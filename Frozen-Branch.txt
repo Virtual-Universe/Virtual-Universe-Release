@@ -1,0 +1,5 @@
+This branch of aurora has reached EOL so no further support will be made. The new replacement is now avail from the upstream aurora git master.
+This remains here Only for thoughs that may still be using it. You should make backups of everything then switch to the new master.
+
+Thankyou,
+SamIam
