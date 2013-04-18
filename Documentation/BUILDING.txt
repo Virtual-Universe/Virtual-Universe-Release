@@ -1,4 +1,4 @@
-=== Building Aurora ===
+=== Building VirtualUniverse ===
 
 === Building on Windows ===
 
@@ -7,7 +7,7 @@ Steps:
 
 === If you have Visual Studio .NET ===
 
- * Load Aurora.sln into Visual Studio .NET and build the solution.
+ * Load VirtualUniverse.sln into Visual Studio .NET and build the solution.
 
 === If you do not have Visual Studio .NET ===
 
@@ -16,7 +16,7 @@ Steps:
 === Both ===
 
  * chdir bin 
- * run Aurora.exe
+ * run VirtualUniverse.exe
 
 === Building on Linux ===
 
@@ -28,12 +28,12 @@ Prereqs:
 
 From the distribution type:
  * ./runprebuild.sh
- * xbuild Aurora.sln
+ * xbuild VirtualUniverse.sln
  * cd bin 
 === If your Mono version >= 2.8 ===
- * run mono Aurora.exe --gc=sgen
+ * run mono VirtualUniverse.exe --gc=sgen
 === If your Mono version < 2.8 ===
- * run mono Aurora.exe
+ * run mono VirtualUniverse.exe
 
 === References ===
  
