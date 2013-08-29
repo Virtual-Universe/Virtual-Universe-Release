@@ -1,0 +1,3 @@
+--------------- Virtual-Universe contributors (Thanks for all the hard work :)) --------------------------
+
+Britanyann Starfinder - Developed the VirtualScript engine

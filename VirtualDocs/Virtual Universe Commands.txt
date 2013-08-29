@@ -1,0 +1,27 @@
+-------------------------------------------------------------------
+----------------Virtual-Universe Commands---------------------- 
+-------------------------------------------------------------------
+
+The Virtual-Universe architecture can be managed by various commands.
+These commands are explained in this file.  because there are different
+consoles and commands for different modules we have broken them up by console 
+and module.  This should help make it easier to understand and help you
+manage your infrastructure.  Feel free to provide us with feedback about
+how we can make it even easier for you to understand as we move forward.
+
+-------------------------------------------------------------------
+----------------VirtualScript Engine Commands---------------------- 
+-------------------------------------------------------------------
+
+These are the commands used to manage the VirtualScript Engine.  They
+are the current commands which are supported.  They may or may not be
+updated or depreciated in future versions of Virtual-Universe.  THe 
+VirtualScript Engine is managed through the region consoles.
+
+Commands
+
+VS Restart - Restarts all scripts and clears the script caches.
+VS Stop - Stops all scripts.
+VS Stats - Tells stats about the VirtualScript Engine.
+VS Disable - Temporarily disables the VirtualScript Engine.
+VS Enable - Enables the VirtualScript Engine.
