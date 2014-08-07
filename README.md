@@ -9,7 +9,7 @@ and a set of features around stability and simplified usability for users.
 
 ## Development Team
 
-The Virtual-Universe Development Team consists of members of the Second Galaxy Development Team and others interested in making a unique virtual world server capable of being the next generation of all virtual worlds.  Together we are ready to take the virtual worlds beyond to the virtual universe.
+The Virtual-Universe Development Team consists of  Virtual Reality Department of Research & Devlopment, members of the Second Galaxy Development Team and others interested in making a unique virtual world server capable of being the next generation of all virtual worlds.  Together we are ready to take the virtual worlds beyond to the virtual universe.
 
 ## Compiling Virtual-Universe
 
