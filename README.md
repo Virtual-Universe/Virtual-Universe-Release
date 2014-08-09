@@ -2,7 +2,7 @@ Virtual-Universe
 ================
 The Virtual-Universe Development Team is proud to present the release of virtual-universe world server.
 
-The Virtual-Universe server is an OpenSim derived project with heavy emphasis on supporting all users, 
+The Virtual-Universe server is a Virtual Reality derived project with heavy emphasis on supporting all users, 
 increased technology focus, heavy emphasis on working with other developers,
 whether it be viewer based developers or server based developers, 
 and a set of features around stability and simplified usability for users.
