@@ -1,0 +1,26 @@
+var classAurora_1_1ClientStack_1_1ThrottleRates =
+[
+    [ "ThrottleRates", "d7/db4/classAurora_1_1ClientStack_1_1ThrottleRates.html#ae2014641a154056beb731f315000846a", null ],
+    [ "GetLimit", "d7/db4/classAurora_1_1ClientStack_1_1ThrottleRates.html#ab2f539b2aa6ffff0f1f51f175c641968", null ],
+    [ "GetRate", "d7/db4/classAurora_1_1ClientStack_1_1ThrottleRates.html#ac2243c1322c6416a914099fde120dd56", null ],
+    [ "Asset", "d7/db4/classAurora_1_1ClientStack_1_1ThrottleRates.html#a62dd9b08aef42c5894967e810c0d90b3", null ],
+    [ "AssetLimit", "d7/db4/classAurora_1_1ClientStack_1_1ThrottleRates.html#a11f24f80c209a67c11c3dfc2216f4289", null ],
+    [ "AvatarInfo", "d7/db4/classAurora_1_1ClientStack_1_1ThrottleRates.html#acc21d7250d2e02c7c43ec9366e2d53ad", null ],
+    [ "AvatarInfoLimit", "d7/db4/classAurora_1_1ClientStack_1_1ThrottleRates.html#a5315faaaf2a4a3109c57a289a9240dff", null ],
+    [ "Cloud", "d7/db4/classAurora_1_1ClientStack_1_1ThrottleRates.html#a268f2557c591c851b332acdc507d779d", null ],
+    [ "CloudLimit", "d7/db4/classAurora_1_1ClientStack_1_1ThrottleRates.html#a439210e73ce53cd5009d17b2dbe66408", null ],
+    [ "Land", "d7/db4/classAurora_1_1ClientStack_1_1ThrottleRates.html#ad84d44c13a4e23f4c2a113c24a2fa2f2", null ],
+    [ "LandLimit", "d7/db4/classAurora_1_1ClientStack_1_1ThrottleRates.html#a77266f6d3dfd67be090a78acad95c531", null ],
+    [ "Resend", "d7/db4/classAurora_1_1ClientStack_1_1ThrottleRates.html#a7bfcdd84648d5b2c593f9f22c742a945", null ],
+    [ "ResendLimit", "d7/db4/classAurora_1_1ClientStack_1_1ThrottleRates.html#afa947503822247fa436824d987cd3b2e", null ],
+    [ "State", "d7/db4/classAurora_1_1ClientStack_1_1ThrottleRates.html#aca07166313be083a6fc8a1329361a7e2", null ],
+    [ "StateLimit", "d7/db4/classAurora_1_1ClientStack_1_1ThrottleRates.html#abbfc7b31c33d5a825c3bcfda330ad030", null ],
+    [ "Task", "d7/db4/classAurora_1_1ClientStack_1_1ThrottleRates.html#ac2ddd78040b72d2604bd5f7392b759d6", null ],
+    [ "TaskLimit", "d7/db4/classAurora_1_1ClientStack_1_1ThrottleRates.html#a754ee79208df32ccd79c7ae7cb42f517", null ],
+    [ "Texture", "d7/db4/classAurora_1_1ClientStack_1_1ThrottleRates.html#ad663d54e4cda2ec7bd2ed4cd9c24dc4d", null ],
+    [ "TextureLimit", "d7/db4/classAurora_1_1ClientStack_1_1ThrottleRates.html#acfcff14e95e06363cec4122fafb77b42", null ],
+    [ "Total", "d7/db4/classAurora_1_1ClientStack_1_1ThrottleRates.html#a19c74b0b3aa9c4248c681085c0909cfc", null ],
+    [ "TotalLimit", "d7/db4/classAurora_1_1ClientStack_1_1ThrottleRates.html#aba610bf10ac78eac6c5c5c9bf11a8c72", null ],
+    [ "Wind", "d7/db4/classAurora_1_1ClientStack_1_1ThrottleRates.html#a0ecd18e8cf2cd444ef68bc45ed243251", null ],
+    [ "WindLimit", "d7/db4/classAurora_1_1ClientStack_1_1ThrottleRates.html#a9649c74fcbbdf512a89c2ede19a3021e", null ]
+];

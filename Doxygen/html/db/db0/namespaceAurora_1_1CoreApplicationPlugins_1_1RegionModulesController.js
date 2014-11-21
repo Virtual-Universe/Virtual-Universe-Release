@@ -1,0 +1,4 @@
+var namespaceAurora_1_1CoreApplicationPlugins_1_1RegionModulesController =
+[
+    [ "RegionModulesControllerPlugin", "d4/df1/classAurora_1_1CoreApplicationPlugins_1_1RegionModulesController_1_1RegionModulesControllerPlugin.html", "d4/df1/classAurora_1_1CoreApplicationPlugins_1_1RegionModulesController_1_1RegionModulesControllerPlugin" ]
+];

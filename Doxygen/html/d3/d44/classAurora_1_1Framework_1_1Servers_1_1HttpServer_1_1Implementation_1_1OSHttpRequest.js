@@ -1,0 +1,25 @@
+var classAurora_1_1Framework_1_1Servers_1_1HttpServer_1_1Implementation_1_1OSHttpRequest =
+[
+    [ "HttpFile", "d8/d90/classAurora_1_1Framework_1_1Servers_1_1HttpServer_1_1Implementation_1_1OSHttpRequest_1_1HttpFile.html", "d8/d90/classAurora_1_1Framework_1_1Servers_1_1HttpServer_1_1Implementation_1_1OSHttpRequest_1_1HttpFile" ],
+    [ "OSHttpRequest", "d3/d44/classAurora_1_1Framework_1_1Servers_1_1HttpServer_1_1Implementation_1_1OSHttpRequest.html#a7aaed1b841bb6ced6b1eb86f628eb2ec", null ],
+    [ "OSHttpRequest", "d3/d44/classAurora_1_1Framework_1_1Servers_1_1HttpServer_1_1Implementation_1_1OSHttpRequest.html#ae33010cdd5998fe4a45ad26da17cdf0f", null ],
+    [ "ToString", "d3/d44/classAurora_1_1Framework_1_1Servers_1_1HttpServer_1_1Implementation_1_1OSHttpRequest.html#a798aaaba2b204c7a42d99e1808471eb6", null ],
+    [ "_files", "d3/d44/classAurora_1_1Framework_1_1Servers_1_1HttpServer_1_1Implementation_1_1OSHttpRequest.html#ac0bd49b40f0c79fe38d1a28e05cf55ba", null ],
+    [ "_request", "d3/d44/classAurora_1_1Framework_1_1Servers_1_1HttpServer_1_1Implementation_1_1OSHttpRequest.html#a6c2ffb3a93293669ee28ceb42a4c5c93", null ],
+    [ "AcceptTypes", "d3/d44/classAurora_1_1Framework_1_1Servers_1_1HttpServer_1_1Implementation_1_1OSHttpRequest.html#adacea55d5f7985cc7138210e015d806c", null ],
+    [ "ContentEncoding", "d3/d44/classAurora_1_1Framework_1_1Servers_1_1HttpServer_1_1Implementation_1_1OSHttpRequest.html#a49f84b97c4c3887d299a99837e10ddc6", null ],
+    [ "ContentLength", "d3/d44/classAurora_1_1Framework_1_1Servers_1_1HttpServer_1_1Implementation_1_1OSHttpRequest.html#a36f1564ffebc409c3c300955b8daf711", null ],
+    [ "ContentLength64", "d3/d44/classAurora_1_1Framework_1_1Servers_1_1HttpServer_1_1Implementation_1_1OSHttpRequest.html#a091d8bba1cddfb036465d9b7fedec167", null ],
+    [ "ContentType", "d3/d44/classAurora_1_1Framework_1_1Servers_1_1HttpServer_1_1Implementation_1_1OSHttpRequest.html#a8d2526222c63dc8d371bf6e2024e78fa", null ],
+    [ "Cookies", "d3/d44/classAurora_1_1Framework_1_1Servers_1_1HttpServer_1_1Implementation_1_1OSHttpRequest.html#a2a0e6652afc21f466ea6ab966056f65f", null ],
+    [ "Files", "d3/d44/classAurora_1_1Framework_1_1Servers_1_1HttpServer_1_1Implementation_1_1OSHttpRequest.html#a0ddf090f74d4cfe6deb7e5956d6dc876", null ],
+    [ "Headers", "d3/d44/classAurora_1_1Framework_1_1Servers_1_1HttpServer_1_1Implementation_1_1OSHttpRequest.html#aba1ee83195443ef7705ecf3efac5eb43", null ],
+    [ "HttpMethod", "d3/d44/classAurora_1_1Framework_1_1Servers_1_1HttpServer_1_1Implementation_1_1OSHttpRequest.html#a00eb8f4b3dbc41ecccd61e3f3e1b42f7", null ],
+    [ "InputStream", "d3/d44/classAurora_1_1Framework_1_1Servers_1_1HttpServer_1_1Implementation_1_1OSHttpRequest.html#a170668b92ae99ef8272e1863b24c4bc9", null ],
+    [ "KeepAlive", "d3/d44/classAurora_1_1Framework_1_1Servers_1_1HttpServer_1_1Implementation_1_1OSHttpRequest.html#ab8b289f04c62e12bf95bc6333d22a23a", null ],
+    [ "Query", "d3/d44/classAurora_1_1Framework_1_1Servers_1_1HttpServer_1_1Implementation_1_1OSHttpRequest.html#af939f97b44df9c881b7f8ef5fec180d1", null ],
+    [ "QueryString", "d3/d44/classAurora_1_1Framework_1_1Servers_1_1HttpServer_1_1Implementation_1_1OSHttpRequest.html#afbab5f7a6e021d72564dcf6827504e45", null ],
+    [ "RawUrl", "d3/d44/classAurora_1_1Framework_1_1Servers_1_1HttpServer_1_1Implementation_1_1OSHttpRequest.html#acea608e783e455b094e412c8c96e40f0", null ],
+    [ "RemoteIPEndPoint", "d3/d44/classAurora_1_1Framework_1_1Servers_1_1HttpServer_1_1Implementation_1_1OSHttpRequest.html#a09139e6bfd74212e98cbb5a42832120b", null ],
+    [ "Url", "d3/d44/classAurora_1_1Framework_1_1Servers_1_1HttpServer_1_1Implementation_1_1OSHttpRequest.html#aa2267ee85dec9e4edbd994664669618f", null ]
+];

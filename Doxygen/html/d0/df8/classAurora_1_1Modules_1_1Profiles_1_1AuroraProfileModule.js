@@ -1,0 +1,36 @@
+var classAurora_1_1Modules_1_1Profiles_1_1AuroraProfileModule =
+[
+    [ "ProfileFlags", "d0/df8/classAurora_1_1Modules_1_1Profiles_1_1AuroraProfileModule.html#a4763671e1a62923826dfcc5deee68fdc", [
+      [ "AllowPublish", "d0/df8/classAurora_1_1Modules_1_1Profiles_1_1AuroraProfileModule.html#a4763671e1a62923826dfcc5deee68fdca5994d50ca43930cac5b6ab8839361bd4", null ],
+      [ "MaturePublish", "d0/df8/classAurora_1_1Modules_1_1Profiles_1_1AuroraProfileModule.html#a4763671e1a62923826dfcc5deee68fdcac4cab629076fb8d106373cc6ddb4ab5e", null ],
+      [ "Identified", "d0/df8/classAurora_1_1Modules_1_1Profiles_1_1AuroraProfileModule.html#a4763671e1a62923826dfcc5deee68fdca12574361637e182cac7c704a3ca29152", null ],
+      [ "Transacted", "d0/df8/classAurora_1_1Modules_1_1Profiles_1_1AuroraProfileModule.html#a4763671e1a62923826dfcc5deee68fdca95ae6dc65eac3f1ac60af92631be6dfd", null ],
+      [ "Online", "d0/df8/classAurora_1_1Modules_1_1Profiles_1_1AuroraProfileModule.html#a4763671e1a62923826dfcc5deee68fdca54f664c70c22054ea0d8d26fc3997ce7", null ]
+    ] ],
+    [ "AddRegion", "d0/df8/classAurora_1_1Modules_1_1Profiles_1_1AuroraProfileModule.html#acb89ffeeb120c08ea49849e7b6ace00c", null ],
+    [ "AvatarInterestsUpdate", "d0/df8/classAurora_1_1Modules_1_1Profiles_1_1AuroraProfileModule.html#a24de64bb82d68814f042a3cef58e2315", null ],
+    [ "AvatarNotesUpdate", "d0/df8/classAurora_1_1Modules_1_1Profiles_1_1AuroraProfileModule.html#a1e02460c1b959510d9f2849ab1e7bcf8", null ],
+    [ "ClassifiedDelete", "d0/df8/classAurora_1_1Modules_1_1Profiles_1_1AuroraProfileModule.html#af747f4b24219b725a6101a77e9173ccb", null ],
+    [ "ClassifiedInfoRequest", "d0/df8/classAurora_1_1Modules_1_1Profiles_1_1AuroraProfileModule.html#ae1d9ff96908d416f3b6f66ba61f2a66e", null ],
+    [ "ClassifiedInfoUpdate", "d0/df8/classAurora_1_1Modules_1_1Profiles_1_1AuroraProfileModule.html#ac07528f5259ebfd9be05f257ec953b18", null ],
+    [ "Close", "d0/df8/classAurora_1_1Modules_1_1Profiles_1_1AuroraProfileModule.html#af7e251b9bfe117e37876ce20abe28889", null ],
+    [ "GodClassifiedDelete", "d0/df8/classAurora_1_1Modules_1_1Profiles_1_1AuroraProfileModule.html#af899a98485efe46cd5df6dc2e0e1aa99", null ],
+    [ "GodPickDelete", "d0/df8/classAurora_1_1Modules_1_1Profiles_1_1AuroraProfileModule.html#ab0491755a5920844aa75cabc4931953e", null ],
+    [ "HandleAvatarClassifiedsRequest", "d0/df8/classAurora_1_1Modules_1_1Profiles_1_1AuroraProfileModule.html#adf3476d1e76f7567f515ec8d954f1a8a", null ],
+    [ "HandleAvatarNotesRequest", "d0/df8/classAurora_1_1Modules_1_1Profiles_1_1AuroraProfileModule.html#ab440c6bdd43bb0988348c0e25fa76a94", null ],
+    [ "HandleAvatarPicksRequest", "d0/df8/classAurora_1_1Modules_1_1Profiles_1_1AuroraProfileModule.html#a8d56da9ef7bceff7503cd139532fe3eb", null ],
+    [ "HandlePickInfoRequest", "d0/df8/classAurora_1_1Modules_1_1Profiles_1_1AuroraProfileModule.html#ac032bfd96794b5bf3a0e0c4ad1b36e58", null ],
+    [ "Initialise", "d0/df8/classAurora_1_1Modules_1_1Profiles_1_1AuroraProfileModule.html#a4f970c1919c289c33844644e073842df", null ],
+    [ "NewClient", "d0/df8/classAurora_1_1Modules_1_1Profiles_1_1AuroraProfileModule.html#a2ca9a6da0030c9ede7c2b3176a241a90", null ],
+    [ "PickDelete", "d0/df8/classAurora_1_1Modules_1_1Profiles_1_1AuroraProfileModule.html#a6ef170ccf5b495dcfa0ce5ac93dcab4a", null ],
+    [ "PickInfoUpdate", "d0/df8/classAurora_1_1Modules_1_1Profiles_1_1AuroraProfileModule.html#ac309eedf8c6156de5a3e7c491a9ba6ae", null ],
+    [ "RegionLoaded", "d0/df8/classAurora_1_1Modules_1_1Profiles_1_1AuroraProfileModule.html#a337d3526a57e2ff45286747c33f632ef", null ],
+    [ "RemoveRegion", "d0/df8/classAurora_1_1Modules_1_1Profiles_1_1AuroraProfileModule.html#a6eecd5bdb75987ef386f04d2421caeca", null ],
+    [ "RequestAvatarProperty", "d0/df8/classAurora_1_1Modules_1_1Profiles_1_1AuroraProfileModule.html#aaab5d6b9124a46611a944ce975ec3f3a", null ],
+    [ "TrackAgent", "d0/df8/classAurora_1_1Modules_1_1Profiles_1_1AuroraProfileModule.html#a90db5f080e0965321542aaf3843a3460", null ],
+    [ "UpdateAvatarProperties", "d0/df8/classAurora_1_1Modules_1_1Profiles_1_1AuroraProfileModule.html#a29ce08f6509bf5a8e420d213f41e0a47", null ],
+    [ "UpdateUserPreferences", "d0/df8/classAurora_1_1Modules_1_1Profiles_1_1AuroraProfileModule.html#a86a11ce2a71dcd66011fbce8d0a6dc73", null ],
+    [ "UserPreferencesRequest", "d0/df8/classAurora_1_1Modules_1_1Profiles_1_1AuroraProfileModule.html#ae832372ad24d0b7978a89d7bd62894d9", null ],
+    [ "Name", "d0/df8/classAurora_1_1Modules_1_1Profiles_1_1AuroraProfileModule.html#ac7898c45282ad8645ac2ed835f4f3c1e", null ],
+    [ "ReplaceableInterface", "d0/df8/classAurora_1_1Modules_1_1Profiles_1_1AuroraProfileModule.html#a3f7d789d534e85fb29a02e8b9c808bc9", null ]
+];

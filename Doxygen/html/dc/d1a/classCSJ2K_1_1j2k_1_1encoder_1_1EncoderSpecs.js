@@ -1,0 +1,25 @@
+var classCSJ2K_1_1j2k_1_1encoder_1_1EncoderSpecs =
+[
+    [ "EncoderSpecs", "dc/d1a/classCSJ2K_1_1j2k_1_1encoder_1_1EncoderSpecs.html#ad5fa7ef00bdfe7a20866b34af5fc3db1", null ],
+    [ "bms", "dc/d1a/classCSJ2K_1_1j2k_1_1encoder_1_1EncoderSpecs.html#aca1aabdd399e0a76a58a07ac91d9528e", null ],
+    [ "cblks", "dc/d1a/classCSJ2K_1_1j2k_1_1encoder_1_1EncoderSpecs.html#a49fb7e2bf594116fdb294cf1e9d4678d", null ],
+    [ "css", "dc/d1a/classCSJ2K_1_1j2k_1_1encoder_1_1EncoderSpecs.html#a01010d3fab9aa8bd994cff8ceb1a3ada", null ],
+    [ "cts", "dc/d1a/classCSJ2K_1_1j2k_1_1encoder_1_1EncoderSpecs.html#a258c4a89eb7ec334d378870bcc58fa78", null ],
+    [ "dls", "dc/d1a/classCSJ2K_1_1j2k_1_1encoder_1_1EncoderSpecs.html#afdcef3480970a29e844b5bc362561402", null ],
+    [ "ephs", "dc/d1a/classCSJ2K_1_1j2k_1_1encoder_1_1EncoderSpecs.html#ad9fbf0920eb10ce231e68a972d40d9f3", null ],
+    [ "gbs", "dc/d1a/classCSJ2K_1_1j2k_1_1encoder_1_1EncoderSpecs.html#aaa33476233272aa132d166fba3bf0161", null ],
+    [ "lcs", "dc/d1a/classCSJ2K_1_1j2k_1_1encoder_1_1EncoderSpecs.html#a02cb527118969f3161994724ed844f2f", null ],
+    [ "mqrs", "dc/d1a/classCSJ2K_1_1j2k_1_1encoder_1_1EncoderSpecs.html#a20dbf329780755541afe185e13d41e2a", null ],
+    [ "nComp", "dc/d1a/classCSJ2K_1_1j2k_1_1encoder_1_1EncoderSpecs.html#afd2eee28447ece50af9221b2b792f9fb", null ],
+    [ "nTiles", "dc/d1a/classCSJ2K_1_1j2k_1_1encoder_1_1EncoderSpecs.html#a50d159aef3d54d76c8fd0ecdd8e01e37", null ],
+    [ "pocs", "dc/d1a/classCSJ2K_1_1j2k_1_1encoder_1_1EncoderSpecs.html#a5e32e0960b9ac1ec1f937593b129d834", null ],
+    [ "pss", "dc/d1a/classCSJ2K_1_1j2k_1_1encoder_1_1EncoderSpecs.html#af7389c6936af4ee123085e6ed53a52a8", null ],
+    [ "qsss", "dc/d1a/classCSJ2K_1_1j2k_1_1encoder_1_1EncoderSpecs.html#a712abb3b45ca4b242a0dc411ef8175f6", null ],
+    [ "qts", "dc/d1a/classCSJ2K_1_1j2k_1_1encoder_1_1EncoderSpecs.html#a23f64146d18c208002e3f10e94cf3777", null ],
+    [ "rois", "dc/d1a/classCSJ2K_1_1j2k_1_1encoder_1_1EncoderSpecs.html#afecbef006eebf4018e22c8691d0ce6e5", null ],
+    [ "rts", "dc/d1a/classCSJ2K_1_1j2k_1_1encoder_1_1EncoderSpecs.html#a3aef65259a26bd9dd9ce6e92511112da", null ],
+    [ "sops", "dc/d1a/classCSJ2K_1_1j2k_1_1encoder_1_1EncoderSpecs.html#a983a6e041760f4fdc847a6cede9e62dc", null ],
+    [ "sss", "dc/d1a/classCSJ2K_1_1j2k_1_1encoder_1_1EncoderSpecs.html#ac9db175879c751b2395affbec1670c85", null ],
+    [ "tts", "dc/d1a/classCSJ2K_1_1j2k_1_1encoder_1_1EncoderSpecs.html#a0e6e39c105e33fcf2d253ed2911603f6", null ],
+    [ "wfs", "dc/d1a/classCSJ2K_1_1j2k_1_1encoder_1_1EncoderSpecs.html#a4f34bd7f00ae90184928f33504fd7f86", null ]
+];

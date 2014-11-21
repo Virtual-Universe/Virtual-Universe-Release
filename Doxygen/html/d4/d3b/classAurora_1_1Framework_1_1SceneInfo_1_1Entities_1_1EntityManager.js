@@ -1,0 +1,28 @@
+var classAurora_1_1Framework_1_1SceneInfo_1_1Entities_1_1EntityManager =
+[
+    [ "Add", "d4/d3b/classAurora_1_1Framework_1_1SceneInfo_1_1Entities_1_1EntityManager.html#a5229ff95449d7054dbda73bc3e902d52", null ],
+    [ "Clear", "d4/d3b/classAurora_1_1Framework_1_1SceneInfo_1_1Entities_1_1EntityManager.html#a2dc94c951340f87d029d9081148247c3", null ],
+    [ "GetEntities", "d4/d3b/classAurora_1_1Framework_1_1SceneInfo_1_1Entities_1_1EntityManager.html#a03e0606862c021ebf33a97ae8585486c", null ],
+    [ "GetEntities", "d4/d3b/classAurora_1_1Framework_1_1SceneInfo_1_1Entities_1_1EntityManager.html#a6d76897d6046a4b6f46fd23947b68ff4", null ],
+    [ "GetPresenceCount", "d4/d3b/classAurora_1_1Framework_1_1SceneInfo_1_1Entities_1_1EntityManager.html#a404986d4cc4dea08b6687e1b48872840", null ],
+    [ "GetPresences", "d4/d3b/classAurora_1_1Framework_1_1SceneInfo_1_1Entities_1_1EntityManager.html#a993701787551cd877514afc08bc7bb57", null ],
+    [ "GetPresences", "d4/d3b/classAurora_1_1Framework_1_1SceneInfo_1_1Entities_1_1EntityManager.html#a399f5296e625d1644ff6a1d15210f825", null ],
+    [ "InternalTryGetValue", "d4/d3b/classAurora_1_1Framework_1_1SceneInfo_1_1Entities_1_1EntityManager.html#a828fa6b37a35c09cec153920d0ba7090", null ],
+    [ "InternalTryGetValue", "d4/d3b/classAurora_1_1Framework_1_1SceneInfo_1_1Entities_1_1EntityManager.html#a30b282f1176ff4c440c763bae6e6442e", null ],
+    [ "Remove", "d4/d3b/classAurora_1_1Framework_1_1SceneInfo_1_1Entities_1_1EntityManager.html#a600d88b34cf25224bd681551e52f815f", null ],
+    [ "TryGetChildPrim", "d4/d3b/classAurora_1_1Framework_1_1SceneInfo_1_1Entities_1_1EntityManager.html#adc0985f9b8848b58011b7b2ec2f10413", null ],
+    [ "TryGetChildPrim", "d4/d3b/classAurora_1_1Framework_1_1SceneInfo_1_1Entities_1_1EntityManager.html#abecdf8e407e434d84cf9e4d1a594357a", null ],
+    [ "TryGetChildPrimParent", "d4/d3b/classAurora_1_1Framework_1_1SceneInfo_1_1Entities_1_1EntityManager.html#a61344a3af306c651a426cff1057f6232", null ],
+    [ "TryGetChildPrimParent", "d4/d3b/classAurora_1_1Framework_1_1SceneInfo_1_1Entities_1_1EntityManager.html#a393efd909f91874f7b2f3ba80f23764c", null ],
+    [ "TryGetPresenceValue", "d4/d3b/classAurora_1_1Framework_1_1SceneInfo_1_1Entities_1_1EntityManager.html#aa691827fcc035986898f2488bf5f8deb", null ],
+    [ "TryGetValue", "d4/d3b/classAurora_1_1Framework_1_1SceneInfo_1_1Entities_1_1EntityManager.html#acb170ef3b191ffb72a528ae5c8d5f7b1", null ],
+    [ "TryGetValue", "d4/d3b/classAurora_1_1Framework_1_1SceneInfo_1_1Entities_1_1EntityManager.html#ab9900e2e28f6a4a07c49e45dabfdfd28", null ],
+    [ "m_child_2_parent_entities", "d4/d3b/classAurora_1_1Framework_1_1SceneInfo_1_1Entities_1_1EntityManager.html#af1800507084436cb3e94b42cd1300c91", null ],
+    [ "m_child_2_parent_entitiesLock", "d4/d3b/classAurora_1_1Framework_1_1SceneInfo_1_1Entities_1_1EntityManager.html#ae9ed654bfe9e9c14a657cf8065f0b7b4", null ],
+    [ "m_objectEntities", "d4/d3b/classAurora_1_1Framework_1_1SceneInfo_1_1Entities_1_1EntityManager.html#aca9f5e647cb8ae2fb8b887e17ec59754", null ],
+    [ "m_objectEntitiesLock", "d4/d3b/classAurora_1_1Framework_1_1SceneInfo_1_1Entities_1_1EntityManager.html#a1f0d820e62169782e46138ff777061fb", null ],
+    [ "m_presenceEntities", "d4/d3b/classAurora_1_1Framework_1_1SceneInfo_1_1Entities_1_1EntityManager.html#a29faede0d80fc1d00778e6d367a7140e", null ],
+    [ "m_presenceEntitiesList", "d4/d3b/classAurora_1_1Framework_1_1SceneInfo_1_1Entities_1_1EntityManager.html#aa65597468486a0dca054bd599381bfe4", null ],
+    [ "m_presenceEntitiesLock", "d4/d3b/classAurora_1_1Framework_1_1SceneInfo_1_1Entities_1_1EntityManager.html#a78e4c61ff95d6da81af8c742d67cef24", null ],
+    [ "Count", "d4/d3b/classAurora_1_1Framework_1_1SceneInfo_1_1Entities_1_1EntityManager.html#aef1e144c5903b58f8905bcd113e30039", null ]
+];

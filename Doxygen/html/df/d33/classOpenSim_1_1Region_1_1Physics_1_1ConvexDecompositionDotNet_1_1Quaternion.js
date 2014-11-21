@@ -1,0 +1,26 @@
+var classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1Quaternion =
+[
+    [ "Quaternion", "df/d33/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1Quaternion.html#ab13209f6e82351bf007ca8f612fa2f0f", null ],
+    [ "Quaternion", "df/d33/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1Quaternion.html#ab166da6e3aa721e985adfd607d03a62d", null ],
+    [ "Quaternion", "df/d33/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1Quaternion.html#a71a64c9d452764d4637827f5b2f38fad", null ],
+    [ "angle", "df/d33/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1Quaternion.html#a556e5e1bd38ec3a387f05643a195892a", null ],
+    [ "axis", "df/d33/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1Quaternion.html#a57b9166d4d460e09e0a613563d9044f2", null ],
+    [ "dot", "df/d33/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1Quaternion.html#ac3ea1eade092bbc8b6e16b48735bfeef", null ],
+    [ "getmatrix", "df/d33/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1Quaternion.html#af6ba18d5088116419259c9814a6a4a90", null ],
+    [ "Interpolate", "df/d33/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1Quaternion.html#aa5f268a50680ab2fda44554e0068abf2", null ],
+    [ "Inverse", "df/d33/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1Quaternion.html#a8ddbda6e99959326308fefbc987655b4", null ],
+    [ "normalize", "df/d33/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1Quaternion.html#afbb17b879d74d97f270d687ab67f10ae", null ],
+    [ "operator float3x3", "df/d33/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1Quaternion.html#ae18d778d8f974cd4d1ffd6d463ae60b8", null ],
+    [ "operator*", "df/d33/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1Quaternion.html#ab48bd776a8f9737181279e83d26a3819", null ],
+    [ "operator*", "df/d33/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1Quaternion.html#a9aab6e20bea77b8933bec7c0b261dedb", null ],
+    [ "operator*", "df/d33/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1Quaternion.html#add930017679e68566d8f0c01819d2b1e", null ],
+    [ "operator+", "df/d33/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1Quaternion.html#a82e2063586daef566a1579bbd75862b1", null ],
+    [ "Pitch", "df/d33/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1Quaternion.html#adb2913088f8f217d9c7d6a4476f1b173", null ],
+    [ "Roll", "df/d33/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1Quaternion.html#ac6457e5cfdb13597e429331d17ff1a9c", null ],
+    [ "slerp", "df/d33/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1Quaternion.html#a927b16891b253e14bafcca6148f2db1c", null ],
+    [ "xdir", "df/d33/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1Quaternion.html#a73ff9fc6fcba2dee0c2aa02e4be5aef5", null ],
+    [ "Yaw", "df/d33/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1Quaternion.html#a9cb28970a7dfbe9193e8eaacf8be9e9a", null ],
+    [ "YawPitchRoll", "df/d33/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1Quaternion.html#a6fab71b574de0e93524ac418ec5aa602", null ],
+    [ "ydir", "df/d33/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1Quaternion.html#a8e8af3c22d72fc7113706003403cfc4c", null ],
+    [ "zdir", "df/d33/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1Quaternion.html#a6b221c4251e5f2d4e6ac9e6c08f9a454", null ]
+];

@@ -1,0 +1,2467 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Prebuild version="1.7" xmlns="http://dnpb.sourceforge.net/schemas/prebuild-1.7.xsd">
+  <Solution activeConfig="Debug" name="VirtualUniverse" path="./" version="1.0.0-$Rev$">
+    <Configuration name="Debug" platform="x86">
+      <Options>
+    	<target name="net-4.5" description="Sets framework to .NET 4.5">
+			<property name="nant.settings.currentframework" value="net-4.5" />
+		</target>
+        <CompilerDefines>TRACE;DEBUG</CompilerDefines>
+        <OptimizeCode>true</OptimizeCode>
+        <CheckUnderflowOverflow>false</CheckUnderflowOverflow>
+        <AllowUnsafe>true</AllowUnsafe>
+        <WarningLevel>4</WarningLevel>
+        <WarningsAsErrors>false</WarningsAsErrors>
+        <SuppressWarnings>1591,1574,0419,0618</SuppressWarnings>
+        <OutputPath>packages</OutputPath>
+        <DebugInformation>true</DebugInformation>
+        <IncrementalBuild>true</IncrementalBuild>
+        <NoStdLib>false</NoStdLib>
+      </Options>
+    </Configuration>
+    <Configuration name="Debug" platform="x64">
+      <Options>
+        <target name="net-4.5" description="Sets framework to .NET 4.5">
+		    <property name="nant.settings.currentframework" value="net-4.5" />
+		</target>
+        <CompilerDefines>TRACE;DEBUG</CompilerDefines>
+        <OptimizeCode>true</OptimizeCode>
+        <CheckUnderflowOverflow>false</CheckUnderflowOverflow>
+        <AllowUnsafe>true</AllowUnsafe>
+        <WarningLevel>4</WarningLevel>
+        <WarningsAsErrors>false</WarningsAsErrors>
+        <SuppressWarnings>1591,1574,0419,0618</SuppressWarnings>
+
+        <OutputPath>packages</OutputPath>
+        <DebugInformation>true</DebugInformation>
+        <IncrementalBuild>true</IncrementalBuild>
+        <NoStdLib>false</NoStdLib>
+      </Options>
+    </Configuration>
+    <Configuration name="Release" platform="x86">
+      <Options>
+   		<target name="net-4.5" description="Sets framework to .NET 4.5">
+			<property name="nant.settings.currentframework" value="net-4.5" />
+		</target>
+        <CompilerDefines>TRACE;DEBUG</CompilerDefines>
+        <OptimizeCode>true</OptimizeCode>
+        <CheckUnderflowOverflow>false</CheckUnderflowOverflow>
+        <AllowUnsafe>true</AllowUnsafe>
+        <WarningLevel>4</WarningLevel>
+        <WarningsAsErrors>false</WarningsAsErrors>
+        <SuppressWarnings>1591,1574,0419,0618</SuppressWarnings>
+        <OutputPath>packages</OutputPath>
+        <DebugInformation>false</DebugInformation>
+        <IncrementalBuild>true</IncrementalBuild>
+        <NoStdLib>false</NoStdLib>
+      </Options>
+    </Configuration>
+    <Configuration name="Release" platform="x64">
+      <Options>
+     	<target name="net-4.5" description="Sets framework to .NET 4.5">
+			<property name="nant.settings.currentframework" value="net-4.5" />
+		</target>
+        <CompilerDefines>TRACE;DEBUG</CompilerDefines>
+        <OptimizeCode>true</OptimizeCode>
+        <CheckUnderflowOverflow>false</CheckUnderflowOverflow>
+        <AllowUnsafe>true</AllowUnsafe>
+        <WarningLevel>4</WarningLevel>
+        <WarningsAsErrors>false</WarningsAsErrors>
+        <SuppressWarnings>1591,1574,0419,0618</SuppressWarnings>
+        <OutputPath>packages</OutputPath>
+        <DebugInformation>false</DebugInformation>
+        <IncrementalBuild>true</IncrementalBuild>
+        <NoStdLib>false</NoStdLib>
+      </Options>
+    </Configuration>
+
+   <!-- External Libraries -->
+   <Project frameworkVersion="v4_5" name="CSJ2K" path="CSJ2K" type="Library">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../packages/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Drawing"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="CSJ2KAssemblyInfo.cs" recurse="false"/>        
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>  
+
+    <!-- Programs -->
+
+    <Project frameworkVersion="v4_5" name="AvatarPreview" path="AvatarPreview" type="WinExe">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../packages/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Xml"/>
+      <Reference name="System.Data"/>
+      <Reference name="System.Drawing"/>
+      <Reference name="System.Windows.Forms"/>
+      <Reference name="Tao.OpenGl" path="../packages/"/>
+      <Reference name="Tao.Platform.Windows" path="../packages/"/>
+      <Reference name="OpenMetaverse" path="../packages/"/>
+      <Reference name="OpenMetaverseTypes" path="../packages/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../packages/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="AvatarPreviewAssemblyInfo.cs" recurse="false"/>   
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>   
+    
+    <Project frameworkVersion="v4_5" name="Baker" path="Baker" type="WinExe">
+     <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../packages/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Data"/>
+      <Reference name="System.Drawing"/>
+      <Reference name="System.Windows.Forms"/>
+      <Reference name="OpenMetaverse" path="../packages/"/>
+      <Reference name="OpenMetaverseTypes" path="../packages/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../packages/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="BakerAssemblyInfo.cs" recurse="false"/>   
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+    
+    <Project frameworkVersion="v4_5" name="ImportPrimScript" path="ImportPrimScript" type="Exe">
+     <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../packages/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Drawing"/>
+      <Reference name="OpenMetaverse" path="../packages/"/>
+      <Reference name="OpenMetaverseTypes" path="../packages/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../packages/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="ImportPrimScriptAssemblyInfo.cs" recurse="false"/>   
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+    
+        <Project frameworkVersion="v4_5" name="MapGenerator" path="MapGenerator" type="Exe">
+     <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <ReferencePath>../packages/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="OpenMetaverse" path="../packages/"/>
+      <Reference name="OpenMetaverseTypes" path="../packages/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../packages/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="MapGeneratorAssemblyInfo.cs" recurse="false"/>   
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>   
+    
+   <Project frameworkVersion="v4_5" name="IRCGateway" path="IRCGateway" type="Exe">
+     <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <ReferencePath>../packages/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="OpenMetaverse" path="../packages/"/>
+      <Reference name="OpenMetaverseTypes" path="../packages/"/>
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="IRCGatewayAssemblyInfo.cs" recurse="false"/>   
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>  
+    
+        <Project frameworkVersion="v4_5" name="Dashboard" path="Dashboard" type="WinExe">
+     <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <ReferencePath>../packages/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Drawing"/>
+      <Reference name="System.Windows.Forms"/>
+      <Reference name="OpenMetaverse" path="../packages/"/>
+      <Reference name="OpenMetaverseTypes" path="../packages/"/>
+      <Reference name="OpenMetaverse.GUI" path="../packages/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="DashboardAssemblyInfo.cs" recurse="false"/>   
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>  
+
+    <!-- // Sorry for the cruft, this is an in progress plugin for WGP that
+    	 // will show a simulators objects in a tree view - Coming soon!
+    <Project frameworkVersion="v4_5" name="ObjectTreeBrowser" path="ObjectTreeBrowser" type="WinExe">
+     <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <ReferencePath>../packages/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Drawing"/>
+      <Reference name="System.Windows.Forms"/>
+      <Reference name="OpenMetaverse" path="../packages/"/>
+      <Reference name="OpenMetaverseTypes" path="../packages/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="ObjectTreeBrowserAssemblyInfo.cs" recurse="false"/>   
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>  
+    -->
+    
+   <Project frameworkVersion="v4_5" name="PrimWorkshop" path="PrimWorkshop" type="WinExe">
+     <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../packages/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Xml"/>
+      <Reference name="System.Data"/>
+      <Reference name="System.Drawing"/>
+      <Reference name="System.Windows.Forms"/>
+      <Reference name="Tao.OpenGl" path="../packages/"/>
+      <Reference name="Tao.Platform.Windows" path="../packages/"/>
+      <Reference name="GlacialList" path="../packages/"/>
+      <Reference name="ICSharpCode.SharpZipLib" path="../packages/"/>
+      <Reference name="OpenMetaverse" path="../packages/"/>
+      <Reference name="OpenMetaverseTypes" path="../packages/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../packages/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="PrimWorkshopAssemblyInfo.cs" recurse="false"/>   
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>  
+      
+    <Project frameworkVersion="v4_5" name="GridImageUpload" path="GridImageUpload" type="WinExe">
+     <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../packages/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Data"/>
+      <Reference name="System.Drawing"/>
+      <Reference name="System.Windows.Forms"/>
+      <Reference name="OpenMetaverse" path="../packages/"/>
+      <Reference name="OpenMetaverseTypes" path="../packages/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../packages/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="GridImageUploadAssemblyInfo.cs" recurse="false"/>   
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>  
+
+    <!--- // Commenting out GridProxy as this is not going to be included
+          // This is designed for testing for issues with communications of
+          // the viewers and the grid and planet services
+    <Project frameworkVersion="v4_5" name="GridProxy" path="GridProxy" type="Exe">
+     <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../packages/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Xml"/>
+      <Reference name="SmartInspect"/>
+      <Reference name="XMLRPC" path="../packages/"/>
+      <Reference name="OpenMetaverse" path="../packages/"/>
+      <Reference name="OpenMetaverseTypes" path="../packages/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../packages/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="GridProxyAssemblyInfo.cs" recurse="false"/>   
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>  
+    -->
+
+    <!-- GridProxyGUI, requires Gtk-sharp, uncomment block to enable and re-run runprebuild-->
+    <!--- // Commenting out GridProxy as this is not going to be included
+          // This is designed for testing for issues with communications of
+          // the viewers and the grid and planet services
+    <Project frameworkVersion="v4_5" name="GridProxyGUI" path="GridProxyGUI" icon="libomv.ico" type="WinExe">
+     <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../packages/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Xml"/>
+      <Reference name="System.Drawing"/>
+      <Reference name="System.Windows.Forms"/>
+      <Reference name="OpenMetaverse" path="../packages/"/>
+      <Reference name="OpenMetaverseTypes" path="../packages/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../packages/"/>
+      <Reference name="GridProxy"/>
+      <Reference name="XMLRPC" path="../packages/"/>
+      <Reference name="SmartInspect"/>
+      <Reference name="atk-sharp"/>
+      <Reference name="gdk-sharp"/>
+      <Reference name="glade-sharp"/>
+      <Reference name="glib-sharp"/>
+      <Reference name="gtk-sharp"/>
+      <Reference name="pango-sharp"/>
+      <Reference name="Mono.Posix"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="GridProxyGUIAssemblyInfo.cs" recurse="false"/>   
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project> 
+    -->
+        <Project frameworkVersion="v4_5" name="VisualParamGenerator" path="VisualParamGenerator" type="Exe">
+     <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../packages/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Xml"/>
+      <Reference name="OpenMetaverse" path="../packages/"/>
+      <Reference name="OpenMetaverseTypes" path="../packages/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="VisualParamGeneratorAssemblyInfo.cs" recurse="false"/>   
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project> 
+
+    <Project frameworkVersion="v4_5" name="VoiceTest" path="VoiceTest" type="Exe">
+     <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../packages/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="OpenMetaverse" path="../packages/"/>
+      <Reference name="OpenMetaverseTypes" path="../packages/"/>
+      <Reference name="OpenMetaverse.Utilities" path="../packages/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="VoiceTestAssemblyInfo.cs" recurse="false"/>   
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project> 
+
+    <!--- // Commenting out WinGridProxy as this is not going to be included
+          // This is designed for testing for issues with communications of
+          // the viewers and the grid and planet services
+    <Project frameworkVersion="v4_5" name="WinGridProxy" path="WinGridProxy" type="WinExe">
+     <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../packages/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Core"/>
+      <Reference name="System.Xml"/>
+      <Reference name="System.Data"/>
+      <Reference name="System.Drawing"/>
+      <Reference name="System.Windows.Forms"/>
+      <Reference name="OpenMetaverse" path="../packages/"/>
+      <Reference name="OpenMetaverseTypes" path="../packages/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../packages/"/>
+      <Reference name="GridProxy"/>
+      <Reference name="XMLRPC" path="../packages/"/>
+      <Reference name="Be.Windows.Forms.HexBox" path="../packages/"/>
+      <Reference name="SmartInspect"/>
+      
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="WinGridProxyAssemblyInfo.cs" recurse="false"/>   
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project> 
+    -->
+
+    <Project frameworkVersion="v4_5" name="GroupManager" path="GroupManager" type="WinExe">
+     <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../packages/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Data"/>
+      <Reference name="System.Drawing"/>
+      <Reference name="System.Windows.Forms"/>
+      <Reference name="OpenMetaverse" path="../packages/"/>
+      <Reference name="OpenMetaverseTypes" path="../packages/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="GroupManagerAssemblyInfo.cs" recurse="false"/>   
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+
+    <Project frameworkVersion="v4_5" name="Heightmap" path="Heightmap" type="WinExe">
+     <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../packages/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Data"/>
+      <Reference name="System.Drawing"/>
+      <Reference name="System.Windows.Forms"/>
+      <Reference name="OpenMetaverse" path="../packages/"/>
+      <Reference name="OpenMetaverseTypes" path="../packages/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="HeightmapAssemblyInfo.cs" recurse="false"/>   
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+
+    <Project frameworkVersion="v4_5" name="GridAccountant" path="GridAccountant" type="WinExe">
+     <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../packages/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Data"/>
+      <Reference name="System.Drawing"/>
+      <Reference name="System.Windows.Forms"/>
+      <Reference name="OpenMetaverse" path="../packages/"/>
+      <Reference name="OpenMetaverseTypes" path="../packages/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="GridAccountantAssemblyInfo.cs" recurse="false"/>   
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+
+    <Project frameworkVersion="v4_5" name="PacketDump" path="PacketDump" type="Exe">
+     <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../packages/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="OpenMetaverse" path="../packages/"/>
+      <Reference name="OpenMetaverseTypes" path="../packages/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="PacketDumpAssemblyInfo.cs" recurse="false"/>   
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+
+    <Project frameworkVersion="v4_5" name="TestClient" path="TestClient" type="Exe">
+     <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../packages/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Xml"/>
+      <Reference name="System.Web"/>
+      <Reference name="System.Drawing"/>
+      <Reference name="OpenMetaverse" path="../packages/"/>
+      <Reference name="OpenMetaverseTypes" path="../packages/"/>
+      <Reference name="OpenMetaverse.Utilities" path="../packages/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../packages/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="TestClientAssemblyInfo.cs" recurse="false"/>   
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+    
+   <Project frameworkVersion="v4_5" name="Universe" path="Universe" type="Library">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../packages/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Core"/>
+      <Reference name="System.Data"/>
+      <Reference name="System.Drawing"/>
+      <Reference name="System.Net.Http"/>
+      <Reference name="System.Windows.Forms"/>
+      <Reference name="System.Web"/>
+      <Reference name="System.Xml"/>
+      <Reference name="Nini" path="../packages/"/>
+      <Reference name="OpenMetaverse" path="../packages/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../packages/"/>
+      <Reference name="OpenMetaverseTypes" path="../packages/"/>
+      <Reference name="protobuf-net.dll" path="../packages/"/>
+      <Reference name="SmartThreadPool.dll" path="../packages/"/>
+      <Reference name="XMLRPC" path="../packages/"/>
+      
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="UniverseAssemblyInfo.cs" recurse="false"/>   
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+
+    <!-- Physics Plug-ins -->
+    <Project frameworkVersion="v4_5" name="BasicPhysics" path="Physics/BasicPhysics" type="Library">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../../packages/Physics/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../../packages/Physics/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../../packages/Physics/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../../packages/Physics/</OutputPath>
+        </Options>
+      </Configuration>
+      <ReferencePath>../../packages/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="Universe"/>
+      <Reference name="Nini" path="../../packages/"/>
+      <Reference name="OpenMetaverseTypes" path="../../packages/"/>
+      
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="BasicPhysicsAssemblyInfo.cs" recurse="false"/>   
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+
+    <Project frameworkVersion="v4_5" name="Meshing" path="Physics/Meshing" type="Library">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../../packages/Physics/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../../packages/Physics/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../../packages/Physics/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../../packages/Physics/</OutputPath>
+        </Options>
+      </Configuration>
+      <ReferencePath>../../packages/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Core"/>
+      <Reference name="System.Drawing"/>
+      <Reference name="Universe"/>
+      <Reference name="CSJ2K" path="../../packages/"/>
+      <Reference name="Nini" path="../../packages/"/>
+      <Reference name="OpenMetaverse" path="../../packages/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../../packages/"/>
+      <Reference name="OpenMetaverseTypes" path="../../packages/"/>
+      <Reference name="zlib.net" path="../../packages/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="MeshingAssemblyInfo.cs" recurse="false"/>   
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+
+    <Project frameworkVersion="v4_5" name="BulletS" path="Physics/BulletS" type="Library">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../../packages/Physics/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../../packages/Physics/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../../packages/Physics/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../../packages/Physics/</OutputPath>
+        </Options>
+      </Configuration>
+      <ReferencePath>../../packages/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Core"/>
+      <Reference name="System.Xml"/>
+      <Reference name="OpenMetaverseTypes" path="../../packages/"/>
+      <Reference name="Nini.dll"  path="../../packages/"/>
+      <Reference name="Universe"/>
+      <Reference name="SolarSystem"/>
+      <Reference name="Meshing"/>
+      <Reference name="ConvexDecomposition"/>
+      <Reference name="BulletXNA.dll" path="../../packages/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="BulletSAssemblyInfo.cs" recurse="false"/> 
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+
+    <Project frameworkVersion="v4_5" name="ConvexDecomposition" path="Physics/ConvexDecomposition" type="Library">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../../packages/Physics/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../../packages/Physics/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../../packages/Physics/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../../packages/Physics/</OutputPath>
+        </Options>
+      </Configuration>
+      <ReferencePath>../../packages/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Core"/>
+      <Reference name="System.Data"/>
+      <Reference name="System.Xml"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="ConvexDecompositionAssemblyInfo.cs" recurse="false"/> 
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+
+    <Project frameworkVersion="v4_5" name="SolarSystem" path="SolarSystem" type="Library">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <ReferencePath>../packages/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Core"/>
+      <Reference name="System.Drawing"/>
+      <Reference name="System.Web"/>
+      <Reference name="System.Xml"/>
+      <Reference name="DataManager"/>
+      <Reference name="Universe"/>
+      <Reference name="DotNetOpenMail" path="../packages/"/>
+      <Reference name="Nini" path="../packages/"/>
+      <Reference name="OpenMetaverse" path="../packages/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../packages/"/>
+      <Reference name="OpenMetaverseTypes" path="../packages/"/>
+      <Reference name="protobuf-net.dll" path="../packages/"/>
+      <Reference name="SmartThreadPool.dll" path="../packages/"/>
+      <Reference name="XMLRPC" path="../packages/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="SolarSystemAssemblyInfo.cs" recurse="false"/> 
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+
+    <Project frameworkVersion="v4_5" name="NoSQL" path="Services/NoSQL" type="Library">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <ReferencePath>../../packages/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Core"/>
+      <Reference name="System.Data"/>
+      <Reference name="System.Drawing"/>
+      <Reference name="System.Xml"/>
+      <Reference name="System.Web"/>
+      <Reference name="DataManager"/>
+      <Reference name="Data"/>
+      <Reference name="Universe"/>
+      <Reference name="Nini" path="../../packages/"/>
+      <Reference name="OpenMetaverse" path="../../packages/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../../packages/"/>
+      <Reference name="OpenMetaverseTypes" path="../../packages/"/>
+      <Reference name="protobuf-net.dll" path="../../packages/"/>
+      <Reference name="Sider" path="../../packages/"/>
+      <Reference name="XMLRPC" path="../../packages/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="NoSQLAssemblyInfo.cs" recurse="false"/> 
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+
+    <Project frameworkVersion="v4_5" name="SQL" path="Services/SQL" type="Library">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../../packages/</OutputPath>
+        </Options>
+      </Configuration>
+       <ReferencePath>../../packages/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Core"/>
+      <Reference name="System.Data"/>
+      <Reference name="System.Drawing"/>
+      <Reference name="System.Xml"/>
+      <Reference name="System.Web"/>
+      <Reference name="DataManager"/>
+      <Reference name="Universe"/>
+      <Reference name="Data"/>
+      <Reference name="Nini" path="../../packages/"/>
+      <Reference name="OpenMetaverse" path="../../packages/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../../packages/"/>
+      <Reference name="OpenMetaverseTypes" path="../../packages/"/>
+      <Reference name="protobuf-net.dll" path="../../packages/"/>
+      <Reference name="Sider" path="../../packages/"/>
+      <Reference name="XMLRPC" path="../../packages/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="SQLAssemblyInfo.cs" recurse="false"/> 
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+	
+    <Project frameworkVersion="v4_5" name="Services" path="Services/Services" type="Library">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <ReferencePath>../../packages/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Core"/>
+      <Reference name="System.Data"/>
+      <Reference name="System.Drawing"/>
+      <Reference name="System.Xml"/>
+      <Reference name="System.Web"/>
+      <Reference name="DataManager"/>
+      <Reference name="Universe"/>
+      <Reference name="SolarSystem"/>
+      <Reference name="Data"/>
+      <Reference name="DotNetOpenId" path="../../packages/"/>
+      <Reference name="GlynnTucker.Cache" path="../../packages/"/>
+      <Reference name="Nini" path="../../packages/"/>
+      <Reference name="OpenMetaverse" path="../../packages/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../../packages/"/>
+      <Reference name="OpenMetaverseTypes" path="../../packages/"/>
+      <Reference name="protobuf-net.dll" path="../../packages/"/>
+      <Reference name="XMLRPC" path="../../packages/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="ServicesAssemblyInfo.cs" recurse="false"/> 
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+
+    <Project frameworkVersion="v4_5" name="DataManager" path="DataManager" type="Library">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <ReferencePath>../packages/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Core"/>
+      <Reference name="System.Data"/>
+      <Reference name="System.Xml"/>
+      <Reference name="Universe"/>
+      <Reference name="Nini" path="../packages/"/>
+      <Reference name="OpenMetaverse" path="../packages/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../packages/"/>
+      <Reference name="OpenMetaverseTypes" path="../packages/"/>
+      
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="DataManagerAssemblyInfo.cs" recurse="false"/> 
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+
+    <Project frameworkVersion="v4_5" name="MySQL" path="DataManagerPlugins/MySQL" type="Library">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <ReferencePath>../../packages/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Core"/>
+	  <Reference name="System.Data"/>
+	  <Reference name="System.Drawing"/>
+      <Reference name="System.Xml"/>
+      <Reference name="DataManager"/>
+	  <Reference name="Universe"/>
+      <Reference name="MySql.Data" path="../../packages/"/>
+      <Reference name="Nini" path="../../packages/"/>
+      <Reference name="OpenMetaverse" path="../../packages/"/>
+      <Reference name="OpenMetaverseTypes" path="../../packages/"/>
+	  <Reference name="OpenMetaverse.StructuredData" path="../../packages/"/>
+      
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="MYSQLAssemblyInfo.cs" recurse="false"/> 
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+
+<!--<Project frameworkVersion="v4_5" name="MSSQL" path="DataManagerPlugins/MSSQL" type="Library">
+	<Configuration name="Debug" platform="x86">
+		<Options>
+			<OutputPath>../../packages/</OutputPath>
+		</Options>
+	</Configuration>
+	<Configuration name="Release" platform="x86">
+		<Options>
+			<OutputPath>../../packages/</OutputPath>
+		</Options>
+	</Configuration>
+	<Configuration name="Debug" platform="x64">
+		<Options>
+			<OutputPath>../../packages/</OutputPath>
+		</Options>
+	</Configuration>
+	<Configuration name="Release" platform="x64">
+		<Options>
+			<OutputPath>../../packages/</OutputPath>
+		</Options>
+	</Configuration>
+
+	<ReferencePath>../../packages/</ReferencePath>
+
+
+	<Reference name="DataManager"/>
+	<Reference name="Universe"/>
+
+	<Reference name="Nini" path="../../packages/"/>
+
+	<Reference name="OpenMetaverse" path="../../packages/"/>
+	<Reference name="OpenMetaverse.StructuredData" path="../../packages/"/>
+	<Reference name="OpenMetaverseTypes" path="../../packages/"/>
+
+	<Reference name="System"/>
+	<Reference name="System.Core"/>
+	<Reference name="System.Data"/>
+	<Reference name="System.Drawing"/>
+	<Reference name="System.Xml"/>
+
+
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="MSSQLAssemblyInfo.cs" recurse="false"/> 
+			<Exclude pattern="Tests"/>
+			<Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>-->
+
+    <Project frameworkVersion="v4_5" name="SQLite" path="DataManagerPlugins/SQLite" type="Library">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <ReferencePath>../../packages/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Core"/>
+      <Reference name="System.Data"/>
+      <Reference name="System.Drawing"/>
+      <Reference name="System.Xml"/>
+      <Reference name="DataManager"/>
+      <Reference name="Universe"/>
+      <Reference name="Community.CsharpSqlite.SQLiteClient" path="../../packages/"/>
+      <Reference name="Nini" path="../../packages/"/>
+      <Reference name="OpenMetaverse" path="../../packages/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../../packages/"/>
+      <Reference name="OpenMetaverseTypes" path="../../packages/"/>
+      <Reference name="XMLRPC" path="../../packages/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="SQLiteAssemblyInfo.cs" recurse="false"/> 
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+
+    <Project frameworkVersion="v4_5" name="Data" path="Services/Data" type="Library">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <ReferencePath>../../packages/</ReferencePath>
+      <Reference name="Microsoft.CSharp"/>
+      <Reference name="System"/>
+      <Reference name="System.Core"/>
+      <Reference name="System.Data"/>
+      <Reference name="System.Drawing"/>
+      <Reference name="System.Xml"/>
+      <Reference name="System.Web"/>
+      <Reference name="DataManager"/>
+      <Reference name="MySQL"/>
+      <Reference name="SQLite"/>
+      <Reference name="Universe"/>
+      <Reference name="Nini" path="../../packages/"/>
+      <Reference name="OpenMetaverse" path="../../packages/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../../packages/"/>
+      <Reference name="OpenMetaverseTypes" path="../../packages/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="DataAssemblyInfo.cs" recurse="false"/> 
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+  
+    <Project frameworkVersion="v4_5" name="ClientStack" path="ClientStack" type="Library">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <ReferencePath>../packages/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Core"/>
+      <Reference name="System.Xml"/>
+      <Reference name="Universe"/>
+      <Reference name="Nini"  path="../packages/"/>
+      <Reference name="OpenMetaverse" path="../packages/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../packages/"/>
+      <Reference name="OpenMetaverseTypes" path="../packages/"/>
+      <Reference name="SmartThreadPool.dll" path="../packages/"/>
+      <Reference name="XMLRPC" path="../packages/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="ClientStackAssemblyInfo.cs" recurse="false"/> 
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+	  
+<Project frameworkVersion="v4_5" name="Updater" path="Updater" type="Library">
+	<Configuration name="Debug" platform="x86">
+		<Options>
+			<OutputPath>../packages/</OutputPath>
+		</Options>
+	</Configuration>
+	<Configuration name="Release" platform="x86">
+		<Options>
+			<OutputPath>../packages/</OutputPath>
+		</Options>
+	</Configuration>
+	<Configuration name="Debug" platform="x64">
+		<Options>
+			<OutputPath>../packages/</OutputPath>
+		</Options>
+	</Configuration>
+	<Configuration name="Release" platform="x64">
+		<Options>
+			<OutputPath>../packages/</OutputPath>
+		</Options>
+	</Configuration>
+	<ReferencePath>../packages/</ReferencePath>
+	<Reference name="System"/>
+	<Reference name="System.Web"/>
+	<Reference name="System.Windows.Forms"/>		
+	<Reference name="System.Xml"/>
+	<Reference name="Nini" path="../packages/"/>
+	<Reference name="Universe"/>
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="UpdaterAssemblyInfo.cs" recurse="false"/> 
+			<Exclude pattern="Tests"/>
+		    <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>    
+	  
+    <!-- Virtual Reality App -->
+        <Project frameworkVersion="v4_5" name="Build" path="Build" type="Exe">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+ 
+	    <Reference name="System.EnterpriseServices" />
+	    <Reference name="System.Xml" />
+	    <Reference name="System" />
+	    <Files>
+		  <Match pattern="App.ico" buildAction="EmbeddedResource"/>
+		  <Match path="data" pattern="prebuild-1.10.xsd" buildAction="EmbeddedResource"/>
+		  <Match path="data" pattern="autotools.xml" buildAction="EmbeddedResource"/>
+		  <Match pattern="*.cs" recurse="true"/>		
+		  <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="BuildAssemblyInfo.cs" recurse="false"/> 	
+	    </Files>
+	</Project>
+	
+    <Project frameworkVersion="v4_5" name="Planets" path="Planets" type="Exe" appmanifest="app.manifest">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <ReferencePath>../packages/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="Universe"/>
+      <Reference name="Space"/>
+      <!--<Reference name="Management"/>-->
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="PlanetsAssemblyInfo.cs" recurse="false"/> 
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+        <Match pattern="*.manifest" buildAction="None"  recurse="false"/>
+      </Files>
+    </Project>
+    
+    	<!--<Project frameworkVersion="v4_5" name="Management" path="Management" type="Exe">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+       <ReferencePath>../packages/</ReferencePath>
+      <Reference name="System"/>
+	  <Reference name="System.Core"/>
+      <Reference name="System.Drawing"/>
+      <Reference name="System.Windows.Forms"/>
+      <Reference name="System.Xml"/>
+      <Reference name="System.Web"/>
+      <Reference name="Universe"/>
+      <Reference name="Nini" path="../packages/"/>
+      <Reference name="OpenMetaverse" path="../packages/"/>
+      <Reference name="OpenMetaverseTypes" path="../packages/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="ManagementAssemblyInfo.cs" recurse="false"/> 
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>-->
+	
+    <Project frameworkVersion="v4_5" name="Galaxy" path="Galaxy" type="Exe" appmanifest="app.manifest">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+       <ReferencePath>../packages/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="Universe"/>
+	  <Reference name="Space"/>
+      <Reference name="Nini" path="../packages/"/>
+      <Reference name="OpenMetaverse" path="../packages/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../packages/"/>
+      <Reference name="OpenMetaverseTypes" path="../packages/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="GalaxyAssemblyInfo.cs" recurse="false"/> 
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+        <Match pattern="*.manifest" buildAction="None"  recurse="true"/>
+      </Files>
+    </Project>
+
+    <Project frameworkVersion="v4_5" name="Assets" path="Assets" type="Exe" appmanifest="app.manifest">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <ReferencePath>../packages/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="Universe"/>
+	  <Reference name="Space"/>
+      <Reference name="Nini" path="../packages/"/>
+      <Reference name="OpenMetaverse" path="../packages/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../packages/"/>
+      <Reference name="OpenMetaverseTypes" path="../packages/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="AssetsAssemblyInfo.cs" recurse="false"/> 
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+        <Match pattern="*.manifest" buildAction="None"  recurse="true"/>
+      </Files>
+    </Project>
+	
+    <Project frameworkVersion="v4_5" name="Avatar" path="Avatar" type="Exe" appmanifest="app.manifest">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <ReferencePath>../packages/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="Universe"/>
+	  <Reference name="Space"/>
+      <Reference name="Nini" path="../packages/"/>
+      <Reference name="OpenMetaverse" path="../packages/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../packages/"/>
+      <Reference name="OpenMetaverseTypes" path="../packages/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="AvatarAssemblyInfo.cs" recurse="false"/> 
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+        <Match pattern="*.manifest" buildAction="None"  recurse="true"/>
+      </Files>
+    </Project>
+	
+    <Project frameworkVersion="v4_5" name="Grid" path="Grid" type="Exe" appmanifest="app.manifest">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <ReferencePath>../packages/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="Universe"/>
+	  <Reference name="Space"/>
+      <Reference name="Nini" path="../packages/"/>
+      <Reference name="OpenMetaverse" path="../packages/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../packages/"/>
+      <Reference name="OpenMetaverseTypes" path="../packages/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="GridAssemblyInfo.cs" recurse="false"/> 
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+        <Match pattern="*.manifest" buildAction="None"  recurse="true"/>
+      </Files>
+    </Project>
+
+    <Project frameworkVersion="v4_5" name="Inventory" path="Inventory" type="Exe" appmanifest="app.manifest">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <ReferencePath>../packages/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="Universe"/>
+	  <Reference name="Space"/>
+      <Reference name="Nini" path="../packages/"/>
+      <Reference name="OpenMetaverse" path="../packages/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../packages/"/>
+      <Reference name="OpenMetaverseTypes" path="../packages/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="InventoryAssemblyInfo.cs" recurse="false"/> 
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+        <Match pattern="*.manifest" buildAction="None"  recurse="true"/>
+      </Files>
+    </Project>
+
+    <Project frameworkVersion="v4_5" name="User" path="User" type="Exe">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <ReferencePath>../packages/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="Universe"/>
+	   <Reference name="Space"/>
+      <Reference name="Nini" path="../packages/"/>
+      <Reference name="OpenMetaverse" path="../packages/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../packages/"/>
+      <Reference name="OpenMetaverseTypes" path="../packages/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="UserAssemblyInfo.cs" recurse="false"/> 
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+        <Match pattern="*.manifest" buildAction="None"  recurse="true"/>
+      </Files>
+    </Project>
+	
+    <Project frameworkVersion="v4_5" name="Web" path="Web" type="Exe" appmanifest="app.manifest">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <ReferencePath>../packages/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="Universe"/>
+	  <Reference name="Space"/>
+      <Reference name="Nini" path="../packages/"/>
+      <Reference name="OpenMetaverse" path="../packages/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../packages/"/>
+      <Reference name="OpenMetaverseTypes" path="../packages/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="WebAssemblyInfo.cs" recurse="false"/> 
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+        <Match pattern="*.manifest" buildAction="None"  recurse="true"/>
+      </Files>
+    </Project>
+
+    <Project frameworkVersion="v4_5" name="Space" path="Space" type="Library">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <ReferencePath>../packages/</ReferencePath>
+      <Reference name="Microsoft.CSharp"/>
+      <Reference name="System"/>
+      <Reference name="System.Core"/>
+      <Reference name="System.Web"/>
+      <Reference name="System.Xml"/>
+      <Reference name="Universe"/>
+      <Reference name="Data"/>
+      <Reference name="Services"/>
+      <Reference name="Nini" path="../packages/"/>
+      <Reference name="OpenMetaverse" path="../packages/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../packages/"/>
+      <Reference name="OpenMetaverseTypes" path="../packages/"/>
+      <Reference name="XMLRPC" path="../packages/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="SpaceAssemblyInfo.cs" recurse="false"/> 
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+
+    <Project frameworkVersion="v4_5" name="Plugins" path="Plugins" type="Library">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <ReferencePath>../packages/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Core"/>
+      <Reference name="System.Drawing"/>
+      <Reference name="System.Windows.Forms"/>
+      <Reference name="System.Xml"/>
+      <Reference name="System.Web"/>
+      <Reference name="DataManager"/>
+      <Reference name="Universe"/>
+      <!--<Reference name="Management"/>-->
+      <Reference name="Data"/>
+      <Reference name="Nini" path="../packages/"/>
+      <Reference name="OpenMetaverse" path="../packages/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../packages/"/>
+      <Reference name="OpenMetaverseTypes" path="../packages/"/>
+      <Reference name="XMLRPC" path="../packages/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="PluginsAssemblyInfo.cs" recurse="false"/> 
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+    
+    <Project frameworkVersion="v4_5" name="Modules" path="Modules" type="Library">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <ReferencePath>../packages/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Core"/>
+      <Reference name="System.Data"/>
+      <Reference name="System.Drawing"/>
+      <Reference name="System.Windows.Forms"/>
+      <Reference name="System.Xml"/>
+      <Reference name="System.Web"/>
+      <Reference name="WindowsBase"/>
+      <Reference name="DataManager"/>
+      <Reference name="Universe"/>
+      <!--<Reference name="Aurora.Management"/>-->
+      <Reference name="SolarSystem"/>
+      <!--<Reference name="MetaBuilders.Irc.dll" path="../packages/"/>-->
+      <Reference name="CSJ2K" path="../packages/"/>
+      <Reference name="DotNetOpenMail" path="../packages/"/>
+      <Reference name="SmartInspect" path="../packages/"/>
+      <Reference name="GlynnTucker.Cache" path="../packages/"/>
+      <Reference name="Nini" path="../packages/"/>
+      <Reference name="OpenMetaverse" path="../packages/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../packages/"/>
+      <Reference name="OpenMetaverseTypes" path="../packages/"/>
+      <Reference name="protobuf-net.dll" path="../packages/"/>
+      <Reference name="Warp3D" path="../packages/" localCopy="true"/>
+      <Reference name="XMLRPC" path="../packages/"/>
+      <Reference name="zlib.net" path="../packages/"/>
+
+	<Files>
+		<Match pattern="*.cs" recurse="true"/>
+	   <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+      <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+      <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+      <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+      <Match path="Assemblies" pattern="ModulesAssemblyInfo.cs" recurse="false"/> 
+		<Match pattern="*.dll" recurse="false" buildAction="None" copyToOutput="Always"/>
+		<Exclude name="obj" pattern="obj"/>
+	</Files>
+</Project>
+
+    <Project frameworkVersion="v4_5" name="DynamicsEngine" path="Physics/DynamicsEngine" type="Library">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../../packages/Physics/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../../packages/Physics/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../../packages/Physics/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../../packages/Physics/</OutputPath>
+        </Options>
+      </Configuration>
+      <ReferencePath>../../packages/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Core"/>
+      <Reference name="Universe"/>
+      <Reference name="Nini" path="../../packages/"/>
+      <Reference name="OpenMetaverseTypes" path="../../packages/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="DynamicsEngineAssemblyInfo.cs" recurse="false"/> 
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+
+    <Project frameworkVersion="v4_5" name="ScriptEngine" path="ScriptEngine" type="Library">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <ReferencePath>../packages/</ReferencePath>
+      <Reference name="Microsoft.CSharp"/>
+      <Reference name="System"/>
+      <Reference name="System.Core"/>
+      <Reference name="System.Data"/>
+      <Reference name="System.Drawing"/>
+      <Reference name="System.Runtime.Remoting"/>
+      <Reference name="System.Xml"/>
+      <Reference name="DataManager"/>
+      <Reference name="Universe"/>
+      <Reference name="Nini" path="../packages/"/>
+      <Reference name="ScriptEngineParser" path="../packages/"/>
+      <Reference name="OpenMetaverse" path="../packages/"/>
+      <Reference name="OpenMetaverseTypes" path="../packages/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../packages/"/>
+      <Reference name="SmartThreadPool.dll" path="../packages/"/>
+      <Reference name="Tools" path="../packages/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="ScriptEngineAssemblyInfo.cs" recurse="false"/> 
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+
+    <Project frameworkVersion="v4_5" name="AI" path="AI" type="Library">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <ReferencePath>../packages/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Core"/>
+      <Reference name="System.Data"/>
+      <Reference name="System.Runtime.Remoting"/>
+      <Reference name="System.Xml"/>
+      <Reference name="DataManager"/>
+      <Reference name="Universe"/>
+      <Reference name="ScriptEngine"/>
+      <Reference name="Nini" path="../packages/"/>
+      <Reference name="OpenMetaverse" path="../packages/"/>
+      <Reference name="OpenMetaverseTypes" path="../packages/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../packages/"/>
+      <Reference name="Tools" path="../packages/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="AIAssemblyInfo.cs" recurse="false"/> 
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+    
+   <Project frameworkVersion="v4_5" name="SmartInspect" path="SmartInspect" type="Library">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../packages/</OutputPath>
+        </Options>
+      </Configuration>
+ 
+      <ReferencePath>../packages/</ReferencePath>
+      <Reference name="System"/>
+	  <Reference name="System.Configuration"/>
+	  <Reference name="System.Core"/>
+      <Reference name="System.Data"/>
+      <Reference name="System.Web"/>
+      <Reference name="System.Xml"/>
+      
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cs" recurse="false"/>  
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.cpp" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.js" recurse="false"/>        
+        <Match path="Assemblies" pattern="SharedAssemblyInfo.vb" recurse="false"/>              
+        <Match path="Assemblies" pattern="SmartInspectAssemblyInfo.cs" recurse="false"/> 
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>  
+   
+  </Solution>
+
+</Prebuild>

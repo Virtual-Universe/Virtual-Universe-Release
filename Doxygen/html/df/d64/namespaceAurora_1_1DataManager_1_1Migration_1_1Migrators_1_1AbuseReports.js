@@ -1,0 +1,4 @@
+var namespaceAurora_1_1DataManager_1_1Migration_1_1Migrators_1_1AbuseReports =
+[
+    [ "AbuseReportsMigrator_0", "d8/df6/classAurora_1_1DataManager_1_1Migration_1_1Migrators_1_1AbuseReports_1_1AbuseReportsMigrator__0.html", "d8/df6/classAurora_1_1DataManager_1_1Migration_1_1Migrators_1_1AbuseReports_1_1AbuseReportsMigrator__0" ]
+];

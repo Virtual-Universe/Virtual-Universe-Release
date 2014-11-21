@@ -1,0 +1,25 @@
+var searchData=
+[
+  ['vbconverter',['VBConverter',['../d2/d3e/classAurora_1_1ScriptEngine_1_1AuroraDotNetEngine_1_1CompilerTools_1_1VBConverter.html',1,'Aurora::ScriptEngine::AuroraDotNetEngine::CompilerTools']]],
+  ['vector3',['Vector3',['../d1/da9/structAurora_1_1ScriptEngine_1_1AuroraDotNetEngine_1_1LSL__Types_1_1Vector3.html',1,'Aurora::ScriptEngine::AuroraDotNetEngine::LSL_Types']]],
+  ['vector3',['Vector3',['../da/dc1/structAurora_1_1Physics_1_1DynamicsEngine_1_1d_1_1Vector3.html',1,'Aurora::Physics::DynamicsEngine::d']]],
+  ['vector4',['Vector4',['../d3/daf/structAurora_1_1Physics_1_1DynamicsEngine_1_1d_1_1Vector4.html',1,'Aurora::Physics::DynamicsEngine::d']]],
+  ['vectorrendermodule',['VectorRenderModule',['../d4/df9/classAurora_1_1Modules_1_1Scripting_1_1VectorRenderModule.html',1,'Aurora::Modules::Scripting']]],
+  ['vegetationmodule',['VegetationModule',['../d8/dad/classAurora_1_1Modules_1_1Vegetation_1_1VegetationModule.html',1,'Aurora::Modules::Vegetation']]],
+  ['versioncontrolmodule',['VersionControlModule',['../d7/daf/classAurora_1_1Modules_1_1VersionControl_1_1VersionControlModule.html',1,'Aurora::Modules::VersionControl']]],
+  ['versioninfo',['VersionInfo',['../da/d4e/classAurora_1_1Framework_1_1Utilities_1_1VersionInfo.html',1,'Aurora::Framework::Utilities']]],
+  ['vertexpool',['VertexPool',['../db/d2d/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1VertexPool.html',1,'OpenSim::Region::Physics::ConvexDecompositionDotNet']]],
+  ['vertflag',['VertFlag',['../d7/d04/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1VertFlag.html',1,'OpenSim::Region::Physics::ConvexDecompositionDotNet']]],
+  ['viewereffecteventhandlerarg',['ViewerEffectEventHandlerArg',['../d7/d4c/classAurora_1_1Framework_1_1ClientInterfaces_1_1ViewerEffectEventHandlerArg.html',1,'Aurora::Framework::ClientInterfaces']]],
+  ['viewerface',['ViewerFace',['../d0/d6d/structAurora_1_1Physics_1_1PrimMesher_1_1ViewerFace.html',1,'Aurora::Physics::PrimMesher']]],
+  ['viewport',['Viewport',['../d9/dd1/classAurora_1_1Modules_1_1WorldMap_1_1Warp3DMap_1_1Viewport.html',1,'Aurora::Modules::WorldMap::Warp3DMap']]],
+  ['visitorloggermodule',['VisitorLoggerModule',['../da/df0/classAurora_1_1Modules_1_1VisitorLogger_1_1VisitorLoggerModule.html',1,'Aurora::Modules::VisitorLogger']]],
+  ['vivoxvoicecaps',['VivoxVoiceCAPS',['../db/dc3/classAurora_1_1Modules_1_1VivoxVoiceCAPS.html',1,'Aurora::Modules']]],
+  ['vivoxvoiceservice',['VivoxVoiceService',['../d4/d10/classAurora_1_1Modules_1_1VivoxVoiceService.html',1,'Aurora::Modules']]],
+  ['vs2002target',['VS2002Target',['../dc/dab/classPrebuild_1_1Core_1_1Targets_1_1VS2002Target.html',1,'Prebuild::Core::Targets']]],
+  ['vs2003target',['VS2003Target',['../d3/d86/classPrebuild_1_1Core_1_1Targets_1_1VS2003Target.html',1,'Prebuild::Core::Targets']]],
+  ['vs2005target',['VS2005Target',['../de/dd1/classPrebuild_1_1Core_1_1Targets_1_1VS2005Target.html',1,'Prebuild::Core::Targets']]],
+  ['vs2008target',['VS2008Target',['../d3/d02/classPrebuild_1_1Core_1_1Targets_1_1VS2008Target.html',1,'Prebuild::Core::Targets']]],
+  ['vs2010target',['VS2010Target',['../df/d9a/classPrebuild_1_1Core_1_1Targets_1_1VS2010Target.html',1,'Prebuild::Core::Targets']]],
+  ['vsgenerictarget',['VSGenericTarget',['../d0/d51/classPrebuild_1_1Core_1_1Targets_1_1VSGenericTarget.html',1,'Prebuild::Core::Targets']]]
+];

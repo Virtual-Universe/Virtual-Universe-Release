@@ -1,0 +1,38 @@
+var annotated =
+[
+    [ "Aurora", "d2/d4d/namespaceAurora.html", "d2/d4d/namespaceAurora" ],
+    [ "AvatarPreview", "dc/db3/namespaceAvatarPreview.html", "dc/db3/namespaceAvatarPreview" ],
+    [ "Baker", "d5/de5/namespaceBaker.html", "d5/de5/namespaceBaker" ],
+    [ "ConciergeServer", null, [
+      [ "ConciergeHandler", "dc/d06/classConciergeServer_1_1ConciergeHandler.html", "dc/d06/classConciergeServer_1_1ConciergeHandler" ]
+    ] ],
+    [ "CSJ2K", "da/db8/namespaceCSJ2K.html", "da/db8/namespaceCSJ2K" ],
+    [ "Games", "d1/d8a/namespaceGames.html", "d1/d8a/namespaceGames" ],
+    [ "GridImageUpload", "d6/de6/namespaceGridImageUpload.html", "d6/de6/namespaceGridImageUpload" ],
+    [ "GridProxy", "db/d60/namespaceGridProxy.html", "db/d60/namespaceGridProxy" ],
+    [ "GridProxyGUI", "d7/d25/namespaceGridProxyGUI.html", "d7/d25/namespaceGridProxyGUI" ],
+    [ "HTMLHelp", "d5/d38/namespaceHTMLHelp.html", "d5/d38/namespaceHTMLHelp" ],
+    [ "IgeMacIntegration", "d9/d9a/namespaceIgeMacIntegration.html", "d9/d9a/namespaceIgeMacIntegration" ],
+    [ "ImportPrimScript", "d9/d01/namespaceImportPrimScript.html", "d9/d01/namespaceImportPrimScript" ],
+    [ "Management", "d3/d67/namespaceManagement.html", "d3/d67/namespaceManagement" ],
+    [ "MoneyServer", "d3/dbb/namespaceMoneyServer.html", "d3/dbb/namespaceMoneyServer" ],
+    [ "MySQLMoneyDataWrapper", "dc/d52/namespaceMySQLMoneyDataWrapper.html", "dc/d52/namespaceMySQLMoneyDataWrapper" ],
+    [ "NSL", "d9/d8e/namespaceNSL.html", "d9/d8e/namespaceNSL" ],
+    [ "OpenSim", "d0/d53/namespaceOpenSim.html", "d0/d53/namespaceOpenSim" ],
+    [ "Prebuild", "d8/d3b/namespacePrebuild.html", "d8/d3b/namespacePrebuild" ],
+    [ "RegAPI", "d8/dcc/namespaceRegAPI.html", "d8/dcc/namespaceRegAPI" ],
+    [ "RunTimeCompiler", "dd/d23/namespaceRunTimeCompiler.html", "dd/d23/namespaceRunTimeCompiler" ],
+    [ "Simple", "d4/d56/namespaceSimple.html", "d4/d56/namespaceSimple" ],
+    [ "SLImageUpload", "da/db6/namespaceSLImageUpload.html", "da/db6/namespaceSLImageUpload" ],
+    [ "SmartInspect", "dd/da3/namespaceSmartInspect.html", "dd/da3/namespaceSmartInspect" ],
+    [ "Stetic", "da/d31/namespaceStetic.html", "da/d31/namespaceStetic" ],
+    [ "Tanis", "db/d6e/namespaceTanis.html", "db/d6e/namespaceTanis" ],
+    [ "WelcomePackageIARConverter", "d4/d6f/namespaceWelcomePackageIARConverter.html", "d4/d6f/namespaceWelcomePackageIARConverter" ],
+    [ "WinGridProxy", "d2/d06/namespaceWinGridProxy.html", "d2/d06/namespaceWinGridProxy" ],
+    [ "Analyst", "d7/d88/classAnalyst.html", "d7/d88/classAnalyst" ],
+    [ "ClientAO", "da/d29/classClientAO.html", "da/d29/classClientAO" ],
+    [ "IThreadRunnable", "d7/d00/interfaceIThreadRunnable.html", "d7/d00/interfaceIThreadRunnable" ],
+    [ "MainWindow", "d6/d1a/classMainWindow.html", "d6/d1a/classMainWindow" ],
+    [ "ProxyMain", "d0/d22/classProxyMain.html", "d0/d22/classProxyMain" ],
+    [ "SupportClass", "dc/dd9/classSupportClass.html", "dc/dd9/classSupportClass" ]
+];

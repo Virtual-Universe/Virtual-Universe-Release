@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{8BC9CEB9-8B4A-11D0-8D11-00A0C91BC942}") = "ConvexDecomposition", "ConvexDecomposition.dll", "{23CBF95B-4B1B-4277-AA71-8D354BC836AF}"
+	ProjectSection(MonoDevelopProperties) = preProject
+		name = ConvexDecomposition
+		Configurations = $0
+		$0.Configuration = $1
+		$1.name = Default
+		$1.OutputPath = .\
+		$1.ctype = ProjectConfiguration
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Default|Any CPU = Default|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{23CBF95B-4B1B-4277-AA71-8D354BC836AF}.Default|Any CPU.ActiveCfg = Default|Any CPU
+		{23CBF95B-4B1B-4277-AA71-8D354BC836AF}.Default|Any CPU.Build.0 = Default|Any CPU
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = ConvexDecomposition.dll
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,26 @@
+var namespaceAurora_1_1Modules_1_1Monitoring_1_1Monitors =
+[
+    [ "AgentCountMonitor", "dd/db6/classAurora_1_1Modules_1_1Monitoring_1_1Monitors_1_1AgentCountMonitor.html", "dd/db6/classAurora_1_1Modules_1_1Monitoring_1_1Monitors_1_1AgentCountMonitor" ],
+    [ "AgentUpdateMonitor", "d2/dd7/classAurora_1_1Modules_1_1Monitoring_1_1Monitors_1_1AgentUpdateMonitor.html", "d2/dd7/classAurora_1_1Modules_1_1Monitoring_1_1Monitors_1_1AgentUpdateMonitor" ],
+    [ "AssetMonitor", "dd/d08/classAurora_1_1Modules_1_1Monitoring_1_1Monitors_1_1AssetMonitor.html", "dd/d08/classAurora_1_1Modules_1_1Monitoring_1_1Monitors_1_1AssetMonitor" ],
+    [ "ChildAgentCountMonitor", "dc/d8b/classAurora_1_1Modules_1_1Monitoring_1_1Monitors_1_1ChildAgentCountMonitor.html", "dc/d8b/classAurora_1_1Modules_1_1Monitoring_1_1Monitors_1_1ChildAgentCountMonitor" ],
+    [ "GCMemoryMonitor", "d7/d8d/classAurora_1_1Modules_1_1Monitoring_1_1Monitors_1_1GCMemoryMonitor.html", "d7/d8d/classAurora_1_1Modules_1_1Monitoring_1_1Monitors_1_1GCMemoryMonitor" ],
+    [ "ImageFrameTimeMonitor", "da/d6d/classAurora_1_1Modules_1_1Monitoring_1_1Monitors_1_1ImageFrameTimeMonitor.html", "da/d6d/classAurora_1_1Modules_1_1Monitoring_1_1Monitors_1_1ImageFrameTimeMonitor" ],
+    [ "LastFrameTimeMonitor", "d2/d8b/classAurora_1_1Modules_1_1Monitoring_1_1Monitors_1_1LastFrameTimeMonitor.html", "d2/d8b/classAurora_1_1Modules_1_1Monitoring_1_1Monitors_1_1LastFrameTimeMonitor" ],
+    [ "LoginMonitor", "dd/d82/classAurora_1_1Modules_1_1Monitoring_1_1Monitors_1_1LoginMonitor.html", "dd/d82/classAurora_1_1Modules_1_1Monitoring_1_1Monitors_1_1LoginMonitor" ],
+    [ "NetworkMonitor", "d2/d0c/classAurora_1_1Modules_1_1Monitoring_1_1Monitors_1_1NetworkMonitor.html", "d2/d0c/classAurora_1_1Modules_1_1Monitoring_1_1Monitors_1_1NetworkMonitor" ],
+    [ "ObjectCountMonitor", "d1/dce/classAurora_1_1Modules_1_1Monitoring_1_1Monitors_1_1ObjectCountMonitor.html", "d1/dce/classAurora_1_1Modules_1_1Monitoring_1_1Monitors_1_1ObjectCountMonitor" ],
+    [ "ObjectUpdateMonitor", "d2/d06/classAurora_1_1Modules_1_1Monitoring_1_1Monitors_1_1ObjectUpdateMonitor.html", "d2/d06/classAurora_1_1Modules_1_1Monitoring_1_1Monitors_1_1ObjectUpdateMonitor" ],
+    [ "OtherFrameMonitor", "d0/d96/classAurora_1_1Modules_1_1Monitoring_1_1Monitors_1_1OtherFrameMonitor.html", "d0/d96/classAurora_1_1Modules_1_1Monitoring_1_1Monitors_1_1OtherFrameMonitor" ],
+    [ "PhysicsFrameMonitor", "d7/d17/classAurora_1_1Modules_1_1Monitoring_1_1Monitors_1_1PhysicsFrameMonitor.html", "d7/d17/classAurora_1_1Modules_1_1Monitoring_1_1Monitors_1_1PhysicsFrameMonitor" ],
+    [ "PhysicsSyncFrameMonitor", "d2/de0/classAurora_1_1Modules_1_1Monitoring_1_1Monitors_1_1PhysicsSyncFrameMonitor.html", "d2/de0/classAurora_1_1Modules_1_1Monitoring_1_1Monitors_1_1PhysicsSyncFrameMonitor" ],
+    [ "PhysicsUpdateFrameMonitor", "d1/d44/classAurora_1_1Modules_1_1Monitoring_1_1Monitors_1_1PhysicsUpdateFrameMonitor.html", "d1/d44/classAurora_1_1Modules_1_1Monitoring_1_1Monitors_1_1PhysicsUpdateFrameMonitor" ],
+    [ "PWSMemoryMonitor", "d5/df6/classAurora_1_1Modules_1_1Monitoring_1_1Monitors_1_1PWSMemoryMonitor.html", "d5/df6/classAurora_1_1Modules_1_1Monitoring_1_1Monitors_1_1PWSMemoryMonitor" ],
+    [ "ScriptCountMonitor", "d5/d6f/classAurora_1_1Modules_1_1Monitoring_1_1Monitors_1_1ScriptCountMonitor.html", "d5/d6f/classAurora_1_1Modules_1_1Monitoring_1_1Monitors_1_1ScriptCountMonitor" ],
+    [ "ScriptFrameTimeMonitor", "d4/df8/classAurora_1_1Modules_1_1Monitoring_1_1Monitors_1_1ScriptFrameTimeMonitor.html", "d4/df8/classAurora_1_1Modules_1_1Monitoring_1_1Monitors_1_1ScriptFrameTimeMonitor" ],
+    [ "SimFrameMonitor", "d7/db8/classAurora_1_1Modules_1_1Monitoring_1_1Monitors_1_1SimFrameMonitor.html", "d7/db8/classAurora_1_1Modules_1_1Monitoring_1_1Monitors_1_1SimFrameMonitor" ],
+    [ "SleepFrameMonitor", "d4/d32/classAurora_1_1Modules_1_1Monitoring_1_1Monitors_1_1SleepFrameMonitor.html", "d4/d32/classAurora_1_1Modules_1_1Monitoring_1_1Monitors_1_1SleepFrameMonitor" ],
+    [ "ThreadCountMonitor", "de/d15/classAurora_1_1Modules_1_1Monitoring_1_1Monitors_1_1ThreadCountMonitor.html", "de/d15/classAurora_1_1Modules_1_1Monitoring_1_1Monitors_1_1ThreadCountMonitor" ],
+    [ "TimeDilationMonitor", "de/d8d/classAurora_1_1Modules_1_1Monitoring_1_1Monitors_1_1TimeDilationMonitor.html", "de/d8d/classAurora_1_1Modules_1_1Monitoring_1_1Monitors_1_1TimeDilationMonitor" ],
+    [ "TotalFrameMonitor", "d7/df2/classAurora_1_1Modules_1_1Monitoring_1_1Monitors_1_1TotalFrameMonitor.html", "d7/df2/classAurora_1_1Modules_1_1Monitoring_1_1Monitors_1_1TotalFrameMonitor" ]
+];

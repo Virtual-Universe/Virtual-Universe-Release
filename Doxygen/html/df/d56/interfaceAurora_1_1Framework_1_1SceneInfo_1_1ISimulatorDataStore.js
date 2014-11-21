@@ -1,0 +1,27 @@
+var interfaceAurora_1_1Framework_1_1SceneInfo_1_1ISimulatorDataStore =
+[
+    [ "CacheDispose", "df/d56/interfaceAurora_1_1Framework_1_1SceneInfo_1_1ISimulatorDataStore.html#aea03981cc236781d4d6ee25d8dc699fc", null ],
+    [ "Copy", "df/d56/interfaceAurora_1_1Framework_1_1SceneInfo_1_1ISimulatorDataStore.html#a27eea93999eef94ffa777ce2e627d881", null ],
+    [ "CreateNewRegion", "df/d56/interfaceAurora_1_1Framework_1_1SceneInfo_1_1ISimulatorDataStore.html#a408d4928e0df13139d500b804d0a3dfd", null ],
+    [ "CreateNewRegion", "df/d56/interfaceAurora_1_1Framework_1_1SceneInfo_1_1ISimulatorDataStore.html#ad08c313513522e691bed6485916d798c", null ],
+    [ "CreateNewRegion", "df/d56/interfaceAurora_1_1Framework_1_1SceneInfo_1_1ISimulatorDataStore.html#a8b743d8224c982ce4d622bc6563da984", null ],
+    [ "FindRegionInfos", "df/d56/interfaceAurora_1_1Framework_1_1SceneInfo_1_1ISimulatorDataStore.html#ad9412768601989565256a5a78d9f33aa", null ],
+    [ "ForceBackup", "df/d56/interfaceAurora_1_1Framework_1_1SceneInfo_1_1ISimulatorDataStore.html#a62be2b78dacc2859a030dd4a84898fe5", null ],
+    [ "GetLastBackupFileName", "df/d56/interfaceAurora_1_1Framework_1_1SceneInfo_1_1ISimulatorDataStore.html#a66a9914b080bb7bc6ea7832238e86ba6", null ],
+    [ "Initialise", "df/d56/interfaceAurora_1_1Framework_1_1SceneInfo_1_1ISimulatorDataStore.html#a99b0d8ef1fd9d78bcd9ebd7d9b9c30a5", null ],
+    [ "LoadLandObjects", "df/d56/interfaceAurora_1_1Framework_1_1SceneInfo_1_1ISimulatorDataStore.html#ab48bed9810983a5d62da1da4faebadd8", null ],
+    [ "LoadObjects", "df/d56/interfaceAurora_1_1Framework_1_1SceneInfo_1_1ISimulatorDataStore.html#a79cc5f4e23280c15f286fca62ee614ea", null ],
+    [ "LoadRegionInfo", "df/d56/interfaceAurora_1_1Framework_1_1SceneInfo_1_1ISimulatorDataStore.html#a050ff51858b16808b8157f49585d3a31", null ],
+    [ "LoadRegionNameInfo", "df/d56/interfaceAurora_1_1Framework_1_1SceneInfo_1_1ISimulatorDataStore.html#a440b67d0aa3ed9acab0469f360961af4", null ],
+    [ "LoadTerrain", "df/d56/interfaceAurora_1_1Framework_1_1SceneInfo_1_1ISimulatorDataStore.html#af6f70349f8cdfc04d0f448238c062060", null ],
+    [ "LoadWater", "df/d56/interfaceAurora_1_1Framework_1_1SceneInfo_1_1ISimulatorDataStore.html#ace5d91f3dee868b736348543237aff02", null ],
+    [ "RemoveRegion", "df/d56/interfaceAurora_1_1Framework_1_1SceneInfo_1_1ISimulatorDataStore.html#a0b4c8ca1967422559a69a4573e662d86", null ],
+    [ "RestoreBackupFile", "df/d56/interfaceAurora_1_1Framework_1_1SceneInfo_1_1ISimulatorDataStore.html#a87b7f310bfc8b690f48bb8072b3cbb94", null ],
+    [ "RestoreLastBackup", "df/d56/interfaceAurora_1_1Framework_1_1SceneInfo_1_1ISimulatorDataStore.html#a90ae0d5d95475d3d75897ed670af335c", null ],
+    [ "SetRegion", "df/d56/interfaceAurora_1_1Framework_1_1SceneInfo_1_1ISimulatorDataStore.html#a36a3de505314a99a2fe152ae1d8c1756", null ],
+    [ "Shutdown", "df/d56/interfaceAurora_1_1Framework_1_1SceneInfo_1_1ISimulatorDataStore.html#a3ed285f440f982ae99374971a8e83c0c", null ],
+    [ "Tainted", "df/d56/interfaceAurora_1_1Framework_1_1SceneInfo_1_1ISimulatorDataStore.html#ac6b62bdae78e96078fbb4d224d94950a", null ],
+    [ "MapTileNeedsGenerated", "df/d56/interfaceAurora_1_1Framework_1_1SceneInfo_1_1ISimulatorDataStore.html#a93ce02bb917f6f97a92c19d4212f7234", null ],
+    [ "Name", "df/d56/interfaceAurora_1_1Framework_1_1SceneInfo_1_1ISimulatorDataStore.html#a3c502944dd752b3ad4c4de9f081ea772", null ],
+    [ "SaveBackups", "df/d56/interfaceAurora_1_1Framework_1_1SceneInfo_1_1ISimulatorDataStore.html#ab30484594afb11956f95e65d8ef3b6cf", null ]
+];

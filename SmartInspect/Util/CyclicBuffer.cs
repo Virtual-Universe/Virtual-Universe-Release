@@ -1,0 +1,380 @@
+/***************************************************************************
+ *	                VIRTUAL REALITY PUBLIC SOURCE LICENSE
+ * 
+ * Date				: Sun January 1, 2006
+ * Copyright		: (c) 2006-2014 by Virtual Reality Development Team. 
+ *                    All Rights Reserved.
+ * Website			: http://www.syndarveruleiki.is
+ *
+ * Product Name		: Virtual Reality
+ * License Text     : packages/docs/VRLICENSE.txt
+ * 
+ * Planetary Info   : Information about the Planetary code
+ * 
+ * Copyright        : (c) 2014-2024 by Second Galaxy Development Team
+ *                    All Rights Reserved.
+ * 
+ * Website          : http://www.secondgalaxy.com
+ * 
+ * Product Name     : Virtual Reality
+ * License Text     : packages/docs/SGLICENSE.txt
+ * 
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in the
+ *       documentation and/or other materials provided with the distribution.
+ *     * Neither the name of the WhiteCore-Sim Project nor the
+ *       names of its contributors may be used to endorse or promote products
+ *       derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE DEVELOPERS ``AS IS'' AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE CONTRIBUTORS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+***************************************************************************/
+
+using System;
+
+using SmartInspect.Core;
+
+namespace SmartInspect.Util
+{
+	/// <summary>
+	/// A fixed size rolling buffer of logging events.
+	/// </summary>
+	/// <remarks>
+	/// <para>
+	/// An array backed fixed size leaky bucket.
+	/// </para>
+	/// </remarks>
+	/// <author>Nicko Cadell</author>
+	/// <author>Gert Driesen</author>
+	public class CyclicBuffer
+	{
+		#region Public Instance Constructors
+
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="maxSize">The maximum number of logging events in the buffer.</param>
+		/// <remarks>
+		/// <para>
+		/// Initializes a new instance of the <see cref="CyclicBuffer" /> class with 
+		/// the specified maximum number of buffered logging events.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentOutOfRangeException">The <paramref name="maxSize"/> argument is not a positive integer.</exception>
+		public CyclicBuffer(int maxSize) 
+		{
+			if (maxSize < 1) 
+			{
+				throw SystemInfo.CreateArgumentOutOfRangeException("maxSize", (object)maxSize, "Parameter: maxSize, Value: [" + maxSize + "] out of range. Non zero positive integer required");
+			}
+
+			m_maxSize = maxSize;
+			m_events = new LoggingEvent[maxSize];
+			m_first = 0;
+			m_last = 0;
+			m_numElems = 0;
+		}
+
+		#endregion Public Instance Constructors
+
+		#region Public Instance Methods
+	
+		/// <summary>
+		/// Appends a <paramref name="loggingEvent"/> to the buffer.
+		/// </summary>
+		/// <param name="loggingEvent">The event to append to the buffer.</param>
+		/// <returns>The event discarded from the buffer, if the buffer is full, otherwise <c>null</c>.</returns>
+		/// <remarks>
+		/// <para>
+		/// Append an event to the buffer. If the buffer still contains free space then
+		/// <c>null</c> is returned. If the buffer is full then an event will be dropped
+		/// to make space for the new event, the event dropped is returned.
+		/// </para>
+		/// </remarks>
+		public LoggingEvent Append(LoggingEvent loggingEvent)
+		{	
+			if (loggingEvent == null)
+			{
+				throw new ArgumentNullException("loggingEvent");
+			}
+
+			lock(this)
+			{
+				// save the discarded event
+				LoggingEvent discardedLoggingEvent = m_events[m_last];
+
+				// overwrite the last event position
+				m_events[m_last] = loggingEvent;	
+				if (++m_last == m_maxSize)
+				{
+					m_last = 0;
+				}
+
+				if (m_numElems < m_maxSize)
+				{
+					m_numElems++;
+				}
+				else if (++m_first == m_maxSize)
+				{
+					m_first = 0;
+				}
+
+				if (m_numElems < m_maxSize)
+				{
+					// Space remaining
+					return null;
+				}
+				else
+				{
+					// Buffer is full and discarding an event
+					return discardedLoggingEvent;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Get and remove the oldest event in the buffer.
+		/// </summary>
+		/// <returns>The oldest logging event in the buffer</returns>
+		/// <remarks>
+		/// <para>
+		/// Gets the oldest (first) logging event in the buffer and removes it 
+		/// from the buffer.
+		/// </para>
+		/// </remarks>
+		public LoggingEvent PopOldest() 
+		{
+			lock(this)
+			{
+				LoggingEvent ret = null;
+				if (m_numElems > 0) 
+				{
+					m_numElems--;
+					ret = m_events[m_first];
+					m_events[m_first] = null;
+					if (++m_first == m_maxSize)
+					{
+						m_first = 0;
+					}
+				} 
+				return ret;
+			}
+		}
+
+		/// <summary>
+		/// Pops all the logging events from the buffer into an array.
+		/// </summary>
+		/// <returns>An array of all the logging events in the buffer.</returns>
+		/// <remarks>
+		/// <para>
+		/// Get all the events in the buffer and clear the buffer.
+		/// </para>
+		/// </remarks>
+		public LoggingEvent[] PopAll()
+		{
+			lock(this)
+			{
+				LoggingEvent[] ret = new LoggingEvent[m_numElems];
+
+				if (m_numElems > 0)
+				{
+					if (m_first < m_last)
+					{
+						Array.Copy(m_events, m_first, ret, 0, m_numElems);
+					}
+					else
+					{
+						Array.Copy(m_events, m_first, ret, 0, m_maxSize - m_first);
+						Array.Copy(m_events, 0, ret, m_maxSize - m_first, m_last);
+					}
+				}
+
+				Clear();
+
+				return ret;
+			}
+		}
+
+		/// <summary>
+		/// Clear the buffer
+		/// </summary>
+		/// <remarks>
+		/// <para>
+		/// Clear the buffer of all events. The events in the buffer are lost.
+		/// </para>
+		/// </remarks>
+		public void Clear()
+		{
+			lock(this)
+			{
+				// Set all the elements to null
+				Array.Clear(m_events, 0, m_events.Length);
+
+				m_first = 0;
+				m_last = 0;
+				m_numElems = 0;
+			}
+		}
+
+#if RESIZABLE_CYCLIC_BUFFER
+		/// <summary>
+		/// Resizes the cyclic buffer to <paramref name="newSize"/>.
+		/// </summary>
+		/// <param name="newSize">The new size of the buffer.</param>
+		/// <remarks>
+		/// <para>
+		/// Resize the cyclic buffer. Events in the buffer are copied into
+		/// the newly sized buffer. If the buffer is shrunk and there are
+		/// more events currently in the buffer than the new size of the
+		/// buffer then the newest events will be dropped from the buffer.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentOutOfRangeException">The <paramref name="newSize"/> argument is not a positive integer.</exception>
+		public void Resize(int newSize) 
+		{
+			lock(this)
+			{
+				if (newSize < 0) 
+				{
+					throw SmartInspect.Util.SystemInfo.CreateArgumentOutOfRangeException("newSize", (object)newSize, "Parameter: newSize, Value: [" + newSize + "] out of range. Non zero positive integer required");
+				}
+				if (newSize == m_numElems)
+				{
+					return; // nothing to do
+				}
+	
+				LoggingEvent[] temp = new  LoggingEvent[newSize];
+
+				int loopLen = (newSize < m_numElems) ? newSize : m_numElems;
+	
+				for(int i = 0; i < loopLen; i++) 
+				{
+					temp[i] = m_events[m_first];
+					m_events[m_first] = null;
+
+					if (++m_first == m_numElems) 
+					{
+						m_first = 0;
+					}
+				}
+
+				m_events = temp;
+				m_first = 0;
+				m_numElems = loopLen;
+				m_maxSize = newSize;
+
+				if (loopLen == newSize) 
+				{
+					m_last = 0;
+				} 
+				else 
+				{
+					m_last = loopLen;
+				}
+			}
+		}
+#endif
+
+		#endregion Public Instance Methods
+
+		#region Public Instance Properties
+
+		/// <summary>
+		/// Gets the <paramref name="i"/>th oldest event currently in the buffer.
+		/// </summary>
+		/// <value>The <paramref name="i"/>th oldest event currently in the buffer.</value>
+		/// <remarks>
+		/// <para>
+		/// If <paramref name="i"/> is outside the range 0 to the number of events
+		/// currently in the buffer, then <c>null</c> is returned.
+		/// </para>
+		/// </remarks>
+		public LoggingEvent this[int i] 
+		{
+			get
+			{
+				lock(this)
+				{
+					if (i < 0 || i >= m_numElems)
+					{
+						return null;
+					}
+
+					return m_events[(m_first + i) % m_maxSize];
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets the maximum size of the buffer.
+		/// </summary>
+		/// <value>The maximum size of the buffer.</value>
+		/// <remarks>
+		/// <para>
+		/// Gets the maximum size of the buffer
+		/// </para>
+		/// </remarks>
+		public int MaxSize 
+		{
+			get 
+			{ 
+				lock(this)
+				{
+					return m_maxSize; 
+				}
+			}
+#if RESIZABLE_CYCLIC_BUFFER
+			set 
+			{ 
+				/// Setting the MaxSize will cause the buffer to resize.
+				Resize(value); 
+			}
+#endif
+		}
+
+		/// <summary>
+		/// Gets the number of logging events in the buffer.
+		/// </summary>
+		/// <value>The number of logging events in the buffer.</value>
+		/// <remarks>
+		/// <para>
+		/// This number is guaranteed to be in the range 0 to <see cref="MaxSize"/>
+		/// (inclusive).
+		/// </para>
+		/// </remarks>
+		public int Length
+		{
+			get 
+			{ 
+				lock(this) 
+				{ 
+					return m_numElems; 
+				}
+			}									
+		}
+
+		#endregion Public Instance Properties
+
+		#region Private Instance Fields
+
+		private LoggingEvent[] m_events;
+		private int m_first; 
+		private int m_last; 
+		private int m_numElems;
+		private int m_maxSize;
+
+		#endregion Private Instance Fields
+	}
+}

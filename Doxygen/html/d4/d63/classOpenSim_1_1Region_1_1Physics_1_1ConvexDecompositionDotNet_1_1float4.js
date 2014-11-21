@@ -1,0 +1,26 @@
+var classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1float4 =
+[
+    [ "float4", "d4/d63/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1float4.html#a22064dd15af835d501eb5e70e6c90c89", null ],
+    [ "float4", "d4/d63/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1float4.html#a31f3ef9b1055ca854e1ce409cce35c73", null ],
+    [ "float4", "d4/d63/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1float4.html#a86f08651396609f0acc95db7fffe7d9c", null ],
+    [ "float4", "d4/d63/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1float4.html#a8bdd27f893d08ce626860621d11cbc8f", null ],
+    [ "cmul", "d4/d63/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1float4.html#a45ed7ee21aa25a7f692f6076f734343c", null ],
+    [ "Equals", "d4/d63/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1float4.html#ae602f5df9ba2b0e356e2efc6414d4860", null ],
+    [ "GetHashCode", "d4/d63/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1float4.html#a4c9b1bdf3c07f6f013fb586fbe3049e9", null ],
+    [ "Homogenize", "d4/d63/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1float4.html#ad1c87d9078368fb06f3c091225ebd2e1", null ],
+    [ "Homogenize", "d4/d63/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1float4.html#a28c6a64bc574297d24e922884d67b426", null ],
+    [ "operator!=", "d4/d63/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1float4.html#afa979a322ddaaa4d6be4e47cd8f11c47", null ],
+    [ "operator*", "d4/d63/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1float4.html#a10e3fffd968fb3f679040d1d5c977355", null ],
+    [ "operator*", "d4/d63/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1float4.html#a80134989ad00f3bc41b6ed3c36932474", null ],
+    [ "operator*", "d4/d63/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1float4.html#a7dcc949d47433d2a55ea5d81cb4f62a9", null ],
+    [ "operator+", "d4/d63/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1float4.html#a9ce5a83e39635d9dd758046ebad64e0d", null ],
+    [ "operator-", "d4/d63/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1float4.html#af7ef82791bbcb5c93938afc6f753c650", null ],
+    [ "operator==", "d4/d63/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1float4.html#ab27d0c733d7a735facc251d9f478333f", null ],
+    [ "setxyz", "d4/d63/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1float4.html#a1229ad3cd242442b8d43439ff124f6af", null ],
+    [ "xyz", "d4/d63/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1float4.html#a3751a85b6bcba52298b199ee3aa43b9c", null ],
+    [ "w", "d4/d63/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1float4.html#a790e5682423421d268c8648f6c25331a", null ],
+    [ "x", "d4/d63/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1float4.html#a07e7d5d593b42c4591071d037ed470a8", null ],
+    [ "y", "d4/d63/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1float4.html#a680c58533a9c9b929a1fd91cc2dbdf75", null ],
+    [ "z", "d4/d63/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1float4.html#a7e2d530387266eba7e46306ee5af6dbe", null ],
+    [ "this[int i]", "d4/d63/classOpenSim_1_1Region_1_1Physics_1_1ConvexDecompositionDotNet_1_1float4.html#a2b1e87f8e5f363a1691b9447e8f7a6fb", null ]
+];

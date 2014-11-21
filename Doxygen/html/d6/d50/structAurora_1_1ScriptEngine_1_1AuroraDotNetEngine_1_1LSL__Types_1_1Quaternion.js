@@ -1,0 +1,28 @@
+var structAurora_1_1ScriptEngine_1_1AuroraDotNetEngine_1_1LSL__Types_1_1Quaternion =
+[
+    [ "Quaternion", "d6/d50/structAurora_1_1ScriptEngine_1_1AuroraDotNetEngine_1_1LSL__Types_1_1Quaternion.html#a7cfdca26ed195781496bf66cd62edf1f", null ],
+    [ "Quaternion", "d6/d50/structAurora_1_1ScriptEngine_1_1AuroraDotNetEngine_1_1LSL__Types_1_1Quaternion.html#a78317d153b1e94261a4f13560c4cf308", null ],
+    [ "Quaternion", "d6/d50/structAurora_1_1ScriptEngine_1_1AuroraDotNetEngine_1_1LSL__Types_1_1Quaternion.html#aca00105668cc331d0842e94fed598bfe", null ],
+    [ "Quaternion", "d6/d50/structAurora_1_1ScriptEngine_1_1AuroraDotNetEngine_1_1LSL__Types_1_1Quaternion.html#aadf6e599bdcf4fc7cc745bce246e319b", null ],
+    [ "Equals", "d6/d50/structAurora_1_1ScriptEngine_1_1AuroraDotNetEngine_1_1LSL__Types_1_1Quaternion.html#ae5d49e4dd387165a9360dff1376a9e81", null ],
+    [ "GetHashCode", "d6/d50/structAurora_1_1ScriptEngine_1_1AuroraDotNetEngine_1_1LSL__Types_1_1Quaternion.html#a8d97ca4b07a60cb8213c1bc5d5ba0afb", null ],
+    [ "Mag", "d6/d50/structAurora_1_1ScriptEngine_1_1AuroraDotNetEngine_1_1LSL__Types_1_1Quaternion.html#a7c86592b44bde932dcd3a45cd7ba8cfc", null ],
+    [ "operator bool", "d6/d50/structAurora_1_1ScriptEngine_1_1AuroraDotNetEngine_1_1LSL__Types_1_1Quaternion.html#add3a8731da70b92b388c7efbe1f50588", null ],
+    [ "operator list", "d6/d50/structAurora_1_1ScriptEngine_1_1AuroraDotNetEngine_1_1LSL__Types_1_1Quaternion.html#a93bf0b17ef4b161bce8583f47de5eeb6", null ],
+    [ "operator LSLString", "d6/d50/structAurora_1_1ScriptEngine_1_1AuroraDotNetEngine_1_1LSL__Types_1_1Quaternion.html#a14a60550a03d90d32308cfb2997877fd", null ],
+    [ "operator Quaternion", "d6/d50/structAurora_1_1ScriptEngine_1_1AuroraDotNetEngine_1_1LSL__Types_1_1Quaternion.html#a12a5345289938264792a1006d503f67c", null ],
+    [ "operator string", "d6/d50/structAurora_1_1ScriptEngine_1_1AuroraDotNetEngine_1_1LSL__Types_1_1Quaternion.html#a0c4a9d82c26e21403b06d437b4606747", null ],
+    [ "operator!=", "d6/d50/structAurora_1_1ScriptEngine_1_1AuroraDotNetEngine_1_1LSL__Types_1_1Quaternion.html#a53ef5346faa851ea809d340675d190ff", null ],
+    [ "operator*", "d6/d50/structAurora_1_1ScriptEngine_1_1AuroraDotNetEngine_1_1LSL__Types_1_1Quaternion.html#a9ca17a734078ac7b148c0dcc0d24c919", null ],
+    [ "operator+", "d6/d50/structAurora_1_1ScriptEngine_1_1AuroraDotNetEngine_1_1LSL__Types_1_1Quaternion.html#a34423ea1709770f2be4b59266a8db4ad", null ],
+    [ "operator-", "d6/d50/structAurora_1_1ScriptEngine_1_1AuroraDotNetEngine_1_1LSL__Types_1_1Quaternion.html#a6867c87d25840a1e89d7c096994ff9ba", null ],
+    [ "operator/", "d6/d50/structAurora_1_1ScriptEngine_1_1AuroraDotNetEngine_1_1LSL__Types_1_1Quaternion.html#a3562e3c6cb7bfa1162d677b5a64ffafc", null ],
+    [ "operator==", "d6/d50/structAurora_1_1ScriptEngine_1_1AuroraDotNetEngine_1_1LSL__Types_1_1Quaternion.html#a4b19077b4bde6db2162eafacf02900da", null ],
+    [ "ToQuaternion", "d6/d50/structAurora_1_1ScriptEngine_1_1AuroraDotNetEngine_1_1LSL__Types_1_1Quaternion.html#a42026bdd19a8737d850649e6bbd1dfdb", null ],
+    [ "ToString", "d6/d50/structAurora_1_1ScriptEngine_1_1AuroraDotNetEngine_1_1LSL__Types_1_1Quaternion.html#ada5099e041d2c65e66b4d1fa5fc2e28f", null ],
+    [ "ToVector4", "d6/d50/structAurora_1_1ScriptEngine_1_1AuroraDotNetEngine_1_1LSL__Types_1_1Quaternion.html#a357a1d6de23b8b6c84ae777f0c17913f", null ],
+    [ "s", "d6/d50/structAurora_1_1ScriptEngine_1_1AuroraDotNetEngine_1_1LSL__Types_1_1Quaternion.html#a9c74c498807dd06a32587b75e5d0a484", null ],
+    [ "x", "d6/d50/structAurora_1_1ScriptEngine_1_1AuroraDotNetEngine_1_1LSL__Types_1_1Quaternion.html#ad06e416903907b2149c5b3f61012b4af", null ],
+    [ "y", "d6/d50/structAurora_1_1ScriptEngine_1_1AuroraDotNetEngine_1_1LSL__Types_1_1Quaternion.html#a4e7809b906bd48c3c272ca22338022b9", null ],
+    [ "z", "d6/d50/structAurora_1_1ScriptEngine_1_1AuroraDotNetEngine_1_1LSL__Types_1_1Quaternion.html#a22562113e77aefc65a49d419165d1de2", null ]
+];

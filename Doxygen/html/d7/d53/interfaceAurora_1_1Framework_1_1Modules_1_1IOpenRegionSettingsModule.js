@@ -1,0 +1,28 @@
+var interfaceAurora_1_1Framework_1_1Modules_1_1IOpenRegionSettingsModule =
+[
+    [ "RegisterGenericValue", "d7/d53/interfaceAurora_1_1Framework_1_1Modules_1_1IOpenRegionSettingsModule.html#a34d09afe0c9cde3641eb2444f284d756", null ],
+    [ "AllowPhysicalPrims", "d7/d53/interfaceAurora_1_1Framework_1_1Modules_1_1IOpenRegionSettingsModule.html#a9a783fe71b3ff56cbf7bc5979b2d2c38", null ],
+    [ "DefaultDrawDistance", "d7/d53/interfaceAurora_1_1Framework_1_1Modules_1_1IOpenRegionSettingsModule.html#a5dbe6f20bb1ec9fb229209358bd2c294", null ],
+    [ "DefaultUnderpants", "d7/d53/interfaceAurora_1_1Framework_1_1Modules_1_1IOpenRegionSettingsModule.html#a6835497d3b5f6304b7e1f7495eac6e91", null ],
+    [ "DefaultUndershirt", "d7/d53/interfaceAurora_1_1Framework_1_1Modules_1_1IOpenRegionSettingsModule.html#a8b866bff9b10e76cf279a52fcaeb30e5", null ],
+    [ "DisplayMinimap", "d7/d53/interfaceAurora_1_1Framework_1_1Modules_1_1IOpenRegionSettingsModule.html#ac113704b2e6b72656870004e71fcb9ec", null ],
+    [ "EnableTeenMode", "d7/d53/interfaceAurora_1_1Framework_1_1Modules_1_1IOpenRegionSettingsModule.html#abc98edb504f4ac4468696f8dc4641d09", null ],
+    [ "ForceDrawDistance", "d7/d53/interfaceAurora_1_1Framework_1_1Modules_1_1IOpenRegionSettingsModule.html#adbdb1eeee7c27537c8647e159875def7", null ],
+    [ "LSLCommands", "d7/d53/interfaceAurora_1_1Framework_1_1Modules_1_1IOpenRegionSettingsModule.html#a85c150c4ce5974f192d5286d4f012f59", null ],
+    [ "MaxDragDistance", "d7/d53/interfaceAurora_1_1Framework_1_1Modules_1_1IOpenRegionSettingsModule.html#ac3b8b7bed84664a5d30850a3d8759bc8", null ],
+    [ "MaxGroups", "d7/d53/interfaceAurora_1_1Framework_1_1Modules_1_1IOpenRegionSettingsModule.html#a9e511d92caa46e4a774c9574584261f1", null ],
+    [ "MaximumHollowSize", "d7/d53/interfaceAurora_1_1Framework_1_1Modules_1_1IOpenRegionSettingsModule.html#af629fdb6e792d8903333e637c2294591", null ],
+    [ "MaximumInventoryItemsTransfer", "d7/d53/interfaceAurora_1_1Framework_1_1Modules_1_1IOpenRegionSettingsModule.html#a52744a6102e79e8dbb0f594861ada970", null ],
+    [ "MaximumLinkCount", "d7/d53/interfaceAurora_1_1Framework_1_1Modules_1_1IOpenRegionSettingsModule.html#a2792657f964871be0db06fdf6e98e911", null ],
+    [ "MaximumLinkCountPhys", "d7/d53/interfaceAurora_1_1Framework_1_1Modules_1_1IOpenRegionSettingsModule.html#aea40741e681198ac1b181c72e9e666a3", null ],
+    [ "MaximumPhysPrimScale", "d7/d53/interfaceAurora_1_1Framework_1_1Modules_1_1IOpenRegionSettingsModule.html#a6cf136b6c6247c5780cc3676c6f67136", null ],
+    [ "MaximumPrimScale", "d7/d53/interfaceAurora_1_1Framework_1_1Modules_1_1IOpenRegionSettingsModule.html#afd79a462496fdd7e42b95d1e2a1f77d1", null ],
+    [ "MinimumHoleSize", "d7/d53/interfaceAurora_1_1Framework_1_1Modules_1_1IOpenRegionSettingsModule.html#ab7e80a7e8357f5f74097dc48f4b0d0d6", null ],
+    [ "MinimumPrimScale", "d7/d53/interfaceAurora_1_1Framework_1_1Modules_1_1IOpenRegionSettingsModule.html#abc4461c6a2a14a66b13aa78d08025069", null ],
+    [ "OffsetOfUTC", "d7/d53/interfaceAurora_1_1Framework_1_1Modules_1_1IOpenRegionSettingsModule.html#ace5cdd789e58ac8c06971b7ad93522ed", null ],
+    [ "RenderWater", "d7/d53/interfaceAurora_1_1Framework_1_1Modules_1_1IOpenRegionSettingsModule.html#a68b716c18fe6f7802ab28eab119eb61a", null ],
+    [ "SayDistance", "d7/d53/interfaceAurora_1_1Framework_1_1Modules_1_1IOpenRegionSettingsModule.html#af2781750d3c562be132a87854cd9fc87", null ],
+    [ "ShoutDistance", "d7/d53/interfaceAurora_1_1Framework_1_1Modules_1_1IOpenRegionSettingsModule.html#a7c8373c508e52c38731e99d308a6b42d", null ],
+    [ "ShowTags", "d7/d53/interfaceAurora_1_1Framework_1_1Modules_1_1IOpenRegionSettingsModule.html#a5a1f15ea974b71c6971e54aa20c575cb", null ],
+    [ "WhisperDistance", "d7/d53/interfaceAurora_1_1Framework_1_1Modules_1_1IOpenRegionSettingsModule.html#ac63848fef18d8a73cb7fe2ff96561186", null ]
+];

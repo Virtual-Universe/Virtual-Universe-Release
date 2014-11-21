@@ -1,0 +1,28 @@
+var interfaceAurora_1_1Framework_1_1Services_1_1IGridService =
+[
+    [ "Configure", "df/dc7/interfaceAurora_1_1Framework_1_1Services_1_1IGridService.html#a516aac763754a1a29105163cfb0c5e10", null ],
+    [ "DeregisterRegion", "df/dc7/interfaceAurora_1_1Framework_1_1Services_1_1IGridService.html#a85866e5f2a26edf4dadd29f425677b3e", null ],
+    [ "FinishedStartup", "df/dc7/interfaceAurora_1_1Framework_1_1Services_1_1IGridService.html#a7aab0e22035088149434a7d90aebb36a", null ],
+    [ "GetDefaultRegions", "df/dc7/interfaceAurora_1_1Framework_1_1Services_1_1IGridService.html#ac443fc0041a7b9afa450b3b692804bad", null ],
+    [ "GetFallbackRegions", "df/dc7/interfaceAurora_1_1Framework_1_1Services_1_1IGridService.html#a5d69c335d8d32fc08444033cff1d2e1f", null ],
+    [ "GetMapItems", "df/dc7/interfaceAurora_1_1Framework_1_1Services_1_1IGridService.html#a7e73764f6a10aa365a98403486fa22ef", null ],
+    [ "GetMaxRegionSize", "df/dc7/interfaceAurora_1_1Framework_1_1Services_1_1IGridService.html#a9b2c30fd09c8b2bbad8f5aca999dc7ba", null ],
+    [ "GetNeighbors", "df/dc7/interfaceAurora_1_1Framework_1_1Services_1_1IGridService.html#a9bfcf366fd7ab644a8ebe858572f89e3", null ],
+    [ "GetRegionByName", "df/dc7/interfaceAurora_1_1Framework_1_1Services_1_1IGridService.html#acc5babf3e93a97d12361891f2a916d90", null ],
+    [ "GetRegionByPosition", "df/dc7/interfaceAurora_1_1Framework_1_1Services_1_1IGridService.html#ab19b889d69467ea3fd6880e2f20528bc", null ],
+    [ "GetRegionByUUID", "df/dc7/interfaceAurora_1_1Framework_1_1Services_1_1IGridService.html#a03ad571c8151b57b5b10aaa67c63812f", null ],
+    [ "GetRegionFlags", "df/dc7/interfaceAurora_1_1Framework_1_1Services_1_1IGridService.html#a46fc765ccfb63abbbec120523ab76eab", null ],
+    [ "GetRegionRange", "df/dc7/interfaceAurora_1_1Framework_1_1Services_1_1IGridService.html#a909d5f98a8893a25829cc5848422105b", null ],
+    [ "GetRegionRange", "df/dc7/interfaceAurora_1_1Framework_1_1Services_1_1IGridService.html#a325b51fa208afc20bd42b9cba995de58", null ],
+    [ "GetRegionsByName", "df/dc7/interfaceAurora_1_1Framework_1_1Services_1_1IGridService.html#a1708d5a2b9e01484b7273c1194f6a689", null ],
+    [ "GetRegionsByNameCount", "df/dc7/interfaceAurora_1_1Framework_1_1Services_1_1IGridService.html#a630fc8ff37e9cdab7e1156228ec170bc", null ],
+    [ "GetRegionViewSize", "df/dc7/interfaceAurora_1_1Framework_1_1Services_1_1IGridService.html#a2fd1b946099df0817b51aa0d23215a58", null ],
+    [ "GetSafeRegions", "df/dc7/interfaceAurora_1_1Framework_1_1Services_1_1IGridService.html#a5cde29ac804b998040743653c4104482", null ],
+    [ "RegisterRegion", "df/dc7/interfaceAurora_1_1Framework_1_1Services_1_1IGridService.html#a6d5cd2a79a9e62e485d96a3a6f844195", null ],
+    [ "SetRegionSafe", "df/dc7/interfaceAurora_1_1Framework_1_1Services_1_1IGridService.html#a8ef97c27a70e4d5ad3af0f76b86be83d", null ],
+    [ "SetRegionUnsafe", "df/dc7/interfaceAurora_1_1Framework_1_1Services_1_1IGridService.html#a0e569ba61160e43422d56f9e93cac884", null ],
+    [ "Start", "df/dc7/interfaceAurora_1_1Framework_1_1Services_1_1IGridService.html#a38d71ee5098bdebc6b2f09ecf4950b79", null ],
+    [ "UpdateMap", "df/dc7/interfaceAurora_1_1Framework_1_1Services_1_1IGridService.html#a41961e0d956eb404b675f2c4f6d84bfe", null ],
+    [ "VerifyRegionSessionID", "df/dc7/interfaceAurora_1_1Framework_1_1Services_1_1IGridService.html#a0e37653cb2441991a80a7781cf086bdb", null ],
+    [ "InnerService", "df/dc7/interfaceAurora_1_1Framework_1_1Services_1_1IGridService.html#abbb4b5e19937bda04729af210acb2f26", null ]
+];

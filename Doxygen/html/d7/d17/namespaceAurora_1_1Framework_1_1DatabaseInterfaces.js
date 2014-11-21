@@ -1,0 +1,25 @@
+var namespaceAurora_1_1Framework_1_1DatabaseInterfaces =
+[
+    [ "ChatSession", "db/dd5/classAurora_1_1Framework_1_1DatabaseInterfaces_1_1ChatSession.html", "db/dd5/classAurora_1_1Framework_1_1DatabaseInterfaces_1_1ChatSession" ],
+    [ "ChatSessionMember", "df/deb/classAurora_1_1Framework_1_1DatabaseInterfaces_1_1ChatSessionMember.html", "df/deb/classAurora_1_1Framework_1_1DatabaseInterfaces_1_1ChatSessionMember" ],
+    [ "Email", "d7/dce/classAurora_1_1Framework_1_1DatabaseInterfaces_1_1Email.html", "d7/dce/classAurora_1_1Framework_1_1DatabaseInterfaces_1_1Email" ],
+    [ "GroupInviteInfo", "d9/d1e/classAurora_1_1Framework_1_1DatabaseInterfaces_1_1GroupInviteInfo.html", "d9/d1e/classAurora_1_1Framework_1_1DatabaseInterfaces_1_1GroupInviteInfo" ],
+    [ "GroupNoticeInfo", "d2/dd5/classAurora_1_1Framework_1_1DatabaseInterfaces_1_1GroupNoticeInfo.html", "d2/dd5/classAurora_1_1Framework_1_1DatabaseInterfaces_1_1GroupNoticeInfo" ],
+    [ "GroupProposalInfo", "d5/d88/classAurora_1_1Framework_1_1DatabaseInterfaces_1_1GroupProposalInfo.html", "d5/d88/classAurora_1_1Framework_1_1DatabaseInterfaces_1_1GroupProposalInfo" ],
+    [ "IAbuseReportsConnector", "d9/d67/interfaceAurora_1_1Framework_1_1DatabaseInterfaces_1_1IAbuseReportsConnector.html", "d9/d67/interfaceAurora_1_1Framework_1_1DatabaseInterfaces_1_1IAbuseReportsConnector" ],
+    [ "IAgentConnector", "d2/dc6/interfaceAurora_1_1Framework_1_1DatabaseInterfaces_1_1IAgentConnector.html", "d2/dc6/interfaceAurora_1_1Framework_1_1DatabaseInterfaces_1_1IAgentConnector" ],
+    [ "IAssetConnector", "d9/d5c/interfaceAurora_1_1Framework_1_1DatabaseInterfaces_1_1IAssetConnector.html", "d9/d5c/interfaceAurora_1_1Framework_1_1DatabaseInterfaces_1_1IAssetConnector" ],
+    [ "IDirectoryServiceConnector", "d4/d6f/interfaceAurora_1_1Framework_1_1DatabaseInterfaces_1_1IDirectoryServiceConnector.html", "d4/d6f/interfaceAurora_1_1Framework_1_1DatabaseInterfaces_1_1IDirectoryServiceConnector" ],
+    [ "IEmailConnector", "dc/d9b/interfaceAurora_1_1Framework_1_1DatabaseInterfaces_1_1IEmailConnector.html", "dc/d9b/interfaceAurora_1_1Framework_1_1DatabaseInterfaces_1_1IEmailConnector" ],
+    [ "IEstateConnector", "d5/d75/interfaceAurora_1_1Framework_1_1DatabaseInterfaces_1_1IEstateConnector.html", "d5/d75/interfaceAurora_1_1Framework_1_1DatabaseInterfaces_1_1IEstateConnector" ],
+    [ "IGenericsConnector", "db/d1a/interfaceAurora_1_1Framework_1_1DatabaseInterfaces_1_1IGenericsConnector.html", "db/d1a/interfaceAurora_1_1Framework_1_1DatabaseInterfaces_1_1IGenericsConnector" ],
+    [ "IGroupsServiceConnector", "dc/d5f/interfaceAurora_1_1Framework_1_1DatabaseInterfaces_1_1IGroupsServiceConnector.html", "dc/d5f/interfaceAurora_1_1Framework_1_1DatabaseInterfaces_1_1IGroupsServiceConnector" ],
+    [ "IMuteListConnector", "d4/dd8/interfaceAurora_1_1Framework_1_1DatabaseInterfaces_1_1IMuteListConnector.html", "d4/dd8/interfaceAurora_1_1Framework_1_1DatabaseInterfaces_1_1IMuteListConnector" ],
+    [ "IOfflineMessagesConnector", "d2/dfe/interfaceAurora_1_1Framework_1_1DatabaseInterfaces_1_1IOfflineMessagesConnector.html", "d2/dfe/interfaceAurora_1_1Framework_1_1DatabaseInterfaces_1_1IOfflineMessagesConnector" ],
+    [ "IProfileConnector", "d8/dbd/interfaceAurora_1_1Framework_1_1DatabaseInterfaces_1_1IProfileConnector.html", "d8/dbd/interfaceAurora_1_1Framework_1_1DatabaseInterfaces_1_1IProfileConnector" ],
+    [ "IRegionConnector", "d4/d47/interfaceAurora_1_1Framework_1_1DatabaseInterfaces_1_1IRegionConnector.html", "d4/d47/interfaceAurora_1_1Framework_1_1DatabaseInterfaces_1_1IRegionConnector" ],
+    [ "IRegionInfoConnector", "dd/d66/interfaceAurora_1_1Framework_1_1DatabaseInterfaces_1_1IRegionInfoConnector.html", "dd/d66/interfaceAurora_1_1Framework_1_1DatabaseInterfaces_1_1IRegionInfoConnector" ],
+    [ "IRemoteProfileConnector", "d9/d96/interfaceAurora_1_1Framework_1_1DatabaseInterfaces_1_1IRemoteProfileConnector.html", "d9/d96/interfaceAurora_1_1Framework_1_1DatabaseInterfaces_1_1IRemoteProfileConnector" ],
+    [ "IUserStatsDataConnector", "d5/dab/interfaceAurora_1_1Framework_1_1DatabaseInterfaces_1_1IUserStatsDataConnector.html", "d5/dab/interfaceAurora_1_1Framework_1_1DatabaseInterfaces_1_1IUserStatsDataConnector" ],
+    [ "OSDWrapper", "d3/de9/classAurora_1_1Framework_1_1DatabaseInterfaces_1_1OSDWrapper.html", "d3/de9/classAurora_1_1Framework_1_1DatabaseInterfaces_1_1OSDWrapper" ]
+];

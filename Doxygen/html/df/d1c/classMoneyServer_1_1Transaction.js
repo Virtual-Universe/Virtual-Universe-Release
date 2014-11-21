@@ -1,0 +1,27 @@
+var classMoneyServer_1_1Transaction =
+[
+    [ "Transaction", "df/d1c/classMoneyServer_1_1Transaction.html#ab6ca15a9deede9b7ed28af9bef2e6488", null ],
+    [ "Transaction", "df/d1c/classMoneyServer_1_1Transaction.html#a2c33c94557d6fe5e227b9a3d09cf528e", null ],
+    [ "FromOSD", "df/d1c/classMoneyServer_1_1Transaction.html#a1841048d24e53dc907f2a74ab64f6241", null ],
+    [ "ToOSD", "df/d1c/classMoneyServer_1_1Transaction.html#a41c961e04eeee73ead6fe432effe7545", null ],
+    [ "ToOSD", "df/d1c/classMoneyServer_1_1Transaction.html#a34d7c9616184fdb9520eaddd25311082", null ],
+    [ "Amount", "df/d1c/classMoneyServer_1_1Transaction.html#a62da05ac84a8bbf1c6e24739ccb002dc", null ],
+    [ "Complete", "df/d1c/classMoneyServer_1_1Transaction.html#ae920d0c3ba465d7a6329bdc91d947d6c", null ],
+    [ "CompleteReason", "df/d1c/classMoneyServer_1_1Transaction.html#a35a9451ece6d2d69eed8b26bee090739", null ],
+    [ "Created", "df/d1c/classMoneyServer_1_1Transaction.html#a4098d5fb45b530eb4b741824d036bd1b", null ],
+    [ "Description", "df/d1c/classMoneyServer_1_1Transaction.html#a3f059ef4aac8dbedf001ba77c44b7c83", null ],
+    [ "FromBalance", "df/d1c/classMoneyServer_1_1Transaction.html#a1ec5869a7a3bd992e7d967dea0970887", null ],
+    [ "FromID", "df/d1c/classMoneyServer_1_1Transaction.html#a93d696453fb0469d8cb4f3a1eadc6bfb", null ],
+    [ "FromName", "df/d1c/classMoneyServer_1_1Transaction.html#a6d9936db277b066adcd54095288d7521", null ],
+    [ "FromObjectID", "df/d1c/classMoneyServer_1_1Transaction.html#a461dfb647efb4eb356d9d728b51ff070", null ],
+    [ "FromObjectName", "df/d1c/classMoneyServer_1_1Transaction.html#acc3d4af15e1d22d0ae8b21aa60e2c052", null ],
+    [ "Region", "df/d1c/classMoneyServer_1_1Transaction.html#a27d167952141353123cf870ef52ce240", null ],
+    [ "ToBalance", "df/d1c/classMoneyServer_1_1Transaction.html#a2712d233c578b4eee1eace0e35bdcf30", null ],
+    [ "ToID", "df/d1c/classMoneyServer_1_1Transaction.html#a47a4f082def96fce5a90831354d2d983", null ],
+    [ "ToName", "df/d1c/classMoneyServer_1_1Transaction.html#a30ea5ca70746d084d741536fddf7988b", null ],
+    [ "ToObjectID", "df/d1c/classMoneyServer_1_1Transaction.html#aa07a9aec24dfdc2f56b16b2f2f602cf0", null ],
+    [ "ToObjectName", "df/d1c/classMoneyServer_1_1Transaction.html#a5a7dc2cee61d0fc2ea158f0d95237063", null ],
+    [ "TransactionID", "df/d1c/classMoneyServer_1_1Transaction.html#a2849daa6638665d573518a9570e530c8", null ],
+    [ "TypeOfTrans", "df/d1c/classMoneyServer_1_1Transaction.html#a0cdb6e17f37d54182363e42fd1ee602d", null ],
+    [ "Updated", "df/d1c/classMoneyServer_1_1Transaction.html#a1c5ce52608e785db2762eb3ea963e48b", null ]
+];

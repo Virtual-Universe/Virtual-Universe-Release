@@ -1,0 +1,27 @@
+var classAurora_1_1Framework_1_1ClientInterfaces_1_1RegionHandshakeArgs =
+[
+    [ "billableFactor", "d4/d33/classAurora_1_1Framework_1_1ClientInterfaces_1_1RegionHandshakeArgs.html#a9d5d8f52c4f56df055dcec4d241ba057", null ],
+    [ "isEstateManager", "d4/d33/classAurora_1_1Framework_1_1ClientInterfaces_1_1RegionHandshakeArgs.html#a83adb8384d5856844d3ab8157c582de0", null ],
+    [ "regionFlags", "d4/d33/classAurora_1_1Framework_1_1ClientInterfaces_1_1RegionHandshakeArgs.html#a36d4bbca9d30583ab4e38e87a7cb9533", null ],
+    [ "regionName", "d4/d33/classAurora_1_1Framework_1_1ClientInterfaces_1_1RegionHandshakeArgs.html#aee600089726d2ee1d0f8602b3633fd8a", null ],
+    [ "RegionType", "d4/d33/classAurora_1_1Framework_1_1ClientInterfaces_1_1RegionHandshakeArgs.html#a839a4c9b506e74ff1f214c5fdadb2c75", null ],
+    [ "simAccess", "d4/d33/classAurora_1_1Framework_1_1ClientInterfaces_1_1RegionHandshakeArgs.html#a4be56bb3ca8e273253824fa26d420fb2", null ],
+    [ "SimOwner", "d4/d33/classAurora_1_1Framework_1_1ClientInterfaces_1_1RegionHandshakeArgs.html#a3f3d698ebb20d6f9f2aa06db2becc7e1", null ],
+    [ "terrainBase0", "d4/d33/classAurora_1_1Framework_1_1ClientInterfaces_1_1RegionHandshakeArgs.html#ae75b147c54e2c1a68fefad8a2c4fe72d", null ],
+    [ "terrainBase1", "d4/d33/classAurora_1_1Framework_1_1ClientInterfaces_1_1RegionHandshakeArgs.html#abcf553dfa35a74f39e8c706836aefee1", null ],
+    [ "terrainBase2", "d4/d33/classAurora_1_1Framework_1_1ClientInterfaces_1_1RegionHandshakeArgs.html#a6ced7aeb08861465154402927c5993a9", null ],
+    [ "terrainBase3", "d4/d33/classAurora_1_1Framework_1_1ClientInterfaces_1_1RegionHandshakeArgs.html#a0c9a4ade2b496e69719acc983c43c716", null ],
+    [ "terrainDetail0", "d4/d33/classAurora_1_1Framework_1_1ClientInterfaces_1_1RegionHandshakeArgs.html#afa6bdb90a37acc076fb6d553a69bad0d", null ],
+    [ "terrainDetail1", "d4/d33/classAurora_1_1Framework_1_1ClientInterfaces_1_1RegionHandshakeArgs.html#a64b8e3458fe820eaa6e3fee338557192", null ],
+    [ "terrainDetail2", "d4/d33/classAurora_1_1Framework_1_1ClientInterfaces_1_1RegionHandshakeArgs.html#af2f43ce2d2afd3fbc08092f19a5b7561", null ],
+    [ "terrainDetail3", "d4/d33/classAurora_1_1Framework_1_1ClientInterfaces_1_1RegionHandshakeArgs.html#a096d37eeafff633765e9bfa420e1016a", null ],
+    [ "terrainHeightRange0", "d4/d33/classAurora_1_1Framework_1_1ClientInterfaces_1_1RegionHandshakeArgs.html#a36744c1605ccde4ab1c8f98b5582eb27", null ],
+    [ "terrainHeightRange1", "d4/d33/classAurora_1_1Framework_1_1ClientInterfaces_1_1RegionHandshakeArgs.html#a912c35ad2af7e1bf77a98426740c2ee1", null ],
+    [ "terrainHeightRange2", "d4/d33/classAurora_1_1Framework_1_1ClientInterfaces_1_1RegionHandshakeArgs.html#af76978df17be444443cf92a8ac751e53", null ],
+    [ "terrainHeightRange3", "d4/d33/classAurora_1_1Framework_1_1ClientInterfaces_1_1RegionHandshakeArgs.html#a9cd250e93583dabfe2dc41a56de824b7", null ],
+    [ "terrainStartHeight0", "d4/d33/classAurora_1_1Framework_1_1ClientInterfaces_1_1RegionHandshakeArgs.html#a4212e30cee17d6b6fbec9fd3fcb130f4", null ],
+    [ "terrainStartHeight1", "d4/d33/classAurora_1_1Framework_1_1ClientInterfaces_1_1RegionHandshakeArgs.html#a006e6a528de722a53d21a742573e4f7e", null ],
+    [ "terrainStartHeight2", "d4/d33/classAurora_1_1Framework_1_1ClientInterfaces_1_1RegionHandshakeArgs.html#ade4f7dad1ef01d5f1b978441f1ae826f", null ],
+    [ "terrainStartHeight3", "d4/d33/classAurora_1_1Framework_1_1ClientInterfaces_1_1RegionHandshakeArgs.html#aa31fcaebfb308c8bb17fdd20b2b384de", null ],
+    [ "waterHeight", "d4/d33/classAurora_1_1Framework_1_1ClientInterfaces_1_1RegionHandshakeArgs.html#ae944bb2abe6ed3b5cfc6aecdec4e149d", null ]
+];

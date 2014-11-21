@@ -1,0 +1,27 @@
+var classCSJ2K_1_1Icc_1_1Types_1_1ICCProfileHeader =
+[
+    [ "ICCProfileHeader", "d4/d2a/classCSJ2K_1_1Icc_1_1Types_1_1ICCProfileHeader.html#a96e4c7da15fc44cdef53aafca49c9c6d", null ],
+    [ "ICCProfileHeader", "d4/d2a/classCSJ2K_1_1Icc_1_1Types_1_1ICCProfileHeader.html#af337cb7d0ac3fdcbaa716961ce3c3d89", null ],
+    [ "ToString", "d4/d2a/classCSJ2K_1_1Icc_1_1Types_1_1ICCProfileHeader.html#a273d71b044cbd07ee46a7f9efe723f44", null ],
+    [ "write", "d4/d2a/classCSJ2K_1_1Icc_1_1Types_1_1ICCProfileHeader.html#a3112f181a7de65a461f16d7ccc1abc8a", null ],
+    [ "dateTime", "d4/d2a/classCSJ2K_1_1Icc_1_1Types_1_1ICCProfileHeader.html#a6da751fff0026963454167f156421524", null ],
+    [ "dwCMMFlags", "d4/d2a/classCSJ2K_1_1Icc_1_1Types_1_1ICCProfileHeader.html#a11d9dbe2994584392fb8531051002cb0", null ],
+    [ "dwCMMTypeSignature", "d4/d2a/classCSJ2K_1_1Icc_1_1Types_1_1ICCProfileHeader.html#a14028390d015487521158c7d840bb548", null ],
+    [ "dwColorSpaceType", "d4/d2a/classCSJ2K_1_1Icc_1_1Types_1_1ICCProfileHeader.html#a8f18405f815aeb3d5ec4e899de6234da", null ],
+    [ "dwCreatorSig", "d4/d2a/classCSJ2K_1_1Icc_1_1Types_1_1ICCProfileHeader.html#ac7900d5adcf8c5ac6315698193adad6f", null ],
+    [ "dwDeviceAttributes1", "d4/d2a/classCSJ2K_1_1Icc_1_1Types_1_1ICCProfileHeader.html#a709453a8efdbf5ca2726de5d1cd9bb21", null ],
+    [ "dwDeviceAttributesReserved", "d4/d2a/classCSJ2K_1_1Icc_1_1Types_1_1ICCProfileHeader.html#a2e15afae42fd121c16e9a50a559ff852", null ],
+    [ "dwDeviceManufacturer", "d4/d2a/classCSJ2K_1_1Icc_1_1Types_1_1ICCProfileHeader.html#ab1a10d34061defc5299be98d1371bbe9", null ],
+    [ "dwDeviceModel", "d4/d2a/classCSJ2K_1_1Icc_1_1Types_1_1ICCProfileHeader.html#a7d915c83963cbab611b350b9a865ca7a", null ],
+    [ "dwPCSType", "d4/d2a/classCSJ2K_1_1Icc_1_1Types_1_1ICCProfileHeader.html#ae821726cc45cf3a99ca046c8a879f62e", null ],
+    [ "dwPlatformSignature", "d4/d2a/classCSJ2K_1_1Icc_1_1Types_1_1ICCProfileHeader.html#ad499c402a9c186ee4e9d3b8a8f97e389", null ],
+    [ "dwProfileClass", "d4/d2a/classCSJ2K_1_1Icc_1_1Types_1_1ICCProfileHeader.html#a8c9f537af4f6513c406f8209cad32ab2", null ],
+    [ "dwProfileSignature", "d4/d2a/classCSJ2K_1_1Icc_1_1Types_1_1ICCProfileHeader.html#a03cc83aeaf4c1a41c0bc5fb9e2413cf3", null ],
+    [ "dwProfileSize", "d4/d2a/classCSJ2K_1_1Icc_1_1Types_1_1ICCProfileHeader.html#a0ac309b3a1a581614b631f170a6719e0", null ],
+    [ "dwRenderingIntent", "d4/d2a/classCSJ2K_1_1Icc_1_1Types_1_1ICCProfileHeader.html#a824059f7a10bbb40479b2608b8ead339", null ],
+    [ "kdwProfileSigReverse", "d4/d2a/classCSJ2K_1_1Icc_1_1Types_1_1ICCProfileHeader.html#a6f8d99c6934c8b13dcafd729bbab071b", null ],
+    [ "PCSIlluminant", "d4/d2a/classCSJ2K_1_1Icc_1_1Types_1_1ICCProfileHeader.html#a20414e6e4d393322aef506c5fac1ca2d", null ],
+    [ "profileVersion", "d4/d2a/classCSJ2K_1_1Icc_1_1Types_1_1ICCProfileHeader.html#a18f092695b748899caee57ee6c28504a", null ],
+    [ "reserved", "d4/d2a/classCSJ2K_1_1Icc_1_1Types_1_1ICCProfileHeader.html#a4fe2f383737e9e2c9d0cb391e7ed00c7", null ],
+    [ "size", "d4/d2a/classCSJ2K_1_1Icc_1_1Types_1_1ICCProfileHeader.html#a3f97e20b8eca59175aaa66149c88bb5e", null ]
+];

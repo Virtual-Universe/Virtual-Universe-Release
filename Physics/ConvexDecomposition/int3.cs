@@ -1,0 +1,145 @@
+﻿/***************************************************************************
+ *	                VIRTUAL REALITY PUBLIC SOURCE LICENSE
+ * 
+ * Date				: Sun January 1, 2006
+ * Copyright		: (c) 2006-2014 by Virtual Reality Development Team. 
+ *                    All Rights Reserved.
+ * Website			: http://www.syndarveruleiki.is
+ *
+ * Product Name		: Virtual Reality
+ * License Text     : packages/docs/VRLICENSE.txt
+ * 
+ * Planetary Info   : Information about the Planetary code
+ * 
+ * Copyright        : (c) 2014-2024 by Second Galaxy Development Team
+ *                    All Rights Reserved.
+ * 
+ * Website          : http://www.secondgalaxy.com
+ * 
+ * Product Name     : Virtual Reality
+ * License Text     : packages/docs/SGLICENSE.txt
+ * 
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in the
+ *       documentation and/or other materials provided with the distribution.
+ *     * Neither the name of the WhiteCore-Sim Project nor the
+ *       names of its contributors may be used to endorse or promote products
+ *       derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE DEVELOPERS ``AS IS'' AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE CONTRIBUTORS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+***************************************************************************/
+
+using System;
+
+namespace OpenSim.Region.Physics.ConvexDecompositionDotNet
+{
+    public class int3
+    {
+        public int x;
+        public int y;
+        public int z;
+
+        public int3()
+        {
+        }
+
+        public int3(int _x, int _y, int _z)
+        {
+            x = _x;
+            y = _y;
+            z = _z;
+        }
+
+        public int this[int i]
+        {
+            get
+            {
+                switch (i)
+                {
+                    case 0: return x;
+                    case 1: return y;
+                    case 2: return z;
+                }
+                throw new ArgumentOutOfRangeException();
+            }
+            set
+            {
+                switch (i)
+                {
+                    case 0: x = value; return;
+                    case 1: y = value; return;
+                    case 2: z = value; return;
+                }
+                throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        public override int GetHashCode()
+        {
+            return x.GetHashCode() ^ y.GetHashCode() ^ z.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            int3 i = obj as int3;
+            if (i == null)
+                return false;
+
+            return this == i;
+        }
+
+        public static bool operator ==(int3 a, int3 b)
+        {
+            // If both are null, or both are same instance, return true.
+            if (Object.ReferenceEquals(a, b))
+                return true;
+            // If one is null, but not both, return false.
+            if ((a == null) || (b == null))
+                return false;
+
+            for (int i = 0; i < 3; i++)
+            {
+                if (a[i] != b[i])
+                    return false;
+            }
+            return true;
+        }
+
+        public static bool operator !=(int3 a, int3 b)
+        {
+            return !(a == b);
+        }
+
+        public static int3 roll3(int3 a)
+        {
+            int tmp = a[0];
+            a[0] = a[1];
+            a[1] = a[2];
+            a[2] = tmp;
+            return a;
+        }
+
+        public static bool isa(int3 a, int3 b)
+        {
+            return (a == b || roll3(a) == b || a == roll3(b));
+        }
+
+        public static bool b2b(int3 a, int3 b)
+        {
+            return isa(a, new int3(b[2], b[1], b[0]));
+        }
+    }
+}
