@@ -1,0 +1,19 @@
+﻿====Goals=====
+
+We need to define development goals that need to be added as we move forward with development.  Ensuring clean repositories and building works is something that shall be a standing goal.  Also be sure to include goals grid staff and members of each of our development teams might want to see added.
+
+Goals go here
+
+Standing Goals (on going never completed)
+
+1. Maintain Clean development repositories
+2. Ensure builds work with each commit for both Linux/ Windows
+
+Development Goals (Goals set by the developers on our development teams)
+
+1. Goal 1
+
+
+Staff Requested Goals (Goals requested and recommended by staff on our grids)
+
+1. Goal 1

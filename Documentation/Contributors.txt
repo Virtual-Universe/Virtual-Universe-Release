@@ -1,0 +1,11 @@
+﻿====Development Team=====
+
+Virtual Universe is provided as is by the Virtual Universe Development Team. The members of the team are:
+
+Emperor Starfinder – CEO and Core Developer of the Second Galaxy Development Team
+
+SonicBoomDrillon – CEO and Core Developer of the Virtual Reality Development Team
+
+====Third Party Contributors=====
+
+Below is a list of individuals who have contributed code to Virtual Universe.  While we usually update this list regularly when we commit code from contributors it might be possible that we might forget.  Please let us know so we can be sure to give credit where credit is due.

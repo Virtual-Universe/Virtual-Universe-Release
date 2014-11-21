@@ -1,0 +1,3 @@
+﻿====Third Party Licenses=====
+
+Here you will find a listing to the text documents of licenses which cover software in the virtual universe code.  Additionally you will find a list to their website if known.  Please let us know if you see inconsistencies  iinths list so we can update it accordingly.
