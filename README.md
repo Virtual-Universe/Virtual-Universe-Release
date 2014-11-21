@@ -11,7 +11,7 @@ Virtual Universe Rolling Release
 
 Virtual Universe is not a virtual world, nor a stand-alone application, it is a scalable and customizable platform containing some basic modules, based on some fundamental innovative pillars (peer-to-peer architecture, secure communication infrastructure, legal framework, powerful scripting language); additional modules, extensions and expansion packs can be built on top of it on demand.
 
-*The core of Virtual Universe is the innovative Virtual Reality Engine based on a hybrid peer-to-peer infrastructure that allows the sharing of computational load in experiencing the virtual environment obtaining infrastructural resource optimization and bandwidth reduction.
+*The core of Virtual Universe is the innovative Virtual Universe Engine based on a hybrid peer-to-peer infrastructure that allows the sharing of computational load in experiencing the virtual environment obtaining infrastructural resource optimization and bandwidth reduction.
 
 It enhances the platform in terms of robustness, availability, scalability, load balancing.
 
