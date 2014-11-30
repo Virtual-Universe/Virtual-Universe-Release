@@ -1,14 +1,14 @@
-#!/bin/bash
-ARCH="x64"
+#!/bin/sh
+ARCH="x86"
 CONFIG="Debug"
-BUILD=true
+BUILD=false
 
 USAGE="[-c <config>] -a <arch>"
 LONG_USAGE="Configuration options to pass to prebuild environment
 
 Options:
   -c|--config Build configuration Debug(default) or Release
-  -a|--arch Architecture to target x86(default), x64
+  -a|--arch Architecture to target x86(default), x64, or AnyCPU
 "
 
 while case "$#" in 0) break ;; esac
@@ -40,15 +40,15 @@ do
   shift
 done
 
-echo Configuring Virtual Universe
+echo Configuring Aurora-Sim
 
-mono packages/Prebuild.exe /target vs2010 /targetframework v4_5 /conditionals "LINUX;NET_4_5"
-if [ -d ".svn" ]; then svn log --pretty=format:"Virtual Universe:%h" -n 1 > packages/.version; fi
+mono bin/Prebuild.exe /target vs2010 /targetframework v4_0 /conditionals "LINUX;NET_4_0"
+if [ -d ".git" ]; then git log --pretty=format:"Aurora (%cd.%h)" --date=short -n 1 > bin/.version; fi
 
 if ${BUILD:=true} ; then
-  echo Building Virtual Universe
+  echo Building Aurora-Sim
   xbuild /property:Configuration="$CONFIG" /property:Platform="$ARCH"
-  echo Finished Building Virtual Universe
-  echo Thank you for choosing Virtual Universe
-  echo Please report any errors to our mantis at http://www.mantis.virtualplanets.org
+  echo Finished Building Aurora
+  echo Thank you for choosing Aurora-Sim
+  echo Please report any errors to out Mantis Bug Tracker http://mantis.aurora-sim.org/
 fi

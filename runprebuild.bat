@@ -1,58 +1,15 @@
 @ECHO OFF
 
-/***************************************************************************
- *	                VIRTUAL UNIVERSE PUBLIC SOURCE LICENSE
- * 
- * Date				: Sun January 1, 2006
- * Copyright		: (c) 2006-2014 by Virtual Reality Development Team. 
- *                    All Rights Reserved.
- * Website			: http://www.syndarveruleiki.is
- *
- * Product Name		: Virtual Reality
- * License Text     : packages/docs/VRLICENSE.txt
- * 
- * Planetary Info   : Information about the Planetary code
- * 
- * Copyright        : (c) 2014-2024 by Second Galaxy Development Team
- *                    All Rights Reserved.
- * 
- * Website          : http://www.secondgalaxy.com
- * 
- * Product Name     : Virtual Reality
- * License Text     : packages/docs/SGLICENSE.txt
- * 
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the WhiteCore-Sim Project nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE DEVELOPERS ``AS IS'' AND ANY
- * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE CONTRIBUTORS BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-***************************************************************************/
 echo ====================================
-echo ==== BUILDING VIRTUAL UNIVERSE =====
+echo ==== AURORA  BUILDING ==============
 echo ====================================
 echo.
 
-rem ## Default architecture (86 (for 32bit), 64)
-set bits=64
+rem ## Default architecture (86 (for 32bit), 64, AnyCPU)
+set bits=AnyCPU
 
-rem ## Whether or not to add the .net4.5 flag
-set framework=4_5
+rem ## Whether or not to add the .net3.5 flag
+set framework=4_0
 
 rem ## Default "configuration" choice ((r)elease, (d)ebug)
 set configuration=d
@@ -73,11 +30,12 @@ echo batch file in a text editor.
 echo.
 
 :bits
-set /p bits="Choose your architecture (x86, x64) [%bits%]: "
+set /p bits="Choose your architecture (AnyCPU, x86, x64) [%bits%]: "
 if %bits%==86 goto configuration
 if %bits%==x86 goto configuration
 if %bits%==64 goto configuration
 if %bits%==x64 goto configuration
+if %bits%==AnyCPU goto configuration
 echo "%bits%" isn't a valid choice!
 goto bits
 
@@ -91,7 +49,7 @@ echo "%configuration%" isn't a valid choice!
 goto configuration
 
 :framework
-set /p framework="Choose your .NET framework (4_5)? [%framework%]: "
+set /p framework="Choose your .NET framework (4_0 or 4_5)? [%framework%]: "
 if %framework%==4_0 goto final
 if %framework%==4_5 goto final
 echo "%framework%" isn't a valid choice!
@@ -108,7 +66,7 @@ if exist Compile.*.bat (
 )
 
 echo Calling Prebuild for target %vstudio% with framework %framework%...
-packages\Prebuild.exe /target vs2010 /targetframework v%framework% /conditionals ISWIN;NET_%framework%
+bin\Prebuild.exe /target vs2010 /targetframework v%framework% /conditionals ISWIN;NET_%framework%
 
 echo.
 echo Creating compile batch file for your convinence...
@@ -127,7 +85,7 @@ if %configuration%==release set cfg=/p:Configuration=Release
 if %configuration%==debug set cfg=/p:Configuration=Debug
 set filename=Compile.VS2010.net%framework%.%bits%.%configuration%.bat
 
-echo %fpath% VirtualUniverse.sln %args% %cfg% > %filename% /p:DefineConstants="ISWIN;NET_%framework%"
+echo %fpath% Aurora.sln %args% %cfg% > %filename% /p:DefineConstants="ISWIN;NET_%framework%"
 
 echo.
 set /p compile_at_end="Done, %filename% created. Compile now? (y,n) [%compile_at_end%]"
