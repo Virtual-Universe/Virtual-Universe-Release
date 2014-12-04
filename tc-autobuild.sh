@@ -1,8 +1,8 @@
 #!/bin/bash
 
-mono bin/Prebuild.exe /target vs2010 /targetframework v4_0 /conditionals "LINUX;NET_4_0"
+mono ./Prebuild.exe /target vs2010 /targetframework v4_0 /conditionals "LINUX;NET_4_0"
 
-if [ -d ".git" ]; then git log --pretty=format:"Aurora (%cd.%h)" --date=short -n 1 > bin/.version; fi
+if [ -d ".git" ]; then git log --pretty=format:"VirtualUniverse (%cd.%h)" --date=short -n 1 > VirtualUniverse/bin/.version; fi
 
 unset makebuild
 unset makedist
@@ -18,7 +18,7 @@ while [ "$1" != "" ]; do
 done
 
 if [ "$makebuild" = "yes" ]; then
-    xbuild Aurora.sln
+    xbuild VirtualUniverse.sln
     res=$?
 
     if [ "$res" != "0" ]; then
@@ -26,7 +26,7 @@ if [ "$makebuild" = "yes" ]; then
     fi
 
     if [ "$makedist" = "yes" ]; then
-	rm -f aurora-autobuild.tar.bz2
-	tar cjf aurora-autobuild.tar.bz2 bin
+	rm -f VirtualUniverse-autobuild.tar.bz2
+	tar cjf VirtualUniverse-autobuild.tar.bz2 VirtualUniverse/bin
     fi
 fi

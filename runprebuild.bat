@@ -1,15 +1,15 @@
 @ECHO OFF
 
 echo ====================================
-echo ==== AURORA  BUILDING ==============
+echo ==== Virtual Universe  BUILDING ====
 echo ====================================
 echo.
 
 rem ## Default architecture (86 (for 32bit), 64, AnyCPU)
-set bits=AnyCPU
+set bits=86
 
-rem ## Whether or not to add the .net3.5 flag
-set framework=4_0
+rem ## Whether or not to add the .netx.y flag
+set framework=4_5
 
 rem ## Default "configuration" choice ((r)elease, (d)ebug)
 set configuration=d
@@ -66,7 +66,7 @@ if exist Compile.*.bat (
 )
 
 echo Calling Prebuild for target %vstudio% with framework %framework%...
-bin\Prebuild.exe /target vs2010 /targetframework v%framework% /conditionals ISWIN;NET_%framework%
+Prebuild.exe /target vs2010 /targetframework v%framework% /conditionals ISWIN;NET_%framework%
 
 echo.
 echo Creating compile batch file for your convinence...
@@ -85,7 +85,7 @@ if %configuration%==release set cfg=/p:Configuration=Release
 if %configuration%==debug set cfg=/p:Configuration=Debug
 set filename=Compile.VS2010.net%framework%.%bits%.%configuration%.bat
 
-echo %fpath% Aurora.sln %args% %cfg% > %filename% /p:DefineConstants="ISWIN;NET_%framework%"
+echo %fpath% VirtualUniverse.sln %args% %cfg% > %filename% /p:DefineConstants="ISWIN;NET_%framework%"
 
 echo.
 set /p compile_at_end="Done, %filename% created. Compile now? (y,n) [%compile_at_end%]"

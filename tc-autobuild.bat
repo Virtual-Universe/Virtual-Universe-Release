@@ -13,16 +13,16 @@ GOTO ParamLoop
 :ParamContinue
 
 rem use .NET 3.5 to build
-bin\Prebuild.exe /target vs2010 /targetframework v4_0 /conditionals NET_4_0
+Prebuild.exe /target vs2010 /targetframework v4_0 /conditionals NET_4_0
 IF ERRORLEVEL 1 GOTO FAIL
 
-%WINDIR%\Microsoft.NET\Framework\v4.0.30319\msbuild /t:Rebuild Aurora.sln /p:DefineConstants="ISWIN;NET_4_0"
+%WINDIR%\Microsoft.NET\Framework\v4.0.30319\msbuild /t:Rebuild VirtualUniverse.sln /p:DefineConstants="ISWIN;NET_4_0"
 IF ERRORLEVEL 1 GOTO FAIL
 
 IF NOT "%makearch%"=="yes" GOTO SkipArch
 echo Build success, creating zip package
-del /q aurora-autobuild.zip
-7z -tzip a aurora-autobuild.zip bin
+del /q VirtualUniverse-autobuild.zip
+7z -tzip a VirtualUniverse-autobuild.zip VirtualUniverse/bin
 :SkipArch
 
 :SUCCESS
