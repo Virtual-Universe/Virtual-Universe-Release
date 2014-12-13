@@ -11,7 +11,7 @@
 
 The Virtual Universe Development Team is proud to present Virtual Universe as a rolling release software.
 
-The WhiteCore server is an OpenSim/Aurora-Sim derived project with heavy emphasis on supporting all users, 
+The Virtual Universe server is an OpenSim/Aurora-Sim derived project with heavy emphasis on supporting all users, 
 
 ## About Virtual Universe
 
