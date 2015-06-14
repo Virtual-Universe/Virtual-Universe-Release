@@ -1,6 +1,6 @@
 Adding, Updating, and Removing Regions
 
-Additional regions may be configured on the region server (Whitecore.exe) using the "create region" command.
+Additional regions may be configured on the region server (Universe.exe) using the "create region" command.
   This will create and add a new region using the resources currently available.
   
 If you wish to keep the region resources separate, you can add another region 'instance'.

@@ -1,4 +1,9 @@
---------------- Universe Developers -----------------------
+--------------- Virtual-Universe Developers -----------------------
+
+See Second Galaxy Development Team.txt for team directory.
+
+
+--------------- WhiteCore-Sim Developers -----------------------
 
 Fly-Man-
 Greythane

@@ -9,7 +9,7 @@ Mono V3.x    : Checkout http://www.go-mono.com/mono-downloads/download.html for 
 Building
 ========
 
-Clone the Universe repo at https://github.com/UniverseSim/Universe-Dev.git
+Clone the Universe repo at https://github.com/Virtual-Universe/Virtual-Universe.git
 
 
 Cd the the downloaded directory.
@@ -24,9 +24,9 @@ NOTE:  Some warnings may be shown (36 at last count) but these do not present
 any problem or prevent operation of the servers. 
 (These will be corrected and removed as time permits)
 
-When completed the 'UniverseSim/bin' subdirectory will contain the newly compiled Universe files.
+When completed the 'VirtualUniverse/bin' subdirectory will contain the newly compiled Universe files.
 
-Copy the 'bin' subdirectory to your existing Universe installation, replacing the 'bin' directory there.
+Copy the 'bin' subdirectory to your existing Virtual Universe installation, replacing the 'bin' directory there.
 
 Restart as per normal using the appropriate script file.
 Answer 'No' if asked to re-configure at startup.
@@ -35,9 +35,9 @@ Checkout the ReadMe.txt file for the rest
 
 Questions?
 ==========
-Checkout the #universe-support irc channel on freenode,
+Checkout the #galaxyfutures irc channel on freenode,
 
 
-Rowan
-<greythane@gmail.com>
-May 2014
+Emperor Starfinder
+<emperor@secondgalaxy.com>
+June 14 2015

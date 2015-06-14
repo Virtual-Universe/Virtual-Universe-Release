@@ -1,7 +1,7 @@
-Universe configuration options
+Virtual Universe configuration options
 ===============================
 
-To tailor the standard Universe configuration to you own personal setup,
+To tailor the standard Virtual Universe configuration to you own personal setup,
 modify the following configuration files..
 
 For the standard 'Standalone' configuration
@@ -15,16 +15,16 @@ Directory: Config/Sim
    
    <universe databasename> :  The database name that you have created 
    <database user>			:  The user that has permission to access the <universe databasename>
-   <user password>			:  The password for the universe user
+   <user password>			:  The password for the Virtual Universe user
 
 								  
  
  /Standalone/GridInfoService.ini : Change the grid name and nickname
-	        gridname = "Universe Sim Sandbox"
-            gridnick = "UniverseSim"
+	        gridname = "Virtual Universe Sandbox"
+            gridnick = "Virtual Universe"
  		   
  /Standalone/StandaloneCommon.ini : Change the welcome message sent to the viewer on login
- 			WelcomeMessage = "Welcome to the Universe Sim Sandbox, <USERNAME>!"
+ 			WelcomeMessage = "Welcome to the Virtual Universe Sandbox, <USERNAME>!"
  
  /Universe.ini : 
  	If your viewer stalls on login You may need to specify the internal_ip
