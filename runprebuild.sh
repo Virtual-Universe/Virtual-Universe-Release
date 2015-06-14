@@ -1,5 +1,5 @@
 #!/bin/bash
-ARCH="x86"
+ARCH="AnyCPU"
 CONFIG="Debug"
 BUILD=false
 VERSIONONLY=false
@@ -73,23 +73,23 @@ done
 
 fi
 
-# Configuring WhiteCore-Sim
+# Configuring Virtual-Universe
 if ! ${VERSIONONLY:=true}; then
-  echo "Configuring Virtual Universe $ARCH $CONFIG build"
+  echo "Configuring Virtual-Universe $ARCH $CONFIG build"
   mono ./Prebuild.exe /target vs2010 /targetframework v4_5 /conditionals "LINUX;NET_4_5"
 fi
 
 # Update version info
 if [ -d ".git" ]; then 
-  git log --pretty=format:"VirtualUniverse (%cd.%h)" --date=short -n 1 > VirtualUniverse/bin/.version; 
+  git log --pretty=format:"Universe (%cd.%h)" --date=short -n 1 > VirtualUniverse/bin/.version; 
   echo "Version info updated"
 fi
 
-# Build Virtual Universe
+# Build Virtual-Universe
 if ${BUILD:=true} ; then
-  echo Building Virtual Universe
+  echo Building Virtual-Universe
   xbuild /property:Configuration="$CONFIG" /property:Platform="$ARCH"
-  echo Finished Building VirtualUniverse
-  echo Thank you for choosing Virtual Universe
+  echo Finished Building Universe
+  echo Thank you for choosing Virtual-Universe
   echo Please report any errors to our Github Issue Tracker https://github.com/Virtual-Universe/Virtual-Universe/issues
 fi

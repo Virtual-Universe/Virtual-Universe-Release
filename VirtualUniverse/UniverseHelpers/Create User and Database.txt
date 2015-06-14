@@ -1,0 +1,13 @@
+Change the <insert password here> into a long password, preferable 8 chars or longer
+
+Then open up you favorite MySQL editor (phpMyAdmin, MySQLAdmin or another tool) and run the following commands:
+
+================================================================================================================
+
+CREATE USER 'universe'@'%' IDENTIFIED BY '<insert password here>';
+
+CREATE DATABASE IF NOT EXISTS `universe` ;
+
+GRANT ALL PRIVILEGES ON `universe` . * TO 'universe'@'%';
+
+================================================================================================================

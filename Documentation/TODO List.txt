@@ -1,0 +1,51 @@
+This is the current TODO list to help us stay organized and on track as we move closer to releasing version 1.0
+
+NOTE: Each directory is similar directory to that of Virtual-Universe for easier organization purposes.  The only difference here is that the Region directory is Planet, Simulation is Space, and Framework is Universe.  In Addtion Universe.Framework.UniverseConsole is the equivelant of Virtual Universe's Universe.Universe.UniverseConsole.
+
+[COMPLETED FOR VERSION 1.0.0]
+
+- Change ScriptEngineParser.dll to a generic ScriptEngineParser.dll.
+- Change Warp3D.dll to Warp3Dw.dll in favor of a generic dll.
+- Merge in updates from WhiteCore-Sim that are necessary.
+- Corrected all references.
+
+
+[GENERAL TODO]
+
+- Review all commented out code to see if it is necessary.  If Not necessary remove it. Lets keep the code clean.
+- Remove all comments found in the code to see if the issues have been resolved so we can fix them to give a general description instead of mantis bugs.
+- Add a comment for new code we add in.  This will help us know what the code is.
+- Keep line endings in Unicode.  This should work okay for Windows users as well.
+- When adding new code if a TODO is added please add it under the appropriate TODO section here as well so we can keep track.
+- Fix issue with building AnyCPU on .Net 4.5 for Windows 7 users.
+
+
+[PLANETS GENERAL TODO]
+
+- WhiteCore-Sim developers appear to have found a limitation on region sizes due to a memory issue.  The size apparently cannot be greater then 4096x4096.  See if this is just a Windows only issue or if it affects Mac and Linux users as well.  This may affect how we shape the planets.
+- Terrain Hollowing.  This is a feature we are working on.  However currently viewers cannot support this.  We will have to add a way for this feature to be supported.
+- Mesh Terrain - A feature wanted by Greythane as a goal for Universe.  Currently viewers cannot support mesh terrain but it is an interesting idea to explore.
+
+[OPENMETAVERSE TODO]
+
+- Remove the need for log4net from OpenMetaverse.  log4net should not be used any longer serverside anyway.  This is an outdated method.  All logging can be handled by the console framework.
+- Make one version for region based grids and one version for planet based grids.
+- Review and update libOMV as necessary.
+
+NOTE: OpenMetaverse is required and needed currently by both the grid and region servers as well as the viewers.  Unsure if this is an LL specific reasoning that liboMV attempts to address however.
+
+[MODULES TODO]
+
+- Keep the Universe.Modules directory in an organized structure so there will not be clutter or cause an overwhelming feeling to developers.  Organized is better.
+
+[SCRIPTENGINE TODO]
+
+- Implement llGetEnv(); there are 3 files opensim changed but they use Xengine and we don't so I need to figure out what the equivelant files are for two of the files.
+[PHYSICS ENGINE TODO]
+
+
+
+[DLL TODO]
+
+
+[DOCUMENTATION TODO]

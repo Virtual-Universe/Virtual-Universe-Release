@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
-<Prebuild version="1.7" xmlns="http://dnpb.sourceforge.net/schemas/prebuild-1.7.xsd">
-  <Solution activeConfig="Debug" name="Universe" path="./" version="1.0.0.$Rev$">
+<Prebuild version="1.10" xmlns="http://dnpb.sourceforge.net/schemas/prebuild-1.10.xsd">
+  <Solution activeConfig="Debug" name="Universe" path="./" version="1.0.0 $Rev$">
     <Configuration name="Debug" platform="x86">
       <Options>
         <CompilerDefines>TRACE;DEBUG</CompilerDefines>
@@ -89,7 +89,7 @@
       </Options>
     </Configuration>
 
-    <Project frameworkVersion="v4_5" name="Universe.Universe" path="Universe/Universe" type="Library">
+    <Project frameworkVersion="v4_5" name="Universe.Framework" path="Universe/Framework" type="Library">
       <Configuration name="Debug" platform="x86">
         <Options>
           <OutputPath>../../VirtualUniverse/bin/</OutputPath>
@@ -102,7 +102,7 @@
       </Configuration>
       <Configuration name="Debug" platform="x64">
         <Options>
-          <OutputPath>../../VIrtualUniverse/bin/</OutputPath>
+          <OutputPath>../../VirtualUniverse/bin/</OutputPath>
         </Options>
       </Configuration>
       <Configuration name="Release" platform="x64">
@@ -131,7 +131,7 @@
       <Reference name="System.Web"/>
  	  <Reference name="System.Xml"/>
 
-      <Reference name="Nini" path="../../VIrtualUniverse/bin/"/>
+      <Reference name="Nini" path="../../VirtualUniverse/bin/"/>
       <Reference name="OpenMetaverse" path="../../VirtualUniverse/bin/"/>
       <Reference name="OpenMetaverse.StructuredData" path="../../VirtualUniverse/bin/"/>
       <Reference name="OpenMetaverseTypes" path="../../VirtualUniverse/bin/"/>
@@ -155,7 +155,7 @@
       </Configuration>
       <Configuration name="Release" platform="x86">
         <Options>
-          <OutputPath>../../../VIrtualUniverse/bin/Physics/</OutputPath>
+          <OutputPath>../../../VirtualUniverse/bin/Physics/</OutputPath>
         </Options>
       </Configuration>
       <Configuration name="Debug" platform="x64">
@@ -175,14 +175,14 @@
       </Configuration>
       <Configuration name="Release" platform="AnyCPU">
         <Options>
-          <OutputPath>../../../VIrtualUniverse/bin/Physics/</OutputPath>
+          <OutputPath>../../../VirtualUniverse/bin/Physics/</OutputPath>
         </Options>
       </Configuration>
 
-      <ReferencePath>../../../VIrtualUniverse/bin/</ReferencePath>
+      <ReferencePath>../../../VirtualUniverse/bin/</ReferencePath>
       <Reference name="System"/>
       
-      <Reference name="Universe.Universe"/>
+      <Reference name="Universe.Framework"/>
       
       <Reference name="Nini" path="../../../VirtualUniverse/bin/"/>
       <Reference name="OpenMetaverseTypes" path="../../../VirtualUniverse/bin/"/>
@@ -231,7 +231,7 @@
 	  <Reference name="System.Core"/>
       <Reference name="System.Drawing"/>
       
-      <Reference name="Universe.Universe"/>
+      <Reference name="Universe.Framework"/>
 
       <Reference name="CSJ2K" path="../../../VirtualUniverse/bin/"/>
       <Reference name="Nini" path="../../../VirtualUniverse/bin/"/>
@@ -267,7 +267,7 @@
       <Reference name="System.Xml"/>
       <Reference name="OpenMetaverseTypes" path="../../../VirtualUniverse/bin/"/>
       <Reference name="Nini.dll"  path="../../../VirtualUniverse/bin/"/>
-      <Reference name="Universe.Universe"/>
+      <Reference name="Universe.Framework"/>
       <Reference name="Universe.Region"/>
       <Reference name="Universe.Physics.Meshing"/>
       <Reference name="Universe.Physics.ConvexDecompositionDotNet"/>
@@ -280,6 +280,41 @@
       </Files>
     </Project>
 
+	<!-- This is for PhysX when completed. - Emperor Starfinder (5.5.2015) -->
+	 <!-- <Project frameworkVersion="v4_5" name="Universe.Physics.PhysXSPlugin" path="Universe/Physics/PhysXPlugin" type="Library">
+      <Configuration name="Debug">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/Physics</OutputPath>
+          <AllowUnsafe>true</AllowUnsafe>
+        </Options>
+      </Configuration>
+      <Configuration name="Release">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/Physics/</OutputPath>
+          <AllowUnsafe>true</AllowUnsafe>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../../../VirtualUniverse/bin/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Core"/>
+      <Reference name="System.Xml"/>
+      <Reference name="OpenMetaverseTypes" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="Nini.dll"  path="../../../VirtualUniverse/bin/"/>
+      <Reference name="Universe.Framework"/>
+      <Reference name="Universe.Region"/>
+      <Reference name="Universe.Physics.Meshing"/>
+      <Reference name="Universe.Physics.ConvexDecompositionDotNet"/>
+	  <Reference name="PhysX_Wrapper_Dotnet.dll" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="PhysX-wrapper.dll" path="../../../VirtualUniverse/bin/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project> -->
+	
     <Project frameworkVersion="v4_5" name="Universe.Physics.ConvexDecompositionDotNet" path="Universe/Physics/ConvexDecompositionDotNet" type="Library">
       <Configuration name="Debug">
         <Options>
@@ -345,13 +380,13 @@
       <Reference name="System.Xml"/>
 
       <Reference name="Universe.DataManager"/>
-      <Reference name="Universe.Universe"/>
+      <Reference name="Universe.Framework"/>
       
       <Reference name="Nini" path="../../VirtualUniverse/bin/"/>
       <Reference name="OpenMetaverse" path="../../VirtualUniverse/bin/"/>
       <Reference name="OpenMetaverse.StructuredData" path="../../VirtualUniverse/bin/"/>
       <Reference name="OpenMetaverseTypes" path="../../VirtualUniverse/bin/"/>
-      <Reference name="protobuf-net.dll" path="../../VIrtualUniverse/bin/"/>
+      <Reference name="protobuf-net.dll" path="../../VirtualUniverse/bin/"/>
       <Reference name="SmartThreadPool.dll" path="../../VirtualUniverse/bin/"/>
       <Reference name="XMLRPC" path="../../VirtualUniverse/bin/"/>
 
@@ -405,7 +440,7 @@
       <Reference name="Universe.DataManager"/>
       <Reference name="Universe.Services.DataService"/>
       
-      <Reference name="Universe.Universe"/>
+      <Reference name="Universe.Framework"/>
 
       <Reference name="Nini" path="../../../VirtualUniverse/bin/"/>
       <Reference name="OpenMetaverse" path="../../../VirtualUniverse/bin/"/>
@@ -527,7 +562,6 @@
       <Reference name="Universe.Modules"/>
       <Reference name="Universe.Services.DataService"/>
 
-      <Reference name="DotNetOpenId" path="../../../VirtualUniverse/bin/"/>
       <Reference name="GlynnTucker.Cache" path="../../../VirtualUniverse/bin/"/>
       <Reference name="Nini" path="../../../VirtualUniverse/bin/"/>
       <Reference name="OpenMetaverse" path="../../../VirtualUniverse/bin/"/>
@@ -581,7 +615,7 @@
       <Reference name="System.Data"/>
       <Reference name="System.Xml"/>
       
-      <Reference name="Universe.Universe"/>
+      <Reference name="Universe.Framework"/>
 
       <Reference name="Nini" path="../../VirtualUniverse/bin/"/>
       <Reference name="OpenMetaverse" path="../../VirtualUniverse/bin/"/>
@@ -635,7 +669,7 @@
       <Reference name="System.Xml"/>
 
       <Reference name="Universe.DataManager"/>
-	  <Reference name="Universe.Universe"/>
+	  <Reference name="Universe.Framework"/>
 		
       <Reference name="MySql.Data" path="../../../VirtualUniverse/bin/"/>
       <Reference name="Nini" path="../../../VirtualUniverse/bin/"/>
@@ -690,7 +724,7 @@
       <Reference name="System.Xml"/>
       
       <Reference name="Universe.DataManager"/>
-      <Reference name="Universe.Universe"/>
+      <Reference name="Universe.Framework"/>
 
       <Reference name="Community.CsharpSqlite.SQLiteClient" path="../../../VirtualUniverse/bin/"/>
       <Reference name="Nini" path="../../../VirtualUniverse/bin/"/>
@@ -750,7 +784,7 @@
       <Reference name="Universe.DataManager"/>
       <Reference name="Universe.DataManager.MySQL"/>
       <Reference name="Universe.DataManager.SQLite"/>
-      <Reference name="Universe.Universe"/>
+      <Reference name="Universe.Framework"/>
 
       <Reference name="Nini" path="../../../VirtualUniverse/bin/"/>
       <Reference name="OpenMetaverse" path="../../../VirtualUniverse/bin/"/>
@@ -801,7 +835,7 @@
       <Reference name="System.Core"/>
       <Reference name="System.Xml"/>
 
-      <Reference name="Universe.Universe"/>
+      <Reference name="Universe.Framework"/>
       
       <Reference name="Nini"  path="../../VirtualUniverse/bin/"/>
       <Reference name="OpenMetaverse" path="../../VirtualUniverse/bin/"/>
@@ -817,7 +851,7 @@
       </Files>
     </Project>
 	  
-    <!-- WhiteCore app -->
+    <!-- Universe app -->
     <Project frameworkVersion="v4_5" name="Universe" path="Universe/Application" type="Exe" appmanifest="app.manifest">
       <Configuration name="Debug" platform="x86">
         <Options>
@@ -853,8 +887,8 @@
       <ReferencePath>../../VirtualUniverse/bin/</ReferencePath>
       <Reference name="System"/>
 
-      <Reference name="Universe.Universe"/>
-	  <Reference name="Universe.Space.Base"/>
+      <Reference name="Universe.Framework"/>
+	  <Reference name="Universe.Simulation.Base"/>
 
       <Files>
         <Match pattern="*.cs" recurse="true">
@@ -899,8 +933,8 @@
       <ReferencePath>../../VirtualUniverse/bin/</ReferencePath>
       <Reference name="System"/>
 
-      <Reference name="Universe.Universe"/>
-	  <Reference name="Universe.Space.Base"/>
+      <Reference name="Universe.Framework"/>
+	  <Reference name="Universe.Simulation.Base"/>
 
       <Reference name="Nini" path="../../VirtualUniverse/bin/"/>
       <Reference name="OpenMetaverse" path="../../VirtualUniverse/bin/"/>
@@ -950,8 +984,8 @@
       <ReferencePath>../../../VirtualUniverse/bin/</ReferencePath>
       <Reference name="System"/>
 
-      <Reference name="Universe.Universe"/>
-	  <Reference name="Universe.Space.Base"/>
+      <Reference name="Universe.Framework"/>
+	  <Reference name="Universe.Simulation.Base"/>
 
       <Reference name="Nini" path="../../../VirtualUniverse/bin/"/>
       <Reference name="OpenMetaverse" path="../../../VirtualUniverse/bin/"/>
@@ -1001,8 +1035,8 @@
       <ReferencePath>../../../VirtualUniverse/bin/</ReferencePath>
       <Reference name="System"/>
 
-      <Reference name="Universe.Universe"/>
-	  <Reference name="Universe.Space.Base"/>
+      <Reference name="Universe.Framework"/>
+	  <Reference name="Universe.Simulation.Base"/>
 
       <Reference name="Nini" path="../../../VirtualUniverse/bin/"/>
       <Reference name="OpenMetaverse" path="../../../VirtualUniverse/bin/"/>
@@ -1052,8 +1086,8 @@
       <ReferencePath>../../../VirtualUniverse/bin/</ReferencePath>
       <Reference name="System"/>
 
-      <Reference name="Universe.Universe"/>
-	  <Reference name="Universe.Space.Base"/>
+      <Reference name="Universe.Framework"/>
+	  <Reference name="Universe.Simulation.Base"/>
 
       <Reference name="Nini" path="../../../VirtualUniverse/bin/"/>
       <Reference name="OpenMetaverse" path="../../../VirtualUniverse/bin/"/>
@@ -1103,8 +1137,8 @@
       <ReferencePath>../../../VirtualUniverse/bin/</ReferencePath>
       <Reference name="System"/>
 
-      <Reference name="Universe.Universe"/>
-	  <Reference name="Universe.Space.Base"/>
+      <Reference name="Universe.Framework"/>
+	  <Reference name="Universe.Simulation.Base"/>
 
       <Reference name="Nini" path="../../../VirtualUniverse/bin/"/>
       <Reference name="OpenMetaverse" path="../../../VirtualUniverse/bin/"/>
@@ -1154,8 +1188,8 @@
       <ReferencePath>../../../VirtualUniverse/bin/</ReferencePath>
       <Reference name="System"/>
 
-      <Reference name="Universe.Universe"/>
-	  <Reference name="Universe.Space.Base"/>
+      <Reference name="Universe.Framework"/>
+	  <Reference name="Universe.Simulation.Base"/>
 
       <Reference name="Nini" path="../../../VirtualUniverse/bin/"/>
       <Reference name="OpenMetaverse" path="../../../VirtualUniverse/bin/"/>
@@ -1170,7 +1204,7 @@
       </Files>
     </Project>
 
-    <Project frameworkVersion="v4_5" name="Universe.Space.Base" path="Universe/Space/Base" type="Library">
+    <Project frameworkVersion="v4_5" name="Universe.Simulation.Base" path="Universe/Simulation/Base" type="Library">
       <Configuration name="Debug" platform="x86">
         <Options>
           <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
@@ -1193,7 +1227,7 @@
       </Configuration>
       <Configuration name="Debug" platform="AnyCPU">
         <Options>
-          <OutputPath>../../../VIrtualUniverse/bin/</OutputPath>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
         </Options>
       </Configuration>
       <Configuration name="Release" platform="AnyCPU">
@@ -1209,7 +1243,7 @@
       <Reference name="System.Web"/>
       <Reference name="System.Xml"/>
 
-      <Reference name="Universe.Universe"/>
+      <Reference name="Universe.Framework"/>
       <Reference name="Universe.Services.DataService"/>
       <Reference name="Universe.Services.GenericServices"/>
       
@@ -1267,7 +1301,7 @@
       <Reference name="System.Web"/>
 
       <Reference name="Universe.DataManager"/>
-      <Reference name="Universe.Universe"/>
+      <Reference name="Universe.Framework"/>
       <Reference name="Universe.Services.DataService"/>
 
       <Reference name="Nini" path="../../VirtualUniverse/bin/"/>
@@ -1324,7 +1358,7 @@
       <Reference name="System.Xml"/>
       <Reference name="System.Web"/>
       <Reference name="Universe.DataManager"/>
-      <Reference name="Universe.Universe"/>
+      <Reference name="Universe.Framework"/>
       <Reference name="Universe.Region"/>
 
       <Reference name="CSJ2K" path="../../VirtualUniverse/bin/"/>
@@ -1334,7 +1368,7 @@
       <Reference name="OpenMetaverse.StructuredData" path="../../VirtualUniverse/bin/"/>
       <Reference name="OpenMetaverseTypes" path="../../VirtualUniverse/bin/"/>
       <Reference name="protobuf-net.dll" path="../../VirtualUniverse/bin/"/>
-      <Reference name="Warp3D" path="../../VirtualUniverse/bin/" localCopy="true"/>
+      <Reference name="Warp3Dw" path="../../VirtualUniverse/bin/"/>
       <Reference name="XMLRPC" path="../../VirtualUniverse/bin/"/>
       <Reference name="zlib.net" path="../../VirtualUniverse/bin/"/>
 
@@ -1381,7 +1415,7 @@
       <Reference name="System"/>
       <Reference name="System.Core"/>
 
-      <Reference name="Universe.Universe"/>
+      <Reference name="Universe.Framework"/>
       
       <Reference name="Nini" path="../../../VirtualUniverse/bin/"/>
       <Reference name="OpenMetaverseTypes" path="../../../VirtualUniverse/bin/"/>
@@ -1393,7 +1427,7 @@
       </Files>
     </Project>
 
-    <Project frameworkVersion="v4_5" name="Universe.ScriptEngines.DotNetEngine" path="Universe/ScriptEngines/DotNetEngine" type="Library">
+    <Project frameworkVersion="v4_5" name="Universe.ScriptEngine.VirtualScript" path="Universe/ScriptEngine/VirtualScript" type="Library">
       <Configuration name="Debug" platform="x86">
         <Options>
           <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
@@ -1435,7 +1469,7 @@
       <Reference name="System.Xml"/>
 
       <Reference name="Universe.DataManager"/>
-      <Reference name="Universe.Universe"/>
+      <Reference name="Universe.Framework"/>
       
       <Reference name="Nini" path="../../../VirtualUniverse/bin/"/>
       <Reference name="ScriptEngineParser" path="../../../VirtualUniverse/bin/"/>
@@ -1492,8 +1526,8 @@
       <Reference name="System.Xml"/>
 
       <Reference name="Universe.DataManager"/>
-      <Reference name="Universe.Universe"/>
-      <Reference name="Universe.ScriptEngines.DotNetEngine"/>
+      <Reference name="Universe.Framework"/>
+      <Reference name="Universe.ScriptEngine.VirtualScript"/>
       
       <Reference name="Nini" path="../../VirtualUniverse/bin/"/>
       <Reference name="OpenMetaverse" path="../../VirtualUniverse/bin/"/>

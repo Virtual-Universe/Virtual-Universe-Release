@@ -1,0 +1,43 @@
+Building your own from source
+=============================
+
+Prerequisites
+=============
+Mono V3.x    : Checkout http://www.go-mono.com/mono-downloads/download.html for the latest update
+(Optional)  Xamarin Studio for a nice IDE : Checkout http://http://monodevelop.com/Download
+
+Building
+========
+
+Clone the Universe repo at https://github.com/UniverseSim/Universe-Dev.git
+
+
+Cd the the downloaded directory.
+Run(Execute) the  ./runprebuild.sh file to create the required c# solution files.
+
+Compile Universe :
+#:  xbuild Universe.sln
+
+A large amount of compile information will be shown but when completed, 
+no errors should be indicated.
+NOTE:  Some warnings may be shown (36 at last count) but these do not present 
+any problem or prevent operation of the servers. 
+(These will be corrected and removed as time permits)
+
+When completed the 'UniverseSim/bin' subdirectory will contain the newly compiled Universe files.
+
+Copy the 'bin' subdirectory to your existing Universe installation, replacing the 'bin' directory there.
+
+Restart as per normal using the appropriate script file.
+Answer 'No' if asked to re-configure at startup.
+
+Checkout the ReadMe.txt file for the rest
+
+Questions?
+==========
+Checkout the #universe-support irc channel on freenode,
+
+
+Rowan
+<greythane@gmail.com>
+May 2014

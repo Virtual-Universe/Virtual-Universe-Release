@@ -1,7 +1,4 @@
-*.hg
-.hgignore
-.hgtags
-hgrc
+
 
 *.bak
 *.build
@@ -37,15 +34,16 @@ hgrc
 .project
 .settings
 addon-modules/*/
-VirtualUniverse.build
-VirtualUniverse.sln
-VirtualUniverse.sln.cache
-VirtualUniverse.suo
-VirtualUniverse.v11.suo
-VirtualUniverse.v12.suo
-Documentation/doxygen/
+Universe.build
+Universe.sln
+Universe.sln.cache
+Universe.suo
+Universe.v11.suo
+Universe.v12.suo
+Universe/doxygen/
 
 VirtualUniverse/Data/AssetCache/*
+VirtualUniverse/Data/FileAssets/*
 VirtualUniverse/Data/Region/*.sim
 VirtualUniverse/Data/RegionBak/*.sim
 VirtualUniverse/Data/SQLite/*.db
@@ -58,37 +56,16 @@ VirtualUniverse/Data/ScriptEngines/*/*.state
 VirtualUniverse/Data/RealEstateUser.txt
 VirtualUniverse/Data/AvatarArchives/*
 VirtualUniverse/Data/UserArchives/*
+VirtualUniverse/Data/Governor.txt
+VirtualUniverse/Data/SystemEstate.txt
 
 VirtualUniverse/bin/*.log
-VirtualUniverse/bin/Planet.exe
-VirtualUniverse/bin/Planet.*.exe
+VirtualUniverse/bin/.version
+VirtualUniverse/bin/Universe.exe
+VirtualUniverse/bin/Universe.*.exe
 VirtualUniverse/bin/Universe.*.dll
 VirtualUniverse/bin/*/Universe.*.dll
 
-#bin/*.abackup
-#bin/*.db
-#bin/*.dll
-#bin/*.dll.mdb
-#bin/*.exe
-#bin/*.ini
-#bin/*.ini.old
-#bin/*.log
-#bin/*.maddin
-#bin/*.manifest
-#bin/*.pdb
-#bin/*.sim
-#bin/.version
-#bin/addin-db-*
-#bin/assetcache
-#bin/Universe.version
-#bin/crashes/
-#bin/Debug/*.dll
-#bin/DefaultInventory
-#bin/estate_settings.xml
-#bin/Physics*
-#bin/Regions/*
-#bin/Terrain*
-#bin/UserAssets
 compile.*.bat
 compile.bat
 compilex64.vs2010.bat
@@ -101,9 +78,3 @@ TAGS
 TestResult.xml
 *StyleCop.Cache
 *.StyleCop
-debug/*
-
-
-VirtualUniverse/Data/Governor.txt
-
-VirtualUniverse/Data/SystemEstate.txt
