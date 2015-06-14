@@ -1,8 +1,10 @@
 language: csharp
+solution: Universe.sln
 mono:
   - latest
 script:
-  - ./runprebuild.sh -c Debug -a x64 -b Yes
+  - ./runprebuild.sh
+  - xbuild /p:Configuration=Release Universe.sln
 notifications:
   irc:
     channels:
