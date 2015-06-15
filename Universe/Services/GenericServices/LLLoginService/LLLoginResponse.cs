@@ -60,6 +60,9 @@ namespace Universe.Services
 
         private string agentAccess;
         private string agentAccessMax;
+        private string agentRegionAccess;
+        private int aoTransition;
+        private int agentFlags;
         private UUID agentID;
         private ArrayList agentInventory;
 
@@ -130,6 +133,9 @@ namespace Universe.Services
             StartLocation = where;
             AgentAccessMax = AdultMax;
             AgentAccess = AdultRating;
+            AgentRegionAccess = AgentRegionAccess;
+            AOTransition = AOTransition;
+            AgentFlag = AgentFlag;
             eventCategories = eventValues;
             eventNotifications = eventNotificationValues;
             classifiedCategories = classifiedValues;
@@ -246,7 +252,10 @@ namespace Universe.Services
             lastname = "User";
             agentAccess = "M";
             agentAccessMax = "A";
+            agentRegionAccess = "A";
             startLocation = "last";
+            aoTransition = 0;
+            agentFlags = 0;
             udpBlackList = "EnableSimulator,TeleportFinish,CrossedRegion,OpenCircuit";
 
             ErrorMessage = "You have entered an invalid name/password combination.  Check Caps/lock.";
@@ -283,6 +292,7 @@ namespace Universe.Services
                 responseData["display_name"] = DisplayName;
                 responseData["agent_access"] = agentAccess;
                 responseData["agent_access_max"] = agentAccessMax;
+                responseData["agent_region_access"] - agentRegionAccess;
                 responseData["udp_blacklist"] = udpBlackList;
 
                 if (AllowFirstLife != null)
@@ -306,6 +316,8 @@ namespace Universe.Services
                 responseData["classified_categories"] = classifiedCategories;
                 responseData["ui-config"] = uiConfig;
                 responseData["export"] = AllowExportPermission ? "flag" : "";
+                responseData["ao_transition"] = aoTransition;
+                responseData["agent_flags"] = agentFlags;
 
                 if (agentInventory != null)
                 {
@@ -653,6 +665,12 @@ namespace Universe.Services
             set { agentAccessMax = value; }
         }
 
+        public string AgentRegionAccess
+        {
+            get { return agentRegionAccess; }
+            set { agentRegionAccess = value; }
+        }
+
         public string StartLocation
         {
             get { return startLocation; }
@@ -669,6 +687,18 @@ namespace Universe.Services
         {
             get { return seedCapability; }
             set { seedCapability = value; }
+        }
+
+        public int AOTransition
+        {
+            get { return aoTransition; }
+            set { aoTransition = value; }
+        }
+
+        public int AgentFlag
+        {
+            get { return AgentFlags; }
+            set { AgentFlags = value; }
         }
 
         public string ErrorReason { get; set; }
