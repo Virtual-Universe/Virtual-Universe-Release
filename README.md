@@ -33,6 +33,13 @@ and much more....
 
 Windows .Net 4.5 [![Build status](https://ci.appveyor.com/api/projects/status/a90lejf562n9sxwy?svg=true)](https://ci.appveyor.com/project/emperorstarfinder/virtual-universe)
 
+Linux 64 Bit [![Build Status](https://travis-ci.org/Virtual-Universe/Virtual-Universe.svg?branch=master)](https://travis-ci.org/Virtual-Universe/Virtual-Universe)
+
+Pull requests [![Issue Stats](http://www.issuestats.com/github/Virtual-Universe/Virtual-Universe/badge/pr)](http://www.issuestats.com/github/Virtual-Universe/Virtual-Universe)
+
+Issues closed [![Issue Stats](http://www.issuestats.com/github/Virtual-Universe/Virtual-Universe/badge/issue)](http://www.issuestats.com/github/Virtual-Universe/Virtual-Universe)
+
+
 ## Configuration
 *To see how to configure Virtual Universe, look at "Setting up Universe.txt" in the UniverseDocs folder for more information*
 
