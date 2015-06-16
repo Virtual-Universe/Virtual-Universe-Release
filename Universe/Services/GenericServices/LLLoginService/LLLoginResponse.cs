@@ -292,7 +292,7 @@ namespace Universe.Services
                 responseData["display_name"] = DisplayName;
                 responseData["agent_access"] = agentAccess;
                 responseData["agent_access_max"] = agentAccessMax;
-                responseData["agent_region_access"] - agentRegionAccess;
+                responseData["agent_region_access"] = agentRegionAccess;
                 responseData["udp_blacklist"] = udpBlackList;
 
                 if (AllowFirstLife != null)
@@ -697,8 +697,8 @@ namespace Universe.Services
 
         public int AgentFlag
         {
-            get { return AgentFlags; }
-            set { AgentFlags = value; }
+            get { return agentFlags; }
+            set { agentFlags = value; }
         }
 
         public string ErrorReason { get; set; }
