@@ -42,12 +42,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenMetaverse;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Physics;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Utilities;
 using Universe.Framework.Modules;
-using OpenMetaverse;
 using GridRegion = Universe.Framework.Services.GridRegion;
 
 namespace Universe.Physics.OpenDynamicsEngine

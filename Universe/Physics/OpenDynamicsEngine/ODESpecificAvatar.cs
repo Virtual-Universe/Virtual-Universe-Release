@@ -26,10 +26,10 @@
  */
 
 using System;
+using OpenMetaverse;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Physics;
 using Universe.Framework.Utilities;
-using OpenMetaverse;
 
 namespace Universe.Physics.OpenDynamicsEngine
 {
