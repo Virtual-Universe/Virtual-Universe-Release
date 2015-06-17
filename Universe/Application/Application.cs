@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
@@ -30,7 +30,7 @@ using Universe.Simulation.Base;
 namespace Universe
 {
     /// <summary>
-    ///     Starting class for the OpenSimulator Region
+    /// Starting class for the Virtual Universe Server
     /// </summary>
     public class Application
     {
