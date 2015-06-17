@@ -27,10 +27,10 @@
 
 using Universe.Simulation.Base;
 
-namespace Universe
+namespace Universe.Server
 {
     /// <summary>
-    /// Starting class for the Virtual Universe Server
+    ///     Starting class for the Virtual Universe Server
     /// </summary>
     public class Application
     {

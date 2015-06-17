@@ -1,0 +1,5 @@
+C:\Users\Fred\Desktop\New\VirtualUniverse\bin\Universe.exe
+C:\Users\Fred\Desktop\New\VirtualUniverse\bin\Universe.pdb
+C:\Users\Fred\Desktop\New\Universe\Application\obj\Debug\Universe.csprojResolveAssemblyReference.cache
+C:\Users\Fred\Desktop\New\Universe\Application\obj\Debug\Universe.exe
+C:\Users\Fred\Desktop\New\Universe\Application\obj\Debug\Universe.pdb

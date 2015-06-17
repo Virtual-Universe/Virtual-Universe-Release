@@ -1,0 +1,5 @@
+C:\Users\Fred\Desktop\New\VirtualUniverse\bin\Universe.Server.GridServer.exe
+C:\Users\Fred\Desktop\New\VirtualUniverse\bin\Universe.Server.GridServer.pdb
+C:\Users\Fred\Desktop\New\Universe\Servers\GridServer\obj\Debug\Universe.Server.GridServer.csprojResolveAssemblyReference.cache
+C:\Users\Fred\Desktop\New\Universe\Servers\GridServer\obj\Debug\Universe.Server.GridServer.exe
+C:\Users\Fred\Desktop\New\Universe\Servers\GridServer\obj\Debug\Universe.Server.GridServer.pdb

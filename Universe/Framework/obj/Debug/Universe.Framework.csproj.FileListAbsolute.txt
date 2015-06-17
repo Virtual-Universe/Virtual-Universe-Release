@@ -1,0 +1,4 @@
+C:\Users\Fred\Desktop\New\VirtualUniverse\bin\Universe.Framework.dll
+C:\Users\Fred\Desktop\New\VirtualUniverse\bin\Universe.Framework.pdb
+C:\Users\Fred\Desktop\New\Universe\Framework\obj\Debug\Universe.Framework.dll
+C:\Users\Fred\Desktop\New\Universe\Framework\obj\Debug\Universe.Framework.pdb

@@ -1,0 +1,5 @@
+C:\Users\Fred\Desktop\New\VirtualUniverse\bin\Physics\Universe.Physics.BulletSPlugin.dll
+C:\Users\Fred\Desktop\New\VirtualUniverse\bin\Physics\Universe.Physics.BulletSPlugin.pdb
+C:\Users\Fred\Desktop\New\Universe\Physics\BulletSPlugin\obj\Debug\Universe.Physics.BulletSPlugin.csprojResolveAssemblyReference.cache
+C:\Users\Fred\Desktop\New\Universe\Physics\BulletSPlugin\obj\Debug\Universe.Physics.BulletSPlugin.dll
+C:\Users\Fred\Desktop\New\Universe\Physics\BulletSPlugin\obj\Debug\Universe.Physics.BulletSPlugin.pdb

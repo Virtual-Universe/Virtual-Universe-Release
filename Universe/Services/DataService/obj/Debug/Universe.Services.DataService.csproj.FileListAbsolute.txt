@@ -1,0 +1,5 @@
+C:\Users\Fred\Desktop\New\VirtualUniverse\bin\Universe.Services.DataService.dll
+C:\Users\Fred\Desktop\New\VirtualUniverse\bin\Universe.Services.DataService.pdb
+C:\Users\Fred\Desktop\New\Universe\Services\DataService\obj\Debug\Universe.Services.DataService.csprojResolveAssemblyReference.cache
+C:\Users\Fred\Desktop\New\Universe\Services\DataService\obj\Debug\Universe.Services.DataService.dll
+C:\Users\Fred\Desktop\New\Universe\Services\DataService\obj\Debug\Universe.Services.DataService.pdb

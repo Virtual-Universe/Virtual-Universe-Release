@@ -52,6 +52,11 @@ if %version% == 5.1 (
 	echo hmmm... Windows XP
 )
 
+rem ## Default "configuration" choice ((r)elease, (d)ebug)
+set configuration=d
+
+rem ## Default "run compile batch" choice (y(es),n(o))
+set compile_at_end=y
 
 rem ## If not requested, skip the prompting
 if "%1" =="" goto final
@@ -64,7 +69,6 @@ echo I will now ask you four questions regarding your build.
 echo However, if you wish to build for:
 echo        %bits% Architecture
 echo        .NET %framework%
-echo		Visual Studio %vstudio%
 if %compile_at_end% == y echo And you would like to compile straight after prebuild...
 echo.
 echo Simply tap [ENTER] three times.
@@ -111,13 +115,12 @@ if exist Compile.*.bat (
     echo.
     del Compile.*.bat
 )
-if %framework%==4_5 set %vstudio%=2012
 
 echo Calling Prebuild for target %vstudio% with framework %framework%...
-Prebuild.exe /target vs%vstudio% /targetframework v%framework% /conditionals ISWIN;NET_%framework%
+Prebuild.exe /target vs2010 /targetframework v%framework% /conditionals ISWIN;NET_%framework%
 
 echo.
-echo Creating compile batch file for your convienence...
+echo Creating compile batch file for your convinence...
 set fpath=C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319\msbuild
 if %bits%==x64 set args=/p:Platform=x64
 if %bits%==x86 set args=/p:Platform=x86
@@ -131,7 +134,7 @@ set configuration=debug
 )
 if %configuration%==release set cfg=/p:Configuration=Release
 if %configuration%==debug set cfg=/p:Configuration=Debug
-set filename=Compile.VS%vstudio%.net%framework%.%bits%.%configuration%.bat
+set filename=Compile.VS2010.net%framework%.%bits%.%configuration%.bat
 
 echo %fpath% Universe.sln %args% %cfg% > %filename% /p:DefineConstants="ISWIN;NET_%framework%"
 

@@ -171,28 +171,28 @@
 	  </ProjectReference>
 	</ItemGroup>
 	<ItemGroup>
+	  <Compile Include="ODEApi.cs">
+		<SubType>Code</SubType>
+	  </Compile>
+	  <Compile Include="ODECharacter.cs">
+		<SubType>Code</SubType>
+	  </Compile>
+	  <Compile Include="ODEDynamics.cs">
+		<SubType>Code</SubType>
+	  </Compile>
+	  <Compile Include="ODEPhysicsScene.cs">
+		<SubType>Code</SubType>
+	  </Compile>
+	  <Compile Include="ODEPlugin.cs">
+		<SubType>Code</SubType>
+	  </Compile>
+	  <Compile Include="ODEPrim.cs">
+		<SubType>Code</SubType>
+	  </Compile>
+	  <Compile Include="ODERayCastRequestManager.cs">
+		<SubType>Code</SubType>
+	  </Compile>
 	  <Compile Include="ODESpecificAvatar.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="WODEApi.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="WODECharacter.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="WODEDynamics.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="WODEPhysicsScene.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="WODEPlugin.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="WODEPrim.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="WODERayCastRequestManager.cs">
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="Properties\AssemblyInfo.cs">

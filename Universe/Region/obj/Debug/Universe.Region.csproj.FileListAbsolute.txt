@@ -1,0 +1,5 @@
+C:\Users\Fred\Desktop\New\VirtualUniverse\bin\Universe.Region.dll
+C:\Users\Fred\Desktop\New\VirtualUniverse\bin\Universe.Region.pdb
+C:\Users\Fred\Desktop\New\Universe\Region\obj\Debug\Universe.Region.csprojResolveAssemblyReference.cache
+C:\Users\Fred\Desktop\New\Universe\Region\obj\Debug\Universe.Region.dll
+C:\Users\Fred\Desktop\New\Universe\Region\obj\Debug\Universe.Region.pdb

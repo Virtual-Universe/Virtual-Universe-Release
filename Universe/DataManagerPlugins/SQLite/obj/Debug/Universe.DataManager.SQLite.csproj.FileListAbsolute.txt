@@ -1,0 +1,5 @@
+C:\Users\Fred\Desktop\New\VirtualUniverse\bin\Universe.DataManager.SQLite.dll
+C:\Users\Fred\Desktop\New\VirtualUniverse\bin\Universe.DataManager.SQLite.pdb
+C:\Users\Fred\Desktop\New\Universe\DataManagerPlugins\SQLite\obj\Debug\Universe.DataManager.SQLite.csprojResolveAssemblyReference.cache
+C:\Users\Fred\Desktop\New\Universe\DataManagerPlugins\SQLite\obj\Debug\Universe.DataManager.SQLite.dll
+C:\Users\Fred\Desktop\New\Universe\DataManagerPlugins\SQLite\obj\Debug\Universe.DataManager.SQLite.pdb

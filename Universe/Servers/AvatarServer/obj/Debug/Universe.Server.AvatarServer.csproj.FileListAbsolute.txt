@@ -1,0 +1,5 @@
+C:\Users\Fred\Desktop\New\VirtualUniverse\bin\Universe.Server.AvatarServer.exe
+C:\Users\Fred\Desktop\New\VirtualUniverse\bin\Universe.Server.AvatarServer.pdb
+C:\Users\Fred\Desktop\New\Universe\Servers\AvatarServer\obj\Debug\Universe.Server.AvatarServer.csprojResolveAssemblyReference.cache
+C:\Users\Fred\Desktop\New\Universe\Servers\AvatarServer\obj\Debug\Universe.Server.AvatarServer.exe
+C:\Users\Fred\Desktop\New\Universe\Servers\AvatarServer\obj\Debug\Universe.Server.AvatarServer.pdb

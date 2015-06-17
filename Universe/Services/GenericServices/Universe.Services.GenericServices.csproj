@@ -263,6 +263,9 @@
 	  <Compile Include="CapsService\PerRegionClientCapsService.cs">
 		<SubType>Code</SubType>
 	  </Compile>
+	  <Compile Include="CapsService\CAPModules\AgentPreferencesCAPS.cs">
+		<SubType>Code</SubType>
+	  </Compile>
 	  <Compile Include="CapsService\CAPModules\AppearanceCAPS.cs">
 		<SubType>Code</SubType>
 	  </Compile>
