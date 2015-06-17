@@ -64,11 +64,14 @@ namespace Universe.Services
                                             OSHttpRequest httpRequest, OSHttpResponse httpResponse)
         {
             OSDMap data = new OSDMap();
+            // AvatarHoverHeight Enabled
+            data["AvatarHoverHeightEnabled"] = true;
+            // MaxMaterialsPerTransaction Enabled
+            data["MaxMaterialsPerTransaction"] = 50;
             data["MeshRezEnabled"] = true;
             data["MeshUploadEnabled"] = true;
             data["MeshXferEnabled"] = true;
             data["PhysicsMaterialsEnabled"] = true;
-
 
             OSDMap typesMap = new OSDMap();
 
