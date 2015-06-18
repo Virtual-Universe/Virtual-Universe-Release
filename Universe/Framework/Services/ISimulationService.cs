@@ -570,7 +570,7 @@ namespace Universe.Framework.Services
                 return;
 
             System.IO.MemoryStream stream = new System.IO.MemoryStream(ObjectBlob);
-            Universe.Framework.Serialization.SceneEntitySerializer.SceneObjectSerializer.FromXml2Format(ref stream, Scene);
+            Object = Universe.Framework.Serialization.SceneEntitySerializer.SceneObjectSerializer.FromXml2Format(ref stream, Scene);
             stream.Close();
             ObjectBlob = null;
         }
