@@ -3,3 +3,8 @@ C:\Users\Fred\Desktop\New\VirtualUniverse\bin\Universe.Services.SQLServices.pdb
 C:\Users\Fred\Desktop\New\Universe\Services\SQLServices\obj\Debug\Universe.Services.SQLServices.csprojResolveAssemblyReference.cache
 C:\Users\Fred\Desktop\New\Universe\Services\SQLServices\obj\Debug\Universe.Services.SQLServices.dll
 C:\Users\Fred\Desktop\New\Universe\Services\SQLServices\obj\Debug\Universe.Services.SQLServices.pdb
+C:\Users\Fred\Desktop\Repository\EmperorStarfinder\Git\VirtualUniverse\Virtual-Universe\VirtualUniverse\bin\Universe.Services.SQLServices.dll
+C:\Users\Fred\Desktop\Repository\EmperorStarfinder\Git\VirtualUniverse\Virtual-Universe\VirtualUniverse\bin\Universe.Services.SQLServices.pdb
+C:\Users\Fred\Desktop\Repository\EmperorStarfinder\Git\VirtualUniverse\Virtual-Universe\Universe\Services\SQLServices\obj\Debug\Universe.Services.SQLServices.csprojResolveAssemblyReference.cache
+C:\Users\Fred\Desktop\Repository\EmperorStarfinder\Git\VirtualUniverse\Virtual-Universe\Universe\Services\SQLServices\obj\Debug\Universe.Services.SQLServices.dll
+C:\Users\Fred\Desktop\Repository\EmperorStarfinder\Git\VirtualUniverse\Virtual-Universe\Universe\Services\SQLServices\obj\Debug\Universe.Services.SQLServices.pdb

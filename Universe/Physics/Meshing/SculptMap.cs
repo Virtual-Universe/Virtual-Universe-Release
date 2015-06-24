@@ -74,7 +74,6 @@ namespace Universe.Physics.PrimMesher
                 needsScaling = true;
             }
 
-
             try
             {
                 if (needsScaling)
@@ -97,10 +96,7 @@ namespace Universe.Physics.PrimMesher
             redBytes = new byte[numBytes];
             greenBytes = new byte[numBytes];
             blueBytes = new byte[numBytes];
-/*
-            FastBitmap unsafeBMP = new FastBitmap(bm);
-            unsafeBMP.LockBitmap(); //Lock the bitmap for the unsafe operation
-*/
+
             int byteNdx = 0;
 
             try
@@ -111,12 +107,10 @@ namespace Universe.Physics.PrimMesher
                     {
                         Color pixel;
                         if (smallMap)
-//                            pixel = unsafeBMP.GetPixel(x < width ? x : x - 1,
                             pixel = bm.GetPixel(x < width ? x : x - 1,
                                                 y < height ? y : y - 1);
                         else
                             pixel = bm.GetPixel(x < width ? x : x - 1,
-//                            pixel = unsafeBMP.GetPixel(x < width ? x*2 : x*2 - 1,
                                                 y < height ? y*2 : y*2 - 1);
 
                         redBytes[byteNdx] = pixel.R;
@@ -133,7 +127,6 @@ namespace Universe.Physics.PrimMesher
             }
 
             //All done, unlock
-//            unsafeBMP.UnlockBitmap();
 
             width++;
             height++;
@@ -200,22 +193,6 @@ namespace Universe.Physics.PrimMesher
             }
             srcImage.Dispose();
             return scaledImage;
-
-            /*
-            Bitmap scaledImage = new Bitmap(srcImage, destWidth, destHeight);
-            scaledImage.SetResolution(96.0f, 96.0f);
-
-            Graphics grPhoto = Graphics.FromImage(scaledImage);
-            grPhoto.InterpolationMode = interpMode;
-
-            grPhoto.DrawImage(srcImage,
-                              new Rectangle(0, 0, destWidth, destHeight),
-                              new Rectangle(0, 0, srcImage.Width, srcImage.Height),
-                              GraphicsUnit.Pixel);
-
-            grPhoto.Dispose();
-            return scaledImage;
-             */
         }
     }
 }

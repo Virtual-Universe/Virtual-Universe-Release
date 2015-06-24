@@ -2,3 +2,8 @@ C:\Users\Fred\Desktop\New\VirtualUniverse\bin\Universe.Framework.dll
 C:\Users\Fred\Desktop\New\VirtualUniverse\bin\Universe.Framework.pdb
 C:\Users\Fred\Desktop\New\Universe\Framework\obj\Debug\Universe.Framework.dll
 C:\Users\Fred\Desktop\New\Universe\Framework\obj\Debug\Universe.Framework.pdb
+C:\Users\Fred\Desktop\Repository\EmperorStarfinder\Git\VirtualUniverse\Virtual-Universe\VirtualUniverse\bin\Universe.Framework.dll
+C:\Users\Fred\Desktop\Repository\EmperorStarfinder\Git\VirtualUniverse\Virtual-Universe\VirtualUniverse\bin\Universe.Framework.pdb
+C:\Users\Fred\Desktop\Repository\EmperorStarfinder\Git\VirtualUniverse\Virtual-Universe\Universe\Framework\obj\Debug\Universe.Framework.csprojResolveAssemblyReference.cache
+C:\Users\Fred\Desktop\Repository\EmperorStarfinder\Git\VirtualUniverse\Virtual-Universe\Universe\Framework\obj\Debug\Universe.Framework.dll
+C:\Users\Fred\Desktop\Repository\EmperorStarfinder\Git\VirtualUniverse\Virtual-Universe\Universe\Framework\obj\Debug\Universe.Framework.pdb

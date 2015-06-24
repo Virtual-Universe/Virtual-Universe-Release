@@ -3,3 +3,8 @@ C:\Users\Fred\Desktop\New\VirtualUniverse\bin\Universe.ScriptEngine.VirtualScrip
 C:\Users\Fred\Desktop\New\Universe\ScriptEngine\VirtualScript\obj\Debug\Universe.ScriptEngine.VirtualScript.csprojResolveAssemblyReference.cache
 C:\Users\Fred\Desktop\New\Universe\ScriptEngine\VirtualScript\obj\Debug\Universe.ScriptEngine.VirtualScript.dll
 C:\Users\Fred\Desktop\New\Universe\ScriptEngine\VirtualScript\obj\Debug\Universe.ScriptEngine.VirtualScript.pdb
+C:\Users\Fred\Desktop\Repository\EmperorStarfinder\Git\VirtualUniverse\Virtual-Universe\VirtualUniverse\bin\Universe.ScriptEngine.VirtualScript.dll
+C:\Users\Fred\Desktop\Repository\EmperorStarfinder\Git\VirtualUniverse\Virtual-Universe\VirtualUniverse\bin\Universe.ScriptEngine.VirtualScript.pdb
+C:\Users\Fred\Desktop\Repository\EmperorStarfinder\Git\VirtualUniverse\Virtual-Universe\Universe\ScriptEngine\VirtualScript\obj\Debug\Universe.ScriptEngine.VirtualScript.csprojResolveAssemblyReference.cache
+C:\Users\Fred\Desktop\Repository\EmperorStarfinder\Git\VirtualUniverse\Virtual-Universe\Universe\ScriptEngine\VirtualScript\obj\Debug\Universe.ScriptEngine.VirtualScript.dll
+C:\Users\Fred\Desktop\Repository\EmperorStarfinder\Git\VirtualUniverse\Virtual-Universe\Universe\ScriptEngine\VirtualScript\obj\Debug\Universe.ScriptEngine.VirtualScript.pdb

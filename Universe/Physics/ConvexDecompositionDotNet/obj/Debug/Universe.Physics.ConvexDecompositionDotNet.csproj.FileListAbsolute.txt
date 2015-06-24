@@ -2,3 +2,8 @@ C:\Users\Fred\Desktop\New\VirtualUniverse\bin\Physics\Universe.Physics.ConvexDec
 C:\Users\Fred\Desktop\New\VirtualUniverse\bin\Physics\Universe.Physics.ConvexDecompositionDotNet.pdb
 C:\Users\Fred\Desktop\New\Universe\Physics\ConvexDecompositionDotNet\obj\Debug\Universe.Physics.ConvexDecompositionDotNet.dll
 C:\Users\Fred\Desktop\New\Universe\Physics\ConvexDecompositionDotNet\obj\Debug\Universe.Physics.ConvexDecompositionDotNet.pdb
+C:\Users\Fred\Desktop\Repository\EmperorStarfinder\Git\VirtualUniverse\Virtual-Universe\VirtualUniverse\bin\Physics\Universe.Physics.ConvexDecompositionDotNet.dll
+C:\Users\Fred\Desktop\Repository\EmperorStarfinder\Git\VirtualUniverse\Virtual-Universe\VirtualUniverse\bin\Physics\Universe.Physics.ConvexDecompositionDotNet.pdb
+C:\Users\Fred\Desktop\Repository\EmperorStarfinder\Git\VirtualUniverse\Virtual-Universe\Universe\Physics\ConvexDecompositionDotNet\obj\Debug\Universe.Physics.ConvexDecompositionDotNet.csprojResolveAssemblyReference.cache
+C:\Users\Fred\Desktop\Repository\EmperorStarfinder\Git\VirtualUniverse\Virtual-Universe\Universe\Physics\ConvexDecompositionDotNet\obj\Debug\Universe.Physics.ConvexDecompositionDotNet.dll
+C:\Users\Fred\Desktop\Repository\EmperorStarfinder\Git\VirtualUniverse\Virtual-Universe\Universe\Physics\ConvexDecompositionDotNet\obj\Debug\Universe.Physics.ConvexDecompositionDotNet.pdb

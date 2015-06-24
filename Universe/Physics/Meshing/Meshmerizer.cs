@@ -32,6 +32,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using ComponentAce.Compression.Libs.zlib;
 using Nini.Config;
 using OpenMetaverse;
 using OpenMetaverse.StructuredData;
@@ -39,7 +40,6 @@ using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.Physics;
 using Universe.Framework.SceneInfo;
-using ComponentAce.Compression.Libs.zlib;
 
 #if DEBUGING
 using PrimMesher;
@@ -73,7 +73,7 @@ namespace Universe.Physics.Meshing
 #if SPAM
         const string baseDir = "rawFiles";
 #else
-        const string baseDir = null; //"rawFiles";
+        const string baseDir = null;
 #endif
 
         readonly bool cacheSculptMaps = true;
@@ -597,8 +597,7 @@ namespace Universe.Physics.Meshing
             }
 
             Mesh mesh = new Mesh(key);
-            //mesh.m_triangles = faces;
-            //mesh.m_vertices = coords;
+
             // Add the corresponding triangles to the mesh
             mesh.Set(coords, faces);
             coords.Clear();

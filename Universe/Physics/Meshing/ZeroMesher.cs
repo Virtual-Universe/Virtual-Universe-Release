@@ -27,12 +27,11 @@
 
 using System;
 using System.Linq;
-using Universe.Framework.SceneInfo;
 using Nini.Config;
 using OpenMetaverse;
-
-using Universe.Framework.Physics;
 using Universe.Framework.Modules;
+using Universe.Framework.Physics;
+using Universe.Framework.SceneInfo;
 
 /*
  * This is the zero mesher.

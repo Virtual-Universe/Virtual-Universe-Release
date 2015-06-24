@@ -1005,11 +1005,7 @@ namespace Universe.Physics.PrimMesher
                 if (startVert > 0)
                     faceNumbers.Add(-1);
                 for (int i = 0; i < numOuterVerts - 1; i++)
-                    //this.faceNumbers.Add(sides < 5 ? faceNum++ : faceNum);
                     faceNumbers.Add(sides < 5 && i < sides ? faceNum++ : faceNum);
-
-                //if (!hasHollow && !hasProfileCut)
-                //    this.bottomFaceNumber = faceNum++;
 
                 faceNumbers.Add(hasProfileCut ? -1 : faceNum++);
 
@@ -1026,8 +1022,7 @@ namespace Universe.Physics.PrimMesher
 
                     hollowFaceNumber = faceNum++;
                 }
-                //if (hasProfileCut || hasHollow)
-                //    this.bottomFaceNumber = faceNum++;
+
                 bottomFaceNumber = faceNum++;
 
                 if (hasHollow && hasProfileCut)
@@ -1342,7 +1337,7 @@ namespace Universe.Physics.PrimMesher
                 }
             } // end of linear path code
 
-            else // pathType == Circular
+            else
             {
                 float twistTotal = twistEnd - twistBegin;
 
@@ -1810,7 +1805,7 @@ namespace Universe.Physics.PrimMesher
                             viewerFaces.Add(newViewerFace);
                         }
                     }
-                } // if (nodeIndex == 0)
+                }
 
                 // append this layer
 
@@ -1896,7 +1891,6 @@ namespace Universe.Physics.PrimMesher
                                 {
                                     u1 *= 2.0f;
                                     u2 *= 2.0f;
-                                    //this.profileHollowFaceNumber = primFaceNum;
                                 }
                             }
 
@@ -1912,7 +1906,6 @@ namespace Universe.Physics.PrimMesher
                                         u1 -= hollow;
                                         u2 -= hollow;
                                     }
-
                                 }
                             }
 
@@ -2027,7 +2020,7 @@ namespace Universe.Physics.PrimMesher
                         viewerFaces.Add(newViewerFace);
                     }
                 }
-            } // for (int nodeIndex = 0; nodeIndex < path.pathNodes.Count; nodeIndex++)
+            }
         }
 
 
@@ -2241,7 +2234,6 @@ namespace Universe.Physics.PrimMesher
         {
             int i;
             int numVerts = coords.Count;
-            //Coord vert;
 
             Coord m = new Coord(x, y, z);
             for (i = 0; i < numVerts; i++)
