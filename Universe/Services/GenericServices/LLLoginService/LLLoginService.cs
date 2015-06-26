@@ -1298,7 +1298,7 @@ namespace Universe.Services
                 if ((linkedItem = m_InventoryService.GetItem(user, i.AssetID)) == null)
                     brokenLinks.Add(i.ID);
                 else if (linkedItem.ID == AvatarWearable.DEFAULT_EYES_ITEM ||
-                         linkedItem.ID == AvatarWearable.DEFAULT_BODY_ITEM ||
+                         linkedItem.ID == AvatarWearable.DEFAULT_SHAPE_ITEM ||
                          linkedItem.ID == AvatarWearable.DEFAULT_HAIR_ITEM ||
                          linkedItem.ID == AvatarWearable.DEFAULT_PANTS_ITEM ||
                          linkedItem.ID == AvatarWearable.DEFAULT_SHIRT_ITEM ||

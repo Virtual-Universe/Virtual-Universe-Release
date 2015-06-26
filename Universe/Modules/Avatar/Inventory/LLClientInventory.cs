@@ -661,7 +661,7 @@ namespace Universe.Modules.Inventory
             if (m_scene.TryGetScenePresence(remoteClient.AgentId, out presence))
             {
                 if (olditemID == AvatarWearable.DEFAULT_EYES_ITEM ||
-                    olditemID == AvatarWearable.DEFAULT_BODY_ITEM ||
+                    olditemID == AvatarWearable.DEFAULT_SHAPE_ITEM ||
                     olditemID == AvatarWearable.DEFAULT_HAIR_ITEM ||
                     olditemID == AvatarWearable.DEFAULT_PANTS_ITEM ||
                     olditemID == AvatarWearable.DEFAULT_SHIRT_ITEM ||

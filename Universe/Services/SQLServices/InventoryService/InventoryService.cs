@@ -313,7 +313,7 @@ namespace Universe.Services.SQLServices.InventoryService
                                                          ID = UUID.Random()
                                                      };
                 //Give a new copy to every person
-                AssetBase asset = m_AssetService.Get(AvatarWearable.DEFAULT_BODY_ASSET.ToString());
+                AssetBase asset = m_AssetService.Get(AvatarWearable.DEFAULT_SHAPE_ASSET.ToString());
                 if (asset != null)
                 {
                     asset.ID = UUID.Random();
@@ -1448,7 +1448,7 @@ namespace Universe.Services.SQLServices.InventoryService
                             brokenLinks.Add(item.ID);
                         }
                         else if (linkedItem.ID == AvatarWearable.DEFAULT_EYES_ITEM ||
-                                 linkedItem.ID == AvatarWearable.DEFAULT_BODY_ITEM ||
+                                 linkedItem.ID == AvatarWearable.DEFAULT_SHAPE_ITEM ||
                                  linkedItem.ID == AvatarWearable.DEFAULT_HAIR_ITEM ||
                                  linkedItem.ID == AvatarWearable.DEFAULT_PANTS_ITEM ||
                                  linkedItem.ID == AvatarWearable.DEFAULT_SHIRT_ITEM ||
@@ -1525,7 +1525,7 @@ namespace Universe.Services.SQLServices.InventoryService
 
         protected virtual InventoryFolderBase[] GetSystemFolders(UUID principalID)
         {
-            //MainConsole.Instance.DebugFormat("[XINVENTORY SERVICE]: Getting system folders for {0}", principalID);
+            //MainConsole.Instance.DebugFormat("[INVENTORY SERVICE]: Getting system folders for {0}", principalID);
 
             InventoryFolderBase[] allFolders = m_Database.GetFolders(
                 new[] {"agentID"},
@@ -1540,7 +1540,7 @@ namespace Universe.Services.SQLServices.InventoryService
                         return false;
                     });
 
-            //MainConsole.Instance.DebugFormat("[XINVENTORY SERVICE]: Found {0} system folders for {1}", sysFolders.Length, principalID);
+            //MainConsole.Instance.DebugFormat("[INVENTORY SERVICE]: Found {0} system folders for {1}", sysFolders.Length, principalID);
 
             return sysFolders;
         }

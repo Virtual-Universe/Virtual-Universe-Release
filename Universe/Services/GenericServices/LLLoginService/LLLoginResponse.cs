@@ -292,7 +292,7 @@ namespace Universe.Services
                 responseData["display_name"] = DisplayName;
                 responseData["agent_access"] = agentAccess;
                 responseData["agent_access_max"] = agentAccessMax;
-                responseData["agent_region_access"] = agentRegionAccess;
+                responseData["agent_region_access"] - agentRegionAccess;
                 responseData["udp_blacklist"] = udpBlackList;
 
                 if (AllowFirstLife != null)
@@ -312,7 +312,7 @@ namespace Universe.Services
                 responseData["seed_capability"] = seedCapability;
 
                 responseData["event_categories"] = eventCategories;
-                responseData["event_notifications"] = eventNotifications; // TODO: What is this?
+                responseData["event_notifications"] = eventNotifications; // This is the notificiations of events you "subscribed" to
                 responseData["classified_categories"] = classifiedCategories;
                 responseData["ui-config"] = uiConfig;
                 responseData["export"] = AllowExportPermission ? "flag" : "";
