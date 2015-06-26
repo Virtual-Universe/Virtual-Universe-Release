@@ -292,7 +292,7 @@ namespace Universe.Services
                 responseData["display_name"] = DisplayName;
                 responseData["agent_access"] = agentAccess;
                 responseData["agent_access_max"] = agentAccessMax;
-                responseData["agent_region_access"] - agentRegionAccess;
+                responseData["agent_region_access"] = agentRegionAccess;
                 responseData["udp_blacklist"] = udpBlackList;
 
                 if (AllowFirstLife != null)
