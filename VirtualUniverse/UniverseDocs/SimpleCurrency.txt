@@ -1,7 +1,29 @@
-Setting up Simple.Currency:
+Setting up Base.Currency:
 
 If you want a currency module that has support for buying/selling land and objects
-   with fake inworld currency, then Simple.Currency is fine for you.
+   with fake inworld currency, then Base.Currency is fine for you.
+
+NOTE: SimpleCurrency is actually part of Base.Currency.
+
+ WARNING:
+  Do NOT use this module in a production environment.
+  Do NOT use this module with real money.
+  This module is for educational purposes only, and can NOT be
+  used with real money or in a production environment!
+
+ NOTE :
+ By using this module you agree that Skidz Tweak, Revolution Smythe, WhiteCore-Sim, or
+  other contributing developers ARE IN NO WAY responsible for any
+  damages that may occur as a result of using this module.
+ By using this module you agree that you understand the risks of
+  running this module and are fully willing to accept those risks
+  and any consequences that may occur.
+ By using this module you are agreeing to everything
+  listed above. If you do not agree, stop using it.
+
+Note: If you wish to use a currency module with REAL money, we cannot assist you here.
+ You will have to either use a addon-module that a third party developer might provide
+ or you will have to write your own.
    
 How to enable for regions:
 
