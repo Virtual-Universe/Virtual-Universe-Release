@@ -36,11 +36,11 @@ using System.Resources;
 /// set of attributes.  Change these attribute values to modify the information
 /// associated with an assembly.
 /// </summary>
-[assembly: AssemblyTitle("Universe.Physics.OpenDynamicsEngine")]
+[assembly: AssemblyTitle("Universe.Physics.OpenDynamicEngine")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Virtual Universe Development Team")]
-[assembly: AssemblyProduct("Universe.Physics.OpenDynamicsEngine")]
+[assembly: AssemblyProduct("Virtual-Universe")]
 [assembly: AssemblyCopyright("Copyright © 2015-2025")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

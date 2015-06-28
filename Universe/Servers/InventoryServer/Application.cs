@@ -25,12 +25,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System;
+using System.Collections.Generic;
 using Universe.Framework.Modules;
 using Universe.Framework.Services;
 using Universe.Simulation.Base;
-using System;
-using System.Collections.Generic;
 
 namespace Universe.Servers.InventoryServer
 {
@@ -48,7 +47,7 @@ namespace Universe.Servers.InventoryServer
                                                                        typeof (IInventoryData),
                                                                        typeof (IUserAccountData),
                                                                        typeof (IAssetDataPlugin),
-                                                                       typeof (ISimpleCurrencyConnector),
+                                                                       typeof (IBaseCurrencyConnector),
                                                                        typeof (IAgentInfoConnector)
                                                                    },
                                                                new List<Type>

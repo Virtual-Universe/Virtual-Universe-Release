@@ -332,6 +332,11 @@ namespace Universe.Modules.Currency
         }
 
         #endregion
+
+        internal string GetString(string p, string bankerName)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public class UserCurrency : IDataTransferable

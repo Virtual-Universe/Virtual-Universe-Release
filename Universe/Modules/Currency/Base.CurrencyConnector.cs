@@ -28,12 +28,14 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net;
 using Nini.Config;
 using OpenMetaverse;
 using OpenMetaverse.StructuredData;
 using Universe.Framework.ConsoleFramework;
+using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Services;
@@ -42,12 +44,12 @@ using Universe.Framework.Utilities;
 namespace Universe.Modules.Currency
 {
     
-    public class BaseCurrencyConnector : ConnectorBase, ISimpleCurrencyConnector
+    public class BaseCurrencyConnector : ConnectorBase, IBaseCurrencyConnector
     {
         #region Declares
-        const string _REALM = "simple_currency";
-        const string _REALMHISTORY = "simple_currency_history";
-        const string _REALMPURCHASE = "simple_purchased";
+        const string _REALM = "base_currency";
+        const string _REALMHISTORY = "base_currency_history";
+        const string _REALMPURCHASE = "base_purchased";
 
         IGenericData m_gd;
         BaseCurrencyConfig m_config;
@@ -62,7 +64,7 @@ namespace Universe.Modules.Currency
 
         public string Name
         {
-            get { return "ISimpleCurrencyConnector"; }
+            get { return "IBaseCurrencyConnector"; }
         }
 
         public void Initialize(IGenericData GenericData, IConfigSource source, IRegistryCore registry,
@@ -72,7 +74,7 @@ namespace Universe.Modules.Currency
             m_registry = registry;
 
             IConfig config = source.Configs["Currency"];
-            if (config == null || source.Configs["Currency"].GetString("Module", "") != "SimpleCurrency")
+            if (config == null || source.Configs["Currency"].GetString("Module", "") != "BaseCurrency")
                 return;
 
             IConfig gridInfo = source.Configs["GridInfoService"];
@@ -95,6 +97,18 @@ namespace Universe.Modules.Currency
 
             if (!m_doRemoteCalls)
             {
+                MainConsole.Instance.Commands.AddCommand(
+                    "reset banker password",
+                    "reset banker password",
+                    "Resets the password of the system Banker in case you lost it",
+                    HandleResetBankerPassword, false, true);
+
+                MainConsole.Instance.Commands.AddCommand(
+                    "reset marketplace password",
+                    "reset marketplace password",
+                    "Resets the password of the system Marketplace user in case you lost it",
+                    HandleResetMarketplacePassword, false, true);
+
                 MainConsole.Instance.Commands.AddCommand(
                     "money add",
                     "money add",
@@ -731,6 +745,70 @@ namespace Universe.Modules.Currency
 
         #region Console Methods
 
+        protected void HandleResetBankerPassword(IScene scene, string[] cmd)
+        {
+            string question;
+
+            question = MainConsole.Instance.Prompt("Are you really sure that you want to reset the Banker User password ? (yes/no)");
+
+            if (question.StartsWith("y"))
+            {
+                IAuthenticationService authService = m_registry.RequestModuleInterface<IAuthenticationService>();
+                var newPassword = Utilities.RandomPassword.Generate(2, 1, 0);
+
+                UserAccount account = m_registry.RequestModuleInterface<IUserAccountService>().GetUserAccount(null, MarketplaceName);
+                bool success = false;
+
+                if (authService != null)
+                    success = authService.SetPassword(account.PrincipalID, "UserAccount", newPassword);
+
+                if (!success)
+                    MainConsole.Instance.ErrorFormat("[USER ACCOUNT SERVICE]: Unable to reset password for the Banker");
+                else
+                {
+                    SaveBankerPassword(newPassword);
+                    MainConsole.Instance.Info("[USER ACCOUNT SERVICE]: The new password for '" + BankerName + "' is : " + newPassword);
+                }
+            }
+        }
+
+        private void SaveBankerPassword(string newPassword)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected void HandleResetMarketplacePassword(IScene scene, string[] cmd)
+        {
+            string question;
+
+            question = MainConsole.Instance.Prompt("Are you really sure that you want to reset the Marketplace User password ? (yes/no)");
+
+            if (question.StartsWith("y"))
+            {
+                IAuthenticationService authService = m_registry.RequestModuleInterface<IAuthenticationService>();
+                var newPassword = Utilities.RandomPassword.Generate(2, 1, 0);
+
+                UserAccount account = m_registry.RequestModuleInterface<IUserAccountService>().GetUserAccount(null, MarketplaceName);
+                bool success = false;
+
+                if (authService != null)
+                    success = authService.SetPassword(account.PrincipalID, "UserAccount", newPassword);
+
+                if (!success)
+                    MainConsole.Instance.ErrorFormat("[USER ACCOUNT SERVICE]: Unable to reset password for the Marketplace User");
+                else
+                {
+                    SaveMarketplacePassword(newPassword);
+                    MainConsole.Instance.Info("[USER ACCOUNT SERVICE]: The new password for '" + MarketplaceName + "' is : " + newPassword);
+                }
+            }
+        }
+
+        private void SaveMarketplacePassword(string newPassword)
+        {
+            throw new NotImplementedException();
+        }
+
         public void AddMoney(IScene scene, string[] cmd)
         {
             string name = MainConsole.Instance.Prompt("User Name: ");
@@ -925,5 +1003,9 @@ namespace Universe.Modules.Currency
             }
         }
         #endregion
+
+        public string MarketplaceName { get; set; }
+
+        public object BankerName { get; set; }
     }
 }

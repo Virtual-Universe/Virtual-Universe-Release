@@ -30,18 +30,18 @@ using System.Collections.Generic;
 using Universe.DataManager.Migration;
 using Universe.Framework.Utilities;
 
-namespace Simple.Currency
+namespace Base.Currency
 {
     public class CurrencyMigrator_0 : Migrator
     {
         public CurrencyMigrator_0()
         {
             Version = new Version(0, 0, 0);
-            MigrationName = "SimpleCurrency";
+            MigrationName = "BaseCurrency";
 
             schema = new List<SchemaDefinition>();
 
-            AddSchema("simple_currency", ColDefs(
+            AddSchema("base_currency", ColDefs(
                 ColDef("PrincipalID", ColumnTypes.String50),
                 ColDef("Amount", ColumnTypes.Integer30),
                 ColDef("LandInUse", ColumnTypes.Integer30),

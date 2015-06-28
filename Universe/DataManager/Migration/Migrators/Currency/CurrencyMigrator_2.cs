@@ -30,18 +30,18 @@ using System.Collections.Generic;
 using Universe.DataManager.Migration;
 using Universe.Framework.Utilities;
 
-namespace Simple.Currency
+namespace Base.Currency
 {
     public class CurrencyMigrator_2 : Migrator
     {
         public CurrencyMigrator_2()
         {
             Version = new Version(0, 0, 2);
-            MigrationName = "SimpleCurrency";
+            MigrationName = "BaseCurrency";
 
             schema = new List<SchemaDefinition>();
 
-            AddSchema("simple_currency", ColDefs(
+            AddSchema("base_currency", ColDefs(
                 ColDef("PrincipalID", ColumnTypes.String50),
                 ColDef("Amount", ColumnTypes.Integer30),
                 ColDef("LandInUse", ColumnTypes.Integer30),
@@ -63,7 +63,7 @@ namespace Simple.Currency
                           ));
 
             // Currency Transaction Logs
-            AddSchema("simple_currency_history", ColDefs(
+            AddSchema("base_currency_history", ColDefs(
                 ColDef("TransactionID", ColumnTypes.String36),
                 ColDef("Description", ColumnTypes.String128),
                 ColDef("FromPrincipalID", ColumnTypes.String36),
@@ -83,7 +83,7 @@ namespace Simple.Currency
                     ));
 
             // this is actually used for all purchases now.. a better name would be _purchased
-            AddSchema("simple_purchased", ColDefs(
+            AddSchema("base_purchased", ColDefs(
                 ColDef("PurchaseID", ColumnTypes.String36),
                 ColDef("PrincipalID", ColumnTypes.String36),
                 ColDef("IP", ColumnTypes.String64),

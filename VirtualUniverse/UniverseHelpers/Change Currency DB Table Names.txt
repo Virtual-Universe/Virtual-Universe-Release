@@ -1,0 +1,3 @@
+RENAME TABLE simple_currency TO base_currency;
+RENAME TABLE simple_currency_history TO base_currency_history;
+RENAME TABLE simple_purchased TO base_purchased;

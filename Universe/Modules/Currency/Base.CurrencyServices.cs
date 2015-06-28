@@ -27,6 +27,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Nini.Config;
 using OpenMetaverse;
 using OpenMetaverse.StructuredData;
@@ -35,11 +36,18 @@ using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Services;
+using Universe.Framework.Utilities;
 
 namespace Universe.Modules.Currency
 {
     public class BaseCurrencyServiceModule : IMoneyModule, IService
     {
+        IUserAccountService m_accountService;
+        IBaseCurrencyConnector m_Connector;
+
+        string bankerName = Constants.BankerName;
+        string marketplaceName = Constants.MarketplaceName;
+
         #region Declares
 
         BaseCurrencyConfig Config
@@ -54,14 +62,40 @@ namespace Universe.Modules.Currency
 
         #region IService Members
 
+        public UUID BankerUUID
+        {
+            get { return (UUID)Constants.BankerUUID; }
+        }
+
+        public string BankerName
+        {
+            get { return bankerName; }
+        }
+
+        public UUID MarketplaceUUID
+        {
+            get { return (UUID)Constants.MarketplaceUUID; }
+        }
+
+        public string MarketplaceName
+        {
+            get { return marketplaceName; }
+        }
+
         public void Initialize(IConfigSource config, IRegistryCore registry)
         {
+            if (Config != null)
+            {
+                bankerName = Config.GetString("BankerName", bankerName);
+                marketplaceName = Config.GetString("MarketplaceName", marketplaceName);
+            }
+
             if (config.Configs["Currency"] == null ||
-                config.Configs["Currency"].GetString("Module", "") != "SimpleCurrency")
+                config.Configs["Currency"].GetString("Module", "") != "BaseCurrency")
                 return;
 
             m_registry = registry;
-            m_connector = Framework.Utilities.DataManager.RequestPlugin<ISimpleCurrencyConnector>() as BaseCurrencyConnector;
+            m_connector = Framework.Utilities.DataManager.RequestPlugin<IBaseCurrencyConnector>() as BaseCurrencyConnector;
         }
 
         public void Start(IConfigSource config, IRegistryCore registry)
@@ -76,6 +110,19 @@ namespace Universe.Modules.Currency
 
         public void FinishedStartup()
         {
+            m_accountService = m_registry.RequestModuleInterface<IUserAccountService>();
+            m_Connector = Framework.Utilities.DataManager.RequestPlugin<IBaseCurrencyConnector>();
+
+            // these are only valid if we are local
+            if (!m_accountService.RemoteCalls())
+            {
+                // check and/or create default banker and marketplace user
+                CheckBankerUserInfo();
+                CheckMarketplaceUserInfo();
+
+                AddCommands();
+            }
+
             if (m_registry == null)
                 return;
 
@@ -110,6 +157,11 @@ namespace Universe.Modules.Currency
                 if ((m_connector.GetConfig().GiveStipends) && (m_connector.GetConfig().Stipend > 0))
                     new GiveStipends(m_connector.GetConfig(), m_registry, m_connector);
             }
+        }
+
+        private void AddCommands()
+        {
+            throw new NotImplementedException();
         }
 
         bool EventManager_OnValidateBuyLand(EventManager.LandBuyArgs e)
@@ -151,6 +203,169 @@ namespace Universe.Modules.Currency
 
         #endregion
 
+        #region systemUsers
+        /// <summary>
+        /// Checks and creates the banker and marketplace user.
+        /// </summary>
+        private void CheckUserInfo()
+        {
+            if (m_accountService == null)
+                return;
+
+            CheckBankerUserInfo ();
+            CheckMarketplaceUserInfo ();
+
+        }
+
+        private void CheckBankerUserInfo()
+        {
+            UserAccount banInfo = m_accountService.GetUserAccount (null, UUID.Parse (Constants.BankerUUID));
+            var banPassword = Utilities.RandomPassword.Generate (2, 1, 0);
+
+            if (banInfo == null)
+            {
+                MainConsole.Instance.Warn ("Creating the Banker user '" + BankerName + "'");
+
+                var error = m_accountService.CreateUser (
+                    (UUID)Constants.BankerUUID,             // UUID
+                    UUID.Zero,                              // ScopeID
+                    BankerName,                             // Name
+                    Util.Md5Hash (banPassword),             // password
+                    "");                                    // email
+
+                if (error == "")
+                {
+                    SaveBankerPassword (banPassword);
+                    MainConsole.Instance.Info (" The password for '" + BankerName + "' is : " + banPassword);
+
+                } else
+                {
+                    MainConsole.Instance.Warn (" Unable to create the Banker user : " + error);
+                    return;
+                }
+
+                //set as "Maintenace" level
+                var account = m_accountService.GetUserAccount (null, UUID.Parse (Constants.BankerUUID));
+                account.UserLevel = 250;
+                account.UserFlags = Constants.USER_FLAG_CHARTERMEMBER;
+                bool success = m_accountService.StoreUserAccount (account);
+
+                if (success)
+                    MainConsole.Instance.Info (" The Banker user has been elevated to 'Maintenance' level");
+
+                return;
+
+            }
+
+            // we already have the Governor account.. verify details in case of a configuration change
+            if (banInfo.Name != BankerName)
+            {
+                IAuthenticationService authService = m_registry.RequestModuleInterface<IAuthenticationService>();
+
+                banInfo.Name = BankerName;
+                bool updatePass = authService.SetPassword(banInfo.PrincipalID, "UserAccount", banPassword);
+                bool updateAcct = m_accountService.StoreUserAccount(banInfo);
+
+                if (updatePass && updateAcct)
+                {
+                    SaveBankerPassword(banPassword);
+                    MainConsole.Instance.InfoFormat(" The Banker user has been updated to '{0}'", BankerName);
+                }
+                else
+                    MainConsole.Instance.Warn(" There was a problem updating the Banker user");
+            }
+        }
+
+        private void CheckMarketplaceUserInfo()
+        {
+            UserAccount marInfo = m_accountService.GetUserAccount(null, UUID.Parse(Constants.MarketplaceUUID));
+            var marPassword = Utilities.RandomPassword.Generate(2, 1, 0);
+
+            if (marInfo == null)
+            {
+                MainConsole.Instance.Warn("Creating the Marketplace user '" + MarketplaceName + "'");
+
+                var error = m_accountService.CreateUser(
+                    (UUID)Constants.MarketplaceUUID,        // UUID
+                    UUID.Zero,                              // ScopeID
+                    MarketplaceName,                        // Name
+                    Util.Md5Hash(marPassword),              // password
+                    "");                                    // email
+
+                if (error == "")
+                {
+                    SaveMarketplacePassword(marPassword);
+                    MainConsole.Instance.Info(" The password for '" + MarketplaceName + "' is : " + marPassword);
+
+                }
+                else
+                {
+                    MainConsole.Instance.Warn(" Unable to create the Marketplace user : " + error);
+                    return;
+                }
+
+                //set as "Maintenace" level
+                var account = m_accountService.GetUserAccount(null, UUID.Parse(Constants.MarketplaceUUID));
+                account.UserLevel = 250;
+                account.UserFlags = Constants.USER_FLAG_CHARTERMEMBER;
+                bool success = m_accountService.StoreUserAccount(account);
+
+                if (success)
+                    MainConsole.Instance.Info(" The Marketplace user has been elevated to 'Maintenance' level");
+
+                return;
+
+            }
+
+            // we already have the Marketplace account.. verify details in case of a configuration change
+            if (marInfo.Name != MarketplaceName)
+            {
+                IAuthenticationService authService = m_registry.RequestModuleInterface<IAuthenticationService>();
+
+                marInfo.Name = MarketplaceName;
+                bool updatePass = authService.SetPassword(marInfo.PrincipalID, "UserAccount", marPassword);
+                bool updateAcct = m_accountService.StoreUserAccount(marInfo);
+
+                if (updatePass && updateAcct)
+                {
+                    SaveMarketplacePassword(marPassword);
+                    MainConsole.Instance.InfoFormat(" The Marketplace user has been updated to '{0}'", MarketplaceName);
+                }
+                else
+                    MainConsole.Instance.Warn(" There was a problem updating the Marketplace user");
+            }
+        }
+
+        private void SaveBankerPassword(string password)
+        {
+            const string passFile = Constants.DEFAULT_DATA_DIR + "/Banker.txt";
+
+            if (File.Exists(passFile))
+                File.Delete(passFile);
+
+            using (var pwFile = new StreamWriter(passFile))
+            {
+                pwFile.WriteLine("Banker user   : '" + BankerName + "' was created: " + Culture.LocaleLogStamp());
+                pwFile.WriteLine("Password        : " + password);
+            }
+        }
+
+        private void SaveMarketplacePassword(string password)
+        {
+            const string passFile = Constants.DEFAULT_DATA_DIR + "/Marketplace.txt";
+
+            if (File.Exists(passFile))
+                File.Delete(passFile);
+
+            using (var pwFile = new StreamWriter(passFile))
+            {
+                pwFile.WriteLine("Marketplace user   : '" + MarketplaceName + "' was created: " + Culture.LocaleLogStamp());
+                pwFile.WriteLine("Password        : " + password);
+            }
+        }
+
+        #endregion 
+        
         #region IMoneyModule Members
 
         public int UploadCharge

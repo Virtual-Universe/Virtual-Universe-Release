@@ -264,9 +264,9 @@ namespace Universe.Framework.Modules
         void RemoveFromScheduledCharge(string identifier);
     }
 
-    public interface ISimpleCurrencyConnector : IUniverseDataPlugin
+    public interface IBaseCurrencyConnector : IUniverseDataPlugin
     {
-        /*SimpleCurrencyConfig GetConfig();
+        /*BaseCurrencyConfig GetConfig();
         UserCurrency GetUserCurrency(UUID agentId);
         bool UserCurrencyUpdate(UserCurrency agent);
         GroupBalance GetGroupBalance(UUID groupID);
