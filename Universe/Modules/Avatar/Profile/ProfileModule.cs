@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
@@ -618,6 +618,17 @@ namespace Universe.Modules.Profiles
             }
             else
                 charterMember = Utils.StringToBytes(Profile.MembershipGroup);
+            // When ChaterMember set this character └ the viewer recognizes it
+            // as a Grid Master Not sure what we will be doing with this in
+            // in Virtual Universe.
+
+            // Perhaps the Viewer Development Work Group on the Second Galaxy Development Team
+            // will shed some light on this regarding future viewer planning.
+
+            if (Utilities.IsSystemUser(Profile.PrincipalID))
+            {
+                charterMember = Utils.StringToBytes("└");
+            }
 
             uint membershipGroupINT = 0;
             if (Profile.MembershipGroup != "")

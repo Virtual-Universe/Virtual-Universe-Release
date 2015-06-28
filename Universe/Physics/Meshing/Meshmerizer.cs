@@ -138,8 +138,8 @@ namespace Universe.Physics.Meshing
             // bottom
 
             List<Face> faces = new List<Face>();
-            faces.Add(new Face(4, 5, 6));
-            faces.Add(new Face(4, 6, 7));
+            faces.Add(new Face(0, 1, 2));
+            faces.Add(new Face(0, 1, 3));
 
             // top
 
@@ -148,8 +148,8 @@ namespace Universe.Physics.Meshing
             vertices.Add(new Coord(minX, minY, maxZ));
             vertices.Add(new Coord(maxX, minY, maxZ));
 
-            faces.Add(new Face(0, 1, 2));
-            faces.Add(new Face(0, 2, 3));
+            faces.Add(new Face(4, 5, 6));
+            faces.Add(new Face(4, 5, 7));
 
             // sides
 
@@ -174,6 +174,7 @@ namespace Universe.Physics.Meshing
 
             return box;
         }
+
 
         /// <summary>
         ///     Creates a simple bounding box mesh for a complex input mesh
@@ -219,7 +220,7 @@ namespace Universe.Physics.Meshing
 
                     if (primShape.SculptData == null || primShape.SculptData.Length <= 0)
                     {
-                        MainConsole.Instance.Error("[MESH]: asset data is zero length");
+                        //MainConsole.Instance.Error("[MESH]: asset data is zero length");
                         return null;
                     }
 
