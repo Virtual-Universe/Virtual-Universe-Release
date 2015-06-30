@@ -66,7 +66,7 @@ namespace Universe.Modules.BaseCurrencyModule
 
         public int ClientPort
         {
-            get { return m_config.Configs["Handlers"].GetInt("LLLoginHandlerPort", (int) MainServer.Instance.Port); }
+            get { return m_config.Configs["Handlers"].GetInt("LLLoginHandlerPort", (int)MainServer.Instance.Port); }
         }
 
 #pragma warning disable 67
@@ -211,7 +211,7 @@ namespace Universe.Modules.BaseCurrencyModule
 
         protected XmlRpcResponse quote_func(XmlRpcRequest request, IPEndPoint ep)
         {
-            Hashtable requestData = (Hashtable) request.Params[0];
+            Hashtable requestData = (Hashtable)request.Params[0];
             UUID agentId = UUID.Zero;
             int amount = 0;
             Hashtable quoteResponse = new Hashtable();
@@ -219,15 +219,15 @@ namespace Universe.Modules.BaseCurrencyModule
 
             if (requestData.ContainsKey("agentId") && requestData.ContainsKey("currencyBuy"))
             {
-                UUID.TryParse((string) requestData["agentId"], out agentId);
+                UUID.TryParse((string)requestData["agentId"], out agentId);
                 try
                 {
-                    amount = (Int32) requestData["currencyBuy"];
+                    amount = (Int32)requestData["currencyBuy"];
                 }
                 catch (InvalidCastException)
                 {
                 }
-                Hashtable currencyResponse = new Hashtable {{"estimatedCost", 0}, {"currencyBuy", amount}};
+                Hashtable currencyResponse = new Hashtable { { "estimatedCost", 0 }, { "currencyBuy", amount } };
 
                 quoteResponse.Add("success", true);
                 quoteResponse.Add("currency", currencyResponse);
@@ -239,7 +239,7 @@ namespace Universe.Modules.BaseCurrencyModule
 
             quoteResponse.Add("success", false);
             quoteResponse.Add("errorMessage", "Invalid parameters passed to the quote box");
-			quoteResponse.Add("errorURI", "http://virtual-planets.org/wiki");
+            quoteResponse.Add("errorURI", "http://virtual-planets.org/wiki");
             returnval.Value = quoteResponse;
             return returnval;
         }
@@ -247,7 +247,7 @@ namespace Universe.Modules.BaseCurrencyModule
         protected XmlRpcResponse buy_func(XmlRpcRequest request, IPEndPoint ep)
         {
             XmlRpcResponse returnval = new XmlRpcResponse();
-            Hashtable returnresp = new Hashtable {{"success", true}};
+            Hashtable returnresp = new Hashtable { { "success", true } };
             returnval.Value = returnresp;
             return returnval;
         }
@@ -262,9 +262,9 @@ namespace Universe.Modules.BaseCurrencyModule
 
             Hashtable landuse = new Hashtable();
 
-            Hashtable level = new Hashtable {{"id", "00000000-0000-0000-0000-000000000000"}, {"", "Premium Membership"}};
+            Hashtable level = new Hashtable { { "id", "00000000-0000-0000-0000-000000000000" }, { "", "Premium Membership" } };
 
-            Hashtable currencytable = new Hashtable {{"estimatedCost", 0}};
+            Hashtable currencytable = new Hashtable { { "estimatedCost", 0 } };
 
             retparam.Add("success", true);
             retparam.Add("currency", currencytable);
@@ -278,7 +278,7 @@ namespace Universe.Modules.BaseCurrencyModule
         protected XmlRpcResponse landBuy_func(XmlRpcRequest request, IPEndPoint ep)
         {
             XmlRpcResponse ret = new XmlRpcResponse();
-            Hashtable retparam = new Hashtable {{"success", true}};
+            Hashtable retparam = new Hashtable { { "success", true } };
             ret.Value = retparam;
             return ret;
         }
@@ -309,7 +309,7 @@ namespace Universe.Modules.BaseCurrencyModule
 
         public GroupBalance GetGroupBalance(UUID groupID)
         {
-            return new GroupBalance() {StartingDate = DateTime.Now.AddDays(-4)};
+            return new GroupBalance() { StartingDate = DateTime.Now.AddDays(-4) };
         }
 
         public uint NumberOfTransactions(UUID toAgent, UUID fromAgent)
@@ -319,27 +319,27 @@ namespace Universe.Modules.BaseCurrencyModule
 
         public List<AgentTransfer> GetTransactionHistory(UUID UserID, UUID fromAgentID, DateTime dateStart, DateTime dateEnd, uint? start, uint? count)
         {
-            return new List<AgentTransfer> ();
+            return new List<AgentTransfer>();
         }
 
         public List<AgentTransfer> GetTransactionHistory(UUID toAgentID, UUID fromAgentID, int period, string periodType)
         {
-            return new List<AgentTransfer> ();
+            return new List<AgentTransfer>();
         }
 
         public List<AgentTransfer> GetTransactionHistory(UUID toAgentID, int period, string periodType)
         {
-            return new List<AgentTransfer> ();
+            return new List<AgentTransfer>();
         }
-            
+
         public List<AgentTransfer> GetTransactionHistory(DateTime dateStart, DateTime dateEnd, uint? start, uint? count)
         {
-            return new List<AgentTransfer> ();
+            return new List<AgentTransfer>();
         }
 
         public List<AgentTransfer> GetTransactionHistory(int period, string periodType, uint? start, uint? count)
         {
-            return new List<AgentTransfer> ();
+            return new List<AgentTransfer>();
         }
 
         public uint NumberOfPurchases(UUID UserID)
@@ -349,22 +349,22 @@ namespace Universe.Modules.BaseCurrencyModule
 
         public List<AgentPurchase> GetPurchaseHistory(UUID UserID, DateTime dateStart, DateTime dateEnd, uint? start, uint? count)
         {
-            return new List<AgentPurchase> ();
+            return new List<AgentPurchase>();
         }
 
-        public List<AgentPurchase> GetPurchaseHistory (UUID toAgentID, int period, string periodType)
+        public List<AgentPurchase> GetPurchaseHistory(UUID toAgentID, int period, string periodType)
         {
-            return new List<AgentPurchase> ();
+            return new List<AgentPurchase>();
         }
 
         public List<AgentPurchase> GetPurchaseHistory(DateTime dateStart, DateTime dateEnd, uint? start, uint? count)
         {
-            return new List<AgentPurchase> ();
+            return new List<AgentPurchase>();
         }
 
-        public List<AgentPurchase> GetPurchaseHistory (int period, string periodType, uint? start, uint? count)
+        public List<AgentPurchase> GetPurchaseHistory(int period, string periodType, uint? start, uint? count)
         {
-            return new List<AgentPurchase> ();
+            return new List<AgentPurchase>();
         }
     }
 }

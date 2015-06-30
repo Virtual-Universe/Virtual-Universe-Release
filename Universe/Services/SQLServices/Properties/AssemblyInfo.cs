@@ -40,7 +40,7 @@ using System.Resources;
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Virtual Universe Development Team")]
-[assembly: AssemblyProduct("Universe.Services.SQLServices")]
+[assembly: AssemblyProduct("Virtual-Universe")]
 [assembly: AssemblyCopyright("Copyright © 2015-2025")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

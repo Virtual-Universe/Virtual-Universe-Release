@@ -43,8 +43,8 @@ namespace Universe.Modules.Estate
 {
     public class EstateInitializer : ISharedRegionStartupModule, IUniverseBackupModule
     {
-        private string LastEstateName = "";
-        private string LastEstateOwner = Constants.RealEstateOwnerName;
+        string LastEstateName = "";
+        string LastEstateOwner = Constants.RealEstateOwnerName;
         protected IRegistryCore m_registry;
          
 
@@ -166,12 +166,13 @@ namespace Universe.Modules.Estate
             // we are linking to a user estate
             IEstateConnector estateConnector = Framework.Utilities.DataManager.RequestPlugin<IEstateConnector>();
             ISystemEstateService sysEstateInfo = m_registry.RequestModuleInterface<ISystemEstateService>();
-             
+            ISystemAccountService sysAccounts = m_registry.RequestModuleInterface<ISystemAccountService>();
+
             string sysEstateOwnerName;
-            var sysAccount = scene.UserAccountService.GetUserAccount (scene.RegionInfo.AllScopeIDs, (UUID) Constants.RealEstateOwnerUUID);
+            var sysAccount = scene.UserAccountService.GetUserAccount(scene.RegionInfo.AllScopeIDs, sysAccounts.SystemEstateOwnerUUID);
 
             if (sysAccount == null)
-                sysEstateOwnerName = sysEstateInfo.SystemEstateOwnerName;
+                sysEstateOwnerName = sysAccounts.SystemEstateOwnerName;
             else
                 sysEstateOwnerName = sysAccount.Name;
 

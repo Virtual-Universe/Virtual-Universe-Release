@@ -41,7 +41,7 @@ namespace Base.Currency
 
             schema = new List<SchemaDefinition>();
 
-            AddSchema("base_currency", ColDefs(
+            AddSchema("currency", ColDefs(
                 ColDef("PrincipalID", ColumnTypes.String50),
                 ColDef("Amount", ColumnTypes.Integer30),
                 ColDef("LandInUse", ColumnTypes.Integer30),

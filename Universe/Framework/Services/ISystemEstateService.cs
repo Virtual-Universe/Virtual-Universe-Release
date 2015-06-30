@@ -32,16 +32,6 @@ namespace Universe.Framework.Services
     public interface ISystemEstateService
     {
         /// <summary>
-        ///     The System Real Estate owner's UUID
-        /// </summary>
-        UUID SystemEstateOwnerUUID { get; }
-
-        /// <summary>
-        ///     The system Real Estate owner's name
-        /// </summary>
-        string SystemEstateOwnerName { get; }
-
-         /// <summary>
         ///     The system Estate name
         /// </summary>
         string SystemEstateName { get; }

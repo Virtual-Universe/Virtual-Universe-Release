@@ -44,10 +44,19 @@ MaxDistanceVariableRegionSightDistance = 512
 LibraryName = "Universe Library"
 LibraryOwnerName = "Library Owner"
 
-[EstateService]
+[SystemUserService]
 ;;  Set this if you want to change the name of the Universe system Chancellor
-ChancellorName = "Chancellor Universe"
+GovernorName = "Chancellor Universe"
 
+;;  Modify these if you want to change the universe banker or group name
+BankerName = "Banker Universe"
+FinancialServicesGroupName = "Universe Financial Services"
+
+;;  Modify this if you want to change the universe marketplace or owner name
+MarketplaceOwnerName = "Marketplace Universe"
+MarketplaceGroupName = "Universe Marketplace"
+
+[EstateService]
 ;;  Set these if you want to change the Universe system Estate owner or name
 SystemEstateOwnerName = "RealEstate Owner"
 SystemEstateName = "Whitecore Estate"

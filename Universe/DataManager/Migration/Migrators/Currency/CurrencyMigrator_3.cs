@@ -41,7 +41,7 @@ namespace Base.Currency
 
             schema = new List<SchemaDefinition>();
 
-            AddSchema("base_currency", ColDefs(
+            AddSchema("currency", ColDefs(
                 ColDef("PrincipalID", ColumnTypes.String50),
                 ColDef("Amount", ColumnTypes.Integer30),
                 ColDef("LandInUse", ColumnTypes.Integer30),
@@ -63,7 +63,7 @@ namespace Base.Currency
                           ));
 
             // Currency Transaction Logs
-            AddSchema("base_currency_history", ColDefs(
+            AddSchema("currency_history", ColDefs(
                 ColDef("TransactionID", ColumnTypes.String36),
                 ColDef("Description", ColumnTypes.String128),
                 ColDef("FromPrincipalID", ColumnTypes.String36),
@@ -83,7 +83,7 @@ namespace Base.Currency
                     ));
 
             // this is actually used for all purchases now.. a better name would be _purchased
-            AddSchema("base_purchased", ColDefs(
+            AddSchema("currency_purchased", ColDefs(
                 ColDef("PurchaseID", ColumnTypes.String36),
                 ColDef("PrincipalID", ColumnTypes.String36),
                 ColDef("IP", ColumnTypes.String64),

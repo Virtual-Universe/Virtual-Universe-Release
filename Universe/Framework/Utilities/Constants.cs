@@ -61,7 +61,7 @@ namespace Universe.Framework.Utilities
         public const string RealEstateOwnerUUID = "bbb55499-7938-4752-ab7c-f7136e36cced";
 		public const string RealEstateOwnerName = "RealEstate Owner";
 
-        // System Govern Avatar Account
+        // System Governor Avatar Account
         public const string GovernorUUID = "3d6181b0-6a4b-97ef-18d8-722652995cf1";
         public const string GovernorName = "Chancellor Universe";
         
@@ -75,7 +75,7 @@ namespace Universe.Framework.Utilities
 
         // System Banker Avatar
         public const string BankerUUID = "2f087cf0-0448-11e5-b939-0800200c9a66";
-        public const string BankerName = "Banker Universe";
+        public const string BankerName = "Universe Banker";
 
         // System Financial Services Group
         public const string FinancialServicesGroupUUID = "2f087cf1-0448-11e5-b939-0800200c9a66";

@@ -42,12 +42,6 @@ namespace Universe.Modules.Currency
 {
     public class BaseCurrencyServiceModule : IMoneyModule, IService
     {
-        IUserAccountService m_accountService;
-        IBaseCurrencyConnector m_Connector;
-
-        string bankerName = Constants.BankerName;
-        string marketplaceName = Constants.MarketplaceName;
-
         #region Declares
 
         BaseCurrencyConfig Config
@@ -62,34 +56,8 @@ namespace Universe.Modules.Currency
 
         #region IService Members
 
-        public UUID BankerUUID
-        {
-            get { return (UUID)Constants.BankerUUID; }
-        }
-
-        public string BankerName
-        {
-            get { return bankerName; }
-        }
-
-        public UUID MarketplaceUUID
-        {
-            get { return (UUID)Constants.MarketplaceUUID; }
-        }
-
-        public string MarketplaceName
-        {
-            get { return marketplaceName; }
-        }
-
         public void Initialize(IConfigSource config, IRegistryCore registry)
         {
-            if (Config != null)
-            {
-                bankerName = Config.GetString("BankerName", bankerName);
-                marketplaceName = Config.GetString("MarketplaceName", marketplaceName);
-            }
-
             if (config.Configs["Currency"] == null ||
                 config.Configs["Currency"].GetString("Module", "") != "BaseCurrency")
                 return;
@@ -110,19 +78,6 @@ namespace Universe.Modules.Currency
 
         public void FinishedStartup()
         {
-            m_accountService = m_registry.RequestModuleInterface<IUserAccountService>();
-            m_Connector = Framework.Utilities.DataManager.RequestPlugin<IBaseCurrencyConnector>();
-
-            // these are only valid if we are local
-            if (!m_accountService.RemoteCalls())
-            {
-                // check and/or create default banker and marketplace user
-                CheckBankerUserInfo();
-                CheckMarketplaceUserInfo();
-
-                AddCommands();
-            }
-
             if (m_registry == null)
                 return;
 
@@ -133,35 +88,29 @@ namespace Universe.Modules.Currency
             {
                 manager.OnAddedScene += (scene) =>
                 {
-                                                m_scenes.Add(scene);
-                                                scene.EventManager.OnNewClient += OnNewClient;
-                                                scene.EventManager.OnClosingClient += OnClosingClient;
-                                                scene.EventManager.OnMakeRootAgent += OnMakeRootAgent;
-                                                scene.EventManager.OnValidateBuyLand += EventManager_OnValidateBuyLand;
-                                                scene.RegisterModuleInterface<IMoneyModule>(this);
-                                            };
+                    m_scenes.Add(scene);
+                    scene.EventManager.OnNewClient += OnNewClient;
+                    scene.EventManager.OnClosingClient += OnClosingClient;
+                    scene.EventManager.OnMakeRootAgent += OnMakeRootAgent;
+                    scene.EventManager.OnValidateBuyLand += EventManager_OnValidateBuyLand;
+                    scene.RegisterModuleInterface<IMoneyModule>(this);
+                };
                 manager.OnCloseScene += (scene) =>
-                                            {
-                                                scene.EventManager.OnNewClient -= OnNewClient;
-                                                scene.EventManager.OnClosingClient -= OnClosingClient;
-                                                scene.EventManager.OnMakeRootAgent -= OnMakeRootAgent;
-                                                scene.EventManager.OnValidateBuyLand -= EventManager_OnValidateBuyLand;
-                                                scene.RegisterModuleInterface<IMoneyModule>(this);
-                                                m_scenes.Remove(scene);
-                                            };
+                {
+                    scene.EventManager.OnNewClient -= OnNewClient;
+                    scene.EventManager.OnClosingClient -= OnClosingClient;
+                    scene.EventManager.OnMakeRootAgent -= OnMakeRootAgent;
+                    scene.EventManager.OnValidateBuyLand -= EventManager_OnValidateBuyLand;
+                    scene.RegisterModuleInterface<IMoneyModule>(this);
+                    m_scenes.Remove(scene);
+                };
             }
-
 
             if (!m_connector.DoRemoteCalls)
             {
                 if ((m_connector.GetConfig().GiveStipends) && (m_connector.GetConfig().Stipend > 0))
                     new GiveStipends(m_connector.GetConfig(), m_registry, m_connector);
             }
-        }
-
-        private void AddCommands()
-        {
-            throw new NotImplementedException();
         }
 
         bool EventManager_OnValidateBuyLand(EventManager.LandBuyArgs e)
@@ -185,7 +134,7 @@ namespace Universe.Modules.Currency
                     landforsale)
                 {
                     if (m_connector.UserCurrencyTransfer(lob.LandData.OwnerID, e.agentId,
-                                                         (uint) saleprice, "Land Buy", TransactionType.LandSale,
+                                                         (uint)saleprice, "Land Buy", TransactionType.LandSale,
                                                          UUID.Zero))
                     {
                         e.parcelOwnerID = pOwnerID;
@@ -203,169 +152,6 @@ namespace Universe.Modules.Currency
 
         #endregion
 
-        #region systemUsers
-        /// <summary>
-        /// Checks and creates the banker and marketplace user.
-        /// </summary>
-        private void CheckUserInfo()
-        {
-            if (m_accountService == null)
-                return;
-
-            CheckBankerUserInfo ();
-            CheckMarketplaceUserInfo ();
-
-        }
-
-        private void CheckBankerUserInfo()
-        {
-            UserAccount banInfo = m_accountService.GetUserAccount (null, UUID.Parse (Constants.BankerUUID));
-            var banPassword = Utilities.RandomPassword.Generate (2, 1, 0);
-
-            if (banInfo == null)
-            {
-                MainConsole.Instance.Warn ("Creating the Banker user '" + BankerName + "'");
-
-                var error = m_accountService.CreateUser (
-                    (UUID)Constants.BankerUUID,             // UUID
-                    UUID.Zero,                              // ScopeID
-                    BankerName,                             // Name
-                    Util.Md5Hash (banPassword),             // password
-                    "");                                    // email
-
-                if (error == "")
-                {
-                    SaveBankerPassword (banPassword);
-                    MainConsole.Instance.Info (" The password for '" + BankerName + "' is : " + banPassword);
-
-                } else
-                {
-                    MainConsole.Instance.Warn (" Unable to create the Banker user : " + error);
-                    return;
-                }
-
-                //set as "Maintenace" level
-                var account = m_accountService.GetUserAccount (null, UUID.Parse (Constants.BankerUUID));
-                account.UserLevel = 250;
-                account.UserFlags = Constants.USER_FLAG_CHARTERMEMBER;
-                bool success = m_accountService.StoreUserAccount (account);
-
-                if (success)
-                    MainConsole.Instance.Info (" The Banker user has been elevated to 'Maintenance' level");
-
-                return;
-
-            }
-
-            // we already have the Governor account.. verify details in case of a configuration change
-            if (banInfo.Name != BankerName)
-            {
-                IAuthenticationService authService = m_registry.RequestModuleInterface<IAuthenticationService>();
-
-                banInfo.Name = BankerName;
-                bool updatePass = authService.SetPassword(banInfo.PrincipalID, "UserAccount", banPassword);
-                bool updateAcct = m_accountService.StoreUserAccount(banInfo);
-
-                if (updatePass && updateAcct)
-                {
-                    SaveBankerPassword(banPassword);
-                    MainConsole.Instance.InfoFormat(" The Banker user has been updated to '{0}'", BankerName);
-                }
-                else
-                    MainConsole.Instance.Warn(" There was a problem updating the Banker user");
-            }
-        }
-
-        private void CheckMarketplaceUserInfo()
-        {
-            UserAccount marInfo = m_accountService.GetUserAccount(null, UUID.Parse(Constants.MarketplaceUUID));
-            var marPassword = Utilities.RandomPassword.Generate(2, 1, 0);
-
-            if (marInfo == null)
-            {
-                MainConsole.Instance.Warn("Creating the Marketplace user '" + MarketplaceName + "'");
-
-                var error = m_accountService.CreateUser(
-                    (UUID)Constants.MarketplaceUUID,        // UUID
-                    UUID.Zero,                              // ScopeID
-                    MarketplaceName,                        // Name
-                    Util.Md5Hash(marPassword),              // password
-                    "");                                    // email
-
-                if (error == "")
-                {
-                    SaveMarketplacePassword(marPassword);
-                    MainConsole.Instance.Info(" The password for '" + MarketplaceName + "' is : " + marPassword);
-
-                }
-                else
-                {
-                    MainConsole.Instance.Warn(" Unable to create the Marketplace user : " + error);
-                    return;
-                }
-
-                //set as "Maintenace" level
-                var account = m_accountService.GetUserAccount(null, UUID.Parse(Constants.MarketplaceUUID));
-                account.UserLevel = 250;
-                account.UserFlags = Constants.USER_FLAG_CHARTERMEMBER;
-                bool success = m_accountService.StoreUserAccount(account);
-
-                if (success)
-                    MainConsole.Instance.Info(" The Marketplace user has been elevated to 'Maintenance' level");
-
-                return;
-
-            }
-
-            // we already have the Marketplace account.. verify details in case of a configuration change
-            if (marInfo.Name != MarketplaceName)
-            {
-                IAuthenticationService authService = m_registry.RequestModuleInterface<IAuthenticationService>();
-
-                marInfo.Name = MarketplaceName;
-                bool updatePass = authService.SetPassword(marInfo.PrincipalID, "UserAccount", marPassword);
-                bool updateAcct = m_accountService.StoreUserAccount(marInfo);
-
-                if (updatePass && updateAcct)
-                {
-                    SaveMarketplacePassword(marPassword);
-                    MainConsole.Instance.InfoFormat(" The Marketplace user has been updated to '{0}'", MarketplaceName);
-                }
-                else
-                    MainConsole.Instance.Warn(" There was a problem updating the Marketplace user");
-            }
-        }
-
-        private void SaveBankerPassword(string password)
-        {
-            const string passFile = Constants.DEFAULT_DATA_DIR + "/Banker.txt";
-
-            if (File.Exists(passFile))
-                File.Delete(passFile);
-
-            using (var pwFile = new StreamWriter(passFile))
-            {
-                pwFile.WriteLine("Banker user   : '" + BankerName + "' was created: " + Culture.LocaleLogStamp());
-                pwFile.WriteLine("Password        : " + password);
-            }
-        }
-
-        private void SaveMarketplacePassword(string password)
-        {
-            const string passFile = Constants.DEFAULT_DATA_DIR + "/Marketplace.txt";
-
-            if (File.Exists(passFile))
-                File.Delete(passFile);
-
-            using (var pwFile = new StreamWriter(passFile))
-            {
-                pwFile.WriteLine("Marketplace user   : '" + MarketplaceName + "' was created: " + Culture.LocaleLogStamp());
-                pwFile.WriteLine("Password        : " + password);
-            }
-        }
-
-        #endregion 
-        
         #region IMoneyModule Members
 
         public int UploadCharge
@@ -383,20 +169,20 @@ namespace Universe.Modules.Currency
             get { return Config.PriceDirectoryFee; }
         }
 
-        public int ClientPort 
+        public int ClientPort
         {
-            get  { return Config.ClientPort; }
+            get { return Config.ClientPort; }
         }
 
         public bool ObjectGiveMoney(UUID objectID, string objectName, UUID fromID, UUID toID, int amount)
         {
-            return m_connector.UserCurrencyTransfer(toID, fromID, UUID.Zero, "", objectID, objectName, (uint) amount, "Object payment",
+            return m_connector.UserCurrencyTransfer(toID, fromID, UUID.Zero, "", objectID, objectName, (uint)amount, "Object payment",
                                                     TransactionType.ObjectPays, UUID.Zero);
         }
 
         public int Balance(UUID agentID)
         {
-            return (int) m_connector.GetUserCurrency(agentID).Amount;
+            return (int)m_connector.GetUserCurrency(agentID).Amount;
         }
 
         public bool Charge(UUID agentID, int amount, string text, TransactionType type)
@@ -415,14 +201,14 @@ namespace Universe.Modules.Currency
 
         public bool Transfer(UUID toID, UUID fromID, int amount, string description, TransactionType type)
         {
-            return m_connector.UserCurrencyTransfer(toID, fromID, (uint) amount, description, type,
+            return m_connector.UserCurrencyTransfer(toID, fromID, (uint)amount, description, type,
                                                     UUID.Zero);
         }
 
-        public bool Transfer(UUID toID, UUID fromID, UUID toObjectID, string toObjectName, UUID fromObjectID, 
+        public bool Transfer(UUID toID, UUID fromID, UUID toObjectID, string toObjectName, UUID fromObjectID,
             string fromObjectName, int amount, string description, TransactionType type)
         {
-            bool result = m_connector.UserCurrencyTransfer(toID, fromID, toObjectID, toObjectName, 
+            bool result = m_connector.UserCurrencyTransfer(toID, fromID, toObjectID, toObjectName,
                 fromObjectID, fromObjectName, (uint)amount, description, type, UUID.Zero);
             if (toObjectID != UUID.Zero)
             {
@@ -463,9 +249,9 @@ namespace Universe.Modules.Currency
 
         public List<AgentTransfer> GetTransactionHistory(UUID toAgentID, UUID fromAgentID, int period, string periodType)
         {
-            return m_connector.GetTransactionHistory (toAgentID, fromAgentID, period, periodType);
+            return m_connector.GetTransactionHistory(toAgentID, fromAgentID, period, periodType);
         }
-            
+
         public List<AgentTransfer> GetTransactionHistory(UUID toAgentID, int period, string periodType)
         {
             return m_connector.GetTransactionHistory(toAgentID, period, periodType);
@@ -480,7 +266,7 @@ namespace Universe.Modules.Currency
         {
             return m_connector.GetTransactionHistory(period, periodType, start, count);
         }
- 
+
 
         public uint NumberOfPurchases(UUID UserID)
         {
@@ -502,7 +288,7 @@ namespace Universe.Modules.Currency
             return m_connector.GetPurchaseHistory(dateStart, dateEnd, start, count);
         }
 
-        public List<AgentPurchase> GetPurchaseHistory (int period, string periodType, uint? start, uint? count)
+        public List<AgentPurchase> GetPurchaseHistory(int period, string periodType, uint? start, uint? count)
         {
             return m_connector.GetPurchaseHistory(period, periodType, start, count);
         }
@@ -521,7 +307,7 @@ namespace Universe.Modules.Currency
         void OnMakeRootAgent(IScenePresence presence)
         {
             presence.ControllingClient.SendMoneyBalance(UUID.Zero, true, new byte[0],
-                                                        (int) m_connector.GetUserCurrency(presence.UUID).Amount);
+                                                        (int)m_connector.GetUserCurrency(presence.UUID).Amount);
         }
 
         protected void OnClosingClient(IClientAPI client)
@@ -552,7 +338,7 @@ namespace Universe.Modules.Currency
                             break;
                         }
                     }
-                    if(!paid)
+                    if (!paid)
                     {
                         m_connector.UserCurrencyTransfer(toID, fromID, (uint)amount, description,
                                                     (TransactionType)type, UUID.Random());
@@ -564,7 +350,7 @@ namespace Universe.Modules.Currency
         bool ValidateLandBuy(EventManager.LandBuyArgs e)
         {
             return m_connector.UserCurrencyTransfer(e.parcelOwnerID, e.agentId,
-                                                    (uint) e.parcelPrice, "Land Purchase", TransactionType.LandSale,
+                                                    (uint)e.parcelPrice, "Land Purchase", TransactionType.LandSale,
                                                     UUID.Random());
         }
 
@@ -600,8 +386,8 @@ namespace Universe.Modules.Currency
         {
             if (client.AgentId == agentId && client.SessionId == sessionId)
             {
-                var cliBal = (int)m_connector.GetUserCurrency (client.AgentId).Amount;   
-                client.SendMoneyBalance (transactionId, true, new byte[0], cliBal);
+                var cliBal = (int)m_connector.GetUserCurrency(client.AgentId).Amount;
+                client.SendMoneyBalance(transactionId, true, new byte[0], cliBal);
             }
             else
                 client.SendAlertMessage("Unable to send your money balance to you!");
@@ -633,11 +419,11 @@ namespace Universe.Modules.Currency
             }
             else if (method == "GetLandData")
             {
-                MainConsole.Instance.Info (message);
+                MainConsole.Instance.Info(message);
 
                 UUID agentID = message["AgentID"];
-                IScene region = GetSceneFor (agentID);
-                MainConsole.Instance.Info ("Region: " + region.RegionInfo.RegionName);
+                IScene region = GetSceneFor(agentID);
+                MainConsole.Instance.Info("Region: " + region.RegionInfo.RegionName);
 
                 IParcelManagementModule parcelManagement = region.RequestModuleInterface<IParcelManagementModule>();
                 if (parcelManagement != null)
@@ -645,30 +431,30 @@ namespace Universe.Modules.Currency
                     IScenePresence sp = region.GetScenePresence(agentID);
                     if (sp != null)
                     {
-                        MainConsole.Instance.InfoFormat ("sp parcel UUID: {0} Pos: {1}, {2}",
+                        MainConsole.Instance.InfoFormat("sp parcel UUID: {0} Pos: {1}, {2}",
                             sp.CurrentParcelUUID, sp.AbsolutePosition.X, sp.AbsolutePosition.Y);
-                        
+
                         ILandObject lo = sp.CurrentParcel;
                         if (lo == null)
                         {
                             // try for a position fix
-                            lo = parcelManagement.GetLandObject ((int)sp.AbsolutePosition.X, (int)sp.AbsolutePosition.Y);
+                            lo = parcelManagement.GetLandObject((int)sp.AbsolutePosition.X, (int)sp.AbsolutePosition.Y);
                         }
 
                         if (lo != null)
-                        {   
+                        {
                             if ((lo.LandData.Flags & (uint)ParcelFlags.ForSale) == (uint)ParcelFlags.ForSale)
                             {
                                 if (lo.LandData.AuthBuyerID != UUID.Zero && lo.LandData.AuthBuyerID != agentID)
-                                    return new OSDMap () { new KeyValuePair<string, OSD> ("Success", false) };
-                                OSDMap map = lo.LandData.ToOSD ();
-                                map ["Success"] = true;
+                                    return new OSDMap() { new KeyValuePair<string, OSD>("Success", false) };
+                                OSDMap map = lo.LandData.ToOSD();
+                                map["Success"] = true;
                                 return map;
                             }
                         }
                     }
                 }
-                return new OSDMap() {new KeyValuePair<string, OSD>("Success", false)};
+                return new OSDMap() { new KeyValuePair<string, OSD>("Success", false) };
             }
             return null;
         }
@@ -677,17 +463,17 @@ namespace Universe.Modules.Currency
         {
             foreach (IScene scene in m_scenes)
             {
-                var sp = scene.GetScenePresence (userID);
+                var sp = scene.GetScenePresence(userID);
                 if (sp != null && !sp.IsChildAgent)
                     return scene;
             }
             if (m_scenes.Count == 0)
             {
-                MainConsole.Instance.Debug ("User is not present in any region??");
+                MainConsole.Instance.Debug("User not present in any regions??");
                 return null;
             }
 
-            MainConsole.Instance.Debug ("Returning scene[0]: " + m_scenes [0].RegionInfo.RegionName);
+            MainConsole.Instance.Debug("Returning scene[0]: " + m_scenes[0].RegionInfo.RegionName);
             return m_scenes[0];
         }
 
@@ -707,7 +493,7 @@ namespace Universe.Modules.Currency
                 if (icapiTo != null)
                 {
                     icapiTo.ControllingClient.SendMoneyBalance(transactionId, true, Utils.StringToBytes(message),
-                                                               (int) m_connector.GetUserCurrency(icapiTo.UUID).Amount);
+                                                               (int)m_connector.GetUserCurrency(icapiTo.UUID).Amount);
                     dialogModule.SendAlertToUser(toId, message);
                 }
 

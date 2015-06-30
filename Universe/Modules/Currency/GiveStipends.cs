@@ -64,7 +64,7 @@ namespace Universe.Modules.Currency
             registry.RequestModuleInterface<ISimulationBase>().EventManager.RegisterEventHandler("CreateUserInformation", CreateUserInformation);
             registry.RequestModuleInterface<ISimulationBase>().EventManager.RegisterEventHandler("UpdateUserInformation", CreateUserInformation);
         }
-        
+
         object CreateUserInformation(string functionname, object parameters)
         {
             UUID userid = (UUID)parameters;
@@ -78,7 +78,7 @@ namespace Universe.Modules.Currency
 
             SchedulerItem i = m_scheduler.Get(user.PrincipalID.ToString(), "StipendsPayout");
             if (i != null) return null;
-            // Scheduler needs to get 1 date/time to set for "PayDay"
+            // TODO: Scheduler needs to get 1 date/time to set for "PayDay"
             RepeatType runevertype = (RepeatType)Enum.Parse(typeof(RepeatType), m_options.StipendsEveryType);
             int runevery = m_options.StipendsEvery;
             m_scheduler.Save(new SchedulerItem("StipendsPayout",
@@ -117,7 +117,7 @@ namespace Universe.Modules.Currency
                 IMoneyModule mo = m_registry.RequestModuleInterface<IMoneyModule>();
                 if (mo == null) return null;
                 UUID transid = UUID.Random();
-                MainConsole.Instance.Info("[Currency Service] Stipend Payment for " + ua.FirstName + " " + ua.LastName+ " is now running");
+                MainConsole.Instance.Info("[MONEY MODULE] Stipend Payment for " + ua.FirstName + " " + ua.LastName + " is now running");
                 if (m_currencyService.UserCurrencyTransfer(ua.PrincipalID, UUID.Zero, (uint)m_options.Stipend, "Stipend Payment", TransactionType.StipendPayment, transid))
                 {
                     return transid.ToString();
@@ -134,10 +134,10 @@ namespace Universe.Modules.Currency
             users = userService.GetUserAccounts(new List<UUID> { UUID.Zero }, 0, m_options.StipendsPremiumOnly ? 600 : 0);
             foreach (UserAccount user in users)
             {
-            	if (Utilities.IsSystemUser(user.PrincipalID)) continue;
-            	SchedulerItem i = m_scheduler.Get(user.PrincipalID.ToString(), "StipendsPayout");
+                if (Utilities.IsSystemUser(user.PrincipalID)) continue;
+                SchedulerItem i = m_scheduler.Get(user.PrincipalID.ToString(), "StipendsPayout");
                 if (i != null) continue;
-                // Scheduler needs to get 1 date/time to set for "PayDay"
+                // TODO: Scheduler needs to get 1 date/time to set for "PayDay"
                 RepeatType runevertype = (RepeatType)Enum.Parse(typeof(RepeatType), m_options.StipendsEveryType);
                 int runevery = m_options.StipendsEvery;
                 m_scheduler.Save(new SchedulerItem("StipendsPayout",
