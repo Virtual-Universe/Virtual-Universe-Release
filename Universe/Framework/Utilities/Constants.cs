@@ -77,17 +77,13 @@ namespace Universe.Framework.Utilities
         public const string BankerUUID = "2f087cf0-0448-11e5-b939-0800200c9a66";
         public const string BankerName = "Universe Banker";
 
-        // System Financial Services Group
-        public const string FinancialServicesGroupUUID = "2f087cf1-0448-11e5-b939-0800200c9a66";
-        public const string FinancialServicesGroupName = "Universe Financial Services";
-
         // System Marketplace Avatar
         public const string MarketplaceUUID = "2f087cf2-0448-11e5-b939-0800200c9a66";
         public const string MarketplaceName = "Marketplace Universe";
 
-        // System Marketplace Group
-        public const string MarketplaceGroupUUID = "2f087cf3-0448-11e5-b939-0800200c9a66";
-        public const string MarketplaceGroupName = "Universe Marketplace";
+        // System Staff Avatar Account
+        public const string StaffUUID = "3d6171b0-6a4b-97ef-18d8-722652995cf1";
+        public const string StaffName = "Staff Universe";
 
         // user levels
         public const int USER_DISABLED = -2;
