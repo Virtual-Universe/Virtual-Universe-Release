@@ -1,28 +1,7 @@
-﻿/***************************************************************************
- *	                VIRTUAL UNIVERSE PUBLIC SOURCE LICENSE
- *                  Website: http://virtual-planets.org
- *                   
- * Original Code    : http://aurora-sim.org
- * Updates from     : http://universe-sim.org
- * 
- * Date				: Sun January 1, 2006
- * Copyright		: (c) 2006-2014 by Virtual UNIVERSE Development Team. 
- *                    All Rights Reserved.
- * Website			: http://www.virtual-planets.org
+﻿/*
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
- * Product Name		: Virtual Universe
- * License Text     : packages/docs/VRLICENSE.txt
- * 
- * Planetary Info   : Information about the Planetary code
- * 
- * Copyright        : (c) 2014-2024 by Second Galaxy Development Team
- *                    All Rights Reserved.
- * 
- * Website          : http://www.secondgalaxy.com
- * 
- * Product Name     : Virtual Universe
- * License Text     : packages/docs/SGLICENSE.txt
- * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *     * Redistributions of source code must retain the above copyright
@@ -44,7 +23,7 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-***************************************************************************/
+ */
 
 
 using System;
