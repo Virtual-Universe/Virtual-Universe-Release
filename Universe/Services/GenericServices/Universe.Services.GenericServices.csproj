@@ -383,6 +383,9 @@
 	  <Compile Include="SimulationService\SimulationServiceConnector.cs">
 		<SubType>Code</SubType>
 	  </Compile>
+	  <Compile Include="SystemAccountService\SystemAccountService.cs">
+		<SubType>Code</SubType>
+	  </Compile>
   </ItemGroup>
 	<Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
 	<PropertyGroup>
