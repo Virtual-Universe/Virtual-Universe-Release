@@ -45,16 +45,11 @@ LibraryName = "Universe Library"
 LibraryOwnerName = "Library Owner"
 
 [SystemUserService]
-;;  Set this if you want to change the name of the Universe system Chancellor
+;;  Set this if you want to change the name of the Universe system user
 GovernorName = "Chancellor Universe"
-
-;;  Modify these if you want to change the universe banker or group name
-BankerName = "Banker Universe"
-FinancialServicesGroupName = "Universe Financial Services"
-
-;;  Modify this if you want to change the universe marketplace or owner name
+StaffName = "Staff Universe"
+BankerName = "Universe Banker"
 MarketplaceOwnerName = "Marketplace Universe"
-MarketplaceGroupName = "Universe Marketplace"
 
 [EstateService]
 ;;  Set these if you want to change the Universe system Estate owner or name
