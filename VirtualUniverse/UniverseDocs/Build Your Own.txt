@@ -3,28 +3,28 @@ Building your own from source
 
 Prerequisites
 =============
-Mono V3.x    : Checkout http://www.go-mono.com/mono-downloads/download.html for the latest update
+Mono V4.0.x    : Checkout http://www.go-mono.com/mono-downloads/download.html for the latest update
 (Optional)  Xamarin Studio for a nice IDE : Checkout http://http://monodevelop.com/Download
 
 Building
 ========
 
-Clone the Universe repo at https://github.com/Virtual-Universe/Virtual-Universe.git
+Clone the Virtual Universe repo at https://github.com/Virtual-Universe/Virtual-Universe.git
 
 
 Cd the the downloaded directory.
 Run(Execute) the  ./runprebuild.sh file to create the required c# solution files.
 
-Compile Universe :
+Compile Virtual Universe :
 #:  xbuild Universe.sln
 
 A large amount of compile information will be shown but when completed, 
 no errors should be indicated.
-NOTE:  Some warnings may be shown (36 at last count) but these do not present 
+NOTE:  Some warnings may be shown (8 at last count) but these do not present 
 any problem or prevent operation of the servers. 
 (These will be corrected and removed as time permits)
 
-When completed the 'VirtualUniverse/bin' subdirectory will contain the newly compiled Universe files.
+When completed the 'VirtualUniverse/bin' subdirectory will contain the newly compiled Virtual Universe files.
 
 Copy the 'bin' subdirectory to your existing Virtual Universe installation, replacing the 'bin' directory there.
 

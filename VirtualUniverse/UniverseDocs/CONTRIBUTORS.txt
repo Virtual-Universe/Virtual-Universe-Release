@@ -9,7 +9,7 @@ Fly-Man-
 Greythane
 
 
---------------- Universe contributors (Thanks for all the patches :)) -----------------------
+--------------- WhiteCore-Sim contributors (Thanks for all the patches :)) -----------------------
 
 Nhede
 Emperorstarfinder

@@ -86,10 +86,10 @@ Check out the example .ini files for these.
 
 Questions?
 ==========
-Checkout http://universe-sim.org, catch me on the '#universe-support' irc channel on freenode,
+Checkout http://virtual-planets.org, catch me on the '#universe-support' irc channel on freenode,
 or check into the Google+ group at https://plus.google.com/communitites/113034607546142208907
 
 
-Rowan
-<greythane@gmail.com>
-June 2014
+BriakallistaStarfinder
+<briakallista@secondgalaxy.com>
+Updated July 1 2015

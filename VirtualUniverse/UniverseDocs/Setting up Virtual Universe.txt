@@ -3,15 +3,15 @@
 ##
 
 If you are using a release, skip down to the next section, otherwise, read on
-If you are using the master build, you will need to compile Virtual-Universe before you can use it.
+If you are using the master build, you will need to compile Virtual Universe before you can use it.
   To do this, follow the instructions in Compiling.txt for your system before continuing on with
   this tutorial.
 
 
 ##
-## Setting up Virtual-Universe
+## Setting up Virtual Universe
 ##
-  The first thing is to figure out which mode of Virtual-Universe you wish to run.
+  The first thing is to figure out which mode of Virtual Universe you wish to run.
   If you want to run one sim and disallow remote sim connections, you want to run standalone,
       and should jump to the standalone section of this file.
   If you want to run more than one sim and allow remote sim connections, you want to run grid
@@ -20,13 +20,13 @@ If you are using the master build, you will need to compile Virtual-Universe bef
 ##
 ## Standalone Mode
 ##
-  To run Virtual-Universe in standalone mode, just run Universe.exe, and enter yes to allow it to 
+  To run Virtual Universe in standalone mode, just run Universe.exe, and enter yes to allow it to 
       configure itself with the inputs from you.
 	  
 ##
 ## Grid Mode
 ##
-  To run Virtual-Universe in grid mode, Uncomment "Include-Single = ServerConfiguration/SingleServerInstance.ini" 
+  To run Virtual Universe in grid mode, Uncomment "Include-Single = ServerConfiguration/SingleServerInstance.ini" 
 	  in the Universe.Server.ini file, setup the files under ServerConfiguration and then run Universe.Server.exe, 
 	  and enter yes to allow it to configure itself with the inputs from you
 	  
@@ -90,7 +90,7 @@ If you are using the master build, you will need to compile Virtual-Universe bef
 ##
 
 This is possible... if you can do it, congratulations, you know the configs 
-  and how they interact with Universe very well!
+  and how they interact with Virtual Universe very well!
 
 ##
 ## Running a region on Universe.Server.exe

@@ -21,7 +21,7 @@ Steps:
 === Building on Linux ===
 
 Prereqs:
- * Mono >= 3.10
+ * Mono >= 4.0.x
  * XBuild
  * On some Linux distributions you may need to install additional packages.  
     See http://opensimulator.org/wiki/Dependencies for more information.

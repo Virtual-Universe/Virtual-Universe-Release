@@ -1,4 +1,4 @@
-Startup CommandLine Switches for Universe
+Startup CommandLine Switches for Virtual Universe
 You can use these switches with either Universe.exe and Universe.Server.exe
 
 ;; Change the sim.sim file name (For Universe.exe only)
@@ -32,7 +32,7 @@ Universe.exe -inishowfileloading=true
 ;;2) That any values for directives pulled in after a first file is loaded override directives of the same name found in the directive set 
 ;;    created by reading in the previous .ini file.
 
-;; This option sets which folder on the hard drive the Universe configuration files will be loaded from
+;; This option sets which folder on the hard drive the Virtual Universe configuration files will be loaded from
 ;; The default option for this is the bin/ directory, which requires no option set here
 ;; This can be a full path
 ;; Example

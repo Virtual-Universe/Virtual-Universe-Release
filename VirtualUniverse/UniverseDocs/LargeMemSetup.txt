@@ -1,7 +1,7 @@
-﻿Patching Universe.exe & Universe.32BitLaunch.exe to allow them to access more RAM in Windows Systems.
+﻿Patching Universe.exe to allow access more RAM in Windows Systems.
 
 WHY ?
-An application running in 32Bit Mode on Windows can only access access 2GB Ram Total by default. As seen with Universe, this
+An application running in 32Bit Mode on Windows can only access access 2GB Ram Total by default. As seen with Virtual Universe, this
 can can easily be reached when you throw in enough prims, scripts & users.  The Solution is to patch the EXE to make it aware
 and to adjust 32-Bit windows to accomodate that (x64 is already capable).
 
