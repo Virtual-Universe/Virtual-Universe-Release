@@ -84,12 +84,12 @@ namespace Universe.Framework.Utilities
     /// </summary>
     public class Util
     {
-        private static uint nextXferID = 5000;
-        private static readonly Random randomClass = new ThreadSafeRandom();
+        static uint nextXferID = 5000;
+        static readonly Random randomClass = new ThreadSafeRandom();
         // Get a list of invalid file characters (OS dependent)
-        private static readonly string regexInvalidFileChars = "[" + new String(Path.GetInvalidFileNameChars()) + "]";
-        private static readonly string regexInvalidPathChars = "[" + new String(Path.GetInvalidPathChars()) + "]";
-        private static readonly object XferLock = new object();
+        static readonly string regexInvalidFileChars = "[" + new String(Path.GetInvalidFileNameChars()) + "]";
+        static readonly string regexInvalidPathChars = "[" + new String(Path.GetInvalidPathChars()) + "]";
+        static readonly object XferLock = new object();
 
         /// <summary>
         ///     Thread pool used for Util.FireAndForget if
@@ -136,7 +136,7 @@ namespace Universe.Framework.Utilities
         #region Protobuf helpers
 
         [ProtoContract]
-        private class UUIDSurrogate
+        class UUIDSurrogate
         {
             [ProtoMember(1)] public string ID;
             // protobuf-net wants an implicit or explicit operator between the types
@@ -155,7 +155,7 @@ namespace Universe.Framework.Utilities
         }
 
         [ProtoContract]
-        private class Vector3Surrogate
+        class Vector3Surrogate
         {
             [ProtoMember(1)] public float X;
             [ProtoMember(2)] public float Y;
@@ -179,7 +179,7 @@ namespace Universe.Framework.Utilities
         }
 
         [ProtoContract]
-        private class QuaternionSurrogate
+        class QuaternionSurrogate
         {
             [ProtoMember(1)] public float X;
             [ProtoMember(2)] public float Y;
@@ -204,7 +204,7 @@ namespace Universe.Framework.Utilities
         }
 
         [ProtoContract]
-        private class IPEndPointSurrogate
+        class IPEndPointSurrogate
         {
             [ProtoMember(1)] public string IPAddr;
             [ProtoMember(2)] public int Port;
@@ -227,7 +227,7 @@ namespace Universe.Framework.Utilities
         }
 
         [ProtoContract]
-        private class OSDSurrogate
+        class OSDSurrogate
         {
             [ProtoMember(1)] public string str;
             // protobuf-net wants an implicit or explicit operator between the types
@@ -246,7 +246,7 @@ namespace Universe.Framework.Utilities
         }
 
         [ProtoContract]
-        private class OSDMapSurrogate
+        class OSDMapSurrogate
         {
             [ProtoMember(1)]
             public string str;
@@ -266,7 +266,7 @@ namespace Universe.Framework.Utilities
         }
 
         [ProtoContract]
-        private class OSDArraySurrogate
+        class OSDArraySurrogate
         {
             [ProtoMember(1)]
             public string str;
@@ -286,7 +286,7 @@ namespace Universe.Framework.Utilities
         }
 
         [ProtoContract]
-        private class ParcelAccessEntrySurrogate
+        class ParcelAccessEntrySurrogate
         {
             [ProtoMember(1)] public UUID AgentID;
             [ProtoMember(2)] public AccessList Flags;
@@ -315,7 +315,7 @@ namespace Universe.Framework.Utilities
         }
 
         [ProtoContract]
-        private class MediaEntrySurrogate
+        class MediaEntrySurrogate
         {
             [ProtoMember(1)] public OSD info;
 
@@ -812,7 +812,7 @@ namespace Universe.Framework.Utilities
         /// <param name="dllToLoad"></param>
         /// <returns></returns>
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
-        private static extern IntPtr LoadLibrary(string dllToLoad);
+        static extern IntPtr LoadLibrary(string dllToLoad);
 
         /// <summary>
         /// Determine whether the current process is 64 bit
@@ -860,7 +860,7 @@ namespace Universe.Framework.Utilities
             return sb.ToString();
         }
 
-        private static byte[] ComputeMD5Hash(string data)
+        static byte[] ComputeMD5Hash(string data)
         {
             MD5 md5 = MD5.Create();
             return md5.ComputeHash(Encoding.Default.GetBytes(data));
@@ -877,7 +877,7 @@ namespace Universe.Framework.Utilities
             return BitConverter.ToString(hash).Replace("-", String.Empty);
         }
 
-        private static byte[] ComputeSHA1Hash(string src)
+        static byte[] ComputeSHA1Hash(string src)
         {
             SHA1CryptoServiceProvider SHA1 = new SHA1CryptoServiceProvider();
             return SHA1.ComputeHash(Encoding.Default.GetBytes(src));
@@ -1757,10 +1757,10 @@ namespace Universe.Framework.Utilities
         /// <summary>
         ///     Created to work around a limitation in Mono with nested delegates
         /// </summary>
-        private sealed class FireAndForgetWrapper
+        sealed class FireAndForgetWrapper
         {
-            private static volatile FireAndForgetWrapper instance;
-            private static readonly object syncRoot = new Object();
+            static volatile FireAndForgetWrapper instance;
+            static readonly object syncRoot = new Object();
 
             public static FireAndForgetWrapper Instance
             {
@@ -1791,7 +1791,7 @@ namespace Universe.Framework.Utilities
                 callback.BeginInvoke(obj, EndFireAndForget, callback);
             }
 
-            private static void EndFireAndForget(IAsyncResult ar)
+            static void EndFireAndForget(IAsyncResult ar)
             {
                 WaitCallback callback = (WaitCallback) ar.AsyncState;
 
@@ -1895,7 +1895,7 @@ namespace Universe.Framework.Utilities
             }
         }
 
-        private static object SmartThreadPoolCallback(object o)
+        static object SmartThreadPoolCallback(object o)
         {
             object[] array = (object[]) o;
             WaitCallback callback = (WaitCallback) array[0];
@@ -1998,25 +1998,25 @@ namespace Universe.Framework.Utilities
                 return OSDBinary.FromBinary(ImageToByteArray(o as System.Drawing.Image));
             OSD oo;
             if ((oo = OSD.FromObject(o)).Type != OSDType.Unknown)
-                return (OSD) oo;
+                return oo;
             if (o is IDataTransferable)
                 return ((IDataTransferable) o).ToOSD();
             Type[] genericArgs = t.GetGenericArguments();
             if (Util.IsInstanceOfGenericType(typeof (List<>), t))
             {
                 OSDArray array = new OSDArray();
-                System.Collections.IList collection = (System.Collections.IList) o;
+                IList collection = (IList) o;
                 foreach (object item in collection)
                 {
                     array.Add(MakeOSD(item, genericArgs[0]));
                 }
                 return array;
             }
-            else if (Util.IsInstanceOfGenericType(typeof (Dictionary<,>), t))
+            if (Util.IsInstanceOfGenericType(typeof (Dictionary<,>), t))
             {
                 OSDMap array = new OSDMap();
-                System.Collections.IDictionary collection = (System.Collections.IDictionary) o;
-                foreach (System.Collections.DictionaryEntry item in collection)
+                IDictionary collection = (IDictionary) o;
+                foreach (DictionaryEntry item in collection)
                 {
                     array.Add(MakeOSD(item.Key, genericArgs[0]), MakeOSD(item.Value, genericArgs[1]));
                 }
@@ -2041,12 +2041,12 @@ namespace Universe.Framework.Utilities
             return returnImage;
         }
 
-        private static object CreateInstance(Type type)
+        static object CreateInstance(Type type)
         {
             if (type == typeof (string))
                 return string.Empty;
-            else
-                return Activator.CreateInstance(type);
+
+            return Activator.CreateInstance(type);
         }
 
         public static object OSDToObject(OSD o)
@@ -2104,9 +2104,9 @@ namespace Universe.Framework.Utilities
             if (PossibleArrayType == typeof (Vector4))
                 return o.AsVector4();
             if (PossibleArrayType == typeof (OSDMap))
-                return (OSDMap) o;
+                return o;
             if (PossibleArrayType == typeof (OSDArray))
-                return (OSDArray) o;
+                return o;
             if (o.Type == OSDType.Array)
             {
                 OSDArray array = (OSDArray) o;
@@ -2130,7 +2130,8 @@ namespace Universe.Framework.Utilities
                 data.FromOSD((OSDMap) o);
                 return data;
             }
-            else if (o.Type == OSDType.Map)
+
+            if (o.Type == OSDType.Map)
             {
                 OSDMap array = (OSDMap) o;
                 var possArrayTypeB = Activator.CreateInstance(PossibleArrayType);
@@ -2459,10 +2460,9 @@ namespace Universe.Framework.Utilities
 
     public class NetworkUtils
     {
-        private static bool m_noInternetConnection;
-        private static int m_nextInternetConnectionCheck;
-        //private static bool useLocalhostLoopback=false;
-        private static readonly ExpiringCache<string, IPAddress> m_dnsCache = new ExpiringCache<string, IPAddress>();
+        static bool m_noInternetConnection;
+        static int m_nextInternetConnectionCheck;
+        static readonly ExpiringCache<string, IPAddress> m_dnsCache = new ExpiringCache<string, IPAddress>();
 
         public static IPEndPoint ResolveEndPoint(string hostName, int port)
         {
@@ -2616,7 +2616,7 @@ namespace Universe.Framework.Utilities
             return false;
         }
 
-        private static bool CheckMask(IPAddress address, IPAddress mask, IPAddress target)
+        static bool CheckMask(IPAddress address, IPAddress mask, IPAddress target)
         {
             if (mask == null)
                 return false;
@@ -2785,9 +2785,9 @@ namespace Universe.Framework.Utilities
 
         public class IPAddressRange
         {
-            private readonly AddressFamily addressFamily;
-            private readonly byte[] lowerBytes;
-            private readonly byte[] upperBytes;
+            readonly AddressFamily addressFamily;
+            readonly byte[] lowerBytes;
+            readonly byte[] upperBytes;
 
             public IPAddressRange(IPAddress lower, IPAddress upper)
             {
@@ -2810,7 +2810,7 @@ namespace Universe.Framework.Utilities
                 bool lowerBoundary = true, upperBoundary = true;
 
                 for (int i = 0;
-                     i < this.lowerBytes.Length &&
+                     i < lowerBytes.Length &&
                      (lowerBoundary || upperBoundary);
                      i++)
                 {
@@ -2928,7 +2928,7 @@ namespace Universe.Framework.Utilities
             return dynamicMethod.Invoke(null, new object[2] {invokeClass, invokeParameters});
         }
 
-        private static void EmitCastToReference(ILGenerator il, System.Type type)
+        static void EmitCastToReference(ILGenerator il, System.Type type)
         {
             if (type.IsValueType)
             {
@@ -2940,7 +2940,7 @@ namespace Universe.Framework.Utilities
             }
         }
 
-        private static void EmitBoxIfNeeded(ILGenerator il, System.Type type)
+        static void EmitBoxIfNeeded(ILGenerator il, System.Type type)
         {
             if (type.IsValueType)
             {
@@ -2948,7 +2948,7 @@ namespace Universe.Framework.Utilities
             }
         }
 
-        private static void EmitFastInt(ILGenerator il, int value)
+        static void EmitFastInt(ILGenerator il, int value)
         {
             switch (value)
             {
