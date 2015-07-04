@@ -145,6 +145,52 @@ namespace Universe.Services.DataService
             if (remoteValue != null || m_doRemoteOnly)
                 return;
 
+            const ulong EveryonePowers = (ulong)(GroupPowers.AllowSetHome |
+                                             GroupPowers.Accountable |
+                                             GroupPowers.JoinChat |
+                                             GroupPowers.AllowVoiceChat |
+                                             GroupPowers.ReceiveNotices);
+
+            const ulong OfficersPowers = (ulong)(GroupPowers.AllowSetHome |
+                                                  GroupPowers.Accountable |
+                                                  GroupPowers.JoinChat |
+                                                  GroupPowers.AllowVoiceChat |
+                                                  GroupPowers.ReceiveNotices |
+                                                  GroupPowers.ChangeIdentity | // Same as EveryonePowers
+                                                  GroupPowers.LandEjectAndFreeze |
+                                                  GroupPowers.LandEdit |
+                                                  GroupPowers.AllowFly |
+                                                  GroupPowers.AllowRez |
+                                                  GroupPowers.AllowLandmark |
+                                                  GroupPowers.LandChangeIdentity |
+                                                  GroupPowers.ChangeMedia |
+                                                  GroupPowers.LandDeed |
+                                                  GroupPowers.LandDivideJoin |
+                                                  GroupPowers.LandEdit |
+                                                  GroupPowers.FindPlaces |
+                                                  GroupPowers.LandGardening |
+                                                  GroupPowers.LandManageAllowed |
+                                                  GroupPowers.LandManageBanned |
+                                                  GroupPowers.LandManagePasses |
+                                                  GroupPowers.LandOptions |
+                                                  GroupPowers.LandRelease |
+                                                  GroupPowers.ReturnGroupOwned |
+                                                  GroupPowers.ReturnGroupSet |
+                                                  GroupPowers.ReturnNonGroup |
+                                                  GroupPowers.SetLandingPoint |
+                                                  GroupPowers.LandSetSale |
+                                                  GroupPowers.Eject |
+                                                  GroupPowers.Invite |
+                                                  GroupPowers.ChangeOptions |
+                                                  GroupPowers.MemberVisible |
+                                                  GroupPowers.SendNotices |
+                                                  GroupPowers.DeedObject |
+                                                  GroupPowers.ObjectManipulate |
+                                                  GroupPowers.ObjectSetForSale |
+                                                  GroupPowers.AssignMemberLimited |
+                                                  GroupPowers.RoleProperties |
+                                                  GroupPowers.ModerateChat);
+
             Dictionary<string, object> row = new Dictionary<string, object>(11);
             row["GroupID"] = groupID;
             row["Name"] = name;
@@ -160,12 +206,9 @@ namespace Universe.Services.DataService
 
             data.Insert("group_data", row);
 
-            const ulong EveryonePowers = 8796495740928;             // >> 0x80018010000
             //Add everyone role to group
             AddRoleToGroup(founderID, groupID, UUID.Zero, "Everyone", "Everyone in the group is in the everyone role.",
                            "Member of " + name, EveryonePowers);
-
-            const ulong OfficersPowers = 436506116225230;           // >> 0x 18cfffffff8ce
 
             UUID officersRole = UUID.Random();
             //Add officers role to group
@@ -648,7 +691,7 @@ namespace Universe.Services.DataService
             values["ListInProfile"] = ListInProfile;
 
             QueryFilter filter = new QueryFilter();
-            // these look the wrong way around
+            // these look the wrong way around ~ SignpostMarv
             filter.andFilters["GroupID"] = AgentID;
             filter.andFilters["AgentID"] = GroupID;
 
@@ -914,6 +957,8 @@ namespace Universe.Services.DataService
         public List<GroupRecord> GetGroupRecords(UUID requestingAgentID, uint start, uint count,
                                                  Dictionary<string, bool> sort, Dictionary<string, bool> boolFields)
         {
+            //            List<string> filter = new List<string>();
+
             object remoteValue = DoRemote(requestingAgentID, start, count, boolFields);
             if (remoteValue != null || m_doRemoteOnly)
                 return (List<GroupRecord>)remoteValue;
