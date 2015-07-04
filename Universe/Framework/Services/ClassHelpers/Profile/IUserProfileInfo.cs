@@ -110,24 +110,22 @@ namespace Universe.Framework.Services.ClassHelpers.Profile
 
         public override OSDMap ToOSD()
         {
-            OSDMap map = new OSDMap
-                             {
-                                 {"PrincipalID", OSD.FromUUID(PrincipalID)},
-                                 {"Flags", OSD.FromInteger((int) Flags)},
-                                 {"AcceptTOS", OSD.FromBoolean(AcceptTOS)},                                 
-                                 {"MaturityRating", OSD.FromInteger(MaturityRating)},
-                                 {"MaxMaturity", OSD.FromInteger(MaxMaturity)},
-                                 {"HoverHeight", OSD.FromReal(HoverHeight)},
-                                 {"Language", OSD.FromString(Language)},
-                                 {"LanguageIsPublic", OSD.FromBoolean(LanguageIsPublic)},
-                                 {"PermEveryone", OSD.FromInteger(PermEveryone)},
-                                 {"PermGroup", OSD.FromInteger(PermGroup)},
-                                 {"PermNextOwner", OSD.FromInteger(PermNextOwner)},
-                                 {
-                                     "OtherAgentInformation",
-                                     OSD.FromString(OSDParser.SerializeLLSDXmlString(OtherAgentInformation))
-                                 }
-                             };
+            OSDMap map = new OSDMap {
+                { "PrincipalID", OSD.FromUUID (PrincipalID) },
+                { "Flags", OSD.FromInteger ((int)Flags) },
+                { "AcceptTOS", OSD.FromBoolean (AcceptTOS) },                                 
+                { "MaturityRating", OSD.FromInteger (MaturityRating) },
+                { "MaxMaturity", OSD.FromInteger (MaxMaturity) },
+                { "HoverHeight", OSD.FromReal (HoverHeight) },
+                { "Language", OSD.FromString (Language) },
+                { "LanguageIsPublic", OSD.FromBoolean (LanguageIsPublic) },
+                { "PermEveryone", OSD.FromInteger (PermEveryone) },
+                { "PermGroup", OSD.FromInteger (PermGroup) },
+                { "PermNextOwner", OSD.FromInteger (PermNextOwner) }, {
+                    "OtherAgentInformation",
+                    OSD.FromString (OSDParser.SerializeLLSDXmlString (OtherAgentInformation))
+                }
+            };
 
             return map;
         }
@@ -275,27 +273,26 @@ namespace Universe.Framework.Services.ClassHelpers.Profile
         /// <returns></returns>
         public OSDMap ToOSD(bool trusted)
         {
-            OSDMap map = new OSDMap
-                             {
-                                 {"PrincipalID", OSD.FromUUID(PrincipalID)},
-                                 {"AllowPublish", OSD.FromBoolean(AllowPublish)},
-                                 {"MaturePublish", OSD.FromBoolean(MaturePublish)},
-                                 {"WantToMask", OSD.FromUInteger(Interests.WantToMask)},
-                                 {"WantToText", OSD.FromString(Interests.WantToText)},
-                                 {"CanDoMask", OSD.FromUInteger(Interests.CanDoMask)},
-                                 {"CanDoText", OSD.FromString(Interests.CanDoText)},
-                                 {"Languages", OSD.FromString(Interests.Languages)},
-                                 {"AboutText", OSD.FromString(AboutText)},
-                                 {"FirstLifeImage", OSD.FromUUID(FirstLifeImage)},
-                                 {"FirstLifeAboutText", OSD.FromString(FirstLifeAboutText)},
-                                 {"Image", OSD.FromUUID(Image)},
-                                 {"WebURL", OSD.FromString(WebURL)},
-                                 {"Created", OSD.FromInteger(Created)},
-                                 {"DisplayName", OSD.FromString(DisplayName)},
-                                 {"Partner", OSD.FromUUID(Partner)},
-                                 {"Visible", OSD.FromBoolean(Visible)},
-                                 {"CustomType", OSD.FromString(CustomType)}
-                             };
+            OSDMap map = new OSDMap {
+                { "PrincipalID", OSD.FromUUID (PrincipalID) },
+                { "AllowPublish", OSD.FromBoolean (AllowPublish) },
+                { "MaturePublish", OSD.FromBoolean (MaturePublish) },
+                { "WantToMask", OSD.FromUInteger (Interests.WantToMask) },
+                { "WantToText", OSD.FromString (Interests.WantToText) },
+                { "CanDoMask", OSD.FromUInteger (Interests.CanDoMask) },
+                { "CanDoText", OSD.FromString (Interests.CanDoText) },
+                { "Languages", OSD.FromString (Interests.Languages) },
+                { "AboutText", OSD.FromString (AboutText) },
+                { "FirstLifeImage", OSD.FromUUID (FirstLifeImage) },
+                { "FirstLifeAboutText", OSD.FromString (FirstLifeAboutText) },
+                { "Image", OSD.FromUUID (Image) },
+                { "WebURL", OSD.FromString (WebURL) },
+                { "Created", OSD.FromInteger (Created) },
+                { "DisplayName", OSD.FromString (DisplayName) },
+                { "Partner", OSD.FromUUID (Partner) },
+                { "Visible", OSD.FromBoolean (Visible) },
+                { "CustomType", OSD.FromString (CustomType) }
+            };
             if (trusted)
             {
                 map.Add("AArchiveName", OSD.FromString(AArchiveName));
@@ -381,25 +378,26 @@ namespace Universe.Framework.Services.ClassHelpers.Profile
 
         public override OSDMap ToOSD()
         {
-            OSDMap Classified = new OSDMap
-                                    {
-                                        {"ClassifiedUUID", OSD.FromUUID(ClassifiedUUID)},
-                                        {"CreatorUUID", OSD.FromUUID(CreatorUUID)},
-                                        {"CreationDate", OSD.FromUInteger(CreationDate)},
-                                        {"ExpirationDate", OSD.FromUInteger(ExpirationDate)},
-                                        {"Category", OSD.FromUInteger(Category)},
-                                        {"Name", OSD.FromString(Name)},
-                                        {"Description", OSD.FromString(Description)},
-                                        {"ParcelUUID", OSD.FromUUID(ParcelUUID)},
-                                        {"ParentEstate", OSD.FromUInteger(ParentEstate)},
-                                        {"SnapshotUUID", OSD.FromUUID(SnapshotUUID)},
-                                        {"ScopeID", OSD.FromUUID(ScopeID)},
-                                        {"SimName", OSD.FromString(SimName)},
-                                        {"GlobalPos", OSD.FromVector3(GlobalPos)},
-                                        {"ParcelName", OSD.FromString(ParcelName)},
-                                        {"ClassifiedFlags", OSD.FromInteger(ClassifiedFlags)},
-                                        {"PriceForListing", OSD.FromInteger(PriceForListing)}
-                                    };
+            OSDMap Classified = new OSDMap {
+                { "ClassifiedUUID", OSD.FromUUID (ClassifiedUUID) },
+                { "CreatorUUID", OSD.FromUUID (CreatorUUID) },
+                { "CreationDate", OSD.FromUInteger (CreationDate) },
+                { "ExpirationDate", OSD.FromUInteger (ExpirationDate) },
+                { "Category", OSD.FromUInteger (Category) },
+                { "Name", OSD.FromString (Name) },
+                { "Description", OSD.FromString (Description) },
+                { "ParcelUUID", OSD.FromUUID (ParcelUUID) },
+                { "ParentEstate", OSD.FromUInteger (ParentEstate) },
+                { "SnapshotUUID", OSD.FromUUID (SnapshotUUID) },
+                { "ScopeID", OSD.FromUUID (ScopeID) },
+                { "SimName", OSD.FromString (SimName) },
+                { "GPosX", GlobalPos.X.ToString () },
+                { "GPosY", GlobalPos.Y.ToString () },
+                { "GPosZ", GlobalPos.Z.ToString () },
+                { "ParcelName", OSD.FromString (ParcelName) },
+                { "ClassifiedFlags", OSD.FromInteger (ClassifiedFlags) },
+                { "PriceForListing", OSD.FromInteger (PriceForListing) }
+            };
             return Classified;
         }
 
@@ -417,7 +415,17 @@ namespace Universe.Framework.Services.ClassHelpers.Profile
             SnapshotUUID = map["SnapshotUUID"].AsUUID();
             ScopeID = map["ScopeID"].AsUUID();
             SimName = map["SimName"].AsString();
-            GlobalPos = map["GlobalPos"].AsVector3();
+
+            if (map.ContainsKey("GlobalPos"))
+            {
+                GlobalPos = map["GlobalPos"].AsVector3();
+            }
+            else
+            {
+                GlobalPos.X = (float)Convert.ToDouble(map["GPosX"].AsString());
+                GlobalPos.Y = (float)Convert.ToDouble(map["GPosY"].AsString());
+                GlobalPos.Z = (float)Convert.ToDouble(map["GPosZ"].AsString());
+            }
             ParcelName = map["ParcelName"].AsString();
             ClassifiedFlags = (byte)map["ClassifiedFlags"].AsInteger();
             PriceForListing = map["PriceForListing"].AsInteger();
@@ -442,22 +450,23 @@ namespace Universe.Framework.Services.ClassHelpers.Profile
 
         public override OSDMap ToOSD()
         {
-            OSDMap Pick = new OSDMap
-                              {
-                                  {"PickUUID", OSD.FromUUID(PickUUID)},
-                                  {"CreatorUUID", OSD.FromUUID(CreatorUUID)},
-                                  {"TopPick", OSD.FromInteger(TopPick)},
-                                  {"ParcelUUID", OSD.FromUUID(ParcelUUID)},
-                                  {"Name", OSD.FromString(Name)},
-                                  {"Description", OSD.FromString(Description)},
-                                  {"SnapshotUUID", OSD.FromUUID(SnapshotUUID)},
-                                  {"User", OSD.FromString(User)},
-                                  {"OriginalName", OSD.FromString(OriginalName)},
-                                  {"SimName", OSD.FromString(SimName)},
-                                  {"GlobalPos", OSD.FromVector3(GlobalPos)},
-                                  {"SortOrder", OSD.FromInteger(SortOrder)},
-                                  {"Enabled", OSD.FromInteger(Enabled)}
-                              };
+            OSDMap Pick = new OSDMap {
+                { "PickUUID", OSD.FromUUID (PickUUID) },
+                { "CreatorUUID", OSD.FromUUID (CreatorUUID) },
+                { "TopPick", OSD.FromInteger (TopPick) },
+                { "ParcelUUID", OSD.FromUUID (ParcelUUID) },
+                { "Name", OSD.FromString (Name) },
+                { "Description", OSD.FromString (Description) },
+                { "SnapshotUUID", OSD.FromUUID (SnapshotUUID) },
+                { "User", OSD.FromString (User) },
+                { "OriginalName", OSD.FromString (OriginalName) },
+                { "SimName", OSD.FromString (SimName) },
+                { "GPosX", GlobalPos.X.ToString () },
+                { "GPosY", GlobalPos.Y.ToString () },
+                { "GPosZ", GlobalPos.Z.ToString () },
+                { "SortOrder", OSD.FromInteger (SortOrder) },
+                { "Enabled", OSD.FromInteger (Enabled) }
+            };
             return Pick;
         }
 
@@ -473,9 +482,20 @@ namespace Universe.Framework.Services.ClassHelpers.Profile
             User = map["User"].AsString();
             OriginalName = map["OriginalName"].AsString();
             SimName = map["SimName"].AsString();
-            GlobalPos = map["GlobalPos"].AsVector3();
+
+            if (map.ContainsKey("GlobalPos"))
+            {
+                GlobalPos = map["GlobalPos"].AsVector3();
+            }
+            else
+            {
+                GlobalPos.X = (float)Convert.ToDouble(map["GPosX"].AsString());
+                GlobalPos.Y = (float)Convert.ToDouble(map["GPosY"].AsString());
+                GlobalPos.Z = (float)Convert.ToDouble(map["GPosZ"].AsString());
+            }
             SortOrder = map["SortOrder"].AsInteger();
             Enabled = map["Enabled"].AsInteger();
+
         }
     }
 }

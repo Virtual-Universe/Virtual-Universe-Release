@@ -41,61 +41,61 @@ namespace Universe.Framework.SceneInfo
     [Serializable, ProtoContract(UseProtoMembersOnly = false)]
     public class LandData : IDataTransferable
     {
-        private Vector3 _AABBMax;
-        private Vector3 _AABBMin;
-        private int _Maturity;
-        private float _MediaLoopSet;
-        private int _area;
-        private uint _auctionID;
-        private UUID _authBuyerID = UUID.Zero;
-        private byte[] _bitmap = new byte[512];
-        private ParcelCategory _category = ParcelCategory.None;
-        private bool _firstParty = false;
-        private int _claimDate;
-        private int _claimPrice;
-        private string _description = String.Empty;
-        private int _dwell;
+        Vector3 _AABBMax;
+        Vector3 _AABBMin;
+        int _Maturity;
+        float _MediaLoopSet;
+        int _area;
+        uint _auctionID;
+        UUID _authBuyerID = UUID.Zero;
+        byte[] _bitmap = new byte[512];
+        ParcelCategory _category = ParcelCategory.None;
+        bool _firstParty = false;
+        int _claimDate;
+        int _claimPrice;
+        string _description = String.Empty;
+        int _dwell;
 
-        private uint _flags = (uint) ParcelFlags.AllowFly | (uint) ParcelFlags.AllowLandmark |
-                              (uint) ParcelFlags.AllowAPrimitiveEntry |
-                              (uint) ParcelFlags.AllowDeedToGroup | (uint) ParcelFlags.AllowTerraform |
-                              (uint) ParcelFlags.CreateObjects | (uint) ParcelFlags.AllowOtherScripts |
-                              (uint) ParcelFlags.SoundLocal | (uint) ParcelFlags.AllowVoiceChat;
+        uint _flags = (uint)ParcelFlags.AllowFly | (uint)ParcelFlags.AllowLandmark |
+                      (uint)ParcelFlags.AllowAPrimitiveEntry |
+                      (uint)ParcelFlags.AllowDeedToGroup | (uint)ParcelFlags.AllowTerraform |
+                      (uint)ParcelFlags.CreateObjects | (uint)ParcelFlags.AllowOtherScripts |
+                      (uint)ParcelFlags.SoundLocal | (uint)ParcelFlags.AllowVoiceChat;
 
-        private UUID _globalID = UUID.Zero;
-        private UUID _groupID = UUID.Zero;
-        private bool _isGroupOwned;
+        UUID _globalID = UUID.Zero;
+        UUID _groupID = UUID.Zero;
+        bool _isGroupOwned;
 
-        private byte _landingType = 2;
-        private int _localID;
-        private byte _mediaAutoScale;
-        private string _mediaDescription = "";
-        private int _mediaHeight;
-        private UUID _mediaID = UUID.Zero;
-        private bool _mediaLoop;
-        private string _mediaType = "none/none";
+        byte _landingType = 2;
+        int _localID;
+        byte _mediaAutoScale;
+        string _mediaDescription = "";
+        int _mediaHeight;
+        UUID _mediaID = UUID.Zero;
+        bool _mediaLoop;
+        string _mediaType = "none/none";
 
-        private string _mediaURL = String.Empty;
-        private int _mediaWidth;
-        private string _musicURL = String.Empty;
-        private string _name = "Your Parcel";
-        private bool _obscureMedia;
-        private bool _obscureMusic;
-        private int _otherCleanTime;
-        private UUID _ownerID = UUID.Zero;
-        private List<ParcelManager.ParcelAccessEntry> _parcelAccessList = new List<ParcelManager.ParcelAccessEntry>();
-        private float _passHours;
-        private int _passPrice;
-        private bool _private;
-        private ulong _regionHandle;
-        private UUID _regionID;
-        private UUID _scopeID;
-        private int _salePrice;
-        private UUID _snapshotID = UUID.Zero;
-        private ParcelStatus _status = ParcelStatus.Leased;
-        private Vector3 _userLocation;
-        private Vector3 _userLookAt;
-        private AuctionInfo m_AuctionInfo = new AuctionInfo();
+        string _mediaURL = String.Empty;
+        int _mediaWidth;
+        string _musicURL = String.Empty;
+        string _name = "Your Parcel";
+        bool _obscureMedia;
+        bool _obscureMusic;
+        int _otherCleanTime;
+        UUID _ownerID = UUID.Zero;
+        List<ParcelManager.ParcelAccessEntry> _parcelAccessList = new List<ParcelManager.ParcelAccessEntry>();
+        float _passHours;
+        int _passPrice;
+        bool _private;
+        ulong _regionHandle;
+        UUID _regionID;
+        UUID _scopeID;
+        int _salePrice;
+        UUID _snapshotID = UUID.Zero;
+        ParcelStatus _status = ParcelStatus.Leased;
+        Vector3 _userLocation;
+        Vector3 _userLookAt;
+        AuctionInfo m_AuctionInfo = new AuctionInfo();
 
         #region constructor
 
@@ -328,6 +328,10 @@ namespace Universe.Framework.SceneInfo
             set { _landingType = value; }
         }
 
+        /// <summary>
+        /// Gets or sets the maturity level of the parcel.
+        /// </summary>
+        /// <value>The maturity.</value>
         [ProtoMember(24)]
         public int Maturity
         {
@@ -335,6 +339,10 @@ namespace Universe.Framework.SceneInfo
             set { _Maturity = value; }
         }
 
+        /// <summary>
+        /// Gets or sets wheter users are allowed to dwell on the parcel.
+        /// </summary>
+        /// <value>The dwell.</value>
         [ProtoMember(25)]
         public int Dwell
         {
@@ -573,68 +581,67 @@ namespace Universe.Framework.SceneInfo
         public LandData Copy()
         {
             LandData landData = new LandData
-                                    {
-                                        _AABBMax = _AABBMax,
-                                        _AABBMin = _AABBMin,
-                                        _area = _area,
-                                        _auctionID = _auctionID,
-                                        _authBuyerID = _authBuyerID,
-                                        _category = _category,
-                                        _claimDate = _claimDate,
-                                        _claimPrice = _claimPrice,
-                                        _globalID = _globalID,
-                                        _groupID = _groupID,
-                                        _isGroupOwned = _isGroupOwned,
-                                        _localID = _localID,
-                                        _landingType = _landingType,
-                                        _mediaAutoScale = _mediaAutoScale,
-                                        _mediaID = _mediaID,
-                                        _mediaURL = _mediaURL,
-                                        _musicURL = _musicURL,
-                                        _ownerID = _ownerID,
-                                        _bitmap = (byte[]) _bitmap.Clone(),
-                                        _description = _description,
-                                        _flags = _flags,
-                                        _name = _name,
-                                        _status = _status,
-                                        _passHours = _passHours,
-                                        _passPrice = _passPrice,
-                                        _salePrice = _salePrice,
-                                        _snapshotID = _snapshotID,
-                                        _userLocation = _userLocation,
-                                        _userLookAt = _userLookAt,
-                                        _otherCleanTime = _otherCleanTime,
-                                        _dwell = _dwell,
-                                        _mediaType = _mediaType,
-                                        _mediaDescription = _mediaDescription,
-                                        _mediaWidth = _mediaWidth,
-                                        _mediaHeight = _mediaHeight,
-                                        _mediaLoop = _mediaLoop,
-                                        _MediaLoopSet = _MediaLoopSet,
-                                        _obscureMusic = _obscureMusic,
-                                        _obscureMedia = _obscureMedia,
-                                        _regionID = _regionID,
-                                        _regionHandle = _regionHandle,
-                                        _Maturity = _Maturity,
-                                        _private = _private
-                                    };
-
+            {
+                _AABBMax = _AABBMax,
+                _AABBMin = _AABBMin,
+                _area = _area,
+                _auctionID = _auctionID,
+                _authBuyerID = _authBuyerID,
+                _category = _category,
+                _claimDate = _claimDate,
+                _claimPrice = _claimPrice,
+                _globalID = _globalID,
+                _groupID = _groupID,
+                _isGroupOwned = _isGroupOwned,
+                _localID = _localID,
+                _landingType = _landingType,
+                _mediaAutoScale = _mediaAutoScale,
+                _mediaID = _mediaID,
+                _mediaURL = _mediaURL,
+                _musicURL = _musicURL,
+                _ownerID = _ownerID,
+                _bitmap = (byte[])_bitmap.Clone(),
+                _description = _description,
+                _flags = _flags,
+                _name = _name,
+                _status = _status,
+                _passHours = _passHours,
+                _passPrice = _passPrice,
+                _salePrice = _salePrice,
+                _snapshotID = _snapshotID,
+                _userLocation = _userLocation,
+                _userLookAt = _userLookAt,
+                _otherCleanTime = _otherCleanTime,
+                _dwell = _dwell,
+                _mediaType = _mediaType,
+                _mediaDescription = _mediaDescription,
+                _mediaWidth = _mediaWidth,
+                _mediaHeight = _mediaHeight,
+                _mediaLoop = _mediaLoop,
+                _MediaLoopSet = _MediaLoopSet,
+                _obscureMusic = _obscureMusic,
+                _obscureMedia = _obscureMedia,
+                _regionID = _regionID,
+                _regionHandle = _regionHandle,
+                _Maturity = _Maturity,
+                _private = _private
+            };
 
             landData._parcelAccessList.Clear();
 
             foreach (
                 ParcelManager.ParcelAccessEntry newEntry in
                     _parcelAccessList.Select(entry => new ParcelManager.ParcelAccessEntry
-                                                          {
-                                                              AgentID = entry.AgentID,
-                                                              Flags = entry.Flags,
-                                                              Time = entry.Time
-                                                          }))
+                    {
+                        AgentID = entry.AgentID,
+                        Flags = entry.Flags,
+                        Time = entry.Time
+                    }))
             {
                 landData._parcelAccessList.Add(newEntry);
             }
 
-			return landData;
+            return landData;
         }
 
         #region IDataTransferable
@@ -650,10 +657,9 @@ namespace Universe.Framework.SceneInfo
             map["AuctionID"] = OSD.FromUInteger(AuctionID);
             map["SalePrice"] = OSD.FromInteger(SalePrice);
             map["Dwell"] = OSD.FromInteger(Dwell);
-            map["Flags"] = OSD.FromInteger((int) Flags);
+            map["Flags"] = OSD.FromInteger((int)Flags);
             map["Name"] = OSD.FromString(Name);
             map["Description"] = OSD.FromString(Description);
-            map["UserLocation"] = OSD.FromVector3(UserLocation);
             map["LocalID"] = OSD.FromInteger(LocalID);
             map["GlobalID"] = OSD.FromUUID(GlobalID);
             map["RegionID"] = OSD.FromUUID(RegionID);
@@ -671,35 +677,43 @@ namespace Universe.Framework.SceneInfo
             map["MediaURL"] = OSD.FromString(MediaURL);
             map["MusicURL"] = OSD.FromString(MusicURL);
             map["Bitmap"] = OSD.FromBinary(Bitmap);
-            map["Category"] = OSD.FromInteger((int) Category);
+            map["Category"] = OSD.FromInteger((int)Category);
             map["FirstParty"] = OSD.FromBoolean(FirstParty);
             map["ClaimDate"] = OSD.FromInteger(ClaimDate);
             map["ClaimPrice"] = OSD.FromInteger(ClaimPrice);
-            map["Status"] = OSD.FromInteger((int) Status);
+            map["Status"] = OSD.FromInteger((int)Status);
             map["LandingType"] = OSD.FromInteger(LandingType);
             map["PassHours"] = OSD.FromReal(PassHours);
             map["PassPrice"] = OSD.FromInteger(PassPrice);
-            map["UserLookAt"] = OSD.FromVector3(UserLookAt);
             map["AuthBuyerID"] = OSD.FromUUID(AuthBuyerID);
             map["OtherCleanTime"] = OSD.FromInteger(OtherCleanTime);
             map["RegionHandle"] = OSD.FromULong(RegionHandle);
             map["Private"] = OSD.FromBoolean(Private);
             map["AuctionInfo"] = AuctionInfo.ToOSD();
+
+            map["ULocX"] = UserLocation.X.ToString();
+            map["ULocY"] = UserLocation.Y.ToString();
+            map["ULocZ"] = UserLocation.Z.ToString();
+            map["ULookX"] = UserLookAt.X.ToString();
+            map["ULookY"] = UserLookAt.Y.ToString();
+            map["ULookZ"] = UserLookAt.Z.ToString();
+
             return map;
         }
 
         public override void FromOSD(OSDMap map)
         {
+            var uloc = Vector3.Zero;
+            var ulook = Vector3.Zero;
+
             RegionID = map["RegionID"].AsUUID();
             ScopeID = map["ScopeID"].AsUUID();
             GlobalID = map["GlobalID"].AsUUID();
             LocalID = map["LocalID"].AsInteger();
             SalePrice = map["SalePrice"].AsInteger();
-            UserLocation = map["UserLocation"].AsVector3();
-            UserLookAt = map["UserLookAt"].AsVector3();
             Name = map["Name"].AsString();
             Description = map["Description"].AsString();
-            Flags = (uint) map["Flags"].AsInteger();
+            Flags = (uint)map["Flags"].AsInteger();
             Dwell = map["Dwell"].AsInteger();
             AuctionID = map["AuctionID"].AsUInteger();
             Area = map["Area"].AsInteger();
@@ -715,18 +729,18 @@ namespace Universe.Framework.SceneInfo
             MediaType = map["MediaType"].AsString();
             ObscureMedia = map["ObscureMedia"].AsBoolean();
             ObscureMusic = map["ObscureMusic"].AsBoolean();
-            MediaLoopSet = (float) map["MediaLoopSet"].AsReal();
-            MediaAutoScale = (byte) map["MediaAutoScale"].AsInteger();
+            MediaLoopSet = (float)map["MediaLoopSet"].AsReal();
+            MediaAutoScale = (byte)map["MediaAutoScale"].AsInteger();
             MediaURL = map["MediaURL"].AsString();
             MusicURL = map["MusicURL"].AsString();
             Bitmap = map["Bitmap"].AsBinary();
-            Category = (ParcelCategory) map["Category"].AsInteger();
+            Category = (ParcelCategory)map["Category"].AsInteger();
             FirstParty = map["FirstParty"].AsBoolean();
             ClaimDate = map["ClaimDate"].AsInteger();
             ClaimPrice = map["ClaimPrice"].AsInteger();
-            Status = (ParcelStatus) map["Status"].AsInteger();
-            LandingType = (byte) map["LandingType"].AsInteger();
-            PassHours = (float) map["PassHours"].AsReal();
+            Status = (ParcelStatus)map["Status"].AsInteger();
+            LandingType = (byte)map["LandingType"].AsInteger();
+            PassHours = (float)map["PassHours"].AsReal();
             PassPrice = map["PassPrice"].AsInteger();
             AuthBuyerID = map["AuthBuyerID"].AsUUID();
             OtherCleanTime = map["OtherCleanTime"].AsInteger();
@@ -734,9 +748,35 @@ namespace Universe.Framework.SceneInfo
             Private = map["Private"].AsBoolean();
             AuctionInfo = new AuctionInfo();
             if (map.ContainsKey("AuctionInfo"))
-                AuctionInfo.FromOSD((OSDMap) map["AuctionInfo"]);
+                AuctionInfo.FromOSD((OSDMap)map["AuctionInfo"]);
 
-            if ((IsGroupOwned) && (GroupID != OwnerID)) OwnerID = GroupID;
+            if ((IsGroupOwned) && (GroupID != OwnerID))
+                OwnerID = GroupID;
+
+            if (map.ContainsKey("UserLocation"))
+            {
+                UserLocation = map["UserLocation"].AsVector3();
+            }
+            else
+            {
+                uloc.X = (float)Convert.ToDouble(map["ULocX"].AsString());
+                uloc.Y = (float)Convert.ToDouble(map["ULocY"].AsString());
+                uloc.Z = (float)Convert.ToDouble(map["ULocZ"].AsString());
+                UserLocation = uloc;
+            }
+
+            if (map.ContainsKey("UserLookAt"))
+            {
+                UserLookAt = map["UserLookAt"].AsVector3();
+            }
+            else
+            {
+                ulook.X = (float)Convert.ToDouble(map["ULookX"].AsString());
+                ulook.Y = (float)Convert.ToDouble(map["ULookY"].AsString());
+                ulook.Z = (float)Convert.ToDouble(map["ULookZ"].AsString());
+                UserLookAt = ulook;
+            }
+
         }
 
         #endregion

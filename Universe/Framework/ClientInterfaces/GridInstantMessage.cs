@@ -34,7 +34,7 @@ using Universe.Framework.Utilities;
 
 namespace Universe.Framework.ClientInterfaces
 {
-    [ProtoContract(UseProtoMembersOnly=true)]
+    [ProtoContract(UseProtoMembersOnly = true)]
     public class GridInstantMessage : IDataTransferable
     {
         [ProtoMember(1)]
@@ -67,28 +67,29 @@ namespace Universe.Framework.ClientInterfaces
         public GridInstantMessage()
         {
             BinaryBucket = new byte[0];
-            Timestamp = (uint) Util.UnixTimeSinceEpoch();
+            Timestamp = (uint)Util.UnixTimeSinceEpoch();
             SessionID = FromAgentID ^ ToAgentID;
         }
 
         public override OSDMap ToOSD()
         {
-            OSDMap map = new OSDMap
-                             {
-                                 {"fromAgentID", OSD.FromUUID(FromAgentID)},
-                                 {"fromAgentName", OSD.FromString(FromAgentName)},
-                                 {"toAgentID", OSD.FromUUID(ToAgentID)},
-                                 {"dialog", OSD.FromInteger(Dialog)},
-                                 {"fromGroup", OSD.FromBoolean(FromGroup)},
-                                 {"message", OSD.FromString(Message)},
-                                 {"imSessionID", OSD.FromUUID(SessionID)},
-                                 {"offline", OSD.FromInteger(Offline)},
-                                 {"Position", OSD.FromVector3(Position)},
-                                 {"binaryBucket", OSD.FromBinary(BinaryBucket)},
-                                 {"ParentEstateID", OSD.FromUInteger(ParentEstateID)},
-                                 {"RegionID", OSD.FromUUID(RegionID)},
-                                 {"timestamp", OSD.FromUInteger(Timestamp)}
-                             };
+            OSDMap map = new OSDMap {
+                { "fromAgentID", OSD.FromUUID (FromAgentID) },
+                { "fromAgentName", OSD.FromString (FromAgentName) },
+                { "toAgentID", OSD.FromUUID (ToAgentID) },
+                { "dialog", OSD.FromInteger (Dialog) },
+                { "fromGroup", OSD.FromBoolean (FromGroup) },
+                { "message", OSD.FromString (Message) },
+                { "imSessionID", OSD.FromUUID (SessionID) },
+                { "offline", OSD.FromInteger (Offline) },
+                { "GPosX", Position.X.ToString () },
+                { "GPosY", Position.Y.ToString () },
+                { "GPosZ", Position.Z.ToString () },
+                { "binaryBucket", OSD.FromBinary (BinaryBucket) },
+                { "ParentEstateID", OSD.FromUInteger (ParentEstateID) },
+                { "RegionID", OSD.FromUUID (RegionID) },
+                { "timestamp", OSD.FromUInteger (Timestamp) }
+            };
             return map;
         }
 
@@ -97,11 +98,22 @@ namespace Universe.Framework.ClientInterfaces
             FromAgentID = map["fromAgentID"].AsUUID();
             FromAgentName = map["fromAgentName"].AsString();
             ToAgentID = map["toAgentID"].AsUUID();
-            Dialog = (byte) map["dialog"].AsInteger();
+            Dialog = (byte)map["dialog"].AsInteger();
             FromGroup = map["fromGroup"].AsBoolean();
             Message = map["message"].ToString();
-            Offline = (byte) map["offline"].AsInteger();
-            Position = map["Position"].AsVector3();
+            Offline = (byte)map["offline"].AsInteger();
+
+            if (map.ContainsKey("Position"))
+            {
+                Position = map["Position"].AsVector3();
+            }
+            else
+            {
+                Position.X = (float)Convert.ToDouble(map["GPosX"].AsString());
+                Position.Y = (float)Convert.ToDouble(map["GPosY"].AsString());
+                Position.Z = (float)Convert.ToDouble(map["GPosZ"].AsString());
+            }
+
             BinaryBucket = map["binaryBucket"].AsBinary();
             ParentEstateID = map["ParentEstateID"].AsUInteger();
             RegionID = map["RegionID"].AsUUID();
