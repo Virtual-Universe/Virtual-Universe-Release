@@ -209,7 +209,7 @@ namespace Universe.FileBasedServices.AssetService
             if (doDatabaseCaching && cache != null)
                 cache.Cache(id, asset);
             if (asset != null) return asset.Data;
-            return new byte[0];
+            return null; // an empty array is not null and alot of tests rely on this
         }
 
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]

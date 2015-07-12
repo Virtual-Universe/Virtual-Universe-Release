@@ -27,17 +27,17 @@
 
 using System;
 using System.Drawing;
-using Universe.Framework.SceneInfo;
-using Universe.Framework.Services.ClassHelpers.Assets;
 using OpenMetaverse;
 using OpenMetaverse.Imaging;
 using Universe.Framework.Modules;
+using Universe.Framework.SceneInfo;
+using Universe.Framework.Services.ClassHelpers.Assets;
 
 namespace Universe.ScriptEngine.VirtualScript.MiniModule
 {
-    internal class Graphics : MarshalByRefObject, IGraphics
+    class Graphics : MarshalByRefObject, IGraphics
     {
-        private readonly IScene m_scene;
+        readonly IScene m_scene;
 
         public Graphics(IScene m_scene)
         {
@@ -53,13 +53,16 @@ namespace Universe.ScriptEngine.VirtualScript.MiniModule
 
         public UUID SaveBitmap(Bitmap data, bool lossless, bool temporary)
         {
-            AssetBase asset = new AssetBase(UUID.Random(), "MRMDynamicImage", AssetType.Texture,
-                                            m_scene.RegionInfo.RegionID)
-                                  {
-                                      Data = OpenJPEG.EncodeFromImage(data, lossless),
-                                      Description = "MRM Image",
-                                      Flags = (temporary) ? AssetFlags.Temporary : 0
-                                  };
+            AssetBase asset = new AssetBase(
+                UUID.Random(),
+                "MRMDynamicImage",
+                AssetType.Texture,
+                m_scene.RegionInfo.RegionID)
+                {
+                    Data = OpenJPEG.EncodeFromImage(data, lossless),
+                    Description = "MRM Image",
+                    Flags = (temporary) ? AssetFlags.Temporary : 0
+                };
             asset.ID = m_scene.AssetService.Store(asset);
 
             return asset.ID;
@@ -67,7 +70,13 @@ namespace Universe.ScriptEngine.VirtualScript.MiniModule
 
         public Bitmap LoadBitmap(UUID assetID)
         {
+            // from AssetCaps
+            const string MISSING_TEXTURE_ID = "41fcdbb9-0896-495d-8889-1eb6fad88da3";       // texture to use when all else fails...
+
             byte[] bmp = m_scene.AssetService.GetData(assetID.ToString());
+            if (bmp == null)
+                bmp = m_scene.AssetService.GetData(MISSING_TEXTURE_ID);
+
             Image img = m_scene.RequestModuleInterface<IJ2KDecoder>().DecodeToImage(bmp);
 
             return new Bitmap(img);

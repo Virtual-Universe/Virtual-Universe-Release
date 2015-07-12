@@ -188,7 +188,7 @@ namespace Universe.Services.SQLServices.AssetService
             if (doDatabaseCaching && cache != null)
                 cache.Cache(id, asset);
             if (asset != null) return asset.Data;
-            return new byte[0];
+            return null; // An empty array is not null and depends on this
         }
 
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
