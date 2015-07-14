@@ -8,6 +8,18 @@ echo If you wish to customize the configuration, re-run with the switch '-p'
 echo   e.g.   runprebuild -p
 echo.
 
+rem ## Default "configuration" choice ((r)elease, (d)ebug)
+set configuration=d
+
+rem ## Default "run compile batch" choice (y(es),n(o))
+set compile_at_end=y
+
+rem ## Default Visual Studio edition
+set vstudio=2010
+
+rem ## Default Framework
+set framework=4_0
+
 rem ## Default architecture (86 (for 32bit), 64)
 :CheckArch
 set bits=x86
@@ -52,11 +64,6 @@ if %version% == 5.1 (
 	echo hmmm... Windows XP
 )
 
-rem ## Default "configuration" choice ((r)elease, (d)ebug)
-set configuration=d
-
-rem ## Default "run compile batch" choice (y(es),n(o))
-set compile_at_end=y
 
 rem ## If not requested, skip the prompting
 if "%1" =="" goto final
@@ -67,8 +74,9 @@ goto final
 :prompt
 echo I will now ask you four questions regarding your build.
 echo However, if you wish to build for:
-echo        %bits% Architecture
-echo        .NET %framework%
+echo		%bits% Architecture
+echo		.NET %framework%
+echo		Visual Studio %vstudio%
 if %compile_at_end% == y echo And you would like to compile straight after prebuild...
 echo.
 echo Simply tap [ENTER] three times.
@@ -83,7 +91,6 @@ if %bits%==86 goto configuration
 if %bits%==x86 goto configuration
 if %bits%==64 goto configuration
 if %bits%==x64 goto configuration
-Rem if %bits%==AnyCPU goto configuration
 echo "%bits%" isn't a valid choice!
 goto bits
 
@@ -98,7 +105,6 @@ goto configuration
 
 :framework
 set /p framework="Choose your .NET framework (4_0 or 4_5)? [%framework%]: "
-if %framework%==3_5 goto final
 if %framework%==4_0 goto final
 if %framework%==4_5 goto final
 echo "%framework%" isn't a valid choice!
@@ -115,12 +121,13 @@ if exist Compile.*.bat (
     echo.
     del Compile.*.bat
 )
+if %framework%==4_5 set %vstudio%=2012
 
 echo Calling Prebuild for target %vstudio% with framework %framework%...
-Prebuild.exe /target vs2010 /targetframework v%framework% /conditionals ISWIN;NET_%framework%
+Prebuild.exe /target vs%vstudio% /targetframework v%framework% /conditionals ISWIN;NET_%framework%
 
 echo.
-echo Creating compile batch file for your convinence...
+echo Creating compile batch file for your convenience...
 set fpath=C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319\msbuild
 if %bits%==x64 set args=/p:Platform=x64
 if %bits%==x86 set args=/p:Platform=x86
@@ -134,7 +141,7 @@ set configuration=debug
 )
 if %configuration%==release set cfg=/p:Configuration=Release
 if %configuration%==debug set cfg=/p:Configuration=Debug
-set filename=Compile.VS2010.net%framework%.%bits%.%configuration%.bat
+set filename=Compile.VS%vstudio%.net%framework%.%bits%.%configuration%.bat
 
 echo %fpath% Universe.sln %args% %cfg% > %filename% /p:DefineConstants="ISWIN;NET_%framework%"
 
