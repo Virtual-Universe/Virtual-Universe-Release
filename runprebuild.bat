@@ -1,7 +1,7 @@
 @ECHO OFF
 
 echo ========================================
-echo ==== UNIVERSE Configuration ============
+echo ==== Universe Configuration ===========
 echo ========================================
 echo.
 echo If you wish to customize the configuration, re-run with the switch '-p'
