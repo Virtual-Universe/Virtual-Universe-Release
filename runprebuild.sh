@@ -1,5 +1,9 @@
 #!/bin/bash
-ARCH="AnyCPU"
+# Run prebuild to configure and create the appropriate Solution and Project files for building Virtual Universe
+#
+# June 2015
+# Emperor Starfinder <emperor@secondgalaxy.com>
+ARCH="x86"
 CONFIG="Debug"
 BUILD=false
 VERSIONONLY=false
