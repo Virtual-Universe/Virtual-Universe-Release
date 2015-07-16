@@ -412,6 +412,8 @@ namespace Universe.Modules
                     // Estate regions
                     info.RegionType = "Estate / ";                   
                     responses.Add("Full Region");
+                    responses.Add("Homestead");
+                    responses.Add("Openspace");
                     responses.Add ("Universe");                            // TODO: Universe 'standard' setup, rename??
                     responses.Add ("Custom");
                     setupMode = MainConsole.Instance.Prompt("Estate region type?","Full Region", responses).ToLower();
