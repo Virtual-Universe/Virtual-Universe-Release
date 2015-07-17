@@ -433,7 +433,7 @@ namespace Universe.Modules.Chat
                         IMUsersCache.Remove(toAgentID);
                     }
                     MainConsole.Instance.Debug("[GRID INSTANT MESSAGE]: Unable to deliver an instant message as user is not online");
-                    HandleUndeliveredMessage(im, "User is not set as online by presence service.");
+                    HandleUndeliveredMessage(im, "We were unable to deliver your instant message as the user is not currently online.");
                     return;
                 }
                 if (AgentLocations[0] == "NonExistant")
