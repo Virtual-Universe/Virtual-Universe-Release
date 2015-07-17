@@ -29,6 +29,8 @@ Options:
 # check if prompting needed
 if [ $# -eq 0 ]; then
     read -p "Architecture to use? (AnyCPU, x86, x64) [$ARCH]: " bits
+	if [[ $bits == "x86" ]]; then ARCH="x86"; fi
+    if [[ $bits == "86" ]]; then ARCH="x86"; fi
     if [[ $bits == "x64" ]]; then ARCH="x64"; fi
     if [[ $bits == "64" ]]; then ARCH="x64"; fi
     if [[ $bits == "AnyCPU" ]]; then ARCH="AnyCPU"; fi
@@ -103,4 +105,8 @@ if ${BUILD:=true} ; then
   echo Finished Building Universe
   echo Thank you for choosing Virtual-Universe
   echo Please report any errors to our Github Issue Tracker https://github.com/Virtual-Universe/Virtual-Universe/issues
+
+else
+  echo "Universe has been configured to compile with $ARCH $CONFIG options"
+  echo "To manually build, enter 'xbuild Universe.sln' at the command prompt"
 fi
