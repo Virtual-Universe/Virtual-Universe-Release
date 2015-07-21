@@ -99,20 +99,18 @@ namespace Universe.Modules.Friends
             if (friendClient != null)
             {
                 MainConsole.Instance.InfoFormat("[FriendsModule]: Local Status Notify {0} that {1} users are {2}", FriendToInformID, userIDs.Length, online);
-                // The friend in this sim as root agent
+                // the  friend in this sim as root agent
                 if (online)
                     friendClient.SendAgentOnline(userIDs);
                 else
                     friendClient.SendAgentOffline(userIDs);
-                // We're done
+                // we're done
                 return;
             }
-            else
-            {
-                MainConsole.Instance.ErrorFormat("[FriendsModule]: Could not send status update to non-existant client {0}.", 
-                    FriendToInformID);
 
-            }
+            MainConsole.Instance.ErrorFormat("[FriendsModule]: Could not send status update to non-existant client {0}.",
+                FriendToInformID);
+
         }
 
         public FriendInfo[] GetFriends(UUID agentID)
@@ -186,11 +184,11 @@ namespace Universe.Modules.Friends
 
         #endregion
 
-        private void UpdateCachedInfo(UUID agentID, CachedUserInfo info)
+        void UpdateCachedInfo(UUID agentID, CachedUserInfo info)
         {
             lock (m_FriendOnlineStatuses)
             {
-                if(info.FriendOnlineStatuses.Count > 0)
+                if (info.FriendOnlineStatuses.Count > 0)
                     m_FriendOnlineStatuses[agentID] = info.FriendOnlineStatuses;
                 else
                     m_FriendOnlineStatuses.Remove(agentID);
@@ -232,9 +230,10 @@ namespace Universe.Modules.Friends
             }
             else if (message["Method"] == "FriendshipOffered")
             {
+                //UUID Requester = message["Requester"].AsUUID();
                 UUID Friend = message["Friend"].AsUUID();
                 GridInstantMessage im = new GridInstantMessage();
-                im.FromOSD((OSDMap) message["Message"]);
+                im.FromOSD((OSDMap)message["Message"]);
                 LocalFriendshipOffered(Friend, im);
             }
             else if (message["Method"] == "FriendshipDenied")
@@ -254,7 +253,7 @@ namespace Universe.Modules.Friends
             return null;
         }
 
-        private void OnClosingClient(IClientAPI client)
+        void OnClosingClient(IClientAPI client)
         {
             client.OnInstantMessage -= OnInstantMessage;
             client.OnApproveFriendRequest -= OnApproveFriendRequest;
@@ -263,7 +262,7 @@ namespace Universe.Modules.Friends
             client.OnGrantUserRights -= OnGrantUserRights;
         }
 
-        private void OnNewClient(IClientAPI client)
+        void OnNewClient(IClientAPI client)
         {
             client.OnInstantMessage += OnInstantMessage;
             client.OnApproveFriendRequest += OnApproveFriendRequest;
@@ -278,15 +277,19 @@ namespace Universe.Modules.Friends
         /// </summary>
         public IClientAPI LocateClientObject(UUID agentID)
         {
-            IScenePresence presence = m_scene.GetScenePresence(agentID);
-            if (presence != null)
-                return presence.ControllingClient;
+            IScenePresence presence;
+            foreach (IScene scene in MainConsole.Instance.ConsoleScenes)
+            {
+                presence = scene.GetScenePresence(agentID);
+                if (presence != null)
+                    return presence.ControllingClient;
+            }
             return null;
         }
 
-        private void OnInstantMessage(IClientAPI client, GridInstantMessage im)
+        void OnInstantMessage(IClientAPI client, GridInstantMessage im)
         {
-            if ((InstantMessageDialog) im.Dialog == InstantMessageDialog.FriendshipOffered)
+            if ((InstantMessageDialog)im.Dialog == InstantMessageDialog.FriendshipOffered)
             {
                 // we got a friendship offer
                 UUID principalID = im.FromAgentID;
@@ -294,10 +297,10 @@ namespace Universe.Modules.Friends
 
                 //Can't trust the incoming name for friend offers, so we have to find it ourselves.
                 UserAccount sender = m_scene.UserAccountService.GetUserAccount(m_scene.RegionInfo.AllScopeIDs,
-                                                                               principalID);
+                                         principalID);
                 im.FromAgentName = sender.Name;
                 UserAccount reciever = m_scene.UserAccountService.GetUserAccount(m_scene.RegionInfo.AllScopeIDs,
-                                                                                 friendID);
+                                           friendID);
 
                 MainConsole.Instance.DebugFormat("[FRIENDS]: {0} offered friendship to {1}", sender.Name, reciever.Name);
                 // This user wants to be friends with the other user.
@@ -309,9 +312,9 @@ namespace Universe.Modules.Friends
             }
         }
 
-        private void ForwardFriendshipOffer(UUID agentID, UUID friendID, GridInstantMessage im)
+        void ForwardFriendshipOffer(UUID agentID, UUID friendID, GridInstantMessage im)
         {
-            // This is a hack so that we don't have to keep state (transactionID/imSessionID)
+            // !!!!!!!! This is a hack so that we don't have to keep state (transactionID/imSessionID)
             // We stick this agent's ID as imSession, so that it's directly available on the receiving end
             im.SessionID = im.FromAgentID;
 
@@ -324,12 +327,11 @@ namespace Universe.Modules.Friends
 
             // The prospective friend is not here [as root]. Let's4 forward.
             SyncMessagePosterService.PostToServer(SyncMessageHelper.FriendshipOffered(agentID, friendID, im,
-                                                                                      m_scene.RegionInfo.RegionID));
-            // If the prospective friend is not online, he'll get the message upon login.
+                m_scene.RegionInfo.RegionID));
+            // If the prospective friend is not online, they will get the message upon login.
         }
 
-        private void OnApproveFriendRequest(IClientAPI client, UUID agentID, UUID friendID,
-                                            List<UUID> callingCardFolders)
+        void OnApproveFriendRequest(IClientAPI client, UUID agentID, UUID friendID, List<UUID> callingCardFolders)
         {
             MainConsole.Instance.DebugFormat("[FRIENDS]: {0} accepted friendship from {1}", agentID, friendID);
 
@@ -339,7 +341,13 @@ namespace Universe.Modules.Friends
             // Update the local cache
             UpdateFriendsCache(agentID);
 
-            // Notify the friend and send calling card to the local user
+            //
+            // Notify the friend
+            //
+
+            //
+            // Send calling card to the local user
+            //
 
             ICallingCardModule ccmodule = client.Scene.RequestModuleInterface<ICallingCardModule>();
             if (ccmodule != null)
@@ -359,7 +367,7 @@ namespace Universe.Modules.Friends
                 agentID, client.Name, friendID, m_scene.RegionInfo.RegionID));
         }
 
-        private void OnDenyFriendRequest(IClientAPI client, UUID agentID, UUID friendID, List<UUID> callingCardFolders)
+        void OnDenyFriendRequest(IClientAPI client, UUID agentID, UUID friendID, List<UUID> callingCardFolders)
         {
             MainConsole.Instance.DebugFormat("[FRIENDS]: {0} denied friendship to {1}", agentID, friendID);
 
@@ -378,7 +386,9 @@ namespace Universe.Modules.Friends
             }
             FriendsService.Delete(friendID, agentID.ToString());
 
+            //
             // Notify the friend
+            //
 
             // Try local
             if (LocalFriendshipDenied(agentID, client.Name, friendID))
@@ -387,7 +397,7 @@ namespace Universe.Modules.Friends
                 agentID, client.Name, friendID, m_scene.RegionInfo.RegionID));
         }
 
-        private void OnTerminateFriendship(IClientAPI client, UUID agentID, UUID exfriendID)
+        void OnTerminateFriendship(IClientAPI client, UUID agentID, UUID exfriendID)
         {
             FriendsService.Delete(agentID, exfriendID.ToString());
             FriendsService.Delete(exfriendID, agentID.ToString());
@@ -397,7 +407,9 @@ namespace Universe.Modules.Friends
 
             client.SendTerminateFriend(exfriendID);
 
+            //
             // Notify the friend
+            //
 
             // Try local
             if (LocalFriendshipTerminated(exfriendID, agentID))
@@ -407,15 +419,16 @@ namespace Universe.Modules.Friends
                 agentID, exfriendID, m_scene.RegionInfo.RegionID));
         }
 
-        private void OnGrantUserRights(IClientAPI remoteClient, UUID requester, UUID target, int rights)
+        void OnGrantUserRights(IClientAPI remoteClient, UUID requester, UUID target, int rights)
         {
             FriendInfo[] friends = GetFriends(remoteClient.AgentId);
             if (friends.Length == 0)
                 return;
 
             MainConsole.Instance.DebugFormat("[FRIENDS MODULE]: User {0} changing rights to {1} for friend {2}",
-                                             requester, rights,
-                                             target);
+                requester, rights,
+                target);
+
             // Let's find the friend in this user's friend list
             FriendInfo friend = null;
             foreach (FriendInfo fi in friends.Where(fi => fi.Friend == target.ToString()))
@@ -435,7 +448,10 @@ namespace Universe.Modules.Friends
                 // Always send this back to the original client
                 remoteClient.SendChangeUserRights(requester, target, rights);
 
+                //
                 // Notify the friend
+                //
+
 
                 // Try local
                 if (!LocalGrantRights(requester, target, myFlags, rights))
@@ -448,17 +464,18 @@ namespace Universe.Modules.Friends
 
         public void OfflineFriendRequest(IClientAPI client)
         {
-            // Barrowed a few lines from SendFriendsOnlineIfNeeded() above.
+            // Borrowed a few lines from SendFriendsOnlineIfNeeded() above.
             UUID agentID = client.AgentId;
             FriendInfo[] friends = FriendsService.GetFriendsRequest(agentID).ToArray();
-            GridInstantMessage im = new GridInstantMessage() 
+            GridInstantMessage im = new GridInstantMessage()
             {
                 ToAgentID = agentID,
                 Dialog = (byte)InstantMessageDialog.FriendshipOffered,
-                Message = "Will you be my friend?", 
+                Message = "Will you be my friend?",
                 Offline = 1,
                 RegionID = client.Scene.RegionInfo.RegionID
             };
+
             foreach (FriendInfo fi in friends)
             {
                 if (fi.MyFlags == 0)
@@ -468,7 +485,7 @@ namespace Universe.Modules.Friends
                         continue;
 
                     UserAccount account = m_scene.UserAccountService.GetUserAccount(
-                        client.Scene.RegionInfo.AllScopeIDs, fromAgentID);
+                                              client.Scene.RegionInfo.AllScopeIDs, fromAgentID);
                     im.FromAgentID = fromAgentID;
                     if (account != null)
                         im.FromAgentName = account.Name;
@@ -480,7 +497,7 @@ namespace Universe.Modules.Friends
             }
         }
 
-        private void UpdateFriendsCache(UUID agentID)
+        void UpdateFriendsCache(UUID agentID)
         {
             lock (m_Friends)
                 m_Friends[agentID] = FriendsService.GetFriends(agentID);
@@ -493,9 +510,9 @@ namespace Universe.Modules.Friends
             IClientAPI friendClient = LocateClientObject(toID);
             if (friendClient != null)
             {
-                // The prospective friend in this sim as root agent
+                // the prospective friend in this sim as root agent
                 friendClient.SendInstantMessage(im);
-                // We're done
+                // we're done
                 return true;
             }
             return false;
@@ -508,7 +525,7 @@ namespace Universe.Modules.Friends
             {
                 //They are online, send the online message
                 if (us != null)
-                    us.SendAgentOnline(new[] {friendID});
+                    us.SendAgentOnline(new[] { friendID });
 
                 // the prospective friend in this sim as root agent
                 GridInstantMessage im = new GridInstantMessage()
@@ -526,15 +543,18 @@ namespace Universe.Modules.Friends
                 // Update the local cache
                 UpdateFriendsCache(friendID);
 
+
+                //
                 // put a calling card into the inventory of the friend
+                //
                 ICallingCardModule ccmodule = friendClient.Scene.RequestModuleInterface<ICallingCardModule>();
                 if (ccmodule != null)
                 {
                     UserAccount account = friendClient.Scene.UserAccountService.GetUserAccount(friendClient.AllScopeIDs,
-                                                                                               userID);
+                                              userID);
                     UUID folderID =
                         friendClient.Scene.InventoryService.GetFolderForType(friendID, InventoryType.Unknown,
-                                                                             AssetType.CallingCard).ID;
+                            AssetType.CallingCard).ID;
                     ccmodule.CreateCallingCard(friendClient, userID, folderID, account.Name);
                 }
                 // we're done
@@ -549,7 +569,7 @@ namespace Universe.Modules.Friends
             IClientAPI friendClient = LocateClientObject(friendID);
             if (friendClient != null)
             {
-                // The prospective friend in this sim as root agent
+                // the prospective friend in this sim as root agent
                 GridInstantMessage im = new GridInstantMessage()
                 {
                     FromAgentID = userID,
@@ -561,7 +581,7 @@ namespace Universe.Modules.Friends
                     RegionID = friendClient.Scene.RegionInfo.RegionID
                 };
                 friendClient.SendInstantMessage(im);
-                // We're done
+                // we're done
                 return true;
             }
 
@@ -576,7 +596,7 @@ namespace Universe.Modules.Friends
                 // update local cache
                 UpdateFriendsCache(exfriendID);
                 // the friend in this sim as root agent
-                // you do NOT send the friend his uuid.
+                // you do NOT send the friend his uuid...  /me sighs...    - Revolution
                 friendClient.SendTerminateFriend(terminatingUser);
                 return true;
             }
@@ -589,17 +609,17 @@ namespace Universe.Modules.Friends
             IClientAPI friendClient = LocateClientObject(friendID);
             if (friendClient != null)
             {
-                bool onlineBitChanged = ((rights ^ userFlags) & (int) FriendRights.CanSeeOnline) != 0;
+                bool onlineBitChanged = ((rights ^ userFlags) & (int)FriendRights.CanSeeOnline) != 0;
                 if (onlineBitChanged)
                 {
-                    if ((rights & (int) FriendRights.CanSeeOnline) == 1)
-                        friendClient.SendAgentOnline(new[] {new UUID(userID)});
+                    if ((rights & (int)FriendRights.CanSeeOnline) == 1)
+                        friendClient.SendAgentOnline(new[] { new UUID(userID) });
                     else
-                        friendClient.SendAgentOffline(new[] {new UUID(userID)});
+                        friendClient.SendAgentOffline(new[] { new UUID(userID) });
                 }
                 else
                 {
-                    bool canEditObjectsChanged = ((rights ^ userFlags) & (int) FriendRights.CanModifyObjects) != 0;
+                    bool canEditObjectsChanged = ((rights ^ userFlags) & (int)FriendRights.CanModifyObjects) != 0;
                     if (canEditObjectsChanged)
                         friendClient.SendChangeUserRights(userID, friendID, rights);
                 }

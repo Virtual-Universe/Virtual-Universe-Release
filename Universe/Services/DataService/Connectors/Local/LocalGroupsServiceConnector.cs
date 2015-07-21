@@ -116,7 +116,9 @@ namespace Universe.Services.DataService
         /// <param name="grpCharter">Group charter.</param>
         void VerifySystemGroup(string grpName, UUID grpUUID, UUID grpOwnerUUID, string grpCharter)
         {
-            if (GetGroupRecord(UUID.Zero, grpUUID, grpName) == null)
+            GroupRecord grpRec;
+            grpRec = GetGroupRecord(UUID.Zero, grpUUID, grpName);
+            if (grpRec == null)
             {
                 MainConsole.Instance.WarnFormat("Creating System Group '{0}'", grpName);
 
@@ -125,9 +127,14 @@ namespace Universe.Services.DataService
                     grpName,                                            // Name
                     grpCharter,                                         // Charter / description
                     false,                                              // Show in list
-                    UUID.Zero, 0, false, false, true,                   // Insignia UUID, Membership fee, Open Enrolement, Allow publishing, Mature
+                    UUID.Zero, 0, false, false, false,                  // Insignia UUID, Membership fee, Open Enrolement, Allow publishing, Mature
                     grpOwnerUUID,                                       // founder UUID
-                    UUID.Random());                                     // owner role UUID ??
+                    UUID.Random());                                    // owner role UUID
+            }
+            else
+            {
+                if (grpRec.FounderID != grpOwnerUUID)
+                    UpdateGroupFounder(grpUUID, grpOwnerUUID, false);
             }
         }
 
@@ -145,51 +152,67 @@ namespace Universe.Services.DataService
             if (remoteValue != null || m_doRemoteOnly)
                 return;
 
-            const ulong EveryonePowers = (ulong)(GroupPowers.AllowSetHome |
-                                             GroupPowers.Accountable |
-                                             GroupPowers.JoinChat |
-                                             GroupPowers.AllowVoiceChat |
-                                             GroupPowers.ReceiveNotices);
+            const ulong EveryonePowers = (ulong)(
+                GroupPowers.Accountable |
+                GroupPowers.AllowSetHome |
+                GroupPowers.AllowVoiceChat |
+                GroupPowers.JoinChat |
+                GroupPowers.ReceiveNotices |
+                GroupPowers.StartProposal |
+                GroupPowers.VoteOnProposal
+            );
 
-            const ulong OfficersPowers = (ulong)(GroupPowers.AllowSetHome |
-                                                  GroupPowers.Accountable |
-                                                  GroupPowers.JoinChat |
-                                                  GroupPowers.AllowVoiceChat |
-                                                  GroupPowers.ReceiveNotices |
-                                                  GroupPowers.ChangeIdentity | // Same as EveryonePowers
-                                                  GroupPowers.LandEjectAndFreeze |
-                                                  GroupPowers.LandEdit |
-                                                  GroupPowers.AllowFly |
-                                                  GroupPowers.AllowRez |
-                                                  GroupPowers.AllowLandmark |
-                                                  GroupPowers.LandChangeIdentity |
-                                                  GroupPowers.ChangeMedia |
-                                                  GroupPowers.LandDeed |
-                                                  GroupPowers.LandDivideJoin |
-                                                  GroupPowers.LandEdit |
-                                                  GroupPowers.FindPlaces |
-                                                  GroupPowers.LandGardening |
-                                                  GroupPowers.LandManageAllowed |
-                                                  GroupPowers.LandManageBanned |
-                                                  GroupPowers.LandManagePasses |
-                                                  GroupPowers.LandOptions |
-                                                  GroupPowers.LandRelease |
-                                                  GroupPowers.ReturnGroupOwned |
-                                                  GroupPowers.ReturnGroupSet |
-                                                  GroupPowers.ReturnNonGroup |
-                                                  GroupPowers.SetLandingPoint |
-                                                  GroupPowers.LandSetSale |
-                                                  GroupPowers.Eject |
-                                                  GroupPowers.Invite |
-                                                  GroupPowers.ChangeOptions |
-                                                  GroupPowers.MemberVisible |
-                                                  GroupPowers.SendNotices |
-                                                  GroupPowers.DeedObject |
-                                                  GroupPowers.ObjectManipulate |
-                                                  GroupPowers.ObjectSetForSale |
-                                                  GroupPowers.AssignMemberLimited |
-                                                  GroupPowers.RoleProperties |
-                                                  GroupPowers.ModerateChat);
+            const ulong OfficersPowers = (ulong)(
+                 (GroupPowers)EveryonePowers |
+                 GroupPowers.AllowFly |
+                 GroupPowers.AllowLandmark |
+                 GroupPowers.AllowRez |
+                 GroupPowers.AssignMemberLimited |
+                 GroupPowers.ChangeIdentity |
+                 GroupPowers.ChangeMedia |
+                 GroupPowers.ChangeOptions |
+                 GroupPowers.DeedObject |
+                 GroupPowers.Eject |
+                 GroupPowers.FindPlaces |
+                 GroupPowers.Invite |
+                 GroupPowers.LandChangeIdentity |
+                 GroupPowers.LandDeed |
+                 GroupPowers.LandDivideJoin |
+                 GroupPowers.LandEdit |
+                 GroupPowers.LandEjectAndFreeze |
+                 GroupPowers.LandGardening |
+                 GroupPowers.LandManageAllowed |
+                 GroupPowers.LandManageBanned |
+                 GroupPowers.LandManagePasses |
+                 GroupPowers.LandOptions |
+                 GroupPowers.LandRelease |
+                 GroupPowers.LandSetSale |
+                 GroupPowers.MemberVisible |
+                 GroupPowers.ModerateChat |
+                 GroupPowers.ObjectManipulate |
+                 GroupPowers.ObjectSetForSale |
+                 GroupPowers.ReturnGroupOwned |
+                 GroupPowers.ReturnGroupSet |
+                 GroupPowers.ReturnNonGroup |
+                 GroupPowers.RoleProperties |
+                 GroupPowers.SendNotices |
+                 GroupPowers.SetLandingPoint
+              );
+
+            const ulong OwnersPowers = (ulong)(
+                (GroupPowers)OfficersPowers |
+                GroupPowers.AllowEditLand |
+                GroupPowers.AssignMember |
+                GroupPowers.ChangeActions |
+                GroupPowers.CreateRole |
+                GroupPowers.DeleteRole |
+                GroupPowers.ExperienceAdmin |
+                GroupPowers.ExperienceCreator |
+                GroupPowers.GroupBanAccess |
+                GroupPowers.HostEvent |
+                GroupPowers.RemoveMember
+            );
+
 
             Dictionary<string, object> row = new Dictionary<string, object>(11);
             row["GroupID"] = groupID;
@@ -206,9 +229,19 @@ namespace Universe.Services.DataService
 
             data.Insert("group_data", row);
 
+            // const ulong EveryonePowers = 8796495740928;             // >> 0x80018010000
+            //
+            // 03-07-2015 Fly-Man- Removed this part in favor of using the real values
+            //
+
             //Add everyone role to group
             AddRoleToGroup(founderID, groupID, UUID.Zero, "Everyone", "Everyone in the group is in the everyone role.",
                            "Member of " + name, EveryonePowers);
+
+            // const ulong OfficersPowers = 436506116225230;           // >> 0x 18cfffffff8ce
+            //
+            // 03-07-2015 Fly-Man- Removed this part in favor of using the real values
+            //
 
             UUID officersRole = UUID.Random();
             //Add officers role to group
@@ -216,13 +249,13 @@ namespace Universe.Services.DataService
                            "The officers of the group, with more powers than regular members.", "Officer of " + name,
                            OfficersPowers);
 
-            const ulong OwnerPowers = 18446744073709551615;
+            // replaced with above //const ulong OwnerPowers = 18446744073709551615;
             // this is the uint maxvalue
             // the default above is : 349644697632766 >>  0x13dfffffffffe
 
             //Add owner role to group
             AddRoleToGroup(founderID, groupID, OwnerRoleID, "Owners", "Owners of " + name, "Owner of " + name,
-                           OwnerPowers);
+                           OwnersPowers);
 
             //Add owner to the group as owner
             AddAgentToGroup(founderID, founderID, groupID, OwnerRoleID);
@@ -233,8 +266,13 @@ namespace Universe.Services.DataService
             SetAgentActiveGroup(founderID, groupID);
         }
 
+        //[CanBeReflected(ThreatLevel = ThreatLevel.Full)]
         public void UpdateGroupFounder(UUID groupID, UUID newOwner, bool keepOldOwnerInGroup)
         {
+            /*object remoteValue = DoRemote(groupID, newOwner, keepOldOwnerInGroup);
+            if (remoteValue != null || m_doRemoteOnly)
+                return;*/
+
             GroupRecord record = GetGroupRecord(UUID.Zero, groupID, "");
             bool newUserExists = GetAgentGroupMemberData(newOwner, groupID, newOwner) != null;
 
@@ -794,7 +832,10 @@ namespace Universe.Services.DataService
                 }
                 if (yes + no < p.Quorum)
                     p.Result = false;
-
+                /*if (yes > no)
+                    p.Result = true;
+                else
+                    p.Result = false;*/
                 p.HasCalculatedResult = true;
                 GenericUtils.AddGeneric(p.GroupID, "Proposal", p.VoteID.ToString(), p.ToOSD(), data);
             }
@@ -913,6 +954,30 @@ namespace Universe.Services.DataService
                 MaturePublish = int.Parse(result[9]) == 1,
                 OwnerRoleID = UUID.Parse(result[10])
             };
+        }
+
+        [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
+        public List<UUID> GetAllGroups(UUID requestingAgentID)
+        {
+            object remoteValue = DoRemote(requestingAgentID);
+            if (remoteValue != null || m_doRemoteOnly)
+                return (List<UUID>)remoteValue;
+
+            // maybe check for system user??
+            if (!Utilities.IsSystemUser(requestingAgentID))
+                return new List<UUID>();
+
+            QueryFilter filter = new QueryFilter();
+            List<string> groupsData = data.Query(new[] { "GroupID" }, "group_data", filter, null, null, null);
+
+            if (groupsData == null)
+                return new List<UUID>();
+
+            List<UUID> groupIDs = new List<UUID>();
+            foreach (var id in groupsData)
+                groupIDs.Add((UUID)id);
+
+            return groupIDs;
         }
 
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
