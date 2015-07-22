@@ -82,13 +82,13 @@ namespace Universe.Modules.Gestures
 
         #endregion
 
-        private void OnNewClient(IClientAPI client)
+        void OnNewClient(IClientAPI client)
         {
             client.OnActivateGesture += ActivateGesture;
             client.OnDeactivateGesture += DeactivateGesture;
         }
 
-        private void OnClosingClient(IClientAPI client)
+        void OnClosingClient(IClientAPI client)
         {
             client.OnActivateGesture -= ActivateGesture;
             client.OnDeactivateGesture -= DeactivateGesture;

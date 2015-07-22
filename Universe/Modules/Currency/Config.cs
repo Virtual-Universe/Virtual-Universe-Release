@@ -109,7 +109,7 @@ namespace Universe.Modules.Currency
                 }
                 catch (Exception)
                 {
-                    MainConsole.Instance.Warn("[Currency]: Exception reading economy config: " + propertyInfo.Name);
+                    MainConsole.Instance.Warn("[BaseCurrency]: Exception reading economy config: " + propertyInfo.Name);
                 }
             }
         }
@@ -143,7 +143,7 @@ namespace Universe.Modules.Currency
                 }
                 catch (Exception ex)
                 {
-                    MainConsole.Instance.Warn("[Currency]: Exception toOSD() config: " + ex.ToString());
+                    MainConsole.Instance.Warn("[BaseCurrency]: Exception toOSD() config: " + ex.ToString());
                 }
             }
             return returnvalue;
@@ -170,7 +170,7 @@ namespace Universe.Modules.Currency
                     }
                     catch (Exception ex)
                     {
-                        MainConsole.Instance.Warn("[Currency]: Exception reading fromOSD() config: " +
+                        MainConsole.Instance.Warn("[BaseCurrency]: Exception reading fromOSD() config: " +
                                                   ex.ToString());
                     }
                 }
@@ -191,6 +191,36 @@ namespace Universe.Modules.Currency
         {
             get { return m_UpgradeMembershipUri; }
             set { m_UpgradeMembershipUri = value.Replace("ServersHostname", MainServer.Instance.HostName); }
+        }
+
+        public int PriceGroupCreate
+        {
+            get { return (int)m_PriceGroupCreate; }
+            set { m_PriceGroupCreate = (uint)value; }
+        }
+
+        public int PriceUpload
+        {
+            get { return (int)m_PriceUpload; }
+            set { m_PriceUpload = (uint)value; }
+        }
+
+        public int PriceDirectoryFee
+        {
+            get { return (int)m_PriceDirectoryFee; }
+            set { m_PriceDirectoryFee = (uint)value; }
+        }
+
+        public int ClientPort
+        {
+            get { return (int)m_ClientPort; }
+            set { m_ClientPort = (uint)value; }
+        }
+
+        public bool CanBuyCurrencyInworld
+        {
+            get { return m_CanBuyCurrencyInworld; }
+            set { m_CanBuyCurrencyInworld = value; }
         }
 
         public int Stipend
@@ -217,42 +247,11 @@ namespace Universe.Modules.Currency
             set { m_StipendsEvery = value; }
         }
 
-        public int PriceGroupCreate
-        {
-            get { return (int)m_PriceGroupCreate; }
-            set { m_PriceGroupCreate = (uint)value; }
-        }
-
-        public int PriceUpload
-        {
-            get { return (int)m_PriceUpload; }
-            set { m_PriceUpload = (uint)value; }
-        }
-
-        public int PriceDirectoryFee
-        {
-            get { return (int)m_PriceDirectoryFee; }
-            set { m_PriceDirectoryFee = (uint)value; }
-        }
-
         public bool StipendsPremiumOnly
         {
             get { return m_StipendsPremiumOnly; }
             set { m_StipendsPremiumOnly = value; }
         }
-
-        public int ClientPort
-        {
-            get { return (int)m_ClientPort; }
-            set { m_ClientPort = (uint)value; }
-        }
-
-        public bool CanBuyCurrencyInworld
-        {
-            get { return m_CanBuyCurrencyInworld; }
-            set { m_CanBuyCurrencyInworld = value; }
-        }
-
         public bool StipendsLoadOldUsers
         {
             get { return m_StipendsLoadOldUsers; }

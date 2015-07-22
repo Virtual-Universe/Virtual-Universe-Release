@@ -38,9 +38,9 @@ namespace Universe.Modules.Agent.Xfer
 {
     public class XferModule : INonSharedRegionModule, IXfer
     {
-        private readonly Dictionary<string, FileData> NewFiles = new Dictionary<string, FileData>();
-        private readonly Dictionary<ulong, XferDownLoad> Transfers = new Dictionary<ulong, XferDownLoad>();
-        private IScene m_scene;
+        readonly Dictionary<string, FileData> NewFiles = new Dictionary<string, FileData>();
+        readonly Dictionary<ulong, XferDownLoad> Transfers = new Dictionary<ulong, XferDownLoad>();
+        IScene m_scene;
 
         #region INonSharedRegionModule Members
 
@@ -122,7 +122,7 @@ namespace Universe.Modules.Agent.Xfer
             client.OnConfirmXfer += AckPacket;
         }
 
-        private void OnClosingClient(IClientAPI client)
+        void OnClosingClient(IClientAPI client)
         {
             client.OnRequestXfer -= RequestXfer;
             client.OnConfirmXfer -= AckPacket;
@@ -174,7 +174,7 @@ namespace Universe.Modules.Agent.Xfer
             }
         }
 
-        private void RemoveXferData(ulong xferID)
+        void RemoveXferData(ulong xferID)
         {
             // NewFiles must be locked!
             if (Transfers.ContainsKey(xferID))
@@ -197,7 +197,7 @@ namespace Universe.Modules.Agent.Xfer
             }
         }
 
-        private void RemoveOrDecrement(string fileName)
+        void RemoveOrDecrement(string fileName)
         {
             // NewFiles must be locked
 
@@ -212,7 +212,7 @@ namespace Universe.Modules.Agent.Xfer
 
         #region Nested type: FileData
 
-        private class FileData
+        class FileData
         {
             public int Count;
             public byte[] Data;
@@ -231,7 +231,7 @@ namespace Universe.Modules.Agent.Xfer
             public uint Packet;
             public uint Serial = 1;
             public ulong XferID;
-            private bool complete;
+            bool complete;
 
             public XferDownLoad(string fileName, byte[] data, ulong xferID, IClientAPI client)
             {

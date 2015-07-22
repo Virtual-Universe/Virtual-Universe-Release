@@ -37,8 +37,11 @@ namespace Universe.Framework.Services
     {
         public int Created;
         public string Email;
+
         public string Name { get; set; }
+
         public UUID PrincipalID { get; set; }
+
         public int UserFlags = Constants.USER_FLAG_GUEST;
         public int UserLevel = Constants.USER_NORMAL;
 
@@ -81,7 +84,7 @@ namespace Universe.Framework.Services
                 string[] split = Name.Split(' ');
                 if (split.Length > 1)
                     return Name.Split(' ')[1];
-                else return "";
+                return "";
             }
         }
 
@@ -256,12 +259,19 @@ namespace Universe.Framework.Services
     public interface IUserAccountData : IUniverseDataPlugin
     {
         string Realm { get; }
+
         UserAccount[] Get(List<UUID> scopeIDs, string[] fields, string[] values);
+
         bool Store(UserAccount data);
+
         bool DeleteAccount(UUID userID, bool archiveInformation);
+
         UserAccount[] GetUsers(List<UUID> scopeIDs, string query);
+
         UserAccount[] GetUsers(List<UUID> scopeIDs, string query, uint? start, uint? count);
+
         UserAccount[] GetUsers(List<UUID> scopeIDs, int level, int flags);
+
         uint NumberOfUsers(List<UUID> scopeIDs, string query);
     }
 }

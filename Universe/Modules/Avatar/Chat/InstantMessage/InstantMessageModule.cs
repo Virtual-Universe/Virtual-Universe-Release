@@ -39,14 +39,14 @@ namespace Universe.Modules.Chat
 {
     public class InstantMessageModule : INonSharedRegionModule
     {
-        private IScene m_Scene;
+        IScene m_Scene;
 
-        private IMessageTransferModule m_TransferModule;
+        IMessageTransferModule m_TransferModule;
 
         /// <value>
         ///     Is this module enabled?
         /// </value>
-        private bool m_enabled;
+        bool m_enabled;
 
         #region INonSharedRegionModule Members
 
@@ -54,13 +54,8 @@ namespace Universe.Modules.Chat
         {
             if (config.Configs["Messaging"] != null)
             {
-                if (config.Configs["Messaging"].GetString(
-                    "InstantMessageModule", "InstantMessageModule") !=
-                    "InstantMessageModule")
-                    return;
+                m_enabled = (config.Configs["Messaging"].GetString("InstantMessageModule", Name) == Name);
             }
-
-            m_enabled = true;
         }
 
         public void AddRegion(IScene scene)
@@ -121,11 +116,11 @@ namespace Universe.Modules.Chat
 
         #endregion
 
-        private void EventManager_OnClosingClient(IClientAPI client)
+        void EventManager_OnClosingClient(IClientAPI client)
         {
         }
 
-        private void EventManager_OnNewClient(IClientAPI client)
+        void EventManager_OnNewClient(IClientAPI client)
         {
             client.OnInstantMessage += OnInstantMessage;
         }
@@ -134,11 +129,11 @@ namespace Universe.Modules.Chat
         {
             byte dialog = im.Dialog;
 
-            if (dialog != (byte) InstantMessageDialog.MessageFromAgent
-                && dialog != (byte) InstantMessageDialog.StartTyping
-                && dialog != (byte) InstantMessageDialog.StopTyping
-                && dialog != (byte) InstantMessageDialog.BusyAutoResponse
-                && dialog != (byte) InstantMessageDialog.MessageFromObject)
+            if (dialog != (byte)InstantMessageDialog.MessageFromAgent
+                && dialog != (byte)InstantMessageDialog.StartTyping
+                && dialog != (byte)InstantMessageDialog.StopTyping
+                && dialog != (byte)InstantMessageDialog.BusyAutoResponse
+                && dialog != (byte)InstantMessageDialog.MessageFromObject)
             {
                 return;
             }
@@ -164,14 +159,14 @@ namespace Universe.Modules.Chat
         /// <summary>
         /// </summary>
         /// <param name="msg"></param>
-        private void OnGridInstantMessage(GridInstantMessage msg)
+        void OnGridInstantMessage(GridInstantMessage msg)
         {
             byte dialog = msg.Dialog;
 
-            if (dialog != (byte) InstantMessageDialog.MessageFromAgent
-                && dialog != (byte) InstantMessageDialog.StartTyping
-                && dialog != (byte) InstantMessageDialog.StopTyping
-                && dialog != (byte) InstantMessageDialog.MessageFromObject)
+            if (dialog != (byte)InstantMessageDialog.MessageFromAgent
+                && dialog != (byte)InstantMessageDialog.StartTyping
+                && dialog != (byte)InstantMessageDialog.StopTyping
+                && dialog != (byte)InstantMessageDialog.MessageFromObject)
             {
                 return;
             }

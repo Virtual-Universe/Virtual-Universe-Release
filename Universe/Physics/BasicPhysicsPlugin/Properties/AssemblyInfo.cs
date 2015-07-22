@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
@@ -25,57 +25,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Resources;
 
-/// <summary>
-/// General Information
-/// General information about an assembly is controlled through the following
-/// set of attributes.  Change these attribute values to modify the information
-/// associated with an assembly.
-/// </summary>
+// Information about this assembly is defined by the following
+// attributes.
+//
+// change them to the information which is associated with the assembly
+// you compile.
+
 [assembly: AssemblyTitle("Universe.Physics.BasicPhysicsPlugin")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Virtual Universe Development Team")]
 [assembly: AssemblyProduct("Universe.Physics.BasicPhysicsPlugin")]
-[assembly: AssemblyCopyright("Copyright © 2015-2025")]
+[assembly: AssemblyCopyright("Copyright � 2015-2025")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
-/// <summary>
-/// ComVisible
-/// Setting ComVisible to false makes the types in this assembly not visible
-/// to COM componants.  If you need to access a type in this assembly from
-/// COM, set the ComVisible to true on that type.
-/// </summary>
+// This sets the default COM visibility of types in the assembly to invisible.
+// If you need to expose a type to COM, use [ComVisible(true)] on that type.
+
 [assembly: ComVisible(false)]
 
-/// <summary>
-/// GUID
-/// The following GUID is for the id of the typelib if this project is exposed
-/// to COM.
-/// </summary>
-[assembly: Guid("269c99ff-0740-4886-8593-7527903090bf")]
+// The assembly version has following format :
+//
+// Major.Minor.Build.Revision
+//
+// You can specify all values by your own or you can build default build and revision
+// numbers with the '*' character (the default):
 
-/// <summary>
-/// Version Information
-/// The version information for an assembly consists of the following information:
-///     Major Version
-///     Minor Version
-///     Build Number
-///     Revision Number
-///     
-/// You can specify all the values or you can default the build and revision numbers
-/// by using the '*' as shown below:
-/// [assembly: AssemblyVersion("1.0.*")]
-/// </summary>
-[assembly: AssemblyVersion("1.0.*")]
-
-/// <summary>
-/// NeutralResourcesLanguageAttribute
-/// The Neutral language of the assembly is set here.  It generally is en.
-/// </summary>
-[assembly: NeutralResourcesLanguageAttribute("en")]
+[assembly: AssemblyVersion("1.0.0.*")]

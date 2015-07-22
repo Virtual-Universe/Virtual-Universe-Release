@@ -28,6 +28,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
+using Nini.Config;
 using OpenMetaverse;
 using OpenMetaverse.StructuredData;
 using ProtoBuf;
@@ -242,7 +243,7 @@ namespace Universe.Framework.Services
         [ProtoMember(3)]
         public UUID SessionID;
         [ProtoMember(4)]
-        public int RegionFlags = 0;
+        public int RegionFlags;
         [ProtoMember(5)]
         public GridRegion Region;
         [ProtoMember(6)]
@@ -265,13 +266,14 @@ namespace Universe.Framework.Services
         public override void FromOSD(OSDMap map)
         {
             Error = map["Error"];
-            OSDArray n = (OSDArray) map["Neighbors"];
-            Neighbors = n.ConvertAll<GridRegion>((osd) =>
-                                                     {
-                                                         GridRegion r = new GridRegion();
-                                                         r.FromOSD((OSDMap) osd);
-                                                         return r;
-                                                     });
+            OSDArray n = (OSDArray)map["Neighbors"];
+            Neighbors = n.ConvertAll<GridRegion>(
+                (osd) =>
+                {
+                    GridRegion r = new GridRegion();
+                    r.FromOSD((OSDMap)osd);
+                    return r;
+                });
             SessionID = map["SessionID"];
             RegionFlags = map["RegionFlags"];
             if (map.ContainsKey("Region"))
@@ -280,7 +282,7 @@ namespace Universe.Framework.Services
                 Region.FromOSD((OSDMap)map["Region"]);
             }
             if (map.ContainsKey("URIs"))
-                URIs = ((OSDMap)map["URIs"]).ConvertMap<List<string>>((o)=>((OSDArray)o).ConvertAll<string>((oo)=>oo));
+                URIs = ((OSDMap)map["URIs"]).ConvertMap<List<string>>((o) => ((OSDArray)o).ConvertAll<string>((oo) => oo));
         }
     }
 
@@ -294,7 +296,7 @@ namespace Universe.Framework.Services
         /// </summary>
         [ProtoMember(3)]
         public uint HttpPort { get; set; }
-		
+
         [ProtoMember(4)]
         public string RegionName { get; set; }
 
@@ -303,76 +305,94 @@ namespace Universe.Framework.Services
 
         [ProtoMember(6)]
         public int RegionLocX { get; set; }
+
         [ProtoMember(7)]
         public int RegionLocY { get; set; }
+
         [ProtoMember(8)]
         public int RegionLocZ { get; set; }
+
         [ProtoMember(9)]
         public UUID EstateOwner { get; set; }
+
         [ProtoMember(10)]
         public int RegionSizeX { get; set; }
+
         [ProtoMember(11)]
         public int RegionSizeY { get; set; }
+
         [ProtoMember(12)]
         public int RegionSizeZ { get; set; }
+
         [ProtoMember(13)]
         public int Flags { get; set; }
+
         [ProtoMember(14)]
         public UUID SessionID { get; set; }
+
         [ProtoMember(15)]
         public UUID RegionID { get; set; }
+
         [ProtoMember(16)]
         public UUID TerrainImage { get; set; }
+
         [ProtoMember(17)]
         public UUID TerrainMapImage { get; set; }
+
         [ProtoMember(18)]
         public UUID ParcelMapImage { get; set; }
+
         [ProtoMember(19)]
         public byte Access { get; set; }
+
         [ProtoMember(20)]
         public int LastSeen { get; set; }
+
         [ProtoMember(21)]
         public string ExternalHostName { get; set; }
+
         [ProtoMember(22)]
         public int InternalPort { get; set; }
+
         [ProtoMember(23)]
         public string RegionTerrain { get; set; }
+
         [ProtoMember(24)]
         public uint RegionArea { get; set; }
 
         public bool IsOnline
         {
-            get { return (Flags & (int) RegionFlags.RegionOnline) != 0; }
+            get { return (Flags & (int)RegionFlags.RegionOnline) != 0; }
             set
             {
                 if (value)
-                    Flags |= (int) RegionFlags.RegionOnline;
+                    Flags |= (int)RegionFlags.RegionOnline;
                 else
-                    Flags &= (int) RegionFlags.RegionOnline;
+                    Flags &= (int)RegionFlags.RegionOnline;
             }
         }
 
         public bool IsHgRegion
         {
-            get { return (Flags & (int) RegionFlags.Hyperlink) != 0; }
+            get { return (Flags & (int)RegionFlags.Hyperlink) != 0; }
             set
             {
                 if (value)
-                    Flags |= (int) RegionFlags.Hyperlink;
+                    Flags |= (int)RegionFlags.Hyperlink;
                 else
-                    Flags &= (int) RegionFlags.Hyperlink;
+                    Flags &= (int)RegionFlags.Hyperlink;
             }
         }
 
         public bool IsForeign   // TODO: used for IWC connection?? maybe add new
         {
-            get { return (Flags & (int) RegionFlags.Foreign) != 0; }
+            get { return (Flags & (int)RegionFlags.Foreign) != 0; }
             set
             {
                 if (value)
-                    Flags |= (int) RegionFlags.Foreign;
+                    Flags |= (int)RegionFlags.Foreign;
                 else
-                    Flags &= (int) RegionFlags.Foreign;
+                    Flags &= (int)RegionFlags.Foreign;
             }
         }
 
@@ -380,20 +400,20 @@ namespace Universe.Framework.Services
         ///     A well-formed URI for the host region server (namely "http://" + ExternalHostName + : + HttpPort)
         /// </summary>
         public string ServerURI
-		{
-			get { return "http://" + ExternalHostName + ":" + HttpPort; }	// this returns the main server port- gridserver??
-		}
+        {
+            get { return "http://" + ExternalHostName + ":" + HttpPort; }	// this returns the main server port- gridserver??
+        }
 
-		/// <summary>
-		/// Gets the region URI.
-		/// </summary>
-		/// <value>The region URI.</value>
-		public string RegionURI
-		{
-			get { return "http://" + ExternalHostName + ":" + InternalPort; }	
-		}
+        /// <summary>
+        /// Gets the region URI.
+        /// </summary>
+        /// <value>The region URI.</value>
+        public string RegionURI
+        {
+            get { return "http://" + ExternalHostName + ":" + InternalPort; }
+        }
 
-		public GridRegion()
+        public GridRegion()
         {
             Flags = 0;
         }
@@ -468,7 +488,8 @@ namespace Universe.Framework.Services
                 return m_remoteEndPoint;
             }
         }
-        private IPEndPoint m_remoteEndPoint = null;
+
+        IPEndPoint m_remoteEndPoint;
 
         public ulong RegionHandle
         {
@@ -503,13 +524,13 @@ namespace Universe.Framework.Services
             map["locZ"] = RegionLocZ;
             map["regionName"] = RegionName;
             map["regionType"] = RegionType;
-            map["serverIP"] = ExternalHostName; //ExternalEndPoint.Address.ToString();
+            map["serverIP"] = ExternalHostName;
             map["serverHttpPort"] = HttpPort;
             map["serverPort"] = InternalPort;
             map["regionMapTexture"] = TerrainImage;
             map["regionTerrainTexture"] = TerrainMapImage;
             map["ParcelMapImage"] = ParcelMapImage;
-            map["access"] = (int) Access;
+            map["access"] = (int)Access;
             map["owner_uuid"] = EstateOwner;
             map["sizeX"] = RegionSizeX;
             map["sizeY"] = RegionSizeY;
@@ -573,7 +594,7 @@ namespace Universe.Framework.Services
                 ParcelMapImage = map["ParcelMapImage"].AsUUID();
 
             if (map.ContainsKey("access"))
-                Access = (byte) map["access"].AsInteger();
+                Access = (byte)map["access"].AsInteger();
 
             if (map.ContainsKey("owner_uuid"))
                 EstateOwner = map["owner_uuid"].AsUUID();
@@ -603,7 +624,7 @@ namespace Universe.Framework.Services
                 ScopeID = map["ScopeID"].AsUUID();
 
             if (map.ContainsKey("AllScopeIDs"))
-                AllScopeIDs = ((OSDArray) map["AllScopeIDs"]).ConvertAll<UUID>(o => o);
+                AllScopeIDs = ((OSDArray)map["AllScopeIDs"]).ConvertAll<UUID>(o => o);
 
             if (map.ContainsKey("remoteEndPointIP"))
             {
@@ -614,8 +635,7 @@ namespace Universe.Framework.Services
             if (map.ContainsKey("regionTerrain"))
                 RegionTerrain = map["regionTerrain"].AsString();
             if (map.ContainsKey("regionArea"))
-                RegionArea = (uint) map["regionArea"].AsInteger();
-
+                RegionArea = (uint)map["regionArea"].AsInteger();
         }
 
         #endregion

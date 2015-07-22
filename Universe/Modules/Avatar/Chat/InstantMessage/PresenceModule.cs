@@ -88,7 +88,7 @@ namespace Universe.Modules.Chat
             client.AddGenericPacketHandler("requestonlinenotification", OnRequestOnlineNotification);
         }
 
-        private void OnClosingClient(IClientAPI client)
+        void OnClosingClient(IClientAPI client)
         {
             client.RemoveGenericPacketHandler("requestonlinenotification");
         }
@@ -98,7 +98,7 @@ namespace Universe.Modules.Chat
             if (!(sender is IClientAPI))
                 return;
 
-            IClientAPI client = (IClientAPI) sender;
+            IClientAPI client = (IClientAPI)sender;
             MainConsole.Instance.DebugFormat("[PRESENCE MODULE]: OnlineNotification requested by {0}", client.Name);
 
             List<UserInfo> status = m_Scene.RequestModuleInterface<IAgentInfoService>().GetUserInfos(args);

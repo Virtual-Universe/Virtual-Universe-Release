@@ -624,7 +624,7 @@ namespace Universe.Modules.Inventory
             }
         }
 
-        private byte[] BuildLandmark(IScenePresence presence)
+        byte[] BuildLandmark(IScenePresence presence)
         {
             Vector3 pos = presence.AbsolutePosition;
             string strdata = String.Format(
@@ -648,7 +648,7 @@ namespace Universe.Modules.Inventory
         /// <param name="invType"></param>
         /// <param name="type"></param>
         /// <param name="olditemID"></param>
-        protected void HandleLinkInventoryItem(IClientAPI remoteClient, UUID transActionID, UUID folderID,
+        void HandleLinkInventoryItem(IClientAPI remoteClient, UUID transActionID, UUID folderID,
                                                uint callbackID, string description, string name,
                                                sbyte invType, sbyte type, UUID olditemID)
         {
@@ -1937,11 +1937,11 @@ namespace Universe.Modules.Inventory
         /// </summary>
         public class ItemUpdater
         {
-            private readonly string uploaderPath = String.Empty;
-            private readonly UUID inventoryItemID;
-            private readonly IHttpServer httpListener;
-            private readonly UUID agentID;
-            private readonly IScene m_scene;
+            readonly string uploaderPath = String.Empty;
+            readonly UUID inventoryItemID;
+            readonly IHttpServer httpListener;
+            readonly UUID agentID;
+            readonly IScene m_scene;
 
             public ItemUpdater(UUID AgentID, IScene scene, UUID inventoryItem, string path, IHttpServer httpServer)
             {
@@ -1984,13 +1984,13 @@ namespace Universe.Modules.Inventory
         /// </summary>
         public class TaskInventoryScriptUpdater
         {
-            private readonly string uploaderPath = String.Empty;
-            private readonly UUID inventoryItemID;
-            private readonly UUID primID;
-            private readonly bool isScriptRunning;
-            private readonly IHttpServer httpListener;
-            private readonly IScene m_scene;
-            private readonly UUID AgentID;
+            readonly string uploaderPath = String.Empty;
+            readonly UUID inventoryItemID;
+            readonly UUID primID;
+            readonly bool isScriptRunning;
+            readonly IHttpServer httpListener;
+            readonly IScene m_scene;
+            readonly UUID AgentID;
 
             public TaskInventoryScriptUpdater(IScene scene, UUID inventoryItemID, UUID primID, int isScriptRunning2,
                                               string path, IHttpServer httpServer, UUID agentID)
@@ -2132,12 +2132,12 @@ namespace Universe.Modules.Inventory
         /// </summary>
         public class TaskInventoryUpdater
         {
-            private readonly string uploaderPath = String.Empty;
-            private readonly UUID inventoryItemID;
-            private readonly UUID primID;
-            private readonly IHttpServer httpListener;
-            private readonly IScene m_scene;
-            private readonly UUID AgentID;
+            readonly string uploaderPath = String.Empty;
+            readonly UUID inventoryItemID;
+            readonly UUID primID;
+            readonly IHttpServer httpListener;
+            readonly IScene m_scene;
+            readonly UUID AgentID;
 
             public TaskInventoryUpdater(IScene scene, UUID inventoryItemID, UUID primID,
                                         string path, IHttpServer httpServer, UUID agentID)

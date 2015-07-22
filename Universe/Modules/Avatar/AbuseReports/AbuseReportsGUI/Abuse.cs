@@ -38,12 +38,12 @@ namespace Universe.Modules.AbuseReportsGUI
 {
     public partial class Abuse : Form
     {
-        private readonly IAbuseReportsConnector AbuseReportsConnector;
-        private readonly string Password;
-        private readonly IAssetService m_assetService;
-        private readonly IJ2KDecoder m_decoder;
-        private AbuseReport CurrentReport;
-        private int formNumber = 1;
+        readonly IAbuseReportsConnector AbuseReportsConnector;
+        readonly string Password;
+        readonly IAssetService m_assetService;
+        readonly IJ2KDecoder m_decoder;
+        AbuseReport CurrentReport;
+        int formNumber = 1;
 
         public Abuse(IAssetService assetService, IJ2KDecoder j2k)
         {
@@ -55,12 +55,12 @@ namespace Universe.Modules.AbuseReportsGUI
             Utilities.InputBox("Password Input Required", "Password for abuse reports database", ref Password);
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        void Form1_Load(object sender, EventArgs e)
         {
             SetGUI(AbuseReportsConnector.GetAbuseReport(formNumber, Password));
         }
 
-        private void Previous_Click(object sender, EventArgs e)
+        void Previous_Click(object sender, EventArgs e)
         {
             formNumber -= 1;
             if (formNumber == 0)
@@ -69,37 +69,37 @@ namespace Universe.Modules.AbuseReportsGUI
             SetGUI(AbuseReportsConnector.GetAbuseReport(formNumber, Password));
         }
 
-        private void Next_Click(object sender, EventArgs e)
+        void Next_Click(object sender, EventArgs e)
         {
             formNumber += 1;
             SetGUI(AbuseReportsConnector.GetAbuseReport(formNumber, Password));
         }
 
-        private void textBox7_TextChanged(object sender, EventArgs e)
+        void textBox7_TextChanged(object sender, EventArgs e)
         {
             CurrentReport.AssignedTo = AssignedTo.Text;
             AbuseReportsConnector.UpdateAbuseReport(CurrentReport, Password);
         }
 
-        private void textBox8_TextChanged(object sender, EventArgs e)
+        void textBox8_TextChanged(object sender, EventArgs e)
         {
             bool.TryParse(Active.Text, out CurrentReport.Active);
             AbuseReportsConnector.UpdateAbuseReport(CurrentReport, Password);
         }
 
-        private void textBox10_TextChanged(object sender, EventArgs e)
+        void textBox10_TextChanged(object sender, EventArgs e)
         {
             bool.TryParse(Checked.Text, out CurrentReport.Checked);
             AbuseReportsConnector.UpdateAbuseReport(CurrentReport, Password);
         }
 
-        private void textBox12_TextChanged(object sender, EventArgs e)
+        void textBox12_TextChanged(object sender, EventArgs e)
         {
             CurrentReport.Notes = Notes.Text;
             AbuseReportsConnector.UpdateAbuseReport(CurrentReport, Password);
         }
 
-        private void GotoAR_Click(object sender, EventArgs e)
+        void GotoAR_Click(object sender, EventArgs e)
         {
             if (GotoARNumber.Text == "")
                 return;

@@ -41,11 +41,11 @@ namespace Universe.Modules.Inventory
 {
     public class InventoryTransferModule : INonSharedRegionModule
     {
-        private readonly List<IScene> m_Scenelist = new List<IScene>();
+        readonly List<IScene> m_Scenelist = new List<IScene>();
 
-        private bool m_Enabled = true;
-        private IMessageTransferModule m_TransferModule;
-        private IMoneyModule moneyService;
+        bool m_Enabled = true;
+        IMessageTransferModule m_TransferModule;
+        IMoneyModule moneyService;
 
         #region INonSharedRegionModule Members
 
@@ -124,18 +124,18 @@ namespace Universe.Modules.Inventory
 
         #endregion
 
-        private void OnNewClient(IClientAPI client)
+        void OnNewClient(IClientAPI client)
         {
             // Inventory giving is conducted via instant message
             client.OnInstantMessage += OnInstantMessage;
         }
 
-        private void OnClosingClient(IClientAPI client)
+        void OnClosingClient(IClientAPI client)
         {
             client.OnInstantMessage -= OnInstantMessage;
         }
 
-        private IScene FindClientScene(UUID agentId)
+        IScene FindClientScene(UUID agentId)
         {
             lock (m_Scenelist)
             {
@@ -149,7 +149,7 @@ namespace Universe.Modules.Inventory
             return null;
         }
 
-        private void OnInstantMessage(IClientAPI client, GridInstantMessage im)
+        void OnInstantMessage(IClientAPI client, GridInstantMessage im)
         {
             //MainConsole.Instance.InfoFormat("[INVENTORY TRANSFER]: OnInstantMessage {0}", im.dialog);
             IScene clientScene = FindClientScene(client.AgentId);
@@ -371,7 +371,7 @@ namespace Universe.Modules.Inventory
         /// <summary>
         /// </summary>
         /// <param name="msg"></param>
-        private void OnGridInstantMessage(GridInstantMessage msg)
+        void OnGridInstantMessage(GridInstantMessage msg)
         {
             // Check if this is ours to handle
             IScene userScene = FindClientScene(msg.ToAgentID);

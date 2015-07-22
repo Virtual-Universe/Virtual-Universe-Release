@@ -51,7 +51,7 @@ namespace Universe.Modules.AbuseReports
     {
         #region IService Members
 
-        private IRegistryCore m_registry;
+        IRegistryCore m_registry;
 
         public void Initialize(IConfigSource config, IRegistryCore registry)
         {
@@ -96,8 +96,8 @@ namespace Universe.Modules.AbuseReports
     /// </summary>
     public class AbuseReportsModule : INonSharedRegionModule
     {
-        private IScene m_Scene;
-        private bool m_enabled;
+        IScene m_Scene;
+        bool m_enabled;
 
         #region INonSharedRegionModule Members
 
@@ -153,12 +153,12 @@ namespace Universe.Modules.AbuseReports
 
         #endregion
 
-        private void OnClosingClient(IClientAPI client)
+        void OnClosingClient(IClientAPI client)
         {
             client.OnUserReport -= UserReport;
         }
 
-        private void OnNewClient(IClientAPI client)
+        void OnNewClient(IClientAPI client)
         {
             client.OnUserReport += UserReport;
         }
@@ -178,7 +178,7 @@ namespace Universe.Modules.AbuseReports
         /// <param name="screenshotID"></param>
         /// <param name="summery"></param>
         /// <param name="reporter"></param>
-        private void UserReport(IClientAPI client, string regionName, UUID abuserID, byte catagory, byte checkflags,
+        void UserReport(IClientAPI client, string regionName, UUID abuserID, byte catagory, byte checkflags,
                                 string details, UUID objectID, Vector3 position, byte reportType, UUID screenshotID,
                                 string summery, UUID reporter)
         {
@@ -280,7 +280,7 @@ namespace Universe.Modules.AbuseReports
             return retVal;
         }
 
-        private  byte[] ProcessSendUserReportWithScreenshot(UUID AgentID, string path, Stream request, OSHttpRequest httpRequest,
+        byte[] ProcessSendUserReportWithScreenshot(UUID AgentID, string path, Stream request, OSHttpRequest httpRequest,
                                           OSHttpResponse httpResponse) 
         {
             IScenePresence SP = findScenePresence(AgentID);
@@ -322,10 +322,10 @@ namespace Universe.Modules.AbuseReports
         public class AbuseTextureUploader
         {
             public event UploadedAbuseTexture OnUpLoad;
-            private UploadedAbuseTexture handlerUpLoad = null;
-            private UUID m_agentID, m_assetID;
+            UploadedAbuseTexture handlerUpLoad = null;
+            UUID m_agentID, m_assetID;
 
-            private readonly string uploaderPath = String.Empty;
+            readonly string uploaderPath = String.Empty;
 
             public AbuseTextureUploader(string path, UUID agentID, UUID assetID)
             {

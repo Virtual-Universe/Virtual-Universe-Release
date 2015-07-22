@@ -41,16 +41,15 @@ namespace Universe.Modules.Estate
 
         #endregion
 
-        private readonly AssetBase m_asset;
-        private readonly object _lock = new object();
+        readonly AssetBase m_asset;
+        readonly object _lock = new object();
 
-        private TerrainUploadComplete handlerTerrainUploadDone;
+        TerrainUploadComplete handlerTerrainUploadDone;
         public ulong mXferID;
 
         public EstateTerrainXferHandler(IClientAPI pRemoteClient, string pClientFilename)
         {
-            m_asset = new AssetBase(UUID.Zero, pClientFilename, AssetType.Texture, pRemoteClient.AgentId)
-                          {Data = new byte[0], Description = "empty", Flags = AssetFlags.Temporary | AssetFlags.Local};
+            m_asset = new AssetBase(UUID.Zero, pClientFilename, AssetType.Texture, pRemoteClient.AgentId) { Data = new byte[0], Description = "empty", Flags = AssetFlags.Temporary | AssetFlags.Local };
         }
 
         public ulong XferID
@@ -64,7 +63,7 @@ namespace Universe.Modules.Estate
         {
             mXferID = Util.GetNextXferID();
             pRemoteClient.SendXferRequest(mXferID, short.Parse(m_asset.Type.ToString()), m_asset.ID, 0,
-                                          Utils.StringToBytes(m_asset.Name));
+                Utils.StringToBytes(m_asset.Name));
         }
 
         /// <summary>

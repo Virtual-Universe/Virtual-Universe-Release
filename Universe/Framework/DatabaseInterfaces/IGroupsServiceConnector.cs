@@ -83,6 +83,8 @@ namespace Universe.Framework.DatabaseInterfaces
 
         uint GetNumberOfGroups(UUID requestingAgentID, Dictionary<string, bool> boolFields);
 
+        List<UUID> GetAllGroups(UUID requestingAgentID);
+
         GroupRecord GetGroupRecord(UUID requestingAgentID, UUID GroupID, string GroupName);
 
         List<GroupRecord> GetGroupRecords(UUID requestingAgentID, uint start, uint count, Dictionary<string, bool> sort,

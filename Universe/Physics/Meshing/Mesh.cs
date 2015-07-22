@@ -43,19 +43,19 @@ namespace Universe.Physics.Meshing
 {
     public class Mesh : IMesh
     {
-        private readonly ulong m_key;
+        readonly ulong m_key;
         public bool WasCached { get; set; }
 
-        private Vector3 _centroid;
-        private int _centroidDiv;
-        private IntPtr m_indicesPtr = IntPtr.Zero;
-        private GCHandle m_pinnedIndex;
-        private GCHandle m_pinnedVertexes;
-        private int[] m_triangles;
-        private float[] m_vertices;
-        private int m_vertexCount;
-        private int m_indexCount;
-        private IntPtr m_verticesPtr = IntPtr.Zero;
+        Vector3 _centroid;
+        int _centroidDiv;
+        IntPtr m_indicesPtr = IntPtr.Zero;
+        GCHandle m_pinnedIndex;
+        GCHandle m_pinnedVertexes;
+        int[] m_triangles;
+        float[] m_vertices;
+        int m_vertexCount;
+        int m_indexCount;
+        IntPtr m_verticesPtr = IntPtr.Zero;
 
         public Mesh(ulong key)
         {
@@ -113,7 +113,7 @@ namespace Universe.Physics.Meshing
             m_indexCount = m_triangles.Length;
         }
 
-        private void setVertexListAsFloat(List<Coord> coords)
+        void setVertexListAsFloat(List<Coord> coords)
         {
             m_vertices = new float[coords.Count * 3];
             for (int i = 0; i < coords.Count; i++)

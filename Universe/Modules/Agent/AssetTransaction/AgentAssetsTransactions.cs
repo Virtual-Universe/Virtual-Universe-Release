@@ -42,9 +42,9 @@ namespace Universe.Modules.Agent.AssetTransaction
     public class AgentAssetTransactions
     {
         // Fields
-        private bool m_dumpAssetsToFile;
-        private IScene m_Scene;
-        private Dictionary<UUID, AssetXferUploader> XferUploaders = new Dictionary<UUID, AssetXferUploader>();
+        bool m_dumpAssetsToFile;
+        IScene m_Scene;
+        Dictionary<UUID, AssetXferUploader> XferUploaders = new Dictionary<UUID, AssetXferUploader>();
 
         // Methods
         public AgentAssetTransactions(UUID agentID, IScene scene,

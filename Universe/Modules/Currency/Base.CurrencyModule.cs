@@ -49,6 +49,11 @@ namespace Universe.Modules.BaseCurrencyModule
 
         #region IMoneyModule Members
 
+        public string InWorldCurrencySymbol
+        {
+            get { return "$"; }
+        }
+
         public int UploadCharge
         {
             get { return 0; }

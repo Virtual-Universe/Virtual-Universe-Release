@@ -44,11 +44,11 @@ namespace Universe.Modules.Chat
     {
         #region Declares
 
-        private IScene m_scene;
+        IScene m_scene;
 
-        private IMessageTransferModule m_TransferModule;
-        private bool m_Enabled = true;
-        private bool m_allowGodTeleports = true;
+        IMessageTransferModule m_TransferModule;
+        bool m_Enabled = true;
+        bool m_allowGodTeleports = true;
 
         #endregion
 
@@ -95,8 +95,7 @@ namespace Universe.Modules.Chat
             m_TransferModule = m_scene.RequestModuleInterface<IMessageTransferModule>();
 
             if (m_TransferModule == null)
-                MainConsole.Instance.Error("[INSTANT MESSAGE]: No message transfer module, " +
-                                           "lures will not work!");
+                MainConsole.Instance.Error("[INSTANT MESSAGE]: No message transfer module, lures will not work!");
         }
 
         public Type ReplaceableInterface
@@ -117,13 +116,13 @@ namespace Universe.Modules.Chat
 
         #region Client
 
-        private void OnNewClient(IClientAPI client)
+        void OnNewClient(IClientAPI client)
         {
             client.OnStartLure += OnStartLure;
             client.OnTeleportLureRequest += OnTeleportLureRequest;
         }
 
-        private void OnClosingClient(IClientAPI client)
+        void OnClosingClient(IClientAPI client)
         {
             client.OnStartLure -= OnStartLure;
             client.OnTeleportLureRequest -= OnTeleportLureRequest;
@@ -132,29 +131,29 @@ namespace Universe.Modules.Chat
         public void OnStartLure(byte lureType, string message, UUID targetid, IClientAPI client)
         {
             IScenePresence presence = client.Scene.GetScenePresence(client.AgentId);
-            Vector3 position = presence.AbsolutePosition + new Vector3(2, 0, 0)*presence.Rotation;
+            Vector3 position = presence.AbsolutePosition + new Vector3(2, 0, 0) * presence.Rotation;
             UUID dest = Util.BuildFakeParcelID(
-                client.Scene.RegionInfo.RegionHandle,
-                (uint) position.X,
-                (uint) position.Y,
-                (uint) position.Z);
+                            client.Scene.RegionInfo.RegionHandle,
+                            (uint)position.X,
+                            (uint)position.Y,
+                            (uint)position.Z);
 
-            GridInstantMessage m = new GridInstantMessage()
-                {
-                    FromAgentID = client.AgentId,
-                    FromAgentName = client.Name,
-                    ToAgentID = targetid,
-                    Dialog = (byte)InstantMessageDialog.RequestTeleport,
-                    Message = message,
-                    SessionID = dest,
-                    Offline = 0,
-                    Position = presence.AbsolutePosition,
-                    BinaryBucket = new Byte[0],
-                    RegionID = client.Scene.RegionInfo.RegionID
-                };
+            var m = new GridInstantMessage()
+            {
+                FromAgentID = client.AgentId,
+                FromAgentName = client.Name,
+                ToAgentID = targetid,
+                Dialog = (byte)InstantMessageDialog.RequestTeleport,
+                Message = message,
+                SessionID = dest,
+                Offline = 0,
+                Position = presence.AbsolutePosition,
+                BinaryBucket = new Byte[0],
+                RegionID = client.Scene.RegionInfo.RegionID
+            };
 
+            // if we are an admin and are in god mode
             if (m_allowGodTeleports && client.Scene.Permissions.CanGodTeleport(client.AgentId, targetid))
-            //if we are an admin and are in god mode
             {
                 //God tp them
                 m.Dialog = (byte)InstantMessageDialog.GodLikeRequestTeleport;
@@ -173,22 +172,21 @@ namespace Universe.Modules.Chat
 
             Util.ParseFakeParcelID(lureID, out handle, out x, out y, out z);
 
-            Vector3 position = new Vector3 {X = x, Y = y, Z = z};
+            Vector3 position = new Vector3 { X = x, Y = y, Z = z };
             IEntityTransferModule entityTransfer = client.Scene.RequestModuleInterface<IEntityTransferModule>();
             if (entityTransfer != null)
             {
-                entityTransfer.RequestTeleportLocation(client, handle, position,
-                                                       Vector3.Zero, teleportFlags);
+                entityTransfer.RequestTeleportLocation(client, handle, position, Vector3.Zero, teleportFlags);
             }
         }
 
-        private void OnGridInstantMessage(GridInstantMessage im)
+        void OnGridInstantMessage(GridInstantMessage im)
         {
-            if (im.Dialog == (byte) InstantMessageDialog.RequestTeleport)
+            if (im.Dialog == (byte)InstantMessageDialog.RequestTeleport)
             {
                 MainConsole.Instance.DebugFormat(
-                    "[HG LURE MODULE]: RequestTeleport sessionID={0}, regionID={1}, message={2}", im.SessionID,
-                    im.RegionID, im.Message);
+                    "[HG LURE MODULE]: RequestTeleport sessionID={0}, regionID={1}, message={2}",
+                    im.SessionID, im.RegionID, im.Message);
 
                 // Forward. We do this, because the IM module explicitly rejects
                 // IMs of this type

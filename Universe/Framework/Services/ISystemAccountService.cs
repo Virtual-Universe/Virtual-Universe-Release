@@ -76,5 +76,14 @@ namespace Universe.Framework.Services
         /// </summary>
         string MarketplaceOwnerName { get; }
 
+        /// <summary>
+        ///     The staff member's UUID
+        /// </summary>
+        UUID StaffUUID { get; }
+
+        /// <summary>
+        ///     The staff member's name
+        /// </summary>
+        string StaffName { get; }
     }
 }

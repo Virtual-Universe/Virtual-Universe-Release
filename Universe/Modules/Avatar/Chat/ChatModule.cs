@@ -44,21 +44,21 @@ namespace Universe.Modules.Chat
 {
     public class ChatModule : INonSharedRegionModule, IChatModule, IMuteListModule
     {
-        private const int DEBUG_CHANNEL = 2147483647;
-        private const int DEFAULT_CHANNEL = 0;
-        private readonly Dictionary<UUID, MuteList[]> MuteListCache = new Dictionary<UUID, MuteList[]>();
-        private IScene m_Scene;
+        const int DEBUG_CHANNEL = 2147483647;
+        const int DEFAULT_CHANNEL = 0;
+        readonly Dictionary<UUID, MuteList[]> MuteListCache = new Dictionary<UUID, MuteList[]>();
+        IScene m_Scene;
 
-        private IMuteListConnector MuteListConnector;
-        private IInstantMessagingService m_imService;
+        IMuteListConnector MuteListConnector;
+        IInstantMessagingService m_imService;
         internal IConfig m_config;
 
-        private bool m_enabled = true;
-        private float m_maxChatDistance = 100;
-        private int m_saydistance = 30;
-        private int m_shoutdistance = 256;
-        private bool m_useMuteListModule = true;
-        private int m_whisperdistance = 10;
+        bool m_enabled = true;
+        float m_maxChatDistance = 100;
+        int m_saydistance = 30;
+        int m_shoutdistance = 256;
+        bool m_useMuteListModule = true;
+        int m_whisperdistance = 10;
 
         public float MaxChatDistance
         {
@@ -99,7 +99,8 @@ namespace Universe.Modules.Chat
         public virtual void OnChatFromWorld(Object sender, OSChatMessage c)
         {
             // early return if not on public or debug channel
-            if (c.Channel != DEFAULT_CHANNEL && c.Channel != DEBUG_CHANNEL) return;
+            if (c.Channel != DEFAULT_CHANNEL && c.Channel != DEBUG_CHANNEL)
+                return;
 
             if (c.Range > m_maxChatDistance) //Check for max distance
                 c.Range = m_maxChatDistance;
@@ -111,17 +112,16 @@ namespace Universe.Modules.Chat
                             UUID fromID, bool fromAgent, bool broadcast, float range, UUID ToAgentID, IScene scene)
         {
             OSChatMessage args = new OSChatMessage
-                                     {
-                                         Message = message,
-                                         Channel = channel,
-                                         Type = type,
-                                         Position = fromPos,
-                                         Range = range,
-                                         SenderUUID = fromID,
-                                         Scene = scene,
-                                         ToAgentID = ToAgentID
-                                     };
-
+            {
+                Message = message,
+                Channel = channel,
+                Type = type,
+                Position = fromPos,
+                Range = range,
+                SenderUUID = fromID,
+                Scene = scene,
+                ToAgentID = ToAgentID
+            };
 
             if (fromAgent)
             {
@@ -135,6 +135,7 @@ namespace Universe.Modules.Chat
             }
 
             args.From = fromName;
+            //args.
 
             if (broadcast)
             {
@@ -180,7 +181,8 @@ namespace Universe.Modules.Chat
             IScene scene = c.Scene;
             Vector3 fromPos = c.Position;
 
-            if (c.Channel == DEBUG_CHANNEL) c.Type = ChatTypeEnum.DebugChannel;
+            if (c.Channel == DEBUG_CHANNEL)
+                c.Type = ChatTypeEnum.DebugChannel;
 
             IScenePresence avatar = (scene != null && c.Sender != null)
                                         ? scene.GetScenePresence(c.Sender.AgentId)
@@ -198,7 +200,7 @@ namespace Universe.Modules.Chat
                             //Always send this so it fires on typing start and end
                             IAttachmentsModule attMod = scene.RequestModuleInterface<IAttachmentsModule>();
                             if (attMod != null)
-                                attMod.SendScriptEventToAttachments(avatar.UUID, "changed", new object[] {Changed.STATE});
+                                attMod.SendScriptEventToAttachments(avatar.UUID, "changed", new object[] { Changed.STATE });
                         }
                         else
                             fromID = c.SenderUUID;
@@ -220,7 +222,7 @@ namespace Universe.Modules.Chat
                                                 where !presence.IsChildAgent
                                                 let fromRegionPos = fromPos
                                                 let toRegionPos = presence.AbsolutePosition
-                                                let dis = (int) Util.GetDistanceTo(toRegionPos, fromRegionPos)
+                                                let dis = (int)Util.GetDistanceTo(toRegionPos, fromRegionPos)
                                                 where
                                                     (c.Type != ChatTypeEnum.Whisper || dis <= m_whisperdistance) &&
                                                     (c.Type != ChatTypeEnum.Say || dis <= m_saydistance) &&
@@ -236,7 +238,7 @@ namespace Universe.Modules.Chat
             {
                 //If one of them is in a private parcel, and the other isn't in the same parcel, don't send the chat message
                 TrySendChatMessage(presence, fromPos, fromID, fromName, c.Type, message, sourceType,
-                                   c.Range);
+                    c.Range);
             }
         }
 
@@ -256,8 +258,8 @@ namespace Universe.Modules.Chat
                     type = ChatTypeEnum.Say;
             }
 
-            presence.ControllingClient.SendChatMessage(message, (byte) type, fromPos, fromName,
-                                                       fromAgentID, (byte) src, (byte) ChatAudibleLevel.Fully);
+            presence.ControllingClient.SendChatMessage(message, (byte)type, fromPos, fromName,
+                fromAgentID, (byte)src, (byte)ChatAudibleLevel.Fully);
         }
 
         #endregion
@@ -303,7 +305,7 @@ namespace Universe.Modules.Chat
             return List;
         }
 
-        private void UpdateCachedInfo(UUID agentID, CachedUserInfo info)
+        void UpdateCachedInfo(UUID agentID, CachedUserInfo info)
         {
             lock (MuteListCache)
                 MuteListCache[agentID] = info.MuteList.ToArray();
@@ -321,11 +323,11 @@ namespace Universe.Modules.Chat
             if (MuteID == UUID.Zero)
                 return;
             MuteList Mute = new MuteList
-                                {
-                                    MuteID = MuteID,
-                                    MuteName = Name,
-                                    MuteType = Flags.ToString()
-                                };
+            {
+                MuteID = MuteID,
+                MuteName = Name,
+                MuteType = Flags.ToString()
+            };
             MuteListConnector.UpdateMute(Mute, AgentID);
             lock (MuteListCache)
                 MuteListCache.Remove(AgentID);
@@ -375,8 +377,8 @@ namespace Universe.Modules.Chat
             m_shoutdistance = m_config.GetInt("shout_distance", m_shoutdistance);
             m_maxChatDistance = m_config.GetFloat("max_chat_distance", m_maxChatDistance);
 
-            m_useMuteListModule = (config.Configs["Messaging"].GetString("MuteListModule", "ChatModule") ==
-                                   "ChatModule");
+            var msgConfig = config.Configs["Messaging"];
+            m_useMuteListModule = (msgConfig.GetString("MuteListModule", "ChatModule") == Name);
         }
 
         public virtual void AddRegion(IScene scene)
@@ -392,12 +394,14 @@ namespace Universe.Modules.Chat
             scene.RegisterModuleInterface<IMuteListModule>(this);
             scene.RegisterModuleInterface<IChatModule>(this);
             FindChatPlugins();
-            //MainConsole.Instance.InfoFormat("[CHAT]: Initialized for {0} w:{1} s:{2} S:{3}", scene.RegionInfo.RegionName, m_whisperdistance, m_saydistance, m_shoutdistance);
+            MainConsole.Instance.DebugFormat("[CHAT]: Initialized for {0} w:{1} s:{2} S:{3}",
+                scene.RegionInfo.RegionName, m_whisperdistance, m_saydistance, m_shoutdistance);
         }
 
         public virtual void RegionLoaded(IScene scene)
         {
-            if (!m_enabled) return;
+            if (!m_enabled)
+                return;
 
             if (m_useMuteListModule)
                 MuteListConnector = Framework.Utilities.DataManager.RequestPlugin<IMuteListConnector>();
@@ -435,7 +439,7 @@ namespace Universe.Modules.Chat
 
         #endregion
 
-        private void FindChatPlugins()
+        void FindChatPlugins()
         {
             AllChatPlugins = UniverseModuleLoader.PickupModules<IChatPlugin>();
             foreach (IChatPlugin plugin in AllChatPlugins)
@@ -444,7 +448,7 @@ namespace Universe.Modules.Chat
             }
         }
 
-        private void OnClosingClient(IClientAPI client)
+        void OnClosingClient(IClientAPI client)
         {
             client.OnChatFromClient -= OnChatFromClient;
             client.OnMuteListRequest -= OnMuteListRequest;
@@ -501,7 +505,8 @@ namespace Universe.Modules.Chat
                 c.Scene.EventManager.TriggerOnChatFromClient(sender, c);
 
             // early return if not on public or debug channel
-            if (c.Channel != DEFAULT_CHANNEL && c.Channel != DEBUG_CHANNEL) return;
+            if (c.Channel != DEFAULT_CHANNEL && c.Channel != DEBUG_CHANNEL)
+                return;
 
             // sanity check:
             if (c.Sender == null)
@@ -526,7 +531,7 @@ namespace Universe.Modules.Chat
                 }
             }
             string Name2 = "";
-            if (sender is IClientAPI)
+            if (sender != null)
             {
                 Name2 = (sender).Name;
             }
@@ -539,7 +544,8 @@ namespace Universe.Modules.Chat
         {
             // unless the chat to be broadcast is of type Region, we
             // drop it if its channel is neither 0 nor DEBUG_CHANNEL
-            if (c.Channel != DEFAULT_CHANNEL && c.Channel != DEBUG_CHANNEL && c.Type != ChatTypeEnum.Region) return;
+            if (c.Channel != DEFAULT_CHANNEL && c.Channel != DEBUG_CHANNEL && c.Type != ChatTypeEnum.Region)
+                return;
 
             ChatTypeEnum cType = c.Type;
             if (c.Channel == DEBUG_CHANNEL)
@@ -576,45 +582,51 @@ namespace Universe.Modules.Chat
 
             c.Scene.ForEachScenePresence(
                 delegate(IScenePresence presence)
-                    {
-                        // ignore chat from child agents
-                        if (presence.IsChildAgent) return;
+                {
+                    // ignore chat from child agents
+                    if (presence.IsChildAgent)
+                        return;
 
-                        IClientAPI client = presence.ControllingClient;
+                    IClientAPI client = presence.ControllingClient;
 
-                        // don't forward SayOwner chat from objects to
-                        // non-owner agents
-                        if ((c.Type == ChatTypeEnum.Owner) &&
+                    // don't forward SayOwner chat from objects to
+                    // non-owner agents
+                    if ((c.Type == ChatTypeEnum.Owner) &&
                             (null != c.SenderObject) &&
                             (c.SenderObject.OwnerID != client.AgentId))
-                            return;
+                        return;
 
-                        // don't forward SayTo chat from objects to
-                        // non-targeted agents
-                        if ((c.Type == ChatTypeEnum.SayTo) &&
+                    // don't forward SayTo chat from objects to
+                    // non-targeted agents
+                    if ((c.Type == ChatTypeEnum.SayTo) &&
                             (c.ToAgentID != client.AgentId))
-                            return;
-                        bool cached = false;
-                        MuteList[] mutes = GetMutes(client.AgentId, out cached);
-                        foreach (MuteList m in mutes)
-                            if (m.MuteID == c.SenderUUID ||
-                                (c.SenderObject != null && m.MuteID == c.SenderObject.ParentEntity.UUID))
-                                return;
-                        client.SendChatMessage(c.Message, (byte) cType,
-                                               new Vector3(client.Scene.RegionInfo.RegionSizeX*0.5f,
-                                                           client.Scene.RegionInfo.RegionSizeY*0.5f, 30), fromName,
-                                               fromID,
-                                               (byte) sourceType, (byte) ChatAudibleLevel.Fully);
-                    });
-        }
+                        return;
 
+                    bool cached = false;
+                    MuteList[] mutes = GetMutes(client.AgentId, out cached);
+                    foreach (MuteList m in mutes)
+                        if (m.MuteID == c.SenderUUID ||
+                                (c.SenderObject != null && m.MuteID == c.SenderObject.ParentEntity.UUID))
+                            return;
+
+                    client.SendChatMessage(
+                        c.Message,
+                        (byte)cType,
+                        new Vector3(client.Scene.RegionInfo.RegionSizeX * 0.5f,
+                        client.Scene.RegionInfo.RegionSizeY * 0.5f, 30),
+                        fromName,
+                        fromID,
+                        (byte)sourceType,
+                        (byte)ChatAudibleLevel.Fully);
+                });
+        }
 
         /// <summary>
         ///     Get all the mutes the client has set
         /// </summary>
         /// <param name="client"></param>
         /// <param name="crc"></param>
-        private void OnMuteListRequest(IClientAPI client, uint crc)
+        void OnMuteListRequest(IClientAPI client, uint crc)
         {
             if (!m_useMuteListModule)
                 return;
@@ -656,7 +668,7 @@ namespace Universe.Modules.Chat
         /// <param name="Name"></param>
         /// <param name="Flags"></param>
         /// <param name="AgentID"></param>
-        private void OnMuteListUpdate(IClientAPI client, UUID MuteID, string Name, int Flags, UUID AgentID)
+        void OnMuteListUpdate(IClientAPI client, UUID MuteID, string Name, int Flags, UUID AgentID)
         {
             if (!m_useMuteListModule)
                 return;
@@ -671,7 +683,7 @@ namespace Universe.Modules.Chat
         /// <param name="MuteID"></param>
         /// <param name="Name"></param>
         /// <param name="AgentID"></param>
-        private void OnMuteListRemove(IClientAPI client, UUID MuteID, string Name, UUID AgentID)
+        void OnMuteListRemove(IClientAPI client, UUID MuteID, string Name, UUID AgentID)
         {
             if (!m_useMuteListModule)
                 return;
@@ -694,18 +706,18 @@ namespace Universe.Modules.Chat
         /// </summary>
         /// <param name="client"></param>
         /// <param name="im"></param>
-        private void OnInstantMessage(IClientAPI client, GridInstantMessage im)
+        void OnInstantMessage(IClientAPI client, GridInstantMessage im)
         {
             byte dialog = im.Dialog;
             switch (dialog)
             {
-                case (byte) InstantMessageDialog.SessionGroupStart:
+                case (byte)InstantMessageDialog.SessionGroupStart:
                     m_imService.CreateGroupChat(client.AgentId, im);
                     break;
-                case (byte) InstantMessageDialog.SessionSend:
+                case (byte)InstantMessageDialog.SessionSend:
                     m_imService.SendChatToSession(client.AgentId, im);
                     break;
-                case (byte) InstantMessageDialog.SessionDrop:
+                case (byte)InstantMessageDialog.SessionDrop:
                     m_imService.DropMemberFromSession(client.AgentId, im);
                     break;
             }

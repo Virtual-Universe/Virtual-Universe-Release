@@ -41,10 +41,10 @@ namespace Universe.Modules.Gods
 {
     public class GodModifiers : INonSharedRegionModule
     {
-        #region Declares 
-        
-        private bool m_Enabled = true;
-        private string m_savestate_oar_directory = "";
+        #region Declares
+
+        bool m_Enabled = true;
+        string m_savestate_oar_directory = "";
 
         #endregion
 
@@ -54,9 +54,7 @@ namespace Universe.Modules.Gods
         {
             if (source.Configs["GodModule"] != null)
             {
-                if (source.Configs["GodModule"].GetString(
-                    "GodModule", Name) !=
-                    Name)
+                if (source.Configs["GodModule"].GetString("GodModule", Name) != Name)
                 {
                     m_Enabled = false;
                     return;
@@ -96,7 +94,7 @@ namespace Universe.Modules.Gods
 
         public string Name
         {
-            get { return "UniverseGodModModule"; }
+            get { return "GodModeModule"; }
         }
 
         public void Close()
@@ -107,14 +105,14 @@ namespace Universe.Modules.Gods
 
         #region Client
 
-        private void OnNewClient(IClientAPI client)
+        void OnNewClient(IClientAPI client)
         {
             client.OnGodUpdateRegionInfoUpdate += GodUpdateRegionInfoUpdate;
             client.OnGodlikeMessage += onGodlikeMessage;
             client.OnSaveState += GodSaveState;
         }
 
-        private void OnClosingClient(IClientAPI client)
+        void OnClosingClient(IClientAPI client)
         {
             client.OnGodUpdateRegionInfoUpdate -= GodUpdateRegionInfoUpdate;
             client.OnGodlikeMessage -= onGodlikeMessage;
@@ -128,7 +126,7 @@ namespace Universe.Modules.Gods
         /// <param name="requester"></param>
         /// <param name="Method"></param>
         /// <param name="Parameter"></param>
-        private void onGodlikeMessage(IClientAPI client, UUID requester, string Method, List<string> Parameter)
+        void onGodlikeMessage(IClientAPI client, UUID requester, string Method, List<string> Parameter)
         {
             //Just rebuild the map
             if (Method == "refreshmapvisibility")
@@ -155,10 +153,11 @@ namespace Universe.Modules.Gods
             {
                 IScene scene = MainConsole.Instance.ConsoleScene; //Switch back later
                 MainConsole.Instance.RunCommand("change region " + client.Scene.RegionInfo.RegionName);
-                MainConsole.Instance.RunCommand("save oar " 
-                                                + m_savestate_oar_directory 
-                                                + client.Scene.RegionInfo.RegionName.Replace(" ", "%20") // Check if the region name has spaces in them
-                                                + ".statesave.oar");
+                MainConsole.Instance.RunCommand(
+                    "save oar "
+                    + m_savestate_oar_directory
+                    + client.Scene.RegionInfo.RegionName.Replace(" ", "%20")// Check if the region name has spaces in them
+                    + ".statesave.oar");
                 if (scene == null)
                     MainConsole.Instance.RunCommand("change region root");
                 else
@@ -180,6 +179,8 @@ namespace Universe.Modules.Gods
         public void GodUpdateRegionInfoUpdate(IClientAPI client, float BillableFactor, int PricePerMeter, ulong EstateID,
                                               ulong RegionFlags, byte[] SimName, int RedirectX, int RedirectY)
         {
+            IEstateConnector estateConnector = Framework.Utilities.DataManager.RequestPlugin<IEstateConnector>();
+
             //Check god perms
             if (!client.Scene.Permissions.IsGod(client.AgentId))
                 return;
@@ -189,22 +190,20 @@ namespace Universe.Modules.Gods
 
             //Set the region loc X and Y
             if (RedirectX != 0)
-                client.Scene.RegionInfo.RegionLocX = RedirectX*Constants.RegionSize;
+                client.Scene.RegionInfo.RegionLocX = RedirectX * Constants.RegionSize;
             if (RedirectY != 0)
-                client.Scene.RegionInfo.RegionLocY = RedirectY*Constants.RegionSize;
+                client.Scene.RegionInfo.RegionLocY = RedirectY * Constants.RegionSize;
 
             //Update the estate ID
             if (client.Scene.RegionInfo.EstateSettings.EstateID != EstateID)
             {
-                bool changed = Framework.Utilities.DataManager.RequestPlugin<IEstateConnector>().LinkRegion(
-                    client.Scene.RegionInfo.RegionID, (int) EstateID);
+                bool changed = estateConnector.LinkRegion(client.Scene.RegionInfo.RegionID, (int)EstateID);
                 if (!changed)
                     client.SendAgentAlertMessage("Unable to connect to the given estate.", false);
                 else
                 {
                     client.Scene.RegionInfo.EstateSettings.EstateID = (uint)EstateID;
-                    Universe.Framework.Utilities.DataManager.RequestPlugin<IEstateConnector>().
-                        SaveEstateSettings(client.Scene.RegionInfo.EstateSettings);
+                    estateConnector.SaveEstateSettings(client.Scene.RegionInfo.EstateSettings);
                 }
             }
 
@@ -213,31 +212,25 @@ namespace Universe.Modules.Gods
             client.Scene.RegionInfo.EstateSettings.PricePerMeter = PricePerMeter;
             client.Scene.RegionInfo.EstateSettings.SetFromFlags(RegionFlags);
 
-            client.Scene.RegionInfo.RegionSettings.AllowDamage = ((RegionFlags &
-                                                                   (ulong) OpenMetaverse.RegionFlags.AllowDamage) ==
-                                                                  (ulong) OpenMetaverse.RegionFlags.AllowDamage);
-            client.Scene.RegionInfo.RegionSettings.FixedSun = ((RegionFlags & (ulong) OpenMetaverse.RegionFlags.SunFixed) ==
-                                                               (ulong) OpenMetaverse.RegionFlags.SunFixed);
-            client.Scene.RegionInfo.RegionSettings.BlockTerraform = ((RegionFlags &
-                                                                      (ulong) OpenMetaverse.RegionFlags.BlockTerraform) ==
-                                                                     (ulong) OpenMetaverse.RegionFlags.BlockTerraform);
-            client.Scene.RegionInfo.RegionSettings.Sandbox = ((RegionFlags & (ulong) OpenMetaverse.RegionFlags.Sandbox) ==
-                                                              (ulong) OpenMetaverse.RegionFlags.Sandbox);
+            client.Scene.RegionInfo.RegionSettings.AllowDamage =
+                ((RegionFlags & (ulong)OpenMetaverse.RegionFlags.AllowDamage) == (ulong)OpenMetaverse.RegionFlags.AllowDamage);
+            client.Scene.RegionInfo.RegionSettings.FixedSun = ((RegionFlags & (ulong)OpenMetaverse.RegionFlags.SunFixed) ==
+            (ulong)OpenMetaverse.RegionFlags.SunFixed);
+            client.Scene.RegionInfo.RegionSettings.BlockTerraform =
+                ((RegionFlags & (ulong)OpenMetaverse.RegionFlags.BlockTerraform) == (ulong)OpenMetaverse.RegionFlags.BlockTerraform);
+            client.Scene.RegionInfo.RegionSettings.Sandbox =
+                ((RegionFlags & (ulong)OpenMetaverse.RegionFlags.Sandbox) == (ulong)OpenMetaverse.RegionFlags.Sandbox);
 
             //Update skipping scripts/physics/collisions
             IEstateModule mod = client.Scene.RequestModuleInterface<IEstateModule>();
             if (mod != null)
                 mod.SetSceneCoreDebug(
-                    ((RegionFlags & (ulong) OpenMetaverse.RegionFlags.SkipScripts) ==
-                     (ulong) OpenMetaverse.RegionFlags.SkipScripts),
-                    ((RegionFlags & (ulong) OpenMetaverse.RegionFlags.SkipCollisions) ==
-                     (ulong) OpenMetaverse.RegionFlags.SkipCollisions),
-                    ((RegionFlags & (ulong) OpenMetaverse.RegionFlags.SkipPhysics) ==
-                     (ulong) OpenMetaverse.RegionFlags.SkipPhysics));
+                    ((RegionFlags & (ulong)OpenMetaverse.RegionFlags.SkipScripts) == (ulong)OpenMetaverse.RegionFlags.SkipScripts),
+                    ((RegionFlags & (ulong)OpenMetaverse.RegionFlags.SkipCollisions) == (ulong)OpenMetaverse.RegionFlags.SkipCollisions),
+                    ((RegionFlags & (ulong)OpenMetaverse.RegionFlags.SkipPhysics) == (ulong)OpenMetaverse.RegionFlags.SkipPhysics));
 
             //Save the changes
-            Universe.Framework.Utilities.DataManager.RequestPlugin<IEstateConnector>().
-                SaveEstateSettings(client.Scene.RegionInfo.EstateSettings);
+            estateConnector.SaveEstateSettings(client.Scene.RegionInfo.EstateSettings);
 
             //Tell the clients to update all references to the new settings
             foreach (IScenePresence sp in client.Scene.GetScenePresences())
@@ -260,30 +253,29 @@ namespace Universe.Modules.Gods
         /// </summary>
         /// <param name="remote_client"></param>
         /// <param name="m_scene"></param>
-        private void HandleRegionInfoRequest(IClientAPI remote_client, IScene m_scene)
+        void HandleRegionInfoRequest(IClientAPI remote_client, IScene m_scene)
         {
             RegionInfoForEstateMenuArgs args = new RegionInfoForEstateMenuArgs
-                                                   {
-                                                       billableFactor = m_scene.RegionInfo.EstateSettings.BillableFactor,
-                                                       estateID = m_scene.RegionInfo.EstateSettings.EstateID,
-                                                       maxAgents = (byte) m_scene.RegionInfo.RegionSettings.AgentLimit,
-                                                       objectBonusFactor =
-                                                           (float) m_scene.RegionInfo.RegionSettings.ObjectBonus,
-                                                       parentEstateID = m_scene.RegionInfo.EstateSettings.ParentEstateID,
-                                                       pricePerMeter = m_scene.RegionInfo.EstateSettings.PricePerMeter,
-                                                       redirectGridX = 0,
-                                                       redirectGridY = 0
-                                                   };
+            {
+                billableFactor = m_scene.RegionInfo.EstateSettings.BillableFactor,
+                estateID = m_scene.RegionInfo.EstateSettings.EstateID,
+                maxAgents = (byte)m_scene.RegionInfo.RegionSettings.AgentLimit,
+                objectBonusFactor = (float)m_scene.RegionInfo.RegionSettings.ObjectBonus,
+                parentEstateID = m_scene.RegionInfo.EstateSettings.ParentEstateID,
+                pricePerMeter = m_scene.RegionInfo.EstateSettings.PricePerMeter,
+                redirectGridX = 0,
+                redirectGridY = 0
+            };
 
             IEstateModule estate = m_scene.RequestModuleInterface<IEstateModule>();
             args.regionFlags = estate == null ? 0 : estate.GetRegionFlags();
 
             args.simAccess = m_scene.RegionInfo.AccessLevel;
-            args.sunHour = (float) m_scene.RegionInfo.RegionSettings.SunPosition;
-            args.terrainLowerLimit = (float) m_scene.RegionInfo.RegionSettings.TerrainLowerLimit;
-            args.terrainRaiseLimit = (float) m_scene.RegionInfo.RegionSettings.TerrainRaiseLimit;
+            args.sunHour = (float)m_scene.RegionInfo.RegionSettings.SunPosition;
+            args.terrainLowerLimit = (float)m_scene.RegionInfo.RegionSettings.TerrainLowerLimit;
+            args.terrainRaiseLimit = (float)m_scene.RegionInfo.RegionSettings.TerrainRaiseLimit;
             args.useEstateSun = m_scene.RegionInfo.RegionSettings.UseEstateSun;
-            args.waterHeight = (float) m_scene.RegionInfo.RegionSettings.WaterHeight;
+            args.waterHeight = (float)m_scene.RegionInfo.RegionSettings.WaterHeight;
             args.simName = m_scene.RegionInfo.RegionName;
             args.regionType = m_scene.RegionInfo.RegionType;
 

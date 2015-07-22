@@ -26,7 +26,6 @@
  */
 
 using System;
-using System.Linq;
 using Nini.Config;
 using OpenMetaverse;
 using Universe.Framework.Modules;

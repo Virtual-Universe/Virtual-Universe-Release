@@ -45,7 +45,7 @@ namespace Universe.Modules.Agent.AssetTransaction
         /// <remarks>
         ///     New -> Uploading -> Complete
         /// </remarks>
-        private enum UploadState
+        enum UploadState
         {
             New,
             Uploading,
@@ -56,36 +56,35 @@ namespace Universe.Modules.Agent.AssetTransaction
         ///     Reference to the object that holds this uploader.  Used to remove ourselves from it's list if we
         ///     are performing a delayed update.
         /// </summary>
-        private AgentAssetTransactions m_transactions;
+        AgentAssetTransactions m_transactions;
 
-        private UploadState m_uploadState = UploadState.New;
+        UploadState m_uploadState = UploadState.New;
 
-        private AssetBase m_asset;
-        private UUID InventFolder = UUID.Zero;
-        private sbyte invType = 0;
+        AssetBase m_asset;
+        UUID InventFolder = UUID.Zero;
+        sbyte invType = 0;
 
-        private bool m_createItem;
-        private uint m_createItemCallback;
+        bool m_createItem;
+        uint m_createItemCallback;
 
-        private bool m_updateItem;
-        private InventoryItemBase m_updateItemData;
+        bool m_updateItem;
+        InventoryItemBase m_updateItemData;
 
-        private bool m_updateTaskItem;
-        private TaskInventoryItem m_updateTaskItemData;
+        bool m_updateTaskItem;
+        TaskInventoryItem m_updateTaskItemData;
 
-        private string m_description = String.Empty;
-        private bool m_dumpAssetToFile;
-        private string m_name = String.Empty;
-        //        private bool m_storeLocal;
-        private uint nextPerm = 0;
-        private IClientAPI ourClient;
+        string m_description = String.Empty;
+        bool m_dumpAssetToFile;
+        string m_name = String.Empty;
+        uint nextPerm = 0;
+        IClientAPI ourClient;
 
-        private UUID m_transactionID;
+        UUID m_transactionID;
 
-        private sbyte type = 0;
-        private byte wearableType = 0;
+        sbyte type = 0;
+        byte wearableType = 0;
         public ulong XferID;
-        private IScene m_Scene;
+        IScene m_Scene;
 
         /// <summary>
         ///     AssetXferUploader constructor
@@ -255,7 +254,7 @@ namespace Universe.Modules.Agent.AssetTransaction
             }
         }
 
-        private void SaveAssetToFile(string filename, byte[] data)
+        void SaveAssetToFile(string filename, byte[] data)
         {
             string assetPath = "UserAssets";
             if (!Directory.Exists(assetPath))
@@ -357,7 +356,7 @@ namespace Universe.Modules.Agent.AssetTransaction
         ///     Store the asset for the given item when it has been uploaded.
         /// </summary>
         /// <param name="item"></param>
-        private void CompleteItemUpdate(InventoryItemBase item)
+        void CompleteItemUpdate(InventoryItemBase item)
         {
             //MainConsole.Instance.DebugFormat(
             //    "[ASSET XFER UPLOADER]: Storing asset {0} for earlier item update for {1} for {2}",
@@ -372,7 +371,7 @@ namespace Universe.Modules.Agent.AssetTransaction
         ///     Store the asset for the given task item when it has been uploaded.
         /// </summary>
         /// <param name="taskItem"></param>
-        private void CompleteTaskItemUpdate(TaskInventoryItem taskItem)
+        void CompleteTaskItemUpdate(TaskInventoryItem taskItem)
         {
             //MainConsole.Instance.DebugFormat(
             //    "[ASSET XFER UPLOADER]: Storing asset {0} for earlier task item update for {1} for {2}",
@@ -383,7 +382,7 @@ namespace Universe.Modules.Agent.AssetTransaction
             m_transactions.RemoveXferUploader(m_transactionID);
         }
 
-        private void CompleteCreateItem(uint callbackID)
+        void CompleteCreateItem(uint callbackID)
         {
             m_Scene.AssetService.Store(m_asset);
 

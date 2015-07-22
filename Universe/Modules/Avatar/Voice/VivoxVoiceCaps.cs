@@ -75,27 +75,27 @@ namespace Universe.Modules
         public const int CHAN_CLAMPING_DISTANCE_MIN = 0;
         public const int CHAN_CLAMPING_DISTANCE_MAX = 160;
 
-        private static readonly Object vlock = new Object();
+        static readonly Object vlock = new Object();
 
         // Control info, e.g. vivox server, admin user, admin password
-        private static bool m_adminConnected = false;
+        static bool m_adminConnected = false;
 
-        private static string m_vivoxServer;
-        private static string m_vivoxSipUri;
-        private static string m_vivoxVoiceAccountApi;
-        private static string m_vivoxAdminUser;
-        private static string m_vivoxAdminPassword;
-        private static string m_authToken = String.Empty;
+        static string m_vivoxServer;
+        static string m_vivoxSipUri;
+        static string m_vivoxVoiceAccountApi;
+        static string m_vivoxAdminUser;
+        static string m_vivoxAdminPassword;
+        static string m_authToken = String.Empty;
 
-        private static int m_vivoxChannelDistanceModel;
-        private static double m_vivoxChannelRollOff;
-        private static int m_vivoxChannelMaximumRange;
-        private static string m_vivoxChannelMode;
-        private static string m_vivoxChannelType;
-        private static int m_vivoxChannelClampingDistance;
+        static int m_vivoxChannelDistanceModel;
+        static double m_vivoxChannelRollOff;
+        static int m_vivoxChannelMaximumRange;
+        static string m_vivoxChannelMode;
+        static string m_vivoxChannelType;
+        static int m_vivoxChannelClampingDistance;
 
-        private static Dictionary<string, string> m_parents = new Dictionary<string, string>();
-        private static bool m_dumpXml;
+        static Dictionary<string, string> m_parents = new Dictionary<string, string>();
+        static bool m_dumpXml;
         protected IRegistryCore m_registry;
 
         public void Initialize(IConfigSource config, IRegistryCore registry)
@@ -399,7 +399,7 @@ namespace Universe.Modules
             }
         }
 
-        private string GetParentIDForRegion(Universe.Framework.Services.GridRegion region)
+        string GetParentIDForRegion(Universe.Framework.Services.GridRegion region)
         {
             lock (vlock)
             {
@@ -472,7 +472,7 @@ namespace Universe.Modules
             }
         }
 
-        private string RegionGetOrCreateChannel(UUID regionID, string regionName, UUID parcelID, string parcelName,
+        string RegionGetOrCreateChannel(UUID regionID, string regionName, UUID parcelID, string parcelName,
                                                 int localID, uint parcelFlags, string voiceParentID)
         {
             string channelUri = null;
@@ -556,46 +556,46 @@ namespace Universe.Modules
 
         #region Vivox Calls
 
-        private static readonly string m_vivoxLoginPath = "http://{0}/api2/viv_signin.php?userid={1}&pwd={2}";
+        static readonly string m_vivoxLoginPath = "http://{0}/api2/viv_signin.php?userid={1}&pwd={2}";
 
         /// <summary>
         ///     Perform administrative login for Vivox.
         ///     Returns a hash table containing values returned from the request.
         /// </summary>
-        private XmlElement VivoxLogin(string name, string password)
+        XmlElement VivoxLogin(string name, string password)
         {
             string requrl = String.Format(m_vivoxLoginPath, m_vivoxServer, name, password);
             return VivoxCall(requrl, false);
         }
 
 
-        private static readonly string m_vivoxLogoutPath = "http://{0}/api2/viv_signout.php?auth_token={1}";
+        static readonly string m_vivoxLogoutPath = "http://{0}/api2/viv_signout.php?auth_token={1}";
 
         /// <summary>
         ///     Perform administrative logout for Vivox.
         /// </summary>
-        private XmlElement VivoxLogout()
+        XmlElement VivoxLogout()
         {
             string requrl = String.Format(m_vivoxLogoutPath, m_vivoxServer, m_authToken);
             return VivoxCall(requrl, false);
         }
 
 
-        private static readonly string m_vivoxGetAccountPath =
+        static readonly string m_vivoxGetAccountPath =
             "http://{0}/api2/viv_get_acct.php?auth_token={1}&user_name={2}";
 
         /// <summary>
         ///     Retrieve account information for the specified user.
         ///     Returns a hash table containing values returned from the request.
         /// </summary>
-        private XmlElement VivoxGetAccountInfo(string user)
+        XmlElement VivoxGetAccountInfo(string user)
         {
             string requrl = String.Format(m_vivoxGetAccountPath, m_vivoxServer, m_authToken, user);
             return VivoxCall(requrl, true);
         }
 
 
-        private static readonly string m_vivoxNewAccountPath =
+        static readonly string m_vivoxNewAccountPath =
             "http://{0}/api2/viv_adm_acct_new.php?username={1}&pwd={2}&auth_token={3}";
 
         /// <summary>
@@ -604,27 +604,27 @@ namespace Universe.Modules
         ///     is user name and password. We *can* supply a lot more
         ///     demographic data.
         /// </summary>
-        private XmlElement VivoxCreateAccount(string user, string password)
+        XmlElement VivoxCreateAccount(string user, string password)
         {
             string requrl = String.Format(m_vivoxNewAccountPath, m_vivoxServer, user, password, m_authToken);
             return VivoxCall(requrl, true);
         }
 
 
-        private static readonly string m_vivoxPasswordPath =
+        static readonly string m_vivoxPasswordPath =
             "http://{0}/api2/viv_adm_password.php?user_name={1}&new_pwd={2}&auth_token={3}";
 
         /// <summary>
         ///     Change the user's password.
         /// </summary>
-        private XmlElement VivoxPassword(string user, string password)
+        XmlElement VivoxPassword(string user, string password)
         {
             string requrl = String.Format(m_vivoxPasswordPath, m_vivoxServer, user, password, m_authToken);
             return VivoxCall(requrl, true);
         }
 
 
-        private static readonly string m_vivoxChannelPath =
+        static readonly string m_vivoxChannelPath =
             "http://{0}/api2/viv_chan_mod.php?mode={1}&chan_name={2}&auth_token={3}";
 
         /// <summary>
@@ -638,7 +638,7 @@ namespace Universe.Modules
         ///     are required in a later phase.
         ///     In this case the call handles parent and description as optional values.
         /// </summary>
-        private bool VivoxTryCreateChannel(string parent, string channelId, string description, out string channelUri)
+        bool VivoxTryCreateChannel(string parent, string channelId, string description, out string channelUri)
         {
             string requrl = String.Format(m_vivoxChannelPath, m_vivoxServer, "create", channelId, m_authToken);
 
@@ -673,7 +673,7 @@ namespace Universe.Modules
         ///     channel name space.
         ///     The parent and description are optional values.
         /// </summary>
-        private bool VivoxTryCreateDirectory(string dirId, string description, out string channelId)
+        bool VivoxTryCreateDirectory(string dirId, string description, out string channelId)
         {
             string requrl = String.Format(m_vivoxChannelPath, m_vivoxServer, "create", dirId, m_authToken);
 
@@ -691,7 +691,7 @@ namespace Universe.Modules
             return false;
         }
 
-        private static readonly string m_vivoxChannelSearchPath =
+        static readonly string m_vivoxChannelSearchPath =
             "http://{0}/api2/viv_chan_search.php?cond_channame={1}&auth_token={2}";
 
         /// <summary>
@@ -705,8 +705,7 @@ namespace Universe.Modules
         ///     are required in a later phase.
         ///     In this case the call handles parent and description as optional values.
         /// </summary>
-        private bool VivoxTryGetChannel(string channelParent, string channelName,
-                                        out string channelId, out string channelUri)
+        bool VivoxTryGetChannel(string channelParent, string channelName, out string channelId, out string channelUri)
         {
             string count;
 
@@ -800,7 +799,7 @@ namespace Universe.Modules
             return false;
         }
 
-        private bool VivoxTryGetDirectory(string directoryName, out string directoryId)
+        bool VivoxTryGetDirectory(string directoryName, out string directoryId)
         {
             string count;
 
@@ -850,10 +849,10 @@ namespace Universe.Modules
         ///     are required in a later phase.
         ///     In this case the call handles parent and description as optional values.
         /// </summary>
-        private static readonly string m_vivoxChannelDel =
+        static readonly string m_vivoxChannelDel =
             "http://{0}/api2/viv_chan_mod.php?mode={1}&chan_id={2}&auth_token={3}";
 
-        private XmlElement VivoxDeleteChannel(string parent, string channelid)
+        XmlElement VivoxDeleteChannel(string parent, string channelid)
         {
             string requrl = String.Format(m_vivoxChannelDel, m_vivoxServer, "delete", channelid, m_authToken);
             if (!string.IsNullOrEmpty(parent))
@@ -866,10 +865,10 @@ namespace Universe.Modules
         /// <summary>
         ///     Return information on channels in the given directory
         /// </summary>
-        private static readonly string m_vivoxChannelSearch =
+        static readonly string m_vivoxChannelSearch =
             "http://{0}/api2/viv_chan_search.php?&cond_chanparent={1}&auth_token={2}";
 
-        private XmlElement VivoxListChildren(string channelid)
+        XmlElement VivoxListChildren(string channelid)
         {
             string requrl = String.Format(m_vivoxChannelSearch, m_vivoxServer, channelid, m_authToken);
             return VivoxCall(requrl, true);
@@ -882,7 +881,7 @@ namespace Universe.Modules
         ///     The outcome of the call can be determined by examining the
         ///     status value in the hash table.
         /// </summary>
-        private XmlElement VivoxCall(string requrl, bool admin)
+        XmlElement VivoxCall(string requrl, bool admin)
         {
             XmlDocument doc = null;
 
@@ -925,7 +924,7 @@ namespace Universe.Modules
         /// <summary>
         ///     Just say if it worked.
         /// </summary>
-        private bool IsOK(XmlElement resp)
+        bool IsOK(XmlElement resp)
         {
             string status;
             XmlFind(resp, "response.level0.status", out status);
@@ -937,7 +936,7 @@ namespace Universe.Modules
         ///     from several places in the module, and we want it to work
         ///     the same way each time.
         /// </summary>
-        private bool DoAdminLogin()
+        bool DoAdminLogin()
         {
             MainConsole.Instance.Debug("[Vivox Voice Service] Establishing admin connection");
 
@@ -982,7 +981,7 @@ namespace Universe.Modules
         ///     voice server. It is only called if the
         ///     m_dumpXml switch is set.
         /// </summary>
-        private void XmlScanl(XmlElement e, int index)
+        void XmlScanl(XmlElement e, int index)
         {
             if (e.HasChildNodes)
             {
@@ -1006,7 +1005,7 @@ namespace Universe.Modules
             }
         }
 
-        private static readonly char[] C_POINT = {'.'};
+        static readonly char[] C_POINT = {'.'};
 
         /// <summary>
         ///     The Find method is passed an element whose
@@ -1019,7 +1018,7 @@ namespace Universe.Modules
         ///     of the search's success. The search is performed
         ///     by the recursive Search method.
         /// </summary>
-        private bool XmlFind(XmlElement root, string tag, int nth, out string result)
+        bool XmlFind(XmlElement root, string tag, int nth, out string result)
         {
             if (root == null || tag == null || tag == String.Empty)
             {
@@ -1029,7 +1028,7 @@ namespace Universe.Modules
             return XmlSearch(root, tag.Split(C_POINT), 0, ref nth, out result);
         }
 
-        private bool XmlFind(XmlElement root, string tag, out string result)
+        bool XmlFind(XmlElement root, string tag, out string result)
         {
             int nth = 0;
             if (root == null || tag == null || tag == String.Empty)
@@ -1050,7 +1049,7 @@ namespace Universe.Modules
         ///     value. Otherwise the result is set to the empty string and
         ///     false is returned.
         /// </summary>
-        private bool XmlSearch(XmlElement e, string[] tags, int index, ref int nth, out string result)
+        bool XmlSearch(XmlElement e, string[] tags, int index, ref int nth, out string result)
         {
             if (index == tags.Length || e.Name != tags[index])
             {

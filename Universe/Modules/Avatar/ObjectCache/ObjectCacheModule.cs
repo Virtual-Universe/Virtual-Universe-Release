@@ -42,13 +42,13 @@ namespace Universe.Modules.ObjectCache
     {
         #region Declares
 
-        private readonly Dictionary<UUID, Dictionary<uint, uint>> ObjectCacheAgents =
+        readonly Dictionary<UUID, Dictionary<uint, uint>> ObjectCacheAgents =
             new Dictionary<UUID, Dictionary<uint, uint>>();
 
         protected bool m_Enabled = true;
 
-        private string m_filePath = "ObjectCache/";
-        private IScene m_scene;
+        string m_filePath = "ObjectCache/";
+        IScene m_scene;
 
         #endregion
 

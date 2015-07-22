@@ -48,9 +48,12 @@ namespace Universe.Modules.Currency
         {
             get { return m_connector.GetConfig(); }
         }
+
         List<IScene> m_scenes = new List<IScene>();
         BaseCurrencyConnector m_connector;
         IRegistryCore m_registry;
+        IAgentInfoService m_userInfoService;
+        IUserAccountService m_userAccountService;
 
         #endregion
 
@@ -106,10 +109,16 @@ namespace Universe.Modules.Currency
                 };
             }
 
+            // these are only valid if we are local
             if (!m_connector.DoRemoteCalls)
             {
-                if ((m_connector.GetConfig().GiveStipends) && (m_connector.GetConfig().Stipend > 0))
-                    new GiveStipends(m_connector.GetConfig(), m_registry, m_connector);
+                //if ((m_connector.GetConfig().GiveStipends) && (m_connector.GetConfig().Stipend > 0))
+                //   new GiveStipends(m_connector.GetConfig(), m_registry, m_connector);
+
+                m_userInfoService = m_registry.RequestModuleInterface<IAgentInfoService>();
+                m_userAccountService = m_registry.RequestModuleInterface<IUserAccountService>();
+
+                AddCommands();
             }
         }
 
@@ -126,25 +135,19 @@ namespace Universe.Modules.Currency
                 int saleprice = lob.LandData.SalePrice;
                 UUID pOwnerID = lob.LandData.OwnerID;
 
-                bool landforsale = ((lob.LandData.Flags &
-                                     (uint)
-                                     (ParcelFlags.ForSale | ParcelFlags.ForSaleObjects |
-                                      ParcelFlags.SellParcelObjects)) != 0);
+                bool landforsale = ((lob.LandData.Flags & (uint)(ParcelFlags.ForSale | ParcelFlags.ForSaleObjects | ParcelFlags.SellParcelObjects)) != 0);
                 if ((AuthorizedID == UUID.Zero || AuthorizedID == e.agentId) && e.parcelPrice >= saleprice &&
                     landforsale)
                 {
-                    if (m_connector.UserCurrencyTransfer(lob.LandData.OwnerID, e.agentId,
-                                                         (uint)saleprice, "Land Buy", TransactionType.LandSale,
-                                                         UUID.Zero))
+                    if (m_connector.UserCurrencyTransfer(lob.LandData.OwnerID, e.agentId, (uint)saleprice, "Land Buy", TransactionType.LandSale, UUID.Zero))
                     {
                         e.parcelOwnerID = pOwnerID;
                         e.landValidated = true;
                         return true;
                     }
-                    else
-                    {
-                        e.landValidated = false;
-                    }
+
+                    // not validated
+                    e.landValidated = false;
                 }
             }
             return false;
@@ -152,7 +155,55 @@ namespace Universe.Modules.Currency
 
         #endregion
 
+        void AddCommands()
+        {
+            if (MainConsole.Instance != null)
+            {
+                MainConsole.Instance.Commands.AddCommand(
+                    "money add",
+                    "money add",
+                    "Adds money to a user's account.",
+                    AddMoney, false, true);
+
+                MainConsole.Instance.Commands.AddCommand(
+                    "money set",
+                    "money set",
+                    "Sets the amount of money a user has.",
+                    SetMoney, false, true);
+
+                MainConsole.Instance.Commands.AddCommand(
+                    "money get",
+                    "money get",
+                    "Gets the amount of money a user has.",
+                    GetMoney, false, true);
+
+                MainConsole.Instance.Commands.AddCommand(
+                    "show user transactions",
+                    "show user transactions",
+                    "Display user transactions for a period.",
+                    HandleShowTransactions, false, true);
+
+                MainConsole.Instance.Commands.AddCommand(
+                    "show user purchases",
+                    "show user purchases",
+                    "Display user purchases for a period.",
+                    HandleShowPurchases, false, true);
+
+                /* MainConsole.Instance.Commands.AddCommand(
+                   "stipend set",
+                   "stipend set",
+                   "Sets the next date for stipend",
+                   HandleStipendSet, false, true);
+                 */
+            }
+        }
+
         #region IMoneyModule Members
+
+        public string InWorldCurrencySymbol
+        {
+            get { return m_connector.InWorldCurrency; }
+        }
 
         public int UploadCharge
         {
@@ -209,7 +260,7 @@ namespace Universe.Modules.Currency
             string fromObjectName, int amount, string description, TransactionType type)
         {
             bool result = m_connector.UserCurrencyTransfer(toID, fromID, toObjectID, toObjectName,
-                fromObjectID, fromObjectName, (uint)amount, description, type, UUID.Zero);
+                              fromObjectID, fromObjectName, (uint)amount, description, type, UUID.Zero);
             if (toObjectID != UUID.Zero)
             {
                 ISceneManager manager = m_registry.RequestModuleInterface<ISceneManager>();
@@ -266,7 +317,6 @@ namespace Universe.Modules.Currency
         {
             return m_connector.GetTransactionHistory(period, periodType, start, count);
         }
-
 
         public uint NumberOfPurchases(UUID UserID)
         {
@@ -331,7 +381,7 @@ namespace Universe.Modules.Currency
                         if (ent != null)
                         {
                             bool success = m_connector.UserCurrencyTransfer(ent.OwnerID, fromID, ent.UUID, ent.Name, UUID.Zero, "",
-                                (uint)amount, description, (TransactionType)type, UUID.Random());
+                                               (uint)amount, description, (TransactionType)type, UUID.Random());
                             if (success)
                                 FireObjectPaid(toID, fromID, amount);
                             paid = true;
@@ -341,7 +391,7 @@ namespace Universe.Modules.Currency
                     if (!paid)
                     {
                         m_connector.UserCurrencyTransfer(toID, fromID, (uint)amount, description,
-                                                    (TransactionType)type, UUID.Random());
+                            (TransactionType)type, UUID.Random());
                     }
                 }
             }
@@ -359,27 +409,27 @@ namespace Universe.Modules.Currency
             if (Config == null)
             {
                 remoteClient.SendEconomyData(0, remoteClient.Scene.RegionInfo.ObjectCapacity,
-                                             remoteClient.Scene.RegionInfo.ObjectCapacity,
-                                             0, 0,
-                                             0, 0,
-                                             0, 0,
-                                             0,
-                                             0, 0,
-                                             0, 0,
-                                             0,
-                                             0, 0);
+                    remoteClient.Scene.RegionInfo.ObjectCapacity,
+                    0, 0,
+                    0, 0,
+                    0, 0,
+                    0,
+                    0, 0,
+                    0, 0,
+                    0,
+                    0, 0);
             }
             else
                 remoteClient.SendEconomyData(0, remoteClient.Scene.RegionInfo.ObjectCapacity,
-                                             remoteClient.Scene.RegionInfo.ObjectCapacity,
-                                             0, Config.PriceGroupCreate,
-                                             0, 0,
-                                             0, 0,
-                                             0,
-                                             0, 0,
-                                             0, 0,
-                                             Config.PriceUpload,
-                                             0, 0);
+                    remoteClient.Scene.RegionInfo.ObjectCapacity,
+                    0, Config.PriceGroupCreate,
+                    0, 0,
+                    0, 0,
+                    0,
+                    0, 0,
+                    0, 0,
+                    Config.PriceUpload,
+                    0, 0);
         }
 
         void SendMoneyBalance(IClientAPI client, UUID agentId, UUID sessionId, UUID transactionId)
@@ -411,9 +461,8 @@ namespace Universe.Modules.Currency
                 if (sp != null)
                 {
                     if (dialogModule != null && !string.IsNullOrEmpty(Message))
-                    {
                         dialogModule.SendAlertToUser(agentID, Message);
-                    }
+
                     sp.ControllingClient.SendMoneyBalance(TransactionID, true, Utils.StringToBytes(Message), Amount);
                 }
             }
@@ -431,7 +480,7 @@ namespace Universe.Modules.Currency
                     IScenePresence sp = region.GetScenePresence(agentID);
                     if (sp != null)
                     {
-                        MainConsole.Instance.InfoFormat("sp parcel UUID: {0} Pos: {1}, {2}",
+                        MainConsole.Instance.DebugFormat("sp parcel UUID: {0} Pos: {1}, {2}",
                             sp.CurrentParcelUUID, sp.AbsolutePosition.X, sp.AbsolutePosition.Y);
 
                         ILandObject lo = sp.CurrentParcel;
@@ -493,7 +542,7 @@ namespace Universe.Modules.Currency
                 if (icapiTo != null)
                 {
                     icapiTo.ControllingClient.SendMoneyBalance(transactionId, true, Utils.StringToBytes(message),
-                                                               (int)m_connector.GetUserCurrency(icapiTo.UUID).Amount);
+                        (int)m_connector.GetUserCurrency(icapiTo.UUID).Amount);
                     dialogModule.SendAlertToUser(toId, message);
                 }
 
@@ -502,6 +551,248 @@ namespace Universe.Modules.Currency
             return false;
         }
 
+        #endregion
+
+        #region helpers
+
+        public string TransactionTypeInfo(TransactionType transType)
+        {
+            switch (transType)
+            {
+                // One-Time Charges
+                case TransactionType.GroupCreate: return "Group creation fee";
+                case TransactionType.GroupJoin: return "Group joining fee";
+                case TransactionType.UploadCharge: return "Upload charge";
+                case TransactionType.LandAuction: return "Land auction fee";
+                case TransactionType.ClassifiedCharge: return "Classified advert fee";
+                // Recurrent Charges
+                case TransactionType.ParcelDirFee: return "Parcel directory fee";
+                case TransactionType.ClassifiedRenew: return "Classified renewal";
+                case TransactionType.ScheduledFee: return "Scheduled fee";
+                // Inventory Transactions
+                case TransactionType.GiveInventory: return "Give inventory";
+                // Transfers Between Users
+                case TransactionType.ObjectSale: return "Object sale";
+                case TransactionType.Gift: return "Gift";
+                case TransactionType.LandSale: return "Land sale";
+                case TransactionType.ReferBonus: return "Refer bonus";
+                case TransactionType.InvntorySale: return "Inventory sale";
+                case TransactionType.RefundPurchase: return "Purchase refund";
+                case TransactionType.LandPassSale: return "Land parcel sale";
+                case TransactionType.DwellBonus: return "Dwell bonus";
+                case TransactionType.PayObject: return "Pay object";
+                case TransactionType.ObjectPays: return "Object pays";
+                case TransactionType.BuyMoney: return "Money purchase";
+                case TransactionType.MoveMoney: return "Move money";
+                // Group Transactions
+                case TransactionType.GroupLiability: return "Group liability";
+                case TransactionType.GroupDividend: return "Group dividend";
+                // Event Transactions
+                case TransactionType.EventFee: return "Event fee";
+                case TransactionType.EventPrize: return "Event prize";
+                // Stipend Credits
+                case TransactionType.StipendPayment: return "Stipend payment";
+
+                default: return "System Generated";
+            }
+        }
+
+        #endregion
+
+        #region Console Methods
+
+        UserAccount GetUserAccount()
+        {
+            string name = MainConsole.Instance.Prompt("User Name (First Last) ");
+
+            UserAccount account = m_userAccountService.GetUserAccount(new List<UUID> { UUID.Zero }, name);
+            if (account == null)
+                MainConsole.Instance.Info("Sorry, unable to locate account for " + name);
+
+            return account;
+        }
+
+        uint GetAmount(string prompt)
+        {
+            uint amount = 0;
+            string amnt = "";
+            do
+            {
+                amnt = MainConsole.Instance.Prompt(prompt, "amnt");
+                if (amnt == "")     // leave an 'out'
+                    return 0;
+
+                if (!uint.TryParse(amnt, out amount))
+                    MainConsole.Instance.Error("Bad input, must be a number!");
+            } while (amount == 0);
+
+            return amount;
+        }
+
+        string StrUserBalance(int amount)
+        {
+            return m_connector.InWorldCurrency + amount;
+        }
+
+        protected void AddMoney(IScene scene, string[] cmd)
+        {
+            UserAccount account = GetUserAccount();
+            if (account == null)
+                return;
+
+            uint amount = GetAmount("Amount of " + m_connector.InWorldCurrency + " to add?");
+            if (amount == 0)
+                return;
+
+            // log the transfer
+            m_connector.UserCurrencyTransfer(account.PrincipalID, UUID.Zero, amount, "Money transfer", TransactionType.SystemGenerated, UUID.Zero);
+
+            var currency = m_connector.GetUserCurrency(account.PrincipalID);
+            MainConsole.Instance.Info(account.Name + " now has " + StrUserBalance((int)currency.Amount));
+
+            if (m_userInfoService != null)
+            {
+                UserInfo toUserInfo = m_userInfoService.GetUserInfo(account.PrincipalID.ToString());
+                if (toUserInfo != null && toUserInfo.IsOnline)
+                    m_connector.SendUpdateMoneyBalanceToClient(account.PrincipalID, UUID.Zero, toUserInfo.CurrentRegionURI, (currency.Amount), "");
+            }
+        }
+
+        protected void SetMoney(IScene scene, string[] cmd)
+        {
+            UserAccount account = GetUserAccount();
+            if (account == null)
+                return;
+
+            uint amount = GetAmount("Set user's balance to " + m_connector.InWorldCurrency + " ?");
+
+            if (amount == 0)
+            {
+                string response = MainConsole.Instance.Prompt("Clear user's balance? (yes, no)", "no").ToLower();
+                if (!response.StartsWith("y"))
+                {
+                    MainConsole.Instance.Info("[Currency]: User balance not cleared.");
+                    return;
+                }
+            }
+
+            var currency = m_connector.GetUserCurrency(account.PrincipalID);
+            var balAdjust = amount - currency.Amount;
+
+            // log the transfer
+            m_connector.UserCurrencyTransfer(account.PrincipalID, UUID.Zero, balAdjust, "Set user money", TransactionType.SystemGenerated, UUID.Zero);
+
+            currency = m_connector.GetUserCurrency(account.PrincipalID);
+            MainConsole.Instance.Info(account.Name + " now has " + StrUserBalance((int)currency.Amount));
+
+            if (m_userInfoService != null)
+            {
+                UserInfo toUserInfo = m_userInfoService.GetUserInfo(account.PrincipalID.ToString());
+                if (toUserInfo != null && toUserInfo.IsOnline)
+                    m_connector.SendUpdateMoneyBalanceToClient(account.PrincipalID, UUID.Zero, toUserInfo.CurrentRegionURI, currency.Amount, "");
+            }
+        }
+
+        protected void GetMoney(IScene scene, string[] cmd)
+        {
+            UserAccount account = GetUserAccount();
+            if (account == null)
+                return;
+
+            var currency = m_connector.GetUserCurrency(account.PrincipalID);
+            MainConsole.Instance.Info(account.Name + " has " + StrUserBalance((int)currency.Amount));
+        }
+
+        /*
+                protected void HandleStipendSet(IScene scene, string[] cmd)
+                {
+                    string rawDate = MainConsole.Instance.Prompt("Date to pay next Stipend? (MM/dd/yyyy)");
+                    if (rawDate == "")
+                        return;
+            
+                    // Make a new DateTime from rawDate
+                    DateTime newDate = DateTime.ParseExact(rawDate, "MM/dd/yyyy", CultureInfo.InvariantCulture);
+                    GiveStipends.StipendDate = newDate;
+
+                    // Code needs to be added to run through the scheduler and change the 
+                    // RunsNext to the date that the user wants the scheduler to be
+                    MainConsole.Instance.Info("Stipend Date has been set to" + newDate);
+                }
+        */
+
+        protected void HandleShowTransactions(IScene scene, string[] cmd)
+        {
+            UserAccount account = GetUserAccount();
+            if (account == null)
+                return;
+
+            int period;
+            while (!int.TryParse(MainConsole.Instance.Prompt("Number of days to display: ", "7"), out period))
+                MainConsole.Instance.Info("Bad input, must be a number > 0");
+
+            string transInfo;
+
+            transInfo = String.Format("{0, -24}", "Date");
+            transInfo += String.Format("{0, -25}", "From");
+            transInfo += String.Format("{0, -30}", "Description");
+            transInfo += String.Format("{0, -20}", "Type");
+            transInfo += String.Format("{0, -12}", "Amount");
+            transInfo += String.Format("{0, -12}", "Balance");
+
+            MainConsole.Instance.CleanInfo(transInfo);
+
+            MainConsole.Instance.CleanInfo(
+                "-------------------------------------------------------------------------------------------------------------------------");
+
+            List<AgentTransfer> transactions = GetTransactionHistory(account.PrincipalID, period, "day");
+
+            foreach (AgentTransfer transfer in transactions)
+            {
+                transInfo = String.Format("{0, -24}", transfer.TransferDate.ToLocalTime());
+                transInfo += String.Format("{0, -25}", transfer.FromAgentName);
+                transInfo += String.Format("{0, -30}", transfer.Description);
+                transInfo += String.Format("{0, -20}", TransactionTypeInfo(transfer.TransferType));
+                transInfo += String.Format("{0, -12}", transfer.Amount);
+                transInfo += String.Format("{0, -12}", transfer.ToBalance);
+
+                MainConsole.Instance.CleanInfo(transInfo);
+            }
+        }
+
+        protected void HandleShowPurchases(IScene scene, string[] cmd)
+        {
+            UserAccount account = GetUserAccount();
+            if (account == null)
+                return;
+
+            int period;
+            while (!int.TryParse(MainConsole.Instance.Prompt("Number of days to display: ", "7"), out period))
+                MainConsole.Instance.Info("Bad input, must be a number > 0");
+
+            string transInfo;
+
+            transInfo = String.Format("{0, -24}", "Date");
+            transInfo += String.Format("{0, -30}", "Description");
+            transInfo += String.Format("{0, -20}", "InWorld Amount");
+            transInfo += String.Format("{0, -12}", "Cost");
+
+            MainConsole.Instance.CleanInfo(transInfo);
+
+            MainConsole.Instance.CleanInfo(
+                "--------------------------------------------------------------------------------------------");
+
+            List<AgentPurchase> purchases = GetPurchaseHistory(account.PrincipalID, period, "day");
+
+            foreach (AgentPurchase purchase in purchases)
+            {
+                transInfo = String.Format("{0, -24}", purchase.PurchaseDate.ToLocalTime());
+                transInfo += String.Format("{0, -30}", "Purchase");
+                transInfo += String.Format("{0, -20}", m_connector.InWorldCurrency + purchase.Amount);
+                transInfo += String.Format("{0, -12}", m_connector.RealCurrency + ((float)purchase.RealAmount / 100).ToString("0.00"));
+
+                MainConsole.Instance.CleanInfo(transInfo);
+            }
+        }
         #endregion
     }
 }

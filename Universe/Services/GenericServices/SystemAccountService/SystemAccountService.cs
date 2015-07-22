@@ -48,6 +48,7 @@ namespace Universe.Services.GenericServices.SystemAccountService
         string realEstateOwnerName = Constants.RealEstateOwnerName;
         string bankerName = Constants.BankerName;
         string marketplaceOwnerName = Constants.MarketplaceName;
+        string staffName = Constants.StaffName;
 
         IRegistryCore m_registry;
 
@@ -93,6 +94,16 @@ namespace Universe.Services.GenericServices.SystemAccountService
             get { return marketplaceOwnerName; }
         }
 
+        public UUID StaffUUID
+        {
+            get { return (UUID)Constants.StaffUUID; }
+        }
+
+        public string StaffName
+        {
+            get { return staffName; }
+        }
+
         #endregion
 
         #region IService Members
@@ -107,6 +118,7 @@ namespace Universe.Services.GenericServices.SystemAccountService
                 realEstateOwnerName = estConfig.GetString("RealEstateOwnerName", realEstateOwnerName);
                 bankerName = estConfig.GetString("BankerName", bankerName);
                 marketplaceOwnerName = estConfig.GetString("MarketplaceOwnerName", marketplaceOwnerName);
+                staffName = estConfig.GetString("StaffName", staffName);
             }
 
             registry.RegisterModuleInterface<ISystemAccountService>(this);
@@ -124,7 +136,7 @@ namespace Universe.Services.GenericServices.SystemAccountService
             // these are only valid if we are local
             if (!m_accountService.RemoteCalls())
             {
-                // check and/or create default RealEstate user
+                // check and/or create default system users
                 CheckSystemUserInfo ();
 
                 AddCommands ();
@@ -161,7 +173,12 @@ namespace Universe.Services.GenericServices.SystemAccountService
                     "reset marketplace password",
                     "Resets the password of the system Marketplace Owner",
                     HandleResetMarketplacePassword, false, true);
-                
+
+                MainConsole.Instance.Commands.AddCommand(
+                    "reset staff password",
+                    "reset staff password",
+                    "Resets the password of the staff id",
+                    HandleResetStaffPassword, false, true);
             }
         }
 
@@ -179,6 +196,7 @@ namespace Universe.Services.GenericServices.SystemAccountService
             VerifySystemUserInfo("RealEstate", SystemEstateOwnerUUID, SystemEstateOwnerName, 150);
             VerifySystemUserInfo("Banker", BankerUUID, BankerName, 250);
             VerifySystemUserInfo("Marketplace", MarketplaceOwnerUUID, MarketplaceOwnerName, 250);
+            VerifySystemUserInfo("Staff", StaffUUID, StaffName, 250);
 
         }
 
@@ -280,6 +298,11 @@ namespace Universe.Services.GenericServices.SystemAccountService
         protected void HandleResetMarketplacePassword(IScene scene, string[] cmd)
         {
             ResetSystemPassword ("Marketplace", MarketplaceOwnerName);
+        }
+
+        protected void HandleResetStaffPassword(IScene scene, string [] cmd)
+        {
+            ResetSystemPassword("Staff", StaffName);
         }
 
         void ResetSystemPassword(string userType, string systemUserName)

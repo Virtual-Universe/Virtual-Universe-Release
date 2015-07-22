@@ -42,10 +42,10 @@ namespace Universe.Modules.Agent.AssetTransaction
         /// <summary>
         ///     Each agent has its own singleton collection of transactions
         /// </summary>
-        private readonly Dictionary<UUID, AgentAssetTransactions> AgentTransactions =
+        readonly Dictionary<UUID, AgentAssetTransactions> AgentTransactions =
             new Dictionary<UUID, AgentAssetTransactions>();
 
-        private IScene m_scene;
+        IScene m_scene;
 
         //[Obsolete] //As long as this is being used to get objects that are not region specific, this is fine to use
         public IScene MyScene
@@ -107,13 +107,13 @@ namespace Universe.Modules.Agent.AssetTransaction
             client.OnXferReceive += HandleXfer;
         }
 
-        private void OnClosingClient(IClientAPI client)
+        void OnClosingClient(IClientAPI client)
         {
             client.OnAssetUploadRequest -= HandleUDPUploadRequest;
             client.OnXferReceive -= HandleXfer;
         }
 
-        private void OnRemovePresence(IScenePresence SP)
+        void OnRemovePresence(IScenePresence SP)
         {
             if (SP != null && !SP.IsChildAgent)
                 RemoveAgentAssetTransactions(SP.UUID);
@@ -232,7 +232,7 @@ namespace Universe.Modules.Agent.AssetTransaction
         /// </summary>
         /// <param name="userID"></param>
         /// <returns></returns>
-        private AgentAssetTransactions GetUserTransactions(UUID userID)
+        AgentAssetTransactions GetUserTransactions(UUID userID)
         {
             lock (AgentTransactions)
             {

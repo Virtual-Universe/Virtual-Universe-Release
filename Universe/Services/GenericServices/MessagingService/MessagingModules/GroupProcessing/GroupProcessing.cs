@@ -70,11 +70,11 @@ namespace Universe.Services
             //We need to check and see if this is an GroupSessionAgentUpdate
             if (message.ContainsKey("Method") && message["Method"] == "GroupSessionAgentUpdate")
             {
-                //Comes in on the Universe.Server side
+                //COMES IN ON UNIVERSE.SERVER SIDE
                 //Send it on to whomever it concerns
-                OSDMap innerMessage = (OSDMap) message["Message"];
+                OSDMap innerMessage = (OSDMap)message["Message"];
                 if (innerMessage["message"] == "ChatterBoxSessionAgentListUpdates")
-                    //ONLY forward on this type of message
+                //ONLY forward on this type of message
                 {
                     UUID agentID = message["AgentID"];
                     IEventQueueService eqs = m_registry.RequestModuleInterface<IEventQueueService>();
@@ -89,11 +89,11 @@ namespace Universe.Services
             }
             else if (message.ContainsKey("Method") && message["Method"] == "FixGroupRoleTitles")
             {
-                //Comes in on the Universe.Server side from region
+                //COMES IN ON UNIVERSE.SERVER SIDE FROM REGION
                 UUID groupID = message["GroupID"].AsUUID();
                 UUID agentID = message["AgentID"].AsUUID();
                 UUID roleID = message["RoleID"].AsUUID();
-                byte type = (byte) message["Type"].AsInteger();
+                byte type = (byte)message["Type"].AsInteger();
                 IGroupsServiceConnector con = Framework.Utilities.DataManager.RequestPlugin<IGroupsServiceConnector>();
                 List<GroupRoleMembersData> members = con.GetGroupRoleMembers(agentID, groupID);
                 List<GroupRolesData> roles = con.GetGroupRoles(agentID, groupID);
@@ -108,27 +108,25 @@ namespace Universe.Services
                     if (data.RoleID == roleID)
                     {
                         //They were affected by the change
-                        switch ((GroupRoleUpdate) type)
+                        switch ((GroupRoleUpdate)type)
                         {
                             case GroupRoleUpdate.Create:
-                            case GroupRoleUpdate.NoUpdate:
-                                //No changes...
+                            case GroupRoleUpdate.NoUpdate:     //No changes...
                                 break;
 
                             case GroupRoleUpdate.UpdatePowers: //Possible we don't need to send this?
                             case GroupRoleUpdate.UpdateAll:
                             case GroupRoleUpdate.UpdateData:
                             case GroupRoleUpdate.Delete:
-                                if (type == (byte) GroupRoleUpdate.Delete)
+                                if (type == (byte)GroupRoleUpdate.Delete)
                                     //Set them to the most limited role since their role is gone
                                     con.SetAgentGroupSelectedRole(data.MemberID, groupID, everyone.RoleID);
-                                //Need to update their title inworld
 
-                                IAgentInfoService agentInfoService =
-                                    m_registry.RequestModuleInterface<IAgentInfoService>();
+                                //Need to update their title inworld
+                                IAgentInfoService agentInfoService = m_registry.RequestModuleInterface<IAgentInfoService>();
                                 UserInfo info;
                                 if (agentInfoService != null &&
-                                    (info = agentInfoService.GetUserInfo(agentID.ToString())) != null && info.IsOnline)
+                                        (info = agentInfoService.GetUserInfo(agentID.ToString())) != null && info.IsOnline)
                                 {
                                     //Forward the message
                                     regionsToBeUpdated.Add(info);
@@ -139,8 +137,7 @@ namespace Universe.Services
                 }
                 if (regionsToBeUpdated.Count != 0)
                 {
-                    ISyncMessagePosterService messagePost =
-                        m_registry.RequestModuleInterface<ISyncMessagePosterService>();
+                    ISyncMessagePosterService messagePost = m_registry.RequestModuleInterface<ISyncMessagePosterService>();
                     if (messagePost != null)
                     {
                         foreach (UserInfo userInfo in regionsToBeUpdated)
@@ -157,7 +154,7 @@ namespace Universe.Services
             }
             else if (message.ContainsKey("Method") && message["Method"] == "ForceUpdateGroupTitles")
             {
-                //Comes in on the region side from the Universe.Server
+                //COMES IN ON REGION SIDE FROM UNIVERSE.SERVER
                 UUID groupID = message["GroupID"].AsUUID();
                 UUID roleID = message["RoleID"].AsUUID();
                 UUID regionID = message["RegionID"].AsUUID();

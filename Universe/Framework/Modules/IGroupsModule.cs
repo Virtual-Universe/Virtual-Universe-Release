@@ -79,6 +79,13 @@ namespace Universe.Framework.Modules
         /// <returns>The group's data.  Null if there is no such group.</returns>
         GroupRecord GetGroupRecord(UUID GroupID);
 
+        /// <summary>
+        /// Gets a list of all groups.
+        /// </summary>
+        /// <returns>Alist of group UUIDs</returns>
+        List<UUID> GetAllGroups(UUID RequestingAgentID);
+        List<GroupMembersData> GetGroupMembers(UUID requestingAgentID, UUID GroupID);
+
         void ActivateGroup(IClientAPI remoteClient, UUID groupID);
         List<GroupTitlesData> GroupTitlesRequest(IClientAPI remoteClient, UUID groupID);
         List<GroupMembersData> GroupMembersRequest(IClientAPI remoteClient, UUID groupID);

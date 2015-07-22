@@ -43,9 +43,9 @@ namespace Universe.Modules.Voice
 {
     public class GenericVoiceModule : INonSharedRegionModule
     {
-        private string configToSend = "SLVoice";
-        private bool m_enabled = true;
-        private IScene m_scene;
+        string configToSend = "SLVoice";
+        bool m_enabled = true;
+        IScene m_scene;
 
         #region INonSharedRegionModule Members
 
@@ -178,7 +178,7 @@ namespace Universe.Modules.Voice
 
         #region Region-side message sending
 
-        private OSDMap syncRecievedService_OnMessageReceived(OSDMap message)
+        OSDMap syncRecievedService_OnMessageReceived(OSDMap message)
         {
             string method = message["Method"];
             if (method == "GetParcelChannelInfo")

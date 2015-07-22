@@ -63,9 +63,9 @@ namespace Universe.Modules.Chat
         /// </summary>
         protected static Dictionary<UUID, string> IMUsersCache = new Dictionary<UUID, string>();
 
-        private bool m_Enabled;
+        bool m_Enabled;
         protected static List<IScene> m_scenes = new List<IScene>();
-        protected bool m_addedHttpHandler = false;
+        protected bool m_addedHttpHandler;
         protected IAgentInfoService m_agentInfoService;
 
         #region IMessageTransferModule Members
@@ -134,21 +134,24 @@ namespace Universe.Modules.Chat
         public virtual void Initialise(IConfigSource config)
         {
             IConfig cnf = config.Configs["Messaging"];
-            if (cnf != null && cnf.GetString(
-                "MessageTransferModule", "MessageTransferModule") !=
-                "MessageTransferModule")
+            if (cnf != null)
+            {
+                m_Enabled = (cnf.GetString("MessageTransferModule", Name) == Name);
+
+                // only add one http handler!
+                if (!m_addedHttpHandler)
+                {
+                    m_addedHttpHandler = true;
+                    MainServer.Instance.AddStreamHandler(new GenericStreamHandler("POST", "/gridinstantmessages/", processGridInstantMessage));
+                }
+            }
+
+            if (!m_Enabled)
             {
                 MainConsole.Instance.Debug("[MESSAGE TRANSFER]: Disabled by configuration");
                 return;
             }
 
-            m_Enabled = true;
-
-            if (!m_addedHttpHandler)
-            {
-                m_addedHttpHandler = true;
-                MainServer.Instance.AddStreamHandler(new GenericStreamHandler("POST", "/gridinstantmessages/", processGridInstantMessage));
-            }
         }
 
         public virtual void AddRegion(IScene scene)
@@ -190,7 +193,7 @@ namespace Universe.Modules.Chat
 
         #endregion
 
-        private void HandleUndeliveredMessage(GridInstantMessage im, string reason)
+        void HandleUndeliveredMessage(GridInstantMessage im, string reason)
         {
             UndeliveredMessage handlerUndeliveredMessage = OnUndeliveredMessage;
 
@@ -208,7 +211,7 @@ namespace Universe.Modules.Chat
         protected virtual byte[] processGridInstantMessage(string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse)
         {
             GridInstantMessage gim = ProtoBuf.Serializer.Deserialize<GridInstantMessage>(request);
-            
+
             // Trigger the Instant message in the scene.
             IScenePresence user;
             bool successful = false;
@@ -234,7 +237,7 @@ namespace Universe.Modules.Chat
         protected virtual void GridInstantMessageCompleted(IAsyncResult iar)
         {
             GridInstantMessageDelegate icon =
-                (GridInstantMessageDelegate) iar.AsyncState;
+                (GridInstantMessageDelegate)iar.AsyncState;
             icon.EndInvoke(iar);
         }
 
@@ -421,7 +424,7 @@ namespace Universe.Modules.Chat
 
             //Now query the grid server for the agent
             List<string> AgentLocations = m_agentInfoService.GetAgentsLocations(im.FromAgentID.ToString(),
-                                                                 new List<string>(new[] {toAgentID.ToString()}));
+                                                                 new List<string>(new[] { toAgentID.ToString() }));
             if (AgentLocations.Count > 0)
             {
                 //No agents, so this user is offline

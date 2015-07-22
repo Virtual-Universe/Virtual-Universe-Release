@@ -45,7 +45,7 @@ namespace Universe.Modules.Selection
     {
         #region Declares
 
-        private bool m_UseSelectionParticles = true;
+        bool m_UseSelectionParticles = true;
 
         public bool UseSelectionParticles
         {
