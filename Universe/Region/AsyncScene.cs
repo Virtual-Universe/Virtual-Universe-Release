@@ -46,7 +46,7 @@ namespace Universe.Region
     {
         #region Fields
 
-        private readonly List<ISceneEntity> m_PhysicsReturns = new List<ISceneEntity>();
+        readonly List<ISceneEntity> m_PhysicsReturns = new List<ISceneEntity>();
 
         public List<ISceneEntity> PhysicsReturns
         {
@@ -58,7 +58,7 @@ namespace Universe.Region
         /// <value>
         ///     The scene graph for this scene
         /// </value>
-        private SceneGraph m_sceneGraph;
+        SceneGraph m_sceneGraph;
 
         protected readonly ClientManager m_clientManager = new ClientManager();
 
@@ -77,7 +77,7 @@ namespace Universe.Region
         protected ThreadMonitor monitor = new ThreadMonitor();
         protected ThreadMonitor physmonitor = new ThreadMonitor();
 
-        protected UniverseEventManager m_UniverseEventManager = null;
+        protected UniverseEventManager m_UniverseEventManager;
         protected EventManager m_eventManager;
 
         /// <value>
@@ -97,7 +97,7 @@ namespace Universe.Region
             get { return m_UniverseEventManager; }
         }
 
-        private ISceneManager m_sceneManager;
+        ISceneManager m_sceneManager;
 
         public ISceneManager SceneManager
         {
@@ -130,22 +130,22 @@ namespace Universe.Region
             get { return m_frame; }
         }
 
-        private float m_basesimfps = 45f;
-        private float m_basesimphysfps = 45f;
+        float m_basesimfps = 45f;
+        float m_basesimphysfps = 45f;
 
         protected float m_updatetimespan = 0.022f;
         protected float m_physicstimespan = 0.022f;
         protected DateTime m_lastphysupdate = DateTime.UtcNow;
 
-        private const int m_update_physics = 1; //Trigger the physics update
-        private const int m_update_entities = 5; // Send prim updates for clients
-        private const int m_update_events = 1; //Trigger the OnFrame event and tell any modules about the new frame
+        const int m_update_physics = 1;             //Trigger the physics update
+        const int m_update_entities = 5;            // Send prim updates for clients
+        const int m_update_events = 1;              //Trigger the OnFrame event and tell any modules about the new frame
 
-        private const int m_update_coarse_locations = 30; //Trigger the sending of coarse location updates (minimap updates)
+        const int m_update_coarse_locations = 30;   //Trigger the sending of coarse location updates (minimap updates)
 
-        private volatile bool shuttingdown = false;
+        volatile bool shuttingdown;
 
-        private bool m_ShouldRunHeartbeat = true;
+        bool m_ShouldRunHeartbeat = true;
 
         public bool ShouldRunHeartbeat
         {
@@ -276,7 +276,7 @@ namespace Universe.Region
             m_regInfo = regionInfo;
         }
 
-        public void Initialize(RegionInfo regionInfo, ISimulationDataStore dataStore, 
+        public void Initialize(RegionInfo regionInfo, ISimulationDataStore dataStore,
             AgentCircuitManager authen, List<IClientNetworkServer> clientServers)
         {
             Initialize(regionInfo);
@@ -302,12 +302,12 @@ namespace Universe.Region
 
             #region Region Config
 
-			IConfig universestartupConfig = m_config.Configs["UniverseStartup"];
-			if (universestartupConfig != null)
+            IConfig universestartupConfig = m_config.Configs["UniverseStartup"];
+            if (universestartupConfig != null)
             {
                 //Region specific is still honored here, the RegionInfo checks for it, and if it is 0, it didn't set it
                 if (RegionInfo.ObjectCapacity == 0)
-					RegionInfo.ObjectCapacity = universestartupConfig.GetInt("ObjectCapacity", 80000);
+                    RegionInfo.ObjectCapacity = universestartupConfig.GetInt("ObjectCapacity", 80000);
             }
 
             IConfig packetConfig = m_config.Configs["PacketPool"];
@@ -333,13 +333,14 @@ namespace Universe.Region
             if (m_basesimphysfps > m_basesimfps)
                 m_basesimphysfps = m_basesimfps;
 
-            m_updatetimespan = 1000/m_basesimfps;
-            m_physicstimespan = 1000/m_basesimphysfps;
+            m_updatetimespan = 1000 / m_basesimfps;
+            m_physicstimespan = 1000 / m_basesimphysfps;
 
             #region Startup Complete config
 
             EventManager.OnAddToStartupQueue += AddToStartupQueue;
             EventManager.OnModuleFinishedStartup += FinishedStartup;
+            //EventManager.OnStartupComplete += StartupComplete;
 
             AddToStartupQueue("Startup");
 
@@ -363,10 +364,10 @@ namespace Universe.Region
             {
                 // Kick all ROOT agents with the message, 'The simulator is going down'
                 ForEachScenePresence(delegate(IScenePresence avatar)
-                                         {
-                                             if (!avatar.IsChildAgent)
-                                                 avatar.ControllingClient.Kick("The simulator is going down.");
-                                         });
+                {
+                    if (!avatar.IsChildAgent)
+                        avatar.ControllingClient.Kick("The simulator is going down.");
+                });
 
                 //Let things process and get sent for a bit
                 Thread.Sleep(1000);
@@ -418,7 +419,7 @@ namespace Universe.Region
             monitor.StartTrackingThread(0, Update);
             physmonitor.StartTrackingThread(0, PhysUpdate);
             //Then start the thread for it with an infinite loop time and no 
-            //sleep overall as the Update delete does it on it's own
+            //  sleep overall as the Update delete does it on it's own
             monitor.StartMonitor(0, 0);
             physmonitor.StartMonitor(0, 0);
         }
@@ -427,9 +428,9 @@ namespace Universe.Region
 
         #region Scene Heartbeat Methods
 
-        private bool m_lastPhysicsChange = false;
+        bool m_lastPhysicsChange;
 
-        private bool PhysUpdate()
+        bool PhysUpdate()
         {
             IMonitorModule monitorModule = RequestModuleInterface<IMonitorModule>();
             IPhysicsFrameMonitor physicsFrameMonitor = monitorModule.GetMonitor<IPhysicsFrameMonitor>(this);
@@ -441,6 +442,7 @@ namespace Universe.Region
             {
                 if (!ShouldRunHeartbeat) //If we arn't supposed to be running, kill ourselves
                     return false;
+
                 int maintc = Util.EnvironmentTickCount();
                 int BeginningFrameTime = maintc;
 
@@ -458,11 +460,11 @@ namespace Universe.Region
 
                 int PhysicsUpdateTime = Util.EnvironmentTickCount();
 
-                if (m_frame%m_update_physics == 0)
+                if (m_frame % m_update_physics == 0)
                 {
                     TimeSpan SinceLastFrame = DateTime.UtcNow - m_lastphysupdate;
                     if (!RegionInfo.RegionSettings.DisablePhysics &&
-                        ApproxEquals((float) SinceLastFrame.TotalMilliseconds,
+                        ApproxEquals((float)SinceLastFrame.TotalMilliseconds,
                                      m_updatetimespan, 3))
                     {
                         m_sceneGraph.UpdatePreparePhysics();
@@ -491,18 +493,19 @@ namespace Universe.Region
                 maintc = Util.EnvironmentTickCountSubtract(BeginningFrameTime);
                 if (maintc == 0)
                     continue;
+
                 int getSleepTime = GetHeartbeatSleepTime(maintc, true);
                 if (getSleepTime > 0)
                     Thread.Sleep(getSleepTime);
             }
         }
 
-        private bool ApproxEquals(float a, float b, int approx)
+        bool ApproxEquals(float a, float b, int approx)
         {
             return (a - b + approx) > 0;
         }
 
-        private readonly List<Action> m_events = new List<Action>();
+        readonly List<Action> m_events = new List<Action>();
 
         public List<Action> Events
         {
@@ -515,7 +518,7 @@ namespace Universe.Region
                 m_events.Add(action);
         }
 
-        private bool Update()
+        bool Update()
         {
             IMonitorModule monitorModule = RequestModuleInterface<IMonitorModule>();
             ISimFrameMonitor simFrameMonitor = monitorModule.GetMonitor<ISimFrameMonitor>(this);
@@ -537,7 +540,7 @@ namespace Universe.Region
                 try
                 {
                     int OtherFrameTime = Util.EnvironmentTickCount();
-                    if (m_frame%m_update_coarse_locations == 0)
+                    if (m_frame % m_update_coarse_locations == 0)
                     {
                         List<Vector3> coarseLocations;
                         List<UUID> avatarUUIDs;
@@ -549,7 +552,7 @@ namespace Universe.Region
                         }
                     }
 
-                    if (m_frame%m_update_entities == 0)
+                    if (m_frame % m_update_entities == 0)
                         m_sceneGraph.UpdateEntities();
 
                     Action[] events;
@@ -568,10 +571,10 @@ namespace Universe.Region
                         {
                         }
 
-                    if (m_frame%m_update_events == 0)
+                    if (m_frame % m_update_events == 0)
                         m_sceneGraph.PhysicsScene.UpdatesLoop();
 
-                    if (m_frame%m_update_events == 0)
+                    if (m_frame % m_update_events == 0)
                         m_eventManager.TriggerOnFrame();
 
                     //Now fix the sim stats
@@ -640,36 +643,37 @@ namespace Universe.Region
             }
         }
 
-        private readonly AveragingClass m_heartbeatList = new AveragingClass(50);
-        private readonly AveragingClass m_physheartbeatList = new AveragingClass(50);
+        readonly AveragingClass m_heartbeatList = new AveragingClass(50);
+        readonly AveragingClass m_physheartbeatList = new AveragingClass(50);
 
-        private int GetHeartbeatSleepTime(int timeBeatTook, bool phys)
+        int GetHeartbeatSleepTime(int timeBeatTook, bool phys)
         {
             if (phys)
             {
                 //Add it to the list of the last 50 heartbeats
                 if (timeBeatTook != 0)
                     m_physheartbeatList.Add(timeBeatTook);
-                int avgHeartBeat = (int) m_physheartbeatList.GetAverage();
+                int avgHeartBeat = (int)m_physheartbeatList.GetAverage();
 
                 //The heartbeat sleep time if time dilation is 1
                 float normalHeartBeatSleepTime = m_physicstimespan;
                 if (avgHeartBeat > normalHeartBeatSleepTime) //Fudge a bit
                     return 0; //It doesn't get any sleep
-                int newAvgSleepTime = (int) (normalHeartBeatSleepTime - avgHeartBeat);
+                int newAvgSleepTime = (int)(normalHeartBeatSleepTime - avgHeartBeat);
                 return newAvgSleepTime; //Fudge a bit
             }
             else
             {
                 //Add it to the list of the last 50 heartbeats
                 m_heartbeatList.Add(timeBeatTook);
-                int avgHeartBeat = (int) m_heartbeatList.GetAverage();
+                int avgHeartBeat = (int)m_heartbeatList.GetAverage();
 
                 //The heartbeat sleep time if time dilation is 1
-                int normalHeartBeatSleepTime = (int) m_updatetimespan;
+                int normalHeartBeatSleepTime = (int)m_updatetimespan;
                 if (avgHeartBeat > normalHeartBeatSleepTime) //Fudge a bit
                     return 0; //It doesn't get any sleep
                 int newAvgSleepTime = normalHeartBeatSleepTime - avgHeartBeat;
+                //Console.WriteLine (newAvgSleepTime);
                 return newAvgSleepTime;
             }
         }
@@ -730,7 +734,7 @@ namespace Universe.Region
 
         protected internal IScenePresence CreateAndAddChildScenePresence(IClientAPI client)
         {
-            ScenePresence newAvatar = new ScenePresence(client, this) {IsChildAgent = true};
+            ScenePresence newAvatar = new ScenePresence(client, this) { IsChildAgent = true };
 
             m_sceneGraph.AddScenePresence(newAvatar);
 
@@ -748,55 +752,55 @@ namespace Universe.Region
         public bool RemoveAgent(IScenePresence presence, bool forceClose)
         {
             AddAsyncEvent(delegate
-                              {
-                                  presence.ControllingClient.Close(forceClose);
-                                  foreach (IClientNetworkServer cns in m_clientServers)
-                                      cns.RemoveClient(presence.ControllingClient);
+            {
+                presence.ControllingClient.Close(forceClose);
+                foreach (IClientNetworkServer cns in m_clientServers)
+                    cns.RemoveClient(presence.ControllingClient);
 
-                                  if (presence.ParentID != UUID.Zero)
-                                      presence.StandUp();
+                if (presence.ParentID != UUID.Zero)
+                    presence.StandUp();
 
-                                  EventManager.TriggerOnClosingClient(presence.ControllingClient);
-                                  EventManager.TriggerOnRemovePresence(presence);
+                EventManager.TriggerOnClosingClient(presence.ControllingClient);
+                EventManager.TriggerOnRemovePresence(presence);
 
-                                  ForEachClient(
-                                      delegate(IClientAPI client)
-                                          {
-                                              if (client.AgentId != presence.UUID)
-                                              {
-                                                  //We can safely ignore null reference exceptions.  It means the avatar is dead and cleaned up anyway
-                                                  try
-                                                  {
-                                                      client.SendKillObject(presence.Scene.RegionInfo.RegionHandle,
-                                                                            new IEntity[] {presence});
-                                                  }
-                                                  catch (NullReferenceException)
-                                                  {
-                                                  }
-                                              }
-                                          });
+                ForEachClient(
+                    delegate(IClientAPI client)
+                    {
+                        if (client.AgentId != presence.UUID)
+                        {
+                            //We can safely ignore null reference exceptions.  It means the avatar is dead and cleaned up anyway
+                            try
+                            {
+                                client.SendKillObject(presence.Scene.RegionInfo.RegionHandle,
+                                                      new IEntity[] { presence });
+                            }
+                            catch (NullReferenceException)
+                            {
+                            }
+                        }
+                    });
 
-                                  // Remove the avatar from the scene
-                                  m_sceneGraph.RemoveScenePresence(presence);
-                                  m_clientManager.Remove(presence.UUID);
+                // Remove the avatar from the scene
+                m_sceneGraph.RemoveScenePresence(presence);
+                m_clientManager.Remove(presence.UUID);
 
-                                  try
-                                  {
-                                      presence.Close();
-                                  }
-                                  catch (Exception e)
-                                  {
-                                      MainConsole.Instance.Error(
-                                          "[SCENE] Scene.cs:RemoveClient:Presence.Close exception: " + e);
-                                  }
+                try
+                {
+                    presence.Close();
+                }
+                catch (Exception e)
+                {
+                    MainConsole.Instance.Error(
+                        "[SCENE] Scene.cs:RemoveClient:Presence.Close exception: " + e);
+                }
 
-                                  //Remove any interfaces it might have stored
-                                  presence.RemoveAllInterfaces();
+                //Remove any interfaces it might have stored
+                presence.RemoveAllInterfaces();
 
-                                  AuthenticateHandler.RemoveCircuit(presence.UUID);
-                                  //MainConsole.Instance.InfoFormat("[SCENE] Memory pre  GC {0}", System.GC.GetTotalMemory(false));
-                                  //MainConsole.Instance.InfoFormat("[SCENE] Memory post GC {0}", System.GC.GetTotalMemory(true));
-                              });
+                AuthenticateHandler.RemoveCircuit(presence.UUID);
+                //MainConsole.Instance.InfoFormat("[SCENE] Memory pre  GC {0}", System.GC.GetTotalMemory(false));
+                //MainConsole.Instance.InfoFormat("[SCENE] Memory post GC {0}", System.GC.GetTotalMemory(true));
+            });
             return true;
         }
 
@@ -913,8 +917,8 @@ namespace Universe.Region
 
         #region Startup Complete
 
-        private readonly List<string> StartupCallbacks = new List<string>();
-        private readonly List<string> StartupData = new List<string>();
+        readonly List<string> StartupCallbacks = new List<string>();
+        readonly List<string> StartupData = new List<string>();
 
         /// <summary>
         ///     Add a module to the startup queue
@@ -926,7 +930,7 @@ namespace Universe.Region
             bool add = startupConfig.GetBoolean("CompleteStartupAfterAllModulesLoad", true);
             if ((add) ||
                 name == "Startup")
-                //We allow startup through to allow for normal starting up, even if all module loading is disabled
+            //We allow startup through to allow for normal starting up, even if all module loading is disabled
             {
                 StartupCallbacks.Add(name);
             }
@@ -944,8 +948,8 @@ namespace Universe.Region
                 StartupCallbacks.Remove(name);
                 if (data.Count != 0)
                 {
-                    List<string> NewData = new List<string>(data.Count + 2) {name, data.Count.ToString()};
-                        //Fixed size to reduce memory
+                    List<string> NewData = new List<string>(data.Count + 2) { name, data.Count.ToString() };
+                    //Fixed size to reduce memory
                     NewData.AddRange(data);
                     StartupData.AddRange(NewData);
                 }
