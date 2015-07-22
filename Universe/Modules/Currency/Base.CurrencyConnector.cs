@@ -61,7 +61,7 @@ namespace Universe.Modules.Currency
 
         #endregion
 
-        #region IWhiteCoreDataPlugin Members
+        #region IUniverseDataPlugin Members
 
         public string Name
         {
