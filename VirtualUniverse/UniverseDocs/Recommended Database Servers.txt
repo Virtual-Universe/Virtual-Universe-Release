@@ -1,0 +1,68 @@
+##
+## Recomended Database Servers to use with Virtual-Universe
+##
+
+##
+## Introduction
+##
+
+After careful testing by the Second Galaxy Development Team and input from our collaborating partners,
+ we are proud to provide our recommendations relating to the best database servers to use for your Virtual Universe.  
+Our testing involves very high level stress tests, speed tests, general use tests, and other tests that are common
+ in the software development industry.  We never make a recommendation that we know will create issues to the end user.
+  
+##
+## Use in Standalone mode
+##
+
+The best server to use if you are not running a full grid and are just in standalone mode and using it for creating 
+content or just for fun then the built in SQLite is just fine and will run very smoothly and fast.
+
+##
+## Grid Mode
+##
+
+For those who are running a full grid or are using Virtual Universe as part of a bigger project that requires scalability
+ and speed we recommend you use one of the following:
+
+* MariaDB - MariaDB is the same as MySQL but is much better both on Windows and Linux.  We have also found it to be less cumbersome
+ as well as less burden for the operating system and processor.  If you run your DB on Linux you can even enable TokuDB which
+ will compress the database tables making it even faster.
+
+* MongoDB - Unfortunately we do not currently support MongoDB but we are in the process of working on its implementation.
+  MongoDB is fast and stable for a database system both on Windows, and Nix systems.  More to Come on MongoDB.
+
+* PostGre DB - We do not recommend the usage of PostGre DB and do not currently support it.
+
+* SQLite - It is not advisable to use the SQLite system to run a grid.  However it can be done but you do so at your own risk.
+
+##
+## User Asset Storage
+##
+
+Virtual Universe comes with a built in FileBasedStorage system.  Using this instead of storing the assets in your database tables
+ will also speed up your grid not to mention make your database smaller.  The FileBasedStorage is easy to configure and enable in the
+ configuration files.
+
+##
+## Legal Notice
+##
+
+  The name Virtual Universe, virtual-planets.org, and the Virtual Universe logos and marks, are the property of their respective
+  creators. Namely the Second Galaxy Development Team, collaborating partners, and contributors.
+  Third party software and code contributed to Virtual Universe is done so under an opensource license.  For more information
+  please see LICENSE.txt in VirtualUniverse/UniverseDocs/LICENSE.txt.
+
+##
+## Support
+##
+
+As always you can obtain support by creating an issue on our github issue tracker at https:github.com/Virtual-Universe/Virtual-Universe/Issues
+ or you can obtain support from fellow users and our development team in our IRC channel on Freenode #galaxyfutures
+
+##
+## About the writer
+##
+
+Emperor Starfinder is the Founder and Chief Executive Officer of the Second Galaxy Development Team.  In addition Emperor is the
+ Work Group Leader of the Second Galaxy Development Team's Grid Architecture Development Work Group.
