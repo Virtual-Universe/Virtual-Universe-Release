@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -96,18 +96,14 @@ namespace Universe.Modules.Caps
 
         private byte[] ProcessGroupAPI(Stream request, OSHttpResponse httpResponse, UUID agentID)
         {
-            //
             // This Caps is called with the following context:
-            //
             // https://serverIP:serverport/cap/16d22b69-9754-446e-a7a5-8d7144c712dd?group_id=<groupUUID>
-            //
             // It gets 2 POSTS send to it
             //
             // 'ban_action':i1 // Ban the user
             // 'ban_action':i2 // Unban the user
             //
             // When there's no action, it returns the values of the banned user and the time that they are banned
-            //
             // This needs a new table in groups that keeps track of these
             // Suggestion would be: group_bans
             throw new NotImplementedException();

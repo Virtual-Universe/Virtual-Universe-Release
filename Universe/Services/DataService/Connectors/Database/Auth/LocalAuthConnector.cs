@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -27,10 +27,11 @@
 
 using System;
 using System.Collections.Generic;
-using Nini.Config;
-using OpenMetaverse;
+
 using Universe.Framework.Modules;
 using Universe.Framework.Services;
+using Nini.Config;
+using OpenMetaverse;
 
 namespace Universe.Services.DataService
 {
@@ -101,6 +102,7 @@ namespace Universe.Services.DataService
             return GD.Insert(m_realm, row);
         }
 
+        // I don't think this is used anywhere (don't know who wrote this comment ~ SignpostMarv)
         public bool SetDataItem(UUID principalID, string item, string value)
         {
             Dictionary<string, object> values = new Dictionary<string, object>(1);

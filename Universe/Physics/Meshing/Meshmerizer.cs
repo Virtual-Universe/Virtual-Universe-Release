@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -32,7 +32,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using ComponentAce.Compression.Libs.zlib;
 using Nini.Config;
 using OpenMetaverse;
 using OpenMetaverse.StructuredData;
@@ -40,6 +39,7 @@ using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.Physics;
 using Universe.Framework.SceneInfo;
+using ZLib.Net;
 
 #if DEBUGING
 using PrimMesher;
@@ -154,6 +154,7 @@ namespace Universe.Physics.Meshing
             faces.Add(new Face(4, 6, 7));
 
             // sides
+
             faces.Add(new Face(5, 0, 3));
             faces.Add(new Face(5, 3, 6));
 
@@ -173,6 +174,7 @@ namespace Universe.Physics.Meshing
 
             return box;
         }
+
 
         /// <summary>
         ///     Creates a simple bounding box mesh for a complex input mesh
@@ -207,7 +209,7 @@ namespace Universe.Physics.Meshing
                 using (ZOutputStream zOut = new ZOutputStream(outMs))
                 {
                     using (Stream inMs = new MemoryStream(meshBytes))
-                    {
+                     {
                         byte[] readBuffer = new byte[2000];
                         int readLen;
 
@@ -217,7 +219,9 @@ namespace Universe.Physics.Meshing
                         }
                         zOut.Flush();
                         zOut.finish();
+                        //outMs.Seek(0, SeekOrigin.Begin);
 
+                        //byte[] decompressedBuf = outMs.GetBuffer();
                         byte[] decompressedBuf = outMs.ToArray();
 
                         decodedOsd = OSDParser.DeserializeLLSDBinary(decompressedBuf);
@@ -228,6 +232,8 @@ namespace Universe.Physics.Meshing
             return decodedOsd;
         }
 
+
+
         /// <summary>
         /// Create a physics mesh from data that comes with the prim.  The actual data used depends on the prim type.
         /// </summary>
@@ -236,7 +242,7 @@ namespace Universe.Physics.Meshing
         /// <param name="size"></param>
         /// <param name="lod"></param>
         /// <returns></returns>
-        Mesh CreateMeshFromPrimMesher(string primName, PrimitiveBaseShape primShape, Vector3 size,
+        Mesh CreateMeshFromPrimMesher (string primName, PrimitiveBaseShape primShape, Vector3 size,
                                       float lod, ulong key)
         {
             List<Coord> coords;
@@ -249,28 +255,27 @@ namespace Universe.Physics.Meshing
                     if (!UseMeshesPhysicsMesh)
                         return null;
 
-                    if (!GenerateFromPrimMeshData(primName, primShape, size, out coords, out faces))
+                    if (!GenerateFromPrimMeshData (primName, primShape, size, out coords, out faces))
                         return null;
-                }
-                else
+                } else
                 {
-                    if (!GenerateFromPrimSculptData(primName, primShape, size, lod, out coords, out faces))
+                    if (!GenerateFromPrimSculptData (primName, primShape, size, lod, out coords, out faces))
                         return null;
                 }
-            }
-            else
+            } else
             {
-                if (!GenerateFromPrimShapeData(primName, primShape, size, lod, out coords, out faces))
+                if (!GenerateFromPrimShapeData (primName, primShape, size, lod, out coords, out faces))
                     return null;
             }
 
-            Mesh mesh = new Mesh(key);
-            mesh.Set(coords, faces);
-            coords.Clear();
-            faces.Clear();
+            Mesh mesh = new Mesh (key);
+            mesh.Set (coords, faces);
+            coords.Clear ();
+            faces.Clear ();
 
             return mesh;
         }
+
 
         /// <summary>
         /// Add a submesh to an existing list of coords and faces.
@@ -281,7 +286,7 @@ namespace Universe.Physics.Meshing
         /// <param name="faces"></param>
         void AddSubMesh(OSDMap subMeshMap, Vector3 size, List<Coord> coords, List<Face> faces)
         {
-
+ 
             // As per http://wiki.secondlife.com/wiki/Mesh/Mesh_Asset_Format, some Mesh Level
             // of Detail Blocks (maps) contain just a NoGeometry key to signal there is no
             // geometry for this submesh.
@@ -291,12 +296,12 @@ namespace Universe.Physics.Meshing
             Vector3 posMax = new Vector3(0.5f, 0.5f, 0.5f);
             Vector3 posMin = new Vector3(-0.5f, -0.5f, -0.5f);
             if (subMeshMap.ContainsKey("PositionDomain"))
-            //Optional, so leave the max and min values otherwise
+                //Optional, so leave the max and min values otherwise
             {
-                posMax = ((OSDMap)subMeshMap["PositionDomain"])["Max"].AsVector3();
-                posMin = ((OSDMap)subMeshMap["PositionDomain"])["Min"].AsVector3();
+                posMax = ((OSDMap) subMeshMap["PositionDomain"])["Max"].AsVector3();
+                posMin = ((OSDMap) subMeshMap["PositionDomain"])["Min"].AsVector3();
             }
-            ushort faceIndexOffset = (ushort)coords.Count;
+            ushort faceIndexOffset = (ushort) coords.Count;
 
             byte[] posBytes = subMeshMap["Position"].AsBinary();
             for (int i = 0; i < posBytes.Length; i += 6)
@@ -306,9 +311,9 @@ namespace Universe.Physics.Meshing
                 ushort uZ = Utils.BytesToUInt16(posBytes, i + 4);
 
                 Coord c = new Coord(
-                    Utils.UInt16ToFloat(uX, posMin.X, posMax.X) * size.X,
-                    Utils.UInt16ToFloat(uY, posMin.Y, posMax.Y) * size.Y,
-                    Utils.UInt16ToFloat(uZ, posMin.Z, posMax.Z) * size.Z);
+                    Utils.UInt16ToFloat(uX, posMin.X, posMax.X)*size.X,
+                    Utils.UInt16ToFloat(uY, posMin.Y, posMax.Y)*size.Y,
+                    Utils.UInt16ToFloat(uZ, posMin.Z, posMax.Z)*size.Z);
 
                 coords.Add(c);
             }
@@ -316,9 +321,9 @@ namespace Universe.Physics.Meshing
             byte[] triangleBytes = subMeshMap["TriangleList"].AsBinary();
             for (int i = 0; i < triangleBytes.Length; i += 6)
             {
-                ushort v1 = (ushort)(Utils.BytesToUInt16(triangleBytes, i) + faceIndexOffset);
-                ushort v2 = (ushort)(Utils.BytesToUInt16(triangleBytes, i + 2) + faceIndexOffset);
-                ushort v3 = (ushort)(Utils.BytesToUInt16(triangleBytes, i + 4) + faceIndexOffset);
+                ushort v1 = (ushort) (Utils.BytesToUInt16(triangleBytes, i) + faceIndexOffset);
+                ushort v2 = (ushort) (Utils.BytesToUInt16(triangleBytes, i + 2) + faceIndexOffset);
+                ushort v3 = (ushort) (Utils.BytesToUInt16(triangleBytes, i + 4) + faceIndexOffset);
                 Face f = new Face(v1, v2, v3);
                 faces.Add(f);
             }
@@ -333,12 +338,12 @@ namespace Universe.Physics.Meshing
         /// <param name="coords">Coords are added to this list by the method.</param>
         /// <param name="faces">Faces are added to this list by the method.</param>
         /// <returns>true if coords and faces were successfully generated, false if not</returns>
-        bool GenerateFromPrimMeshData(string primName, PrimitiveBaseShape primShape, Vector3 size,
+        bool GenerateFromPrimMeshData(string primName, PrimitiveBaseShape primShape, Vector3 size, 
             out List<Coord> coords, out List<Face> faces)
         {
-            coords = new List<Coord>();
-            faces = new List<Face>();
-
+            coords = new List<Coord> ();
+            faces = new List<Face> ();
+                     
             OSD meshOsd;
             mConvexHulls = null;
             mBoundingHull = null;
@@ -367,39 +372,47 @@ namespace Universe.Physics.Meshing
             if (meshOsd is OSDMap)
             {
                 OSDMap map = (OSDMap)meshOsd;
-                OSDMap physicsParms = new OSDMap();
+                OSDMap physicsParms = new OSDMap ();
 
-                if (map.ContainsKey("physics_shape"))
-                    physicsParms = (OSDMap)map["physics_shape"];   // old asset format
-                else if (map.ContainsKey("physics_mesh"))
-                    physicsParms = (OSDMap)map["physics_mesh"];    // new asset format
-                else if (map.ContainsKey("medium_lod"))
-                    physicsParms = (OSDMap)map["medium_lod"];     // fallback to medium LOD mesh
-                else if (map.ContainsKey("high_lod"))
-                    physicsParms = (OSDMap)map["high_lod"];        // if all esle fails...
+//               if (map.ContainsKey ("physics_cached"))
+//                {
+                    //                  OSD cachedMeshMap = map["physics_cached"]; // cached data from Universe
+                    //                  Mesh cachedMesh = new Mesh(key);
+                    //                  cachedMesh.Deserialize(cachedMeshMap);
+                    //                  cachedMesh.WasCached = true;
+                    //                  return cachedMesh; //Return here, we found all of the info right here
+//                    return true;
+//                }
+                if (map.ContainsKey ("physics_shape"))
+                    physicsParms = (OSDMap)map ["physics_shape"];   // old asset format
+                else if (map.ContainsKey ("physics_mesh"))
+                    physicsParms = (OSDMap)map ["physics_mesh"];    // new asset format
+                else if (map.ContainsKey ("medium_lod"))
+                    physicsParms = (OSDMap)map ["medium_lod"];     // fallback to medium LOD mesh
+                else if (map.ContainsKey ("high_lod"))
+                    physicsParms = (OSDMap)map ["high_lod"];        // if all esle fails...
 
-                if (map.ContainsKey("physics_convex"))
-                {
+                if (map.ContainsKey ("physics_convex"))
+                { 
                     // pull this out also in case physics engine can use it
                     OSD convexBlockOsd = null;
                     try
                     {
-                        OSDMap convexBlock = (OSDMap)map["physics_convex"];
+                        OSDMap convexBlock = (OSDMap)map ["physics_convex"];
                         {
-                            int convexOffset = convexBlock["offset"].AsInteger() + (int)start;
-                            int convexSize = convexBlock["size"].AsInteger();
+                            int convexOffset = convexBlock ["offset"].AsInteger () + (int)start;
+                            int convexSize = convexBlock ["size"].AsInteger ();
 
                             byte[] convexBytes = new byte[convexSize];
 
-                            Buffer.BlockCopy(primShape.SculptData, convexOffset, convexBytes, 0, convexSize);
+                            Buffer.BlockCopy (primShape.SculptData, convexOffset, convexBytes, 0, convexSize);
 
                             try
                             {
-                                convexBlockOsd = DecompressOsd(convexBytes);
-                            }
-                            catch (Exception e)
+                                convexBlockOsd = DecompressOsd (convexBytes);
+                            } catch (Exception e)
                             {
-                                MainConsole.Instance.ErrorFormat("[MESH]: prim '{0}': exception decoding convex block: {1}", primName, e);
+                                MainConsole.Instance.ErrorFormat ("[MESH]: prim '{0}': exception decoding convex block: {1}", primName, e);
                                 //return false;
                             }
                         }
@@ -408,114 +421,111 @@ namespace Universe.Physics.Meshing
                         {
                             convexBlock = convexBlockOsd as OSDMap;
 
-                            Vector3 min = new Vector3(-0.5f, -0.5f, -0.5f);
-                            if (convexBlock.ContainsKey("Min"))
-                                min = convexBlock["Min"].AsVector3();
+                            Vector3 min = new Vector3 (-0.5f, -0.5f, -0.5f);
+                            if (convexBlock.ContainsKey ("Min"))
+                                min = convexBlock ["Min"].AsVector3 ();
 
-                            Vector3 max = new Vector3(0.5f, 0.5f, 0.5f);
-                            if (convexBlock.ContainsKey("Max"))
-                                max = convexBlock["Max"].AsVector3();
+                            Vector3 max = new Vector3 (0.5f, 0.5f, 0.5f);
+                            if (convexBlock.ContainsKey ("Max"))
+                                max = convexBlock ["Max"].AsVector3 ();
 
                             List<Vector3> boundingHull = null;
 
-                            if (convexBlock.ContainsKey("BoundingVerts"))
+                            if (convexBlock.ContainsKey ("BoundingVerts"))
                             {
-                                byte[] boundingVertsBytes = convexBlock["BoundingVerts"].AsBinary();
-                                boundingHull = new List<Vector3>();
-                                for (int i = 0; i < boundingVertsBytes.Length; )
+                                byte[] boundingVertsBytes = convexBlock ["BoundingVerts"].AsBinary ();
+                                boundingHull = new List<Vector3> ();
+                                for (int i = 0; i < boundingVertsBytes.Length;)
                                 {
-                                    ushort uX = Utils.BytesToUInt16(boundingVertsBytes, i);
+                                    ushort uX = Utils.BytesToUInt16 (boundingVertsBytes, i);
                                     i += 2;
-                                    ushort uY = Utils.BytesToUInt16(boundingVertsBytes, i);
+                                    ushort uY = Utils.BytesToUInt16 (boundingVertsBytes, i);
                                     i += 2;
-                                    ushort uZ = Utils.BytesToUInt16(boundingVertsBytes, i);
+                                    ushort uZ = Utils.BytesToUInt16 (boundingVertsBytes, i);
                                     i += 2;
 
-                                    Vector3 pos = new Vector3(
-                                                      Utils.UInt16ToFloat(uX, min.X, max.X),
-                                                      Utils.UInt16ToFloat(uY, min.Y, max.Y),
-                                                      Utils.UInt16ToFloat(uZ, min.Z, max.Z)
+                                    Vector3 pos = new Vector3 (
+                                                      Utils.UInt16ToFloat (uX, min.X, max.X),
+                                                      Utils.UInt16ToFloat (uY, min.Y, max.Y),
+                                                      Utils.UInt16ToFloat (uZ, min.Z, max.Z)
                                                   );
 
-                                    boundingHull.Add(pos);
+                                    boundingHull.Add (pos);
                                 }
 
                                 mBoundingHull = boundingHull;
-                                MainConsole.Instance.DebugFormat("[MESH]: prim '{0}': parsed bounding hull. nVerts={1}", primName, mBoundingHull.Count);
+                                MainConsole.Instance.DebugFormat ("[MESH]: prim '{0}': parsed bounding hull. nVerts={1}", primName, mBoundingHull.Count);
                             }
 
-                            if (convexBlock.ContainsKey("HullList"))
+                            if (convexBlock.ContainsKey ("HullList"))
                             {
-                                byte[] hullList = convexBlock["HullList"].AsBinary();
-                                byte[] posBytes = convexBlock["Positions"].AsBinary();
+                                byte[] hullList = convexBlock ["HullList"].AsBinary ();
+                                byte[] posBytes = convexBlock ["Positions"].AsBinary ();
 
-                                var hulls = new List<List<Vector3>>();
+                                var hulls = new List<List<Vector3>> ();
                                 int posNdx = 0;
 
                                 foreach (byte cnt in hullList)
                                 {
                                     int count = cnt == 0 ? 256 : cnt;
-                                    var hull = new List<Vector3>();
+                                    var hull = new List<Vector3> ();
 
                                     for (int i = 0; i < count; i++)
                                     {
-                                        ushort uX = Utils.BytesToUInt16(posBytes, posNdx);
+                                        ushort uX = Utils.BytesToUInt16 (posBytes, posNdx);
                                         posNdx += 2;
-                                        ushort uY = Utils.BytesToUInt16(posBytes, posNdx);
+                                        ushort uY = Utils.BytesToUInt16 (posBytes, posNdx);
                                         posNdx += 2;
-                                        ushort uZ = Utils.BytesToUInt16(posBytes, posNdx);
+                                        ushort uZ = Utils.BytesToUInt16 (posBytes, posNdx);
                                         posNdx += 2;
 
-                                        var pos = new Vector3(
-                                                      Utils.UInt16ToFloat(uX, min.X, max.X),
-                                                      Utils.UInt16ToFloat(uY, min.Y, max.Y),
-                                                      Utils.UInt16ToFloat(uZ, min.Z, max.Z)
+                                        var pos = new Vector3 (
+                                                      Utils.UInt16ToFloat (uX, min.X, max.X),
+                                                      Utils.UInt16ToFloat (uY, min.Y, max.Y),
+                                                      Utils.UInt16ToFloat (uZ, min.Z, max.Z)
                                                   );
 
-                                        hull.Add(pos);
+                                        hull.Add (pos);
                                     }
 
-                                    hulls.Add(hull);
+                                    hulls.Add (hull);
                                 }
 
                                 mConvexHulls = hulls;
-                                MainConsole.Instance.DebugFormat("[MESH]: prim '{0}': parsed hulls. nHulls '{1}'", primName, mConvexHulls.Count);
-                            }
-                            else
+                                MainConsole.Instance.DebugFormat ("[MESH]: prim '{0}': parsed hulls. nHulls '{1}'", primName, mConvexHulls.Count);
+                            } else
                             {
-                                MainConsole.Instance.DebugFormat("[MESH]: prim '{0}' has physics_convex but no HullList", primName);
+                                MainConsole.Instance.DebugFormat ("[MESH]: prim '{0}' has physics_convex but no HullList", primName);
                             }
                         }
-                    }
-                    catch (Exception e)
+                    } catch (Exception e)
                     {
-                        MainConsole.Instance.WarnFormat("[MESH]: Exception decoding convex block: {0}", e);
+                        MainConsole.Instance.WarnFormat ("[MESH]: Exception decoding convex block: {0}", e);
                     }
                 }
 
                 if (physicsParms == null)
                 {
-                    MainConsole.Instance.WarnFormat("[MESH]: No recognised physics mesh found in mesh asset for {0}", primName);
-                    return false;
+                    MainConsole.Instance.WarnFormat ("[MESH]: No recognised physics mesh found in mesh asset for {0}", primName);
+                    return  false;
                 }
 
-                int physOffset = physicsParms["offset"].AsInteger() + (int)start;
-                int physSize = physicsParms["size"].AsInteger();
+                int physOffset = physicsParms ["offset"].AsInteger () + (int)start;
+                int physSize = physicsParms ["size"].AsInteger ();
 
                 if (physOffset < 0 || physSize == 0)
                     return false; // no mesh data in asset
 
-                var decodedMeshOsd = new OSD();
+                var decodedMeshOsd = new OSD ();
                 var meshBytes = new byte[physSize];
-                Buffer.BlockCopy(primShape.SculptData, physOffset, meshBytes, 0, physSize);
+                Buffer.BlockCopy (primShape.SculptData, physOffset, meshBytes, 0, physSize);
 
                 try
                 {
-                    decodedMeshOsd = DecompressOsd(meshBytes);
-                }
-                catch (Exception e)
+                    decodedMeshOsd = DecompressOsd (meshBytes);
+                } catch (Exception e)
                 {
-                    MainConsole.Instance.ErrorFormat("[MESH]: prim: '{0}', exception decoding physical mesh: {1}", primName, e);
+                    MainConsole.Instance.ErrorFormat ("[MESH]: prim: '{0}', exception decoding physical mesh: {1}", primName, e);
                     return false;
                 }
 
@@ -528,16 +538,17 @@ namespace Universe.Physics.Meshing
                     foreach (OSD subMeshOsd in decodedMeshOsdArray)
                     {
                         if (subMeshOsd is OSDMap)
-                            AddSubMesh(subMeshOsd as OSDMap, size, coords, faces);
+                            AddSubMesh (subMeshOsd as OSDMap, size, coords, faces);
                     }
-                    MainConsole.Instance.DebugFormat("[MESH]: {0}: mesh decoded. offset={1}, size={2}, nCoords={3}, nFaces={4}",
+                    MainConsole.Instance.DebugFormat ("[MESH]: {0}: mesh decoded. offset={1}, size={2}, nCoords={3}, nFaces={4}",
                         primName, physOffset, physSize, coords.Count, faces.Count);
                 }
             }
-
+        
             return true;
 
         }
+
 
         /// <summary>
         /// Generate the co-ords and faces necessary to construct a mesh from the sculpt data the accompanies a prim.
@@ -552,8 +563,8 @@ namespace Universe.Physics.Meshing
         bool GenerateFromPrimSculptData(string primName, PrimitiveBaseShape primShape, Vector3 size, float lod,
             out List<Coord> coords, out List<Face> faces)
         {
-            coords = new List<Coord>();
-            faces = new List<Face>();
+            coords = new List<Coord> ();
+            faces = new List<Face> ();
             SculptMesh sculptMesh;
             Image idata = null;
             string decodedSculptFileName = "";
@@ -561,18 +572,17 @@ namespace Universe.Physics.Meshing
 
             if (cacheSculptMaps && primShape.SculptTexture != UUID.Zero)
             {
-                decodedSculptFileName = System.IO.Path.Combine(decodedSculptMapPath,
+                decodedSculptFileName = System.IO.Path.Combine (decodedSculptMapPath,
                     "smap_" + primShape.SculptTexture);
                 try
                 {
-                    if (File.Exists(decodedSculptFileName))
+                    if (File.Exists (decodedSculptFileName))
                     {
-                        idata = Image.FromFile(decodedSculptFileName);
+                        idata = Image.FromFile (decodedSculptFileName);
                     }
-                }
-                catch (Exception e)
+                } catch (Exception e)
                 {
-                    MainConsole.Instance.Error("[SCULPT]: unable to load cached sculpt map " +
+                    MainConsole.Instance.Error ("[SCULPT]: unable to load cached sculpt map " +
                     decodedSculptFileName + " " + e);
                 }
                 //if (idata != null)
@@ -586,39 +596,35 @@ namespace Universe.Physics.Meshing
 
                 try
                 {
-                    idata = m_j2kDecoder.DecodeToImage(primShape.SculptData);
+                    idata = m_j2kDecoder.DecodeToImage (primShape.SculptData);
 
                     if (idata != null && cacheSculptMaps &&
                         (cacheSculptAlphaMaps || (((ImageFlags)(idata.Flags) & ImageFlags.HasAlpha) == 0)))
                     {
                         try
                         {
-                            idata.Save(decodedSculptFileName, ImageFormat.MemoryBmp);
-                        }
-                        catch (Exception e)
+                            idata.Save (decodedSculptFileName, ImageFormat.MemoryBmp);
+                        } catch (Exception e)
                         {
-                            MainConsole.Instance.Error("[SCULPT]: unable to cache sculpt map " +
+                            MainConsole.Instance.Error ("[SCULPT]: unable to cache sculpt map " +
                             decodedSculptFileName + " " +
                             e);
                         }
                     }
-                }
-                catch (DllNotFoundException)
+                } catch (DllNotFoundException)
                 {
-                    MainConsole.Instance.Error(
+                    MainConsole.Instance.Error (
                         "[PHYSICS]: OpenJpeg is not installed correctly on this system. Physics Proxy generation failed.\n" +
                         "Often times this is because of an old version of GLIBC.  You must have version 2.4 or above!");
                     return false;
-                }
-                catch (IndexOutOfRangeException)
+                } catch (IndexOutOfRangeException)
                 {
-                    MainConsole.Instance.Error(
+                    MainConsole.Instance.Error (
                         "[PHYSICS]: OpenJpeg was unable to decode this. Physics Proxy generation failed");
                     return false;
-                }
-                catch (Exception ex)
+                } catch (Exception ex)
                 {
-                    MainConsole.Instance.Error(
+                    MainConsole.Instance.Error (
                         "[PHYSICS]: Unable to generate a Sculpty physics proxy. Sculpty texture decode failed: " +
                         ex);
                     return false;
@@ -628,21 +634,21 @@ namespace Universe.Physics.Meshing
             SculptMesh.SculptType sculptType;
             switch ((SculptType)primShape.SculptType)
             {
-                case SculptType.Cylinder:
-                    sculptType = SculptMesh.SculptType.cylinder;
-                    break;
-                case SculptType.Plane:
-                    sculptType = SculptMesh.SculptType.plane;
-                    break;
-                case SculptType.Torus:
-                    sculptType = SculptMesh.SculptType.torus;
-                    break;
-                case SculptType.Sphere:
-                    sculptType = SculptMesh.SculptType.sphere;
-                    break;
-                default:
-                    sculptType = SculptMesh.SculptType.plane;
-                    break;
+            case SculptType.Cylinder:
+                sculptType = SculptMesh.SculptType.cylinder;
+                break;
+            case SculptType.Plane:
+                sculptType = SculptMesh.SculptType.plane;
+                break;
+            case SculptType.Torus:
+                sculptType = SculptMesh.SculptType.torus;
+                break;
+            case SculptType.Sphere:
+                sculptType = SculptMesh.SculptType.sphere;
+                break;
+            default:
+                sculptType = SculptMesh.SculptType.plane;
+                break;
             }
 
             bool mirror = ((primShape.SculptType & 128) != 0);
@@ -651,19 +657,21 @@ namespace Universe.Physics.Meshing
             if (idata == null)
                 return false;
 
-            sculptMesh = new SculptMesh((Bitmap)idata, sculptType, (int)lod, false, mirror, invert);
+            sculptMesh = new SculptMesh ((Bitmap)idata, sculptType, (int)lod, false, mirror, invert);
 
-            idata.Dispose();
+            idata.Dispose ();
 
-            sculptMesh.DumpRaw(baseDir, primName, "primMesh");
+            sculptMesh.DumpRaw (baseDir, primName, "primMesh");
 
-            sculptMesh.Scale(size.X, size.Y, size.Z);
+            sculptMesh.Scale (size.X, size.Y, size.Z);
 
             coords = sculptMesh.coords;
             faces = sculptMesh.faces;
 
             return true;
         }
+
+
 
         /// <summary>
         /// Generate the co-ords and faces necessary to construct a mesh from the shape data the accompanies a prim.
@@ -679,7 +687,7 @@ namespace Universe.Physics.Meshing
         {
             PrimMesh primMesh;
             coords = new List<Coord>();
-            faces = new List<Face>();
+            faces = new List<Face>();            
             float pathShearX = primShape.PathShearX < 128
                 ? primShape.PathShearX * 0.01f
                 : (primShape.PathShearX - 256) * 0.01f;
@@ -698,9 +706,9 @@ namespace Universe.Physics.Meshing
             {
                 if (profileHollow > 0.99f)
                     profileHollow = 0.99f;
-                float sizeX = primShape.Scale.X - (primShape.Scale.X * profileHollow);
+                float sizeX = primShape.Scale.X - (primShape.Scale.X*profileHollow);
                 if (sizeX < 0.1f)                           //If its > 0.1, its fine to mesh at the small hollow
-                    profileHollow = 0.95f + (sizeX / 2);      //Scale the rest by how large the size of the prim is
+                    profileHollow = 0.95f + (sizeX/2);      //Scale the rest by how large the size of the prim is
             }
 
             int sides = 4;
@@ -708,76 +716,76 @@ namespace Universe.Physics.Meshing
             // defaults for LOD
             LevelOfDetail iLOD = (LevelOfDetail)lod;
             switch (iLOD)
-            {
-                case LevelOfDetail.High:
-                    sides = 24;
-                    break;
-                case LevelOfDetail.Medium:
-                    sides = 12;
-                    break;
-                case LevelOfDetail.Low:
-                    sides = 6;
-                    break;
-                case LevelOfDetail.VeryLow:
-                    sides = 3;
-                    break;
-                default:
-                    sides = 24;
-                    break;
+            {    
+            case LevelOfDetail.High:
+                sides = 24;
+                break;
+            case LevelOfDetail.Medium:
+                sides = 12;
+                break;
+            case LevelOfDetail.Low:
+                sides = 6;
+                break;
+            case LevelOfDetail.VeryLow:
+                sides = 3;
+                break;
+            default:
+                sides = 24;
+                break;
             }
 
             switch ((primShape.ProfileCurve & 0x07))
             {
-                case (byte)ProfileShape.EquilateralTriangle:
-                    sides = 3;
-                    break;
-                case (byte)ProfileShape.Circle:
-                    break;      // use lod set above
-                case (byte)ProfileShape.HalfCircle:
-                    profileBegin = 0.5f * profileBegin + 0.5f;
-                    profileEnd = 0.5f * profileEnd + 0.5f;
-                    break;      // use lod already set and...
+            case (byte) ProfileShape.EquilateralTriangle:
+                sides = 3;
+                break;
+            case (byte) ProfileShape.Circle:
+                break;      // use lod set above
+            case (byte) ProfileShape.HalfCircle:
+                profileBegin = 0.5f * profileBegin + 0.5f;
+                profileEnd = 0.5f * profileEnd + 0.5f;
+                break;      // use lod already set and...
             }
 
             int hollowSides = sides;
             // default lod for hollows
             switch (iLOD)
-            {
-                case LevelOfDetail.High:
-                    hollowSides = 24;
-                    break;
-                case LevelOfDetail.Medium:
-                    hollowSides = 12;
-                    break;
-                case LevelOfDetail.Low:
-                    hollowSides = 6;
-                    break;
-                case LevelOfDetail.VeryLow:
-                    hollowSides = 3;
-                    break;
-                default:
-                    hollowSides = 24;
-                    break;
+            {    
+            case LevelOfDetail.High:
+                hollowSides = 24;
+                break;
+            case LevelOfDetail.Medium:
+                hollowSides = 12;
+                break;
+            case LevelOfDetail.Low:
+                hollowSides = 6;
+                break;
+            case LevelOfDetail.VeryLow:
+                hollowSides = 3;
+                break;
+            default:
+                hollowSides = 24;
+                break;
             }
 
             switch (primShape.HollowShape)
             {
-                case HollowShape.Circle:
-                    //hollowSides = 24;
-                    break; // use lod preset
-                case HollowShape.Square:
-                    hollowSides = 4;
-                    break;
-                case HollowShape.Triangle:
-                    hollowSides = 3;
-                    break;
+            case HollowShape.Circle:
+                //hollowSides = 24;
+                break; // use lod preset
+            case HollowShape.Square:
+                hollowSides = 4;
+                break;
+            case HollowShape.Triangle:
+                hollowSides = 3;
+                break;
             }
 
             primMesh = new PrimMesh(sides, profileBegin, profileEnd, profileHollow, hollowSides);
 
             if (primMesh.errorMessage != null)
-                if (primMesh.errorMessage.Length > 0)
-                    MainConsole.Instance.Error("[ERROR] " + primMesh.errorMessage);
+            if (primMesh.errorMessage.Length > 0)
+                MainConsole.Instance.Error("[ERROR] " + primMesh.errorMessage);
 
             primMesh.topShearX = pathShearX;
             primMesh.topShearY = pathShearY;
@@ -793,7 +801,7 @@ namespace Universe.Physics.Meshing
 
                 if (profileBegin < 0.0f || profileBegin >= profileEnd || profileEnd > 1.0f)
                 {
-                    ReportPrimError("*** CORRUPT PRIM!! ***", primName, primMesh);
+                    ReportPrimError ("*** CORRUPT PRIM!! ***", primName, primMesh);
                     if (profileBegin < 0.0f)
                         profileBegin = 0.0f;
                     if (profileEnd > 1.0f)
@@ -804,17 +812,15 @@ namespace Universe.Physics.Meshing
 #endif
                 try
                 {
-                    primMesh.Extrude(primShape.PathCurve == (byte)Extrusion.Straight
+                    primMesh.Extrude (primShape.PathCurve == (byte)Extrusion.Straight
                         ? PathType.Linear
                         : PathType.Flexible);
-                }
-                catch (Exception ex)
+                } catch (Exception ex)
                 {
-                    ReportPrimError("Extrusion failure: exception: " + ex, primName, primMesh);
+                    ReportPrimError ("Extrusion failure: exception: " + ex, primName, primMesh);
                     return false;
                 }
-            }
-            else
+            } else
             {
                 primMesh.holeSizeX = (200 - primShape.PathScaleX) * 0.01f;
                 primMesh.holeSizeY = (200 - primShape.PathScaleY) * 0.01f;
@@ -828,7 +834,7 @@ namespace Universe.Physics.Meshing
 
                 if (profileBegin < 0.0f || profileBegin >= profileEnd || profileEnd > 1.0f)
                 {
-                    ReportPrimError("*** CORRUPT PRIM!! ***", primName, primMesh);
+                    ReportPrimError ("*** CORRUPT PRIM!! ***", primName, primMesh);
                     if (profileBegin < 0.0f)
                         profileBegin = 0.0f;
                     if (profileEnd > 1.0f)
@@ -839,11 +845,10 @@ namespace Universe.Physics.Meshing
 #endif
                 try
                 {
-                    primMesh.Extrude(PathType.Circular);
-                }
-                catch (Exception ex)
+                    primMesh.Extrude (PathType.Circular);
+                } catch (Exception ex)
                 {
-                    ReportPrimError("Extrusion failure: exception: " + ex, primName, primMesh);
+                    ReportPrimError ("Extrusion failure: exception: " + ex, primName, primMesh);
                     return false;
                 }
             }

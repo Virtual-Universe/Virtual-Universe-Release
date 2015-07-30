@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -302,6 +302,7 @@ namespace Universe.Modules.Attachments
             ISceneEntity group = m_scene.GetGroupByPrim(objectLocalID);
             if (group != null)
             {
+                //group.DetachToGround();
                 DetachSingleAttachmentToInventory(group.RootChild.FromUserInventoryItemID, remoteClient);
             }
             else
@@ -457,6 +458,10 @@ namespace Universe.Modules.Attachments
                     //Update the ItemID with the new item
                     objatt.SetFromItemID(itemID, assetID);
 
+                    //DO NOT SEND THIS KILL ENTITY
+                    // If we send this, when someone copies an inworld object, then wears it, the inworld objects disapepars
+                    // If a bug is caused by this, we need to figure out some other workaround.
+                    //SendKillEntity(objatt.RootChild);
                     //We also have to reset the IDs so that it doesn't have the same IDs as one inworld (possibly)!
                     ISceneEntity[] atts = GetAttachmentsForAvatar(remoteClient.AgentId);
                     foreach (var obj in atts)
@@ -486,9 +491,9 @@ namespace Universe.Modules.Attachments
                         {
                             if (!foundDuplicate)
                             {
-                                //If the user has information stored about this object, we need to force updating next time
                                 if (m_scene.SceneGraph.AddPrimToScene(objatt))
                                     forceUpdateOnNextDeattach = true;
+                                        //If the user has information stored about this object, we need to force updating next time
                             }
                             else
                             {
@@ -497,6 +502,11 @@ namespace Universe.Modules.Attachments
 
                                 return (e as ISceneEntity); //It was already added
                             }
+                            /*foreach (var prim in objatt.ChildrenEntities())
+                                prim.LocalId = 0;
+                            bool success = m_scene.SceneGraph.RestorePrimToScene(objatt, true);
+                            if (!success)
+                                MainConsole.Instance.Error("[AttachmentModule]: Failed to add attachment " + objatt.Name + " for user " + remoteClient.Name + "!"); */
                         }
                     }
                     catch
@@ -636,8 +646,11 @@ namespace Universe.Modules.Attachments
                 sog.UpdateGroupPosition(pos, true);
                 sog.RootChild.AttachedPos = pos;
                 sog.RootChild.FixOffsetPosition((pos), false);
+                //sog.AbsolutePosition = sog.RootChild.AttachedPos;
                 sog.SetAttachmentPoint(attachmentPoint);
                 sog.ScheduleGroupUpdate(PrimUpdateFlags.TerseUpdate);
+                //Don't update right now, wait until logout
+                //UpdateKnownItem(client, sog, sog.GetFromItemID(), sog.OwnerID);
             }
             else
             {
@@ -749,6 +762,7 @@ namespace Universe.Modules.Attachments
                 {
                     // Check object for older stored attachment point
                     AttachmentPt = group.RootChild.Shape.State & 0x7f;
+                    //attachPos = group.AbsolutePosition;
                 }
 
                 // if we still didn't find a suitable attachment point, force it to the default
@@ -815,6 +829,7 @@ namespace Universe.Modules.Attachments
             // Killing it here will cause the client to deselect it
             // It then reappears on the avatar, deselected
             // through the full update below
+            //
             if (group.IsSelected)
             {
                 foreach (ISceneChildEntity part in group.ChildrenEntities())
@@ -844,7 +859,8 @@ namespace Universe.Modules.Attachments
                 {
                     //it came from an item, we need to start the scripts
 
-                    // Fire after attach, so we don't get messy perms dialogs.
+                    // Fire after attach, so we don't get messy perms dialogs
+                    // 4 == AttachedRez
                     group.CreateScriptInstances(0, true, StateSource.AttachedRez, UUID.Zero, false);
                 }
 
@@ -867,7 +883,8 @@ namespace Universe.Modules.Attachments
             }
             else
             {
-                // Fire after attach, so we don't get messy perms dialogs.
+                // Fire after attach, so we don't get messy perms dialogs
+                // 4 == AttachedRez
                 group.CreateScriptInstances(0, true, StateSource.AttachedRez, UUID.Zero, false);
                 group.RootChild.FromUserInventoryItemID = UUID.Zero;
             }
@@ -903,8 +920,8 @@ namespace Universe.Modules.Attachments
                 client => client.SendKillObject(m_scene.RegionInfo.RegionHandle, new uint[] {rootPart}));
         }
 
-        // What makes this method odd and unique is it tries to detach using an UUID.
-        // To LocalId or UUID, *THAT* is the question.
+        // What makes this method odd and unique is it tries to detach using an UUID....     Yay for standards.
+        // To LocalId or UUID, *THAT* is the question. How now Brown UUID??
         protected void DetachSingleAttachmentToInventoryInternal(UUID itemID, IClientAPI remoteClient, bool fireEvent)
         {
             if (itemID == UUID.Zero) // If this happened, someone made a mistake....
@@ -1008,6 +1025,9 @@ namespace Universe.Modules.Attachments
 
 
                 m_scene.InventoryService.UpdateAssetIDForItem(itemID, asset.ID);
+
+                // this gets called when the agent logs off!
+                //remoteClient.SendInventoryItemCreateUpdate(item, 0);
 
                 return asset.ID;
             }

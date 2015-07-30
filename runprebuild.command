@@ -1,16 +1,16 @@
 #!/bin/bash
-# Run prebuild to configure and create the appropriate Solution and Porject files for building Virtual-Universe
+# Run prebuild to configure and create the appropriate Solution and Project files for building Universe-Sim
 #
-# April 2015
+# July 2015
 # Rowan Deppeler <greythane@gmail.com>
 
 # find and change to the current folder (bash does not start here by default)
-VUDIR="${0%/*}"
-cd $VUDIR
-echo $VUDIR
+WCSDIR="${0%/*}"
+cd $WCSDIR
+echo $WCSDIR
 
 # default setings
-ARCH="AnyCPU"
+ARCH="x64"
 CONFIG="Debug"
 BUILD=false
 VERSIONONLY=false
@@ -24,12 +24,18 @@ Options:
   -b|--build Build after configuration No (default) or Yes
   -v|--version Update version details only
 "
-
+# get the current system architecture
+if (( 1 == 1<<32 )); then
+    ARCH="x86";
+    echo "x86 architecture detected";
+else
+    echo "x64 architecture found";
+fi
 
 # check if prompting needed
 if [ $# -eq 0 ]; then
     read -p "Architecture to use? (AnyCPU, x86, x64) [$ARCH]: " bits
-	if [[ $bits == "x86" ]]; then ARCH="x86"; fi
+    if [[ $bits == "x86" ]]; then ARCH="x86"; fi
     if [[ $bits == "86" ]]; then ARCH="x86"; fi
     if [[ $bits == "x64" ]]; then ARCH="x64"; fi
     if [[ $bits == "64" ]]; then ARCH="x64"; fi
@@ -86,27 +92,26 @@ done
 
 fi
 
-# Configuring Virtual-Universe
+# Configuring Universe-Sim
 if ! ${VERSIONONLY:=true}; then
-  echo "Configuring Virtual-Universe $ARCH $CONFIG build"
+  echo "Configuring Universe-Sim $ARCH $CONFIG build"
   mono ./Prebuild.exe /target vs2010 /targetframework v4_5 /conditionals "LINUX;NET_4_5"
 fi
 
 # Update version info
 if [ -d ".git" ]; then 
-  git log --pretty=format:"Universe (%cd.%h)" --date=short -n 1 > VirtualUniverse/bin/.version; 
+  git log --pretty=format:"Universe 0.9.3 (%cd.%h)" --date=short -n 1 > UniverseSim/bin/.version; 
   echo "Version info updated"
 fi
 
-# Build Universe
+# Build Universe-Sim
 if ${BUILD:=true} ; then
-  echo Building Universe
+  echo Building Universe-Sim
   xbuild /property:Configuration="$CONFIG" /property:Platform="$ARCH"
   echo Finished Building Universe
-  echo Thank you for choosing Virtual-Universe
-  echo Please report any errors to our Github Issue Tracker https://github.com/Virtual-Universe/Virtual-Universe/issues
-
+  echo Thank you for choosing Universe-Sim
+  echo Please report any errors to our Github Issue Tracker https://github.com/UniverseSim/Universe-Dev/issues
 else
-  echo "Universe has been configured to compile with $ARCH $CONFIG options"
+  echo "Universe-Sim has been configured to compile with $ARCH $CONFIG options"
   echo "To manually build, enter 'xbuild Universe.sln' at the command prompt"
 fi

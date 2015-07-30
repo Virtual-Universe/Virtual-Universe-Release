@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -32,13 +32,13 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
 using Universe.Framework.Modules;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Inventory;
 using Universe.Framework.Utilities;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
 
 namespace Universe.Services.DataService
 {
@@ -215,10 +215,12 @@ namespace Universe.Services.DataService
                 contents.WriteStartMap("internalContents"); //Start internalContents kvp
                 OSDMap invFetch = (OSDMap) m;
 
+                //UUID agent_id = invFetch["agent_id"].AsUUID();
                 UUID owner_id = invFetch["owner_id"].AsUUID();
                 UUID folder_id = invFetch["folder_id"].AsUUID();
                 bool fetch_folders = invFetch["fetch_folders"].AsBoolean();
                 bool fetch_items = invFetch["fetch_items"].AsBoolean();
+                //int sort_order = invFetch["sort_order"].AsInteger();
 
                 //Set the normal stuff
                 contents["agent_id"] = AgentID;
@@ -357,7 +359,7 @@ namespace Universe.Services.DataService
                         moreLinkedItems.Clear();
                         goto redoQuery;
                     }
-                    contents.WriteEndArray(); //end array items
+                    contents.WriteEndArray( /*"items"*/); //end array items
                 }
                 contents.WriteStartArray("categories"); //We don't send any folders
                 int version = 0;
@@ -398,7 +400,7 @@ namespace Universe.Services.DataService
                                         contents["preferred_type"] = type;
 
                                         count++;
-                                        contents.WriteEndMap(); //end array items
+                                        contents.WriteEndMap( /*"folder"*/); //end array items
                                     }
                                 }
                                 catch
@@ -413,7 +415,7 @@ namespace Universe.Services.DataService
                     }
                 }
 
-                contents.WriteEndArray();
+                contents.WriteEndArray( /*"categories"*/);
                 contents["descendents"] = count;
                 contents["version"] = version;
 
@@ -422,7 +424,7 @@ namespace Universe.Services.DataService
             }
 
             contents.WriteEndArray(); //end array folders
-            contents.WriteEndMap(); //end llsd
+            contents.WriteEndMap( /*"llsd"*/); //end llsd
 
             try
             {
@@ -626,6 +628,7 @@ namespace Universe.Services.DataService
 
                 array.Add(item);
             }
+            //retVal.Close();
 
             return array;
         }
@@ -648,7 +651,7 @@ namespace Universe.Services.DataService
                                                  };
                 folders.Add(folder);
             }
-
+            //retVal.Clear();
             return folders;
         }
 
@@ -886,6 +889,11 @@ namespace Universe.Services.DataService
                 writer.Close();
 
                 byte[] array = sw.ToArray();
+                /*byte[] newarr = new byte[array.Length - 3];
+                Array.Copy(array, 3, newarr, 0, newarr.Length);
+                writer = null;
+                sw = null;
+                array = null;*/
                 return array;
             }
 

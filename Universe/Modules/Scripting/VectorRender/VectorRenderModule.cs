@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,6 +25,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.Modules;
+using Universe.Framework.SceneInfo;
+using Universe.Framework.Utilities;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.Imaging;
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -33,13 +41,6 @@ using System.Drawing.Text;
 using System.Globalization;
 using System.IO;
 using System.Net;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.Imaging;
-using Universe.Framework.ConsoleFramework;
-using Universe.Framework.Modules;
-using Universe.Framework.SceneInfo;
-using Universe.Framework.Utilities;
 
 namespace Universe.Modules.Scripting
 {
@@ -346,13 +347,51 @@ namespace Universe.Modules.Scripting
             }
             catch (Exception)
             {
-                //Add a WriteLine to remove the warning about 'e' defined but not used
+                //Ckrinke: Add a WriteLine to remove the warning about 'e' defined but not used
                 // MainConsole.Instance.Debug("Problem with Draw. Please verify parameters." + e.ToString());
                 parsed = -1;
             }
 
             return parsed;
         }
+
+/*
+        private void CairoDraw(string data, System.Drawing.Graphics graph)
+        {
+            using (Win32Surface draw = new Win32Surface(graph.GetHdc()))
+            {
+                Context contex = new Context(draw);
+
+                contex.Antialias = Antialias.None;    //fastest method but low quality
+                contex.LineWidth = 7;
+                char[] lineDelimiter = { ';' };
+                char[] partsDelimiter = { ',' };
+                string[] lines = data.Split(lineDelimiter);
+
+                foreach (string line in lines)
+                {
+                    string nextLine = line.Trim();
+
+                    if (nextLine.StartsWith("MoveTO"))
+                    {
+                        float x = 0;
+                        float y = 0;
+                        GetParams(partsDelimiter, ref nextLine, ref x, ref y);
+                        contex.MoveTo(x, y);
+                    }
+                    else if (nextLine.StartsWith("LineTo"))
+                    {
+                        float x = 0;
+                        float y = 0;
+                        GetParams(partsDelimiter, ref nextLine, ref x, ref y);
+                        contex.LineTo(x, y);
+                        contex.Stroke();
+                    }
+                }
+            }
+            graph.ReleaseHdc();
+        }
+*/
 
         private void GDIDraw(string data, Graphics graph, char dataDelim)
         {
@@ -637,7 +676,8 @@ namespace Universe.Modules.Scripting
             try
             {
                 WebRequest request = WebRequest.Create(url);
-
+//Ckrinke: Comment out for now as 'str' is unused. Bring it back into play later when it is used.
+//Ckrinke            Stream str = null;
                 HttpWebResponse response = (HttpWebResponse) (request).GetResponse();
                 if (response.StatusCode == HttpStatusCode.OK)
                 {

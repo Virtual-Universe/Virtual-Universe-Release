@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,12 +25,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using OpenMetaverse;
+
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Services.ClassHelpers.Inventory;
+using OpenMetaverse;
 
 namespace Universe.Region
 {
@@ -120,8 +121,9 @@ namespace Universe.Region
                     taskItem.GroupPermissions = item.GroupPermissions &
                                                 item.NextPermissions;
                     taskItem.NextPermissions = item.NextPermissions;
-                    // We're adding this to a prim we don't own. Force owner change
-                    taskItem.CurrentPermissions |= 16;
+                    // We're adding this to a prim we don't own. Force
+                    // owner change
+                    taskItem.CurrentPermissions |= 16; // Slam
                 }
                 else
                 {
@@ -169,7 +171,8 @@ namespace Universe.Region
                 return part.Inventory.GetInventoryItem(itemID);
             }
             MainConsole.Instance.ErrorFormat(
-                "[PRIM INVENTORY]: " + "Couldn't find prim local ID {0} in prim {1}, {2} to get inventory item ID {3}",
+                "[PRIM INVENTORY]: " +
+                "Couldn't find prim local ID {0} in prim {1}, {2} to get inventory item ID {3}",
                 primID, "unknown", "unknown", itemID);
 
             return null;
@@ -193,7 +196,9 @@ namespace Universe.Region
                 return true;
             }
             MainConsole.Instance.ErrorFormat(
-                "[PRIM INVENTORY]: " + "Couldn't find prim ID {0} to update item {1}, {2}", item.ParentPartID, item.Name, item.ItemID);
+                "[PRIM INVENTORY]: " +
+                "Couldn't find prim ID {0} to update item {1}, {2}",
+                item.ParentPartID, item.Name, item.ItemID);
 
             return false;
         }
@@ -231,6 +236,18 @@ namespace Universe.Region
                 perms &= ~(uint) PermissionMask.Copy;
             if ((ownerMask & (uint) PermissionMask.Transfer) == 0)
                 perms &= ~(uint) PermissionMask.Transfer;
+
+            // If root prim permissions are applied here, this would screw
+            // with in-inventory manipulation of the next owner perms
+            // in a major way. So, let's move this to the give itself.
+            // Yes. I know. Evil.
+//            if ((ownerMask & RootPart.NextOwnerMask & (uint)PermissionMask.Modify) == 0)
+//                perms &= ~((uint)PermissionMask.Modify >> 13);
+//            if ((ownerMask & RootPart.NextOwnerMask & (uint)PermissionMask.Copy) == 0)
+//                perms &= ~((uint)PermissionMask.Copy >> 13);
+//            if ((ownerMask & RootPart.NextOwnerMask & (uint)PermissionMask.Transfer) == 0)
+//                perms &= ~((uint)PermissionMask.Transfer >> 13);
+
             return perms;
         }
 

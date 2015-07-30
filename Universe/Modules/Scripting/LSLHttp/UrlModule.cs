@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,17 +25,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Nini.Config;
-using OpenMetaverse;
+
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Servers;
 using Universe.Framework.Servers.HttpServer;
 using Universe.Framework.Servers.HttpServer.Implementation;
+using Nini.Config;
+using OpenMetaverse;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace Universe.Modules.Scripting
 {
@@ -57,6 +58,7 @@ namespace Universe.Modules.Scripting
         public int responseCode;
         public string responseBody;
         public string contentType;
+        //public ManualResetEvent ev;
         public bool requestDone;
         public int startTime;
         public string uri;
@@ -193,6 +195,7 @@ namespace Universe.Modules.Scripting
                 UrlData urlData = m_RequestMap[request];
                 urlData.requests[request].responseCode = status;
                 urlData.requests[request].responseBody = body;
+                //urlData.requests[request].ev.Set();
                 urlData.requests[request].requestDone = true;
             }
             else
@@ -406,6 +409,7 @@ namespace Universe.Modules.Scripting
                     requestData.headers["x-script-url"] = url.url;
                     requestData.contentType = "text/plain";
 
+                    //requestData.ev = new ManualResetEvent(false);
                     lock (url.requests)
                     {
                         url.requests.Add(requestID, requestData);
@@ -425,6 +429,7 @@ namespace Universe.Modules.Scripting
                 }
                 catch (Exception we)
                 {
+                    //Hashtable response = new Hashtable();
                     MainConsole.Instance.Warn("[HttpRequestHandler]: http-in request failed");
                     MainConsole.Instance.Warn(we.Message);
                     MainConsole.Instance.Warn(we.StackTrace);

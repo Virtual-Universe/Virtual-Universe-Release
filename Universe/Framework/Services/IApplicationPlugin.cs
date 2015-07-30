@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,17 +25,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using Nini.Config;
 using Universe.Framework.Modules;
+using Nini.Config;
 
 namespace Universe.Framework.Services
 {
     /// <summary>
-    ///     Virtual-Universe Application Plugin framework interface
+    ///     Universe-Sim Application Plugin framework interface
     /// </summary>
     public interface IApplicationPlugin
     {
@@ -296,6 +295,8 @@ namespace Universe.Framework.Services
         public List<string> andIsNullFilters = new List<string>();
         public List<string> andIsNotNullFilters = new List<string>();
 
+//        public List<QueryFilter> subFilters = new List<QueryFilter>();
+
         public uint Count
         {
             get
@@ -321,6 +322,11 @@ namespace Universe.Framework.Services
                                         andIsNullFilters.Count +
                                         andIsNotNullFilters.Count
                                     );
+
+//                subFilters.ForEach(delegate(QueryFilter filter)
+//                {
+//                    total += filter.Count;
+//                });
 
                 return total;
             }
@@ -626,6 +632,17 @@ namespace Universe.Framework.Services
                 }
 
                 #endregion
+
+//                foreach (QueryFilter subFilter in subFilters)
+//                {
+//                    Dictionary<string, object> sps;
+//                    query += (had ? " AND" : string.Empty) + subFilter.ToSQL(prepared, out sps, ref i);
+//                    pss[pss.Length] = sps;
+//                    if (subFilter.Count > 0)
+//                    {
+//                        had = true;
+//                    }
+//                }
 
                 query += ")";
             }

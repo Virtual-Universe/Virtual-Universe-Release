@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -98,7 +98,9 @@ namespace Universe.Framework.Serialization
 
         public static Stream URIFetch(Uri uri)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
+            HttpWebRequest request = (HttpWebRequest) WebRequest.Create(uri);
+
+            // request.Credentials = credentials;
 
             request.ContentLength = 0;
             request.KeepAlive = false;
@@ -106,9 +108,14 @@ namespace Universe.Framework.Serialization
             WebResponse response = request.GetResponse();
             Stream file = response.GetResponseStream();
 
+            // justincc: gonna ignore the content type for now and just try anything
+            //if (response.ContentType != "application/x-oar")
+            //    throw new Exception(String.Format("{0} does not identify an OAR file", uri.ToString()));
+
             if (response.ContentLength == 0)
                 throw new Exception(String.Format("{0} returned an empty file", uri));
 
+            // return new BufferedStream(file, (int) response.ContentLength);
             return new BufferedStream(file, 1000000);
         }
     }

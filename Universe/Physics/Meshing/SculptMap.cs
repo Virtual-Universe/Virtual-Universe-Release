@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -28,12 +28,16 @@
 // to build without references to System.Drawing, comment this out
 
 #define SYSTEM_DRAWING
+#undef FASTBMP                     // expiremental. Advise if problems are seen <greythane@gmail.com>
 
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+#if FASTBMP
+using Universe.Framework.Utilities;
+#endif
 
 #if SYSTEM_DRAWING
 
@@ -47,17 +51,17 @@ namespace Universe.Physics.PrimMesher
         public byte[] greenBytes;
         public byte[] blueBytes;
 
-        public SculptMap()
+        public SculptMap ()
         {
         }
 
-        public SculptMap(Bitmap bm, int lod)
+        public SculptMap (Bitmap bm, int lod)
         {
             int bmW = bm.Width;
             int bmH = bm.Height;
 
             if (bmW == 0 || bmH == 0)
-                throw new Exception("SculptMap: bitmap has no data");
+                throw new Exception ("SculptMap: bitmap has no data");
 
             int numLodPixels = lod * 2 * lod * 2; // (32 * 2)^2  = 64^2 pixels for default sculpt map image
 
@@ -78,12 +82,11 @@ namespace Universe.Physics.PrimMesher
             try
             {
                 if (needsScaling)
-                    bm = ScaleImage(bm, width, height,
+                    bm = ScaleImage (bm, width, height,
                         InterpolationMode.NearestNeighbor);
-            }
-            catch (Exception e)
+            } catch (Exception e)
             {
-                throw new Exception("Exception in ScaleImage(): e: " + e);
+                throw new Exception ("Exception in ScaleImage(): e: " + e);
             }
 
             if (width * height > lod * lod)
@@ -114,31 +117,29 @@ namespace Universe.Physics.PrimMesher
 #if FASTBMP
                             pixel = unsafeBMP.GetPixel (x < width ? x : x - 1,
 #else
-                            pixel = bm.GetPixel(x < width ? x : x - 1,
+                            pixel = bm.GetPixel (x < width ? x : x - 1,
 #endif
- y < height ? y : y - 1);
-                        }
-                        else
+                                y < height ? y : y - 1);
+                        } else
                         {
 #if FASTBMP
                             pixel = unsafeBMP.GetPixel (x < width ? x * 2 : x * 2 - 1,
 #else
-                            pixel = bm.GetPixel(x < width ? x * 2 : x * 2 - 1,
+                            pixel = bm.GetPixel (x < width ? x * 2 : x * 2 - 1,
 #endif
- y < height ? y * 2 : y * 2 - 1);
+                                y < height ? y * 2 : y * 2 - 1);
                         }
 
-                        redBytes[byteNdx] = pixel.R;
-                        greenBytes[byteNdx] = pixel.G;
-                        blueBytes[byteNdx] = pixel.B;
+                        redBytes [byteNdx] = pixel.R;
+                        greenBytes [byteNdx] = pixel.G;
+                        blueBytes [byteNdx] = pixel.B;
 
                         ++byteNdx;
                     }
                 }
-            }
-            catch (Exception e)
+            } catch (Exception e)
             {
-                throw new Exception("Caught exception processing byte arrays in SculptMap(): e: " + e);
+                throw new Exception ("Caught exception processing byte arrays in SculptMap(): e: " + e);
             }
 #if FASTBMP
             //All done, unlock
@@ -148,12 +149,12 @@ namespace Universe.Physics.PrimMesher
             height++;
         }
 
-        public List<List<Coord>> ToRows(bool mirror)
+        public List<List<Coord>> ToRows (bool mirror)
         {
             int numRows = height;
             int numCols = width;
 
-            List<List<Coord>> rows = new List<List<Coord>>(numRows);
+            List<List<Coord>> rows = new List<List<Coord>> (numRows);
 
             float pixScale = 1.0f / 255;
 
@@ -162,27 +163,27 @@ namespace Universe.Physics.PrimMesher
 
             for (rowNdx = 0; rowNdx < numRows; rowNdx++)
             {
-                List<Coord> row = new List<Coord>(numCols);
+                List<Coord> row = new List<Coord> (numCols);
                 for (colNdx = 0; colNdx < numCols; colNdx++)
                 {
                     if (mirror)
-                        row.Add(new Coord(-(redBytes[smNdx] * pixScale - 0.5f), (greenBytes[smNdx] * pixScale - 0.5f),
-                            blueBytes[smNdx] * pixScale - 0.5f));
+                        row.Add (new Coord (-(redBytes [smNdx] * pixScale - 0.5f), (greenBytes [smNdx] * pixScale - 0.5f),
+                            blueBytes [smNdx] * pixScale - 0.5f));
                     else
-                        row.Add(new Coord(redBytes[smNdx] * pixScale - 0.5f, greenBytes[smNdx] * pixScale - 0.5f,
-                            blueBytes[smNdx] * pixScale - 0.5f));
+                        row.Add (new Coord (redBytes [smNdx] * pixScale - 0.5f, greenBytes [smNdx] * pixScale - 0.5f,
+                            blueBytes [smNdx] * pixScale - 0.5f));
 
                     ++smNdx;
                 }
-                rows.Add(row);
+                rows.Add (row);
             }
             return rows;
         }
 
-        Bitmap ScaleImage(Bitmap srcImage, int destWidth, int destHeight,
+        Bitmap ScaleImage (Bitmap srcImage, int destWidth, int destHeight,
                            InterpolationMode interpMode)
         {
-            Bitmap scaledImage = new Bitmap(destWidth, destHeight, PixelFormat.Format24bppRgb);
+            Bitmap scaledImage = new Bitmap (destWidth, destHeight, PixelFormat.Format24bppRgb);
 
             Color c;
             float xscale = srcImage.Width / destWidth;
@@ -196,10 +197,9 @@ namespace Universe.Physics.PrimMesher
                 {
                     try
                     {
-                        c = srcImage.GetPixel((int)(sx), (int)(sy));
-                        scaledImage.SetPixel(x, y, Color.FromArgb(c.R, c.G, c.B));
-                    }
-                    catch (IndexOutOfRangeException)
+                        c = srcImage.GetPixel ((int)(sx), (int)(sy));
+                        scaledImage.SetPixel (x, y, Color.FromArgb (c.R, c.G, c.B));
+                    } catch (IndexOutOfRangeException)
                     {
                     }
 
@@ -207,8 +207,24 @@ namespace Universe.Physics.PrimMesher
                 }
                 sy += yscale;
             }
-            srcImage.Dispose();
+            srcImage.Dispose ();
             return scaledImage;
+
+            /*
+            Bitmap scaledImage = new Bitmap(srcImage, destWidth, destHeight);
+            scaledImage.SetResolution(96.0f, 96.0f);
+
+            Graphics grPhoto = Graphics.FromImage(scaledImage);
+            grPhoto.InterpolationMode = interpMode;
+
+            grPhoto.DrawImage(srcImage,
+                              new Rectangle(0, 0, destWidth, destHeight),
+                              new Rectangle(0, 0, srcImage.Width, srcImage.Height),
+                              GraphicsUnit.Pixel);
+
+            grPhoto.Dispose();
+            return scaledImage;
+             */
         }
     }
 }

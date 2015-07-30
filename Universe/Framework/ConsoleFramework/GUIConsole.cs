@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -84,7 +84,15 @@ namespace Universe.Framework.ConsoleFramework
             // Set this culture for the thread 
             // to en-US to avoid number parsing issues
             Culture.SetCurrentCulture();
+            /*string line = */
             ReadLine(m_defaultPrompt + "# ", true, true);
+
+//            result.AsyncWaitHandle.WaitOne(-1);
+
+//            if (line != String.Empty && line.Replace(" ", "") != String.Empty) //If there is a space, its fine
+//            {
+//                MainConsole.Instance.Info("[GUICONSOLE] Invalid command");
+//            }
         }
 
         public void RunCommand(string cmd)
@@ -105,7 +113,13 @@ namespace Universe.Framework.ConsoleFramework
         {
             string oldDefaultPrompt = m_defaultPrompt;
             m_defaultPrompt = p;
+//            System.Console.Write("{0}", p);
             string cmdinput = Console.ReadLine();
+
+//            while (cmdinput.Equals(null))
+//            {
+//                ;
+//            }
 
             if (isCommand)
             {

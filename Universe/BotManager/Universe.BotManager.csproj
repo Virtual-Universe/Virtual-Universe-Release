@@ -202,9 +202,9 @@
 		<Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
 		<Private>False</Private>
 	  </ProjectReference>
-	  <ProjectReference Include="..\ScriptEngine\VirtualScript\Universe.ScriptEngine.VirtualScript.csproj">
-		<Name>Universe.ScriptEngine.VirtualScript</Name>
-		<Project>{BA633182-0000-0000-0000-000000000000}</Project>
+	  <ProjectReference Include="..\ScriptEngine\DotNetEngine\Universe.ScriptEngine.DotNetEngine.csproj">
+		<Name>Universe.ScriptEngine.DotNetEngine</Name>
+		<Project>{1031248A-0000-0000-0000-000000000000}</Project>
 		<Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
 		<Private>False</Private>
 	  </ProjectReference>

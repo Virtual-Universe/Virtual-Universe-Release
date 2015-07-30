@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -27,15 +27,16 @@
 
 //#define Debug
 
-using System;
-using System.Collections.Concurrent;
-using System.Net;
-using System.Threading;
-using OpenMetaverse;
+
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.Utilities;
+using OpenMetaverse;
+using System;
+using System.Collections.Concurrent;
+using System.Net;
+using System.Threading;
 
 namespace Universe.ClientStack
 {
@@ -177,12 +178,14 @@ namespace Universe.ClientStack
         /// </summary>
         public readonly IncomingPacketHistoryCollection PacketArchive = new IncomingPacketHistoryCollection(200);
 
+        //        private readonly TokenBucket[] m_throttleCategories;
         /// <summary>
         ///     Throttle buckets for each packet category
         /// </summary>
         /// <summary>
         ///     Outgoing queues for throttled packets
         /// </summary>
+//        private readonly Universe.Framework.LocklessQueue<OutgoingPacket>[] m_packetOutboxes = new Universe.Framework.LocklessQueue<OutgoingPacket>[(int)ThrottleOutPacketType.Count];
         private readonly int[] PacketsCounts = new int[(int) ThrottleOutPacketType.Count];
 
         /// <summary>
@@ -469,8 +472,12 @@ namespace Universe.ClientStack
             int avatarinfo = (int) (state*AVATAR_INFO_STATE_PERCENTAGE);
             state -= avatarinfo;
 
+//            int total = resend + land + wind + cloud + task + texture + asset + state + avatarinfo;
+
             // Make sure none of the throttles are set below our packet MTU,
             // otherwise a throttle could become permanently clogged
+
+
             Rates[(int) ThrottleOutPacketType.Resend] = resend;
             Rates[(int) ThrottleOutPacketType.Land] = land;
             Rates[(int) ThrottleOutPacketType.Wind] = wind;
@@ -724,6 +731,8 @@ namespace Universe.ClientStack
             }
 
             m_nextOnQueueEmpty = start + MIN_CALLBACK_MS;
+//            if (m_nextOnQueueEmpty == 0)
+//                m_nextOnQueueEmpty = 1;
         }
     }
 }

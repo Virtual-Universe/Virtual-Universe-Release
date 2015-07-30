@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -208,7 +208,7 @@ namespace Universe.Modules.Archivers
                 bool canCopy = (perm & (uint) PermissionMask.Copy) != 0;
                 bool canTransfer = (perm & (uint) PermissionMask.Transfer) != 0;
 
-                // Special case: If Everyone can copy the object then this implies it can also be
+                // Special case: if Everyone can copy the object then this implies it can also be
                 // Transferred.
                 // However, if the user is the Owner then we don't check EveryoneMask, because it seems that the mask
                 // always (incorrectly) includes the Copy bit set in this case. But that's a mistake: the viewer
@@ -226,8 +226,7 @@ namespace Universe.Modules.Archivers
                     partPermitted = false;
 
                 //MainConsole.Instance.DebugFormat("[ARCHIVER]: Object permissions: {0}: Base={1:X4}, Owner={2:X4}, Everyone={3:X4}, permissionClass={4}, checkPermissions={5}, canCopy={6}, canTransfer={7}, permitted={8}",
-                //    name, obj.BaseMask, obj.OwnerMask, obj.EveryoneMask,
-                //    permissionClass, checkPermissions, canCopy, canTransfer, permitted);
+                //    name, obj.BaseMask, obj.OwnerMask, obj.EveryoneMask, permissionClass, checkPermissions, canCopy, canTransfer, permitted);
 
                 if (!partPermitted)
                 {

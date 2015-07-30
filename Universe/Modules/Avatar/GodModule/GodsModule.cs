@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -24,6 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 
 using System;
 using System.IO;
@@ -46,17 +47,17 @@ namespace Universe.Modules.Gods
         /// <summary>
         ///     Special UUID for actions that apply to all agents
         /// </summary>
-        static readonly UUID ALL_AGENTS = new UUID("44e87126-e794-4ded-05b3-7c42da3d5cdb");
+        static readonly UUID ALL_AGENTS = new UUID ("44e87126-e794-4ded-05b3-7c42da3d5cdb");
 
         protected IDialogModule m_dialogModule;
         protected IScene m_scene;
 
         #region IGodsModule Members
 
-        public void RequestGodlikePowers(
+        public void RequestGodlikePowers (
             UUID agentID, UUID sessionID, UUID token, bool godLike, IClientAPI controllingClient)
         {
-            IScenePresence sp = m_scene.GetScenePresence(agentID);
+            IScenePresence sp = m_scene.GetScenePresence (agentID);
 
             if (sp != null)
             {
@@ -64,49 +65,48 @@ namespace Universe.Modules.Gods
                 {
                     //Unconditionally remove god levels
                     sp.GodLevel = Constants.USER_NORMAL;
-                    sp.ControllingClient.SendAdminResponse(token, (uint)sp.GodLevel);
+                    sp.ControllingClient.SendAdminResponse (token, (uint)sp.GodLevel);
                     return;
                 }
 
                 // First check that this is the sim owner
-                if (m_scene.Permissions.IsAdministrator(sp.UUID))
+                if (m_scene.Permissions.IsAdministrator (sp.UUID))
                 {
                     sp.GodLevel = sp.UserLevel;
                     if (sp.GodLevel == Constants.USER_NORMAL)
                         sp.GodLevel = Constants.USER_GOD_MAINTENANCE;
 
-                    MainConsole.Instance.InfoFormat("[GODS]: God level set for {0}, level {1}", sp.Name, sp.GodLevel);
-                    sp.ControllingClient.SendAdminResponse(token, (uint)sp.GodLevel);
-                }
-                else
+                    MainConsole.Instance.InfoFormat ("[GODS]: God level set for {0}, level {1}", sp.Name, sp.GodLevel);
+                    sp.ControllingClient.SendAdminResponse (token, (uint)sp.GodLevel);
+                } else
                 {
                     if (m_dialogModule != null)
-                        m_dialogModule.SendAlertToUser(agentID, "Request for god powers denied. This request has been logged.");
-                    MainConsole.Instance.Info("[GODS]: God powers requested by " + sp.Name +
+                        m_dialogModule.SendAlertToUser ( agentID, "Request for god powers denied. This request has been logged.");
+                    MainConsole.Instance.Info ("[GODS]: God powers requested by " + sp.Name +
                         ", user is not allowed to have god powers");
                 }
             }
         }
 
-        public void KickUser(UUID godID, UUID sessionID, UUID agentID, uint kickflags, string reason)
+        public void KickUser (UUID godID, UUID sessionID, UUID agentID, uint kickflags, string reason)
         {
             UUID kickUserID = ALL_AGENTS;
 
-            IScenePresence sp = m_scene.GetScenePresence(agentID);
+            IScenePresence sp = m_scene.GetScenePresence (agentID);
 
             if (sp != null || agentID == kickUserID)
             {
-                if (m_scene.Permissions.IsGod(godID))
+                if (m_scene.Permissions.IsGod (godID))
                 {
                     if (kickflags == 0)
                     {
                         if (agentID == kickUserID)
                         {
-                            m_scene.ForEachClient(
+                            m_scene.ForEachClient (
                                 delegate(IClientAPI controller)
                                 {
                                     if (controller.AgentId != godID)
-                                        controller.Kick(reason);
+                                        controller.Kick (reason);
                                 }
                             );
 
@@ -116,36 +116,32 @@ namespace Universe.Modules.Gods
                                 if (p.UUID != godID)
                                 {
                                     IEntityTransferModule transferModule =
-                                        m_scene.RequestModuleInterface<IEntityTransferModule>();
+                                        m_scene.RequestModuleInterface<IEntityTransferModule> ();
                                     if (transferModule != null)
-                                        transferModule.IncomingCloseAgent(m_scene, p.UUID);
+                                        transferModule.IncomingCloseAgent (m_scene, p.UUID);
                                 }
                             }
-                        }
-                        else
+                        } else
                         {
                             IEntityTransferModule transferModule =
-                                m_scene.RequestModuleInterface<IEntityTransferModule>();
+                                m_scene.RequestModuleInterface<IEntityTransferModule> ();
                             if (transferModule != null)
-                                transferModule.IncomingCloseAgent(m_scene, sp.UUID);
+                                transferModule.IncomingCloseAgent (m_scene, sp.UUID);
                         }
-                    }
-                    else if (kickflags == 1)
+                    } else if (kickflags == 1)
                     {
                         sp.Frozen = true;
-                        m_dialogModule.SendAlertToUser(agentID, reason);
-                        m_dialogModule.SendAlertToUser(godID, "User Frozen");
-                    }
-                    else if (kickflags == 2)
+                        m_dialogModule.SendAlertToUser (agentID, reason);
+                        m_dialogModule.SendAlertToUser (godID, "User Frozen");
+                    } else if (kickflags == 2)
                     {
                         sp.Frozen = false;
-                        m_dialogModule.SendAlertToUser(agentID, reason);
-                        m_dialogModule.SendAlertToUser(godID, "User Unfrozen");
+                        m_dialogModule.SendAlertToUser (agentID, reason);
+                        m_dialogModule.SendAlertToUser (godID, "User Unfrozen");
                     }
-                }
-                else
+                } else
                 {
-                    m_dialogModule.SendAlertToUser(godID, "Kick request denied");
+                    m_dialogModule.SendAlertToUser (godID, "Kick request denied");
                 }
             }
         }
@@ -154,30 +150,30 @@ namespace Universe.Modules.Gods
 
         #region INonSharedRegionModule Members
 
-        public void Initialise(IConfigSource source)
+        public void Initialise (IConfigSource source)
         {
         }
 
-        public void AddRegion(IScene scene)
+        public void AddRegion (IScene scene)
         {
             m_scene = scene;
-            m_scene.RegisterModuleInterface<IGodsModule>(this);
+            m_scene.RegisterModuleInterface<IGodsModule> (this);
             m_scene.EventManager.OnNewClient += SubscribeToClientEvents;
             m_scene.EventManager.OnClosingClient += UnsubscribeFromClientEvents;
             m_scene.EventManager.OnRegisterCaps += RegisterCaps;
         }
 
-        public void RemoveRegion(IScene scene)
+        public void RemoveRegion (IScene scene)
         {
-            m_scene.UnregisterModuleInterface<IGodsModule>(this);
+            m_scene.UnregisterModuleInterface<IGodsModule> (this);
             m_scene.EventManager.OnNewClient -= SubscribeToClientEvents;
             m_scene.EventManager.OnClosingClient -= UnsubscribeFromClientEvents;
             m_scene.EventManager.OnRegisterCaps -= RegisterCaps;
         }
 
-        public void RegionLoaded(IScene scene)
+        public void RegionLoaded (IScene scene)
         {
-            m_dialogModule = m_scene.RequestModuleInterface<IDialogModule>();
+            m_dialogModule = m_scene.RequestModuleInterface<IDialogModule> ();
         }
 
         public Type ReplaceableInterface
@@ -185,7 +181,7 @@ namespace Universe.Modules.Gods
             get { return null; }
         }
 
-        public void Close()
+        public void Close ()
         {
         }
 
@@ -196,45 +192,45 @@ namespace Universe.Modules.Gods
 
         #endregion
 
-        public void SubscribeToClientEvents(IClientAPI client)
+        public void SubscribeToClientEvents (IClientAPI client)
         {
             client.OnGodKickUser += KickUser;
             client.OnRequestGodlikePowers += RequestGodlikePowers;
         }
 
-        public void UnsubscribeFromClientEvents(IClientAPI client)
+        public void UnsubscribeFromClientEvents (IClientAPI client)
         {
             client.OnGodKickUser -= KickUser;
             client.OnRequestGodlikePowers -= RequestGodlikePowers;
         }
 
-        public OSDMap RegisterCaps(UUID agentID, IHttpServer server)
+        public OSDMap RegisterCaps (UUID agentID, IHttpServer server)
         {
-            OSDMap retVal = new OSDMap();
-            retVal["UntrustedSimulatorMessage"] = CapsUtil.CreateCAPS("UntrustedSimulatorMessage", "");
+            OSDMap retVal = new OSDMap ();
+            retVal ["UntrustedSimulatorMessage"] = CapsUtil.CreateCAPS ("UntrustedSimulatorMessage", "");
 
-            server.AddStreamHandler(new GenericStreamHandler("POST", retVal["UntrustedSimulatorMessage"],
+            server.AddStreamHandler (new GenericStreamHandler ("POST", retVal ["UntrustedSimulatorMessage"],
                 delegate(string path, Stream request,
                                                                       OSHttpRequest httpRequest,
                                                                       OSHttpResponse httpResponse)
                 {
-                    return UntrustedSimulatorMessage(agentID, request);
+                    return UntrustedSimulatorMessage (agentID, request);
                 }));
             return retVal;
         }
 
-        byte[] UntrustedSimulatorMessage(UUID AgentID, Stream request)
+        byte[] UntrustedSimulatorMessage (UUID AgentID, Stream request)
         {
-            OSDMap rm = (OSDMap)OSDParser.DeserializeLLSDXml(HttpServerHandlerHelpers.ReadFully(request));
-            if (rm["message"] == "GodKickUser")
+            OSDMap rm = (OSDMap)OSDParser.DeserializeLLSDXml (HttpServerHandlerHelpers.ReadFully (request));
+            if (rm ["message"] == "GodKickUser")
             {
-                OSDArray innerArray = ((OSDArray)((OSDMap)rm["body"])["UserInfo"]);
-                OSDMap innerMap = (OSDMap)innerArray[0];
-                UUID toKick = innerMap["AgentID"].AsUUID();
-                UUID sessionID = innerMap["GodSessionID"].AsUUID();
-                string reason = innerMap["Reason"].AsString();
-                uint kickFlags = innerMap["KickFlags"].AsUInteger();
-                KickUser(AgentID, sessionID, toKick, kickFlags, reason);
+                OSDArray innerArray = ((OSDArray)((OSDMap)rm ["body"]) ["UserInfo"]);
+                OSDMap innerMap = (OSDMap)innerArray [0];
+                UUID toKick = innerMap ["AgentID"].AsUUID ();
+                UUID sessionID = innerMap ["GodSessionID"].AsUUID ();
+                string reason = innerMap ["Reason"].AsString ();
+                uint kickFlags = innerMap ["KickFlags"].AsUInteger ();
+                KickUser (AgentID, sessionID, toKick, kickFlags, reason);
             }
             return new byte[0];
         }
@@ -250,9 +246,9 @@ namespace Universe.Modules.Gods
         /// <param name="agentID">the person that is being kicked</param>
         /// <param name="kickflags">Tells what to do to the user</param>
         /// <param name="reason">The message to send to the user after it's been turned into a field</param>
-        public void KickUser(UUID godID, UUID sessionID, UUID agentID, uint kickflags, byte[] reason)
+        public void KickUser (UUID godID, UUID sessionID, UUID agentID, uint kickflags, byte[] reason)
         {
-            KickUser(godID, sessionID, agentID, kickflags, Utils.BytesToString(reason));
+            KickUser (godID, sessionID, agentID, kickflags, Utils.BytesToString (reason));
         }
     }
 }

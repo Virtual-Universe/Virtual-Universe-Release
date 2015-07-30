@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,12 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using Nini.Config;
-using OpenMetaverse;
+
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
@@ -39,6 +34,12 @@ using Universe.Framework.SceneInfo;
 using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Inventory;
+using Nini.Config;
+using OpenMetaverse;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 namespace Universe.Modules.Permissions
 {
@@ -51,8 +52,10 @@ namespace Universe.Modules.Permissions
 
         // These are here for testing.  They will be taken out
 
+        //private uint PERM_ALL = (uint)2147483647;
         private uint PERM_COPY = 32768;
         private uint PERM_LOCKED = 540672;
+        //private uint PERM_MODIFY = (uint)16384;
         private uint PERM_MOVE = 524288;
         private uint PERM_TRANS = 8192;
 
@@ -422,9 +425,19 @@ namespace Universe.Modules.Permissions
 
         public void RegionLoaded(IScene scene)
         {
+            //if (m_friendsModule == null)
+            //    MainConsole.Instance.Warn("[PERMISSIONS]: Friends module not found, friend permissions will not work");
+
             m_groupsModule = m_scene.RequestModuleInterface<IGroupsModule>();
 
+            //if (m_groupsModule == null)
+            //    MainConsole.Instance.Warn("[PERMISSIONS]: Groups module not found, group permissions will not work");
+
             m_moapModule = m_scene.RequestModuleInterface<IMoapModule>();
+
+            // This log line will be commented out when no longer required for debugging
+//            if (m_moapModule == null)
+//                MainConsole.Instance.Warn("[PERMISSIONS]: Media on a prim module not found, media on a prim permissions will not work");
 
             m_parcelManagement = m_scene.RequestModuleInterface<IParcelManagementModule>();
         }
@@ -855,9 +868,9 @@ namespace Universe.Modules.Permissions
 
         private bool CanControlPrimMedia(UUID agentID, UUID primID, int face)
         {
-            //MainConsole.Instance.DebugFormat(
-            //    "[PERMISSONS]: Performing CanControlPrimMedia check with agentID {0}, primID {1}, face {2}",
-            //    agentID, primID, face);
+//            MainConsole.Instance.DebugFormat(
+//                "[PERMISSONS]: Performing CanControlPrimMedia check with agentID {0}, primID {1}, face {2}",
+//                agentID, primID, face);
 
             if (null == m_moapModule)
                 return false;
@@ -872,18 +885,18 @@ namespace Universe.Modules.Permissions
             if (null == me)
                 return true;
 
-            //MainConsole.Instance.DebugFormat(
-            //    "[PERMISSIONS]: Checking CanControlPrimMedia for {0} on {1} face {2} with control permissions {3}", 
-            //    agentID, primID, face, me.ControlPermissions);
+//            MainConsole.Instance.DebugFormat(
+//                "[PERMISSIONS]: Checking CanControlPrimMedia for {0} on {1} face {2} with control permissions {3}", 
+//                agentID, primID, face, me.ControlPermissions);
 
             return GenericObjectPermission(part.UUID, agentID, true);
         }
 
         private bool CanInteractWithPrimMedia(UUID agentID, UUID primID, int face)
         {
-            //MainConsole.Instance.DebugFormat(
-            //    "[PERMISSONS]: Performing CanInteractWithPrimMedia check with agentID {0}, primID {1}, face {2}",
-            //    agentID, primID, face);
+//            MainConsole.Instance.DebugFormat(
+//                "[PERMISSONS]: Performing CanInteractWithPrimMedia check with agentID {0}, primID {1}, face {2}",
+//                agentID, primID, face);
 
             if (null == m_moapModule)
                 return false;
@@ -898,15 +911,18 @@ namespace Universe.Modules.Permissions
             if (null == me)
                 return true;
 
-            //MainConsole.Instance.DebugFormat(
-            //    "[PERMISSIONS]: Checking CanInteractWithPrimMedia for {0} on {1} face {2} with interact permissions {3}", 
-            //    agentID, primID, face, me.InteractPermissions);
+//            MainConsole.Instance.DebugFormat(
+//                "[PERMISSIONS]: Checking CanInteractWithPrimMedia for {0} on {1} face {2} with interact permissions {3}", 
+//                agentID, primID, face, me.InteractPermissions);
 
             return GenericPrimMediaPermission(part, agentID, me.InteractPermissions);
         }
 
         private bool GenericPrimMediaPermission(ISceneChildEntity part, UUID agentID, MediaPermission perms)
         {
+//            if (IsAdministrator(agentID))
+//                return true;
+
             if ((perms & MediaPermission.Anyone) == MediaPermission.Anyone)
                 return true;
 
@@ -984,7 +1000,7 @@ namespace Universe.Modules.Permissions
             // Outside of this method, they should never be added to objectflags!
             // -teravus
 
-            // this shouldn't ever happen so return no permissions/objectflags.
+            // this shouldn't ever happen..     return no permissions/objectflags.
             if (task == null)
                 return 0;
 
@@ -1107,6 +1123,8 @@ namespace Universe.Modules.Permissions
             // sets an object locked, the only thing that they can do is unlock it.
             //
             // Nobody but the object owner can set permissions on an object
+            //
+
             if (locked && (!IsAdministrator(currentUser)) && denyOnLocked)
                 return false;
 
@@ -1162,7 +1180,21 @@ namespace Universe.Modules.Permissions
         protected bool GenericCommunicationPermission(UUID user, UUID target)
         {
             //TODO:FEATURE: Setting this to true so that cool stuff can happen until we define what determines Generic Communication Permission
+            //bool permission = false;
             return true;
+            /*string reason = "Only registered users may communicate with another account.";
+
+            // Uhh, we need to finish this before we enable it..   because it's blocking all sorts of goodies and features
+            if (IsAdministrator(user))
+                permission = true;
+
+            if (IsEstateManager(user))
+                permission = true;
+
+            if (!permission)
+                SendPermissionError(user, reason);
+
+            return permission;*/
         }
 
         public bool GenericEstatePermission(UUID user)
@@ -1432,6 +1464,7 @@ namespace Universe.Modules.Permissions
 
             // Ordinarily, if you can view it, you can edit it
             // There is no viewing a no mod script
+            //
             return CanViewScript(script, objectID, user, scene);
         }
 
@@ -1454,6 +1487,7 @@ namespace Universe.Modules.Permissions
             if (m_bypassPermissions) return m_bypassPermissionsValue;
 
             // If the sender is an object, check owner instead
+            //
             ISceneChildEntity part = startScene.GetSceneObjectPart(user);
             if (part != null)
                 user = part.OwnerID;
@@ -1531,6 +1565,12 @@ namespace Universe.Modules.Permissions
 
                 ISceneEntity task = (ISceneEntity) ent;
 
+
+                // UUID taskOwner = null;
+                // Added this because at this point in time it wouldn't be wise for
+                // the administrator object permissions to take effect.
+                // UUID objectOwner = task.OwnerID;
+
                 // Anyone can move
                 if ((task.RootChild.EveryoneMask & PERM_MOVE) != 0)
                     permission = true;
@@ -1585,27 +1625,29 @@ namespace Universe.Modules.Permissions
             {
                 return true;
             }
-            IEntity ent = null;
-            //If the object is entering the region, its not here yet and we can't check for it
-            if (!enteringRegion && !m_scene.Entities.TryGetValue(objectID, out ent))
-            {
-                return false;
-            }
 
             //If there is no parcel management, we don't do anymore checks
             if (m_parcelManagement == null)
                 return true;
 
             ILandObject land = m_parcelManagement.GetLandObject(newPoint.X, newPoint.Y);
-            ILandObject oldland = m_parcelManagement.GetLandObject(ent.AbsolutePosition.X, ent.AbsolutePosition.Y);
-
             if (land == null)
             {
                 return false;
             }
 
-            if (oldland.LandData.GlobalID == land.LandData.GlobalID)
-                return true; //Same parcel
+            IEntity ent;
+            if (!enteringRegion)
+            {
+                // If the object is entering the region, its not here yet and we can't check for it
+                // If not entering then why check if it is in the same place???
+                if (!m_scene.Entities.TryGetValue (objectID, out ent))
+                    return false;
+            
+                ILandObject oldland = m_parcelManagement.GetLandObject(ent.AbsolutePosition.X, ent.AbsolutePosition.Y);
+                if (oldland.LandData.GlobalID == land.LandData.GlobalID)
+                    return true; //Same parcel
+            }
 
             if ((land.LandData.Flags & ((int) ParcelFlags.AllowAPrimitiveEntry)) != 0)
             {
@@ -1661,6 +1703,7 @@ namespace Universe.Modules.Permissions
                 // This is a short cut for efficiency. If land is non-null,
                 // then all objects are on that parcel and we can save
                 // ourselves the checking for each prim. Much faster.
+                //
                 if (land != null)
                 {
                     l = land;
@@ -1682,13 +1725,16 @@ namespace Universe.Modules.Permissions
                 }
 
                 // If we own the land outright, then allow
+                //
                 if (l.LandData.OwnerID == user)
                     continue;
 
                 // Group voodoo
+                //
                 if (l.LandData.IsGroupOwned)
                 {
                     // Not a group member, or no rights at all
+                    //
                     if (!m_groupsModule.GroupPermissionCheck(client.AgentId, g.GroupID, GroupPowers.None))
                     {
                         objects.Remove(g);
@@ -1696,6 +1742,7 @@ namespace Universe.Modules.Permissions
                     }
 
                     // Group deeded object?
+                    //
                     if (g.OwnerID == l.LandData.GroupID &&
                         !m_groupsModule.GroupPermissionCheck(client.AgentId, g.GroupID, GroupPowers.ReturnGroupOwned))
                     {
@@ -1704,6 +1751,7 @@ namespace Universe.Modules.Permissions
                     }
 
                     // Group set object?
+                    //
                     if (g.GroupID == l.LandData.GroupID &&
                         !m_groupsModule.GroupPermissionCheck(client.AgentId, g.GroupID, GroupPowers.ReturnGroupSet))
                     {
@@ -1718,10 +1766,13 @@ namespace Universe.Modules.Permissions
                     }
 
                     // So we can remove all objects from this group land.
+                    // Fine.
+                    //
                     continue;
                 }
 
                 // By default, we can't remove
+                //
                 objects.Remove(g);
             }
 
@@ -1856,6 +1907,10 @@ namespace Universe.Modules.Permissions
                 }
 
                 ISceneEntity task = (ISceneEntity) ent;
+                // UUID taskOwner = null;
+                // Added this because at this point in time it wouldn't be wise for
+                // the administrator object permissions to take effect.
+                // UUID objectOwner = task.OwnerID;
 
                 if ((task.RootChild.EveryoneMask & PERM_COPY) != 0)
                     permission = true;
@@ -1962,6 +2017,7 @@ namespace Universe.Modules.Permissions
                 // the below expressions.
                 // Trying to improve on SL perms by making a script
                 // readable only if it's really full perms
+                //
                 if ((assetRequestItem.CurrentPermissions &
                      ((uint) PermissionMask.Modify |
                       (uint) PermissionMask.Copy |
@@ -2064,6 +2120,7 @@ namespace Universe.Modules.Permissions
                 // the below expressions.
                 // Trying to improve on SL perms by making a script
                 // readable only if it's really full perms
+                //
                 if ((assetRequestItem.CurrentPermissions &
                      ((uint) PermissionMask.Modify |
                       (uint) PermissionMask.Copy |

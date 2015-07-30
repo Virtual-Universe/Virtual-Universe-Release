@@ -81,4 +81,4 @@ CurrencySymbol = "VU$"
 
 ;; max groups: optional: the maximum number of groups allowed
 ;; *not recognized by all viewers
-;; MaxGroups = 50
+;; MaxGroups = 500

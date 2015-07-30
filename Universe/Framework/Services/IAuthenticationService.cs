@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -42,6 +42,7 @@ namespace Universe.Framework.Services
         //
         // These methods will return a token, which can be used to access
         // various services.
+        //
         string Authenticate(UUID principalID, string authType, string password, int lifetime);
 
         //////////////////////////////////////////////////////
@@ -51,6 +52,7 @@ namespace Universe.Framework.Services
         //
         // Tokens expire after 30 minutes and can be refreshed by
         // re-verifying.
+        //
         bool Verify(UUID principalID, string authType, string token, int lifetime);
 
         //////////////////////////////////////////////////////
@@ -59,6 +61,7 @@ namespace Universe.Framework.Services
         // A token can be returned before the timeout. This
         // invalidates it and it can not subsequently be used
         // or refreshed.
+        //
         bool Release(UUID principalID, string authType, string token);
 
         //////////////////////////////////////////////////////
@@ -69,6 +72,7 @@ namespace Universe.Framework.Services
         // handlers may not include one handler for this,
         // because it's a bit risky. Such handlers require
         // authentication/authorization.
+        //
         bool SetPassword(UUID principalID, string authType, string passwd);
         bool SetPasswordHashed(UUID UUID, string authType, string passwd);
         bool SetPlainPassword(UUID principalID, string authType, string passwd);

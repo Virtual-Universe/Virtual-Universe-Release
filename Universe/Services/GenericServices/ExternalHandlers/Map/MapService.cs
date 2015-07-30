@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,14 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
-using Nini.Config;
-using ProtoBuf;
 using Universe.Framework.Modules;
 using Universe.Framework.Servers;
 using Universe.Framework.Servers.HttpServer;
@@ -40,6 +32,14 @@ using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Servers.HttpServer.Interfaces;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
+using Nini.Config;
+using ProtoBuf;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Linq;
 using GridRegion = Universe.Framework.Services.GridRegion;
 
 namespace Universe.Services
@@ -95,6 +95,13 @@ namespace Universe.Services
                 g.FillRectangle(sea, 0, 0, 256, 256);
             }
             m_blankRegionTileData = CacheMapTexture(1, 0, 0, m_blankRegionTile, true);
+            /*string path = Path.Combine(m_assetCacheDir, Path.Combine("mapzoomlevels", "blankMap.index"));
+            if(File.Exists(path))
+            {
+                FileStream stream = File.OpenRead(path);
+                m_blankTiles = ProtoBuf.Serializer.Deserialize<MapTileIndex>(stream);
+                stream.Close();
+            }*/
         }
 
         void CreateCacheDirectories(string cacheDir)
@@ -465,6 +472,7 @@ namespace Universe.Services
                 bmp.Dispose();
 
             CacheMapTexture(1, regionX, regionY, mapTexture);
+            //mapTexture = ResizeBitmap(mapTexture, 128, 128);
             return mapTexture;
         }
 
@@ -480,6 +488,7 @@ namespace Universe.Services
             if (!m_cacheEnabled)
                 return new byte[0];
 
+            //string fullPath = Path.Combine(m_assetCacheDir, Path.Combine("mapzoomlevels", name));
             string fullPath = Path.Combine(m_assetMapCacheDir, name);
             if (File.Exists(fullPath))
             {
@@ -509,6 +518,7 @@ namespace Universe.Services
             }
 
             string name = string.Format("map-{0}-{1}-{2}-objects.jpg", maplayer, regionX, regionY);
+            //string fullPath = Path.Combine(m_assetCacheDir, Path.Combine("mapzoomlevels", name));
             string fullPath = Path.Combine(m_assetMapCacheDir, name);
             if (File.Exists(fullPath))
             {
@@ -552,6 +562,7 @@ namespace Universe.Services
                 return;
 
             string name = string.Format("map-{0}-{1}-{2}-objects.jpg", maplayer, regionX, regionY);
+            //string fullPath = Path.Combine(m_assetCacheDir, Path.Combine("mapzoomlevels", name));
             string fullPath = Path.Combine(m_assetMapCacheDir, name);
             File.WriteAllBytes(fullPath, data);
         }

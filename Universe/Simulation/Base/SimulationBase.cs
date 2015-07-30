@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -150,7 +150,6 @@ namespace Universe.Simulation.Base
             // This thread will go on to become the console listening thread
             if (System.Threading.Thread.CurrentThread.Name != "ConsoleThread")
                 System.Threading.Thread.CurrentThread.Name = "ConsoleThread";
-            
             //Register the interface
             ApplicationRegistry.RegisterModuleInterface<ISimulationBase>(this);
 
@@ -207,20 +206,20 @@ namespace Universe.Simulation.Base
         {
             MainConsole.Instance.Info("====================================================================");
             MainConsole.Instance.Info(
-				        string.Format("==================== Starting Virtual Universe ({0}) ======================",
+				        string.Format("==================== STARTING Universe ({0}) ======================",
                               (IntPtr.Size == 4 ? "x86" : "x64")));
             MainConsole.Instance.Info("====================================================================");
-            MainConsole.Instance.Info("[Virtual Universe Startup]: Version: " + Version + "\n");
+            MainConsole.Instance.Info("[UniverseStartup]: Version: " + Version + "\n");
             if (Environment.Is64BitOperatingSystem)
-                MainConsole.Instance.Info("[Virtual Universe Startup]: Running on 64 bit architecture");
+                MainConsole.Instance.Info("[UniverseStartup]: Running on 64 bit architecture");
             // get memory allocation
             Process proc = Process.GetCurrentProcess();
-            MainConsole.Instance.Info("[Virtual Universe Startup]: Allocated RAM " + proc.WorkingSet64);
+            MainConsole.Instance.Info("[UniverseStartup]: Allocated RAM " + proc.WorkingSet64);
             if (Utilities.IsLinuxOs)
             {
                 var pc = new PerformanceCounter ("Mono Memory", "Total Physical Memory");
                 var bytes = pc.RawValue;
-                MainConsole.Instance.InfoFormat ("[Virtual Universe Startup]: Physical RAM (Mbytes): {0}", bytes / 1024000);
+                MainConsole.Instance.InfoFormat ("[UniverseStartup]: Physical RAM (Mbytes): {0}", bytes / 1024000);
             }
 
             SetUpHTTPServer();
@@ -472,7 +471,7 @@ namespace Universe.Simulation.Base
         {
             if (File.Exists(fileName))
             {
-                MainConsole.Instance.Info("[COMMAND FILE]: Running " + fileName);
+                MainConsole.Instance.Info("[COMMANDFILE]: Running " + fileName);
                 List<string> commands = new List<string>();
                 using (StreamReader readFile = File.OpenText(fileName))
                 {
@@ -488,7 +487,7 @@ namespace Universe.Simulation.Base
                 }
                 foreach (string currentCommand in commands)
                 {
-                    MainConsole.Instance.Info("[COMMAND FILE]: Running '" + currentCommand + "'");
+                    MainConsole.Instance.Info("[COMMANDFILE]: Running '" + currentCommand + "'");
                     MainConsole.Instance.RunCommand(currentCommand);
                 }
             }
@@ -497,7 +496,7 @@ namespace Universe.Simulation.Base
         public virtual void HandleForceGC(IScene scene, string[] cmd)
         {
             GC.Collect();
-            MainConsole.Instance.Warn("[Garbage Collection]: Garbage collection finished");
+            MainConsole.Instance.Warn("Garbage collection finished");
         }
 
         public virtual void runConfig(IScene scene, string[] cmd)
@@ -529,7 +528,7 @@ namespace Universe.Simulation.Base
             string hostName =
                 m_config.Configs["Network"].GetString("HostName", "http://127.0.0.1");
             //Clean it up a bit
-            //Are these doing anything?
+            // these are doing nothing??
             hostName.Replace("http://", "");
             hostName.Replace("https://", "");
             if (hostName.EndsWith("/"))
@@ -538,7 +537,7 @@ namespace Universe.Simulation.Base
             {
                 server.HostName = hostName;
             }
-            MainConsole.Instance.Info("[Virtual Universe]: Finished reloading configuration.");
+            MainConsole.Instance.Info("Finished reloading configuration.");
         }
 
         public virtual void HandleShowInfo(IScene scene, string[] cmd)
@@ -608,7 +607,7 @@ namespace Universe.Simulation.Base
                 }
 
                 if (close)
-                    MainConsole.Instance.Info("[SHUTDOWN]: Shutting down Virtual Universe");
+                    MainConsole.Instance.Info("[SHUTDOWN]: Terminating");
 
                 MainConsole.Instance.Info("[SHUTDOWN]: Shutdown processing on main thread complete. " +
                                           (close ? " Exiting..." : ""));

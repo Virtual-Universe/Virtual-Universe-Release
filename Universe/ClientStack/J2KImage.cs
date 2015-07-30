@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,13 +25,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using OpenMetaverse;
-using OpenMetaverse.Imaging;
+
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Assets;
+using OpenMetaverse;
+using OpenMetaverse.Imaging;
+using System;
 
 namespace Universe.ClientStack
 {
@@ -110,11 +111,9 @@ namespace Universe.ClientStack
 
         public void RunUpdate()
         {
-            /// <summary>
-            /// This is where we decide what we need to update
-            /// and assign the real discardLevel and packetNumber
-            /// assuming of course that the connected client might be bonkers
-            /// </summary>
+            //This is where we decide what we need to update
+            //and assign the real discardLevel and packetNumber
+            //assuming of course that the connected client might be bonkers
 
             if (!HasAsset)
             {
@@ -267,11 +266,9 @@ namespace Universe.ClientStack
                     }
                 }
 
-                /// <summary>
-                /// It is concievable that the client might request packet one
-                /// from a one packet image, which is really packet 0,
-                /// which would leave us with a negative imagePacketSize.
-                /// </summary>
+                // It's concievable that the client might request packet one
+                // from a one packet image, which is really packet 0,
+                // which would leave us with a negative imagePacketSize..
                 if (imagePacketSize > 0)
                 {
                     byte[] imageData = new byte[imagePacketSize];

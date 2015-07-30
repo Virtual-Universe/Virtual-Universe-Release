@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -52,7 +52,7 @@ namespace Universe.Modules.Archivers
         readonly Queue<UUID> assets2Save = new Queue<UUID>();
         protected bool m_assetsIncluded = true;
 
-        // services
+        // services...
         IAssetService m_assetService;
         IAssetDataPlugin m_assetData;
         IInventoryService m_inventoryService;
@@ -309,7 +309,8 @@ namespace Universe.Modules.Archivers
         {
             string iarPathExisting = iarPath;
 
-            //MainConsole.Instance.DebugFormat("[INVENTORY ARCHIVER]: Loading folder {0} {1}", rootDestFolder.Name, rootDestFolder.ID);
+            //MainConsole.Instance.DebugFormat(
+            //    "[INVENTORY ARCHIVER]: Loading folder {0} {1}", rootDestFolder.Name, rootDestFolder.ID);
 
             InventoryFolderBase destFolder
                 = ResolveDestinationFolder(rootDestFolder, ref iarPathExisting, ref resolvedFolders);
@@ -353,7 +354,8 @@ namespace Universe.Modules.Archivers
 
                 if (resolvedFolders.ContainsKey(archivePath))
                 {
-                    //MainConsole.Instance.DebugFormat("[INVENTORY ARCHIVER]: Found previously created folder from archive path {0}", archivePath);
+                    //MainConsole.Instance.DebugFormat(
+                    //    "[INVENTORY ARCHIVER]: Found previously created folder from archive path {0}", archivePath);
                     return resolvedFolders[archivePath];
                 }
                 if (m_merge)
@@ -582,6 +584,7 @@ namespace Universe.Modules.Archivers
         /// <returns>true if asset was successfully loaded, false otherwise</returns>
         private bool LoadAsset(string assetPath, byte[] data)
         {
+            //IRegionSerialiser serialiser = scene.RequestModuleInterface<IRegionSerialiser>();
             // Right now we're nastily obtaining the UUID from the filename
             string filename = assetPath.Remove(0, ArchiveConstants.ASSETS_PATH.Length);
 
@@ -663,7 +666,6 @@ namespace Universe.Modules.Archivers
 
             return false;
         }
-
 
         /// <summary>
         /// Loads the archive.xml control file.

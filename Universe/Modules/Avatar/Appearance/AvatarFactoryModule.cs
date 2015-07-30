@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -662,6 +662,8 @@ textures 1
 
                     // ItemIDs will be updated with new assetIDs if the avatar has just updated their clothing,
                     //    so we can't assume this...
+                    //if (nowWearing[i].ItemID == oldAppearance.Wearables[i][j].ItemID)
+                    //    continue; //Don't relookup items that are the same and have already been found earlier
 
                     UUID assetID = invService.GetItemAssetID(userID, appearance.Wearables[i][j].ItemID);
 
@@ -945,14 +947,18 @@ textures 1
 
                     m_sp.ControllingClient.SendWearables(Appearance.Wearables, Appearance.Serial);
 
+                    //Send rebakes if needed
+                    // NOTE: Do NOT send this! It seems to make the client become a cloud
+                    //sp.SendAppearanceToAgent(sp);
+
                     // If the avatars baked textures are all in the cache, then we have a 
-                    // complete appearance, send it out, if not, then we'll send it when
+                    // complete appearance... send it out, if not, then we'll send it when
                     // the avatar finishes updating its appearance
                     SendAppearanceToAllOtherAgents();
 
-                    // This agent just became root. We are going to tell everyone about it. The process of
-                    // getting other avatars information was initiated in the constructor, don't do it 
-                    // again here.
+                    // This agent just became roo t. We are going to tell everyone about it. The process of
+                    // getting other avatars information was initiated in the constructor... don't do it 
+                    // again here... 
                     SendAvatarDataToAllAgents(true);
 
                     //Tell us about everyone else as well now that we are here

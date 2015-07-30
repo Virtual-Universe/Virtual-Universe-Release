@@ -1,5 +1,5 @@
 #!/bin/bash
-# startup script for Virtual-Universe standalone
+# startup script for Universe-Sim standalone
 # Versions 0.9.2+
 #
 # May 2014

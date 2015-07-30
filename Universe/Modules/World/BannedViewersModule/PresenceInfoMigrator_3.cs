@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -27,6 +27,7 @@
 
 using System;
 using System.Collections.Generic;
+
 using Universe.DataManager.Migration;
 using Universe.Framework.Utilities;
 
@@ -45,18 +46,18 @@ namespace Universe.Modules.Ban
             schema = new List<SchemaDefinition>();
 
             AddSchema("baninfo", ColDefs(
-                ColDef("AgentID", ColumnTypes.String50),
-                ColDef("Flags", ColumnTypes.String50),
-                ColDef("KnownAlts", ColumnTypes.Text),
-                ColDef("KnownID0s", ColumnTypes.Text),
-                ColDef("KnownIPs", ColumnTypes.Text),
-                ColDef("KnownMacs", ColumnTypes.Text),
-                ColDef("KnownViewers", ColumnTypes.Text),
-                ColDef("LastKnownID0", ColumnTypes.String50),
-                ColDef("LastKnownIP", ColumnTypes.String50),
-                ColDef("LastKnownMac", ColumnTypes.String50),
-                ColDef("LastKnownViewer", ColumnTypes.String255),
-                ColDef("Platform", ColumnTypes.String50)
+                ColDef("AgentID", /*"AgentID"*/ ColumnTypes.String50),
+                ColDef("Flags", /*"Flags"*/ ColumnTypes.String50),
+                ColDef("KnownAlts", /*"KnownAlts"*/ ColumnTypes.Text),
+                ColDef("KnownID0s", /*"KnownID0s"*/ ColumnTypes.Text),
+                ColDef("KnownIPs", /*"KnownIPs"*/ ColumnTypes.Text),
+                ColDef("KnownMacs", /*"KnownMacs"*/ ColumnTypes.Text),
+                ColDef("KnownViewers", /*"KnownViewers"*/ ColumnTypes.Text),
+                ColDef("LastKnownID0", /*"LastKnownID0"*/ ColumnTypes.String50),
+                ColDef("LastKnownIP", /*"LastKnownIP"*/ ColumnTypes.String50),
+                ColDef("LastKnownMac", /*"LastKnownMac"*/ ColumnTypes.String50),
+                ColDef("LastKnownViewer", /*"LastKnownViewer"*/ ColumnTypes.String255),
+                ColDef("Platform", /*"Platform"*/ ColumnTypes.String50)
                                      ), IndexDefs(
                                          IndexDef(new string[1] {"AgentID"}, IndexType.Primary)
                                             ));

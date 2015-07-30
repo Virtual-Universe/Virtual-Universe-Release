@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -28,19 +28,19 @@
 
 #define UseDictionaryForEntityUpdates
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Timers;
-using OpenMetaverse;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Utilities;
+using OpenMetaverse;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Linq;
+using System.Timers;
 using GridRegion = Universe.Framework.Services.GridRegion;
 
 namespace Universe.Region
@@ -70,7 +70,7 @@ namespace Universe.Region
         private readonly object m_objectPropertiesToSendLock = new object();
         private readonly object m_objectUpdatesToSendLock = new object();
 #if UseRemovingEntityUpdates
-        private OrderedDictionary m_presenceUpdatesToSend = new OrderedDictionary();
+        private OrderedDictionary/*<UUID, EntityUpdate>*/ m_presenceUpdatesToSend = new OrderedDictionary/*<UUID, EntityUpdate>*/ ();
 #elif UseDictionaryForEntityUpdates
         private readonly Dictionary<uint, EntityUpdate> m_presenceUpdatesToSend = new Dictionary<uint, EntityUpdate>();
 #else
@@ -78,13 +78,13 @@ namespace Universe.Region
 #endif
 
         private readonly Queue<AnimationGroup> m_presenceAnimationsToSend =
-            new Queue<AnimationGroup>();
+            new Queue<AnimationGroup> /*<UUID, AnimationGroup>*/();
 
-        private readonly OrderedDictionary
-            m_objectUpdatesToSend = new OrderedDictionary();
+        private readonly OrderedDictionary /*<UUID, EntityUpdate>*/
+            m_objectUpdatesToSend = new OrderedDictionary /*<UUID, EntityUpdate>*/();
 
-        private readonly OrderedDictionary
-            m_objectPropertiesToSend = new OrderedDictionary();
+        private readonly OrderedDictionary /*<UUID, ISceneChildEntity>*/
+            m_objectPropertiesToSend = new OrderedDictionary /*<UUID, ISceneChildEntity>*/();
 
         private HashSet<ISceneEntity> lastGrpsInView = new HashSet<ISceneEntity>();
         private readonly Dictionary<UUID, IScenePresence> lastPresencesDInView = new Dictionary<UUID, IScenePresence>();
@@ -159,6 +159,7 @@ namespace Universe.Region
                     m_drawDistanceChangedTimer.Elapsed += m_drawDistanceChangedTimer_Elapsed;
                     m_drawDistanceChangedTimer.Start();
                 }
+                //SignificantClientMovement (m_presence.ControllingClient);
             }
             else if (FunctionName == "SignficantCameraMovement")
             {
@@ -199,7 +200,8 @@ namespace Universe.Region
                     lastPresencesDInView.Remove(presence.UUID);
                 return; // if 2 far ignore
             }
-            //The client cannot get a terse update before a full update
+            //Is this really necessary? -7/21
+            //Very much so... the client cannot get a terse update before a full update -7/25
             lock (m_lastPresencesInViewLock)
                 if (!lastPresencesDInView.ContainsKey(presence.UUID))
                     return; //Only send updates if they are in view
@@ -280,7 +282,8 @@ namespace Universe.Region
             if (m_presence.LocalId == presence.LocalId &&
                 presence.SittingOnUUID == UUID.Zero) //As long as we arn't sitting, in which we don't get terse updates
             {
-                //The client cannot get a terse update before a full update
+                //Is this really necessary? -7/21
+                //Very much so... the client cannot get a terse update before a full update -7/25
                 lock (m_lastPresencesInViewLock)
                     if (lastPresencesDInView.ContainsKey(presence.UUID))
                         AddPresenceUpdate(presence, PrimUpdateFlags.TerseUpdate);
@@ -585,6 +588,13 @@ namespace Universe.Region
                         {
 #if UseRemovingEntityUpdates
                             EntityUpdate update = ((EntityUpdate)m_presenceUpdatesToSend[0]);
+                            /*if (m_EntitiesInPacketQueue.Contains (update.Entity.UUID))
+                            {
+                                m_presenceUpdatesToSend.RemoveAt (0);
+                                m_presenceUpdatesToSend.Insert (m_presenceUpdatesToSend.Count, update.Entity.UUID, update);
+                                continue;
+                            }
+                            m_EntitiesInPacketQueue.Add (update.Entity.UUID);*/
                             m_presenceUpdatesToSend.RemoveAt (0);
                             if (update.Flags == PrimUpdateFlags.ForcedFullUpdate)
                                 SendFullUpdateForPresence ((IScenePresence)update.Entity);
@@ -641,6 +651,13 @@ namespace Universe.Region
                         for (int i = 0; i < count; i++)
                         {
                             AnimationGroup update = m_presenceAnimationsToSend.Dequeue();
+                            /*if (m_AnimationsInPacketQueue.Contains (update.AvatarID))
+                            {
+                                m_presenceAnimationsToSend.RemoveAt (0);
+                                m_presenceAnimationsToSend.Insert (m_presenceAnimationsToSend.Count, update.AvatarID, update);
+                                continue;
+                            }
+                            m_AnimationsInPacketQueue.Add (update.AvatarID);*/
                             animationsToSend.Add(update);
                         }
                     }
@@ -673,6 +690,13 @@ namespace Universe.Region
                         for (int i = 0; i < count; i++)
                         {
                             ISceneChildEntity entity = ((ISceneChildEntity) m_objectPropertiesToSend[0]);
+                            /*if (m_PropertiesInPacketQueue.Contains (entity.UUID))
+                            {
+                                m_objectPropertiesToSend.RemoveAt (0);
+                                m_objectPropertiesToSend.Insert (m_objectPropertiesToSend.Count, entity.UUID, entity);
+                                continue;
+                            }
+                            m_PropertiesInPacketQueue.Add (entity.UUID);*/
                             m_objectPropertiesToSend.RemoveAt(0);
                             entities.Add(entity);
                         }
@@ -775,6 +799,10 @@ namespace Universe.Region
         /// <param name="updates"></param>
         public void FinishedEntityPacketSend(IEnumerable<EntityUpdate> updates)
         {
+            /*foreach (EntityUpdate update in updates)
+            {
+                m_EntitiesInPacketQueue.Remove(update.Entity.UUID);
+            }*/
         }
 
         /// <summary>
@@ -783,6 +811,10 @@ namespace Universe.Region
         /// <param name="updates"></param>
         public void FinishedPropertyPacketSend(IEnumerable<IEntity> updates)
         {
+            /*foreach (IEntity update in updates)
+            {
+                m_PropertiesInPacketQueue.Remove(update.UUID);
+            }*/
         }
 
         /// <summary>
@@ -791,6 +823,7 @@ namespace Universe.Region
         /// <param name="update"></param>
         public void FinishedAnimationPacketSend(AnimationGroup update)
         {
+            //m_AnimationsInPacketQueue.Remove(update.AvatarID);
         }
 
         private void SendQueued(HashSet<ISceneEntity> entsqueue)
@@ -840,7 +873,7 @@ namespace Universe.Region
         {
             if (m_culler == null)
                 return;
-            //Remove this so that if the client comes back, we don't have any issues with sending them another update
+            //Gotta remove this so that if the client comes back, we don't have any issues with sending them another update
             lock (m_lastPresencesInViewLock)
                 lastPresencesDInView.Remove(m_presence.UUID);
         }

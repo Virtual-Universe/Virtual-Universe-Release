@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -45,7 +45,7 @@ namespace Universe.Modules.Agent.AssetTransaction
         /// <remarks>
         ///     New -> Uploading -> Complete
         /// </remarks>
-        enum UploadState
+        private enum UploadState
         {
             New,
             Uploading,
@@ -56,35 +56,35 @@ namespace Universe.Modules.Agent.AssetTransaction
         ///     Reference to the object that holds this uploader.  Used to remove ourselves from it's list if we
         ///     are performing a delayed update.
         /// </summary>
-        AgentAssetTransactions m_transactions;
+        private AgentAssetTransactions m_transactions;
 
-        UploadState m_uploadState = UploadState.New;
+        private UploadState m_uploadState = UploadState.New;
 
-        AssetBase m_asset;
-        UUID InventFolder = UUID.Zero;
-        sbyte invType = 0;
+        private AssetBase m_asset;
+        private UUID InventFolder = UUID.Zero;
+        private sbyte invType = 0;
 
-        bool m_createItem;
-        uint m_createItemCallback;
+        private bool m_createItem;
+        private uint m_createItemCallback;
 
-        bool m_updateItem;
-        InventoryItemBase m_updateItemData;
+        private bool m_updateItem;
+        private InventoryItemBase m_updateItemData;
 
-        bool m_updateTaskItem;
-        TaskInventoryItem m_updateTaskItemData;
+        private bool m_updateTaskItem;
+        private TaskInventoryItem m_updateTaskItemData;
 
-        string m_description = String.Empty;
-        bool m_dumpAssetToFile;
-        string m_name = String.Empty;
-        uint nextPerm = 0;
-        IClientAPI ourClient;
+        private string m_description = String.Empty;
+        private bool m_dumpAssetToFile;
+        private string m_name = String.Empty;
+        private uint nextPerm = 0;
+        private IClientAPI ourClient;
 
-        UUID m_transactionID;
+        private UUID m_transactionID;
 
-        sbyte type = 0;
-        byte wearableType = 0;
+        private sbyte type = 0;
+        private byte wearableType = 0;
         public ulong XferID;
-        IScene m_Scene;
+        private IScene m_Scene;
 
         /// <summary>
         ///     AssetXferUploader constructor
@@ -169,7 +169,7 @@ namespace Universe.Modules.Agent.AssetTransaction
         {
             //MainConsole.Instance.DebugFormat(
             //    "[ASSET XFER UPLOADER]: Initialised xfer from {0}, asset {1}, transaction {2}, type {3}, storeLocal {4}, tempFile {5}, already received data length {6}",
-            //    remoteClient.Name, assetID, transaction, type, storeLocal, tempFile, data.Length);
+            //     remoteClient.Name, assetID, transaction, type, storeLocal, tempFile, data.Length);
 
             lock (this)
             {
@@ -209,8 +209,7 @@ namespace Universe.Modules.Agent.AssetTransaction
             XferID = Util.GetNextXferID();
 
             //MainConsole.Instance.DebugFormat(
-            //    "[ASSET XFER UPLOADER]: Requesting Xfer of asset {0}, type {1}, transfer id {2} from {3}",
-            //    m_asset.FullID, m_asset.Type, XferID, ourClient.Name);
+            //    "[ASSET XFER UPLOADER]: Requesting Xfer of asset {0}, type {1}, transfer id {2} from {3}", m_asset.FullID, m_asset.Type, XferID, ourClient.Name);
 
             ourClient.SendXferRequest(XferID, (short) m_asset.Type, m_asset.ID, 0, new byte[0]);
         }
@@ -254,7 +253,7 @@ namespace Universe.Modules.Agent.AssetTransaction
             }
         }
 
-        void SaveAssetToFile(string filename, byte[] data)
+        private void SaveAssetToFile(string filename, byte[] data)
         {
             string assetPath = "UserAssets";
             if (!Directory.Exists(assetPath))
@@ -356,11 +355,10 @@ namespace Universe.Modules.Agent.AssetTransaction
         ///     Store the asset for the given item when it has been uploaded.
         /// </summary>
         /// <param name="item"></param>
-        void CompleteItemUpdate(InventoryItemBase item)
+        private void CompleteItemUpdate(InventoryItemBase item)
         {
             //MainConsole.Instance.DebugFormat(
-            //    "[ASSET XFER UPLOADER]: Storing asset {0} for earlier item update for {1} for {2}",
-            //    m_asset.FullID, item.Name, ourClient.Name);
+            //    "[ASSET XFER UPLOADER]: Storing asset {0} for earlier item update for {1} for {2}", m_asset.FullID, item.Name, ourClient.Name);
 
             m_Scene.AssetService.Store(m_asset);
 
@@ -371,18 +369,17 @@ namespace Universe.Modules.Agent.AssetTransaction
         ///     Store the asset for the given task item when it has been uploaded.
         /// </summary>
         /// <param name="taskItem"></param>
-        void CompleteTaskItemUpdate(TaskInventoryItem taskItem)
+        private void CompleteTaskItemUpdate(TaskInventoryItem taskItem)
         {
             //MainConsole.Instance.DebugFormat(
-            //    "[ASSET XFER UPLOADER]: Storing asset {0} for earlier task item update for {1} for {2}",
-            //    m_asset.FullID, taskItem.Name, ourClient.Name);
+            //    "[ASSET XFER UPLOADER]: Storing asset {0} for earlier task item update for {1} for {2}", m_asset.FullID, taskItem.Name, ourClient.Name);
 
             m_Scene.AssetService.Store(m_asset);
 
             m_transactions.RemoveXferUploader(m_transactionID);
         }
 
-        void CompleteCreateItem(uint callbackID)
+        private void CompleteCreateItem(uint callbackID)
         {
             m_Scene.AssetService.Store(m_asset);
 

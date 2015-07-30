@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org//
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -85,6 +85,8 @@ namespace Universe.Modules.WorldView
                         SaveCachedImage(uri,stdWworldview);
 
                     return stdWworldview;
+
+
                 }
             }
             catch (Exception e)
@@ -158,14 +160,21 @@ namespace Universe.Modules.WorldView
             return m_WorldViewModule.GenerateWorldView(pos, rot, fov, width, height, usetex);
         }
 
+
         /// <summary>
         /// Generates a standard world view.
         /// </summary>
         /// <returns>The world view.</returns>
         public Byte[] GetWorldView()
         {
+
             // set some basic defaults
             Vector3 camPos = new Vector3 ();
+
+            // this is the basic topdown view used for a map tile
+            //camPos.Y = scene.RegionInfo.RegionSizeY / 2 - 0.5f;
+            //camPos.X = scene.RegionInfo.RegionSizeX / 2 - 0.5f;
+            //camPos.Z = 221.7025033688163f);
 
             camPos.X = 80.25f;
             camPos.Y = 75.25f;
@@ -183,6 +192,7 @@ namespace Universe.Modules.WorldView
 
             return m_WorldViewModule.GenerateWorldView(camPos, camDir, fov, width, height, true);
         }
+
 
         /// <summary>
         /// Finds the cached world view image.
@@ -219,5 +229,8 @@ namespace Universe.Modules.WorldView
             string cacheFile = cacheDir + "/" + name;
             File.WriteAllBytes(cacheFile, data);
         }
+
+
     }
 }
+

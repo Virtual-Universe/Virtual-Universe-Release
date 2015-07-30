@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org//
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -178,6 +178,9 @@ namespace Universe.Modules.WorldView
 
             // set some basic defaults
             Vector3 camPos = new Vector3 ();
+            //camPos.Y = scene.RegionInfo.RegionSizeY / 2 - 0.5f;
+            //camPos.X = scene.RegionInfo.RegionSizeX / 2 - 0.5f;
+            //camPos.Z = 221.7025033688163f);
 
             camPos.X = 1.25f;
             camPos.Y = 1.25f;
@@ -231,8 +234,33 @@ namespace Universe.Modules.WorldView
         public byte[] ExportWorldView(Vector3 camPos, Vector3 camDir, float fov,
             int width, int height, bool usetex)
         {
+           // String background = @"html/images/sky_bg.jpg";
+
             Bitmap bmp = m_Generator.CreateViewImage(camPos, camDir, fov, width, height, usetex);
 
+            /*
+            Color bgColor = Color.FromArgb( 0xFF, 0x8B, 0xC4, 0xEC);
+            bmp.MakeTransparent (bgColor);
+
+            //this does not crash but probably needs transparency set correctly
+            var bgBmp = Bitmap.FromFile(background);
+            Bitmap outbmp = ImageUtils.ResizeImage(bgBmp, width, height);
+
+            //create a bitmap to hold the combined image
+            var finalImage = new System.Drawing.Bitmap(width, height);
+
+            //get a graphics object from the image so we can draw on it
+            using (Graphics g = Graphics.FromImage(finalImage))
+            {
+                //set background color
+                //g.Clear(Color.Black);
+
+                //go through each image and draw it on the final image
+                g.DrawImage(outbmp,  new Rectangle(0, 0, width, height));
+                g.DrawImage(bmp,  new Rectangle(0, 0, width, height));
+            }
+            if (finalImage != null)
+*/
             if (bmp != null)
             {
                 MemoryStream str = new MemoryStream ();
@@ -243,10 +271,13 @@ namespace Universe.Modules.WorldView
             } 
 
             return null;
+
         }
 
         public byte[] ExportWorldMapTile(int size)
         {
+
+
             Bitmap bmp = m_Generator.CreateViewTileImage(size);
 
             if (bmp != null)
@@ -258,6 +289,7 @@ namespace Universe.Modules.WorldView
                 return str.ToArray ();
             } else
                 return null;
+
         }
 
         protected void HandleSaveWorldview(IScene scene, string[] cmdparams)
@@ -280,6 +312,7 @@ namespace Universe.Modules.WorldView
                 }
             }
 
+
             if (cmds.Count > 0)
                 fileName = cmds [0];
             else
@@ -297,6 +330,7 @@ namespace Universe.Modules.WorldView
                 "[Worldview]: Saving worldview for {0} to {1}", scene.RegionInfo.RegionName, savePath);
         
             SaveRegionWorldView (scene, savePath, fieldOfView);
+        
         }
 
         protected void HandleSaveWorldTile(IScene scene, string[] cmdparams)
@@ -344,5 +378,77 @@ namespace Universe.Modules.WorldView
             SaveRegionWorldMapTile (scene, savePath, size);
 
         }
+
+        /*
+         private void ExportArchiveImage(UUID imageUUID, string archiveName, string filePath)
+        {
+            byte[] jpeg = new byte[0];
+
+            using (MemoryStream imgstream = new MemoryStream())
+            {
+                // Taking our jpeg2000 data, decoding it, then saving it to a byte array with regular jpeg data
+
+                // non-async because we know we have the asset immediately.
+                byte[] imageAsset = AssetService.GetData(imageUUID.ToString());
+
+                if (imageAsset != null)
+                {
+                    // Decode image to System.Drawing.Image
+                    Image image = null;
+                    ManagedImage managedImage;
+                    if (OpenJPEG.DecodeToImage(imageAsset, out managedImage, out image))
+                    {
+                        // Save to bitmap
+                        using (Bitmap texture = ResizeBitmap(image, 256, 256, archiveName))
+                        {
+                            EncoderParameters myEncoderParameters = new EncoderParameters();
+                            myEncoderParameters.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality,
+                                75L);
+
+                            // Save bitmap to stream
+                            texture.Save(imgstream, GetEncoderInfo("image/jpeg"), myEncoderParameters);
+
+                            // Write the stream to a byte array for output
+                            jpeg = imgstream.ToArray();
+
+                            // save image
+                            string fileName = archiveName + ".jpg";
+                            string fullPath = Path.Combine(filePath, fileName);
+                            File.WriteAllBytes(fullPath, jpeg);
+
+                        }
+                        image.Dispose();
+                    }
+                }
+            }
+        }
+
+
+        private Bitmap ResizeBitmap(Image b, int nWidth, int nHeight, string name)
+        {
+            Bitmap newsize = new Bitmap(nWidth, nHeight);
+            Graphics temp = Graphics.FromImage(newsize);
+            temp.DrawImage(b, 0, 0, nWidth, nHeight);
+            temp.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            if (name != "")
+                temp.DrawString(name, new Font("Arial", 8, FontStyle.Regular),
+                    new SolidBrush(Color.FromArgb(90, 255, 255, 180)), new Point(2, nHeight - 13));
+
+            return newsize;
+        }
+
+        // From msdn
+        private static ImageCodecInfo GetEncoderInfo(String mimeType)
+        {
+           ImageCodecInfo[] encoders;
+           encoders = ImageCodecInfo.GetImageEncoders();
+            for (int j = 0; j < encoders.Length; ++j)
+            {
+                if (encoders[j].MimeType == mimeType)
+                    return encoders[j];
+            }
+            return null;
+        }
+*/
     }
 }

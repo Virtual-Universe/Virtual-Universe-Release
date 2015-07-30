@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,12 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Xml;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
+
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
@@ -41,6 +36,12 @@ using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Services.ClassHelpers.Inventory;
 using Universe.Framework.Utilities;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
+using System;
+using System.Collections.Generic;
+using System.Xml;
 
 namespace Universe.Modules.InventoryAccess
 {
@@ -293,6 +294,7 @@ namespace Universe.Modules.InventoryAccess
                 return UUID.Zero;
 
             // Get the user info of the item destination
+            //
             IScenePresence SP = m_scene.GetScenePresence(agentId);
             UUID userID = UUID.Zero;
 
@@ -301,6 +303,7 @@ namespace Universe.Modules.InventoryAccess
             {
                 // Take or take copy require a taker
                 // Saving changes requires a local user
+                //
                 if (SP == null || SP.ControllingClient == null)
                     return UUID.Zero;
 
@@ -309,6 +312,8 @@ namespace Universe.Modules.InventoryAccess
             else
             {
                 // All returns / deletes go to the object owner
+                //
+
                 userID = objectGroups[0].OwnerID;
             }
 
@@ -321,12 +326,17 @@ namespace Universe.Modules.InventoryAccess
             // owner's Lost And Found folder.
             // Delete is treated like return in this case
             // Deleting your own items makes them go to trash
+            //
+
             InventoryFolderBase folder = null;
             InventoryItemBase item = null;
 
             if (DeRezAction.SaveToExistingUserInventoryItem == action)
             {
                 item = m_scene.InventoryService.GetItem(userID, objectGroups[0].RootChild.FromUserInventoryItemID);
+
+                //item = userInfo.RootFolder.FindItem(
+                //        objectGroup.RootPart.FromUserInventoryItemID);
 
                 if (null == item)
                 {
@@ -339,9 +349,12 @@ namespace Universe.Modules.InventoryAccess
             else
             {
                 // Folder magic
+                //
                 if (action == DeRezAction.Delete)
                 {
                     // Deleting someone else's item
+                    //
+
                     if (SP == null || SP.ControllingClient == null ||
                         objectGroups[0].OwnerID != agentId)
                     {
@@ -357,6 +370,7 @@ namespace Universe.Modules.InventoryAccess
                 else if (action == DeRezAction.Return)
                 {
                     // Dump to lost + found unconditionally
+                    //
                     folder = m_scene.InventoryService.GetFolderForType(userID, InventoryType.Unknown,
                                                                        AssetType.LostAndFoundFolder);
                 }
@@ -366,6 +380,7 @@ namespace Universe.Modules.InventoryAccess
                     if (action == DeRezAction.Delete)
                     {
                         // Deletes go to trash by default
+                        //
                         folder = m_scene.InventoryService.GetFolderForType(userID, InventoryType.Unknown,
                                                                            AssetType.TrashFolder);
                     }
@@ -387,6 +402,7 @@ namespace Universe.Modules.InventoryAccess
 
                 // Override and put into where it came from, if it came
                 // from anywhere in inventory
+                //
                 if (action == DeRezAction.Attachment || action == DeRezAction.Take ||
                     action == DeRezAction.AcquireToUserInventory)
                 {
@@ -449,8 +465,10 @@ namespace Universe.Modules.InventoryAccess
                         if ((nextPerms & (uint) PermissionMask.Modify) == 0)
                             perms &= ~(uint) PermissionMask.Modify;
 
-                        // Make sure all bits but the ones we want are clear on take.
-                        // This will be applied to the current perms, so it will do what we want.
+                        // Make sure all bits but the ones we want are clear
+                        // on take.
+                        // This will be applied to the current perms, so
+                        // it will do what we want.
                         group.RootChild.NextOwnerMask &=
                             ((uint) PermissionMask.Copy |
                              (uint) PermissionMask.Transfer |
@@ -590,6 +608,7 @@ namespace Universe.Modules.InventoryAccess
             else
             {
                 // Brave new fullperm world
+                //
                 itemId = item.ID;
             }
             return CreateObjectFromInventory(remoteClient, itemId, item.AssetID, out doc, item);
@@ -618,6 +637,7 @@ namespace Universe.Modules.InventoryAccess
             else
             {
                 // Brave new fullperm world
+                //
                 itemId = item.ID;
             }
             return CreateObjectFromInventory(remoteClient, itemId, item.AssetID, out doc, item);
@@ -663,7 +683,7 @@ namespace Universe.Modules.InventoryAccess
                 group.IsDeleted = false;
                 foreach (ISceneChildEntity part in group.ChildrenEntities())
                 {
-                    //Could be changed by user in inventory, so restore from inventory not asset on rez
+                    //AR: Could be changed by user in inventory, so restore from inventory not asset on rez
                     if (item != null)
                     {
                         part.EveryoneMask = item.EveryOnePermissions;
@@ -808,6 +828,7 @@ namespace Universe.Modules.InventoryAccess
                 // have already removed the item from the folder
                 // if it's no copy.
                 // Put it back if it's not an attachment
+                //
                 if ((item.CurrentPermissions & (uint) PermissionMask.Copy) == 0)
                     remoteClient.SendBulkUpdateInventory(item);
                 remoteClient.SendAlertMessage("You do not have permission to rez objects here.");
@@ -953,6 +974,7 @@ namespace Universe.Modules.InventoryAccess
                     // have already removed the item from the folder
                     // if it's no copy.
                     // Put it back if it's not an attachment
+                    //
                     if (((item.CurrentPermissions & (uint) PermissionMask.Copy) == 0))
                         remoteClient.SendBulkUpdateInventory(item);
                     return null;
@@ -973,6 +995,7 @@ namespace Universe.Modules.InventoryAccess
                     RayStart, RayEnd, RayTargetID, Quaternion.Identity,
                     BypassRayCast, bRayEndIsIntersection, true, group.GetAxisAlignedBoundingBox(out offsetHeight), false);
                 pos.Z += offsetHeight;
+                //group.AbsolutePosition = pos;
                 //   MainConsole.Instance.InfoFormat("rezx point for inventory rezz is {0} {1} {2}  and offsetheight was {3}", pos.X, pos.Y, pos.Z, offsetHeight);
 
                 ISceneChildEntity rootPart = group.GetChildPart(group.UUID);
@@ -1044,6 +1067,7 @@ namespace Universe.Modules.InventoryAccess
                     {
                         // If this is done on attachments, no
                         // copy ones will be lost, so avoid it
+                        //
                         List<UUID> uuids = new List<UUID> {item.ID};
                         m_scene.InventoryService.DeleteItems(item.Owner, uuids);
                     }
@@ -1076,6 +1100,7 @@ namespace Universe.Modules.InventoryAccess
             // At this point, we need to apply perms
             // only to notecards and scripts. All
             // other asset types are always available
+            //
             if (assetRequestItem.AssetType == (int) AssetType.LSLText)
             {
                 if (!m_scene.Permissions.CanViewScript(itemID, UUID.Zero, remoteClient.AgentId))

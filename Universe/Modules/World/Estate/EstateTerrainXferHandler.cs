@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,6 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
 using System;
 using OpenMetaverse;
 using Universe.Framework.PresenceInfo;
@@ -37,19 +38,20 @@ namespace Universe.Modules.Estate
     {
         #region Delegates
 
-        public delegate void TerrainUploadComplete(string name, byte[] filedata, IClientAPI remoteClient);
+        public delegate void TerrainUploadComplete (string name, byte[] filedata, IClientAPI remoteClient);
 
         #endregion
 
         readonly AssetBase m_asset;
-        readonly object _lock = new object();
+        readonly object _lock = new object ();
 
         TerrainUploadComplete handlerTerrainUploadDone;
         public ulong mXferID;
 
-        public EstateTerrainXferHandler(IClientAPI pRemoteClient, string pClientFilename)
+        public EstateTerrainXferHandler (IClientAPI pRemoteClient, string pClientFilename)
         {
-            m_asset = new AssetBase(UUID.Zero, pClientFilename, AssetType.Texture, pRemoteClient.AgentId) { Data = new byte[0], Description = "empty", Flags = AssetFlags.Temporary | AssetFlags.Local };
+            m_asset = new AssetBase (UUID.Zero, pClientFilename, AssetType.Texture, pRemoteClient.AgentId)
+                          { Data = new byte[0], Description = "empty", Flags = AssetFlags.Temporary | AssetFlags.Local };
         }
 
         public ulong XferID
@@ -59,11 +61,11 @@ namespace Universe.Modules.Estate
 
         public event TerrainUploadComplete TerrainUploadDone;
 
-        public void RequestStartXfer(IClientAPI pRemoteClient)
+        public void RequestStartXfer (IClientAPI pRemoteClient)
         {
-            mXferID = Util.GetNextXferID();
-            pRemoteClient.SendXferRequest(mXferID, short.Parse(m_asset.Type.ToString()), m_asset.ID, 0,
-                Utils.StringToBytes(m_asset.Name));
+            mXferID = Util.GetNextXferID ();
+            pRemoteClient.SendXferRequest (mXferID, short.Parse (m_asset.Type.ToString ()), m_asset.ID, 0,
+                Utils.StringToBytes (m_asset.Name));
         }
 
         /// <summary>
@@ -73,7 +75,7 @@ namespace Universe.Modules.Estate
         /// <param name="xferID"></param>
         /// <param name="packetID"></param>
         /// <param name="data"></param>
-        public void XferReceive(IClientAPI remoteClient, ulong xferID, uint packetID, byte[] data)
+        public void XferReceive (IClientAPI remoteClient, ulong xferID, uint packetID, byte[] data)
         {
             if (mXferID == xferID)
             {
@@ -82,33 +84,32 @@ namespace Universe.Modules.Estate
                     if (m_asset.Data.Length > 1)
                     {
                         byte[] destinationArray = new byte[m_asset.Data.Length + data.Length];
-                        Array.Copy(m_asset.Data, 0, destinationArray, 0, m_asset.Data.Length);
-                        Array.Copy(data, 0, destinationArray, m_asset.Data.Length, data.Length);
+                        Array.Copy (m_asset.Data, 0, destinationArray, 0, m_asset.Data.Length);
+                        Array.Copy (data, 0, destinationArray, m_asset.Data.Length, data.Length);
                         m_asset.Data = destinationArray;
-                    }
-                    else
+                    } else
                     {
                         byte[] buffer2 = new byte[data.Length - 4];
-                        Array.Copy(data, 4, buffer2, 0, data.Length - 4);
+                        Array.Copy (data, 4, buffer2, 0, data.Length - 4);
                         m_asset.Data = buffer2;
                     }
 
-                    remoteClient.SendConfirmXfer(xferID, packetID);
+                    remoteClient.SendConfirmXfer (xferID, packetID);
 
                     if ((packetID & 0x80000000) != 0)
                     {
-                        SendCompleteMessage(remoteClient);
+                        SendCompleteMessage (remoteClient);
                     }
                 }
             }
         }
 
-        public void SendCompleteMessage(IClientAPI remoteClient)
+        public void SendCompleteMessage (IClientAPI remoteClient)
         {
             handlerTerrainUploadDone = TerrainUploadDone;
             if (handlerTerrainUploadDone != null)
             {
-                handlerTerrainUploadDone(m_asset.Name, m_asset.Data, remoteClient);
+                handlerTerrainUploadDone (m_asset.Name, m_asset.Data, remoteClient);
             }
         }
     }

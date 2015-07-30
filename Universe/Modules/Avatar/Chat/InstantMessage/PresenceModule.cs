@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -24,6 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 
 using System;
 using System.Collections.Generic;
@@ -43,11 +44,11 @@ namespace Universe.Modules.Chat
 
         #region INonSharedRegionModule Members
 
-        public void Initialise(IConfigSource config)
+        public void Initialise (IConfigSource config)
         {
         }
 
-        public void AddRegion(IScene scene)
+        public void AddRegion (IScene scene)
         {
             m_Scene = scene;
 
@@ -55,11 +56,11 @@ namespace Universe.Modules.Chat
             scene.EventManager.OnClosingClient += OnClosingClient;
         }
 
-        public void RegionLoaded(IScene scene)
+        public void RegionLoaded (IScene scene)
         {
         }
 
-        public void RemoveRegion(IScene scene)
+        public void RemoveRegion (IScene scene)
         {
             m_Scene = scene;
 
@@ -67,7 +68,7 @@ namespace Universe.Modules.Chat
             scene.EventManager.OnClosingClient -= OnClosingClient;
         }
 
-        public void Close()
+        public void Close ()
         {
         }
 
@@ -83,42 +84,42 @@ namespace Universe.Modules.Chat
 
         #endregion
 
-        public void OnNewClient(IClientAPI client)
+        public void OnNewClient (IClientAPI client)
         {
-            client.AddGenericPacketHandler("requestonlinenotification", OnRequestOnlineNotification);
+            client.AddGenericPacketHandler ("requestonlinenotification", OnRequestOnlineNotification);
         }
 
-        void OnClosingClient(IClientAPI client)
+        void OnClosingClient (IClientAPI client)
         {
-            client.RemoveGenericPacketHandler("requestonlinenotification");
+            client.RemoveGenericPacketHandler ("requestonlinenotification");
         }
 
-        public void OnRequestOnlineNotification(Object sender, string method, List<String> args)
+        public void OnRequestOnlineNotification (Object sender, string method, List<String> args)
         {
             if (!(sender is IClientAPI))
                 return;
 
             IClientAPI client = (IClientAPI)sender;
-            MainConsole.Instance.DebugFormat("[PRESENCE MODULE]: OnlineNotification requested by {0}", client.Name);
+            MainConsole.Instance.DebugFormat ("[PRESENCE MODULE]: OnlineNotification requested by {0}", client.Name);
 
-            List<UserInfo> status = m_Scene.RequestModuleInterface<IAgentInfoService>().GetUserInfos(args);
+            List<UserInfo> status = m_Scene.RequestModuleInterface<IAgentInfoService> ().GetUserInfos (args);
 
-            List<UUID> online = new List<UUID>();
-            List<UUID> offline = new List<UUID>();
+            List<UUID> online = new List<UUID> ();
+            List<UUID> offline = new List<UUID> ();
 
             foreach (UserInfo pi in status)
             {
-                UUID uuid = new UUID(pi.UserID);
-                if (pi.IsOnline && !online.Contains(uuid))
-                    online.Add(uuid);
-                if (!pi.IsOnline && !offline.Contains(uuid))
-                    offline.Add(uuid);
+                UUID uuid = new UUID (pi.UserID);
+                if (pi.IsOnline && !online.Contains (uuid))
+                    online.Add (uuid);
+                if (!pi.IsOnline && !offline.Contains (uuid))
+                    offline.Add (uuid);
             }
 
             if (online.Count > 0)
-                client.SendAgentOnline(online.ToArray());
+                client.SendAgentOnline (online.ToArray ());
             if (offline.Count > 0)
-                client.SendAgentOffline(offline.ToArray());
+                client.SendAgentOffline (offline.ToArray ());
         }
     }
 }

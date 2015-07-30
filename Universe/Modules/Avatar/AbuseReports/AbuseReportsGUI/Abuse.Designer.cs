@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -53,7 +53,7 @@ namespace Universe.Modules.AbuseReportsGUI
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        void InitializeComponent()
+        private void InitializeComponent()
         {
             this.Category = new System.Windows.Forms.TextBox();
             this.ReporterName = new System.Windows.Forms.TextBox();
@@ -91,20 +91,23 @@ namespace Universe.Modules.AbuseReportsGUI
             this.ScreenshotLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.SnapshotUUID)).BeginInit();
             this.SuspendLayout();
-
+            // 
             // Category
+            // 
             this.Category.Location = new System.Drawing.Point(178, 44);
             this.Category.Name = "Category";
             this.Category.Size = new System.Drawing.Size(260, 20);
             this.Category.TabIndex = 0;
-
-            // ReporterName 
+            // 
+            // ReporterName
+            // 
             this.ReporterName.Location = new System.Drawing.Point(178, 70);
             this.ReporterName.Name = "ReporterName";
             this.ReporterName.Size = new System.Drawing.Size(260, 20);
             this.ReporterName.TabIndex = 1;
-
+            // 
             // label1
+            // 
             this.label1.AutoSize = true;
             this.label1.BackColor = System.Drawing.Color.Transparent;
             this.label1.Location = new System.Drawing.Point(32, 51);
@@ -112,8 +115,9 @@ namespace Universe.Modules.AbuseReportsGUI
             this.label1.Size = new System.Drawing.Size(49, 13);
             this.label1.TabIndex = 2;
             this.label1.Text = "Category";
-
+            // 
             // label2
+            // 
             this.label2.AutoSize = true;
             this.label2.BackColor = System.Drawing.Color.Transparent;
             this.label2.Location = new System.Drawing.Point(32, 77);
@@ -121,8 +125,9 @@ namespace Universe.Modules.AbuseReportsGUI
             this.label2.Size = new System.Drawing.Size(48, 13);
             this.label2.TabIndex = 3;
             this.label2.Text = "Reporter";
-
+            // 
             // label3
+            // 
             this.label3.AutoSize = true;
             this.label3.BackColor = System.Drawing.Color.Transparent;
             this.label3.Location = new System.Drawing.Point(203, 9);
@@ -131,8 +136,9 @@ namespace Universe.Modules.AbuseReportsGUI
             this.label3.TabIndex = 4;
             this.label3.Text = "Abuse Reports";
             this.label3.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-
+            // 
             // Previous
+            // 
             this.Previous.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.Previous.Location = new System.Drawing.Point(35, 366);
             this.Previous.Name = "Previous";
@@ -141,8 +147,9 @@ namespace Universe.Modules.AbuseReportsGUI
             this.Previous.Text = "Previous";
             this.Previous.UseVisualStyleBackColor = true;
             this.Previous.Click += new System.EventHandler(this.Previous_Click);
-
+            // 
             // Next
+            // 
             this.Next.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.Next.Location = new System.Drawing.Point(363, 366);
             this.Next.Name = "Next";
@@ -151,8 +158,9 @@ namespace Universe.Modules.AbuseReportsGUI
             this.Next.Text = "Next";
             this.Next.UseVisualStyleBackColor = true;
             this.Next.Click += new System.EventHandler(this.Next_Click);
-
+            // 
             // label4
+            // 
             this.label4.AutoSize = true;
             this.label4.BackColor = System.Drawing.Color.Transparent;
             this.label4.Location = new System.Drawing.Point(32, 28);
@@ -160,8 +168,9 @@ namespace Universe.Modules.AbuseReportsGUI
             this.label4.Size = new System.Drawing.Size(82, 13);
             this.label4.TabIndex = 7;
             this.label4.Text = "Abuse Report #";
-
+            // 
             // CardNumber
+            // 
             this.CardNumber.AutoSize = true;
             this.CardNumber.BackColor = System.Drawing.Color.Transparent;
             this.CardNumber.Location = new System.Drawing.Point(175, 28);
@@ -169,8 +178,9 @@ namespace Universe.Modules.AbuseReportsGUI
             this.CardNumber.Size = new System.Drawing.Size(13, 13);
             this.CardNumber.TabIndex = 8;
             this.CardNumber.Text = "1";
-
+            // 
             // label5
+            // 
             this.label5.AutoSize = true;
             this.label5.BackColor = System.Drawing.Color.Transparent;
             this.label5.Location = new System.Drawing.Point(32, 155);
@@ -178,8 +188,9 @@ namespace Universe.Modules.AbuseReportsGUI
             this.label5.Size = new System.Drawing.Size(40, 13);
             this.label5.TabIndex = 9;
             this.label5.Text = "Abuser";
-
+            // 
             // label6
+            // 
             this.label6.AutoSize = true;
             this.label6.BackColor = System.Drawing.Color.Transparent;
             this.label6.Location = new System.Drawing.Point(32, 181);
@@ -187,8 +198,9 @@ namespace Universe.Modules.AbuseReportsGUI
             this.label6.Size = new System.Drawing.Size(48, 13);
             this.label6.TabIndex = 10;
             this.label6.Text = "Location";
-
+            // 
             // label7
+            // 
             this.label7.AutoSize = true;
             this.label7.BackColor = System.Drawing.Color.Transparent;
             this.label7.Location = new System.Drawing.Point(32, 233);
@@ -196,8 +208,9 @@ namespace Universe.Modules.AbuseReportsGUI
             this.label7.Size = new System.Drawing.Size(39, 13);
             this.label7.TabIndex = 11;
             this.label7.Text = "Details";
-
+            // 
             // label8
+            // 
             this.label8.AutoSize = true;
             this.label8.BackColor = System.Drawing.Color.Transparent;
             this.label8.Location = new System.Drawing.Point(32, 207);
@@ -205,8 +218,9 @@ namespace Universe.Modules.AbuseReportsGUI
             this.label8.Size = new System.Drawing.Size(50, 13);
             this.label8.TabIndex = 12;
             this.label8.Text = "Summary";
-
+            // 
             // label9
+            // 
             this.label9.AutoSize = true;
             this.label9.BackColor = System.Drawing.Color.Transparent;
             this.label9.Location = new System.Drawing.Point(32, 259);
@@ -214,46 +228,53 @@ namespace Universe.Modules.AbuseReportsGUI
             this.label9.Size = new System.Drawing.Size(66, 13);
             this.label9.TabIndex = 13;
             this.label9.Text = "Assigned To";
-
+            // 
             // Abusername
+            // 
             this.Abusername.Location = new System.Drawing.Point(178, 148);
             this.Abusername.Name = "Abusername";
             this.Abusername.Size = new System.Drawing.Size(260, 20);
             this.Abusername.TabIndex = 14;
-
+            // 
             // AbuseLocation
+            // 
             this.AbuseLocation.Location = new System.Drawing.Point(178, 174);
             this.AbuseLocation.Name = "AbuseLocation";
             this.AbuseLocation.Size = new System.Drawing.Size(260, 20);
             this.AbuseLocation.TabIndex = 15;
-
+            // 
             // Details
+            // 
             this.Details.Location = new System.Drawing.Point(178, 226);
             this.Details.Name = "Details";
             this.Details.Size = new System.Drawing.Size(260, 20);
             this.Details.TabIndex = 16;
-
+            // 
             // Summary
+            // 
             this.Summary.Location = new System.Drawing.Point(178, 200);
             this.Summary.Name = "Summary";
             this.Summary.Size = new System.Drawing.Size(260, 20);
             this.Summary.TabIndex = 17;
-
+            // 
             // AssignedTo
+            // 
             this.AssignedTo.Location = new System.Drawing.Point(178, 252);
             this.AssignedTo.Name = "AssignedTo";
             this.AssignedTo.Size = new System.Drawing.Size(260, 20);
             this.AssignedTo.TabIndex = 18;
             this.AssignedTo.TextChanged += new System.EventHandler(this.textBox7_TextChanged);
-
+            // 
             // Active
+            // 
             this.Active.Location = new System.Drawing.Point(178, 278);
             this.Active.Name = "Active";
             this.Active.Size = new System.Drawing.Size(260, 20);
             this.Active.TabIndex = 19;
             this.Active.TextChanged += new System.EventHandler(this.textBox8_TextChanged);
-
+            // 
             // label10
+            // 
             this.label10.AutoSize = true;
             this.label10.BackColor = System.Drawing.Color.Transparent;
             this.label10.Location = new System.Drawing.Point(32, 285);
@@ -261,14 +282,16 @@ namespace Universe.Modules.AbuseReportsGUI
             this.label10.Size = new System.Drawing.Size(37, 13);
             this.label10.TabIndex = 20;
             this.label10.Text = "Active";
-
+            // 
             // ObjectName
+            // 
             this.ObjectName.Location = new System.Drawing.Point(178, 96);
             this.ObjectName.Name = "ObjectName";
             this.ObjectName.Size = new System.Drawing.Size(260, 20);
             this.ObjectName.TabIndex = 21;
-
+            // 
             // label11
+            // 
             this.label11.AutoSize = true;
             this.label11.BackColor = System.Drawing.Color.Transparent;
             this.label11.Location = new System.Drawing.Point(32, 103);
@@ -276,8 +299,9 @@ namespace Universe.Modules.AbuseReportsGUI
             this.label11.Size = new System.Drawing.Size(69, 13);
             this.label11.TabIndex = 22;
             this.label11.Text = "Object Name";
-
+            // 
             // label12
+            // 
             this.label12.AutoSize = true;
             this.label12.BackColor = System.Drawing.Color.Transparent;
             this.label12.Location = new System.Drawing.Point(32, 311);
@@ -285,15 +309,17 @@ namespace Universe.Modules.AbuseReportsGUI
             this.label12.Size = new System.Drawing.Size(50, 13);
             this.label12.TabIndex = 23;
             this.label12.Text = "Checked";
-
+            // 
             // Checked
+            // 
             this.Checked.Location = new System.Drawing.Point(178, 304);
             this.Checked.Name = "Checked";
             this.Checked.Size = new System.Drawing.Size(260, 20);
             this.Checked.TabIndex = 24;
             this.Checked.TextChanged += new System.EventHandler(this.textBox10_TextChanged);
-
+            // 
             // label13
+            // 
             this.label13.AutoSize = true;
             this.label13.BackColor = System.Drawing.Color.Transparent;
             this.label13.Location = new System.Drawing.Point(32, 129);
@@ -301,14 +327,16 @@ namespace Universe.Modules.AbuseReportsGUI
             this.label13.Size = new System.Drawing.Size(59, 13);
             this.label13.TabIndex = 26;
             this.label13.Text = "Object Pos";
-
+            // 
             // ObjectPos
+            // 
             this.ObjectPos.Location = new System.Drawing.Point(178, 122);
             this.ObjectPos.Name = "ObjectPos";
             this.ObjectPos.Size = new System.Drawing.Size(260, 20);
             this.ObjectPos.TabIndex = 25;
-
+            // 
             // label14
+            // 
             this.label14.AutoSize = true;
             this.label14.BackColor = System.Drawing.Color.Transparent;
             this.label14.Location = new System.Drawing.Point(32, 333);
@@ -316,29 +344,33 @@ namespace Universe.Modules.AbuseReportsGUI
             this.label14.Size = new System.Drawing.Size(35, 13);
             this.label14.TabIndex = 27;
             this.label14.Text = "Notes";
-
+            // 
             // Notes
+            // 
             this.Notes.Location = new System.Drawing.Point(178, 330);
             this.Notes.Name = "Notes";
             this.Notes.Size = new System.Drawing.Size(260, 20);
             this.Notes.TabIndex = 28;
             this.Notes.TextChanged += new System.EventHandler(this.textBox12_TextChanged);
-
+            // 
             // label15
+            // 
             this.label15.AutoSize = true;
             this.label15.Location = new System.Drawing.Point(128, 371);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(104, 13);
             this.label15.TabIndex = 29;
             this.label15.Text = "Goto Abuse Report: ";
-
+            // 
             // GotoARNumber
+            // 
             this.GotoARNumber.Location = new System.Drawing.Point(229, 368);
             this.GotoARNumber.Name = "GotoARNumber";
             this.GotoARNumber.Size = new System.Drawing.Size(51, 20);
             this.GotoARNumber.TabIndex = 30;
-
+            // 
             // GotoAR
+            // 
             this.GotoAR.Location = new System.Drawing.Point(282, 366);
             this.GotoAR.Name = "GotoAR";
             this.GotoAR.Size = new System.Drawing.Size(47, 23);
@@ -346,15 +378,17 @@ namespace Universe.Modules.AbuseReportsGUI
             this.GotoAR.Text = "Go";
             this.GotoAR.UseVisualStyleBackColor = true;
             this.GotoAR.Click += new System.EventHandler(this.GotoAR_Click);
-
+            // 
             // SnapshotUUID
+            // 
             this.SnapshotUUID.Location = new System.Drawing.Point(444, 77);
             this.SnapshotUUID.Name = "SnapshotUUID";
             this.SnapshotUUID.Size = new System.Drawing.Size(292, 235);
             this.SnapshotUUID.TabIndex = 32;
             this.SnapshotUUID.TabStop = false;
-
+            // 
             // ScreenshotLabel
+            // 
             this.ScreenshotLabel.AutoSize = true;
             this.ScreenshotLabel.BackColor = System.Drawing.Color.Transparent;
             this.ScreenshotLabel.Location = new System.Drawing.Point(549, 61);
@@ -363,8 +397,9 @@ namespace Universe.Modules.AbuseReportsGUI
             this.ScreenshotLabel.TabIndex = 33;
             this.ScreenshotLabel.Text = "Screenshot";
             this.ScreenshotLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-
+            // 
             // Abuse
+            // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(748, 401);

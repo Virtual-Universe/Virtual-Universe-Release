@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -28,19 +28,19 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Web;
 using System.Xml;
-using Nini.Config;
-using OpenMetaverse;
 using Universe.Framework.Modules;
 using Universe.Framework.Servers;
 using Universe.Framework.Servers.HttpServer;
-using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Servers.HttpServer.Interfaces;
+using Nini.Config;
+using OpenMetaverse;
+using Universe.Framework.Servers.HttpServer.Implementation;
+using System.IO;
+using System.Text;
 
 namespace Universe.Framework.ConsoleFramework
 {
@@ -52,6 +52,7 @@ namespace Universe.Framework.ConsoleFramework
     }
 
     // A console that uses REST interfaces
+    //
     public class RemoteConsole : CommandConsole
     {
         private readonly Dictionary<UUID, ConsoleConnection> m_Connections =
@@ -77,6 +78,7 @@ namespace Universe.Framework.ConsoleFramework
 
             if (source.Configs["Console"] != null)
             {
+                //if (source.Configs["Console"].GetString("RemoteConsole", String.Empty) != "enable")
                     if (source.Configs["Console"].GetString("Console", String.Empty) != Name)
                         return;
 

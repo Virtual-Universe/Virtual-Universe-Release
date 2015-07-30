@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,14 +25,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using Nini.Config;
-using OpenMetaverse;
-using Universe.Framework.Modules;
 using Universe.Framework.Servers.HttpServer.Implementation;
-using Universe.Framework.Services;
+using System.Collections.Generic;
+using Universe.Framework.Modules;
 using Universe.Framework.Utilities;
+using System;
+using Universe.Framework.Services;
+using OpenMetaverse;
+using Nini.Config;
 
 namespace Universe.Modules.Web
 {
@@ -179,6 +179,7 @@ namespace Universe.Modules.Web
             vars.Add("PurchaseAgentText", translator.GetTranslatedString("TransactionToAgentText"));
             vars.Add("PurchaseDateText", translator.GetTranslatedString("TransactionDateText"));
             vars.Add("PurchaseUpdateDateText", translator.GetTranslatedString("TransactionDateText"));
+            //vars.Add("PurchaseTimeText", translator.GetTranslatedString("Time"));
             vars.Add("PurchaseDetailText", translator.GetTranslatedString("TransactionDetailText"));
             vars.Add("LoggedIPText", translator.GetTranslatedString("LoggedIPText"));
             vars.Add("PurchaseAmountText", InWorldCurrency + translator.GetTranslatedString("TransactionAmountText"));

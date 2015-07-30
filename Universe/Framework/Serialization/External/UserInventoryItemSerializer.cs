@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -29,8 +29,8 @@ using System;
 using System.IO;
 using System.Text;
 using System.Xml;
-using OpenMetaverse;
 using Universe.Framework.Services.ClassHelpers.Inventory;
+using OpenMetaverse;
 
 namespace Universe.Framework.Serialization.External
 {
@@ -52,6 +52,10 @@ namespace Universe.Framework.Serialization.External
 
             StringReader reader = new StringReader(Encoding.ASCII.GetString(serialization, 0, serialization.Length));
             XmlReader xtr = XmlReader.Create(reader);
+            //Uses byte[] directly... should be used once issues with it are fixed
+            //MemoryStream mr = new MemoryStream (serialization);
+            //StreamReader sr = new StreamReader (mr, Encoding.ASCII);
+            //XmlReader xtr = XmlTextReader.Create (sr);
             xtr.ReadStartElement("InventoryItem");
 
             item.Name = xtr.ReadElementString("Name");

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,15 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Xml.Serialization;
-using OpenMetaverse;
-using OpenMetaverse.Packets;
-using OpenMetaverse.StructuredData;
-using ProtoBuf;
+
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
@@ -43,6 +35,15 @@ using Universe.Framework.SceneInfo;
 using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Serialization;
 using Universe.Framework.Utilities;
+using OpenMetaverse;
+using OpenMetaverse.Packets;
+using OpenMetaverse.StructuredData;
+using ProtoBuf;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Xml.Serialization;
 using GridRegion = Universe.Framework.Services.GridRegion;
 
 namespace Universe.Region
@@ -67,6 +68,7 @@ namespace Universe.Region
     /// </summary>
     [Serializable, ProtoContract()]
     public partial class SceneObjectGroup : ISceneEntity
+        //(ISceneObject implements ISceneEntity and IEntity)
     {
         private readonly List<uint> m_lastColliders = new List<uint>();
         private readonly Dictionary<uint, scriptRotTarget> m_rotTargets = new Dictionary<uint, scriptRotTarget>();
@@ -708,8 +710,12 @@ namespace Universe.Region
 
             foreach (SceneObjectPart part in m_partsList)
             {
+                // Temporary commented to stop compiler warning
+                //Vector3 partPosition =
+                //    new Vector3(part.AbsolutePosition.X, part.AbsolutePosition.Y, part.AbsolutePosition.Z);
                 Quaternion parentrotation = GroupRotation;
                 // Telling the prim to raytrace.
+                //EntityIntersection inter = part.TestIntersection(hRay, parentrotation);
                 EntityIntersection inter = part.TestIntersectionOBB(hRay, parentrotation, frontFacesOnly, faceCenters);
 
                 // This may need to be updated to the maximum draw distance possible..
@@ -747,6 +753,7 @@ namespace Universe.Region
         {
             Vector3 pos = m_rootPart.AbsolutePosition;
             Quaternion rot = m_rootPart.GetRotationOffset();
+//            Vector3 size = GroupScale();
             Vector3 minScale = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
             Vector3 maxScale = new Vector3(float.MinValue, float.MinValue, float.MinValue);
             //limits in group frame
@@ -800,6 +807,195 @@ namespace Universe.Region
             maxX = pos.X + tmp.X;
             maxY = pos.Y + tmp.Y;
             maxZ = pos.Z + tmp.Z;
+
+/*
+            maxX = -256f;
+            maxY = -256f;
+            maxZ = -256f;
+            minX = 256f;
+            minY = 256f;
+            minZ = 8192f;
+
+            foreach (SceneObjectPart part in m_partsList)
+            {
+                Vector3 worldPos = part.GetWorldPosition();
+                Vector3 offset = worldPos - AbsolutePosition;
+                Quaternion worldRot;
+                if (part.ParentID == 0)
+                    worldRot = part.RotationOffset;
+                else
+                    worldRot = part.GetWorldRotation();
+                Vector3 frontTopLeft;
+                Vector3 frontTopRight;
+                Vector3 frontBottomLeft;
+                Vector3 frontBottomRight;
+                Vector3 backTopLeft;
+                Vector3 backTopRight;
+                Vector3 backBottomLeft;
+                Vector3 backBottomRight;
+                Vector3 orig = Vector3.Zero;
+
+                frontTopLeft.X = orig.X - (part.Scale.X / 2);
+                frontTopLeft.Y = orig.Y - (part.Scale.Y / 2);
+                frontTopLeft.Z = orig.Z + (part.Scale.Z / 2);
+
+                frontTopRight.X = orig.X - (part.Scale.X / 2);
+                frontTopRight.Y = orig.Y + (part.Scale.Y / 2);
+                frontTopRight.Z = orig.Z + (part.Scale.Z / 2);
+
+                frontBottomLeft.X = orig.X - (part.Scale.X / 2);
+                frontBottomLeft.Y = orig.Y - (part.Scale.Y / 2);
+                frontBottomLeft.Z = orig.Z - (part.Scale.Z / 2);
+
+                frontBottomRight.X = orig.X - (part.Scale.X / 2);
+                frontBottomRight.Y = orig.Y + (part.Scale.Y / 2);
+                frontBottomRight.Z = orig.Z - (part.Scale.Z / 2);
+
+                backTopLeft.X = orig.X + (part.Scale.X / 2);
+                backTopLeft.Y = orig.Y - (part.Scale.Y / 2);
+                backTopLeft.Z = orig.Z + (part.Scale.Z / 2);
+
+                backTopRight.X = orig.X + (part.Scale.X / 2);
+                backTopRight.Y = orig.Y + (part.Scale.Y / 2);
+                backTopRight.Z = orig.Z + (part.Scale.Z / 2);
+
+                backBottomLeft.X = orig.X + (part.Scale.X / 2);
+                backBottomLeft.Y = orig.Y - (part.Scale.Y / 2);
+                backBottomLeft.Z = orig.Z - (part.Scale.Z / 2);
+
+                backBottomRight.X = orig.X + (part.Scale.X / 2);
+                backBottomRight.Y = orig.Y + (part.Scale.Y / 2);
+                backBottomRight.Z = orig.Z - (part.Scale.Z / 2);
+
+                frontTopLeft = frontTopLeft * worldRot;
+                frontTopRight = frontTopRight * worldRot;
+                frontBottomLeft = frontBottomLeft * worldRot;
+                frontBottomRight = frontBottomRight * worldRot;
+
+                backBottomLeft = backBottomLeft * worldRot;
+                backBottomRight = backBottomRight * worldRot;
+                backTopLeft = backTopLeft * worldRot;
+                backTopRight = backTopRight * worldRot;
+
+                frontTopLeft += offset;
+                frontTopRight += offset;
+                frontBottomLeft += offset;
+                frontBottomRight += offset;
+
+                backBottomLeft += offset;
+                backBottomRight += offset;
+                backTopLeft += offset;
+                backTopRight += offset;
+
+                if (frontTopRight.X > maxX)
+                    maxX = frontTopRight.X;
+                if (frontTopLeft.X > maxX)
+                    maxX = frontTopLeft.X;
+                if (frontBottomRight.X > maxX)
+                    maxX = frontBottomRight.X;
+                if (frontBottomLeft.X > maxX)
+                    maxX = frontBottomLeft.X;
+
+                if (backTopRight.X > maxX)
+                    maxX = backTopRight.X;
+                if (backTopLeft.X > maxX)
+                    maxX = backTopLeft.X;
+                if (backBottomRight.X > maxX)
+                    maxX = backBottomRight.X;
+                if (backBottomLeft.X > maxX)
+                    maxX = backBottomLeft.X;
+
+                if (frontTopRight.X < minX)
+                    minX = frontTopRight.X;
+                if (frontTopLeft.X < minX)
+                    minX = frontTopLeft.X;
+                if (frontBottomRight.X < minX)
+                    minX = frontBottomRight.X;
+                if (frontBottomLeft.X < minX)
+                    minX = frontBottomLeft.X;
+
+                if (backTopRight.X < minX)
+                    minX = backTopRight.X;
+                if (backTopLeft.X < minX)
+                    minX = backTopLeft.X;
+                if (backBottomRight.X < minX)
+                    minX = backBottomRight.X;
+                if (backBottomLeft.X < minX)
+                    minX = backBottomLeft.X;
+
+                if (frontTopRight.Y > maxY)
+                    maxY = frontTopRight.Y;
+                if (frontTopLeft.Y > maxY)
+                    maxY = frontTopLeft.Y;
+                if (frontBottomRight.Y > maxY)
+                    maxY = frontBottomRight.Y;
+                if (frontBottomLeft.Y > maxY)
+                    maxY = frontBottomLeft.Y;
+
+                if (backTopRight.Y > maxY)
+                    maxY = backTopRight.Y;
+                if (backTopLeft.Y > maxY)
+                    maxY = backTopLeft.Y;
+                if (backBottomRight.Y > maxY)
+                    maxY = backBottomRight.Y;
+                if (backBottomLeft.Y > maxY)
+                    maxY = backBottomLeft.Y;
+
+                if (backTopRight.Y < minY)
+                    minY = backTopRight.Y;
+                if (backTopLeft.Y < minY)
+                    minY = backTopLeft.Y;
+                if (backBottomRight.Y < minY)
+                    minY = backBottomRight.Y;
+                if (backBottomLeft.Y < minY)
+                    minY = backBottomLeft.Y;
+
+                if (backTopRight.Y < minY)
+                    minY = backTopRight.Y;
+                if (backTopLeft.Y < minY)
+                    minY = backTopLeft.Y;
+                if (backBottomRight.Y < minY)
+                    minY = backBottomRight.Y;
+                if (backBottomLeft.Y < minY)
+                    minY = backBottomLeft.Y;
+
+                if (frontTopRight.Z > maxZ)
+                    maxZ = frontTopRight.Z;
+                if (frontTopLeft.Z > maxZ)
+                    maxZ = frontTopLeft.Z;
+                if (frontBottomRight.Z > maxZ)
+                    maxZ = frontBottomRight.Z;
+                if (frontBottomLeft.Z > maxZ)
+                    maxZ = frontBottomLeft.Z;
+
+                if (backTopRight.Z > maxZ)
+                    maxZ = backTopRight.Z;
+                if (backTopLeft.Z > maxZ)
+                    maxZ = backTopLeft.Z;
+                if (backBottomRight.Z > maxZ)
+                    maxZ = backBottomRight.Z;
+                if (backBottomLeft.Z > maxZ)
+                    maxZ = backBottomLeft.Z;
+
+                if (frontTopRight.Z < minZ)
+                    minZ = frontTopRight.Z;
+                if (frontTopLeft.Z < minZ)
+                    minZ = frontTopLeft.Z;
+                if (frontBottomRight.Z < minZ)
+                    minZ = frontBottomRight.Z;
+                if (frontBottomLeft.Z < minZ)
+                    minZ = frontBottomLeft.Z;
+
+                if (backTopRight.Z < minZ)
+                    minZ = backTopRight.Z;
+                if (backTopLeft.Z < minZ)
+                    minZ = backTopLeft.Z;
+                if (backBottomRight.Z < minZ)
+                    minZ = backBottomRight.Z;
+                if (backBottomLeft.Z < minZ)
+                    minZ = backBottomLeft.Z;
+            }
+ */
         }
 
         public Vector3 GetAxisAlignedBoundingBox(out float offsetHeight)
@@ -818,6 +1014,20 @@ namespace Universe.Region
             offsetHeight = 0.5f*(maxZ + minZ);
             offsetHeight -= m_rootPart.AbsolutePosition.Z;
 
+            /*
+                        offsetHeight = 0;
+                        float lower = (minZ * -1);
+                        if (lower > maxZ)
+                        {
+                            offsetHeight = lower - (boundingBox.Z / 2);
+
+                        }
+                        else if (maxZ > lower)
+                        {
+                            offsetHeight = maxZ - (boundingBox.Z / 2);
+                            offsetHeight *= -1;
+                        }
+            */
             // MainConsole.Instance.InfoFormat("BoundingBox is {0} , {1} , {2} ", boundingBox.X, boundingBox.Y, boundingBox.Z);
             return boundingBox;
         }
@@ -955,7 +1165,7 @@ namespace Universe.Region
                 m_partsList.Sort(Scene.SceneGraph.LinkSetSorter);
                 foreach (SceneObjectPart t in m_partsList)
                 {
-                    //If it isn't the same as the last seen +1, fix it
+//If it isn't the same as the last seen +1, fix it
                     if (t != null && t.LinkNum != lastSeenLinkNum)
                         t.LinkNum = lastSeenLinkNum;
 
@@ -1043,7 +1253,7 @@ namespace Universe.Region
                         IBackupModule backup = m_scene.RequestModuleInterface<IBackupModule>();
                         if (backup != null)
                         {
-                            if (!backup.LoadingPrims) //Do not add to backup while still loading prims
+                            if (!backup.LoadingPrims) //Do NOT add to backup while still loading prims
                                 backup.AddPrimBackupTaint(this);
                         }
                     }
@@ -1085,6 +1295,8 @@ namespace Universe.Region
             get { return m_rootPart.IsAttachment; }
         }
 
+        //private bool m_isBackedUp = false;
+
         public byte GetAttachmentPoint()
         {
             return m_rootPart.Shape.State;
@@ -1121,7 +1333,7 @@ namespace Universe.Region
             if (forcedRotation != Quaternion.Identity)
                 UpdateGroupRotationR(forcedRotation);
             m_rootPart.AttachedAvatar = UUID.Zero;
-
+            //Anakin Lohner bug #3839 
             foreach (SceneObjectPart p in m_partsList)
             {
                 p.AttachedAvatar = UUID.Zero;
@@ -1140,21 +1352,45 @@ namespace Universe.Region
         public void DetachToInventoryPrep()
         {
             m_rootPart.AttachedAvatar = UUID.Zero;
-
+            //Anakin Lohner bug #3839 
             foreach (SceneObjectPart p in m_partsList)
             {
                 p.AttachedAvatar = UUID.Zero;
             }
 
             m_rootPart.SetParentLocalId(0);
+            //m_rootPart.SetAttachmentPoint((byte)0);
             m_rootPart.IsAttachment = false;
             AbsolutePosition = m_rootPart.AttachedPos;
             m_ValidgrpOOB = false;
+            //m_rootPart.ApplyPhysics(m_rootPart.GetEffectiveObjectFlags(), m_scene.m_physicalPrim);
+            //AttachToBackup();
+            //m_rootPart.ScheduleFullUpdate();
         }
+
+        // justincc: I don't believe this hack is needed any longer, especially since the physics
+        // parts of set AbsolutePosition were already commented out.  By changing HasGroupChanged to false
+        // this method was preventing proper reload of scene objects.
+
+        // dahlia: I had to uncomment it, without it meshing was failing on some prims and objects
+        // at region startup
+
+        // teravus: After this was removed from the linking algorithm, Linked prims no longer collided 
+        // properly when non-physical if they havn't been moved.   This breaks ALL builds.
+        // see: http://opensimulator.org/mantis/view.php?id=3108
+
+        // Here's the deal, this is ABSOLUTELY CRITICAL so the physics scene gets the update about the 
+        // position of linkset prims.  IF YOU CHANGE THIS, YOU MUST TEST colliding with just linked and 
+        // unmoved prims!  As soon as you move a Prim/group, it will collide properly because Absolute 
+        // Position has been set!
 
         public void ResetChildPrimPhysicsPositions()
         {
-            AbsolutePosition = AbsolutePosition;
+            AbsolutePosition = AbsolutePosition; // could someone in the know please explain how this works?
+
+            // teravus: AbsolutePosition is NOT a normal property!
+            // the code in the getter of AbsolutePosition is significantly different then the code in the setter!
+            // jhurliman: Then why is it a property instead of two methods?
         }
 
         public void SetOwnerId(UUID userId)
@@ -2075,6 +2311,8 @@ namespace Universe.Region
                 if (m_targets.Count > 0)
                 {
                     bool at_target = false;
+                    //Vector3 targetPos;
+                    //uint targetHandle;
                     Dictionary<uint, scriptPosTarget> atTargets = new Dictionary<uint, scriptPosTarget>();
                     lock (m_targets)
                     {
@@ -2238,6 +2476,8 @@ namespace Universe.Region
                     {
                         // If no sculpt data exists, we need to get the data
                         m_scene.AssetService.Get(part.Shape.SculptTexture.ToString(), true, part.AssetReceived);
+                        //In the mean time...
+                        //part.Shape.SculptEntry = false;
                         part.Shape.SculptData = new byte[0];
                     }
                 }
@@ -2246,6 +2486,22 @@ namespace Universe.Region
 
         public void GeneratedMesh(ISceneChildEntity part, IMesh mesh)
         {
+            //This destroys the mesh if it is added... this needs added in a way that won't corrupt the mesh
+            /*if (part.Shape.SculptType == (byte)SculptType.Mesh && !mesh.WasCached)//If it was cached, we don't want to resave it
+            {
+                //We can cache meshes into the mesh itself, saving time generating it next time around
+                OSDMap meshOsd = (OSDMap)OSDParser.DeserializeLLSDBinary(part.Shape.SculptData);
+                meshOsd["physics_cached"] = new OSDMap();
+                mesh.Serialize();
+                mesh.WasCached = true;
+                UUID newSculptTexture;
+                if (m_scene.AssetService.UpdateContent(part.Shape.SculptTexture,
+                    OSDParser.SerializeLLSDBinary(meshOsd), out newSculptTexture))
+                {
+                    part.Shape.SculptTexture = newSculptTexture;
+                    HasGroupChanged = true;
+                }
+            }*/
         }
 
         public void TriggerScriptMovingStartEvent()
@@ -2352,7 +2608,8 @@ namespace Universe.Region
             for (i = 0; i < parts.Length; i++)
             {
                 part = parts[i];
-
+                //                PhysicsObject oldActor = part.PhysActor;
+                //                PrimitiveBaseShape pbs = part.Shape;
                 if (part.PhysActor != null)
                 {
                     part.PhysActor.RotationalVelocity = Vector3.Zero;
@@ -2361,8 +2618,10 @@ namespace Universe.Region
                     part.PhysActor.OnSignificantMovement -= part.ParentGroup.CheckForSignificantMovement;
                     part.PhysActor.OnOutOfBounds -= part.PhysicsOutOfBounds;
 
+                    //part.PhysActor.delink ();
                     //Remove the old one so that we don't have more than we should,
                     //  as when we copy, it readds it to the PhysicsScene somehow
+                    //if (part.IsRoot)//The root removes all children
                     m_scene.PhysicsScene.RemovePrim(part.PhysActor);
                     part.FireOnRemovedPhysics();
                     part.PhysActor = null;
@@ -2407,6 +2666,7 @@ namespace Universe.Region
             RootPart.PhysActor.VolumeDetect = RootPart.VolumeDetectActive;
 
             //Add collision updates
+            //part.PhysActor.OnCollisionUpdate += RootPart.PhysicsCollision;
             RootPart.PhysActor.OnRequestTerseUpdate += RootPart.PhysicsRequestingTerseUpdate;
             RootPart.PhysActor.OnSignificantMovement += RootPart.ParentGroup.CheckForSignificantMovement;
             RootPart.PhysActor.OnOutOfBounds += RootPart.PhysicsOutOfBounds;
@@ -2435,6 +2695,9 @@ namespace Universe.Region
                     part.Friction, part.Restitution, part.GravityMultiplier, part.Density);
                 if (part.PhysActor == null)
                     continue;
+                //                    part.PhysActor.BuildingRepresentation = true;
+                //                    if(part.IsRoot)
+                //Don't let it rebuild it until we have all the links done
 
                 part.PhysActor.VolumeDetect = part.VolumeDetectActive;
 
@@ -2457,6 +2720,16 @@ namespace Universe.Region
 
             FixVehicleParams(RootPart);
 
+            /*if (physical != RootPart.PhysActor.IsPhysical)
+            {
+                RootPart.PhysActor.IsPhysical = physical;
+                foreach (SceneObjectPart p in parts)
+                {
+                    if(!p.IsRoot)
+                        p.PhysActor.IsPhysical = physical;
+                }
+            }*/
+
             //Force deselection here so that it isn't stuck forever
             IsSelected = keepSelectedStatuses && IsSelected;
 
@@ -2474,6 +2747,7 @@ namespace Universe.Region
         {
             part.PhysActor.VehicleType = part.VehicleType;
 
+            // OSD o = part.GetComponentState("VehicleParameters");
             foreach (OSD param in part.VehicleFlags)
             {
                 part.PhysActor.VehicleFlags(param.AsInteger(), false);
@@ -2961,9 +3235,9 @@ namespace Universe.Region
             if (!(part is SceneObjectPart))
                 return null;
             SceneObjectPart linkPart = part as SceneObjectPart;
-                //MainConsole.Instance.DebugFormat(
-                //    "[SCENE OBJECT GROUP]: Delinking part {0}, {1} from group with root part {2}, {3}",
-                //    linkPart.Name, linkPart.UUID, RootPart.Name, RootPart.UUID);
+//                MainConsole.Instance.DebugFormat(
+//                    "[SCENE OBJECT GROUP]: Delinking part {0}, {1} from group with root part {2}, {3}",
+//                    linkPart.Name, linkPart.UUID, RootPart.Name, RootPart.UUID);
 
             Quaternion worldRot = linkPart.GetWorldRotation();
 
@@ -2999,6 +3273,9 @@ namespace Universe.Region
 
             linkPart.Rezzed = RootPart.Rezzed;
 
+
+            //This is already set multiple places, no need to do it again
+            //HasGroupChanged = true;
             //We need to send this so that we don't have issues with the client not realizing that the prims were unlinked
             ScheduleGroupUpdate(PrimUpdateFlags.ForcedFullUpdate);
 
@@ -3011,7 +3288,8 @@ namespace Universe.Region
         {
             Quaternion WorldRot = oldGroupRotation*part.GetRotationOffset();
 
-            // first fix from old local to world position
+            // first fix from old local to world 
+            // position
             Vector3 axPos = part.OffsetPosition;
             axPos *= oldGroupRotation;
             part.SetGroupPosition(oldGroupPosition + axPos);
@@ -3031,7 +3309,7 @@ namespace Universe.Region
 
             Quaternion newRot = Quaternion.Inverse(rootRotation)*WorldRot;
             part.SetRotationOffset(false, newRot, false);
-            // caller will tell the rest about this position changes.
+            // caller will tell the rest about this position changes..
         }
 
         #endregion
@@ -3382,6 +3660,7 @@ namespace Universe.Region
                 part.Resize(scale);
                 if (part.PhysActor != null)
                     part.PhysActor.Size = scale;
+                //if (part.UUID != m_rootPart.UUID)
 
                 HasGroupChanged = true;
                 ScheduleGroupUpdate(PrimUpdateFlags.Shape);
@@ -3443,6 +3722,9 @@ namespace Universe.Region
                 {
                     obPart.StoreUndoState();
                 }
+
+                //On some linked objects this hangs (maybe deadlock), do we need this?
+                //part.PhysActor.BlockPhysicalReconstruction = true;
 
                 RebuildPhysicalRepresentation(true, () =>
                     {
@@ -3884,9 +4166,11 @@ namespace Universe.Region
                 childPrim.StoreUndoState();
                 childPrim.IgnoreUndoUpdate = true;
 
-                // fix rotation and get in world coords
+                // fix rotation
+                // get in world coords
                 Quaternion primsRot = old_global_group_rot*childPrim.GetRotationOffset();
-                // set new offset as inverse of the one on root so world is right
+                // set new offset as inverse of the one on root
+                // so world is right
                 primsRot = Quaternion.Inverse(new_global_group_rot)*primsRot;
                 // just store it
                 childPrim.SetRotationOffset(false, primsRot, false);

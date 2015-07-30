@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,13 +25,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Nini.Config;
-using OpenMetaverse.StructuredData;
+
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Services;
+using Nini.Config;
+using OpenMetaverse.StructuredData;
 using GridRegion = Universe.Framework.Services.GridRegion;
 
 namespace Universe.Services
@@ -82,6 +83,7 @@ namespace Universe.Services
                         IScenePresence sp = scene.GetScenePresence(appearance.Owner);
                         if (sp != null && !sp.IsChildAgent)
                         {
+// 20131224 not used                            IAvatarFactory factory = scene.RequestModuleInterface<IAvatarFactory>();
                             sp.RequestModuleInterface<IAvatarAppearanceModule>().Appearance = appearance;
                             sp.RequestModuleInterface<IAvatarAppearanceModule>().SendAppearanceToAgent(sp);
                             sp.RequestModuleInterface<IAvatarAppearanceModule>().SendAppearanceToAllOtherAgents();

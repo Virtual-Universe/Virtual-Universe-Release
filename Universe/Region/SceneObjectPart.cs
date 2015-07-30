@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,16 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Xml;
-using System.Xml.Serialization;
-using OpenMetaverse;
-using OpenMetaverse.Packets;
-using OpenMetaverse.StructuredData;
-using ProtoBuf;
+
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
@@ -45,6 +36,16 @@ using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Serialization;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Utilities;
+using OpenMetaverse;
+using OpenMetaverse.Packets;
+using OpenMetaverse.StructuredData;
+using ProtoBuf;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Xml;
+using System.Xml.Serialization;
 using PrimType = Universe.Framework.SceneInfo.PrimType;
 
 namespace Universe.Region
@@ -78,6 +79,8 @@ namespace Universe.Region
             get { return ParentGroup.GroupRotation; }
             set { }
         }
+
+        //---------------
 
         public void ApplyNextOwnerPermissions()
         {
@@ -295,7 +298,7 @@ namespace Universe.Region
             get { return m_physActor; }
             set
             {
-                //MainConsole.Instance.DebugFormat("[SOP]: PhysActor set to {0} for {1} {2}", value, Name, UUID);
+//                MainConsole.Instance.DebugFormat("[SOP]: PhysActor set to {0} for {1} {2}", value, Name, UUID);
                 m_physActor = value;
             }
         }
@@ -511,6 +514,7 @@ namespace Universe.Region
             CreateSelected = true;
 
             TrimPermissions();
+            //m_undo = new UndoStack<UndoState>(ParentGroup.GetSceneMaxUndo());
 
             m_inventory = new SceneObjectPartInventory(this);
             Material = (int) OpenMetaverse.Material.Wood;
@@ -787,6 +791,7 @@ namespace Universe.Region
                     Restitution = 0.5f;
                     break;
                 default:
+                    //?????
                     break;
             }
             if (PhysActor != null)
@@ -1029,6 +1034,11 @@ namespace Universe.Region
                 Color = c;
                 if (triggerChangedColor)
                     TriggerScriptChangedEvent(Changed.COLOR);
+
+                /* ScheduleFullUpdate() need not be called b/c after
+                 * setting the color, the text will be set, so then
+                 * ScheduleFullUpdate() will be called. */
+                //ScheduleFullUpdate();
             }
         }
 
@@ -1415,7 +1425,9 @@ namespace Universe.Region
             get { return _flags; }
             set
             {
-                //MainConsole.Instance.DebugFormat("[SOP]: Setting flags for {0} {1} to {2}", UUID, Name, value);
+//                MainConsole.Instance.DebugFormat("[SOP]: Setting flags for {0} {1} to {2}", UUID, Name, value);
+                //if (ParentGroup != null && _flags != value)
+                //    ParentGroup.HasGroupChanged = true;
                 _flags = value;
             }
         }
@@ -1462,6 +1474,8 @@ namespace Universe.Region
                 if (ParentGroup != null)
                     ParentGroup.HasGroupChanged = true;
                 m_collisionSound = value;
+                //Why?
+                //aggregateScriptEvents();
             }
         }
 
@@ -1716,6 +1730,7 @@ namespace Universe.Region
 
         public bool AddFlag(PrimFlags flag)
         {
+            // PrimFlags prevflag = Flags;
             if ((Flags & flag) == 0)
             {
                 //MainConsole.Instance.Debug("Adding flag: " + ((PrimFlags) flag).ToString());
@@ -1758,7 +1773,7 @@ namespace Universe.Region
                 int pos = 0;
 
                 // The flags don't like conversion from uint to byte, so we have to do
-                // it the crappy way.  See the above function
+                // it the crappy way.  See the above function :(
 
                 data[pos] = ConvertScriptUintToByte((uint)pTexAnim.Flags); pos++;
                 data[pos] = (byte)pTexAnim.Face; pos++;
@@ -1959,6 +1974,12 @@ namespace Universe.Region
 
         public uint GetEffectiveObjectFlags()
         {
+            // Commenting this section of code out since it doesn't actually do anything, as enums are handled by 
+            // value rather than reference
+//            PrimFlags f = _flags;
+//            if (m_parentGroup == null || m_parentGroup.RootPart == this)
+//                f &= ~(PrimFlags.Touch | PrimFlags.Money);
+
             return (uint) Flags | (uint) LocalFlags;
         }
 
@@ -2061,6 +2082,7 @@ namespace Universe.Region
 
         public void PreloadSound(string sound)
         {
+            // UUID ownerID = OwnerID;
             UUID objectID = ParentGroup.RootPart.UUID;
             UUID soundID = UUID.Zero;
 
@@ -2095,6 +2117,7 @@ namespace Universe.Region
 
         public bool RemFlag(PrimFlags flag)
         {
+            // PrimFlags prevflag = Flags;
             if ((Flags & flag) != 0)
             {
                 //MainConsole.Instance.Debug("Removing flag: " + ((PrimFlags)flag).ToString());
@@ -2107,11 +2130,13 @@ namespace Universe.Region
             }
             return false;
             //MainConsole.Instance.Debug("prev: " + prevflag.ToString() + " curr: " + Flags.ToString());
+            //ScheduleFullUpdate();
         }
 
         public void ResetEntityIDs()
         {
             UUID = UUID.Random();
+            //LinkNum = linkNum;
             Inventory.ResetInventoryIDs(false);
             LocalId = ParentGroup.Scene.SceneGraph.AllocateLocalId();
 
@@ -2129,6 +2154,12 @@ namespace Universe.Region
         {
             if (IsAttachment)
             {
+                /*
+                    ScenePresence avatar = m_scene.GetScenePresence(rootpart.AttachedAvatar);
+                    if (avatar != null)
+                    {
+                    Rotate the Av?
+                    } */
             }
             else
             {
@@ -2537,10 +2568,16 @@ namespace Universe.Region
         /// <param name="events"></param>
         public void SetScriptEvents(UUID scriptid, long events)
         {
+            // scriptEvents oldparts;
             lock (m_scriptEvents)
             {
                 if (m_scriptEvents.ContainsKey(scriptid))
                 {
+                    // oldparts = m_scriptEvents[scriptid];
+
+                    // remove values from aggregated script events
+                    //if (m_scriptEvents[scriptid] == (scriptEvents) events)
+                    //    return;
                     m_scriptEvents[scriptid] = (scriptEvents) events;
                 }
                 else
@@ -2581,6 +2618,7 @@ namespace Universe.Region
             m_parentGroup.stopMoveToTarget();
 
             m_parentGroup.ScheduleGroupTerseUpdate();
+            //m_parentGroup.ScheduleGroupForFullUpdate();
         }
 
         public void StoreUndoState()
@@ -2625,6 +2663,8 @@ namespace Universe.Region
             // This breaks down into the ray---> plane equation.
             // TODO: Change to take shape into account
             Vector3[] vertexes = new Vector3[8];
+
+            // float[] distance = new float[6];
             Vector3[] FaceA = new Vector3[6]; // vertex A for Facei
             Vector3[] FaceB = new Vector3[6]; // vertex B for Facei
             Vector3[] FaceC = new Vector3[6]; // vertex C for Facei
@@ -2661,6 +2701,9 @@ namespace Universe.Region
             Vector3 tScale = Vector3.Zero;
 
             Vector3 AXscale = new Vector3(m_shape.Scale.X*0.5f, m_shape.Scale.Y*0.5f, m_shape.Scale.Z*0.5f);
+
+            //Vector3 pScale = (AXscale) - (AXrot.Inverse() * (AXscale));
+            //Vector3 nScale = (AXscale * -1) - (AXrot.Inverse() * (AXscale * -1));
 
             // rScale is the rotated offset to find a vertex based on the scale and the world rotation.
             Vector3 rScale = new Vector3();
@@ -2707,6 +2750,9 @@ namespace Universe.Region
             tScale = new Vector3(AXscale.X, -AXscale.Y, AXscale.Z);
             rScale = tScale*AXrot;
             vertexes[0] = (new Vector3((pos.X + rScale.X), (pos.Y + rScale.Y), (pos.Z + rScale.Z)));
+            // vertexes[0].X = pos.X + vertexes[0].X;
+            //vertexes[0].Y = pos.Y + vertexes[0].Y;
+            //vertexes[0].Z = pos.Z + vertexes[0].Z;
 
             FaceA[0] = vertexes[0];
             FaceB[3] = vertexes[0];
@@ -2715,6 +2761,10 @@ namespace Universe.Region
             tScale = AXscale;
             rScale = tScale*AXrot;
             vertexes[1] = (new Vector3((pos.X + rScale.X), (pos.Y + rScale.Y), (pos.Z + rScale.Z)));
+
+            // vertexes[1].X = pos.X + vertexes[1].X;
+            // vertexes[1].Y = pos.Y + vertexes[1].Y;
+            //vertexes[1].Z = pos.Z + vertexes[1].Z;
 
             FaceB[0] = vertexes[1];
             FaceA[1] = vertexes[1];
@@ -2725,6 +2775,10 @@ namespace Universe.Region
 
             vertexes[2] = (new Vector3((pos.X + rScale.X), (pos.Y + rScale.Y), (pos.Z + rScale.Z)));
 
+            //vertexes[2].X = pos.X + vertexes[2].X;
+            //vertexes[2].Y = pos.Y + vertexes[2].Y;
+            //vertexes[2].Z = pos.Z + vertexes[2].Z;
+
             FaceC[0] = vertexes[2];
             FaceD[3] = vertexes[2];
             FaceC[5] = vertexes[2];
@@ -2732,6 +2786,10 @@ namespace Universe.Region
             tScale = new Vector3(AXscale.X, AXscale.Y, -AXscale.Z);
             rScale = tScale*AXrot;
             vertexes[3] = (new Vector3((pos.X + rScale.X), (pos.Y + rScale.Y), (pos.Z + rScale.Z)));
+
+            //vertexes[3].X = pos.X + vertexes[3].X;
+            // vertexes[3].Y = pos.Y + vertexes[3].Y;
+            // vertexes[3].Z = pos.Z + vertexes[3].Z;
 
             FaceD[0] = vertexes[3];
             FaceC[1] = vertexes[3];
@@ -2741,6 +2799,10 @@ namespace Universe.Region
             rScale = tScale*AXrot;
             vertexes[4] = (new Vector3((pos.X + rScale.X), (pos.Y + rScale.Y), (pos.Z + rScale.Z)));
 
+            // vertexes[4].X = pos.X + vertexes[4].X;
+            // vertexes[4].Y = pos.Y + vertexes[4].Y;
+            // vertexes[4].Z = pos.Z + vertexes[4].Z;
+
             FaceB[1] = vertexes[4];
             FaceA[2] = vertexes[4];
             FaceD[4] = vertexes[4];
@@ -2748,6 +2810,10 @@ namespace Universe.Region
             tScale = new Vector3(-AXscale.X, AXscale.Y, -AXscale.Z);
             rScale = tScale*AXrot;
             vertexes[5] = (new Vector3((pos.X + rScale.X), (pos.Y + rScale.Y), (pos.Z + rScale.Z)));
+
+            // vertexes[5].X = pos.X + vertexes[5].X;
+            // vertexes[5].Y = pos.Y + vertexes[5].Y;
+            // vertexes[5].Z = pos.Z + vertexes[5].Z;
 
             FaceD[1] = vertexes[5];
             FaceC[2] = vertexes[5];
@@ -2757,6 +2823,10 @@ namespace Universe.Region
             rScale = tScale*AXrot;
             vertexes[6] = (new Vector3((pos.X + rScale.X), (pos.Y + rScale.Y), (pos.Z + rScale.Z)));
 
+            // vertexes[6].X = pos.X + vertexes[6].X;
+            // vertexes[6].Y = pos.Y + vertexes[6].Y;
+            // vertexes[6].Z = pos.Z + vertexes[6].Z;
+
             FaceB[2] = vertexes[6];
             FaceA[3] = vertexes[6];
             FaceB[4] = vertexes[6];
@@ -2764,6 +2834,10 @@ namespace Universe.Region
             tScale = new Vector3(-AXscale.X, -AXscale.Y, -AXscale.Z);
             rScale = tScale*AXrot;
             vertexes[7] = (new Vector3((pos.X + rScale.X), (pos.Y + rScale.Y), (pos.Z + rScale.Z)));
+
+            // vertexes[7].X = pos.X + vertexes[7].X;
+            // vertexes[7].Y = pos.Y + vertexes[7].Y;
+            // vertexes[7].Z = pos.Z + vertexes[7].Z;
 
             FaceD[2] = vertexes[7];
             FaceC[3] = vertexes[7];
@@ -2786,6 +2860,7 @@ namespace Universe.Region
                 normals[i] = cross/cross.Length();
 
                 //MainConsole.Instance.Info("[NORMALS]: normals[ " + i + "]" + normals[i].ToString());
+                //distance[i] = (normals[i].X * AmBa.X + normals[i].Y * AmBa.Y + normals[i].Z * AmBa.Z) * -1;
             }
 
             EntityIntersection result = new EntityIntersection {distance = 1024};
@@ -2797,6 +2872,58 @@ namespace Universe.Region
 
             #region OBB Version 2 Experiment
 
+            //float fmin = 999999;
+            //float fmax = -999999;
+            //float s = 0;
+
+            //for (int i=0;i<6;i++)
+            //{
+            //s = iray.Direction.Dot(normals[i]);
+            //d = normals[i].Dot(FaceB[i]);
+
+            //if (s == 0)
+            //{
+            //if (iray.Origin.Dot(normals[i]) > d)
+            //{
+            //return result;
+            //}
+            // else
+            //{
+            //continue;
+            //}
+            //}
+            //a = (d - iray.Origin.Dot(normals[i])) / s;
+            //if (iray.Direction.Dot(normals[i]) < 0)
+            //{
+            //if (a > fmax)
+            //{
+            //if (a > fmin)
+            //{
+            //return result;
+            //}
+            //fmax = a;
+            //}
+
+            //}
+            //else
+            //{
+            //if (a < fmin)
+            //{
+            //if (a < 0 || a < fmax)
+            //{
+            //return result;
+            //}
+            //fmin = a;
+            //}
+            //}
+            //}
+            //if (fmax > 0)
+            //    a= fmax;
+            //else
+            //     a=fmin;
+
+            //q = iray.Origin + a * iray.Direction;
+
             #endregion
 
             // Loop over faces (6 of them)
@@ -2806,8 +2933,14 @@ namespace Universe.Region
                 AmBb = FaceB[i] - FaceC[i];
                 d = Vector3.Dot(normals[i], FaceB[i]);
 
+                //if (faceCenters)
+                //{
+                //    c = normals[i].Dot(normals[i]);
+                //}
+                //else
+                //{
                 c = Vector3.Dot(iray.Direction, normals[i]);
-
+                //}
                 if (c == 0)
                     continue;
 
@@ -2819,9 +2952,21 @@ namespace Universe.Region
                 // If the normal is pointing outside the object
                 if (Vector3.Dot(iray.Direction, normals[i]) < 0 || !frontFacesOnly)
                 {
+                    //if (faceCenters)
+                    //{   //(FaceA[i] + FaceB[i] + FaceC[1] + FaceD[i]) / 4f;
+                    //    q =  iray.Origin + a * normals[i];
+                    //}
+                    //else
+                    //{
                     q = iray.Origin + iray.Direction*a;
+                    //}
 
                     float distance2 = (float) GetDistanceTo(q, AXpos);
+                    // Is this the closest hit to the object's origin?
+                    //if (faceCenters)
+                    //{
+                    //    distance2 = (float)GetDistanceTo(q, iray.Origin);
+                    //}
 
                     if (distance2 < result.distance)
                     {
@@ -2843,6 +2988,8 @@ namespace Universe.Region
                             ScaleOffset = Math.Abs(ScaleOffset);
                             Vector3 offset = result.normal*ScaleOffset;
                             result.ipoint = AXpos + offset;
+
+                            //pos = (intersectionpoint + offset);
                         }
                         else
                         {
@@ -3177,6 +3324,25 @@ namespace Universe.Region
         /// <param name="sendChangedEvent"></param>
         public void UpdateTexture(Primitive.TextureEntry tex, bool sendChangedEvent)
         {
+            //Color4 tmpcolor;
+            //for (uint i = 0; i < 32; i++)
+            //{
+            //    if (tex.FaceTextures[i] != null)
+            //    {
+            //        tmpcolor = tex.GetFace((uint) i).RGBA;
+            //        tmpcolor.A = tmpcolor.A*255;
+            //        tmpcolor.R = tmpcolor.R*255;
+            //        tmpcolor.G = tmpcolor.G*255;
+            //        tmpcolor.B = tmpcolor.B*255;
+            //        tex.FaceTextures[i].RGBA = tmpcolor;
+            //    }
+            //}
+            //tmpcolor = tex.DefaultTexture.RGBA;
+            //tmpcolor.A = tmpcolor.A*255;
+            //tmpcolor.R = tmpcolor.R*255;
+            //tmpcolor.G = tmpcolor.G*255;
+            //tmpcolor.B = tmpcolor.B*255;
+            //tex.DefaultTexture.RGBA = tmpcolor;
             UpdateTextureEntry(tex.GetBytes(), sendChangedEvent);
         }
 
@@ -3248,8 +3414,8 @@ namespace Universe.Region
             }
             else
             {
-                //MainConsole.Instance.DebugFormat(
-                //    "[SCENE OBJECT PART]: Scheduling part {0} {1} for full update in aggregateScriptEvents()", Name, LocalId);
+//                MainConsole.Instance.DebugFormat(
+//                    "[SCENE OBJECT PART]: Scheduling part {0} {1} for full update in aggregateScriptEvents()", Name, LocalId);
                 ScheduleUpdate(PrimUpdateFlags.PrimFlags);
             }
         }
@@ -3343,6 +3509,7 @@ namespace Universe.Region
                 if (m_VehicleParams == null)
                 {
                     m_VehicleParams = new OSDMap ();
+                    //m_VehicleParams ["99"] = 0;
                 }
                 return m_VehicleParams;
             }
@@ -4442,7 +4609,9 @@ namespace Universe.Region
         {
             if (PhysActor != null)
             {
+//                Vector3 newpos = new Vector3(PhysActor.Position.GetBytes(), 0);
                 m_parentGroup.SetAbsolutePosition(false, PhysActor.Position);
+                //m_parentGroup.RootPart.m_groupPosition = newpos;
             }
             ScheduleUpdate(PrimUpdateFlags.TerseUpdate);
         }
@@ -4516,7 +4685,10 @@ namespace Universe.Region
             IsAttachment = AttachmentPoint != 0;
 
             // save the attachment point.
+            //if (AttachmentPoint != 0)
+            //{
             m_shape.State = (byte) AttachmentPoint;
+            //}
         }
 
         public void SetPhysActorCameraPos(Quaternion CameraRotation)
@@ -4595,6 +4767,7 @@ namespace Universe.Region
                 (pos.Y != GroupPosition.Y) ||
                 (pos.Z != GroupPosition.Z))
             {
+//                Vector3 newPos = new Vector3(pos.X, pos.Y, pos.Z);
                 FixGroupPosition(pos, false);
                 ScheduleTerseUpdate();
             }
@@ -4645,7 +4818,8 @@ namespace Universe.Region
                     case 16:
                         _nextOwnerMask = ApplyMask(_nextOwnerMask, set, mask) &
                                          baseMask;
-                        // Prevent the client from creating no mod, no copy objects
+                        // Prevent the client from creating no mod, no copy
+                        // objects
                         if ((_nextOwnerMask & (uint) PermissionMask.Copy) == 0)
                             _nextOwnerMask |= (uint) PermissionMask.Transfer;
 
@@ -4828,10 +5002,11 @@ namespace Universe.Region
                     currRot.Normalize();
 
                     // difference between current orientation and desired orientation
-                    Quaternion dR = (currRot / APIDTarget);
+                    Quaternion dR = currRot / APIDTarget;
 
                     // find axis and angle of rotation to rotate to desired orientation
                     Vector3 axis = Vector3.UnitX;
+                    
                     float angle;
                     dR.GetAxisAngle(out axis, out angle);
                     axis = axis * currRot;

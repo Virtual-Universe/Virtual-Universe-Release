@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -30,21 +30,21 @@ using Universe.Framework.ClientInterfaces;
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
-using Universe.ScriptEngine.VirtualScript;
+using Universe.ScriptEngine.DotNetEngine;
 using OpenMetaverse;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Runtime.Remoting.Lifetime;
-using LSL_Float = Universe.ScriptEngine.VirtualScript.LSL_Types.LSLFloat;
-using LSL_Integer = Universe.ScriptEngine.VirtualScript.LSL_Types.LSLInteger;
-using LSL_Key = Universe.ScriptEngine.VirtualScript.LSL_Types.LSLString;
-using LSL_List = Universe.ScriptEngine.VirtualScript.LSL_Types.list;
-using LSL_Rotation = Universe.ScriptEngine.VirtualScript.LSL_Types.Quaternion;
-using LSL_String = Universe.ScriptEngine.VirtualScript.LSL_Types.LSLString;
-using LSL_Vector = Universe.ScriptEngine.VirtualScript.LSL_Types.Vector3;
-using ThreatLevel = Universe.ScriptEngine.VirtualScript.ThreatLevel;
+using LSL_Float = Universe.ScriptEngine.DotNetEngine.LSL_Types.LSLFloat;
+using LSL_Integer = Universe.ScriptEngine.DotNetEngine.LSL_Types.LSLInteger;
+using LSL_Key = Universe.ScriptEngine.DotNetEngine.LSL_Types.LSLString;
+using LSL_List = Universe.ScriptEngine.DotNetEngine.LSL_Types.list;
+using LSL_Rotation = Universe.ScriptEngine.DotNetEngine.LSL_Types.Quaternion;
+using LSL_String = Universe.ScriptEngine.DotNetEngine.LSL_Types.LSLString;
+using LSL_Vector = Universe.ScriptEngine.DotNetEngine.LSL_Types.Vector3;
+using ThreatLevel = Universe.ScriptEngine.DotNetEngine.ThreatLevel;
 
 namespace Universe.BotManager
 {

@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -42,6 +42,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Servers;
+using Universe.Framework.Modules;
 
 namespace Universe.Framework.Utilities
 {
@@ -70,7 +71,7 @@ namespace Universe.Framework.Utilities
         public static string GetAddress()
         {
 			return (MainServer.Instance.Secure ? "https://" : "http://") + MainServer.Instance.HostName + ":" +
-                   MainServer.Instance.Port.ToString();
+                   MainServer.Instance.Port;
         }
         
         public static string GetRegionMaturity(int Maturity)
@@ -87,20 +88,20 @@ namespace Universe.Framework.Utilities
         		return "Unknown";
         	}
         }
-
+        
         public static string GetMaxMaturity(int Maturity)
         {
-            switch(Maturity)
-            {
-                case 0:
-                    return "PG";
-                case 1:
-                    return "M";
-                case 2:
-                    return "A";
-                default:
-                    return "PG";
-            }
+        	switch(Maturity)
+        	{
+        	case 0:
+        		return "PG";
+        	case 1:
+        		return "M";
+        	case 2:
+        		return "A";
+        	default:
+        		return "PG";
+        	}
         }
 
         /// <summary>
@@ -376,7 +377,7 @@ namespace Universe.Framework.Utilities
                 return externalIp;
             }
 
-           return CachedExternalIP;
+            return CachedExternalIP;
         }
 
         /// <summary>
@@ -607,18 +608,18 @@ namespace Universe.Framework.Utilities
         }
 
         /// <summary>
-        /// Determines whether the specified userID is a system user
+        /// Determines whether the specified userID is a system user.
         /// </summary>
-        /// <returns><c>true</c>if the specified userID is a system user; otherwise, </returns>
+        /// <returns><c>true</c> if the specified userID is a system user; otherwise, <c>false</c>.</returns>
         /// <param name="userID">User I.</param>
         public static bool IsSystemUser(OpenMetaverse.UUID userID)
         {
             var userId = userID.ToString();
             return ( userId == Constants.GovernorUUID || 
                      userId == Constants.RealEstateOwnerUUID ||
-                     userId == Constants.LibraryOwner || 
+                     userId == Constants.LibraryOwner ||
                      userId == Constants.BankerUUID ||
-                     userId == Constants.MarketplaceUUID
+                     userId == Constants.MarketplaceOwnerUUID 
             );
         }
 
@@ -651,7 +652,7 @@ namespace Universe.Framework.Utilities
             static Random rand = new Random();
 
             static readonly char[] VOWELS = { 'a', 'e', 'i', 'o', 'u' };
-            static readonly char[] CONSONANTS = { 'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z' };
+            static readonly char[] CONSONANTS =  { 'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z' };
             static readonly char[] SYMBOLS = { '*', '?', '/', '\\', '%', '$', '#', '@', '!', '~' };
             static readonly char[] NUMBERS = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
 
@@ -891,5 +892,49 @@ namespace Universe.Framework.Utilities
             "Tindomelos", "Tourmaline", "Trali", "Tulip", "Turid", "Tuxton", "Ulfraed", "Voquo",
             "Warin", "Wilbordic", "Wilf", "Wulfwaru", "Yule"
         };
+
+
+        public static string TransactionTypeInfo(TransactionType transType)
+        {
+            switch (transType) {
+            // One-Time Charges
+            case TransactionType.GroupCreate:       return "Group creation fee";
+            case TransactionType.GroupJoin:         return "Group joining fee";
+            case TransactionType.UploadCharge:      return "Upload charge";
+            case TransactionType.LandAuction:       return "Land auction fee";
+            case TransactionType.ClassifiedCharge:  return "Classified advert fee";
+                // Recurrent Charges
+            case TransactionType.ParcelDirFee:      return "Parcel directory fee";
+            case TransactionType.ClassifiedRenew:   return "Classified renewal";
+            case TransactionType.ScheduledFee:      return "Scheduled fee";
+                // Inventory Transactions
+            case TransactionType.GiveInventory:     return "Give inventory";
+                // Transfers Between Users
+            case TransactionType.ObjectSale:        return "Object sale";
+            case TransactionType.Gift:              return "Gift";
+            case TransactionType.LandSale:          return "Land sale";
+            case TransactionType.ReferBonus:        return "Refer bonus";
+            case TransactionType.InvntorySale:      return "Inventory sale";
+            case TransactionType.RefundPurchase:    return "Purchase refund";
+            case TransactionType.LandPassSale:      return "Land parcel sale";
+            case TransactionType.DwellBonus:        return "Dwell bonus";
+            case TransactionType.PayObject:         return "Pay object";
+            case TransactionType.ObjectPays:        return "Object pays";
+            case TransactionType.BuyMoney:          return "Money purchase";
+            case TransactionType.MoveMoney:         return "Move money";
+                // Group Transactions
+            case TransactionType.GroupLiability:    return "Group liability";
+            case TransactionType.GroupDividend:     return "Group dividend";
+                // Event Transactions
+            case TransactionType.EventFee:          return "Event fee";
+            case TransactionType.EventPrize:        return "Event prize";
+                // Stipend Credits
+            case TransactionType.StipendPayment:    return "Stipend payment";
+
+            default:                                return "System Generated";
+            }
+        }
     }
+
+
 }

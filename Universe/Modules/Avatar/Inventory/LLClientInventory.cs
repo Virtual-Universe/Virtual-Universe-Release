@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -131,12 +131,12 @@ namespace Universe.Modules.Inventory
             client.OnLinkInventoryItem += HandleLinkInventoryItem;
             client.OnCreateNewInventoryFolder += HandleCreateInventoryFolder;
             client.OnUpdateInventoryFolder += HandleUpdateInventoryFolder;
-            client.OnMoveInventoryFolder += HandleMoveInventoryFolder;
+            client.OnMoveInventoryFolder += HandleMoveInventoryFolder; // 2; //!!
 #if UDP_INVENTORY
             client.OnFetchInventoryDescendents += HandleFetchInventoryDescendents;
             client.OnFetchInventory += HandleFetchInventory;
 #endif
-            client.OnPurgeInventoryDescendents += HandlePurgeInventoryDescendents;
+            client.OnPurgeInventoryDescendents += HandlePurgeInventoryDescendents; // 2; //!!
             client.OnUpdateInventoryItem += UpdateInventoryItemAsset;
             client.OnChangeInventoryItemFlags += ChangeInventoryItemFlags;
             client.OnCopyInventoryItem += CopyInventoryItem;
@@ -593,8 +593,8 @@ namespace Universe.Modules.Inventory
                     }
                     if (invType == (sbyte) InventoryType.Gesture)
                     {
-                        data = new byte[13]
-                                     {50, 10, 50, 53, 53, 10, 48, 10, 10, 10, 48, 10, 0};
+                        data = /*Default empty gesture*/ new byte[13]
+                                                             {50, 10, 50, 53, 53, 10, 48, 10, 10, 10, 48, 10, 0};
                     }
 
                     AssetBase asset = new AssetBase(UUID.Random(), name, (AssetType) assetType,
@@ -624,7 +624,7 @@ namespace Universe.Modules.Inventory
             }
         }
 
-        byte[] BuildLandmark(IScenePresence presence)
+        private byte[] BuildLandmark(IScenePresence presence)
         {
             Vector3 pos = presence.AbsolutePosition;
             string strdata = String.Format(
@@ -648,7 +648,7 @@ namespace Universe.Modules.Inventory
         /// <param name="invType"></param>
         /// <param name="type"></param>
         /// <param name="olditemID"></param>
-        void HandleLinkInventoryItem(IClientAPI remoteClient, UUID transActionID, UUID folderID,
+        protected void HandleLinkInventoryItem(IClientAPI remoteClient, UUID transActionID, UUID folderID,
                                                uint callbackID, string description, string name,
                                                sbyte invType, sbyte type, UUID olditemID)
         {
@@ -691,7 +691,8 @@ namespace Universe.Modules.Inventory
         /// <param name="items"></param>
         protected void MoveInventoryItem(IClientAPI remoteClient, List<InventoryItemBase> items)
         {
-            //MainConsole.Instance.DebugFormat("[AGENT INVENTORY]: Moving {0} items for user {1}", items.Count, remoteClient.AgentId);
+            //MainConsole.Instance.DebugFormat(
+            //    "[AGENT INVENTORY]: Moving {0} items for user {1}", items.Count, remoteClient.AgentId);
 
             m_scene.InventoryService.MoveItemsAsync(remoteClient.AgentId, items, null);
         }
@@ -802,8 +803,9 @@ namespace Universe.Modules.Inventory
         protected void UpdateInventoryItemAsset(IClientAPI remoteClient, UUID transactionID,
                                                 UUID itemID, InventoryItemBase itemUpd)
         {
-            // This one will let people set next perms on items in agent inventory.
-
+            // This one will let people set next perms on items in agent
+            // inventory. Rut-Roh. Whatever. Make this secure. Yeah.
+            //
             // Passing something to another avatar or a an object will already
             InventoryItemBase item = m_scene.InventoryService.GetItem(remoteClient.AgentId, itemID);
 
@@ -827,6 +829,7 @@ namespace Universe.Modules.Inventory
                     item.CreationDate = itemUpd.CreationDate == 0 ? Util.UnixTimeSinceEpoch() : itemUpd.CreationDate;
 
                     // TODO: Check if folder changed and move item
+                    //item.NextPermissions = itemUpd.Folder;
                     item.InvType = itemUpd.InvType;
                     item.SalePrice = itemUpd.SalePrice;
                     item.SaleType = itemUpd.SaleType;
@@ -958,7 +961,9 @@ namespace Universe.Modules.Inventory
             else
             {
                 MainConsole.Instance.ErrorFormat(
-                    "[PRIM INVENTORY]: " + "Couldn't find part {0} to request inventory data", primLocalID);
+                    "[PRIM INVENTORY]: " +
+                    "Couldn't find part {0} to request inventory data",
+                    primLocalID);
             }
         }
 
@@ -989,7 +994,8 @@ namespace Universe.Modules.Inventory
                 else
                 {
                     MainConsole.Instance.ErrorFormat(
-                        "[PRIM INVENTORY]: " + "Removal of item {0} requested of prim {1} but this prim does not exist",
+                        "[PRIM INVENTORY]: " +
+                        "Removal of item {0} requested of prim {1} but this prim does not exist",
                         itemID,
                         localID);
                 }
@@ -1130,6 +1136,7 @@ namespace Universe.Modules.Inventory
                 // Explicity allow anyone to add to the inventory if the
                 // AllowInventoryDrop flag has been set. Don't however let
                 // them update an item unless they pass the external checks
+                //
                 if (!m_scene.Permissions.CanEditObjectInventory(part.UUID, remoteClient.AgentId)
                     && (currentItem != null || !allowInventoryDrop))
                     return;
@@ -1185,7 +1192,8 @@ namespace Universe.Modules.Inventory
                         }
                         else
                         {
-                            // Owner can't change base, and can change other only up to base
+                            // Owner can't change base, and can change other
+                            // only up to base
                             itemInfo.BasePermissions = currentItem.BasePermissions;
                             itemInfo.EveryonePermissions &= currentItem.BasePermissions;
                             itemInfo.GroupPermissions &= currentItem.BasePermissions;
@@ -1240,20 +1248,24 @@ namespace Universe.Modules.Inventory
                         part.ParentEntity.AddInventoryItem(remoteClient, localID, item, copyID);
                         part.Inventory.CreateScriptInstance(copyID, 0, false, 0);
 
-                        //MainConsole.Instance.InfoFormat("[PRIMINVENTORY]: " + "Rezzed script {0} into prim local ID {1} for user {2}", item.inventoryName, localID, remoteClient.Name);
+                        //MainConsole.Instance.InfoFormat("[PRIMINVENTORY]: " +
+                        //    "Rezzed script {0} into prim local ID {1} for user {2}", item.inventoryName, localID, remoteClient.Name);
                         part.GetProperties(remoteClient);
                     }
                     else
                     {
                         MainConsole.Instance.ErrorFormat(
-                            "[PRIM INVENTORY]: " + "Could not rez script {0} into prim local ID {1} for user {2}" + " because the prim could not be found in the region!",
+                            "[PRIM INVENTORY]: " +
+                            "Could not rez script {0} into prim local ID {1} for user {2}"
+                            + " because the prim could not be found in the region!",
                             item.Name, localID, remoteClient.Name);
                     }
                 }
                 else
                 {
                     MainConsole.Instance.ErrorFormat(
-                        "[PRIM INVENTORY]: Could not find script inventory item {0} to rez for {1}!", itemID, remoteClient.Name);
+                        "[PRIM INVENTORY]: Could not find script inventory item {0} to rez for {1}!",
+                        itemID, remoteClient.Name);
                 }
             }
             else // script has been rezzed directly into a prim's inventory
@@ -1452,7 +1464,10 @@ namespace Universe.Modules.Inventory
 
             if (destPart == null)
             {
-                MainConsole.Instance.ErrorFormat("[PRIM INVENTORY]: " + "Could not find script for ID {0}", destId);
+                MainConsole.Instance.ErrorFormat(
+                    "[PRIM INVENTORY]: " +
+                    "Could not find script for ID {0}",
+                    destId);
                 return;
             }
 
@@ -1473,7 +1488,8 @@ namespace Universe.Modules.Inventory
             if (destPart.ScriptAccessPin == 0 || destPart.ScriptAccessPin != pin)
             {
                 MainConsole.Instance.WarnFormat(
-                    "[PRIM INVENTORY]: " + "Script in object {0} : {1}, attempted to load script {2} : {3} into object {4} : {5} with invalid pin {6}",
+                    "[PRIM INVENTORY]: " +
+                    "Script in object {0} : {1}, attempted to load script {2} : {3} into object {4} : {5} with invalid pin {6}",
                     srcPart.Name, srcId, srcTaskItem.Name, srcTaskItem.ItemID, destPart.Name, destId, pin);
                 // the LSL Wiki says we are supposed to shout on the DEBUG_CHANNEL -
                 //   "Object: Task Object trying to illegally load script onto task Other_Object!"
@@ -1500,7 +1516,6 @@ namespace Universe.Modules.Inventory
                                                      SalePrice = srcTaskItem.SalePrice,
                                                      SaleType = srcTaskItem.SaleType
                                                  };
-
 
             if (destPart.OwnerID != srcPart.OwnerID)
             {
@@ -1576,12 +1591,14 @@ namespace Universe.Modules.Inventory
 
             if (destPart == null)
             {
-                MainConsole.Instance.ErrorFormat("[PRIM INVENTORY]: " + "Could not find prim for ID {0}", destId);
+                MainConsole.Instance.ErrorFormat(
+                    "[PRIM INVENTORY]: " +
+                    "Could not find prim for ID {0}",
+                    destId);
                 return;
             }
 
             // Can't transfer this
-            //
             if ((part.OwnerID != destPart.OwnerID) &&
                 ((srcTaskItem.CurrentPermissions & (uint) PermissionMask.Transfer) == 0))
                 return;
@@ -1937,11 +1954,11 @@ namespace Universe.Modules.Inventory
         /// </summary>
         public class ItemUpdater
         {
-            readonly string uploaderPath = String.Empty;
-            readonly UUID inventoryItemID;
-            readonly IHttpServer httpListener;
-            readonly UUID agentID;
-            readonly IScene m_scene;
+            private readonly string uploaderPath = String.Empty;
+            private readonly UUID inventoryItemID;
+            private readonly IHttpServer httpListener;
+            private readonly UUID agentID;
+            private readonly IScene m_scene;
 
             public ItemUpdater(UUID AgentID, IScene scene, UUID inventoryItem, string path, IHttpServer httpServer)
             {
@@ -1984,13 +2001,13 @@ namespace Universe.Modules.Inventory
         /// </summary>
         public class TaskInventoryScriptUpdater
         {
-            readonly string uploaderPath = String.Empty;
-            readonly UUID inventoryItemID;
-            readonly UUID primID;
-            readonly bool isScriptRunning;
-            readonly IHttpServer httpListener;
-            readonly IScene m_scene;
-            readonly UUID AgentID;
+            private readonly string uploaderPath = String.Empty;
+            private readonly UUID inventoryItemID;
+            private readonly UUID primID;
+            private readonly bool isScriptRunning;
+            private readonly IHttpServer httpListener;
+            private readonly IScene m_scene;
+            private readonly UUID AgentID;
 
             public TaskInventoryScriptUpdater(IScene scene, UUID inventoryItemID, UUID primID, int isScriptRunning2,
                                               string path, IHttpServer httpServer, UUID agentID)
@@ -2045,7 +2062,7 @@ namespace Universe.Modules.Inventory
                     MainConsole.Instance.Error("[CAPS]: " + e.ToString());
                 }
 
-                // Maybe this should be some meaningful error packet
+                // XXX Maybe this should be some meaningful error packet
                 return null;
             }
 
@@ -2075,7 +2092,8 @@ namespace Universe.Modules.Inventory
                 if (null == part || null == part.ParentEntity)
                 {
                     MainConsole.Instance.ErrorFormat(
-                        "[PRIM INVENTORY]: " + "Prim inventory update requested for item ID {0} in prim ID {1} but this prim does not exist",
+                        "[PRIM INVENTORY]: " +
+                        "Prim inventory update requested for item ID {0} in prim ID {1} but this prim does not exist",
                         itemId, primId);
 
                     newID = UUID.Zero;
@@ -2132,12 +2150,12 @@ namespace Universe.Modules.Inventory
         /// </summary>
         public class TaskInventoryUpdater
         {
-            readonly string uploaderPath = String.Empty;
-            readonly UUID inventoryItemID;
-            readonly UUID primID;
-            readonly IHttpServer httpListener;
-            readonly IScene m_scene;
-            readonly UUID AgentID;
+            private readonly string uploaderPath = String.Empty;
+            private readonly UUID inventoryItemID;
+            private readonly UUID primID;
+            private readonly IHttpServer httpListener;
+            private readonly IScene m_scene;
+            private readonly UUID AgentID;
 
             public TaskInventoryUpdater(IScene scene, UUID inventoryItemID, UUID primID,
                                         string path, IHttpServer httpServer, UUID agentID)
@@ -2176,7 +2194,7 @@ namespace Universe.Modules.Inventory
                         if (item != null)
                         {
                             if ((item.Type == (int) InventoryType.Notecard || item.Type == (int) InventoryType.Gesture ||
-                                 item.Type == 21)
+                                 item.Type == 21 /* Gesture... again*/)
                                 && m_scene.Permissions.CanViewNotecard(inventoryItemID, primID, AgentID))
                             {
                                 if ((newAssetID = m_scene.AssetService.UpdateContent(item.AssetID, data)) != UUID.Zero)
@@ -2198,7 +2216,7 @@ namespace Universe.Modules.Inventory
                     MainConsole.Instance.Error("[CAPS]: " + e.ToString());
                 }
 
-                // Maybe this should be some meaningful error packet
+                // XXX Maybe this should be some meaningful error packet
                 return null;
             }
         }

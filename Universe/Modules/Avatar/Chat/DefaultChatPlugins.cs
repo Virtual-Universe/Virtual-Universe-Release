@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -29,10 +29,10 @@ using System;
 using System.Collections.Generic;
 using OpenMetaverse;
 using Universe.Framework.ClientInterfaces;
-using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
+
 
 namespace Universe.Modules.Chat
 {
@@ -83,7 +83,7 @@ namespace Universe.Modules.Chat
                 {
                     float Num1 = float.Parse(operators[1]);
                     float Num2 = float.Parse(operators[2]);
-                    float RetVal = Num1 * Num2;
+                    float RetVal = Num1*Num2;
                     BuildAndSendResult(RetVal, c.Scene, c.Position);
                 }
             }
@@ -93,7 +93,7 @@ namespace Universe.Modules.Chat
                 {
                     float Num1 = float.Parse(operators[1]);
                     float Num2 = float.Parse(operators[2]);
-                    float RetVal = Num1 / Num2;
+                    float RetVal = Num1/Num2;
                     BuildAndSendResult(RetVal, c.Scene, c.Position);
                 }
             }
@@ -125,8 +125,7 @@ namespace Universe.Modules.Chat
         /// <param name="position"></param>
         static void BuildAndSendResult(float result, IScene scene, Vector3 position)
         {
-            var message = new OSChatMessage
-            {
+            var message = new OSChatMessage {
                 From = "Server",
                 Message = "Result: " + result,
                 Channel = 0,
@@ -186,6 +185,15 @@ namespace Universe.Modules.Chat
             chatModule = module;
             module.RegisterChatPlugin("Chat", this);
             module.RegisterChatPlugin("all", this);
+
+            // load web settings overrides (if any)
+            //IGenericsConnector generics = Framework.Utilities.DataManager.RequestPlugin<IGenericsConnector> ();
+            //if (generics != null)
+            //{
+            //    var settings = generics.GetGeneric<Universe.Modules.Web.GridSettings> (UUID.Zero, "GridSettings", "Settings");
+            //    if (settings != null)
+            //        WelcomeMessage = settings.WelcomeMessage;
+            //}
         }
 
         public bool OnNewChatMessageFromWorld(OSChatMessage c, out OSChatMessage newc)
@@ -202,11 +210,11 @@ namespace Universe.Modules.Chat
                         isGod = true;
 
                         // add to authorised users
-                        if (!m_authorizedSpeakers.Contains(c.SenderUUID))
-                            m_authorizedSpeakers.Add(c.SenderUUID);
+                        if (!m_authorizedSpeakers.Contains (c.SenderUUID))
+                            m_authorizedSpeakers.Add (c.SenderUUID);
 
-                        if (!m_authList.Contains(c.SenderUUID))
-                            m_authList.Add(c.SenderUUID);
+                        if (!m_authList.Contains (c.SenderUUID))
+                            m_authList.Add (c.SenderUUID);
                     }
 
                     //Check that the agent is allowed to speak in this reigon
@@ -230,21 +238,21 @@ namespace Universe.Modules.Chat
                     {
                         chatModule.SayDistance = Convert.ToInt32(message[2]);
                         chatModule.TrySendChatMessage(senderSP, c.Position,
-                                                      UUID.Zero, "Chat", ChatTypeEnum.Region,
+                                                      UUID.Zero, "UniverseChat", ChatTypeEnum.Region,
                                                       message[1] + " changed.", ChatSourceType.System, -1);
                     }
                     if (message[1] == "WhisperDistance")
                     {
                         chatModule.WhisperDistance = Convert.ToInt32(message[2]);
                         chatModule.TrySendChatMessage(senderSP, c.Position,
-                                                      UUID.Zero, "Chat", ChatTypeEnum.Region,
+                                                      UUID.Zero, "UniverseChat", ChatTypeEnum.Region,
                                                       message[1] + " changed.", ChatSourceType.System, -1);
                     }
                     if (message[1] == "ShoutDistance")
                     {
                         chatModule.ShoutDistance = Convert.ToInt32(message[2]);
                         chatModule.TrySendChatMessage(senderSP, c.Position,
-                                                      UUID.Zero, "Chat", ChatTypeEnum.Region,
+                                                      UUID.Zero, "UniverseChat", ChatTypeEnum.Region,
                                                       message[1] + " changed.", ChatSourceType.System, -1);
                     }
                     //Add the user to the list of allowed speakers and 'chat' admins
@@ -254,7 +262,7 @@ namespace Universe.Modules.Chat
                         c.Scene.TryGetAvatarByName(message[2], out NewSP);
                         m_authList.Add(NewSP.UUID);
                         chatModule.TrySendChatMessage(senderSP, c.Position,
-                                                      UUID.Zero, "Chat", ChatTypeEnum.Region,
+                                                      UUID.Zero, "UniverseChat", ChatTypeEnum.Region,
                                                       message[2] + " added.", ChatSourceType.System, -1);
                     }
                     if (message[1] == "RemoveFromAuth")
@@ -263,7 +271,7 @@ namespace Universe.Modules.Chat
                         c.Scene.TryGetAvatarByName(message[2], out NewSP);
                         m_authList.Remove(NewSP.UUID);
                         chatModule.TrySendChatMessage(senderSP, c.Position,
-                                                      UUID.Zero, "Chat", ChatTypeEnum.Region,
+                                                      UUID.Zero, "UniverseChat", ChatTypeEnum.Region,
                                                       message[2] + " added.", ChatSourceType.System, -1);
                     }
                     //Block chat from those not in the auth list
@@ -271,7 +279,7 @@ namespace Universe.Modules.Chat
                     {
                         m_blockChat = true;
                         chatModule.TrySendChatMessage(senderSP, c.Position,
-                                                      UUID.Zero, "Chat", ChatTypeEnum.Region, "Chat blocked.",
+                                                      UUID.Zero, "UniverseChat", ChatTypeEnum.Region, "Chat blocked.",
                                                       ChatSourceType.System, -1);
                     }
                     //Allow chat from all again
@@ -279,7 +287,7 @@ namespace Universe.Modules.Chat
                     {
                         m_blockChat = false;
                         chatModule.TrySendChatMessage(senderSP, c.Position,
-                                                      UUID.Zero, "Chat", ChatTypeEnum.Region, "Chat allowed.",
+                                                      UUID.Zero, "UniverseChat", ChatTypeEnum.Region, "Chat allowed.",
                                                       ChatSourceType.System, -1);
                     }
                     //Remove speaking priviledges from an individual
@@ -289,7 +297,7 @@ namespace Universe.Modules.Chat
                         c.Scene.TryGetAvatarByName(message[2], out NewSP);
                         m_authorizedSpeakers.Remove(NewSP.UUID);
                         chatModule.TrySendChatMessage(senderSP, c.Position,
-                                                      UUID.Zero, "Chat", ChatTypeEnum.Region,
+                                                      UUID.Zero, "UniverseChat", ChatTypeEnum.Region,
                                                       message[2] + " - revoked.", ChatSourceType.System, -1);
                     }
                     //Allow an individual to speak again
@@ -299,7 +307,7 @@ namespace Universe.Modules.Chat
                         c.Scene.TryGetAvatarByName(message[2], out NewSP);
                         m_authorizedSpeakers.Add(NewSP.UUID);
                         chatModule.TrySendChatMessage(senderSP, c.Position,
-                                                      UUID.Zero, "Chat", ChatTypeEnum.Region,
+                                                      UUID.Zero, "UniverseChat", ChatTypeEnum.Region,
                                                       message[2] + " - revoked.", ChatSourceType.System, -1);
                     }
                 }
@@ -334,23 +342,23 @@ namespace Universe.Modules.Chat
                 //Tell all the clients about the incoming client if it is enabled
                 if (m_announceNewAgents)
                 {
-                    client.Scene.ForEachScenePresence(delegate(IScenePresence presence)
-                    {
-                        if (presence.UUID != client.AgentId && !presence.IsChildAgent)
+                    client.Scene.ForEachScenePresence (delegate(IScenePresence presence)
                         {
-                            IEntityCountModule entityCountModule = client.Scene.RequestModuleInterface<IEntityCountModule>();
-                            if (entityCountModule != null)
-                                presence.ControllingClient.SendChatMessage(
-                                    client.Name + " has joined the region. Total Agents: " + (entityCountModule.RootAgents + 1),
-                                    1,
-                                    SP.AbsolutePosition,
-                                    "System",
-                                    UUID.Zero,
-                                    (byte)ChatSourceType.System,
-                                    (byte)ChatAudibleLevel.Fully
-                                );
+                            if (presence.UUID != client.AgentId && !presence.IsChildAgent)
+                            {
+                                IEntityCountModule entityCountModule = client.Scene.RequestModuleInterface<IEntityCountModule> ();
+                                if (entityCountModule != null)
+                                    presence.ControllingClient.SendChatMessage (
+                                        client.Name + " has joined the region. Total Agents: " + (entityCountModule.RootAgents + 1),
+                                        1,
+                                        SP.AbsolutePosition,
+                                        "System",
+                                        UUID.Zero,
+                                        (byte)ChatSourceType.System,
+                                        (byte)ChatAudibleLevel.Fully
+                                    );
+                            }
                         }
-                    }
                     );
                 }
 
@@ -364,8 +372,8 @@ namespace Universe.Modules.Chat
                             1, SP.AbsolutePosition,
                             "System",
                             UUID.Zero,
-                            (byte)ChatSourceType.System,
-                            (byte)ChatAudibleLevel.Fully
+                            (byte) ChatSourceType.System,
+                            (byte) ChatAudibleLevel.Fully
                         );
                     }
                 }
@@ -389,22 +397,22 @@ namespace Universe.Modules.Chat
                 if (m_announceClosedAgents)
                 {
                     scene.ForEachScenePresence(delegate(IScenePresence sP)
-                    {
-                        if (sP.UUID != clientID && !sP.IsChildAgent)
                         {
-                            IEntityCountModule entityCountModule = scene.RequestModuleInterface<IEntityCountModule>();
-                            if (entityCountModule != null)
-                                sP.ControllingClient.SendChatMessage(
-                                    presence.Name + " has left the region. Total Agents: " + (entityCountModule.RootAgents - 1),
-                                    1,
-                                    sP.AbsolutePosition,
-                                    "System",
-                                    UUID.Zero,
-                                    (byte)ChatSourceType.System,
-                                    (byte)ChatAudibleLevel.Fully
-                                );
+                            if (sP.UUID != clientID && !sP.IsChildAgent)
+                            {
+                                IEntityCountModule entityCountModule = scene.RequestModuleInterface<IEntityCountModule>();
+                                if (entityCountModule != null)
+                                    sP.ControllingClient.SendChatMessage(
+                                        presence.Name + " has left the region. Total Agents: " + (entityCountModule.RootAgents - 1),
+                                        1,
+                                        sP.AbsolutePosition,
+                                        "System",
+                                        UUID.Zero,
+                                        (byte) ChatSourceType.System,
+                                        (byte) ChatAudibleLevel.Fully
+                                    );
+                            }
                         }
-                    }
                     );
                 }
             }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -51,7 +51,7 @@ namespace Universe.Modules.AbuseReports
     {
         #region IService Members
 
-        IRegistryCore m_registry;
+        private IRegistryCore m_registry;
 
         public void Initialize(IConfigSource config, IRegistryCore registry)
         {
@@ -96,8 +96,8 @@ namespace Universe.Modules.AbuseReports
     /// </summary>
     public class AbuseReportsModule : INonSharedRegionModule
     {
-        IScene m_Scene;
-        bool m_enabled;
+        private IScene m_Scene;
+        private bool m_enabled;
 
         #region INonSharedRegionModule Members
 
@@ -131,6 +131,8 @@ namespace Universe.Modules.AbuseReports
 
             scene.EventManager.OnNewClient -= OnNewClient;
             scene.EventManager.OnClosingClient -= OnClosingClient;
+            //Disabled until complete
+            //scene.EventManager.OnRegisterCaps -= OnRegisterCaps;
         }
 
         public void RegionLoaded(IScene scene)
@@ -153,12 +155,12 @@ namespace Universe.Modules.AbuseReports
 
         #endregion
 
-        void OnClosingClient(IClientAPI client)
+        private void OnClosingClient(IClientAPI client)
         {
             client.OnUserReport -= UserReport;
         }
 
-        void OnNewClient(IClientAPI client)
+        private void OnNewClient(IClientAPI client)
         {
             client.OnUserReport += UserReport;
         }
@@ -178,7 +180,7 @@ namespace Universe.Modules.AbuseReports
         /// <param name="screenshotID"></param>
         /// <param name="summery"></param>
         /// <param name="reporter"></param>
-        void UserReport(IClientAPI client, string regionName, UUID abuserID, byte catagory, byte checkflags,
+        private void UserReport(IClientAPI client, string regionName, UUID abuserID, byte catagory, byte checkflags,
                                 string details, UUID objectID, Vector3 position, byte reportType, UUID screenshotID,
                                 string summery, UUID reporter)
         {
@@ -280,11 +282,12 @@ namespace Universe.Modules.AbuseReports
             return retVal;
         }
 
-        byte[] ProcessSendUserReportWithScreenshot(UUID AgentID, string path, Stream request, OSHttpRequest httpRequest,
+        private  byte[] ProcessSendUserReportWithScreenshot(UUID AgentID, string path, Stream request, OSHttpRequest httpRequest,
                                           OSHttpResponse httpResponse) 
         {
             IScenePresence SP = findScenePresence(AgentID);
             OSDMap map = (OSDMap)OSDParser.DeserializeLLSDXml(HttpServerHandlerHelpers.ReadFully(request));
+            //string RegionName = map["abuse-region-name"];
             UUID AbuserID = map["abuser-id"];
             uint Category = map["category"];
             uint CheckFlags = map["check-flags"];
@@ -322,10 +325,10 @@ namespace Universe.Modules.AbuseReports
         public class AbuseTextureUploader
         {
             public event UploadedAbuseTexture OnUpLoad;
-            UploadedAbuseTexture handlerUpLoad = null;
-            UUID m_agentID, m_assetID;
+            private UploadedAbuseTexture handlerUpLoad = null;
+            private UUID m_agentID, m_assetID;
 
-            readonly string uploaderPath = String.Empty;
+            private readonly string uploaderPath = String.Empty;
 
             public AbuseTextureUploader(string path, UUID agentID, UUID assetID)
             {

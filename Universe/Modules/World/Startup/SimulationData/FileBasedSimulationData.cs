@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,20 +25,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Timers;
-using Nini.Config;
-using OpenMetaverse;
-using ProtoBuf;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Utilities;
 using Universe.Region;
+using Nini.Config;
+using OpenMetaverse;
+using ProtoBuf;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Timers;
 using Timer = System.Timers.Timer;
 
 namespace Universe.Modules
@@ -130,6 +130,7 @@ namespace Universe.Modules
 
         public virtual List<string> FindRegionInfos(out bool newRegion, ISimulationBase simBase)
         {
+//			List<string> regions = new List<string>(Directory.GetFiles(".", "*.sim", SearchOption.TopDirectoryOnly));
 			ReadConfig(simBase);
 			MainConsole.Instance.Info("Looking for previous sims in: "+ m_storeDirectory);
 			List<string> regions = new List<string>(Directory.GetFiles(m_storeDirectory, "*.sim", SearchOption.TopDirectoryOnly));
@@ -156,7 +157,7 @@ namespace Universe.Modules
             {
                 if (Path.GetFileName (regBak).StartsWith(regionName)) 
                 {
-                    //MainConsole.Instance.Debug ("Found: " + Path.GetFileNameWithoutExtension (regBak));
+                    //        MainConsole.Instance.Debug ("Found: " + Path.GetFileNameWithoutExtension (regBak));
                     regionBaks.Add ( regBak);
                 }
             }
@@ -347,6 +348,12 @@ namespace Universe.Modules
                     ((info.RegionLocY == 0 
                             ? 1000 
                             : info.RegionLocY / Constants.RegionSize)).ToString ())) * Constants.RegionSize;
+            
+                //info.RegionLocZ =
+                //    int.Parse (MainConsole.Instance.Prompt ("Region location Z",
+                //        ((info.RegionLocZ == 0 
+                //            ? 0 
+                //            : info.RegionLocZ / Constants.RegionSize)).ToString ())) * Constants.RegionSize;
 
                 var haveSize = true;
                 var sizeCheck = "";
@@ -382,6 +389,7 @@ namespace Universe.Modules
                 // * Mainland / Openspace
                 //
                 // * Estate / Full Region   (Private)
+                //
                 info.RegionType = MainConsole.Instance.Prompt ("Region Type (Mainland/Estate)",
                     (info.RegionType == "" ? "Estate" : info.RegionType));
 
@@ -397,7 +405,7 @@ namespace Universe.Modules
                     responses.Add("Full Region");
                     responses.Add("Homestead");
                     responses.Add ("Openspace");
-                    responses.Add ("Universe");                            // TODO: remove?
+                    responses.Add ("Whitecore");                            // TODO: remove?
                     responses.Add ("Custom");                               
                     setupMode = MainConsole.Instance.Prompt("Mainland region type?", "Full Region", responses).ToLower ();
 
@@ -413,8 +421,7 @@ namespace Universe.Modules
                     info.RegionType = "Estate / ";                   
                     responses.Add("Full Region");
                     responses.Add("Homestead");
-                    responses.Add("Openspace");
-                    responses.Add ("Universe");                            // TODO: Universe 'standard' setup, rename??
+                    responses.Add ("Whitecore");                            // TODO: Universe 'standard' setup, rename??
                     responses.Add ("Custom");
                     setupMode = MainConsole.Instance.Prompt("Estate region type?","Full Region", responses).ToLower();
                 }
@@ -465,15 +472,15 @@ namespace Universe.Modules
                                                : info.ObjectCapacity.ToString ()));
                 } 
 
-                if (setupMode.StartsWith("u"))
+                if (setupMode.StartsWith("w"))
                 {
                     // 'standard' setup
-                    info.RegionType = info.RegionType + "Universe";                   
+                    info.RegionType = info.RegionType + "Whitecore";                   
                     //info.RegionPort;            // use auto assigned port
                     info.RegionTerrain = "Flatland";
                     info.Startup = StartupType.Normal;
                     info.SeeIntoThisSimFromNeighbor = true;
-                    info.InfiniteRegion = true;
+                    info.InfiniteRegion = false;
                     info.ObjectCapacity = 50000;
 
                 }
@@ -494,8 +501,8 @@ namespace Universe.Modules
 
                     info.Startup = StartupType.Medium;
                     info.SeeIntoThisSimFromNeighbor = true;
-                    info.InfiniteRegion = true;
-                    info.ObjectCapacity = 5000;
+                    info.InfiniteRegion = false;
+                    info.ObjectCapacity = 750;
                     info.RegionSettings.AgentLimit = 10;
                     info.RegionSettings.AllowLandJoinDivide = false;
                     info.RegionSettings.AllowLandResell = false;
@@ -512,8 +519,8 @@ namespace Universe.Modules
 
                     info.Startup = StartupType.Medium;
                     info.SeeIntoThisSimFromNeighbor = true;
-                    info.InfiniteRegion = true;
-                    info.ObjectCapacity = 7500;
+                    info.InfiniteRegion = false;
+                    info.ObjectCapacity = 3750;
                     info.RegionSettings.AgentLimit = 20;
                     info.RegionSettings.AllowLandJoinDivide = false;
                     info.RegionSettings.AllowLandResell = false;
@@ -527,8 +534,8 @@ namespace Universe.Modules
                     info.RegionTerrain = terrainFull;
                     info.Startup = StartupType.Normal;
                     info.SeeIntoThisSimFromNeighbor = true;
-                    info.InfiniteRegion = true;
-                    info.ObjectCapacity = 100000;
+                    info.InfiniteRegion = false;
+                    info.ObjectCapacity = 15000;
                     info.RegionSettings.AgentLimit = 100;
                     if (info.RegionType.StartsWith ("M"))                           // defaults are 'true'
                     {
@@ -539,7 +546,7 @@ namespace Universe.Modules
 
             }
 
-            // are we updating or adding?
+            // are we updating or adding??
             if (m_scene != null)
             {
                 IGridRegisterModule gridRegister = m_scene.RequestModuleInterface<IGridRegisterModule>();
@@ -589,6 +596,7 @@ namespace Universe.Modules
                 MainConsole.Instance.DefaultPrompt = MainConsole.Instance.ConsoleScene.RegionInfo.RegionName+": ";
             }
         }
+
 
         /// <summary>
         /// Sets the region prim capacity.
@@ -801,8 +809,8 @@ namespace Universe.Modules
                 m_timeBetweenSaves = config.GetInt("TimeBetweenSaves", m_timeBetweenSaves);
                 m_keepOldSave = config.GetBoolean("SavePreviousBackup", m_keepOldSave);
 
-                // Directories are references from the bin directory
-                // The data is saved relative to the bin dirs
+                // directories are references from the bin directory
+                // As of V0.9.2 the data is saved relative to the bin dirs
                 m_oldSaveDirectory =
                     PathHelpers.ComputeFullPath(config.GetString("PreviousBackupDirectory", m_oldSaveDirectory));
                 m_storeDirectory =
@@ -1043,6 +1051,7 @@ namespace Universe.Modules
                 return;
             }
 
+            //RegionData data = _regionLoader.LoadBackup(filename + ".tmp");
             if (!isOldSave)
             {
                 if (File.Exists(filename))
@@ -1080,6 +1089,10 @@ namespace Universe.Modules
 
         string BuildSaveFileName()
         {
+            //return (m_storeDirectory == "" || m_storeDirectory == "/")
+            // the'/' diretcory is valid an someone might use it to store backups so don't
+            // fudge it to mean './' ... as it previously was...
+
             var name = BackupFile;
             return (m_storeDirectory == "")
                        ? name + ".sim"

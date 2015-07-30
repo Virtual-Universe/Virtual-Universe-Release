@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -28,12 +28,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Utilities;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
 
 namespace Universe.Framework.ClientInterfaces
 {
@@ -127,7 +127,7 @@ namespace Universe.Framework.ClientInterfaces
         public AvatarAppearance(UUID avatarID, AvatarWearable[] wearables, Primitive.TextureEntry textureEntry,
                                 byte[] visualParams)
         {
-            //MainConsole.Instance.WarnFormat("[AVATAR APPEARANCE] create initialized appearance for {0}",avatarID);
+            //            MainConsole.Instance.WarnFormat("[AVATAR APPEARANCE] create initialized appearance for {0}",avatarID);
 
             m_serial = 1;
             m_owner = avatarID;
@@ -159,7 +159,7 @@ namespace Universe.Framework.ClientInterfaces
 
         public AvatarAppearance(AvatarAppearance appearance, bool copyWearables)
         {
-            //MainConsole.Instance.WarnFormat("[AVATAR APPEARANCE] create from an existing appearance");
+            //            MainConsole.Instance.WarnFormat("[AVATAR APPEARANCE] create from an existing appearance");
 
             if (appearance == null)
             {
@@ -309,8 +309,8 @@ namespace Universe.Framework.ClientInterfaces
                         if (!ChangedTextures.Contains(oldface.TextureID))
                             ChangedTextures.Add(oldface.TextureID);
 
-                    //if (newface != null)
-                    //   MainConsole.Instance.WarnFormat("[AVATAR APPEARANCE]: index {0}, new texture id {1}",i,newface.TextureID);
+                    //                if (newface != null)
+                    //                    MainConsole.Instance.WarnFormat("[AVATAR APPEARANCE]: index {0}, new texture id {1}",i,newface.TextureID);
                 }
             }
 
@@ -439,7 +439,7 @@ namespace Universe.Framework.ClientInterfaces
                 if (!m_attachments.ContainsKey(attach.AttachPoint))
                     m_attachments[attach.AttachPoint] = new List<AvatarAttachment>();
 
-                //Added to prevent Attachments to be added more then once
+                // 21/07/2014 Added to prevent Attachments to be added more then once
                 foreach (AvatarAttachment prev in m_attachments[attach.AttachPoint])
                 {
                     if (prev.ItemID == attach.ItemID)

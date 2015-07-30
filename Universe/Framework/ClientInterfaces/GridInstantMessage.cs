@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -34,44 +34,44 @@ using Universe.Framework.Utilities;
 
 namespace Universe.Framework.ClientInterfaces
 {
-    [ProtoContract(UseProtoMembersOnly = true)]
+    [ProtoContract (UseProtoMembersOnly = true)]
     public class GridInstantMessage : IDataTransferable
     {
-        [ProtoMember(1)]
+        [ProtoMember (1)]
         public uint ParentEstateID;
-        [ProtoMember(2)]
+        [ProtoMember (2)]
         public Vector3 Position;
-        [ProtoMember(3)]
+        [ProtoMember (3)]
         public UUID RegionID;
-        [ProtoMember(4)]
+        [ProtoMember (4)]
         public byte[] BinaryBucket;
-        [ProtoMember(5)]
+        [ProtoMember (5)]
         public byte Dialog;
-        [ProtoMember(6)]
+        [ProtoMember (6)]
         public UUID FromAgentID;
-        [ProtoMember(7)]
+        [ProtoMember (7)]
         public string FromAgentName;
-        [ProtoMember(8)]
+        [ProtoMember (8)]
         public bool FromGroup;
-        [ProtoMember(9)]
+        [ProtoMember (9)]
         public UUID SessionID;
-        [ProtoMember(10)]
+        [ProtoMember (10)]
         public string Message;
-        [ProtoMember(11)]
+        [ProtoMember (11)]
         public byte Offline;
-        [ProtoMember(12)]
+        [ProtoMember (12)]
         public uint Timestamp;
-        [ProtoMember(13)]
+        [ProtoMember (13)]
         public UUID ToAgentID;
 
-        public GridInstantMessage()
+        public GridInstantMessage ()
         {
             BinaryBucket = new byte[0];
-            Timestamp = (uint)Util.UnixTimeSinceEpoch();
+            Timestamp = (uint)Util.UnixTimeSinceEpoch ();
             SessionID = FromAgentID ^ ToAgentID;
         }
 
-        public override OSDMap ToOSD()
+        public override OSDMap ToOSD ()
         {
             OSDMap map = new OSDMap {
                 { "fromAgentID", OSD.FromUUID (FromAgentID) },
@@ -82,9 +82,10 @@ namespace Universe.Framework.ClientInterfaces
                 { "message", OSD.FromString (Message) },
                 { "imSessionID", OSD.FromUUID (SessionID) },
                 { "offline", OSD.FromInteger (Offline) },
-                { "GPosX", Position.X.ToString () },
-                { "GPosY", Position.Y.ToString () },
-                { "GPosZ", Position.Z.ToString () },
+                //  broken for non en_US locales                                  {"Position", OSD.FromVector3(Position)},
+                { "GPosX", OSD.FromReal (Position.X).ToString () },
+                { "GPosY", OSD.FromReal (Position.Y).ToString () },
+                { "GPosZ", OSD.FromReal (Position.Z).ToString () },
                 { "binaryBucket", OSD.FromBinary (BinaryBucket) },
                 { "ParentEstateID", OSD.FromUInteger (ParentEstateID) },
                 { "RegionID", OSD.FromUUID (RegionID) },
@@ -93,32 +94,31 @@ namespace Universe.Framework.ClientInterfaces
             return map;
         }
 
-        public override void FromOSD(OSDMap map)
+        public override void FromOSD (OSDMap map)
         {
-            FromAgentID = map["fromAgentID"].AsUUID();
-            FromAgentName = map["fromAgentName"].AsString();
-            ToAgentID = map["toAgentID"].AsUUID();
-            Dialog = (byte)map["dialog"].AsInteger();
-            FromGroup = map["fromGroup"].AsBoolean();
-            Message = map["message"].ToString();
-            Offline = (byte)map["offline"].AsInteger();
-
-            if (map.ContainsKey("Position"))
+            FromAgentID = map ["fromAgentID"].AsUUID ();
+            FromAgentName = map ["fromAgentName"].AsString ();
+            ToAgentID = map ["toAgentID"].AsUUID ();
+            Dialog = (byte)map ["dialog"].AsInteger ();
+            FromGroup = map ["fromGroup"].AsBoolean ();
+            Message = map ["message"].ToString ();
+            Offline = (byte)map ["offline"].AsInteger ();
+//            Position = map["Position"].AsVector3();
+            if (map.ContainsKey ("Position"))
             {
-                Position = map["Position"].AsVector3();
-            }
-            else
+                Position = map ["Position"].AsVector3 ();
+            } else
             {
-                Position.X = (float)Convert.ToDouble(map["GPosX"].AsString());
-                Position.Y = (float)Convert.ToDouble(map["GPosY"].AsString());
-                Position.Z = (float)Convert.ToDouble(map["GPosZ"].AsString());
+                Position.X = (float)Convert.ToDecimal (map ["GPosX"].AsString (), Culture.NumberFormatInfo);
+                Position.Y = (float)Convert.ToDecimal (map ["GPosY"].AsString (), Culture.NumberFormatInfo);
+                Position.Z = (float)Convert.ToDecimal (map ["GPosZ"].AsString (), Culture.NumberFormatInfo);
             }
 
-            BinaryBucket = map["binaryBucket"].AsBinary();
-            ParentEstateID = map["ParentEstateID"].AsUInteger();
-            RegionID = map["RegionID"].AsUUID();
-            SessionID = map["imSessionID"].AsUUID();
-            Timestamp = map["timestamp"].AsUInteger();
+            BinaryBucket = map ["binaryBucket"].AsBinary ();
+            ParentEstateID = map ["ParentEstateID"].AsUInteger ();
+            RegionID = map ["RegionID"].AsUUID ();
+            SessionID = map ["imSessionID"].AsUUID ();
+            Timestamp = map ["timestamp"].AsUInteger ();
         }
     }
 }

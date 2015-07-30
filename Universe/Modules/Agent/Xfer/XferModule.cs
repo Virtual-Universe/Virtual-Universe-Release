@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -38,9 +38,9 @@ namespace Universe.Modules.Agent.Xfer
 {
     public class XferModule : INonSharedRegionModule, IXfer
     {
-        readonly Dictionary<string, FileData> NewFiles = new Dictionary<string, FileData>();
-        readonly Dictionary<ulong, XferDownLoad> Transfers = new Dictionary<ulong, XferDownLoad>();
-        IScene m_scene;
+        private readonly Dictionary<string, FileData> NewFiles = new Dictionary<string, FileData>();
+        private readonly Dictionary<ulong, XferDownLoad> Transfers = new Dictionary<ulong, XferDownLoad>();
+        private IScene m_scene;
 
         #region INonSharedRegionModule Members
 
@@ -122,7 +122,7 @@ namespace Universe.Modules.Agent.Xfer
             client.OnConfirmXfer += AckPacket;
         }
 
-        void OnClosingClient(IClientAPI client)
+        private void OnClosingClient(IClientAPI client)
         {
             client.OnRequestXfer -= RequestXfer;
             client.OnConfirmXfer -= AckPacket;
@@ -174,7 +174,7 @@ namespace Universe.Modules.Agent.Xfer
             }
         }
 
-        void RemoveXferData(ulong xferID)
+        private void RemoveXferData(ulong xferID)
         {
             // NewFiles must be locked!
             if (Transfers.ContainsKey(xferID))
@@ -197,7 +197,7 @@ namespace Universe.Modules.Agent.Xfer
             }
         }
 
-        void RemoveOrDecrement(string fileName)
+        private void RemoveOrDecrement(string fileName)
         {
             // NewFiles must be locked
 
@@ -212,7 +212,7 @@ namespace Universe.Modules.Agent.Xfer
 
         #region Nested type: FileData
 
-        class FileData
+        private class FileData
         {
             public int Count;
             public byte[] Data;
@@ -231,7 +231,7 @@ namespace Universe.Modules.Agent.Xfer
             public uint Packet;
             public uint Serial = 1;
             public ulong XferID;
-            bool complete;
+            private bool complete;
 
             public XferDownLoad(string fileName, byte[] data, ulong xferID, IClientAPI client)
             {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -26,6 +26,16 @@
  */
 
 using Amib.Threading;
+
+using Universe.Framework.ClientInterfaces;
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.Modules;
+using Universe.Framework.PresenceInfo;
+using Universe.Framework.SceneInfo;
+using Universe.Framework.Utilities;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.Packets;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -33,15 +43,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.Packets;
-using Universe.Framework.ClientInterfaces;
-using Universe.Framework.ConsoleFramework;
-using Universe.Framework.Modules;
-using Universe.Framework.PresenceInfo;
-using Universe.Framework.SceneInfo;
-using Universe.Framework.Utilities;
 
 namespace Universe.ClientStack
 {
@@ -66,6 +67,7 @@ namespace Universe.ClientStack
         private readonly ExpiringCache<UUID, uint> m_inQueueCircuitCodes = new ExpiringCache<UUID, uint>();
         private readonly ThreadMonitor outgoingPacketMonitor = new ThreadMonitor();
 
+        //PacketEventDictionary packetEvents = new PacketEventDictionary();
         /// <summary>
         ///     Handlers for incoming packets
         /// </summary>
@@ -167,6 +169,7 @@ namespace Universe.ClientStack
         /// </summary>
         private bool m_sendPing;
 
+        //private UDPClientCollection m_clients = new UDPClientCollection();
         /// <summary>
         /// </summary>
         /// <summary>
@@ -624,6 +627,7 @@ namespace Universe.ClientStack
 
                     // Bump up the resend count on this packet
                     Interlocked.Increment(ref outgoingPacket.ResendCount);
+                    //Interlocked.Increment(ref Stats.ResentPackets);
 
                     // Requeue or resend the packet
                     if (!outgoingPacket.Client.EnqueueOutgoing(outgoingPacket))
@@ -708,6 +712,11 @@ namespace Universe.ClientStack
 
             // Stats tracking
             Interlocked.Increment(ref udpClient.PacketsSent);
+//            if (isReliable)
+//                Interlocked.Add(ref udpClient.UnackedBytes, outgoingPacket.Buffer.DataLength);
+
+            // Put the UDP payload on the wire
+//            AsyncBeginSend(buffer);
 
             SyncSend(buffer);
 
@@ -724,6 +733,10 @@ namespace Universe.ClientStack
         protected override void PacketReceived(UDPPacketBuffer buffer)
         {
             //MainConsole.Instance.Info("[llupdserver] PacketReceived");
+            // Debugging/Profiling
+            //try { Thread.CurrentThread.Name = "PacketReceived (" + m_scene.RegionInfo.RegionName + ")"; }
+            //catch (Exception) { }
+
             LLUDPClient udpClient = null;
             Packet packet = null;
             int packetEnd = buffer.DataLength - 1;
@@ -865,9 +878,9 @@ namespace Universe.ClientStack
             if (packet.Header.Reliable && !udpClient.PacketArchive.TryEnqueue(packet.Header.Sequence))
             {
                 //if (packet.Header.Resent)
-                // MainConsole.Instance.Debug("[LLUDPSERVER]: Received a resend of already processed packet #" + packet.Header.Sequence + ", type: " + packet.Type);
+                //    MainConsole.Instance.Debug("[LLUDPSERVER]: Received a resend of already processed packet #" + packet.Header.Sequence + ", type: " + packet.Type);
                 //else
-                // MainConsole.Instance.Warn("[LLUDPSERVER]: Received a duplicate (not marked as resend) of packet #" + packet.Header.Sequence + ", type: " + packet.Type);
+                //    MainConsole.Instance.Warn("[LLUDPSERVER]: Received a duplicate (not marked as resend) of packet #" + packet.Header.Sequence + ", type: " + packet.Type);
 
                 // Avoid firing a callback twice for the same packet
                 return;
@@ -953,6 +966,7 @@ namespace Universe.ClientStack
 
             Buffer.BlockCopy(packetData, 0, buffer.Data, 0, length);
 
+            //            AsyncBeginSend(buffer);
             SyncSend(buffer);
         }
 

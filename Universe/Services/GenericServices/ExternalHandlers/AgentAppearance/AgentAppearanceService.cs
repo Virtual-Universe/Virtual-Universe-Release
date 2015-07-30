@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,14 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.Assets;
-using OpenMetaverse.Imaging;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
@@ -43,6 +35,14 @@ using Universe.Framework.Servers.HttpServer.Interfaces;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Services.ClassHelpers.Inventory;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.Assets;
+using OpenMetaverse.Imaging;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using TextureData = OpenMetaverse.AppearanceManager.TextureData;
 using WearableData = OpenMetaverse.AppearanceManager.WearableData;
 
@@ -101,15 +101,20 @@ namespace Universe.Services
         {
             string[] req = path.Split('/');
             UUID avID = UUID.Parse(req[2]);
+            //string type = req[3];
             UUID textureID = UUID.Parse(req[4]);
 
+            //IAvatarService avService = m_registry.RequestModuleInterface<IAvatarService>();
+            //Universe.Framework.ClientInterfaces.AvatarAppearance appearance = avService.GetAppearance(avID);
+            //AvatarTextureIndex textureIndex = AppearanceManager.BakeTypeToAgentTextureIndex((BakeType)Enum.Parse(typeof(BakeType), type, true));
+            //AssetBase texture = m_assetService.Get(appearance.Texture.FaceTextures[(int)textureIndex].TextureID.ToString());
             AssetBase texture = m_assetService.Get(textureID.ToString());
             if (texture == null)
             {
-                MainConsole.Instance.WarnFormat("[Agent Appearance Service]: Could not find baked texture {0} for {1}", textureID, avID);
+                MainConsole.Instance.WarnFormat("[AgentAppearanceService]: Could not find baked texture {0} for {1}", textureID, avID);
                 return new byte[0];
             }
-            MainConsole.Instance.InfoFormat("[Agent Appearance Service]: Found baked texture {0} for {1}", textureID, avID);
+            MainConsole.Instance.InfoFormat("[AgentAppearanceService]: Found baked texture {0} for {1}", textureID, avID);
             // Full content request
             httpResponse.StatusCode = (int)System.Net.HttpStatusCode.OK;
             httpResponse.ContentType = texture.TypeString;
@@ -117,6 +122,7 @@ namespace Universe.Services
         }
 
         private TextureData[] Textures = new TextureData[(int)AvatarTextureIndex.NumberOfEntries];
+        //private List<UUID> m_lastInventoryItemIDs = new List<UUID>();
 
         private void BakeAvatar(IScene scene, string[] cmd)
         {
@@ -151,7 +157,7 @@ namespace Universe.Services
             }
             List<InventoryItemBase> items = m_inventoryService.GetFolderItems(agentID, cof.ID);
             foreach (InventoryItemBase itm in items)
-                MainConsole.Instance.Warn("[Server Side Appearance]: Baking " + itm.Name);
+                MainConsole.Instance.Warn("[ServerSideAppearance]: Baking " + itm.Name);
 
             for (int i = 0; i < Textures.Length; i++)
                 Textures[i] = new TextureData();
@@ -166,6 +172,8 @@ namespace Universe.Services
                     if (appearance.Wearables.Any((w) => w.GetItem(assetID) != UUID.Zero))
                     {
                         currentItemIDs.Add(assetID);
+                        //if (m_lastInventoryItemIDs.Contains(assetID))
+                        //    continue;
                         WearableData wearable = new WearableData();
                         AssetBase asset = m_assetService.Get(assetID.ToString());
                         if (asset != null && asset.TypeAsset != AssetType.Object)
@@ -191,9 +199,35 @@ namespace Universe.Services
                     }
                 }
             }
+            /*foreach (UUID id in m_lastInventoryItemIDs)
+            {
+                if (!currentItemIDs.Contains(id))
+                {
+                    OpenMetaverse.AppearanceManager.WearableData wearable = new OpenMetaverse.AppearanceManager.WearableData();
+                    AssetBase asset = m_assetService.Get(id.ToString());
+                    if (asset != null && asset.TypeAsset != AssetType.Object)
+                    {
+                        wearable.Asset = new AssetClothing(id, asset.Data);
+                        if (wearable.Asset.Decode())
+                        {
+                            foreach (KeyValuePair<AvatarTextureIndex, UUID> entry in wearable.Asset.Textures)
+                            {
+                                int i = (int)entry.Key;
 
+                                Textures[i].Texture = null;
+                                Textures[i].TextureID = UUID.Zero;
+                            }
+                        }
+                    }
+                }
+            }*/
+            //m_lastInventoryItemIDs = currentItemIDs;
             for (int i = 0; i < Textures.Length; i++)
             {
+                /*if (Textures[i].TextureID == UUID.Zero)
+                    continue;
+                if (Textures[i].Texture != null)
+                    continue;*/
                 AssetBase asset = m_assetService.Get(Textures[i].TextureID.ToString());
                 if (asset != null)
                 {
@@ -254,18 +288,18 @@ namespace Universe.Services
                 assetID = m_assetService.Store(newBakedAsset);
             bake_complete:
                 newBakeIDs.Add(assetID);
-                MainConsole.Instance.WarnFormat("[Server Side Appearance]: Baked {0}", assetID);
+                MainConsole.Instance.WarnFormat("[ServerSideAppearance]: Baked {0}", assetID);
                 int place = (int)AppearanceManager.BakeTypeToAgentTextureIndex(bakeType);
                 appearance.Texture.FaceTextures[place].TextureID = assetID;
             }
 
-            MainConsole.Instance.ErrorFormat("[Server Side Appearance]: Baking took {0} ms", (Environment.TickCount - start));
+            MainConsole.Instance.ErrorFormat("[ServerSideAppearance]: Baking took {0} ms", (Environment.TickCount - start));
 
             appearance.Serial = cof_version + 1;
             cof = m_inventoryService.GetFolderForType(agentID, InventoryType.Unknown, AssetType.CurrentOutfitFolder);
             if (cof.Version > cof_version)
             {
-                //it changed during the baking
+                //it changed during the baking... kill it with fire!
                 return null;
             }
             m_avatarService.SetAppearance(agentID, appearance);

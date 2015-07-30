@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -213,7 +213,6 @@ namespace Universe.Modules.Archivers
             // Don't chase down link asset items as they actually point to their target item IDs rather than an asset
             if (m_saveAssets && itemAssetType != AssetType.Link && itemAssetType != AssetType.LinkFolder)
                 m_assetGatherer.GatherAssetUuids(saveItem.AssetID, (AssetType) inventoryItem.AssetType, m_assetUuids);
-
         }
 
         /// <summary>
@@ -227,7 +226,6 @@ namespace Universe.Modules.Archivers
             // ignore viewer folders (special folders?)
             if (inventoryFolder.Name.StartsWith ("#"))
                 return;
-
 
             if (saveThisFolderItself)
             {
@@ -280,15 +278,11 @@ namespace Universe.Modules.Archivers
             return permitted;
         }
 
-
         /// <summary>
         ///     Execute the inventory write request
         /// </summary>
         public void Execute()
         {
-
-
-
             try
             {
                 InventoryFolderBase inventoryFolder = null;
@@ -379,6 +373,8 @@ namespace Universe.Modules.Archivers
 
                     SaveInvItem(inventoryItem, ArchiveConstants.INVENTORY_PATH);
                 }
+
+                // Don't put all this profile information into the archive right now.
             }
             catch (Exception)
             {
@@ -393,7 +389,6 @@ namespace Universe.Modules.Archivers
                 }
                 new AssetsRequest(
                     new AssetsArchiver(m_archiveWriter), m_assetUuids, m_assetService, ReceivedAllAssets).Execute();
-                    
             }
             else
             {

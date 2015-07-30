@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,15 +25,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using OpenMetaverse;
 using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Modules;
-using Universe.Framework.SceneInfo;
 using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Services;
+using OpenMetaverse;
+using System.Collections.Generic;
+using System.IO;
+using Universe.Framework.SceneInfo;
 using Universe.Framework.Utilities;
 using GridRegion = Universe.Framework.Services.GridRegion;
 using RegionFlags = Universe.Framework.Services.RegionFlags;
@@ -66,7 +65,14 @@ namespace Universe.Modules.Web
         public Dictionary<string, object> Fill(WebInterface webInterface, string filename, OSHttpRequest httpRequest,
                                                OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
                                                ITranslator translator, out string response)
-        {            
+        {
+            // under development
+            //response = "<h3>Sorry! This feature is not available yet<</h3><br /> Redirecting to main page" +
+            //    "<script language=\"javascript\">" +
+            //    "setTimeout(function() {window.location.href = \"index.html\";}, 3000);" +
+            //    "</script>";
+            //return null;
+            
             response = null;
             var vars = new Dictionary<string, object>();
             if (httpRequest.Query.ContainsKey("regionid"))
@@ -133,6 +139,15 @@ namespace Universe.Modules.Web
                     vars.Add("RegionImageURL", webTextureService.GetTextureURL(region.TerrainMapImage));
                 else
                     vars.Add("RegionImageURL", "../images/icons/no_terrain.jpg");
+
+             /*   // Regionprofile Menus
+                vars.Add("MenuRegionTitle", translator.GetTranslatedString("MenuRegionTitle"));
+                vars.Add("TooltipsMenuRegion", translator.GetTranslatedString("TooltipsMenuRegion"));
+                vars.Add("MenuParcelTitle", translator.GetTranslatedString("MenuParcelTitle"));
+                vars.Add("TooltipsMenuParcel", translator.GetTranslatedString("TooltipsMenuParcel"));
+                vars.Add("MenuOwnerTitle", translator.GetTranslatedString("MenuOwnerTitle"));
+                vars.Add("TooltipsMenuOwner", translator.GetTranslatedString("TooltipsMenuOwner"));
+                */
                 vars.Add("RegionInformationText", translator.GetTranslatedString("RegionInformationText"));
                 vars.Add("OwnerNameText", translator.GetTranslatedString("OwnerNameText"));
                 vars.Add("RegionLocationText", translator.GetTranslatedString("RegionLocationText"));

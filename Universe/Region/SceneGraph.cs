@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,13 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.Packets;
+
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
@@ -41,6 +35,13 @@ using Universe.Framework.SceneInfo;
 using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.Packets;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 
 namespace Universe.Region
 {
@@ -60,7 +61,7 @@ namespace Universe.Region
         protected string m_DefaultObjectName = "Primitive";
 
         /// <summary>
-        ///     The last allocated local prim id. When a new local id is requested, the next number in the sequence is
+        ///     The last allocated local prim id.  When a new local id is requested, the next number in the sequence is
         ///     dispensed.
         /// </summary>
         protected uint m_lastAllocatedLocalId = 720000;
@@ -284,7 +285,7 @@ namespace Universe.Region
         protected internal void AddScenePresence(IScenePresence presence)
         {
             AddEntity(presence, true);
-            MainConsole.Instance.DebugFormat("Adding {0} to {1} at {2}:{3}",
+            MainConsole.Instance.DebugFormat ("Adding {0} to {1} at {2}:{3}",
                 presence.Name, presence.Scene.RegionInfo.RegionName, presence.AbsolutePosition.X, presence.AbsolutePosition.Y);
         }
 
@@ -486,6 +487,22 @@ namespace Universe.Region
         /// <param name="action"></param>
         public void ForEachScenePresence(Action<IScenePresence> action)
         {
+            // Once all callers have their delegates configured for parallelism, we can unleash this
+            /*
+            Action<ScenePresence> protectedAction = new Action<ScenePresence>(delegate(ScenePresence sp)
+                {
+                    try
+                    {
+                        action(sp);
+                    }
+                    catch (Exception e)
+                    {
+                        MainConsole.Instance.Info("[BUG] in " + m_parentScene.RegionInfo.RegionName + ": " + e.ToString());
+                        MainConsole.Instance.Info("[BUG] Stack Trace: " + e.StackTrace);
+                    }
+                });
+            Parallel.ForEach<ScenePresence>(GetScenePresences(), protectedAction);
+            */
             // For now, perform actions serially
             List<IScenePresence> presences = new List<IScenePresence>(GetScenePresences());
             foreach (IScenePresence sp in presences)
@@ -766,6 +783,7 @@ namespace Universe.Region
 
                     // TODO: Raytrace better here
 
+                    //EntityIntersection ei = m_sceneGraph.GetClosestIntersectingPrim(new Ray(AXOrigin, AXdirection));
                     Ray NewRay = new Ray(AXOrigin, AXdirection);
 
                     // Ray Trace against target here
@@ -789,6 +807,11 @@ namespace Universe.Region
                         // Set the position to the intersection point
                         Vector3 offset = (normal*(ScaleOffset/2f));
                         pos = (intersectionpoint + offset);
+
+                        //Seems to make no sense to do this as this call is used for rezzing from inventory as well, and with inventory items their size is not always 0.5f
+                        //And in cases when we weren't rezzing from inventory we were re-adding the 0.25 straight after calling this method
+                        // Un-offset the prim (it gets offset later by the consumer method)
+                        //pos.Z -= 0.25F; 
                     }
 
                     return pos;
@@ -911,6 +934,7 @@ namespace Universe.Region
                     pos = target2.AbsolutePosition;
                     // TODO: Raytrace better here
 
+                    //EntityIntersection ei = m_sceneGraph.GetClosestIntersectingPrim(new Ray(AXOrigin, AXdirection), false, false);
                     Ray NewRay = new Ray(AXOrigin, AXdirection);
 
                     // Ray Trace against target here
@@ -941,7 +965,10 @@ namespace Universe.Region
                         {
                             Quaternion worldRot = target2.GetWorldRotation();
 
+                            // SceneObjectGroup obj = m_sceneGraph.DuplicateObject(localID, pos, target.GetEffectiveObjectFlags(), AgentID, GroupID, worldRot);
                             DuplicateObject(localID, pos, target.GetEffectiveObjectFlags(), AgentID, GroupID, worldRot);
+                            //obj.Rotation = worldRot;
+                            //obj.UpdateGroupRotationR(worldRot);
                         }
                         else
                         {
@@ -1283,7 +1310,7 @@ namespace Universe.Region
                 {
                     ((SceneObjectGroup) entity).UpdatePrimFlags(LocalID, UsePhysics, IsTemporary, IsPhantom, false,
                                                                 blocks);
-                    // VolumeDetect can't be set via UI and will always be off when a change is made there
+                        // VolumeDetect can't be set via UI and will always be off when a change is made there
                 }
             }
         }
@@ -1485,6 +1512,17 @@ namespace Universe.Region
             if (!TryGetEntity(LocalID, out entity))
                 return;
             SceneObjectGroup grp = (SceneObjectGroup) entity;
+            //Protip: In my day, we didn't call them searchable objects, we called them limited point-to-point joints
+            //aka ObjectFlags.JointWheel = IncludeInSearch
+
+            //Permissions model: Object can be REMOVED from search IFF:
+            // * User owns object
+            //use CanEditObject
+
+            //Object can be ADDED to search IFF:
+            // * User owns object
+            // * Asset/DRM permission bit "modify" is enabled
+            //use CanEditObjectPosition
 
             // libomv will complain about PrimFlags.JointWheel being
             // deprecated, so we
@@ -1623,6 +1661,7 @@ namespace Universe.Region
             }
 
             // Must be all one owner
+            //
             if (owners.Count > 1)
             {
                 MainConsole.Instance.DebugFormat("[LINK]: Refusing link. Too many owners");
@@ -1713,6 +1752,8 @@ namespace Universe.Region
                 // occur on link to invoke this elsewhere (such as object selection)
                 parentGroup.RootChild.CreateSelected = true;
                 parentGroup.HasGroupChanged = true;
+                //parentGroup.RootPart.SendFullUpdateToAllClients(PrimUpdateFlags.FullUpdate);
+                //parentGroup.ScheduleGroupForFullUpdate(PrimUpdateFlags.FullUpdate);
                 parentGroup.ScheduleGroupUpdate(PrimUpdateFlags.ForcedFullUpdate);
                 parentGroup.TriggerScriptChangedEvent(Changed.LINK);
             }
@@ -1735,6 +1776,7 @@ namespace Universe.Region
                 List<ISceneChildEntity> rootParts = new List<ISceneChildEntity>();
                 List<ISceneEntity> affectedGroups = new List<ISceneEntity>();
                 // Look them all up in one go, since that is comparatively expensive
+                //
                 foreach (ISceneChildEntity part in prims)
                 {
                     if (part != null)
@@ -1756,6 +1798,7 @@ namespace Universe.Region
                 foreach (ISceneChildEntity child in childParts)
                 {
                     // Unlink all child parts from their groups
+                    //
                     child.ParentEntity.DelinkFromGroup(child, true);
 
                     // These are not in affected groups and will not be
@@ -1770,15 +1813,18 @@ namespace Universe.Region
                     // In most cases, this will run only one time, and the prim
                     // will be a solo prim
                     // However, editing linked parts and unlinking may be different
+                    //
                     ISceneEntity group = root.ParentEntity;
                     List<ISceneChildEntity> newSet = new List<ISceneChildEntity>(group.ChildrenEntities());
                     int numChildren = group.PrimCount;
 
                     // If there are prims left in a link set, but the root is
                     // slated for unlink, we need to do this
+                    //
                     if (numChildren != 1)
                     {
                         // Unlink the remaining set
+                        //
                         bool sendEventsToRemainder = true;
                         if (numChildren > 1)
                             sendEventsToRemainder = false;
@@ -1789,17 +1835,22 @@ namespace Universe.Region
                                 group.DelinkFromGroup(p, sendEventsToRemainder);
                         }
 
-                        // If there is more than one prim remaining, we need to re-link
+                        // If there is more than one prim remaining, we
+                        // need to re-link
+                        //
                         if (numChildren > 2)
                         {
                             // Remove old root
+                            //
                             if (newSet.Contains(root))
                                 newSet.Remove(root);
 
                             // Preserve link ordering
+                            //
                             newSet.Sort(LinkSetSorter);
 
                             // Determine new root
+                            //
                             ISceneChildEntity newRoot = newSet[0];
                             newSet.RemoveAt(0);
 
@@ -1811,6 +1862,7 @@ namespace Universe.Region
                 }
 
                 // Finally, trigger events in the roots
+                //
                 foreach (ISceneEntity g in affectedGroups)
                 {
                     g.TriggerScriptChangedEvent(Changed.LINK);
@@ -1884,6 +1936,8 @@ namespace Universe.Region
             copiedEntity.AttachToScene(m_parentScene);
             //Now save the entity that we have 
             AddEntity(copiedEntity, false);
+            //Fix physics representation now
+//            entity.RebuildPhysicalRepresentation();
             return copiedEntity;
         }
 

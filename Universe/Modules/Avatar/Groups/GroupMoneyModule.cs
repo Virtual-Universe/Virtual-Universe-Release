@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -114,12 +114,12 @@ namespace Universe.Modules.Avatar.Groups
                     List<GroupAccountHistory> history = moneyModule.GetTransactions(groupID, agentID, currentInterval,
                                                                                     intervalDays);
                     history = (from h in history where h.Stipend select h).ToList();
-                    //We don't want payments, we only want stipends which we sent to users
+                        //We don't want payments, we only want stipends which we sent to users
                     GroupBalance balance = moneyModule.GetGroupBalance(groupID);
                     client.SendGroupAccountingDetails(client, groupID, transactionID, sessionID, amt, currentInterval,
                                                       intervalDays,
                                                       Util.BuildYMDDateString(
-                                                          balance.StartingDate.AddDays(-currentInterval * intervalDays)),
+                                                          balance.StartingDate.AddDays(-currentInterval*intervalDays)),
                                                       history.ToArray());
                 }
                 else
@@ -152,7 +152,7 @@ namespace Universe.Modules.Avatar.Groups
                     List<GroupAccountHistory> history = moneyModule.GetTransactions(groupID, agentID, currentInterval,
                                                                                     intervalDays);
                     history = (from h in history where h.Payment select h).ToList();
-                    //We want payments for things only, not stipends
+                        //We want payments for things only, not stipends
                     GroupBalance balance = moneyModule.GetGroupBalance(groupID);
                     client.SendGroupTransactionsSummaryDetails(
                         client, groupID, transactionID, sessionID,
@@ -160,8 +160,7 @@ namespace Universe.Modules.Avatar.Groups
                         Util.BuildYMDDateString(balance.StartingDate.AddDays(-currentInterval * intervalDays)),
                         history.ToArray()
                     );
-                }
-                else
+                } else
                     client.SendGroupTransactionsSummaryDetails(
                         client, groupID, transactionID, sessionID,
                         currentInterval, intervalDays,
@@ -184,7 +183,7 @@ namespace Universe.Modules.Avatar.Groups
                     client.SendGroupAccountingSummary(
                         client, groupID, requestID, amt, balance.TotalTierDebit,
                         balance.TotalTierCredits,
-                        Util.BuildYMDDateString(balance.StartingDate.AddDays(-currentInterval * intervalDays)),
+                        Util.BuildYMDDateString(balance.StartingDate.AddDays(-currentInterval*intervalDays)),
                         currentInterval, intervalDays,
                         Util.BuildYMDDateString(balance.StartingDate.AddDays(intervalDays)),
                         Util.BuildYMDDateString(balance.StartingDate.AddDays(-(currentInterval + 1) * intervalDays)),

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -26,9 +26,9 @@
  */
 
 using System;
-using OpenMetaverse;
 using Universe.Framework.Modules;
 using Universe.Framework.Utilities;
+using OpenMetaverse;
 
 namespace Universe.Framework.SceneInfo
 {
@@ -262,6 +262,7 @@ namespace Universe.Framework.SceneInfo
             var groundHeight = GetNormalizedGroundHeight (x, y);
             var waterHeight = m_scene.RegionInfo.RegionSettings.WaterHeight;
 
+            //var landHeight = (groundHeight < waterHeight) ? 0f : groundHeight - waterHeight;
             var landHeight = groundHeight - waterHeight;
 
             // this is the height above/below the waterline
@@ -299,7 +300,8 @@ namespace Universe.Framework.SceneInfo
             else if (tType.StartsWith("n"))                             // null space
                 CreateNullSpaceTerrain ();   
 			else
-                CreateMainlandTerrain (min, max, smoothing);
+                // grassland, (tType.StartsWith("m") || tType.StartsWith("g") || tType.StartsWith("h"))
+                    CreateMainlandTerrain (min, max, smoothing);
 
             CalcLandArea ();
 		}
@@ -355,6 +357,20 @@ namespace Universe.Framework.SceneInfo
                     m_scene.RegionInfo.RegionSizeY/Constants.TerrainPatchSize];
             m_Width = m_scene.RegionInfo.RegionSizeX;
             m_Height = m_scene.RegionInfo.RegionSizeY;
+
+           /* int x;
+            for (x = 0; x < m_scene.RegionInfo.RegionSizeX; x++)
+            {
+                int y;
+                for (y = 0; y < m_scene.RegionInfo.RegionSizeY; y++)
+                {
+//                    this[x, y] = (float) m_scene.RegionInfo.RegionSettings.WaterHeight + .1f;
+                    this[x, y] = 0.0f;
+                }
+            }
+            */
+            //m_scene.RegionInfo.RegionSettings.WaterHeight = 0.0f;
+            //m_scene.RegionInfo.RegionSettings.TerrainTexture1 = UUID.Zero;
         }
 
         void CreateFlatlandTerrain()
@@ -415,6 +431,7 @@ namespace Universe.Framework.SceneInfo
 			{
 				for (y = 0; y < rHeight; y++)
 				{
+//					this[x, y] = heightMap[x][y];
                     this[x, y] = blendMap[x][y];
 				}
 			}
@@ -508,5 +525,6 @@ namespace Universe.Framework.SceneInfo
 
            m_scene.RegionInfo.RegionArea = regionArea;
         }
+
 	}
 }

@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -27,6 +27,11 @@
 
 //#define BlockUnsupportedVersions
 
+using Universe.Framework.Configuration;
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.Modules;
+using Universe.Framework.Utilities;
+using Nini.Config;
 using System;
 using System.Diagnostics;
 using System.Globalization;
@@ -34,11 +39,6 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
-using Nini.Config;
-using Universe.Framework.Configuration;
-using Universe.Framework.ConsoleFramework;
-using Universe.Framework.Modules;
-using Universe.Framework.Utilities;
 
 namespace Universe.Simulation.Base
 {
@@ -81,12 +81,12 @@ namespace Universe.Simulation.Base
             // Increase the number of IOCP threads available. Mono defaults to a tragically low number
             int workerThreads, iocpThreads;
             ThreadPool.GetMaxThreads(out workerThreads, out iocpThreads);
-            //MainConsole.Instance.InfoFormat("[Universe MAIN]: Runtime gave us {0} worker threads and {1} IOCP threads", workerThreads, iocpThreads);
+            //MainConsole.Instance.InfoFormat("[WHiteCore MAIN]: Runtime gave us {0} worker threads and {1} IOCP threads", workerThreads, iocpThreads);
             if (workerThreads < 500 || iocpThreads < 1000)
             {
                 workerThreads = 500;
                 iocpThreads = 1000;
-                //MainConsole.Instance.Info("[Universe MAIN]: Bumping up to 500 worker threads and 1000 IOCP threads");
+                //MainConsole.Instance.Info("[WHiteCore MAIN]: Bumping up to 500 worker threads and 1000 IOCP threads");
                 ThreadPool.SetMaxThreads(workerThreads, iocpThreads);
             }
 
@@ -150,7 +150,7 @@ namespace Universe.Simulation.Base
 					Console.WriteLine("\n\n************* Universe initial run. *************");
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     Console.WriteLine(
-                        "\n\n   This appears to be your first time running Virtual Universe.\n"+
+                        "\n\n   This appears to be your first time running Universe.\n"+
                         "If you have already configured your *.ini files, please ignore this warning and press enter;\n" +
                         "Otherwise type 'yes' and Universe will guide you through the configuration process.\n\n"+
                         "Remember, these file names are Case Sensitive in Linux and Proper Cased.\n"+
@@ -168,11 +168,11 @@ namespace Universe.Simulation.Base
                 Console.WriteLine("This will overwrite any existing configuration files!");
                 Console.ResetColor();
                 Console.WriteLine ("");
-                resp = ReadLine("Do you want to configure Virtual Universe now?  (yes/no)", resp);
+                resp = ReadLine("Do you want to configure Universe now?  (yes/no)", resp);
 
                 if (resp == "yes")
                 {
-                    string cfgFolder = Universe_ConfigDir + "/";
+                    string cfgFolder = Universe_ConfigDir + "/";           // Main Config folder >> "../Config" (default)
 
                     string dbSource = "localhost";
 					string dbPasswd = "universe";
@@ -183,7 +183,7 @@ namespace Universe.Simulation.Base
                     string regionIPAddress = gridIPAddress;
                     bool isStandalone = true;
                     string dbType = "1";
-                    string gridName = "Virtual-Universe Grid";
+                    string gridName = "Universe-Sim Grid";
                     string welcomeMessage = "";
                     string allowAnonLogin = "true";
                     uint port = 9000;
@@ -191,7 +191,7 @@ namespace Universe.Simulation.Base
 
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("====================================================================");
-					Console.WriteLine("======================= Virtual Universe Configurator ==============");
+					Console.WriteLine("======================= Universe CONFIGURATOR =====================");
                     Console.WriteLine("====================================================================");
                     Console.ResetColor();
 
@@ -244,7 +244,7 @@ namespace Universe.Simulation.Base
 
                     if (isStandalone)
                     {
-                        gridName = ReadLine("Name of your Virtual-Universe Grid", gridName);
+                        gridName = ReadLine("Name of your Universe-Sim Grid", gridName);
 
                         welcomeMessage = "Welcome to " + gridName + ", <USERNAME>!";
                         Console.ForegroundColor = ConsoleColor.White;
@@ -737,6 +737,24 @@ namespace Universe.Simulation.Base
         };
 
         #endregion
+
+        //typedef struct _MINIDUMP_EXCEPTION_INFORMATION { 
+        //    DWORD ThreadId; 
+        //    PEXCEPTION_POINTERS ExceptionPointers; 
+        //    BOOL ClientPointers; 
+        //} MINIDUMP_EXCEPTION_INFORMATION, *PMINIDUMP_EXCEPTION_INFORMATION; 
+
+        //BOOL 
+        //WINAPI 
+        //MiniDumpWriteDump( 
+        //    __in HANDLE hProcess, 
+        //    __in DWORD ProcessId, 
+        //    __in HANDLE hFile, 
+        //    __in MINIDUMP_TYPE DumpType, 
+        //    __in_opt PMINIDUMP_EXCEPTION_INFORMATION ExceptionParam, 
+        //    __in_opt PMINIDUMP_USER_STREAM_INFORMATION UserStreamParam, 
+        //    __in_opt PMINIDUMP_CALLBACK_INFORMATION CallbackParam 
+        //    ); 
 
         // Overload requiring MiniDumpExceptionInformation 
         [DllImport("dbghelp.dll", EntryPoint = "MiniDumpWriteDump", CallingConvention = CallingConvention.StdCall,

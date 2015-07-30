@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,6 +25,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.ModuleLoader;
+using Universe.Framework.Modules;
+using Universe.Framework.Servers;
+using Universe.Framework.Servers.HttpServer;
+using Universe.Framework.Servers.HttpServer.Implementation;
+using Universe.Framework.Services;
+using Universe.Framework.Utilities;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -36,18 +47,7 @@ using System.Text.RegularExpressions;
 using System.Web;
 using System.Xml;
 using System.Xml.Xsl;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
-using Universe.Framework.ConsoleFramework;
 using Universe.Framework.DatabaseInterfaces;
-using Universe.Framework.ModuleLoader;
-using Universe.Framework.Modules;
-using Universe.Framework.Servers;
-using Universe.Framework.Servers.HttpServer;
-using Universe.Framework.Servers.HttpServer.Implementation;
-using Universe.Framework.Services;
-using Universe.Framework.Utilities;
 
 namespace Universe.Modules.Web
 {
@@ -535,9 +535,11 @@ namespace Universe.Modules.Web
                     response.AddHeader("Cache-Control", "no-cache");
                     return "text/html";
                 case ".css":
+                    //response.AddHeader("Cache-Control", "max-age=" + CLIENT_CACHE_TIME.ToString() + ", public");
                     response.AddHeader("Cache-Control", "no-cache");
                     return "text/css";
                 case ".js":
+                    //response.AddHeader("Cache-Control", "max-age=" + CLIENT_CACHE_TIME.ToString() + ", public");
                     return "application/javascript";
             }
             return "text/plain";
@@ -869,6 +871,7 @@ namespace Universe.Modules.Web
         {
             Dictionary<string, object> dictionary = new Dictionary<string, object>();
 
+            //dictionary.Add("NewsDate", Time.ToShortDateString());
             dictionary.Add("NewsDate", Culture.LocaleDate(Time));
             dictionary.Add("NewsTitle", Title);
             dictionary.Add("NewsText", Text);
@@ -1117,7 +1120,7 @@ namespace Universe.Modules.Web
         public string Gridname = "Universe Grid";
         public string Gridnick = "Universe";
         public string WelcomeMessage = "Welcome to Universe, <USERNAME>!";
-        public string SystemEstateOwnerName = "Governor White";
+        public string SystemEstateOwnerName = "Governor Universe";
         public string SystemEstateName = "Whitecore Estate";
 
         public GridSettings()
@@ -1206,4 +1209,5 @@ namespace Universe.Modules.Web
             return map;
         }
     }
+
 }

@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,12 +25,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Timers;
+
 using Nini.Config;
-using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Other;
@@ -41,10 +37,8 @@ namespace Universe.Services
     public class Scheduler : ConnectorBase, IScheduleService, IService
     {
         public UniverseEventManager EventManager = new UniverseEventManager();
-        private ISchedulerDataPlugin m_database;
-        private bool m_enabled = false;
-
-        private readonly Timer scheduleTimer = new Timer();
+        ISchedulerDataPlugin m_database;
+//        bool m_enabled;
 
         #region Implementation of IService
 
@@ -56,7 +50,8 @@ namespace Universe.Services
         public void Initialize(IConfigSource config, IRegistryCore registry)
         {
             registry.RegisterModuleInterface<IScheduleService>(this);
-            base.Init(registry, "Scheduler");
+
+            Init(registry, "Scheduler");
         }
 
         /// <summary>
@@ -76,37 +71,15 @@ namespace Universe.Services
             if (!m_doRemoteCalls)
             {
                 m_database = Framework.Utilities.DataManager.RequestPlugin<ISchedulerDataPlugin>();
-                if (m_database != null)
-                    m_enabled = true;
+//                if (m_database != null)
+//                    m_enabled = true;
 
-                if (m_enabled)
-                {
-                    // don't want to start to soon
-                    scheduleTimer.Interval = 60000;
-                    scheduleTimer.Elapsed += t_Elapsed;
-                    scheduleTimer.Start();
-                }
             }
         }
 
         #endregion
 
         #region Implementation of IScheduleService
-
-        public bool Register(SchedulerItem I, OnGenericEventHandler handler)
-        {
-            if (m_doRemoteCalls) return false;
-            EventManager.RegisterEventHandler(I.FireFunction, handler);
-            return true;
-        }
-
-
-        public bool Register(string fName, OnGenericEventHandler handler)
-        {
-            if (m_doRemoteCalls) return false;
-            EventManager.RegisterEventHandler(fName, handler);
-            return true;
-        }
 
         [CanBeReflected(ThreatLevel = ThreatLevel.High, RenamedMethod = "SchedulerSave")]
         public string Save(SchedulerItem I)
@@ -116,15 +89,26 @@ namespace Universe.Services
             return m_database.SchedulerSave(I);
         }
 
-        [CanBeReflected(ThreatLevel = ThreatLevel.High, RenamedMethod = "SchedulerRemove")]
-        public void Remove(string id)
+        [CanBeReflected(ThreatLevel = ThreatLevel.High)]
+        public void RemoveID(string id)
         {
             if (m_doRemoteCalls)
             {
                 DoRemotePost(id);
                 return;
             }
-            m_database.SchedulerRemove(id);
+            m_database.SchedulerRemoveID(id);
+        }
+
+        [CanBeReflected(ThreatLevel = ThreatLevel.High)]
+        public void RemoveFireFunction(string identifier)
+        {
+            if (m_doRemoteCalls)
+            {
+                DoRemotePost(identifier);
+                return;
+            }
+            m_database.SchedulerRemoveFunction(identifier);
         }
 
         [CanBeReflected(ThreatLevel = ThreatLevel.Low, RenamedMethod = "SchedulerExist")]
@@ -151,11 +135,19 @@ namespace Universe.Services
             return m_database.Get(scheduleFor, fireFunction);
         }
 
+        [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
+        public SchedulerItem GetFunctionItem(string fireFunction)
+        {
+            if (m_doRemoteCalls)
+                return (SchedulerItem) DoRemote(fireFunction);
+            return m_database.GetFunctionItem(fireFunction);
+        }
+
         #endregion
 
-        #region Timer
+ /*       #region Timer
 
-        private void t_Elapsed(object sender, ElapsedEventArgs e)
+        void t_Elapsed(object sender, ElapsedEventArgs e)
         {
             scheduleTimer.Enabled = false;
             try
@@ -168,7 +160,7 @@ namespace Universe.Services
             }
             catch (Exception ee)
             {
-                MainConsole.Instance.ErrorFormat("[Scheduler] t_Elapsed Error {0}", ee.ToString());
+                MainConsole.Instance.ErrorFormat("[Scheduler] t_Elapsed Error {0}", ee);
             }
             finally
             {
@@ -176,18 +168,24 @@ namespace Universe.Services
             }
         }
 
-        private void FireEvent(SchedulerItem I)
+        void FireEvent(SchedulerItem I)
         {
             try
             {
                 // save changes before it fires in case its changed during the fire
                 I = m_database.SaveHistory(I);
 
-                if (I.RunOnce) I.Enabled = false;
-                if (I.Enabled) I.CalculateNextRunTime(I.TimeToRun);
+                if (I.RunOnce)
+                    I.Enabled = false;
+                
+//                if (I.Enabled) I.CalculateNextRunTime(I.TimeToRun);
+                if (I.Enabled)
+                    I.TimeToRun = schedMoney.GetStipendPaytime(Constants.SCHEDULED_PAYMENTS_DELAY);      // next stipend payment cycle + delay
 
                 if (!I.HistoryKeep)
                     m_database.HistoryDeleteOld(I);
+                
+                // save the new schedule item
                 m_database.SchedulerSave(I);
 
                 // now fire
@@ -204,7 +202,7 @@ namespace Universe.Services
             }
             catch (Exception e)
             {
-                MainConsole.Instance.ErrorFormat("[Scheduler] FireEvent Error {0}: {1}", I.id, e.ToString());
+                MainConsole.Instance.ErrorFormat("[Scheduler] FireEvent Error {0}: {1}", I.id, e);
             }
         }
 
@@ -214,5 +212,6 @@ namespace Universe.Services
         }
 
         #endregion
+        */
     }
 }

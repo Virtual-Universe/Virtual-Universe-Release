@@ -72,6 +72,7 @@ namespace Universe.Framework.Servers.HttpServer.Implementation
         /// </summary>
         public string RedirectLocation
         {
+            // get { return _redirectLocation; }
             set { _httpResponse.Redirect(value); }
         }
 

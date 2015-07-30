@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -32,7 +32,6 @@ using OpenMetaverse;
 using OpenMetaverse.StructuredData;
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
-using Universe.Region;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Servers;
@@ -40,6 +39,7 @@ using Universe.Framework.Servers.HttpServer;
 using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Servers.HttpServer.Interfaces;
 using Universe.Framework.Utilities;
+using Universe.Region;
 
 namespace Universe.Modules.Caps
 {
@@ -109,25 +109,24 @@ namespace Universe.Modules.Caps
             if (r.Type != OSDType.Map) // not a proper request
                 return MainServer.BadRequest;
 
-            /*
-             * This module gets the root of the prim(set)
-             * What needs to be done is to check how many prims there are selected (multiple selected_roots)
-             * and if they are part of a link-set
-             * 
-             * update check:
-             * http://wiki.secondlife.com/wiki/Mesh/Mesh_Server_Weight
-             * http://wiki.secondlife.com/wiki/Mesh/Mesh_physics
-             * http://wiki.secondlife.com/wiki/Mesh/Mesh_Streaming_Cost
-             * 
-             * Each prim has a standard amount of details
-             * 
-             * physics = 0.1 x amount of prims
-             * prim_equiv = 1 x amount of prims // update to // MIN{ (0.5*num_prims) + (0.25 * num_scripts), num_prims }
-             * simulation = 0.5 x amount of prims
-             * streaming = 0.06 x amount of prims
-             * 
-             * These values need to be returned with the return that's underneath here
-             */
+			// This module gets the root of the prim(set)
+			// What needs to be done is to check how many prims there are selected (multiple selected_roots)
+            // and if they are part of a link-set
+			//
+            // update check:
+            //  http://wiki.secondlife.com/wiki/Mesh/Mesh_Server_Weight
+            //  http://wiki.secondlife.com/wiki/Mesh/Mesh_physics
+            //  http://wiki.secondlife.com/wiki/Mesh/Mesh_Streaming_Cost
+            //
+			// Each prim has a standard amount of details
+			//
+			// physics = 0.1 x amount of prims
+            // prim_equiv = 1 x amount of prims // update to // MIN{ (0.5*num_prims) + (0.25 * num_scripts), num_prims }
+			// simulation = 0.5 x amount of prims
+			// streaming = 0.06 x amount of prims
+			//
+			// These values need to be returned with the return that's underneath here
+
             int primCount = 0;
 
             ISceneEntity[] entityList = m_scene.Entities.GetEntities ();

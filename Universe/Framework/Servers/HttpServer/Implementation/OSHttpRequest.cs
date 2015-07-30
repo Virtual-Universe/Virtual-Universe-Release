@@ -159,6 +159,7 @@ namespace Universe.Framework.Servers.HttpServer.Implementation
         /// <value>
         ///     POST request values, if applicable
         /// </value>
+        //        public Hashtable Form { get; private set; }
         public string RawUrl
         {
             get { return _request.RawUrl; }
@@ -261,6 +262,14 @@ namespace Universe.Framework.Servers.HttpServer.Implementation
                                        };
                         Files.Add(element.Name, file);
                     }
+                    /*else
+                    {
+                        var buffer = new byte[element.Length];
+                        message.Body.Seek(element.Start, SeekOrigin.Begin);
+                        message.Body.Read(buffer, 0, (int)element.Length);
+
+                        form.Add(Uri.UnescapeDataString(element.Name), message.ContentEncoding.GetString(buffer));
+                    }*/
                 }
             }
         }

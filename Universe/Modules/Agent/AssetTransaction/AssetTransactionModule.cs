@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,11 +25,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
 using System;
 using System.Collections.Generic;
 using Nini.Config;
 using OpenMetaverse;
-using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
@@ -43,7 +43,7 @@ namespace Universe.Modules.Agent.AssetTransaction
         ///     Each agent has its own singleton collection of transactions
         /// </summary>
         readonly Dictionary<UUID, AgentAssetTransactions> AgentTransactions =
-            new Dictionary<UUID, AgentAssetTransactions>();
+            new Dictionary<UUID, AgentAssetTransactions> ();
 
         IScene m_scene;
 
@@ -107,13 +107,13 @@ namespace Universe.Modules.Agent.AssetTransaction
             client.OnXferReceive += HandleXfer;
         }
 
-        void OnClosingClient(IClientAPI client)
+        void OnClosingClient (IClientAPI client)
         {
             client.OnAssetUploadRequest -= HandleUDPUploadRequest;
             client.OnXferReceive -= HandleXfer;
         }
 
-        void OnRemovePresence(IScenePresence SP)
+        void OnRemovePresence (IScenePresence SP)
         {
             if (SP != null && !SP.IsChildAgent)
                 RemoveAgentAssetTransactions(SP.UUID);
@@ -232,7 +232,7 @@ namespace Universe.Modules.Agent.AssetTransaction
         /// </summary>
         /// <param name="userID"></param>
         /// <returns></returns>
-        AgentAssetTransactions GetUserTransactions(UUID userID)
+        AgentAssetTransactions GetUserTransactions (UUID userID)
         {
             lock (AgentTransactions)
             {
@@ -261,18 +261,18 @@ namespace Universe.Modules.Agent.AssetTransaction
         {
 //            MainConsole.Instance.Debug("HandleUDPUploadRequest - assetID: " + assetID.ToString() + " transaction: " + transaction.ToString() + " type: " + type.ToString() + " storelocal: " + storeLocal + " tempFile: " + tempFile);
 
-            if (((AssetType) type == AssetType.Texture ||
-                 (AssetType) type == AssetType.Sound ||
-                 (AssetType) type == AssetType.TextureTGA ||
-                 (AssetType) type == AssetType.Animation) &&
-                tempFile == false)
+            if (((AssetType)type == AssetType.Texture ||
+                (AssetType)type == AssetType.Sound ||
+                (AssetType)type == AssetType.TextureTGA ||
+                (AssetType)type == AssetType.Animation) &&
+                !tempFile)
             {
                 IScene scene = remoteClient.Scene;
                 IMoneyModule mm = scene.RequestModuleInterface<IMoneyModule>();
 
                 if (mm != null)
                 {
-                    if (!mm.Charge(remoteClient.AgentId, mm.UploadCharge, "", TransactionType.UploadCharge))
+                    if (!mm.Charge (remoteClient.AgentId, mm.UploadCharge, "Upload asset", TransactionType.UploadCharge))
                     {
                         remoteClient.SendAgentAlertMessage("Unable to upload asset. Insufficient funds.", false);
                         return;

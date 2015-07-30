@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,12 +25,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Drawing;
-using Nini.Config;
+
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
+using Nini.Config;
+using System;
+using System.Drawing;
 
 namespace Universe.Modules.WorldMap
 {
@@ -39,12 +40,14 @@ namespace Universe.Modules.WorldMap
         private static readonly Color WATER_COLOR = Color.FromArgb(29, 71, 95);
 
         private IScene m_scene;
+        //private IConfigSource m_config; // not used currently
 
         #region IMapTileTerrainRenderer Members
 
         public void Initialise(IScene scene, IConfigSource config)
         {
             m_scene = scene;
+            // m_config = config; // not used currently
         }
 
         public Bitmap TerrainToBitmap(Bitmap mapbmp)
@@ -101,6 +104,8 @@ namespace Universe.Modules.WorldMap
                         try
                         {
                             //X
+                            // .
+                            //
                             // Shade the terrain for shadows
                             if (x < (m_scene.RegionInfo.RegionSizeX - 1) && yr < (m_scene.RegionInfo.RegionSizeY - 1))
                             {
@@ -127,15 +132,18 @@ namespace Universe.Modules.WorldMap
 
                                 try
                                 {
+                                    // hfdiffi = Math.Abs((int)((hfdiff * 4) + (hfdiff * 0.5))) + 1;
                                     hfdiffi = Math.Abs((int) (hfdiff*4.5f)) + 1;
                                     if (hfdiff%1f != 0)
                                     {
+                                        // hfdiffi = hfdiffi + Math.Abs((int)(((hfdiff % 1) * 0.5f) * 10f) - 1);
                                         hfdiffi = hfdiffi + Math.Abs((int) ((hfdiff%1f)*5f) - 1);
                                     }
 
                                     hfdiffihighlight = Math.Abs((int) ((hfdiff*highlightfactor)*4.5f)) + 1;
                                     if (hfdiff%1f != 0)
                                     {
+                                        // hfdiffi = hfdiffi + Math.Abs((int)(((hfdiff % 1) * 0.5f) * 10f) - 1);
                                         hfdiffihighlight = hfdiffihighlight +
                                                            Math.Abs((int) (((hfdiff*highlightfactor)%1f)*5f) - 1);
                                     }

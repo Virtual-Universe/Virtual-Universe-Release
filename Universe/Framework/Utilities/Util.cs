@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,7 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Amib.Threading;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -41,13 +40,12 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.InteropServices;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Xml;
+using Amib.Threading;
 using Nini.Config;
 using OpenMetaverse;
 using OpenMetaverse.StructuredData;
@@ -86,6 +84,7 @@ namespace Universe.Framework.Utilities
     {
         static uint nextXferID = 5000;
         static readonly Random randomClass = new ThreadSafeRandom();
+
         // Get a list of invalid file characters (OS dependent)
         static readonly string regexInvalidFileChars = "[" + new String(Path.GetInvalidFileNameChars()) + "]";
         static readonly string regexInvalidPathChars = "[" + new String(Path.GetInvalidPathChars()) + "]";
@@ -95,9 +94,9 @@ namespace Universe.Framework.Utilities
         ///     Thread pool used for Util.FireAndForget if
         ///     FireAndForgetMethod.SmartThreadPool is used
         /// </summary>
-        private static SmartThreadPool m_ThreadPool;
+        static SmartThreadPool m_ThreadPool;
 
-        private static volatile bool m_threadPoolRunning;
+        static volatile bool m_threadPoolRunning;
 
         // Unix-epoch starts at January 1st 1970, 00:00:00 UTC. And all our times in the server are (or at least should be) in UTC.
         public static readonly DateTime UnixEpoch =
@@ -335,7 +334,7 @@ namespace Universe.Framework.Utilities
         }
 
         [ProtoContract]
-        private class ColorSurrogate
+        class ColorSurrogate
         {
             [ProtoMember(1)] public int A;
             [ProtoMember(2)] public int R;
@@ -1526,6 +1525,8 @@ namespace Universe.Framework.Utilities
         {
             byte[] hash = ComputeMD5Hash(data + salt);
 
+            //string s = BitConverter.ToString(hash);
+
             Guid guid = new Guid(hash);
 
             return guid;
@@ -1606,6 +1607,7 @@ namespace Universe.Framework.Utilities
                 }
                 else
                 {
+                    // uh?
                     MainConsole.Instance.Debug(("[UTILS]: Got OSD of unexpected type " + buffer.Type.ToString()));
                     return null;
                 }
@@ -2012,6 +2014,7 @@ namespace Universe.Framework.Utilities
                 }
                 return array;
             }
+
             if (Util.IsInstanceOfGenericType(typeof (Dictionary<,>), t))
             {
                 OSDMap array = new OSDMap();
@@ -2045,7 +2048,7 @@ namespace Universe.Framework.Utilities
         {
             if (type == typeof (string))
                 return string.Empty;
-
+            
             return Activator.CreateInstance(type);
         }
 
@@ -2462,11 +2465,14 @@ namespace Universe.Framework.Utilities
     {
         static bool m_noInternetConnection;
         static int m_nextInternetConnectionCheck;
+        //static bool useLocalhostLoopback=false;
         static readonly ExpiringCache<string, IPAddress> m_dnsCache = new ExpiringCache<string, IPAddress>();
 
         public static IPEndPoint ResolveEndPoint(string hostName, int port)
         {
             IPEndPoint endpoint = null;
+            // Old one defaults to IPv6
+            //return new IPEndPoint(Dns.GetHostAddresses(m_externalHostName)[0], m_internalEndPoint.Port);
 
             IPAddress ia = null;
             // If it is already an IP, don't resolve it - just return directly
@@ -2596,6 +2602,33 @@ namespace Universe.Framework.Utilities
         /// <returns></returns>
         public static IPAddress ResolveAddressForClient(IPAddress iPAddress, IPEndPoint clientIP)
         {
+            /*if (iPAddress == null)
+                return clientIP.Address;
+            if (iPAddress.Equals(clientIP.Address))
+            {
+                if (useLocalhostLoopback)
+                    return IPAddress.Loopback;
+                if (iPAddress == IPAddress.Loopback)
+                    return iPAddress; //Don't send something else if it is already on loopback
+                if (CheckInternetConnection())
+                {
+#pragma warning disable 618
+                    //The 'bad' way, only works for things on the same machine...
+                    try
+                    {
+                        string hostName = Dns.GetHostName();
+                        IPHostEntry ipEntry = Dns.GetHostByName(hostName);
+#pragma warning restore 618
+                        IPAddress[] addr = ipEntry.AddressList;
+                        return addr[0]; //Loopback around! They are on the same connection
+                    }
+                    catch
+                    {
+                        InternetFailure(); //Something went wrong
+                    }
+                }
+            }
+            return iPAddress;*/
             return iPAddress;
         }
 
@@ -2926,6 +2959,10 @@ namespace Universe.Framework.Utilities
                 EmitBoxIfNeeded(il, method.ReturnType);
             il.Emit(OpCodes.Ret);
             return dynamicMethod.Invoke(null, new object[2] {invokeClass, invokeParameters});
+            /*FastInvokeHandler invoder =
+              (FastInvokeHandler)dynamicMethod.CreateDelegate(
+              typeof(FastInvokeHandler));
+            return invoder;*/
         }
 
         static void EmitCastToReference(ILGenerator il, System.Type type)

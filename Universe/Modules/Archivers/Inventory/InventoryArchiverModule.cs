@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -274,7 +274,7 @@ namespace Universe.Modules.Archivers
                 }
 
                 var loadArchive = request.Execute(false);
-                if (loadArchive == null)
+                if (loadArchive == null)                         // nothing loaded ??
                     return false;
 
                 return true;
@@ -430,7 +430,6 @@ namespace Universe.Modules.Archivers
                     options["CheckPermissions"] = param.Substring(7);
                     newParams.Remove(param);
                 }
-
             }
 
             string firstName;
@@ -457,7 +456,6 @@ namespace Universe.Modules.Archivers
                     lastName = newParams[3];
                 }
 
-
                 // optional...
                 string iarPath = "/*";
                 if (newParams.Count > 5)
@@ -472,7 +470,6 @@ namespace Universe.Modules.Archivers
                 } else
                     archiveFileName = newParams[4];
                 
-
                 //some file sanity checks
                 string savePath;
                 savePath = PathHelpers.VerifyWriteFile (archiveFileName, ".iar", m_archiveDirectory, true);
@@ -496,7 +493,6 @@ namespace Universe.Modules.Archivers
         void SaveIARConsoleCommandCompleted(
             Guid id, bool succeeded, UserAccount userInfo, string invPath, Stream saveStream,
             Exception reportedException)
-
         {
             lock (m_pendingConsoleSaves)
             {

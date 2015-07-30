@@ -1,11 +1,13 @@
-Virtual Universe-Dev 1.0.1+ (git)
-Emperor Starfinder <emperor@secondgalaxy.com>
-June 2015
+Universe-Dev 0.9.3+ (git)
+Rowan Deppeler <greythane@gmail.com>
+June 2014
+Fly-Man-
+Jan 2015
 ===============================================
 
 ** Simplified startup scripts **
 ================================
-Easy to use startup scripts are provided to simplify running Virtual Universe.
+Easy to use startup scripts are provided to simplify running Universe.
 Choose the appropriate one(s) for your system and configuration.
 
  *nix flavours (including Mac)
@@ -13,8 +15,8 @@ Choose the appropriate one(s) for your system and configuration.
 All these scripts are intended to be executed from a terminal window.
 
 The following are the general startup scripts for use in testing, maintenance etc...
-sim_console.sh       			: Start only the Virtual Universe standalone server
-grid_console.sh      			: Start only the Virtual Universe grid server
+sim_console.sh       			: Start only the Universe standalone server
+grid_console.sh      			: Start only the Universe grid server
 
 
 Note:
@@ -22,8 +24,8 @@ Note:
    Linux (ubuntu variations) >> apt-get install screen;
    Mac >> already available
   
-run_standalonemode.sh       	: Run Virtual Universe standalone mode in background
-run_gridmode.sh             	: Run Virtual Universe grid mode in background
+run_standalonemode.sh       	: Run Universe standalone mode in background
+run_gridmode.sh             	: Run Universe grid mode in background
 
 
 GUI scripts for Windows and Mac
@@ -40,14 +42,14 @@ grid_console.bat				: Windows
 
 ** The default configuration **
 ===============================
-The default configuration of Virtual Universe is setup to run in Standalone mode and
+The default configuration of Universe is setup to run in Standalone mode and
 to use an SQLite database, with no pre-configured users or regions.
 On initial startup, you will be asked to create your initial region, together with 
 your first user.
 
 ** Quick Customising **
 =======================
-You can quickly set a few options to customise your Virtual Universe installation.
+You can quickly set a few options to customise your Universe installation.
 To do this, modify the commented out settings in 'MyWorld.ini' located in the
  'Config' folder.  This will allow you to set the name of your Sim, configure your default
   region and specify an address to use if you do not want to use your external IP.
@@ -71,34 +73,34 @@ Note:  You will need to use both the 'grid' and 'sim' startup scripts.
 ==============
 Checkout the 'Build Your Own.txt' file in the 'UniverseDocs' folder for details
  if you want to build from source.
-Re-compile and copy/paste the new 'VirtualUniverse/bin' subdirectory from your build environment.
+Re-compile and copy/paste the new 'UniverseSim/bin' subdirectory from your build environment.
 
 Monthly 'Development' build snapshots are available at the following links:
 
 Windows
-
+https://drive.google.com/file/d/0B2u55gI751a8VXJBckZJWU5rZ1E/edit?usp=sharing
 
 Mono 32 bit  (Linux / Mac)
-
+https://drive.google.com/file/d/0B2u55gI751a8OEgtV0Q0Yk4wWEE/edit?usp=sharing
 
 Mono 64bit
-
+https://drive.google.com/file/d/0B2u55gI751a8ZmV1OEE4ZDE4Nm8/edit?usp=sharing
 
 Download your desired update snapshot.
-Delete or backup the existing 'VirtualUniverse/bin' subdirectory.
-Extract the update package and copy the resulting 'bin' folder to your 'VirtualUniverse' folder.
+Delete or backup the existing 'UniverseSim/bin' subdirectory.
+Extract the update package and copy the resulting 'bin' folder to your 'UniverseSim' folder.
 re-start..
 
 Questions?
 ==========
-Checkout the #galaxyfutures irc channel on freenode,
+Checkout the #universe-support irc channel on freenode,
 or check into the Google+ AuroraSim/UniverseSim group at 
-https://plus.google.com/communities/106118101750197366605
+https://plus.google.com/communitites/113034607546142208907
 
-Emperor Starfinder
-<emperor@secondgalaxy.com>
+Rowan Deppeler
+<greythane @ gmail.com>
 
-June 14 2015
+June 2014
 =======================
 
 For licensing information, please see the relevant licenses.

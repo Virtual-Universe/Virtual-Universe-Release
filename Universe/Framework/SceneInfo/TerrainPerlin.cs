@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -296,6 +296,23 @@ namespace Universe.Framework.SceneInfo
 			return greyValues;
 		}
 
+
+/*		public float Turbulence(float value, float x, float y, float size)
+		{
+			float initialSize = size;
+
+			while (size >= 1)
+			{
+				value += value(x / size, y / size) * size;
+				size /= 2.0;
+			}
+
+			value = (128.0 * value / initialSize);
+
+			return value;
+		}
+*/
+
 		public static float[][] SmoothHeightMap( float[][] greyValues)
 		{
 			int width = greyValues.Length;
@@ -472,8 +489,8 @@ namespace Universe.Framework.SceneInfo
             int wVar = (int)(width * .13);
             int hVar = (int)(height * .11);
 
-            float cx = (width-1) / 2;
-            float cy = (height-1)/ 2;
+            float cx = (width-1) / 2;     // + random.Next(-1*wVar, wVar);
+            float cy = (height-1)/ 2;    // + random.Next(-1*hVar, hVar);
 	
 			float [][] blend_map = GetEmptyArray<float>(width, height);
 

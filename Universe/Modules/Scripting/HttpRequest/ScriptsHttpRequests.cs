@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -34,11 +34,11 @@ using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
-using Nini.Config;
-using OpenMetaverse;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Utilities;
+using Nini.Config;
+using OpenMetaverse;
 
 
 /*****************************************************
@@ -100,6 +100,8 @@ namespace Universe.Modules.Scripting
         // <reqID, itemID>
         private IScene m_scene;
         private IScriptModule m_scriptModule;
+
+        // private Queue<HttpRequestClass> rpcQueue = new Queue<HttpRequestClass>();
 
         public HttpRequestModule()
         {
@@ -374,6 +376,10 @@ namespace Universe.Modules.Scripting
     public class HttpRequestClass : IHttpRequestClass
     {
         // Constants for parameters
+        // public const int HTTP_BODY_MAXLENGTH = 2;
+        // public const int HTTP_METHOD = 0;
+        // public const int HTTP_MIMETYPE = 1;
+        // public const int HTTP_VERIFY_CERT = 3;
         public string HttpMIMEType = "text/plain;charset=utf-8";
         public string HttpMethod = "GET";
         public int HttpTimeout;
@@ -455,8 +461,13 @@ namespace Universe.Modules.Scripting
                 {
                     // Connection Group Name is probably not used so we hijack it to identify
                     // a desired security exception
+//                  Request.ConnectionGroupName="NoVerify";
                     Request.Headers.Add("NoVerifyCert", "true");
                 }
+//              else
+//              {
+//                  Request.ConnectionGroupName="Verify";
+//              }
 
                 if (!string.IsNullOrEmpty(proxyurl))
                 {

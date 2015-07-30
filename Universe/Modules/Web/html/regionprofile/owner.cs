@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,17 +25,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using OpenMetaverse;
 using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Modules;
 using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Profile;
 using Universe.Framework.Utilities;
+using OpenMetaverse;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace Universe.Modules.Web
 {
@@ -79,18 +78,23 @@ namespace Universe.Modules.Web
 
                 account = webInterface.Registry.RequestModuleInterface<IUserAccountService>().
                     GetUserAccount(null, userid);
+
+                //IEstateConnector estateConnector = Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ();
+                //EstateSettings estate = estateConnector.GetEstateSettings (region.RegionID);
             }
             if (account == null)
                 return vars;
 
             // There is no harm in showing the system users here, actually it is required
+            //if ( Utilities.IsSytemUser(account.PrincipalID))
+            //    return vars;
+
             vars.Add("UserName", account.Name);
             //  TODO: User Profile inworld shows this as the standard mm/dd/yyyy
             //  Do we want this to be localised into the users Localisation or keep it as standard ?
             //
             // greythane, Oct 2014 - Not sure why we need to keep the US format here?  A lot of us don't live there :)  
-            // NoahStarfinder, May 26, 2015 - The localization being localized into the users location is impossible due 
-            // to the way the viewer works because of the codebase given by Linden Labs for Secondlife Viewers.
+            //  vars.Add("UserBorn", Culture.LocaleDate(Util.ToDateTime(account.Created)));
             vars.Add("UserBorn", Util.ToDateTime(account.Created).ToShortDateString());  
 
             IUserProfileInfo profile = Framework.Utilities.DataManager.RequestPlugin<IProfileConnector>().

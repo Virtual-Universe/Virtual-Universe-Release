@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,15 +25,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using OpenMetaverse;
+
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Utilities;
+using OpenMetaverse;
+using System;
+using System.Collections.Generic;
 
 namespace Universe.ClientStack
 {
@@ -218,6 +219,7 @@ namespace Universe.ClientStack
                     // written. Undecoded textures should not be going into the priority
                     // queue, because a high priority undecoded texture will clog up the
                     // pipeline for a client
+                    //return true;
                 }
             }
 
@@ -309,6 +311,20 @@ namespace Universe.ClientStack
         #endregion
 
         #region Nested type: J2KImageComparer
+
+/*
+        private sealed class J2KImageComparer : IComparer<J2KImage>
+        {
+            #region IComparer<J2KImage> Members
+
+            public int Compare(J2KImage x, J2KImage y)
+            {
+                return x.Priority.CompareTo(y.Priority);
+            }
+
+            #endregion
+        }
+*/
 
         #endregion
     }

@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,9 +25,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
 using Universe.Framework.Servers.HttpServer.Implementation;
+using System.Collections.Generic;
 
 namespace Universe.Modules.Web
 {
@@ -77,7 +76,7 @@ namespace Universe.Modules.Web
                 if (settings.LocalCSS != "")
                 {
                     settings.LocalCSS = "local/" + settings.LocalCSS;
-                    settings.HideStyleBar = true; // not needed if a local style is used
+                    settings.HideStyleBar = true;                               // not needed if a local style is used
                 }
 
                 webInterface.SaveWebUISettings (settings);
@@ -101,12 +100,12 @@ namespace Universe.Modules.Web
             vars.Add("GridCenterX", settings.MapCenter.X);
             vars.Add("GridCenterY", settings.MapCenter.Y);
             if (settings.LocalFrontPage.StartsWith("local/"))
-                vars.Add("LocalFrontPage", settings.LocalFrontPage.Remove(0,6)); // remove 'local/' prefix
+                vars.Add("LocalFrontPage", settings.LocalFrontPage.Remove(0,6));                // remove 'local/' prefix
             else
                 vars.Add("LocalFrontPage", settings.LocalFrontPage);
 
             if (settings.LocalCSS.StartsWith("local/"))
-                vars.Add("LocalCSS", settings.LocalCSS.Remove(0,6)); // remove 'local/' prefix
+                vars.Add("LocalCSS", settings.LocalCSS.Remove(0,6));                            // remove 'local/' prefix
             else
                 vars.Add("LocalCSS", settings.LocalCSS);
 

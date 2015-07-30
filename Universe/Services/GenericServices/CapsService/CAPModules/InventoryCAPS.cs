@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,13 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
+
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
@@ -43,6 +37,13 @@ using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Services.ClassHelpers.Inventory;
 using Universe.Framework.Utilities;
 using Universe.Region;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
 
 namespace Universe.Services
 {
@@ -150,14 +151,14 @@ namespace Universe.Services
             OSDArray foldersrequested = (OSDArray) map["folders"];
             try
             {
-                //MainConsole.Instance.DebugFormat("[Inventory CAPS]: Received WebFetchInventoryDescendents request for {0}", AgentID);
+                //MainConsole.Instance.DebugFormat("[InventoryCAPS]: Received WebFetchInventoryDescendents request for {0}", AgentID);
 
                 return m_inventoryData.FetchInventoryReply(foldersrequested, AgentID,
                                                            UUID.Zero, m_libraryService.LibraryOwner);
             }
             catch (Exception ex)
             {
-                MainConsole.Instance.Warn("[Inventory Caps]: SERIOUS ISSUE! " + ex.ToString());
+                MainConsole.Instance.Warn("[InventoryCaps]: SERIOUS ISSUE! " + ex.ToString());
             }
             finally
             {
@@ -173,7 +174,7 @@ namespace Universe.Services
         {
             try
             {
-                //MainConsole.Instance.DebugFormat("[Inventory CAPS]: Received FetchLibDescendents request for {0}", AgentID);
+                //MainConsole.Instance.DebugFormat("[InventoryCAPS]: Received FetchLibDescendents request for {0}", AgentID);
 
                 OSDMap map = (OSDMap) OSDParser.DeserializeLLSDXml(HttpServerHandlerHelpers.ReadFully(request));
 
@@ -185,7 +186,7 @@ namespace Universe.Services
             }
             catch (Exception ex)
             {
-                MainConsole.Instance.Warn("[Inventory Caps]: SERIOUS ISSUE! " + ex);
+                MainConsole.Instance.Warn("[InventoryCaps]: SERIOUS ISSUE! " + ex);
             }
             OSDMap rmap = new OSDMap();
             rmap["folders"] = new OSDArray();
@@ -196,7 +197,7 @@ namespace Universe.Services
         {
             try
             {
-                //MainConsole.Instance.DebugFormat("[Inventory CAPS]: Received FetchInventory request for {0}", AgentID);
+                //MainConsole.Instance.DebugFormat("[InventoryCAPS]: Received FetchInventory request for {0}", AgentID);
 
                 OSDMap requestmap = (OSDMap) OSDParser.DeserializeLLSDXml(HttpServerHandlerHelpers.ReadFully(request));
                 if (requestmap["items"].Type == OSDType.Unknown)
@@ -224,7 +225,7 @@ namespace Universe.Services
             }
             catch (Exception ex)
             {
-                MainConsole.Instance.Warn("[Inventory Caps]: SERIOUS ISSUE! " + ex);
+                MainConsole.Instance.Warn("[InventoryCaps]: SERIOUS ISSUE! " + ex);
             }
             OSDMap rmap = new OSDMap();
             rmap["items"] = new OSDArray();
@@ -235,7 +236,7 @@ namespace Universe.Services
         {
             try
             {
-                //MainConsole.Instance.DebugFormat("[Inventory CAPS]: Received FetchLib request for {0}", AgentID);
+                //MainConsole.Instance.DebugFormat("[InventoryCAPS]: Received FetchLib request for {0}", AgentID);
 
                 OSDMap requestmap = (OSDMap) OSDParser.DeserializeLLSDXml(HttpServerHandlerHelpers.ReadFully(request));
 
@@ -261,7 +262,7 @@ namespace Universe.Services
             }
             catch (Exception ex)
             {
-                MainConsole.Instance.Warn("[Inventory Caps]: SERIOUS ISSUE! " + ex);
+                MainConsole.Instance.Warn("[InventoryCaps]: SERIOUS ISSUE! " + ex);
             }
             OSDMap rmap = new OSDMap();
             rmap["items"] = new OSDArray();
@@ -339,6 +340,7 @@ namespace Universe.Services
                          asset_type == "object")
                 {
                     OSDMap meshMap = (OSDMap) map["asset_resources"];
+                    //OSDArray instance_list = (OSDArray)meshMap["instance_list"];
                     int mesh_list = meshMap.ContainsKey("mesh_list") ? ((OSDArray) meshMap["mesh_list"]).Count : 1;
                     int texture_list = meshMap.ContainsKey("texture_list")
                                            ? ((OSDArray) meshMap["texture_list"]).Count
@@ -549,6 +551,7 @@ namespace Universe.Services
                                                                  GroupPermissions = group_mask,
                                                                  NextPermissions = next_owner_mask
                                                              };
+                            //Bad... but whatever
                             m_inventoryService.AddItem(itemBase);
 
                             pbs.SculptEntry = true;
@@ -561,6 +564,8 @@ namespace Universe.Services
                             Quaternion rotation = inner_instance_list["rotation"].AsQuaternion();
 
 							int physicsShapeType = inner_instance_list["physics_shape_type"].AsInteger();
+// 20131224 not used                            int material = inner_instance_list["material"].AsInteger();
+// 20131224 not used                            int mesh = inner_instance_list["mesh"].AsInteger();
 
                             SceneObjectPart prim = new SceneObjectPart(m_agentID, pbs, position, Quaternion.Identity,
                                                                        Vector3.Zero, assetName)
@@ -600,6 +605,7 @@ namespace Universe.Services
                             Vector3 offset = positions[i] - rootPos;
                             grp.ChildrenList[i].SetOffsetPosition(offset);
                         }
+                        //grp.Rotation = rotations[0];
                         for (int i = 0; i < rotations.Count; i++)
                         {
                             if (i != 0)

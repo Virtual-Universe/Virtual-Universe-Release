@@ -1,5 +1,5 @@
 #!/bin/bash
-# Start the Virtual-Universe Grid server
+# Start the Universe-Sim Grid server
 # Version 0.9.2+
 #
 # May 2014

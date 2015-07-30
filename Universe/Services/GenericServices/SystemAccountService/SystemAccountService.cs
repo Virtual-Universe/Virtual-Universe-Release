@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -47,8 +47,7 @@ namespace Universe.Services.GenericServices.SystemAccountService
         string governorName = Constants.GovernorName;
         string realEstateOwnerName = Constants.RealEstateOwnerName;
         string bankerName = Constants.BankerName;
-        string marketplaceOwnerName = Constants.MarketplaceName;
-        string staffName = Constants.StaffName;
+        string marketplaceOwnerName = Constants.MarketplaceOwnerName;
 
         IRegistryCore m_registry;
 
@@ -86,22 +85,12 @@ namespace Universe.Services.GenericServices.SystemAccountService
 
         public UUID MarketplaceOwnerUUID
         {
-            get { return (UUID) Constants.MarketplaceUUID; }
+            get { return (UUID) Constants.MarketplaceOwnerUUID; }
         }
 
         public string MarketplaceOwnerName
         {
             get { return marketplaceOwnerName; }
-        }
-
-        public UUID StaffUUID
-        {
-            get { return (UUID)Constants.StaffUUID; }
-        }
-
-        public string StaffName
-        {
-            get { return staffName; }
         }
 
         #endregion
@@ -118,7 +107,6 @@ namespace Universe.Services.GenericServices.SystemAccountService
                 realEstateOwnerName = estConfig.GetString("RealEstateOwnerName", realEstateOwnerName);
                 bankerName = estConfig.GetString("BankerName", bankerName);
                 marketplaceOwnerName = estConfig.GetString("MarketplaceOwnerName", marketplaceOwnerName);
-                staffName = estConfig.GetString("StaffName", staffName);
             }
 
             registry.RegisterModuleInterface<ISystemAccountService>(this);
@@ -136,7 +124,7 @@ namespace Universe.Services.GenericServices.SystemAccountService
             // these are only valid if we are local
             if (!m_accountService.RemoteCalls())
             {
-                // check and/or create default system users
+                // check and/or create default RealEstate user
                 CheckSystemUserInfo ();
 
                 AddCommands ();
@@ -173,12 +161,7 @@ namespace Universe.Services.GenericServices.SystemAccountService
                     "reset marketplace password",
                     "Resets the password of the system Marketplace Owner",
                     HandleResetMarketplacePassword, false, true);
-
-                MainConsole.Instance.Commands.AddCommand(
-                    "reset staff password",
-                    "reset staff password",
-                    "Resets the password of the staff id",
-                    HandleResetStaffPassword, false, true);
+                
             }
         }
 
@@ -194,9 +177,8 @@ namespace Universe.Services.GenericServices.SystemAccountService
 
             VerifySystemUserInfo("Govenor", GovernorUUID, GovernorName, 250);
             VerifySystemUserInfo("RealEstate", SystemEstateOwnerUUID, SystemEstateOwnerName, 150);
-            VerifySystemUserInfo("Banker", BankerUUID, BankerName, 250);
-            VerifySystemUserInfo("Marketplace", MarketplaceOwnerUUID, MarketplaceOwnerName, 250);
-            VerifySystemUserInfo("Staff", StaffUUID, StaffName, 250);
+            VerifySystemUserInfo("Banker", BankerUUID, BankerName, 100);
+            VerifySystemUserInfo("Marketplace", MarketplaceOwnerUUID, MarketplaceOwnerName, 100);
 
         }
 
@@ -300,11 +282,6 @@ namespace Universe.Services.GenericServices.SystemAccountService
             ResetSystemPassword ("Marketplace", MarketplaceOwnerName);
         }
 
-        protected void HandleResetStaffPassword(IScene scene, string [] cmd)
-        {
-            ResetSystemPassword("Staff", StaffName);
-        }
-
         void ResetSystemPassword(string userType, string systemUserName)
         {
             string question;
@@ -331,6 +308,7 @@ namespace Universe.Services.GenericServices.SystemAccountService
                 }
             }
         }
+
 
         #endregion
     }

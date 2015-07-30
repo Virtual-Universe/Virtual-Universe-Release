@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,12 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Timers;
-using Nini.Config;
-using OpenMetaverse;
+
 using Universe.Framework.Configuration;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.ModuleLoader;
@@ -43,6 +38,12 @@ using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Other;
 using Universe.Framework.Utilities;
 using Universe.Services.DataService;
+using Nini.Config;
+using OpenMetaverse;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Timers;
 
 namespace Universe.Simulation.Base
 {
@@ -216,9 +217,9 @@ namespace Universe.Simulation.Base
             if (MainConsole.Instance != null)
             {
                 MainConsole.Instance.DefaultPrompt = m_consolePrompt;
-                MainConsole.Instance.Info(string.Format("[Mini Universe]: STARTING MIN Universe ({0})...",
+                MainConsole.Instance.Info(string.Format("[MINUniverse]: STARTING MIN Universe ({0})...",
                                                         (IntPtr.Size == 4 ? "x86" : "x64")));
-                MainConsole.Instance.Info("[Mini Universe]: Version: " + Version + "\n");
+                MainConsole.Instance.Info("[MINUniverse]: Version: " + Version + "\n");
             }
         }
 
@@ -227,7 +228,7 @@ namespace Universe.Simulation.Base
         /// </summary>
         public virtual void Startup()
         {
-            MainConsole.Instance.Info("[Mini Universe]: Startup completed in " +
+            MainConsole.Instance.Info("[MINUniverse]: Startup completed in " +
                                       (DateTime.Now - this.StartupTime).TotalSeconds);
         }
 
@@ -453,7 +454,7 @@ namespace Universe.Simulation.Base
         {
             if (File.Exists(fileName))
             {
-                MainConsole.Instance.Info("[COMMAND FILE]: Running " + fileName);
+                MainConsole.Instance.Info("[COMMANDFILE]: Running " + fileName);
                 List<string> commands = new List<string>();
                 using (StreamReader readFile = File.OpenText(fileName))
                 {
@@ -469,7 +470,7 @@ namespace Universe.Simulation.Base
                 }
                 foreach (string currentCommand in commands)
                 {
-                    MainConsole.Instance.Info("[COMMAND FILE]: Running '" + currentCommand + "'");
+                    MainConsole.Instance.Info("[COMMANDFILE]: Running '" + currentCommand + "'");
                     MainConsole.Instance.RunCommand(currentCommand);
                 }
             }
@@ -478,7 +479,7 @@ namespace Universe.Simulation.Base
         public virtual void HandleForceGC(IScene scene, string[] cmd)
         {
             GC.Collect();
-            MainConsole.Instance.Warn("[Garbage Collection]: Garbage collection finished");
+            MainConsole.Instance.Warn("Garbage collection finished");
         }
 
         public virtual void runConfig(IScene scene, string[] cmd)
@@ -508,7 +509,7 @@ namespace Universe.Simulation.Base
             string hostName =
                 m_config.Configs["Network"].GetString("HostName", "http://127.0.0.1");
             //Clean it up a bit
-            // Are these actually doing anything?
+            // these are doing nothing??
             hostName.Replace("http://", "");
             hostName.Replace("https://", "");
             if (hostName.EndsWith("/"))
@@ -587,7 +588,7 @@ namespace Universe.Simulation.Base
                 }
 
                 if (close)
-                    MainConsole.Instance.Info("[SHUTDOWN]: Shutting down Virtual Universe");
+                    MainConsole.Instance.Info("[SHUTDOWN]: Terminating");
 
                 MainConsole.Instance.Info("[SHUTDOWN]: Shutdown processing on main thread complete. " +
                                           (close ? " Exiting..." : ""));

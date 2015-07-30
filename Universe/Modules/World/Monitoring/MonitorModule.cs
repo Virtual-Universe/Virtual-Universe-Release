@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,14 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Timers;
+
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
@@ -48,6 +41,14 @@ using Universe.Modules.Monitoring.Monitors;
 using Nini.Config;
 using OpenMetaverse;
 using OpenMetaverse.Packets;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Timers;
 using ThreadState = System.Diagnostics.ThreadState;
 using Timer = System.Timers.Timer;
 
@@ -554,9 +555,11 @@ namespace Universe.Modules.Monitoring
                     //21 and 22 are forced to the GC memory as they WILL make memory usage go up rapidly otherwise!
                     sb[21].StatID = (uint) Stats.VirtualSizeKB;
                     sb[21].StatValue = GC.GetTotalMemory(false)/1024;
+                    // System.Diagnostics.Process.GetCurrentProcess().WorkingSet64 / (1024);
 
                     sb[22].StatID = (uint) Stats.ResidentSizeKB;
                     sb[22].StatValue = GC.GetTotalMemory(false)/1024;
+                    //(float)System.Diagnostics.Process.GetCurrentProcess().PrivateMemorySize64 / (1024);
 
                     sb[23].StatID = (uint) Stats.PendingLocalUploads;
                     sb[23].StatValue = (networkMonitor.PendingUploads/statsUpdateFactor);
@@ -590,7 +593,9 @@ namespace Universe.Modules.Monitoring
                     // It is the sleep time, physics step, update physics shape, physics other, and pumpI0.
                     // Note: take out agent Update and script time for now, as they are not a part of the heartbeat right now and will mess this calc up
                     float SpareTime = TotalFrames - (
-                                                         PhysicsMS + otherMS + imageMS);
+                                                        /*NetMS + */ PhysicsMS + otherMS + imageMS);
+//                         + /*(agentUpdateFrameMonitor.AgentFrameTime / statsUpdateFactor) +*/
+//                        (imagesMonitor.GetValue() / statsUpdateFactor) /* + ScriptMS*/));
 
                     sb[32].StatValue = SpareTime;
 

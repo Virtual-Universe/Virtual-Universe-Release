@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,10 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using Nini.Config;
-using OpenMetaverse;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Modules;
@@ -36,6 +32,10 @@ using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Profile;
 using Universe.Framework.Utilities;
+using Nini.Config;
+using OpenMetaverse;
+using System;
+using System.Collections.Generic;
 using RegionFlags = Universe.Framework.Services.RegionFlags;
 
 
@@ -136,6 +136,9 @@ namespace Universe.Modules.Web
                 string AvatarPasswordCheck = requestParameters["AvatarPassword2"].ToString();
                 string FirstName = requestParameters["FirstName"].ToString();
                 string LastName = requestParameters["LastName"].ToString();
+                //removed - greythane - deemed not used
+                //string UserAddress = requestParameters["UserAddress"].ToString();
+                //string UserZip = requestParameters["UserZip"].ToString();
                 string UserCity = requestParameters["UserCity"].ToString();
                 string UserEmail = requestParameters["UserEmail"].ToString();
                 string UserHomeRegion = requestParameters["UserHomeRegion"].ToString();
@@ -174,7 +177,7 @@ namespace Universe.Modules.Web
                     return null;
                 }
 
-                // Only one space is allowed in the name to seperate First and Last of the avatar name
+                // Thish -  Only one space is allowed in the name to seperate First and Last of the avatar name
                 if (AvatarName.Split (' ').Length != 2)
                 {
                     response = "<h3>" + translator.GetTranslatedString("AvatarNameSpacingError") + "</h3>";
@@ -204,11 +207,19 @@ namespace Universe.Modules.Web
                         IAgentInfo agent = con.GetAgent (userID);
                         agent.OtherAgentInformation ["RLFirstName"] = FirstName;
                         agent.OtherAgentInformation ["RLLastName"] = LastName;
+                        //agent.OtherAgentInformation ["RLAddress"] = UserAddress;
                         agent.OtherAgentInformation ["RLCity"] = UserCity;
+                        //agent.OtherAgentInformation ["RLZip"] = UserZip;
                         agent.OtherAgentInformation ["UserDOBMonth"] = UserDOBMonth;
                         agent.OtherAgentInformation ["UserDOBDay"] = UserDOBDay;
                         agent.OtherAgentInformation ["UserDOBYear"] = UserDOBYear;
                         agent.OtherAgentInformation ["UserFlags"] = UserFlags;
+                        /*if (activationRequired)
+                        {
+                            UUID activationToken = UUID.Random();
+                            agent.OtherAgentInformation["WebUIActivationToken"] = Util.Md5Hash(activationToken.ToString() + ":" + PasswordHash);
+                            resp["WebUIActivationToken"] = activationToken;
+                        }*/
                         con.UpdateAgent (agent);
 
                         // create user profile details
@@ -269,6 +280,9 @@ namespace Universe.Modules.Web
                 daysArgs.Add(new Dictionary<string, object> {{"Value", i}});
 
             List<Dictionary<string, object>> monthsArgs = new List<Dictionary<string, object>>();
+            //for (int i = 1; i <= 12; i++)
+            //    monthsArgs.Add(new Dictionary<string, object> {{"Value", i}});
+
             monthsArgs.Add(new Dictionary<string, object> {{"Value", translator.GetTranslatedString("Jan_Short")}});
             monthsArgs.Add(new Dictionary<string, object> {{"Value", translator.GetTranslatedString("Feb_Short")}});
             monthsArgs.Add(new Dictionary<string, object> {{"Value", translator.GetTranslatedString("Mar_Short")}});
@@ -281,6 +295,8 @@ namespace Universe.Modules.Web
             monthsArgs.Add(new Dictionary<string, object> {{"Value", translator.GetTranslatedString("Oct_Short")}});
             monthsArgs.Add(new Dictionary<string, object> {{"Value", translator.GetTranslatedString("Nov_Short")}});
             monthsArgs.Add(new Dictionary<string, object> {{"Value", translator.GetTranslatedString("Dec_Short")}});
+
+
 
             List<Dictionary<string, object>> yearsArgs = new List<Dictionary<string, object>>();
             for (int i = 1940; i <= 2013; i++)
@@ -374,6 +390,7 @@ namespace Universe.Modules.Web
             vars.Add("TermsOfServiceAccept", translator.GetTranslatedString("TermsOfServiceAccept"));
             vars.Add("TermsOfServiceText", translator.GetTranslatedString("TermsOfServiceText"));
             vars.Add("RegistrationsDisabled", "");
+            //vars.Add("RegistrationsDisabled", translator.GetTranslatedString("RegistrationsDisabled"));
             vars.Add("RegistrationText", translator.GetTranslatedString("RegistrationText"));
             vars.Add("AvatarNameText", translator.GetTranslatedString("AvatarNameText"));
             vars.Add("AvatarPasswordText", translator.GetTranslatedString("Password"));

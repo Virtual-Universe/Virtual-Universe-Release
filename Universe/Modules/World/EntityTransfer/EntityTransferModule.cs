@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,10 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using Nini.Config;
-using OpenMetaverse;
+
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.DatabaseInterfaces;
@@ -40,6 +37,10 @@ using Universe.Framework.Servers;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Other;
 using Universe.Framework.Utilities;
+using Nini.Config;
+using OpenMetaverse;
+using System;
+using System.Collections.Generic;
 using GridRegion = Universe.Framework.Services.GridRegion;
 
 namespace Universe.Modules.EntityTransfer
@@ -188,6 +189,7 @@ namespace Universe.Modules.EntityTransfer
                                                  Access = 254
                                              };
                     // == not there
+
                     List<MapBlockData> blocks = new List<MapBlockData> {block};
                     sp.ControllingClient.SendMapBlock(blocks, 0);
                     return;
@@ -321,6 +323,10 @@ namespace Universe.Modules.EntityTransfer
                 return;
 
             sp.SetAgentLeaving(finalDestination);
+
+            //Kill the groups here, otherwise they will become ghost attachments 
+            //  and stay in the sim, they'll get readded below into the new sim
+            //KillAttachments(sp);
 
             // Well, this is it. The agent is over there.
             KillEntity(sp.Scene, sp);
@@ -764,7 +770,9 @@ namespace Universe.Modules.EntityTransfer
         /// <returns>True if the SceneObjectGroup was added, False if it was not</returns>
         public bool AddSceneObject(IScene scene, ISceneEntity sceneObject)
         {
-            // If the user is banned, we won't let any of their objects enter. Period.
+            // If the user is banned, we won't let any of their objects
+            // enter. Period.
+            //
             if (scene.RegionInfo.EstateSettings.IsBanned(sceneObject.OwnerID))
             {
                 MainConsole.Instance.Info("[EntityTransferModule]: Denied prim crossing for banned avatar");
@@ -772,11 +780,13 @@ namespace Universe.Modules.EntityTransfer
                 return false;
             }
 
+            //if (!sceneObject.IsAttachmentCheckFull()) // Not Attachment
             {
                 if (!scene.Permissions.CanObjectEntry(sceneObject.UUID,
                                                       true, sceneObject.AbsolutePosition, sceneObject.OwnerID))
                 {
                     // Deny non attachments based on parcel settings
+                    //
                     MainConsole.Instance.Info("[EntityTransferModule]: Denied prim crossing " +
                                               "because of parcel settings");
 
@@ -1010,6 +1020,8 @@ namespace Universe.Modules.EntityTransfer
                 sp.CopyTo(data);
                 agent = data;
                 circuitData = BuildCircuitDataForPresence(sp, sp.AbsolutePosition);
+                //if (agentIsLeaving)
+                //    sp.SetAgentLeaving(null);//We arn't sure where they are going
                 return true;
             }
 

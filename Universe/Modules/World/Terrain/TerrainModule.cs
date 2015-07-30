@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,14 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Timers;
-using Nini.Config;
-using OpenMetaverse;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.ModuleLoader;
 using Universe.Framework.Modules;
@@ -42,6 +34,14 @@ using Universe.Framework.Utilities;
 using Universe.Modules.Terrain.FileLoaders;
 using Universe.Modules.Terrain.FloodBrushes;
 using Universe.Modules.Terrain.PaintBrushes;
+using Nini.Config;
+using OpenMetaverse;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Timers;
 
 namespace Universe.Modules.Terrain
 {
@@ -528,6 +528,7 @@ namespace Universe.Modules.Terrain
                                         }
                                     }
                                     //MainConsole.Instance.Error("[TERRAIN]: Unable to load heightmap, the terrain you have given is larger than the current region.");
+                                    //return;
                                 }
                                 else
                                 {
@@ -645,6 +646,10 @@ namespace Universe.Modules.Terrain
         {
             try
             {
+                //foreach (
+                //    KeyValuePair<string, ITerrainLoader> loader in
+                //        m_loaders.Where(loader => Path.GetExtension(filename.ToLower()) == loader.Key))
+                //{
                 var loader = GetTerrainLoader (filename);
                 if (loader != null)
                 {
@@ -762,8 +767,8 @@ namespace Universe.Modules.Terrain
             else
             {
                 //Send only what the client can see,
-                //but the client isn't loaded yet, wait until they get set up
-                //The first agent update they send will trigger the DrawDistanceChanged event and send the land
+                //  but the client isn't loaded yet, wait until they get set up
+                //  The first agent update they send will trigger the DrawDistanceChanged event and send the land
             }
         }
 
@@ -858,6 +863,8 @@ namespace Universe.Modules.Terrain
                             terrainarray[x, y] = true;
                             xs.Add(x);
                             ys.Add(y);
+                            //Wait and send them all at once
+                            //presence.ControllingClient.SendLayerData(x, y, serializedMap);
                         }
                     }
                 }
@@ -1063,6 +1070,15 @@ namespace Universe.Modules.Terrain
         {
             ITerrainChannel channel = null;
 
+			// find the loader to use..
+			//var fileExt = Path.GetExtension(filename.ToLower());
+            //foreach (KeyValuePair<string, ITerrainLoader> floader in m_loaders)
+           // {
+			//	if (fileExt != floader.Key)
+			//		continue;
+            //
+			//	ITerrainLoader loader = floader.Value;
+            //{
             var loader = GetTerrainLoader (filename);
             if (loader != null)
             {
@@ -1140,6 +1156,8 @@ namespace Universe.Modules.Terrain
         {
             HttpWebRequest request = (HttpWebRequest) WebRequest.Create(uri);
 
+            // request.Credentials = credentials;
+
             request.ContentLength = 0;
             request.KeepAlive = false;
 
@@ -1152,6 +1170,7 @@ namespace Universe.Modules.Terrain
                 return new BufferedStream(file,0);
             }
 
+            // return new BufferedStream(file, (int) response.ContentLength);
             return new BufferedStream(file, 1000000);
         }
 
@@ -1226,6 +1245,12 @@ namespace Universe.Modules.Terrain
 
             if (offsetX >= 0 && offsetX < fileWidth && offsetY >= 0 && offsetY < fileHeight)
             {
+                // this region is included in the tile request
+                //foreach (
+                //    KeyValuePair<string, ITerrainLoader> loader in
+                //        m_loaders.Where(loader => Path.GetExtension(filename.ToLower()) == loader.Key))
+                //{
+                //{
                 var loader = GetTerrainLoader (filename);
                 if (loader != null)
                 {
@@ -1568,6 +1593,7 @@ namespace Universe.Modules.Terrain
 				MainConsole.Instance.Info("[TERRAIN]: Loading "+cmd[2]+" to scene "+tmodule.m_scene.RegionInfo.RegionName);
                 tmodule.LoadFromFile(cmd[2], offsetX, offsetY);
             }
+            // LoadFromFile(cmd[2], offsetX, offsetY);
         }
 
         void InterfaceLoadTileFile(IScene scene, string[] cmd)
@@ -1729,7 +1755,7 @@ namespace Universe.Modules.Terrain
 				float desiredRange = desiredMax - desiredMin;
 				//MainConsole.Instance.InfoFormat("Desired {0}, {1} = {2}", new Object[] { desiredMin, desiredMax, desiredRange });
 
-				// a bit ambiguous here.
+				// a bit ambiguous here... // if (desiredRange == 0d) {
 				if (desiredRange >= 0) {
 					// delta is zero so flatten at requested height
 					tmodule.InterfaceFillTerrain (scene, cmd);

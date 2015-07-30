@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,21 +25,21 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading;
-using OpenMetaverse;
-using OpenMetaverse.Assets;
-using OpenMetaverse.StructuredData;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Serialization;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Utilities;
+using OpenMetaverse;
+using OpenMetaverse.Assets;
+using OpenMetaverse.StructuredData;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading;
 
 namespace Universe.Framework.SceneInfo
 {
@@ -119,14 +119,14 @@ namespace Universe.Framework.SceneInfo
         /// <param name="scene"></param>
         public void GatherAssetUuids(ISceneEntity sceneObject, IDictionary<UUID, AssetType> assetUuids)
         {
-            //MainConsole.Instance.DebugFormat(
-            //    "[ASSET GATHERER]: Getting assets for object {0}, {1}", sceneObject.Name, sceneObject.UUID);
+//            MainConsole.Instance.DebugFormat(
+//                "[ASSET GATHERER]: Getting assets for object {0}, {1}", sceneObject.Name, sceneObject.UUID);
 
             ISceneChildEntity[] parts = sceneObject.ChildrenEntities().ToArray();
             foreach (ISceneChildEntity part in parts)
             {
-                //MainConsole.Instance.DebugFormat(
-                //    "[ARCHIVER]: Getting part {0}, {1} for object {2}", part.Name, part.UUID, sceneObject.UUID);
+//                MainConsole.Instance.DebugFormat(
+//                    "[ARCHIVER]: Getting part {0}, {1} for object {2}", part.Name, part.UUID, sceneObject.UUID);
 
                 try
                 {
@@ -203,6 +203,7 @@ namespace Universe.Framework.SceneInfo
                                 if (normalMapId != UUID.Zero)
                                 {
                                     assetUuids[normalMapId] = AssetType.Texture;
+                                    //m_log.Info("[UUID Gatherer]: found normal map ID: " + normalMapId.ToString());
                                 }
                             }
                             if (mat.ContainsKey("SpecMap"))
@@ -211,6 +212,7 @@ namespace Universe.Framework.SceneInfo
                                 if (specularMapId != UUID.Zero)
                                 {
                                     assetUuids[specularMapId] = AssetType.Texture;
+                                    //m_log.Info("[UUID Gatherer]: found specular map ID: " + specularMapId.ToString());
                                 }
                             }
                         }

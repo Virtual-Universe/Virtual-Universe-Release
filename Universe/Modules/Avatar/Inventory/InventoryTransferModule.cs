@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -41,11 +41,12 @@ namespace Universe.Modules.Inventory
 {
     public class InventoryTransferModule : INonSharedRegionModule
     {
-        readonly List<IScene> m_Scenelist = new List<IScene>();
+        //private IScene m_Scene;
+        private readonly List<IScene> m_Scenelist = new List<IScene>();
 
-        bool m_Enabled = true;
-        IMessageTransferModule m_TransferModule;
-        IMoneyModule moneyService;
+        private bool m_Enabled = true;
+        private IMessageTransferModule m_TransferModule;
+        private IMoneyModule moneyService;
 
         #region INonSharedRegionModule Members
 
@@ -69,6 +70,7 @@ namespace Universe.Modules.Inventory
             if (!m_Enabled)
                 return;
 
+            //m_Scene = scene;
             m_Scenelist.Add(scene);
 
             scene.RegisterModuleInterface(this);
@@ -78,7 +80,6 @@ namespace Universe.Modules.Inventory
             scene.EventManager.OnIncomingInstantMessage += OnGridInstantMessage;
 
             moneyService =  scene.RequestModuleInterface<IMoneyModule>();
-
         }
 
         public void RegionLoaded(IScene scene)
@@ -86,12 +87,14 @@ namespace Universe.Modules.Inventory
             if (m_TransferModule == null)
             {
                 m_TransferModule = m_Scenelist[0].RequestModuleInterface<IMessageTransferModule>();
+//                m_TransferModule = m_Scene.RequestModuleInterface<IMessageTransferModule>();
                 if (m_TransferModule == null)
                 {
                     MainConsole.Instance.Error(
                         "[INVENTORY TRANSFER]: No Message transfer module found, transfers will be local only");
                     m_Enabled = false;
 
+                    //m_Scene = null;
                     m_Scenelist.Clear();
                     scene.EventManager.OnNewClient -= OnNewClient;
                     scene.EventManager.OnClosingClient -= OnClosingClient;
@@ -102,6 +105,7 @@ namespace Universe.Modules.Inventory
 
         public void RemoveRegion(IScene scene)
         {
+            //m_Scene = null;
             scene.EventManager.OnNewClient -= OnNewClient;
             scene.EventManager.OnClosingClient -= OnClosingClient;
             scene.EventManager.OnIncomingInstantMessage -= OnGridInstantMessage;
@@ -124,18 +128,18 @@ namespace Universe.Modules.Inventory
 
         #endregion
 
-        void OnNewClient(IClientAPI client)
+        private void OnNewClient(IClientAPI client)
         {
             // Inventory giving is conducted via instant message
             client.OnInstantMessage += OnInstantMessage;
         }
 
-        void OnClosingClient(IClientAPI client)
+        private void OnClosingClient(IClientAPI client)
         {
             client.OnInstantMessage -= OnInstantMessage;
         }
 
-        IScene FindClientScene(UUID agentId)
+        private IScene FindClientScene(UUID agentId)
         {
             lock (m_Scenelist)
             {
@@ -149,7 +153,7 @@ namespace Universe.Modules.Inventory
             return null;
         }
 
-        void OnInstantMessage(IClientAPI client, GridInstantMessage im)
+        private void OnInstantMessage(IClientAPI client, GridInstantMessage im)
         {
             //MainConsole.Instance.InfoFormat("[INVENTORY TRANSFER]: OnInstantMessage {0}", im.dialog);
             IScene clientScene = FindClientScene(client.AgentId);
@@ -177,7 +181,7 @@ namespace Universe.Modules.Inventory
                     recipientUser = recipientUserScene.GetScenePresence(receipientID);
                 UUID copyID;
 
-                // user is online now.
+                // user is online now...
                 if (recipientUser != null)
                 {
 
@@ -214,6 +218,8 @@ namespace Universe.Modules.Inventory
                                 im.BinaryBucket [0] = (byte)AssetType.Folder;
                                 Array.Copy (copyIDBytes, 0, im.BinaryBucket, 1, copyIDBytes.Length);
 
+//                                m_currencyService.UserCurrencyTransfer(im.FromAgentID, im.ToAgentID, 0,
+//                                    "Inworld inventory folder transfer", TransactionType.GiveInventory, UUID.Zero);
                             if (moneyService != null)
                                 moneyService.Transfer(im.ToAgentID, im.FromAgentID, 0,
                                 "Inworld inventory folder transfer", TransactionType.GiveInventory);
@@ -316,6 +322,7 @@ namespace Universe.Modules.Inventory
                 {
                     item.Folder = trashFolder.ID;
 
+                    // Diva comment: can't we just update this item???
                     List<UUID> uuids = new List<UUID> {item.ID};
                     invService.DeleteItems(item.Owner, uuids);
                     ILLClientInventory inventory = client.Scene.RequestModuleInterface<ILLClientInventory>();
@@ -350,6 +357,8 @@ namespace Universe.Modules.Inventory
                                                  "received inventory" + reason, false);
                 }
 
+                //m_currencyService.UserCurrencyTransfer(im.FromAgentID, im.ToAgentID, 0,
+                //    "Inworld inventory transfer declined", TransactionType.GiveInventory, UUID.Zero);
                 if (moneyService != null)
                     moneyService.Transfer(im.ToAgentID, im.FromAgentID, 0,
                         "Inworld inventory transfer declined", TransactionType.GiveInventory);
@@ -371,7 +380,7 @@ namespace Universe.Modules.Inventory
         /// <summary>
         /// </summary>
         /// <param name="msg"></param>
-        void OnGridInstantMessage(GridInstantMessage msg)
+        private void OnGridInstantMessage(GridInstantMessage msg)
         {
             // Check if this is ours to handle
             IScene userScene = FindClientScene(msg.ToAgentID);
@@ -382,6 +391,7 @@ namespace Universe.Modules.Inventory
             }
 
             // Find agent to deliver to
+            //
             IScenePresence user = userScene.GetScenePresence(msg.ToAgentID);
 
             // Just forward to local handling

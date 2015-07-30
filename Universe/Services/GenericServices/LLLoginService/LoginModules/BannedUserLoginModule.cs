@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,15 +25,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections;
-using System.IO;
-using Nini.Config;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Modules;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Profile;
+using Nini.Config;
+using System;
+using System.Collections;
+using System.IO;
 using Universe.Framework.Utilities;
 using Universe.Framework.Servers;
 
@@ -90,7 +90,8 @@ namespace Universe.Services
             data = null;
 
             if (request == null)
-                return null; //If its null, its just a verification request, allow them to see things even if they are banned
+                return null;
+                    //If its null, its just a verification request, allow them to see things even if they are banned
 
             bool tosExists = false;
             string tosAccepted = "";
@@ -109,6 +110,11 @@ namespace Universe.Services
             }
 
             // TODO: Some TPV's now send their version in the Channel
+            /*
+            string channel = "Unknown";
+            if (request.Contains("channel") && request["channel"] != null)
+                channel = request["channel"].ToString();
+            */
 
             bool AcceptedNewTOS = false;
             //This gets if the viewer has accepted the new TOS
@@ -133,7 +139,7 @@ namespace Universe.Services
                 if (m_TOSLocation.ToLower().StartsWith("http://"))
                     return new LLFailedLoginResponse(LoginResponseEnum.ToSNeedsSent, m_TOSLocation, false);
 
-                // Text file
+                // text file
                 var ToSText = File.ReadAllText (Path.Combine (Environment.CurrentDirectory, m_TOSLocation));
                 return new LLFailedLoginResponse(LoginResponseEnum.ToSNeedsSent, ToSText, false);
             }

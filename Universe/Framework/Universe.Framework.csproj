@@ -682,6 +682,9 @@
 	  <Compile Include="SceneInfo\AgentCircuitManager.cs">
 		<SubType>Code</SubType>
 	  </Compile>
+	  <Compile Include="SceneInfo\AssemblyInfo.cs">
+		<SubType>Code</SubType>
+	  </Compile>
 	  <Compile Include="SceneInfo\ClientManager.cs">
 		<SubType>Code</SubType>
 	  </Compile>

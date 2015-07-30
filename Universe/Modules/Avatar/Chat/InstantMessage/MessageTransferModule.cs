@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -24,6 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 
 using System;
 using System.Collections.Generic;
@@ -136,13 +137,13 @@ namespace Universe.Modules.Chat
             IConfig cnf = config.Configs["Messaging"];
             if (cnf != null)
             {
-                m_Enabled = (cnf.GetString("MessageTransferModule", Name) == Name);
+                m_Enabled = (cnf.GetString ("MessageTransferModule", Name) == Name);
 
-                // only add one http handler!
+                // only add one http handler !
                 if (!m_addedHttpHandler)
                 {
                     m_addedHttpHandler = true;
-                    MainServer.Instance.AddStreamHandler(new GenericStreamHandler("POST", "/gridinstantmessages/", processGridInstantMessage));
+                    MainServer.Instance.AddStreamHandler (new GenericStreamHandler ("POST", "/gridinstantmessages/", processGridInstantMessage));
                 }
             }
 
@@ -199,6 +200,7 @@ namespace Universe.Modules.Chat
 
             // If this event has handlers, then an IM from an agent will be
             // considered delivered. This will suppress the error message.
+            //
             if (handlerUndeliveredMessage != null)
             {
                 handlerUndeliveredMessage(im, reason);
@@ -211,7 +213,7 @@ namespace Universe.Modules.Chat
         protected virtual byte[] processGridInstantMessage(string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse)
         {
             GridInstantMessage gim = ProtoBuf.Serializer.Deserialize<GridInstantMessage>(request);
-
+            
             // Trigger the Instant message in the scene.
             IScenePresence user;
             bool successful = false;
@@ -237,7 +239,7 @@ namespace Universe.Modules.Chat
         protected virtual void GridInstantMessageCompleted(IAsyncResult iar)
         {
             GridInstantMessageDelegate icon =
-                (GridInstantMessageDelegate)iar.AsyncState;
+                (GridInstantMessageDelegate) iar.AsyncState;
             icon.EndInvoke(iar);
         }
 
@@ -315,7 +317,7 @@ namespace Universe.Modules.Chat
                                                    users[i] +
                                                    ", user was not online");
                         im.ToAgentID = users[i];
-                        HandleUndeliveredMessage(im, "User is not set as online by presence service.");
+                        HandleUndeliveredMessage(im, "User is not online.");
                         continue;
                     }
                     if (AgentLocations[i] == "NonExistant")
@@ -424,7 +426,7 @@ namespace Universe.Modules.Chat
 
             //Now query the grid server for the agent
             List<string> AgentLocations = m_agentInfoService.GetAgentsLocations(im.FromAgentID.ToString(),
-                                                                 new List<string>(new[] { toAgentID.ToString() }));
+                                                                 new List<string>(new[] {toAgentID.ToString()}));
             if (AgentLocations.Count > 0)
             {
                 //No agents, so this user is offline
@@ -436,7 +438,7 @@ namespace Universe.Modules.Chat
                         IMUsersCache.Remove(toAgentID);
                     }
                     MainConsole.Instance.Debug("[GRID INSTANT MESSAGE]: Unable to deliver an instant message as user is not online");
-                    HandleUndeliveredMessage(im, "We were unable to deliver your instant message as the user is not currently online.");
+                    HandleUndeliveredMessage(im, "User is not online.");
                     return;
                 }
                 if (AgentLocations[0] == "NonExistant")

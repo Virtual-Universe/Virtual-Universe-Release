@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,16 +25,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.IO;
-using Nini.Config;
-using OpenMetaverse;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Utilities;
+using Nini.Config;
+using OpenMetaverse;
+using System;
+using System.IO;
 
 namespace Universe.FileBasedServices.AssetService
 {
@@ -72,6 +72,7 @@ namespace Universe.FileBasedServices.AssetService
             if (fileConfig != null)
             {
                 if (fileConfig.GetString("AssetFolderPath", "") == "")
+                    //SetUpFileBase(Path.Combine(Path.GetPathRoot(Environment.CurrentDirectory), "assets"));
                     SetUpFileBase(Constants.DEFAULT_FILEASSETS_DIR);
                 else
                     SetUpFileBase(fileConfig.GetString("AssetFolderPath"));
@@ -209,7 +210,8 @@ namespace Universe.FileBasedServices.AssetService
             if (doDatabaseCaching && cache != null)
                 cache.Cache(id, asset);
             if (asset != null) return asset.Data;
-            return null; // an empty array is not null and alot of tests rely on this
+            // see assetservice.GetData  byte[0] != null            return new byte[0];
+            return null;
         }
 
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
@@ -382,6 +384,11 @@ namespace Universe.FileBasedServices.AssetService
             if (asset == null)
                 return null;
 
+            //Delete first, then restore it with the new local flag attached, so that we know we've converted it
+            //m_assetService.Delete(asset.ID, true);
+            //asset.Flags = AssetFlags.Local;
+            //m_assetService.StoreAsset(asset);
+
             //Now store in Redis
             FileSetAsset(asset);
 
@@ -415,7 +422,7 @@ namespace Universe.FileBasedServices.AssetService
                     assetStream.Close();
                     asset.Data = data;
 
-                    //Deduplication.
+                    //Deduplication...
                     if (duplicate)
                     {
                         //Only set id --> asset, and not the hashcode --> data to deduplicate
@@ -438,6 +445,8 @@ namespace Universe.FileBasedServices.AssetService
             if (asset == null)
                 return;
             File.Delete(GetPathForID(id));
+            //DON'T DO THIS, there might be other references to this hash
+            //File.Delete(GetDataPathForID(asset.HashCode));
         }
 
         #region Console Commands

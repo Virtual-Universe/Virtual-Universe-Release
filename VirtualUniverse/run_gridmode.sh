@@ -1,5 +1,5 @@
 #!/bin/bash
-# Startup script for Virtual-Universe in full Grid mode
+# Startup script for Universe-Sim in full Grid mode
 # Versions 0.9.2+
 #
 # June 2014

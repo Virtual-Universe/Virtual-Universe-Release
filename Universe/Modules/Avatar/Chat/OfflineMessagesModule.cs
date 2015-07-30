@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -24,6 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 
 using System;
 using System.Collections.Generic;
@@ -166,9 +167,8 @@ namespace Universe.Modules.Chat
             if (msglist == null)
                 msglist = OfflineMessagesConnector.GetOfflineMessages(client.AgentId);
             msglist.Sort(delegate(GridInstantMessage a, GridInstantMessage b)
-            {
-                return a.Timestamp.CompareTo(b.Timestamp);
-            });
+                { return a.Timestamp.CompareTo(b.Timestamp); 
+                });
 
             foreach (GridInstantMessage IM in msglist)
             {
@@ -177,6 +177,7 @@ namespace Universe.Modules.Chat
                 //
                 // Needed for proper state management for stored group
                 // invitations
+                //
                 IM.Offline = 1;
                 m_Scene.EventManager.TriggerIncomingInstantMessage(IM);
             }
@@ -186,11 +187,11 @@ namespace Universe.Modules.Chat
         {
             if (OfflineMessagesConnector == null || im == null)
                 return;
-
+            
             IClientAPI client = FindClient(im.FromAgentID);
             if ((client == null) && (im.Dialog != 32))
                 return;
-
+            
             if (!OfflineMessagesConnector.AddOfflineMessage(im))
             {
                 if ((!im.FromGroup) && (reason != "User does not exist.") && (client != null))
@@ -241,7 +242,7 @@ namespace Universe.Modules.Chat
                     }
                 }
 
-                if (im.Dialog == (byte)InstantMessageDialog.MessageFromAgent && !im.FromGroup)
+                if (im.Dialog == (byte) InstantMessageDialog.MessageFromAgent && !im.FromGroup)
                 {
                     client.SendInstantMessage(new GridInstantMessage()
                     {
@@ -255,13 +256,13 @@ namespace Universe.Modules.Chat
                     });
                 }
 
-                if (im.Dialog == (byte)InstantMessageDialog.InventoryOffered)
+                if (im.Dialog == (byte) InstantMessageDialog.InventoryOffered)
                     client.SendAlertMessage("User is not online. Inventory has been saved");
             }
             else if (im.Offline == 0)
             {
                 if (client == null) return;
-                if (im.Dialog == (byte)InstantMessageDialog.MessageFromAgent && !im.FromGroup)
+                if (im.Dialog == (byte) InstantMessageDialog.MessageFromAgent && !im.FromGroup)
                 {
                     client.SendInstantMessage(new GridInstantMessage()
                     {
@@ -275,7 +276,7 @@ namespace Universe.Modules.Chat
                     });
                 }
 
-                if (im.Dialog == (byte)InstantMessageDialog.InventoryOffered)
+                if (im.Dialog == (byte) InstantMessageDialog.InventoryOffered)
                     client.SendAlertMessage("User not able to be found. Inventory has been saved");
             }
         }

@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -38,9 +38,9 @@ namespace Universe.Services.DataService.Connectors.Database.Scheduler
 {
     public class LocalSchedulerConnector : ISchedulerDataPlugin
     {
-        private IGenericData m_Gd;
+        IGenericData m_Gd;
 
-        private readonly string[] theFields = new[]
+        readonly string[] theFields = new[]
                                                   {
                                                       "id", "fire_function", "fire_params", "run_once", "run_every",
                                                       "runs_next", "keep_history", "require_reciept", "last_history_id",
@@ -109,14 +109,21 @@ namespace Universe.Services.DataService.Connectors.Database.Scheduler
             return I.id;
         }
 
-        public void SchedulerRemove(string id)
+        public void SchedulerRemoveID(string id)
         {
             QueryFilter filter = new QueryFilter();
             filter.andFilters["id"] = id;
             m_Gd.Delete("scheduler", filter);
         }
 
-        private object[] GetDBValues(SchedulerItem I)
+        public void SchedulerRemoveFunction(string identifier)
+        {
+            QueryFilter filter = new QueryFilter();
+            filter.andFilters["fire_function"] = identifier;
+            m_Gd.Delete("scheduler", filter);
+        }
+
+        object[] GetDBValues(SchedulerItem I)
         {
             return new object[]
                        {
@@ -125,7 +132,7 @@ namespace Universe.Services.DataService.Connectors.Database.Scheduler
                            I.FireParams,
                            I.RunOnce,
                            I.RunEvery,
-                           I.TimeToRun,
+                           I.TimeToRun,         // "run_next" field in db
                            I.HistoryKeep,
                            I.HistoryReceipt,
                            I.HistoryLastID,
@@ -145,7 +152,7 @@ namespace Universe.Services.DataService.Connectors.Database.Scheduler
         }
 
 
-        public List<SchedulerItem> ToRun()
+        public List<SchedulerItem> ToRun(DateTime timeToRun)
         {
             List<SchedulerItem> returnValue = new List<SchedulerItem>();
             DataReaderConnection dr = null;
@@ -153,7 +160,8 @@ namespace Universe.Services.DataService.Connectors.Database.Scheduler
             {
                 dr =
                     m_Gd.QueryData(
-                        "WHERE enabled = 1 AND runs_next < '" + DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm") +
+//                        "WHERE enabled = 1 AND runs_next < '" + DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm") +
+                        "WHERE enabled = 1 AND runs_next <='" + timeToRun.ToString("yyyy-MM-dd HH:mm") +
                         "' ORDER BY runs_next desc", "scheduler", string.Join(", ", theFields));
                 if (dr != null && dr.DataReader != null)
                 {
@@ -256,7 +264,19 @@ namespace Universe.Services.DataService.Connectors.Database.Scheduler
             return null;
         }
 
-        private SchedulerItem LoadFromDataReader(IDataReader dr)
+        public SchedulerItem GetFunctionItem(string fireFunction)
+        {
+            QueryFilter filter = new QueryFilter();
+            filter.andFilters["fire_function"] = fireFunction;
+            List<string> results = m_Gd.Query(theFields, "scheduler", filter, null, null, null);
+
+            if (results == null || results.Count == 0)
+                return null;
+            
+            return LoadFromList(results);
+        }
+
+        SchedulerItem LoadFromDataReader(IDataReader dr)
         {
             return new SchedulerItem
                        {
@@ -277,7 +297,7 @@ namespace Universe.Services.DataService.Connectors.Database.Scheduler
                        };
         }
 
-        private SchedulerItem LoadFromList(List<string> values)
+        SchedulerItem LoadFromList(List<string> values)
         {
             if (values == null) return null;
             if (values.Count == 0) return null;

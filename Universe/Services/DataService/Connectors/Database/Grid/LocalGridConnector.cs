@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,17 +25,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
+
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
+using System;
+using System.Collections.Generic;
 using GridRegion = Universe.Framework.Services.GridRegion;
 using RegionFlags = Universe.Framework.Services.RegionFlags;
 
@@ -99,7 +100,7 @@ namespace Universe.Services.DataService
 
             if (borked.Count < 1)
             {
-                MainConsole.Instance.Info("[Local Grid Connector] No regions found with missing owners.");
+                MainConsole.Instance.Info("[LocalGridConnector] No regions found with missing owners.");
                 return;
             }
 
@@ -107,13 +108,13 @@ namespace Universe.Services.DataService
 
             if (estatePlugin == null)
             {
-                MainConsole.Instance.Error("[Local Grid Connector] " + borked.Count +
+                MainConsole.Instance.Error("[LocalGridConnector] " + borked.Count +
                                            " regions found with missing owners, but could not get IEstateConnector plugin.");
                 return;
             }
 
 
-            MainConsole.Instance.Error("[Local Grid Connector] " + borked.Count +
+            MainConsole.Instance.Error("[LocalGridConnector] " + borked.Count +
                                            " regions found with missing owners, attempting fix.");
 
             Dictionary<int, List<GridRegion>> borkedByEstate = new Dictionary<int, List<GridRegion>>();
@@ -134,12 +135,12 @@ namespace Universe.Services.DataService
                 EstateSettings es = estatePlugin.GetEstateSettings(estateID);
                 if (es == null)
                 {
-                    MainConsole.Instance.Error("[Local Grid Connector] Cannot fix missing owner for regions in Estate " +
+                    MainConsole.Instance.Error("[LocalGridConnector] Cannot fix missing owner for regions in Estate " +
                                                estateID + ", could not get estate settings.");
                 }
                 else if (es.EstateOwner == UUID.Zero)
                 {
-                    MainConsole.Instance.Error("[Loca lGrid Connector] Cannot fix missing owner for regions in Estate " +
+                    MainConsole.Instance.Error("[LocalGridConnector] Cannot fix missing owner for regions in Estate " +
                                                estateID + ", Estate Owner is also missing.");
                 }
                 if (es == null || es.EstateOwner == UUID.Zero)
@@ -154,12 +155,12 @@ namespace Universe.Services.DataService
             {
                 if (estateFail == borkedByEstate.Count)
                 {
-                    MainConsole.Instance.Error("[Local Grid Connector] " + borked.Count +
+                    MainConsole.Instance.Error("[LocalGridConnector] " + borked.Count +
                                                " regions found with missing owners, could not locate any estate settings from IEstateConnector plugin.");
                     return;
                 }
 
-                MainConsole.Instance.Error("[Local Grid Connector] " + borked.Count +
+                MainConsole.Instance.Error("[LocalGridConnector] " + borked.Count +
                                                " regions found with missing owners, could not locate estate settings for " +
                                                estateFail + " estates.");
 
@@ -176,7 +177,7 @@ namespace Universe.Services.DataService
                     region.EstateOwner = kvp.Value;
                     if (!Store(region))
                     {
-                        MainConsole.Instance.Error("[Local Grid Connector] Failed to fix missing region for " +
+                        MainConsole.Instance.Error("[LocalGridConnector] Failed to fix missing region for " +
                                                    region.RegionName + " (" + region.RegionID + ")");
                         ++storeFail;
                     }
@@ -190,20 +191,20 @@ namespace Universe.Services.DataService
 
             if (storeFail > 0)
             {
-                MainConsole.Instance.Error("[Local Grid Connector] " + borkedCount +
+                MainConsole.Instance.Error("[LocalGridConnector] " + borkedCount +
                                            " regions found with missing owners, fix failed on " + storeFail +
                                            " regions, fix attempted on " + storeSuccess + " regions.");
             }
             else if (storeSuccess != borked.Count)
             {
-                MainConsole.Instance.Error("[Local Grid Connector] " + borkedCount +
+                MainConsole.Instance.Error("[LocalGridConnector] " + borkedCount +
                                            " regions found with missing owners, fix attempted on " + storeSuccess +
                                            " regions.");
             }
             else
             {
                 MainConsole.Instance.Info(
-                    "[Local Grid Connector] All regions found with missing owners should have their owners restored.");
+                    "[LocalGridConnector] All regions found with missing owners should have their owners restored.");
             }
             if (borked.Count > 0)
             {
@@ -212,7 +213,7 @@ namespace Universe.Services.DataService
                 {
                     blurbs.Add(region.RegionName + " (" + region.RegionID + ")");
                 }
-                MainConsole.Instance.Info("[Local Grid Connector] Failed to fix missing region owners for regions " +
+                MainConsole.Instance.Info("[LocalGridConnector] Failed to fix missing region owners for regions " +
                                           string.Join(", ", blurbs.ToArray()));
             }
         }
@@ -464,7 +465,7 @@ namespace Universe.Services.DataService
                 if (region.EstateOwner == UUID.Zero && ES != null && ES.EstateID != 0)
                 {
                     MainConsole.Instance.Error(
-                        "[Local Grid Connector] Attempt to store region with owner of UUID.Zero detected:" +
+                        "[LocalGridConnector] Attempt to store region with owner of UUID.Zero detected:" +
                         (new System.Diagnostics.StackTrace()).GetFrame(1).ToString());
                 }
             }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -26,14 +26,14 @@
  */
 
 using System;
-using Nini.Config;
-using OpenMetaverse;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.Modules;
 using Universe.Framework.Physics;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Utilities;
+using Nini.Config;
+using OpenMetaverse;
 
 
 namespace Universe.Region.Animation
@@ -251,6 +251,8 @@ namespace Universe.Region.Animation
                           AgentManager.ControlFlags.AGENT_CONTROL_UP_POS;
             bool heldDown = (controlFlags & AgentManager.ControlFlags.AGENT_CONTROL_UP_NEG) ==
                             AgentManager.ControlFlags.AGENT_CONTROL_UP_NEG;
+            //bool flying = (controlFlags & AgentManager.ControlFlags.AGENT_CONTROL_FLY) == AgentManager.ControlFlags.AGENT_CONTROL_FLY;
+            //bool mouselook = (controlFlags & AgentManager.ControlFlags.AGENT_CONTROL_MOUSELOOK) == AgentManager.ControlFlags.AGENT_CONTROL_MOUSELOOK;
 
             // Direction in which the avatar is trying to move
             Vector3 move = Vector3.Zero;
@@ -300,6 +302,9 @@ namespace Universe.Region.Animation
             {
                 return "TURNRIGHT";
             }
+
+            // Is the avatar trying to move?
+            //            bool moving = (move != Vector3.Zero);
 
             #endregion Inputs
 
@@ -485,6 +490,7 @@ namespace Universe.Region.Animation
                         return "LAND";
                     return "SOFT_LAND";
                 }
+                //return "LAND";
             }
 
             m_animTickFall = 0;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -24,6 +24,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+#undef TEST_USERS       // developers only here :)
 
 using System;
 using System.Collections.Generic;
@@ -112,12 +114,12 @@ namespace Universe.Services.SQLServices.UserAccountService
                     MainConsole.Instance.Commands.AddCommand(
                         "add user",
                         "add user [<first> [<last> [<pass> [<email>]]]] [--system] [--uuid]",
-                        "Create a new user. If optional parameters are not supplied required details will be prompted\n" +
-                        "  --system : Enter user scope UUID\n" +
+                        "Create a new user. If optional parameters are not supplied required details will be prompted\n"+
+                        "  --system : Enter user scope UUID\n"+
                         "  --uuid : Enter a specific UUID for the user",
                         HandleCreateUser, false, true);
 
-                    // Alias for 'add user' (legacy)
+                    // alias for 'add user' (legacy)
                     MainConsole.Instance.Commands.AddCommand(
                         "create user",
                         "create user [<first> [<last> [<pass> [<email>]]]] [--system] [--uuid]",
@@ -216,6 +218,13 @@ namespace Universe.Services.SQLServices.UserAccountService
                         "set user rezday [<first> [<last>]]",
                         "Sets the users creation date",
                         HandleSetRezday, false, true);
+                    #if TEST_USERS
+                    MainConsole.Instance.Commands.AddCommand(
+                        "create test users",
+                        "create test users",
+                        "Create multiple users for testing purposes",
+                        HandleTestUsers, false, true);
+                    #endif
                 }
             }
         }
@@ -388,8 +397,13 @@ namespace Universe.Services.SQLServices.UserAccountService
             return d[0];
         }
 
+        //[CanBeReflected(ThreatLevel = ThreatLevel.Full)]
         public bool StoreUserAccount(UserAccount data)
         {
+            /*object remoteValue = DoRemoteByURL("UserAccountServerURI", data);
+            if (remoteValue != null || m_doRemoteOnly)
+                return remoteValue == null ? false : (bool)remoteValue;*/
+
             m_registry.RequestModuleInterface<ISimulationBase>()
                       .EventManager.FireGenericEventHandler("UpdateUserInformation", data.PrincipalID);
             return m_Database.Store(data);
@@ -477,8 +491,13 @@ namespace Universe.Services.SQLServices.UserAccountService
         /// </summary>
         /// <param name="newAccount"></param>
         /// <param name="password"></param>
+        //[CanBeReflected(ThreatLevel = ThreatLevel.Full)]
         public string CreateUser(UserAccount newAccount, string password)
         {
+            /*object remoteValue = DoRemoteByURL("UserAccountServerURI", newAcc, password);
+            if (remoteValue != null || m_doRemoteOnly)
+                return remoteValue == null ? "" : remoteValue.ToString();*/
+
             UserAccount account = GetUserAccount(null, newAccount.PrincipalID);
             UserAccount nameaccount = GetUserAccount(null, newAccount.Name);
             if (account == null && nameaccount == null)
@@ -511,6 +530,8 @@ namespace Universe.Services.SQLServices.UserAccountService
                         m_profileConnector.CreateNewProfile (newAccount.PrincipalID);
                         IUserProfileInfo profile = m_profileConnector.GetUserProfile (newAccount.PrincipalID);
 
+                        // if (AvatarArchive != "")
+                        //    profile.AArchiveName = AvatarArchive;
                         profile.MembershipGroup = "Resident";
                         profile.IsNewUser = true;
                         m_profileConnector.UpdateUserProfile (profile);
@@ -531,6 +552,9 @@ namespace Universe.Services.SQLServices.UserAccountService
 
         public void DeleteUser(UUID userID, string name, string password, bool archiveInformation, bool wipeFromDatabase)
         {
+            //if (password != "" && m_AuthenticationService.Authenticate(userID, "UserAccount", password, 0) == "")
+            //    return; //Not authed
+
             // ensure the system users are left alone!
             if (Utilities.IsSystemUser(userID))
             {
@@ -670,6 +694,7 @@ namespace Universe.Services.SQLServices.UserAccountService
                 IUserProfileInfo profile = m_profileConnector.GetUserProfile(account.PrincipalID);
                 if (profile != null)
                 {
+                    // this is not right is it?  >> profile.MembershipGroup = title;
                     profile.CustomType = title;
                     m_profileConnector.UpdateUserProfile (profile);
                 }
@@ -759,7 +784,7 @@ namespace Universe.Services.SQLServices.UserAccountService
             }
         }
 
-        private string UserFlagToType(int userFlags)
+        string UserFlagToType(int userFlags)
         {
             switch (userFlags)
             {
@@ -907,6 +932,8 @@ namespace Universe.Services.SQLServices.UserAccountService
                         profile = m_profileConnector.GetUserProfile (account.PrincipalID);
                     }
 
+                    // if (AvatarArchive != "")
+                    //    profile.AArchiveName = AvatarArchive;
                     profile.MembershipGroup = UserFlagToType(account.UserFlags);
                     profile.IsNewUser = true;
                     m_profileConnector.UpdateUserProfile (profile);
@@ -933,6 +960,8 @@ namespace Universe.Services.SQLServices.UserAccountService
         /// <param name="cmd">string array with parameters: firstname, lastname, password, email</param>
         protected void HandleCreateUser(IScene scene, string[] cmd)
         {
+            //string firstName = "Default";
+            //string lastName = "User";
             string userName = "";
             string password, email, uuid, scopeID;
             bool sysFlag = false;
@@ -1095,7 +1124,7 @@ namespace Universe.Services.SQLServices.UserAccountService
             if (lastName == "")
                 return;
 
-            // password as well
+            // password as well?
             password = cmd.Length < 5 ? MainConsole.Instance.PasswordPrompt("Password") : cmd[4];
 
             UserAccount account = GetUserAccount(null, firstName, lastName);
@@ -1294,7 +1323,7 @@ namespace Universe.Services.SQLServices.UserAccountService
                 return;
             }
 
-            // email address as well
+            // email address as well?
             newEmail = account.Email;
             newEmail = cmd.Length < 6 ? MainConsole.Instance.Prompt("Email address", newEmail) : cmd[5];
             if (!Utilities.IsValidEmail (newEmail))
@@ -1374,6 +1403,7 @@ namespace Universe.Services.SQLServices.UserAccountService
 
                     //set user levels and status  (if needed)
                     var account = GetUserAccount (null, UserUUID);
+                    //account.UserLevel = 0;
                     account.UserFlags = Constants.USER_FLAG_RESIDENT;
                     StoreUserAccount (account);
 
@@ -1474,6 +1504,58 @@ namespace Universe.Services.SQLServices.UserAccountService
             		MainConsole.Instance.InfoFormat("[USER ACCOUNT SERVICE]: User account {0} {1} has a new rezday.", firstName, lastName);
             }
         }
+
+        #if TEST_USERS
+        protected void HandleTestUsers(IScene scene, string[] cmdParams)
+        {
+            string checkOk;
+            checkOk = MainConsole.Instance.Prompt ("[TESTING]:  Caution!! This will add random users for testing purposes. Continue? (yes, no)", "no").ToLower ();
+            if (!checkOk.StartsWith("y"))
+                return;
+
+            int addUsers = 0;
+            addUsers = int.Parse (MainConsole.Instance.Prompt ("Number of test users to add?", "0"));
+            if (addUsers == 0)
+                return;
+
+            // make sure
+            checkOk = MainConsole.Instance.Prompt ("[TESTING]: You are about to add " + addUsers + " to your database! Are you sure? (yes, no)", "no").ToLower ();
+            if (!checkOk.StartsWith("y"))
+                return;
+
+            var startTime = DateTime.Now;
+            int userNo = 0;
+            string FirstName = "Test";
+            string LastName = "User";
+            string Password = "none";
+            string Email = "none";
+            UUID UserUUID;
+
+            for (userNo = 0; userNo < addUsers; userNo++)
+            {
+                UserUUID = UUID.Random ();
+
+                string check = CreateUser (UserUUID, UUID.Zero, FirstName + " " + LastName+userNo, Util.Md5Hash(Password), Email);
+                if (check != "")
+                {
+                    MainConsole.Instance.Error ("Couldn't create the user. Reason: " + check);
+                    continue;
+                }
+
+                //set user levels and status  (if needed)
+                var account = GetUserAccount (null, UserUUID);
+                //account.UserLevel = 0;
+                account.UserFlags = Constants.USER_FLAG_RESIDENT;
+                StoreUserAccount (account);
+            }
+
+            var elapsed = DateTime.Now - startTime;
+
+            MainConsole.Instance.InfoFormat ("Added {0} test users in {1}", addUsers, elapsed.ToString());
+
+        }
+        #endif
+
         #endregion
     }
 }

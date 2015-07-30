@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -38,12 +38,12 @@ namespace Universe.Modules.AbuseReportsGUI
 {
     public partial class Abuse : Form
     {
-        readonly IAbuseReportsConnector AbuseReportsConnector;
-        readonly string Password;
-        readonly IAssetService m_assetService;
-        readonly IJ2KDecoder m_decoder;
-        AbuseReport CurrentReport;
-        int formNumber = 1;
+        private readonly IAbuseReportsConnector AbuseReportsConnector;
+        private readonly string Password;
+        private readonly IAssetService m_assetService;
+        private readonly IJ2KDecoder m_decoder;
+        private AbuseReport CurrentReport;
+        private int formNumber = 1;
 
         public Abuse(IAssetService assetService, IJ2KDecoder j2k)
         {
@@ -55,12 +55,12 @@ namespace Universe.Modules.AbuseReportsGUI
             Utilities.InputBox("Password Input Required", "Password for abuse reports database", ref Password);
         }
 
-        void Form1_Load(object sender, EventArgs e)
+        private void Form1_Load(object sender, EventArgs e)
         {
             SetGUI(AbuseReportsConnector.GetAbuseReport(formNumber, Password));
         }
 
-        void Previous_Click(object sender, EventArgs e)
+        private void Previous_Click(object sender, EventArgs e)
         {
             formNumber -= 1;
             if (formNumber == 0)
@@ -69,37 +69,37 @@ namespace Universe.Modules.AbuseReportsGUI
             SetGUI(AbuseReportsConnector.GetAbuseReport(formNumber, Password));
         }
 
-        void Next_Click(object sender, EventArgs e)
+        private void Next_Click(object sender, EventArgs e)
         {
             formNumber += 1;
             SetGUI(AbuseReportsConnector.GetAbuseReport(formNumber, Password));
         }
 
-        void textBox7_TextChanged(object sender, EventArgs e)
+        private void textBox7_TextChanged(object sender, EventArgs e)
         {
             CurrentReport.AssignedTo = AssignedTo.Text;
             AbuseReportsConnector.UpdateAbuseReport(CurrentReport, Password);
         }
 
-        void textBox8_TextChanged(object sender, EventArgs e)
+        private void textBox8_TextChanged(object sender, EventArgs e)
         {
             bool.TryParse(Active.Text, out CurrentReport.Active);
             AbuseReportsConnector.UpdateAbuseReport(CurrentReport, Password);
         }
 
-        void textBox10_TextChanged(object sender, EventArgs e)
+        private void textBox10_TextChanged(object sender, EventArgs e)
         {
             bool.TryParse(Checked.Text, out CurrentReport.Checked);
             AbuseReportsConnector.UpdateAbuseReport(CurrentReport, Password);
         }
 
-        void textBox12_TextChanged(object sender, EventArgs e)
+        private void textBox12_TextChanged(object sender, EventArgs e)
         {
             CurrentReport.Notes = Notes.Text;
             AbuseReportsConnector.UpdateAbuseReport(CurrentReport, Password);
         }
 
-        void GotoAR_Click(object sender, EventArgs e)
+        private void GotoAR_Click(object sender, EventArgs e)
         {
             if (GotoARNumber.Text == "")
                 return;

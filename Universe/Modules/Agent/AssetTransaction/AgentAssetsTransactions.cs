@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -42,9 +42,9 @@ namespace Universe.Modules.Agent.AssetTransaction
     public class AgentAssetTransactions
     {
         // Fields
-        bool m_dumpAssetsToFile;
-        IScene m_Scene;
-        Dictionary<UUID, AssetXferUploader> XferUploaders = new Dictionary<UUID, AssetXferUploader>();
+        private bool m_dumpAssetsToFile;
+        private IScene m_Scene;
+        private Dictionary<UUID, AssetXferUploader> XferUploaders = new Dictionary<UUID, AssetXferUploader>();
 
         // Methods
         public AgentAssetTransactions(UUID agentID, IScene scene,
@@ -116,8 +116,7 @@ namespace Universe.Modules.Agent.AssetTransaction
             if (foundUploader != null)
             {
                 //MainConsole.Instance.DebugFormat(
-                //    "[AGENT ASSETS TRANSACTIONS]: Found xfer uploader for xfer id {0}, packet id {1}, data length {2}",
-                //    xferID, packetID, data.Length);
+                //    "[AGENT ASSETS TRANSACTIONS]: Found xfer uploader for xfer id {0}, packet id {1}, data length {2}", xferID, packetID, data.Length);
 
                 foundUploader.HandleXferPacket(xferID, packetID, data);
             }

@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <Prebuild version="1.10" xmlns="http://dnpb.sourceforge.net/schemas/prebuild-1.10.xsd">
-  <Solution activeConfig="Debug" name="Universe" path="./" version="1.0.0 $Rev$">
+  <Solution activeConfig="Debug" name="Universe" path="./" version="0.9.3 $Rev$">
     <Configuration name="Debug" platform="x86">
       <Options>
         <CompilerDefines>TRACE;DEBUG</CompilerDefines>
@@ -280,41 +280,6 @@
       </Files>
     </Project>
 
-	<!-- This is for PhysX when completed. - Emperor Starfinder (5.5.2015) -->
-	 <!-- <Project frameworkVersion="v4_5" name="Universe.Physics.PhysXSPlugin" path="Universe/Physics/PhysXPlugin" type="Library">
-      <Configuration name="Debug">
-        <Options>
-          <OutputPath>../../../VirtualUniverse/bin/Physics</OutputPath>
-          <AllowUnsafe>true</AllowUnsafe>
-        </Options>
-      </Configuration>
-      <Configuration name="Release">
-        <Options>
-          <OutputPath>../../../VirtualUniverse/bin/Physics/</OutputPath>
-          <AllowUnsafe>true</AllowUnsafe>
-        </Options>
-      </Configuration>
-
-      <ReferencePath>../../../VirtualUniverse/bin/</ReferencePath>
-      <Reference name="System"/>
-      <Reference name="System.Core"/>
-      <Reference name="System.Xml"/>
-      <Reference name="OpenMetaverseTypes" path="../../../VirtualUniverse/bin/"/>
-      <Reference name="Nini.dll"  path="../../../VirtualUniverse/bin/"/>
-      <Reference name="Universe.Framework"/>
-      <Reference name="Universe.Region"/>
-      <Reference name="Universe.Physics.Meshing"/>
-      <Reference name="Universe.Physics.ConvexDecompositionDotNet"/>
-	  <Reference name="PhysX_Wrapper_Dotnet.dll" path="../../../VirtualUniverse/bin/"/>
-      <Reference name="PhysX-wrapper.dll" path="../../../VirtualUniverse/bin/"/>
-
-      <Files>
-        <Match pattern="*.cs" recurse="true">
-          <Exclude name="obj" pattern="obj"/>
-        </Match>
-      </Files>
-    </Project> -->
-	
     <Project frameworkVersion="v4_5" name="Universe.Physics.ConvexDecompositionDotNet" path="Universe/Physics/ConvexDecompositionDotNet" type="Library">
       <Configuration name="Debug">
         <Options>
@@ -1427,7 +1392,7 @@
       </Files>
     </Project>
 
-    <Project frameworkVersion="v4_5" name="Universe.ScriptEngine.VirtualScript" path="Universe/ScriptEngine/VirtualScript" type="Library">
+    <Project frameworkVersion="v4_5" name="Universe.ScriptEngine.DotNetEngine" path="Universe/ScriptEngine/DotNetEngine" type="Library">
       <Configuration name="Debug" platform="x86">
         <Options>
           <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
@@ -1527,7 +1492,7 @@
 
       <Reference name="Universe.DataManager"/>
       <Reference name="Universe.Framework"/>
-      <Reference name="Universe.ScriptEngine.VirtualScript"/>
+      <Reference name="Universe.ScriptEngine.DotNetEngine"/>
       
       <Reference name="Nini" path="../../VirtualUniverse/bin/"/>
       <Reference name="OpenMetaverse" path="../../VirtualUniverse/bin/"/>

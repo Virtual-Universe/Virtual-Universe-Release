@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -63,7 +63,7 @@ namespace Universe.Framework.Utilities
 
         // System Governor Avatar Account
         public const string GovernorUUID = "3d6181b0-6a4b-97ef-18d8-722652995cf1";
-        public const string GovernorName = "Chancellor Universe";
+        public const string GovernorName = "Governor Universe";
         
         // System Estate
         public const string SystemEstateName = "Universe Estate";
@@ -74,29 +74,26 @@ namespace Universe.Framework.Utilities
 		public const string RealEstateGroupName = "Maintenance";
 
         // System Banker Avatar
-        public const string BankerUUID = "2f087cf0-0448-11e5-b939-0800200c9a66";
+        public const string BankerUUID = "f4261829-2796-4688-bfe2-085190cb639b";
         public const string BankerName = "Universe Banker";
 
         // System Marketplace Avatar
-        public const string MarketplaceUUID = "2f087cf2-0448-11e5-b939-0800200c9a66";
-        public const string MarketplaceName = "Marketplace Universe";
+        public const string MarketplaceOwnerUUID = "198e72a6-cef6-4bbb-ae08-c0a79e6b7d1e";
+        public const string MarketplaceOwnerName = "Marketplace Concierge";
 
-        // System Staff Avatar Account
-        public const string StaffUUID = "3d6171b0-6a4b-97ef-18d8-722652995cf1";
-        public const string StaffName = "Staff Universe";
 
         // user levels
         public const int USER_DISABLED = -2;
         public const int USER_BANNED = -1;
         public const int USER_NORMAL = 0;
-        public const int USER_GOD_LIKE = 1;     //?? bit low, are some other levels needed??
+        public const int USER_GOD_LIKE = 1;                 //?? bit low, are some other levels needed??
         public const int USER_GOD_CUSTOMER_SERVICE = 100;
         public const int USER_GOD_LIASON = 150;
         public const int USER_GOD_FULL = 200;
         public const int USER_GOD_MAINTENANCE = 250;
 
         // user flags (account types)
-        public const int USER_FLAG_GUEST      = 0;         // Temporary: (Default) No payment info on account    
+        public const int USER_FLAG_GUEST      = 0;          // Temporary: (Default) No payment info on account    
         public const int USER_FLAG_RESIDENT   = 200;        // Resident: Payment info on account
         public const int USER_FLAG_PAY        = 300;        // Testing: Payment info on account
         public const int USER_FLAG_NOPAY      = 400;        // Testing: No Payment info on account
@@ -104,15 +101,17 @@ namespace Universe.Framework.Utilities
         public const int USER_FLAG_CONTRACTOR = 800;        // Contracted
         public const int USER_FLAG_CHARTERMEMBER = 3840;    // Charter member
 
-        // Stipend flags
         public const int SCHEDULER_INTERVAL = 300;          // seconds between scheduler checks
-  
+
         public const string STIPEND_PAY_DAY = "tuesday";    // the day stipend payments are processed
         public const string STIPEND_PAY_TIME = "00:05";     // the time, hh:mm, when stipend payments are processed
         public const string STIPEND_PAY_PERIOD = "week";    // how often we process stipends
         public const int STIPEND_PAY_INTERVAL = 1;          // number of period between payments (hours, weeks etc.)
         public const int STIPEND_RECENT_LOGIN_PERIOD = 7 * 24 * 60 * 60;    // week (of seconds)
 
-        public const int GROUP_PAYMENTS_DELAY = 15;         // minutes to wait after stipend payments before processing group payments
+        public const int SCHEDULED_PAYMENTS_DELAY = 15;     // minutes to wait after stipend payments before processing scheduled payments
+        public const int GROUP_PAYMENTS_DELAY = 30;         // minutes to wait after stipend payments before processing group payments
+        public const int DIRECTORYFEE_GRACE_PERIOD = 2;     // hours grace period before a fee will be charged at least once
+
     }
 }

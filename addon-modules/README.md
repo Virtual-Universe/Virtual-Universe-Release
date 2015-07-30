@@ -5,7 +5,7 @@ These are optional modules that can be used with Virtual Universe
 To install, there are two ways to install, auto-installation, or manual compilation
 
 ## Automated
-1. Start Universe.exe or Universe.Server.exe
+1. Start Planet.exe or Universe.Server.exe
 2. Type 'compile module <path to the build.am of the module that you want>' into the console and it will install the module for you and tell you how to use or configure it.
 
 ## Manual Compilation and installation:
@@ -17,4 +17,3 @@ The <?xml>, <Prebuild>, <Solution> and <Configuration> tags should not be includ
 
 
 # Known Issues
-There are no currently known issues with our addon-modules system.
