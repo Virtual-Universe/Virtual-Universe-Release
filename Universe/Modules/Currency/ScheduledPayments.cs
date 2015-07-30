@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Aurora-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -28,6 +28,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Timers;
 using Nini.Config;
 using OpenMetaverse;
@@ -37,6 +38,7 @@ using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Services;
+using Universe.Framework.Services.ClassHelpers.Other;
 using Universe.Framework.Utilities;
 
 namespace Universe.Modules.Currency
@@ -45,13 +47,21 @@ namespace Universe.Modules.Currency
     {
         #region Declares
 
+        public UniverseEventManager eventManager = new UniverseEventManager();
+
         IRegistryCore m_registry;
         IConfigSource m_config;
         IMoneyModule moneyModule;
+        IScheduleService scheduler;
+        ISchedulerDataPlugin sched_database;
+
+        string currencySymbol = "";
 
         readonly Timer taskTimer = new Timer();
         DateTime nextStipendPayment;
+        DateTime nextScheduledPayment;
         DateTime nextGroupPayment;
+        DateTime nextGroupDividend;
 
         bool payStipends;
         bool payGroups;
@@ -65,7 +75,7 @@ namespace Universe.Modules.Currency
         string stipendPayDay;           // the good day
         string stipendPayTime;          // the time to start work
         bool stipendsPremiumOnly;       // Premium members only
-        bool stipendsLoadOldUsers;      //  ?? not sure if needed
+        //bool stipendsLoadOldUsers;      //  ?? not sure if needed
         bool stipendsLoginRequired;     // login required in the last week
         int schedulerInterval = 0;      // seconds
 
@@ -86,24 +96,28 @@ namespace Universe.Modules.Currency
         public void FinishedStartup()
         {
             moneyModule = m_registry.RequestModuleInterface<IMoneyModule>();
-            if (moneyModule != null) //Only register if money is enabled
+            if ((moneyModule != null) && moneyModule.IsLocal) //Only register if money is enabled and is local
             {
                 m_registry.RegisterModuleInterface<IScheduledMoneyModule>(this);
-                m_registry.RequestModuleInterface<ISimulationBase>()
-                          .EventManager.RegisterEventHandler("ScheduledPayment", ChargeNext);
+                eventManager.RegisterEventHandler("ScheduledPayment", ChargeNext);
+
+                scheduler = m_registry.RequestModuleInterface<IScheduleService>();
+                sched_database = Framework.Utilities.DataManager.RequestPlugin<ISchedulerDataPlugin>();
+
+                currencySymbol = moneyModule.InWorldCurrencySymbol;
 
                 getStipendConfig();
 
                 AddCommands();
 
-                // Set up Timer in case it is needed
+                // Set up Timer
                 taskTimer.Enabled = false;
                 taskTimer.Elapsed += SchedulerTimerElapsed;
 
                 if (payStipends || payGroups)
                 {
                     InitializeScheduleTimer();
-                    MainConsole.Instance.Info("[Currency]: Stipend paymenst enabled. Next payment: " + nextStipendPayment.ToLongDateString());
+                    MainConsole.Instance.Info("[Currency]: Stipend payments enabled. Next payment: " + String.Format("{0:f}", nextStipendPayment));
                 }
             }
         }
@@ -163,6 +177,24 @@ namespace Universe.Modules.Currency
                 "grouppay paynow",
                 "Process group payments immediately",
                 HandleGrouppayPayNow, false, true);
+
+            MainConsole.Instance.Commands.AddCommand(
+                "grouppay pay dividends",
+                "grouppay pay dividends",
+                "Process group dividends immediately",
+                HandleGrouppayPayDividends, false, true);
+
+            MainConsole.Instance.Commands.AddCommand(
+                "scheduled info",
+                "scheduled info",
+                "Displays details about any pending scheduled payments",
+                HandleScheduledPayInfo, false, true);
+
+            MainConsole.Instance.Commands.AddCommand(
+                "scheduled paynow",
+                "scheduled paynow",
+                "Process scheduled payments immediately",
+                HandleScheduledPayNow, false, true);
         }
 
         void getStipendConfig()
@@ -179,7 +211,7 @@ namespace Universe.Modules.Currency
                 stipendPayDay = currCfg.GetString("StipendPayDay", Constants.STIPEND_PAY_DAY);
                 stipendPayTime = currCfg.GetString("StipendPayTime", Constants.STIPEND_PAY_TIME);
                 stipendsPremiumOnly = currCfg.GetBoolean("StipendsPremiumOnly", false);
-                stipendsLoadOldUsers = currCfg.GetBoolean("StipendsLoadOldUsers", false);
+                //stipendsLoadOldUsers = currCfg.GetBoolean ("StipendsLoadOldUsers", false);
                 stipendsLoginRequired = currCfg.GetBoolean("StipendsLoginRequired", false);
                 schedulerInterval = currCfg.GetInt("SchedulerInterval", Constants.SCHEDULER_INTERVAL);
 
@@ -187,7 +219,7 @@ namespace Universe.Modules.Currency
                 directoryFee = currCfg.GetInt("PriceDirectoryFee", 0);
             }
 
-            // some checks
+            // some sanity checks
             payStipends &= stipendAmount != 0;
             payGroups &= directoryFee != 0;
         }
@@ -196,32 +228,72 @@ namespace Universe.Modules.Currency
 
         #region IScheduledMoneyModule Members
 
+        // alternatives for the MoneyModule
+        public int UploadCharge { get { return moneyModule.UploadCharge; } }
+
+        public int GroupCreationCharge { get { return moneyModule.GroupCreationCharge; } }
+
+        public int DirectoryFeeCharge { get { return moneyModule.DirectoryFeeCharge; } }
+
         public event UserDidNotPay OnUserDidNotPay;
         public event CheckWhetherUserShouldPay OnCheckWhetherUserShouldPay;
 
-        public bool Charge(UUID agentID, int amount, string text, int daysUntilNextCharge, TransactionType type, string identifer, bool chargeImmediately)
+        public bool Charge(UUID agentID, int amount, string description, TransactionType transType,
+            string identifer, bool chargeImmediately, bool runOnce)
         {
+            var userService = m_registry.RequestModuleInterface<IUserAccountService>();
+            var user = userService.GetUserAccount(null, agentID);
+
             if (moneyModule != null)
             {
                 if (chargeImmediately)
                 {
-                    bool success = moneyModule.Charge(agentID, amount, text, type);
+                    bool success = moneyModule.Transfer(
+                        (UUID)Constants.BankerUUID,            // pay the Banker
+                        agentID,
+                        amount,
+                        description,
+                        transType
+                    );
                     if (!success)
+                    {
+                        MainConsole.Instance.WarnFormat("[Currency]: Unable to process {0} payment of {1}{2} from {3}",
+                             description, currencySymbol, amount, user.Name);
                         return false;
+                    }
+
+                    MainConsole.Instance.WarnFormat("[Currency]: Payment for {0} of {1}{2} from {3} has been paid",
+                        description, currencySymbol, amount, user.Name);
                 }
-                IScheduleService scheduler = m_registry.RequestModuleInterface<IScheduleService>();
-                if (scheduler != null)
+
+                if (!runOnce)
                 {
-                    OSDMap itemInfo = new OSDMap();
-                    itemInfo.Add("AgentID", agentID);
-                    itemInfo.Add("Amount", amount);
-                    itemInfo.Add("Text", text);
-                    itemInfo.Add("Type", (int)type);
-                    SchedulerItem item = new SchedulerItem("ScheduledPayment " + identifer,
-                                                           OSDParser.SerializeJsonString(itemInfo), false,
-                                                           DateTime.UtcNow, daysUntilNextCharge, RepeatType.days, agentID);
-                    itemInfo.Add("SchedulerID", item.id);
-                    scheduler.Save(item);
+                    // add a re-occurring scheduled payment
+                    if (scheduler != null)
+                    {
+                        string scid = UUID.Random().ToString();
+
+                        OSDMap itemInfo = new OSDMap();
+                        itemInfo.Add("AgentID", agentID);
+                        itemInfo.Add("Amount", amount);
+                        itemInfo.Add("Text", description);
+                        itemInfo.Add("Type", (int)transType);
+                        itemInfo.Add("SchedulerID", scid);
+
+                        SchedulerItem item = new SchedulerItem(
+                                             "ScheduledPayment " + identifer,                         // name
+                                             OSDParser.SerializeJsonString(itemInfo),                // scheduled payment details
+                                             false,                                                   // run once
+                                             GetStipendPaytime(Constants.SCHEDULED_PAYMENTS_DELAY),  // next cycle + delay
+                                             agentID);                                                // user to charge
+
+                        // we need to use our own id here
+                        item.id = scid;
+                        scheduler.Save(item);
+                    }
+                    else
+                        MainConsole.Instance.WarnFormat("[Currency]: Unable to add a new scheduled {0} payment of {1}{2} for {3}",
+                            description, currencySymbol, amount, user.Name);
                 }
             }
             return true;
@@ -229,9 +301,41 @@ namespace Universe.Modules.Currency
 
         public void RemoveFromScheduledCharge(string identifier)
         {
-            IScheduleService scheduler = m_registry.RequestModuleInterface<IScheduleService>();
+            // NOTE:  THe identifier is actually the 'fire_function' in the database
+            // format is "ScheduledPayment [ShowInDirectory: 44089279-b5b0-49f2-a92b-ff2c2ab063e7]" (UUID is the Landdata GlobalID) 
             if (scheduler != null)
-                scheduler.Remove("ScheduledPayment " + identifier);
+                scheduler.RemoveFireFunction("ScheduledPayment " + identifier);
+        }
+
+        public void RemoveDirFeeScheduledCharge(string identifier)
+        {
+            // NOTE:  THe identifier is actually the 'fire_function' in the database
+            if (scheduler == null)
+                return;
+
+            var fireFunction = "ScheduledPayment " + identifier;
+            var schItem = scheduler.GetFunctionItem(fireFunction);
+            if (schItem == null)
+                return;
+
+            // is this an 'oops' setting?
+            DateTime gracePeriod = schItem.StartTime.AddHours(Constants.DIRECTORYFEE_GRACE_PERIOD);
+            if (DateTime.Now > gracePeriod)
+            {
+                // Check if the fee has been charged at least once
+                var firstCharge = schItem.TimeToRun.AddDays(-PaymentCycleDays());
+                if (firstCharge <= schItem.StartTime)
+                {
+                    // We have not been through at least one cycle
+                    schItem.RunOnce = true;
+                    scheduler.Save(schItem);
+
+                    return;    // the schedule item will be removed once it is paid
+                }
+            }
+
+            // all good.. just clear it
+            scheduler.RemoveFireFunction(fireFunction);
         }
 
         object ChargeNext(string functionName, object parameters)
@@ -239,27 +343,52 @@ namespace Universe.Modules.Currency
             if (functionName.StartsWith("ScheduledPayment"))
             {
                 OSDMap itemInfo = (OSDMap)OSDParser.DeserializeJson(parameters.ToString());
-                IMoneyModule moneyModule = m_registry.RequestModuleInterface<IMoneyModule>();
                 UUID agentID = itemInfo["AgentID"];
                 string scdID = itemInfo["SchedulerID"];
-                string text = itemInfo["Text"];
+                string description = itemInfo["Text"];
                 int amount = itemInfo["Amount"];
-                TransactionType type = !itemInfo.ContainsKey("Type") ? TransactionType.SystemGenerated : (TransactionType)itemInfo["Type"].AsInteger();
-                if (CheckWhetherUserShouldPay(agentID, text))
+                TransactionType transType = !itemInfo.ContainsKey("Type") ? TransactionType.SystemGenerated : (TransactionType)itemInfo["Type"].AsInteger();
+
+                // allow for delayed start before charge commences
+                SchedulerItem schItem = null;
+                if (scheduler != null)
                 {
-                    MainConsole.Instance.Info("[MONEY MODULE] Scheduled Payment for " + agentID + " is now running");
-                    bool success = moneyModule.Charge(agentID, amount, text, type);
+                    schItem = scheduler.Get(scdID);
+                    if (schItem.StartTime >= DateTime.Now)
+                        return null;
+                }
+
+                var userService = m_registry.RequestModuleInterface<IUserAccountService>();
+                var user = userService.GetUserAccount(null, agentID);
+
+                if (CheckWhetherUserShouldPay(agentID, description))
+                {
+                    bool success = moneyModule.Transfer(
+                        (UUID)Constants.BankerUUID,            // pay the Banker
+                        agentID,
+                        amount,
+                        description,
+                        transType
+                    );
                     if (!success)
                     {
+                        MainConsole.Instance.WarnFormat("[Currency]: Unable to process {0} payment of {1}{2} from {3}",
+                            description, currencySymbol, amount, user.Name);
                         if (OnUserDidNotPay != null)
-                            OnUserDidNotPay(agentID, functionName.Replace("ScheduledPayment ", ""), text);
+                            OnUserDidNotPay(agentID, functionName.Replace("ScheduledPayment ", ""), description);
                     }
+
+                    MainConsole.Instance.InfoFormat("[Currency]: Scheduled payment for {0} of {1}{2} from {3} has been paid",
+                        description, currencySymbol, amount, user.Name);
+
+                    // check for a 'runOnce' charge
+                    if ((schItem != null) && schItem.RunOnce)
+                        scheduler.RemoveID(scdID);
                 }
                 else
                 {
-                    IScheduleService scheduler = m_registry.RequestModuleInterface<IScheduleService>();
                     if (scheduler != null)
-                        scheduler.Remove(scdID);
+                        scheduler.RemoveID(scdID);
                 }
             }
             return null;
@@ -269,25 +398,48 @@ namespace Universe.Modules.Currency
         {
             if (OnCheckWhetherUserShouldPay == null)
                 return true;
+
+            bool foundParcel = false;
             foreach (CheckWhetherUserShouldPay d in OnCheckWhetherUserShouldPay.GetInvocationList())
             {
-                if (!d(agentID, text))
-                    return false;
+                if (d(agentID, text))
+                    foundParcel = true;
             }
-            return true;
+            return foundParcel;
         }
 
         #endregion
 
         #region scheduler
 
+        string ElapsedTime(TimeSpan elapsed)
+        {
+            string strElapsed = "";
+
+            if (elapsed.Days > 0)
+                strElapsed += String.Format("{0} day{1} ", elapsed.Days, elapsed.Days == 1 ? "" : "s");
+
+            strElapsed += String.Format("{0} hour{1} {2} minute{3} {4} second{5}",
+                elapsed.Hours,
+                elapsed.Hours == 1 ? "" : "s",
+                elapsed.Minutes,
+                elapsed.Minutes == 1 ? "" : "s",
+                elapsed.Seconds,
+                elapsed.Seconds == 1 ? "" : "s"
+            );
+
+            return strElapsed;
+        }
+
         void InitializeScheduleTimer()
         {
             if (!(payStipends || payGroups))
                 return;
 
-            nextStipendPayment = GetStipendPaytime();
-            nextGroupPayment = nextStipendPayment + new TimeSpan(0, 0, Constants.GROUP_PAYMENTS_DELAY);
+            nextStipendPayment = GetStipendPaytime(0);
+            nextScheduledPayment = nextStipendPayment.AddMinutes(Constants.SCHEDULED_PAYMENTS_DELAY);
+            nextGroupPayment = nextStipendPayment.AddMinutes(Constants.GROUP_PAYMENTS_DELAY);
+            nextGroupDividend = GetGroupDisbursmentPaytime(Constants.GROUP_PAYMENTS_DELAY);
 
             taskTimer.Interval = schedulerInterval * 1000;         // seconds 
             taskTimer.Enabled = true;
@@ -295,19 +447,27 @@ namespace Universe.Modules.Currency
 
         void SchedulerTimerElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
         {
-            // ok time for some payments
+            // check if time for some payments
             taskTimer.Enabled = false;
 
             // Stipend payments needed yet?
             if (DateTime.Now > nextStipendPayment)
                 ProcessStipendPayments();
 
-            // Group payments needed yet?
+            // Scheduled payments then?
+            if (DateTime.Now > nextScheduledPayment)
+                ProccessScheduledPayments();
+
+            // What about Group liabilities?
             if (DateTime.Now > nextGroupPayment)
-                ProcessGroupPayments();
+                ProcessGroupLiability();
+
+            // Group dividend?
+            if (DateTime.Now > nextGroupDividend)
+                ProcessGroupDividends();
 
             // reset for the next cycle
-            taskTimer.Interval = schedulerInterval * 1000;     // reset in case it has been 'fiddled with'
+            taskTimer.Interval = schedulerInterval * 1000;     // reset in case it has been 'fiddled with' (manual paynow)
             taskTimer.Enabled = true;
         }
 
@@ -388,12 +548,11 @@ namespace Universe.Modules.Currency
         }
 
         /// <summary>
-        /// Gets the date and time for the newt stipend payment.
+        /// Gets the date and time for the next stipend payment.
         /// </summary>
         /// <returns>The stipend paytime.</returns>
-        DateTime GetStipendPaytime()
+        public DateTime GetStipendPaytime(int minsOffset)
         {
-
             int paydayDow;
             if (stipendPayDay != "")
             {
@@ -416,7 +575,32 @@ namespace Universe.Modules.Currency
 
             double dayOffset = (paydayDow - todayDow);              // # days to payday
 
-            DateTime nxtPayTime = (today.Date + new TimeSpan(stipHour, stipMin, 0)).AddDays(dayOffset);
+            DateTime nxtPayTime = (today.Date + new TimeSpan(stipHour, stipMin + minsOffset, 0)).AddDays(dayOffset);
+            if (nxtPayTime < DateTime.Now)
+            {
+                // must be today and process time was earlier 
+                var cycleDays = PaymentCycleDays();
+                nxtPayTime = nxtPayTime.AddDays((double)cycleDays);
+            }
+            return nxtPayTime;
+        }
+
+        /// <summary>
+        /// Gets the date and time for the next group dividend payment.
+        /// </summary>
+        /// <returns>The dividend paytime.</returns>
+        public DateTime GetGroupDisbursmentPaytime(int minsOffset)
+        {
+            // time to start processing
+            int stipHour;
+            int.TryParse(stipendPayTime.Substring(0, 2), out stipHour);
+            int stipMin;
+            int.TryParse(stipendPayTime.Substring(3, 2), out stipMin);
+
+            var today = DateTime.Now;
+
+            DateTime nxtPayTime = (today.Date + new TimeSpan(stipHour, stipMin + minsOffset, 0));
+            nxtPayTime = nxtPayTime.AddDays(1);
 
             return nxtPayTime;
         }
@@ -435,8 +619,8 @@ namespace Universe.Modules.Currency
 
             TimeSpan nextSched = nextStipendPayment - DateTime.Now;
 
-            MainConsole.Instance.InfoFormat("[Currency]: The next stipend payment is scheduled for {0} at {1}",
-                nextStipendPayment.ToLongDateString(), stipendPayTime);
+            MainConsole.Instance.InfoFormat("[Currency]: The next stipend payment is scheduled for {0}",
+                String.Format("{0:f}", nextStipendPayment));
             MainConsole.Instance.InfoFormat("            Time to next payment schedule: {0} day{1} {2} hour{3} {4} minute{5}",
                 nextSched.Days,
                 nextSched.Days == 1 ? "" : "s",
@@ -446,7 +630,7 @@ namespace Universe.Modules.Currency
                 nextSched.Minutes == 1 ? "" : "s"
             );
             MainConsole.Instance.InfoFormat("            Stipend : {0} {1}",
-                moneyModule.InWorldCurrencySymbol, stipendAmount);
+                currencySymbol, stipendAmount);
             MainConsole.Instance.InfoFormat("            Cycle   : {0} {1}{2}",
                 stipendInterval, stipendPeriod, stipendInterval == 1 ? "" : "s");
         }
@@ -461,7 +645,8 @@ namespace Universe.Modules.Currency
 
             MainConsole.Instance.Warn("[Currency]: Processing of Stipend payments commenced");
 
-            var rightNow = DateTime.Now.ToUniversalTime();
+            var startTime = DateTime.Now;
+            var rightNow = startTime.ToUniversalTime();
             var userService = m_registry.RequestModuleInterface<IUserAccountService>();
             var agentInfo = Framework.Utilities.DataManager.RequestPlugin<IAgentInfoConnector>();
             List<UserAccount> users;
@@ -490,37 +675,166 @@ namespace Universe.Modules.Currency
                     (UUID)Constants.BankerUUID,
                     stipendAmount,
                     stipendMessage,
-                    TransactionType.SystemGenerated
+                    TransactionType.StipendPayment
                 );
 
                 // keep track
                 if (xfrd)
                 {
+                    MainConsole.Instance.InfoFormat("[Currency] Stipend Payment of {0}{1} for {2} processed.",
+                        currencySymbol, stipendAmount, user.Name);
                     payments++;
                     payValue += stipendAmount;
                 }
             }
 
+            // TODO - need to fiddle 'the books' as -ve balances are not currently available
+            // ignore for now
+            /*
+
             // remove the payments from the banker account 
             if (payValue > 0)
             {
-                moneyModule.Transfer(
-                    (UUID)Constants.BankerUUID,
+                 moneyModule.Transfer(
+                    (UUID) Constants.BankerUUID,
                     UUID.Zero,
                     payValue,
                     "Stipends reset",
                     TransactionType.SystemGenerated
                 );
             }
+            */
 
-            var elapsed = DateTime.Now - rightNow;
-            MainConsole.Instance.InfoFormat("[Currency]: Processed {0} stipend payments for {1} users in {2} secs",
-                payments, payValue, elapsed.Seconds);
+            var elapsed = DateTime.Now - startTime;
+            MainConsole.Instance.InfoFormat("[Currency]: Processed {0} user stipend payments for {1}{2} in {3} secs",
+                payments, currencySymbol, payValue, (int)elapsed.TotalSeconds);
 
             // reset for the next payment
-            nextStipendPayment = GetStipendPaytime();
-            MainConsole.Instance.InfoFormat("[Currency]: The next stipend payment is scheduled for {0}", nextStipendPayment.ToLongDateString());
+            nextStipendPayment = GetStipendPaytime(0);
+            MainConsole.Instance.InfoFormat("[Currency]: The next stipend payment is scheduled for {0}",
+                String.Format("{0:f}", nextStipendPayment));
+        }
 
+        #endregion
+
+        #region scheduled charges
+
+        void ScheduledPaymentsInfo()
+        {
+            var userService = m_registry.RequestModuleInterface<IUserAccountService>();
+
+            int payments = 0;
+            int payValue = 0;
+
+            string paymentInfo;
+
+            paymentInfo = String.Format("{0, -20}", "User");
+            //paymentInfo += String.Format ("{0, -34}", "Description");
+            paymentInfo += String.Format("{0, -30}", "Transaction");
+            paymentInfo += String.Format("{0, -10}", "Amount");
+
+            MainConsole.Instance.CleanInfo(paymentInfo);
+
+            MainConsole.Instance.CleanInfo(
+                "----------------------------------------------------------------------------------------------------");
+
+            List<SchedulerItem> CurrentSchedule = sched_database.ToRun(nextScheduledPayment);
+            foreach (SchedulerItem I in CurrentSchedule)
+            {
+                OSDMap itemInfo = (OSDMap)OSDParser.DeserializeJson(I.FireParams);
+                UUID agentID = itemInfo["AgentID"];
+                //string scdID = itemInfo ["SchedulerID"];
+                //string description = itemInfo ["Text"];
+                int amount = itemInfo["Amount"];
+                TransactionType transType = !itemInfo.ContainsKey("Type") ? TransactionType.SystemGenerated : (TransactionType)itemInfo["Type"].AsInteger();
+
+                var user = userService.GetUserAccount(null, agentID);
+
+                paymentInfo = String.Format("{0, -20}", user.Name);
+                //paymentInfo += String.Format ("{0, -34}", description.Substring (0, 32));   
+                paymentInfo += String.Format("{0, -30}", Utilities.TransactionTypeInfo(transType));
+                paymentInfo += String.Format("{0, -10}", amount);
+
+                MainConsole.Instance.CleanInfo(paymentInfo);
+                payments++;
+                payValue += amount;
+            }
+
+            MainConsole.Instance.CleanInfo("");
+
+            TimeSpan nextSched = nextScheduledPayment - DateTime.Now;
+
+            MainConsole.Instance.InfoFormat("[Currency]: The next payment cycle is scheduled for {0}",
+                String.Format("{0:f}", nextScheduledPayment));
+            MainConsole.Instance.InfoFormat("            Time to next payment schedule: {0} day{1} {2} hour{3} {4} minute{5}",
+                nextSched.Days,
+                nextSched.Days == 1 ? "" : "s",
+                nextSched.Hours,
+                nextSched.Hours == 1 ? "" : "s",
+                nextSched.Minutes,
+                nextSched.Minutes == 1 ? "" : "s"
+            );
+            MainConsole.Instance.InfoFormat("             Cycle  : {0} {1}{2}",
+                stipendInterval, stipendPeriod, stipendInterval == 1 ? "" : "s");
+            MainConsole.Instance.InfoFormat("          Payments  : {0}", payments);
+            MainConsole.Instance.InfoFormat("              Fees  : {0}{1}", currencySymbol, payValue);
+        }
+
+        void ProccessScheduledPayments()
+        {
+            var startScheduled = DateTime.Now;
+
+            // reset in case this is a manual 'paynow'
+            nextScheduledPayment = GetStipendPaytime(Constants.SCHEDULED_PAYMENTS_DELAY);
+
+            List<SchedulerItem> CurrentSchedule = sched_database.ToRun(nextScheduledPayment);
+            foreach (SchedulerItem I in CurrentSchedule)
+                FireScheduleEvent(I, nextScheduledPayment);
+
+            var elapsed = DateTime.Now - startScheduled;
+            MainConsole.Instance.InfoFormat("[Currency]: Scheduled payment processing completed in {0}", (int)elapsed.TotalSeconds);
+            MainConsole.Instance.InfoFormat("[Currency]: The next scheduled payment cycle is scheduled for {0}",
+                String.Format("{0:f}", nextScheduledPayment));
+        }
+
+        void FireScheduleEvent(SchedulerItem I, DateTime nextPayTime)
+        {
+            if (I.FireFunction.StartsWith("ScheduledPayment"))
+            {
+                try
+                {
+                    // save changes before it fires in case its changed during the fire
+                    I = sched_database.SaveHistory(I);
+
+                    if (I.RunOnce)
+                        I.Enabled = false;
+
+                    if (I.Enabled)
+                        I.TimeToRun = nextPayTime;      // next stipend payment cycle + delay
+
+                    if (!I.HistoryKeep)
+                        sched_database.HistoryDeleteOld(I);
+
+                    // save the new schedule item
+                    sched_database.SchedulerSave(I);
+
+                    // now fire
+                    List<Object> reciept = eventManager.FireGenericEventHandler("ScheduledPayment", I.FireParams);
+                    if (!I.HistoryReceipt)
+                        I = sched_database.SaveHistoryComplete(I);
+                    else
+                    {
+                        foreach (string results in reciept.Cast<string>().Where(results => results != ""))
+                        {
+                            sched_database.SaveHistoryCompleteReciept(I.HistoryLastID, results);
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    MainConsole.Instance.ErrorFormat("[Scheduler] FireEvent Error {0}: {1}", I.id, e);
+                }
+            }
         }
 
         #endregion
@@ -544,7 +858,6 @@ namespace Universe.Modules.Currency
             var groups = groupsModule.GetAllGroups((UUID)Constants.BankerUUID);
             if (groups != null)
             {
-
                 // check each group
                 foreach (UUID groupID in groups)
                 {
@@ -560,10 +873,12 @@ namespace Universe.Modules.Currency
                 }
             }
 
-            TimeSpan nextSched = nextStipendPayment - DateTime.Now;
+            TimeSpan nextSched = nextGroupPayment - DateTime.Now;
 
-            MainConsole.Instance.InfoFormat("[Currency]: The next Group payment cycle is scheduled for {0} at {1}",
-                nextStipendPayment.ToLongDateString(), stipendPayTime);
+            MainConsole.Instance.InfoFormat("[Currency]: The next Group dividend is scheduled for {0}",
+                String.Format("{0:f}", nextGroupDividend));
+            MainConsole.Instance.InfoFormat("[Currency]: The next Group payment cycle is scheduled for {0}",
+                        String.Format("{0:f}", nextGroupPayment));
             MainConsole.Instance.InfoFormat("            Time to next payment schedule: {0} day{1} {2} hour{3} {4} minute{5}",
                 nextSched.Days,
                 nextSched.Days == 1 ? "" : "s",
@@ -575,44 +890,60 @@ namespace Universe.Modules.Currency
             MainConsole.Instance.InfoFormat("            Cycle   : {0} {1}{2}",
                 stipendInterval, stipendPeriod, stipendInterval == 1 ? "" : "s");
             MainConsole.Instance.InfoFormat("            Groups  : {0}", liableGroups);
-            MainConsole.Instance.InfoFormat("            Fee     : {0}{1}", moneyModule.InWorldCurrencySymbol, searchFee);
+            MainConsole.Instance.InfoFormat("            Fee     : {0}{1}", currencySymbol, searchFee);
         }
 
-        void ProcessGroupPayments()
+        /*  void ProcessGroupPayments()
+          {
+              if (!payGroups)
+              {
+                  MainConsole.Instance.Info ("[Currency]: Group payments are not enabled.");
+                  return;
+              }
+
+              if (directoryFee == 0)
+                  return;
+
+              var startGroups = DateTime.Now;
+              MainConsole.Instance.Warn ("[Currency]: Processing of Group liabilities and payments commenced");
+
+              int grpMembersLiable;
+              int liablePayments;
+              int grpsPayments;
+              int grpDividends;
+
+              ProcessGroupLiability (out grpMembersLiable, out liablePayments);
+              ProcessGroupDividends (out grpsPayments, out grpDividends);
+
+              // reset for the next payment
+              nextGroupPayment = GetStipendPaytime ( Constants.GROUP_PAYMENTS_DELAY );
+
+              MainConsole.Instance.InfoFormat ("[Currency]: Processed {0} group liability payments for {1}{2}",
+                  grpMembersLiable, liablePayments, moneyModule.InWorldCurrencySymbol);
+
+              MainConsole.Instance.InfoFormat ("[Currency]: Processed {0} group dividend payments for {1}{2}",
+                  grpsPayments, grpDividends, moneyModule.InWorldCurrencySymbol);
+
+              var elapsed = DateTime.Now - startGroups;
+              MainConsole.Instance.InfoFormat ("[Currency]: Group processing completed in {0} secs", elapsed);
+              MainConsole.Instance.InfoFormat ("[Currency]: The next Group payment is scheduled for {0}",
+                  String.Format("{0:f}",nextGroupPayment));
+          }
+          */
+
+        void ProcessGroupLiability()
         {
+            if (!payGroups)
+                return;
+
             if (directoryFee == 0)
                 return;
 
+            int grpMembersLiable = 0;
+            int liablePayments = 0;
+
             var startGroups = DateTime.Now;
-            MainConsole.Instance.Warn("[Currency]: Processing of Group liabilities and payments commenced");
-
-            int grpMembersLiable;
-            int liablePayments;
-            int grpsPayments;
-            int grpDividends;
-
-            ProcessGroupLiability(out grpMembersLiable, out liablePayments);
-            ProcessGroupDividends(out grpsPayments, out grpDividends);
-
-            // reset for the next payment
-            nextGroupPayment = GetStipendPaytime() + +new TimeSpan(0, 0, Constants.GROUP_PAYMENTS_DELAY);
-
-            MainConsole.Instance.InfoFormat("[Currency]: Processed {0} group liability payments for {1}{2}",
-                grpMembersLiable, liablePayments, moneyModule.InWorldCurrencySymbol);
-
-            MainConsole.Instance.InfoFormat("[Currency]: Processed {0} group dividend payments for {1}{2}",
-                grpsPayments, grpDividends, moneyModule.InWorldCurrencySymbol);
-
-            var elapsed = DateTime.Now - startGroups;
-            MainConsole.Instance.InfoFormat("[Currency]: Group processing completed in {0} secs", elapsed);
-            MainConsole.Instance.InfoFormat("[Currency]: The next Group payment is scheduled for {0}",
-                nextGroupPayment.ToLongDateString());
-        }
-
-        void ProcessGroupLiability(out int grpMembersLiable, out int liablePayments)
-        {
-            grpMembersLiable = 0;
-            liablePayments = 0;
+            MainConsole.Instance.Warn("[Currency]: Processing of Group liabilities commenced");
 
             if (!payGroups || directoryFee == 0)
                 return;
@@ -628,6 +959,7 @@ namespace Universe.Modules.Currency
             IScene scene = MainConsole.Instance.ConsoleScenes[0];
             IGroupsModule groupsModule = scene.RequestModuleInterface<IGroupsModule>();
             IDirectoryServiceConnector dir_service = Framework.Utilities.DataManager.RequestPlugin<IDirectoryServiceConnector>();
+            IUserAccountService userService = m_registry.RequestModuleInterface<IUserAccountService>();
 
             var groups = groupsModule.GetAllGroups((UUID)Constants.BankerUUID);
 
@@ -641,6 +973,7 @@ namespace Universe.Modules.Currency
 
             foreach (UUID groupID in groups)
             {
+                var groupName = groupsModule.GetGroupTitle(groupID);
 
                 var grpParcels = dir_service.GetParcelByOwner(groupID);
                 foreach (var parcel in grpParcels)
@@ -653,7 +986,7 @@ namespace Universe.Modules.Currency
                 // This does not appear to be set anywhere else so use it as the total group liability for land sales
                 grpBalance.ParcelDirectoryFee = searchFee;
 
-                //TODO: Add a groupTransfer() process to provide for actually saving group monies !!
+                //TODO: Add a groupTranfer() process to provide for actually saving group monies !!
                 // moneyModule.UpdateGroupBalance(groupID, grpBalance);
 
                 // a bit of optimisation - no need to continue if there are no fees to be paid
@@ -691,28 +1024,45 @@ namespace Universe.Modules.Currency
                         (UUID)Constants.BankerUUID,
                         memberID,
                         memberShare,
-                        "Group directory fee share",
+                        "Group directory fee share payment",
                         TransactionType.SystemGenerated
                     );
 
                     // keep track
                     if (xfrd)
                     {
+                        var user = userService.GetUserAccount(null, memberID);
+                        MainConsole.Instance.InfoFormat("[Currency] Directory fee payment for {0} of {1}{2} from {3} processed.",
+                            groupName, currencySymbol, memberShare, user.Name);
+
                         grpMembersLiable++;
                         liablePayments += directoryFee;
                     }
                 }
             }
-            return;
 
+            // reset for the next payment
+            nextGroupPayment = GetStipendPaytime(Constants.GROUP_PAYMENTS_DELAY);
+
+            MainConsole.Instance.InfoFormat("[Currency]: Processed {0} group liability payments for {1}{2}",
+                grpMembersLiable, liablePayments, moneyModule.InWorldCurrencySymbol);
+
+            var elapsed = DateTime.Now - startGroups;
+            MainConsole.Instance.InfoFormat("[Currency]: Group processing completed in {0} secs", (int)elapsed.TotalSeconds);
+            MainConsole.Instance.InfoFormat("[Currency]: The next Group payment is scheduled for {0}",
+                String.Format("{0:f}", nextGroupPayment));
+
+            return;
         }
 
-        void ProcessGroupDividends(out int grpsPayments, out int grpDividends)
+        void ProcessGroupDividends()
         {
-            grpsPayments = 0;
-            grpDividends = 0;
+            int grpsPayments = 0;
+            int grpDividends = 0;
+            var startGroups = DateTime.Now;
+            MainConsole.Instance.Warn("[Currency]: Processing of Group dividends commenced");
 
-            // * Group Payments
+            // * Group Disbursments
             // - If there's money in the group it will have to be divided by the people that have the "Accountability" role task
             // - Check how many users there are with that role task
             // - Divide the amount of money by the amount of users (make sure the amount is a whole number)
@@ -721,6 +1071,7 @@ namespace Universe.Modules.Currency
 
             IScene scene = MainConsole.Instance.ConsoleScenes[0];
             IGroupsModule groupsModule = scene.RequestModuleInterface<IGroupsModule>();
+            IUserAccountService userService = m_registry.RequestModuleInterface<IUserAccountService>();
 
             var groups = groupsModule.GetAllGroups((UUID)Constants.BankerUUID);
             if (groups == null | groups.Count == 0)
@@ -732,6 +1083,8 @@ namespace Universe.Modules.Currency
 
             foreach (UUID groupID in groups)
             {
+                var groupName = groupsModule.GetGroupTitle(groupID);
+
                 grpBalance = moneyModule.GetGroupBalance(groupID);
                 if (grpBalance.ParcelDirectoryFee <= 0)
                     continue;
@@ -757,7 +1110,6 @@ namespace Universe.Modules.Currency
 
                 foreach (var memberID in payMembers)
                 {
-
                     // pay them...
                     xfrd = moneyModule.Transfer(
                             memberID,
@@ -770,17 +1122,40 @@ namespace Universe.Modules.Currency
                     // keep track
                     if (xfrd)
                     {
+                        var user = userService.GetUserAccount(null, memberID);
+                        MainConsole.Instance.InfoFormat("[Currency] Dividend payment from {0} of {1}{2} from {3} processed.",
+                            groupName, currencySymbol, dividend, user.Name);
+
                         grpsPayments++;
                         grpDividends += dividend;
                     }
                 }
             }
+
+            // reset for the next payment
+            nextGroupDividend = GetGroupDisbursmentPaytime(Constants.GROUP_PAYMENTS_DELAY);
+
+            MainConsole.Instance.InfoFormat("[Currency]: Processed {0} group dividend payments for {1}{2}",
+                grpsPayments, grpDividends, moneyModule.InWorldCurrencySymbol);
+
+            var elapsed = DateTime.Now - startGroups;
+            MainConsole.Instance.InfoFormat("[Currency]: Group processing completed in {0} secs", (int)elapsed.TotalSeconds);
+            MainConsole.Instance.InfoFormat("[Currency]: The next Group disbursment is scheduled for {0}",
+                String.Format("{0:f}", nextGroupDividend));
+
             return;
         }
 
         #endregion
 
         #region console commands
+        void SetSchedTimer(int seconds)
+        {
+            taskTimer.Enabled = false;
+            taskTimer.Interval = seconds * 1000;
+            taskTimer.Enabled = true;
+        }
+
         protected void HandleStipendEnable(IScene scene, string[] cmd)
         {
             if (payStipends)
@@ -811,7 +1186,6 @@ namespace Universe.Modules.Currency
 
             if (promptUser)
             {
-
                 // prompt for details...");
                 stipendAmount = int.Parse(MainConsole.Instance.Prompt("Stipend amount ?", "0"));
                 if (stipendAmount == 0)
@@ -856,7 +1230,6 @@ namespace Universe.Modules.Currency
                 if (!stipendsPremiumOnly)
                     stipendsLoginRequired = MainConsole.Instance.Prompt("Require a recent login for Free members? (yes/no)", "no").ToLower() == "yes";
                 // not sure about this one??  //StipendsLoadOldUsers = currCfg.GetBoolean ("StipendsLoadOldUsers", false);
-
             }
 
             // ensure we are enabled
@@ -866,7 +1239,6 @@ namespace Universe.Modules.Currency
             MainConsole.Instance.Info("[Currency]; Stipend payments have been enabled");
             MainConsole.Instance.CleanInfoFormat("          The next stipend payment of {0}{1} is scheduled for {2}",
                 moneyModule.InWorldCurrencySymbol, stipendAmount, nextStipendPayment.ToLongDateString());
-
         }
 
         protected void HandleStipendDisable(IScene scene, string[] cmd)
@@ -895,11 +1267,8 @@ namespace Universe.Modules.Currency
             }
 
             nextStipendPayment = DateTime.Now;
-            taskTimer.Enabled = false;
-            taskTimer.Interval = 10 * 1000;
-            taskTimer.Enabled = true;
+            SetSchedTimer(10);
             MainConsole.Instance.InfoFormat("[Currency]: Stipend payments will commence in {0} seconds.", 10);
-
         }
 
         protected void HandleStipendReset(IScene scene, string[] cmd)
@@ -909,7 +1278,6 @@ namespace Universe.Modules.Currency
 
             MainConsole.Instance.Info("[Currency]; Stipend configuration reloaded");
             StipendInfo();
-
         }
 
         protected void HandleGrouppayEnable(IScene scene, string[] cmd)
@@ -930,7 +1298,6 @@ namespace Universe.Modules.Currency
             MainConsole.Instance.Info("[Currency]; Group payments have been enabled");
             MainConsole.Instance.CleanInfoFormat("          The next group payment cycle is scheduled for {0}",
                   nextGroupPayment.ToLongDateString());
-
         }
 
         protected void HandleGrouppayDisable(IScene scene, string[] cmd)
@@ -959,11 +1326,27 @@ namespace Universe.Modules.Currency
             }
 
             nextGroupPayment = DateTime.Now;
-            taskTimer.Enabled = false;
-            taskTimer.Interval = 10 * 1000;
-            taskTimer.Enabled = true;
+            SetSchedTimer(10);
             MainConsole.Instance.InfoFormat("[Currency]: Group payments will commence in {0} seconds.", 10);
+        }
 
+        protected void HandleGrouppayPayDividends(IScene scene, string[] cmd)
+        {
+            nextGroupDividend = DateTime.Now;
+            SetSchedTimer(10);
+            MainConsole.Instance.InfoFormat("[Currency]: Group dividend payments will commence in {0} seconds.", 10);
+        }
+
+        protected void HandleScheduledPayInfo(IScene scene, string[] cmd)
+        {
+            ScheduledPaymentsInfo();
+        }
+
+        protected void HandleScheduledPayNow(IScene scene, string[] cmd)
+        {
+            nextScheduledPayment = DateTime.Now;
+            SetSchedTimer(10);
+            MainConsole.Instance.InfoFormat("[Currency]: Scheduled payments will commence in {0} seconds.", 10);
         }
 
         #endregion

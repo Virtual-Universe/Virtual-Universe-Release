@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Aurora-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -27,7 +27,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using Nini.Config;
 using OpenMetaverse;
 using OpenMetaverse.StructuredData;
@@ -89,8 +88,7 @@ namespace Universe.Modules.Currency
             ISceneManager manager = m_registry.RequestModuleInterface<ISceneManager>();
             if (manager != null)
             {
-                manager.OnAddedScene += (scene) =>
-                {
+                manager.OnAddedScene += (scene) => {
                     m_scenes.Add(scene);
                     scene.EventManager.OnNewClient += OnNewClient;
                     scene.EventManager.OnClosingClient += OnClosingClient;
@@ -98,8 +96,7 @@ namespace Universe.Modules.Currency
                     scene.EventManager.OnValidateBuyLand += EventManager_OnValidateBuyLand;
                     scene.RegisterModuleInterface<IMoneyModule>(this);
                 };
-                manager.OnCloseScene += (scene) =>
-                {
+                manager.OnCloseScene += (scene) => {
                     scene.EventManager.OnNewClient -= OnNewClient;
                     scene.EventManager.OnClosingClient -= OnClosingClient;
                     scene.EventManager.OnMakeRootAgent -= OnMakeRootAgent;
@@ -112,9 +109,6 @@ namespace Universe.Modules.Currency
             // these are only valid if we are local
             if (!m_connector.DoRemoteCalls)
             {
-                //if ((m_connector.GetConfig().GiveStipends) && (m_connector.GetConfig().Stipend > 0))
-                //   new GiveStipends(m_connector.GetConfig(), m_registry, m_connector);
-
                 m_userInfoService = m_registry.RequestModuleInterface<IAgentInfoService>();
                 m_userAccountService = m_registry.RequestModuleInterface<IUserAccountService>();
 
@@ -188,13 +182,6 @@ namespace Universe.Modules.Currency
                     "show user purchases",
                     "Display user purchases for a period.",
                     HandleShowPurchases, false, true);
-
-                /* MainConsole.Instance.Commands.AddCommand(
-                   "stipend set",
-                   "stipend set",
-                   "Sets the next date for stipend",
-                   HandleStipendSet, false, true);
-                 */
             }
         }
 
@@ -203,6 +190,11 @@ namespace Universe.Modules.Currency
         public string InWorldCurrencySymbol
         {
             get { return m_connector.InWorldCurrency; }
+        }
+
+        public bool IsLocal
+        {
+            get { return !m_connector.DoRemoteCalls; }
         }
 
         public int UploadCharge
@@ -317,6 +309,7 @@ namespace Universe.Modules.Currency
         {
             return m_connector.GetTransactionHistory(period, periodType, start, count);
         }
+
 
         public uint NumberOfPurchases(UUID UserID)
         {
@@ -553,52 +546,6 @@ namespace Universe.Modules.Currency
 
         #endregion
 
-        #region helpers
-
-        public string TransactionTypeInfo(TransactionType transType)
-        {
-            switch (transType)
-            {
-                // One-Time Charges
-                case TransactionType.GroupCreate: return "Group creation fee";
-                case TransactionType.GroupJoin: return "Group joining fee";
-                case TransactionType.UploadCharge: return "Upload charge";
-                case TransactionType.LandAuction: return "Land auction fee";
-                case TransactionType.ClassifiedCharge: return "Classified advert fee";
-                // Recurrent Charges
-                case TransactionType.ParcelDirFee: return "Parcel directory fee";
-                case TransactionType.ClassifiedRenew: return "Classified renewal";
-                case TransactionType.ScheduledFee: return "Scheduled fee";
-                // Inventory Transactions
-                case TransactionType.GiveInventory: return "Give inventory";
-                // Transfers Between Users
-                case TransactionType.ObjectSale: return "Object sale";
-                case TransactionType.Gift: return "Gift";
-                case TransactionType.LandSale: return "Land sale";
-                case TransactionType.ReferBonus: return "Refer bonus";
-                case TransactionType.InvntorySale: return "Inventory sale";
-                case TransactionType.RefundPurchase: return "Purchase refund";
-                case TransactionType.LandPassSale: return "Land parcel sale";
-                case TransactionType.DwellBonus: return "Dwell bonus";
-                case TransactionType.PayObject: return "Pay object";
-                case TransactionType.ObjectPays: return "Object pays";
-                case TransactionType.BuyMoney: return "Money purchase";
-                case TransactionType.MoveMoney: return "Move money";
-                // Group Transactions
-                case TransactionType.GroupLiability: return "Group liability";
-                case TransactionType.GroupDividend: return "Group dividend";
-                // Event Transactions
-                case TransactionType.EventFee: return "Event fee";
-                case TransactionType.EventPrize: return "Event prize";
-                // Stipend Credits
-                case TransactionType.StipendPayment: return "Stipend payment";
-
-                default: return "System Generated";
-            }
-        }
-
-        #endregion
-
         #region Console Methods
 
         UserAccount GetUserAccount()
@@ -709,10 +656,10 @@ namespace Universe.Modules.Currency
                     string rawDate = MainConsole.Instance.Prompt("Date to pay next Stipend? (MM/dd/yyyy)");
                     if (rawDate == "")
                         return;
-            
+
                     // Make a new DateTime from rawDate
                     DateTime newDate = DateTime.ParseExact(rawDate, "MM/dd/yyyy", CultureInfo.InvariantCulture);
-                    GiveStipends.StipendDate = newDate;
+                    //GiveStipends.StipendDate = newDate;
 
                     // Code needs to be added to run through the scheduler and change the 
                     // RunsNext to the date that the user wants the scheduler to be
@@ -751,7 +698,7 @@ namespace Universe.Modules.Currency
                 transInfo = String.Format("{0, -24}", transfer.TransferDate.ToLocalTime());
                 transInfo += String.Format("{0, -25}", transfer.FromAgentName);
                 transInfo += String.Format("{0, -30}", transfer.Description);
-                transInfo += String.Format("{0, -20}", TransactionTypeInfo(transfer.TransferType));
+                transInfo += String.Format("{0, -20}", Utilities.TransactionTypeInfo(transfer.TransferType));
                 transInfo += String.Format("{0, -12}", transfer.Amount);
                 transInfo += String.Format("{0, -12}", transfer.ToBalance);
 

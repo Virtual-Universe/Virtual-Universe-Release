@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Aurora-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -27,17 +27,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Net;
 using Nini.Config;
 using OpenMetaverse;
 using OpenMetaverse.StructuredData;
-using Universe.Framework.ConsoleFramework;
-using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Modules;
-using Universe.Framework.SceneInfo;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
 
@@ -196,19 +191,27 @@ namespace Universe.Modules.Currency
             amount = (uint)CheckMinMaxTransferSettings(agentID, amount);
             if (amount == 0)
                 return false;
-            UserCurrencyTransfer(agentID, UUID.Zero, amount,
-                                             "Currency Exchange", TransactionType.SystemGenerated, UUID.Zero);
+
+            UserCurrencyTransfer(
+                agentID,
+                UUID.Zero,
+                amount,
+                "Currency Exchange",
+                TransactionType.BuyMoney,
+                UUID.Zero
+            );
 
             //Log to the database
             List<object> values = new List<object> {
                 UUID.Random (),                         // TransactionID
                 agentID.ToString (),                    // PrincipalID
                 ep.ToString (),                         // IP
-                amount,                                // Amount
-                CalculateEstimatedCost(amount),        // Actual cost
-                Utils.GetUnixTime(),                   // Created
-                Utils.GetUnixTime()                    // Updated
+                amount,                                 // Amount
+                CalculateEstimatedCost(amount),         // Actual cost
+                Utils.GetUnixTime(),                    // Created
+                Utils.GetUnixTime()                     // Updated
             };
+
             m_gd.Insert(_REALMPURCHASE, values.ToArray());
             return true;
         }
@@ -261,7 +264,6 @@ namespace Universe.Modules.Currency
             if (fromAgentID != UUID.Zero)
                 filter.andFilters["FromPrincipalID"] = fromAgentID;
 
-
             var transactions = m_gd.Query(new string[1] { "count(*)" }, _REALMHISTORY, filter, null, null, null);
             if ((transactions == null) || (transactions.Count == 0))
                 return 0;
@@ -283,7 +285,7 @@ namespace Universe.Modules.Currency
             if (fromAgentID != UUID.Zero)
                 filter.andFilters["FromPrincipalID"] = fromAgentID;
 
-            // back to utc please...
+            // back to UTC please...
             dateStart = dateStart.ToUniversalTime();
             dateEnd = dateEnd.ToUniversalTime();
 
@@ -292,6 +294,7 @@ namespace Universe.Modules.Currency
 
             Dictionary<string, bool> sort = new Dictionary<string, bool>(1);
             sort["Created"] = false;        // descending order
+            //sort["FromName"] = true;
 
             List<string> query = m_gd.Query(new string[] { "*" }, _REALMHISTORY, filter, sort, start, count);
 
@@ -355,7 +358,7 @@ namespace Universe.Modules.Currency
             if (UserID != UUID.Zero)
                 filter.andFilters["PrincipalID"] = UserID;
 
-            // back to utc please...
+            // back to UTC please...
             dateStart = dateStart.ToUniversalTime();
             dateEnd = dateEnd.ToUniversalTime();
 
@@ -364,6 +367,7 @@ namespace Universe.Modules.Currency
 
 
             Dictionary<string, bool> sort = new Dictionary<string, bool>(1);
+            //sort["PrincipalID"] = true;
             sort["Created"] = false;        // descending order
 
             List<string> query = m_gd.Query(new string[] { "*" }, _REALMPURCHASE, filter, sort, start, count);
@@ -401,6 +405,7 @@ namespace Universe.Modules.Currency
             return UserCurrencyTransfer(toID, fromID, UUID.Zero, "", UUID.Zero, "", amount, description, type, transactionID);
         }
 
+        // This is the main entry point for currency transactions
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
         public bool UserCurrencyTransfer(UUID toID, UUID fromID, UUID toObjectID, string toObjectName, UUID fromObjectID,
             string fromObjectName, uint amount, string description, TransactionType type, UUID transactionID)
@@ -412,21 +417,38 @@ namespace Universe.Modules.Currency
 
             UserCurrency toCurrency = GetUserCurrency(toID);
             UserCurrency fromCurrency = fromID == UUID.Zero ? null : GetUserCurrency(fromID);
+
             if (toCurrency == null)
                 return false;
+
+            // Groups (legacy) should not receive stiopends
+            if ((type == TransactionType.StipendPayment) && toCurrency.IsGroup)
+                return false;
+
             if (fromCurrency != null)
             {
-                //Check to see whether they have enough money
-                if ((int)fromCurrency.Amount - (int)amount < 0)
-                    return false; //Not enough money
-                fromCurrency.Amount -= amount;
+                if (fromID == (UUID)Constants.BankerUUID)
+                {
+                    // payment from the Banker
+                    // 20150730 - greythane - need to fiddle 'the books' as -ve balances are not currently available
+                    fromCurrency.Amount += amount;
+                }
+                else
+                {
+                    // Normal users cannot have a credit balance.. check to see whether they have enough money
+                    if ((int)fromCurrency.Amount - (int)amount < 0)
+                        return false; // Not enough money
+                }
 
+                // subtract this payment
+                fromCurrency.Amount -= amount;
                 UserCurrencyUpdate(fromCurrency, true);
             }
+
             if (fromID == toID)
                 toCurrency = GetUserCurrency(toID);
 
-            //Update the user whose getting paid
+            //Update the user who is getting paid
             toCurrency.Amount += amount;
             UserCurrencyUpdate(toCurrency, true);
 
@@ -525,7 +547,7 @@ namespace Universe.Modules.Currency
                     FromBalance,
                     toObjectName ?? "",
                     fromObjectName ?? "",
-                    regionID 
+                    regionID
                 });
         }
 

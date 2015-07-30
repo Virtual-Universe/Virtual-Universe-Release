@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Aurora-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -78,30 +78,30 @@ namespace Universe.Modules.Currency
             {
                 try
                 {
-                    if (propertyInfo.PropertyType.IsAssignableFrom(typeof(float)))
+                    if (propertyInfo.PropertyType.IsAssignableFrom(typeof (float)))
                         propertyInfo.SetValue(this,
                                               economyConfig.GetFloat(propertyInfo.Name,
                                                                      float.Parse(
                                                                          propertyInfo.GetValue(this, new object[0])
                                                                                      .ToString())), new object[0]);
-                    else if (propertyInfo.PropertyType.IsAssignableFrom(typeof(int)))
+                    else if (propertyInfo.PropertyType.IsAssignableFrom(typeof (int)))
                         propertyInfo.SetValue(this,
                                               economyConfig.GetInt(propertyInfo.Name,
                                                                    int.Parse(
                                                                        propertyInfo.GetValue(this, new object[0])
                                                                                    .ToString())), new object[0]);
-                    else if (propertyInfo.PropertyType.IsAssignableFrom(typeof(bool)))
+                    else if (propertyInfo.PropertyType.IsAssignableFrom(typeof (bool)))
                         propertyInfo.SetValue(this,
                                               economyConfig.GetBoolean(propertyInfo.Name,
                                                                        bool.Parse(
                                                                            propertyInfo.GetValue(this, new object[0])
                                                                                        .ToString())), new object[0]);
-                    else if (propertyInfo.PropertyType.IsAssignableFrom(typeof(string)))
+                    else if (propertyInfo.PropertyType.IsAssignableFrom(typeof (string)))
                         propertyInfo.SetValue(this,
                                               economyConfig.GetString(propertyInfo.Name,
                                                                       propertyInfo.GetValue(this, new object[0])
                                                                                   .ToString()), new object[0]);
-                    else if (propertyInfo.PropertyType.IsAssignableFrom(typeof(UUID)))
+                    else if (propertyInfo.PropertyType.IsAssignableFrom(typeof (UUID)))
                         propertyInfo.SetValue(this,
                                               new UUID(economyConfig.GetString(propertyInfo.Name,
                                                                                propertyInfo.GetValue(this, new object[0])
@@ -130,16 +130,16 @@ namespace Universe.Modules.Currency
             {
                 try
                 {
-                    if (propertyInfo.PropertyType.IsAssignableFrom(typeof(float)))
-                        returnvalue.Add(propertyInfo.Name, (float)propertyInfo.GetValue(this, new object[0]));
-                    else if (propertyInfo.PropertyType.IsAssignableFrom(typeof(int)))
-                        returnvalue.Add(propertyInfo.Name, (int)propertyInfo.GetValue(this, new object[0]));
-                    else if (propertyInfo.PropertyType.IsAssignableFrom(typeof(bool)))
-                        returnvalue.Add(propertyInfo.Name, (bool)propertyInfo.GetValue(this, new object[0]));
-                    else if (propertyInfo.PropertyType.IsAssignableFrom(typeof(string)))
-                        returnvalue.Add(propertyInfo.Name, (string)propertyInfo.GetValue(this, new object[0]));
-                    else if (propertyInfo.PropertyType.IsAssignableFrom(typeof(UUID)))
-                        returnvalue.Add(propertyInfo.Name, (UUID)propertyInfo.GetValue(this, new object[0]));
+                    if (propertyInfo.PropertyType.IsAssignableFrom(typeof (float)))
+                        returnvalue.Add(propertyInfo.Name, (float) propertyInfo.GetValue(this, new object[0]));
+                    else if (propertyInfo.PropertyType.IsAssignableFrom(typeof (int)))
+                        returnvalue.Add(propertyInfo.Name, (int) propertyInfo.GetValue(this, new object[0]));
+                    else if (propertyInfo.PropertyType.IsAssignableFrom(typeof (bool)))
+                        returnvalue.Add(propertyInfo.Name, (bool) propertyInfo.GetValue(this, new object[0]));
+                    else if (propertyInfo.PropertyType.IsAssignableFrom(typeof (string)))
+                        returnvalue.Add(propertyInfo.Name, (string) propertyInfo.GetValue(this, new object[0]));
+                    else if (propertyInfo.PropertyType.IsAssignableFrom(typeof (UUID)))
+                        returnvalue.Add(propertyInfo.Name, (UUID) propertyInfo.GetValue(this, new object[0]));
                 }
                 catch (Exception ex)
                 {
@@ -157,15 +157,15 @@ namespace Universe.Modules.Currency
                 {
                     try
                     {
-                        if (propertyInfo.PropertyType.IsAssignableFrom(typeof(float)))
+                        if (propertyInfo.PropertyType.IsAssignableFrom(typeof (float)))
                             propertyInfo.SetValue(this, float.Parse(values[propertyInfo.Name].AsString()), new object[0]);
-                        else if (propertyInfo.PropertyType.IsAssignableFrom(typeof(int)))
+                        else if (propertyInfo.PropertyType.IsAssignableFrom(typeof (int)))
                             propertyInfo.SetValue(this, values[propertyInfo.Name].AsInteger(), new object[0]);
-                        else if (propertyInfo.PropertyType.IsAssignableFrom(typeof(bool)))
+                        else if (propertyInfo.PropertyType.IsAssignableFrom(typeof (bool)))
                             propertyInfo.SetValue(this, values[propertyInfo.Name].AsBoolean(), new object[0]);
-                        else if (propertyInfo.PropertyType.IsAssignableFrom(typeof(string)))
+                        else if (propertyInfo.PropertyType.IsAssignableFrom(typeof (string)))
                             propertyInfo.SetValue(this, values[propertyInfo.Name].AsString(), new object[0]);
-                        else if (propertyInfo.PropertyType.IsAssignableFrom(typeof(UUID)))
+                        else if (propertyInfo.PropertyType.IsAssignableFrom(typeof (UUID)))
                             propertyInfo.SetValue(this, values[propertyInfo.Name].AsUUID(), new object[0]);
                     }
                     catch (Exception ex)
@@ -190,19 +190,19 @@ namespace Universe.Modules.Currency
         public string UpgradeMembershipUri
         {
             get { return m_UpgradeMembershipUri; }
-            set { m_UpgradeMembershipUri = value.Replace("ServersHostname", MainServer.Instance.HostName); }
+            set { m_UpgradeMembershipUri = value.Replace ("ServersHostname", MainServer.Instance.HostName); }
         }
-
+            
         public int PriceGroupCreate
         {
-            get { return (int)m_PriceGroupCreate; }
-            set { m_PriceGroupCreate = (uint)value; }
+            get { return (int) m_PriceGroupCreate; }
+            set { m_PriceGroupCreate = (uint) value; }
         }
 
         public int PriceUpload
         {
-            get { return (int)m_PriceUpload; }
-            set { m_PriceUpload = (uint)value; }
+            get { return (int) m_PriceUpload; }
+            set { m_PriceUpload = (uint) value; }
         }
 
         public int PriceDirectoryFee
@@ -213,8 +213,8 @@ namespace Universe.Modules.Currency
 
         public int ClientPort
         {
-            get { return (int)m_ClientPort; }
-            set { m_ClientPort = (uint)value; }
+            get { return (int) m_ClientPort; }
+            set { m_ClientPort = (uint) value; }
         }
 
         public bool CanBuyCurrencyInworld
@@ -323,11 +323,11 @@ namespace Universe.Modules.Currency
             get { return m_MinAmountPurchasable; }
             set { m_MinAmountPurchasable = value; }
         }
-
+        
         public int SchedulerInterval
         {
-            get { return m_SchedulerInterval; }
-            set { m_SchedulerInterval = value; }
+        	get { return m_SchedulerInterval; }
+        	set { m_SchedulerInterval = value; }
         }
 
         #endregion
