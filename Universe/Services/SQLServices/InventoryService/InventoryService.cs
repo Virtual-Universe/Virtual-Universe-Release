@@ -294,6 +294,15 @@ namespace Universe.Services.SQLServices.InventoryService
                                               }))
                 CreateFolder(principalID, rootFolder.ID, (int) AssetType.CurrentOutfitFolder, "Current Outfit");
 
+            // Marketplace related folders, unchecked at the moment
+
+            if (!Array.Exists(sysFolders, delegate (InventoryFolderBase f)
+            {
+                if (f.Type == (short)AssetType.VMMListings) return true;
+                return false;
+            }))
+                CreateFolder(principalID, rootFolder.ID, (int)AssetType.VMMListings, "Marketplace Listings");
+
             if (createDefaultItems && m_LibraryService != null)
             {
                 defaultItems = new List<InventoryItemBase>();
