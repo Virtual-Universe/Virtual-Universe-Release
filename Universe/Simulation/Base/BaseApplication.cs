@@ -27,11 +27,6 @@
 
 //#define BlockUnsupportedVersions
 
-using Universe.Framework.Configuration;
-using Universe.Framework.ConsoleFramework;
-using Universe.Framework.Modules;
-using Universe.Framework.Utilities;
-using Nini.Config;
 using System;
 using System.Diagnostics;
 using System.Globalization;
@@ -39,6 +34,11 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
+using Nini.Config;
+using Universe.Framework.Configuration;
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.Modules;
+using Universe.Framework.Utilities;
 
 namespace Universe.Simulation.Base
 {
@@ -63,7 +63,7 @@ namespace Universe.Simulation.Base
         /// </summary>
         public static string m_crashDir = "crashes";
 
-        static bool _IsHandlingException; // Make sure we don't go recursive on ourself
+        static bool _IsHandlingException; // Make sure we don't go recursive on ourselves
 
         //could move our main function into OpenSimMain and kill this class
         public static void BaseMain(string[] args, string defaultIniFile, ISimulationBase simBase)
@@ -660,7 +660,7 @@ namespace Universe.Simulation.Base
         }
 
         /// <summary>
-        ///     Deal with sending the error to the error reporting service and saving the dump to the harddrive if needed
+        ///     Deal with sending the error to the error reporting service and saving the dump to the hard-drive if needed
         /// </summary>
         /// <param name="msg"></param>
         /// <param name="ex"></param>

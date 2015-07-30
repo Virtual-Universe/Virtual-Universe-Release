@@ -25,7 +25,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Timers;
+using Nini.Config;
+using OpenMetaverse;
 using Universe.Framework.Configuration;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.ModuleLoader;
@@ -38,12 +43,6 @@ using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Other;
 using Universe.Framework.Utilities;
 using Universe.Services.DataService;
-using Nini.Config;
-using OpenMetaverse;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Timers;
 
 namespace Universe.Simulation.Base
 {
@@ -58,7 +57,7 @@ namespace Universe.Simulation.Base
         protected ConfigurationLoader m_configurationLoader;
 
         /// <value>
-        ///     The config information passed into the Universe server.
+        ///     The config information passed into the Virtual Universe Server.
         /// </value>
         protected IConfigSource m_config;
 
@@ -224,7 +223,7 @@ namespace Universe.Simulation.Base
         }
 
         /// <summary>
-        ///     Performs initialisation of the application, such as loading the HTTP server and modules
+        ///     Performs initialization of the application, such as loading the HTTP server and modules
         /// </summary>
         public virtual void Startup()
         {
