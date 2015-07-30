@@ -150,7 +150,7 @@ namespace Universe.DataManager
             if (!TableExists(tableName))
             {
                 MainConsole.Instance.Warn("[DataMigrator]: Issue finding table " + tableName +
-                    " when verifing tables exist!"); 
+                    " when verifying tables exist!"); 
                 return false;
             }
 
@@ -183,7 +183,7 @@ namespace Universe.DataManager
                                                       GetColumnTypeStringSymbol(columnDefinition.Type));
                         }
                     }
-                    MainConsole.Instance.Warn("[DataMigrator]: Issue verifing table " + tableName + " column " +
+                    MainConsole.Instance.Warn("[DataMigrator]: Issue verifying table " + tableName + " column " +
                                               columnDefinition.Name +
                                               " when verifing tables exist, problem with new column definitions");
                     return false;
@@ -205,9 +205,9 @@ namespace Universe.DataManager
                             continue; //They are the same type, let them go on through
                         }
                     }
-                    MainConsole.Instance.Warn("[DataMigrator]: Issue verifing table " + tableName + " column " +
+                    MainConsole.Instance.Warn("[DataMigrator]: Issue verifying table " + tableName + " column " +
                                               columnDefinition.Name +
-                                              " when verifing tables exist, problem with old column definitions");
+                                              " when verifying tables exist, problem with old column definitions");
                     return false;
                 }
             }
@@ -235,10 +235,10 @@ namespace Universe.DataManager
                     }
                     if (thisDef == null)
                     {
-                        MainConsole.Instance.Warn("[DataMigrator]: Issue verifing table " + tableName + " index " +
+                        MainConsole.Instance.Warn("[DataMigrator]: Issue verifying table " + tableName + " index " +
                                                   indexDefinition.Type.ToString() + " (" +
                                                   string.Join(", ", indexDefinition.Fields) +
-                                                  ") when verifing tables exist");
+                                                  ") when verifying tables exist");
                         return false;
                     }
                 }
@@ -258,10 +258,10 @@ namespace Universe.DataManager
                     }
                     if (thisDef == null)
                     {
-                        MainConsole.Instance.Warn("[DataMigrator]: Issue verifing table " + tableName + " index " +
+                        MainConsole.Instance.Warn("[DataMigrator]: Issue verifying table " + tableName + " index " +
                                                   indexDefinition.Type.ToString() + " (" +
                                                   string.Join(", ", indexDefinition.Fields) +
-                                                  ") when verifing tables exist");
+                                                  ") when verifying tables exist");
                         return false;
                     }
                 }
@@ -452,7 +452,7 @@ namespace Universe.DataManager
                     else
                     {
                         throw new Exception(
-                            "You've discovered some type that's not reconized by Universe, please place the correct conversion in ConvertTypeToColumnType. Type: " +
+                            "You've discovered some type that's not recognized by Virtual Universe, please place the correct conversion in ConvertTypeToColumnType. Type: " +
                             tStr);
                     }
             }

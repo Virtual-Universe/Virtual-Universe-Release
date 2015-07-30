@@ -25,11 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Universe.DataManager.Migration;
-using Universe.Framework.ConsoleFramework;
-using Universe.Framework.Services;
-using Universe.Framework.Utilities;
-using OpenMetaverse;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -37,6 +32,11 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Community.CsharpSqlite.SQLiteClient;
+using OpenMetaverse;
+using Universe.DataManager.Migration;
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.Services;
+using Universe.Framework.Utilities;
 
 namespace Universe.DataManager.SQLite
 {
@@ -80,7 +80,7 @@ namespace Universe.DataManager.SQLite
             string filePath = Path.GetDirectoryName (s1[0]);
             string fileName = Path.GetFileName (s1[0]);
 
-            if (filePath == "") //Only add this if we arn't an absolute path already
+            if (filePath == "") //Only add this if we aren't an absolute path already
             {
                 filePath = Util.BasePathCombine ("");
                 _connectionString = string.Format ("Data Source=file://{0}", Path.Combine (Util.BasePathCombine (""), fileName));
@@ -128,7 +128,7 @@ namespace Universe.DataManager.SQLite
             catch (SqliteBusyException ex)
             {
                 if (retries++ > 5)
-                    MainConsole.Instance.WarnFormat("[SqliteDataManager]: Exception processing command: {0}, Exception: {1}",
+                    MainConsole.Instance.WarnFormat("[SQLite DataManager]: Exception processing command: {0}, Exception: {1}",
                                             cmd.CommandText,
                                             ex.ToString());
                 else
@@ -136,14 +136,14 @@ namespace Universe.DataManager.SQLite
             }
             catch (SqliteException ex)
             {
-                MainConsole.Instance.WarnFormat("[SqliteDataManager]: Exception processing command: {0}, Exception: {1}",
+                MainConsole.Instance.WarnFormat("[SQLite DataManager]: Exception processing command: {0}, Exception: {1}",
                                         cmd.CommandText,
                                         ex.ToString());
                 //throw ex;
             }
             catch (Exception ex)
             {
-                MainConsole.Instance.WarnFormat("[SqliteDataManager]: Exception processing command: {0}, Exception: {1}",
+                MainConsole.Instance.WarnFormat("[SQLite DataManager]: Exception processing command: {0}, Exception: {1}",
                                         cmd.CommandText,
                                         ex.ToString());
                 throw ex;
@@ -189,7 +189,7 @@ namespace Universe.DataManager.SQLite
             catch (SqliteBusyException ex)
             {
                 if (retries++ > 5)
-                    MainConsole.Instance.WarnFormat("[SqliteDataManager]: Exception processing command: {0}, Exception: {1}",
+                    MainConsole.Instance.WarnFormat("[SQLite DataManager]: Exception processing command: {0}, Exception: {1}",
                                             cmd.CommandText,
                                             ex.ToString());
                 else
@@ -198,13 +198,13 @@ namespace Universe.DataManager.SQLite
             }
             catch (SqliteException ex)
             {
-                MainConsole.Instance.WarnFormat("[SqliteDataManager]: Exception processing command: {0}, Exception: {1}",
+                MainConsole.Instance.WarnFormat("[SQLite DataManager]: Exception processing command: {0}, Exception: {1}",
                                         cmd.CommandText,
                                         ex.ToString());
             }
             catch (Exception ex)
             {
-                MainConsole.Instance.WarnFormat("[SqliteDataManager]: Exception processing command: {0}, Exception: {1}",
+                MainConsole.Instance.WarnFormat("[SQLite DataManager]: Exception processing command: {0}, Exception: {1}",
                                         cmd.CommandText,
                                         ex.ToString());
                 throw ex;
@@ -524,7 +524,7 @@ namespace Universe.DataManager.SQLite
             }
             catch (SqliteException e)
             {
-                MainConsole.Instance.Error("[SqliteLoader] Update(" + query + "), " + e);
+                MainConsole.Instance.Error("[SQLite Loader] Update(" + query + "), " + e);
             }
             CloseReaderCommand(cmd);
             return true;
@@ -599,7 +599,7 @@ namespace Universe.DataManager.SQLite
             }
             catch (Exception e)
             {
-                MainConsole.Instance.Error("[SqliteLoader] " + (insert ? "Insert" : "Replace") + "(" + query + "), " + e);
+                MainConsole.Instance.Error("[SQLite Loader] " + (insert ? "Insert" : "Replace") + "(" + query + "), " + e);
             }
             CloseReaderCommand(cmd);
             return true;
@@ -661,7 +661,7 @@ namespace Universe.DataManager.SQLite
             }
             catch (Exception e)
             {
-                MainConsole.Instance.Error("[SqliteLoader] INSERT .. SELECT (" + cmd.CommandText + "), " + e);
+                MainConsole.Instance.Error("[SQLite Loader] INSERT .. SELECT (" + cmd.CommandText + "), " + e);
             }
             CloseReaderCommand(cmd);
             return true;
@@ -703,7 +703,7 @@ namespace Universe.DataManager.SQLite
             }
             catch (Exception e)
             {
-                MainConsole.Instance.Error("[SqliteDataManager] Delete(" + query + "), " + e);
+                MainConsole.Instance.Error("[SQLite DataManager] Delete(" + query + "), " + e);
                 return false;
             }
             CloseReaderCommand(cmd);
@@ -1302,7 +1302,7 @@ namespace Universe.DataManager.SQLite
                     }
                     if (isPrimary)
                     {
-//                        MainConsole.Instance.Warn("[" + Identifier + "]: Primary Key found (" + string.Join(", ", defs[index.Key].Fields) + ")");
+                        //MainConsole.Instance.Warn("[" + Identifier + "]: Primary Key found (" + string.Join(", ", defs[index.Key].Fields) + ")");
                         defs[index.Key].Type = IndexType.Primary;
                         checkForPrimary = false;
                     }
