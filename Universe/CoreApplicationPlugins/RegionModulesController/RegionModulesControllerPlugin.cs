@@ -25,15 +25,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Reflection;
+using Nini.Config;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.ModuleLoader;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Services;
-using Nini.Config;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
 
 namespace Universe.CoreApplicationPlugins.RegionModulesController
 {
@@ -61,9 +61,7 @@ namespace Universe.CoreApplicationPlugins.RegionModulesController
         // The root of all evil.
         // This is where we handle adding the modules to scenes when they
         // load. This means that here we deal with replaceable interfaces,
-        // nonshared modules, etc.
-        //
-
+        // non-shared modules, etc.
         protected Dictionary<IScene, Dictionary<string, IRegionModuleBase>> RegionModules =
             new Dictionary<IScene, Dictionary<string, IRegionModuleBase>>();
 
@@ -103,7 +101,7 @@ namespace Universe.CoreApplicationPlugins.RegionModulesController
                 //MainConsole.Instance.DebugFormat("[REGIONMODULE]: Adding scene {0} to non-shared module {1}",
                 //                  scene.RegionInfo.RegionName, module.Name);
 
-                // Initialise the module
+                // Initialize the module
                 module.Initialise(m_simBase.ConfigSource);
 
                 IRegionModuleBaseModules.Add(module);
@@ -127,7 +125,7 @@ namespace Universe.CoreApplicationPlugins.RegionModulesController
                 AddRegionModule(scene, module.Name, module);
             }
 
-            // Same thing for nonshared modules, load them unless overridden
+            // Same thing for non-shared modules, load them unless overridden
             List<INonSharedRegionModule> deferredlist =
                 new List<INonSharedRegionModule>();
 
@@ -185,9 +183,8 @@ namespace Universe.CoreApplicationPlugins.RegionModulesController
             // interface would be successful only depending on load order,
             // which can't be depended upon, or modules would need to resort
             // to ugly kludges to attempt to request interfaces when needed
-            // and unneccessary caching logic repeated in all modules.
+            // and uneccessary caching logic repeated in all modules.
             // The extra function stub is just that much cleaner
-            //
             foreach (INonSharedRegionModule module in list)
             {
                 try
