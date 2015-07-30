@@ -25,14 +25,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System;
+using OpenMetaverse;
+using OpenMetaverse.Imaging;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Assets;
-using OpenMetaverse;
-using OpenMetaverse.Imaging;
-using System;
 
 namespace Universe.ClientStack
 {

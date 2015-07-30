@@ -26,16 +26,6 @@
  */
 
 using Amib.Threading;
-
-using Universe.Framework.ClientInterfaces;
-using Universe.Framework.ConsoleFramework;
-using Universe.Framework.Modules;
-using Universe.Framework.PresenceInfo;
-using Universe.Framework.SceneInfo;
-using Universe.Framework.Utilities;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.Packets;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -43,6 +33,15 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.Packets;
+using Universe.Framework.ClientInterfaces;
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.Modules;
+using Universe.Framework.PresenceInfo;
+using Universe.Framework.SceneInfo;
+using Universe.Framework.Utilities;
 
 namespace Universe.ClientStack
 {
@@ -477,7 +476,7 @@ namespace Universe.ClientStack
             // Frequency analysis of outgoing packet sizes shows a large clump of packets at each end of the spectrum.
             // The vast majority of packets are less than 200 bytes, although due to asset transfers and packet splitting
             // there are a decent number of packets in the 1000-1140 byte range. We allocate one of two sizes of data here
-            // to accomodate for both common scenarios and provide ample room for ACK appending in both
+            // to accommodate for both common scenarios and provide ample room for ACK appending in both
             int bufferSize = dataLength*2;
 
             UDPPacketBuffer buffer = new UDPPacketBuffer(udpClient.RemoteEndPoint, bufferSize);
@@ -605,7 +604,7 @@ namespace Universe.ClientStack
             {
                 //MainConsole.Instance.Debug("[LLUDPSERVER]: Resending " + expiredPackets.Count + " packets to " + udpClient.AgentID + ", RTO=" + udpClient.RTO);
 
-                // Exponential backoff of the retransmission timeout
+                // Exponential back off of the retransmission timeout
                 udpClient.BackoffRTO();
 
                 foreach (OutgoingPacket t in expiredPackets.Where(t => t.UnackedMethod != null))
@@ -712,11 +711,11 @@ namespace Universe.ClientStack
 
             // Stats tracking
             Interlocked.Increment(ref udpClient.PacketsSent);
-//            if (isReliable)
-//                Interlocked.Add(ref udpClient.UnackedBytes, outgoingPacket.Buffer.DataLength);
+            // if (isReliable)
+            //    Interlocked.Add(ref udpClient.UnackedBytes, outgoingPacket.Buffer.DataLength);
 
             // Put the UDP payload on the wire
-//            AsyncBeginSend(buffer);
+            //AsyncBeginSend(buffer);
 
             SyncSend(buffer);
 
@@ -797,7 +796,7 @@ namespace Universe.ClientStack
                 else
                     // Don't create circuits for unauthorized clients
                     MainConsole.Instance.WarnFormat(
-                        "[LLUDPServer]: Connection request for client {0} connecting with unnotified circuit code {1} from {2}",
+                        "[LLUDPServer]: Connection request for client {0} connecting with un-notified circuit code {1} from {2}",
                         cPacket.CircuitCode.ID, cPacket.CircuitCode.Code, remoteEndPoint);
 
                 return;
@@ -966,7 +965,7 @@ namespace Universe.ClientStack
 
             Buffer.BlockCopy(packetData, 0, buffer.Data, 0, length);
 
-            //            AsyncBeginSend(buffer);
+            //AsyncBeginSend(buffer);
             SyncSend(buffer);
         }
 

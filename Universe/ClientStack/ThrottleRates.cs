@@ -26,8 +26,8 @@
  */
 
 using System;
-using Universe.Framework.ClientInterfaces;
 using Nini.Config;
+using Universe.Framework.ClientInterfaces;
 
 
 namespace Universe.ClientStack

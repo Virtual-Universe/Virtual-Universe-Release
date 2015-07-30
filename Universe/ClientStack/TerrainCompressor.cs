@@ -25,11 +25,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
-using Universe.Framework.Utilities;
+using System;
 using OpenMetaverse;
 using OpenMetaverse.Packets;
-using System;
+using Universe.Framework.Utilities;
 
 namespace Universe.ClientStack
 {
@@ -282,7 +281,7 @@ namespace Universe.ClientStack
                     uint minWbits = ((uint)wbits >> 1);
                     int wbitsMaxValue;
         */
-            // goal is to determ minimum number of bits to use so all data fits
+            // goal is to determine minimum number of bits to use so all data fits
             /*
                     wbits = (int)minWbits;
                     wbitsMaxValue = (1 << wbits);
@@ -406,8 +405,8 @@ namespace Universe.ClientStack
 
         private static void DCTLine16(float[] linein, float[] lineout, int line)
         {
-            // outputs transpose data (lines exchanged with coluns )
-            // so to save a bit of cpu when doing coluns
+            // outputs transpose data (lines exchanged with columns )
+            // so to save a bit of cpu when doing columns
             float total = 0.0f;
             int lineSize = line*Constants.TerrainPatchSize;
 
@@ -467,7 +466,7 @@ namespace Universe.ClientStack
             // input columns are in fact stored in lines now
 
             float total = 0.0f;
-//            const float oosob = 2.0f / Constants.TerrainPatchSize;
+            //const float oosob = 2.0f / Constants.TerrainPatchSize;
             int inlinesptr = Constants.TerrainPatchSize*column;
 
             for (int n = 0; n < Constants.TerrainPatchSize; n++)
@@ -475,7 +474,7 @@ namespace Universe.ClientStack
                 total += linein[inlinesptr + n];
             }
 
-            //            lineout[CopyMatrix16[column]] = (int)(OO_SQRT2 * total * oosob * QuantizeTable16[column]);
+            //lineout[CopyMatrix16[column]] = (int)(OO_SQRT2 * total * oosob * QuantizeTable16[column]);
             lineout[CopyMatrix16[column]] = (int) (OO_SQRT2*total*QuantizeTable16[column]);
 
             for (int uptr = Constants.TerrainPatchSize;
@@ -489,7 +488,7 @@ namespace Universe.ClientStack
                     total += linein[n]*CosineTable16[ptru];
                 }
 
-//                lineout[CopyMatrix16[Constants.TerrainPatchSize * u + column]] = (int)(total * oosob * QuantizeTable16[Constants.TerrainPatchSize * u + column]);
+                //lineout[CopyMatrix16[Constants.TerrainPatchSize * u + column]] = (int)(total * oosob * QuantizeTable16[Constants.TerrainPatchSize * u + column]);
                 lineout[CopyMatrix16[uptr + column]] = (int) (total*QuantizeTable16[uptr + column]);
             }
         }
@@ -502,7 +501,7 @@ namespace Universe.ClientStack
             int wbitsMaxValue = 1 << wbits;
 
             float total = 0.0f;
-            //            const float oosob = 2.0f / Constants.TerrainPatchSize;
+            //const float oosob = 2.0f / Constants.TerrainPatchSize;
             int inlinesptr = Constants.TerrainPatchSize*column;
 
             for (int n = 0; n < Constants.TerrainPatchSize; n++)
@@ -510,7 +509,7 @@ namespace Universe.ClientStack
                 total += linein[inlinesptr + n];
             }
 
-            //            lineout[CopyMatrix16[column]] = (int)(OO_SQRT2 * total * oosob * QuantizeTable16[column]);
+            //lineout[CopyMatrix16[column]] = (int)(OO_SQRT2 * total * oosob * QuantizeTable16[column]);
             int tmp = (int) (OO_SQRT2*total*QuantizeTable16[column]);
             lineout[CopyMatrix16[column]] = tmp;
 
@@ -565,7 +564,6 @@ namespace Universe.ClientStack
         {
             for (int n = 0; n < size*size; n++)
             {
-                // ?
                 int temp = bitpack.UnpackBits(1);
                 if (temp != 0)
                 {
@@ -842,7 +840,7 @@ namespace Universe.ClientStack
             {
                 for (int i = 0; i < Constants.TerrainPatchSize; i++)
                 {
-//                    QuantizeTable16[j * Constants.TerrainPatchSize + i] = 1.0f / (1.0f + 2.0f * ((float)i + (float)j));
+                    //QuantizeTable16[j * Constants.TerrainPatchSize + i] = 1.0f / (1.0f + 2.0f * ((float)i + (float)j));
                     QuantizeTable16[j*Constants.TerrainPatchSize + i] = oosob/(1.0f + 2.0f*(i + (float) j));
                 }
             }
