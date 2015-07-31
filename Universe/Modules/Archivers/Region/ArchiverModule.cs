@@ -61,7 +61,7 @@ namespace Universe.Modules.Archivers
         }
 
 
-        public void Initialise(IConfigSource source)
+        public void Initialize(IConfigSource source)
         {
             //MainConsole.Instance.Debug("[ARCHIVER] Initialising");
         }

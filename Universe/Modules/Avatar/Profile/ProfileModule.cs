@@ -71,7 +71,7 @@ namespace Universe.Modules.Profiles
 
         #region INonSharedRegionModule Members
 
-        public void Initialise (IConfigSource config)
+        public void Initialize (IConfigSource config)
         {
             IConfig profileConfig = config.Configs ["Profile"];
             if (profileConfig == null)

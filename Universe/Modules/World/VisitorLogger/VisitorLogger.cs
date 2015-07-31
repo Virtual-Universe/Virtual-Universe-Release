@@ -53,7 +53,7 @@ namespace Universe.Modules.VisitorLogger
 
         #region INonSharedRegionModule
 
-        public void Initialise(IConfigSource source)
+        public void Initialize(IConfigSource source)
         {
             IConfig config = source.Configs["VisitorLogModule"];
             if (config != null)

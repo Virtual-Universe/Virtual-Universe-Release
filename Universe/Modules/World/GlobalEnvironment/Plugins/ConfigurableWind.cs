@@ -58,7 +58,7 @@ namespace Universe.Modules.GlobalEnvironment.Plugins
             get { return "ConfigurableWind"; }
         }
 
-        public void Initialise()
+        public void Initialize()
         {
         }
 

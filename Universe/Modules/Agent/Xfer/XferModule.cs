@@ -44,7 +44,7 @@ namespace Universe.Modules.Agent.Xfer
 
         #region INonSharedRegionModule Members
 
-        public void Initialise(IConfigSource config)
+        public void Initialize(IConfigSource config)
         {
         }
 

@@ -53,7 +53,7 @@ namespace Universe.Modules.GlobalEnvironment.Plugins
             get { return "SimpleRandomWind"; }
         }
 
-        public void Initialise()
+        public void Initialize()
         {
         }
 

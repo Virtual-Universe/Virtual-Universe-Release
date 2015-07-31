@@ -185,7 +185,7 @@ namespace Universe.ScriptEngine.DotNetEngine.CompilerTools
             converters = UniverseModuleLoader.PickupModules<IScriptConverter>();
             foreach (IScriptConverter convert in converters)
             {
-                convert.Initialise(this);
+                convert.Initialize(this);
             }
         }
 

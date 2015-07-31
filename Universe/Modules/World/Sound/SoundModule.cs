@@ -45,7 +45,7 @@ namespace Universe.Modules.Sound
 
         #region INonSharedRegionModule Members
 
-        public void Initialise(IConfigSource source)
+        public void Initialize(IConfigSource source)
         {
         }
 

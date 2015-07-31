@@ -167,7 +167,7 @@ namespace Universe.Framework.SceneInfo
             int height = baseNoise[0].Length;
 
             float[][] smoothNoise;
-            float[][] perlinNoise = GetEmptyArray<float>(width, height); //an array of floats initialised to 0
+            float[][] perlinNoise = GetEmptyArray<float>(width, height); //an array of floats Initialized to 0
 
             float persistance = 0.25f;
             float amplitude = 1.0f;

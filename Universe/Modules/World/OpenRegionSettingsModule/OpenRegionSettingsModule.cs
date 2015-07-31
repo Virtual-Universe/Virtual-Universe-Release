@@ -226,7 +226,7 @@ namespace Universe.Modules.OpenRegionSettingsModule
 
         #region INonSharedRegionModule
 
-        public void Initialise(IConfigSource source)
+        public void Initialize(IConfigSource source)
         {
         }
 

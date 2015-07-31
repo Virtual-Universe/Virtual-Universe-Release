@@ -76,7 +76,7 @@ namespace Universe.Modules.SimConsole
 
         #region INonSharedRegionModule
 
-        public void Initialise(IConfigSource source)
+        public void Initialize(IConfigSource source)
         {
             IConfig config = source.Configs["SimConsole"];
             if (config != null)

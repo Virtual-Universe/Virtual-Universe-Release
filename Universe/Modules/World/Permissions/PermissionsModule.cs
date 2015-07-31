@@ -226,7 +226,7 @@ namespace Universe.Modules.Permissions
 
         #region INonSharedRegionModule Members
 
-        public void Initialise(IConfigSource config)
+        public void Initialize(IConfigSource config)
         {
             PermissionsConfig = config.Configs["Permissions"];
 

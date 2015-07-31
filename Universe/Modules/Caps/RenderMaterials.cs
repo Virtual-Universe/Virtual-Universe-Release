@@ -55,7 +55,7 @@ namespace Universe.Modules.Caps
 
         #region INonSharedRegionModule Members
 
-        public void Initialise (IConfigSource source)
+        public void Initialize (IConfigSource source)
         {
             var cfg = source.Configs ["MaterialsModule"];
             if (cfg != null)

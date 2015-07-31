@@ -130,7 +130,7 @@ textures 1
 
         #region INonSharedRegionModule Members
 
-        public void Initialise(IConfigSource config)
+        public void Initialize(IConfigSource config)
         {
             if (config != null)
             {

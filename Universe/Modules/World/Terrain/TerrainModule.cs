@@ -102,10 +102,10 @@ namespace Universe.Modules.Terrain
         #region INonSharedRegionModule Members
 
         /// <summary>
-        ///     Creates and initialises a terrain module for a region
+        ///     Creates and Initializes a terrain module for a region
         /// </summary>
         /// <param name="config">Config for the region</param>
-        public void Initialise(IConfigSource config)
+        public void Initialize(IConfigSource config)
         {
             if (config.Configs["TerrainModule"] != null)
             {

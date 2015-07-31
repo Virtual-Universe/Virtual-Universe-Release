@@ -55,7 +55,7 @@ namespace Universe.Modules.Chat
 
         #region INonSharedRegionModule
 
-        public void Initialise (IConfigSource source)
+        public void Initialize (IConfigSource source)
         {
             IConfig ccmModuleConfig = source.Configs ["Messaging"];
             if (ccmModuleConfig != null)

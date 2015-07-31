@@ -55,9 +55,9 @@ namespace Universe.Framework.SceneInfo
         string BackupFile { get; set; }
 
         /// <summary>
-        ///     Initialises the data storage engine
+        ///     Initializes the data storage engine
         /// </summary>
-        void Initialise();
+        void Initialize();
 
         /// <summary>
         ///     Entirely removes the region, this includes everything about the region

@@ -47,7 +47,7 @@ namespace Universe.ScriptEngine.DotNetEngine.CompilerTools
             get { return ""; }
         }
 
-        public void Initialise(Compiler compiler)
+        public void Initialize(Compiler compiler)
         {
         }
 
@@ -181,7 +181,7 @@ namespace Universe.ScriptEngine.DotNetEngine.CompilerTools
             get { return ""; }
         }
 
-        public void Initialise(Compiler compiler)
+        public void Initialize(Compiler compiler)
         {
             m_compiler = compiler;
         }

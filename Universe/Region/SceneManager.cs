@@ -135,7 +135,7 @@ namespace Universe.Region
                 Console.Read(); //Wait till they see
                 Environment.Exit(0);
             }
-            m_selectedDataService.Initialise();
+            m_selectedDataService.Initialize();
 
             AddConsoleCommands();
 
@@ -150,11 +150,11 @@ namespace Universe.Region
             foreach (IScene scene in m_scenes)
             {
                 scene.Config = config;
-                scene.PhysicsScene.PostInitialise(config);
+                scene.PhysicsScene.PostInitialize(config);
             }
         }
 
-        public void PostInitialise()
+        public void PostInitialize()
         {
         }
 
@@ -456,7 +456,7 @@ namespace Universe.Region
             //First, Initialize the SharedRegionStartupModule
             foreach (ISharedRegionStartupModule module in m_startupPlugins)
             {
-                module.Initialise(scene, m_config, m_SimBase);
+                module.Initialize(scene, m_config, m_SimBase);
             }
             //Then do the ISharedRegionModule and INonSharedRegionModules
             MainConsole.Instance.Debug("[Modules]: Loading region modules");
@@ -470,7 +470,7 @@ namespace Universe.Region
             //Then finish the rest of the SharedRegionStartupModules
             foreach (ISharedRegionStartupModule module in m_startupPlugins)
             {
-                module.PostInitialise(scene, m_config, m_SimBase);
+                module.PostInitialize(scene, m_config, m_SimBase);
             }
             foreach (ISharedRegionStartupModule module in m_startupPlugins)
             {

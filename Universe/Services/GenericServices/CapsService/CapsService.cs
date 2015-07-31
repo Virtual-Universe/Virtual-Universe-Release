@@ -193,7 +193,7 @@ namespace Universe.Services
             if (!m_ClientCapsServices.ContainsKey(AgentID))
             {
                 PerClientBasedCapsService client = new PerClientBasedCapsService();
-                client.Initialise(this, AgentID);
+                client.Initialize(this, AgentID);
                 m_ClientCapsServices.Add(AgentID, client);
             }
             return m_ClientCapsServices[AgentID];
@@ -257,7 +257,7 @@ namespace Universe.Services
             if (!m_RegionCapsServices.ContainsKey(regionID))
             {
                 IRegionCapsService service = new PerRegionCapsService();
-                service.Initialise(regionID, Registry);
+                service.Initialize(regionID, Registry);
 
                 m_RegionCapsServices.Add(regionID, service);
             }
