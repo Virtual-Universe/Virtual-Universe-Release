@@ -25,23 +25,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System;
+using System.Collections.Generic;
+using Nini.Config;
+using OpenMetaverse;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Utilities;
-using Nini.Config;
-using OpenMetaverse;
-using System;
-using System.Collections.Generic;
 
 /*
  * Steps to add a new prioritization policy:
  * 
- *  - Add a new value to the UpdatePrioritizationSchemes enum.
+ *  - Add a new value to the UpdatePrioritizationSchemes Enum.
  *  - Specify this new value in the [InterestManagement] section of your
- *    Universe.ini. The name in the config file must match the enum value name
+ *    Universe.ini. The name in the config file must match the Enum value name
  *    (although it is not case sensitive).
  *  - Write a new GetPriorityBy*() method in this class.
  *  - Add a new entry to the switch statement in GetUpdatePriority() that calls
@@ -86,7 +85,7 @@ namespace Universe.Region
         public bool ShowEntityToClient(IScenePresence client, IEntity entity, IScene scene, int currentTickCount)
         {
             if (!m_useCulling)
-                return true; //If we arn't using culling, return true by default to show all prims
+                return true; //If we aren't using culling, return true by default to show all prims
             if (entity == null || client == null || scene == null)
                 return false;
 

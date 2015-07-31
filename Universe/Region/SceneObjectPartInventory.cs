@@ -25,19 +25,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using OpenMetaverse;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Serialization;
-using OpenMetaverse;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Universe.Region
 {
@@ -535,7 +534,7 @@ namespace Universe.Region
         /// </summary>
         /// <param name="name">The name that the new item should have.</param>
         /// <param name="item">
-        ///     The item itself.  The name within this structure is ignored in favour of the name
+        ///     The item itself.  The name within this structure is ignored in favor of the name
         ///     given in this method's arguments
         /// </param>
         /// <param name="allowedDrop">
@@ -578,7 +577,7 @@ namespace Universe.Region
                 foreach (TaskInventoryItem item in items)
                 {
                     m_items.Add(item.ItemID, item);
-                    //                    m_part.TriggerScriptChangedEvent(Changed.INVENTORY);
+                    //m_part.TriggerScriptChangedEvent(Changed.INVENTORY);
                 }
                 m_inventorySerial++;
             }

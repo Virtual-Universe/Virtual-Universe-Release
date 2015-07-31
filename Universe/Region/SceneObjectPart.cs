@@ -25,7 +25,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Xml;
+using System.Xml.Serialization;
+using OpenMetaverse;
+using OpenMetaverse.Packets;
+using OpenMetaverse.StructuredData;
+using ProtoBuf;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
@@ -36,16 +45,6 @@ using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Serialization;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Utilities;
-using OpenMetaverse;
-using OpenMetaverse.Packets;
-using OpenMetaverse.StructuredData;
-using ProtoBuf;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Xml;
-using System.Xml.Serialization;
 using PrimType = Universe.Framework.SceneInfo.PrimType;
 
 namespace Universe.Region
@@ -137,7 +136,7 @@ namespace Universe.Region
         [XmlIgnore] Dictionary<int, string> m_CollisionFilter = new Dictionary<int, string>();
         [XmlIgnore] bool m_IsAttachment;
         [XmlIgnore] int[] m_PayPrice = {-2, -2, -2, -2, -2};
-        [XmlIgnore] bool m_ValidpartOOB; // control recalcutation
+        [XmlIgnore] bool m_ValidpartOOB; // control recalculation
         protected Vector3 m_acceleration;
         protected Vector3 m_angularVelocity;
         byte m_clickAction;
@@ -298,7 +297,7 @@ namespace Universe.Region
             get { return m_physActor; }
             set
             {
-//                MainConsole.Instance.DebugFormat("[SOP]: PhysActor set to {0} for {1} {2}", value, Name, UUID);
+                //MainConsole.Instance.DebugFormat("[SOP]: PhysActor set to {0} for {1} {2}", value, Name, UUID);
                 m_physActor = value;
             }
         }
@@ -3414,8 +3413,8 @@ namespace Universe.Region
             }
             else
             {
-//                MainConsole.Instance.DebugFormat(
-//                    "[SCENE OBJECT PART]: Scheduling part {0} {1} for full update in aggregateScriptEvents()", Name, LocalId);
+                //MainConsole.Instance.DebugFormat(
+                //      "[SCENE OBJECT PART]: Scheduling part {0} {1} for full update in aggregateScriptEvents()", Name, LocalId);
                 ScheduleUpdate(PrimUpdateFlags.PrimFlags);
             }
         }
@@ -3487,7 +3486,6 @@ namespace Universe.Region
             }
         }
 
-
         public OSDArray VehicleFlags
         {
             get
@@ -3514,9 +3512,7 @@ namespace Universe.Region
                 return m_VehicleParams;
             }
             set { m_VehicleParams = value; }
-        }
-
-           
+        }    
 
         #endregion
 
@@ -3574,7 +3570,6 @@ namespace Universe.Region
         {
             m_groupPosition = new Vector3(value.X, value.Y, value.Z);
         }
-
 
         public void FixGroupPosition(Vector3 value, bool single)
         {
@@ -4609,7 +4604,7 @@ namespace Universe.Region
         {
             if (PhysActor != null)
             {
-//                Vector3 newpos = new Vector3(PhysActor.Position.GetBytes(), 0);
+                //Vector3 newpos = new Vector3(PhysActor.Position.GetBytes(), 0);
                 m_parentGroup.SetAbsolutePosition(false, PhysActor.Position);
                 //m_parentGroup.RootPart.m_groupPosition = newpos;
             }

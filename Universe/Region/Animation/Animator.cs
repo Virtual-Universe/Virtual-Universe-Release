@@ -26,15 +26,14 @@
  */
 
 using System;
+using Nini.Config;
+using OpenMetaverse;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.Modules;
 using Universe.Framework.Physics;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Utilities;
-using Nini.Config;
-using OpenMetaverse;
-
 
 namespace Universe.Region.Animation
 {
