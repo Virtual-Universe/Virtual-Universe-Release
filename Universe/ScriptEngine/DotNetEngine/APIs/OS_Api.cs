@@ -515,36 +515,36 @@ namespace Universe.ScriptEngine.DotNetEngine.APIs
             if (String.IsNullOrEmpty(url))
                 return "Configuration Error!";
 
-            string verb = "/json_grid_info";
-            OSDMap json = new OSDMap();
+            string verb = "/JSON_grid_info";
+            OSDMap JSON = new OSDMap();
 
             OSDMap info = (OSDMap) Util.CombineParams(new[] {String.Format("{0}{1}", url, verb)}, 3000);
 
             if (info["Success"] != true)
                 return "Get GridInfo Failed!";
 
-            json = (OSDMap) OSDParser.DeserializeJson(info["_RawResult"].AsString());
+            JSON = (OSDMap) OSDParser.DeserializeJSON(info["_RawResult"].AsString());
 
             switch (type)
             {
                 case InfoType.Nick:
-                    retval = json["gridnick"];
+                    retval = JSON["gridnick"];
                     break;
 
                 case InfoType.Name:
-                    retval = json["gridname"];
+                    retval = JSON["gridname"];
                     break;
 
                 case InfoType.Login:
-                    retval = json["login"];
+                    retval = JSON["login"];
                     break;
 
                 case InfoType.Home:
-                    retval = json["home"];
+                    retval = JSON["home"];
                     break;
 
                 case InfoType.Custom:
-                    retval = json[key];
+                    retval = JSON[key];
                     break;
 
                 default:
@@ -1609,7 +1609,7 @@ namespace Universe.ScriptEngine.DotNetEngine.APIs
             
             try
             {
-                OSD decoded = OSDParser.DeserializeJson(JSON);
+                OSD decoded = OSDParser.DeserializeJSON(JSON);
                 return osdToObject(decoded);
             }
             catch (Exception e)
@@ -1624,11 +1624,11 @@ namespace Universe.ScriptEngine.DotNetEngine.APIs
             if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "osParseJSON", m_host, "OSSL", m_itemID))
                 return new Hashtable();
 
-            // see http://www.json.org/ for more details on JSON
+            // see http://www.JSON.org/ for more details on JSON
 
             string currentKey = null;
             Stack objectStack = new Stack(); // objects in JSON can be nested so we need to keep a track of this
-            Hashtable jsondata = new Hashtable(); // the hashtable to be returned
+            Hashtable JSONdata = new Hashtable(); // the hashtable to be returned
             try
             {
                 // iterate through the serialised stream of tokens and store at the right depth in the hashtable
@@ -1645,7 +1645,7 @@ namespace Universe.ScriptEngine.DotNetEngine.APIs
                             Hashtable currentObject = new Hashtable();
                             if (objectStack.Count == 0) // the stack should only be empty for the first outer object
                             {
-                                objectStack.Push(jsondata);
+                                objectStack.Push(JSONdata);
                             }
                             else if (objectStack.Peek().ToString() == "System.Collections.ArrayList")
                             {
@@ -1818,7 +1818,7 @@ namespace Universe.ScriptEngine.DotNetEngine.APIs
                 OSSLError("osParseJSON: The JSON string is not valid " + JSON);
             }
 
-            return jsondata;
+            return JSONdata;
         }
 
         // send a message to to object identified by the given UUID, a script in the object must implement the dataserver function

@@ -728,7 +728,7 @@ namespace Universe.Framework.ClientInterfaces
             }
             catch (Exception e)
             {
-                MainConsole.Instance.ErrorFormat("[AVATAR APPEARANCE]: unpack failed badly: {0}, {1}", e.ToString(), OSDParser.SerializeJsonString(data));
+                MainConsole.Instance.ErrorFormat("[AVATAR APPEARANCE]: unpack failed badly: {0}, {1}", e.ToString(), OSDParser.SerializeJSONString(data));
             }
         }
 

@@ -310,7 +310,7 @@ namespace Universe.Framework.Services.ClassHelpers.Profile
                 map.Add ("MembershipGroup", OSD.FromString (MembershipGroup));
             }
 
-            map.Add ("Notes", OSD.FromString (OSDParser.SerializeJsonString (Notes)));
+            map.Add ("Notes", OSD.FromString (OSDParser.SerializeJSONString (Notes)));
             return map;
         }
 
@@ -333,7 +333,7 @@ namespace Universe.Framework.Services.ClassHelpers.Profile
             try
             {
                 if (map.ContainsKey ("Notes"))
-                    Notes = (OSDMap)OSDParser.DeserializeJson (map ["Notes"].AsString ());
+                    Notes = (OSDMap)OSDParser.DeserializeJSON (map ["Notes"].AsString ());
             } catch
             {
             }

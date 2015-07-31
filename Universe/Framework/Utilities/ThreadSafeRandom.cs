@@ -34,7 +34,7 @@ namespace Universe.Framework.Utilities
 {
     /// <summary>
     /// A thread-safe Random since the .NET version is not.
-    /// See http://msdn.microsoft.com/en-us/library/system.random%28v=vs.100%29.aspx
+    /// See http://MSDN.microsoft.com/en-us/library/system.random%28v=vs.100%29.aspx
     /// </summary>
     public class ThreadSafeRandom : Random
     {

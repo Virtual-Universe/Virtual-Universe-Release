@@ -88,7 +88,7 @@ namespace Universe.Services.DataService
             values[3] = info.IsOnline ? 1 : 0;
             values[4] = Util.ToUnixTime(info.LastLogin);
             values[5] = Util.ToUnixTime(info.LastLogout);
-            values[6] = OSDParser.SerializeJsonString(info.Info);
+            values[6] = OSDParser.SerializeJSONString(info.Info);
             values[7] = info.CurrentRegionID.ToString();
             values[8] = info.CurrentPosition.ToString();
             values[9] = info.CurrentLookAt.ToString();
@@ -150,7 +150,7 @@ namespace Universe.Services.DataService
                                             IsOnline = query[i + 3] == "1",
                                             LastLogin = Util.ToDateTime(int.Parse(query[i + 4])),
                                             LastLogout = Util.ToDateTime(int.Parse(query[i + 5])),
-                                            Info = (OSDMap) OSDParser.DeserializeJson(query[i + 6])
+                                            Info = (OSDMap) OSDParser.DeserializeJSON(query[i + 6])
                                         };
                     try
                     {

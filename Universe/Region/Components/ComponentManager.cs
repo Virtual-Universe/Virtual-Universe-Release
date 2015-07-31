@@ -58,7 +58,7 @@ namespace Universe.Region.Components
                 if (serialized == "")
                     map = new OSDMap();
                 else
-                    map = (OSDMap) OSDParser.DeserializeJson(serialized);
+                    map = (OSDMap) OSDParser.DeserializeJSON(serialized);
             }
             catch
             {

@@ -713,7 +713,7 @@ namespace Universe.Modules.Archivers
             return newsize;
         }
 
-        // From msdn
+        // From MSDN
         static ImageCodecInfo GetEncoderInfo(String mimeType)
         {
             ImageCodecInfo[] encoders;

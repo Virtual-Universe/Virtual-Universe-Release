@@ -122,7 +122,7 @@ namespace Universe.ScriptEngine.DotNetEngine
 
             //Plugins
             stateSave.Plugins =
-                OSDParser.SerializeJsonString(m_module.GetSerializationData(script.ItemID, script.Part.UUID));
+                OSDParser.SerializeJSONString(m_module.GetSerializationData(script.ItemID, script.Part.UUID));
 
             lock (StateSaveLock)
                 script.Part.StateSaves[script.ItemID] = stateSave;
@@ -139,7 +139,7 @@ namespace Universe.ScriptEngine.DotNetEngine
             instance.Disabled = save.Disabled;
             instance.UserInventoryItemID = save.UserInventoryID;
             if (save.Plugins != "")
-                instance.PluginData = (OSDMap) OSDParser.DeserializeJson(save.Plugins);
+                instance.PluginData = (OSDMap) OSDParser.DeserializeJSON(save.Plugins);
             m_module.CreateFromData(instance.Part.UUID, instance.ItemID, instance.Part.UUID,
                                     instance.PluginData);
             instance.Source = save.Source;

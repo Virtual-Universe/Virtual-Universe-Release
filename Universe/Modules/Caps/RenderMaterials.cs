@@ -164,7 +164,7 @@ namespace Universe.Modules.Caps
                                         OSDMap matMap = new OSDMap ();
                                         matMap ["ID"] = elem.AsBinary ();
 
-                                        matMap ["Material"] = OSDParser.DeserializeJson (Encoding.UTF8.GetString (materialAsset.Data));
+                                        matMap ["Material"] = OSDParser.DeserializeJSON (Encoding.UTF8.GetString (materialAsset.Data));
                                         respArr.Add (matMap);
                                     } else
                                         MainConsole.Instance.Info ("[Materials]: request for UNKNOWN material ID: " + id);
@@ -189,7 +189,7 @@ namespace Universe.Modules.Caps
                                     {
                                         foreach (OSDMap matsMap in matsArr)
                                         {
-                                            // MainConsole.Instance.Debug("[Materials]: processing matsMap: " + OSDParser.SerializeJsonString(matsMap));
+                                            // MainConsole.Instance.Debug("[Materials]: processing matsMap: " + OSDParser.SerializeJSONString(matsMap));
 
                                             uint matLocalID = 0;
                                             try
@@ -218,7 +218,7 @@ namespace Universe.Modules.Caps
                                             if (mat == null)
                                                 continue;
 
-                                            // MainConsole.Instance.Debug("[Materials]: mat: " + OSDParser.SerializeJsonString(mat));
+                                            // MainConsole.Instance.Debug("[Materials]: mat: " + OSDParser.SerializeJSONString(mat));
                                             UUID id = HashOsd (mat);
                                             m_knownMaterials [id] = mat;
 
@@ -279,7 +279,7 @@ namespace Universe.Modules.Caps
                                                         AssetBase asset = new AssetBase (id, "RenderMaterial",
                                                                               AssetType.Texture, sop.OwnerID) {
                                                             Data = Encoding.UTF8.GetBytes (
-                                                                OSDParser.SerializeJsonString (mat))
+                                                                OSDParser.SerializeJSONString (mat))
                                                         };
                                                         m_scene.AssetService.Store (asset);
 
@@ -394,7 +394,7 @@ namespace Universe.Modules.Caps
         {
             try
             {
-                return OSDParser.SerializeJsonString (ZDecompressBytesToOsd (bytes));
+                return OSDParser.SerializeJSONString (ZDecompressBytesToOsd (bytes));
             } catch (Exception e)
             {
                 return "ZippedOsdBytesToString caught an exception: " + e;

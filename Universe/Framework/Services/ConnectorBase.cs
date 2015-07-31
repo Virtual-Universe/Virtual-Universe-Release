@@ -326,7 +326,7 @@ namespace Universe.Framework.Services
                 return false;
             try
             {
-                response = (OSDMap) OSDParser.DeserializeJson(resp);
+                response = (OSDMap) OSDParser.DeserializeJSON(resp);
             }
             catch
             {
@@ -439,7 +439,7 @@ namespace Universe.Framework.Services
                         else
                             response["Value"] = Util.MakeOSD(o, methodInfo.Method.ReturnType);
                         response["Success"] = true;
-                        return Encoding.UTF8.GetBytes(OSDParser.SerializeJsonString(response, true));
+                        return Encoding.UTF8.GetBytes(OSDParser.SerializeJSONString(response, true));
                     }
                 }
                 catch (Exception ex)

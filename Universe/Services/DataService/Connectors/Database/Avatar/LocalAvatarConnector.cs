@@ -86,7 +86,7 @@ namespace Universe.Services.DataService
             if (data.Count == 0)
                 return null;
             AvatarAppearance appearance = new AvatarAppearance();
-            appearance.FromOSD((OSDMap) OSDParser.DeserializeJson(data[0]));
+            appearance.FromOSD((OSDMap) OSDParser.DeserializeJSON(data[0]));
             return appearance;
         }
 
@@ -98,7 +98,7 @@ namespace Universe.Services.DataService
                 filter.andFilters["PrincipalID"] = PrincipalID;
                 Dictionary<string, object> values = new Dictionary<string, object>();
                 values.Add("PrincipalID", PrincipalID);
-                values.Add("Appearance", OSDParser.SerializeJsonString(data.ToOSD()));
+                values.Add("Appearance", OSDParser.SerializeJSONString(data.ToOSD()));
                 GD.Replace(m_realm, values);
             }
             return true;

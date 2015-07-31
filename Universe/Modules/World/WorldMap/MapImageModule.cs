@@ -659,7 +659,7 @@ namespace Universe.Modules.WorldMap
             }
         }
 
-        // From msdn
+        // From MSDN
         private static ImageCodecInfo GetEncoderInfo(String mimeType)
         {
             ImageCodecInfo[] encoders = ImageCodecInfo.GetImageEncoders();
@@ -1045,7 +1045,7 @@ namespace Universe.Modules.WorldMap
 
         private bool DeserializeCache(string file)
         {
-            OSDMap map = OSDParser.DeserializeJson(file) as OSDMap;
+            OSDMap map = OSDParser.DeserializeJSON(file) as OSDMap;
             if (map == null)
                 return false;
 
@@ -1069,7 +1069,7 @@ namespace Universe.Modules.WorldMap
                     Path.Combine(Path.Combine(m_assetCacheDir, "mapTileTextureCache"),
                                  m_scene.RegionInfo.RegionName + ".tc"), FileMode.Create);
             StreamWriter writer = new StreamWriter(stream);
-            writer.WriteLine(OSDParser.SerializeJsonString(map));
+            writer.WriteLine(OSDParser.SerializeJSONString(map));
             writer.Close();
         }
 

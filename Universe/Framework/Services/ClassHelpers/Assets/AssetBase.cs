@@ -443,27 +443,27 @@ namespace Universe.Framework.Services.ClassHelpers.Assets
         }
 
         /// <summary>
-        ///     Make an OSDMap (json) with only the needed parts for the database and then compress it
+        ///     Make an OSDMap (JSON) with only the needed parts for the database and then compress it
         /// </summary>
         /// <returns>A compressed (gzip) string of the data needed for the database</returns>
         public string CompressedPack()
         {
             OSDMap assetMap = ToOSD();
 
-            //Serialize it with json
-            string jsonString = OSDParser.SerializeJsonString(assetMap);
+            //Serialize it with JSON
+            string JSONString = OSDParser.SerializeJSONString(assetMap);
             //Now use gzip to compress this map
-            string compressedString = Util.Compress(jsonString);
+            string compressedString = Util.Compress(JSONString);
 
             return compressedString;
         }
 
         public void CompressedUnpack(string compressedString)
         {
-            //Decompress the info back to json format
-            string jsonString = Util.Decompress(compressedString);
+            //Decompress the info back to JSON format
+            string JSONString = Util.Decompress(compressedString);
             //Build the OSDMap 
-            OSDMap assetMap = (OSDMap) OSDParser.DeserializeJson(jsonString);
+            OSDMap assetMap = (OSDMap) OSDParser.DeserializeJSON(JSONString);
             //Now unpack the contents
             Unpack(assetMap);
         }

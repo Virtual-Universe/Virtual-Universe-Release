@@ -154,7 +154,7 @@ namespace Universe.Modules.Installer
 
         private void ReadAMBuildFile(string fileName)
         {
-            OSDMap map = (OSDMap) OSDParser.DeserializeJson(File.ReadAllText(fileName));
+            OSDMap map = (OSDMap) OSDParser.DeserializeJSON(File.ReadAllText(fileName));
             string prebuildFile = Path.Combine(Path.GetDirectoryName(fileName), map["PrebuildFile"]);
             string tmpFile = Path.Combine(Path.GetDirectoryName(fileName), map["TmpFile"]);
 

@@ -183,7 +183,7 @@ namespace Universe.ScriptEngine.DotNetEngine
         /// </exception>
         /// <returns>AppDomain with a restricted security policy</returns>
         /// <remarks>
-        ///     Substantial portions of this function from: http://blogs.msdn.com/shawnfa/archive/2004/10/25/247379.aspx
+        ///     Substantial portions of this function from: http://blogs.MSDN.com/shawnfa/archive/2004/10/25/247379.aspx
         ///     Valid permissionSetName values are:
         ///     * FullTrust
         ///     * SkipVerification

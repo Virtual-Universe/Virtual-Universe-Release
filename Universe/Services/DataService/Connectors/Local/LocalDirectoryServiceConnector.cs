@@ -894,7 +894,7 @@ namespace Universe.Services.DataService
             {
                 //Pull the classified out of OSD
                 Classified classified = new Classified();
-                classified.FromOSD((OSDMap) OSDParser.DeserializeJson(retVal[i + 5]));
+                classified.FromOSD((OSDMap) OSDParser.DeserializeJSON(retVal[i + 5]));
 
                 DirClassifiedReplyData replyData = new DirClassifiedReplyData
                                                        {
@@ -946,7 +946,7 @@ namespace Universe.Services.DataService
             {
                 Classified classified = new Classified();
                 //Pull the classified out of OSD
-                classified.FromOSD((OSDMap) OSDParser.DeserializeJson(retVal[i + 6]));
+                classified.FromOSD((OSDMap) OSDParser.DeserializeJSON(retVal[i + 6]));
                 Classifieds.Add(classified);
             }
             return Classifieds;
@@ -971,7 +971,7 @@ namespace Universe.Services.DataService
             List<string> retVal = GD.Query(new[] { "*" }, m_userClassifiedsTable, filter, null, null, null);
             if ((retVal == null) || (retVal.Count == 0)) return null;
             Classified classified = new Classified();
-            classified.FromOSD((OSDMap) OSDParser.DeserializeJson(retVal[6]));
+            classified.FromOSD((OSDMap) OSDParser.DeserializeJSON(retVal[6]));
             return classified;
         }
 

@@ -580,7 +580,7 @@ namespace Universe.Services
             Stream s = File.Open(tempname, FileMode.OpenOrCreate);
             ProtoBuf.Serializer.Serialize<AssetBase>(s, asset);
             s.Close();
-            //File.WriteAllText(tempname, OpenMetaverse.StructuredData.OSDParser.SerializeJsonString(asset.ToOSD()));
+            //File.WriteAllText(tempname, OpenMetaverse.StructuredData.OSDParser.SerializeJSONString(asset.ToOSD()));
 
             // Now that it's written, rename it so that it can be found.
             if (File.Exists(filename))

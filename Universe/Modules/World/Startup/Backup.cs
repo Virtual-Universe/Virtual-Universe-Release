@@ -742,7 +742,7 @@ namespace Universe.Modules.Startup
             void WriteAsset(string id, AssetBase asset, TarArchiveWriter writer)
             {
                 if (asset != null)
-                    writer.WriteFile("assets/" + asset.ID, OSDParser.SerializeJsonString(asset.ToOSD()));
+                    writer.WriteFile("assets/" + asset.ID, OSDParser.SerializeJSONString(asset.ToOSD()));
                 else
                     MainConsole.Instance.WarnFormat("Could not find asset {0}", id);
             }
@@ -943,7 +943,7 @@ namespace Universe.Modules.Startup
                     if (m_loadAssets)
                     {
                         AssetBase asset = new AssetBase();
-                        asset.Unpack(OSDParser.DeserializeJson(Encoding.UTF8.GetString(data)));
+                        asset.Unpack(OSDParser.DeserializeJSON(Encoding.UTF8.GetString(data)));
                         scene.AssetService.Store(asset);
                     }
                 }

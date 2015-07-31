@@ -163,7 +163,7 @@ namespace Universe.Modules.ObjectCache
             {
                 cachedMap.Add(kvp.Key.ToString(), OSD.FromUInteger(kvp.Value));
             }
-            return OSDParser.SerializeJsonString(cachedMap);
+            return OSDParser.SerializeJSONString(cachedMap);
         }
 
         public Dictionary<uint, uint> DeserializeAgentCache(string osdMap)
@@ -171,7 +171,7 @@ namespace Universe.Modules.ObjectCache
             Dictionary<uint, uint> cache = new Dictionary<uint, uint>();
             try
             {
-                OSDMap cachedMap = (OSDMap) OSDParser.DeserializeJson(osdMap);
+                OSDMap cachedMap = (OSDMap) OSDParser.DeserializeJSON(osdMap);
                 foreach (KeyValuePair<string, OSD> kvp in cachedMap)
                 {
                     cache[uint.Parse(kvp.Key)] = kvp.Value.AsUInteger();

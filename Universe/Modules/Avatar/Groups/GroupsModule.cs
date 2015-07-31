@@ -849,7 +849,7 @@ namespace Universe.Modules.Groups
                                       };
 
             if (m_debugEnabled)
-                MainConsole.Instance.InfoFormat("[GROUPS]: {0}", OSDParser.SerializeJsonString(llDataStruct));
+                MainConsole.Instance.InfoFormat("[GROUPS]: {0}", OSDParser.SerializeJSONString(llDataStruct));
 
             IEventQueueService queue = remoteClient.Scene.RequestModuleInterface<IEventQueueService>();
 

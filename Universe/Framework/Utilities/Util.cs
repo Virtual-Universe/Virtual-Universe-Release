@@ -232,14 +232,14 @@ namespace Universe.Framework.Utilities
             // protobuf-net wants an implicit or explicit operator between the types
             public static implicit operator OSD(OSDSurrogate value)
             {
-                return value.str == "" ? null : OSDParser.DeserializeJson(value.str);
+                return value.str == "" ? null : OSDParser.DeserializeJSON(value.str);
             }
 
             public static implicit operator OSDSurrogate(OSD value)
             {
                 return new OSDSurrogate
                            {
-                               str = value == null ? "" : OSDParser.SerializeJsonString(value)
+                               str = value == null ? "" : OSDParser.SerializeJSONString(value)
                            };
             }
         }
@@ -252,14 +252,14 @@ namespace Universe.Framework.Utilities
             // protobuf-net wants an implicit or explicit operator between the types
             public static implicit operator OSDMap(OSDMapSurrogate value)
             {
-                return value.str == "" ? null : (OSDMap)OSDParser.DeserializeJson(value.str);
+                return value.str == "" ? null : (OSDMap)OSDParser.DeserializeJSON(value.str);
             }
 
             public static implicit operator OSDMapSurrogate(OSDMap value)
             {
                 return new OSDMapSurrogate
                 {
-                    str = value == null ? "" : OSDParser.SerializeJsonString(value)
+                    str = value == null ? "" : OSDParser.SerializeJSONString(value)
                 };
             }
         }
@@ -272,14 +272,14 @@ namespace Universe.Framework.Utilities
             // protobuf-net wants an implicit or explicit operator between the types
             public static implicit operator OSDArray(OSDArraySurrogate value)
             {
-                return value.str == "" ? null : (OSDArray)OSDParser.DeserializeJson(value.str);
+                return value.str == "" ? null : (OSDArray)OSDParser.DeserializeJSON(value.str);
             }
 
             public static implicit operator OSDArraySurrogate(OSDArray value)
             {
                 return new OSDArraySurrogate
                 {
-                    str = value == null ? "" : OSDParser.SerializeJsonString(value)
+                    str = value == null ? "" : OSDParser.SerializeJSONString(value)
                 };
             }
         }
@@ -1583,7 +1583,7 @@ namespace Universe.Framework.Utilities
             string strdata = UTF8.GetString(data);
             OSDMap args = null;
             OSD buffer;
-            buffer = OSDParser.DeserializeJson(strdata);
+            buffer = OSDParser.DeserializeJSON(strdata);
             if (buffer.Type == OSDType.Map)
             {
                 args = (OSDMap) buffer;
@@ -1598,8 +1598,8 @@ namespace Universe.Framework.Utilities
             try
             {
                 OSD buffer;
-                // We should pay attention to the content-type, but let's assume we know it's Json
-                buffer = OSDParser.DeserializeJson(data);
+                // We should pay attention to the content-type, but let's assume we know it's JSON
+                buffer = OSDParser.DeserializeJSON(data);
                 if (buffer.Type == OSDType.Map)
                 {
                     args = (OSDMap) buffer;
@@ -2279,7 +2279,7 @@ namespace Universe.Framework.Utilities
             return false;
         }
 
-        // http://social.msdn.microsoft.com/forums/en-US/csharpgeneral/thread/68f7ca38-5cd1-411f-b8d4-e4f7a688bc03
+        // http://social.MSDN.microsoft.com/forums/en-US/csharpgeneral/thread/68f7ca38-5cd1-411f-b8d4-e4f7a688bc03
         // By: A Million Lemmings
         public static string ConvertDecString(int dvalue)
         {

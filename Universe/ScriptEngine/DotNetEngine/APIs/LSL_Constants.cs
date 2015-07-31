@@ -346,7 +346,7 @@ namespace Universe.ScriptEngine.DotNetEngine.Runtime
         public static readonly LSL_Types.LSLInteger CONTENT_TYPE_XML = 2; //application/xml
         public static readonly LSL_Types.LSLInteger CONTENT_TYPE_XHTML = 3; //application/xhtml+xml
         public static readonly LSL_Types.LSLInteger CONTENT_TYPE_ATOM = 4; //application/atom+xml
-        public static readonly LSL_Types.LSLInteger CONTENT_TYPE_JSON = 5; //application/json
+        public static readonly LSL_Types.LSLInteger CONTENT_TYPE_JSON = 5; //application/JSON
         public static readonly LSL_Types.LSLInteger CONTENT_TYPE_LLSD = 6; //application/llsd+xml
         public static readonly LSL_Types.LSLInteger CONTENT_TYPE_FORM = 7; //application/x-www-form-urlencoded
         public static readonly LSL_Types.LSLInteger CONTENT_TYPE_RSS = 8; //application/rss+xml 

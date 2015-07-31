@@ -34,6 +34,6 @@ namespace Universe.Framework.Services
     {
         byte[] HandleDirectoryRequest(Hashtable requestBody, OSHttpRequest httpRequest, OSHttpResponse httpResponse);
         byte[] HandleDialplanRequest(Hashtable requestBody, OSHttpRequest httpRequest, OSHttpResponse httpResponse);
-        string GetJsonConfig();
+        string GetJSONConfig();
     }
 }

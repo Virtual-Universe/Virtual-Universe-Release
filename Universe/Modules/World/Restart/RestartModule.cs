@@ -351,7 +351,7 @@ namespace Universe.Modules.Restart
             var regionName = scene.RegionInfo.RegionName;
             var sceneFile = BuildSaveFileName (regionName);
 
-            File.WriteAllText (sceneFile, OSDParser.SerializeJsonString (userMap));
+            File.WriteAllText (sceneFile, OSDParser.SerializeJSONString (userMap));
             MainConsole.Instance.InfoFormat ("[Restart]: {0} users saved for {1}", regionUsers, regionName);
 
         }
@@ -364,7 +364,7 @@ namespace Universe.Modules.Restart
                 return;
 
             var regionUsers = 0;
-            OSDMap sceneAgents = (OSDMap)OSDParser.DeserializeJson (File.ReadAllText (readFile));
+            OSDMap sceneAgents = (OSDMap)OSDParser.DeserializeJSON (File.ReadAllText (readFile));
             foreach (OSD o in sceneAgents.Values)
             {
                 AgentCircuitData data = new AgentCircuitData ();

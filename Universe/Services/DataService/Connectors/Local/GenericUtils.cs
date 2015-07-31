@@ -87,7 +87,7 @@ namespace Universe.Services.DataService
             List<OSDMap> Values = new List<OSDMap>();
             foreach (string ret in retVal)
             {
-                OSDMap map = (OSDMap) OSDParser.DeserializeJson(ret);
+                OSDMap map = (OSDMap) OSDParser.DeserializeJSON(ret);
                 if (map != null)
                     Values.Add(map);
             }
@@ -133,7 +133,7 @@ namespace Universe.Services.DataService
             if (retVal.Count == 0)
                 return null;
 
-            return (OSDMap) OSDParser.DeserializeJson(retVal[0]);
+            return (OSDMap) OSDParser.DeserializeJSON(retVal[0]);
         }
 
         /// <summary>
@@ -201,7 +201,7 @@ namespace Universe.Services.DataService
             row["OwnerID"] = OwnerID;
             row["Type"] = Type;
             row["`Key`"] = Key;
-            row["`Value`"] = OSDParser.SerializeJsonString(Value);
+            row["`Value`"] = OSDParser.SerializeJSONString(Value);
             GD.Replace("generics", row);
         }
 
@@ -264,7 +264,7 @@ namespace Universe.Services.DataService
             QueryFilter filter = new QueryFilter();
             filter.andFilters["Type"] = Type;
             filter.andFilters["`Key`"] = Key;
-            filter.andFilters["`Value`"] = OSDParser.SerializeJsonString(Value);
+            filter.andFilters["`Value`"] = OSDParser.SerializeJSONString(Value);
             return
                 GD.Query(new string[1] {"OwnerID"}, "generics", filter, null, null, null)
                   .ConvertAll<UUID>(x => new UUID(x));
