@@ -719,7 +719,7 @@ namespace Universe.Modules.Attachments
         protected void FindAttachmentPoint(IClientAPI remoteClient, uint localID, ISceneEntity group,
                                            int AttachmentPt, UUID assetID, bool forceUpdatePrim, bool isTempAttach)
         {
-            //Make sure that we de-attach over the limit of attachments
+            //Make sure that we aren't over the limit of attachments
             ISceneEntity[] attachments = GetAttachmentsForAvatar(remoteClient.AgentId);
             if (attachments.Length + 1 > m_maxNumberOfAttachments)
             {

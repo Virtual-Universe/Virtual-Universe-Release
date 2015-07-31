@@ -150,7 +150,7 @@ namespace Universe.Modules.Monitoring
                     sb[i] = new SimStatsPacket.StatBlock();
                 }
 
-                //As we de-attach a scene, we add all of the monitors that do not need the scene and run for the entire instance
+                //As we aren't a scene, we add all of the monitors that do not need the scene and run for the entire instance
                 AddDefaultMonitors();
             }
 

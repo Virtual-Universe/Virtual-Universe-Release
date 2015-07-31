@@ -1021,7 +1021,7 @@ namespace Universe.Modules.EntityTransfer
                 agent = data;
                 circuitData = BuildCircuitDataForPresence(sp, sp.AbsolutePosition);
                 //if (agentIsLeaving)
-                //    sp.SetAgentLeaving(null);//We de-attach sure where they are going
+                //    sp.SetAgentLeaving(null);//We aren't sure where they are going
                 return true;
             }
 

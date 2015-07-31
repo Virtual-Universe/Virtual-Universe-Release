@@ -1574,7 +1574,7 @@ namespace Universe.Services.DataService
             if (remoteValue != null || m_doRemoteOnly)
                 return (List<GroupRolesData>) remoteValue;
 
-            //No permissions check necessary, we are checking only roles that they are in, so if they de-attach in the group, that isn't a problem
+            //No permissions check necessary, we are checking only roles that they are in, so if they aren't in the group, that isn't a problem
 
             QueryTables tables = new QueryTables();
             tables.AddTable("group_role_membership", "osgm");

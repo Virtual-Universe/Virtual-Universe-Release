@@ -1417,7 +1417,7 @@ namespace Universe.Region
             IGroupsModule module = Scene.RequestModuleInterface<IGroupsModule>();
             if (module != null)
                 if (GroupID2 != UUID.Zero && !module.GroupPermissionCheck(attemptingUserID, GroupID2, GroupPowers.None))
-                    return; // No settings to groups you de-attach in
+                    return; // No settings to groups you aren't in
             foreach (SceneObjectPart part in m_partsList)
             {
                 part.SetGroup(GroupID2);
@@ -3520,7 +3520,7 @@ namespace Universe.Region
             if (IsTemporary)
             {
                 // Remove from database and parcel prim count
-                // Temporary objects de-attach saved to the database ever, so we don't need to do anything
+                // Temporary objects aren't saved to the database ever, so we don't need to do anything
             }
 
             if (selectionPart != null)

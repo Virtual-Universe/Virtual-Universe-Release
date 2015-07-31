@@ -190,7 +190,7 @@ namespace Universe.Modules.Selection
                         prim.ParentEntity.IsSelected = true;
                     }
                 }
-                //Check for avies! They de-attach prims!
+                //Check for avies! They aren't prims!
                 if (scene.GetScenePresence(primLocalID) != null)
                     continue;
 
