@@ -359,7 +359,7 @@ namespace Universe.Services.DataService
                                               EstateID = 0
                                           };
             if (retVals.Count > 0)
-                settings.FromOSD((OSDMap) OSDParser.DeserializeJSON(retVals[4]));
+                settings.FromOSD((OSDMap) OSDParser.DeserializeJson(retVals[4]));
 
             return settings;
         }
@@ -387,7 +387,7 @@ namespace Universe.Services.DataService
             values["EstateName"] = es.EstateName;
             values["EstateOwner"] = es.EstateOwner;
             values["ParentEstateID"] = es.ParentEstateID;
-            values["Settings"] = OSDParser.SerializeJSONString(es.ToOSD());
+            values["Settings"] = OSDParser.SerializeJsonString(es.ToOSD());
 
             if (!doInsert)
             {

@@ -523,7 +523,7 @@ namespace Universe.ScriptEngine.DotNetEngine.APIs
             if (info["Success"] != true)
                 return "Get GridInfo Failed!";
 
-            JSON = (OSDMap) OSDParser.DeserializeJSON(info["_RawResult"].AsString());
+            JSON = (OSDMap) OSDParser.DeserializeJson(info["_RawResult"].AsString());
 
             switch (type)
             {
@@ -1609,7 +1609,7 @@ namespace Universe.ScriptEngine.DotNetEngine.APIs
             
             try
             {
-                OSD decoded = OSDParser.DeserializeJSON(JSON);
+                OSD decoded = OSDParser.DeserializeJson(JSON);
                 return osdToObject(decoded);
             }
             catch (Exception e)

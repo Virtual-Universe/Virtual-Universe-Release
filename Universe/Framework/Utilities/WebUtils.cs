@@ -56,7 +56,7 @@ namespace Universe.Framework.Utilities
         /// </summary>
         public static string PostToService(string url, OSDMap data)
         {
-            byte[] buffer = data != null ? Encoding.UTF8.GetBytes(OSDParser.SerializeJSONString(data, true)) : null;
+            byte[] buffer = data != null ? Encoding.UTF8.GetBytes(OSDParser.SerializeJsonString(data, true)) : null;
             Task<byte[]> t = ServiceOSDRequest(url, buffer, "POST", m_defaultTimeout);
             t.Wait();
             return t.Result == null ? null : Encoding.UTF8.GetString(t.Result);
@@ -86,7 +86,7 @@ namespace Universe.Framework.Utilities
         /// </summary>
         public static string PutToService(string url, OSDMap data)
         {
-            byte[] buffer = data != null ? Encoding.UTF8.GetBytes(OSDParser.SerializeJSONString(data, true)) : null;
+            byte[] buffer = data != null ? Encoding.UTF8.GetBytes(OSDParser.SerializeJsonString(data, true)) : null;
             Task<byte[]> t = ServiceOSDRequest(url, buffer, "PUT", m_defaultTimeout);
             t.Wait();
             return t.Result == null ? null : Encoding.UTF8.GetString(t.Result);
@@ -175,7 +175,7 @@ namespace Universe.Framework.Utilities
         /// </summary>
         public static string PostToService(string url, OSDMap data)
         {
-            byte[] buffer = data != null ? Encoding.UTF8.GetBytes(OSDParser.SerializeJSONString(data, true)) : null;
+            byte[] buffer = data != null ? Encoding.UTF8.GetBytes(OSDParser.SerializeJsonString(data, true)) : null;
             return Encoding.UTF8.GetString(ServiceOSDRequest(url, buffer, "POST", m_defaultTimeout));
         }
 
@@ -203,7 +203,7 @@ namespace Universe.Framework.Utilities
         /// </summary>
         public static string PutToService(string url, OSDMap data)
         {
-            byte[] buffer = data != null ? Encoding.UTF8.GetBytes(OSDParser.SerializeJSONString(data, true)) : null;
+            byte[] buffer = data != null ? Encoding.UTF8.GetBytes(OSDParser.SerializeJsonString(data, true)) : null;
             return Encoding.UTF8.GetString(ServiceOSDRequest(url, buffer, "PUT", m_defaultTimeout));
         }
 
@@ -370,7 +370,7 @@ namespace Universe.Framework.Utilities
             try
             {
                 // We should pay attention to the content-type, but let's assume we know it's JSON
-                OSD buffer = OSDParser.DeserializeJSON(data);
+                OSD buffer = OSDParser.DeserializeJson(data);
                 if (buffer.Type == OSDType.Map)
                 {
                     OSDMap args = (OSDMap) buffer;

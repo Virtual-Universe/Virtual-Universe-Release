@@ -13316,7 +13316,7 @@ namespace Universe.ScriptEngine.DotNetEngine.APIs
 
         public LSL_String llJSONGetValue(LSL_String JSON, LSL_List specifiers)
         {
-            OSD o = OSDParser.DeserializeJSON(JSON);
+            OSD o = OSDParser.DeserializeJson(JSON);
             OSD specVal = JSONGetSpecific(o, specifiers, 0);
 
             return specVal.AsString();
@@ -13326,7 +13326,7 @@ namespace Universe.ScriptEngine.DotNetEngine.APIs
         {
             try
             {
-                OSD o = OSDParser.DeserializeJSON(JSON);
+                OSD o = OSDParser.DeserializeJson(JSON);
                 return (LSL_List)ParseJSONNode(o);
             }
             catch (Exception)
@@ -13378,7 +13378,7 @@ namespace Universe.ScriptEngine.DotNetEngine.APIs
                     {
                         array.Add(ListToJSON(o));
                     }
-                    return OSDParser.SerializeJSONString(array);
+                    return OSDParser.SerializeJsonString(array);
                 }
                 else if (type == ScriptBaseClass.JSON_OBJECT)
                 {
@@ -13389,7 +13389,7 @@ namespace Universe.ScriptEngine.DotNetEngine.APIs
                             return ScriptBaseClass.JSON_INVALID;
                         map.Add(((LSL_String)values.Data[i]).m_string, ListToJSON(values.Data[i + 1]));
                     }
-                    return OSDParser.SerializeJSONString(map);
+                    return OSDParser.SerializeJsonString(map);
                 }
                 return ScriptBaseClass.JSON_INVALID;
             }
@@ -13452,9 +13452,9 @@ namespace Universe.ScriptEngine.DotNetEngine.APIs
         {
             try
             {
-                OSD o = OSDParser.DeserializeJSON(JSON);
+                OSD o = OSDParser.DeserializeJson(JSON);
                 JSONSetSpecific(o, specifiers, 0, value);
-                return OSDParser.SerializeJSONString(o);
+                return OSDParser.SerializeJsonString(o);
             }
             catch (Exception)
             {
@@ -13528,7 +13528,7 @@ namespace Universe.ScriptEngine.DotNetEngine.APIs
 
         public LSL_String llJSONValueType(LSL_String JSON, LSL_List specifiers)
         {
-            OSD o = OSDParser.DeserializeJSON(JSON);
+            OSD o = OSDParser.DeserializeJson(JSON);
             OSD specVal = JSONGetSpecific(o, specifiers, 0);
             if (specVal == null)
                 return ScriptBaseClass.JSON_INVALID;

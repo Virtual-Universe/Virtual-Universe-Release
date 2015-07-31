@@ -282,7 +282,7 @@ namespace Universe.Modules.Currency
 
                         SchedulerItem item = new SchedulerItem(
                                              "ScheduledPayment " + identifer,                         // name
-                                             OSDParser.SerializeJSONString(itemInfo),                // scheduled payment details
+                                             OSDParser.SerializeJsonString(itemInfo),                // scheduled payment details
                                              false,                                                   // run once
                                              GetStipendPaytime(Constants.SCHEDULED_PAYMENTS_DELAY),  // next cycle + delay
                                              agentID);                                                // user to charge
@@ -342,7 +342,7 @@ namespace Universe.Modules.Currency
         {
             if (functionName.StartsWith("ScheduledPayment"))
             {
-                OSDMap itemInfo = (OSDMap)OSDParser.DeserializeJSON(parameters.ToString());
+                OSDMap itemInfo = (OSDMap)OSDParser.DeserializeJson(parameters.ToString());
                 UUID agentID = itemInfo["AgentID"];
                 string scdID = itemInfo["SchedulerID"];
                 string description = itemInfo["Text"];
@@ -741,7 +741,7 @@ namespace Universe.Modules.Currency
             List<SchedulerItem> CurrentSchedule = sched_database.ToRun(nextScheduledPayment);
             foreach (SchedulerItem I in CurrentSchedule)
             {
-                OSDMap itemInfo = (OSDMap)OSDParser.DeserializeJSON(I.FireParams);
+                OSDMap itemInfo = (OSDMap)OSDParser.DeserializeJson(I.FireParams);
                 UUID agentID = itemInfo["AgentID"];
                 //string scdID = itemInfo ["SchedulerID"];
                 //string description = itemInfo ["Text"];

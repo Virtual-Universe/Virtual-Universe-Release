@@ -640,7 +640,7 @@ namespace Universe.Modules.WorldMap
 
         bool DeserializeCache(string file)
         {
-            OSDMap map = OSDParser.DeserializeJSON(file) as OSDMap;
+            OSDMap map = OSDParser.DeserializeJson(file) as OSDMap;
             if (map == null)
                 return false;
 
@@ -663,7 +663,7 @@ namespace Universe.Modules.WorldMap
                     System.IO.Path.Combine(System.IO.Path.Combine(m_assetCacheDir, "mapTileTextureCache"),
                                            m_scene.RegionInfo.RegionName + ".tc"), FileMode.Create);
             StreamWriter writer = new StreamWriter(stream);
-            writer.WriteLine(OSDParser.SerializeJSONString(map));
+            writer.WriteLine(OSDParser.SerializeJsonString(map));
             writer.Close();
         }
 

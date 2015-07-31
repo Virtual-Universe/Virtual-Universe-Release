@@ -451,7 +451,7 @@ namespace Universe.Framework.Services.ClassHelpers.Assets
             OSDMap assetMap = ToOSD();
 
             //Serialize it with JSON
-            string JSONString = OSDParser.SerializeJSONString(assetMap);
+            string JSONString = OSDParser.SerializeJsonString(assetMap);
             //Now use gzip to compress this map
             string compressedString = Util.Compress(JSONString);
 
@@ -463,7 +463,7 @@ namespace Universe.Framework.Services.ClassHelpers.Assets
             //Decompress the info back to JSON format
             string JSONString = Util.Decompress(compressedString);
             //Build the OSDMap 
-            OSDMap assetMap = (OSDMap) OSDParser.DeserializeJSON(JSONString);
+            OSDMap assetMap = (OSDMap) OSDParser.DeserializeJson(JSONString);
             //Now unpack the contents
             Unpack(assetMap);
         }

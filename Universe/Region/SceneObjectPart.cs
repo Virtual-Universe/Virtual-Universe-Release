@@ -3478,11 +3478,11 @@ namespace Universe.Region
         string _vehicleParams
         {
             get { 
-                return m_VehicleParams == null ? "" : OSDParser.SerializeJSONString(m_VehicleParams, true);
+                return m_VehicleParams == null ? "" : OSDParser.SerializeJsonString(m_VehicleParams, true);
             }
             set {
                 if (value != null)
-                    m_VehicleParams = value == "" ? null : (OSDMap) OSDParser.DeserializeJSON(value);
+                    m_VehicleParams = value == "" ? null : (OSDMap) OSDParser.DeserializeJson(value);
             }
         }
 

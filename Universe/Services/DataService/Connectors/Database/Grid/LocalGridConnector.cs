@@ -483,7 +483,7 @@ namespace Universe.Services.DataService
             row["SizeZ"] = region.RegionSizeZ;
             row["Flags"] = region.Flags;
             row["SessionID"] = region.SessionID;
-            row["Info"] = OSDParser.SerializeJSONString(region.ToOSD());
+            row["Info"] = OSDParser.SerializeJsonString(region.ToOSD());
 
             return GD.Replace(m_realm, row);
         }
@@ -552,7 +552,7 @@ namespace Universe.Services.DataService
                 for (int i = 0; i < query.Count; i += 14)
                 {
                     GridRegion data = new GridRegion();
-                    OSDMap map = (OSDMap) OSDParser.DeserializeJSON(query[i + 13]);
+                    OSDMap map = (OSDMap) OSDParser.DeserializeJson(query[i + 13]);
                     map["owner_uuid"] = (!map.ContainsKey("owner_uuid") || map["owner_uuid"].AsUUID() == UUID.Zero)
                                             ? OSD.FromUUID(UUID.Parse(query[i + 6]))
                                             : map["owner_uuid"];

@@ -211,7 +211,7 @@ namespace Universe.Services.DataService
                                           classified.CreatorUUID,
                                           classified.ScopeID,
                                           classified.ClassifiedUUID,
-                                          OSDParser.SerializeJSONString(classified.ToOSD()),
+                                          OSDParser.SerializeJsonString(classified.ToOSD()),
                                           classified.PriceForListing,
                                           keywords
                                       };
@@ -234,7 +234,7 @@ namespace Universe.Services.DataService
             for (int i = 0; i < query.Count; i += 9)
             {
                 Classified classified = new Classified();
-                classified.FromOSD((OSDMap) OSDParser.DeserializeJSON(query[i + 6]));
+                classified.FromOSD((OSDMap) OSDParser.DeserializeJson(query[i + 6]));
                 classifieds.Add(classified);
             }
             return classifieds;
@@ -257,7 +257,7 @@ namespace Universe.Services.DataService
                 return null;
             }
             Classified classified = new Classified();
-            classified.FromOSD((OSDMap) OSDParser.DeserializeJSON(query[6]));
+            classified.FromOSD((OSDMap) OSDParser.DeserializeJson(query[6]));
             return classified;
         }
 
@@ -293,7 +293,7 @@ namespace Universe.Services.DataService
                                           pick.SimName,
                                           pick.CreatorUUID,
                                           pick.PickUUID,
-                                          OSDParser.SerializeJSONString(pick.ToOSD())
+                                          OSDParser.SerializeJsonString(pick.ToOSD())
                                       };
             return GD.Insert(m_userPicksTable, values.ToArray());
         }
@@ -313,7 +313,7 @@ namespace Universe.Services.DataService
             if (query.Count < 5)
                 return null;
             ProfilePickInfo pick = new ProfilePickInfo();
-            pick.FromOSD((OSDMap) OSDParser.DeserializeJSON(query[4]));
+            pick.FromOSD((OSDMap) OSDParser.DeserializeJson(query[4]));
             return pick;
         }
 
@@ -333,7 +333,7 @@ namespace Universe.Services.DataService
             for (int i = 0; i < query.Count; i += 5)
             {
                 ProfilePickInfo pick = new ProfilePickInfo();
-                pick.FromOSD((OSDMap) OSDParser.DeserializeJSON(query[i + 4]));
+                pick.FromOSD((OSDMap) OSDParser.DeserializeJson(query[i + 4]));
                 picks.Add(pick);
             }
             return picks;
