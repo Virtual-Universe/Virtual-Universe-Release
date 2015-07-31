@@ -25,6 +25,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Linq;
+using Nini.Config;
+using ProtoBuf;
 using Universe.Framework.Modules;
 using Universe.Framework.Servers;
 using Universe.Framework.Servers.HttpServer;
@@ -32,8 +40,6 @@ using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Servers.HttpServer.Interfaces;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
-using Nini.Config;
-using ProtoBuf;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -476,7 +482,7 @@ namespace Universe.Services
             return mapTexture;
         }
 
-        // From msdn
+        // From MSDN
         static ImageCodecInfo GetEncoderInfo(String mimeType)
         {
             ImageCodecInfo[] encoders = ImageCodecInfo.GetImageEncoders();

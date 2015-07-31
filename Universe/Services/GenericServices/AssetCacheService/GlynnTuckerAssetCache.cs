@@ -25,14 +25,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System;
+using GlynnTucker.Cache;
+using Nini.Config;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Assets;
-using GlynnTucker.Cache;
-using Nini.Config;
-using System;
 
 namespace Universe.Services
 {
@@ -92,10 +91,7 @@ namespace Universe.Services
 
         #region IImprovedAssetCache
 
-        ////////////////////////////////////////////////////////////
         // IImprovedAssetCache
-        //
-
         public void Cache(string assetID, AssetBase asset)
         {
             if (asset != null)

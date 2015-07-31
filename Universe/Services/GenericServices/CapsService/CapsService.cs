@@ -25,17 +25,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Nini.Config;
+using OpenMetaverse;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Servers.HttpServer.Interfaces;
 using Universe.Framework.Services;
-using Nini.Config;
-using OpenMetaverse;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Universe.Services
 {

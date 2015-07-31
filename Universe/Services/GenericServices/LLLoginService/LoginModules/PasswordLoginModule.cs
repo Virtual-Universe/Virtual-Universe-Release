@@ -25,13 +25,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
+using System.Collections;
+using Nini.Config;
+using OpenMetaverse;
 using Universe.Framework.Modules;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Profile;
 using Universe.Framework.Utilities;
-using Nini.Config;
-using OpenMetaverse;
-using System.Collections;
 
 namespace Universe.Services
 {
@@ -53,9 +54,8 @@ namespace Universe.Services
                                    string password, out object data)
         {
             data = null;
-            //
+
             // Authenticate this user
-            //
             if (authType == "UserAccount")
             {
                 password = password.StartsWith("$1$") ? password.Remove(0, 3) : Util.Md5Hash(password); //remove $1$

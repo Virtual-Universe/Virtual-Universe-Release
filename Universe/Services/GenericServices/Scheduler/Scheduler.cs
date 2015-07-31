@@ -38,7 +38,7 @@ namespace Universe.Services
     {
         public UniverseEventManager EventManager = new UniverseEventManager();
         ISchedulerDataPlugin m_database;
-//        bool m_enabled;
+        //bool m_enabled;
 
         #region Implementation of IService
 
@@ -71,9 +71,8 @@ namespace Universe.Services
             if (!m_doRemoteCalls)
             {
                 m_database = Framework.Utilities.DataManager.RequestPlugin<ISchedulerDataPlugin>();
-//                if (m_database != null)
-//                    m_enabled = true;
-
+                //if (m_database != null)
+                //m_enabled = true;
             }
         }
 
@@ -178,7 +177,7 @@ namespace Universe.Services
                 if (I.RunOnce)
                     I.Enabled = false;
                 
-//                if (I.Enabled) I.CalculateNextRunTime(I.TimeToRun);
+                if (I.Enabled) I.CalculateNextRunTime(I.TimeToRun);
                 if (I.Enabled)
                     I.TimeToRun = schedMoney.GetStipendPaytime(Constants.SCHEDULED_PAYMENTS_DELAY);      // next stipend payment cycle + delay
 
@@ -206,9 +205,9 @@ namespace Universe.Services
             }
         }
 
-        public void MarkComplete(string history_id, string reciept)
+        public void MarkComplete(string history_id, string receipt)
         {
-            m_database.SaveHistoryCompleteReciept(history_id, reciept);
+            m_database.SaveHistoryCompleteReciept(history_id, receipt);
         }
 
         #endregion

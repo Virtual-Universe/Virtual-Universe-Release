@@ -25,7 +25,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.IO;
+using System.Web;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.PresenceInfo;
@@ -35,12 +41,6 @@ using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Profile;
 using Universe.Framework.Utilities;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.IO;
-using System.Web;
 using GridRegion = Universe.Framework.Services.GridRegion;
 
 namespace Universe.Services
@@ -179,7 +179,7 @@ namespace Universe.Services
 
             if (m_service.ClientCaps.GetRootCapsService().RegionHandle != m_service.RegionHandle)
             {
-                retVal.Add("reason", "Contacted by non-root region for teleport. Protocol implemention is wrong.");
+                retVal.Add("reason", "Contacted by non-root region for teleport. Protocol implementation is wrong.");
                 retVal.Add("success", OSD.FromBoolean(false));
                 return OSDParser.SerializeLLSDXmlBytes(retVal);
             }

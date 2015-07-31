@@ -25,14 +25,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System;
+using System.Collections.Generic;
+using Nini.Config;
+using OpenMetaverse;
 using Universe.Framework.Modules;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Other;
 using Universe.Framework.Utilities;
-using Nini.Config;
-using OpenMetaverse;
-using System.Collections.Generic;
 using FriendInfo = Universe.Framework.Services.FriendInfo;
 
 namespace Universe.Services
@@ -133,7 +133,7 @@ namespace Universe.Services
                 foreach (FriendInfo friend in friends)
                 {
                     if (friend.TheirFlags == -1 || friend.MyFlags == -1)
-                        continue; //Not validiated yet!
+                        continue; //Not validated yet!
                     UUID FriendToInform = UUID.Zero;
                     if (!UUID.TryParse(friend.Friend, out FriendToInform))
                         continue;
@@ -158,7 +158,7 @@ namespace Universe.Services
                 foreach (FriendInfo friend in friends)
                 {
                     if (friend.TheirFlags == -1 || friend.MyFlags == -1)
-                        continue; //Not validiated yet!
+                        continue; //Not validated yet!
                     UUID FriendToInform = UUID.Zero;
                     if (!UUID.TryParse(friend.Friend, out FriendToInform))
                         continue;

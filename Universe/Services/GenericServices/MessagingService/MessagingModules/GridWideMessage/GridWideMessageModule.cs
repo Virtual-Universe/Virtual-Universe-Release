@@ -25,15 +25,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Services;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -102,7 +104,7 @@ namespace Universe.Services
             //Get required interfaces
             List<IClientCapsService> clients = m_capsService.GetClientsCapsServices();
 
-            //Go through all clients, and send the message asyncly to all agents that are root
+            //Go through all clients, and send the message async to all agents that are root
             foreach (
                 IRegionClientCapsService regionClient in
                     from client in clients
@@ -116,7 +118,7 @@ namespace Universe.Services
                 m_messagePost.Post(regionClient.Region.ServerURI,
                                    BuildRequest("GridWideMessage", message, regionClient.AgentID.ToString()));
             }
-            MainConsole.Instance.Info("[GridWideMessageModule]: Sent alert, will be delievered across the grid shortly.");
+            MainConsole.Instance.Info("[GridWideMessageModule]: Sent alert, will be delivered across the grid shortly.");
         }
 
         #endregion
@@ -166,7 +168,7 @@ namespace Universe.Services
 
         protected void SendGridAlert(IScene scene, string[] cmd)
         {
-            //Combine the params and figure out the message
+            //Combine the parameters and figure out the message
             string message = CombineParams(cmd, 3);
 
             SendAlert(message);
@@ -174,7 +176,7 @@ namespace Universe.Services
 
         protected void SendGridMessage(IScene scene, string[] cmd)
         {
-            //Combine the params and figure out the message
+            //Combine the parameters and figure out the message
             string user = CombineParams(cmd, 3, 5);
             string message = CombineParams(cmd, 5);
 
@@ -190,7 +192,7 @@ namespace Universe.Services
 
         protected void KickUserMessage(IScene scene, string[] cmd)
         {
-            //Combine the params and figure out the message
+            //Combine the parameters and figure out the message
             string user = CombineParams(cmd, 3, 5);
             if (user.EndsWith(" "))
                 user = user.Remove(user.Length - 1);

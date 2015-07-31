@@ -25,14 +25,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System;
+using Nini.Config;
+using OpenMetaverse;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
-using Nini.Config;
-using OpenMetaverse;
-using System;
 
 namespace Universe.Services
 {
@@ -41,7 +40,6 @@ namespace Universe.Services
     // Principals may be clients acting on users' behalf,
     // or any other components that need 
     // verifiable identification.
-    //
     public class PasswordAuthenticationService :
         AuthenticationServiceBase, IAuthenticationService, IService
     {
@@ -114,9 +112,7 @@ namespace Universe.Services
             if (handlerConfig.GetString("AuthenticationHandler", "") != Name)
                 return;
 
-            //
             // Try reading the [AuthenticationService] section first, if it exists
-            //
             IConfig authConfig = config.Configs["AuthenticationService"];
             if (authConfig != null)
             {

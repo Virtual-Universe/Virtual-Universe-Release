@@ -25,17 +25,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Universe.Framework.Modules;
-using Universe.Framework.Servers;
-using Universe.Framework.Services;
-using Universe.Framework.Utilities;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
+using Universe.Framework.Modules;
+using Universe.Framework.Servers;
+using Universe.Framework.Services;
+using Universe.Framework.Utilities;
 using GridRegion = Universe.Framework.Services.GridRegion;
 
 namespace Universe.Services.GenericServices.CapsService

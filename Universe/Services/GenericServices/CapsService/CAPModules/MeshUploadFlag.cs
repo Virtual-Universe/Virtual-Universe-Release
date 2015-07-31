@@ -25,15 +25,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System;
+using System.IO;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
 using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Servers.HttpServer;
 using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Profile;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
-using System.IO;
 
 namespace Universe.Services
 {

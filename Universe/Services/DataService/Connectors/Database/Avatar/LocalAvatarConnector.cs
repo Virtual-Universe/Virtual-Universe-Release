@@ -25,14 +25,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
-using Universe.Framework.ClientInterfaces;
-using Universe.Framework.Modules;
-using Universe.Framework.Services;
+using System;
+using System.Collections.Generic;
 using Nini.Config;
 using OpenMetaverse;
 using OpenMetaverse.StructuredData;
-using System.Collections.Generic;
+using Universe.Framework.ClientInterfaces;
+using Universe.Framework.Modules;
+using Universe.Framework.Services;
 
 namespace Universe.Services.DataService
 {

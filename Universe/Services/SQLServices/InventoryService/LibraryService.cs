@@ -25,19 +25,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
-using Universe.Framework.ConsoleFramework;
-using Universe.Framework.ModuleLoader;
-using Universe.Framework.Modules;
-using Universe.Framework.Services;
-using Universe.Framework.Services.ClassHelpers.Inventory;
+using System;
+using System.Collections.Generic;
+using System.IO;
 using Nini.Ini;
 using Nini.Config;
 using OpenMetaverse;
-using System;
-using System.IO;
-using System.Collections.Generic;
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.ModuleLoader;
+using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
+using Universe.Framework.Services;
+using Universe.Framework.Services.ClassHelpers.Inventory;
 using Universe.Framework.Utilities;
 
 namespace Universe.Services.SQLServices.InventoryService
@@ -48,7 +47,7 @@ namespace Universe.Services.SQLServices.InventoryService
     /// </summary>
     public class LibraryService : ILibraryService, IService
     {
-        // moved to Constants to allow for easier comparision from the WebUI
+        // moved to Constants to allow for easier comparison from the WebUI
         // readonly UUID libOwner = new UUID("11111111-1111-0000-0000-000100bba000");
         readonly UUID libOwner = new UUID (Constants.LibraryOwner);
 

@@ -25,12 +25,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
-using Universe.Framework.Modules;
-using Universe.Framework.Services;
+using System;
+using System.Collections.Generic;
 using Nini.Config;
 using OpenMetaverse;
-using System.Collections.Generic;
+using Universe.Framework.Modules;
+using Universe.Framework.Services;
 using FriendInfo = Universe.Framework.Services.FriendInfo;
 
 namespace Universe.Services.DataService

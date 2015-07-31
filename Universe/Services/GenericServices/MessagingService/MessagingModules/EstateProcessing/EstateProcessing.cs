@@ -25,7 +25,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System;
+using System.Collections.Generic;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Modules;
@@ -35,7 +36,12 @@ using Universe.Framework.Services.ClassHelpers.Other;
 using Nini.Config;
 using OpenMetaverse;
 using OpenMetaverse.StructuredData;
-using System.Collections.Generic;
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.DatabaseInterfaces;
+using Universe.Framework.Modules;
+using Universe.Framework.SceneInfo;
+using Universe.Framework.Services;
+using Universe.Framework.Services.ClassHelpers.Other;
 using GridRegion = Universe.Framework.Services.GridRegion;
 
 namespace Universe.Services

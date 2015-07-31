@@ -24,7 +24,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
- 
+
+using System;
 using System.IO;
 using OpenMetaverse;
 using OpenMetaverse.StructuredData;
@@ -87,7 +88,7 @@ namespace Universe.Services
             	IAgentInfo agent = data.GetAgent(agentID);
             	if (agent == null)
             		return MainServer.BadRequest;
-            	// Access prefs ?
+            	// Access preferences
             	if (rm.ContainsKey("access_prefs"))
             	{
             		OSDMap accessPrefs = (OSDMap)rm["access_prefs"];

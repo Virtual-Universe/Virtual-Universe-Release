@@ -25,12 +25,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using Nini.Config;
 using Universe.Framework.Modules;
 using Universe.Framework.Servers.HttpServer;
 using Universe.Framework.Servers.HttpServer.Interfaces;
 using Universe.Framework.Services;
-using Nini.Config;
 
 namespace Universe.Services
 {

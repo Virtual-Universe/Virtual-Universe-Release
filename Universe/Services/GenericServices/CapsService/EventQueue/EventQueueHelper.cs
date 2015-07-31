@@ -28,13 +28,12 @@
 using System;
 using System.Linq;
 using System.Net;
-using Universe.Framework.SceneInfo;
-using Universe.Framework.Utilities;
 using OpenMetaverse;
 using OpenMetaverse.Messages.Linden;
 using OpenMetaverse.Packets;
 using OpenMetaverse.StructuredData;
-
+using Universe.Framework.SceneInfo;
+using Universe.Framework.Utilities;
 
 namespace Universe.Services
 {

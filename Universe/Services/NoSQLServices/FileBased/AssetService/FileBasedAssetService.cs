@@ -25,16 +25,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
+using System.IO;
+using Nini.Config;
+using OpenMetaverse;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Utilities;
-using Nini.Config;
-using OpenMetaverse;
-using System;
-using System.IO;
 
 namespace Universe.FileBasedServices.AssetService
 {
@@ -422,10 +422,10 @@ namespace Universe.FileBasedServices.AssetService
                     assetStream.Close();
                     asset.Data = data;
 
-                    //Deduplication...
+                    //De-duplication...
                     if (duplicate)
                     {
-                        //Only set id --> asset, and not the hashcode --> data to deduplicate
+                        //Only set id --> asset, and not the hashcode --> data to de-duplicate
                         return true;
                     }
 

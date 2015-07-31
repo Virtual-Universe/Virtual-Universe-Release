@@ -25,12 +25,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System;
+using OpenMetaverse;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
-using OpenMetaverse;
-using System;
 
 namespace Universe.Services
 {

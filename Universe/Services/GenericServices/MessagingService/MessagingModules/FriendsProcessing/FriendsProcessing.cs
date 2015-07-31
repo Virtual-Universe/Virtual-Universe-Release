@@ -25,15 +25,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System;
+using System.Collections.Generic;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
-using System.Collections.Generic;
 using FriendInfo = Universe.Framework.Services.FriendInfo;
 
 namespace Universe.Services
@@ -77,7 +77,7 @@ namespace Universe.Services
                 UUID FriendToInformID = innerMessage["FriendToInformID"].AsUUID();
                 bool NewStatus = innerMessage["NewStatus"].AsBoolean();
 
-                //Do this since IFriendsModule is a scene module, not a ISimulationBase module (not interchangable)
+                //Do this since IFriendsModule is a scene module, not a ISimulationBase module (not interchangeable)
                 ISceneManager manager = m_registry.RequestModuleInterface<ISceneManager>();
                 if (manager != null)
                 {
@@ -104,7 +104,7 @@ namespace Universe.Services
                 UUID FriendToInformID = innerMessage["FriendToInformID"].AsUUID();
                 bool NewStatus = innerMessage["NewStatus"].AsBoolean();
 
-                //Do this since IFriendsModule is a scene module, not a ISimulationBase module (not interchangable)
+                //Do this since IFriendsModule is a scene module, not a ISimulationBase module (not interchangeable)
                 ISceneManager manager = m_registry.RequestModuleInterface<ISceneManager>();
                 if (manager != null)
                 {

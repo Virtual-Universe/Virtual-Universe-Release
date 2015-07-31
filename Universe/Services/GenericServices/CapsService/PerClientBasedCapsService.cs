@@ -28,12 +28,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenMetaverse;
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.Servers.HttpServer.Interfaces;
 using Universe.Framework.Services;
-using OpenMetaverse;
-
 
 namespace Universe.Services
 {

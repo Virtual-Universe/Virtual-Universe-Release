@@ -25,15 +25,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
+using System.Collections.Generic;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
 using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
-using System.Collections.Generic;
 
 namespace Universe.Services.DataService
 {
@@ -104,7 +105,7 @@ namespace Universe.Services.DataService
         {
             QueryFilter filter = new QueryFilter();
             filter.andFilters["EstateName"] = name;
-            //            var EstateID = int.Parse (GD.Query (new string[1] { "EstateID" }, "estatesettings", filter, null, null, null) [0]);
+            //var EstateID = int.Parse (GD.Query (new string[1] { "EstateID" }, "estatesettings", filter, null, null, null) [0]);
             List<string> estate = GD.Query(new string[1] { "EstateID" }, m_estateSettingsTable, filter, null, null, null);
 
             if (estate.Count == 0)              // not found!!
@@ -133,7 +134,7 @@ namespace Universe.Services.DataService
 
             // check for system user/estate
             if ( (es.EstateOwner == (UUID) Constants.RealEstateOwnerUUID) )           // probably don't need to check both :)
-//                (es.EstateName == Constants.SystemEstateName) )                     // maybe if the system user can have multiple estates??
+                //(es.EstateName == Constants.SystemEstateName) )                     // maybe if the system user can have multiple estates??
             {
                 es.EstateID = (uint) Constants.SystemEstateID;                        // Default Mainland estate  # 
             } else

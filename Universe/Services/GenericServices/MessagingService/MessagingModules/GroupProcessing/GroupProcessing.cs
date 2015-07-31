@@ -25,7 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Nini.Config;
@@ -70,7 +70,7 @@ namespace Universe.Services
             //We need to check and see if this is an GroupSessionAgentUpdate
             if (message.ContainsKey ("Method") && message ["Method"] == "GroupSessionAgentUpdate")
             {
-                //COMES IN ON Universe.SERVER SIDE
+                //Comes in on the Universe.Sserver side
                 //Send it on to whomever it concerns
                 OSDMap innerMessage = (OSDMap)message ["Message"];
                 if (innerMessage ["message"] == "ChatterBoxSessionAgentListUpdates")
@@ -88,7 +88,7 @@ namespace Universe.Services
                 }
             } else if (message.ContainsKey ("Method") && message ["Method"] == "FixGroupRoleTitles")
             {
-                //COMES IN ON Universe.SERVER SIDE FROM REGION
+                //Comes in on the Universe.Server side from the region
                 UUID groupID = message ["GroupID"].AsUUID ();
                 UUID agentID = message ["AgentID"].AsUUID ();
                 UUID roleID = message ["RoleID"].AsUUID ();
@@ -152,7 +152,7 @@ namespace Universe.Services
                 }
             } else if (message.ContainsKey ("Method") && message ["Method"] == "ForceUpdateGroupTitles")
             {
-                //COMES IN ON REGION SIDE FROM Universe.SERVER
+                //Comes in on the region side from Universe.Server
                 UUID groupID = message ["GroupID"].AsUUID ();
                 UUID roleID = message ["RoleID"].AsUUID ();
                 UUID regionID = message ["RegionID"].AsUUID ();

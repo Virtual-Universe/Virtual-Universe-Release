@@ -25,16 +25,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using Nini.Config;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.Servers;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
-using Nini.Config;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
 
 namespace Universe.Services.GenericServices
 {
@@ -54,7 +54,6 @@ namespace Universe.Services.GenericServices
             m_remoteCalls = conf.GetBoolean("DoRemote");
             m_defaultURICount = conf.GetInt("DefaultURICount", m_defaultURICount);
             Init(registry, GetType().Name);
-
 
             conf = config.Configs["Configuration"];
             if (conf == null)

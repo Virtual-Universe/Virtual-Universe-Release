@@ -175,7 +175,7 @@ namespace Universe.Services.GenericServices.SystemAccountService
             if (m_accountService == null)
                 return;
 
-            VerifySystemUserInfo("Govenor", GovernorUUID, GovernorName, 250);
+            VerifySystemUserInfo("Governor", GovernorUUID, GovernorName, 250);
             VerifySystemUserInfo("RealEstate", SystemEstateOwnerUUID, SystemEstateOwnerName, 150);
             VerifySystemUserInfo("Banker", BankerUUID, BankerName, 100);
             VerifySystemUserInfo("Marketplace", MarketplaceOwnerUUID, MarketplaceOwnerName, 100);
@@ -308,7 +308,6 @@ namespace Universe.Services.GenericServices.SystemAccountService
                 }
             }
         }
-
 
         #endregion
     }

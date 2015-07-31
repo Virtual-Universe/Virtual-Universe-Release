@@ -25,12 +25,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System;
+using System.IO;
+using OpenMetaverse.StructuredData;
 using Universe.Framework.Servers.HttpServer;
 using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Services;
-using OpenMetaverse.StructuredData;
-using System.IO;
 
 namespace Universe.Services
 {
@@ -64,10 +64,10 @@ namespace Universe.Services
                                             OSHttpRequest httpRequest, OSHttpResponse httpResponse)
         {
             OSDMap data = new OSDMap();
-            // 17-06-2015 Fly-Man- AvatarHoverHeight enabled
+            // AvatarHoverHeight enabled
             data["AvatarHoverHeightEnabled"] = true;
             
-            // 17-06-2015 Fly-Man- MaxMaterialsPerTransaction enabled
+            // MaxMaterialsPerTransaction enabled
             data["MaxMaterialsPerTransaction"] = 50;
             
             data["MeshRezEnabled"] = true;

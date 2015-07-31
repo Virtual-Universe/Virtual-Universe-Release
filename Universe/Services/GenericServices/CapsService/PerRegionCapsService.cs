@@ -25,11 +25,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System;
+using System.Collections.Generic;
+using OpenMetaverse;
 using Universe.Framework.Modules;
 using Universe.Framework.Services;
-using OpenMetaverse;
-using System.Collections.Generic;
 using GridRegion = Universe.Framework.Services.GridRegion;
 
 namespace Universe.Services
@@ -88,11 +88,11 @@ namespace Universe.Services
         #region Initialize
 
         /// <summary>
-        ///     Initialise the service
+        ///     Initialize the service
         /// </summary>
         /// <param name="regionID"></param>
         /// <param name="registry"></param>
-        public void Initialise(UUID regionID, IRegistryCore registry)
+        public void Initialize(UUID regionID, IRegistryCore registry)
         {
             m_RegionID = regionID;
             m_registry = registry;

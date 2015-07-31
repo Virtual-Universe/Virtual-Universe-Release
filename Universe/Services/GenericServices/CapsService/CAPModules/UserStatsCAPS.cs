@@ -25,7 +25,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Nini.Config;
+using OpenMetaverse.StructuredData;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Modules;
@@ -34,11 +39,6 @@ using Universe.Framework.Servers;
 using Universe.Framework.Servers.HttpServer;
 using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Services;
-using Nini.Config;
-using OpenMetaverse.StructuredData;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 
 namespace Universe.Services
 {
@@ -164,7 +164,6 @@ namespace Universe.Services
                     MainConsole.Instance.CleanInfo(string.Format("Average agents in view: {0}", agents_in_view.Average()));
 
                 MainConsole.Instance.CleanInfo ("");
-
             }
         }
     }

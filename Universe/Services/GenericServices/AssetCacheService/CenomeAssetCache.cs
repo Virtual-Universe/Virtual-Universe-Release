@@ -25,14 +25,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System;
+using Nini.Config;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Utilities;
-using Nini.Config;
-using System;
 
 namespace Universe.Services
 {
@@ -258,8 +257,8 @@ namespace Universe.Services
                 m_cachedCount = 0;
             }
 
-//            if (null == assetBase)
-//                MainConsole.Instance.DebugFormat("[CENOME ASSET CACHE]: Asset {0} not in cache", id);
+            //if (null == assetBase)
+            //    MainConsole.Instance.DebugFormat("[CENOME ASSET CACHE]: Asset {0} not in cache", id);
 
             return assetBase;
         }

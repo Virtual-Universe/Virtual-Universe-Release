@@ -25,15 +25,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
+using System.Collections.Generic;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
-using System;
-using System.Collections.Generic;
 
 namespace Universe.Services.DataService
 {
@@ -231,7 +231,7 @@ namespace Universe.Services.DataService
             filter.orGreaterThanEqFilters["LastSeen"] = now;
             if (stillOnline)
             {
-//                filter.andGreaterThanFilters["LastLogout"] = now;
+                //filter.andGreaterThanFilters["LastLogout"] = now;
                 filter.andFilters["IsOnline"] = "1";
             }
 
@@ -249,7 +249,7 @@ namespace Universe.Services.DataService
 
                 filter.orGreaterThanEqFilters ["LastLogin"] = now;
                 filter.orGreaterThanEqFilters ["LastSeen"] = now;
-                //                filter.andGreaterThanFilters["LastLogout"] = now;
+                //filter.andGreaterThanFilters["LastLogout"] = now;
             }
 
             filter.andFilters["IsOnline"] = "1";
@@ -270,7 +270,7 @@ namespace Universe.Services.DataService
             filter.orGreaterThanEqFilters["LastSeen"] = now;
             if (stillOnline)
             {
-//                filter.andGreaterThanFilters["LastLogout"] = now;
+                //filter.andGreaterThanFilters["LastLogout"] = now;
                 filter.andFilters["IsOnline"] = "1";
             }
 

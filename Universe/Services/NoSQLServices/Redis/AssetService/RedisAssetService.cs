@@ -25,6 +25,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using Sider;
+using System;
+using System.IO;
+using Nini.Config;
+using OpenMetaverse;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
@@ -32,11 +37,6 @@ using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Utilities;
 using Universe.RedisServices.ConnectionHelpers;
-using Nini.Config;
-using OpenMetaverse;
-using Sider;
-using System;
-using System.IO;
 
 namespace Universe.RedisServices.AssetService
 {
@@ -216,7 +216,7 @@ namespace Universe.RedisServices.AssetService
             if (doDatabaseCaching && cache != null)
                 cache.Cache(id, asset);
             if (asset != null) return asset.Data;
-// see assetservice.GetData            return new byte[0];
+            // see assetservice.GetData            return new byte[0];
             return null;
         }
 
@@ -437,14 +437,14 @@ namespace Universe.RedisServices.AssetService
 
             try
             {
-                //Deduplication...
+                //De-duplication...
                 if (duplicate)
                 {
                     if (MainConsole.Instance != null)
                         MainConsole.Instance.Debug("[REDIS ASSET SERVICE]: Found duplicate asset " + asset.IDString +
                                                    " for " + asset.IDString);
 
-                    //Only set id --> asset, and not the hashcode --> data to deduplicate
+                    //Only set id --> asset, and not the hashcode --> data to de-duplicate
                     RedisEnsureConnection((conn) => conn.Set(asset.IDString, memStream.ToArray()));
                     return true;
                 }

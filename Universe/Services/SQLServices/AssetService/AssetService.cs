@@ -26,15 +26,15 @@
  */
 
 
+using System;
+using Nini.Config;
+using OpenMetaverse;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Utilities;
-using Nini.Config;
-using OpenMetaverse;
-using System;
 
 namespace Universe.Services.SQLServices.AssetService
 {
@@ -189,7 +189,7 @@ namespace Universe.Services.SQLServices.AssetService
             if (doDatabaseCaching && cache != null)
                 cache.Cache(id, asset);
             if (asset != null) return asset.Data;
-// An empty array is NOT null and a lot of tests depend on this//            return new byte[0];
+            // An empty array is NOT null and a lot of tests depend on this//            return new byte[0];
             return null;
         }
 
@@ -307,7 +307,7 @@ namespace Universe.Services.SQLServices.AssetService
         }
 
         /// <summary>
-        /// Handles the delete asset commad.
+        /// Handles the delete asset command.
         /// </summary>
         /// <param name="scene">Scene.</param>
         /// <param name="args">Arguments.</param>
@@ -379,7 +379,6 @@ namespace Universe.Services.SQLServices.AssetService
                 asset.CreationDate.ToShortDateString()
             );      
         }
-
 
         #endregion
     }

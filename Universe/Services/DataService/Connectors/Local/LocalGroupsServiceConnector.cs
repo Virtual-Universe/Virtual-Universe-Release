@@ -127,7 +127,7 @@ namespace Universe.Services.DataService
                     grpName,                                            // Name
                     grpCharter,                                         // Charter / description
                     false,                                              // Show in list
-                    UUID.Zero, 0, false, false, false,                  // Insignia UUID, Membership fee, Open Enrolement, Allow publishing, Mature
+                    UUID.Zero, 0, false, false, false,                  // Insignia UUID, Membership fee, Open Enrollment, Allow publishing, Mature
                     grpOwnerUUID,                                       // founder UUID
                     UUID.Random ());                                    // owner role UUID
             } else
@@ -671,7 +671,7 @@ namespace Universe.Services.DataService
             filter.andFilters["GroupID"] = GroupID;
             filter.andFilters["RoleID"] = RoleID;
             filter.andFilters["AgentID"] = AgentID;
-            //Make sure they arn't already in this role
+            //Make sure they aren't already in this role
             if (
                 uint.Parse(data.Query(new[] {"COUNT(AgentID)"}, "group_role_membership", filter, null, null, null)[0]) ==
                 0)
@@ -728,7 +728,7 @@ namespace Universe.Services.DataService
             values["ListInProfile"] = ListInProfile;
 
             QueryFilter filter = new QueryFilter();
-            // these look the wrong way around ~ SignpostMarv
+            // these look the wrong way around
             filter.andFilters["GroupID"] = AgentID;
             filter.andFilters["AgentID"] = GroupID;
 
@@ -1021,7 +1021,7 @@ namespace Universe.Services.DataService
         public List<GroupRecord> GetGroupRecords(UUID requestingAgentID, uint start, uint count,
                                                  Dictionary<string, bool> sort, Dictionary<string, bool> boolFields)
         {
-            //            List<string> filter = new List<string>();
+            //List<string> filter = new List<string>();
 
             object remoteValue = DoRemote(requestingAgentID, start, count, boolFields);
             if (remoteValue != null || m_doRemoteOnly)

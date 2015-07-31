@@ -25,16 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Universe.Framework.ConsoleFramework;
-using Universe.Framework.Modules;
-using Universe.Framework.Servers;
-using Universe.Framework.Servers.HttpServer;
-using Universe.Framework.Servers.HttpServer.Implementation;
-using Universe.Framework.Services;
-using Universe.Framework.Services.ClassHelpers.Assets;
-using Universe.Framework.Utilities;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
 using System;
 using System.Collections.Specialized;
 using System.Drawing;
@@ -43,6 +33,16 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.Modules;
+using Universe.Framework.Servers;
+using Universe.Framework.Servers.HttpServer;
+using Universe.Framework.Servers.HttpServer.Implementation;
+using Universe.Framework.Services;
+using Universe.Framework.Services.ClassHelpers.Assets;
+using Universe.Framework.Utilities;
 using Encoder = System.Drawing.Imaging.Encoder;
 
 namespace Universe.Services
@@ -251,10 +251,9 @@ namespace Universe.Services
                 httpResponse.StatusCode = (int) System.Net.HttpStatusCode.NotFound;
                 response = MainServer.BlankResponse;
                 return true;
-
             }
 
-            // found the texture in th cache
+            // found the texture in the cache
             if (texture.Type != (sbyte) AssetType.Texture &&
                 texture.Type != (sbyte) AssetType.Unknown &&
                 texture.Type != (sbyte) AssetType.Simstate)
@@ -422,7 +421,7 @@ namespace Universe.Services
             return data;
         }
 
-        // From msdn
+        // From MSDN
         static ImageCodecInfo GetEncoderInfo(String mimeType)
         {
             ImageCodecInfo[] encoders = ImageCodecInfo.GetImageEncoders();
@@ -438,8 +437,7 @@ namespace Universe.Services
         {
             try
             {
-                //MainConsole.Instance.Debug("[CAPS]: UploadBakedTexture Request in region: " +
-                //        m_regionName);
+                //MainConsole.Instance.Debug("[CAPS]: UploadBakedTexture Request in region: " + m_regionName);
 
                 string uploadpath = "/CAPS/Upload/" + UUID.Random() + "/";
                 BakedTextureUploader uploader = new BakedTextureUploader(uploadpath);
