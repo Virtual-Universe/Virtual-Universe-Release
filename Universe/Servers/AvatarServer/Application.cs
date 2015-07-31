@@ -27,14 +27,14 @@
 
 using System;
 using System.Collections.Generic;
+using Universe.Framework.Modules;
 using Universe.Framework.Services;
 using Universe.Simulation.Base;
-using Universe.Framework.Modules;
 
 namespace Universe.Servers.AvatarServer
 {
     /// <summary>
-    ///     Starting class for the Universe Server
+    ///     Starting class for the Virtual Universe Server
     /// </summary>
     public class Application
     {
