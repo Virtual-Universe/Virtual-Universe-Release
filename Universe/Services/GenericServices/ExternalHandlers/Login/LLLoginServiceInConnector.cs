@@ -36,9 +36,6 @@ using Universe.Framework.Modules;
 using Universe.Framework.Servers.HttpServer.Interfaces;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
-using System;
-using System.Collections;
-using System.Net;
 
 namespace Universe.Services
 {

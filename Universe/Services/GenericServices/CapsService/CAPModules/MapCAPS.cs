@@ -31,7 +31,6 @@ using System.IO;
 using Nini.Config;
 using OpenMetaverse;
 using OpenMetaverse.StructuredData;
-using System.Collections.Generic;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.Modules;
 using Universe.Framework.Servers;

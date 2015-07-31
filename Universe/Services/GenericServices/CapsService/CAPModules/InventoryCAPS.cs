@@ -42,6 +42,7 @@ using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Services.ClassHelpers.Inventory;
 using Universe.Framework.Utilities;
+using Universe.Region;
 
 namespace Universe.Services
 {

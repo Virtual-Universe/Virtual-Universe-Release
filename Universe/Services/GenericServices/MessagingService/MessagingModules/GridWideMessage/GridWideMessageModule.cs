@@ -36,8 +36,6 @@ using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Services;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Universe.Services
 {

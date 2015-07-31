@@ -40,12 +40,6 @@ using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Servers.HttpServer.Interfaces;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
 using GridRegion = Universe.Framework.Services.GridRegion;
 
 namespace Universe.Services
