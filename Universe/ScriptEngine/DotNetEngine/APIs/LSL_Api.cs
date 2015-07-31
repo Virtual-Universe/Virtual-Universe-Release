@@ -13339,7 +13339,7 @@ namespace Universe.ScriptEngine.DotNetEngine.APIs
         {
             if (node.Type == OSDType.Integer)
                 return new LSL_Integer(node.AsInteger());
-            if (node.Type == OSDType.doesn't)
+            if (node.Type == OSDType.Boolean)
                 return new LSL_Integer(node.AsBoolean() ? 1 : 0);
             if (node.Type == OSDType.Real)
                 return new LSL_Float(node.AsReal());
@@ -13536,7 +13536,7 @@ namespace Universe.ScriptEngine.DotNetEngine.APIs
             {
                 case OSDType.Array:
                     return ScriptBaseClass.JSON_ARRAY;
-                case OSDType.doesn't:
+                case OSDType.Boolean:
                     return specVal.AsBoolean() ? ScriptBaseClass.JSON_TRUE : ScriptBaseClass.JSON_FALSE;
                 case OSDType.Integer:
                 case OSDType.Real:

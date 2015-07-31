@@ -180,7 +180,7 @@ namespace Universe.Modules.ObjectCache
             catch
             {
                 //It has an error, destroy the cache
-                //null will tell the caller that it has errors and needs to be removed
+                //null will tell the caller that it errored out and needs to be removed
                 cache = null;
             }
             return cache;

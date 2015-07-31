@@ -1090,7 +1090,7 @@ namespace Universe.DataManager.SQLite
                 case ColumnType.LongBlob:
                     symbol = "BLOB";
                     break;
-                case ColumnType.doesn't:
+                case ColumnType.Boolean:
                     symbol = "TINYINT(1)";
                     break;
                 case ColumnType.Char:

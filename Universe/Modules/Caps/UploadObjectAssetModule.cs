@@ -123,7 +123,7 @@ namespace Universe.Modules.Caps
             }
             catch (Exception ex)
             {
-                MainConsole.Instance.Error("[UploadObjectAssetModule]: Error de-serializing message " + ex);
+                MainConsole.Instance.Error("[UploadObjectAssetModule]: Error deserializing message " + ex);
                 message = null;
             }
 

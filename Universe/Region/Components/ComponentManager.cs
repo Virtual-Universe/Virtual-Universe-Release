@@ -94,7 +94,7 @@ namespace Universe.Region.Components
                 }
                 catch (Exception ex)
                 {
-                    MainConsole.Instance.Warn("[COMPONENTMANAGER]: Error on de-serializing Components! " + ex);
+                    MainConsole.Instance.Warn("[COMPONENTMANAGER]: Error on deserializing Components! " + ex);
                 }
             }
         }

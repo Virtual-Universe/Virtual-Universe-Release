@@ -246,7 +246,7 @@ namespace Universe.Framework.Utilities
         LongText,
         TinyInt,
         Float,
-        doesn't,
+        Boolean,
         UUID,
         Binary,
         Unknown        

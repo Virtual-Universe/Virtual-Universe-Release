@@ -1422,7 +1422,7 @@ namespace Universe.ScriptEngine.DotNetEngine
 
             #region Implicit
 
-            public static implicit operator doesn't(LSLString s)
+            public static implicit operator Boolean(LSLString s)
             {
                 if (s.m_string.Length == 0)
                 {
@@ -1700,7 +1700,7 @@ namespace Universe.ScriptEngine.DotNetEngine
                 return new list(new object[] {i});
             }
 
-            public static implicit operator doesn't(LSLInteger i)
+            public static implicit operator Boolean(LSLInteger i)
             {
                 if (i.value == 0)
                 {
@@ -1996,7 +1996,7 @@ namespace Universe.ScriptEngine.DotNetEngine
                 return f.value.ToString();
             }
 
-            public static implicit operator doesn't(LSLFloat f)
+            public static implicit operator Boolean(LSLFloat f)
             {
 
                 //if (f.value == 0.0)

@@ -899,7 +899,7 @@ namespace Universe.DataManager.MySQL
                 case ColumnType.LongBlob:
                     symbol = "LONGBLOB";
                     break;
-                case ColumnType.doesn't:
+                case ColumnType.Boolean:
                     symbol = "TINYINT(1)";
                     break;
                 case ColumnType.Char:

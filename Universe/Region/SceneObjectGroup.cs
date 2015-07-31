@@ -2729,7 +2729,7 @@ namespace Universe.Region
                 }
             }*/
 
-            //Force de-selection here so that it isn't stuck forever
+            //Force deselection here so that it isn't stuck forever
             IsSelected = keepSelectedStatuses && IsSelected;
 
             if (OnFinishedPhysicalRepresentationBuilding != null)

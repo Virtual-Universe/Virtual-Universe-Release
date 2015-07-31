@@ -109,7 +109,7 @@ namespace Universe.Framework.Services.ClassHelpers.Inventory
         ///     Database plugins don't need to set this, it will be set by
         ///     upstream code (or set by the get accessor if left unset).
         ///     XXX: An alternative to having a separate uuid property would be to hash the CreatorId appropriately
-        ///     necessary there was communication with a UUID-only client.  This may be much more expensive.
+        ///     every time there was communication with a UUID-only client.  This may be much more expensive.
         /// </value>
         public UUID CreatorIdAsUuid
         {

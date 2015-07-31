@@ -308,7 +308,7 @@ namespace Universe.Modules.Chat
 
                     MainConsole.Instance.InfoFormat ("[DIALOG]: Sending broadcast alert to all regions with message '{0}'",  message);
 
-                    // broadcast the message
+                    // broadcst the message
                     foreach (IScene scn in MainConsole.Instance.ConsoleScenes)
                     {
                         scn.ForEachScenePresence (delegate(IScenePresence sp) {

@@ -82,7 +82,7 @@ namespace Universe.Physics.OpenDynamicsEngine
         private float m_bankingTimescale;
         private IntPtr m_body = IntPtr.Zero;
         private bool m_enabled;
-        private VehicleFlag m_flags = 0; // doesn't settings:
+        private VehicleFlag m_flags = 0; // Boolean settings:
         private List<Vector3> m_forcelist = new List<Vector3>();
         private Vector3 m_lastAngVelocity = Vector3.Zero;
         private Vector3 m_lastAngularVelocity = Vector3.Zero; // what was last applied to body

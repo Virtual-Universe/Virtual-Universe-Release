@@ -189,7 +189,7 @@ namespace Universe.Modules.Inventory
     /// <param name="ownerID"></param>
         protected void HandleFetchInventory(IClientAPI remoteClient, UUID itemID, UUID ownerID)
         {
-            //MainConsole.Instance.Warn("[Scene.PacketHandler]: Depreciated UDP Inventory request!");
+            //MainConsole.Instance.Warn("[Scene.PacketHandler]: Depriated UDP Inventory request!");
             InventoryItemBase item = new InventoryItemBase(itemID, remoteClient.AgentId);
             item = m_scene.InventoryService.GetItem(item);
 
@@ -212,7 +212,7 @@ namespace Universe.Modules.Inventory
         protected void HandleFetchInventoryDescendents(IClientAPI remoteClient, UUID folderID, UUID ownerID,
                                                     bool fetchFolders, bool fetchItems, int sortOrder)
         {
-            //MainConsole.Instance.Warn("[Scene.PacketHandler]: Depreciated UDP FetchInventoryDescendents request!");
+            //MainConsole.Instance.Warn("[Scene.PacketHandler]: Depriated UDP FetchInventoryDescendents request!");
             if (folderID == UUID.Zero)
                 return;
 

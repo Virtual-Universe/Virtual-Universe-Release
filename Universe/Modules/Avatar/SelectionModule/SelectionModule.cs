@@ -190,7 +190,7 @@ namespace Universe.Modules.Selection
                         prim.ParentEntity.IsSelected = true;
                     }
                 }
-                //Check for avatars! They aren't prims!
+                //Check for avies! They aren't prims!
                 if (scene.GetScenePresence(primLocalID) != null)
                     continue;
 
@@ -225,7 +225,7 @@ namespace Universe.Modules.Selection
         }
 
         /// <summary>
-        ///     Handle the de-selection of a prim from the client.
+        ///     Handle the deselection of a prim from the client.
         /// </summary>
         /// <param name="primLocalID"></param>
         /// <param name="remoteClient"></param>
@@ -381,7 +381,7 @@ namespace Universe.Modules.Selection
                     return;
 
                 ISceneChildEntity SOP = m_SelectedUUID;
-                if (SOP == null) //This IS necessary, this is how we can clear this out
+                if (SOP == null) //This IS nesessary, this is how we can clear this out
                 {
                     IsSelecting = false;
                     return;

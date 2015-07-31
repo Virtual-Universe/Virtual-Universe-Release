@@ -158,7 +158,7 @@ namespace Universe.Framework.Utilities
         /// </summary>
         /// <remarks>
         ///     <para>
-        ///         Updated necessary when cache has been changed (element removed, expired, added, replaced).
+        ///         Updated every time when cache has been changed (element removed, expired, added, replaced).
         ///     </para>
         /// </remarks>
         private int m_version;

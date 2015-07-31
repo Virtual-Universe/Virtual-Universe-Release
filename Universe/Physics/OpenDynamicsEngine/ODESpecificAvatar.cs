@@ -255,7 +255,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                 vec.Z += -9.8f*35*Mass*(_appliedFallingForce > 100 ? 1 : _appliedFallingForce++/100f)*
                          (this.IsTruelyColliding ? 0.5f : 1.0f);
             else if (_parent_scene.AllowAvGravity && m_targetVelocity.Z > 0 &&
-                     tempPos.Z > _parent_scene.AvGravityHeight) //Should be stop avatars from flying upwards
+                     tempPos.Z > _parent_scene.AvGravityHeight) //Should be stop avies from flying upwards
             {
                 //How much should we force them down?
                 float Multiplier = (_parent_scene.AllowAvsToEscapeGravity ? .03f : .1f);

@@ -297,17 +297,17 @@ namespace Universe.Framework.Utilities
                             System.Diagnostics.StackTrace stackTrace = new System.Diagnostics.StackTrace();
 
                             MainConsole.Instance.Trace(
-                                string.Format("[WebUtils]: osd request (URI:{0}, METHOD:{1}, UPSTACK(4):{5}) took {2}ms overall, {3}ms writing, {4}ms de-serializing",
+                                string.Format("[WebUtils]: osd request (URI:{0}, METHOD:{1}, UPSTACK(4):{5}) took {2}ms overall, {3}ms writing, {4}ms deserializing",
                                 url, method, tickdiff, tickdata, tickserialize,
                                 (stackTrace.FrameCount > 4 ? stackTrace.GetFrame(4) : stackTrace.GetFrame(stackTrace.FrameCount - 1)).GetMethod().Name));
                         }
                         else if (MainConsole.Instance.IsDebugEnabled)
                             MainConsole.Instance.Debug(
-                                string.Format("[WebUtils]: request (URI:{0}, METHOD:{1}) took {2}ms overall, {3}ms writing, {4}ms de-serializing",
+                                string.Format("[WebUtils]: request (URI:{0}, METHOD:{1}) took {2}ms overall, {3}ms writing, {4}ms deserializing",
                                 url, method, tickdiff, tickdata, tickserialize));
                         if (tickdiff > 5000)
                             MainConsole.Instance.Info(
-                                string.Format("[WebUtils]: request took too long (URI:{0}, METHOD:{1}) took {2}ms overall, {3}ms writing, {4}ms de-serializing",
+                                string.Format("[WebUtils]: request took too long (URI:{0}, METHOD:{1}) took {2}ms overall, {3}ms writing, {4}ms deserializing",
                                 url, method, tickdiff, tickdata, tickserialize));
                     }
                 }

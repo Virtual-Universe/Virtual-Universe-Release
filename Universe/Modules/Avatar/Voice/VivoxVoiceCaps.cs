@@ -194,7 +194,7 @@ namespace Universe.Modules
                     String.IsNullOrEmpty(m_vivoxAdminUser) ||
                     String.IsNullOrEmpty(m_vivoxAdminPassword))
                 {
-                    MainConsole.Instance.Error("[VivoxVoice] plugin has wrong configuration");
+                    MainConsole.Instance.Error("[VivoxVoice] plugin mis-configured");
                     MainConsole.Instance.Info("[VivoxVoice] plugin disabled: incomplete configuration");
                     return;
                 }
@@ -416,7 +416,7 @@ namespace Universe.Modules
 
                 // Make sure that all local channels are deleted.
                 // So we have to search for the children, and then do an
-                // iteration over the set of children identified.
+                // iteration over the set of chidren identified.
                 // This assumes that there is just one directory per
                 // region.
 
@@ -505,7 +505,7 @@ namespace Universe.Modules
 
             lock (vlock)
             {
-                // Added by Adam to help debug channel not available errors.
+                // Added by Adam to help debug channel not availible errors.
                 if (VivoxTryGetChannel(voiceParentID, landUUID, out channelId, out channelUri))
                     MainConsole.Instance.DebugFormat("[VivoxVoice] Found existing channel at " + channelUri);
                 else if (VivoxTryCreateChannel(voiceParentID, landUUID, landName, out channelUri))
@@ -536,7 +536,7 @@ namespace Universe.Modules
                     VivoxTryGetDirectory("Server" + sessionid + "D", out parentID);
                     //parentID = String.Empty;
                 }
-                // Added by Adam to help debug channel not available errors.
+                // Added by Adam to help debug channel not availible errors.
                 if (VivoxTryGetChannel(parentID, channelID, out channelID, out channelUri))
                     MainConsole.Instance.DebugFormat("[VivoxVoice] Found existing channel at " + channelUri);
                 else if (VivoxTryCreateChannel(parentID, "Conff" + sessionid.ToString(), "Conff" + sessionid.ToString(),
@@ -775,7 +775,7 @@ namespace Universe.Modules
                         !XmlFind(resp, "response.level0.channel-search.channels.channels.level4.parent", i, out parent))
                     {
                         MainConsole.Instance.Debug("[VivoxVoice] Skipping Channel " + i + "/" + name +
-                                                   " as it's parent doesn't match");
+                                                   " as it's parent doesnt match");
                         continue;
                     }
 

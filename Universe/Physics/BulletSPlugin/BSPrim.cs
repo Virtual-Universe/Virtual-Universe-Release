@@ -202,7 +202,7 @@ namespace Universe.Region.Physics.BulletSPlugin
             {
                 //Don't make objects phantom when selecting
                 //PhysicsScene.PE.RemoveFromCollisionFlags(PhysBody, CollisionFlags.CF_NO_CONTACT_RESPONSE);
-                //Re-enable collision events
+                //Reenable collision events
                 if (SubscribedEvents())
                     EnableCollisions(true);
                 PhysicsScene.PE.ForceActivationState(PhysBody, ActivationState.ACTIVE_TAG);

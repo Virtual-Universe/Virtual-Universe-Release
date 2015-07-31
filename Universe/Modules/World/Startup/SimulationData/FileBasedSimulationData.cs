@@ -291,7 +291,7 @@ namespace Universe.Modules
         /// <param name="info">Info.</param>
         /// <param name="prompt">If set to <c>true</c> prompt.</param>
         /// <param name="currentInfo">Current info.</param>
-        RegionInfo CreateRegionFromConsole(RegionInfo info, doesn't prompt, Dictionary<string, int> currentInfo)
+        RegionInfo CreateRegionFromConsole(RegionInfo info, Boolean prompt, Dictionary<string, int> currentInfo)
         {
 
             if (info == null || info.NewRegion)
