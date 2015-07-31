@@ -3310,7 +3310,7 @@ namespace Universe.ScriptEngine.DotNetEngine.APIs
             IBotManager manager = World.RequestModuleInterface<IBotManager>();
             if (manager != null)
             {
-                MainConsole.Instance.DebugFormat ("Creating NPC: {0} {1}, Position: {2}, Appearence: {3}, Options: {4} {5}",
+                MainConsole.Instance.DebugFormat ("Creating NPC: {0} {1}, Position: {2}, appearance: {3}, Options: {4} {5}",
                     firstname, lastname, position, notecard, owned, senseAsAgent);
 
                 // check for notecard or UUID for appearance...

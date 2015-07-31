@@ -37,9 +37,9 @@ namespace Universe.Modules.Terrain.FileLoaders
     {
 		public override void SaveFile(string filename, ITerrainChannel map)
         {
-            Bitmap colours = CreateGrayscaleBitmapFromMap(map);
+            Bitmap colors = CreateGrayscaleBitmapFromMap(map);
 
-            colours.Save(filename, ImageFormat.Gif);
+            colors.Save(filename, ImageFormat.Gif);
         }
 
         /// <summary>
@@ -49,9 +49,9 @@ namespace Universe.Modules.Terrain.FileLoaders
         /// <param name="map">The terrain channel being saved</param>
         public override void SaveStream(Stream stream, ITerrainChannel map)
         {
-            Bitmap colours = CreateGrayscaleBitmapFromMap(map);
+            Bitmap colors = CreateGrayscaleBitmapFromMap(map);
 
-            colours.Save(stream, ImageFormat.Gif);
+            colors.Save(stream, ImageFormat.Gif);
         }
 
         public override string ToString()

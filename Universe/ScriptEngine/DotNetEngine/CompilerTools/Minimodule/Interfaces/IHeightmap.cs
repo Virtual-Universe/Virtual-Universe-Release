@@ -43,7 +43,7 @@ namespace Universe.ScriptEngine.DotNetEngine.MiniModule
         float this[int x, int y] { get; set; }
 
         /// <summary>
-        ///     The maximum length of the region (Y axis), exclusive. (eg Height = 256, max Y = 255). Minimum is always 0 inclusive.
+        ///     The maximum length of the region (Y axis), exclusive. (e.g Height = 256, max Y = 255). Minimum is always 0 inclusive.
         /// </summary>
         /// <example>
         ///     Host.Console.Info("The terrain length of this region is " + World.Heightmap.Length);
@@ -51,7 +51,7 @@ namespace Universe.ScriptEngine.DotNetEngine.MiniModule
         int Length { get; }
 
         /// <summary>
-        ///     The maximum width of the region (X axis), exclusive. (eg Width = 256, max X = 255). Minimum is always 0 inclusive.
+        ///     The maximum width of the region (X axis), exclusive. (e.g Width = 256, max X = 255). Minimum is always 0 inclusive.
         /// </summary>
         /// <example>
         ///     Host.Console.Info("The terrain width of this region is " + World.Heightmap.Width);

@@ -95,7 +95,7 @@ namespace Universe.Framework.SceneInfo
             int width = perlinNoise.Length;
             int height = perlinNoise[0].Length;
 
-            Color[][] image = GetEmptyArray<Color>(width, height); //an array of colours
+            Color[][] image = GetEmptyArray<Color>(width, height); //an array of colors
 
             for (int i = 0; i < width; i++)
             {
@@ -422,7 +422,7 @@ namespace Universe.Framework.SceneInfo
             int width = image1.Length;
             int height = image1[0].Length;
 
-	        Color[][] image = GetEmptyArray<Color>(width, height); //an array of colours for the new image
+	        Color[][] image = GetEmptyArray<Color>(width, height); //an array of colors for the new image
             
             for (int i = 0; i < width; i++)
             {

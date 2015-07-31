@@ -117,9 +117,9 @@ namespace Universe.Modules.Terrain.FileLoaders
         /// <param name="map">The terrain channel being saved</param>
         public virtual void SaveFile(string filename, ITerrainChannel map)
         {
-            Bitmap colours = CreateGrayscaleBitmapFromMap(map);
+            Bitmap colors = CreateGrayscaleBitmapFromMap(map);
 
-            colours.Save(filename, ImageFormat.Png);
+            colors.Save(filename, ImageFormat.Png);
         }
 
         /// <summary>
@@ -129,9 +129,9 @@ namespace Universe.Modules.Terrain.FileLoaders
         /// <param name="map">The terrain channel being saved</param>
         public virtual void SaveStream(Stream stream, ITerrainChannel map)
         {
-            Bitmap colours = CreateGrayscaleBitmapFromMap(map);
+            Bitmap colors = CreateGrayscaleBitmapFromMap(map);
 
-            colours.Save(stream, ImageFormat.Png);
+            colors.Save(stream, ImageFormat.Png);
         }
 
         #endregion
@@ -179,7 +179,7 @@ namespace Universe.Modules.Terrain.FileLoaders
             {
                 for (int x = 0; x < map.Width; x++)
                 {
-                    // 512 is the largest possible height before colours clamp
+                    // 512 is the largest possible height before colors clamp
                     int colorindex = (int) (Math.Max(Math.Min(1.0, map[x, y]/128.0), 0.0)*(pallete - 1));
 
                     // Handle error conditions
@@ -205,25 +205,25 @@ namespace Universe.Modules.Terrain.FileLoaders
             int pallete = gradientmapLd.Height;
 
             Bitmap bmp = new Bitmap(map.Width, map.Height);
-            Color[] colours = new Color[pallete];
+            Color[] colors = new Color[pallete];
 
             for (int i = 0; i < pallete; i++)
             {
-                colours[i] = gradientmapLd.GetPixel(0, i);
+                colors[i] = gradientmapLd.GetPixel(0, i);
             }
 
             for (int y = 0; y < map.Height; y++)
             {
                 for (int x = 0; x < map.Width; x++)
                 {
-                    // 512 is the largest possible height before colours clamp
+                    // 512 is the largest possible height before colors clamp
                     int colorindex = (int) (Math.Max(Math.Min(1.0, map[x, y]/512.0), 0.0)*(pallete - 1));
 
                     // Handle error conditions
                     if (colorindex > pallete - 1 || colorindex < 0)
                         bmp.SetPixel(x, map.Height - y - 1, Color.Red);
                     else
-                        bmp.SetPixel(x, map.Height - y - 1, colours[colorindex]);
+                        bmp.SetPixel(x, map.Height - y - 1, colors[colorindex]);
                 }
             }
             return bmp;

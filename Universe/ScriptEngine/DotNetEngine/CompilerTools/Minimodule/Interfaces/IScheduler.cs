@@ -39,7 +39,7 @@ namespace Universe.ScriptEngine.DotNetEngine.MiniModule
 
         /// <summary>
         ///     Fire this only when simulator performance
-        ///     is reasonable. (eg sysload &lt;= 1.0)
+        ///     is reasonable. (e.g sysload &lt;= 1.0)
         /// </summary>
         bool IfHealthy { get; set; }
 

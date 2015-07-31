@@ -41,7 +41,7 @@ namespace Universe.Modules.Archivers
     public static class InventoryArchiveUtils
     {
 
-        // Character used for escaping the path delimter ("\/") and itself ("\\") in human escaped strings
+        // Character used for escaping the path delimiter ("\/") and itself ("\\") in human escaped strings
         public static readonly char ESCAPE_CHARACTER = '\\';
 
         // The character used to separate inventory path components (different folders and items)
@@ -50,11 +50,11 @@ namespace Universe.Modules.Archivers
         /// <summary>
         ///     Find a folder given a PATH_DELIMITER delimited path starting from a user's root folder
         /// </summary>
-        /// This method does not handle paths that contain multiple delimitors
+        /// This method does not handle paths that contain multiple delimiters
         /// 
         /// FIXME: We have no way of distinguishing folders with the same path
         /// 
-        /// FIXME: Delimitors which occur in names themselves are not currently escapable.
+        /// FIXME: Delimiters which occur in names themselves are not currently escapable.
         /// <param name="inventoryService">
         ///     Inventory service to query
         /// </param>
@@ -84,11 +84,11 @@ namespace Universe.Modules.Archivers
         /// <summary>
         ///     Find a folder given a PATH_DELIMITER delimited path starting from this folder
         /// </summary>
-        /// This method does not handle paths that contain multiple delimitors
+        /// This method does not handle paths that contain multiple delimiters
         /// 
         /// FIXME: We have no way of distinguishing folders with the same path.
         /// 
-        /// FIXME: Delimitors which occur in names themselves are not currently escapable.
+        /// FIXME: Delimiters which occur in names themselves are not currently escapable.
         /// <param name="inventoryService">
         ///     Inventory service to query
         /// </param>
@@ -141,10 +141,10 @@ namespace Universe.Modules.Archivers
 
         /// <summary>
         ///     Find an item given a PATH_DELIMITOR delimited path starting from the user's root folder.
-        ///     This method does not handle paths that contain multiple delimitors
+        ///     This method does not handle paths that contain multiple delimiters
         ///     FIXME: We do not yet handle situations where folders or items have the same name.  We could handle this by some
         ///     XPath like expression
-        ///     FIXME: Delimitors which occur in names themselves are not currently escapable.
+        ///     FIXME: Delimiters which occur in names themselves are not currently escapable.
         /// </summary>
         /// <param name="inventoryService">
         ///     Inventory service to query
@@ -172,10 +172,10 @@ namespace Universe.Modules.Archivers
 
         /// <summary>
         ///     Find an item given a PATH_DELIMITOR delimited path starting from this folder.
-        ///     This method does not handle paths that contain multiple delimitors
+        ///     This method does not handle paths that contain multiple delimiters
         ///     FIXME: We do not yet handle situations where folders or items have the same name.  We could handle this by some
         ///     XPath like expression
-        ///     FIXME: Delimitors which occur in names themselves are not currently escapable.
+        ///     FIXME: Delimiters which occur in names themselves are not currently escapable.
         /// </summary>
         /// <param name="inventoryService">
         ///     Inventory service to query
@@ -220,12 +220,12 @@ namespace Universe.Modules.Archivers
         }
 
         /// <summary>
-        ///     Split a human escaped path into two components if it contains an unescaped path delimiter, or one component
+        ///     Split a human escaped path into two components if it contains an un-escaped path delimiter, or one component
         ///     if no delimiter is present
         /// </summary>
         /// <param name="path"></param>
         /// <returns>
-        ///     The split path.  We leave the components in their originally unescaped state (though we remove the delimiter
+        ///     The split path.  We leave the components in their originally un-escaped state (though we remove the delimiter
         ///     which originally split them if applicable).
         /// </returns>
         public static string[] SplitEscapedPath(string path)
@@ -254,7 +254,7 @@ namespace Universe.Modules.Archivers
         }
 
         /// <summary>
-        ///     Unescapes a human escaped path.  This means that "\\" goes to "\", and "\/" goes to "/"
+        ///     Un-escapes a human escaped path.  This means that "\\" goes to "\", and "\/" goes to "/"
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
@@ -292,7 +292,7 @@ namespace Universe.Modules.Archivers
         ///     Escape an archive path.
         /// </summary>
         /// This has to be done differently from human paths because we can't leave in any "/" characters (due to
-        /// problems if the archive is built from or extracted to a filesystem
+        /// problems if the archive is built from or extracted to a file-system
         /// <param name="path"></param>
         /// <returns></returns>
         public static string EscapeArchivePath(string path)

@@ -1065,7 +1065,7 @@ namespace Universe.Modules
                     if (!Directory.Exists(m_oldSaveDirectory))
                         Directory.CreateDirectory(m_oldSaveDirectory);
 
-                    // need to check if backup file already exists as well (eg. save within the minute timeframe)
+                    // need to check if backup file already exists as well (e.g. save within the minute timeframe)
                     string oldfileName = BuildOldSaveFileName ();
                     if (File.Exists(oldfileName))
                         File.Delete(oldfileName);

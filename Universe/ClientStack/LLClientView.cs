@@ -12639,7 +12639,7 @@ namespace Universe.ClientStack
                                 break;
                             default:
                                 MainConsole.Instance.Debug(
-                                    "[CLIENT] MultipleObjUpdate recieved an unknown packet type: " +
+                                    "[CLIENT] MultipleObjUpdate received an unknown packet type: " +
                                     (block.Type));
                                 break;
                         }

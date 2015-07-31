@@ -382,7 +382,7 @@ namespace Universe.Modules.Archivers
 
             if (parms.Count == 0)
             {
-                userName = MainConsole.Instance.Prompt (" Avatar appearence to save (<first> <last>)");
+                userName = MainConsole.Instance.Prompt (" Avatar appearance to save (<first> <last>)");
                 if (userName == "")
                     return;
             } else if (parms.Count > 1)
@@ -756,7 +756,7 @@ namespace Universe.Modules.Archivers
                         "save avatar archive [<First> <Last> [<Filename>]] [FolderNameToSaveInto] (--snapshot <UUID>) (--private)",
                         "Saves appearance to an avatar archive (.aa is the recommended file extension)\n" +
                         " Note: Put \"\" around the FolderName if you have spaces. \n" +
-                        "     : eg \"../Data/MyAvatars/Male Avatar.aa\" \n" +
+                        "     : e.g \"../Data/MyAvatars/Male Avatar.aa\" \n" +
                         "  Both --snapshot and --private are optional.\n" +
                         "   --snapshot sets a picture to display on the web interface if this archive is being used as a default avatar.\n" +
                         "   --private tells any web interfaces that they cannot display this as a default avatar.",

@@ -154,7 +154,7 @@ namespace Universe.Modules.Archivers
                         "--merge is an option which merges the loaded IAR with existing inventory folders where possible, rather than always creating new ones\n"
                         + "<first> is user's first name." + Environment.NewLine
                         + "<last> is user's last name." + Environment.NewLine
-                        + "<IAR path> is the filesystem path or URI from which to load the IAR." + Environment.NewLine
+                        + "<IAR path> is the file-system path or URI from which to load the IAR." + Environment.NewLine
                         + "           If this is not given then 'UserArchives' in the "+ m_archiveDirectory + " directory is used\n"
                         + "<inventory path> is the path inside the user's inventory where the IAR should be loaded." 
                         + "                 (Default is '/iar_import')",
@@ -165,7 +165,7 @@ namespace Universe.Modules.Archivers
                         "save iar <first> <last> [<IAR path> [<inventory path>]] [--noassets]",
                         "Save user inventory archive (IAR). <first> is the user's first name." + Environment.NewLine
                         + "<last> is the user's last name." + Environment.NewLine
-                        + "<IAR path> is the filesystem path at which to save the IAR." + Environment.NewLine
+                        + "<IAR path> is the file-system path at which to save the IAR." + Environment.NewLine
                         + "           If this is not given then the IAR will be saved in " + m_archiveDirectory + "/UserArchives\n"
                         + "<inventory path> is the path inside the user's inventory for the folder/item to be saved.\n"
                         + "                 (Default is all folders)\n"

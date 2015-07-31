@@ -661,7 +661,7 @@ namespace Universe.Modules.Archivers
                 return true;
             }
             MainConsole.Instance.ErrorFormat(
-                "[INVENTORY ARCHIVER]: Tried to dearchive data with path {0} with an unknown type extension {1}",
+                "[INVENTORY ARCHIVER]: Tried to de-archive data with path {0} with an unknown type extension {1}",
                 assetPath, extension);
 
             return false;

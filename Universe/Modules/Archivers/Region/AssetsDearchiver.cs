@@ -162,7 +162,7 @@ namespace Universe.Modules.Archivers
             else
             {
                 MainConsole.Instance.ErrorFormat(
-                    "[DEARCHIVER]: Tried to dearchive data with filename {0} without any corresponding metadata",
+                    "[DEARCHIVER]: Tried to de-archive data with filename {0} without any corresponding metadata",
                     assetPath);
             }
         }

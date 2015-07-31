@@ -36,7 +36,7 @@ namespace Universe.Modules.Terrain.FileLoaders
     /// <summary>
     ///     A generic windows bitmap loader.
     ///     Should be capable of handling 24-bit RGB images.
-    ///     Uses the System.Drawing filesystem loader.
+    ///     Uses the System.Drawing file-system loader.
     /// </summary>
     internal class BMP : GenericSystemDrawing
     {
@@ -47,9 +47,9 @@ namespace Universe.Modules.Terrain.FileLoaders
         /// <param name="map">The terrain channel being saved</param>
         public override void SaveFile(string filename, ITerrainChannel map)
         {
-            Bitmap colours = CreateGrayscaleBitmapFromMap(map);
+            Bitmap colors = CreateGrayscaleBitmapFromMap(map);
 
-            colours.Save(filename, ImageFormat.Bmp);
+            colors.Save(filename, ImageFormat.Bmp);
         }
 
         /// <summary>
@@ -59,9 +59,9 @@ namespace Universe.Modules.Terrain.FileLoaders
         /// <param name="map">The terrain channel being saved</param>
         public override void SaveStream(Stream stream, ITerrainChannel map)
         {
-            Bitmap colours = CreateGrayscaleBitmapFromMap(map);
+            Bitmap colors = CreateGrayscaleBitmapFromMap(map);
 
-            colours.Save(stream, ImageFormat.Bmp);
+            colors.Save(stream, ImageFormat.Bmp);
         }
 
         /// <summary>

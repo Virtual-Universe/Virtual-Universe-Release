@@ -332,7 +332,7 @@ namespace Universe.Modules.Estate
 
             // owner?
             estateOwner = (cmd.Length > 3) 
-                ? Util.CombineParams (cmd, 4) // in case of spaces in the name eg Allan Allard
+                ? Util.CombineParams (cmd, 4) // in case of spaces in the name e.g Allan Allard
                 : MainConsole.Instance.Prompt ("Estate owner: ", estateOwner); 
             if (estateOwner == "")
                 return;
@@ -430,7 +430,7 @@ namespace Universe.Modules.Estate
                 estateOwner = MainConsole.Instance.Prompt ("New owner for this estate", ownerAccount.Name); 
             } else
             {
-                estateOwner = Util.CombineParams (cmd, 5); // in case of spaces in the name eg Allan Allard
+                estateOwner = Util.CombineParams (cmd, 5); // in case of spaces in the name e.g Allan Allard
             }
             if (estateOwner == "")
                 return;

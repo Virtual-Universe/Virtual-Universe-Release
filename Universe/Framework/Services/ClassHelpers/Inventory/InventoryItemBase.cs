@@ -231,7 +231,7 @@ namespace Universe.Framework.Services.ClassHelpers.Inventory
         }
 
         /// <value>
-        ///     This is an enumerated value determining the type of asset (eg Notecard, Sound, Object, etc)
+        ///     This is an enumerated value determining the type of asset (e.g Notecard, Sound, Object, etc)
         /// </value>
         public int AssetType
         {

@@ -45,7 +45,7 @@ namespace Universe.Framework.Configuration
         public string iniFilePath = "";
 
         /// <summary>
-        ///     Should we save all merging of the .ini files to the filesystem?
+        ///     Should we save all merging of the .ini files to the file-system?
         /// </summary>
         protected bool inidbg;
 

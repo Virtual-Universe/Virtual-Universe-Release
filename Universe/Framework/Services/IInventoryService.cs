@@ -305,7 +305,7 @@ namespace Universe.Framework.Services
 
         /// <summary>
         /// Adds an item async to the temporary cache only.
-        ///  - used for non persistent inventory items eg NPC attachments
+        ///  - used for non persistent inventory items e.g NPC attachments
         /// </summary>
         /// <param name="item">Item.</param>
         void AddCacheItemAsync (InventoryItemBase item);

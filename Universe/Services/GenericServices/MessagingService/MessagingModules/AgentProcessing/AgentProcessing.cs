@@ -144,7 +144,7 @@ namespace Universe.Services
 
                 regionCaps.Disabled = false;
 
-                //The agent is getting here for the first time (eg. login)
+                //The agent is getting here for the first time (e.g. login)
                 OSDMap body = ((OSDMap) message["Message"]);
 
                 //Parse the OSDMap
