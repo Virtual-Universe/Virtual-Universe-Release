@@ -220,7 +220,7 @@ namespace Universe.Region
                 }
                 if (foundAvies.Count == 0)
                 {
-                    //All avies are still the same, check their locations now
+                    //All avatars are still the same, check their locations now
                     for (int i = 0; i < avatarUUIDs.Count; i++)
                     {
                         if (m_oldCoarseLocations[i].ApproxEquals(coarseLocations[i], 5))

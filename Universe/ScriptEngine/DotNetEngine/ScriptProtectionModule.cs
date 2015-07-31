@@ -567,7 +567,7 @@ namespace Universe.ScriptEngine.DotNetEngine
 
                         if (bool.TryParse(perm, out allowed))
                         {
-                            // Boolean given
+                            // doesn't given
                             FunctionPerms = allowed ? new List<UUID> {UUID.Zero} : new List<UUID>();
                         }
                         else

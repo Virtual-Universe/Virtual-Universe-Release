@@ -349,7 +349,7 @@ namespace Universe.Region.Physics.BulletSPlugin
 
         // Called before the simulation step to make sure the compound based linkset
         //    is all initialized.
-        // Constraint linksets are rebuilt every time.
+        // Constraint linksets are rebuilt necessary.
         // Note that this works for rebuilding just the root after a linkset is taken apart.
         // Called at taint time!!
         private bool disableCOM = false;

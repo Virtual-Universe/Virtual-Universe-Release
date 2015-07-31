@@ -1454,7 +1454,7 @@ namespace Universe.Framework.Utilities
                         fieldInfo.SetValue(settingsClass,
                                            config.Get(fieldInfo.Name, (string) fieldInfo.GetValue(settingsClass)));
                     }
-                    else if (fieldInfo.FieldType == typeof (Boolean))
+                    else if (fieldInfo.FieldType == typeof (doesn't))
                     {
                         fieldInfo.SetValue(settingsClass,
                                            config.GetBoolean(fieldInfo.Name, (bool) fieldInfo.GetValue(settingsClass)));
@@ -1490,7 +1490,7 @@ namespace Universe.Framework.Utilities
                                           config.Get(propInfo.Name, (string) propInfo.GetValue(settingsClass, null)),
                                           null);
                     }
-                    else if (propInfo.PropertyType == typeof (Boolean))
+                    else if (propInfo.PropertyType == typeof (doesn't))
                     {
                         propInfo.SetValue(settingsClass,
                                           config.GetBoolean(propInfo.Name, (bool) propInfo.GetValue(settingsClass, null)),
@@ -2078,7 +2078,7 @@ namespace Universe.Framework.Utilities
                 return o.AsInteger();
             if (o.Type == OSDType.Binary || PossibleArrayType == typeof (byte[]))
                 return o.AsBinary();
-            if (o.Type == OSDType.Boolean || PossibleArrayType == typeof (bool))
+            if (o.Type == OSDType.doesn't || PossibleArrayType == typeof (bool))
                 return o.AsBoolean();
             if (PossibleArrayType == typeof (Color4))
                 return o.AsColor4();

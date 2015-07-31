@@ -286,7 +286,7 @@ namespace Universe.Services.DataService.Connectors.Database.Asset
                     AssetBase asset = GetAsset(id, false);
                     if (asset == null)
                         return false;
-                    if ((int) (asset.Flags & AssetFlags.Maptile) != 0 || //Depriated, use Deletable instead
+                    if ((int) (asset.Flags & AssetFlags.Maptile) != 0 || //Depreciated, use Deletable instead
                         (int) (asset.Flags & AssetFlags.Deletable) != 0)
                         ignoreFlags = true;
                 }

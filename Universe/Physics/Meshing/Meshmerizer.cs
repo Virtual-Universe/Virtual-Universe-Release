@@ -363,7 +363,7 @@ namespace Universe.Physics.Meshing
                 }
                 catch (Exception e)
                 {
-                    MainConsole.Instance.Error("[MESH]: Exception deserializing mesh asset header:" + e);
+                    MainConsole.Instance.Error("[MESH]: Exception de-serializing mesh asset header:" + e);
                     return false;
                 }
                 start = data.Position;

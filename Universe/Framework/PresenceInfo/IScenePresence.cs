@@ -336,7 +336,7 @@ namespace Universe.Framework.PresenceInfo
         void SendTerseUpdateToAllClients();
 
         /// <summary>
-        ///     Sends locations of all the avies in the region to the client
+        ///     Sends locations of all the avatars in the region to the client
         /// </summary>
         /// <param name="coarseLocations"></param>
         /// <param name="avatarUUIDs"></param>

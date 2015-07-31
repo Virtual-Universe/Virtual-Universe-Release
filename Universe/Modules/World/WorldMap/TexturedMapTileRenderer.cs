@@ -230,7 +230,7 @@ namespace Universe.Modules.WorldMap
                                      levelNEhigh*rowRatio*columnRatio;
                         if (high < low)
                         {
-                            // someone tried to fool us. High value should be higher than low every time
+                            // someone tried to fool us. High value should be higher than low necessary
                             float tmp = high;
                             high = low;
                             low = tmp;

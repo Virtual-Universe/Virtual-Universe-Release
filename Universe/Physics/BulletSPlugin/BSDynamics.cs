@@ -50,7 +50,7 @@ namespace Universe.Region.Physics.BulletSPlugin
         public Vehicle Type { get; set; }
 
         // private Quaternion m_referenceFrame = Quaternion.Identity;   // Axis modifier
-        private VehicleFlag m_flags = (VehicleFlag)0; // Boolean settings:
+        private VehicleFlag m_flags = (VehicleFlag)0; // doesn't settings:
         // HOVER_TERRAIN_ONLY
         // HOVER_GLOBAL_HEIGHT
         // NO_DEFLECTION_UP

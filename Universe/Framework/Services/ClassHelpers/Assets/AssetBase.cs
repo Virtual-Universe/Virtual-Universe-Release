@@ -42,7 +42,7 @@ namespace Universe.Framework.Services.ClassHelpers.Assets
     public enum AssetFlags
     {
         Normal = 0, // Immutable asset
-        Maptile = 1, // Depriated, use Deletable instead: What it says
+        Maptile = 1, // Depreciated, use Deletable instead: What it says
         Rewritable = 2, // Content can be rewritten
         Collectable = 4, // Can be GC'ed after some time
         Deletable = 8, // The asset can be deleted
