@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,10 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Universe.Framework.ConsoleFramework;
-using Universe.Framework.Servers.HttpServer.Implementation;
-using Universe.Framework.Servers.HttpServer.Interfaces;
-using Nwc.XmlRpc;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -36,6 +32,10 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Xml;
+using Nwc.XmlRpc;
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.Servers.HttpServer.Implementation;
+using Universe.Framework.Servers.HttpServer.Interfaces;
 
 namespace Universe.Framework.Servers.HttpServer
 {
@@ -405,7 +405,7 @@ namespace Universe.Framework.Servers.HttpServer
                                     HttpServerHandlerHelpers.WriteChunked(stream, buffer);
                                 }
                             }
-                            //response.ContentLength64 = buffer.LongLength;
+
                             response.Close();
                         }
                         else
@@ -543,7 +543,6 @@ namespace Universe.Framework.Servers.HttpServer
                 }
                 else
                 {
-                    //HandleLLSDRequests(request, response);
                     response.ContentType = "text/plain";
                     response.StatusCode = 404;
                     response.StatusDescription = "Not Found";
@@ -565,7 +564,7 @@ namespace Universe.Framework.Servers.HttpServer
 
         public byte[] GetHTML404(OSHttpResponse response)
         {
-            // I know this statuscode is dumb, but the client doesn't respond to 404s and 500s
+            // I know this status code is dumb, but the client doesn't respond to 404s and 500s
             response.StatusCode = 404;
             response.AddHeader("Content-type", "text/html");
 
@@ -582,7 +581,7 @@ namespace Universe.Framework.Servers.HttpServer
         {
             try
             {
-                // I know this statuscode is dumb, but the client doesn't respond to 404s and 500s
+                // I know this status code is dumb, but the client doesn't respond to 404s and 500s
                 response.StatusCode = (int)HttpStatusCode.OK;
                 response.AddHeader("Content-type", "text/html");
 
@@ -604,8 +603,6 @@ namespace Universe.Framework.Servers.HttpServer
 
             try
             {
-                //m_httpListener = new HttpListener();
-
                 NotSocketErrors = 0;
                 m_internalServer = new HttpListenerManager(m_threadCount, Secure);
                 if (OnOverrideRequest != null)
