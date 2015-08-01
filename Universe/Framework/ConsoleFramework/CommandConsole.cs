@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-support/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -475,9 +475,6 @@ namespace Universe.Framework.ConsoleFramework
                 paths.Clear();
 
                 paths.AddRange(
-                    //    commands.Values.Select(
-                    //    command =>
-                    //    string.Format("-- {0}  [{1}]:   {2}", command.command, command.commandHelp, command.info)));
                     commands.Values.Select(
                         command =>
                         string.Format("-- {0}:\n      {1}", command.commandHelp, command.info.Replace("\n","\n        "))));

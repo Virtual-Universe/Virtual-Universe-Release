@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-support/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,19 +28,19 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Web;
 using System.Xml;
+using Nini.Config;
+using OpenMetaverse;
 using Universe.Framework.Modules;
 using Universe.Framework.Servers;
 using Universe.Framework.Servers.HttpServer;
-using Universe.Framework.Servers.HttpServer.Interfaces;
-using Nini.Config;
-using OpenMetaverse;
 using Universe.Framework.Servers.HttpServer.Implementation;
-using System.IO;
-using System.Text;
+using Universe.Framework.Servers.HttpServer.Interfaces;
 
 namespace Universe.Framework.ConsoleFramework
 {
@@ -52,7 +52,6 @@ namespace Universe.Framework.ConsoleFramework
     }
 
     // A console that uses REST interfaces
-    //
     public class RemoteConsole : CommandConsole
     {
         private readonly Dictionary<UUID, ConsoleConnection> m_Connections =
@@ -78,9 +77,8 @@ namespace Universe.Framework.ConsoleFramework
 
             if (source.Configs["Console"] != null)
             {
-                //if (source.Configs["Console"].GetString("RemoteConsole", String.Empty) != "enable")
-                    if (source.Configs["Console"].GetString("Console", String.Empty) != Name)
-                        return;
+                if (source.Configs["Console"].GetString("Console", String.Empty) != Name)
+                    return;
 
                 m_consolePort = (uint) source.Configs["Console"].GetInt("remote_console_port", 0);
                 m_UserName = source.Configs["Console"].GetString("RemoteConsoleUser", String.Empty);

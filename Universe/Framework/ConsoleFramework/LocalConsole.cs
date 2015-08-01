@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-support/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -43,7 +43,7 @@ namespace Universe.Framework.ConsoleFramework
 
         private static readonly ConsoleColor[] Colors =
             {
-                // the dark colors don't seem to be visible on some black background terminals like putty :(
+                // the dark colors don't seem to be visible on some black background terminals like putty
                 //ConsoleColor.DarkBlue,
                 //ConsoleColor.DarkGreen,
                 //ConsoleColor.Gray, 
@@ -151,7 +151,7 @@ namespace Universe.Framework.ConsoleFramework
             {
                 int bh = Console.BufferHeight;
 
-                // On Mono 2.4.2.3 (and possibly above), the buffer value is sometimes erroneously zero (Mantis 4657)
+                // On Mono 2.4.2.3 (and possibly above), the buffer value is sometimes erroneously zero
                 if (bh > 0 && top >= bh)
                     top = bh - 1;
             }
@@ -415,8 +415,7 @@ namespace Universe.Framework.ConsoleFramework
 
             bool trailingSpace = cmdline.ToString().EndsWith(" ");
 
-            // Allow ? through while typing a URI
-            //
+            // Allow through while typing a URI?
             if (words.Length > 0 && words[words.Length - 1].StartsWith("http") && !trailingSpace)
                 return false;
 
