@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,6 @@ namespace Universe.Framework.SceneInfo
     {
         public static float MetersToSphericalStrength(float size)
         {
-            //return Math.Pow(2, size);
             return (size + 1)*1.35f; // MCP: a more useful brush size range
         }
 

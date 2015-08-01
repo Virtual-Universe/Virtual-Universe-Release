@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,9 +26,9 @@
  */
 
 using System;
+using OpenMetaverse;
 using Universe.Framework.Modules;
 using Universe.Framework.Utilities;
-using OpenMetaverse;
 
 namespace Universe.Framework.SceneInfo
 {
@@ -357,20 +357,6 @@ namespace Universe.Framework.SceneInfo
                     m_scene.RegionInfo.RegionSizeY/Constants.TerrainPatchSize];
             m_Width = m_scene.RegionInfo.RegionSizeX;
             m_Height = m_scene.RegionInfo.RegionSizeY;
-
-           /* int x;
-            for (x = 0; x < m_scene.RegionInfo.RegionSizeX; x++)
-            {
-                int y;
-                for (y = 0; y < m_scene.RegionInfo.RegionSizeY; y++)
-                {
-//                    this[x, y] = (float) m_scene.RegionInfo.RegionSettings.WaterHeight + .1f;
-                    this[x, y] = 0.0f;
-                }
-            }
-            */
-            //m_scene.RegionInfo.RegionSettings.WaterHeight = 0.0f;
-            //m_scene.RegionInfo.RegionSettings.TerrainTexture1 = UUID.Zero;
         }
 
         void CreateFlatlandTerrain()
@@ -395,7 +381,6 @@ namespace Universe.Framework.SceneInfo
                 }
             }
         }
-
 
         void CreateMainlandTerrain(int smoothing)
 		{
@@ -431,7 +416,6 @@ namespace Universe.Framework.SceneInfo
 			{
 				for (y = 0; y < rHeight; y++)
 				{
-//					this[x, y] = heightMap[x][y];
                     this[x, y] = blendMap[x][y];
 				}
 			}
@@ -518,13 +502,11 @@ namespace Universe.Framework.SceneInfo
                 for (y = 0; y < m_scene.RegionInfo.RegionSizeY; y++)
                 {
                     if (this [x, y] > m_scene.RegionInfo.RegionSettings.WaterHeight)
-                        regionArea++;
-                                
+                        regionArea++;                       
                 }
             }
 
            m_scene.RegionInfo.RegionArea = regionArea;
         }
-
 	}
 }

@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * Adapted for Universe from an article in gamedev magazine, with some additional ideas
+ * Adapted for Virtual Universe from an article in gamedev magazine, with some additional ideas
  * from Christopher Breinholt: http://breinygames.blogspot.com.au
  * Rowan D <greythane@gmail.com> , Oct 2013
  * 
@@ -43,7 +43,6 @@ namespace Universe.Framework.SceneInfo
         #region Feilds
         static Random random = new Random();
         #endregion
-
 
         #region Reusable Functions
 
@@ -296,23 +295,6 @@ namespace Universe.Framework.SceneInfo
 			return greyValues;
 		}
 
-
-/*		public float Turbulence(float value, float x, float y, float size)
-		{
-			float initialSize = size;
-
-			while (size >= 1)
-			{
-				value += value(x / size, y / size) * size;
-				size /= 2.0;
-			}
-
-			value = (128.0 * value / initialSize);
-
-			return value;
-		}
-*/
-
 		public static float[][] SmoothHeightMap( float[][] greyValues)
 		{
 			int width = greyValues.Length;
@@ -434,8 +416,6 @@ namespace Universe.Framework.SceneInfo
 
 	        return image;
         }
-        
-
 
 		/// <summary>
 		/// Adjusts the levels.
@@ -475,7 +455,6 @@ namespace Universe.Framework.SceneInfo
             return newImage;
         }
 
-
 		/// <summary>
 		/// Generates a map with the edges blended to the edgeLevel.
 		/// </summary>
@@ -514,7 +493,6 @@ namespace Universe.Framework.SceneInfo
                         blend_map[x][y] = map[x][y];            // inside the borderlands... leave alone
                     } else {
                         float factor = (2*edgeDistance)/(wVar+edgeDistance);
-                        //float factorY = (1- (1/(1+ry)));
 
                         blend_map[x][y] = edgeLevel + ((map[x][y] - edgeLevel) * factor);
                         //MainConsole.Instance.InfoFormat ("cx: {0}, cy: {1}, rx: {2}, ry: {3}. edge: {4}, factor: {5}, height: {6}",
@@ -522,7 +500,6 @@ namespace Universe.Framework.SceneInfo
 					}
 				}
 			}
-
 
 			return blend_map;
 		}
@@ -568,7 +545,6 @@ namespace Universe.Framework.SceneInfo
             return gradient_map;
         }
 
-
 		/// <summary>
 		/// Generates a height map for a 'Island' style area (Edges of the map under water)
 		/// </summary>
@@ -590,11 +566,9 @@ namespace Universe.Framework.SceneInfo
 				height = 256;
 			}
 
-
 			float[][] perlinNoiseMap = GeneratePerlinNoise(width, height, octaveCount);
 			perlinNoiseMap = AdjustLevels (perlinNoiseMap, 0.2f, 0.8f);
 			float [][] perlinMap = MapToGreyScale (perlinNoiseMap);
-
 
 			// mask the edges to an 'Island' shape
 			float[][] map_mask = GenerateIslandGradientMap(width, height);
@@ -617,7 +591,6 @@ namespace Universe.Framework.SceneInfo
 
 			return perlinMap;
 		}
-
 
 		/// <summary>
 		/// Generates a height map for a 'Mainland' style area (Terrain out to the edges of the map).
@@ -647,7 +620,6 @@ namespace Universe.Framework.SceneInfo
 			float[][] perlinNoiseMap = GeneratePerlinNoise(width, height, octaveCount);
 			perlinNoiseMap = AdjustLevels (perlinNoiseMap, 0.2f, 0.8f);
 			float [][] perlinMap = MapToGreyScale (perlinNoiseMap);
-
 
             for (int x=0; x < smoothing; x++)
 			{

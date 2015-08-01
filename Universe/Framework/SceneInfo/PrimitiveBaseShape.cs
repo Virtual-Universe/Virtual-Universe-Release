@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,10 +32,10 @@ using System.Linq;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
-using Universe.Framework.ConsoleFramework;
 using OpenMetaverse;
 using OpenMetaverse.StructuredData;
 using ProtoBuf;
+using Universe.Framework.ConsoleFramework;
 
 namespace Universe.Framework.SceneInfo
 {
@@ -690,11 +690,6 @@ namespace Universe.Framework.SceneInfo
             _scale.X = _scale.Y = radius*2f;
         }
 
-        /*void returns need to change of course
-        public virtual void GetMesh()
-        {
-        }*/
-
         public PrimitiveBaseShape Copy()
         {
             PrimitiveBaseShape copy = (PrimitiveBaseShape) MemberwiseClone();
@@ -792,9 +787,6 @@ namespace Universe.Framework.SceneInfo
 
             byte[] returnbytes = new byte[TotalBytesLength];
 
-
-            // uint paramlength = ExtraParamsNum;
-
             // Stick in the number of parameters
             returnbytes[i++] = (byte) ExtraParamsNum;
 
@@ -804,8 +796,6 @@ namespace Universe.Framework.SceneInfo
 
                 Utils.UInt16ToBytes(FlexiEP, returnbytes, i);
                 i += 2;
-                //returnbytes[i++] = (byte)(FlexiEP % 256);
-                //returnbytes[i++] = (byte)((FlexiEP >> 8) % 256);
 
                 Utils.UIntToBytes((uint) FlexiData.Length, returnbytes, i);
                 i += 4;
@@ -932,14 +922,11 @@ namespace Universe.Framework.SceneInfo
                 extraParamCount = data[i++];
             }
 
-
             for (int k = 0; k < extraParamCount; k++)
             {
                 ushort epType = Utils.BytesToUInt16(data, i);
 
                 i += 2;
-                // uint paramLength = Helpers.BytesToUIntBig(data, i);
-
                 i += 4;
                 switch (epType)
                 {
@@ -1160,7 +1147,6 @@ namespace Universe.Framework.SceneInfo
             return data;
         }
 
-
         /// <summary>
         ///     Creates a OpenMetaverse.Primitive and populates it with converted PrimitiveBaseShape values
         /// </summary>
@@ -1171,7 +1157,6 @@ namespace Universe.Framework.SceneInfo
             return ToOmvPrimitive(new Vector3(0.0f, 0.0f, 0.0f),
                                   new Quaternion(0.0f, 0.0f, 0.0f, 1.0f));
         }
-
 
         /// <summary>
         ///     Creates a OpenMetaverse.Primitive and populates it with converted PrimitiveBaseShape values

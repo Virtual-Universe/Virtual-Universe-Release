@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -91,10 +91,6 @@ namespace Universe.Framework.SceneInfo
 
                 // MainConsole.Instance.DebugFormat("[TASK INVENTORY]: Instantiated {0} prim items in total from xml", Count);
             }
-            // else
-            // {
-            //     MainConsole.Instance.DebugFormat("[TASK INVENTORY]: Skipping empty element {0}", reader.Name);
-            // }
 
             // For some .net implementations, this last read is necessary so that we advance beyond the end tag
             // of the element wrapping this object so that the rest of the serialization can complete normally.
@@ -113,8 +109,6 @@ namespace Universe.Framework.SceneInfo
                     tiiSerializer.Serialize(writer, item);
                 }
             }
-
-            //tiiSerializer.Serialize(writer, Values);
         }
 
         #endregion

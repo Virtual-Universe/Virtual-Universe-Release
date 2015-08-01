@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -119,7 +119,6 @@ namespace Universe.Framework.SceneInfo
         }
 
         // Used by the sim
-        //
 
         [ProtoMember(9)]
         public bool UseGlobalTime
@@ -196,8 +195,7 @@ namespace Universe.Framework.SceneInfo
         [ProtoMember(25)]
         public bool DenyMinors { get; set; }
 
-        // All those lists...
-        //
+        // All those lists.
 
         [ProtoMember(26)]
         public List<UUID> EstateManagers
