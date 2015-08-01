@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-support/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,6 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
 using System.Collections.Generic;
 using OpenMetaverse;
 
@@ -277,8 +278,8 @@ namespace Universe.Framework.ClientInterfaces
         {
             string[] output = ParseNotecardToList(rawInput).ToArray();
 
-//            foreach (string line in output)
-//                MainConsole.Instance.DebugFormat("[PARSE NOTECARD]: ParseNotecardToString got line {0}", line);
+            //foreach (string line in output)
+            //    MainConsole.Instance.DebugFormat("[PARSE NOTECARD]: ParseNotecardToString got line {0}", line);
 
             return string.Join("\n", output);
         }
@@ -356,7 +357,7 @@ namespace Universe.Framework.ClientInterfaces
 
 						while (line < lines)
                             {
-								//m_log.DebugFormat("[PARSE NOTECARD]: Adding line {0}", input[idx]);
+								//MainConsole.Instance.DebugFormat("[PARSE NOTECARD]: Adding line {0}", input[idx]);
 								output.Add(input[idx]);
 								idx++;
 								line++;
