@@ -26,7 +26,7 @@
  */
 
 using System;
-using System.Colelctions.Generic;
+using System.Collections.Generic;
 using OpenMetaverse;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.SceneInfo;
