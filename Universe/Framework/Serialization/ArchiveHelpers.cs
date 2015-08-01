@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -100,22 +100,15 @@ namespace Universe.Framework.Serialization
         {
             HttpWebRequest request = (HttpWebRequest) WebRequest.Create(uri);
 
-            // request.Credentials = credentials;
-
             request.ContentLength = 0;
             request.KeepAlive = false;
 
             WebResponse response = request.GetResponse();
             Stream file = response.GetResponseStream();
 
-            // justincc: going to ignore the content type for now and just try anything
-            //if (response.ContentType != "application/x-oar")
-            //    throw new Exception(String.Format("{0} does not identify an OAR file", uri.ToString()));
-
             if (response.ContentLength == 0)
                 throw new Exception(String.Format("{0} returned an empty file", uri));
 
-            // return new BufferedStream(file, (int) response.ContentLength);
             return new BufferedStream(file, 1000000);
         }
     }
