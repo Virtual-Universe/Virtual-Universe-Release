@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-support/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,9 +29,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Universe.Framework.Utilities;
 using Nini.Config;
 using Nini.Ini;
+using Universe.Framework.Utilities;
 
 namespace Universe.Framework.Configuration
 {
@@ -241,8 +241,6 @@ namespace Universe.Framework.Configuration
             IConfigSource m_config = new IniConfigSource();
             IConfigSource m_fakeconfig = new IniConfigSource();
 
-            //Console.WriteLine(string.Format("[Config]: Reading configuration settings"));
-
             if (sources.Count == 0)
             {
                 Console.WriteLine(string.Format("[CONFIG]: Could not load any configuration"));
@@ -266,7 +264,6 @@ namespace Universe.Framework.Configuration
                 AddIncludes(sources, basePath, ref i, ref triedPaths, m_fakeconfig);
             }
 
-            //
             sources.Reverse();
             for (int i = 0; i < sources.Count; i++)
             {
