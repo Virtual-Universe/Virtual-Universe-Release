@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,6 +31,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using Nini.Config;
+using OpenMetaverse.StructuredData;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.Servers;
@@ -38,8 +40,6 @@ using Universe.Framework.Servers.HttpServer;
 using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Servers.HttpServer.Interfaces;
 using Universe.Framework.Utilities;
-using Nini.Config;
-using OpenMetaverse.StructuredData;
 
 namespace Universe.Framework.Services
 {

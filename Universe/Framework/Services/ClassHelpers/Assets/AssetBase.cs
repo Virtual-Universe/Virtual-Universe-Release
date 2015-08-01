@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,16 +25,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
+using System.Diagnostics;
+using System.Security.Cryptography;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
+using ProtoBuf;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.Utilities;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
-using ProtoBuf;
-using System;
-using System.Diagnostics;
-using System.Security.Cryptography;
 
 namespace Universe.Framework.Services.ClassHelpers.Assets
 {
@@ -206,7 +206,6 @@ namespace Universe.Framework.Services.ClassHelpers.Assets
                 return "Unknown asset";
             }
         }
-
 
         #endregion
 
@@ -460,7 +459,7 @@ namespace Universe.Framework.Services.ClassHelpers.Assets
 
         public void CompressedUnpack(string compressedString)
         {
-            //Decompress the info back to json format
+            //Decompress the info back to JSON format
             string jsonString = Util.Decompress(compressedString);
             //Build the OSDMap 
             OSDMap assetMap = (OSDMap) OSDParser.DeserializeJson(jsonString);

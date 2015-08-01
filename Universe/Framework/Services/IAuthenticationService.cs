@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,42 +37,29 @@ namespace Universe.Framework.Services
     //
     public interface IAuthenticationService
     {
-        //////////////////////////////////////////////////////
         // Authentication
-        //
         // These methods will return a token, which can be used to access
         // various services.
-        //
         string Authenticate(UUID principalID, string authType, string password, int lifetime);
 
-        //////////////////////////////////////////////////////
         // Verification
-        //
         // Allows to verify the authenticity of a token
-        //
         // Tokens expire after 30 minutes and can be refreshed by
         // re-verifying.
-        //
         bool Verify(UUID principalID, string authType, string token, int lifetime);
 
-        //////////////////////////////////////////////////////
         // Teardown
-        //
         // A token can be returned before the timeout. This
         // invalidates it and it can not subsequently be used
         // or refreshed.
-        //
         bool Release(UUID principalID, string authType, string token);
 
-        //////////////////////////////////////////////////////
         // SetPassword for a principal
-        //
         // This method exists for the service, but may or may not
         // be served remotely. That is, the authentication
         // handlers may not include one handler for this,
         // because it's a bit risky. Such handlers require
         // authentication/authorization.
-        //
         bool SetPassword(UUID principalID, string authType, string passwd);
         bool SetPasswordHashed(UUID UUID, string authType, string passwd);
         bool SetPlainPassword(UUID principalID, string authType, string passwd);
@@ -85,9 +72,7 @@ namespace Universe.Framework.Services
         /// <returns></returns>
         bool CheckExists(UUID principalID, string authType);
 
-        //////////////////////////////////////////////////////
         // Grid
-        //
         // We no longer need a shared secret between grid
         // servers. Anything a server requests from another
         // server is either done on behalf of a user, in which
@@ -97,9 +82,7 @@ namespace Universe.Framework.Services
         // need to take approriate action (IPSec is recommended)
         // to secure inter-server traffic.
 
-        //////////////////////////////////////////////////////
         // NOTE
-        //
         // Session IDs are not handled here. After obtaining
         // a token, the session ID regions use can be
         // obtained from the presence service.

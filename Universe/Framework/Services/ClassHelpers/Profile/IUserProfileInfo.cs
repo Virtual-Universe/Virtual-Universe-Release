@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,10 +26,10 @@
  */
 
 using System;
-using Universe.Framework.Modules;
-using Universe.Framework.Utilities;
 using OpenMetaverse;
 using OpenMetaverse.StructuredData;
+using Universe.Framework.Modules;
+using Universe.Framework.Utilities;
 
 namespace Universe.Framework.Services.ClassHelpers.Profile
 {
@@ -398,7 +398,6 @@ namespace Universe.Framework.Services.ClassHelpers.Profile
                 { "SnapshotUUID", OSD.FromUUID (SnapshotUUID) },
                 { "ScopeID", OSD.FromUUID (ScopeID) },
                 { "SimName", OSD.FromString (SimName) },
-                //  broken for non en_US locales                                        {"GlobalPos", OSD.FromVector3(GlobalPos)},
                 { "GPosX", OSD.FromReal (GlobalPos.X).ToString () },
                 { "GPosY", OSD.FromReal (GlobalPos.Y).ToString () },
                 { "GPosZ", OSD.FromReal (GlobalPos.Z).ToString () },
@@ -423,7 +422,6 @@ namespace Universe.Framework.Services.ClassHelpers.Profile
             SnapshotUUID = map ["SnapshotUUID"].AsUUID ();
             ScopeID = map ["ScopeID"].AsUUID ();
             SimName = map ["SimName"].AsString ();
-//            GlobalPos = map["GlobalPos"].AsVector3();
             if (map.ContainsKey ("GlobalPos"))
             {
                 GlobalPos = map ["GlobalPos"].AsVector3 ();
@@ -468,7 +466,6 @@ namespace Universe.Framework.Services.ClassHelpers.Profile
                 { "User", OSD.FromString (User) },
                 { "OriginalName", OSD.FromString (OriginalName) },
                 { "SimName", OSD.FromString (SimName) },
-//  broken for non en_US locales   {"GlobalPos", OSD.FromVector3(GlobalPos)},
                 { "GPosX", OSD.FromReal (GlobalPos.X).ToString () },
                 { "GPosY", OSD.FromReal (GlobalPos.Y).ToString () },
                 { "GPosZ", OSD.FromReal (GlobalPos.Z).ToString () },
@@ -502,7 +499,6 @@ namespace Universe.Framework.Services.ClassHelpers.Profile
             }
             SortOrder = map ["SortOrder"].AsInteger ();
             Enabled = map ["Enabled"].AsInteger ();
-
         }
     }
 }
