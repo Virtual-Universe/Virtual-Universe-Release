@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -452,7 +452,6 @@ namespace Universe.Framework.Utilities
             return uncompressedData;
         }
 
-
         /// <summary>
         ///     Download the file from downloadLink and save it to Universe + Version +
         /// </summary>
@@ -893,7 +892,6 @@ namespace Universe.Framework.Utilities
             "Warin", "Wilbordic", "Wilf", "Wulfwaru", "Yule"
         };
 
-
         public static string TransactionTypeInfo(TransactionType transType)
         {
             switch (transType) {
@@ -935,6 +933,4 @@ namespace Universe.Framework.Utilities
             }
         }
     }
-
-
 }

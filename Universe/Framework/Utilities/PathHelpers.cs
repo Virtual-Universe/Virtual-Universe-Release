@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,10 +26,10 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.IO;
 using Universe.Framework.ConsoleFramework;
-using System.Collections.Generic;
 
 namespace Universe.Framework.Utilities
 {
@@ -53,7 +53,6 @@ namespace Universe.Framework.Utilities
                     //return Path with the system username
             }
         }
-
 
         public static string PathHomeDrive(string fName) 
         {
@@ -125,7 +124,6 @@ namespace Universe.Framework.Utilities
                     defaultDir = "./";
 
                 fileName = VerifyOSPath(Path.Combine (defaultDir, fileName));
-
             }
              
             // check if the directory exists
@@ -245,8 +243,6 @@ namespace Universe.Framework.Utilities
             }
 
             return fileName;
-
         }
-
     }
 }

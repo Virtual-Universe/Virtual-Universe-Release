@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -162,29 +162,6 @@ namespace Universe.Framework.Utilities
         /// <param name="packet"></param>
         public bool ReturnPacket(Packet packet)
         {
-            /*if (dataBlockPoolEnabled)
-            {
-                switch (packet.Type)
-                {
-                    case PacketType.ObjectUpdate:
-                        ObjectUpdatePacket oup = (ObjectUpdatePacket)packet;
-
-                        foreach (ObjectUpdatePacket.ObjectDataBlock oupod in oup.ObjectData)
-                            ReturnDataBlock<ObjectUpdatePacket.ObjectDataBlock>(oupod);
-                        oup.ObjectData = null;
-                        break;
-
-                    case PacketType.ImprovedTerseObjectUpdate:
-                        ImprovedTerseObjectUpdatePacket itoup =
-                                (ImprovedTerseObjectUpdatePacket)packet;
-
-                        foreach(ImprovedTerseObjectUpdatePacket.ObjectDataBlock itoupod in itoup.ObjectData)
-                            ReturnDataBlock<ImprovedTerseObjectUpdatePacket.ObjectDataBlock>(itoupod);
-                        itoup.ObjectData = null;
-                        break;
-                }
-            }*/
-
             if (packetPoolEnabled)
             {
                 switch (packet.Type)

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,7 +24,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 
 namespace Universe.Framework.Utilities
 {
@@ -112,6 +111,5 @@ namespace Universe.Framework.Utilities
         public const int SCHEDULED_PAYMENTS_DELAY = 15;     // minutes to wait after stipend payments before processing scheduled payments
         public const int GROUP_PAYMENTS_DELAY = 30;         // minutes to wait after stipend payments before processing group payments
         public const int DIRECTORYFEE_GRACE_PERIOD = 2;     // hours grace period before a fee will be charged at least once
-
     }
 }

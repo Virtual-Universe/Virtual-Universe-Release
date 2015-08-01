@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -57,7 +57,6 @@ using ReaderWriterLockSlim = System.Threading.ReaderWriterLockSlim;
 
 namespace Universe.Framework.Utilities
 {
-
     /// <summary>
     ///     The method used by Util.FireAndForget for asynchronously firing events
     /// </summary>
@@ -505,7 +504,6 @@ namespace Universe.Framework.Utilities
         {
             return lerp(y, lerp(x, a, b), lerp(x, c, d));
         }
-
 
         public static Encoding UTF8 = Encoding.UTF8;
 
@@ -998,15 +996,11 @@ namespace Universe.Framework.Utilities
             return Regex.Replace(filename, regexInvalidFileChars, String.Empty);
         }
 
-        //
         // directory locations
-        //
 
         public static string homeDir()
         {
             string temp;
-            //            string personal=(Environment.GetFolderPath(Environment.SpecialFolder.Personal));
-            //            temp = Path.Combine(personal,".Universe");
             temp = ".";
             return temp;
         }
@@ -1607,7 +1601,6 @@ namespace Universe.Framework.Utilities
                 }
                 else
                 {
-                    // uh?
                     MainConsole.Instance.Debug(("[UTILS]: Got OSD of unexpected type " + buffer.Type.ToString()));
                     return null;
                 }
@@ -2298,7 +2291,6 @@ namespace Universe.Framework.Utilities
                 value = Math.Truncate(value/26);
             } while (value > 0);
 
-
             return retVal;
         }
     }
@@ -2465,14 +2457,11 @@ namespace Universe.Framework.Utilities
     {
         static bool m_noInternetConnection;
         static int m_nextInternetConnectionCheck;
-        //static bool useLocalhostLoopback=false;
         static readonly ExpiringCache<string, IPAddress> m_dnsCache = new ExpiringCache<string, IPAddress>();
 
         public static IPEndPoint ResolveEndPoint(string hostName, int port)
         {
             IPEndPoint endpoint = null;
-            // Old one defaults to IPv6
-            //return new IPEndPoint(Dns.GetHostAddresses(m_externalHostName)[0], m_internalEndPoint.Port);
 
             IPAddress ia = null;
             // If it is already an IP, don't resolve it - just return directly
@@ -2602,33 +2591,6 @@ namespace Universe.Framework.Utilities
         /// <returns></returns>
         public static IPAddress ResolveAddressForClient(IPAddress iPAddress, IPEndPoint clientIP)
         {
-            /*if (iPAddress == null)
-                return clientIP.Address;
-            if (iPAddress.Equals(clientIP.Address))
-            {
-                if (useLocalhostLoopback)
-                    return IPAddress.Loopback;
-                if (iPAddress == IPAddress.Loopback)
-                    return iPAddress; //Don't send something else if it is already on loopback
-                if (CheckInternetConnection())
-                {
-#pragma warning disable 618
-                    //The 'bad' way, only works for things on the same machine...
-                    try
-                    {
-                        string hostName = Dns.GetHostName();
-                        IPHostEntry ipEntry = Dns.GetHostByName(hostName);
-#pragma warning restore 618
-                        IPAddress[] addr = ipEntry.AddressList;
-                        return addr[0]; //Loopback around! They are on the same connection
-                    }
-                    catch
-                    {
-                        InternetFailure(); //Something went wrong
-                    }
-                }
-            }
-            return iPAddress;*/
             return iPAddress;
         }
 
@@ -2959,10 +2921,6 @@ namespace Universe.Framework.Utilities
                 EmitBoxIfNeeded(il, method.ReturnType);
             il.Emit(OpCodes.Ret);
             return dynamicMethod.Invoke(null, new object[2] {invokeClass, invokeParameters});
-            /*FastInvokeHandler invoder =
-              (FastInvokeHandler)dynamicMethod.CreateDelegate(
-              typeof(FastInvokeHandler));
-            return invoder;*/
         }
 
         static void EmitCastToReference(ILGenerator il, System.Type type)

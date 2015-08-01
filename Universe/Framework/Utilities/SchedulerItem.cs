@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -64,15 +64,12 @@ namespace Universe.Framework.Utilities
             FireFunction = sName;
             FireParams = sParams;
             RunOnce = runOnce;
-            //RunEvery = runEvery;
-            //RunEveryType = runEveryType;
             StartTime = DateTime.Now;                   // was UtcNow; but this is all relative to the server time not UTC
             TimeToRun = runSchedule;                    // dateTime to run this schedule
             CreateTime = DateTime.Now;                  // was UtcNow;
             ScheduleFor = agentID;
             Enabled = true;
         }
-
 
         void SimpleInitialize()
         {
