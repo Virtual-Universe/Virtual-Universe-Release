@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-support.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,17 +25,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Net;
+using OpenMetaverse;
+using OpenMetaverse.Packets;
+using OpenMetaverse.StructuredData;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Services.ClassHelpers.Inventory;
-using OpenMetaverse;
-using OpenMetaverse.Packets;
-using OpenMetaverse.StructuredData;
-using System;
-using System.Collections.Generic;
-using System.Net;
 
 namespace Universe.Framework.PresenceInfo
 {
@@ -276,10 +276,6 @@ namespace Universe.Framework.PresenceInfo
     public delegate void FetchInventory(IClientAPI remoteClient, UUID itemID, UUID ownerID);
 
     public delegate void RequestTaskInventory(IClientAPI remoteClient, uint localID);
-
-/*    public delegate void UpdateInventoryItem(
-        IClientAPI remoteClient, UUID transactionID, UUID itemID, string name, string description,
-        uint nextOwnerMask);*/
 
     public delegate void UpdateInventoryItem(
         IClientAPI remoteClient, UUID transactionID, UUID itemID, InventoryItemBase itemUpd);
@@ -927,7 +923,6 @@ namespace Universe.Framework.PresenceInfo
 
         IPAddress EndPoint { get; }
 
-        // [Obsolete("LLClientView Specific - Replace with ???")]
         int NextAnimationSequenceNumber { get; }
 
         /// <summary>
@@ -947,7 +942,6 @@ namespace Universe.Framework.PresenceInfo
 
         bool SendLogoutPacketWhenClosing { set; }
 
-        // [Obsolete("LLClientView Specific - Circuits are unique to LLClientView")]
         uint CircuitCode { get; }
 
         IPEndPoint RemoteEndPoint { get; }
@@ -956,20 +950,14 @@ namespace Universe.Framework.PresenceInfo
 
         event GenericMessage OnGenericMessage;
 
-        // [Obsolete("LLClientView Specific - Replace with more bare-bones arguments.")]
         event ImprovedInstantMessage OnInstantMessage;
         event PreSendImprovedInstantMessage OnPreSendInstantMessage;
-        // [Obsolete("LLClientView Specific - Replace with more bare-bones arguments. Rename OnChat.")]
         event ChatMessage OnChatFromClient;
-        // [Obsolete("LLClientView Specific - Remove bitbuckets. Adam, can you be more specific here..  as I don't see any bit buckets.")]
         event RezObject OnRezObject;
-        // [Obsolete("LLClientView Specific - Replace with more suitable arguments.")]
         event ModifyTerrain OnModifyTerrain;
         event BakeTerrain OnBakeTerrain;
         event EstateChangeInfo OnEstateChangeInfo;
-        // [Obsolete("LLClientView Specific.")]
         event SetAppearance OnSetAppearance;
-        // [Obsolete("LLClientView Specific - Replace and rename OnAvatarUpdate. Difference from SetAppearance?")]
         event AvatarNowWearing OnAvatarNowWearing;
         event RezSingleAttachmentFromInv OnRezSingleAttachmentFromInv;
         event UUIDNameRequest OnDetachAttachmentIntoInv;
@@ -1229,8 +1217,6 @@ namespace Universe.Framework.PresenceInfo
         void Close(bool forceClose);
         void Stop();
         void Kick(string message);
-
-        //     void ActivateGesture(UUID assetId, UUID gestureId);
 
         /// <summary>
         ///     Tell this client what items it should be wearing now

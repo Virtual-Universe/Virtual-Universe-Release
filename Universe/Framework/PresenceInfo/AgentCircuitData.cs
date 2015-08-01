@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-support.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,11 +26,11 @@
  */
 
 using System;
-using Universe.Framework.Modules;
 using OpenMetaverse;
 using OpenMetaverse.StructuredData;
-using Universe.Framework.Services;
 using ProtoBuf;
+using Universe.Framework.Modules;
+using Universe.Framework.Services;
 
 namespace Universe.Framework.PresenceInfo
 {
