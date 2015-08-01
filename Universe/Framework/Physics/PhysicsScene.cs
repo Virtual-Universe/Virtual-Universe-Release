@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-support.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,12 +25,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
 using System.Collections.Generic;
+using Nini.Config;
+using OpenMetaverse;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
-using Nini.Config;
-using OpenMetaverse;
 
 namespace Universe.Framework.Physics
 {
@@ -250,14 +251,6 @@ namespace Universe.Framework.Physics
         public override void SetWaterLevel(double height, short[] map)
         {
         }
-
-        /*
-                    public override PhysicsActor AddPrim(Vector3 position, Vector3 size, Quaternion rotation)
-                    {
-                        MainConsole.Instance.InfoFormat("NullPhysicsScene : AddPrim({0},{1})", position, size);
-                        return PhysicsActor.Null;
-                    }
-        */
 
         public override PhysicsActor AddPrimShape(UUID primID, uint localID, string name, byte physicsType, PrimitiveBaseShape shape,
             Vector3 position, Vector3 size, Quaternion rotation, bool isPhysical, int material, float friction, float restitution, 
