@@ -35,7 +35,7 @@ using OpenMetaverse;
 using OpenMetaverse.Assets;
 using OpenMetaverse.StructuredData;
 using Universe.Framework.ConsoleFramework;
-using Universe.Framework.SceneInfo.Entitites;
+using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Serialization;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Assets;
