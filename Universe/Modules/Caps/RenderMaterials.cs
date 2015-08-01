@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -201,6 +201,7 @@ namespace Universe.Modules.Caps
                                             }
                                             // MainConsole.Instance.Debug("[Materials]: matLocalId: " + matLocalID);
 
+
                                             OSDMap mat = null;
                                             if (matsMap.ContainsKey ("Material"))
                                             {
@@ -246,7 +247,13 @@ namespace Universe.Modules.Caps
                                                                 MainConsole.Instance.Debug ("[Materials]: te.DefaultTexture is null");
                                                             else
                                                             {
+//## FixMe ##
+// comparison always results in 'False'                                   if (te.DefaultTexture.MaterialID == null)
+//                                                                    MainConsole.Instance.Debug("[MaterialsDemoModule]: te.DefaultTexture.MaterialID is null");
+//                                                                else
+//                                                                {
                                                                 te.DefaultTexture.MaterialID = id;
+//                                                                }
                                                             }
                                                         } else
                                                         {
@@ -300,6 +307,7 @@ namespace Universe.Modules.Caps
                 } catch (Exception e)
                 {
                     MainConsole.Instance.Warn ("[Materials]: exception decoding zipped CAP payload: " + e);
+                    //return "";
                 }
                 MainConsole.Instance.Debug ("[Materials]: knownMaterials.Count: " + m_knownMaterials.Count);
             }
@@ -362,12 +370,14 @@ namespace Universe.Modules.Caps
             }
         }
 
+
         public byte[] RenderMaterialsGetCap (string path, Stream request,
                                             OSHttpRequest httpRequest, OSHttpResponse httpResponse)
         {
             MainConsole.Instance.Debug ("[Materials]: GET cap handler");
 
             OSDMap resp = new OSDMap ();
+
 
             int matsCount = 0;
 
@@ -383,6 +393,7 @@ namespace Universe.Modules.Caps
                 allOsd.Add (matMap);
                 matsCount++;
             }
+
 
             resp ["Zipped"] = ZCompressOSD (allOsd, false);
             MainConsole.Instance.Debug ("[Materials]: matsCount: " + matsCount);

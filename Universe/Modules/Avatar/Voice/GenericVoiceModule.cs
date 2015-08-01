@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,11 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Text;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
+
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
@@ -38,6 +34,11 @@ using Universe.Framework.Servers.HttpServer;
 using Universe.Framework.Servers.HttpServer.Interfaces;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
+using System;
+using System.Text;
 
 namespace Universe.Modules.Voice
 {
@@ -110,7 +111,7 @@ namespace Universe.Modules.Voice
         #endregion
 
         // OnRegisterCaps is invoked via the scene.EventManager
-        // everytime Universe hands out capabilities to a client
+        // every time Universe hands out capabilities to a client
         // (login, region crossing). We contribute two capabilities to
         // the set of capabilities handed back to the client:
         // ProvisionVoiceAccountRequest and ParcelVoiceInfoRequest.
@@ -170,6 +171,8 @@ namespace Universe.Modules.Voice
             return OSDParser.SerializeLLSDXmlBytes(response);
         }
 
+
+
         #region Region-side message sending
 
         private OSDMap syncRecievedService_OnMessageReceived(OSDMap message)
@@ -217,6 +220,7 @@ namespace Universe.Modules.Voice
                         m_scene.RegionInfo.RegionName);
                     //success = true;
                 }
+
 
                 OSDMap map = new OSDMap();
                 map ["Method"] = method;

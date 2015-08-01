@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -167,7 +167,7 @@ namespace Universe.Framework.Services
         List<UserAccount> GetUserAccounts (List<UUID> scopeIDs, string query);
 
         /// <summary>
-        ///     Returns a paginated list of avatars that matches both the search criteriion and the scope ID passed
+        ///     Returns a paginated list of avatars that matches both the search criterion and the scope ID passed
         /// </summary>
         /// <param name="scopeIDs"></param>
         /// <param name="query"></param>
@@ -177,7 +177,7 @@ namespace Universe.Framework.Services
         List<UserAccount> GetUserAccounts (List<UUID> scopeIDs, string query, uint? start, uint? count);
 
         /// <summary>
-        ///     Returns a paginated list of avatars that matches both the search criteriion and the scope ID passed
+        ///     Returns a paginated list of avatars that matches both the search criterion and the scope ID passed
         /// </summary>
         /// <param name="scopeIDs"></param>
         /// <param name="level">greater than or equal to clause is used</param>
@@ -194,7 +194,7 @@ namespace Universe.Framework.Services
         uint NumberOfUserAccounts (List<UUID> scopeIDs, string query);
 
         /// <summary>
-        ///     Store the data given, wich replaces the stored data, therefore must be complete.
+        ///     Store the data given, which replaces the stored data, therefore must be complete.
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
@@ -238,7 +238,7 @@ namespace Universe.Framework.Services
         /// </summary>
         /// <param name="userID">The user's ID</param>
         /// <param name="password">The user's password</param>
-        /// <param name="archiveInformation">Whether or not we should store the account's name and account information so that the user's information inworld does not go null</param>
+        /// <param name="archiveInformation">Whether or not we should store the account's name and account information so that the user's information in world does not go null</param>
         /// <param name="wipeFromDatabase">Whether or not we should remove all of the user's data from other locations in the database</param>
         void DeleteUser (UUID userID, string name, string password, bool archiveInformation, bool wipeFromDatabase);
 
@@ -252,7 +252,7 @@ namespace Universe.Framework.Services
     }
 
     /// <summary>
-    ///     An interface for connecting to the user accounts datastore
+    ///     An interface for connecting to the user accounts data-store
     /// </summary>
     public interface IUserAccountData : IUniverseDataPlugin
     {

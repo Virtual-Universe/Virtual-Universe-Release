@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,21 +25,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.Modules;
+using Universe.Framework.Services;
+using Universe.Framework.Services.ClassHelpers.Assets;
+using Universe.Framework.Utilities;
+using CSJ2K;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.Imaging;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
-using CSJ2K;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.Imaging;
-using Universe.Framework.ConsoleFramework;
-using Universe.Framework.Modules;
-using Universe.Framework.Services;
-using Universe.Framework.Services.ClassHelpers.Assets;
-using Universe.Framework.Utilities;
 
 namespace Universe.Modules.Agent.J2KDecoder
 {
@@ -48,7 +49,7 @@ namespace Universe.Modules.Agent.J2KDecoder
     public class J2KDecoderModule : IService, IJ2KDecoder
     {
         /// <summary>
-        ///     Temporarily holds deserialized layer data information in memory
+        ///     Temporarily holds de-serialized layer data information in memory
         /// </summary>
         private readonly ExpiringCache<UUID, OpenJPEG.J2KLayerInfo[]> m_decodedCache =
             new ExpiringCache<UUID, OpenJPEG.J2KLayerInfo[]>();
@@ -188,6 +189,7 @@ namespace Universe.Modules.Agent.J2KDecoder
                             {
                                 OpenJPEG.J2KLayerInfo layer = new OpenJPEG.J2KLayerInfo
                                                                   {Start = i == 0 ? 0 : layerStarts[i]};
+
 
                                 if (i == layerStarts.Count - 1)
                                     layer.End = j2kData.Length;

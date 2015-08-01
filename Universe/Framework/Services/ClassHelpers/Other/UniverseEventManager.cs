@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -48,43 +48,43 @@ namespace Universe.Framework.Services.ClassHelpers.Other
         /// <summary>
         ///     Events so far:
         ///     DrawDistanceChanged - Changed Draw Distance
-        ///     param is a ScenePresence
+        ///     parameter is a ScenePresence
         ///     BanUser - Added a new banned user to the estate bans
-        ///     param is a UUID of an agent
+        ///     parameter is a UUID of an agent
         ///     UnBanUser - Removed a banned user from the estate bans
-        ///     param is a UUID of an agent
+        ///     parameter is a UUID of an agent
         ///     SignficantCameraMovement - The Camera has moved a distance that has triggered this update
-        ///     param is a ScenePresence
+        ///     parameter is a ScenePresence
         ///     ObjectChangedOwner - An object's owner was changed
-        ///     param is a SceneObjectGroup
+        ///     parameter is a SceneObjectGroup
         ///     ObjectChangedPhysicalStatus - An object's physical status has changed
-        ///     param is a SceneObjectGroup
+        ///     parameter is a SceneObjectGroup
         ///     ObjectEnteringNewParcel - An object has entered a new parcel
-        ///     param is an object[], with o[0] a SceneObjectGroup, o[1] the new parcel UUID, and o[2] the old parcel UUID
+        ///     parameter is an object[], with o[0] a SceneObjectGroup, o[1] the new parcel UUID, and o[2] the old parcel UUID
         ///     UserStatusChange - User's status (logged in/out) has changed
-        ///     param is a object[], with o[0] the UUID of the user (as a string), o[1] whether they are logging in, o[2] the region they are entering (if logging in)
+        ///     parameter is a object[], with o[0] the UUID of the user (as a string), o[1] whether they are logging in, o[2] the region they are entering (if logging in)
         ///     PreRegisterRegion - A region is about to be registered
-        ///     param is a GridRegion
+        ///     parameter is a GridRegion
         ///     NewUserConnection - A new user has been added to the scene (child or root)
-        ///     param is an object[], with o[0] the AgentCircuitData that will be added to the region
+        ///     parameter is an object[], with o[0] the AgentCircuitData that will be added to the region
         ///     EstateUpdated - An estate has been updated
-        ///     param is the EstateSettings of the changed estate
+        ///     parameter is the EstateSettings of the changed estate
         ///     ObjectAddedFlag - An object in the Scene has added a prim flag
-        ///     param is an object[], with o[0] a ISceneChildEntity and o[1] the flag that was changed
+        ///     parameter is an object[], with o[0] a ISceneChildEntity and o[1] the flag that was changed
         ///     ObjectRemovedFlag - An object in the Scene has removed a prim flag
-        ///     param is an object[], with o[0] a ISceneChildEntity and o[1] the flag that was changed
+        ///     parameter is an object[], with o[0] a ISceneChildEntity and o[1] the flag that was changed
         ///     SetAppearance - An avatar has updated their appearance
-        ///     param is an object[], with o[0] the UUID of the avatar and o[1] the AvatarData that is to be updated
+        ///     parameter is an object[], with o[0] the UUID of the avatar and o[1] the AvatarData that is to be updated
         ///     GridRegionSuccessfullyRegistered - Universe.Server, A region has registered with the grid service
-        ///     param is an object[], with o[0] the OSDMap which will be sent to the new region, o[1] the SessionID, o[2] the GridRegion that registered
+        ///     parameter is an object[], with o[0] the OSDMap which will be sent to the new region, o[1] the SessionID, o[2] the GridRegion that registered
         ///     Backup - The 'backup' console command was triggered, everything should backup
-        ///     no params
+        ///     no parameters
         ///     DeleteUserInformation - The user is being deleted, remove all of their information from all databases
-        ///     params are the user's UUID
+        ///     parameter are the user's UUID
         ///     CreateUserInformation - The user account is being created
-        ///     params are the user's UUID
+        ///     parameter are the user's UUID
         ///     UpdateUserInformation - The user account is being updated
-        ///     params are the user's UUID
+        ///     parameter are the user's UUID
         /// </summary>
         public void RegisterEventHandler(string functionName, OnGenericEventHandler handler)
         {

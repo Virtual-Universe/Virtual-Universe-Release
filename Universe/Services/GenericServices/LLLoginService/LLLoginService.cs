@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,14 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Net;
-using System.Text.RegularExpressions;
-using System.Xml;
-using Nini.Config;
-using OpenMetaverse;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.DatabaseInterfaces;
@@ -44,6 +36,14 @@ using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Inventory;
 using Universe.Framework.Services.ClassHelpers.Profile;
 using Universe.Framework.Utilities;
+using Nini.Config;
+using OpenMetaverse;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Net;
+using System.Text.RegularExpressions;
+using System.Xml;
 using FriendInfo = Universe.Framework.Services.FriendInfo;
 using GridRegion = Universe.Framework.Services.GridRegion;
 using GridSettings = Universe.Modules.Web.GridSettings;
@@ -271,8 +271,11 @@ namespace Universe.Services
                     return response;
                 }
 
+                //
                 // Authenticate this user
+                //
                 // We don't support clear passwords here
+                //
                 string token = m_AuthenticationService.Authenticate(account.PrincipalID, "UserAccount", passwd, 30);
                 UUID secureSession = UUID.Zero;
                 if ((token == string.Empty) || (token != string.Empty && !UUID.TryParse(token, out secureSession)))
@@ -302,7 +305,9 @@ namespace Universe.Services
                                                 ? name
                                                 : AgentID.ToString());
 
+            //
             // Get the account and check that it exists
+            //
             UserAccount account = AgentID != UUID.Zero
                                       ? m_UserAccountService.GetUserAccount(null, AgentID)
                                       : m_UserAccountService.GetUserAccount(null, name);
@@ -344,6 +349,7 @@ namespace Universe.Services
             UUID secureSession = UUID.Zero;
 
             // TODO: Make this check better
+            //
             // Some TPV's now send their name in Channel instead of clientVersion 
             // while others send a Channel and a clientVersion.
 
@@ -423,7 +429,9 @@ namespace Universe.Services
                 AvatarAppearance avappearance = null;
                 IProfileConnector profileData = Framework.Utilities.DataManager.RequestPlugin<IProfileConnector>();
 
+                //
                 // Get the user's inventory
+                //
                 if (m_RequireInventory && m_InventoryService == null)
                 {
                     MainConsole.Instance.WarnFormat(
@@ -506,8 +514,9 @@ namespace Universe.Services
 
                 //Now get the logged in status, then below make sure to kill the previous agent if we crashed before
                 UserInfo guinfo = m_agentInfoService.GetUserInfo(account.PrincipalID.ToString());
-
+                //
                 // Clear out any existing CAPS the user may have
+                //
                 if (m_CapsService != null)
                 {
                     IAgentProcessing agentProcessor = m_registry.RequestModuleInterface<IAgentProcessing>();
@@ -525,8 +534,9 @@ namespace Universe.Services
                         m_CapsService.RemoveCAPS(account.PrincipalID);
                 }
 
-
+                //
                 // Change Online status and get the home region
+                //
                 GridRegion home = null;
                 if (guinfo != null && (guinfo.HomeRegionID != UUID.Zero) && m_GridService != null)
                     home = m_GridService.GetRegionByUUID(account.AllScopeIDs, guinfo.HomeRegionID);
@@ -586,7 +596,9 @@ namespace Universe.Services
                                               (guinfo.HomeRegionID == UUID.Zero ? "(no region found)" : guinfo.HomeRegionID.ToString()));
                 }
 
+                //
                 // Find the destination region/grid
+                //
                 string where = string.Empty;
                 Vector3 position = Vector3.Zero;
                 Vector3 lookAt = Vector3.Zero;
@@ -602,7 +614,9 @@ namespace Universe.Services
 
                 #region Appearance
 
+                //
                 // Get the avatar
+                //
                 if (m_AvatarService != null)
                 {
                     bool loadedArchive;
@@ -632,7 +646,9 @@ namespace Universe.Services
                 if (m_FriendsService != null)
                     friendsToInform = m_FriendsService.GetFriendOnlineStatuses(account.PrincipalID, true);
 
+                //
                 // Instantiate/get the simulation interface and launch an agent at the destination
+                //
                 string reason = "", seedCap = "";
                 AgentCircuitData aCircuit = LaunchAgentAtGrid(destination, tpFlags, account, session,
                                                               secureSession, position, where,
@@ -658,7 +674,9 @@ namespace Universe.Services
                                                destination.ServerURI);
                 m_agentInfoService.FireUserStatusChangeEvent(account.PrincipalID.ToString(), true, destination.RegionID);
 
+                //
                 // Finally, fill out the response and return it
+                //
                 string MaturityRating = "A";
                 string MaxMaturity = "A";
                 if (agent != null)
@@ -1142,6 +1160,7 @@ namespace Universe.Services
                     // Set the minimum level to allow login 
                     // Useful to allow grid update without worrying about users.
                     // or fixing critical issues
+                    //
                     if (cmd.Length > 2)
                         Int32.TryParse(cmd[2], out m_MinLoginLevel);
                     break;

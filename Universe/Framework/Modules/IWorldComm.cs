@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -72,7 +72,7 @@ namespace Universe.Framework.Modules
         ///     Objects that do an llSay have their messages delivered here and for nearby avatars,
         ///     the OnChatFromClient event is used.
         /// </summary>
-        /// <param name="type">type of delvery (whisper,say,shout or regionwide)</param>
+        /// <param name="type">type of delivery (whisper,say,shout or regionwide)</param>
         /// <param name="channel">channel to sent on</param>
         /// <param name="name">name of sender (object or avatar)</param>
         /// <param name="id">key of sender (object or avatar)</param>
@@ -85,7 +85,7 @@ namespace Universe.Framework.Modules
         /// <summary>
         ///     Are there any listen events ready to be dispatched?
         /// </summary>
-        /// <returns>boolean indication</returns>
+        /// <returns>Boolean indication</returns>
         bool HasMessages();
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace Universe.Framework.Modules
         bool HasListeners();
 
         /// <summary>
-        ///     Pop the first availlable listen event from the queue
+        ///     Pop the first available listen event from the queue
         /// </summary>
         /// <returns>ListenerInfo with filter filled in</returns>
         IWorldCommListenerInfo GetNextMessage();

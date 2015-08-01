@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,6 +25,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.Modules;
+using Universe.Framework.Servers.HttpServer;
+using Universe.Framework.Servers.HttpServer.Implementation;
+using Universe.Framework.Services;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -32,14 +41,6 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Xml;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
-using Universe.Framework.ConsoleFramework;
-using Universe.Framework.Modules;
-using Universe.Framework.Servers.HttpServer;
-using Universe.Framework.Servers.HttpServer.Implementation;
-using Universe.Framework.Services;
 
 namespace Universe.Modules
 {
@@ -194,7 +195,7 @@ namespace Universe.Modules
                     String.IsNullOrEmpty(m_vivoxAdminUser) ||
                     String.IsNullOrEmpty(m_vivoxAdminPassword))
                 {
-                    MainConsole.Instance.Error("[VivoxVoice] plugin mis-configured");
+                    MainConsole.Instance.Error("[VivoxVoice] plugin has wrong configuration");
                     MainConsole.Instance.Info("[VivoxVoice] plugin disabled: incomplete configuration");
                     return;
                 }
@@ -416,7 +417,7 @@ namespace Universe.Modules
 
                 // Make sure that all local channels are deleted.
                 // So we have to search for the children, and then do an
-                // iteration over the set of chidren identified.
+                // iteration over the set of children identified.
                 // This assumes that there is just one directory per
                 // region.
 
@@ -505,7 +506,7 @@ namespace Universe.Modules
 
             lock (vlock)
             {
-                // Added by Adam to help debug channel not availible errors.
+                // Added by Adam to help debug channel not available errors.
                 if (VivoxTryGetChannel(voiceParentID, landUUID, out channelId, out channelUri))
                     MainConsole.Instance.DebugFormat("[VivoxVoice] Found existing channel at " + channelUri);
                 else if (VivoxTryCreateChannel(voiceParentID, landUUID, landName, out channelUri))
@@ -775,7 +776,7 @@ namespace Universe.Modules
                         !XmlFind(resp, "response.level0.channel-search.channels.channels.level4.parent", i, out parent))
                     {
                         MainConsole.Instance.Debug("[VivoxVoice] Skipping Channel " + i + "/" + name +
-                                                   " as it's parent doesnt match");
+                                                   " as it's parent doesn't match");
                         continue;
                     }
 
@@ -1074,7 +1075,7 @@ namespace Universe.Modules
         ///     If the whole hierarchy is resolved, the InnerText
         ///     value at that point is returned. Note that this
         ///     may itself be a sub-hierarchy of the entire
-        ///     document. The function returns a boolean indicator
+        ///     document. The function returns a Boolean indicator
         ///     of the search's success. The search is performed
         ///     by the recursive Search method.
         /// </summary>

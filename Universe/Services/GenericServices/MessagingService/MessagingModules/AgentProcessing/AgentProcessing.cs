@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,14 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
+
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.DatabaseInterfaces;
@@ -40,6 +33,14 @@ using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading;
 using GridRegion = Universe.Framework.Services.GridRegion;
 
 namespace Universe.Services
@@ -137,14 +138,14 @@ namespace Universe.Services
             {
                 if (regionCaps == null || clientCaps == null)
                     return null;
-                //Received a callback
+                //Recieved a callback
                 if (clientCaps.InTeleport) //Only set this if we are in a teleport, 
                     //  otherwise (such as on login), this won't check after the first tp!
                     clientCaps.CallbackHasCome = true;
 
                 regionCaps.Disabled = false;
 
-                //The agent is getting here for the first time (e.g. login)
+                //The agent is getting here for the first time (eg. login)
                 OSDMap body = ((OSDMap) message["Message"]);
 
                 //Parse the OSDMap
@@ -327,7 +328,7 @@ namespace Universe.Services
             {
                 foreach (IRegionClientCapsService regionClientCaps in fullregionCaps.GetClients())
                 {
-                    //We can send this here, because we ONLY send this when the region is going down for a long time
+                    //We can send this here, because we ONLY send this when the region is going down for a loong time
                     eqs.DisableSimulator(regionClientCaps.AgentID, regionClientCaps.RegionHandle,
                                          regionClientCaps.Region.RegionID);
                 }
@@ -638,7 +639,7 @@ namespace Universe.Services
                                                   otherRegion.Region.RegionID);
 
                     // TeleportFinish makes the client send CompleteMovementIntoRegion (at the destination), which
-                    // triggers a whole shebang of things there, including MakeRoot. So let's wait for confirmation
+                    // trigers a whole shebang of things there, including MakeRoot. So let's wait for confirmation
                     // that the client contacted the destination before we send the attachments and close things here.
 
                     result = WaitForCallback(AgentID, out callWasCanceled);
@@ -670,7 +671,7 @@ namespace Universe.Services
 
                         // Next, let's close the child agent connections that are too far away.
                         //if (useCallbacks || oldRegion != destination)//Only close it if we are using callbacks (Universe region)
-                        //Why? OpenSim regions need closed too, even if the protocol is kind of stupid
+                        //Why? OpenSim regions need closed too, even if the protocol is kinda stupid
                         CloseNeighborAgents(regionCaps.Region, destination, AgentID);
                         IAgentInfoService agentInfoService = m_registry.RequestModuleInterface<IAgentInfoService>();
                         if (agentInfoService != null)
@@ -720,7 +721,7 @@ namespace Universe.Services
                                            clientCaps.GetCapsService(destination.RegionID);
                                        if (ourRegionCaps == null)
                                            return;
-                                       //If they handles aren't the same, the agent moved, and we can't be sure that we should close these agents
+                                       //If they handles arn't the same, the agent moved, and we can't be sure that we should close these agents
                                        if (rootRegionCaps.RegionHandle != ourRegionCaps.RegionHandle &&
                                            !clientCaps.InTeleport)
                                            return;
@@ -822,7 +823,7 @@ namespace Universe.Services
                 Thread.Sleep(10);
                 count--;
             }
-            //If we made it through the whole loop, we haven't been canceled,
+            //If we made it through the whole loop, we havn't been canceled,
             //    as we either have timed out or made it, so no checks are needed
             callWasCanceled = false;
             return clientCaps.CallbackHasCome;
@@ -1068,7 +1069,7 @@ namespace Universe.Services
             if (SimulationService != null)
             {
                 // The client is in the region, we need to make sure it gets the right Caps
-                // If CreateAgent is successful, it passes back a OSDMap of parameters that the client 
+                // If CreateAgent is successful, it passes back a OSDMap of params that the client 
                 //    wants to inform us about, and it includes the Caps SEED url for the region
                 IRegionClientCapsService regionClientCaps = null;
                 IClientCapsService clientCaps = null;

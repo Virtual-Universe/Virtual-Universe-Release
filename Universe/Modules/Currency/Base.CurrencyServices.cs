@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/, http://aurora-sim.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -43,9 +43,8 @@ namespace Universe.Modules.Currency
     {
         #region Declares
 
-        BaseCurrencyConfig Config
-        {
-            get { return m_connector.GetConfig(); }
+        BaseCurrencyConfig Config {
+            get { return m_connector.GetConfig (); }
         }
 
         List<IScene> m_scenes = new List<IScene>();
@@ -85,34 +84,37 @@ namespace Universe.Modules.Currency
 
             m_registry.RegisterModuleInterface<IMoneyModule>(this);
 
-            ISceneManager manager = m_registry.RequestModuleInterface<ISceneManager>();
-            if (manager != null)
-            {
+            ISceneManager manager = m_registry.RequestModuleInterface<ISceneManager> ();
+            if (manager != null) {
                 manager.OnAddedScene += (scene) => {
-                    m_scenes.Add(scene);
+                    m_scenes.Add (scene);
                     scene.EventManager.OnNewClient += OnNewClient;
                     scene.EventManager.OnClosingClient += OnClosingClient;
                     scene.EventManager.OnMakeRootAgent += OnMakeRootAgent;
                     scene.EventManager.OnValidateBuyLand += EventManager_OnValidateBuyLand;
-                    scene.RegisterModuleInterface<IMoneyModule>(this);
+                    scene.RegisterModuleInterface<IMoneyModule> (this);
                 };
                 manager.OnCloseScene += (scene) => {
                     scene.EventManager.OnNewClient -= OnNewClient;
                     scene.EventManager.OnClosingClient -= OnClosingClient;
                     scene.EventManager.OnMakeRootAgent -= OnMakeRootAgent;
                     scene.EventManager.OnValidateBuyLand -= EventManager_OnValidateBuyLand;
-                    scene.RegisterModuleInterface<IMoneyModule>(this);
-                    m_scenes.Remove(scene);
+                    scene.RegisterModuleInterface<IMoneyModule> (this);
+                    m_scenes.Remove (scene);
                 };
             }
 
-            // these are only valid if we are local
-            if (!m_connector.DoRemoteCalls)
-            {
-                m_userInfoService = m_registry.RequestModuleInterface<IAgentInfoService>();
-                m_userAccountService = m_registry.RequestModuleInterface<IUserAccountService>();
 
-                AddCommands();
+            // these are only valid if we are local
+            if (!m_connector.DoRemoteCalls) {
+                //               if ((m_connector.GetConfig().GiveStipends) && (m_connector.GetConfig().Stipend > 0))
+                //                   new GiveStipends(m_connector.GetConfig(), m_registry, m_connector);
+
+                m_userInfoService = m_registry.RequestModuleInterface<IAgentInfoService> ();
+                m_userAccountService = m_registry.RequestModuleInterface<IUserAccountService> ();
+                    
+                AddCommands ();
+                
             }
         }
 
@@ -123,17 +125,15 @@ namespace Universe.Modules.Currency
                 return false;
             ILandObject lob = parcelManagement.GetLandObject(e.parcelLocalID);
 
-            if (lob != null)
-            {
+            if (lob != null) {
                 UUID AuthorizedID = lob.LandData.AuthBuyerID;
                 int saleprice = lob.LandData.SalePrice;
                 UUID pOwnerID = lob.LandData.OwnerID;
 
-                bool landforsale = ((lob.LandData.Flags & (uint)(ParcelFlags.ForSale | ParcelFlags.ForSaleObjects | ParcelFlags.SellParcelObjects)) != 0);
+                bool landforsale = ((lob.LandData.Flags & (uint) (ParcelFlags.ForSale | ParcelFlags.ForSaleObjects | ParcelFlags.SellParcelObjects)) != 0);
                 if ((AuthorizedID == UUID.Zero || AuthorizedID == e.agentId) && e.parcelPrice >= saleprice &&
-                    landforsale)
-                {
-                    if (m_connector.UserCurrencyTransfer(lob.LandData.OwnerID, e.agentId, (uint)saleprice, "Land Buy", TransactionType.LandSale, UUID.Zero))
+                    landforsale) {
+                    if (m_connector.UserCurrencyTransfer (lob.LandData.OwnerID, e.agentId, (uint)saleprice, "Land Buy", TransactionType.LandSale, UUID.Zero))
                     {
                         e.parcelOwnerID = pOwnerID;
                         e.landValidated = true;
@@ -142,6 +142,7 @@ namespace Universe.Modules.Currency
 
                     // not validated
                     e.landValidated = false;
+
                 }
             }
             return false;
@@ -151,9 +152,8 @@ namespace Universe.Modules.Currency
 
         void AddCommands()
         {
-            if (MainConsole.Instance != null)
-            {
-                MainConsole.Instance.Commands.AddCommand(
+            if (MainConsole.Instance != null) {
+                MainConsole.Instance.Commands.AddCommand (
                     "money add",
                     "money add",
                     "Adds money to a user's account.",
@@ -182,50 +182,47 @@ namespace Universe.Modules.Currency
                     "show user purchases",
                     "Display user purchases for a period.",
                     HandleShowPurchases, false, true);
+
+/*                MainConsole.Instance.Commands.AddCommand(
+                    "stipend set",
+                    "stipend set",
+                    "Sets the next date for stipend",
+                    HandleStipendSet, false, true);
+                    */
             }
         }
 
         #region IMoneyModule Members
 
-        public string InWorldCurrencySymbol
-        {
+        public string InWorldCurrencySymbol {
             get { return m_connector.InWorldCurrency; }
         }
 
-        public bool IsLocal
-        {
-            get { return !m_connector.DoRemoteCalls; }
-        }
-
-        public int UploadCharge
-        {
+        public int UploadCharge {
             get { return Config.PriceUpload; }
         }
 
-        public int GroupCreationCharge
-        {
+        public int GroupCreationCharge {
             get { return Config.PriceGroupCreate; }
         }
 
-        public int DirectoryFeeCharge
-        {
+        public int DirectoryFeeCharge {
             get { return Config.PriceDirectoryFee; }
         }
 
-        public int ClientPort
-        {
-            get { return Config.ClientPort; }
+        public int ClientPort {
+            get  { return Config.ClientPort; }
         }
 
         public bool ObjectGiveMoney(UUID objectID, string objectName, UUID fromID, UUID toID, int amount)
         {
-            return m_connector.UserCurrencyTransfer(toID, fromID, UUID.Zero, "", objectID, objectName, (uint)amount, "Object payment",
+            return m_connector.UserCurrencyTransfer(toID, fromID, UUID.Zero, "", objectID, objectName, (uint) amount, "Object payment",
                                                     TransactionType.ObjectPays, UUID.Zero);
         }
 
         public int Balance(UUID agentID)
         {
-            return (int)m_connector.GetUserCurrency(agentID).Amount;
+            return (int) m_connector.GetUserCurrency(agentID).Amount;
         }
 
         public bool Charge(UUID agentID, int amount, string text, TransactionType type)
@@ -244,23 +241,20 @@ namespace Universe.Modules.Currency
 
         public bool Transfer(UUID toID, UUID fromID, int amount, string description, TransactionType type)
         {
-            return m_connector.UserCurrencyTransfer(toID, fromID, (uint)amount, description, type,
+            return m_connector.UserCurrencyTransfer(toID, fromID, (uint) amount, description, type,
                                                     UUID.Zero);
         }
 
-        public bool Transfer(UUID toID, UUID fromID, UUID toObjectID, string toObjectName, UUID fromObjectID,
+        public bool Transfer(UUID toID, UUID fromID, UUID toObjectID, string toObjectName, UUID fromObjectID, 
             string fromObjectName, int amount, string description, TransactionType type)
         {
-            bool result = m_connector.UserCurrencyTransfer(toID, fromID, toObjectID, toObjectName,
+            bool result = m_connector.UserCurrencyTransfer (toID, fromID, toObjectID, toObjectName, 
                               fromObjectID, fromObjectName, (uint)amount, description, type, UUID.Zero);
-            if (toObjectID != UUID.Zero)
-            {
-                ISceneManager manager = m_registry.RequestModuleInterface<ISceneManager>();
-                if (manager != null)
-                {
-                    foreach (IScene scene in manager.Scenes)
-                    {
-                        ISceneChildEntity ent = scene.GetSceneObjectPart(toObjectID);
+            if (toObjectID != UUID.Zero) {
+                ISceneManager manager = m_registry.RequestModuleInterface<ISceneManager> ();
+                if (manager != null) {
+                    foreach (IScene scene in manager.Scenes) {
+                        ISceneChildEntity ent = scene.GetSceneObjectPart (toObjectID);
                         if (ent != null)
                             FireObjectPaid(toObjectID, fromID, amount);
                     }
@@ -292,9 +286,9 @@ namespace Universe.Modules.Currency
 
         public List<AgentTransfer> GetTransactionHistory(UUID toAgentID, UUID fromAgentID, int period, string periodType)
         {
-            return m_connector.GetTransactionHistory(toAgentID, fromAgentID, period, periodType);
+            return m_connector.GetTransactionHistory (toAgentID, fromAgentID, period, periodType);
         }
-
+            
         public List<AgentTransfer> GetTransactionHistory(UUID toAgentID, int period, string periodType)
         {
             return m_connector.GetTransactionHistory(toAgentID, period, periodType);
@@ -309,7 +303,7 @@ namespace Universe.Modules.Currency
         {
             return m_connector.GetTransactionHistory(period, periodType, start, count);
         }
-
+ 
 
         public uint NumberOfPurchases(UUID UserID)
         {
@@ -331,7 +325,7 @@ namespace Universe.Modules.Currency
             return m_connector.GetPurchaseHistory(dateStart, dateEnd, start, count);
         }
 
-        public List<AgentPurchase> GetPurchaseHistory(int period, string periodType, uint? start, uint? count)
+        public List<AgentPurchase> GetPurchaseHistory (int period, string periodType, uint? start, uint? count)
         {
             return m_connector.GetPurchaseHistory(period, periodType, start, count);
         }
@@ -350,7 +344,7 @@ namespace Universe.Modules.Currency
         void OnMakeRootAgent(IScenePresence presence)
         {
             presence.ControllingClient.SendMoneyBalance(UUID.Zero, true, new byte[0],
-                                                        (int)m_connector.GetUserCurrency(presence.UUID).Amount);
+                                                        (int) m_connector.GetUserCurrency(presence.UUID).Amount);
         }
 
         protected void OnClosingClient(IClientAPI client)
@@ -362,29 +356,24 @@ namespace Universe.Modules.Currency
 
         void ProcessMoneyTransferRequest(UUID fromID, UUID toID, int amount, int type, string description)
         {
-            if (toID != UUID.Zero)
-            {
-                ISceneManager manager = m_registry.RequestModuleInterface<ISceneManager>();
-                if (manager != null)
-                {
+            if (toID != UUID.Zero) {
+                ISceneManager manager = m_registry.RequestModuleInterface<ISceneManager> ();
+                if (manager != null) {
                     bool paid = false;
-                    foreach (IScene scene in manager.Scenes)
-                    {
-                        ISceneChildEntity ent = scene.GetSceneObjectPart(toID);
-                        if (ent != null)
-                        {
-                            bool success = m_connector.UserCurrencyTransfer(ent.OwnerID, fromID, ent.UUID, ent.Name, UUID.Zero, "",
-                                               (uint)amount, description, (TransactionType)type, UUID.Random());
+                    foreach (IScene scene in manager.Scenes) {
+                        ISceneChildEntity ent = scene.GetSceneObjectPart (toID);
+                        if (ent != null) {
+                            bool success = m_connector.UserCurrencyTransfer (ent.OwnerID, fromID, ent.UUID, ent.Name, UUID.Zero, "",
+                                               (uint)amount, description, (TransactionType)type, UUID.Random ());
                             if (success)
                                 FireObjectPaid(toID, fromID, amount);
                             paid = true;
                             break;
                         }
                     }
-                    if (!paid)
-                    {
-                        m_connector.UserCurrencyTransfer(toID, fromID, (uint)amount, description,
-                            (TransactionType)type, UUID.Random());
+                    if (!paid) {
+                        m_connector.UserCurrencyTransfer (toID, fromID, (uint)amount, description,
+                            (TransactionType)type, UUID.Random ());
                     }
                 }
             }
@@ -393,15 +382,14 @@ namespace Universe.Modules.Currency
         bool ValidateLandBuy(EventManager.LandBuyArgs e)
         {
             return m_connector.UserCurrencyTransfer(e.parcelOwnerID, e.agentId,
-                                                    (uint)e.parcelPrice, "Land Purchase", TransactionType.LandSale,
+                                                    (uint) e.parcelPrice, "Land Purchase", TransactionType.LandSale,
                                                     UUID.Random());
         }
 
         void EconomyDataRequestHandler(IClientAPI remoteClient)
         {
-            if (Config == null)
-            {
-                remoteClient.SendEconomyData(0, remoteClient.Scene.RegionInfo.ObjectCapacity,
+            if (Config == null) {
+                remoteClient.SendEconomyData (0, remoteClient.Scene.RegionInfo.ObjectCapacity,
                     remoteClient.Scene.RegionInfo.ObjectCapacity,
                     0, 0,
                     0, 0,
@@ -411,9 +399,8 @@ namespace Universe.Modules.Currency
                     0, 0,
                     0,
                     0, 0);
-            }
-            else
-                remoteClient.SendEconomyData(0, remoteClient.Scene.RegionInfo.ObjectCapacity,
+            } else
+                remoteClient.SendEconomyData (0, remoteClient.Scene.RegionInfo.ObjectCapacity,
                     remoteClient.Scene.RegionInfo.ObjectCapacity,
                     0, Config.PriceGroupCreate,
                     0, 0,
@@ -427,13 +414,11 @@ namespace Universe.Modules.Currency
 
         void SendMoneyBalance(IClientAPI client, UUID agentId, UUID sessionId, UUID transactionId)
         {
-            if (client.AgentId == agentId && client.SessionId == sessionId)
-            {
-                var cliBal = (int)m_connector.GetUserCurrency(client.AgentId).Amount;
-                client.SendMoneyBalance(transactionId, true, new byte[0], cliBal);
-            }
-            else
-                client.SendAlertMessage("Unable to send your money balance to you!");
+            if (client.AgentId == agentId && client.SessionId == sessionId) {
+                var cliBal = (int)m_connector.GetUserCurrency (client.AgentId).Amount;   
+                client.SendMoneyBalance (transactionId, true, new byte[0], cliBal);
+            } else
+                client.SendAlertMessage ("Unable to send your money balance to you!");
         }
 
         #endregion
@@ -442,80 +427,69 @@ namespace Universe.Modules.Currency
 
         OSDMap syncRecievedService_OnMessageReceived(OSDMap message)
         {
-            string method = message["Method"];
-            if (method == "UpdateMoneyBalance")
-            {
-                UUID agentID = message["AgentID"];
-                int Amount = message["Amount"];
-                string Message = message["Message"];
-                UUID TransactionID = message["TransactionID"];
-                IDialogModule dialogModule = GetSceneFor(agentID).RequestModuleInterface<IDialogModule>();
-                IScenePresence sp = GetSceneFor(agentID).GetScenePresence(agentID);
-                if (sp != null)
-                {
-                    if (dialogModule != null && !string.IsNullOrEmpty(Message))
-                        dialogModule.SendAlertToUser(agentID, Message);
+            string method = message ["Method"];
+            if (method == "UpdateMoneyBalance") {
+                UUID agentID = message ["AgentID"];
+                int Amount = message ["Amount"];
+                string Message = message ["Message"];
+                UUID TransactionID = message ["TransactionID"];
+                IDialogModule dialogModule = GetSceneFor (agentID).RequestModuleInterface<IDialogModule> ();
+                IScenePresence sp = GetSceneFor (agentID).GetScenePresence (agentID);
+                if (sp != null) {
+                    if (dialogModule != null && !string.IsNullOrEmpty (Message))
+                        dialogModule.SendAlertToUser (agentID, Message);
 
                     sp.ControllingClient.SendMoneyBalance(TransactionID, true, Utils.StringToBytes(Message), Amount);
                 }
-            }
-            else if (method == "GetLandData")
-            {
-                MainConsole.Instance.Info(message);
+            } else if (method == "GetLandData") {
+                MainConsole.Instance.Info (message);
 
                 UUID agentID = message["AgentID"];
-                IScene region = GetSceneFor(agentID);
-                MainConsole.Instance.Info("Region: " + region.RegionInfo.RegionName);
+                IScene region = GetSceneFor (agentID);
+                MainConsole.Instance.Info ("Region: " + region.RegionInfo.RegionName);
 
-                IParcelManagementModule parcelManagement = region.RequestModuleInterface<IParcelManagementModule>();
-                if (parcelManagement != null)
-                {
-                    IScenePresence sp = region.GetScenePresence(agentID);
-                    if (sp != null)
-                    {
-                        MainConsole.Instance.DebugFormat("sp parcel UUID: {0} Pos: {1}, {2}",
+                IParcelManagementModule parcelManagement = region.RequestModuleInterface<IParcelManagementModule> ();
+                if (parcelManagement != null) {
+                    IScenePresence sp = region.GetScenePresence (agentID);
+                    if (sp != null) {
+                        MainConsole.Instance.DebugFormat ("sp parcel UUID: {0} Pos: {1}, {2}",
                             sp.CurrentParcelUUID, sp.AbsolutePosition.X, sp.AbsolutePosition.Y);
-
+                        
                         ILandObject lo = sp.CurrentParcel;
-                        if (lo == null)
-                        {
+                        if (lo == null) {
                             // try for a position fix
-                            lo = parcelManagement.GetLandObject((int)sp.AbsolutePosition.X, (int)sp.AbsolutePosition.Y);
+                            lo = parcelManagement.GetLandObject ((int)sp.AbsolutePosition.X, (int)sp.AbsolutePosition.Y);
                         }
 
-                        if (lo != null)
-                        {
-                            if ((lo.LandData.Flags & (uint)ParcelFlags.ForSale) == (uint)ParcelFlags.ForSale)
-                            {
+                        if (lo != null) {   
+                            if ((lo.LandData.Flags & (uint)ParcelFlags.ForSale) == (uint)ParcelFlags.ForSale) {
                                 if (lo.LandData.AuthBuyerID != UUID.Zero && lo.LandData.AuthBuyerID != agentID)
-                                    return new OSDMap() { new KeyValuePair<string, OSD>("Success", false) };
-                                OSDMap map = lo.LandData.ToOSD();
-                                map["Success"] = true;
+                                    return new OSDMap () { new KeyValuePair<string, OSD> ("Success", false) };
+                                OSDMap map = lo.LandData.ToOSD ();
+                                map ["Success"] = true;
                                 return map;
                             }
                         }
                     }
                 }
-                return new OSDMap() { new KeyValuePair<string, OSD>("Success", false) };
+                return new OSDMap() {new KeyValuePair<string, OSD>("Success", false)};
             }
             return null;
         }
 
         IScene GetSceneFor(UUID userID)
         {
-            foreach (IScene scene in m_scenes)
-            {
-                var sp = scene.GetScenePresence(userID);
-                if (sp != null && !sp.IsChildAgent)
+            foreach (IScene scene in m_scenes) {
+                var sp = scene.GetScenePresence (userID);
+                if ( sp != null && !sp.IsChildAgent)
                     return scene;
             }
-            if (m_scenes.Count == 0)
-            {
-                MainConsole.Instance.Debug("User not present in any regions??");
+            if (m_scenes.Count == 0) {
+                MainConsole.Instance.Debug ("User not present in any regions??");
                 return null;
             }
 
-            MainConsole.Instance.Debug("Returning scene[0]: " + m_scenes[0].RegionInfo.RegionName);
+            MainConsole.Instance.Debug ("Returning scene[0]: " + m_scenes [0].RegionInfo.RegionName);
             return m_scenes[0];
         }
 
@@ -528,15 +502,13 @@ namespace Universe.Modules.Currency
         /// <returns></returns>
         public bool SendGridMessage(UUID toId, string message, UUID transactionId)
         {
-            IDialogModule dialogModule = GetSceneFor(toId).RequestModuleInterface<IDialogModule>();
-            if (dialogModule != null)
-            {
-                IScenePresence icapiTo = GetSceneFor(toId).GetScenePresence(toId);
-                if (icapiTo != null)
-                {
-                    icapiTo.ControllingClient.SendMoneyBalance(transactionId, true, Utils.StringToBytes(message),
-                        (int)m_connector.GetUserCurrency(icapiTo.UUID).Amount);
-                    dialogModule.SendAlertToUser(toId, message);
+            IDialogModule dialogModule = GetSceneFor (toId).RequestModuleInterface<IDialogModule> ();
+            if (dialogModule != null) {
+                IScenePresence icapiTo = GetSceneFor (toId).GetScenePresence (toId);
+                if (icapiTo != null) {
+                    icapiTo.ControllingClient.SendMoneyBalance (transactionId, true, Utils.StringToBytes (message),
+                        (int)m_connector.GetUserCurrency (icapiTo.UUID).Amount);
+                    dialogModule.SendAlertToUser (toId, message);
                 }
 
                 return true;
@@ -552,7 +524,7 @@ namespace Universe.Modules.Currency
         {
             string name = MainConsole.Instance.Prompt("User Name (First Last) ");
 
-            UserAccount account = m_userAccountService.GetUserAccount(new List<UUID> { UUID.Zero }, name);
+            UserAccount account = m_userAccountService.GetUserAccount(new List<UUID> {UUID.Zero}, name);
             if (account == null)
                 MainConsole.Instance.Info("Sorry, unable to locate account for " + name);
 
@@ -563,16 +535,15 @@ namespace Universe.Modules.Currency
         {
             uint amount = 0;
             string amnt = "";
-            do
-            {
-                amnt = MainConsole.Instance.Prompt(prompt, "amnt");
+            do {
+                amnt = MainConsole.Instance.Prompt (prompt, "amnt");
                 if (amnt == "")     // leave an 'out'
                     return 0;
-
-                if (!uint.TryParse(amnt, out amount))
-                    MainConsole.Instance.Error("Bad input, must be a number!");
+                
+                if (!uint.TryParse (amnt, out amount))
+                    MainConsole.Instance.Error ("Bad input, must be a number!");
             } while (amount == 0);
-
+             
             return amount;
         }
 
@@ -583,7 +554,7 @@ namespace Universe.Modules.Currency
 
         protected void AddMoney(IScene scene, string[] cmd)
         {
-            UserAccount account = GetUserAccount();
+            UserAccount account = GetUserAccount ();
             if (account == null)
                 return;
 
@@ -597,28 +568,26 @@ namespace Universe.Modules.Currency
             var currency = m_connector.GetUserCurrency(account.PrincipalID);
             MainConsole.Instance.Info(account.Name + " now has " + StrUserBalance((int)currency.Amount));
 
-            if (m_userInfoService != null)
-            {
-                UserInfo toUserInfo = m_userInfoService.GetUserInfo(account.PrincipalID.ToString());
+            if (m_userInfoService != null) {
+                UserInfo toUserInfo = m_userInfoService.GetUserInfo (account.PrincipalID.ToString ());
                 if (toUserInfo != null && toUserInfo.IsOnline)
                     m_connector.SendUpdateMoneyBalanceToClient(account.PrincipalID, UUID.Zero, toUserInfo.CurrentRegionURI, (currency.Amount), "");
             }
+
         }
 
         protected void SetMoney(IScene scene, string[] cmd)
         {
-            UserAccount account = GetUserAccount();
+            UserAccount account = GetUserAccount ();
             if (account == null)
                 return;
 
             uint amount = GetAmount("Set user's balance to " + m_connector.InWorldCurrency + " ?");
 
-            if (amount == 0)
-            {
-                string response = MainConsole.Instance.Prompt("Clear user's balance? (yes, no)", "no").ToLower();
-                if (!response.StartsWith("y"))
-                {
-                    MainConsole.Instance.Info("[Currency]: User balance not cleared.");
+            if (amount == 0) {
+                string response = MainConsole.Instance.Prompt ("Clear user's balance? (yes, no)", "no").ToLower ();
+                if (!response.StartsWith ("y")) {
+                    MainConsole.Instance.Info ("[Currency]: User balance not cleared.");
                     return;
                 }
             }
@@ -632,17 +601,17 @@ namespace Universe.Modules.Currency
             currency = m_connector.GetUserCurrency(account.PrincipalID);
             MainConsole.Instance.Info(account.Name + " now has " + StrUserBalance((int)currency.Amount));
 
-            if (m_userInfoService != null)
-            {
-                UserInfo toUserInfo = m_userInfoService.GetUserInfo(account.PrincipalID.ToString());
+            if (m_userInfoService != null) {
+                UserInfo toUserInfo = m_userInfoService.GetUserInfo (account.PrincipalID.ToString ());
                 if (toUserInfo != null && toUserInfo.IsOnline)
                     m_connector.SendUpdateMoneyBalanceToClient(account.PrincipalID, UUID.Zero, toUserInfo.CurrentRegionURI, currency.Amount, "");
             }
         }
 
+
         protected void GetMoney(IScene scene, string[] cmd)
         {
-            UserAccount account = GetUserAccount();
+            UserAccount account = GetUserAccount ();
             if (account == null)
                 return;
 
@@ -650,26 +619,26 @@ namespace Universe.Modules.Currency
             MainConsole.Instance.Info(account.Name + " has " + StrUserBalance((int)currency.Amount));
         }
 
-        /*
-                protected void HandleStipendSet(IScene scene, string[] cmd)
-                {
-                    string rawDate = MainConsole.Instance.Prompt("Date to pay next Stipend? (MM/dd/yyyy)");
-                    if (rawDate == "")
-                        return;
-
-                    // Make a new DateTime from rawDate
-                    DateTime newDate = DateTime.ParseExact(rawDate, "MM/dd/yyyy", CultureInfo.InvariantCulture);
-                    //GiveStipends.StipendDate = newDate;
-
-                    // Code needs to be added to run through the scheduler and change the 
-                    // RunsNext to the date that the user wants the scheduler to be
-                    MainConsole.Instance.Info("Stipend Date has been set to" + newDate);
-                }
-        */
-
-        protected void HandleShowTransactions(IScene scene, string[] cmd)
+/*
+        protected void HandleStipendSet(IScene scene, string[] cmd)
         {
-            UserAccount account = GetUserAccount();
+            string rawDate = MainConsole.Instance.Prompt("Date to pay next Stipend? (MM/dd/yyyy)");
+            if (rawDate == "")
+                return;
+            
+            // Make a new DateTime from rawDate
+            DateTime newDate = DateTime.ParseExact(rawDate, "MM/dd/yyyy", CultureInfo.InvariantCulture);
+//            GiveStipends.StipendDate = newDate;
+
+            // Code needs to be added to run through the scheduler and change the 
+            // RunsNext to the date that the user wants the scheduler to be
+            // Fly-Man- 2-5-2015
+            MainConsole.Instance.Info("Stipend Date has been set to" + newDate);
+        }
+*/
+        protected void HandleShowTransactions(IScene scene, string [] cmd)
+        {
+            UserAccount account = GetUserAccount ();
             if (account == null)
                 return;
 
@@ -679,65 +648,66 @@ namespace Universe.Modules.Currency
 
             string transInfo;
 
-            transInfo = String.Format("{0, -24}", "Date");
-            transInfo += String.Format("{0, -25}", "From");
-            transInfo += String.Format("{0, -30}", "Description");
-            transInfo += String.Format("{0, -20}", "Type");
-            transInfo += String.Format("{0, -12}", "Amount");
-            transInfo += String.Format("{0, -12}", "Balance");
+            transInfo =  String.Format ("{0, -24}", "Date");
+            transInfo += String.Format ("{0, -25}", "From");
+            transInfo += String.Format ("{0, -30}", "Description");
+            transInfo += String.Format ("{0, -20}", "Type");
+            transInfo += String.Format ("{0, -12}", "Amount");
+            transInfo += String.Format ("{0, -12}", "Balance");
 
             MainConsole.Instance.CleanInfo(transInfo);
 
             MainConsole.Instance.CleanInfo(
                 "-------------------------------------------------------------------------------------------------------------------------");
 
-            List<AgentTransfer> transactions = GetTransactionHistory(account.PrincipalID, period, "day");
+            List<AgentTransfer> transactions =  GetTransactionHistory(account.PrincipalID, period, "day");
 
-            foreach (AgentTransfer transfer in transactions)
-            {
-                transInfo = String.Format("{0, -24}", transfer.TransferDate.ToLocalTime());
-                transInfo += String.Format("{0, -25}", transfer.FromAgentName);
-                transInfo += String.Format("{0, -30}", transfer.Description);
-                transInfo += String.Format("{0, -20}", Utilities.TransactionTypeInfo(transfer.TransferType));
-                transInfo += String.Format("{0, -12}", transfer.Amount);
-                transInfo += String.Format("{0, -12}", transfer.ToBalance);
+            foreach (AgentTransfer transfer in transactions) {
+                transInfo = String.Format ("{0, -24}", transfer.TransferDate.ToLocalTime ());   
+                transInfo += String.Format ("{0, -25}", transfer.FromAgentName);   
+                transInfo += String.Format ("{0, -30}", transfer.Description);
+                transInfo += String.Format ("{0, -20}", Utilities.TransactionTypeInfo(transfer.TransferType));
+                transInfo += String.Format ("{0, -12}", transfer.Amount);
+                transInfo += String.Format ("{0, -12}", transfer.ToBalance);
 
                 MainConsole.Instance.CleanInfo(transInfo);
+
             }
+
         }
 
-        protected void HandleShowPurchases(IScene scene, string[] cmd)
+        protected void HandleShowPurchases(IScene scene, string [] cmd)
         {
-            UserAccount account = GetUserAccount();
+            UserAccount account = GetUserAccount ();
             if (account == null)
                 return;
 
             int period;
-            while (!int.TryParse(MainConsole.Instance.Prompt("Number of days to display: ", "7"), out period))
-                MainConsole.Instance.Info("Bad input, must be a number > 0");
-
+            while (!int.TryParse (MainConsole.Instance.Prompt ("Number of days to display: ", "7"), out period))
+                MainConsole.Instance.Info ("Bad input, must be a number > 0");
+            
             string transInfo;
 
-            transInfo = String.Format("{0, -24}", "Date");
-            transInfo += String.Format("{0, -30}", "Description");
-            transInfo += String.Format("{0, -20}", "InWorld Amount");
-            transInfo += String.Format("{0, -12}", "Cost");
+            transInfo = String.Format ("{0, -24}", "Date");
+            transInfo += String.Format ("{0, -30}", "Description");
+            transInfo += String.Format ("{0, -20}", "InWorld Amount");
+            transInfo += String.Format ("{0, -12}", "Cost");
 
-            MainConsole.Instance.CleanInfo(transInfo);
+            MainConsole.Instance.CleanInfo (transInfo);
 
-            MainConsole.Instance.CleanInfo(
+            MainConsole.Instance.CleanInfo (
                 "--------------------------------------------------------------------------------------------");
 
-            List<AgentPurchase> purchases = GetPurchaseHistory(account.PrincipalID, period, "day");
+            List<AgentPurchase> purchases = GetPurchaseHistory (account.PrincipalID, period, "day");
 
-            foreach (AgentPurchase purchase in purchases)
-            {
-                transInfo = String.Format("{0, -24}", purchase.PurchaseDate.ToLocalTime());
-                transInfo += String.Format("{0, -30}", "Purchase");
-                transInfo += String.Format("{0, -20}", m_connector.InWorldCurrency + purchase.Amount);
-                transInfo += String.Format("{0, -12}", m_connector.RealCurrency + ((float)purchase.RealAmount / 100).ToString("0.00"));
+            foreach (AgentPurchase purchase in purchases) {
+                transInfo = String.Format ("{0, -24}", purchase.PurchaseDate.ToLocalTime ());   
+                transInfo += String.Format ("{0, -30}", "Purchase");
+                transInfo += String.Format ("{0, -20}", m_connector.InWorldCurrency + purchase.Amount);
+                transInfo += String.Format ("{0, -12}", m_connector.RealCurrency + ((float)purchase.RealAmount / 100).ToString ("0.00"));
 
-                MainConsole.Instance.CleanInfo(transInfo);
+                MainConsole.Instance.CleanInfo (transInfo);
+
             }
         }
         #endregion

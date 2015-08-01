@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -127,7 +127,7 @@ namespace Universe.Services.DataService
                     grpName,                                            // Name
                     grpCharter,                                         // Charter / description
                     false,                                              // Show in list
-                    UUID.Zero, 0, false, false, false,                  // Insignia UUID, Membership fee, Open Enrollment, Allow publishing, Mature
+                    UUID.Zero, 0, false, false, false,                  // Insignia UUID, Membership fee, Open Enrolement, Allow publishing, Mature
                     grpOwnerUUID,                                       // founder UUID
                     UUID.Random ());                                    // owner role UUID
             } else
@@ -671,7 +671,7 @@ namespace Universe.Services.DataService
             filter.andFilters["GroupID"] = GroupID;
             filter.andFilters["RoleID"] = RoleID;
             filter.andFilters["AgentID"] = AgentID;
-            //Make sure they aren't already in this role
+            //Make sure they arn't already in this role
             if (
                 uint.Parse(data.Query(new[] {"COUNT(AgentID)"}, "group_role_membership", filter, null, null, null)[0]) ==
                 0)
@@ -728,7 +728,7 @@ namespace Universe.Services.DataService
             values["ListInProfile"] = ListInProfile;
 
             QueryFilter filter = new QueryFilter();
-            // these look the wrong way around
+            // these look the wrong way around ~ SignpostMarv
             filter.andFilters["GroupID"] = AgentID;
             filter.andFilters["AgentID"] = GroupID;
 
@@ -1021,7 +1021,7 @@ namespace Universe.Services.DataService
         public List<GroupRecord> GetGroupRecords(UUID requestingAgentID, uint start, uint count,
                                                  Dictionary<string, bool> sort, Dictionary<string, bool> boolFields)
         {
-            //List<string> filter = new List<string>();
+            //            List<string> filter = new List<string>();
 
             object remoteValue = DoRemote(requestingAgentID, start, count, boolFields);
             if (remoteValue != null || m_doRemoteOnly)
@@ -1574,7 +1574,7 @@ namespace Universe.Services.DataService
             if (remoteValue != null || m_doRemoteOnly)
                 return (List<GroupRolesData>) remoteValue;
 
-            //No permissions check necessary, we are checking only roles that they are in, so if they aren't in the group, that isn't a problem
+            //No permissions check necessary, we are checking only roles that they are in, so if they arn't in the group, that isn't a problem
 
             QueryTables tables = new QueryTables();
             tables.AddTable("group_role_membership", "osgm");

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -60,8 +60,51 @@ namespace Universe.Modules.Archivers
         /// <param name="asset"></param>
         public void WriteAsset(AssetBase asset)
         {
+            //WriteMetadata(archive);
             WriteData(asset);
         }
+
+        //        protected void WriteMetadata(TarArchiveWriter archive)
+//        {
+//            StringWriter sw = new StringWriter();
+//            XmlTextWriter xtw = new XmlTextWriter(sw);
+//
+//            xtw.Formatting = Formatting.Indented;
+//            xtw.WriteStartDocument();
+//
+//            xtw.WriteStartElement("assets");
+//
+//            foreach (UUID uuid in m_assets.Keys)
+//            {
+//                AssetBase asset = m_assets[uuid];
+//
+//                if (asset != null)
+//                {
+//                    xtw.WriteStartElement("asset");
+//
+//                    string extension = string.Empty;
+//
+//                    if (ArchiveConstants.ASSET_TYPE_TO_EXTENSION.ContainsKey(asset.Type))
+//                    {
+//                        extension = ArchiveConstants.ASSET_TYPE_TO_EXTENSION[asset.Type];
+//                    }
+//
+//                    xtw.WriteElementString("filename", uuid.ToString() + extension);
+//
+//                    xtw.WriteElementString("name", asset.Name);
+//                    xtw.WriteElementString("description", asset.Description);
+//                    xtw.WriteElementString("asset-type", asset.Type.ToString());
+//
+//                    xtw.WriteEndElement();
+//                }
+//            }
+//
+//            xtw.WriteEndElement();
+//
+//            xtw.WriteEndDocument();
+//
+//            archive.WriteFile("assets.xml", sw.ToString());
+//        }
 
         /// <summary>
         ///     Write asset data files to the given archive
@@ -70,6 +113,8 @@ namespace Universe.Modules.Archivers
         protected void WriteData(AssetBase asset)
         {
             // It appears that gtar, at least, doesn't need the intermediate directory entries in the tar
+            //archive.AddDir("assets");
+
             string extension = string.Empty;
 
             if (ArchiveConstants.ASSET_TYPE_TO_EXTENSION.ContainsKey((sbyte) asset.TypeAsset))

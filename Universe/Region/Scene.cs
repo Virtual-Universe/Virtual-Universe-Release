@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,11 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using Nini.Config;
-using OpenMetaverse;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.Physics;
@@ -39,6 +34,11 @@ using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Other;
 using Universe.Framework.Utilities;
+using Nini.Config;
+using OpenMetaverse;
+using System;
+using System.Collections.Generic;
+using System.Threading;
 
 namespace Universe.Region
 {
@@ -406,7 +406,7 @@ namespace Universe.Region
             }
             catch
             {
-                MainConsole.Instance.WarnFormat("[Scene]: Could not start UDP server on port {0}, is this port already in use?", RegionInfo.RegionPort);
+                MainConsole.Instance.WarnFormat("[Scene]: Could not start udp server on port {0}, is this port already in use?", RegionInfo.RegionPort);
                 RegionInfo.RegionPort = int.Parse(MainConsole.Instance.Prompt("Region Port: "));
                 foreach (IClientNetworkServer clientServer in m_clientServers)
                     clientServer.UpdatePort((uint)RegionInfo.RegionPort);
@@ -438,7 +438,7 @@ namespace Universe.Region
             ILLClientInventory inventoryModule = RequestModuleInterface<ILLClientInventory>();
             while (true)
             {
-                if (!ShouldRunHeartbeat) //If we aren't supposed to be running, kill ourselves
+                if (!ShouldRunHeartbeat) //If we arn't supposed to be running, kill ourselves
                     return;
 
                 int maintc = Util.EnvironmentTickCount();

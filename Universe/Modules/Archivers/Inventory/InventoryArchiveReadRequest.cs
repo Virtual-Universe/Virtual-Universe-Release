@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,14 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.IO.Compression;
-using System.Linq;
-using System.Xml;
-using System.Text;
-using OpenMetaverse;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
@@ -42,6 +34,14 @@ using Universe.Framework.Serialization.External;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Services.ClassHelpers.Inventory;
+using OpenMetaverse;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
+using System.Linq;
+using System.Xml;
+using System.Text;
 
 namespace Universe.Modules.Archivers
 {
@@ -111,7 +111,7 @@ namespace Universe.Modules.Archivers
             m_loadStream = new GZipStream(str, CompressionMode.Decompress);
             m_overridecreator = overwriteCreator;
 
-            // we will need thse at some time
+            // we will need these at some time
             m_assetService = m_registry.RequestModuleInterface<IAssetService>();
             m_assetData = Framework.Utilities.DataManager.RequestPlugin<IAssetDataPlugin>();
             m_inventoryService = m_registry.RequestModuleInterface<IInventoryService> ();
@@ -309,14 +309,15 @@ namespace Universe.Modules.Archivers
         {
             string iarPathExisting = iarPath;
 
-            //MainConsole.Instance.DebugFormat(
-            //    "[INVENTORY ARCHIVER]: Loading folder {0} {1}", rootDestFolder.Name, rootDestFolder.ID);
+            //            MainConsole.Instance.DebugFormat(
+            //                "[INVENTORY ARCHIVER]: Loading folder {0} {1}", rootDestFolder.Name, rootDestFolder.ID);
 
             InventoryFolderBase destFolder
                 = ResolveDestinationFolder(rootDestFolder, ref iarPathExisting, ref resolvedFolders);
 
-            //MainConsole.Instance.DebugFormat(
-            //    "[INVENTORY ARCHIVER]: originalArchivePath [{0}], section already loaded [{1}]", iarPath, iarPathExisting);
+            //            MainConsole.Instance.DebugFormat(
+            //                "[INVENTORY ARCHIVER]: originalArchivePath [{0}], section already loaded [{1}]", 
+            //                iarPath, iarPathExisting);
 
             string iarPathToCreate = iarPath.Substring(iarPathExisting.Length);
             CreateFoldersForPath(destFolder, iarPathExisting, iarPathToCreate, ref resolvedFolders, ref loadedNodes);
@@ -348,14 +349,16 @@ namespace Universe.Modules.Archivers
             ref string archivePath,
             ref Dictionary<string, InventoryFolderBase> resolvedFolders)
         {
+            //            string originalArchivePath = archivePath;
+
             while (archivePath.Length > 0)
             {
-                //MainConsole.Instance.DebugFormat("[INVENTORY ARCHIVER]: Trying to resolve destination folder {0}", archivePath);
+                //                MainConsole.Instance.DebugFormat("[INVENTORY ARCHIVER]: Trying to resolve destination folder {0}", archivePath);
 
                 if (resolvedFolders.ContainsKey(archivePath))
                 {
-                    //MainConsole.Instance.DebugFormat(
-                    //    "[INVENTORY ARCHIVER]: Found previously created folder from archive path {0}", archivePath);
+                    //                    MainConsole.Instance.DebugFormat(
+                    //                        "[INVENTORY ARCHIVER]: Found previously created folder from archive path {0}", archivePath);
                     return resolvedFolders[archivePath];
                 }
                 if (m_merge)
@@ -384,8 +387,9 @@ namespace Universe.Modules.Archivers
                 }
                 else
                 {
-                    //MainConsole.Instance.DebugFormat(
-                    //    "[INVENTORY ARCHIVER]: Found no previously created folder for archive path {0}", originalArchivePath);
+                    //                        MainConsole.Instance.DebugFormat(
+                    //                            "[INVENTORY ARCHIVER]: Found no previously created folder for archive path {0}",
+                    //                            originalArchivePath);
                     archivePath = string.Empty;
                     return rootDestFolder;
                 }
@@ -423,7 +427,7 @@ namespace Universe.Modules.Archivers
 
             for (int i = 0; i < rawDirsToCreate.Length; i++)
             {
-                //MainConsole.Instance.DebugFormat("[INVENTORY ARCHIVER]: Creating folder {0} from IAR", rawDirsToCreate[i]);
+                //                MainConsole.Instance.DebugFormat("[INVENTORY ARCHIVER]: Creating folder {0} from IAR", rawDirsToCreate[i]);
 
                 if (!rawDirsToCreate[i].Contains(ArchiveConstants.INVENTORY_NODE_NAME_COMPONENT_SEPARATOR))
                     continue;
@@ -534,8 +538,9 @@ namespace Universe.Modules.Archivers
 
                 if (f != null)
                 {
-                    //MainConsole.Instance.DebugFormat(
-                    //    "[LOCAL INVENTORY SERVICES CONNECTOR]: Found folder {0} type {1} for item {2}", f.Name, (AssetType)f.Type, item.Name);
+                    //                    MainConsole.Instance.DebugFormat(
+                    //                        "[LOCAL INVENTORY SERVICES CONNECTOR]: Found folder {0} type {1} for item {2}", 
+                    //                        f.Name, (AssetType)f.Type, item.Name);
 
                     item.Folder = f.ID;
                 }
@@ -661,11 +666,12 @@ namespace Universe.Modules.Archivers
                 return true;
             }
             MainConsole.Instance.ErrorFormat(
-                "[INVENTORY ARCHIVER]: Tried to de-archive data with path {0} with an unknown type extension {1}",
+                "[INVENTORY ARCHIVER]: Tried to dearchive data with path {0} with an unknown type extension {1}",
                 assetPath, extension);
 
             return false;
         }
+
 
         /// <summary>
         /// Loads the archive.xml control file.
@@ -705,5 +711,6 @@ namespace Universe.Modules.Archivers
                 }
             }
         }
+
     }
 }

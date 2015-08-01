@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,12 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Timers;
-using Nini.Config;
-using OpenMetaverse;
+
 using Universe.Framework.Configuration;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.ModuleLoader;
@@ -43,6 +38,12 @@ using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Other;
 using Universe.Framework.Utilities;
 using Universe.Services.DataService;
+using Nini.Config;
+using OpenMetaverse;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Timers;
 
 namespace Universe.Simulation.Base
 {
@@ -57,7 +58,7 @@ namespace Universe.Simulation.Base
         protected ConfigurationLoader m_configurationLoader;
 
         /// <value>
-        ///     The config information passed into the Virtual Universe Server.
+        ///     The config information passed into the Universe server.
         /// </value>
         protected IConfigSource m_config;
 
@@ -223,7 +224,7 @@ namespace Universe.Simulation.Base
         }
 
         /// <summary>
-        ///     Performs initialization of the application, such as loading the HTTP server and modules
+        ///     Performs initialisation of the application, such as loading the HTTP server and modules
         /// </summary>
         public virtual void Startup()
         {

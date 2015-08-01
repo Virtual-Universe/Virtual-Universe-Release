@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,15 +25,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.IO;
-using OpenMetaverse;
+
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Services.ClassHelpers.Inventory;
 using Universe.Framework.Utilities;
+using OpenMetaverse;
+using System;
+using System.IO;
 
 namespace Universe.Modules.Agent.AssetTransaction
 {
@@ -76,6 +77,7 @@ namespace Universe.Modules.Agent.AssetTransaction
         private string m_description = String.Empty;
         private bool m_dumpAssetToFile;
         private string m_name = String.Empty;
+        //        private bool m_storeLocal;
         private uint nextPerm = 0;
         private IClientAPI ourClient;
 
@@ -119,8 +121,9 @@ namespace Universe.Modules.Agent.AssetTransaction
         /// <returns>True if the transfer is complete, false otherwise or if the xferID was not valid</returns>
         public bool HandleXferPacket(ulong xferID, uint packetID, byte[] data)
         {
-            //MainConsole.Instance.DebugFormat(
-            //    "[ASSET XFER UPLOADER]: Received packet {0} for xfer {1} (data length {2})", packetID, xferID, data.Length);
+            //            MainConsole.Instance.DebugFormat(
+            //                "[ASSET XFER UPLOADER]: Received packet {0} for xfer {1} (data length {2})",
+            //                packetID, xferID, data.Length);
 
             if (XferID == xferID)
             {
@@ -167,9 +170,9 @@ namespace Universe.Modules.Agent.AssetTransaction
             IClientAPI remoteClient, UUID assetID, UUID transaction, sbyte type, byte[] data, bool storeLocal,
             bool tempFile)
         {
-            //MainConsole.Instance.DebugFormat(
-            //    "[ASSET XFER UPLOADER]: Initialized xfer from {0}, asset {1}, transaction {2}, type {3}, storeLocal {4}, tempFile {5}, already received data length {6}",
-            //     remoteClient.Name, assetID, transaction, type, storeLocal, tempFile, data.Length);
+            //            MainConsole.Instance.DebugFormat(
+            //                "[ASSET XFER UPLOADER]: Initialized xfer from {0}, asset {1}, transaction {2}, type {3}, storeLocal {4}, tempFile {5}, already received data length {6}",
+            //                remoteClient.Name, assetID, transaction, type, storeLocal, tempFile, data.Length);
 
             lock (this)
             {
@@ -194,6 +197,8 @@ namespace Universe.Modules.Agent.AssetTransaction
             if (tempFile)
                 m_asset.Flags |= AssetFlags.Temporary;
 
+            //            m_storeLocal = storeLocal;
+
             if (m_asset.Data.Length > 2)
             {
                 SendCompleteMessage();
@@ -208,8 +213,9 @@ namespace Universe.Modules.Agent.AssetTransaction
         {
             XferID = Util.GetNextXferID();
 
-            //MainConsole.Instance.DebugFormat(
-            //    "[ASSET XFER UPLOADER]: Requesting Xfer of asset {0}, type {1}, transfer id {2} from {3}", m_asset.FullID, m_asset.Type, XferID, ourClient.Name);
+            //            MainConsole.Instance.DebugFormat(
+            //                "[ASSET XFER UPLOADER]: Requesting Xfer of asset {0}, type {1}, transfer id {2} from {3}",
+            //                m_asset.FullID, m_asset.Type, XferID, ourClient.Name);
 
             ourClient.SendXferRequest(XferID, (short) m_asset.Type, m_asset.ID, 0, new byte[0]);
         }
@@ -236,6 +242,10 @@ namespace Universe.Modules.Agent.AssetTransaction
                 {
                     CompleteTaskItemUpdate(m_updateTaskItemData);
                 }
+                //                else if (m_storeLocal)
+                //                {
+                //                    m_Scene.AssetService.Store(m_asset);
+                //                }
             }
 
             MainConsole.Instance.DebugFormat(
@@ -319,9 +329,9 @@ namespace Universe.Modules.Agent.AssetTransaction
                 }
                 else
                 {
-                    //MainConsole.Instance.DebugFormat(
-                    //    "[ASSET XFER UPLOADER]: Holding update inventory item request {0} for {1} pending completion of asset xfer for transaction {2}",
-                    //    item.Name, remoteClient.Name, transactionID);
+                    //                    MainConsole.Instance.DebugFormat(
+                    //                        "[ASSET XFER UPLOADER]: Holding update inventory item request {0} for {1} pending completion of asset xfer for transaction {2}",
+                    //                        item.Name, remoteClient.Name, transactionID);
 
                     m_updateItem = true;
                     m_updateItemData = item;
@@ -357,8 +367,9 @@ namespace Universe.Modules.Agent.AssetTransaction
         /// <param name="item"></param>
         private void CompleteItemUpdate(InventoryItemBase item)
         {
-            //MainConsole.Instance.DebugFormat(
-            //    "[ASSET XFER UPLOADER]: Storing asset {0} for earlier item update for {1} for {2}", m_asset.FullID, item.Name, ourClient.Name);
+            //            MainConsole.Instance.DebugFormat(
+            //                "[ASSET XFER UPLOADER]: Storing asset {0} for earlier item update for {1} for {2}",
+            //                m_asset.FullID, item.Name, ourClient.Name);
 
             m_Scene.AssetService.Store(m_asset);
 
@@ -371,8 +382,9 @@ namespace Universe.Modules.Agent.AssetTransaction
         /// <param name="taskItem"></param>
         private void CompleteTaskItemUpdate(TaskInventoryItem taskItem)
         {
-            //MainConsole.Instance.DebugFormat(
-            //    "[ASSET XFER UPLOADER]: Storing asset {0} for earlier task item update for {1} for {2}", m_asset.FullID, taskItem.Name, ourClient.Name);
+            //            MainConsole.Instance.DebugFormat(
+            //                "[ASSET XFER UPLOADER]: Storing asset {0} for earlier task item update for {1} for {2}",
+            //                m_asset.FullID, taskItem.Name, ourClient.Name);
 
             m_Scene.AssetService.Store(m_asset);
 

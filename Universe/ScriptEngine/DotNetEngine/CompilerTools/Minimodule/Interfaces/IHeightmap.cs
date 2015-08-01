@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -43,7 +43,7 @@ namespace Universe.ScriptEngine.DotNetEngine.MiniModule
         float this[int x, int y] { get; set; }
 
         /// <summary>
-        ///     The maximum length of the region (Y axis), exclusive. (e.g Height = 256, max Y = 255). Minimum is always 0 inclusive.
+        ///     The maximum length of the region (Y axis), exclusive. (eg Height = 256, max Y = 255). Minimum is always 0 inclusive.
         /// </summary>
         /// <example>
         ///     Host.Console.Info("The terrain length of this region is " + World.Heightmap.Length);
@@ -51,7 +51,7 @@ namespace Universe.ScriptEngine.DotNetEngine.MiniModule
         int Length { get; }
 
         /// <summary>
-        ///     The maximum width of the region (X axis), exclusive. (e.g Width = 256, max X = 255). Minimum is always 0 inclusive.
+        ///     The maximum width of the region (X axis), exclusive. (eg Width = 256, max X = 255). Minimum is always 0 inclusive.
         /// </summary>
         /// <example>
         ///     Host.Console.Info("The terrain width of this region is " + World.Heightmap.Width);

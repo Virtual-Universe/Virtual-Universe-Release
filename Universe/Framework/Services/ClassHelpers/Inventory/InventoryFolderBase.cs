@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -70,6 +70,7 @@ namespace Universe.Framework.Services.ClassHelpers.Inventory
 
         public UUID ParentID { get; set; }
 
+
         /* Current Inventory folder types (as they do not appear to be listed anywhere)
             -1  User Defined
             0	Textures
@@ -79,7 +80,7 @@ namespace Universe.Framework.Services.ClassHelpers.Inventory
             5	Clothing
             6	Objects
             7	Notecards
-            9	My Inventory ( OpenSimulator 0.7.x / WhiteCore)
+            9	My Inventory ( OpenSimulator 0.7.x / Universe)
             10	Scripts
             13	Body Parts
             14	Trash
@@ -97,7 +98,6 @@ namespace Universe.Framework.Services.ClassHelpers.Inventory
             53	Marketplace Listings
             100	My Suitcase
         */
-
         public short Type { get; set; }
 
         public ushort Version { get; set; }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -268,11 +268,11 @@ namespace Universe.BotManager.AStar
                     break;
                 }
 
-                // Get successors to the corrent node
+                // Get successors to the current node
                 NodeCurrent.GetSuccessors(FSuccessors);
                 foreach (AStarNode NodeSuccessor in FSuccessors)
                 {
-                    // Test if the correct successor node is on the open list, if it is and
+                    // Test if the current successor node is on the open list, if it is and
                     // the TotalCost is higher, we will throw away the current successor.
                     AStarNode NodeOpen = null;
                     if (FOpenList.Contains(NodeSuccessor))
@@ -280,7 +280,7 @@ namespace Universe.BotManager.AStar
                     if ((NodeOpen != null) && (NodeSuccessor.TotalCost > NodeOpen.TotalCost))
                         continue;
 
-                    // Test if the correct successor node is on the closed list, if it is and
+                    // Test if the current successor node is on the closed list, if it is and
                     // the TotalCost is higher, we will throw away the current successor.
                     AStarNode NodeClosed = null;
                     if (FClosedList.Contains(NodeSuccessor))
@@ -297,7 +297,7 @@ namespace Universe.BotManager.AStar
                     // Add the current successor to the open list
                     FOpenList.Push(NodeSuccessor);
                 }
-                // Add the corrent node to the closed list
+                // Add the current node to the closed list
                 FClosedList.Add(NodeCurrent);
                 i++;
             }

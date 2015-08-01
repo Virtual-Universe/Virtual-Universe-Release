@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -157,7 +157,7 @@ namespace Universe.Framework.Physics
         public virtual void RequestPhysicsterseUpdate()
         {
             // Make a temporary copy of the event to avoid possibility of
-            // a race condition if the last subscriber unsubscribes
+            // a race condition if the last subscriber unsubscribe's
             // immediately after the null check and before the event is raised.
             RequestTerseUpdate handler = OnRequestTerseUpdate;
 
@@ -168,7 +168,7 @@ namespace Universe.Framework.Physics
         public virtual void RaiseOutOfBounds(Vector3 pos)
         {
             // Make a temporary copy of the event to avoid possibility of
-            // a race condition if the last subscriber unsubscribes
+            // a race condition if the last subscriber unsubscribe's
             // immediately after the null check and before the event is raised.
             OutOfBounds handler = OnOutOfBounds;
 
@@ -310,7 +310,7 @@ namespace Universe.Framework.Physics
         public virtual bool CheckForRegionCrossing()
         {
             // Make a temporary copy of the event to avoid possibility of
-            // a race condition if the last subscriber unsubscribes
+            // a race condition if the last subscriber unsubscribe's
             // immediately after the null check and before the event is raised.
             checkForRegionCrossing handler = OnCheckForRegionCrossing;
 

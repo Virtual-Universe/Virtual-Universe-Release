@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -35,7 +35,7 @@ namespace Universe.BotManager.AStar
     ///     A node class for doing path finding on a 2-dimensional map
     ///     Christy Lock Note:
     ///     Astar.cs, Heap.cs and Main.cs were originally written by Sune Trundslev 4 Jan 2004
-    ///     I has made small modifications to Astar. cs and Main.cs to handle the 3d Metaverse
+    ///     I has made small modifications to Astar.cs and Main.cs to handle the 3d Metaverse
     ///     Specifically to return waypoints in generic string Lists broken into slope changes. These are returned to BotMe.cs.
     ///     You can find the original code at http://www.codeproject.com/KB/recipes/csharppathfind.aspx
     ///     Note that there is no specific license in the code download and the author states " With this class, you should be able to implement your own

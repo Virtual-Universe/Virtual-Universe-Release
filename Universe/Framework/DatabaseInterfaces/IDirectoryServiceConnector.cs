@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -213,7 +213,7 @@ namespace Universe.Framework.DatabaseInterfaces
         List<DirEventsReplyData> FindEvents(string queryText, uint flags, int StartQuery, UUID scopeID);
 
         /// <summary>
-        ///     Retrives all events in the given region by their maturity level
+        ///     Retrieves all events in the given region by their maturity level
         /// </summary>
         /// <param name="regionName"></param>
         /// <param name="maturity">Uses DirectoryManager.EventFlags to determine the maturity requested</param>

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -65,7 +65,7 @@ namespace Universe.Modules.Land
         private readonly Dictionary<UUID, int> m_SimwideCounts =
             new Dictionary<UUID, int>();
 
-        // For now, a simple simwide taint to get this up. Later parcel based
+        // For now, a simple sim-wide taint to get this up. Later parcel based
         // taint to allow recounting a parcel if only ownership has changed
         // without recounting the whole sim.
         private readonly Object m_TaintLock = new Object();

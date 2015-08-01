@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,15 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Xml.Serialization;
-using OpenMetaverse;
-using OpenMetaverse.Packets;
-using OpenMetaverse.StructuredData;
-using ProtoBuf;
+
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
@@ -43,6 +35,15 @@ using Universe.Framework.SceneInfo;
 using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Serialization;
 using Universe.Framework.Utilities;
+using OpenMetaverse;
+using OpenMetaverse.Packets;
+using OpenMetaverse.StructuredData;
+using ProtoBuf;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Xml.Serialization;
 using GridRegion = Universe.Framework.Services.GridRegion;
 
 namespace Universe.Region
@@ -72,7 +73,7 @@ namespace Universe.Region
         private readonly List<uint> m_lastColliders = new List<uint>();
         private readonly Dictionary<uint, scriptRotTarget> m_rotTargets = new Dictionary<uint, scriptRotTarget>();
         private readonly Dictionary<uint, scriptPosTarget> m_targets = new Dictionary<uint, scriptPosTarget>();
-        [XmlIgnore] private bool m_ValidgrpOOB; // control recalculation
+        [XmlIgnore] private bool m_ValidgrpOOB; // control recalcutation
         [XmlIgnore] private float m_grpBSphereRadiusSQ; // the square of the radius of a sphere containing the oob
         [XmlIgnore] private Vector3 m_grpOOBoffset; // the position center of the bounding box relative to it's Position
 
@@ -1417,7 +1418,7 @@ namespace Universe.Region
             IGroupsModule module = Scene.RequestModuleInterface<IGroupsModule>();
             if (module != null)
                 if (GroupID2 != UUID.Zero && !module.GroupPermissionCheck(attemptingUserID, GroupID2, GroupPowers.None))
-                    return; // No settings to groups you aren't in
+                    return; // No settings to groups you arn't in
             foreach (SceneObjectPart part in m_partsList)
             {
                 part.SetGroup(GroupID2);
@@ -3520,7 +3521,7 @@ namespace Universe.Region
             if (IsTemporary)
             {
                 // Remove from database and parcel prim count
-                // Temporary objects aren't saved to the database ever, so we don't need to do anything
+                // Temporary objects arn't saved to the database ever, so we don't need to do anything
             }
 
             if (selectionPart != null)

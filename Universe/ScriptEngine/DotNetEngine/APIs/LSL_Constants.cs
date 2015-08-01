@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -346,7 +346,7 @@ namespace Universe.ScriptEngine.DotNetEngine.Runtime
         public static readonly LSL_Types.LSLInteger CONTENT_TYPE_XML = 2; //application/xml
         public static readonly LSL_Types.LSLInteger CONTENT_TYPE_XHTML = 3; //application/xhtml+xml
         public static readonly LSL_Types.LSLInteger CONTENT_TYPE_ATOM = 4; //application/atom+xml
-        public static readonly LSL_Types.LSLInteger CONTENT_TYPE_JSON = 5; //application/JSON
+        public static readonly LSL_Types.LSLInteger CONTENT_TYPE_JSON = 5; //application/json
         public static readonly LSL_Types.LSLInteger CONTENT_TYPE_LLSD = 6; //application/llsd+xml
         public static readonly LSL_Types.LSLInteger CONTENT_TYPE_FORM = 7; //application/x-www-form-urlencoded
         public static readonly LSL_Types.LSLInteger CONTENT_TYPE_RSS = 8; //application/rss+xml 

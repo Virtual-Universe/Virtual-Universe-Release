@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -332,7 +332,7 @@ namespace Universe.Modules.Estate
 
             // owner?
             estateOwner = (cmd.Length > 3) 
-                ? Util.CombineParams (cmd, 4) // in case of spaces in the name e.g Allan Allard
+                ? Util.CombineParams (cmd, 4) // in case of spaces in the name eg Allan Allard
                 : MainConsole.Instance.Prompt ("Estate owner: ", estateOwner); 
             if (estateOwner == "")
                 return;
@@ -344,7 +344,7 @@ namespace Universe.Modules.Estate
             {
                 MainConsole.Instance.WarnFormat ("[USER ACCOUNT SERVICE]: The user, '{0}' was not found!", estateOwner);
 
-                // temporary fix until remote user creation can be implmented
+                // temporary fix until remote user creation can be implemented
                 if (!accountService.RemoteCalls ())
                 {
                     string createUser = MainConsole.Instance.Prompt ("Do you wish to create this user?  (yes/no)", "yes").ToLower ();
@@ -430,7 +430,7 @@ namespace Universe.Modules.Estate
                 estateOwner = MainConsole.Instance.Prompt ("New owner for this estate", ownerAccount.Name); 
             } else
             {
-                estateOwner = Util.CombineParams (cmd, 5); // in case of spaces in the name e.g Allan Allard
+                estateOwner = Util.CombineParams (cmd, 5); // in case of spaces in the name e.g. Allan Allard
             }
             if (estateOwner == "")
                 return;
@@ -532,7 +532,7 @@ namespace Universe.Modules.Estate
             var region = gridService.GetRegionByName (null, regionName);
             if (region == null)
             {
-                MainConsole.Instance.ErrorFormat ("[EstateService]: The requestes region '{0}' does not exist!", regionName);
+                MainConsole.Instance.ErrorFormat ("[EstateService]: The requested region '{0}' does not exist!", regionName);
                 return;
             }
 

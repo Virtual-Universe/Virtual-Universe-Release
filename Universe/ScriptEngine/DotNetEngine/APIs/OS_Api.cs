@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -515,36 +515,36 @@ namespace Universe.ScriptEngine.DotNetEngine.APIs
             if (String.IsNullOrEmpty(url))
                 return "Configuration Error!";
 
-            string verb = "/JSON_grid_info";
-            OSDMap JSON = new OSDMap();
+            string verb = "/json_grid_info";
+            OSDMap json = new OSDMap();
 
             OSDMap info = (OSDMap) Util.CombineParams(new[] {String.Format("{0}{1}", url, verb)}, 3000);
 
             if (info["Success"] != true)
                 return "Get GridInfo Failed!";
 
-            JSON = (OSDMap) OSDParser.DeserializeJson(info["_RawResult"].AsString());
+            json = (OSDMap) OSDParser.DeserializeJson(info["_RawResult"].AsString());
 
             switch (type)
             {
                 case InfoType.Nick:
-                    retval = JSON["gridnick"];
+                    retval = json["gridnick"];
                     break;
 
                 case InfoType.Name:
-                    retval = JSON["gridname"];
+                    retval = json["gridname"];
                     break;
 
                 case InfoType.Login:
-                    retval = JSON["login"];
+                    retval = json["login"];
                     break;
 
                 case InfoType.Home:
-                    retval = JSON["home"];
+                    retval = json["home"];
                     break;
 
                 case InfoType.Custom:
-                    retval = JSON[key];
+                    retval = json[key];
                     break;
 
                 default:
@@ -1624,11 +1624,11 @@ namespace Universe.ScriptEngine.DotNetEngine.APIs
             if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "osParseJSON", m_host, "OSSL", m_itemID))
                 return new Hashtable();
 
-            // see http://www.JSON.org/ for more details on JSON
+            // see http://www.json.org/ for more details on JSON
 
             string currentKey = null;
             Stack objectStack = new Stack(); // objects in JSON can be nested so we need to keep a track of this
-            Hashtable JSONdata = new Hashtable(); // the hashtable to be returned
+            Hashtable jsondata = new Hashtable(); // the hashtable to be returned
             try
             {
                 // iterate through the serialised stream of tokens and store at the right depth in the hashtable
@@ -1645,7 +1645,7 @@ namespace Universe.ScriptEngine.DotNetEngine.APIs
                             Hashtable currentObject = new Hashtable();
                             if (objectStack.Count == 0) // the stack should only be empty for the first outer object
                             {
-                                objectStack.Push(JSONdata);
+                                objectStack.Push(jsondata);
                             }
                             else if (objectStack.Peek().ToString() == "System.Collections.ArrayList")
                             {
@@ -1818,7 +1818,7 @@ namespace Universe.ScriptEngine.DotNetEngine.APIs
                 OSSLError("osParseJSON: The JSON string is not valid " + JSON);
             }
 
-            return JSONdata;
+            return jsondata;
         }
 
         // send a message to to object identified by the given UUID, a script in the object must implement the dataserver function
@@ -3310,7 +3310,7 @@ namespace Universe.ScriptEngine.DotNetEngine.APIs
             IBotManager manager = World.RequestModuleInterface<IBotManager>();
             if (manager != null)
             {
-                MainConsole.Instance.DebugFormat ("Creating NPC: {0} {1}, Position: {2}, appearance: {3}, Options: {4} {5}",
+                MainConsole.Instance.DebugFormat ("Creating NPC: {0} {1}, Position: {2}, Appearence: {3}, Options: {4} {5}",
                     firstname, lastname, position, notecard, owned, senseAsAgent);
 
                 // check for notecard or UUID for appearance...

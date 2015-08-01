@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,12 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.Packets;
+
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
@@ -38,6 +33,12 @@ using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Utilities;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.Packets;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Universe.Modules.Selection
 {
@@ -190,7 +191,7 @@ namespace Universe.Modules.Selection
                         prim.ParentEntity.IsSelected = true;
                     }
                 }
-                //Check for avies! They aren't prims!
+                //Check for avatars! They aren't prims!
                 if (scene.GetScenePresence(primLocalID) != null)
                     continue;
 
@@ -225,7 +226,7 @@ namespace Universe.Modules.Selection
         }
 
         /// <summary>
-        ///     Handle the deselection of a prim from the client.
+        ///     Handle the de-selection of a prim from the client.
         /// </summary>
         /// <param name="primLocalID"></param>
         /// <param name="remoteClient"></param>
@@ -381,7 +382,7 @@ namespace Universe.Modules.Selection
                     return;
 
                 ISceneChildEntity SOP = m_SelectedUUID;
-                if (SOP == null) //This IS nesessary, this is how we can clear this out
+                if (SOP == null) //This IS necessary, this is how we can clear this out
                 {
                     IsSelecting = false;
                     return;

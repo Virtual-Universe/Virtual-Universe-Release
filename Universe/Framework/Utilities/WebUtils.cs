@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -238,7 +238,7 @@ namespace Universe.Framework.Utilities
                 // If there is some input, write it into the request
                 if (buffer != null && buffer.Length > 0)
                 {
-                    request.ContentType = "application/JSON";
+                    request.ContentType = "application/json";
                     request.ContentLength = buffer.Length; //Count bytes to send
                     using (Stream requestStream = request.GetRequestStream())
                         HttpServerHandlerHelpers.WriteChunked(requestStream, buffer);
@@ -297,17 +297,17 @@ namespace Universe.Framework.Utilities
                             System.Diagnostics.StackTrace stackTrace = new System.Diagnostics.StackTrace();
 
                             MainConsole.Instance.Trace(
-                                string.Format("[WebUtils]: osd request (URI:{0}, METHOD:{1}, UPSTACK(4):{5}) took {2}ms overall, {3}ms writing, {4}ms deserializing",
+                                string.Format("[WebUtils]: osd request (URI:{0}, METHOD:{1}, UPSTACK(4):{5}) took {2}ms overall, {3}ms writing, {4}ms de-serializing",
                                 url, method, tickdiff, tickdata, tickserialize,
                                 (stackTrace.FrameCount > 4 ? stackTrace.GetFrame(4) : stackTrace.GetFrame(stackTrace.FrameCount - 1)).GetMethod().Name));
                         }
                         else if (MainConsole.Instance.IsDebugEnabled)
                             MainConsole.Instance.Debug(
-                                string.Format("[WebUtils]: request (URI:{0}, METHOD:{1}) took {2}ms overall, {3}ms writing, {4}ms deserializing",
+                                string.Format("[WebUtils]: request (URI:{0}, METHOD:{1}) took {2}ms overall, {3}ms writing, {4}ms de-serializing",
                                 url, method, tickdiff, tickdata, tickserialize));
                         if (tickdiff > 5000)
                             MainConsole.Instance.Info(
-                                string.Format("[WebUtils]: request took too long (URI:{0}, METHOD:{1}) took {2}ms overall, {3}ms writing, {4}ms deserializing",
+                                string.Format("[WebUtils]: request took too long (URI:{0}, METHOD:{1}) took {2}ms overall, {3}ms writing, {4}ms de-serializing",
                                 url, method, tickdiff, tickdata, tickserialize));
                     }
                 }
@@ -326,7 +326,7 @@ namespace Universe.Framework.Utilities
         ///     Takes the value of an Accept header and returns the preferred types
         ///     ordered by q value (if it exists).
         ///     Example input: image/jpg;q=0.7, image/png;q=0.8, image/jp2
-        ///     Exmaple output: ["jp2", "png", "jpg"]
+        ///     Example output: ["jp2", "png", "jpg"]
         ///     NOTE: This doesn't handle the semantics of *'s...
         /// </summary>
         /// <param name="accept"></param>

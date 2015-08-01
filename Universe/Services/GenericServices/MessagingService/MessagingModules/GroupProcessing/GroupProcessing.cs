@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,7 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
+
 using System.Collections.Generic;
 using System.Linq;
 using Nini.Config;
@@ -70,7 +70,7 @@ namespace Universe.Services
             //We need to check and see if this is an GroupSessionAgentUpdate
             if (message.ContainsKey ("Method") && message ["Method"] == "GroupSessionAgentUpdate")
             {
-                //Comes in on the Universe.Sserver side
+                //COMES IN ON Universe.SERVER SIDE
                 //Send it on to whomever it concerns
                 OSDMap innerMessage = (OSDMap)message ["Message"];
                 if (innerMessage ["message"] == "ChatterBoxSessionAgentListUpdates")
@@ -88,7 +88,7 @@ namespace Universe.Services
                 }
             } else if (message.ContainsKey ("Method") && message ["Method"] == "FixGroupRoleTitles")
             {
-                //Comes in on the Universe.Server side from the region
+                //COMES IN ON Universe.SERVER SIDE FROM REGION
                 UUID groupID = message ["GroupID"].AsUUID ();
                 UUID agentID = message ["AgentID"].AsUUID ();
                 UUID roleID = message ["RoleID"].AsUUID ();
@@ -152,7 +152,7 @@ namespace Universe.Services
                 }
             } else if (message.ContainsKey ("Method") && message ["Method"] == "ForceUpdateGroupTitles")
             {
-                //Comes in on the region side from Universe.Server
+                //COMES IN ON REGION SIDE FROM Universe.SERVER
                 UUID groupID = message ["GroupID"].AsUUID ();
                 UUID roleID = message ["RoleID"].AsUUID ();
                 UUID regionID = message ["RegionID"].AsUUID ();

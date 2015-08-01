@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,15 +25,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using MySql.Data.MySqlClient;
 using Universe.DataManager.Migration;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
+using MySql.Data.MySqlClient;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
 
 namespace Universe.DataManager.MySQL
 {
@@ -66,7 +66,7 @@ namespace Universe.DataManager.MySQL
             catch
             {
                 MainConsole.Instance.Error(
-                    "[MySQL Database]: We cannot connect to the MySQL instance you have provided. Please make sure it is online, and then press enter to try again.");
+                    "[MySQLDatabase]: We cannot connect to the MySQL instance you have provided. Please make sure it is online, and then press enter to try again.");
                 Console.Read();
                 goto retry;
             }
@@ -111,7 +111,7 @@ namespace Universe.DataManager.MySQL
             }
             catch (Exception e)
             {
-                MainConsole.Instance.Error("[MySQL DataLoader] Query(" + sql + "), " + e);
+                MainConsole.Instance.Error("[MySQLDataLoader] Query(" + sql + "), " + e);
                 return null;
             }
         }
@@ -142,7 +142,7 @@ namespace Universe.DataManager.MySQL
             catch (Exception e)
             {
                 if (spamConsole)
-                    MainConsole.Instance.ErrorFormat("[MySQL DataLoader] ExecuteNonQuery({0}), {1}", sql, e.ToString());
+                    MainConsole.Instance.ErrorFormat("[MySQLDataLoader] ExecuteNonQuery({0}), {1}", sql, e.ToString());
                 else
                     throw e;
             }
@@ -180,7 +180,7 @@ namespace Universe.DataManager.MySQL
             }
             catch (Exception e)
             {
-                MainConsole.Instance.Error("[MySQL DataLoader] QueryFullData(" + query + "), " + e);
+                MainConsole.Instance.Error("[MySQLDataLoader] QueryFullData(" + query + "), " + e);
                 return null;
             }
         }
@@ -267,10 +267,14 @@ namespace Universe.DataManager.MySQL
             }
             catch (Exception e)
             {
-                MainConsole.Instance.Error("[MySQL DataLoader] Query(" + query + "), " + e);
+                MainConsole.Instance.Error("[MySQLDataLoader] Query(" + query + "), " + e);
                 return null;
             }
         }
+
+        /*public override Dictionary<string, List<string>> QueryNames(string[] wantedValue, string table, QueryFilter queryFilter, Dictionary<string, bool> sort, uint? start, uint? count)
+        {
+        }*/
 
         public override Dictionary<string, List<string>> QueryNames(string[] keyRow, object[] keyValue, string table,
                                                                     string wantedValue)
@@ -318,7 +322,7 @@ namespace Universe.DataManager.MySQL
             }
             catch (Exception e)
             {
-                MainConsole.Instance.Error("[MySQL DataLoader] QueryNames(" + query + "), " + e);
+                MainConsole.Instance.Error("[MySQLDataLoader] QueryNames(" + query + "), " + e);
                 return null;
             }
         }
@@ -393,7 +397,7 @@ namespace Universe.DataManager.MySQL
             }
             catch (MySqlException e)
             {
-                MainConsole.Instance.Error("[MySQL DataLoader] Update(" + query + "), " + e);
+                MainConsole.Instance.Error("[MySQLDataLoader] Update(" + query + "), " + e);
             }
             return true;
         }
@@ -425,7 +429,7 @@ namespace Universe.DataManager.MySQL
             }
             catch (Exception e)
             {
-                MainConsole.Instance.Error("[MySQL DataLoader] Insert(" + query + "), " + e);
+                MainConsole.Instance.Error("[MySQLDataLoader] Insert(" + query + "), " + e);
             }
             return true;
         }
@@ -449,7 +453,7 @@ namespace Universe.DataManager.MySQL
             }
             catch (Exception e)
             {
-                MainConsole.Instance.Error("[MySQL DataLoader] Insert(" + query + "), " + e);
+                MainConsole.Instance.Error("[MySQLDataLoader] Insert(" + query + "), " + e);
             }
             return true;
         }
@@ -480,7 +484,7 @@ namespace Universe.DataManager.MySQL
             }
             catch (Exception e)
             {
-                MainConsole.Instance.Error("[MySQL DataLoader] " + (insert ? "Insert" : "Replace") + "(" + query + "), " +
+                MainConsole.Instance.Error("[MySQLDataLoader] " + (insert ? "Insert" : "Replace") + "(" + query + "), " +
                                            e);
             }
             return true;
@@ -510,7 +514,7 @@ namespace Universe.DataManager.MySQL
             }
             catch (Exception e)
             {
-                MainConsole.Instance.Error("[MySQL DataLoader] Insert(" + query + "), " + e);
+                MainConsole.Instance.Error("[MySQLDataLoader] Insert(" + query + "), " + e);
                 return false;
             }
             return true;
@@ -569,7 +573,7 @@ namespace Universe.DataManager.MySQL
             }
             catch (Exception e)
             {
-                MainConsole.Instance.Error("[MySQL DataLoader] Delete(" + query + "), " + e);
+                MainConsole.Instance.Error("[MySQLDataLoader] Delete(" + query + "), " + e);
                 return false;
             }
             return true;
@@ -650,7 +654,7 @@ namespace Universe.DataManager.MySQL
             }
             catch (Exception e)
             {
-                MainConsole.Instance.ErrorFormat("[MySQL DataLoader] CreateTable: {0}", e.ToString());
+                MainConsole.Instance.ErrorFormat("[MySQLDataLoader] CreateTable: {0}", e.ToString());
             }
         }
 
@@ -722,7 +726,7 @@ namespace Universe.DataManager.MySQL
             }
             catch (Exception e)
             {
-                MainConsole.Instance.ErrorFormat("[MySQL DataLoader] UpdateTable: {0}", e);
+                MainConsole.Instance.ErrorFormat("[MySQLDataLoader] UpdateTable: {0}", e);
             }
 
             Dictionary<string, IndexDefinition> oldIndicesDict = ExtractIndicesFromTable(table);
@@ -963,7 +967,7 @@ namespace Universe.DataManager.MySQL
             }
             catch (Exception e)
             {
-                MainConsole.Instance.ErrorFormat("[MySQL DataLoader] DropTable {0}", e.ToString());
+                MainConsole.Instance.ErrorFormat("[MySQLDataLoader] DropTable {0}", e.ToString());
             }
         }
 
@@ -977,7 +981,7 @@ namespace Universe.DataManager.MySQL
             }
             catch (Exception e)
             {
-                MainConsole.Instance.ErrorFormat("[MySQL DataLoader] ForceRenameTable {0}", e.ToString());
+                MainConsole.Instance.ErrorFormat("[MySQLDataLoader] ForceRenameTable {0}", e.ToString());
             }
         }
 
@@ -995,7 +999,7 @@ namespace Universe.DataManager.MySQL
             }
             catch (Exception e)
             {
-                MainConsole.Instance.ErrorFormat("[MySQL DataLoader] CopyAllDataBetweenMatchingTables", e.ToString());
+                MainConsole.Instance.ErrorFormat("[MySQLDataLoader] CopyAllDataBetweenMatchingTables", e.ToString());
             }
         }
 
@@ -1018,7 +1022,7 @@ namespace Universe.DataManager.MySQL
             }
             catch (Exception e)
             {
-                MainConsole.Instance.ErrorFormat("[MySQL DataLoader] TableExists: {0}", e.ToString());
+                MainConsole.Instance.ErrorFormat("[MySQLDataLoader] TableExists: {0}", e.ToString());
             }
             return retVal.Contains(table.ToLower());
         }
@@ -1054,7 +1058,7 @@ namespace Universe.DataManager.MySQL
             }
             catch (Exception e)
             {
-                MainConsole.Instance.ErrorFormat("[MySQL DataLoader] ExtractColumnsFromTable: {0}", e.ToString());
+                MainConsole.Instance.ErrorFormat("[MySQLDataLoader] ExtractColumnsFromTable: {0}", e.ToString());
             }
             finally
             {
@@ -1068,7 +1072,7 @@ namespace Universe.DataManager.MySQL
                 }
                 catch (Exception e)
                 {
-                    MainConsole.Instance.DebugFormat("[MySQL DataLoader] ExtractColumnsFromTable: {0}", e.ToString());
+                    MainConsole.Instance.DebugFormat("[MySQLDataLoader] ExtractColumnsFromTable: {0}", e.ToString());
                 }
             }
             return defs;
@@ -1102,7 +1106,7 @@ namespace Universe.DataManager.MySQL
             }
             catch (Exception e)
             {
-                MainConsole.Instance.ErrorFormat("[MySQL DataLoader] ExtractIndicesFromTable: {1}", e.ToString());
+                MainConsole.Instance.ErrorFormat("[MySQLDataLoader] ExtractIndicesFromTable: {1}", e.ToString());
             }
             finally
             {
@@ -1115,7 +1119,7 @@ namespace Universe.DataManager.MySQL
                 }
                 catch (Exception e)
                 {
-                    MainConsole.Instance.DebugFormat("[MySQL DataLoader] ExtractIndicesFromTable: {0}", e.ToString());
+                    MainConsole.Instance.DebugFormat("[MySQLDataLoader] ExtractIndicesFromTable: {0}", e.ToString());
                 }
             }
 

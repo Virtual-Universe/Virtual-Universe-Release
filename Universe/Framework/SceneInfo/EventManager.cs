@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -53,7 +53,7 @@ namespace Universe.Framework.SceneInfo
         public delegate void OnNewClientDelegate(IClientAPI client);
 
         /// <summary>
-        ///     Deprecated in favour of OnClientConnect.
+        ///     Deprecated in favor of OnClientConnect.
         ///     Will be marked Obsolete after IClientCore has 100% of IClientAPI interfaces.
         /// </summary>
         public event OnNewClientDelegate OnNewClient;
@@ -298,7 +298,7 @@ namespace Universe.Framework.SceneInfo
         /// <summary>
         ///     Called when an oar file has finished saving
         ///     Message is non empty string if there were problems saving the oar file
-        ///     If a guid was supplied on the original call to identify, the request, this is returned.  Otherwise
+        ///     If a GUID was supplied on the original call to identify, the request, this is returned.  Otherwise
         ///     Guid.Empty is returned.
         /// </summary>
         public delegate void OarFileSaved(Guid guid, string message);

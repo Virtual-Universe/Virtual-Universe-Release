@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -200,26 +200,26 @@ namespace Universe.Simulation.Base
         }
 
         /// <summary>
-        ///     Performs initialization of the application, such as loading the HTTP server and modules
+        ///     Performs initialisation of the application, such as loading the HTTP server and modules
         /// </summary>
         public virtual void Startup()
         {
             MainConsole.Instance.Info("====================================================================");
             MainConsole.Instance.Info(
-				        string.Format("==================== STARTING VIRTUAL UNIVERSE ({0}) ===============",
+				        string.Format("==================== STARTING Universe ({0}) ======================",
                               (IntPtr.Size == 4 ? "x86" : "x64")));
             MainConsole.Instance.Info("====================================================================");
-            MainConsole.Instance.Info("[Virtual Universe Startup]: Version: " + Version + "\n");
+            MainConsole.Instance.Info("[UniverseStartup]: Version: " + Version + "\n");
             if (Environment.Is64BitOperatingSystem)
-                MainConsole.Instance.Info("[Virtual Universe Startup]: Running on 64 bit architecture");
+                MainConsole.Instance.Info("[UniverseStartup]: Running on 64 bit architecture");
             // get memory allocation
             Process proc = Process.GetCurrentProcess();
-            MainConsole.Instance.Info("[Virtual Universe Startup]: Allocated RAM " + proc.WorkingSet64);
+            MainConsole.Instance.Info("[UniverseStartup]: Allocated RAM " + proc.WorkingSet64);
             if (Utilities.IsLinuxOs)
             {
                 var pc = new PerformanceCounter ("Mono Memory", "Total Physical Memory");
                 var bytes = pc.RawValue;
-                MainConsole.Instance.InfoFormat ("[Virtual Universe Startup]: Physical RAM (Mbytes): {0}", bytes / 1024000);
+                MainConsole.Instance.InfoFormat ("[UniverseStartup]: Physical RAM (Mbytes): {0}", bytes / 1024000);
             }
 
             SetUpHTTPServer();
@@ -607,9 +607,9 @@ namespace Universe.Simulation.Base
                 }
 
                 if (close)
-                    MainConsole.Instance.Info("[Virtual Universe Shutdown]: Terminating");
+                    MainConsole.Instance.Info("[SHUTDOWN]: Terminating");
 
-                MainConsole.Instance.Info("[Virtual Universe Shutdown]: Shutdown processing on main thread complete. " +
+                MainConsole.Instance.Info("[SHUTDOWN]: Shutdown processing on main thread complete. " +
                                           (close ? " Exiting..." : ""));
 
                 if (close)

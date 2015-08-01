@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,12 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.IO;
-using System.Text;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
+
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
@@ -40,6 +35,12 @@ using Universe.Framework.Servers.HttpServer;
 using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Servers.HttpServer.Interfaces;
 using Universe.Framework.Utilities;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
+using System;
+using System.IO;
+using System.Text;
 
 namespace Universe.Modules.Caps
 {
@@ -102,7 +103,9 @@ namespace Universe.Modules.Caps
             if (!m_scene.TryGetScenePresence(AgentId, out avatar))
                 return MainServer.BadRequest;
 
+
             OSD r = OSDParser.DeserializeLLSDXml(HttpServerHandlerHelpers.ReadFully(request));
+            //UUID session_id = UUID.Zero;
             bool bypass_raycast = false;
             uint everyone_mask = 0;
             uint group_mask = 0;
@@ -137,7 +140,7 @@ namespace Universe.Modules.Caps
             Vector3 scale = Vector3.Zero;
             int state = 0;
 
-            if (r.Type != OSDType.Map) // not a proper req
+            if (r.Type != OSDType.Map) // not a proper request
                 return MainServer.BadRequest;
 
             OSDMap rm = (OSDMap) r;
@@ -216,6 +219,7 @@ namespace Universe.Modules.Caps
 
                     OSDMap AgentDataMap = (OSDMap) rm["AgentData"];
 
+                    //session_id = AgentDataMap["SessionId"].AsUUID();
                     group_id = AgentDataMap["GroupId"].AsUUID();
                 }
             }
@@ -255,6 +259,8 @@ namespace Universe.Modules.Caps
 
                 ray_target_id = rm["ray_target_id"].AsUUID();
 
+
+                //session_id = rm["session_id"].AsUUID();
                 state = rm["state"].AsInteger();
                 try
                 {
@@ -305,12 +311,15 @@ namespace Universe.Modules.Caps
             if (m_scene.Permissions.CanRezObject(1, avatar.UUID, pos, out reason))
             {
                 // rez ON the ground, not IN the ground
+                // pos.Z += 0.25F;
+
                 obj = m_scene.SceneGraph.AddNewPrim(avatar.UUID, group_id, pos, rotation, pbs);
             }
             else
             {
                 avatar.ControllingClient.SendAlertMessage("You do not have permission to rez objects here: " + reason);
             }
+
 
             if (obj == null)
                 return MainServer.BadRequest;

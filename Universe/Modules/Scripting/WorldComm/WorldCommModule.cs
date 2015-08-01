@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -66,7 +66,7 @@ using System.Text.RegularExpressions;
  * digest, with a list of recent messages by UUID.  This can
  * be used to prevent in-world repeater loops.  However, the
  * linden functions do not have this capability, so for now
- * thats the way it works.
+ * that's the way it works.
  * Instead it blocks messages originating from the same prim.
  * (not Object!)
  *
@@ -294,7 +294,7 @@ namespace Universe.Modules.Scripting
         /// <summary>
         ///     Are there any listen events ready to be dispatched?
         /// </summary>
-        /// <returns>boolean indication</returns>
+        /// <returns>Boolean indication</returns>
         public bool HasMessages()
         {
             return m_pending.Count != 0;

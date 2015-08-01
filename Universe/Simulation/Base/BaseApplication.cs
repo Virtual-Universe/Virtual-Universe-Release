@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -27,6 +27,11 @@
 
 //#define BlockUnsupportedVersions
 
+using Universe.Framework.Configuration;
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.Modules;
+using Universe.Framework.Utilities;
+using Nini.Config;
 using System;
 using System.Diagnostics;
 using System.Globalization;
@@ -34,16 +39,11 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
-using Nini.Config;
-using Universe.Framework.Configuration;
-using Universe.Framework.ConsoleFramework;
-using Universe.Framework.Modules;
-using Universe.Framework.Utilities;
 
 namespace Universe.Simulation.Base
 {
     /// <summary>
-    ///     Starting class for the Universe Server
+    ///     Starting class for the Virtual Universe Server
     /// </summary>
     public class BaseApplication
     {
@@ -63,7 +63,7 @@ namespace Universe.Simulation.Base
         /// </summary>
         public static string m_crashDir = "crashes";
 
-        static bool _IsHandlingException; // Make sure we don't go recursive on ourselves
+        static bool _IsHandlingException; // Make sure we don't go recursive on ourself
 
         //could move our main function into OpenSimMain and kill this class
         public static void BaseMain(string[] args, string defaultIniFile, ISimulationBase simBase)
@@ -660,7 +660,7 @@ namespace Universe.Simulation.Base
         }
 
         /// <summary>
-        ///     Deal with sending the error to the error reporting service and saving the dump to the hard-drive if needed
+        ///     Deal with sending the error to the error reporting service and saving the dump to the harddrive if needed
         /// </summary>
         /// <param name="msg"></param>
         /// <param name="ex"></param>

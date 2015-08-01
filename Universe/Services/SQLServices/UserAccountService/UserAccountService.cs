@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,7 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#undef TEST_USERS       // developers only here
+#undef TEST_USERS       // developers only here :)
 
 using System;
 using System.Collections.Generic;
@@ -173,7 +173,7 @@ namespace Universe.Services.SQLServices.UserAccountService
                     MainConsole.Instance.Commands.AddCommand(
                         "set user level",
                         "set user level [<first> [<last> [<level>]]]",
-                        "Set user level. If the user's level is > 0, this account will be treated as god-mode.\n" +
+                        "Set user level. If the user's level is > 0, this account will be treated as god-moded.\n" +
                         "It will also affect the 'login level' command. ",
                         HandleSetUserLevel, false, true);
 
@@ -553,7 +553,7 @@ namespace Universe.Services.SQLServices.UserAccountService
         public void DeleteUser(UUID userID, string name, string password, bool archiveInformation, bool wipeFromDatabase)
         {
             //if (password != "" && m_AuthenticationService.Authenticate(userID, "UserAccount", password, 0) == "")
-            //    return; //Not authenticated
+            //    return; //Not authed
 
             // ensure the system users are left alone!
             if (Utilities.IsSystemUser(userID))
@@ -823,7 +823,7 @@ namespace Universe.Services.SQLServices.UserAccountService
             case Constants.USER_GOD_CUSTOMER_SERVICE:
                 return "Customer service";
             case Constants.USER_GOD_LIASON:
-                return "Liaison";
+                return "Liason";
             case Constants.USER_GOD_FULL:
                 return "A God";
             case Constants.USER_GOD_MAINTENANCE:
@@ -1035,14 +1035,14 @@ namespace Universe.Services.SQLServices.UserAccountService
 
             if ((email.ToLower() != "none") && !Utilities.IsValidEmail(email))
             {
-                MainConsole.Instance.Warn ("This does not look like a valid email address. ('none' if unknown)");
+                MainConsole.Instance.Warn ("This does not look like a vaild email address. ('none' if unknown)");
                 email = MainConsole.Instance.Prompt ("Email", email);
             }
 
             // Get user type (for payments etc)
             var userType = MainConsole.Instance.Prompt("User type", "Resident", userTypes);
 
-            // Get available user avatar archives
+            // Get available user avatar acrchives
             var userAvatarArchive = "";
             var avatarArchives = GetAvatarArchivesFiles ();
             if (avatarArchives.Count > 0)
@@ -1053,7 +1053,7 @@ namespace Universe.Services.SQLServices.UserAccountService
                     userAvatarArchive = "";
             }
 
-            // Allow the modification the UUID if required - for matching user UUID with other Grids etc e.g SL
+            // Allow the modifcation the UUID if required - for matching user UUID with other Grids etc eg SL
             uuid = UUID.Random().ToString();
             if (uuidFlag)
                 while (true)
@@ -1185,7 +1185,7 @@ namespace Universe.Services.SQLServices.UserAccountService
             // if the user is disabled details will exist with a level set @ -2
             if (account.UserLevel < 0)
             {
-                MainConsole.Instance.Warn("[USER ACCOUNT SERVICE]: User is already disabled!");
+                MainConsole.Instance.Warn("[USER ACCOUNT SERVICE]: User is already diabled!");
                 return;
             }
 
@@ -1412,6 +1412,7 @@ namespace Universe.Services.SQLServices.UserAccountService
                 }
                 MainConsole.Instance.InfoFormat ("File: {0} loaded,  {1} users added", Path.GetFileName(fileName), userNo);
             }
+
         }
         
         /// <summary>
@@ -1439,6 +1440,7 @@ namespace Universe.Services.SQLServices.UserAccountService
             // good to go...
             var accounts = GetUserAccounts(null,"*");
 
+
             //Add the user
             FileStream stream = new FileStream(fileName, FileMode.Create);          // always start fresh
             StreamWriter streamWriter = new StreamWriter(stream);
@@ -1460,6 +1462,7 @@ namespace Universe.Services.SQLServices.UserAccountService
             streamWriter.Close();
 
             MainConsole.Instance.InfoFormat ("File: {0} saved with {1} users", Path.GetFileName(fileName), userNo);
+
         }
 
         protected void HandleSetRezday(IScene scene, string[] cmdparams)

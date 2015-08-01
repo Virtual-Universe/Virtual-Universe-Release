@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -62,7 +62,7 @@ namespace Universe.Modules.Terrain.FileLoaders
             int yoffset = h*(fileHeight - y);
 
             MainConsole.Instance.DebugFormat(
-                "[TERRAIN]: Loading tile {0},{1} (offset {2},{3}) from tilemap size of {4},{5}",
+                "[TERRAIN]: Loading tile {0},{1} (offset {2},{3}) from tile-map size of {4},{5}",
                 x, y, xoffset, yoffset, fileWidth, fileHeight);
 
             Rectangle tileRect = new Rectangle(xoffset, yoffset, w, h);
@@ -99,9 +99,9 @@ namespace Universe.Modules.Terrain.FileLoaders
 
         public void SaveFile(string filename, ITerrainChannel map)
         {
-            Bitmap colors = CreateBitmapFromMap(map);
+            Bitmap colours = CreateBitmapFromMap(map);
 
-            colors.Save(filename, ImageFormat.Jpeg);
+            colours.Save(filename, ImageFormat.Jpeg);
         }
 
         /// <summary>
@@ -111,9 +111,9 @@ namespace Universe.Modules.Terrain.FileLoaders
         /// <param name="map">The terrain channel being saved</param>
         public void SaveStream(Stream stream, ITerrainChannel map)
         {
-            Bitmap colors = CreateBitmapFromMap(map);
+            Bitmap colours = CreateBitmapFromMap(map);
 
-            colors.Save(stream, ImageFormat.Jpeg);
+            colours.Save(stream, ImageFormat.Jpeg);
         }
 
         #endregion
@@ -146,11 +146,11 @@ namespace Universe.Modules.Terrain.FileLoaders
             int pallete = gradientmapLd.Height;
 
             Bitmap bmp = new Bitmap(map.Width, map.Height);
-            Color[] colors = new Color[pallete];
+            Color[] colours = new Color[pallete];
 
             for (int i = 0; i < pallete; i++)
             {
-                colors[i] = gradientmapLd.GetPixel(0, i);
+                colours[i] = gradientmapLd.GetPixel(0, i);
             }
 
             for (int y = 0; y < map.Height; y++)
@@ -159,7 +159,7 @@ namespace Universe.Modules.Terrain.FileLoaders
                 {
                     // 512 is the largest possible height before colors clamp
                     int colorindex = (int) (Math.Max(Math.Min(1.0, map[x, y]/512.0), 0.0)*(pallete - 1));
-                    bmp.SetPixel(x, map.Height - y - 1, colors[colorindex]);
+                    bmp.SetPixel(x, map.Height - y - 1, colours[colorindex]);
                 }
             }
             return bmp;

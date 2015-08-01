@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,17 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Universe.Framework.Utilities;
-using System.Drawing;
-using System.Drawing.Imaging;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
-using OpenMetaverse.Imaging;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
@@ -43,6 +32,17 @@ using Universe.Framework.SceneInfo;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Services.ClassHelpers.Inventory;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
+using OpenMetaverse.Imaging;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Universe.Framework.Utilities;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace Universe.Modules.Archivers
 {
@@ -185,6 +185,8 @@ namespace Universe.Modules.Archivers
                 attachCount++;
             }
             MainConsole.Instance.InfoFormat("[AvatarArchive] Adding {0} attachments to {1}", attachCount, archiveName);
+
+            //InventoryFolderBase clothingFolder = inventoryService.GetFolderForType(principalID, AssetType.Clothing);
 
             // set details
             archive.Appearance = appearance;
@@ -334,6 +336,7 @@ namespace Universe.Modules.Archivers
                 fileName = cmdparams [5];
             }
             
+
             //some file sanity checks
             fileName = PathHelpers.VerifyReadFile (fileName, ".aa", m_storeDirectory);
             if (fileName == "")
@@ -756,7 +759,8 @@ namespace Universe.Modules.Archivers
                         "save avatar archive [<First> <Last> [<Filename>]] [FolderNameToSaveInto] (--snapshot <UUID>) (--private)",
                         "Saves appearance to an avatar archive (.aa is the recommended file extension)\n" +
                         " Note: Put \"\" around the FolderName if you have spaces. \n" +
-                        "     : e.g \"../Data/MyAvatars/Male Avatar.aa\" \n" +
+                        "     : e.g. \"../Data/MyAvatars/Male Avatar.aa\" \n" +
+                    //"  Put all attachments in BodyParts folder before saving the archive) \n" +
                         "  Both --snapshot and --private are optional.\n" +
                         "   --snapshot sets a picture to display on the web interface if this archive is being used as a default avatar.\n" +
                         "   --private tells any web interfaces that they cannot display this as a default avatar.",
@@ -770,6 +774,7 @@ namespace Universe.Modules.Archivers
                 }
             }
         }
+
 
         public void Start(IConfigSource config, IRegistryCore registry)
         {

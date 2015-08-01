@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -92,7 +92,7 @@ namespace Universe.Framework.Services
         /// </summary>
         /// <param name="table">table to update</param>
         /// <param name="values">dictionary of table fields and new values</param>
-        /// <param name="incrementValues">dictionary of table fields and integer to increment by (use negative ints to decrement)</param>
+        /// <param name="incrementValues">dictionary of table fields and integer to increment by (use negative integers to decrement)</param>
         /// <param name="queryFilter">filter to control which rows get updated</param>
         /// <param name="start">LIMIT start or LIMIT start, count</param>
         /// <param name="count">LIMIT start, count</param>

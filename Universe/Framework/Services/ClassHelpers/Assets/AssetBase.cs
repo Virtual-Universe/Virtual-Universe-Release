@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -42,7 +42,7 @@ namespace Universe.Framework.Services.ClassHelpers.Assets
     public enum AssetFlags
     {
         Normal = 0, // Immutable asset
-        Maptile = 1, // Depriated, use Deletable instead: What it says
+        Maptile = 1, // Deprecated, use Deletable instead: What it says
         Rewritable = 2, // Content can be rewritten
         Collectable = 4, // Can be GC'ed after some time
         Deletable = 8, // The asset can be deleted
@@ -443,27 +443,27 @@ namespace Universe.Framework.Services.ClassHelpers.Assets
         }
 
         /// <summary>
-        ///     Make an OSDMap (JSON) with only the needed parts for the database and then compress it
+        ///     Make an OSDMap (json) with only the needed parts for the database and then compress it
         /// </summary>
         /// <returns>A compressed (gzip) string of the data needed for the database</returns>
         public string CompressedPack()
         {
             OSDMap assetMap = ToOSD();
 
-            //Serialize it with JSON
-            string JSONString = OSDParser.SerializeJsonString(assetMap);
+            //Serialize it with json
+            string jsonString = OSDParser.SerializeJsonString(assetMap);
             //Now use gzip to compress this map
-            string compressedString = Util.Compress(JSONString);
+            string compressedString = Util.Compress(jsonString);
 
             return compressedString;
         }
 
         public void CompressedUnpack(string compressedString)
         {
-            //Decompress the info back to JSON format
-            string JSONString = Util.Decompress(compressedString);
+            //Decompress the info back to json format
+            string jsonString = Util.Decompress(compressedString);
             //Build the OSDMap 
-            OSDMap assetMap = (OSDMap) OSDParser.DeserializeJson(JSONString);
+            OSDMap assetMap = (OSDMap) OSDParser.DeserializeJson(jsonString);
             //Now unpack the contents
             Unpack(assetMap);
         }

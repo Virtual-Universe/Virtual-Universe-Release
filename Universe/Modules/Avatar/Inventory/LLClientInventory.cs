@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,15 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
+
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
@@ -48,6 +40,15 @@ using Universe.Framework.Servers.HttpServer.Interfaces;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Services.ClassHelpers.Inventory;
 using Universe.Framework.Utilities;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
 
 namespace Universe.Modules.Inventory
 {
@@ -189,7 +190,7 @@ namespace Universe.Modules.Inventory
     /// <param name="ownerID"></param>
         protected void HandleFetchInventory(IClientAPI remoteClient, UUID itemID, UUID ownerID)
         {
-            //MainConsole.Instance.Warn("[Scene.PacketHandler]: Depriated UDP Inventory request!");
+            //MainConsole.Instance.Warn("[Scene.PacketHandler]: Deprecated UDP Inventory request!");
             InventoryItemBase item = new InventoryItemBase(itemID, remoteClient.AgentId);
             item = m_scene.InventoryService.GetItem(item);
 
@@ -212,7 +213,7 @@ namespace Universe.Modules.Inventory
         protected void HandleFetchInventoryDescendents(IClientAPI remoteClient, UUID folderID, UUID ownerID,
                                                     bool fetchFolders, bool fetchItems, int sortOrder)
         {
-            //MainConsole.Instance.Warn("[Scene.PacketHandler]: Depriated UDP FetchInventoryDescendents request!");
+            //MainConsole.Instance.Warn("[Scene.PacketHandler]: Deprecated UDP FetchInventoryDescendents request!");
             if (folderID == UUID.Zero)
                 return;
 
@@ -274,8 +275,8 @@ namespace Universe.Modules.Inventory
         protected void HandleUpdateInventoryFolder(IClientAPI remoteClient, UUID folderID, ushort type, string name,
                                                    UUID parentID)
         {
-            //MainConsole.Instance.DebugFormat(
-            //    "[AGENT INVENTORY]: Updating inventory folder {0} {1} for {2} {3}", folderID, name, remoteClient.Name, remoteClient.AgentId);
+            //            MainConsole.Instance.DebugFormat(
+            //                "[AGENT INVENTORY]: Updating inventory folder {0} {1} for {2} {3}", folderID, name, remoteClient.Name, remoteClient.AgentId);
 
             InventoryFolderBase folder = new InventoryFolderBase(folderID, remoteClient.AgentId);
             folder = m_scene.InventoryService.GetFolder(folder);
@@ -1248,8 +1249,9 @@ namespace Universe.Modules.Inventory
                         part.ParentEntity.AddInventoryItem(remoteClient, localID, item, copyID);
                         part.Inventory.CreateScriptInstance(copyID, 0, false, 0);
 
-                        //MainConsole.Instance.InfoFormat("[PRIMINVENTORY]: " +
-                        //    "Rezzed script {0} into prim local ID {1} for user {2}", item.inventoryName, localID, remoteClient.Name);
+                        //                        MainConsole.Instance.InfoFormat("[PRIMINVENTORY]: " +
+                        //                                         "Rezzed script {0} into prim local ID {1} for user {2}",
+                        //                                         item.inventoryName, localID, remoteClient.Name);
                         part.GetProperties(remoteClient);
                     }
                     else
@@ -1517,6 +1519,7 @@ namespace Universe.Modules.Inventory
                                                      SaleType = srcTaskItem.SaleType
                                                  };
 
+
             if (destPart.OwnerID != srcPart.OwnerID)
             {
                 if (m_scene.Permissions.PropagatePermissions())
@@ -1599,6 +1602,7 @@ namespace Universe.Modules.Inventory
             }
 
             // Can't transfer this
+            //
             if ((part.OwnerID != destPart.OwnerID) &&
                 ((srcTaskItem.CurrentPermissions & (uint) PermissionMask.Transfer) == 0))
                 return;
@@ -2035,8 +2039,9 @@ namespace Universe.Modules.Inventory
             {
                 try
                 {
-                    //MainConsole.Instance.InfoFormat("[CAPS]: " +
-                    //    "TaskInventoryScriptUpdater received data: {0}, path: {1}, param: {2}", data, path, param));
+                    //                    MainConsole.Instance.InfoFormat("[CAPS]: " +
+                    //                                     "TaskInventoryScriptUpdater received data: {0}, path: {1}, param: {2}",
+                    //                                     data, path, param));
 
                     IClientAPI client;
                     m_scene.ClientManager.TryGetValue(AgentID, out client);
@@ -2132,6 +2137,7 @@ namespace Universe.Modules.Inventory
                     if (isScriptRunning2)
                     {
                         // Needs to determine which engine was running it and use that
+                        //
                         part.Inventory.UpdateScriptInstance(item.ItemID, data, 0, false, StateSource.NewRez);
                         errors = part.Inventory.GetScriptErrors(item.ItemID);
                     }

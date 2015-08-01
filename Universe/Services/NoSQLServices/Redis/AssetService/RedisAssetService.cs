@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,11 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Sider;
-using System;
-using System.IO;
-using Nini.Config;
-using OpenMetaverse;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
@@ -37,6 +32,11 @@ using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Utilities;
 using Universe.RedisServices.ConnectionHelpers;
+using Nini.Config;
+using OpenMetaverse;
+using Sider;
+using System;
+using System.IO;
 
 namespace Universe.RedisServices.AssetService
 {
@@ -216,7 +216,7 @@ namespace Universe.RedisServices.AssetService
             if (doDatabaseCaching && cache != null)
                 cache.Cache(id, asset);
             if (asset != null) return asset.Data;
-            // see assetservice.GetData            return new byte[0];
+// see assetservice.GetData            return new byte[0];
             return null;
         }
 
@@ -437,14 +437,14 @@ namespace Universe.RedisServices.AssetService
 
             try
             {
-                //De-duplication...
+                //Deduplication...
                 if (duplicate)
                 {
                     if (MainConsole.Instance != null)
                         MainConsole.Instance.Debug("[REDIS ASSET SERVICE]: Found duplicate asset " + asset.IDString +
                                                    " for " + asset.IDString);
 
-                    //Only set id --> asset, and not the hashcode --> data to de-duplicate
+                    //Only set id --> asset, and not the hashcode --> data to deduplicate
                     RedisEnsureConnection((conn) => conn.Set(asset.IDString, memStream.ToArray()));
                     return true;
                 }

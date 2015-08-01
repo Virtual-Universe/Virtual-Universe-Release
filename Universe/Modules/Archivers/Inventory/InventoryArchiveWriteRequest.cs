@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,12 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.IO.Compression;
-using System.Xml;
-using OpenMetaverse;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
@@ -39,6 +33,12 @@ using Universe.Framework.Serialization.External;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Services.ClassHelpers.Inventory;
+using OpenMetaverse;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
+using System.Xml;
 
 namespace Universe.Modules.Archivers
 {
@@ -208,11 +208,13 @@ namespace Universe.Modules.Archivers
             string serialization = UserInventoryItemSerializer.Serialize(saveItem);
             m_archiveWriter.WriteFile(filename, serialization);
 
+    //        m_assetGatherer.GatherAssetUuids(saveItem.AssetID, (AssetType) saveItem.AssetType, m_assetUuids);
             AssetType itemAssetType = (AssetType)inventoryItem.AssetType;
 
             // Don't chase down link asset items as they actually point to their target item IDs rather than an asset
             if (m_saveAssets && itemAssetType != AssetType.Link && itemAssetType != AssetType.LinkFolder)
                 m_assetGatherer.GatherAssetUuids(saveItem.AssetID, (AssetType) inventoryItem.AssetType, m_assetUuids);
+
         }
 
         /// <summary>
@@ -226,6 +228,7 @@ namespace Universe.Modules.Archivers
             // ignore viewer folders (special folders?)
             if (inventoryFolder.Name.StartsWith ("#"))
                 return;
+
 
             if (saveThisFolderItself)
             {
@@ -278,11 +281,15 @@ namespace Universe.Modules.Archivers
             return permitted;
         }
 
+
         /// <summary>
         ///     Execute the inventory write request
         /// </summary>
         public void Execute()
         {
+
+
+
             try
             {
                 InventoryFolderBase inventoryFolder = null;
@@ -340,6 +347,7 @@ namespace Universe.Modules.Archivers
                 {
                     inventoryItem =
                         InventoryArchiveUtils.FindItemByPath(m_inventoryService, rootFolder, m_invPath);
+                    //inventoryItem = m_userInfo.RootFolder.FindItemByPath(m_invPath);
                 }
 
                 if (null == inventoryFolder && null == inventoryItem)
@@ -375,6 +383,7 @@ namespace Universe.Modules.Archivers
                 }
 
                 // Don't put all this profile information into the archive right now.
+                //SaveUsers();
             }
             catch (Exception)
             {
@@ -389,6 +398,7 @@ namespace Universe.Modules.Archivers
                 }
                 new AssetsRequest(
                     new AssetsArchiver(m_archiveWriter), m_assetUuids, m_assetService, ReceivedAllAssets).Execute();
+                    
             }
             else
             {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -11691,7 +11691,7 @@ namespace Universe.ScriptEngine.DotNetEngine.APIs
             else if (type == ScriptBaseClass.CONTENT_TYPE_ATOM)
                 content_type = "application/atom+xml";
             else if (type == ScriptBaseClass.CONTENT_TYPE_JSON)
-                content_type = "application/JSON";
+                content_type = "application/json";
             else if (type == ScriptBaseClass.CONTENT_TYPE_LLSD)
                 content_type = "application/llsd+xml";
             else if (type == ScriptBaseClass.CONTENT_TYPE_FORM)
@@ -13314,20 +13314,20 @@ namespace Universe.ScriptEngine.DotNetEngine.APIs
             return "";
         }
 
-        public LSL_String llJSONGetValue(LSL_String JSON, LSL_List specifiers)
+        public LSL_String llJsonGetValue(LSL_String json, LSL_List specifiers)
         {
-            OSD o = OSDParser.DeserializeJson(JSON);
-            OSD specVal = JSONGetSpecific(o, specifiers, 0);
+            OSD o = OSDParser.DeserializeJson(json);
+            OSD specVal = JsonGetSpecific(o, specifiers, 0);
 
             return specVal.AsString();
         }
 
-        public LSL_List llJSON2List(LSL_String JSON)
+        public LSL_List llJson2List(LSL_String json)
         {
             try
             {
-                OSD o = OSDParser.DeserializeJson(JSON);
-                return (LSL_List)ParseJSONNode(o);
+                OSD o = OSDParser.DeserializeJson(json);
+                return (LSL_List)ParseJsonNode(o);
             }
             catch (Exception)
             {
@@ -13335,7 +13335,7 @@ namespace Universe.ScriptEngine.DotNetEngine.APIs
             }
         }
 
-        private object ParseJSONNode(OSD node)
+        private object ParseJsonNode(OSD node)
         {
             if (node.Type == OSDType.Integer)
                 return new LSL_Integer(node.AsInteger());
@@ -13350,7 +13350,7 @@ namespace Universe.ScriptEngine.DotNetEngine.APIs
                 LSL_List resp = new LSL_List();
                 OSDArray ar = node as OSDArray;
                 foreach (OSD o in ar)
-                    resp.Add(ParseJSONNode(o));
+                    resp.Add(ParseJsonNode(o));
                 return resp;
             }
             if (node.Type == OSDType.Map)
@@ -13360,14 +13360,14 @@ namespace Universe.ScriptEngine.DotNetEngine.APIs
                 foreach (KeyValuePair<string, OSD> o in ar)
                 {
                     resp.Add(new LSL_String(o.Key));
-                    resp.Add(ParseJSONNode(o.Value));
+                    resp.Add(ParseJsonNode(o.Value));
                 }
                 return resp;
             }
             throw new Exception(ScriptBaseClass.JSON_INVALID);
         }
 
-        public LSL_String llList2JSON(LSL_String type, LSL_List values)
+        public LSL_String llList2Json(LSL_String type, LSL_List values)
         {
             try
             {
@@ -13376,7 +13376,7 @@ namespace Universe.ScriptEngine.DotNetEngine.APIs
                     OSDArray array = new OSDArray();
                     foreach (object o in values.Data)
                     {
-                        array.Add(ListToJSON(o));
+                        array.Add(ListToJson(o));
                     }
                     return OSDParser.SerializeJsonString(array);
                 }
@@ -13387,7 +13387,7 @@ namespace Universe.ScriptEngine.DotNetEngine.APIs
                     {
                         if (!(values.Data[i] is LSL_String))
                             return ScriptBaseClass.JSON_INVALID;
-                        map.Add(((LSL_String)values.Data[i]).m_string, ListToJSON(values.Data[i + 1]));
+                        map.Add(((LSL_String)values.Data[i]).m_string, ListToJson(values.Data[i + 1]));
                     }
                     return OSDParser.SerializeJsonString(map);
                 }
@@ -13399,7 +13399,7 @@ namespace Universe.ScriptEngine.DotNetEngine.APIs
             }
         }
 
-        private OSD ListToJSON(object o)
+        private OSD ListToJson(object o)
         {
             if (o is LSL_Float)
                 return OSD.FromReal(((LSL_Float)o).value);
@@ -13426,7 +13426,7 @@ namespace Universe.ScriptEngine.DotNetEngine.APIs
             throw new Exception(ScriptBaseClass.JSON_INVALID);
         }
 
-        private OSD JSONGetSpecific(OSD o, LSL_List specifiers, int i)
+        private OSD JsonGetSpecific(OSD o, LSL_List specifiers, int i)
         {
             object spec = specifiers.Data[i];
             OSD nextVal = null;
@@ -13443,17 +13443,17 @@ namespace Universe.ScriptEngine.DotNetEngine.APIs
             if (nextVal != null)
             {
                 if (specifiers.Data.Length - 1 > i)
-                    return JSONGetSpecific(nextVal, specifiers, i + 1);
+                    return JsonGetSpecific(nextVal, specifiers, i + 1);
             }
             return nextVal;
         }
 
-        public LSL_String llJSONSetValue(LSL_String JSON, LSL_List specifiers, LSL_String value)
+        public LSL_String llJsonSetValue(LSL_String json, LSL_List specifiers, LSL_String value)
         {
             try
             {
-                OSD o = OSDParser.DeserializeJson(JSON);
-                JSONSetSpecific(o, specifiers, 0, value);
+                OSD o = OSDParser.DeserializeJson(json);
+                JsonSetSpecific(o, specifiers, 0, value);
                 return OSDParser.SerializeJsonString(o);
             }
             catch (Exception)
@@ -13462,7 +13462,7 @@ namespace Universe.ScriptEngine.DotNetEngine.APIs
             return ScriptBaseClass.JSON_INVALID;
         }
 
-        private void JSONSetSpecific(OSD o, LSL_List specifiers, int i, LSL_String val)
+        private void JsonSetSpecific(OSD o, LSL_List specifiers, int i, LSL_String val)
         {
             object spec = specifiers.Data[i];
             // 20131224 not used            object specNext = i+1 == specifiers.Data.Length ? null : specifiers.Data[i+1];
@@ -13474,12 +13474,12 @@ namespace Universe.ScriptEngine.DotNetEngine.APIs
                 {
                     int v = ((LSL_Integer)spec).value;
                     if (v >= array.Count)
-                        array.Add(JSONBuildRestOfSpec(specifiers, i + 1, val));
+                        array.Add(JsonBuildRestOfSpec(specifiers, i + 1, val));
                     else
                         nextVal = ((OSDArray)o)[v];
                 }
                 else if (spec is LSL_String && ((LSL_String)spec) == ScriptBaseClass.JSON_APPEND)
-                    array.Add(JSONBuildRestOfSpec(specifiers, i + 1, val));
+                    array.Add(JsonBuildRestOfSpec(specifiers, i + 1, val));
             }
             if (o is OSDMap)
             {
@@ -13489,20 +13489,20 @@ namespace Universe.ScriptEngine.DotNetEngine.APIs
                     if (map.ContainsKey(((LSL_String)spec).m_string))
                         nextVal = map[((LSL_String)spec).m_string];
                     else
-                        map.Add(((LSL_String)spec).m_string, JSONBuildRestOfSpec(specifiers, i + 1, val));
+                        map.Add(((LSL_String)spec).m_string, JsonBuildRestOfSpec(specifiers, i + 1, val));
                 }
             }
             if (nextVal != null)
             {
                 if (specifiers.Data.Length - 1 > i)
                 {
-                    JSONSetSpecific(nextVal, specifiers, i + 1, val);
+                    JsonSetSpecific(nextVal, specifiers, i + 1, val);
                     return;
                 }
             }
         }
 
-        private OSD JSONBuildRestOfSpec(LSL_List specifiers, int i, LSL_String val)
+        private OSD JsonBuildRestOfSpec(LSL_List specifiers, int i, LSL_String val)
         {
             object spec = i >= specifiers.Data.Length ? null : specifiers.Data[i];
             // 20131224 not used            object specNext = i+1 >= specifiers.Data.Length ? null : specifiers.Data[i+1];
@@ -13514,22 +13514,22 @@ namespace Universe.ScriptEngine.DotNetEngine.APIs
                 (spec is LSL_String && ((LSL_String)spec) == ScriptBaseClass.JSON_APPEND))
             {
                 OSDArray array = new OSDArray();
-                array.Add(JSONBuildRestOfSpec(specifiers, i + 1, val));
+                array.Add(JsonBuildRestOfSpec(specifiers, i + 1, val));
                 return array;
             }
             else if (spec is LSL_String)
             {
                 OSDMap map = new OSDMap();
-                map.Add((LSL_String)spec, JSONBuildRestOfSpec(specifiers, i + 1, val));
+                map.Add((LSL_String)spec, JsonBuildRestOfSpec(specifiers, i + 1, val));
                 return map;
             }
             return new OSD();
         }
 
-        public LSL_String llJSONValueType(LSL_String JSON, LSL_List specifiers)
+        public LSL_String llJsonValueType(LSL_String json, LSL_List specifiers)
         {
-            OSD o = OSDParser.DeserializeJson(JSON);
-            OSD specVal = JSONGetSpecific(o, specifiers, 0);
+            OSD o = OSDParser.DeserializeJson(json);
+            OSD specVal = JsonGetSpecific(o, specifiers, 0);
             if (specVal == null)
                 return ScriptBaseClass.JSON_INVALID;
             switch (specVal.Type)

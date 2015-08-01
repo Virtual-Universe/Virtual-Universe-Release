@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -109,7 +109,7 @@ namespace Universe.Modules.Friends
                 return;
             }
 
-            MainConsole.Instance.ErrorFormat ("[FriendsModule]: Could not send status update to non-existant client {0}.", 
+            MainConsole.Instance.ErrorFormat ("[FriendsModule]: Could not send status update to non-existent client {0}.", 
                 FriendToInformID);
 
         }
@@ -338,9 +338,13 @@ namespace Universe.Modules.Friends
             // Update the local cache
             UpdateFriendsCache (agentID);
 
+            //
             // Notify the friend
             //
+
+            //
             // Send calling card to the local user
+            //
 
             ICallingCardModule ccmodule = client.Scene.RequestModuleInterface<ICallingCardModule> ();
             if (ccmodule != null)
@@ -379,7 +383,10 @@ namespace Universe.Modules.Friends
             }
             FriendsService.Delete (friendID, agentID.ToString ());
 
+            //
             // Notify the friend
+            //
+
             // Try local
             if (LocalFriendshipDenied (agentID, client.Name, friendID))
                 return;
@@ -397,8 +404,10 @@ namespace Universe.Modules.Friends
 
             client.SendTerminateFriend (exfriendID);
 
+            //
             // Notify the friend
             //
+
             // Try local
             if (LocalFriendshipTerminated (exfriendID, agentID))
                 return;
@@ -436,8 +445,11 @@ namespace Universe.Modules.Friends
                 // Always send this back to the original client
                 remoteClient.SendChangeUserRights (requester, target, rights);
 
+                //
                 // Notify the friend
                 //
+
+
                 // Try local
                 if (!LocalGrantRights (requester, target, myFlags, rights))
                 {
@@ -526,7 +538,10 @@ namespace Universe.Modules.Friends
                 // Update the local cache
                 UpdateFriendsCache (friendID);
 
+
+                //
                 // put a calling card into the inventory of the friend
+                //
                 ICallingCardModule ccmodule = friendClient.Scene.RequestModuleInterface<ICallingCardModule> ();
                 if (ccmodule != null)
                 {

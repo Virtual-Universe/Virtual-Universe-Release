@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -71,7 +71,7 @@ namespace Universe.Modules.Terrain.PaintBrushes
                         if (!map.Scene.Permissions.CanTerraformLand(userID, new Vector3(x, y, 0)))
                             continue;
 
-                        // Calculate a sphere and add it to the heighmap
+                        // Calculate a sphere and add it to the heightmap
                         float z = 0;
                         if (duration < 4.0)
                             z = TerrainUtil.SphericalFactor(x, y, rx, ry, strength)*duration*0.25f;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,10 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using OpenMetaverse;
+
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
@@ -40,6 +37,10 @@ using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Other;
 using Universe.Framework.Utilities;
 using Universe.Region.Animation;
+using OpenMetaverse;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using GridRegion = Universe.Framework.Services.GridRegion;
 using PrimType = Universe.Framework.SceneInfo.PrimType;
 
@@ -185,7 +186,7 @@ namespace Universe.Region
 
         protected string m_nextSitAnimation = String.Empty;
 
-        //PauPaw:Proper PID Controller for autopilot************
+        //PauPaw:Proper PID Controler for autopilot************
         protected bool m_moveToPositionInProgress;
         protected Vector3 m_moveToPositionTarget;
 
@@ -1496,7 +1497,7 @@ namespace Universe.Region
                         // nesting this check because LengthSquared() is expensive and we don't 
                         // want to do it every step when flying.
                         // then call it in the if...
-                        //The == Zero and Z > 0.1 are to stop people from flying and then falling down because the physics engine hasn't calculated the push yet
+                        //The == Zero and Z > 0.1 are to stop people from flying and then falling down because the physics engine hasn't calculted the push yet
                         if (Velocity != Vector3.Zero && Math.Abs(Velocity.Z) > 0.05 &&
                             (Velocity.LengthSquared() <= LAND_VELOCITYMAG_MAX))
                         {
@@ -1510,9 +1511,9 @@ namespace Universe.Region
                 // which occurs later in the main scene loop
                 if (update_movementflag || (update_rotation && DCFlagKeyPressed))
                 {
-                    //MainConsole.Instance.DebugFormat("{0} {1}", update_movementflag, (update_rotation && DCFlagKeyPressed));
-                    //MainConsole.Instance.DebugFormat(
-                    //    "In {0} adding velocity to {1} of {2}", m_scene.RegionInfo.RegionName, Name, agent_control_v3);
+                    //                    MainConsole.Instance.DebugFormat("{0} {1}", update_movementflag, (update_rotation && DCFlagKeyPressed));
+                    //                    MainConsole.Instance.DebugFormat(
+                    //                        "In {0} adding velocity to {1} of {2}", m_scene.RegionInfo.RegionName, Name, agent_control_v3);
 
                     AddNewMovement(agent_control_v3, q);
                 }
@@ -1891,7 +1892,7 @@ namespace Universe.Region
 
             ControllingClient.SendSitResponse(part.UUID, offset, sitOrientation, autopilot, cameraAtOffset,
                                               cameraEyeOffset, forceMouselook);
-            //Remove any bad terse updates lying around
+            //Remove any bad terse updates lieing around
             foreach (IScenePresence sp in Scene.GetScenePresences())
                 sp.SceneViewer.ClearPresenceUpdates(this);
             System.Threading.Thread.Sleep(10);
@@ -2143,7 +2144,7 @@ namespace Universe.Region
                 }
                 else
                     Scene.SceneGraph.TaintPresenceForUpdate(this, PresenceTaint.Other);
-                        //We haven't sent the update yet, keep tainting
+                        //We havn't sent the update yet, keep tainting
             }
         }
 
@@ -2324,19 +2325,19 @@ namespace Universe.Region
                         float halfRegionX = Scene.RegionInfo.RegionSizeX / 2;
                         float halfRegionY = Scene.RegionInfo.RegionSizeY / 2;
 
-                        /*if (m_lastSigInfiniteRegionPos.X - AbsolutePosition.X > 128 ||
-                            m_lastSigInfiniteRegionPos.X - AbsolutePosition.X < -128 ||
-                            m_lastSigInfiniteRegionPos.Y - AbsolutePosition.Y > 128 ||
-                            m_lastSigInfiniteRegionPos.Y - AbsolutePosition.Y < -128)
-                        {
-                        m_lastSigInfiniteRegionPos = AbsolutePosition;
-                        m_nearbyInfiniteRegions = Scene.GridService.GetRegionRange(
-                            ControllingClient.AllScopeIDs,
-                            (int) (TargetX - Scene.GridService.GetMaxRegionSize()),
-                            (int) (TargetX + 256),
-                            (int) (TargetY - Scene.GridService.GetMaxRegionSize()),
-                            (int) (TargetY + 256));
-                    }*/
+//                        if (m_lastSigInfiniteRegionPos.X - AbsolutePosition.X > 128 ||
+//                            m_lastSigInfiniteRegionPos.X - AbsolutePosition.X < -128 ||
+//                            m_lastSigInfiniteRegionPos.Y - AbsolutePosition.Y > 128 ||
+//                            m_lastSigInfiniteRegionPos.Y - AbsolutePosition.Y < -128)
+//                        {
+//                        m_lastSigInfiniteRegionPos = AbsolutePosition;
+//                        m_nearbyInfiniteRegions = Scene.GridService.GetRegionRange(
+//                            ControllingClient.AllScopeIDs,
+//                            (int) (TargetX - Scene.GridService.GetMaxRegionSize()),
+//                            (int) (TargetX + 256),
+//                            (int) (TargetY - Scene.GridService.GetMaxRegionSize()),
+//                            (int) (TargetY + 256));
+//                    }
 
                         if (m_lastSigInfiniteRegionPos.X - AbsolutePosition.X > halfRegionX ||
                             m_lastSigInfiniteRegionPos.X - AbsolutePosition.X < -halfRegionX ||
@@ -2386,7 +2387,7 @@ namespace Universe.Region
                                 transferModule.Cross(this, isFlying, neighborRegion);
                             else
                                 MainConsole.Instance.DebugFormat(
-                                    "[ScenePresence]: Unable to cross agent to neighboring region, because there is no AgentTransferModule");
+                                    "[ScenePresence]: Unable to cross agent to neighbouring region, because there is no AgentTransferModule");
                         }
                         return true;
                     }
@@ -2445,7 +2446,7 @@ namespace Universe.Region
                                     transferModule.Cross(this, isFlying, neighborRegion);
                                 else
                                     MainConsole.Instance.DebugFormat(
-                                        "[ScenePresence]: Unable to cross agent to neighboring region, because there is no AgentTransferModule");
+                                        "[ScenePresence]: Unable to cross agent to neighbouring region, because there is no AgentTransferModule");
 
                                 return true;
                             }
@@ -2763,7 +2764,7 @@ namespace Universe.Region
         /// </summary>
         public virtual void AddToPhysicalScene(bool isFlying, bool AddAvHeightToPosition)
         {
-            //Make sure we aren't already doing this
+            //Make sure we arn't already doing this
             if (m_creatingPhysicalRepresentation)
                 return;
 
@@ -2842,7 +2843,7 @@ namespace Universe.Region
 
             if (ControllingClient != null)
                 ControllingClient.SendAgentAlertMessage(
-                    "Physics is having a problem with your avatar.  You may not be able to move until you restart.", true);
+                    "Physics is having a problem with your avatar.  You may not be able to move until you relog.", true);
         }
 
         protected void PhysicsUpdatePosAndVelocity()
@@ -2908,7 +2909,7 @@ namespace Universe.Region
 
             if (coldata.Count != 0 && Animator != null)
             {
-                //If we are on the ground, we need to fix the collision plane for the avatar (fixes their feet in the viewer)
+                //If we are on the ground, we need to fix the collision plane for the avie (fixes their feet in the viewer)
                 switch (Animator.CurrentMovementAnimation)
                 {
                     case "STAND":

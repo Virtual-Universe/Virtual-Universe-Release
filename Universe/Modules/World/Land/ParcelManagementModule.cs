@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,15 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Timers;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.Messages.Linden;
-using OpenMetaverse.StructuredData;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.DatabaseInterfaces;
@@ -46,6 +37,15 @@ using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Servers.HttpServer.Interfaces;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.Messages.Linden;
+using OpenMetaverse.StructuredData;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Timers;
 using GridRegion = Universe.Framework.Services.GridRegion;
 
 namespace Universe.Modules.Land
@@ -59,7 +59,7 @@ namespace Universe.Modules.Land
         public const float BAN_LINE_SAFETY_HEIGHT = 100;
         public const int LAND_RESULT_NO_DATA = -1; // The request they made had no data
         public const int LAND_RESULT_SINGLE = 0; // The request they made contained only a single piece of land
-        public const int LAND_RESULT_MULTIPLE = 1; // The request they made contained more than a single peice of land
+        public const int LAND_RESULT_MULTIPLE = 1; // The request they made contained more than a single piece of land
 
         //ParcelSelectObjects
         public const int LAND_SELECT_OBJECTS_GROUP = 4;
@@ -160,9 +160,9 @@ namespace Universe.Modules.Land
             UUID godParcelOwner;
             var regionType = scene.RegionInfo.RegionType.ToLower ();
             if ( regionType.StartsWith("m") )
-                godParcelOwner = (UUID)Constants.GovernorUUID;              // Mainland reverts to the 'Guv'
+                godParcelOwner = (UUID)Constants.GovernorUUID;              // Mainland reverts to Governor Universe
             else
-                godParcelOwner = (UUID)Constants.RealEstateOwnerUUID;       // Estates revert to the RealEstate Owner
+                godParcelOwner = (UUID)Constants.RealEstateOwnerUUID;       // Estates revert to RealEstate Owner
 
             // This is an override to the default GodOwner and allows specifying a specific user
             if (_godParcelOwner != "")
@@ -237,8 +237,6 @@ namespace Universe.Modules.Land
             get { return "LandManagementModule"; }
         }
 
-        public string AbandonmentData { get; private set; }
-
         #endregion
 
         #region MoneyModule pieces (for parcel directory payment)
@@ -275,7 +273,7 @@ namespace Universe.Modules.Land
         /// <param name="agentID">Avatar Unique Id</param>
         /// <param name="objectName">Name of object returned</param>
         /// <param name="location">Location of object returned</param>
-        /// <param name="reason">Reasion for object return</param>
+        /// <param name="reason">Reason for object return</param>
         /// <param name="groups">The objects to return</param>
         public void AddReturns(UUID agentID, string objectName, Vector3 location, string reason,
                                List<ISceneEntity> groups)
@@ -1550,7 +1548,7 @@ namespace Universe.Modules.Land
                 {
                     UserAccount CurrentAgent = m_scene.UserAccountService.GetUserAccount(null, remote_client.AgentId);
 
-                    string AbandonmentDate = DateTime.Now.ToString("yyyy-MM-dd");
+                    string AbandonmentDate = DateTime.Now.ToString("M\\/dd\\/yyyy");
 
                     if (land.LandData.IsGroupOwned)
                     {
@@ -1567,22 +1565,22 @@ namespace Universe.Modules.Land
                             }
                         }
 
-                        land.LandData.Description = "Parcel owned by the group " + GroupName + " was abandoned by " + CurrentAgent.Name + " on " + AbandonmentDate;
+                        land.LandData.Description = "Land owned by the group " + GroupName + " was abandoned by " + CurrentAgent.Name + " on " + AbandonmentDate;
                     }
                     else
                     {
                         if (remote_client.AgentId == land.LandData.OwnerID)
                         {
-                            land.LandData.Description = "Parcel owned by " + CurrentAgent.Name + " was abondoned on " + AbandonmentDate;
+                            land.LandData.Description = "Land abandoned by " + CurrentAgent.Name + " on " + AbandonmentDate;
                         }
                         else
                         {
                             UserAccount ParcelOwner = m_scene.UserAccountService.GetUserAccount(null, land.LandData.OwnerID);
-                            land.LandData.Description = "Parcel owned by " + ParcelOwner.Name + " was abandoned by " + CurrentAgent.Name + " on " + AbandonmentDate;
+                            land.LandData.Description = "Land owned by " + ParcelOwner.Name + " was abandoned by " + CurrentAgent.Name + " on " + AbandonmentDate;
                         }
                     }
 
-                    land.LandData.Name = AbandonmentData + ":Abandoned Land ";
+                    land.LandData.Name = "Abandoned Land " + AbandonmentDate;
                     
                     land.LandData.OwnerID = m_scene.RegionInfo.EstateSettings.EstateOwner;
                     land.LandData.AuctionID = 0; //This must be reset!
@@ -1597,7 +1595,7 @@ namespace Universe.Modules.Land
                           ParcelFlags.AllowAPrimitiveEntry | ParcelFlags.CreateObjects | ParcelFlags.RestrictPushObject | ParcelFlags.AllowDeedToGroup | ParcelFlags.DenyAgeUnverified | ParcelFlags.DenyAnonymous);
 
                     land.LandData.Flags |= (uint)(ParcelFlags.SoundLocal | ParcelFlags.AllowVoiceChat | ParcelFlags.AllowLandmark | ParcelFlags.AllowFly | ParcelFlags.AllowOtherScripts | ParcelFlags.AllowGroupScripts | ParcelFlags.AllowGroupObjectEntry | ParcelFlags.CreateGroupObjects | ParcelFlags.UseEstateVoiceChan);
-                    land.LandData.Status = ParcelStatus.Abandoned; // Parcel is abandoned
+
                     m_hasSentParcelOverLay.Clear(); //Clear everyone out
                     m_scene.ForEachClient(SendParcelOverlay);
                     land.SendLandUpdateToClient(true, remote_client);
@@ -1621,7 +1619,6 @@ namespace Universe.Modules.Land
                     land.LandData.IsGroupOwned = false;
                     land.LandData.SalePrice = 0;
                     land.LandData.AuthBuyerID = UUID.Zero;
-                    land.LandData.Status = ParcelStatus.Leased; // Parcel is back to be Leased
                     land.LandData.Flags &=
                         ~(uint)
                          (ParcelFlags.ForSale | ParcelFlags.ForSaleObjects | ParcelFlags.SellParcelObjects |

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,13 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.IO;
-using System.Text;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.Messages.Linden;
-using OpenMetaverse.StructuredData;
+
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
@@ -42,6 +36,13 @@ using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Servers.HttpServer.Interfaces;
 using Universe.Framework.Utilities;
 using Universe.Region;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.Messages.Linden;
+using OpenMetaverse.StructuredData;
+using System;
+using System.IO;
+using System.Text;
 using ExtraParamType = OpenMetaverse.ExtraParamType;
 
 namespace Universe.Modules.Caps
@@ -123,7 +124,7 @@ namespace Universe.Modules.Caps
             }
             catch (Exception ex)
             {
-                MainConsole.Instance.Error("[UploadObjectAssetModule]: Error deserializing message " + ex);
+                MainConsole.Instance.Error("[UploadObjectAssetModule]: Error de-serializing message " + ex);
                 message = null;
             }
 
@@ -151,6 +152,26 @@ namespace Universe.Modules.Caps
                     rootpos = obj.Position;
                 }
 
+
+                // Combine the extraparams data into it's ugly blob again....
+                //int bytelength = 0;
+                //for (int extparams = 0; extparams < obj.ExtraParams.Length; extparams++)
+                //{
+                //    bytelength += obj.ExtraParams[extparams].ExtraParamData.Length;
+                //}
+                //byte[] extraparams = new byte[bytelength];
+                //int position = 0;
+
+
+                //for (int extparams = 0; extparams < obj.ExtraParams.Length; extparams++)
+                //{
+                //    Buffer.BlockCopy(obj.ExtraParams[extparams].ExtraParamData, 0, extraparams, position,
+                //                     obj.ExtraParams[extparams].ExtraParamData.Length);
+                //
+                //    position += obj.ExtraParams[extparams].ExtraParamData.Length;
+                // }
+
+                //pbs.ExtraParams = extraparams;
                 foreach (UploadObjectAssetMessage.Object.ExtraParam extraParam in obj.ExtraParams)
                 {
                     switch ((ushort) extraParam.Type)

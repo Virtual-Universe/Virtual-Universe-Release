@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -28,19 +28,19 @@
 
 #define UseDictionaryForEntityUpdates
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Timers;
-using OpenMetaverse;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Utilities;
+using OpenMetaverse;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Linq;
+using System.Timers;
 using GridRegion = Universe.Framework.Services.GridRegion;
 
 namespace Universe.Region
@@ -147,7 +147,7 @@ namespace Universe.Region
                 if (sp.UUID != m_presence.UUID)
                     return null; //Only want our av
 
-                //Draw Distance changed, force a cull check
+                //Draw Distance chagned, force a cull check
                 m_forceCullCheck = true;
                 //Don't do this immediately as the viewer may keep changing the draw distance
                 lock (m_drawDistanceTimerLock)
@@ -163,7 +163,7 @@ namespace Universe.Region
             }
             else if (FunctionName == "SignficantCameraMovement")
             {
-                //Camera changed, do a cull check
+                //Camera chagned, do a cull check
                 m_forceCullCheck = true;
                 //Don't do this immediately as the viewer may keep changing the camera quickly
                 lock (m_drawDistanceTimerLock)
@@ -258,7 +258,7 @@ namespace Universe.Region
                     if ((o.Flags & flags) == o.Flags)
                         return; //Same, leave it alone!
                     o.Flags |= flags;
-                    return; //All done, its updated, no need to re-add
+                    return; //All done, its updated, no need to readd
                 }
 
                 m_presenceUpdatesToSend[presence.LocalId] = o;
@@ -280,7 +280,7 @@ namespace Universe.Region
 
             //Send a terse as well, since we are sending an animation
             if (m_presence.LocalId == presence.LocalId &&
-                presence.SittingOnUUID == UUID.Zero) //As long as we aren't sitting, in which we don't get terse updates
+                presence.SittingOnUUID == UUID.Zero) //As long as we arn't sitting, in which we don't get terse updates
             {
                 //Is this really necessary? -7/21
                 //Very much so... the client cannot get a terse update before a full update -7/25
@@ -323,7 +323,7 @@ namespace Universe.Region
                    m_presence.DrawDistance > m_presence.Scene.RegionInfo.RegionSizeY)) &&
                 !lastGrpsInView.Contains(part.ParentEntity))
             {
-                //This object entered our draw distance on its own, and we haven't seen it before
+                //This object entered our draw distance on its own, and we havn't seen it before
                 flags = PrimUpdateFlags.ForcedFullUpdate;
                 lock (m_objectUpdatesToSendLock)
                 {

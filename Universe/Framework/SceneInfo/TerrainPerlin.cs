@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -167,7 +167,7 @@ namespace Universe.Framework.SceneInfo
             int height = baseNoise[0].Length;
 
             float[][] smoothNoise;
-            float[][] perlinNoise = GetEmptyArray<float>(width, height); //an array of floats Initialized to 0
+            float[][] perlinNoise = GetEmptyArray<float>(width, height); //an array of floats initialized to 0
 
             float persistance = 0.25f;
             float amplitude = 1.0f;
@@ -192,7 +192,7 @@ namespace Universe.Framework.SceneInfo
             // try and free up the bucket of memory we may have just used
             GC.Collect();
 
-            //normalisation
+            //normalization
             for (int i = 0; i < width; i++)
             {
                 for (int j = 0; j < height; j++)

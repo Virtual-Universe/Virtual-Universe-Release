@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,12 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
@@ -39,6 +33,12 @@ using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Services.ClassHelpers.Inventory;
 using Universe.Framework.Utilities;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Universe.Services.SQLServices.InventoryService
 {
@@ -171,7 +171,7 @@ namespace Universe.Services.SQLServices.InventoryService
         public virtual bool CreateUserInventory(UUID principalID, bool createDefaultItems,
                                                 out List<InventoryItemBase> defaultItems)
         {
-            // This is braindeaad. We can't ever communicate that we fixed
+            // This is brain-dead. We can't ever communicate that we fixed
             // an existing inventory. Well, just return root folder status,
             // but check sanity anyway.
             //
@@ -299,15 +299,15 @@ namespace Universe.Services.SQLServices.InventoryService
                                                   return false;
                                               }))
                 CreateFolder(principalID, rootFolder.ID, (int) AssetType.CurrentOutfitFolder, "Current Outfit");
-
+            
             // Marketplace related folders, unchecked at the moment
-
-            if (!Array.Exists(sysFolders, delegate (InventoryFolderBase f)
-            {
-                if (f.Type == (short)AssetType.VMMListings) return true;
-                return false;
-            }))
-                CreateFolder(principalID, rootFolder.ID, (int)AssetType.VMMListings, "Marketplace Listings");
+            
+            if (!Array.Exists(sysFolders, delegate(InventoryFolderBase f)
+                                              {
+                                                  if (f.Type == (short) AssetType.VMMListings) return true;
+                                                  return false;
+                                              }))
+                CreateFolder(principalID, rootFolder.ID, (int) AssetType.VMMListings, "Marketplace Listings");
 
             if (createDefaultItems && m_LibraryService != null)
             {
@@ -589,7 +589,7 @@ namespace Universe.Services.SQLServices.InventoryService
 
             if (invType == InventoryType.Snapshot)
                 type = AssetType.SnapshotFolder;
-            //Fix for snapshots, as they get the texture asset type, but need to get checked as snapshotfolder types
+            //Fix for snapshots, as they get the texture asset type, but need to get checked as snapshot folder types
 
             List<InventoryFolderBase> folders = m_Database.GetFolders(
                 new[] {"agentID", "type"},
@@ -597,12 +597,13 @@ namespace Universe.Services.SQLServices.InventoryService
 
             if (folders.Count == 0)
             {
-                //MainConsole.Instance.WarnFormat("[XINVENTORY SERVICE]: Found no folder for type {0} for user {1}", type, principalID);
+                //                MainConsole.Instance.WarnFormat("[XINVENTORY SERVICE]: Found no folder for type {0} for user {1}", type, principalID);
                 return null;
             }
 
-            //MainConsole.Instance.DebugFormat(
-            //    "[XINVENTORY SERVICE]: Found folder {0} {1} for type {2} for user {3}",  folders[0].folderName, folders[0].folderID, type, principalID);
+            //            MainConsole.Instance.DebugFormat(
+            //                "[XINVENTORY SERVICE]: Found folder {0} {1} for type {2} for user {3}", 
+            //                folders[0].folderName, folders[0].folderID, type, principalID);
 
             return folders[0];
         }
@@ -614,8 +615,10 @@ namespace Universe.Services.SQLServices.InventoryService
             if (remoteValue != null || m_doRemoteOnly)
                 return (InventoryCollection) remoteValue;
 
-            // This method doesn't receive a valud principal id from the
-            // connector. So we disregard the principal and look by ID.
+            // This method doesn't receive a valid principal id from the
+            // connector. So we disregard the principal and look
+            // by ID.
+            //
             MainConsole.Instance.DebugFormat("[XINVENTORY SERVICE]: Fetch contents for folder {0}", folderID.ToString());
             InventoryCollection inventory = new InventoryCollection
                                                 {
@@ -658,6 +661,7 @@ namespace Universe.Services.SQLServices.InventoryService
                 return (List<InventoryFolderBase>) remoteValue;
 
             // Since we probably don't get a valid principal here, either ...
+            //
             List<InventoryFolderBase> invItems = m_Database.GetFolders(
                 new[] {"parentFolderID"},
                 new[] {folderID.ToString()});
@@ -732,6 +736,7 @@ namespace Universe.Services.SQLServices.InventoryService
         }
 
         // We don't check the principal's ID here
+        //
         [CanBeReflected(ThreatLevel = ThreatLevel.High)]
         public virtual bool DeleteFolders(UUID principalID, List<UUID> folderIDs)
         {
@@ -753,6 +758,7 @@ namespace Universe.Services.SQLServices.InventoryService
             }
 
             // Ignore principal ID, it's bogus at connector level
+            //
             foreach (UUID id in folderIDs)
             {
                 if (!ParentIsTrash(id))
@@ -881,7 +887,7 @@ namespace Universe.Services.SQLServices.InventoryService
 
             foreach (InventoryItemBase i in items)
             {
-                //re-fetch because we don't have Owner filled in properly
+                //refetch because we don't have Owner filled in properly
                 InventoryItemBase item = GetItem(UUID.Zero, i.ID);
                 if(item == null) continue;
                 // Cannot move this item, its from libraryowner
@@ -918,7 +924,8 @@ namespace Universe.Services.SQLServices.InventoryService
                 return true;
             }
 
-            // Just use the ID.
+            // Just use the ID... *facepalms*
+            //
             foreach (UUID id in itemIDs)
             {
                 InventoryItemBase item = GetItem(UUID.Zero, id);
@@ -1231,7 +1238,7 @@ namespace Universe.Services.SQLServices.InventoryService
                 {
                     // Trying to do this right this time. This is evil. If
                     // you believe in Good, go elsewhere. Vampires and other
-                    // evil creators only beyond this point. You have been
+                    // evil creatores only beyond this point. You have been
                     // warned.
 
                     // We're going to mask a lot of things by the next perms
@@ -1242,7 +1249,7 @@ namespace Universe.Services.SQLServices.InventoryService
                     //
                     // Transfer
                     // Copy
-                    // Modify
+                    // Modufy
                     const uint permsMask = ~((uint) PermissionMask.Copy |
                                              (uint) PermissionMask.Transfer |
                                              (uint) PermissionMask.Modify);
@@ -1355,7 +1362,7 @@ namespace Universe.Services.SQLServices.InventoryService
                 itemCopy.SaleType = item.SaleType;
 
                 if (! AddItem(itemCopy))
-                    MainConsole.Instance.Warn ("[InventoryService]: Failed to insert inventory item copy into database");
+                    MainConsole.Instance.Warn ("[InventoryService]: Failed to insert inventory item copyinto database");
 
 
                 if ((item.CurrentPermissions & (uint)PermissionMask.Copy) == 0)
@@ -1522,7 +1529,7 @@ namespace Universe.Services.SQLServices.InventoryService
             }
             //Make sure that all default folders exist
             CreateUserInventory(account.PrincipalID, false);
-            //Re-fetch the skeleton now
+            //Refetch the skeleton now
             skeleton = GetInventorySkeleton(account.PrincipalID);
             Dictionary<int, UUID> defaultFolders = new Dictionary<int, UUID>();
             Dictionary<UUID, UUID> changedFolders = new Dictionary<UUID, UUID>();
@@ -1575,7 +1582,7 @@ namespace Universe.Services.SQLServices.InventoryService
 
         protected virtual InventoryFolderBase[] GetSystemFolders(UUID principalID)
         {
-            //MainConsole.Instance.DebugFormat("[XINVENTORY SERVICE]: Getting system folders for {0}", principalID);
+            //            MainConsole.Instance.DebugFormat("[XINVENTORY SERVICE]: Getting system folders for {0}", principalID);
 
             InventoryFolderBase[] allFolders = m_Database.GetFolders(
                 new[] {"agentID"},
@@ -1590,7 +1597,8 @@ namespace Universe.Services.SQLServices.InventoryService
                         return false;
                     });
 
-            //MainConsole.Instance.DebugFormat("[XINVENTORY SERVICE]: Found {0} system folders for {1}", sysFolders.Length, principalID);
+            //            MainConsole.Instance.DebugFormat(
+            //                "[XINVENTORY SERVICE]: Found {0} system folders for {1}", sysFolders.Length, principalID);
 
             return sysFolders;
         }

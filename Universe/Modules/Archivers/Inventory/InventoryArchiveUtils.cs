@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,13 +25,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
+using Universe.Framework.Services;
+using Universe.Framework.Services.ClassHelpers.Inventory;
+using OpenMetaverse;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using OpenMetaverse;
-using Universe.Framework.Services;
-using Universe.Framework.Services.ClassHelpers.Inventory;
 
 namespace Universe.Modules.Archivers
 {
@@ -122,10 +121,12 @@ namespace Universe.Modules.Archivers
             // If the path isn't just / then trim any starting extraneous slashes
             path = path.TrimStart(new[] {PATH_DELIMITER});
 
-            //MainConsole.Instance.DebugFormat("[INVENTORY ARCHIVE UTILS]: Adjusted path in FindFolderByPath() is [{0}]", path);
+//            MainConsole.Instance.DebugFormat("[INVENTORY ARCHIVE UTILS]: Adjusted path in FindFolderByPath() is [{0}]", path);
 
             string[] components = SplitEscapedPath(path);
             components[0] = UnescapePath(components[0]);
+
+            //string[] components = path.Split(new string[] { PATH_DELIMITER.ToString() }, 2, StringSplitOptions.None);
 
             InventoryCollection contents = inventoryService.GetFolderContent(startFolder.Owner, startFolder.ID);
 
@@ -196,20 +197,23 @@ namespace Universe.Modules.Archivers
             string[] components = SplitEscapedPath(path);
             components[0] = UnescapePath(components[0]);
 
+            //string[] components = path.Split(new string[] { PATH_DELIMITER }, 2, StringSplitOptions.None);
+
             if (components.Length == 1)
             {
-                //MainConsole.Instance.DebugFormat(
-                //    "FOUND SINGLE COMPONENT [{0}].  Looking for this in [{1}] {2}", components[0], startFolder.Name, startFolder.ID);
+//                MainConsole.Instance.DebugFormat(
+//                    "FOUND SINGLE COMPONENT [{0}].  Looking for this in [{1}] {2}", 
+//                    components[0], startFolder.Name, startFolder.ID);
 
                 List<InventoryItemBase> items = inventoryService.GetFolderItems(startFolder.Owner, startFolder.ID);
 
-                //MainConsole.Instance.DebugFormat("[INVENTORY ARCHIVE UTILS]: Found {0} items in FindItemByPath()", items.Count);
+//                MainConsole.Instance.DebugFormat("[INVENTORY ARCHIVE UTILS]: Found {0} items in FindItemByPath()", items.Count);
 
                 return items.FirstOrDefault(item => item.Name == components[0]);
             }
             else
             {
-                //MainConsole.Instance.DebugFormat("FOUND COMPONENTS [{0}] and [{1}]", components[0], components[1]);
+//                MainConsole.Instance.DebugFormat("FOUND COMPONENTS [{0}] and [{1}]", components[0], components[1]);
 
                 InventoryCollection contents = inventoryService.GetFolderContent(startFolder.Owner, startFolder.ID);
 
@@ -230,7 +234,7 @@ namespace Universe.Modules.Archivers
         /// </returns>
         public static string[] SplitEscapedPath(string path)
         {
-            //MainConsole.Instance.DebugFormat("SPLITTING PATH {0}", path);
+//            MainConsole.Instance.DebugFormat("SPLITTING PATH {0}", path);
 
             bool singleEscapeChar = false;
 
@@ -260,7 +264,7 @@ namespace Universe.Modules.Archivers
         /// <returns></returns>
         public static string UnescapePath(string path)
         {
-            //MainConsole.Instance.DebugFormat("ESCAPING PATH {0}", path);
+//            MainConsole.Instance.DebugFormat("ESCAPING PATH {0}", path);
 
             StringBuilder sb = new StringBuilder();
 
@@ -283,7 +287,7 @@ namespace Universe.Modules.Archivers
                 }
             }
 
-            //MainConsole.Instance.DebugFormat("ESCAPED PATH TO {0}", sb);
+//            MainConsole.Instance.DebugFormat("ESCAPED PATH TO {0}", sb);
 
             return sb.ToString();
         }
@@ -302,7 +306,7 @@ namespace Universe.Modules.Archivers
         }
 
         /// <summary>
-        ///     Unescape an archive path.
+        ///     Un-escape an archive path.
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
