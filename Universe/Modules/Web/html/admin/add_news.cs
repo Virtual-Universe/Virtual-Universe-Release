@@ -28,7 +28,7 @@
 using System;
 using System.Collections.Generic;
 using OpenMetaverse;
-using Univers.Framework.DatabaseInterfaces;
+using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Servers.HttpServer;
 using Universe.Framework.Servers.HttpServer.Implementation;
 
