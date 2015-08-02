@@ -25,8 +25,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System;
+using System.Collections.Generic;
+using System.IO;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
 using Universe.Framework.ConsoleFramework;
+using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
@@ -37,347 +43,390 @@ using Universe.Framework.Servers.HttpServer.Interfaces;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Utilities;
-using Universe.Modules.AbuseReportsGUI;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
-using System;
-using System.IO;
-using System.Threading;
-using System.Windows.Forms;
 
 namespace Universe.Modules.AbuseReports
 {
-    public class AbuseReportsGUIService : IService
-    {
-        #region IService Members
+	public class AbuseReportsService : IService
+	{
+		#region IService Members
 
-        private IRegistryCore m_registry;
+		IAbuseReportsConnector abuseConnector;
 
-        public void Initialize(IConfigSource config, IRegistryCore registry)
-        {
-            m_registry = registry;
-            if (MainConsole.Instance != null)
-                MainConsole.Instance.Commands.AddCommand("GUI abuse reports",
-                                                         "GUI abuse reports",
-                                                         "Opens the abuse reports GUI", 
-                                                         OpenGUI, false, true);
-        }
+		public void Initialize(IConfigSource config, IRegistryCore registry)
+		{
+		}
 
-        public void Start(IConfigSource config, IRegistryCore registry)
-        {
-        }
+		public void Start(IConfigSource config, IRegistryCore registry)
+		{
+		}
 
-        public void FinishedStartup()
-        {
-        }
-
-        #endregion
-
-        #region GUI Code
-
-        protected void OpenGUI(IScene scene, string[] cmdparams)
-        {
-            Thread t = new Thread(ThreadProcARGUI);
-            t.Start();
-        }
-
-        public void ThreadProcARGUI()
-        {
-            Culture.SetCurrentCulture();
-            Application.Run(new Abuse(m_registry.RequestModuleInterface<IAssetService>(),
-                                      m_registry.RequestModuleInterface<IJ2KDecoder>()));
-        }
-
-        #endregion
-    }
-
-    /// <summary>
-    ///     Enables the saving of abuse reports to the database
-    /// </summary>
-    public class AbuseReportsModule : INonSharedRegionModule
-    {
-        private IScene m_Scene;
-        private bool m_enabled;
-
-        #region INonSharedRegionModule Members
-
-        public void Initialize(IConfigSource source)
-        {
-            IConfig cnf = source.Configs["AbuseReports"];
-            if (cnf != null)
-                m_enabled = cnf.GetBoolean("Enabled", true);
-        }
-
-        public void AddRegion(IScene scene)
-        {
-            if (!m_enabled)
-                return;
-
-            m_Scene = scene;
-
-            scene.EventManager.OnNewClient += OnNewClient;
-            scene.EventManager.OnClosingClient += OnClosingClient;
-            //Disabled until complete
-            scene.EventManager.OnRegisterCaps += OnRegisterCaps;
-        }
-
-        public void RemoveRegion(IScene scene)
-        {
-            if (!m_enabled)
-                return;
+		public void FinishedStartup()
+		{
+			abuseConnector = Framework.Utilities.DataManager.RequestPlugin<IAbuseReportsConnector> ();
+			if (abuseConnector != null)
+			{
+				if (MainConsole.Instance != null)
+				{
+					MainConsole.Instance.Commands.AddCommand (
+						"abuse reports",
+						"abuse reports",
+						"Display a summary of current abuse reports", 
+						HandleAbuseReports, false, true);
+				}
+			}
+		}
 
 
-            m_Scene = null;
+		#endregion
 
-            scene.EventManager.OnNewClient -= OnNewClient;
-            scene.EventManager.OnClosingClient -= OnClosingClient;
-            //Disabled until complete
-            //scene.EventManager.OnRegisterCaps -= OnRegisterCaps;
-        }
+		#region console commands
+		protected void HandleAbuseReports(IScene scene, string [] cmd)
+		{
 
-        public void RegionLoaded(IScene scene)
-        {
-        }
+			int reports;
+			while (!int.TryParse (MainConsole.Instance.Prompt ("Number of reports to display: ", "7"), out reports))
+				MainConsole.Instance.Info ("Bad input, must be a number > 0");
 
-        public Type ReplaceableInterface
-        {
-            get { return null; }
-        }
+			string abuseInfo;
 
-        public string Name
-        {
-            get { return "AbuseReportsModule"; }
-        }
+			abuseInfo = String.Format ("{0, -8}", "Card");
+			abuseInfo += String.Format ("{0, -30}", "Category");
+			abuseInfo += String.Format ("{0, -30}", "Summary");
+			abuseInfo += String.Format ("{0, -20}", "Reporter");
+			abuseInfo += String.Format ("{0, -20}", "Assigned");
 
-        public void Close()
-        {
-        }
+			MainConsole.Instance.CleanInfo (abuseInfo);
 
-        #endregion
+			MainConsole.Instance.CleanInfo (
+				"----------------------------------------------------------------------------------------------------");
 
-        private void OnClosingClient(IClientAPI client)
-        {
-            client.OnUserReport -= UserReport;
-        }
+			List<AbuseReport> abuseReports =  abuseConnector.GetAbuseReports(0, reports, true);
 
-        private void OnNewClient(IClientAPI client)
-        {
-            client.OnUserReport += UserReport;
-        }
+			foreach (AbuseReport rpt in abuseReports) {
+				abuseInfo = String.Format ("{0, -8}", rpt.Number);
+				abuseInfo += String.Format ("{0, -30}", rpt.Category.ToString().Substring(0,28));   
+				abuseInfo += String.Format ("{0, -30}", rpt.AbuseSummary);
+				abuseInfo += String.Format ("{0, -20}", rpt.ReporterName);
+				abuseInfo += String.Format ("{0, -12}", rpt.AssignedTo);
 
-        /// <summary>
-        ///     This deals with saving the report into the database.
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="regionName"></param>
-        /// <param name="abuserID"></param>
-        /// <param name="catagory"></param>
-        /// <param name="checkflags"></param>
-        /// <param name="details"></param>
-        /// <param name="objectID"></param>
-        /// <param name="position"></param>
-        /// <param name="reportType"></param>
-        /// <param name="screenshotID"></param>
-        /// <param name="summery"></param>
-        /// <param name="reporter"></param>
-        private void UserReport(IClientAPI client, string regionName, UUID abuserID, byte catagory, byte checkflags,
-                                string details, UUID objectID, Vector3 position, byte reportType, UUID screenshotID,
-                                string summery, UUID reporter)
-        {
-            AbuseReport report = new AbuseReport
-                                     {
-                                         ObjectUUID = objectID,
-                                         ObjectPosition = position.ToString(),
-                                         Active = true,
-                                         Checked = false,
-                                         Notes = "",
-                                         AssignedTo = "No One",
-                                         ScreenshotID = screenshotID
-                                     };
+				MainConsole.Instance.CleanInfo (abuseInfo);
+				MainConsole.Instance.CleanInfo ("");
 
-            if (objectID != UUID.Zero)
-            {
-                ISceneChildEntity Object = client.Scene.GetSceneObjectPart(objectID);
-                report.ObjectName = Object.Name;
-            }
-            else
-                report.ObjectName = "";
+			}
+		}
 
-            string[] detailssplit = details.Split('\n');
+		#endregion
+	}
 
-            string AbuseDetails = detailssplit[detailssplit.Length - 1];
+	/// <summary>
+	///     Enables the saving of abuse reports to the database
+	/// </summary>
+	public class AbuseReportsModule : INonSharedRegionModule
+	{
+		IScene m_Scene;
+		bool m_enabled;
 
-            report.AbuseDetails = AbuseDetails;
+		#region INonSharedRegionModule Members
 
-            report.ReporterName = client.Name;
+		public void Initialise(IConfigSource source)
+		{
+			IConfig cnf = source.Configs["AbuseReports"];
+			if (cnf != null)
+				m_enabled = cnf.GetBoolean("Enabled", true);
+		}
 
-            string[] findRegion = summery.Split('|');
-            report.RegionName = findRegion[1];
+		public void AddRegion(IScene scene)
+		{
+			if (!m_enabled)
+				return;
 
-            string[] findLocation = summery.Split('(');
-            string[] findLocationend = findLocation[1].Split(')');
-            report.AbuseLocation = findLocationend[0];
+			m_Scene = scene;
 
-            string[] findCategory = summery.Split('[');
-            string[] findCategoryend = findCategory[1].Split(']');
-            report.Category = findCategoryend[0];
+			scene.EventManager.OnNewClient += OnNewClient;
+			scene.EventManager.OnClosingClient += OnClosingClient;
+			scene.EventManager.OnRegisterCaps += OnRegisterCaps;
+		}
 
-            string[] findAbuserName = summery.Split('{');
-            string[] findAbuserNameend = findAbuserName[1].Split('}');
-            report.AbuserName = findAbuserNameend[0];
-
-            string[] findSummary = summery.Split('\"');
-
-            string abuseSummary = findSummary[1];
-            if (findSummary.Length != 0)
-            {
-                abuseSummary = findSummary[1];
-            }
-
-            report.AbuseSummary = abuseSummary;
+		public void RemoveRegion(IScene scene)
+		{
+			if (!m_enabled)
+				return;
 
 
-            report.Number = (-1);
+			m_Scene = null;
 
-            EstateSettings ES = client.Scene.RegionInfo.EstateSettings;
-            //If the abuse email is set up and the email module is available, send the email
-            if (ES.AbuseEmailToEstateOwner && ES.AbuseEmail != "")
-            {
-                IEmailModule Email = m_Scene.RequestModuleInterface<IEmailModule>();
-                if (Email != null)
-                    Email.SendEmail(UUID.Zero, ES.AbuseEmail, "Abuse Report", "This abuse report was submitted by " +
-                                                                              report.ReporterName + " against " +
-                                                                              report.AbuserName + " at " +
-                                                                              report.AbuseLocation + " in your region " +
-                                                                              report.RegionName +
-                                                                              ". Summary: " + report.AbuseSummary +
-                                                                              ". Details: " + report.AbuseDetails + ".",
-                                    client.Scene);
-            }
-            //Tell the DB about it
-            IAbuseReports conn = m_Scene.RequestModuleInterface<IAbuseReports>();
-            if (conn != null)
-                conn.AddAbuseReport(report);
-        }
+			scene.EventManager.OnNewClient -= OnNewClient;
+			scene.EventManager.OnClosingClient -= OnClosingClient;
+			//Disabled until complete
+			//scene.EventManager.OnRegisterCaps -= OnRegisterCaps;
+		}
 
-        #region Disabled CAPS code
+		public void RegionLoaded(IScene scene)
+		{
+		}
 
-        private OSDMap OnRegisterCaps(UUID agentID, IHttpServer server)
-        {
-            OSDMap retVal = new OSDMap();
-            retVal["SendUserReportWithScreenshot"] = CapsUtil.CreateCAPS("SendUserReportWithScreenshot", "");
-            retVal["SendUserReport"] = retVal["SendUserReportWithScreenshot"];
+		public Type ReplaceableInterface
+		{
+			get { return null; }
+		}
 
-            //Region Server bound
-            server.AddStreamHandler(new GenericStreamHandler("POST", retVal["SendUserReportWithScreenshot"],
-                                                             delegate(string path, Stream request,
-                                                                      OSHttpRequest httpRequest,
-                                                                      OSHttpResponse httpResponse)
-                                                             {
-                                                                 return ProcessSendUserReportWithScreenshot(agentID, path, request,
-                                                                                            httpRequest,
-                                                                                            httpResponse);
-                                                             }));
+		public string Name
+		{
+			get { return "AbuseReportsModule"; }
+		}
 
-            return retVal;
-        }
+		public void Close()
+		{
+		}
 
-        private  byte[] ProcessSendUserReportWithScreenshot(UUID AgentID, string path, Stream request, OSHttpRequest httpRequest,
-                                          OSHttpResponse httpResponse) 
-        {
-            IScenePresence SP = findScenePresence(AgentID);
-            OSDMap map = (OSDMap)OSDParser.DeserializeLLSDXml(HttpServerHandlerHelpers.ReadFully(request));
-            //string RegionName = map["abuse-region-name"];
-            UUID AbuserID = map["abuser-id"];
-            uint Category = map["category"];
-            uint CheckFlags = map["check-flags"];
-            string details = map["details"];
-            UUID objectID = map["object-id"];
-            Vector3 position = map["position"];
-            uint ReportType = map["report-type"];
-            UUID ScreenShotID = map["screenshot-id"];
-            string summary = map["summary"];
-            UserReport(SP.ControllingClient, SP.Scene.RegionInfo.RegionName, AbuserID, (byte)Category, (byte)CheckFlags,
-                       details, objectID, position, (byte)ReportType, ScreenShotID, summary, SP.UUID);
+		#endregion
 
-            if (ScreenShotID != UUID.Zero)
-            {
-                string uploadpath = "/CAPS/Upload/" + UUID.Random() + "/";
-                AbuseTextureUploader uploader = new AbuseTextureUploader(uploadpath, SP.UUID, ScreenShotID);
-                uploader.OnUpLoad += AbuseTextureUploaded;
+		void OnClosingClient(IClientAPI client)
+		{
+			client.OnUserReport -= UserReport;
+		}
 
-                MainServer.Instance.AddStreamHandler(new GenericStreamHandler("POST", uploadpath,
-                                                                    uploader.uploaderCaps));
+		void OnNewClient(IClientAPI client)
+		{
+			client.OnUserReport += UserReport;
+		}
 
-                string uploaderURL = MainServer.Instance.ServerURI + uploadpath;
-                OSDMap resp = new OSDMap();
-                resp["uploader"] = uploaderURL;
-                resp["state"] = "upload";
-                return OSDParser.SerializeLLSDXmlBytes(resp);
-            }
-            else
-                return MainServer.BlankResponse;
-        }
+		/// <summary>
+		///     This deals with saving the report into the database.
+		/// </summary>
+		/// <param name="client"></param>
+		/// <param name="regionName"></param>
+		/// <param name="abuserID"></param>
+		/// <param name="catagory"></param>
+		/// <param name="checkflags"></param>
+		/// <param name="details"></param>
+		/// <param name="objectID"></param>
+		/// <param name="position"></param>
+		/// <param name="reportType"></param>
+		/// <param name="screenshotID"></param>
+		/// <param name="summery"></param>
+		/// <param name="reporter"></param>
+		void UserReport(IClientAPI client, string regionName, UUID abuserID, byte catagory, byte checkflags,
+			string details, UUID objectID, Vector3 position, byte reportType, UUID screenshotID,
+			string summery, UUID reporter)
+		{
+			AbuseReport report = new AbuseReport
+			{
+				ObjectUUID = objectID,
+				ObjectPosition = position.ToString(),
+				Active = true,
+				Checked = false,
+				Notes = "",
+				AssignedTo = "No One",
+				ScreenshotID = screenshotID
+			};
+
+			if (objectID != UUID.Zero)
+			{
+				ISceneChildEntity Object = client.Scene.GetSceneObjectPart(objectID);
+				report.ObjectName = Object.Name;
+			}
+			else
+				report.ObjectName = "";
+
+			string[] detailssplit = details.Split('\n');
+
+			string AbuseDetails = detailssplit[detailssplit.Length - 1];
+
+			report.AbuseDetails = AbuseDetails;
+
+			report.ReporterName = client.Name;
+
+			string[] findRegion = summery.Split('|');
+			report.RegionName = findRegion[1];
+
+			string[] findLocation = summery.Split('(');
+			string[] findLocationend = findLocation[1].Split(')');
+			report.AbuseLocation = findLocationend[0];
+
+			string[] findCategory = summery.Split('[');
+			string[] findCategoryend = findCategory[1].Split(']');
+			report.Category = findCategoryend[0];
+
+			string[] findAbuserName = summery.Split('{');
+			string[] findAbuserNameend = findAbuserName[1].Split('}');
+			report.AbuserName = findAbuserNameend[0];
+
+			string[] findSummary = summery.Split('\"');
+
+			string abuseSummary = findSummary[1];
+			if (findSummary.Length != 0)
+			{
+				abuseSummary = findSummary[1];
+			}
+
+			report.AbuseSummary = abuseSummary;
 
 
-        public delegate void UploadedAbuseTexture(UUID agentID, UUID assetID, byte[] data);
+			report.Number = (-1);
 
-        public class AbuseTextureUploader
-        {
-            public event UploadedAbuseTexture OnUpLoad;
-            private UploadedAbuseTexture handlerUpLoad = null;
-            private UUID m_agentID, m_assetID;
+			EstateSettings ES = client.Scene.RegionInfo.EstateSettings;
+			//If the abuse email is set up and the email module is available, send the email
+			if (ES.AbuseEmailToEstateOwner && ES.AbuseEmail != "")
+			{
+				IEmailModule Email = m_Scene.RequestModuleInterface<IEmailModule>();
+				if (Email != null)
+				{
+					string msg = "This abuse report was submitted by " +
+						report.ReporterName + " against " +
+						report.AbuserName + " at " +
+						report.AbuseLocation + " in your region " +
+						report.RegionName +
+						". Summary: " + report.AbuseSummary +
+						". Details: " + report.AbuseDetails + ".";
 
-            private readonly string uploaderPath = String.Empty;
+					Email.SendEmail (
+						UUID.Zero,
+						ES.AbuseEmail,
+						"Abuse Report",
+						msg,
+						client.Scene
+					);
+				}
+			}
+			//Tell the DB about it
+			IAbuseReports conn = m_Scene.RequestModuleInterface<IAbuseReports>();
+			if (conn != null)
+				conn.AddAbuseReport(report);
+		}
 
-            public AbuseTextureUploader(string path, UUID agentID, UUID assetID)
-            {
-                uploaderPath = path;
-                m_agentID = agentID;
-                m_assetID = assetID;
-            }
+		#region Disabled CAPS code
 
-            /// <summary>
-            /// </summary>
-            /// <param name="path"></param>
-            /// <param name="request"></param>
-            /// <param name="httpRequest"></param>
-            /// <param name="httpResponse"></param>
-            /// <returns></returns>
-            public byte[] uploaderCaps(string path, Stream request,
-                                       OSHttpRequest httpRequest, OSHttpResponse httpResponse)
-            {
-                handlerUpLoad = OnUpLoad;
-                handlerUpLoad(m_agentID, m_assetID, HttpServerHandlerHelpers.ReadFully(request));
+		OSDMap OnRegisterCaps(UUID agentID, IHttpServer server)
+		{
+			OSDMap retVal = new OSDMap();
+			retVal["SendUserReportWithScreenshot"] = CapsUtil.CreateCAPS("SendUserReportWithScreenshot", "");
+			retVal["SendUserReport"] = retVal["SendUserReportWithScreenshot"];
 
-                OSDMap map = new OSDMap();
-                map["new_asset"] = m_assetID.ToString();
-                map["item_id"] = UUID.Zero;
-                map["state"] = "complete";
-                MainServer.Instance.RemoveStreamHandler("POST", uploaderPath);
+			//Region Server bound
+			server.AddStreamHandler(new GenericStreamHandler("POST", retVal["SendUserReportWithScreenshot"],
+				delegate(string path, Stream request,
+					OSHttpRequest httpRequest,
+					OSHttpResponse httpResponse)
+				{
+					return ProcessSendUserReportWithScreenshot(agentID, path, request,
+						httpRequest,
+						httpResponse);
+				}));
 
-                return OSDParser.SerializeLLSDXmlBytes(map);
-            }
-        }
+			return retVal;
+		}
 
-        public void AbuseTextureUploaded(UUID agentID, UUID assetID, byte[] data)
-        {
-            //MainConsole.Instance.InfoFormat("[AssetCAPS]: Received baked texture {0}", assetID.ToString());
-            AssetBase asset = new AssetBase(assetID, "Abuse Texture", AssetType.Texture, agentID) { Data = data };
-            asset.ID = m_Scene.AssetService.Store(asset);
-            MainConsole.Instance.DebugFormat("[AbuseCAPS]: texture new id {0}", assetID.ToString());
-        }
+		byte[] ProcessSendUserReportWithScreenshot(UUID AgentID, string path, Stream request, OSHttpRequest httpRequest,
+			OSHttpResponse httpResponse) 
+		{
+			IScenePresence SP = findScenePresence(AgentID);
+			OSDMap map = (OSDMap)OSDParser.DeserializeLLSDXml(HttpServerHandlerHelpers.ReadFully(request));
+			//string RegionName = map["abuse-region-name"];
 
-        #endregion
+			UUID AbuserID = map["abuser-id"];
+			uint Category = map["category"];
+			uint CheckFlags = map["check-flags"];
+			string details = map["details"];
+			UUID objectID = map["object-id"];
+			Vector3 position = map["position"];
+			uint ReportType = map["report-type"];
+			UUID ScreenShotID = map["screenshot-id"];
+			string summary = map["summary"];
 
-        #region Helpers
+			UserReport(
+				SP.ControllingClient,
+				SP.Scene.RegionInfo.RegionName,
+				AbuserID,
+				(byte)Category,
+				(byte)CheckFlags,
+				details,
+				objectID,
+				position,
+				(byte)ReportType,
+				ScreenShotID,
+				summary,
+				SP.UUID
+			);
 
-        public IScenePresence findScenePresence(UUID avID)
-        {
-            return m_Scene.GetScenePresence(avID);
-        }
+			if (ScreenShotID != UUID.Zero)
+			{
+				string uploadpath = "/CAPS/Upload/" + UUID.Random() + "/";
+				AbuseTextureUploader uploader = new AbuseTextureUploader(uploadpath, SP.UUID, ScreenShotID);
+				uploader.OnUpLoad += AbuseTextureUploaded;
 
-        #endregion
-    }
+				MainServer.Instance.AddStreamHandler(new GenericStreamHandler("POST", uploadpath, uploader.uploaderCaps));
+
+				string uploaderURL = MainServer.Instance.ServerURI + uploadpath;
+				OSDMap resp = new OSDMap();
+				resp["uploader"] = uploaderURL;
+				resp["state"] = "upload";
+
+				return OSDParser.SerializeLLSDXmlBytes(resp);
+			}
+
+			return MainServer.BlankResponse;
+		}
+
+
+		public delegate void UploadedAbuseTexture(UUID agentID, UUID assetID, byte[] data);
+
+		public class AbuseTextureUploader
+		{
+			public event UploadedAbuseTexture OnUpLoad;
+			UploadedAbuseTexture handlerUpLoad;
+			UUID m_agentID, m_assetID;
+
+			readonly string uploaderPath = String.Empty;
+
+			public AbuseTextureUploader(string path, UUID agentID, UUID assetID)
+			{
+				uploaderPath = path;
+				m_agentID = agentID;
+				m_assetID = assetID;
+			}
+
+			/// <summary>
+			/// </summary>
+			/// <param name="path"></param>
+			/// <param name="request"></param>
+			/// <param name="httpRequest"></param>
+			/// <param name="httpResponse"></param>
+			/// <returns></returns>
+			public byte[] uploaderCaps(string path, Stream request,
+				OSHttpRequest httpRequest, OSHttpResponse httpResponse)
+			{
+				handlerUpLoad = OnUpLoad;
+				handlerUpLoad(m_agentID, m_assetID, HttpServerHandlerHelpers.ReadFully(request));
+
+				OSDMap map = new OSDMap();
+				map["new_asset"] = m_assetID.ToString();
+				map["item_id"] = UUID.Zero;
+				map["state"] = "complete";
+
+				MainServer.Instance.RemoveStreamHandler("POST", uploaderPath);
+
+				return OSDParser.SerializeLLSDXmlBytes(map);
+			}
+		}
+
+		public void AbuseTextureUploaded(UUID agentID, UUID assetID, byte[] data)
+		{
+			//MainConsole.Instance.InfoFormat("[AssetCAPS]: Received baked texture {0}", assetID.ToString());
+			AssetBase asset = new AssetBase(assetID, "Abuse Texture", AssetType.Texture, agentID) { Data = data };
+			asset.ID = m_Scene.AssetService.Store(asset);
+			MainConsole.Instance.DebugFormat("[AbuseCAPS]: texture new id {0}", assetID);
+		}
+
+		#endregion
+
+		#region Helpers
+
+		public IScenePresence findScenePresence(UUID avID)
+		{
+			return m_Scene.GetScenePresence(avID);
+		}
+
+		#endregion
+	}
 }

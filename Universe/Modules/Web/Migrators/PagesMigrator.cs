@@ -25,9 +25,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Universe.Framework.DatabaseInterfaces;
-using OpenMetaverse;
+using System;
 using System.Collections.Generic;
+using OpenMetaverse;
+using Universe.Framework.DatabaseInterfaces;
 
 namespace Universe.Modules.Web
 {
@@ -382,6 +383,8 @@ namespace Universe.Modules.Web
                                            MenuPosition = 8,
                                            Location = "admin/add_news.html"
                                        });
+			
+			// These are individual pages that can be called
             _rootPage.Children.Add(new GridPage
                                        {
                                            MenuID = "edit_news",

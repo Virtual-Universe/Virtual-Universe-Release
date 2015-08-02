@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http;//opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,13 +25,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Universe.Framework.Servers.HttpServer.Implementation;
-using System.Collections.Generic;
-using Universe.Framework.Modules;
-using Universe.Framework.Utilities;
 using System;
+using System.Collections.Generic;
 using OpenMetaverse;
+using Universe.Framework.Modules;
+using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Services;
+using Universe.Framework.Utilities;
 
 namespace Universe.Modules.Web
 {
@@ -126,7 +126,6 @@ namespace Universe.Modules.Web
                     transactions = moneyModule.GetTransactionHistory (UserID, UUID.Zero, dateFrom, dateTo, (uint)start, amountPerQuery);
                 else
                     transactions = moneyModule.GetTransactionHistory (dateFrom, dateTo, (uint)start, amountPerQuery);
-
 
                 // data
                 if (transactions.Count > 0)

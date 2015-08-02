@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/,
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,15 +25,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using OpenMetaverse;
 using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Modules;
 using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
 using Universe.Framework.SceneInfo;
-using OpenMetaverse;
-using System.Collections.Generic;
-using System.IO;
 using GridRegion = Universe.Framework.Services.GridRegion;
 using RegionFlags = Universe.Framework.Services.RegionFlags;
 
@@ -149,10 +150,10 @@ namespace Universe.Modules.Web
 
                 }
 
-                if (regionPreset.StartsWith("w"))
+                if (regionPreset.StartsWith("u"))
                 {
                     // 'standard' setup
-                    newRegion.RegionType = newRegion.RegionType + "Whitecore";                   
+                    newRegion.RegionType = newRegion.RegionType + "Universe";                   
                     //info.RegionPort;            // use auto assigned port
                     newRegion.RegionTerrain = "Flatland";
                     newRegion.Startup = StartupType.Normal;
@@ -347,9 +348,6 @@ namespace Universe.Modules.Web
             vars.Add("Submit", translator.GetTranslatedString("Submit"));
             vars.Add("SubmitURL", "home.html");
             vars.Add("ErrorMessage", "");
-
-
-         
 
             return vars;
         }
