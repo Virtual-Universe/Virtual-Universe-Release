@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,11 +27,6 @@
 
 //#define BlockUnsupportedVersions
 
-using Universe.Framework.Configuration;
-using Universe.Framework.ConsoleFramework;
-using Universe.Framework.Modules;
-using Universe.Framework.Utilities;
-using Nini.Config;
 using System;
 using System.Diagnostics;
 using System.Globalization;
@@ -39,6 +34,11 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
+using Nini.Config;
+using Universe.Framework.Configuration;
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.Modules;
+using Universe.Framework.Utilities;
 
 namespace Universe.Simulation.Base
 {
@@ -47,7 +47,6 @@ namespace Universe.Simulation.Base
     /// </summary>
     public class BaseApplication
     {
-
         /// <summary>
         ///     Save Crashes in the bin/crashes folder.  Configurable with m_crashDir
         /// </summary>
@@ -92,7 +91,7 @@ namespace Universe.Simulation.Base
 
             BinMigratorService service = new BinMigratorService();
             service.MigrateBin();
-            // Configure nIni aliases and localles
+            // Configure nini aliases and localles
             Culture.SystemCultureInfo = CultureInfo.CurrentCulture;
             Culture.SetCurrentCulture();
             configSource.Alias.AddAlias("On", true);
@@ -147,18 +146,18 @@ namespace Universe.Simulation.Base
                 if (!requested)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-					Console.WriteLine("\n\n************* Universe initial run. *************");
+					Console.WriteLine("\n\n************* Virtual Universe initial run. *************");
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     Console.WriteLine(
-                        "\n\n   This appears to be your first time running Universe.\n"+
+                        "\n\n   This appears to be your first time running Virtual Universe.\n"+
                         "If you have already configured your *.ini files, please ignore this warning and press enter;\n" +
-                        "Otherwise type 'yes' and Universe will guide you through the configuration process.\n\n"+
+                        "Otherwise type 'yes' and Virtual Universe will guide you through the configuration process.\n\n"+
                         "Remember, these file names are Case Sensitive in Linux and Proper Cased.\n"+
                         "1. " + Universe_ConfigDir + "/Universe.ini\nand\n" +
                         "2. " + Universe_ConfigDir + "/Sim/Standalone/StandaloneCommon.ini \nor\n" +
                         "3. " + Universe_ConfigDir + "/Grid/GridCommon.ini\n" +
                         "\nAlso, you will want to examine these files in great detail because only the basic system will " +
-                        "load by default. Universe can do a LOT more if you spend a little time going through these files.\n\n");
+                        "load by default. Virtual Universe can do a LOT more if you spend a little time going through these files.\n\n");
                 }
 
                 // Make sure...
@@ -183,7 +182,7 @@ namespace Universe.Simulation.Base
                     string regionIPAddress = gridIPAddress;
                     bool isStandalone = true;
                     string dbType = "1";
-                    string gridName = "Universe-Sim Grid";
+                    string gridName = "Virtual Universe Grid";
                     string welcomeMessage = "";
                     string allowAnonLogin = "true";
                     uint port = 9000;
@@ -191,7 +190,7 @@ namespace Universe.Simulation.Base
 
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("====================================================================");
-					Console.WriteLine("======================= Universe CONFIGURATOR =====================");
+					Console.WriteLine("======================= Virtual Universe Configurator ==============");
                     Console.WriteLine("====================================================================");
                     Console.ResetColor();
 
@@ -227,7 +226,7 @@ namespace Universe.Simulation.Base
                             Console.ForegroundColor = ConsoleColor.White;
                             Console.WriteLine(
                                 "\nNote: this setup does not automatically create a MySQL installation for you.\n" +
-                                " This will configure the Universe setting but you must install MySQL as well");
+                                " This will configure the Virtual Universe setting but you must install MySQL as well");
                             Console.ResetColor();
 
                             dbSource = ReadLine("MySQL database IP", dbSource);
@@ -244,7 +243,7 @@ namespace Universe.Simulation.Base
 
                     if (isStandalone)
                     {
-                        gridName = ReadLine("Name of your Universe-Sim Grid", gridName);
+                        gridName = ReadLine("Name of your Virtual Universe Grid", gridName);
 
                         welcomeMessage = "Welcome to " + gridName + ", <USERNAME>!";
                         Console.ForegroundColor = ConsoleColor.White;
@@ -563,8 +562,7 @@ namespace Universe.Simulation.Base
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     Console.WriteLine(" >> Please restart to use your new configuration. <<");
                     Console.ResetColor ();
-                    Console.WriteLine ("");
-                    
+                    Console.WriteLine ("");                  
                 }
             }
         }
