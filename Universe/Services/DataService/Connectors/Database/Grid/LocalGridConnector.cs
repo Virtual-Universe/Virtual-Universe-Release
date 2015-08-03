@@ -51,7 +51,7 @@ namespace Universe.Services.DataService
 		public void Initialize(IGenericData GenericData, IConfigSource source, IRegistryCore simBase,
 			string defaultConnectionString)
 		{
-			if (source.Configs["WhiteCoreConnectors"].GetString("GridConnector", "LocalConnector") == "LocalConnector")
+			if (source.Configs["UniverseConnectors"].GetString("GridConnector", "LocalConnector") == "LocalConnector")
 			{
 				GD = GenericData;
 
@@ -63,7 +63,7 @@ namespace Universe.Services.DataService
 				if (GD != null)
 				{
 					GD.ConnectToDatabase (connectionString, "GridRegions",
-						source.Configs ["WhiteCoreConnectors"].GetBoolean ("ValidateTables", true));
+						source.Configs ["UniverseConnectors"].GetBoolean ("ValidateTables", true));
 
 					Framework.Utilities.DataManager.RegisterPlugin (this);
 
