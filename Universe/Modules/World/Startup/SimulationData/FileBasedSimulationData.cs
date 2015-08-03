@@ -25,20 +25,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Timers;
+using Nini.Config;
+using OpenMetaverse;
+using ProtoBuf;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Utilities;
 using Universe.Region;
-using Nini.Config;
-using OpenMetaverse;
-using ProtoBuf;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Timers;
 using Timer = System.Timers.Timer;
 
 namespace Universe.Modules
@@ -157,7 +157,7 @@ namespace Universe.Modules
             {
                 if (Path.GetFileName (regBak).StartsWith(regionName)) 
                 {
-                    //        MainConsole.Instance.Debug ("Found: " + Path.GetFileNameWithoutExtension (regBak));
+                    //MainConsole.Instance.Debug ("Found: " + Path.GetFileNameWithoutExtension (regBak));
                     regionBaks.Add ( regBak);
                 }
             }
@@ -252,7 +252,7 @@ namespace Universe.Modules
 
                 ForceBackup();
 
-				MainConsole.Instance.Info("[FileBasedSimulationData]: Save completed.");
+				MainConsole.Instance.Info("[File Based Simulation Data]: Save completed.");
 			}
 
 			return regionInfo;
@@ -348,12 +348,6 @@ namespace Universe.Modules
                     ((info.RegionLocY == 0 
                             ? 1000 
                             : info.RegionLocY / Constants.RegionSize)).ToString ())) * Constants.RegionSize;
-            
-                //info.RegionLocZ =
-                //    int.Parse (MainConsole.Instance.Prompt ("Region location Z",
-                //        ((info.RegionLocZ == 0 
-                //            ? 0 
-                //            : info.RegionLocZ / Constants.RegionSize)).ToString ())) * Constants.RegionSize;
 
                 var haveSize = true;
                 var sizeCheck = "";
@@ -389,7 +383,6 @@ namespace Universe.Modules
                 // * Mainland / Openspace
                 //
                 // * Estate / Full Region   (Private)
-                //
                 info.RegionType = MainConsole.Instance.Prompt ("Region Type (Mainland/Estate)",
                     (info.RegionType == "" ? "Estate" : info.RegionType));
 
@@ -405,7 +398,7 @@ namespace Universe.Modules
                     responses.Add("Full Region");
                     responses.Add("Homestead");
                     responses.Add ("Openspace");
-                    responses.Add ("Whitecore");                            // TODO: remove?
+                    responses.Add ("Universe");                            // TODO: remove?
                     responses.Add ("Custom");                               
                     setupMode = MainConsole.Instance.Prompt("Mainland region type?", "Full Region", responses).ToLower ();
 
@@ -421,7 +414,8 @@ namespace Universe.Modules
                     info.RegionType = "Estate / ";                   
                     responses.Add("Full Region");
                     responses.Add("Homestead");
-                    responses.Add ("Whitecore");                            // TODO: Universe 'standard' setup, rename??
+					responses.Add ("Openspace");
+                    responses.Add ("Universe");                            // TODO: Universe 'standard' setup, rename?
                     responses.Add ("Custom");
                     setupMode = MainConsole.Instance.Prompt("Estate region type?","Full Region", responses).ToLower();
                 }
@@ -468,20 +462,20 @@ namespace Universe.Modules
                     info.ObjectCapacity =
                         int.Parse (MainConsole.Instance.Prompt ("Object capacity",
                         info.ObjectCapacity == 0
-                                               ? "50000"
+                                               ? "100000"
                                                : info.ObjectCapacity.ToString ()));
                 } 
 
                 if (setupMode.StartsWith("w"))
                 {
                     // 'standard' setup
-                    info.RegionType = info.RegionType + "Whitecore";                   
+                    info.RegionType = info.RegionType + "Universe";                   
                     //info.RegionPort;            // use auto assigned port
                     info.RegionTerrain = "Flatland";
                     info.Startup = StartupType.Normal;
                     info.SeeIntoThisSimFromNeighbor = true;
-                    info.InfiniteRegion = false;
-                    info.ObjectCapacity = 50000;
+                    info.InfiniteRegion = true;
+                    info.ObjectCapacity = 100000;
 
                 }
                 if (setupMode.StartsWith("o"))       
@@ -501,7 +495,7 @@ namespace Universe.Modules
 
                     info.Startup = StartupType.Medium;
                     info.SeeIntoThisSimFromNeighbor = true;
-                    info.InfiniteRegion = false;
+                    info.InfiniteRegion = true;
                     info.ObjectCapacity = 750;
                     info.RegionSettings.AgentLimit = 10;
                     info.RegionSettings.AllowLandJoinDivide = false;
@@ -519,7 +513,7 @@ namespace Universe.Modules
 
                     info.Startup = StartupType.Medium;
                     info.SeeIntoThisSimFromNeighbor = true;
-                    info.InfiniteRegion = false;
+                    info.InfiniteRegion = true;
                     info.ObjectCapacity = 3750;
                     info.RegionSettings.AgentLimit = 20;
                     info.RegionSettings.AllowLandJoinDivide = false;
@@ -534,7 +528,7 @@ namespace Universe.Modules
                     info.RegionTerrain = terrainFull;
                     info.Startup = StartupType.Normal;
                     info.SeeIntoThisSimFromNeighbor = true;
-                    info.InfiniteRegion = false;
+                    info.InfiniteRegion = true;
                     info.ObjectCapacity = 15000;
                     info.RegionSettings.AgentLimit = 100;
                     if (info.RegionType.StartsWith ("M"))                           // defaults are 'true'
