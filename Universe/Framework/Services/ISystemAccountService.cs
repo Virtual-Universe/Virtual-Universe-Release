@@ -75,5 +75,19 @@ namespace Universe.Framework.Services
         ///     The System Marketplace owner's name
         /// </summary>
         string MarketplaceOwnerName { get; }
+
+		/// <summary>
+		/// Get the name of a system estate
+		/// </summary>
+		/// <returns>The estate owner name</returns>
+		/// <param name="estateID">EstateID</param>
+		string GetSystemEstateOwnerName (int estateID);
+
+		/// <summary>
+		/// Get a system estate owner's UUID
+		/// </summary>
+		/// <returns>The estate owner UUID</returns>
+		/// <param name="estateID">EstateID</param>
+		string GetSystemEstateOwner (int estateID);
     }
 }

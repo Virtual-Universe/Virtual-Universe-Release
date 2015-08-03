@@ -65,8 +65,10 @@ namespace Universe.Framework.Utilities
         public const string GovernorName = "Governor White";
         
         // System Estate
-        public const string SystemEstateName = "Universe Estate";
-        public const int SystemEstateID = 1;
+        public const string MainlandEstateName = "Universe Mainland";
+        public const int MainlandEstateID = 1;
+		public const string SystemEstateName = "Universe Estate";
+		public const int SystemEstateID = 10;
 
         // System Real Estate Maintenance Group
 		public const string RealEstateGroupUUID = "dc7b21cd-3c89-fcaa-31c8-25f9ffd224cd";
