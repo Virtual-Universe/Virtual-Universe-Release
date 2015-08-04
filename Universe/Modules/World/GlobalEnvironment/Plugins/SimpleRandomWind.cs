@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://vision-sim.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Vision-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -32,14 +32,13 @@ using OpenMetaverse;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 
-
-namespace Universe.Modules.GlobalEnvironment.Plugins
+namespace Universe.Modules.Wind.Plugins
 {
     public class SimpleRandomWind : IWindModelPlugin
     {
-        private readonly Random m_rndnums = new Random(Environment.TickCount);
-        private float m_strength = 1.0f;
-        private Vector2[] m_windSpeeds = new Vector2[16*16];
+        readonly Random m_rndnums = new Random (Environment.TickCount);
+        float m_strength = 1.0f;
+        Vector2[] m_windSpeeds = new Vector2[16 * 16];
 
         public string Version
         {
@@ -53,22 +52,22 @@ namespace Universe.Modules.GlobalEnvironment.Plugins
             get { return "SimpleRandomWind"; }
         }
 
-        public void Initialize()
+        public void Initialize ()
         {
         }
 
-        public void WindConfig(IScene scene, IConfig windConfig)
+        public void WindConfig (IScene scene, IConfig windConfig)
         {
             if (windConfig != null)
             {
-                if (windConfig.Contains("strength"))
+                if (windConfig.Contains ("strength"))
                 {
-                    m_strength = windConfig.GetFloat("strength", 1.0F);
+                    m_strength = windConfig.GetFloat ("strength", 1.0F);
                 }
             }
         }
 
-        public void WindUpdate(uint frame)
+        public void WindUpdate (uint frame)
         {
             //Make sure our object is valid (we haven't been disposed of yet)
             if (m_windSpeeds != null)
@@ -77,37 +76,41 @@ namespace Universe.Modules.GlobalEnvironment.Plugins
                 {
                     for (int x = 0; x < 16; x++)
                     {
-                        m_windSpeeds[y*16 + x].X = (float) (m_rndnums.NextDouble()*2d - 1d); // -1 to 1
-                        m_windSpeeds[y*16 + x].Y = (float) (m_rndnums.NextDouble()*2d - 1d); // -1 to 1
-                        m_windSpeeds[y*16 + x].X *= m_strength;
-                        m_windSpeeds[y*16 + x].Y *= m_strength;
+                        m_windSpeeds [y * 16 + x].X = (float)(m_rndnums.NextDouble () * 2d - 1d); // -1 to 1
+                        m_windSpeeds [y * 16 + x].Y = (float)(m_rndnums.NextDouble () * 2d - 1d); // -1 to 1
+                        m_windSpeeds [y * 16 + x].X *= m_strength;
+                        m_windSpeeds [y * 16 + x].Y *= m_strength;
                     }
                 }
             }
         }
 
-        public Vector3 WindSpeed(float fX, float fY, float fZ)
+        public Vector3 WindSpeed (float fX, float fY, float fZ)
         {
-            Vector3 windVector = new Vector3(0.0f, 0.0f, 0.0f);
+            Vector3 windVector = new Vector3 (0.0f, 0.0f, 0.0f);
 
-            int x = (int) fX/16;
-            int y = (int) fY/16;
+            int x = (int)fX / 16;
+            int y = (int)fY / 16;
 
-            if (x < 0) x = 0;
-            if (x > 15) x = 15;
-            if (y < 0) y = 0;
-            if (y > 15) y = 15;
+            if (x < 0)
+                x = 0;
+            if (x > 15)
+                x = 15;
+            if (y < 0)
+                y = 0;
+            if (y > 15)
+                y = 15;
 
             if (m_windSpeeds != null)
             {
-                windVector.X = m_windSpeeds[y*16 + x].X;
-                windVector.Y = m_windSpeeds[y*16 + x].Y;
+                windVector.X = m_windSpeeds [y * 16 + x].X;
+                windVector.Y = m_windSpeeds [y * 16 + x].Y;
             }
 
             return windVector;
         }
 
-        public Vector2[] WindLLClientArray()
+        public Vector2[] WindLLClientArray ()
         {
             return m_windSpeeds;
         }
@@ -117,37 +120,37 @@ namespace Universe.Modules.GlobalEnvironment.Plugins
             get { return "Provides a simple wind model that creates random wind of a given strength in 16m x 16m patches."; }
         }
 
-        public Dictionary<string, string> WindParams()
+        public Dictionary<string, string> WindParams ()
         {
-            Dictionary<string, string> Params = new Dictionary<string, string> {{"strength", "wind strength"}};
+            Dictionary<string, string> Params = new Dictionary<string, string> { { "strength", "wind strength" } };
 
             return Params;
         }
 
-        public void WindParamSet(string param, float value)
+        public void WindParamSet (string param, float value)
         {
             switch (param)
             {
-                case "strength":
-                    m_strength = value;
-                    break;
+            case "strength":
+                m_strength = value;
+                break;
             }
         }
 
-        public float WindParamGet(string param)
+        public float WindParamGet (string param)
         {
             switch (param)
             {
-                case "strength":
-                    return m_strength;
-                default:
-                    throw new Exception(String.Format("Unknown {0} parameter {1}", this.Name, param));
+            case "strength":
+                return m_strength;
+            default:
+                throw new Exception (String.Format ("Unknown {0} parameter {1}", this.Name, param));
             }
         }
 
         #endregion
 
-        public void Dispose()
+        public void Dispose ()
         {
             m_windSpeeds = null;
         }

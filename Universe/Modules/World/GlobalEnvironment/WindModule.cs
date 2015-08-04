@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,6 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
 using System;
 using System.Collections.Generic;
 using Nini.Config;
@@ -35,51 +36,51 @@ using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 
-namespace Universe.Modules.GlobalEnvironment
+namespace Vision.Modules.Wind
 {
     public class WindModule : IWindModule, INonSharedRegionModule
     {
-        private const string m_dWindPluginName = "SimpleRandomWind";
+        const string m_dWindPluginName = "SimpleRandomWind";
 
-        private readonly Dictionary<string, IWindModelPlugin> m_availableWindPlugins =
-            new Dictionary<string, IWindModelPlugin>();
+        readonly Dictionary<string, IWindModelPlugin> m_availableWindPlugins =
+            new Dictionary<string, IWindModelPlugin> ();
 
-        private string desiredWindPlugin = "";
-        private IWindModelPlugin m_activeWindPlugin;
-        private bool m_enabled;
+        string desiredWindPlugin = "";
+        IWindModelPlugin m_activeWindPlugin;
+        bool m_enabled;
 
-        private uint m_frame;
-        private uint m_frameLastUpdateClientArray;
-        private int m_frameUpdateRate = 150;
-        //private Random m_rndnums = new Random(Environment.TickCount);
-        private bool m_ready;
-        private IScene m_scene;
+        uint m_frame;
+        uint m_frameLastUpdateClientArray;
+        int m_frameUpdateRate = 150;
+        // Random m_rndnums = new Random(Environment.TickCount);
+        bool m_ready;
+        IScene m_scene;
 
-        private IConfig windConfig;
-        private Vector2[] windSpeeds = new Vector2[16*16];
+        IConfig windConfig;
+        Vector2[] windSpeeds = new Vector2[16 * 16];
 
         #region IRegion Methods
 
-        public void Initialize(IConfigSource config)
+        public void Initialize (IConfigSource config)
         {
-            windConfig = config.Configs["Wind"];
+            windConfig = config.Configs ["Wind"];
             desiredWindPlugin = m_dWindPluginName;
 
             if (windConfig != null)
             {
-                m_enabled = windConfig.GetBoolean("enabled", true);
+                m_enabled = windConfig.GetBoolean ("enabled", true);
 
-                m_frameUpdateRate = windConfig.GetInt("wind_update_rate", 150);
+                m_frameUpdateRate = windConfig.GetInt ("wind_update_rate", 150);
 
                 // Determine which wind model plugin is desired
-                if (windConfig.Contains("wind_plugin"))
+                if (windConfig.Contains ("wind_plugin"))
                 {
-                    desiredWindPlugin = windConfig.GetString("wind_plugin");
+                    desiredWindPlugin = windConfig.GetString ("wind_plugin");
                 }
             }
         }
 
-        public void AddRegion(IScene scene)
+        public void AddRegion (IScene scene)
         {
             m_scene = scene;
             if (m_enabled)
@@ -92,20 +93,20 @@ namespace Universe.Modules.GlobalEnvironment
                 foreach (IWindModelPlugin windPlugin in UniverseModuleLoader.PickupModules<IWindModelPlugin>())
                 {
                     //MainConsole.Instance.InfoFormat("[WIND] Found Plugin: {0}", windPlugin.Name);
-                    m_availableWindPlugins.Add(windPlugin.Name, windPlugin);
+                    m_availableWindPlugins.Add (windPlugin.Name, windPlugin);
                 }
 
                 // Check for desired plugin
-                if (m_availableWindPlugins.ContainsKey(desiredWindPlugin))
+                if (m_availableWindPlugins.ContainsKey (desiredWindPlugin))
                 {
-                    m_activeWindPlugin = m_availableWindPlugins[desiredWindPlugin];
+                    m_activeWindPlugin = m_availableWindPlugins [desiredWindPlugin];
 
                     //MainConsole.Instance.InfoFormat("[WIND] {0} plugin found, initializing.", desiredWindPlugin);
 
                     if (windConfig != null)
                     {
-                        m_activeWindPlugin.Initialize();
-                        m_activeWindPlugin.WindConfig(m_scene, windConfig);
+                        m_activeWindPlugin.Initialize ();
+                        m_activeWindPlugin.WindConfig (m_scene, windConfig);
                     }
                 }
 
@@ -113,9 +114,9 @@ namespace Universe.Modules.GlobalEnvironment
                 // if the plug-in wasn't found, default to no wind.
                 if (m_activeWindPlugin == null)
                 {
-                    MainConsole.Instance.ErrorFormat("[WIND] Could not find specified wind plug-in: {0}",
-                                                     desiredWindPlugin);
-                    MainConsole.Instance.ErrorFormat("[WIND] Defaulting to no wind.");
+                    MainConsole.Instance.ErrorFormat ("[WIND] Could not find specified wind plug-in: {0}",
+                        desiredWindPlugin);
+                    MainConsole.Instance.ErrorFormat ("[WIND] Defaulting to no wind.");
                 }
 
                 if (MainConsole.Instance != null)
@@ -123,20 +124,24 @@ namespace Universe.Modules.GlobalEnvironment
                     // Get a list of the parameters for each plugin
                     foreach (IWindModelPlugin windPlugin in m_availableWindPlugins.Values)
                     {
-                        MainConsole.Instance.Commands.AddCommand(
-                            String.Format("wind base wind_plugin {0}", windPlugin.Name),
-                            String.Format("{0} - {1}", windPlugin.Name, windPlugin.Description), "",
+                        MainConsole.Instance.Commands.AddCommand (
+                            String.Format ("wind base wind_plugin {0}", windPlugin.Name),
+                            String.Format ("wind base wind_plugin {0}", windPlugin.Name),
+                            String.Format ("{0} - {1}", windPlugin.Name, windPlugin.Description),
                             HandleConsoleBaseCommand, true, false);
                         
-                    	MainConsole.Instance.Commands.AddCommand(
-                            String.Format("wind base wind_update_rate"), "Change the wind update rate.", "",
+                        MainConsole.Instance.Commands.AddCommand (
+                            String.Format ("wind base wind_update_rate"), 
+                            "wind base wind_update_rate <value>",
+                            "Change the wind update rate.", 
                             HandleConsoleBaseCommand, true, false);
 
                         foreach (KeyValuePair<string, string> kvp in windPlugin.WindParams())
                         {
-                            MainConsole.Instance.Commands.AddCommand(
-                                String.Format("wind {0} {1}", windPlugin.Name, kvp.Key),
-                                String.Format("{0} : {1} - {2}", windPlugin.Name, kvp.Key, kvp.Value), "",
+                            MainConsole.Instance.Commands.AddCommand (
+                                String.Format ("wind {0} {1}", windPlugin.Name, kvp.Key),
+                                String.Format ("wind {0} {1}", windPlugin.Name, kvp.Key),
+                                String.Format ("{0} : {1} - {2}", windPlugin.Name, kvp.Key, kvp.Value),
                                 HandleConsoleParamCommand, true, false);
                         }
                     }
@@ -148,17 +153,17 @@ namespace Universe.Modules.GlobalEnvironment
                 m_scene.EventManager.OnMakeRootAgent += OnAgentEnteredRegion;
 
                 // Register the wind module 
-                m_scene.RegisterModuleInterface<IWindModule>(this);
+                m_scene.RegisterModuleInterface<IWindModule> (this);
 
                 // Generate initial wind values
-                GenWindPos();
+                GenWindPos ();
 
                 // Mark Module Ready for duty
                 m_ready = true;
             }
         }
 
-        public void RemoveRegion(IScene scene)
+        public void RemoveRegion (IScene scene)
         {
             if (m_enabled)
             {
@@ -166,7 +171,7 @@ namespace Universe.Modules.GlobalEnvironment
 
                 m_activeWindPlugin = null;
 
-                m_availableWindPlugins.Clear();
+                m_availableWindPlugins.Clear ();
 
                 //  Remove our hooks
                 m_scene.EventManager.OnFrame -= WindUpdate;
@@ -174,7 +179,7 @@ namespace Universe.Modules.GlobalEnvironment
             }
         }
 
-        public void RegionLoaded(IScene scene)
+        public void RegionLoaded (IScene scene)
         {
         }
 
@@ -183,7 +188,7 @@ namespace Universe.Modules.GlobalEnvironment
             get { return null; }
         }
 
-        public void Close()
+        public void Close ()
         {
         }
 
@@ -199,107 +204,102 @@ namespace Universe.Modules.GlobalEnvironment
         /// <summary>
         ///     Base console command handler, only used if a person specifies the base command with now options
         /// </summary>
-        private void HandleConsoleCommand(string[] cmdparams)
+        void HandleConsoleCommand (string[] cmdparams)
         {
-            MainConsole.Instance.Info(
+            MainConsole.Instance.Info (
                 "[WIND] The wind command can be used to change the currently active wind model plugin and update the parameters for wind plugins.");
         }
 
         /// <summary>
         ///     Called to change the active wind model plugin
         /// </summary>
-        private void HandleConsoleBaseCommand(IScene scene, string[] cmdparams)
+        void HandleConsoleBaseCommand (IScene scene, string[] cmdparams)
         {
             if ((cmdparams.Length != 4)
-                || !cmdparams[1].Equals("base"))
+                || !cmdparams [1].Equals ("base"))
             {
-                MainConsole.Instance.Info(
+                MainConsole.Instance.Info (
                     "[WIND] Invalid parameters to change parameters for Wind module base, usage: wind base <parameter> <value>");
                 return;
             }
 
-            switch (cmdparams[2])
+            switch (cmdparams [2])
             {
-                case "wind_update_rate":
-                    int newRate = 1;
+            case "wind_update_rate":
+                int newRate = 1;
 
-                    if (int.TryParse(cmdparams[3], out newRate))
-                    {
-                        m_frameUpdateRate = newRate;
-                    }
-                    else
-                    {
-                        MainConsole.Instance.InfoFormat("[WIND] Invalid value {0} specified for {1}", cmdparams[3],
-                                                        cmdparams[2]);
-                        return;
-                    }
+                if (int.TryParse (cmdparams [3], out newRate))
+                {
+                    m_frameUpdateRate = newRate;
+                } else
+                {
+                    MainConsole.Instance.InfoFormat ("[WIND] Invalid value {0} specified for {1}", cmdparams [3],
+                        cmdparams [2]);
+                    return;
+                }
 
-                    break;
-                case "wind_plugin":
-                    string desiredPlugin = cmdparams[3];
+                break;
+            case "wind_plugin":
+                string desiredPlugin = cmdparams [3];
 
-                    if (desiredPlugin.Equals(m_activeWindPlugin.Name))
-                    {
-                        MainConsole.Instance.InfoFormat("[WIND] Wind model plugin {0} is already active", cmdparams[3]);
-                        return;
-                    }
+                if (desiredPlugin.Equals (m_activeWindPlugin.Name))
+                {
+                    MainConsole.Instance.InfoFormat ("[WIND] Wind model plugin {0} is already active", cmdparams [3]);
+                    return;
+                }
 
-                    if (m_availableWindPlugins.ContainsKey(desiredPlugin))
-                    {
-                        m_activeWindPlugin = m_availableWindPlugins[cmdparams[3]];
-                        MainConsole.Instance.InfoFormat("[WIND] {0} wind model plugin now active",
-                                                        m_activeWindPlugin.Name);
-                    }
-                    else
-                    {
-                        MainConsole.Instance.InfoFormat("[WIND] Could not find wind model plugin {0}", desiredPlugin);
-                    }
-                    break;
+                if (m_availableWindPlugins.ContainsKey (desiredPlugin))
+                {
+                    m_activeWindPlugin = m_availableWindPlugins [cmdparams [3]];
+                    MainConsole.Instance.InfoFormat ("[WIND] {0} wind model plugin now active",
+                        m_activeWindPlugin.Name);
+                } else
+                {
+                    MainConsole.Instance.InfoFormat ("[WIND] Could not find wind model plugin {0}", desiredPlugin);
+                }
+                break;
             }
         }
 
         /// <summary>
         ///     Called to change plugin parameters.
         /// </summary>
-        private void HandleConsoleParamCommand(IScene scene, string[] cmdparams)
+        void HandleConsoleParamCommand (IScene scene, string[] cmdparams)
         {
-            // wind <plugin> <param> [value]
+            // wind <plugin> <parameter> [value]
             if ((cmdparams.Length != 4)
                 && (cmdparams.Length != 3))
             {
-                MainConsole.Instance.Info("[WIND] Usage: wind <plugin> <param> [value]");
+                MainConsole.Instance.Info ("[WIND] Usage: wind <plugin> <parameter> [value]");
                 return;
             }
 
-            string plugin = cmdparams[1];
-            string param = cmdparams[2];
+            string plugin = cmdparams [1];
+            string param = cmdparams [2];
             float value = 0f;
             if (cmdparams.Length == 4)
             {
-                if (!float.TryParse(cmdparams[3], out value))
+                if (!float.TryParse (cmdparams [3], out value))
                 {
-                    MainConsole.Instance.InfoFormat("[WIND] Invalid value {0}", cmdparams[3]);
+                    MainConsole.Instance.InfoFormat ("[WIND] Invalid value {0}", cmdparams [3]);
                 }
 
                 try
                 {
-                    WindParamSet(plugin, param, value);
-                }
-                catch (Exception e)
+                    WindParamSet (plugin, param, value);
+                } catch (Exception e)
                 {
-                    MainConsole.Instance.InfoFormat("[WIND] {0}", e.Message);
+                    MainConsole.Instance.InfoFormat ("[WIND] {0}", e.Message);
                 }
-            }
-            else
+            } else
             {
                 try
                 {
-                    value = WindParamGet(plugin, param);
-                    MainConsole.Instance.InfoFormat("[WIND] {0} : {1}", param, value);
-                }
-                catch (Exception e)
+                    value = WindParamGet (plugin, param);
+                    MainConsole.Instance.InfoFormat ("[WIND] {0} : {1}", param, value);
+                } catch (Exception e)
                 {
-                    MainConsole.Instance.InfoFormat("[WIND] {0}", e.Message);
+                    MainConsole.Instance.InfoFormat ("[WIND] {0}", e.Message);
                 }
             }
         }
@@ -315,42 +315,39 @@ namespace Universe.Modules.GlobalEnvironment
         /// <param name="x">0...255</param>
         /// <param name="y">0...255</param>
         /// <param name="z">Ignored</param>
-        public Vector3 WindSpeed(int x, int y, int z)
+        public Vector3 WindSpeed (int x, int y, int z)
         {
             if (m_activeWindPlugin != null)
             {
-                return m_activeWindPlugin.WindSpeed(x, y, z);
-            }
-            else
+                return m_activeWindPlugin.WindSpeed (x, y, z);
+            } else
             {
-                return new Vector3(0.0f, 0.0f, 0.0f);
-            }
-        }
-
-        public void WindParamSet(string plugin, string param, float value)
-        {
-            if (m_availableWindPlugins.ContainsKey(plugin))
-            {
-                IWindModelPlugin windPlugin = m_availableWindPlugins[plugin];
-                windPlugin.WindParamSet(param, value);
-                MainConsole.Instance.InfoFormat("[WIND] {0} set to {1}", param, value);
-            }
-            else
-            {
-                throw new Exception(String.Format("Could not find plugin {0}", plugin));
+                return new Vector3 (0.0f, 0.0f, 0.0f);
             }
         }
 
-        public float WindParamGet(string plugin, string param)
+        public void WindParamSet (string plugin, string param, float value)
         {
-            if (m_availableWindPlugins.ContainsKey(plugin))
+            if (m_availableWindPlugins.ContainsKey (plugin))
             {
-                IWindModelPlugin windPlugin = m_availableWindPlugins[plugin];
-                return windPlugin.WindParamGet(param);
+                IWindModelPlugin windPlugin = m_availableWindPlugins [plugin];
+                windPlugin.WindParamSet (param, value);
+                MainConsole.Instance.InfoFormat ("[WIND] {0} set to {1}", param, value);
+            } else
+            {
+                throw new Exception (String.Format ("Could not find plugin {0}", plugin));
             }
-            else
+        }
+
+        public float WindParamGet (string plugin, string param)
+        {
+            if (m_availableWindPlugins.ContainsKey (plugin))
             {
-                throw new Exception(String.Format("Could not find plugin {0}", plugin));
+                IWindModelPlugin windPlugin = m_availableWindPlugins [plugin];
+                return windPlugin.WindParamGet (param);
+            } else
+            {
+                throw new Exception (String.Format ("Could not find plugin {0}", plugin));
             }
         }
 
@@ -361,8 +358,7 @@ namespace Universe.Modules.GlobalEnvironment
                 if (m_activeWindPlugin != null)
                 {
                     return m_activeWindPlugin.Name;
-                }
-                else
+                } else
                 {
                     return String.Empty;
                 }
@@ -374,19 +370,19 @@ namespace Universe.Modules.GlobalEnvironment
         /// <summary>
         ///     Called on each frame update.  Updates the wind model and clients as necessary.
         /// </summary>
-        public void WindUpdate()
+        public void WindUpdate ()
         {
-            if (((m_frame++%m_frameUpdateRate) != 0) || !m_ready)
+            if (((m_frame++ % m_frameUpdateRate) != 0) || !m_ready)
             {
                 return;
             }
 
-            GenWindPos();
+            GenWindPos ();
 
-            SendWindAllClients();
+            SendWindAllClients ();
         }
 
-        public void OnAgentEnteredRegion(IScenePresence avatar)
+        public void OnAgentEnteredRegion (IScenePresence avatar)
         {
             if (m_ready)
             {
@@ -396,16 +392,16 @@ namespace Universe.Modules.GlobalEnvironment
                     // Try not to update this too often, as it may involve array copies
                     if (m_frame >= (m_frameLastUpdateClientArray + m_frameUpdateRate))
                     {
-                        windSpeeds = m_activeWindPlugin.WindLLClientArray();
+                        windSpeeds = m_activeWindPlugin.WindLLClientArray ();
                         m_frameLastUpdateClientArray = m_frame;
                     }
                 }
 
-                avatar.ControllingClient.SendWindData(windSpeeds);
+                avatar.ControllingClient.SendWindData (windSpeeds);
             }
         }
 
-        private void SendWindAllClients()
+        void SendWindAllClients ()
         {
             if (m_ready)
             {
@@ -413,27 +409,26 @@ namespace Universe.Modules.GlobalEnvironment
                 // Try not to update this too often, as it may involve array copies
                 if (m_frame >= (m_frameLastUpdateClientArray + m_frameUpdateRate))
                 {
-                    windSpeeds = m_activeWindPlugin.WindLLClientArray();
+                    windSpeeds = m_activeWindPlugin.WindLLClientArray ();
                     m_frameLastUpdateClientArray = m_frame;
                 }
 
-                m_scene.ForEachScenePresence(delegate(IScenePresence sp)
-                                                 {
-                                                     if (!sp.IsChildAgent)
-                                                         sp.ControllingClient.SendWindData(windSpeeds);
-                                                 });
+                m_scene.ForEachScenePresence (delegate(IScenePresence sp) {
+                    if (!sp.IsChildAgent)
+                        sp.ControllingClient.SendWindData (windSpeeds);
+                });
             }
         }
 
         /// <summary>
         ///     Calculate the sun's orbital position and its velocity.
         /// </summary>
-        private void GenWindPos()
+        void GenWindPos ()
         {
             if (m_activeWindPlugin != null)
             {
                 // Tell Wind Plugin to update it's wind data
-                m_activeWindPlugin.WindUpdate(m_frame);
+                m_activeWindPlugin.WindUpdate (m_frame);
             }
         }
     }

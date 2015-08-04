@@ -440,10 +440,12 @@ namespace Universe.Simulation.Base
                                                      runConfig, false, true);
         }
 
-        private void HandleQuit(IScene scene, string[] args)
-        {
-            Shutdown(true);
-        }
+		private void HandleQuit(IScene scene, string[] args)
+		{
+			var ok = MainConsole.Instance.Prompt ("[CONSOLE]: Shutdown the simulator. Are you sure? (yes/no)", "no").ToLower();
+			if (ok.StartsWith("y"))
+				Shutdown(true);
+		}
 
         /// <summary>
         ///     Run an optional startup list of commands
