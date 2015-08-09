@@ -27,9 +27,8 @@
 
 using System;
 using System.Collections.Generic;
-
-using Universe.Framework.Modules;
 using OpenMetaverse;
+using Universe.Framework.Modules;
 
 namespace Universe.BotManager
 {
@@ -161,7 +160,5 @@ namespace Universe.BotManager
         {
             return m_listOfPositions.Count;
         }
-
-
     }
 }
