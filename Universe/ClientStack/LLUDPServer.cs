@@ -26,16 +26,6 @@
  */
 
 using Amib.Threading;
-
-using Universe.Framework.ClientInterfaces;
-using Universe.Framework.ConsoleFramework;
-using Universe.Framework.Modules;
-using Universe.Framework.PresenceInfo;
-using Universe.Framework.SceneInfo;
-using Universe.Framework.Utilities;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.Packets;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -43,6 +33,15 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.Packets;
+using Universe.Framework.ClientInterfaces;
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.Modules;
+using Universe.Framework.PresenceInfo;
+using Universe.Framework.SceneInfo;
+using Universe.Framework.Utilities;
 
 namespace Universe.ClientStack
 {
@@ -712,11 +711,11 @@ namespace Universe.ClientStack
 
             // Stats tracking
             Interlocked.Increment(ref udpClient.PacketsSent);
-//            if (isReliable)
-//                Interlocked.Add(ref udpClient.UnackedBytes, outgoingPacket.Buffer.DataLength);
+            //if (isReliable)
+            //    Interlocked.Add(ref udpClient.UnackedBytes, outgoingPacket.Buffer.DataLength);
 
             // Put the UDP payload on the wire
-//            AsyncBeginSend(buffer);
+            //AsyncBeginSend(buffer);
 
             SyncSend(buffer);
 
@@ -966,7 +965,7 @@ namespace Universe.ClientStack
 
             Buffer.BlockCopy(packetData, 0, buffer.Data, 0, length);
 
-            //            AsyncBeginSend(buffer);
+            //AsyncBeginSend(buffer);
             SyncSend(buffer);
         }
 

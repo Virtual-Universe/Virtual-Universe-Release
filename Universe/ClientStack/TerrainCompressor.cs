@@ -25,11 +25,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
-using Universe.Framework.Utilities;
+using System;
 using OpenMetaverse;
 using OpenMetaverse.Packets;
-using System;
+using Universe.Framework.Utilities;
 
 namespace Universe.ClientStack
 {
@@ -155,7 +154,6 @@ namespace Universe.ClientStack
                 header.PatchIDs = (y & 0x1F);
                 header.PatchIDs += (x << 5);
             }
-
 
             // NOTE: No idea what prequant and postquant should be or what they do
 

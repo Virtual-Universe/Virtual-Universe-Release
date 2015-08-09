@@ -25,10 +25,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Universe.Framework.ClientInterfaces;
 using OpenMetaverse;
 using OpenMetaverse.Packets;
-
+using Universe.Framework.ClientInterfaces;
 
 namespace Universe.ClientStack
 {

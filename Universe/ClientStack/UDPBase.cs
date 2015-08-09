@@ -28,8 +28,8 @@
 using System;
 using System.Net;
 using System.Net.Sockets;
-using Universe.Framework.ConsoleFramework;
 using OpenMetaverse;
+using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Utilities;
 
 namespace Universe.ClientStack

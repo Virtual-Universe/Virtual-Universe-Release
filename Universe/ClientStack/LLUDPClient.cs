@@ -27,16 +27,15 @@
 
 //#define Debug
 
-
-using Universe.Framework.ClientInterfaces;
-using Universe.Framework.ConsoleFramework;
-using Universe.Framework.Modules;
-using Universe.Framework.Utilities;
-using OpenMetaverse;
 using System;
 using System.Collections.Concurrent;
 using System.Net;
 using System.Threading;
+using OpenMetaverse;
+using Universe.Framework.ClientInterfaces;
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.Modules;
+using Universe.Framework.Utilities;
 
 namespace Universe.ClientStack
 {
@@ -731,8 +730,8 @@ namespace Universe.ClientStack
             }
 
             m_nextOnQueueEmpty = start + MIN_CALLBACK_MS;
-//            if (m_nextOnQueueEmpty == 0)
-//                m_nextOnQueueEmpty = 1;
+            //if (m_nextOnQueueEmpty == 0)
+            //    m_nextOnQueueEmpty = 1;
         }
     }
 }
