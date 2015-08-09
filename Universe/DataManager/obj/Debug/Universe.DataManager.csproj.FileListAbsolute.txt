@@ -1,0 +1,5 @@
+C:\Users\universe\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.DataManager.dll
+C:\Users\universe\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.DataManager.pdb
+C:\Users\universe\Desktop\Virtual-Dev\Universe\DataManager\obj\Debug\Universe.DataManager.csprojResolveAssemblyReference.cache
+C:\Users\universe\Desktop\Virtual-Dev\Universe\DataManager\obj\Debug\Universe.DataManager.dll
+C:\Users\universe\Desktop\Virtual-Dev\Universe\DataManager\obj\Debug\Universe.DataManager.pdb

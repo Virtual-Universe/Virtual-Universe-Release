@@ -1,0 +1,5 @@
+C:\Users\universe\Desktop\Virtual-Dev\VirtualUniverse\bin\Physics\Universe.Physics.ConvexDecompositionDotNet.dll
+C:\Users\universe\Desktop\Virtual-Dev\VirtualUniverse\bin\Physics\Universe.Physics.ConvexDecompositionDotNet.pdb
+C:\Users\universe\Desktop\Virtual-Dev\Universe\Physics\ConvexDecompositionDotNet\obj\Debug\Universe.Physics.ConvexDecompositionDotNet.dll
+C:\Users\universe\Desktop\Virtual-Dev\Universe\Physics\ConvexDecompositionDotNet\obj\Debug\Universe.Physics.ConvexDecompositionDotNet.pdb
+C:\Users\universe\Desktop\Virtual-Dev\Universe\Physics\ConvexDecompositionDotNet\obj\Debug\Universe.Physics.ConvexDecompositionDotNet.csprojResolveAssemblyReference.cache

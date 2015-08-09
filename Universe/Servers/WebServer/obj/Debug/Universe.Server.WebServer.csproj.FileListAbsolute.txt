@@ -1,0 +1,5 @@
+C:\Users\universe\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.Server.WebServer.exe
+C:\Users\universe\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.Server.WebServer.pdb
+C:\Users\universe\Desktop\Virtual-Dev\Universe\Servers\WebServer\obj\Debug\Universe.Server.WebServer.csprojResolveAssemblyReference.cache
+C:\Users\universe\Desktop\Virtual-Dev\Universe\Servers\WebServer\obj\Debug\Universe.Server.WebServer.exe
+C:\Users\universe\Desktop\Virtual-Dev\Universe\Servers\WebServer\obj\Debug\Universe.Server.WebServer.pdb

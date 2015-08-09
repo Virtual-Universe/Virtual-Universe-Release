@@ -1392,7 +1392,7 @@
       </Files>
     </Project>
 
-    <Project frameworkVersion="v4_5" name="Universe.ScriptEngine.DotNetEngine" path="Universe/ScriptEngine/DotNetEngine" type="Library">
+    <Project frameworkVersion="v4_5" name="Universe.ScriptEngine.VirtualScript" path="Universe/ScriptEngine/VirtualScript" type="Library">
       <Configuration name="Debug" platform="x86">
         <Options>
           <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
@@ -1492,7 +1492,7 @@
 
       <Reference name="Universe.DataManager"/>
       <Reference name="Universe.Framework"/>
-      <Reference name="Universe.ScriptEngine.DotNetEngine"/>
+      <Reference name="Universe.ScriptEngine.VirtualScript"/>
       
       <Reference name="Nini" path="../../VirtualUniverse/bin/"/>
       <Reference name="OpenMetaverse" path="../../VirtualUniverse/bin/"/>

@@ -1,0 +1,5 @@
+C:\Users\universe\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.Services.NoSQLServices.dll
+C:\Users\universe\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.Services.NoSQLServices.pdb
+C:\Users\universe\Desktop\Virtual-Dev\Universe\Services\NoSQLServices\obj\Debug\Universe.Services.NoSQLServices.csprojResolveAssemblyReference.cache
+C:\Users\universe\Desktop\Virtual-Dev\Universe\Services\NoSQLServices\obj\Debug\Universe.Services.NoSQLServices.dll
+C:\Users\universe\Desktop\Virtual-Dev\Universe\Services\NoSQLServices\obj\Debug\Universe.Services.NoSQLServices.pdb

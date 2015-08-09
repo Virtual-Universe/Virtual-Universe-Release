@@ -1,0 +1,5 @@
+C:\Users\universe\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.Simulation.Base.dll
+C:\Users\universe\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.Simulation.Base.pdb
+C:\Users\universe\Desktop\Virtual-Dev\Universe\Simulation\Base\obj\Debug\Universe.Simulation.Base.csprojResolveAssemblyReference.cache
+C:\Users\universe\Desktop\Virtual-Dev\Universe\Simulation\Base\obj\Debug\Universe.Simulation.Base.dll
+C:\Users\universe\Desktop\Virtual-Dev\Universe\Simulation\Base\obj\Debug\Universe.Simulation.Base.pdb

@@ -1,0 +1,5 @@
+C:\Users\universe\Desktop\Virtual-Dev\Universe\BotManager\obj\Debug\Universe.BotManager.csprojResolveAssemblyReference.cache
+C:\Users\universe\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.BotManager.dll
+C:\Users\universe\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.BotManager.pdb
+C:\Users\universe\Desktop\Virtual-Dev\Universe\BotManager\obj\Debug\Universe.BotManager.dll
+C:\Users\universe\Desktop\Virtual-Dev\Universe\BotManager\obj\Debug\Universe.BotManager.pdb

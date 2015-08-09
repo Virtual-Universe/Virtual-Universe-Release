@@ -38,8 +38,7 @@ using Universe.Framework.SceneInfo;
 using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Services.ClassHelpers.Inventory;
 using Universe.Framework.Utilities;
-using Universe.ScriptEngine.DotNetEngine.Runtime;
-
+using Universe.ScriptEngine.VirtualScript.Runtime;
 
 namespace Universe.BotManager
 {

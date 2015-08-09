@@ -1,0 +1,5 @@
+C:\Users\universe\Desktop\Virtual-Dev\VirtualUniverse\bin\Physics\Universe.Physics.Meshing.dll
+C:\Users\universe\Desktop\Virtual-Dev\VirtualUniverse\bin\Physics\Universe.Physics.Meshing.pdb
+C:\Users\universe\Desktop\Virtual-Dev\Universe\Physics\Meshing\obj\Debug\Universe.Physics.Meshing.csprojResolveAssemblyReference.cache
+C:\Users\universe\Desktop\Virtual-Dev\Universe\Physics\Meshing\obj\Debug\Universe.Physics.Meshing.dll
+C:\Users\universe\Desktop\Virtual-Dev\Universe\Physics\Meshing\obj\Debug\Universe.Physics.Meshing.pdb
