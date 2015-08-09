@@ -15,7 +15,7 @@
     <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
     <DefaultTargetSchema>IE50</DefaultTargetSchema>
     <DelaySign>false</DelaySign>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>
     </AppDesignerFolder>
@@ -33,7 +33,7 @@
     <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
-    <DefineConstants>TRACE;DEBUG;ISWIN;NET_4_5</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;ISWIN;NET_4_0</DefineConstants>
     <DocumentationFile>
     </DocumentationFile>
     <DebugSymbols>True</DebugSymbols>
@@ -55,7 +55,7 @@
     <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
-    <DefineConstants>TRACE;DEBUG;ISWIN;NET_4_5</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;ISWIN;NET_4_0</DefineConstants>
     <DocumentationFile>
     </DocumentationFile>
     <DebugSymbols>True</DebugSymbols>
@@ -77,7 +77,7 @@
     <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
-    <DefineConstants>TRACE;DEBUG;ISWIN;NET_4_5</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;ISWIN;NET_4_0</DefineConstants>
     <DocumentationFile>
     </DocumentationFile>
     <DebugSymbols>True</DebugSymbols>
@@ -99,7 +99,7 @@
     <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
-    <DefineConstants>ISWIN;NET_4_5</DefineConstants>
+    <DefineConstants>ISWIN;NET_4_0</DefineConstants>
     <DocumentationFile>
     </DocumentationFile>
     <DebugSymbols>False</DebugSymbols>
@@ -121,7 +121,7 @@
     <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
-    <DefineConstants>ISWIN;NET_4_5</DefineConstants>
+    <DefineConstants>ISWIN;NET_4_0</DefineConstants>
     <DocumentationFile>
     </DocumentationFile>
     <DebugSymbols>False</DebugSymbols>
@@ -143,7 +143,7 @@
     <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
-    <DefineConstants>ISWIN;NET_4_5</DefineConstants>
+    <DefineConstants>ISWIN;NET_4_0</DefineConstants>
     <DocumentationFile>
     </DocumentationFile>
     <DebugSymbols>False</DebugSymbols>
@@ -324,13 +324,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Avatar\AbuseReports\AbuseReportsModule.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Avatar\AbuseReports\AbuseReportsGUI\Abuse.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Avatar\AbuseReports\AbuseReportsGUI\Abuse.Designer.cs">
-      <DependentUpon>Abuse.cs</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Avatar\Appearance\AvatarFactoryModule.cs">
@@ -595,6 +588,12 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Web\html\world_map.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Web\html\admin\abuse_list.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Web\html\admin\abuse_report.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Web\html\admin\add_news.cs">
