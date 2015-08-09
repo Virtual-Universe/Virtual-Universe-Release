@@ -35,11 +35,11 @@ using System.Resources;
 /// set of attributes. Change these attribute values to modify the information
 /// associated with an assembly.
 /// </summary>
-[assembly: AssemblyTitle("Universe.Physics.Meshing")]
+[assembly: AssemblyTitle("Universe.ScriptEngine.VirtualScript")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Universe.Physics.Meshing")]
+[assembly: AssemblyProduct("Universe.ScriptEngine.VirtualScript")]
 [assembly: AssemblyCopyright("Copyright © 2015-2025")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
