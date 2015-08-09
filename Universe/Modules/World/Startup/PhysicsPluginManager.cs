@@ -25,14 +25,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System;
+using System.Collections.Generic;
+using Nini.Config;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.ModuleLoader;
 using Universe.Framework.Physics;
 using Universe.Framework.SceneInfo;
-using Nini.Config;
-using System;
-using System.Collections.Generic;
 
 namespace Universe.Modules.Startup
 {

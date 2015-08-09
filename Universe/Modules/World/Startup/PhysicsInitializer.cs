@@ -26,12 +26,11 @@
  */
 
 using System;
+using Nini.Config;
 using Universe.Framework.Modules;
 using Universe.Framework.Physics;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Utilities;
-using Nini.Config;
-
 
 namespace Universe.Modules.Startup
 {

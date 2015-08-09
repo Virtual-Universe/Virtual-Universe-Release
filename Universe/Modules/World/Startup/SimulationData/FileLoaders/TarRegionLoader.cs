@@ -25,17 +25,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Serialization;
 using Universe.Region;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.IO.Compression;
 
 namespace Universe.Modules
 {
@@ -55,7 +55,7 @@ namespace Universe.Modules
             if (stream == null)
                 return null;
 
-			MainConsole.Instance.Warn("[TarRegionDataLoader]: loading region data: " + file);
+			MainConsole.Instance.Warn("[Tar Region Data Loader]: loading region data: " + file);
  
 			GZipStream m_loadStream = new GZipStream(stream, CompressionMode.Decompress);
             TarArchiveReader reader = new TarArchiveReader(m_loadStream);
@@ -162,7 +162,7 @@ namespace Universe.Modules
 
             foundLocalIDs.Clear();
 
-			MainConsole.Instance.Warn("[TarRegionDataLoader]: completed: ");
+			MainConsole.Instance.Warn("[Tar Region Data Loader]: completed: ");
 
             return regiondata;
         }
@@ -309,7 +309,7 @@ namespace Universe.Modules
             }
             catch (Exception ex)
             {
-				MainConsole.Instance.Warn("[TarRegionDataLoader]: Failed to save backup: " + ex.ToString());
+				MainConsole.Instance.Warn("[Tar Region Data Loader]: Failed to save backup: " + ex.ToString());
                 return false;
             }
             return true;

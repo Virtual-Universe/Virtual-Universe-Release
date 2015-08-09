@@ -125,12 +125,10 @@ namespace Universe.Modules
                 "Removes old region backup files older than [days] (default: " + m_removeArchiveDays + " days)",
                 CleanupRegionBackups,
                 false, true);
-
         }
 
         public virtual List<string> FindRegionInfos(out bool newRegion, ISimulationBase simBase)
         {
-//			List<string> regions = new List<string>(Directory.GetFiles(".", "*.sim", SearchOption.TopDirectoryOnly));
 			ReadConfig(simBase);
 			MainConsole.Instance.Info("Looking for previous regions in: "+ m_storeDirectory);
 			List<string> regions = new List<string>(Directory.GetFiles(m_storeDirectory, "*.sim", SearchOption.TopDirectoryOnly));
@@ -256,7 +254,6 @@ namespace Universe.Modules
 			}
 
 			return regionInfo;
-
         }
 
         public virtual RegionInfo LoadRegionInfo(string fileName, ISimulationBase simBase)
@@ -293,7 +290,6 @@ namespace Universe.Modules
         /// <param name="currentInfo">Current info.</param>
         RegionInfo CreateRegionFromConsole(RegionInfo info, Boolean prompt, Dictionary<string, int> currentInfo)
         {
-
             if (info == null || info.NewRegion)
             {
                 if (info == null)
@@ -466,7 +462,7 @@ namespace Universe.Modules
                                                : info.ObjectCapacity.ToString ()));
                 } 
 
-                if (setupMode.StartsWith("w"))
+                if (setupMode.StartsWith("u"))
                 {
                     // 'standard' setup
                     info.RegionType = info.RegionType + "Universe";                   
@@ -537,7 +533,6 @@ namespace Universe.Modules
                         info.RegionSettings.AllowLandResell = false;
                     }
                 }
-
             }
 
             // are we updating or adding??
@@ -563,7 +558,7 @@ namespace Universe.Modules
 
                 m_scene.SimulationDataService.ForceBackup();
 
-                MainConsole.Instance.InfoFormat("[FileBasedSimulationData]: Save of {0} completed.",info.RegionName);
+                MainConsole.Instance.InfoFormat("[File Based Simulation Data]: Save of {0} completed.",info.RegionName);
             }
 
             return info;
@@ -590,7 +585,6 @@ namespace Universe.Modules
                 MainConsole.Instance.DefaultPrompt = MainConsole.Instance.ConsoleScene.RegionInfo.RegionName+": ";
             }
         }
-
 
         /// <summary>
         /// Sets the region prim capacity.
@@ -632,7 +626,6 @@ namespace Universe.Modules
             }
 
             DeleteUpOldArchives(daysOld);
-
         }
 
         /// <summary>
@@ -676,12 +669,10 @@ namespace Universe.Modules
                 File.Copy(fileName, regionFile);
 
                 return true; 
-
             }
 
             return false;
         }
-
             
         public virtual List<ISceneEntity> LoadObjects()
         {
@@ -743,7 +734,7 @@ namespace Universe.Modules
             }
             catch (Exception ex)
             {
-                MainConsole.Instance.Error("[FileBasedSimulationData]: Failed to save backup, exception occurred " + ex);
+                MainConsole.Instance.Error("[File Based Simulation Data]: Failed to save backup, exception occurred " + ex);
             }
         }
 
@@ -767,7 +758,7 @@ namespace Universe.Modules
             }
             catch (Exception ex)
             {
-                MainConsole.Instance.Error("[FileBasedSimulationData]: Failed to save backup, exception occurred " + ex);
+                MainConsole.Instance.Error("[File Based Simulation Data]: Failed to save backup, exception occurred " + ex);
             }
             if (m_saveTimer != null)
                 m_saveTimer.Start(); //Restart it as we just did a backup
@@ -804,7 +795,6 @@ namespace Universe.Modules
                 m_keepOldSave = config.GetBoolean("SavePreviousBackup", m_keepOldSave);
 
                 // directories are references from the bin directory
-                // As of V0.9.2 the data is saved relative to the bin dir
                 m_oldSaveDirectory =
                     PathHelpers.ComputeFullPath(config.GetString("PreviousBackupDirectory", m_oldSaveDirectory));
                 m_storeDirectory =
@@ -814,8 +804,7 @@ namespace Universe.Modules
                 if (m_oldSaveDirectory == "")
                     m_oldSaveDirectory = Constants.DEFAULT_DATA_DIR + "/RegionBak";
 
-                m_removeArchiveDays = config.GetInt("ArchiveDays", m_removeArchiveDays);
-                               
+                m_removeArchiveDays = config.GetInt("ArchiveDays", m_removeArchiveDays);                          
 
                 // verify the necessary paths exist
                 if (!Directory.Exists(m_storeDirectory))
@@ -885,7 +874,7 @@ namespace Universe.Modules
                 }
                 catch (Exception ex)
                 {
-                    MainConsole.Instance.Error("[FileBasedSimulationData]: Failed to save backup, exception occurred " +
+                    MainConsole.Instance.Error("[File Based Simulation Data]: Failed to save backup, exception occurred " +
                                                ex);
                 }
                 m_saveTimer.Start(); //Restart it as we just did a backup
@@ -893,7 +882,7 @@ namespace Universe.Modules
             else if (m_displayNotSavingNotice)
             {
                 m_displayNotSavingNotice = false;
-                MainConsole.Instance.Info("[FileBasedSimulationData]: Not saving backup, not required");
+                MainConsole.Instance.Info("[File Based Simulation Data]: Not saving backup, not required");
             }
         }
 
@@ -917,13 +906,12 @@ namespace Universe.Modules
             }
             catch (Exception ex)
             {
-                MainConsole.Instance.Error("[FileBasedSimulationData]: Failed to save backup, exception occurred " + ex);
+                MainConsole.Instance.Error("[File Based Simulation Data]: Failed to save backup, exception occurred " + ex);
             }
         }
 
         public void DeleteUpOldArchives(int daysOld)
         {
-
             if (daysOld < 0)
                 return;
 
@@ -1045,7 +1033,6 @@ namespace Universe.Modules
                 return;
             }
 
-            //RegionData data = _regionLoader.LoadBackup(filename + ".tmp");
             if (!isOldSave)
             {
                 if (File.Exists(filename))
@@ -1064,7 +1051,7 @@ namespace Universe.Modules
                     if (File.Exists(oldfileName))
                         File.Delete(oldfileName);
                      
-                    // now we can copy it over...
+                    // now we can copy it over.
                     File.Copy(filename, oldfileName );
                 }
             }
@@ -1083,10 +1070,6 @@ namespace Universe.Modules
 
         string BuildSaveFileName()
         {
-            //return (m_storeDirectory == "" || m_storeDirectory == "/")
-            // the'/' directory is valid an someone might use it to store backups so don't
-            // fudge it to mean './' ... as it previously was...
-
             var name = BackupFile;
             return (m_storeDirectory == "")
                        ? name + ".sim"
