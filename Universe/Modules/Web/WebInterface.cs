@@ -25,17 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Universe.Framework.ConsoleFramework;
-using Universe.Framework.ModuleLoader;
-using Universe.Framework.Modules;
-using Universe.Framework.Servers;
-using Universe.Framework.Servers.HttpServer;
-using Universe.Framework.Servers.HttpServer.Implementation;
-using Universe.Framework.Services;
-using Universe.Framework.Utilities;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -47,7 +36,18 @@ using System.Text.RegularExpressions;
 using System.Web;
 using System.Xml;
 using System.Xml.Xsl;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
+using Universe.Framework.ConsoleFramework;
 using Universe.Framework.DatabaseInterfaces;
+using Universe.Framework.ModuleLoader;
+using Universe.Framework.Modules;
+using Universe.Framework.Servers;
+using Universe.Framework.Servers.HttpServer;
+using Universe.Framework.Servers.HttpServer.Implementation;
+using Universe.Framework.Services;
+using Universe.Framework.Utilities;
 
 namespace Universe.Modules.Web
 {
@@ -66,7 +66,6 @@ namespace Universe.Modules.Web
         internal GridPage webPages;
         internal WebUISettings webUISettings;
         public GridSettings gridSettings;
-
 
         #endregion
 
@@ -714,7 +713,6 @@ namespace Universe.Modules.Web
             }
         }
 
-
         public List<Dictionary<string, object>> RegionTypeArgs(ITranslator translator)
         { 
             var args = new List<Dictionary<string, object>>();
@@ -820,9 +818,7 @@ namespace Universe.Modules.Web
             // change what's appropriate...
             ILoginService loginService = Registry.RequestModuleInterface<ILoginService>();
             loginService.WelcomeMessage = settings.WelcomeMessage;
-
         }
-
 
         #endregion
 
@@ -1209,5 +1205,4 @@ namespace Universe.Modules.Web
             return map;
         }
     }
-
 }

@@ -25,14 +25,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
+using System.Collections.Generic;
+using Nini.Config;
+using OpenMetaverse;
 using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Modules;
 using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Services;
-using Nini.Config;
-using OpenMetaverse;
-using System;
-using System.Collections.Generic;
 using RegionFlags = Universe.Framework.Services.RegionFlags;
 
 namespace Universe.Modules.Web

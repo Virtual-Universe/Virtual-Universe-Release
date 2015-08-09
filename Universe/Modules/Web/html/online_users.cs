@@ -25,10 +25,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
+using System.Collections.Generic;
+using OpenMetaverse;
 using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Services;
-using OpenMetaverse;
-using System.Collections.Generic;
 using Universe.Framework.Utilities;
 
 namespace Universe.Modules.Web
@@ -108,7 +109,7 @@ namespace Universe.Modules.Web
                             UUID.TryParse (friend.Friend, out friendID);
 
                             if (friendID != UUID.Zero) 
-//                            if ( (friendID != UUID.Zero) && (friendID == ourAccount.PrincipalID))
+                            //if ( (friendID != UUID.Zero) && (friendID == ourAccount.PrincipalID))
                                 activeUsersList.Add (friendID);
                         }
                     }

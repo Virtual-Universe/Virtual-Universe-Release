@@ -31,13 +31,12 @@ using System.IO;
 using OpenMetaverse;
 using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Modules;
+using Universe.Framework.SceneInfo;
 using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
-using Universe.Framework.SceneInfo;
 using GridRegion = Universe.Framework.Services.GridRegion;
 using RegionFlags = Universe.Framework.Services.RegionFlags;
-
 
 namespace Universe.Modules.Web
 {

@@ -25,6 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
 using System.Collections.Generic;
 using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Services;
@@ -110,7 +111,6 @@ namespace Universe.Modules.Web
 
             vars.Add("RegionList", RegionListVars);
             vars.Add("RegionText", translator.GetTranslatedString("Region"));
-
 
             vars.Add("RegionNameText", translator.GetTranslatedString("RegionNameText"));
             vars.Add("RegionLocXText", translator.GetTranslatedString("RegionLocXText"));

@@ -25,13 +25,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Universe.Framework.Servers.HttpServer.Implementation;
-using System.Collections.Generic;
-using Universe.Framework.Modules;
-using Universe.Framework.Utilities;
 using System;
+using System.Collections.Generic;
 using OpenMetaverse;
+using Universe.Framework.Modules;
+using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Services;
+using Universe.Framework.Utilities;
 
 namespace Universe.Modules.Web
 {
@@ -131,7 +131,6 @@ namespace Universe.Modules.Web
                         { "Description", transaction.Description },
                         { "Amount",transaction.Amount },
                         { "ToBalance",transaction.ToBalance }
-
                     });
                 }
             }
@@ -145,7 +144,6 @@ namespace Universe.Modules.Web
                     {"Description", translator.GetTranslatedString ("NoTransactionsText")},
                     {"Amount",""},
                     {"ToBalance",""}
-
                 });
             }
 

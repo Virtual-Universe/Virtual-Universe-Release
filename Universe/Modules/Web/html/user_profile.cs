@@ -25,15 +25,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Universe.Framework.Servers.HttpServer.Implementation;
-using Universe.Framework.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using OpenMetaverse;
-using Universe.Framework.Utilities;
-using Universe.Framework.Services.ClassHelpers.Profile;
 using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Modules;
+using Universe.Framework.Servers.HttpServer.Implementation;
+using Universe.Framework.Services;
+using Universe.Framework.Services.ClassHelpers.Profile;
+using Universe.Framework.Utilities;
 
 namespace Universe.Modules.Web
 {
@@ -177,9 +178,7 @@ namespace Universe.Modules.Web
                         { "GroupPictureURL", "../images/icons/no_groups.jpg" },
                         { "GroupName", "None yet" }
                     });
-
                 }
-
             }
 
             vars.Add("GroupNameText", translator.GetTranslatedString("GroupNameText"));

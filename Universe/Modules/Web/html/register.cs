@@ -25,6 +25,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
+using System.Collections.Generic;
+using Nini.Config;
+using OpenMetaverse;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Modules;
@@ -32,18 +36,12 @@ using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Profile;
 using Universe.Framework.Utilities;
-using Nini.Config;
-using OpenMetaverse;
-using System;
-using System.Collections.Generic;
 using RegionFlags = Universe.Framework.Services.RegionFlags;
-
 
 namespace Universe.Modules.Web
 {
     public class RegisterPage : IWebInterfacePage
     {
-
         public string[] FilePath
         {
             get
@@ -97,7 +95,6 @@ namespace Universe.Modules.Web
                 return "1";
             }
         }
-            
 
         public Dictionary<string, object> Fill(WebInterface webInterface, string filename, OSHttpRequest httpRequest,
                                                OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
@@ -137,6 +134,11 @@ namespace Universe.Modules.Web
                 string FirstName = requestParameters["FirstName"].ToString();
                 string LastName = requestParameters["LastName"].ToString();
                 //removed - greythane - deemed not used
+                // Comment - The UserAddress and UserZip are used by currency for billing purposes
+                // when purchasing currency and regions. This is not asked for during registration
+                // but after the user has registered and logged into their account via the website.
+                // Here they can set their address and zip code as part of their billing information
+                // Emperor Starfinder - August 9, 2015
                 //string UserAddress = requestParameters["UserAddress"].ToString();
                 //string UserZip = requestParameters["UserZip"].ToString();
                 string UserCity = requestParameters["UserCity"].ToString();
@@ -296,8 +298,6 @@ namespace Universe.Modules.Web
             monthsArgs.Add(new Dictionary<string, object> {{"Value", translator.GetTranslatedString("Nov_Short")}});
             monthsArgs.Add(new Dictionary<string, object> {{"Value", translator.GetTranslatedString("Dec_Short")}});
 
-
-
             List<Dictionary<string, object>> yearsArgs = new List<Dictionary<string, object>>();
             for (int i = 1940; i <= 2013; i++)
                 yearsArgs.Add(new Dictionary<string, object> {{"Value", i}});
@@ -348,7 +348,6 @@ namespace Universe.Modules.Web
                                        });
 
             vars.Add("AvatarArchive", avatarArchives);
-
 
             IConfig loginServerConfig =
                 webInterface.Registry.RequestModuleInterface<ISimulationBase>().ConfigSource.Configs["LoginService"];
