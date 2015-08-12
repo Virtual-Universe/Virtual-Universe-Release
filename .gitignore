@@ -73,7 +73,7 @@ VirtualUniverse/Data/FileAssets/*
 VirtualUniverse/Data/Governor.txt
 VirtualUniverse/Data/OarFiles/*
 VirtualUniverse/Data/Marketplace.txt
-VirtualUniverse/Data/RealEstateUser.txt
+VirtualUniverse/Data/RealEstate.txt
 VirtualUniverse/Data/RegionBak/*.sim
 VirtualUniverse/Data/Region/*.sim
 VirtualUniverse/Data/ScriptEngines/*-*-*-*-*
