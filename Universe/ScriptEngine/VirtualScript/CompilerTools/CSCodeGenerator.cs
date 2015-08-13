@@ -317,12 +317,12 @@ namespace Universe.ScriptEngine.VirtualScript.CompilerTools
                 foreach (string nameSpace in api.NamespaceAdditions)
                     sb.AppendFormat("using {0};\n", nameSpace);
             sb.AppendLine(
-@"using LSL_Types = Universe.ScriptEngine.DotNetEngine.LSL_Types;
+@"using LSL_Types = Universe.ScriptEngine.VirtualScript.LSL_Types;
 using System;
 namespace Script
 {
 [Serializable]
-public class ScriptClass : Universe.ScriptEngine.DotNetEngine.Runtime.ScriptBaseClass
+public class ScriptClass : Universe.ScriptEngine.VirtualScript.Runtime.ScriptBaseClass
 {");
 
             sb.AppendLine(ScriptClass);
@@ -909,11 +909,7 @@ public class ScriptClass : Universe.ScriptEngine.DotNetEngine.Runtime.ScriptBase
                         if (a.kids.Count == 1)
                         {
                             SYMBOL assignmentChild = (SYMBOL) a.kids[0];
-                            if (assignmentChild is IdentExpression)
-                            {
-// 20131224 not used                                IdentExpression identEx = (IdentExpression) assignmentChild;
-                            }
-                            else if (assignmentChild is ListConstant)
+                            if (assignmentChild is ListConstant)
                             {
                                 ListConstant listConst = (ListConstant) assignmentChild;
                                 foreach (SYMBOL listChild in listConst.kids)
@@ -929,7 +925,7 @@ public class ScriptClass : Universe.ScriptEngine.DotNetEngine.Runtime.ScriptBase
                                             p[i] = objChild;
                                             if (objChild is IdentExpression)
                                             {
-// 20131224 not used                                                IdentExpression identEx = (IdentExpression) objChild;
+                                                // 20131224 not used IdentExpression identEx = (IdentExpression) objChild;
                                             }
                                             i++;
                                         }

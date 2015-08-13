@@ -173,7 +173,7 @@ namespace Universe.ScriptEngine.VirtualScript
 
         public string ScriptEngineName
         {
-            get { return "DotNetEngine"; }
+            get { return "VirtualScript"; }
         }
 
         public IScriptModule ScriptModule
@@ -232,28 +232,28 @@ namespace Universe.ScriptEngine.VirtualScript
             {
                 if (MainConsole.Instance != null)
                 {
-                    MainConsole.Instance.Commands.AddCommand("DNE restart", 
-                	                                         "DNE restart",
+                    MainConsole.Instance.Commands.AddCommand("VS restart", 
+                	                                         "VS restart",
                                                              "Restarts all scripts and clears all script caches",
                                                              UniverseDotNetRestart, false, false);
                     
-                	MainConsole.Instance.Commands.AddCommand("DNE stop",
-                	                                         "DNE stop", 
+                	MainConsole.Instance.Commands.AddCommand("VS stop",
+                	                                         "VS stop", 
                 	                                         "Stops all scripts",
                                                              UniverseDotNetStop, false, false);
                     
-                	MainConsole.Instance.Commands.AddCommand("DNE stats",
-                	                                         "DNE stats",
+                	MainConsole.Instance.Commands.AddCommand("VS stats",
+                	                                         "VS stats",
                                                              "Tells stats about the script engine", 
                                                              UniverseDotNetStats, false, false);
                     
-                	MainConsole.Instance.Commands.AddCommand("DNE disable",
-                	                                         "DNE disable",
+                	MainConsole.Instance.Commands.AddCommand("VS disable",
+                	                                         "VS disable",
                                                              "Disables the script engine temperarily",
                                                              UniverseDotNetDisable, false, false);
                     
-                	MainConsole.Instance.Commands.AddCommand("DNE enable",
-                	                                         "DNE enable", 
+                	MainConsole.Instance.Commands.AddCommand("VS enable",
+                	                                         "VS enable", 
                 	                                         "Reenables the script engine",
                                                              UniverseDotNetEnable, false, false);
                 }
@@ -441,11 +441,11 @@ namespace Universe.ScriptEngine.VirtualScript
                 MaintenanceThread.StartScripts(
                     scripts.Select(ID => new LUStruct {Action = LUType.Load, ID = ID}).ToArray());
 
-                MainConsole.Instance.Warn("[DNE]: All scripts have been restarted.");
+                MainConsole.Instance.Warn("[Virtual Script]: All scripts have been restarted.");
             }
             else
             {
-                MainConsole.Instance.Info("[DNE]: Not restarting all scripts");
+                MainConsole.Instance.Info("[Virtual Script]: Not restarting all scripts");
             }
         }
 
@@ -456,17 +456,17 @@ namespace Universe.ScriptEngine.VirtualScript
             {
                 StopAllScripts();
                 MaintenanceThread.Stop();
-                MainConsole.Instance.Warn("[DNE]: All scripts have been stopped.");
+                MainConsole.Instance.Warn("[Virtual Script]: All scripts have been stopped.");
             }
             else
             {
-                MainConsole.Instance.Info("[DNE]: Not restarting all scripts");
+                MainConsole.Instance.Info("[Virtual Script]: Not restarting all scripts");
             }
         }
 
         protected void UniverseDotNetStats(IScene scene, string[] cmdparams)
         {
-            MainConsole.Instance.Info ("Universe DotNet Script Engine Stats:");
+            MainConsole.Instance.Info ("Virtual Script Engine Stats:");
             MainConsole.Instance.CleanInfo ("    Region: " + scene.RegionInfo.RegionName);
             MainConsole.Instance.CleanInfo ("    Number of scripts compiled: " + Compiler.ScriptCompileCounter);
             MainConsole.Instance.CleanInfo ("    Max allowed threat level: " + ScriptProtection.GetThreatLevel ());
@@ -487,14 +487,14 @@ namespace Universe.ScriptEngine.VirtualScript
         protected void UniverseDotNetDisable(IScene scene, string[] cmdparams)
         {
             ConsoleDisabled = true;
-            MainConsole.Instance.Warn("[DNE]: DNE has been disabled.");
+            MainConsole.Instance.Warn("[Virtual Script]: Virtual Script Engine has been disabled.");
         }
 
         protected void UniverseDotNetEnable(IScene scene, string[] cmdparams)
         {
             ConsoleDisabled = false;
             MaintenanceThread.Started = true;
-            MainConsole.Instance.Warn("[DNE]: DNE has been enabled.");
+            MainConsole.Instance.Warn("[Virtual Script]: Virtual Script Engine has been enabled.");
         }
 
         #endregion
@@ -994,7 +994,6 @@ namespace Universe.ScriptEngine.VirtualScript
 
                     MaintenanceThread.SetEventSchSetIgnoreNew(SD, false);
 
-
                     if (presence != null && (newItem.PermsMask & ScriptBaseClass.PERMISSION_TAKE_CONTROLS) != 0)
                     {
                         SC.itemID = newItem.ItemID;
@@ -1091,7 +1090,6 @@ namespace Universe.ScriptEngine.VirtualScript
                 return;
 
             LUStruct ls = new LUStruct {ID = data, Action = LUType.Unload};
-
 
             MaintenanceThread.AddScriptChange(new[] {ls}, LoadPriority.Stop);
 
@@ -1361,7 +1359,6 @@ namespace Universe.ScriptEngine.VirtualScript
             return m_Scene.GetSceneObjectPart(localID);
         }
 
-
         bool ScriptDanger(ISceneChildEntity part, Vector3 pos)
         {
             IScene scene = part.ParentEntity.Scene;
@@ -1552,7 +1549,7 @@ namespace Universe.ScriptEngine.VirtualScript
 
             RemoveError(ItemID);
 
-            if ((string) Error[0] == "SUCCESSFULL")
+            if ((string) Error[0] == "SUCCESS")
                 return new ArrayList();
 
             return Error;

@@ -690,16 +690,16 @@ namespace Universe.ScriptEngine.VirtualScript
             if (QIS.functionName != "link_message" &&
                 QIS.VersionID != Interlocked.Read(ref QIS.ID.VersionID))
             {
-                MainConsole.Instance.DebugFormat("[DNE]: Found bad version ID in queue, resetting, {0} to {1}",
+                MainConsole.Instance.DebugFormat("[Virtual Script]: Found bad version ID in queue, resetting, {0} to {1}",
                                                 QIS.VersionID, Interlocked.Read(ref QIS.ID.VersionID));
-                MainConsole.Instance.DebugFormat("[DNE]:     Function: '{0}' in region {1}",
+                MainConsole.Instance.DebugFormat("[Virtual Script]:     Function: '{0}' in region {1}",
 					QIS.functionName == "" ? QIS.functionName : "unknown",
                     QIS.ID.Part.ParentEntity.Scene.RegionInfo.RegionName);
                 //return;
             }
 
             if(MainConsole.Instance.IsTraceEnabled)
-                MainConsole.Instance.TraceFormat("[DNE]: Running Event {0} in object {1} in region {2}",
+                MainConsole.Instance.TraceFormat("[Virtual Script]: Running Event {0} in object {1} in region {2}",
                                            QIS.functionName, QIS.ID.Part,
                                            QIS.ID.Part.ParentEntity.Scene.RegionInfo.RegionName);
             if (!EventSchProcessQIS(ref QIS)) //Execute the event

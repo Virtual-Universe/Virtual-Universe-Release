@@ -124,26 +124,26 @@ namespace Universe.ScriptEngine.VirtualScript.CompilerTools
         private string CreateCompilerScript(string compileScript)
         {
             compileScript = compileScript.Replace("string",
-                                                  "Universe.ScriptEngine.DotNetEngine.LSL_Types.LSLString");
+                                                  "Universe.ScriptEngine.VirtualScript.LSL_Types.LSLString");
 
             compileScript = compileScript.Replace("integer",
-                                                  "Universe.ScriptEngine.DotNetEngine.LSL_Types.LSLInteger");
+                                                  "Universe.ScriptEngine.VirtualScript.LSL_Types.LSLInteger");
 
             compileScript = compileScript.Replace("float",
-                                                  "Universe.ScriptEngine.DotNetEngine.LSL_Types.LSLFloat");
+                                                  "Universe.ScriptEngine.VirtualScript.LSL_Types.LSLFloat");
 
             compileScript = compileScript.Replace("list",
-                                                  "Universe.ScriptEngine.DotNetEngine.LSL_Types.list");
+                                                  "Universe.ScriptEngine.VirtualScript.LSL_Types.list");
 
             compileScript = compileScript.Replace("rotation",
-                                                  "Universe.ScriptEngine.DotNetEngine.LSL_Types.Quaternion");
+                                                  "Universe.ScriptEngine.VirtualScript.LSL_Types.Quaternion");
 
             compileScript = compileScript.Replace("vector",
-                                                  "Universe.ScriptEngine.DotNetEngine.LSL_Types.Vector3");
+                                                  "Universe.ScriptEngine.VirtualScript.LSL_Types.Vector3");
             string compiledScript = "";
             compiledScript = String.Empty +
-                             "using Universe.ScriptEngine.DotNetEngine.Runtime;\n" +
-                             "using Universe.ScriptEngine.DotNetEngine;\n" +
+                             "using Universe.ScriptEngine.VirtualScript.Runtime;\n" +
+                             "using Universe.ScriptEngine.VirtualScript;\n" +
                              "using System;\n" +
                              "using System.Collections.Generic;\n" +
                              "using System.Collections;\n" +
@@ -151,7 +151,7 @@ namespace Universe.ScriptEngine.VirtualScript.CompilerTools
                              "{\n";
 
             compiledScript +=
-                "public class ScriptClass : Universe.ScriptEngine.DotNetEngine.Runtime.ScriptBaseClass, IDisposable\n";
+                "public class ScriptClass : Universe.ScriptEngine.VirtualScript.Runtime.ScriptBaseClass, IDisposable\n";
             compiledScript += "{\n";
             compiledScript +=
                 compileScript;
@@ -331,9 +331,9 @@ namespace Universe.ScriptEngine.VirtualScript.CompilerTools
             }
             string compiledScript = "";
             compiledScript = String.Empty +
-                             "using Universe.ScriptEngine.DotNetEngine.Runtime;\n" +
-                             "using Universe.ScriptEngine.DotNetEngine;\n" +
-                             "using Universe.ScriptEngine.DotNetEngine.APIs.Interfaces;\n" +
+                             "using Universe.ScriptEngine.VirtualScript.Runtime;\n" +
+                             "using Universe.ScriptEngine.VirtualScript;\n" +
+                             "using Universe.ScriptEngine.VirtualScript.APIs.Interfaces;\n" +
                              "\n" +
                              "using Universe.Framework.ClientInterfaces;\n" +
                              "using Universe.Framework.ConsoleFramework;\n" +
@@ -357,7 +357,7 @@ namespace Universe.ScriptEngine.VirtualScript.CompilerTools
                               "{\n";
 
             compiledScript +=
-                "public class ScriptClass : Universe.ScriptEngine.DotNetEngine.Runtime.ScriptBaseClass, IDisposable\n";
+                "public class ScriptClass : Universe.ScriptEngine.VirtualScript.Runtime.ScriptBaseClass, IDisposable\n";
             compiledScript += "{\n";
             compiledScript +=
                 compileScript;

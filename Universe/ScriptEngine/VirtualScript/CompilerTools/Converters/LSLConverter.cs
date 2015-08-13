@@ -196,19 +196,19 @@ namespace Universe.ScriptEngine.VirtualScript.CompilerTools
         private string ReplaceTypes(string message)
         {
             message = message.Replace(
-                "Universe.ScriptEngine.DotNetEngine.LSL_Types.LSLString",
+                "Universe.ScriptEngine.VirtualScript.LSL_Types.LSLString",
                 "string");
 
             message = message.Replace(
-                "Universe.ScriptEngine.DotNetEngine.LSL_Types.LSLInteger",
+                "Universe.ScriptEngine.VirtualScript.LSL_Types.LSLInteger",
                 "integer");
 
             message = message.Replace(
-                "Universe.ScriptEngine.DotNetEngine.LSL_Types.LSLFloat",
+                "Universe.ScriptEngine.VirtualScript.LSL_Types.LSLFloat",
                 "float");
 
             message = message.Replace(
-                "Universe.ScriptEngine.DotNetEngine.LSL_Types.list",
+                "Universe.ScriptEngine.VirtualScript.LSL_Types.list",
                 "list");
 
             return message;
@@ -218,10 +218,10 @@ namespace Universe.ScriptEngine.VirtualScript.CompilerTools
         {
             //Remove these long strings
             message = message.Replace(
-                "Universe.ScriptEngine.DotNetEngine.Runtime.ScriptBaseClass.",
+                "Universe.ScriptEngine.VirtualScript.Runtime.ScriptBaseClass.",
                 "");
             message = message.Replace(
-                "Universe.ScriptEngine.DotNetEngine.LSL_Types.",
+                "Universe.ScriptEngine.VirtualScript.LSL_Types.",
                 "");
             if (message.Contains("The best overloaded method match for"))
             {

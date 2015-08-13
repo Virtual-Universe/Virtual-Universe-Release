@@ -59,7 +59,6 @@ namespace Universe.ScriptEngine.VirtualScript.CompilerTools
         // * Returns assembly name ready for AppDomain load.
         //
         // Assembly is compiled using LSL_BaseClass as base. Look at debug C# code file created when LSL script is compiled for full details.
-        //
 
         private string DefaultCompileLanguage;
         private string FilePrefix;
@@ -103,7 +102,7 @@ namespace Universe.ScriptEngine.VirtualScript.CompilerTools
             //Find the default compiler
             FindDefaultCompiler();
 
-#if DNE_DEBUG
+#if VS_DEBUG
             TestScripts();
         }
         
@@ -491,7 +490,7 @@ namespace Universe.ScriptEngine.VirtualScript.CompilerTools
 
             if (rootPath != null)
                 parameters.ReferencedAssemblies.Add(Path.Combine(rootPath,
-                                                                 "Universe.ScriptEngine.DotNetEngine.dll"));
+                                                                 "Universe.ScriptEngine.VirtualScript.dll"));
             parameters.ReferencedAssemblies.Add("System.dll");
             parameters.ReferencedAssemblies.Add("Microsoft.CSharp.dll");
             parameters.ReferencedAssemblies.Add("System.Core.dll");
@@ -517,10 +516,8 @@ namespace Universe.ScriptEngine.VirtualScript.CompilerTools
             CompilerResults results = converter.Compile(parameters, WriteScriptSourceToDebugFile,
                                                         WriteScriptSourceToDebugFile ? srcFileName : script);
             parameters = null;
-            //
-            // WARNINGS AND ERRORS
-            //
 
+            // WARNINGS AND ERRORS
             if (results.Errors.Count > 0)
             {
                 try
@@ -550,7 +547,6 @@ namespace Universe.ScriptEngine.VirtualScript.CompilerTools
                         CharN = 1;
                         LineN = 1;
                     }
-
 
                     // The Second Life viewer's script editor begins
                     // countingn lines and columns at 0, so we subtract 1.
