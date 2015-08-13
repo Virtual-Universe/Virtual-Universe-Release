@@ -42,8 +42,8 @@ namespace Universe.Modules.Currency
     public class BaseCurrencyConnector : ConnectorBase, IBaseCurrencyConnector
     {
         #region Declares
-        const string _REALM = "base_currency";
-        const string _REALMHISTORY = "base_currency_history";
+        const string _REALM = "currency";
+        const string _REALMHISTORY = "currency_history";
         const string _REALMPURCHASE = "currency_purchased";
 
         IGenericData m_gd;
