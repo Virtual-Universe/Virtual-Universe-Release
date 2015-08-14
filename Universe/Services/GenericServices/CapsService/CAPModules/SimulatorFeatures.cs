@@ -25,66 +25,124 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System;
+using System.IO;
+using OpenMetaverse.StructuredData;
 using Universe.Framework.Servers.HttpServer;
 using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Services;
-using OpenMetaverse.StructuredData;
-using System.IO;
 
 namespace Universe.Services
 {
-    public class SimulatorFeatures : ICapsServiceConnector
-    {
-        private IRegionClientCapsService m_service;
+	public class SimulatorFeatures : ICapsServiceConnector
+	{
+		IRegionClientCapsService m_service;
 
-        #region ICapsServiceConnector Members
+		// Configuration
+		static List<String> m_lastNames = new List<String>();
+		static List<String> m_fullNames = new List<String>();
 
-        public void RegisterCaps(IRegionClientCapsService service)
-        {
-            m_service = service;
+		#region ICapsServiceConnector Members
 
-            m_service.AddStreamHandler("SimulatorFeatures",
-                                       new GenericStreamHandler("GET", m_service.CreateCAPS("SimulatorFeatures", ""),
-                                                                SimulatorFeaturesCAP));
-        }
+		public void RegisterCaps(IRegionClientCapsService service)
+		{
+			m_service = service;
 
-        public void DeregisterCaps()
-        {
-            m_service.RemoveStreamHandler("SimulatorFeatures", "GET");
-        }
+			// Retrieve our gods if needed
+			InitGodNames ();
 
-        public void EnteringRegion()
-        {
-        }
+			m_service.AddStreamHandler("SimulatorFeatures",
+				new GenericStreamHandler("GET", m_service.CreateCAPS("SimulatorFeatures", ""),
+					SimulatorFeaturesCAP));
 
-        #endregion
+		}
 
-        private byte[] SimulatorFeaturesCAP(string path, Stream request,
-                                            OSHttpRequest httpRequest, OSHttpResponse httpResponse)
-        {
-            OSDMap data = new OSDMap();
-            // 17-06-2015 Fly-Man- AvatarHoverHeight enabled
-            data["AvatarHoverHeightEnabled"] = true;
-            
-            // 17-06-2015 Fly-Man- MaxMaterialsPerTransaction enabled
-            data["MaxMaterialsPerTransaction"] = 50;
-            
-            data["MeshRezEnabled"] = true;
-            data["MeshUploadEnabled"] = true;
-            data["MeshXferEnabled"] = true;
-            data["PhysicsMaterialsEnabled"] = true;
+		public void DeregisterCaps()
+		{
+			m_service.RemoveStreamHandler("SimulatorFeatures", "GET");
+		}
 
-            OSDMap typesMap = new OSDMap();
+		public void EnteringRegion()
+		{
+		}
 
-            typesMap["convex"] = true;
-            typesMap["none"] = true;
-            typesMap["prim"] = true;
+		#endregion
 
-            data["PhysicsShapeTypes"] = typesMap;
+		byte[] SimulatorFeaturesCAP(string path, Stream request,
+			OSHttpRequest httpRequest, OSHttpResponse httpResponse)
+		{
+			OSDMap data = new OSDMap();
+			// 17-06-2015 Fly-Man- AvatarHoverHeight enabled
+			data["AvatarHoverHeightEnabled"] = true;
 
-            //Send back data
-            return OSDParser.SerializeLLSDXmlBytes(data);
-        }
-    }
+			// 17-06-2015 Fly-Man- MaxMaterialsPerTransaction enabled
+			data["MaxMaterialsPerTransaction"] = 50;
+
+			data["MeshRezEnabled"] = true;
+			data["MeshUploadEnabled"] = true;
+			data["MeshXferEnabled"] = true;
+			data["PhysicsMaterialsEnabled"] = true;
+
+			OSDMap typesMap = new OSDMap();
+
+			typesMap["convex"] = true;
+			typesMap["none"] = true;
+			typesMap["prim"] = true;
+
+			data["PhysicsShapeTypes"] = typesMap;
+
+			// Some additional features
+			data["god_names"] = GodNames(httpRequest);
+
+			//Send back data
+			return OSDParser.SerializeLLSDXmlBytes(data);
+		}
+
+		#region helpers
+		void InitGodNames()
+		{
+			if (m_fullNames.Count > 0)
+				return;
+
+			IUserAccountService userService = m_service.Registry.RequestModuleInterface<IUserAccountService>();
+			var gods = userService.GetUserAccounts(null, "*");
+			foreach (UserAccount user in gods)
+				if (user.UserLevel >= Constants.USER_GOD_LIASON)
+				{
+					m_lastNames.Add(user.LastName);
+					m_fullNames.Add(user.Name);
+				}
+
+			OSDMap GodNames(OSHttpRequest httpRequest)
+			{
+				OSDMap namesmap = new OSDMap();
+				if (httpRequest.Query.ContainsKey ("god_names"))
+				{
+					OSD nmap = httpRequest.Query ["god_names"].ToString ();
+					namesmap = (OSDMap)nmap;
+				}
+
+				OSDArray fnames = new OSDArray();
+				foreach (string name in m_fullNames) 
+				{
+					fnames.Add(name);
+				}
+
+				namesmap["full_names"] = fnames;
+
+				OSDArray lnames = new OSDArray();
+
+				foreach (string name in m_lastNames)
+				{
+					lnames.Add(name);
+				}
+
+				namesmap["last_names"] = lnames;
+
+				return namesmap;
+			}
+
+			#endregion
+		}
+	}
 }
