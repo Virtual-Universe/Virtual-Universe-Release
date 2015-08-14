@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -693,9 +693,11 @@ namespace Universe.Framework.SceneInfo
             map ["AuctionInfo"] = AuctionInfo.ToOSD ();
 
             // OSD.FromVector3 is broken for non en_US locales
+            // map["UserLocation"] = OSD.FromVector3(UserLocation);
             map["ULocX"] = OSD.FromReal(UserLocation.X).ToString();
             map["ULocY"] = OSD.FromReal(UserLocation.Y).ToString();
             map["ULocZ"] = OSD.FromReal(UserLocation.Z).ToString ();
+            // map["UserLookAt"] = OSD.FromVector3(UserLookAt);
             map["ULookX"] = OSD.FromReal(UserLookAt.X).ToString();
             map["ULookY"] = OSD.FromReal(UserLookAt.Y).ToString ();
             map["ULookZ"] = OSD.FromReal(UserLookAt.Z).ToString ();
@@ -754,6 +756,7 @@ namespace Universe.Framework.SceneInfo
 
             if ((IsGroupOwned) && (GroupID != OwnerID)) OwnerID = GroupID;
 
+            //UserLocation = map["UserLocation"].AsVector3();
             if (map.ContainsKey("UserLocation")) {
                 UserLocation = map ["UserLocation"].AsVector3 ();
             } else {
@@ -763,6 +766,7 @@ namespace Universe.Framework.SceneInfo
                 UserLocation = uloc;
             }
 
+            //UserLookAt = map["UserLookAt"].AsVector3();
             if (map.ContainsKey("UserLookAt")) {
                 UserLookAt = map ["UserLookAt"].AsVector3 ();
             } else {

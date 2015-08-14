@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -95,8 +95,8 @@ namespace Universe.Modules.Land
                 OnObjectBeingRemovedFromScene;
             m_Scene.EventManager.OnLandObjectAdded += OnLandObjectAdded;
             m_Scene.EventManager.OnLandObjectRemoved += OnLandObjectRemoved;
-            m_Scene.UniverseEventManager.RegisterEventHandler("ObjectChangedOwner", OnGenericEvent);
-            m_Scene.UniverseEventManager.RegisterEventHandler("ObjectEnteringNewParcel", OnGenericEvent);
+            m_Scene.WhiteCoreEventManager.RegisterEventHandler("ObjectChangedOwner", OnGenericEvent);
+            m_Scene.WhiteCoreEventManager.RegisterEventHandler("ObjectEnteringNewParcel", OnGenericEvent);
             m_Scene.EventManager.OnSceneGroupMove += EventManager_OnSceneGroupMove;
         }
 
@@ -127,8 +127,8 @@ namespace Universe.Modules.Land
                 OnObjectBeingRemovedFromScene;
             m_Scene.EventManager.OnLandObjectAdded -= OnLandObjectAdded;
             m_Scene.EventManager.OnLandObjectRemoved -= OnLandObjectRemoved;
-            m_Scene.UniverseEventManager.UnregisterEventHandler("ObjectChangedOwner", OnGenericEvent);
-            m_Scene.UniverseEventManager.UnregisterEventHandler("ObjectEnteringNewParcel", OnGenericEvent);
+            m_Scene.WhiteCoreEventManager.UnregisterEventHandler("ObjectChangedOwner", OnGenericEvent);
+            m_Scene.WhiteCoreEventManager.UnregisterEventHandler("ObjectEnteringNewParcel", OnGenericEvent);
             m_Scene.EventManager.OnSceneGroupMove -= EventManager_OnSceneGroupMove;
             m_Scene = null;
         }

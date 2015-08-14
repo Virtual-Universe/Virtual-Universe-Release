@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -51,9 +51,9 @@ namespace Universe.Modules
         protected Timer m_backupSaveTimer;
 
         protected string m_fileName = "";
-        protected string m_storeDirectory = Constants.DEFAULT_DATA_DIR + "/Region";
+        protected string m_storeDirectory = "";
         protected bool m_keepOldSave = true;
-        protected string m_oldSaveDirectory = Constants.DEFAULT_DATA_DIR + "/RegionBak";
+        protected string m_oldSaveDirectory = "";
         protected bool m_oldSaveHasBeenSaved;
         protected bool m_requiresSave = true;
         protected bool m_displayNotSavingNotice = true;
@@ -125,20 +125,26 @@ namespace Universe.Modules
                 "Removes old region backup files older than [days] (default: " + m_removeArchiveDays + " days)",
                 CleanupRegionBackups,
                 false, true);
+
         }
 
         public virtual List<string> FindRegionInfos(out bool newRegion, ISimulationBase simBase)
         {
+//			List<string> regions = new List<string>(Directory.GetFiles(".", "*.sim", SearchOption.TopDirectoryOnly));
 			ReadConfig(simBase);
 			MainConsole.Instance.Info("Looking for previous regions in: "+ m_storeDirectory);
+
 			List<string> regions = new List<string>(Directory.GetFiles(m_storeDirectory, "*.sim", SearchOption.TopDirectoryOnly));
             newRegion = regions.Count == 0;
             List<string> retVals = new List<string>();
+
 			foreach (string r in regions)
-				if (Path.GetExtension (r) == ".sim") {
-				MainConsole.Instance.Info ("Found: " + Path.GetFileNameWithoutExtension (r));
+				if (Path.GetExtension (r) == ".sim") 
+                {
+				    MainConsole.Instance.Info ("Found: " + Path.GetFileNameWithoutExtension (r));
 					retVals.Add (Path.GetFileNameWithoutExtension (r));
 				}
+            
             return retVals;
         }
 
@@ -151,11 +157,12 @@ namespace Universe.Modules
 
             List<string> regionBaks = new List<string>();
             regionName += "--";                                 // name & timestamp delimiter
+
             foreach (string regBak in allBackups)
             {
                 if (Path.GetFileName (regBak).StartsWith(regionName)) 
                 {
-                    //MainConsole.Instance.Debug ("Found: " + Path.GetFileNameWithoutExtension (regBak));
+                    //        MainConsole.Instance.Debug ("Found: " + Path.GetFileNameWithoutExtension (regBak));
                     regionBaks.Add ( regBak);
                 }
             }
@@ -250,7 +257,7 @@ namespace Universe.Modules
 
                 ForceBackup();
 
-				MainConsole.Instance.Info("[File Based Simulation Data]: Save completed.");
+				MainConsole.Instance.Info("[FileBasedSimulationData]: Save completed.");
 			}
 
 			return regionInfo;
@@ -261,6 +268,7 @@ namespace Universe.Modules
             ReadConfig(simBase);
             ReadBackup(fileName);
             BackupFile = fileName;
+
             return _regionData.RegionInfo;
         }
 
@@ -290,6 +298,7 @@ namespace Universe.Modules
         /// <param name="currentInfo">Current info.</param>
         RegionInfo CreateRegionFromConsole(RegionInfo info, Boolean prompt, Dictionary<string, int> currentInfo)
         {
+
             if (info == null || info.NewRegion)
             {
                 if (info == null)
@@ -344,6 +353,12 @@ namespace Universe.Modules
                     ((info.RegionLocY == 0 
                             ? 1000 
                             : info.RegionLocY / Constants.RegionSize)).ToString ())) * Constants.RegionSize;
+            
+                //info.RegionLocZ =
+                //    int.Parse (MainConsole.Instance.Prompt ("Region location Z",
+                //        ((info.RegionLocZ == 0 
+                //            ? 0 
+                //            : info.RegionLocZ / Constants.RegionSize)).ToString ())) * Constants.RegionSize;
 
                 var haveSize = true;
                 var sizeCheck = "";
@@ -379,6 +394,7 @@ namespace Universe.Modules
                 // * Mainland / Openspace
                 //
                 // * Estate / Full Region   (Private)
+                //
                 info.RegionType = MainConsole.Instance.Prompt ("Region Type (Mainland/Estate)",
                     (info.RegionType == "" ? "Estate" : info.RegionType));
 
@@ -411,7 +427,7 @@ namespace Universe.Modules
                     responses.Add("Full Region");
                     responses.Add("Homestead");
 					responses.Add ("Openspace");
-                    responses.Add ("Universe");                            // TODO: Universe 'standard' setup, rename?
+                    responses.Add ("Universe");                            // TODO: Universe 'standard' setup, rename??
                     responses.Add ("Custom");
                     setupMode = MainConsole.Instance.Prompt("Estate region type?","Full Region", responses).ToLower();
                 }
@@ -458,7 +474,7 @@ namespace Universe.Modules
                     info.ObjectCapacity =
                         int.Parse (MainConsole.Instance.Prompt ("Object capacity",
                         info.ObjectCapacity == 0
-                                               ? "100000"
+                                               ? "50000"
                                                : info.ObjectCapacity.ToString ()));
                 } 
 
@@ -471,7 +487,7 @@ namespace Universe.Modules
                     info.Startup = StartupType.Normal;
                     info.SeeIntoThisSimFromNeighbor = true;
                     info.InfiniteRegion = true;
-                    info.ObjectCapacity = 100000;
+                    info.ObjectCapacity = 50000;
 
                 }
                 if (setupMode.StartsWith("o"))       
@@ -533,6 +549,7 @@ namespace Universe.Modules
                         info.RegionSettings.AllowLandResell = false;
                     }
                 }
+
             }
 
             // are we updating or adding??
@@ -558,7 +575,7 @@ namespace Universe.Modules
 
                 m_scene.SimulationDataService.ForceBackup();
 
-                MainConsole.Instance.InfoFormat("[File Based Simulation Data]: Save of {0} completed.",info.RegionName);
+                MainConsole.Instance.InfoFormat("[FileBasedSimulationData]: Save of {0} completed.",info.RegionName);
             }
 
             return info;
@@ -566,7 +583,7 @@ namespace Universe.Modules
 
         public virtual void SetRegion(IScene scene)
         {
-            scene.UniverseEventManager.RegisterEventHandler("Backup", UniverseEventManager_OnGenericEvent);
+            scene.WhiteCoreEventManager.RegisterEventHandler("Backup", WhiteCoreEventManager_OnGenericEvent);
             m_scene = scene;
         }
 
@@ -585,6 +602,7 @@ namespace Universe.Modules
                 MainConsole.Instance.DefaultPrompt = MainConsole.Instance.ConsoleScene.RegionInfo.RegionName+": ";
             }
         }
+
 
         /// <summary>
         /// Sets the region prim capacity.
@@ -626,6 +644,7 @@ namespace Universe.Modules
             }
 
             DeleteUpOldArchives(daysOld);
+
         }
 
         /// <summary>
@@ -669,10 +688,12 @@ namespace Universe.Modules
                 File.Copy(fileName, regionFile);
 
                 return true; 
+
             }
 
             return false;
         }
+
             
         public virtual List<ISceneEntity> LoadObjects()
         {
@@ -734,7 +755,7 @@ namespace Universe.Modules
             }
             catch (Exception ex)
             {
-                MainConsole.Instance.Error("[File Based Simulation Data]: Failed to save backup, exception occurred " + ex);
+                MainConsole.Instance.Error("[FileBasedSimulationData]: Failed to save backup, exception occurred " + ex);
             }
         }
 
@@ -758,7 +779,7 @@ namespace Universe.Modules
             }
             catch (Exception ex)
             {
-                MainConsole.Instance.Error("[File Based Simulation Data]: Failed to save backup, exception occurred " + ex);
+                MainConsole.Instance.Error("[FileBasedSimulationData]: Failed to save backup, exception occurred " + ex);
             }
             if (m_saveTimer != null)
                 m_saveTimer.Start(); //Restart it as we just did a backup
@@ -794,17 +815,24 @@ namespace Universe.Modules
                 m_timeBetweenSaves = config.GetInt("TimeBetweenSaves", m_timeBetweenSaves);
                 m_keepOldSave = config.GetBoolean("SavePreviousBackup", m_keepOldSave);
 
-                // directories are references from the bin directory
-                m_oldSaveDirectory =
-                    PathHelpers.ComputeFullPath(config.GetString("PreviousBackupDirectory", m_oldSaveDirectory));
+                // As of V0.9.2, data is saved in the '../Data' directory relative to the bin dir
+                // or as configured
+
+                // Get and save the default Data path
+                string defaultDataPath = simBase.DefaultDataPath;
+
                 m_storeDirectory =
                     PathHelpers.ComputeFullPath(config.GetString("StoreBackupDirectory", m_storeDirectory));
                 if (m_storeDirectory == "")
-                    m_storeDirectory = Constants.DEFAULT_DATA_DIR + "/Region";
+                    m_storeDirectory = Path.Combine(defaultDataPath, "Region");
+       
+                m_oldSaveDirectory =
+                    PathHelpers.ComputeFullPath(config.GetString("PreviousBackupDirectory", m_oldSaveDirectory));
                 if (m_oldSaveDirectory == "")
-                    m_oldSaveDirectory = Constants.DEFAULT_DATA_DIR + "/RegionBak";
+                    m_oldSaveDirectory = Path.Combine(defaultDataPath, "RegionBak");
 
-                m_removeArchiveDays = config.GetInt("ArchiveDays", m_removeArchiveDays);                          
+                m_removeArchiveDays = config.GetInt("ArchiveDays", m_removeArchiveDays);
+                               
 
                 // verify the necessary paths exist
                 if (!Directory.Exists(m_storeDirectory))
@@ -812,6 +840,7 @@ namespace Universe.Modules
                 if (!Directory.Exists(m_oldSaveDirectory))
                     Directory.CreateDirectory(m_oldSaveDirectory);
 
+       
                 string regionNameSeed = config.GetString("RegionNameSeed", "");
                 if (regionNameSeed != "")
                     m_regionNameSeed = regionNameSeed.Split (',');
@@ -822,7 +851,7 @@ namespace Universe.Modules
 
             if (m_saveChanges && m_timeBetweenSaves != 0)
             {
-                m_saveTimer = new Timer(m_timeBetweenSaves*60*1000);
+                m_saveTimer = new Timer(m_timeBetweenSaves * 60 * 1000);
                 m_saveTimer.Elapsed += m_saveTimer_Elapsed;
                 m_saveTimer.Start();
             }
@@ -841,7 +870,7 @@ namespace Universe.Modules
         /// <param name="FunctionName"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        object UniverseEventManager_OnGenericEvent(string FunctionName, object parameters)
+        object WhiteCoreEventManager_OnGenericEvent(string FunctionName, object parameters)
         {
             if (FunctionName == "Backup")
             {
@@ -874,7 +903,7 @@ namespace Universe.Modules
                 }
                 catch (Exception ex)
                 {
-                    MainConsole.Instance.Error("[File Based Simulation Data]: Failed to save backup, exception occurred " +
+                    MainConsole.Instance.Error("[FileBasedSimulationData]: Failed to save backup, exception occurred " +
                                                ex);
                 }
                 m_saveTimer.Start(); //Restart it as we just did a backup
@@ -882,7 +911,7 @@ namespace Universe.Modules
             else if (m_displayNotSavingNotice)
             {
                 m_displayNotSavingNotice = false;
-                MainConsole.Instance.Info("[File Based Simulation Data]: Not saving backup, not required");
+                MainConsole.Instance.Info("[FileBasedSimulationData]: Not saving backup, not required");
             }
         }
 
@@ -906,12 +935,13 @@ namespace Universe.Modules
             }
             catch (Exception ex)
             {
-                MainConsole.Instance.Error("[File Based Simulation Data]: Failed to save backup, exception occurred " + ex);
+                MainConsole.Instance.Error("[FileBasedSimulationData]: Failed to save backup, exception occurred " + ex);
             }
         }
 
         public void DeleteUpOldArchives(int daysOld)
         {
+
             if (daysOld < 0)
                 return;
 
@@ -1033,6 +1063,7 @@ namespace Universe.Modules
                 return;
             }
 
+            //RegionData data = _regionLoader.LoadBackup(filename + ".tmp");
             if (!isOldSave)
             {
                 if (File.Exists(filename))
@@ -1051,7 +1082,7 @@ namespace Universe.Modules
                     if (File.Exists(oldfileName))
                         File.Delete(oldfileName);
                      
-                    // now we can copy it over.
+                    // now we can copy it over...
                     File.Copy(filename, oldfileName );
                 }
             }
@@ -1070,6 +1101,10 @@ namespace Universe.Modules
 
         string BuildSaveFileName()
         {
+            //return (m_storeDirectory == "" || m_storeDirectory == "/")
+            // the'/' directory is valid an someone might use it to store backups so don't
+            // fudge it to mean './' ... as it previously was...
+
             var name = BackupFile;
             return (m_storeDirectory == "")
                        ? name + ".sim"

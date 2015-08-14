@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -45,7 +45,7 @@ namespace Universe.Services.DataService
 
         public void Initialize(IConfigSource source, IRegistryCore simBase)
         {
-            IConfig m_config = source.Configs["UniverseData"];
+            IConfig m_config = source.Configs["WhiteCoreData"];
             if (m_config != null)
             {
                 StorageProvider = m_config.GetString("StorageProvider", StorageProvider);
@@ -54,7 +54,7 @@ namespace Universe.Services.DataService
 
             IGenericData DataConnector = null;
             if (StorageProvider == "MySQL")
-                //Allow for fallback when UniverseData isn't set
+                //Allow for fallback when WhiteCoreData isn't set
             {
                 MySQLDataLoader GenericData = new MySQLDataLoader();
 
@@ -73,15 +73,15 @@ namespace Universe.Services.DataService
                 DataConnector = GenericData;
             }*/
             else if (StorageProvider == "SQLite")
-                //Allow for fallback when UniverseData isn't set
+                //Allow for fallback when WhiteCoreData isn't set
             {
                 SQLiteLoader GenericData = new SQLiteLoader();
 
                 DataConnector = GenericData;
             }
 
-            List<IUniverseDataPlugin> Plugins = UniverseModuleLoader.PickupModules<IUniverseDataPlugin>();
-            foreach (IUniverseDataPlugin plugin in Plugins)
+            List<IWhiteCoreDataPlugin> Plugins = WhiteCoreModuleLoader.PickupModules<IWhiteCoreDataPlugin>();
+            foreach (IWhiteCoreDataPlugin plugin in Plugins)
             {
                 try
                 {
@@ -99,7 +99,7 @@ namespace Universe.Services.DataService
 
         public void Initialize(IConfigSource source, IRegistryCore simBase, List<Type> types)
         {
-            IConfig m_config = source.Configs["UniverseData"];
+            IConfig m_config = source.Configs["WhiteCoreData"];
             if (m_config != null)
             {
                 StorageProvider = m_config.GetString("StorageProvider", StorageProvider);
@@ -108,7 +108,7 @@ namespace Universe.Services.DataService
 
             IGenericData DataConnector = null;
             if (StorageProvider == "MySQL")
-                //Allow for fallback when UniverseData isn't set
+                //Allow for fallback when WhiteCoreData isn't set
             {
                 MySQLDataLoader GenericData = new MySQLDataLoader();
 
@@ -127,7 +127,7 @@ namespace Universe.Services.DataService
                 DataConnector = GenericData;
             }*/
             else if (StorageProvider == "SQLite")
-                //Allow for fallback when UniverseData isn't set
+                //Allow for fallback when WhiteCoreData isn't set
             {
                 SQLiteLoader GenericData = new SQLiteLoader();
 
@@ -136,7 +136,7 @@ namespace Universe.Services.DataService
 
             foreach (Type t in types)
             {
-                List<dynamic> Plugins = UniverseModuleLoader.PickupModules(t);
+                List<dynamic> Plugins = WhiteCoreModuleLoader.PickupModules(t);
                 foreach (dynamic plugin in Plugins)
                 {
                     try

@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Aurora-Sim Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -26,17 +26,17 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using Nini.Config;
 using OpenMetaverse;
+using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Servers.HttpServer.Interfaces;
-using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Utilities;
-using System.Collections.Generic;
 
 namespace Universe.Modules.WorldView
 {
@@ -45,10 +45,11 @@ namespace Universe.Modules.WorldView
 
         bool m_Enabled = true;
         IMapImageGenerator m_Generator;
-        string m_assetCacheDir = Constants.DEFAULT_ASSETCACHE_DIR;
+        string m_assetCacheDir = "";
         string m_worldviewCacheDir;
         bool m_cacheEnabled = true;
         float m_cacheExpires = 24;
+        ISimulationBase simulationBase;
 
         public void Initialize(IConfigSource config)
         {
@@ -80,7 +81,6 @@ namespace Universe.Modules.WorldView
                 if (m_cacheEnabled)
                 {
                     m_assetCacheDir = config.Configs ["AssetCache"].GetString ("CacheDirectory",m_assetCacheDir);
-                    CreateCacheDirectories (m_assetCacheDir);
                 }
 
             }
@@ -94,6 +94,7 @@ namespace Universe.Modules.WorldView
         {
             if (!m_Enabled)
                 return;
+            
             m_Generator = scene.RequestModuleInterface<IMapImageGenerator>();
             if (m_Generator == null)
             {
@@ -101,9 +102,20 @@ namespace Universe.Modules.WorldView
                 return;
             }
 
-            ISimulationBase simulationBase = scene.RequestModuleInterface<ISimulationBase>();
+            simulationBase = scene.RequestModuleInterface<ISimulationBase>();
             if (simulationBase != null)
             {
+               // verify cache path
+                if (m_cacheEnabled)
+                {
+                    if (m_assetCacheDir == "")
+                    {
+                        var defpath = simulationBase.DefaultDataPath;
+                        m_assetCacheDir = Path.Combine (defpath, Constants.DEFAULT_ASSETCACHE_DIR);
+                    }
+                    CreateCacheDirectories (m_assetCacheDir);
+                }
+
                 IHttpServer server = simulationBase.GetHttpServer(0);
                 server.AddStreamHandler(new WorldViewRequestHandler(this,
                         scene.RegionInfo.RegionID.ToString()));
@@ -205,7 +217,7 @@ namespace Universe.Modules.WorldView
             if (string.IsNullOrEmpty(fileName))
             {
                 fileName = scene.RegionInfo.RegionName + ".jpg";
-                savePath = PathHelpers.VerifyWriteFile (fileName, ".jpg", Constants.DEFAULT_DATA_DIR + "/Worldview", true);
+                savePath = PathHelpers.VerifyWriteFile (fileName, ".jpg", simulationBase.DefaultDataPath + "/Worldview", true);
             }
             File.WriteAllBytes(savePath, jpeg);
 
@@ -225,7 +237,7 @@ namespace Universe.Modules.WorldView
             if (string.IsNullOrEmpty(fileName))
             {
                 fileName = scene.RegionInfo.RegionName + "_maptile.jpg";
-                savePath = PathHelpers.VerifyWriteFile (fileName, ".jpg", Constants.DEFAULT_DATA_DIR + "/Worldview", true);
+                savePath = PathHelpers.VerifyWriteFile (fileName, ".jpg", simulationBase.DefaultDataPath + "/Worldview", true);
             }
             File.WriteAllBytes(savePath, jpeg);
 
@@ -324,7 +336,7 @@ namespace Universe.Modules.WorldView
             }
 
             //some file sanity checks
-            var savePath = PathHelpers.VerifyWriteFile (fileName, ".jpg", Constants.DEFAULT_DATA_DIR + "/Worldview", true);
+            var savePath = PathHelpers.VerifyWriteFile (fileName, ".jpg", simulationBase.DefaultDataPath + "/Worldview", true);
 
             MainConsole.Instance.InfoFormat (
                 "[Worldview]: Saving worldview for {0} to {1}", scene.RegionInfo.RegionName, savePath);
@@ -370,7 +382,7 @@ namespace Universe.Modules.WorldView
             }
 
             //some file sanity checks
-            var savePath = PathHelpers.VerifyWriteFile (fileName+"_maptile", ".jpg", Constants.DEFAULT_DATA_DIR + "/Worldview", true);
+            var savePath = PathHelpers.VerifyWriteFile (fileName+"_maptile", ".jpg", simulationBase.DefaultDataPath + "/Worldview", true);
 
             MainConsole.Instance.InfoFormat (
                 "[Worldview]: Saving world maptile for {0} to {1}", scene.RegionInfo.RegionName, savePath);

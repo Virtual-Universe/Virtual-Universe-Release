@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -80,6 +80,13 @@ namespace Universe.Simulation.Base
             get { return m_version; }
         }
 
+        protected string m_defaultDataPath = Constants.DEFAULT_DATA_DIR;
+        public string DefaultDataPath
+        { 
+            get { return m_defaultDataPath;}
+            set { m_defaultDataPath = value;}
+        }
+
         protected IRegistryCore m_applicationRegistry = new RegistryCore();
 
         public IRegistryCore ApplicationRegistry
@@ -87,9 +94,9 @@ namespace Universe.Simulation.Base
             get { return m_applicationRegistry; }
         }
 
-        protected UniverseEventManager m_eventManager = new UniverseEventManager();
+        protected WhiteCoreEventManager m_eventManager = new WhiteCoreEventManager();
 
-        public UniverseEventManager EventManager
+        public WhiteCoreEventManager EventManager
         {
             get { return m_eventManager; }
         }
@@ -111,8 +118,7 @@ namespace Universe.Simulation.Base
             get { return m_BaseHTTPServer; }
         }
 
-        protected Dictionary<uint, IHttpServer> m_Servers =
-            new Dictionary<uint, IHttpServer>();
+        protected Dictionary<uint, IHttpServer> m_Servers = new Dictionary<uint, IHttpServer>();
 
         protected uint m_Port;
 
@@ -121,7 +127,7 @@ namespace Universe.Simulation.Base
             get { return m_Port; }
         }
 
-        protected string[] m_commandLineParameters = null;
+        protected string[] m_commandLineParameters;
 
         public string[] CommandLineParameters
         {
@@ -148,8 +154,8 @@ namespace Universe.Simulation.Base
             m_configurationLoader = configLoader;
 
             // This thread will go on to become the console listening thread
-            if (System.Threading.Thread.CurrentThread.Name != "ConsoleThread")
-                System.Threading.Thread.CurrentThread.Name = "ConsoleThread";
+            System.Threading.Thread.CurrentThread.Name = "ConsoleThread";
+
             //Register the interface
             ApplicationRegistry.RegisterModuleInterface<ISimulationBase>(this);
 
@@ -168,10 +174,15 @@ namespace Universe.Simulation.Base
         {
             IConfig startupConfig = m_config.Configs["Startup"];
 
-            int stpMaxThreads = 15;
+            int stpMinThreads = 15;
+            int stpMaxThreads = 300;
 
             if (startupConfig != null)
             {
+                m_defaultDataPath = startupConfig.GetString("DataDirectory", Constants.DEFAULT_DATA_DIR);
+                if (m_defaultDataPath == "")
+                    m_defaultDataPath = Constants.DEFAULT_DATA_DIR;
+                
                 m_startupCommandsFile = startupConfig.GetString("startup_console_commands_file", "");
                 m_shutdownCommandsFile = startupConfig.GetString("shutdown_console_commands_file", "");
 
@@ -192,34 +203,43 @@ namespace Universe.Simulation.Base
                     Utils.EnumTryParse(asyncCallMethodStr, out asyncCallMethod))
                     Util.FireAndForgetMethod = asyncCallMethod;
 
-                stpMaxThreads = SystemConfig.GetInt("MaxPoolThreads", 15);
+                stpMinThreads = SystemConfig.GetInt("MinPoolThreads", stpMinThreads);
+                stpMaxThreads = SystemConfig.GetInt("MaxPoolThreads", stpMaxThreads);
+
+                if (stpMinThreads < 2)
+                    stpMinThreads = 2;
+                if (stpMaxThreads < 2)
+                    stpMaxThreads = 2;
+                if (stpMinThreads > stpMaxThreads)
+                    stpMinThreads = stpMaxThreads;
             }
 
+                
             if (Util.FireAndForgetMethod == FireAndForgetMethod.SmartThreadPool)
-                Util.InitThreadPool(stpMaxThreads);
+                Util.InitThreadPool(stpMinThreads, stpMaxThreads);
         }
 
         /// <summary>
-        ///     Performs initialisation of the application, such as loading the HTTP server and modules
+        ///     Performs initialization of the application, such as loading the HTTP server and modules
         /// </summary>
         public virtual void Startup()
         {
             MainConsole.Instance.Info("====================================================================");
             MainConsole.Instance.Info(
-				        string.Format("==================== Starting Virtual Universe ({0}) ===============",
+				        string.Format("==================== STARTING Universe ({0}) ======================",
                               (IntPtr.Size == 4 ? "x86" : "x64")));
             MainConsole.Instance.Info("====================================================================");
-            MainConsole.Instance.Info("[Virtual Universe Startup]: Version: " + Version + "\n");
+            MainConsole.Instance.Info("[WhiteCoreStartup]: Version: " + Version + "\n");
             if (Environment.Is64BitOperatingSystem)
-                MainConsole.Instance.Info("[Virtual Universe Startup]: Running on 64 bit architecture");
+                MainConsole.Instance.Info("[WhiteCoreStartup]: Running on 64 bit architecture");
             // get memory allocation
             Process proc = Process.GetCurrentProcess();
-            MainConsole.Instance.Info("[Virtual Universe Startup]: Allocated RAM " + proc.WorkingSet64);
+            MainConsole.Instance.Info("[WhiteCoreStartup]: Allocated RAM " + proc.WorkingSet64);
             if (Utilities.IsLinuxOs)
             {
                 var pc = new PerformanceCounter ("Mono Memory", "Total Physical Memory");
                 var bytes = pc.RawValue;
-                MainConsole.Instance.InfoFormat ("[Virtual Universe Startup]: Physical RAM (Mbytes): {0}", bytes / 1024000);
+                MainConsole.Instance.InfoFormat ("[WhiteCoreStartup]: Physical RAM (Mbytes): {0}", bytes / 1024000);
             }
 
             SetUpHTTPServer();
@@ -329,7 +349,7 @@ namespace Universe.Simulation.Base
 
         public virtual void InitializeModules()
         {
-            m_applicationPlugins = UniverseModuleLoader.PickupModules<IApplicationPlugin>();
+            m_applicationPlugins = WhiteCoreModuleLoader.PickupModules<IApplicationPlugin>();
             foreach (IApplicationPlugin plugin in m_applicationPlugins)
                 plugin.PreStartup(this);
         }
@@ -343,7 +363,7 @@ namespace Universe.Simulation.Base
                 plugin.Initialize(this);
 
             foreach (IApplicationPlugin plugin in m_applicationPlugins)
-                plugin.PostInitialize();
+                plugin.PostInitialise();
 
             foreach (IApplicationPlugin plugin in m_applicationPlugins)
                 plugin.Start();
@@ -384,7 +404,7 @@ namespace Universe.Simulation.Base
         ///     Opens a file and uses it as input to the console command parser.
         /// </summary>
         /// <param name="fileName">name of file to use as input to the console</param>
-        private void PrintFileToConsole(string fileName)
+        void PrintFileToConsole(string fileName)
         {
             if (File.Exists(fileName))
             {
@@ -403,7 +423,7 @@ namespace Universe.Simulation.Base
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void RunAutoTimerScript(object sender, EventArgs e)
+        void RunAutoTimerScript(object sender, EventArgs e)
         {
             RunCommandScript(m_TimerScriptFileName);
         }
@@ -458,12 +478,12 @@ namespace Universe.Simulation.Base
                                                      runConfig, false, true);
         }
 
-		private void HandleQuit(IScene scene, string[] args)
-		{
-			var ok = MainConsole.Instance.Prompt ("[CONSOLE]: Shutdown the simulator. Are you sure? (yes/no)", "no").ToLower();
-			if (ok.StartsWith("y"))
-				Shutdown(true);
-		}
+        void HandleQuit(IScene scene, string[] args)
+        {
+            var ok = MainConsole.Instance.Prompt ("[CONSOLE]: Shutdown the simulator. Are you sure? (yes/no)", "no").ToLower();
+            if (ok.StartsWith("y"))
+                Shutdown(true);
+        }
 
         /// <summary>
         ///     Run an optional startup list of commands
@@ -530,7 +550,7 @@ namespace Universe.Simulation.Base
             string hostName =
                 m_config.Configs["Network"].GetString("HostName", "http://127.0.0.1");
             //Clean it up a bit
-            // these are doing nothing?
+            // these are doing nothing??
             hostName.Replace("http://", "");
             hostName.Replace("https://", "");
             if (hostName.EndsWith("/"))
@@ -630,7 +650,7 @@ namespace Universe.Simulation.Base
         {
             try
             {
-                string pidstring = System.Diagnostics.Process.GetCurrentProcess().Id.ToString();
+                string pidstring = Process.GetCurrentProcess().Id.ToString();
                 FileStream fs = File.Create(path);
                 System.Text.ASCIIEncoding enc = new System.Text.ASCIIEncoding();
                 Byte[] buf = enc.GetBytes(pidstring);

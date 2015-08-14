@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -27,10 +27,10 @@
 
 using System;
 using System.Collections.Generic;
+using Universe.Framework.Modules;
 using Nini.Config;
 using OpenMetaverse;
 using OpenMetaverse.StructuredData;
-using Universe.Framework.Modules;
 
 namespace Universe.Framework.Services
 {
@@ -195,7 +195,7 @@ namespace Universe.Framework.Services
         void Initialize(IConfigSource config, IRegistryCore registry);
     }
 
-    public interface IAgentInfoConnector : IUniverseDataPlugin
+    public interface IAgentInfoConnector : IWhiteCoreDataPlugin
     {
         bool Set(UserInfo info);
         void Update(string userID, Dictionary<string, object> values);

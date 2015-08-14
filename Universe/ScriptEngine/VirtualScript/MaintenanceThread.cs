@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -31,11 +31,11 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
-using OpenMetaverse;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Utilities;
+using OpenMetaverse;
 
 namespace Universe.ScriptEngine.VirtualScript
 {
@@ -68,12 +68,12 @@ namespace Universe.ScriptEngine.VirtualScript
         public bool ScriptChangeIsRunning;
 
         private int SleepingScriptEventCount;
-        public UniverseThreadPool cmdThreadpool;
+        public WhiteCoreThreadPool cmdThreadpool;
         private int m_CheckingEvents;
         private int m_CheckingSleepers;
         public bool m_Started;
-        public UniverseThreadPool scriptChangeThreadpool;
-        public UniverseThreadPool scriptThreadpool;
+        public WhiteCoreThreadPool scriptChangeThreadpool;
+        public WhiteCoreThreadPool scriptThreadpool;
 
         public bool Started
         {
@@ -110,7 +110,7 @@ namespace Universe.ScriptEngine.VirtualScript
             //There IS a reason we start this, even if RunInMain is enabled
             // If this isn't enabled, we run into issues with the CmdHandlerQueue,
             // as it always must be async, so we must run the pool anyway
-            UniverseThreadPoolStartInfo info = new UniverseThreadPoolStartInfo
+            WhiteCoreThreadPoolStartInfo info = new WhiteCoreThreadPoolStartInfo
                                                  {
                                                      priority = ThreadPriority.Normal,
                                                      Threads = 1,
@@ -118,9 +118,9 @@ namespace Universe.ScriptEngine.VirtualScript
                                                      SleepIncrementTime = Engine.Config.GetInt("SleepIncrementTime", 1),
                                                      Name = "Script Cmd Thread Pools"
                                                  };
-            cmdThreadpool = new UniverseThreadPool(info);
+            cmdThreadpool = new WhiteCoreThreadPool(info);
             
-            UniverseThreadPoolStartInfo scinfo = new UniverseThreadPoolStartInfo
+            WhiteCoreThreadPoolStartInfo scinfo = new WhiteCoreThreadPoolStartInfo
                                                  {
                                                      priority = ThreadPriority.Normal,
                                                      Threads = 1,
@@ -129,10 +129,10 @@ namespace Universe.ScriptEngine.VirtualScript
                                                      Name = "Script Loading Thread Pools"
                                                  };
         
-            scriptChangeThreadpool = new UniverseThreadPool(scinfo);
+            scriptChangeThreadpool = new WhiteCoreThreadPool(scinfo);
 
             MaxScriptThreads = Engine.Config.GetInt("MaxScriptThreads", 100); // leave control threads out of user option
-            UniverseThreadPoolStartInfo sinfo = new UniverseThreadPoolStartInfo
+            WhiteCoreThreadPoolStartInfo sinfo = new WhiteCoreThreadPoolStartInfo
                                                   {
                                                       priority = ThreadPriority.Normal,
                                                       Threads = MaxScriptThreads,
@@ -141,7 +141,7 @@ namespace Universe.ScriptEngine.VirtualScript
                                                       KillThreadAfterQueueClear = true,
                                                       Name = "Script Event Thread Pools"
                                                   };
-            scriptThreadpool = new UniverseThreadPool(sinfo);
+            scriptThreadpool = new WhiteCoreThreadPool(sinfo);
 
             AppDomain.CurrentDomain.AssemblyResolve += m_ScriptEngine.AssemblyResolver.OnAssemblyResolve;
         }
@@ -690,16 +690,16 @@ namespace Universe.ScriptEngine.VirtualScript
             if (QIS.functionName != "link_message" &&
                 QIS.VersionID != Interlocked.Read(ref QIS.ID.VersionID))
             {
-                MainConsole.Instance.DebugFormat("[Virtual Script]: Found bad version ID in queue, resetting, {0} to {1}",
+                MainConsole.Instance.DebugFormat("[WDNE]: Found bad version ID in queue, resetting, {0} to {1}",
                                                 QIS.VersionID, Interlocked.Read(ref QIS.ID.VersionID));
-                MainConsole.Instance.DebugFormat("[Virtual Script]:     Function: '{0}' in region {1}",
+                MainConsole.Instance.DebugFormat("[WDNE]:     Function: '{0}' in region {1}",
 					QIS.functionName == "" ? QIS.functionName : "unknown",
                     QIS.ID.Part.ParentEntity.Scene.RegionInfo.RegionName);
                 //return;
             }
 
             if(MainConsole.Instance.IsTraceEnabled)
-                MainConsole.Instance.TraceFormat("[Virtual Script]: Running Event {0} in object {1} in region {2}",
+                MainConsole.Instance.TraceFormat("[WDNE]: Running Event {0} in object {1} in region {2}",
                                            QIS.functionName, QIS.ID.Part,
                                            QIS.ID.Part.ParentEntity.Scene.RegionInfo.RegionName);
             if (!EventSchProcessQIS(ref QIS)) //Execute the event

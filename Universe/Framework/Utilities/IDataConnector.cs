@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -61,14 +61,14 @@ namespace Universe.Framework.Utilities
         ///     Get the latest version of the database
         /// </summary>
         /// <returns></returns>
-        Version GetUniverseVersion(string migratorName);
+        Version GetWhiteCoreVersion(string migratorName);
 
         /// <summary>
         ///     Set the version of the database
         /// </summary>
         /// <param name="version"></param>
         /// <param name="MigrationName"></param>
-        void WriteUniverseVersion(Version version, string MigrationName);
+        void WriteWhiteCoreVersion(Version version, string MigrationName);
 
         /// <summary>
         ///     copy tables

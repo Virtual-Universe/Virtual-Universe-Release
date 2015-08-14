@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -535,7 +535,7 @@ namespace Universe.Region
         /// </summary>
         /// <param name="name">The name that the new item should have.</param>
         /// <param name="item">
-        ///     The item itself.  The name within this structure is ignored in favour of the name
+        ///     The item itself.  The name within this structure is ignored in favor of the name
         ///     given in this method's arguments
         /// </param>
         /// <param name="allowedDrop">

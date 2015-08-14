@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -41,7 +41,7 @@ namespace Universe.Services.DataService.Connectors.Database.Asset
     {
         private IGenericData m_Gd;
 
-        #region Implementation of IUniverseDataPlugin
+        #region Implementation of IWhiteCoreDataPlugin
 
         public string Name
         {
@@ -51,7 +51,7 @@ namespace Universe.Services.DataService.Connectors.Database.Asset
         public void Initialize(IGenericData genericData, IConfigSource source, IRegistryCore simBase,
                                string defaultConnectionString)
         {
-            if (source.Configs["UniverseConnectors"].GetString("AssetConnector", "LocalConnector") != "LocalConnector")
+            if (source.Configs["WhiteCoreConnectors"].GetString("AssetConnector", "LocalConnector") != "LocalConnector")
                 return;
             m_Gd = genericData;
 
@@ -60,7 +60,7 @@ namespace Universe.Services.DataService.Connectors.Database.Asset
 
             if (genericData != null)
                 genericData.ConnectToDatabase(defaultConnectionString, "Asset",
-                                              source.Configs["UniverseConnectors"].GetBoolean("ValidateTables", true));
+                                              source.Configs["WhiteCoreConnectors"].GetBoolean("ValidateTables", true));
             Framework.Utilities.DataManager.RegisterPlugin(this);
         }
 

@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,14 +25,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using Nini.Config;
-using OpenMetaverse;
-using Universe.Framework.Modules;
 using Universe.Framework.Servers.HttpServer.Implementation;
-using Universe.Framework.Services;
+using System.Collections.Generic;
+using Universe.Framework.Modules;
 using Universe.Framework.Utilities;
+using System;
+using Universe.Framework.Services;
+using OpenMetaverse;
+using Nini.Config;
 
 namespace Universe.Modules.Web
 {
@@ -79,6 +79,7 @@ namespace Universe.Modules.Web
             UUID UserID = UUID.Zero;
             int start = 0;
  
+
             IMoneyModule moneyModule = webInterface.Registry.RequestModuleInterface<IMoneyModule>();
             string noDetails = translator.GetTranslatedString ("NoPurchasesText");
 
@@ -108,6 +109,7 @@ namespace Universe.Modules.Web
                 vars.Add ("CurrentPage", 0);
                 vars.Add ("NextOne", 0);
                 vars.Add ("BackOne", 0);
+
             }
 
             UserAccount user = Authenticator.GetAuthentication(httpRequest);
@@ -145,6 +147,7 @@ namespace Universe.Modules.Web
 
             if (purchasesList.Count == 0)
             {
+ 
                 purchasesList.Add(new Dictionary<string, object> {
                     {"ID", ""},
                     {"AgentID", ""},
@@ -155,6 +158,7 @@ namespace Universe.Modules.Web
                     {"RealAmount",""},
                     {"PurchaseDate",""},
                     {"UpdateDate", ""},
+
                 });
             }
 

@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,6 +25,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
+using System.Xml;
+using OpenMetaverse;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
@@ -33,12 +39,6 @@ using Universe.Framework.Serialization.External;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Services.ClassHelpers.Inventory;
-using OpenMetaverse;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.IO.Compression;
-using System.Xml;
 
 namespace Universe.Modules.Archivers
 {
@@ -71,7 +71,7 @@ namespace Universe.Modules.Archivers
         /// <value>
         ///     The stream to which the inventory archive will be saved.
         /// </value>
-        private readonly Stream m_saveStream;
+        readonly Stream m_saveStream;
 
         readonly UserAccount m_userInfo;
         protected TarArchiveWriter m_archiveWriter;
@@ -90,7 +90,7 @@ namespace Universe.Modules.Archivers
         /// </value>
         protected Guid m_id;
 
-        private string m_invPath;
+        string m_invPath;
 
         /// <value>
         ///     We only use this to request modules
@@ -258,7 +258,7 @@ namespace Universe.Modules.Archivers
         /// <param name="UserID">The user</param>
         /// <param name="InvItem">The inventory item</param>
         /// <returns>Whether the user is allowed to export the object to an IAR</returns>
-        private bool CanUserArchiveObject(UUID UserID, InventoryItemBase InvItem)
+        bool CanUserArchiveObject(UUID UserID, InventoryItemBase InvItem)
         {
             if (FilterContent == null || FilterContent == "")
                 return true;// Default To Allow Export
@@ -287,9 +287,6 @@ namespace Universe.Modules.Archivers
         /// </summary>
         public void Execute()
         {
-
-
-
             try
             {
                 InventoryFolderBase inventoryFolder = null;

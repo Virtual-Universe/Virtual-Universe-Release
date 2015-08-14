@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,6 +25,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.Servers.HttpServer.Implementation;
+using Universe.Framework.Servers.HttpServer.Interfaces;
+using Nwc.XmlRpc;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -32,10 +36,6 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Xml;
-using Nwc.XmlRpc;
-using Universe.Framework.ConsoleFramework;
-using Universe.Framework.Servers.HttpServer.Implementation;
-using Universe.Framework.Servers.HttpServer.Interfaces;
 
 namespace Universe.Framework.Servers.HttpServer
 {
@@ -405,7 +405,7 @@ namespace Universe.Framework.Servers.HttpServer
                                     HttpServerHandlerHelpers.WriteChunked(stream, buffer);
                                 }
                             }
-
+                            //response.ContentLength64 = buffer.LongLength;
                             response.Close();
                         }
                         else
@@ -543,6 +543,7 @@ namespace Universe.Framework.Servers.HttpServer
                 }
                 else
                 {
+                    //HandleLLSDRequests(request, response);
                     response.ContentType = "text/plain";
                     response.StatusCode = 404;
                     response.StatusDescription = "Not Found";
@@ -564,7 +565,7 @@ namespace Universe.Framework.Servers.HttpServer
 
         public byte[] GetHTML404(OSHttpResponse response)
         {
-            // I know this status code is dumb, but the client doesn't respond to 404s and 500s
+            // I know this statuscode is dumb, but the client doesn't respond to 404s and 500s
             response.StatusCode = 404;
             response.AddHeader("Content-type", "text/html");
 
@@ -581,7 +582,7 @@ namespace Universe.Framework.Servers.HttpServer
         {
             try
             {
-                // I know this status code is dumb, but the client doesn't respond to 404s and 500s
+                // I know this statuscode is dumb, but the client doesn't respond to 404s and 500s
                 response.StatusCode = (int)HttpStatusCode.OK;
                 response.AddHeader("Content-type", "text/html");
 
@@ -603,6 +604,8 @@ namespace Universe.Framework.Servers.HttpServer
 
             try
             {
+                //m_httpListener = new HttpListener();
+
                 NotSocketErrors = 0;
                 m_internalServer = new HttpListenerManager(m_threadCount, Secure);
                 if (OnOverrideRequest != null)

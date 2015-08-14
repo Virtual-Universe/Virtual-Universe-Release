@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,10 +27,10 @@
 
 using System;
 using System.Collections;
-using System.Text;
 using System.Threading;
-using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Servers.HttpServer.Implementation;
+using System.Text;
+using Universe.Framework.ConsoleFramework;
 
 namespace Universe.Framework.Servers.HttpServer
 {
@@ -101,6 +101,8 @@ namespace Universe.Framework.Servers.HttpServer
             {
                 if (!ProcessQueuedRequests())
                 {
+                    //lock(m_queueSync)
+                    //    Monitor.Wait(m_queueSync);
                     Thread.Sleep(1000);
                 }
             }
@@ -113,7 +115,7 @@ namespace Universe.Framework.Servers.HttpServer
                 if (m_requests.Count == 0)
                     return false;
 
-                //MainConsole.Instance.DebugFormat("[POLL SERVICE REQUEST MANAGER]: Processing {0} requests", m_requests.Count);
+                //                MainConsole.Instance.DebugFormat("[POLL SERVICE REQUEST MANAGER]: Processing {0} requests", m_requests.Count);
 
                 int reqperthread = (int) (m_requests.Count/m_WorkerThreadCount) + 1;
 

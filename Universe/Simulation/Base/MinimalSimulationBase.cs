@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -24,6 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 
 using System;
 using System.Collections.Generic;
@@ -79,6 +80,13 @@ namespace Universe.Simulation.Base
             get { return m_version; }
         }
 
+        protected string m_defaultDataPath = Constants.DEFAULT_DATA_DIR;
+        public string DefaultDataPath
+        { 
+            get { return m_defaultDataPath;}
+            set { m_defaultDataPath = value;}
+        }
+
         protected IRegistryCore m_applicationRegistry = new RegistryCore();
 
         public IRegistryCore ApplicationRegistry
@@ -86,9 +94,9 @@ namespace Universe.Simulation.Base
             get { return m_applicationRegistry; }
         }
 
-        protected UniverseEventManager m_eventManager = new UniverseEventManager();
+        protected WhiteCoreEventManager m_eventManager = new WhiteCoreEventManager();
 
-        public UniverseEventManager EventManager
+        public WhiteCoreEventManager EventManager
         {
             get { return m_eventManager; }
         }
@@ -156,8 +164,7 @@ namespace Universe.Simulation.Base
             m_configurationLoader = configLoader;
 
             // This thread will go on to become the console listening thread
-            if (System.Threading.Thread.CurrentThread.Name != "ConsoleThread")
-                System.Threading.Thread.CurrentThread.Name = "ConsoleThread";
+            System.Threading.Thread.CurrentThread.Name = "ConsoleThread";
 
             //Register the interface
             ApplicationRegistry.RegisterModuleInterface<ISimulationBase>(this);
@@ -177,10 +184,15 @@ namespace Universe.Simulation.Base
         {
             IConfig startupConfig = m_config.Configs["Startup"];
 
-            int stpMaxThreads = 15;
+            int stpMinThreads = 15;
+            int stpMaxThreads = 300;
 
             if (startupConfig != null)
             {
+                m_defaultDataPath = startupConfig.GetString("DataDirectory", Constants.DEFAULT_DATA_DIR);
+                if (m_defaultDataPath == "")
+                    m_defaultDataPath = Constants.DEFAULT_DATA_DIR;
+                
                 m_startupCommandsFile = startupConfig.GetString("startup_console_commands_file", "startup_commands.txt");
                 m_shutdownCommandsFile = startupConfig.GetString("shutdown_console_commands_file",
                                                                  "shutdown_commands.txt");
@@ -202,11 +214,21 @@ namespace Universe.Simulation.Base
                     Utils.EnumTryParse(asyncCallMethodStr, out asyncCallMethod))
                     Util.FireAndForgetMethod = asyncCallMethod;
 
-                stpMaxThreads = SystemConfig.GetInt("MaxPoolThreads", 15);
+                stpMinThreads = SystemConfig.GetInt("MinPoolThreads", stpMinThreads);
+                stpMaxThreads = SystemConfig.GetInt("MaxPoolThreads", stpMaxThreads);
+
+                if (stpMinThreads < 2)
+                    stpMinThreads = 2;
+                if (stpMaxThreads < 2)
+                    stpMaxThreads = 2;
+                if (stpMinThreads > stpMaxThreads)
+                    stpMinThreads = stpMaxThreads;
+                
             }
 
+
             if (Util.FireAndForgetMethod == FireAndForgetMethod.SmartThreadPool)
-                Util.InitThreadPool(stpMaxThreads);
+                Util.InitThreadPool(stpMinThreads, stpMaxThreads);
 
             //Set up console forcefully
             Universe.Services.BaseService consoleService = new Universe.Services.BaseService();
@@ -216,18 +238,18 @@ namespace Universe.Simulation.Base
             if (MainConsole.Instance != null)
             {
                 MainConsole.Instance.DefaultPrompt = m_consolePrompt;
-                MainConsole.Instance.Info(string.Format("[MINUniverse]: STARTING MIN Universe ({0})...",
+                MainConsole.Instance.Info(string.Format("[MINWhiteCore]: STARTING MIN Universe ({0})...",
                                                         (IntPtr.Size == 4 ? "x86" : "x64")));
-                MainConsole.Instance.Info("[MINUniverse]: Version: " + Version + "\n");
+                MainConsole.Instance.Info("[MINWhiteCore]: Version: " + Version + "\n");
             }
         }
 
         /// <summary>
-        ///     Performs initialisation of the application, such as loading the HTTP server and modules
+        ///     Performs initialization of the application, such as loading the HTTP server and modules
         /// </summary>
         public virtual void Startup()
         {
-            MainConsole.Instance.Info("[MINUniverse]: Startup completed in " +
+            MainConsole.Instance.Info("[MINWhiteCore]: Startup completed in " +
                                       (DateTime.Now - this.StartupTime).TotalSeconds);
         }
 
@@ -315,7 +337,7 @@ namespace Universe.Simulation.Base
             List<dynamic> modules = new List<dynamic>();
             foreach (Type t in m_servicePlugins)
             {
-                var mods = UniverseModuleLoader.PickupModules(t);
+                var mods = WhiteCoreModuleLoader.PickupModules(t);
                 modules.AddRange(mods);
             }
 
@@ -440,12 +462,12 @@ namespace Universe.Simulation.Base
                                                      runConfig, false, true);
         }
 
-		private void HandleQuit(IScene scene, string[] args)
-		{
-			var ok = MainConsole.Instance.Prompt ("[CONSOLE]: Shutdown the simulator. Are you sure? (yes/no)", "no").ToLower();
-			if (ok.StartsWith("y"))
-				Shutdown(true);
-		}
+        private void HandleQuit(IScene scene, string[] args)
+        {
+            var ok = MainConsole.Instance.Prompt ("[CONSOLE]: Shutdown the simulator. Are you sure? (yes/no)", "no").ToLower();
+            if (ok.StartsWith("y"))
+                Shutdown(true);
+        }
 
         /// <summary>
         ///     Run an optional startup list of commands
@@ -510,7 +532,7 @@ namespace Universe.Simulation.Base
             string hostName =
                 m_config.Configs["Network"].GetString("HostName", "http://127.0.0.1");
             //Clean it up a bit
-            // these are doing nothing?
+            // these are doing nothing??
             hostName.Replace("http://", "");
             hostName.Replace("https://", "");
             if (hostName.EndsWith("/"))

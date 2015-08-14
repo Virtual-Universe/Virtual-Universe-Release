@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -137,7 +137,7 @@ namespace Universe.Region
         [XmlIgnore] Dictionary<int, string> m_CollisionFilter = new Dictionary<int, string>();
         [XmlIgnore] bool m_IsAttachment;
         [XmlIgnore] int[] m_PayPrice = {-2, -2, -2, -2, -2};
-        [XmlIgnore] bool m_ValidpartOOB; // control recalcutation
+        [XmlIgnore] bool m_ValidpartOOB; // control recalculation
         protected Vector3 m_acceleration;
         protected Vector3 m_angularVelocity;
         byte m_clickAction;
@@ -1742,7 +1742,7 @@ namespace Universe.Region
                 object[] o = new object[2];
                 o[0] = this;
                 o[1] = flag;
-                m_parentGroup.Scene.UniverseEventManager.FireGenericEventHandler("ObjectAddedFlag", o);
+                m_parentGroup.Scene.WhiteCoreEventManager.FireGenericEventHandler("ObjectAddedFlag", o);
                 return true;
             }
             return false;
@@ -2125,7 +2125,7 @@ namespace Universe.Region
                 object[] o = new object[2];
                 o[0] = this;
                 o[1] = flag;
-                m_parentGroup.Scene.UniverseEventManager.FireGenericEventHandler("ObjectRemovedFlag", o);
+                m_parentGroup.Scene.WhiteCoreEventManager.FireGenericEventHandler("ObjectRemovedFlag", o);
                 return true;
             }
             return false;
@@ -3215,7 +3215,7 @@ namespace Universe.Region
                 RemFlag(PrimFlags.TemporaryOnRez);
 
             if (UsePhysics != wasUsingPhysics) //Fire the event
-                ParentGroup.Scene.UniverseEventManager.FireGenericEventHandler("ObjectChangedPhysicalStatus", ParentGroup);
+                ParentGroup.Scene.WhiteCoreEventManager.FireGenericEventHandler("ObjectChangedPhysicalStatus", ParentGroup);
 
             ParentGroup.HasGroupChanged = true;
             ScheduleUpdate(PrimUpdateFlags.PrimFlags);

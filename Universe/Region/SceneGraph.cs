@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -95,11 +95,11 @@ namespace Universe.Region
             m_parentScene.EventManager.OnNewClient += SubscribeToClientEvents;
             m_parentScene.EventManager.OnClosingClient += UnSubscribeToClientEvents;
 
-			IConfig universestartupConfig = parent.Config.Configs["UniverseStartup"];
-			if (universestartupConfig != null)
+			IConfig whitecorestartupConfig = parent.Config.Configs["WhiteCoreStartup"];
+			if (whitecorestartupConfig != null)
             {
-				m_DefaultObjectName = universestartupConfig.GetString("DefaultObjectName", m_DefaultObjectName);
-				EnableFakeRaycasting = universestartupConfig.GetBoolean("EnableFakeRaycasting", false);
+				m_DefaultObjectName = whitecorestartupConfig.GetString("DefaultObjectName", m_DefaultObjectName);
+				EnableFakeRaycasting = whitecorestartupConfig.GetBoolean("EnableFakeRaycasting", false);
             }
         }
 
@@ -1064,7 +1064,7 @@ namespace Universe.Region
                     sog.ApplyNextOwnerPermissions();
                 }
                 //Trigger the prim count event so that this parcel gets changed!
-                m_parentScene.UniverseEventManager.FireGenericEventHandler("ObjectChangedOwner", sog);
+                m_parentScene.WhiteCoreEventManager.FireGenericEventHandler("ObjectChangedOwner", sog);
             }
 
             foreach (uint localID in localIDs)

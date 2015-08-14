@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,17 +25,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.IO.Compression;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Serialization;
 using Universe.Region;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
 
 namespace Universe.Modules
 {
@@ -55,7 +55,7 @@ namespace Universe.Modules
             if (stream == null)
                 return null;
 
-			MainConsole.Instance.Warn("[Tar Region Data Loader]: loading region data: " + file);
+			MainConsole.Instance.Warn("[TarRegionDataLoader]: loading region data: " + file);
  
 			GZipStream m_loadStream = new GZipStream(stream, CompressionMode.Decompress);
             TarArchiveReader reader = new TarArchiveReader(m_loadStream);
@@ -162,7 +162,7 @@ namespace Universe.Modules
 
             foundLocalIDs.Clear();
 
-			MainConsole.Instance.Warn("[Tar Region Data Loader]: completed: ");
+			MainConsole.Instance.Warn("[TarRegionDataLoader]: completed: ");
 
             return regiondata;
         }
@@ -309,7 +309,7 @@ namespace Universe.Modules
             }
             catch (Exception ex)
             {
-				MainConsole.Instance.Warn("[Tar Region Data Loader]: Failed to save backup: " + ex.ToString());
+				MainConsole.Instance.Warn("[TarRegionDataLoader]: Failed to save backup: " + ex.ToString());
                 return false;
             }
             return true;

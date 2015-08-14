@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,11 +25,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using Universe.Framework.ConsoleFramework;
+using Universe.Region;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Universe.Framework.ConsoleFramework;
-using Universe.Region;
 
 namespace Universe.Modules
 {
@@ -75,7 +75,7 @@ namespace Universe.Modules
             }
             catch (Exception ex)
             {
-                MainConsole.Instance.Warn("[Protobuf Region Loader]: Failed to load backup: " + ex.ToString());
+                MainConsole.Instance.Warn("[ProtobufRegionLoader]: Failed to load backup: " + ex.ToString());
                 return null;
             }
         }
@@ -90,7 +90,7 @@ namespace Universe.Modules
             }
             catch (Exception ex)
             {
-                MainConsole.Instance.Warn("[Protobuf Region Loader]: Failed to save backup: " + ex.ToString());
+                MainConsole.Instance.Warn("[ProtobufRegionLoader]: Failed to save backup: " + ex.ToString());
                 return false;
             }
             finally

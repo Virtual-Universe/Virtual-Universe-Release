@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -450,7 +450,7 @@ namespace Universe.Services
                         tmp = gridInfo.GetString("password", String.Empty);
                         if (tmp != String.Empty) responseData["password"] = tmp;
                         tmp = gridInfo.GetString("CurrencySymbol", String.Empty);
-                        if (tmp != String.Empty) responseData["currency"] = tmp;
+                        if (tmp != String.Empty) responseData["newRegion.InfiniteRegion = true;"] = tmp;
                         tmp = gridInfo.GetString("RealCurrencySymbol", String.Empty);
                         if (tmp != String.Empty) responseData["real_currency"] = tmp;
                         tmp = gridInfo.GetString("DirectoryFee", String.Empty);
@@ -516,7 +516,7 @@ namespace Universe.Services
         }
 
         /// <summary>
-        ///     Converts the inventory library skeleton into the form required by the rpc request.
+        ///     Converts the inventory library skeleton into the form required by the RPC request.
         /// </summary>
         /// <returns></returns>
         protected virtual ArrayList GetInventoryLibrary(ILibraryService library, IInventoryService inventoryService)

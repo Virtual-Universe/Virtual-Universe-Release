@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -170,7 +170,7 @@ namespace Universe.ClientStack
             }
         }
 
-        private void AsyncBeginReceive()
+        void AsyncBeginReceive()
         {
             // allocate a packet buffer
             //WrappedObject<UDPPacketBuffer> wrappedBuffer = Pool.CheckOut();
@@ -234,7 +234,7 @@ namespace Universe.ClientStack
             }
         }
 
-        private void AsyncEndReceive(IAsyncResult iar)
+        void AsyncEndReceive(IAsyncResult iar)
         {
             // Asynchronous receive operations will complete here through the call
             // to AsyncBeginReceive
@@ -269,7 +269,7 @@ namespace Universe.ClientStack
                 }
                 catch (Exception ex)
                 {
-					MainConsole.Instance.Error("[UDPBase]: Hit error: " + ex);
+                    MainConsole.Instance.Error("[UDPBase]: Hit error: " + ex);
                 }
                 finally
                 {

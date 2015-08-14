@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -52,7 +52,7 @@ namespace Universe.Services.DataService
 
         #endregion
 
-        #region IUniverseDataPlugin members
+        #region IWhiteCoreDataPlugin members
 
         public void Initialize(IGenericData GenericData, IConfigSource source, IRegistryCore simBase,
                                string defaultConnectionString)
@@ -72,11 +72,11 @@ namespace Universe.Services.DataService
 
             if (data != null)
                 data.ConnectToDatabase (defaultConnectionString, "Groups",
-                    source.Configs ["UniverseConnectors"].GetBoolean ("ValidateTables", true));
+                    source.Configs ["WhiteCoreConnectors"].GetBoolean ("ValidateTables", true));
 
             Framework.Utilities.DataManager.RegisterPlugin (Name + "Local", this);
 
-            if (source.Configs ["UniverseConnectors"].GetString ("GroupsConnector", "LocalConnector") == "LocalConnector")
+            if (source.Configs ["WhiteCoreConnectors"].GetString ("GroupsConnector", "LocalConnector") == "LocalConnector")
             {
                 Framework.Utilities.DataManager.RegisterPlugin (this);
             }
@@ -127,7 +127,7 @@ namespace Universe.Services.DataService
                     grpName,                                            // Name
                     grpCharter,                                         // Charter / description
                     false,                                              // Show in list
-                    UUID.Zero, 0, false, false, false,                  // Insignia UUID, Membership fee, Open Enrolement, Allow publishing, Mature
+                    UUID.Zero, 0, false, false, false,                  // Insignia UUID, Membership fee, Open Enrollment, Allow publishing, Mature
                     grpOwnerUUID,                                       // founder UUID
                     UUID.Random ());                                    // owner role UUID
             } else
@@ -671,7 +671,7 @@ namespace Universe.Services.DataService
             filter.andFilters["GroupID"] = GroupID;
             filter.andFilters["RoleID"] = RoleID;
             filter.andFilters["AgentID"] = AgentID;
-            //Make sure they arn't already in this role
+            //Make sure they aren't already in this role
             if (
                 uint.Parse(data.Query(new[] {"COUNT(AgentID)"}, "group_role_membership", filter, null, null, null)[0]) ==
                 0)
@@ -1923,7 +1923,7 @@ namespace Universe.Services.DataService
                 profile.InsigniaID = groupInfo.GroupPicture;
                 profile.MaturePublish = groupInfo.MaturePublish;
                 profile.MembershipFee = groupInfo.MembershipFee;
-                profile.Money = 0; // TODO: Get this from the currency server?
+                profile.Money = 0; // TODO: Get this from the newRegion.InfiniteRegion = true; server?
                 profile.Name = groupInfo.GroupName;
                 profile.OpenEnrollment = groupInfo.OpenEnrollment;
                 profile.OwnerRole = groupInfo.OwnerRoleID;

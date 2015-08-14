@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -238,21 +238,21 @@ namespace Universe.Modules.Chat
                     {
                         chatModule.SayDistance = Convert.ToInt32(message[2]);
                         chatModule.TrySendChatMessage(senderSP, c.Position,
-                                                      UUID.Zero, "UniverseChat", ChatTypeEnum.Region,
+                                                      UUID.Zero, "WhiteCoreChat", ChatTypeEnum.Region,
                                                       message[1] + " changed.", ChatSourceType.System, -1);
                     }
                     if (message[1] == "WhisperDistance")
                     {
                         chatModule.WhisperDistance = Convert.ToInt32(message[2]);
                         chatModule.TrySendChatMessage(senderSP, c.Position,
-                                                      UUID.Zero, "UniverseChat", ChatTypeEnum.Region,
+                                                      UUID.Zero, "WhiteCoreChat", ChatTypeEnum.Region,
                                                       message[1] + " changed.", ChatSourceType.System, -1);
                     }
                     if (message[1] == "ShoutDistance")
                     {
                         chatModule.ShoutDistance = Convert.ToInt32(message[2]);
                         chatModule.TrySendChatMessage(senderSP, c.Position,
-                                                      UUID.Zero, "UniverseChat", ChatTypeEnum.Region,
+                                                      UUID.Zero, "WhiteCoreChat", ChatTypeEnum.Region,
                                                       message[1] + " changed.", ChatSourceType.System, -1);
                     }
                     //Add the user to the list of allowed speakers and 'chat' admins
@@ -262,7 +262,7 @@ namespace Universe.Modules.Chat
                         c.Scene.TryGetAvatarByName(message[2], out NewSP);
                         m_authList.Add(NewSP.UUID);
                         chatModule.TrySendChatMessage(senderSP, c.Position,
-                                                      UUID.Zero, "UniverseChat", ChatTypeEnum.Region,
+                                                      UUID.Zero, "WhiteCoreChat", ChatTypeEnum.Region,
                                                       message[2] + " added.", ChatSourceType.System, -1);
                     }
                     if (message[1] == "RemoveFromAuth")
@@ -271,7 +271,7 @@ namespace Universe.Modules.Chat
                         c.Scene.TryGetAvatarByName(message[2], out NewSP);
                         m_authList.Remove(NewSP.UUID);
                         chatModule.TrySendChatMessage(senderSP, c.Position,
-                                                      UUID.Zero, "UniverseChat", ChatTypeEnum.Region,
+                                                      UUID.Zero, "WhiteCoreChat", ChatTypeEnum.Region,
                                                       message[2] + " added.", ChatSourceType.System, -1);
                     }
                     //Block chat from those not in the auth list
@@ -279,7 +279,7 @@ namespace Universe.Modules.Chat
                     {
                         m_blockChat = true;
                         chatModule.TrySendChatMessage(senderSP, c.Position,
-                                                      UUID.Zero, "UniverseChat", ChatTypeEnum.Region, "Chat blocked.",
+                                                      UUID.Zero, "WhiteCoreChat", ChatTypeEnum.Region, "Chat blocked.",
                                                       ChatSourceType.System, -1);
                     }
                     //Allow chat from all again
@@ -287,7 +287,7 @@ namespace Universe.Modules.Chat
                     {
                         m_blockChat = false;
                         chatModule.TrySendChatMessage(senderSP, c.Position,
-                                                      UUID.Zero, "UniverseChat", ChatTypeEnum.Region, "Chat allowed.",
+                                                      UUID.Zero, "WhiteCoreChat", ChatTypeEnum.Region, "Chat allowed.",
                                                       ChatSourceType.System, -1);
                     }
                     //Remove speaking privileges from an individual
@@ -297,7 +297,7 @@ namespace Universe.Modules.Chat
                         c.Scene.TryGetAvatarByName(message[2], out NewSP);
                         m_authorizedSpeakers.Remove(NewSP.UUID);
                         chatModule.TrySendChatMessage(senderSP, c.Position,
-                                                      UUID.Zero, "UniverseChat", ChatTypeEnum.Region,
+                                                      UUID.Zero, "WhiteCoreChat", ChatTypeEnum.Region,
                                                       message[2] + " - revoked.", ChatSourceType.System, -1);
                     }
                     //Allow an individual to speak again
@@ -307,7 +307,7 @@ namespace Universe.Modules.Chat
                         c.Scene.TryGetAvatarByName(message[2], out NewSP);
                         m_authorizedSpeakers.Add(NewSP.UUID);
                         chatModule.TrySendChatMessage(senderSP, c.Position,
-                                                      UUID.Zero, "UniverseChat", ChatTypeEnum.Region,
+                                                      UUID.Zero, "WhiteCoreChat", ChatTypeEnum.Region,
                                                       message[2] + " - revoked.", ChatSourceType.System, -1);
                     }
                 }

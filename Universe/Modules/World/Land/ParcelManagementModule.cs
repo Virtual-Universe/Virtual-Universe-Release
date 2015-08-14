@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -184,8 +184,8 @@ namespace Universe.Modules.Land
             m_scene.EventManager.OnRegisterCaps += EventManagerOnRegisterCaps;
             m_scene.EventManager.OnClosingClient += OnClosingClient;
             m_scene.EventManager.OnFrame += EventManager_OnFrame;
-            m_scene.UniverseEventManager.RegisterEventHandler("ObjectAddedFlag", UniverseEventManager_OnGenericEvent);
-            m_scene.UniverseEventManager.RegisterEventHandler("ObjectRemovedFlag", UniverseEventManager_OnGenericEvent);
+            m_scene.WhiteCoreEventManager.RegisterEventHandler("ObjectAddedFlag", WhiteCoreEventManager_OnGenericEvent);
+            m_scene.WhiteCoreEventManager.RegisterEventHandler("ObjectRemovedFlag", WhiteCoreEventManager_OnGenericEvent);
             if (m_UpdateDirectoryOnTimer)
                 m_scene.EventManager.OnStartupComplete += EventManager_OnStartupComplete;
 
@@ -311,7 +311,7 @@ namespace Universe.Modules.Land
             }
         }
 
-        object UniverseEventManager_OnGenericEvent(string FunctionName, object parameters)
+        object WhiteCoreEventManager_OnGenericEvent(string FunctionName, object parameters)
         {
             if (FunctionName == "ObjectAddedFlag")
             {
@@ -926,7 +926,7 @@ namespace Universe.Modules.Land
                         param[0] = group;
                         param[1] = over.LandData.GlobalID;
                         param[2] = oldParcelUUID;
-                        m_scene.UniverseEventManager.FireGenericEventHandler("ObjectEnteringNewParcel", param);
+                        m_scene.WhiteCoreEventManager.FireGenericEventHandler("ObjectEnteringNewParcel", param);
                     }
                 }
             }
@@ -1548,7 +1548,7 @@ namespace Universe.Modules.Land
                 {
                     UserAccount CurrentAgent = m_scene.UserAccountService.GetUserAccount(null, remote_client.AgentId);
 
-                    string AbandonmentDate = DateTime.Now.ToString("M\\/dd\\/yyyy");
+                    string AbandonmentDate = DateTime.Now.ToString("yyyy-MM-dd");
 
                     if (land.LandData.IsGroupOwned)
                     {
@@ -1565,22 +1565,22 @@ namespace Universe.Modules.Land
                             }
                         }
 
-                        land.LandData.Description = "Land owned by the group " + GroupName + " was abandoned by " + CurrentAgent.Name + " on " + AbandonmentDate;
+                        land.LandData.Description = "Parcel owned by the group " + GroupName + " was abandoned by " + CurrentAgent.Name + " on " + AbandonmentDate;
                     }
                     else
                     {
                         if (remote_client.AgentId == land.LandData.OwnerID)
                         {
-                            land.LandData.Description = "Land abandoned by " + CurrentAgent.Name + " on " + AbandonmentDate;
+                            land.LandData.Description = "Parcel owned by " + CurrentAgent.Name + " was abandoned on " + AbandonmentDate;
                         }
                         else
                         {
                             UserAccount ParcelOwner = m_scene.UserAccountService.GetUserAccount(null, land.LandData.OwnerID);
-                            land.LandData.Description = "Land owned by " + ParcelOwner.Name + " was abandoned by " + CurrentAgent.Name + " on " + AbandonmentDate;
+                            land.LandData.Description = "Parcel owned by " + ParcelOwner.Name + " was abandoned by " + CurrentAgent.Name + " on " + AbandonmentDate;
                         }
                     }
 
-                    land.LandData.Name = "Abandoned Land " + AbandonmentDate;
+                    land.LandData.Name = AbandonmentDate + ": Abandoned Land";
                     
                     land.LandData.OwnerID = m_scene.RegionInfo.EstateSettings.EstateOwner;
                     land.LandData.AuctionID = 0; //This must be reset!
@@ -1595,7 +1595,7 @@ namespace Universe.Modules.Land
                           ParcelFlags.AllowAPrimitiveEntry | ParcelFlags.CreateObjects | ParcelFlags.RestrictPushObject | ParcelFlags.AllowDeedToGroup | ParcelFlags.DenyAgeUnverified | ParcelFlags.DenyAnonymous);
 
                     land.LandData.Flags |= (uint)(ParcelFlags.SoundLocal | ParcelFlags.AllowVoiceChat | ParcelFlags.AllowLandmark | ParcelFlags.AllowFly | ParcelFlags.AllowOtherScripts | ParcelFlags.AllowGroupScripts | ParcelFlags.AllowGroupObjectEntry | ParcelFlags.CreateGroupObjects | ParcelFlags.UseEstateVoiceChan);
-
+                    land.LandData.Status = ParcelStatus.Abandoned; // Parcel is Abandoned
                     m_hasSentParcelOverLay.Clear(); //Clear everyone out
                     m_scene.ForEachClient(SendParcelOverlay);
                     land.SendLandUpdateToClient(true, remote_client);
@@ -1619,6 +1619,7 @@ namespace Universe.Modules.Land
                     land.LandData.IsGroupOwned = false;
                     land.LandData.SalePrice = 0;
                     land.LandData.AuthBuyerID = UUID.Zero;
+                    land.LandData.Status = ParcelStatus.Leased; // Parcel is back to be Leased
                     land.LandData.Flags &=
                         ~(uint)
                          (ParcelFlags.ForSale | ParcelFlags.ForSaleObjects | ParcelFlags.SellParcelObjects |

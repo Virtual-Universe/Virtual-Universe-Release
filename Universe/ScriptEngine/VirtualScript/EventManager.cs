@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,10 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using OpenMetaverse;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
@@ -36,6 +32,10 @@ using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Utilities;
+using OpenMetaverse;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Universe.ScriptEngine.VirtualScript
 {
@@ -44,6 +44,7 @@ namespace Universe.ScriptEngine.VirtualScript
     /// </summary>
     public class EventManager
     {
+        //
         // This class it the link between an event inside Universe and
         // the corresponding event in a user script being executed.
         //
@@ -55,6 +56,7 @@ namespace Universe.ScriptEngine.VirtualScript
         //
         // You can check debug C# dump of an LSL script if you need to
         // verify what exact parameters are needed.
+        //
 
         private readonly Dictionary<uint, Dictionary<UUID, DetectParams>> CoalescedTouchEvents =
             new Dictionary<uint, Dictionary<UUID, DetectParams>>();
@@ -106,6 +108,7 @@ namespace Universe.ScriptEngine.VirtualScript
             Scene.EventManager.OnScriptMovingEndEvent += moving_end;
 
             Scene.EventManager.OnRezScripts += rez_scripts;
+
 
             IMoneyModule moneyModule =
                 Scene.RequestModuleInterface<IMoneyModule>();
@@ -337,6 +340,8 @@ namespace Universe.ScriptEngine.VirtualScript
 
                 if (datas == null || datas.Length == 0)
                 {
+                    //datas = ScriptEngine.ScriptProtection.GetScripts(part.ParentGroup.RootPart.UUID);
+                    //if (datas == null || datas.Length == 0)
                     return;
                 }
                 string functionName = "collision";
@@ -367,6 +372,8 @@ namespace Universe.ScriptEngine.VirtualScript
 
                 if (datas == null || datas.Length == 0)
                 {
+                    //datas = ScriptEngine.ScriptProtection.GetScripts(part.ParentGroup.RootPart.UUID);
+                    //if (datas == null || datas.Length == 0)
                     return;
                 }
                 string functionName = "collision_end";
@@ -404,6 +411,8 @@ namespace Universe.ScriptEngine.VirtualScript
 
                 if (datas == null || datas.Length == 0)
                 {
+                    //datas = ScriptEngine.ScriptProtection.GetScripts(part.ParentGroup.RootPart.UUID);
+                    //if (datas == null || datas.Length == 0)
                     return;
                 }
                 string functionName = "land_collision_start";
@@ -441,6 +450,8 @@ namespace Universe.ScriptEngine.VirtualScript
 
                 if (datas == null || datas.Length == 0)
                 {
+                    //datas = ScriptEngine.ScriptProtection.GetScripts(part.ParentGroup.RootPart.UUID);
+                    //if (datas == null || datas.Length == 0)
                     return;
                 }
                 string functionName = "land_collision";
@@ -478,6 +489,8 @@ namespace Universe.ScriptEngine.VirtualScript
 
                 if (datas == null || datas.Length == 0)
                 {
+                    //datas = ScriptEngine.ScriptProtection.GetScripts(part.ParentGroup.RootPart.UUID);
+                    //if (datas == null || datas.Length == 0)
                     return;
                 }
                 string functionName = "land_collision_end";
@@ -756,7 +769,7 @@ namespace Universe.ScriptEngine.VirtualScript
                 //This will happen if the script doesn't compile correctly
                 if (ID.Script == null)
                 {
-                    MainConsole.Instance.Info("[Virtual Script]: Could not load script from item '" +
+                    MainConsole.Instance.Info("[VirtualScript]: Could not load script from item '" +
                                               ID.InventoryItem.Name +
                                               "' to fire event " + FunctionName);
                     return false;
@@ -825,11 +838,13 @@ namespace Universe.ScriptEngine.VirtualScript
 
                         // If the last message was a 0 (nothing held)
                         // and this one is also nothing held, drop it
+                        //
                         if (ID.LastControlLevel == held && held == 0)
                             return true;
 
                         // If there is one or more queued, then queue
                         // only changed ones, else queue unconditionally
+                        //
                         if (ID.ControlEventsInQueue > 0)
                         {
                             if (ID.LastControlLevel == held)

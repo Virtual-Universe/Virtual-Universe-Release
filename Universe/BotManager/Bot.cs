@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,14 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Timers;
-using OpenMetaverse;
-using OpenMetaverse.Packets;
-using Universe.BotManager.AStar;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
@@ -43,6 +35,14 @@ using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Services.ClassHelpers.Inventory;
 using Universe.Framework.Services.ClassHelpers.Other;
 using Universe.Framework.Utilities;
+using OpenMetaverse;
+using OpenMetaverse.Packets;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Timers;
+using Universe.BotManager.AStar;
 
 namespace Universe.BotManager
 {
@@ -274,7 +274,7 @@ namespace Universe.BotManager
         ///     HereEvent - Triggered when a script passes TRIGGER_HERE_EVENT via botSetMap
         ///     ChangedState = Triggered when the state of a bot changes
         /// </summary>
-        public UniverseEventManager EventManager = new UniverseEventManager();
+        public WhiteCoreEventManager EventManager = new WhiteCoreEventManager();
 
         public BotState m_currentState = BotState.Idle;
         public BotState m_previousState = BotState.Idle;

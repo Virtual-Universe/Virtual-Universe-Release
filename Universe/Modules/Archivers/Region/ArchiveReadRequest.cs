@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -67,7 +67,7 @@ namespace Universe.Modules.Archivers
         /// </value>
         protected bool m_merge;
 
-        protected UniverseThreadPool m_threadpool;
+        protected WhiteCoreThreadPool m_threadpool;
 
         /// <value>
         ///     Should we ignore any assets when reloading the archive?
@@ -173,7 +173,7 @@ namespace Universe.Modules.Archivers
             TarArchiveReader archive = new TarArchiveReader(m_loadStream);
 
             if (!m_skipAssets)
-                m_threadpool = new UniverseThreadPool(new UniverseThreadPoolStartInfo()
+                m_threadpool = new WhiteCoreThreadPool(new WhiteCoreThreadPoolStartInfo()
                                                                          {
                                                                              Threads = 1,
                                                                              priority =

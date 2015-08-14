@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -50,7 +50,7 @@ namespace Universe.DataManager.Migration
             this.genericData = genericData;
             this.migratorName = migratorName;
             this.validateTables = validateTables;
-            List<IMigrator> allMigrators = UniverseModuleLoader.PickupModules<IMigrator>();
+            List<IMigrator> allMigrators = WhiteCoreModuleLoader.PickupModules<IMigrator>();
 
             foreach (
                 IMigrator m in
@@ -75,7 +75,7 @@ namespace Universe.DataManager.Migration
             if (migratorName == "")
                 return;
             executed = false;
-            Version currentVersion = genericData.GetUniverseVersion(migratorName);
+            Version currentVersion = genericData.GetWhiteCoreVersion(migratorName);
 
             //if there is no Universe version, this is likely an entirely new installation
             if (currentVersion == null)

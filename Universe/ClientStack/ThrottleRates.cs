@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -26,8 +26,9 @@
  */
 
 using System;
-using Nini.Config;
 using Universe.Framework.ClientInterfaces;
+using Nini.Config;
+
 
 namespace Universe.ClientStack
 {
@@ -198,7 +199,7 @@ namespace Universe.ClientStack
                     return State;
                 case ThrottleOutPacketType.AvatarInfo:
                     return AvatarInfo;
-                //case ThrottleOutPacketType.Unknown:
+//                case ThrottleOutPacketType.Unknown:
                 default:
                     return 0;
             }
@@ -226,7 +227,7 @@ namespace Universe.ClientStack
                     return StateLimit;
                 case ThrottleOutPacketType.AvatarInfo:
                     return AvatarInfoLimit;
-                //case ThrottleOutPacketType.Unknown:
+//                case ThrottleOutPacketType.Unknown:
                 default:
                     return 0;
             }

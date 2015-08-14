@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -444,7 +444,7 @@ namespace Universe.RedisServices.AssetService
                         MainConsole.Instance.Debug("[REDIS ASSET SERVICE]: Found duplicate asset " + asset.IDString +
                                                    " for " + asset.IDString);
 
-                    //Only set id --> asset, and not the hashcode --> data to deduplicate
+                    //Only set id --> asset, and not the hashcode --> data to de-duplicate
                     RedisEnsureConnection((conn) => conn.Set(asset.IDString, memStream.ToArray()));
                     return true;
                 }

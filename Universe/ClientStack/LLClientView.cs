@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,17 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading;
-using System.Xml;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.Messages.Linden;
-using OpenMetaverse.Packets;
-using OpenMetaverse.StructuredData;
+
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
@@ -46,6 +36,17 @@ using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Services.ClassHelpers.Inventory;
 using Universe.Framework.Utilities;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.Messages.Linden;
+using OpenMetaverse.Packets;
+using OpenMetaverse.StructuredData;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading;
+using System.Xml;
 using RegionFlags = OpenMetaverse.RegionFlags;
 
 namespace Universe.ClientStack
@@ -480,7 +481,7 @@ namespace Universe.ClientStack
                 m_allowUDPInv = advancedConfig.GetBoolean("AllowUDPInventory", m_allowUDPInv);
 
             //m_killRecord = new HashSet<uint>();
-            //m_attachmentsSent = new HashSet<uint>();
+//            m_attachmentsSent = new HashSet<uint>();
 
             m_assetService = m_scene.RequestModuleInterface<IAssetService>();
             m_GroupsModule = scene.RequestModuleInterface<IGroupsModule>();
@@ -1155,7 +1156,7 @@ namespace Universe.ClientStack
                 {
                     type++;
                 }
-                LayerDataPacket layerpack = UniverseTerrainCompressor.CreateLandPacket(map, xs, ys, type,
+                LayerDataPacket layerpack = WhiteCoreTerrainCompressor.CreateLandPacket(map, xs, ys, type,
                                                                                      m_scene.RegionInfo.RegionSizeX,
                                                                                      m_scene.RegionInfo.RegionSizeY);
                 layerpack.Header.Zerocoded = true;
@@ -1214,7 +1215,7 @@ namespace Universe.ClientStack
                 {
                     type++;
                 }
-                LayerDataPacket layerpack = UniverseTerrainCompressor.CreateLandPacket(map, x, y, type,
+                LayerDataPacket layerpack = WhiteCoreTerrainCompressor.CreateLandPacket(map, x, y, type,
                                                                                      m_scene.RegionInfo.RegionSizeX,
                                                                                      m_scene.RegionInfo.RegionSizeY);
 
@@ -1260,7 +1261,7 @@ namespace Universe.ClientStack
                     Array.Copy(y, i, yTemp, 0, Size);
 
                     //Build the packet
-                    LayerDataPacket layerpack = UniverseTerrainCompressor.CreateLandPacket(map, xTemp, yTemp, type,
+                    LayerDataPacket layerpack = WhiteCoreTerrainCompressor.CreateLandPacket(map, xTemp, yTemp, type,
                                                                                          m_scene.RegionInfo.RegionSizeX,
                                                                                          m_scene.RegionInfo.RegionSizeY);
 
@@ -1346,7 +1347,7 @@ namespace Universe.ClientStack
             {
                 type += 2;
             }
-            LayerDataPacket layerpack = UniverseTerrainCompressor.CreateLayerDataPacket(patches, type,
+            LayerDataPacket layerpack = WhiteCoreTerrainCompressor.CreateLayerDataPacket(patches, type,
                                                                                       m_scene.RegionInfo.RegionSizeX,
                                                                                       m_scene.RegionInfo.RegionSizeY);
             layerpack.Header.Zerocoded = true;
@@ -1377,7 +1378,7 @@ namespace Universe.ClientStack
             {
                 type += 2;
             }
-            LayerDataPacket layerpack = UniverseTerrainCompressor.CreateLayerDataPacket(patches, type,
+            LayerDataPacket layerpack = WhiteCoreTerrainCompressor.CreateLayerDataPacket(patches, type,
                                                                                       m_scene.RegionInfo.RegionSizeX,
                                                                                       m_scene.RegionInfo.RegionSizeY);
             layerpack.Header.Zerocoded = true;

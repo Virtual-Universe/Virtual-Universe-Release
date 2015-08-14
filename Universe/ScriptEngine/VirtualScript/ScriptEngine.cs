@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -98,7 +98,7 @@ namespace Universe.ScriptEngine.VirtualScript
         /// <summary>
         ///     Path to the script binaries.
         /// </summary>
-        public string ScriptEnginesPath = Constants.DEFAULT_SCRIPTENGINE_DIR;
+        public string ScriptEnginesPath = "";
 
         /// <summary>
         ///     Errors of scripts that have failed in this run of the Maintenance Thread
@@ -230,32 +230,43 @@ namespace Universe.ScriptEngine.VirtualScript
             //Register the console commands
             if (FirstStartup)
             {
+                if (ScriptEnginesPath == "")
+                {
+                    var defpath = scene.RequestModuleInterface<ISimulationBase> ().DefaultDataPath;
+                    ScriptEnginesPath = Path.Combine (defpath, Constants.DEFAULT_SCRIPTENGINE_DIR);
+                }
+
                 if (MainConsole.Instance != null)
                 {
-                    MainConsole.Instance.Commands.AddCommand("VS restart", 
-                	                                         "VS restart",
-                                                             "Restarts all scripts and clears all script caches",
-                                                             UniverseDotNetRestart, false, false);
+                    MainConsole.Instance.Commands.AddCommand(
+                        "WDNE restart", 
+                        "WDNE restart",
+                        "Restarts all scripts and clears all script caches",
+                        WhiteCoreDotNetRestart, false, false);
                     
-                	MainConsole.Instance.Commands.AddCommand("VS stop",
-                	                                         "VS stop", 
-                	                                         "Stops all scripts",
-                                                             UniverseDotNetStop, false, false);
+                	MainConsole.Instance.Commands.AddCommand(
+                        "WDNE stop",
+                        "WDNE stop", 
+                        "Stops all scripts",
+                        WhiteCoreDotNetStop, false, false);
                     
-                	MainConsole.Instance.Commands.AddCommand("VS stats",
-                	                                         "VS stats",
-                                                             "Tells stats about the script engine", 
-                                                             UniverseDotNetStats, false, false);
+                	MainConsole.Instance.Commands.AddCommand(
+                        "WDNE stats",
+                        "WDNE stats",
+                        "Tells stats about the script engine", 
+                        WhiteCoreDotNetStats, false, false);
                     
-                	MainConsole.Instance.Commands.AddCommand("VS disable",
-                	                                         "VS disable",
-                                                             "Disables the script engine temperarily",
-                                                             UniverseDotNetDisable, false, false);
+                	MainConsole.Instance.Commands.AddCommand(
+                        "WDNE disable",
+                        "WDNE disable",
+                        "Disables the script engine temperarily",
+                        WhiteCoreDotNetDisable, false, false);
                     
-                	MainConsole.Instance.Commands.AddCommand("VS enable",
-                	                                         "VS enable", 
-                	                                         "Reenables the script engine",
-                                                             UniverseDotNetEnable, false, false);
+                	MainConsole.Instance.Commands.AddCommand(
+                        "WDNE enable",
+                        "WDNE enable", 
+                        "Reenables the script engine",
+                        WhiteCoreDotNetEnable, false, false);
                 }
 
                 // Create all objects we'll be using
@@ -414,7 +425,7 @@ namespace Universe.ScriptEngine.VirtualScript
             }
         }
 
-        protected void UniverseDotNetRestart(IScene scene, string[] cmdparams)
+        protected void WhiteCoreDotNetRestart(IScene scene, string[] cmdparams)
         {
             string go =
                 MainConsole.Instance.Prompt(
@@ -423,8 +434,8 @@ namespace Universe.ScriptEngine.VirtualScript
             if (go.Equals("yes", StringComparison.CurrentCultureIgnoreCase))
             {
                 //Clear out all of the data on the threads that we have just to make sure everything is all clean
-                this.MaintenanceThread.DisableThreads();
-                this.MaintenanceThread.PokeThreads(UUID.Zero);
+                MaintenanceThread.DisableThreads();
+                MaintenanceThread.PokeThreads(UUID.Zero);
                 ScriptData[] scripts = ScriptProtection.GetAllScripts();
                 ScriptProtection.Reset(true);
                 foreach (ScriptData ID in scripts)
@@ -441,32 +452,32 @@ namespace Universe.ScriptEngine.VirtualScript
                 MaintenanceThread.StartScripts(
                     scripts.Select(ID => new LUStruct {Action = LUType.Load, ID = ID}).ToArray());
 
-                MainConsole.Instance.Warn("[Virtual Script]: All scripts have been restarted.");
+                MainConsole.Instance.Warn("[WDNE]: All scripts have been restarted.");
             }
             else
             {
-                MainConsole.Instance.Info("[Virtual Script]: Not restarting all scripts");
+                MainConsole.Instance.Info("[WDNE]: Not restarting all scripts");
             }
         }
 
-        protected void UniverseDotNetStop(IScene scene, string[] cmdparams)
+        protected void WhiteCoreDotNetStop(IScene scene, string[] cmdparams)
         {
             string go = MainConsole.Instance.Prompt("Are you sure you want to stop all scripts?", "no");
             if (go.Contains("yes") || go.Contains("Yes"))
             {
                 StopAllScripts();
                 MaintenanceThread.Stop();
-                MainConsole.Instance.Warn("[Virtual Script]: All scripts have been stopped.");
+                MainConsole.Instance.Warn("[WDNE]: All scripts have been stopped.");
             }
             else
             {
-                MainConsole.Instance.Info("[Virtual Script]: Not restarting all scripts");
+                MainConsole.Instance.Info("[WDNE]: Not restarting all scripts");
             }
         }
 
-        protected void UniverseDotNetStats(IScene scene, string[] cmdparams)
+        protected void WhiteCoreDotNetStats(IScene scene, string[] cmdparams)
         {
-            MainConsole.Instance.Info ("Virtual Script Engine Stats:");
+            MainConsole.Instance.Info ("Universe DotNet Script Engine Stats:");
             MainConsole.Instance.CleanInfo ("    Region: " + scene.RegionInfo.RegionName);
             MainConsole.Instance.CleanInfo ("    Number of scripts compiled: " + Compiler.ScriptCompileCounter);
             MainConsole.Instance.CleanInfo ("    Max allowed threat level: " + ScriptProtection.GetThreatLevel ());
@@ -484,17 +495,17 @@ namespace Universe.ScriptEngine.VirtualScript
             //MaintenanceThread.Stats();
         }
 
-        protected void UniverseDotNetDisable(IScene scene, string[] cmdparams)
+        protected void WhiteCoreDotNetDisable(IScene scene, string[] cmdparams)
         {
             ConsoleDisabled = true;
-            MainConsole.Instance.Warn("[Virtual Script]: Virtual Script Engine has been disabled.");
+            MainConsole.Instance.Warn("[WDNE]: WDNE has been disabled.");
         }
 
-        protected void UniverseDotNetEnable(IScene scene, string[] cmdparams)
+        protected void WhiteCoreDotNetEnable(IScene scene, string[] cmdparams)
         {
             ConsoleDisabled = false;
             MaintenanceThread.Started = true;
-            MainConsole.Instance.Warn("[Virtual Script]: Virtual Script Engine has been enabled.");
+            MainConsole.Instance.Warn("[WDNE]: WDNE has been enabled.");
         }
 
         #endregion
@@ -994,6 +1005,7 @@ namespace Universe.ScriptEngine.VirtualScript
 
                     MaintenanceThread.SetEventSchSetIgnoreNew(SD, false);
 
+
                     if (presence != null && (newItem.PermsMask & ScriptBaseClass.PERMISSION_TAKE_CONTROLS) != 0)
                     {
                         SC.itemID = newItem.ItemID;
@@ -1036,17 +1048,14 @@ namespace Universe.ScriptEngine.VirtualScript
                 if ((statesource & StateSource.PrimCrossing) != 0)
                 {
                     //Post the changed event though
-                    AddToScriptQueue(id, "changed", new DetectParams[0], EventPriority.FirstStart,
-                                     new Object[] {new LSL_Types.LSLInteger(512)});
-                    return new LUStruct {Action = LUType.Unknown};
+                    AddToScriptQueue (id, "changed", new DetectParams[0], EventPriority.FirstStart,
+                        new Object[] { new LSL_Types.LSLInteger (512) });
+                    return new LUStruct { Action = LUType.Unknown };
                 }
-                else
-                {
-                    //Restart other scripts
-                    ls.Action = LUType.Load;
-                }
+                //Restart other scripts
+                ls.Action = LUType.Load;
                 id.EventDelayTicks = 0;
-                ScriptProtection.RemovePreviouslyCompiled(id.Source);
+                ScriptProtection.RemovePreviouslyCompiled (id.Source);
             }
             else
                 ls.Action = LUType.Load;
@@ -1090,6 +1099,7 @@ namespace Universe.ScriptEngine.VirtualScript
                 return;
 
             LUStruct ls = new LUStruct {ID = data, Action = LUType.Unload};
+
 
             MaintenanceThread.AddScriptChange(new[] {ls}, LoadPriority.Stop);
 
@@ -1172,7 +1182,7 @@ namespace Universe.ScriptEngine.VirtualScript
         {
             if (m_APIs.Length == 0)
             {
-                m_APIs = UniverseModuleLoader.PickupModules<IScriptApi>().ToArray();
+                m_APIs = WhiteCoreModuleLoader.PickupModules<IScriptApi>().ToArray();
                 //Only add Apis that are considered safe
                 m_APIs = m_APIs.Where(api => ScriptProtection.CheckAPI(api.Name)).ToArray();
             }
@@ -1215,7 +1225,6 @@ namespace Universe.ScriptEngine.VirtualScript
                 if (member.Name.StartsWith(api.Name, StringComparison.CurrentCultureIgnoreCase) && member.IsPublic)
                     FunctionNames.Add(member.Name);
             }
-            members = null;
             return FunctionNames;
         }
 
@@ -1260,7 +1269,7 @@ namespace Universe.ScriptEngine.VirtualScript
         /// </summary>
         public void StartSharedScriptPlugins()
         {
-            List<IScriptPlugin> sharedPlugins = UniverseModuleLoader.PickupModules<IScriptPlugin>();
+            List<IScriptPlugin> sharedPlugins = WhiteCoreModuleLoader.PickupModules<IScriptPlugin>();
             foreach (IScriptPlugin plugin in sharedPlugins)
             {
                 plugin.Initialize(this);
@@ -1345,8 +1354,7 @@ namespace Universe.ScriptEngine.VirtualScript
             ISceneChildEntity parent = part.ParentEntity.RootChild;
             if (parent != null && parent.IsAttachment)
                 return ScriptDanger(parent, position);
-            else
-                return ScriptDanger(part, position);
+            return ScriptDanger(part, position);
         }
 
         public ISceneChildEntity findPrim(UUID objectID)
@@ -1359,6 +1367,7 @@ namespace Universe.ScriptEngine.VirtualScript
             return m_Scene.GetSceneObjectPart(localID);
         }
 
+
         bool ScriptDanger(ISceneChildEntity part, Vector3 pos)
         {
             IScene scene = part.ParentEntity.Scene;
@@ -1368,41 +1377,33 @@ namespace Universe.ScriptEngine.VirtualScript
             IParcelManagementModule parcelManagement = scene.RequestModuleInterface<IParcelManagementModule>();
             if (parcelManagement != null)
             {
-                ILandObject parcel = parcelManagement.GetLandObject(pos.X, pos.Y);
+                ILandObject parcel = parcelManagement.GetLandObject (pos.X, pos.Y);
                 if (parcel != null)
                 {
-                    if ((parcel.LandData.Flags & (uint) ParcelFlags.AllowOtherScripts) != 0)
+                    if ((parcel.LandData.Flags & (uint)ParcelFlags.AllowOtherScripts) != 0)
                         return true;
-                    else if ((parcel.LandData.Flags & (uint) ParcelFlags.AllowGroupScripts) != 0)
+                    if ((parcel.LandData.Flags & (uint)ParcelFlags.AllowGroupScripts) != 0)
                     {
                         if (part.OwnerID == parcel.LandData.OwnerID
                             || (parcel.LandData.IsGroupOwned && part.GroupID == parcel.LandData.GroupID)
-                            || scene.Permissions.IsGod(part.OwnerID))
+                            || scene.Permissions.IsGod (part.OwnerID))
                             return true;
-                        else
-                            return false;
+                        return false;
                     }
-                    else
-                    {
-                        //Gods should be able to run scripts. 
-                        // -- Revolution
-                        if (part.OwnerID == parcel.LandData.OwnerID || scene.Permissions.IsGod(part.OwnerID))
-                            return true;
-                        else
-                            return false;
-                    }
+                    //Gods should be able to run scripts. 
+                    // -- Revolution
+                    if (part.OwnerID == parcel.LandData.OwnerID || scene.Permissions.IsGod (part.OwnerID))
+                        return true;
+                    return false;
                 }
-                else
-                {
-                    if (pos.X > 0f && pos.X < scene.RegionInfo.RegionSizeX && pos.Y > 0f &&
+                if (pos.X > 0f && pos.X < scene.RegionInfo.RegionSizeX && pos.Y > 0f &&
                         pos.Y < scene.RegionInfo.RegionSizeY)
                         // The only time parcel != null when an object is inside a region is when
                         // there is nothing behind the landchannel.  IE, no land plugin loaded.
                         return true;
-                    else
-                        // The object is outside of this region.  Stop piping events to it.
-                        return false;
-                }
+                    
+                // The object is outside of this region.  Stop piping events to it.
+                return false;
             }
             return true;
         }
@@ -1414,9 +1415,9 @@ namespace Universe.ScriptEngine.VirtualScript
             //      -- Leaf, Tue Aug 12 14:17:05 EDT 2008
             ISceneChildEntity parent = part.ParentEntity.RootChild;
             if (parent != null && parent.IsAttachment)
-                return PipeEventsForScript(parent, parent.AbsolutePosition);
-            else
-                return PipeEventsForScript(part, part.AbsolutePosition);
+                return PipeEventsForScript (parent, parent.AbsolutePosition);
+            
+            return PipeEventsForScript (part, part.AbsolutePosition);
         }
 
         #endregion
@@ -1464,8 +1465,8 @@ namespace Universe.ScriptEngine.VirtualScript
                                    //Remove the scripts that are in a different region
                                    if (script.World.RegionInfo.RegionID != RegionID)
                                        return true;
-                                   else
-                                       return false;
+                                  
+                                   return false;
                                });
             //Now sort and put the top scripts in the correct order
             data.Sort(ScriptScoreSorter);
@@ -1541,7 +1542,7 @@ namespace Universe.ScriptEngine.VirtualScript
         /// <returns></returns>
         public ArrayList FindErrors(UUID ItemID)
         {
-            ArrayList Error = new ArrayList();
+            ArrayList Error;
 
             if (!TryFindError(ItemID, out Error))
                 return new ArrayList(new[] {"Compile not finished."});
@@ -1549,7 +1550,7 @@ namespace Universe.ScriptEngine.VirtualScript
 
             RemoveError(ItemID);
 
-            if ((string) Error[0] == "SUCCESS")
+            if ((string) Error[0] == "SUCCESSFULL")
                 return new ArrayList();
 
             return Error;

@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -58,7 +58,7 @@ namespace Universe.Modules.WorldMap
 
         readonly Dictionary<UUID, Color4> m_colors = new Dictionary<UUID, Color4>();
         IConfigSource m_config;
-        string m_assetCacheDir = Constants.DEFAULT_ASSETCACHE_DIR;
+        string m_assetCacheDir = "";
         IRendering m_primMesher;
         IScene m_scene;
         IJ2KDecoder m_imgDecoder;
@@ -77,6 +77,11 @@ namespace Universe.Modules.WorldMap
             m_imgDecoder = m_scene.RequestModuleInterface<IJ2KDecoder>();
             m_config = config;
             m_assetCacheDir = m_config.Configs ["AssetCache"].GetString ("CacheDirectory",m_assetCacheDir);
+            if (m_assetCacheDir == "")
+            {
+                var defpath = scene.RequestModuleInterface<ISimulationBase> ().DefaultDataPath;
+                m_assetCacheDir = System.IO.Path.Combine(defpath, Constants.DEFAULT_ASSETCACHE_DIR);
+            }
 
             List<string> renderers = RenderingLoader.ListRenderers(Util.ExecutingDirectory());
             if (renderers.Count > 0)

@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -58,10 +58,10 @@ namespace Universe.Framework.Services.ClassHelpers.Assets
     [Serializable, ProtoContract(UseProtoMembersOnly = false)]
     public class AssetBase : IDataTransferable, IDisposable
     {
-        private static readonly SHA256Managed SHA256Managed = new SHA256Managed();
-        private string idString = "";
-        private byte[] myData = new byte[] {};
-        private string myHashCode = "";
+        static readonly SHA256Managed SHA256Managed = new SHA256Managed();
+        string idString = "";
+        byte[] myData = new byte[] {};
+        string myHashCode = "";
 
         #region Initiation
 
@@ -94,7 +94,7 @@ namespace Universe.Framework.Services.ClassHelpers.Assets
             Initiate(assetID.ToString(), name, assetType, creatorID);
         }
 
-        private void SimpleInitialize()
+        void SimpleInitialize()
         {
             DatabaseTable = "assets";
             ID = UUID.Zero;
@@ -206,6 +206,7 @@ namespace Universe.Framework.Services.ClassHelpers.Assets
                 return "Unknown asset";
             }
         }
+
 
         #endregion
 
@@ -459,7 +460,7 @@ namespace Universe.Framework.Services.ClassHelpers.Assets
 
         public void CompressedUnpack(string compressedString)
         {
-            //Decompress the info back to JSON format
+            //Decompress the info back to json format
             string jsonString = Util.Decompress(compressedString);
             //Build the OSDMap 
             OSDMap assetMap = (OSDMap) OSDParser.DeserializeJson(jsonString);

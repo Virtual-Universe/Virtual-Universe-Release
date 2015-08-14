@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,6 +25,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using Universe.Framework.ClientInterfaces;
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.Modules;
+using Universe.Framework.PresenceInfo;
+using Universe.Framework.SceneInfo;
+using Universe.Framework.SceneInfo.Entities;
+using Universe.Framework.Utilities;
+using Universe.ScriptEngine.VirtualScript.Runtime;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -34,16 +44,6 @@ using System.Linq;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Lifetime;
 using System.Threading;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
-using Universe.Framework.ClientInterfaces;
-using Universe.Framework.ConsoleFramework;
-using Universe.Framework.Modules;
-using Universe.Framework.PresenceInfo;
-using Universe.Framework.SceneInfo;
-using Universe.Framework.SceneInfo.Entities;
-using Universe.Framework.Utilities;
-using Universe.ScriptEngine.VirtualScript.Runtime;
 
 namespace Universe.ScriptEngine.VirtualScript
 {
@@ -218,6 +218,8 @@ namespace Universe.ScriptEngine.VirtualScript
 
             // Remove from internal structure
             ScriptEngine.ScriptProtection.RemoveScript(this);
+            //            if (!Silent) //Don't remove on a recompile because we'll make it under a different assembly
+            //                ScriptEngine.ScriptProtection.RemovePreviouslyCompiled(Source);
 
             //Remove any errors that might be sitting around
             m_ScriptEngine.ScriptErrorReporter.RemoveError(ItemID);
@@ -542,7 +544,7 @@ namespace Universe.ScriptEngine.VirtualScript
 
             if (InventoryItem == null)
             {
-                MainConsole.Instance.Warn("[Virtual Script]: Could not find inventory item for script " + ItemID + ", part" +
+                MainConsole.Instance.Warn("[WDNE]: Could not find inventory item for script " + ItemID + ", part" +
                                           Part.Name + "@" +
                                           Part.AbsolutePosition);
                 return false;
@@ -637,7 +639,8 @@ namespace Universe.ScriptEngine.VirtualScript
             else
             {
                 Compiled = false;
-                
+                //if (!reupload && Loading && LastStateSave != null && !LastStateSave.Compiled)
+                //    return false;//If we're trying to start up and we failed before, just give up
                 if (reupload)
                 {
                     LastStateSave = null;
@@ -746,9 +749,13 @@ namespace Universe.ScriptEngine.VirtualScript
             }
             Compiled = true; //We compiled successfully
 
+            //ILease lease = (ILease)RemotingServices.GetLifetimeService(Script as MarshalByRefObject);
+            //if (lease != null) //Its null if it is all running in the same app domain
+            //    lease.Register(Script.Sponsor);
+
             //If its a reupload, an avatar is waiting for the script errors
             if (reupload)
-                m_ScriptEngine.ScriptErrorReporter.AddError(ItemID, new ArrayList(new[] {"SUCCESSFUL"}));
+                m_ScriptEngine.ScriptErrorReporter.AddError(ItemID, new ArrayList(new[] {"SUCCESSFULL"}));
 
             if (useDebug)
                 MainConsole.Instance.Debug("[" + m_ScriptEngine.ScriptEngineName + "]: Stage 2 compile: " +

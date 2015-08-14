@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org//
+ * Copyright (c) Contributors, http://whitecore-sim.org/, http://aurora-sim.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Aurora-Sim Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -106,10 +106,8 @@ namespace Universe.Modules.Currency
 
 
             // these are only valid if we are local
-            if (!m_connector.DoRemoteCalls) {
-                //               if ((m_connector.GetConfig().GiveStipends) && (m_connector.GetConfig().Stipend > 0))
-                //                   new GiveStipends(m_connector.GetConfig(), m_registry, m_connector);
-
+            if (!m_connector.DoRemoteCalls)
+            {
                 m_userInfoService = m_registry.RequestModuleInterface<IAgentInfoService> ();
                 m_userAccountService = m_registry.RequestModuleInterface<IUserAccountService> ();
                     
@@ -183,12 +181,6 @@ namespace Universe.Modules.Currency
                     "Display user purchases for a period.",
                     HandleShowPurchases, false, true);
 
-/*                MainConsole.Instance.Commands.AddCommand(
-                    "stipend set",
-                    "stipend set",
-                    "Sets the next date for stipend",
-                    HandleStipendSet, false, true);
-                    */
             }
         }
 
@@ -196,6 +188,10 @@ namespace Universe.Modules.Currency
 
         public string InWorldCurrencySymbol {
             get { return m_connector.InWorldCurrency; }
+        }
+
+        public bool IsLocal {
+            get { return !m_connector.DoRemoteCalls; }
         }
 
         public int UploadCharge {

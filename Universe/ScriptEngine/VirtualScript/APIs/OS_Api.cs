@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -35,12 +35,8 @@ using System.Net;
 using System.Runtime.Remoting.Lifetime;
 using System.Text;
 using System.Text.RegularExpressions;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
-using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
@@ -50,6 +46,9 @@ using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Utilities;
 using Universe.ScriptEngine.VirtualScript.Runtime;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
 using GridRegion = Universe.Framework.Services.GridRegion;
 using Group = System.Text.RegularExpressions.Group;
 using LSL_Float = Universe.ScriptEngine.VirtualScript.LSL_Types.LSLFloat;
@@ -59,6 +58,7 @@ using LSL_List = Universe.ScriptEngine.VirtualScript.LSL_Types.list;
 using LSL_Rotation = Universe.ScriptEngine.VirtualScript.LSL_Types.Quaternion;
 using LSL_String = Universe.ScriptEngine.VirtualScript.LSL_Types.LSLString;
 using LSL_Vector = Universe.ScriptEngine.VirtualScript.LSL_Types.Vector3;
+using Universe.Framework.DatabaseInterfaces;
 
 namespace Universe.ScriptEngine.VirtualScript.APIs
 {

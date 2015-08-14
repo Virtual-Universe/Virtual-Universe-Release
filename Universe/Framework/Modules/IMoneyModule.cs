@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -143,6 +143,7 @@ namespace Universe.Framework.Modules
             FromObjectName = map ["FromObjectName"];
             ToObjectName = map ["ToObjectName"];
             RegionName = map ["RegionName"];
+
         }
 
         public override OpenMetaverse.StructuredData.OSDMap ToOSD()
@@ -207,6 +208,7 @@ namespace Universe.Framework.Modules
     public interface IMoneyModule
     {
         string InWorldCurrencySymbol { get; }
+        bool IsLocal { get; }
 
         int UploadCharge { get; }
         int GroupCreationCharge { get; }
@@ -274,9 +276,9 @@ namespace Universe.Framework.Modules
 
     }
 
-    public interface IBaseCurrencyConnector : IUniverseDataPlugin
+    public interface IBaseCurrencyConnector : IWhiteCoreDataPlugin
     {
-        /*BaseCurrencyConfig GetConfig();
+        /*SimpleCurrencyConfig GetConfig();
         UserCurrency GetUserCurrency(UUID agentId);
         bool UserCurrencyUpdate(UserCurrency agent);
         GroupBalance GetGroupBalance(UUID groupID);

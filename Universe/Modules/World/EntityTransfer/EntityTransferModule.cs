@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -872,7 +872,7 @@ namespace Universe.Modules.EntityTransfer
                 MainConsole.Instance.InfoFormat("[Scene]: Zombie scene presence detected for {0} in {1}", agent.AgentID,
                                                 scene.RegionInfo.RegionName);
                 //Tell everyone about it
-                scene.UniverseEventManager.FireGenericEventHandler("AgentIsAZombie", sp.UUID);
+                scene.WhiteCoreEventManager.FireGenericEventHandler("AgentIsAZombie", sp.UUID);
                 //Send the killing message (DisableSimulator)
                 scene.RemoveAgent(sp, true);
                 sp = null;
@@ -881,7 +881,7 @@ namespace Universe.Modules.EntityTransfer
             response.CapsURIs = scene.EventManager.TriggerOnRegisterCaps(agent.AgentID);
             response.OurIPForClient = MainServer.Instance.HostName;
 
-            scene.UniverseEventManager.FireGenericEventHandler("NewUserConnection", agent);
+            scene.WhiteCoreEventManager.FireGenericEventHandler("NewUserConnection", agent);
 
             //Add the circuit at the end
             scene.AuthenticateHandler.AddNewCircuit(agent.CircuitCode, agent);

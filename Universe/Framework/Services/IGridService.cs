@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -438,7 +438,8 @@ namespace Universe.Framework.Services
             ScopeID = ConvertFrom.ScopeID;
             AllScopeIDs = ConvertFrom.AllScopeIDs;
             SessionID = ConvertFrom.GridSecureSessionID;
-            Flags |= ConvertFrom.RegionFlags;                           // not sure why we don't pass all the flags
+//            Flags |= (int) RegionFlags.RegionOnline;
+            Flags |= ConvertFrom.RegionFlags;                           // not sure why we don't pass all the flags??
             RegionTerrain = ConvertFrom.RegionTerrain;
             RegionArea = ConvertFrom.RegionArea;
         }
@@ -488,7 +489,10 @@ namespace Universe.Framework.Services
 
         public ulong RegionHandle
         {
-            get { return Util.IntsToUlong (RegionLocX, RegionLocY); }
+            get {
+                var regHdl = Util.IntsToUlong (RegionLocX, RegionLocY);
+                return regHdl;
+            }
         }
 
         /// <summary>

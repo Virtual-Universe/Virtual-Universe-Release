@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -28,12 +28,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using OpenMetaverse;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo.Entities;
+using OpenMetaverse;
 
 namespace Universe.Framework.SceneInfo
 {
+
     #region Delegates
 
     public delegate uint GenerateClientFlagsHandler(UUID userID, ISceneChildEntity part);
@@ -234,7 +235,8 @@ namespace Universe.Framework.SceneInfo
 
         public uint GenerateClientFlags(UUID userID, ISceneChildEntity part)
         {
-            // libomv will moan about PrimFlags.ObjectYouOfficer being obsolete.
+            // libomv will moan about PrimFlags.ObjectYouOfficer being
+            // obsolete...
 #pragma warning disable 0612
             const PrimFlags DEFAULT_FLAGS =
                 PrimFlags.ObjectModify |

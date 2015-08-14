@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -36,7 +36,7 @@ using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 
-namespace Vision.Modules.Wind
+namespace Universe.Modules.GlobalEnvironment
 {
     public class WindModule : IWindModule, INonSharedRegionModule
     {
@@ -90,7 +90,7 @@ namespace Vision.Modules.Wind
                 m_frame = 0;
 
                 // Register all the Wind Model Plug-ins
-                foreach (IWindModelPlugin windPlugin in UniverseModuleLoader.PickupModules<IWindModelPlugin>())
+                foreach (IWindModelPlugin windPlugin in WhiteCoreModuleLoader.PickupModules<IWindModelPlugin>())
                 {
                     //MainConsole.Instance.InfoFormat("[WIND] Found Plugin: {0}", windPlugin.Name);
                     m_availableWindPlugins.Add (windPlugin.Name, windPlugin);

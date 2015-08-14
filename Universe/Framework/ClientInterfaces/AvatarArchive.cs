@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-support/, http://aurora-sim.org, http://opensimulator.org/,
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -44,6 +44,11 @@ namespace Universe.Framework.ClientInterfaces
         public bool IsPublic;
 
         /// <summary>
+        ///     true/false if it is a portabl;e archive
+        /// </summary>
+        public bool IsPortable;
+
+        /// <summary>
         ///     Name of the archive
         /// </summary>
         public string FileName;
@@ -73,6 +78,7 @@ namespace Universe.Framework.ClientInterfaces
             FolderName = map["FolderName"];
             Snapshot = map["Snapshot"];
             IsPublic = map["Public"];
+            IsPortable = map["Portable"];
         }
 
         public override OSDMap ToOSD()
@@ -85,6 +91,7 @@ namespace Universe.Framework.ClientInterfaces
             map["FolderName"] = FolderName;
             map["Snapshot"] = Snapshot;
             map["Public"] = IsPublic;
+            map["Portable"] = IsPortable;
 
             return map;
         }

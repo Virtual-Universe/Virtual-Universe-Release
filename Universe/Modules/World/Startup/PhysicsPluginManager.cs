@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,13 +25,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using Nini.Config;
+
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.ModuleLoader;
 using Universe.Framework.Physics;
 using Universe.Framework.SceneInfo;
+using Nini.Config;
+using System;
+using System.Collections.Generic;
 
 namespace Universe.Modules.Startup
 {
@@ -80,7 +81,7 @@ namespace Universe.Modules.Startup
                 MainConsole.Instance.Debug("[Physics]: Loading physics engine: " + physEngineName);
                 PhysicsScene result = _PhysPlugins[physEngineName].GetScene();
                 result.Initialize(meshEngine, scene);
-                result.PostInitialize(config);
+                result.PostInitialise(config);
                 return result;
             }
             else
@@ -97,10 +98,10 @@ namespace Universe.Modules.Startup
         public void LoadPluginsFromAssemblies(string assembliesPath)
         {
             List<IPhysicsPlugin> physicsPlugins =
-                UniverseModuleLoader.LoadModules<IPhysicsPlugin>(assembliesPath);
+                WhiteCoreModuleLoader.LoadModules<IPhysicsPlugin>(assembliesPath);
             List<IMeshingPlugin> meshingPlugins =
-                UniverseModuleLoader.LoadModules<IMeshingPlugin>(assembliesPath);
-            meshingPlugins.AddRange(UniverseModuleLoader.LoadModules<IMeshingPlugin>(""));
+                WhiteCoreModuleLoader.LoadModules<IMeshingPlugin>(assembliesPath);
+            meshingPlugins.AddRange(WhiteCoreModuleLoader.LoadModules<IMeshingPlugin>(""));
 
             foreach (IPhysicsPlugin plug in physicsPlugins)
             {

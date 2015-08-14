@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -62,7 +62,7 @@ namespace Universe.DataManager.Migration
 
         public bool Validate(IDataConnector genericData)
         {
-            if (genericData.GetUniverseVersion(MigrationName) != Version)
+            if (genericData.GetWhiteCoreVersion(MigrationName) != Version)
             {
                 return false;
             }
@@ -87,7 +87,7 @@ namespace Universe.DataManager.Migration
         public void Migrate(IDataConnector genericData)
         {
             DoMigrate(genericData);
-            genericData.WriteUniverseVersion(Version, MigrationName);
+            genericData.WriteWhiteCoreVersion(Version, MigrationName);
         }
 
         protected virtual void DoMigrate(IDataConnector genericData)
@@ -97,7 +97,7 @@ namespace Universe.DataManager.Migration
         public void CreateDefaults(IDataConnector genericData)
         {
             DoCreateDefaults(genericData);
-            genericData.WriteUniverseVersion(Version, MigrationName);
+            genericData.WriteWhiteCoreVersion(Version, MigrationName);
         }
 
         protected virtual void DoCreateDefaults(IDataConnector genericData)

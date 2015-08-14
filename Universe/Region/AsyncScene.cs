@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -78,7 +78,7 @@ namespace Universe.Region
         protected ThreadMonitor monitor = new ThreadMonitor();
         protected ThreadMonitor physmonitor = new ThreadMonitor();
 
-        protected UniverseEventManager m_UniverseEventManager;
+        protected WhiteCoreEventManager m_WhiteCoreEventManager;
         protected EventManager m_eventManager;
 
         /// <value>
@@ -93,9 +93,9 @@ namespace Universe.Region
         /// <summary>
         ///     Generic manager to send and receive events. Used mainly by region modules
         /// </summary>
-        public UniverseEventManager UniverseEventManager
+        public WhiteCoreEventManager WhiteCoreEventManager
         {
-            get { return m_UniverseEventManager; }
+            get { return m_WhiteCoreEventManager; }
         }
 
         ISceneManager m_sceneManager;
@@ -295,7 +295,7 @@ namespace Universe.Region
             m_config = m_sceneManager.ConfigSource;
             m_authenticateHandler = authen;
 
-            m_UniverseEventManager = new UniverseEventManager();
+            m_WhiteCoreEventManager = new WhiteCoreEventManager();
             m_eventManager = new EventManager();
             m_permissions = new ScenePermissions(this);
 
@@ -303,12 +303,12 @@ namespace Universe.Region
 
             #region Region Config
 
-			IConfig universestartupConfig = m_config.Configs["UniverseStartup"];
-			if (universestartupConfig != null)
+			IConfig whitecorestartupConfig = m_config.Configs["WhiteCoreStartup"];
+			if (whitecorestartupConfig != null)
             {
                 //Region specific is still honored here, the RegionInfo checks for it, and if it is 0, it didn't set it
                 if (RegionInfo.ObjectCapacity == 0)
-					RegionInfo.ObjectCapacity = universestartupConfig.GetInt("ObjectCapacity", 80000);
+					RegionInfo.ObjectCapacity = whitecorestartupConfig.GetInt("ObjectCapacity", 80000);
             }
 
             IConfig packetConfig = m_config.Configs["PacketPool"];
@@ -440,7 +440,7 @@ namespace Universe.Region
             ILLClientInventory inventoryModule = RequestModuleInterface<ILLClientInventory>();
             while (true)
             {
-                if (!ShouldRunHeartbeat) //If we arn't supposed to be running, kill ourselves
+                if (!ShouldRunHeartbeat) //If we aren't supposed to be running, kill ourselves
                     return false;
                 
                 int maintc = Util.EnvironmentTickCount();
@@ -529,7 +529,7 @@ namespace Universe.Region
 
             while (true)
             {
-                if (!ShouldRunHeartbeat) //If we arn't supposed to be running, kill ourselves
+                if (!ShouldRunHeartbeat) //If we aren't supposed to be running, kill ourselves
                     return false;
 
                 int maintc = Util.EnvironmentTickCount();

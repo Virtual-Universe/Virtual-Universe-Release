@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -34,22 +34,22 @@ namespace Universe.Framework.Utilities
     /// <summary>
     ///     Summary description for NSXML.
     /// </summary>
-    public sealed class UniverseXmlDocument : XmlDocument
+    public sealed class WhiteCoreXmlDocument : XmlDocument
     {
         #region Constructors
 
         /// <summary>
         ///     Default Constructor
         /// </summary>
-        public UniverseXmlDocument()
+        public WhiteCoreXmlDocument()
         {
         }
 
         /// <summary>
-        ///     Creates a UniverseXmlDocument and loads it with the xml
+        ///     Creates a WhiteCoreXmlDocument and loads it with the xml
         /// </summary>
         /// <param name="xml"></param>
-        public UniverseXmlDocument(string xml)
+        public WhiteCoreXmlDocument(string xml)
             : this()
         {
             LoadXml(xml);
@@ -60,13 +60,13 @@ namespace Universe.Framework.Utilities
         #region root work
 
         /// <summary>
-        ///     Creates a new UniverseXmlDocument with the specified rootName
+        ///     Creates a new WhiteCoreXmlDocument with the specified rootName
         /// </summary>
         /// <param name="rootName"></param>
         /// <returns></returns>
-        public static UniverseXmlDocument NewXmlDocumentWithRoot(string rootName)
+        public static WhiteCoreXmlDocument NewXmlDocumentWithRoot(string rootName)
         {
-            return new UniverseXmlDocument("<" + rootName + "/>");
+            return new WhiteCoreXmlDocument("<" + rootName + "/>");
         }
 
         /// <summary>
@@ -249,7 +249,7 @@ namespace Universe.Framework.Utilities
         /// <param name="xPathFrom">XPath to the node or nodes you want to move</param>
         /// <param name="xPathTo">XPath to the node that you want to place the xml</param>
         /// <returns></returns>
-        public UniverseXmlDocument AddXMLDoc(UniverseXmlDocument XmlDoc, string xPathFrom, string xPathTo)
+        public WhiteCoreXmlDocument AddXMLDoc(WhiteCoreXmlDocument XmlDoc, string xPathFrom, string xPathTo)
         {
             if (DocumentElement == null) throw new Exception("DocumentElemnt is null");
             XmlNode node = XmlDoc.SelectSingleNode(xPathFrom);
@@ -440,6 +440,7 @@ namespace Universe.Framework.Utilities
             }
         }
 
+
         /// <summary>
         ///     Edit the value of an attribute
         /// </summary>
@@ -487,6 +488,7 @@ namespace Universe.Framework.Utilities
         {
             return selectedNode.ChildNodes.Cast<XmlNode>().Any(selectedNode2 => selectedNode2.Name != "#text");
         }
+
 
         /// <summary>
         ///     Converts the common xml date to normal date

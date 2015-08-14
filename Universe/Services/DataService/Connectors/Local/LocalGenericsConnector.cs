@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -56,7 +56,7 @@ namespace Universe.Services.DataService
         public void Initialize(IGenericData GenericData, IConfigSource source, IRegistryCore simBase,
                                string defaultConnectionString)
         {
-            if (source.Configs["UniverseConnectors"].GetString("GenericsConnector", "LocalConnector") == "LocalConnector")
+            if (source.Configs["WhiteCoreConnectors"].GetString("GenericsConnector", "LocalConnector") == "LocalConnector")
             {
                 GD = GenericData;
 
@@ -66,7 +66,7 @@ namespace Universe.Services.DataService
                 if (GD != null)
                 {
                     GD.ConnectToDatabase (defaultConnectionString, "Generics",
-                        source.Configs ["UniverseConnectors"].GetBoolean ("ValidateTables", true));
+                        source.Configs ["WhiteCoreConnectors"].GetBoolean ("ValidateTables", true));
 
                     Framework.Utilities.DataManager.RegisterPlugin (this);
                 }

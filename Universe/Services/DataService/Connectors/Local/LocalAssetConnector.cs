@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -51,11 +51,11 @@ namespace Universe.Services.DataService
 
             if (GD != null)
                 GD.ConnectToDatabase(defaultConnectionString, "Asset",
-                                     source.Configs["UniverseConnectors"].GetBoolean("ValidateTables", true));
+                                     source.Configs["WhiteCoreConnectors"].GetBoolean("ValidateTables", true));
 
             Framework.Utilities.DataManager.RegisterPlugin(Name + "Local", this);
 
-            if (source.Configs["UniverseConnectors"].GetString("AssetConnector", "LocalConnector") == "LocalConnector")
+            if (source.Configs["WhiteCoreConnectors"].GetString("AssetConnector", "LocalConnector") == "LocalConnector")
             {
                 Framework.Utilities.DataManager.RegisterPlugin(this);
             }

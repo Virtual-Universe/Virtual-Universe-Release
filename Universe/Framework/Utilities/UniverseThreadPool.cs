@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -31,7 +31,7 @@ using System.Threading;
 
 namespace Universe.Framework.Utilities
 {
-    public class UniverseThreadPoolStartInfo
+    public class WhiteCoreThreadPoolStartInfo
     {
         public int InitialSleepTime = 10;
         public bool KillThreadAfterQueueClear;
@@ -42,16 +42,16 @@ namespace Universe.Framework.Utilities
         public ThreadPriority priority;
     }
 
-    public class UniverseThreadPool
+    public class WhiteCoreThreadPool
     {
-        private readonly int[] Sleeping;
-        private readonly Thread[] Threads;
-        private readonly UniverseThreadPoolStartInfo m_info;
-        private readonly ConcurrentQueue<Action> queue = new ConcurrentQueue<Action>();
+        readonly int[] Sleeping;
+        readonly Thread[] Threads;
+        readonly WhiteCoreThreadPoolStartInfo m_info;
+        readonly ConcurrentQueue<Action> queue = new ConcurrentQueue<Action>();
         public long nSleepingthreads;
         public long nthreads;
 
-        public UniverseThreadPool(UniverseThreadPoolStartInfo info)
+        public WhiteCoreThreadPool(WhiteCoreThreadPoolStartInfo info)
         {
             m_info = info;
             Threads = new Thread[m_info.Threads];
@@ -61,7 +61,7 @@ namespace Universe.Framework.Utilities
             // lets threads check for work a bit faster in case we have all sleeping and awake interrupt fails
         }
 
-        private void ThreadStart(object number)
+        void ThreadStart(object number)
         {
             Culture.SetCurrentCulture();
             int OurSleepTime = 0;
@@ -83,25 +83,24 @@ namespace Universe.Framework.Utilities
                             Interlocked.Decrement(ref nthreads);
                             break;
                         }
-                        else
+
+                        Interlocked.Exchange(ref Sleeping[ThreadNumber], 1);
+                        Interlocked.Increment(ref nSleepingthreads);
+                        try
                         {
-                            Interlocked.Exchange(ref Sleeping[ThreadNumber], 1);
-                            Interlocked.Increment(ref nSleepingthreads);
-                            try
-                            {
-                                Thread.Sleep(OurSleepTime);
-                            }
-                            catch (ThreadInterruptedException)
-                            {
-                            }
-                            Interlocked.Decrement(ref nSleepingthreads);
-                            Interlocked.Exchange(ref Sleeping[ThreadNumber], 0);
-                            continue;
+                            Thread.Sleep(OurSleepTime);
                         }
+                        catch (ThreadInterruptedException)
+                        {
+                        }
+
+                        Interlocked.Decrement(ref nSleepingthreads);
+                        Interlocked.Exchange(ref Sleeping[ThreadNumber], 0);
+                        continue;
+
                     }
-                    else
-                    {
-                        // workers have no business on pool waiting times
+             
+                    // workers have no business on pool waiting times
                         // that would make interrelations very hard to debug
                         // If a worker wants to delay its re-queue, then he should for now sleep before
                         // asking to be re-queued.
@@ -109,9 +108,9 @@ namespace Universe.Framework.Utilities
                         // so to release the thread sooner, like .net and mono can now do.
                         // This control loop would then have to look for those delayed requests.
                         // UBIT
-                        OurSleepTime = m_info.InitialSleepTime;
-                        item.Invoke();
-                    }
+                    OurSleepTime = m_info.InitialSleepTime;
+                    item.Invoke();
+                   
                 }
                 catch
                 {
@@ -139,8 +138,7 @@ namespace Universe.Framework.Utilities
                                                 {
                                                     Priority = m_info.priority,
                                                     Name =
-                                                        (m_info.Name == "" ? "UniverseThreadPool" : m_info.Name) + "#" +
-                                                        i,
+                                                        (m_info.Name == "" ? "WhiteCoreThreadPool" : m_info.Name) + "#" + i,
                                                     IsBackground = true
                                                 };
                             try

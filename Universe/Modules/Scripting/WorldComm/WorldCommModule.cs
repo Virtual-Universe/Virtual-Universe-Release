@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -110,11 +110,11 @@ namespace Universe.Modules.Scripting
             int maxhandles = 64;
             try
             {
-                m_whisperdistance = config.Configs["UniverseChat"].GetInt("whisper_distance", m_whisperdistance);
-                m_saydistance = config.Configs["UniverseChat"].GetInt("say_distance", m_saydistance);
-                m_shoutdistance = config.Configs["UniverseChat"].GetInt("shout_distance", m_shoutdistance);
-                maxlisteners = config.Configs["UniverseChat"].GetInt("max_listens_per_region", maxlisteners);
-                maxhandles = config.Configs["UniverseChat"].GetInt("max_listens_per_script", maxhandles);
+                m_whisperdistance = config.Configs["WhiteCoreChat"].GetInt("whisper_distance", m_whisperdistance);
+                m_saydistance = config.Configs["WhiteCoreChat"].GetInt("say_distance", m_saydistance);
+                m_shoutdistance = config.Configs["WhiteCoreChat"].GetInt("shout_distance", m_shoutdistance);
+                maxlisteners = config.Configs["WhiteCoreChat"].GetInt("max_listens_per_region", maxlisteners);
+                maxhandles = config.Configs["WhiteCoreChat"].GetInt("max_listens_per_script", maxhandles);
             }
             catch (Exception)
             {

@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -42,7 +42,7 @@ namespace Universe.Physics.OpenDynamicsEngine
     ///     This ensures that it's thread safe and there will be no conflicts.
     ///     Requests get returned by a different thread then they were requested by.
     /// </summary>
-    public class UniverseODERayCastRequestManager
+    public class WhiteCoreODERayCastRequestManager
     {
         /// <summary>
         ///     ODE contact array to be filled by the collision testing
@@ -70,10 +70,10 @@ namespace Universe.Physics.OpenDynamicsEngine
         /// <summary>
         ///     Scene that created this object.
         /// </summary>
-        private UniverseODEPhysicsScene m_scene;
+        private WhiteCoreODEPhysicsScene m_scene;
 
 
-        public UniverseODERayCastRequestManager(UniverseODEPhysicsScene pScene)
+        public WhiteCoreODERayCastRequestManager(WhiteCoreODEPhysicsScene pScene)
         {
             m_scene = pScene;
             nearCallback = near;
@@ -385,11 +385,11 @@ namespace Universe.Physics.OpenDynamicsEngine
 
                 if (p1 != null)
                 {
-                    if (p1 is UniverseODEPrim)
+                    if (p1 is WhiteCoreODEPrim)
                     {
                         ContactResult collisionresult = new ContactResult
                                                             {
-                                                                ConsumerID = ((UniverseODEPrim) p1).LocalID,
+                                                                ConsumerID = ((WhiteCoreODEPrim) p1).LocalID,
                                                                 Pos =
                                                                     new Vector3(curContact.pos.X, curContact.pos.Y,
                                                                                 curContact.pos.Z),

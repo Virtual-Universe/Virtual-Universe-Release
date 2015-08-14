@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -27,11 +27,11 @@
 
 using System.Collections.Generic;
 
+using Nini.Config;
 using Universe.Framework.ModuleLoader;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Services;
-using Nini.Config;
 
 namespace Universe.Region
 {
@@ -59,7 +59,7 @@ namespace Universe.Region
                 m_simBase.ApplicationRegistry.RegisterModuleInterface<ISceneLoader>(this);
         }
 
-        public void PostInitialize()
+        public void PostInitialise()
         {
         }
 
@@ -97,7 +97,7 @@ namespace Universe.Region
         public IScene CreateScene(ISimulationDataStore dataStore, RegionInfo regionInfo)
         {
             AgentCircuitManager circuitManager = new AgentCircuitManager();
-            List<IClientNetworkServer> clientServers = UniverseModuleLoader.PickupModules<IClientNetworkServer>();
+            List<IClientNetworkServer> clientServers = WhiteCoreModuleLoader.PickupModules<IClientNetworkServer>();
             List<IClientNetworkServer> allClientServers = new List<IClientNetworkServer>();
             foreach (IClientNetworkServer clientServer in clientServers)
             {

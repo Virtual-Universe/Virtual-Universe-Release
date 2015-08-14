@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -42,11 +42,11 @@ using Universe.Framework.Utilities;
 
 namespace Universe.Modules.Archivers
 {
-    public class UniverseArchiver : IService, IUniverseBackupArchiver
+    public class WhiteCoreArchiver : IService, IWhiteCoreBackupArchiver
     {
         private Int64 m_AllowPrompting;
 
-        #region IUniverseBackupArchiver Members
+        #region IWhiteCoreBackupArchiver Members
 
         public bool AllowPrompting
         {
@@ -64,11 +64,11 @@ namespace Universe.Modules.Archivers
         {
             writer.WriteDir("assets"); //Used by many, create it by default
 
-            IUniverseBackupModule[] modules = scene.RequestModuleInterfaces<IUniverseBackupModule>();
-            foreach (IUniverseBackupModule module in modules)
+            IWhiteCoreBackupModule[] modules = scene.RequestModuleInterfaces<IWhiteCoreBackupModule>();
+            foreach (IWhiteCoreBackupModule module in modules)
                 module.SaveModuleToArchive(writer, scene);
 
-            foreach (IUniverseBackupModule module in modules)
+            foreach (IWhiteCoreBackupModule module in modules)
             {
                 while (module.IsArchiving) //Wait until all are done
                     Thread.Sleep(100);
@@ -81,26 +81,26 @@ namespace Universe.Modules.Archivers
 
         public void LoadRegionBackup(TarArchiveReader reader, IScene scene)
         {
-            IUniverseBackupModule[] modules = scene.RequestModuleInterfaces<IUniverseBackupModule>();
+            IWhiteCoreBackupModule[] modules = scene.RequestModuleInterfaces<IWhiteCoreBackupModule>();
 
             byte[] data;
             string filePath;
             TarArchiveReader.TarEntryType entryType;
 
-            foreach (IUniverseBackupModule module in modules)
+            foreach (IWhiteCoreBackupModule module in modules)
                 module.BeginLoadModuleFromArchive(scene);
 
             while ((data = reader.ReadEntry(out filePath, out entryType)) != null)
             {
                 if (TarArchiveReader.TarEntryType.TYPE_DIRECTORY == entryType)
                     continue;
-                foreach (IUniverseBackupModule module in modules)
+                foreach (IWhiteCoreBackupModule module in modules)
                     module.LoadModuleFromArchive(data, filePath, entryType, scene);
             }
 
             reader.Close();
 
-            foreach (IUniverseBackupModule module in modules)
+            foreach (IWhiteCoreBackupModule module in modules)
                 module.EndLoadModuleFromArchive(scene);
         }
 
@@ -116,13 +116,13 @@ namespace Universe.Modules.Archivers
                     "save archive",
                     "save archive",
                     "Saves a Universe '.abackup' archive (deprecated)",
-                    SaveUniverseArchive, true, false);
+                    SaveWhiteCoreArchive, true, false);
 
                 MainConsole.Instance.Commands.AddCommand(
                     "load archive",
                     "load archive",
                     "Loads a Universe '.abackupArchive",
-                    LoadUniverseArchive, true, false);
+                    LoadWhiteCoreArchive, true, false);
             }
             //Register the extension
             const string ext = ".abackup";
@@ -139,7 +139,7 @@ namespace Universe.Modules.Archivers
             {
             }
             //Register the interface
-            registry.RegisterModuleInterface<IUniverseBackupArchiver>(this);
+            registry.RegisterModuleInterface<IWhiteCoreBackupArchiver>(this);
         }
 
         public void Start(IConfigSource config, IRegistryCore registry)
@@ -152,7 +152,7 @@ namespace Universe.Modules.Archivers
 
         #endregion
 
-        private void LoadUniverseArchive(IScene scene, string[] cmd)
+        private void LoadWhiteCoreArchive(IScene scene, string[] cmd)
         {
             string fileName = MainConsole.Instance.Prompt("What file name should we load?",
                                                           scene.RegionInfo.RegionName + ".abackup");
@@ -183,7 +183,7 @@ namespace Universe.Modules.Archivers
             GC.Collect();
         }
 
-        private void SaveUniverseArchive(IScene scene, string[] cmd)
+        private void SaveWhiteCoreArchive(IScene scene, string[] cmd)
         {
             string fileName = MainConsole.Instance.Prompt("What file name will this be saved as?",
                                                           scene.RegionInfo.RegionName + ".abackup");

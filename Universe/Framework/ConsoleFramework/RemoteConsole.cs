@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-support/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -52,19 +52,20 @@ namespace Universe.Framework.ConsoleFramework
     }
 
     // A console that uses REST interfaces
+    //
     public class RemoteConsole : CommandConsole
     {
-        private readonly Dictionary<UUID, ConsoleConnection> m_Connections =
+        readonly Dictionary<UUID, ConsoleConnection> m_Connections =
             new Dictionary<UUID, ConsoleConnection>();
 
-        private readonly ManualResetEvent m_DataEvent = new ManualResetEvent(false);
-        private readonly List<string> m_InputData = new List<string>();
-        private readonly List<string> m_Scrollback = new List<string>();
-        private long m_LineNumber;
+        readonly ManualResetEvent m_DataEvent = new ManualResetEvent(false);
+        readonly List<string> m_InputData = new List<string>();
+        readonly List<string> m_Scrollback = new List<string>();
+        long m_LineNumber;
 
-        private string m_Password = String.Empty;
-        private IHttpServer m_Server;
-        private string m_UserName = String.Empty;
+        string m_Password = String.Empty;
+        IHttpServer m_Server;
+        string m_UserName = String.Empty;
 
         public override string Name
         {
@@ -77,8 +78,9 @@ namespace Universe.Framework.ConsoleFramework
 
             if (source.Configs["Console"] != null)
             {
-                if (source.Configs["Console"].GetString("Console", String.Empty) != Name)
-                    return;
+                //if (source.Configs["Console"].GetString("RemoteConsole", String.Empty) != "enable")
+                    if (source.Configs["Console"].GetString("Console", String.Empty) != Name)
+                        return;
 
                 m_consolePort = (uint) source.Configs["Console"].GetInt("remote_console_port", 0);
                 m_UserName = source.Configs["Console"].GetString("RemoteConsoleUser", String.Empty);
@@ -92,7 +94,11 @@ namespace Universe.Framework.ConsoleFramework
 
             SetServer(m_consolePort == 0 ? MainServer.Instance : simbase.GetHttpServer(m_consolePort));
 
-            m_Commands.AddCommand("help", "help", "Get a general command list", base.Help, false, true);
+            m_Commands.AddCommand(
+                "help",
+                "help",
+                "Get a general command list",
+                Help, false, true);
         }
 
         public void SetServer(IHttpServer server)
@@ -160,7 +166,7 @@ namespace Universe.Framework.ConsoleFramework
             return cmdinput;
         }
 
-        private void DoExpire()
+        void DoExpire()
         {
             List<UUID> expired = new List<UUID>();
 
@@ -178,7 +184,7 @@ namespace Universe.Framework.ConsoleFramework
             }
         }
 
-        private byte[] HandleHttpStartSession(string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse)
+        byte[] HandleHttpStartSession(string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse)
         {
             DoExpire();
 
@@ -205,7 +211,7 @@ namespace Universe.Framework.ConsoleFramework
                 m_Connections[sessionID] = c;
             }
 
-            string uri = "/ReadResponses/" + sessionID.ToString() + "/";
+            string uri = "/ReadResponses/" + sessionID + "/";
 
             m_Server.AddPollServiceHTTPHandler(uri, new PollServiceEventArgs(null, HasEvents, GetEvents, NoEvents,
                                                                         sessionID));
@@ -235,7 +241,7 @@ namespace Universe.Framework.ConsoleFramework
             return Encoding.UTF8.GetBytes(xmldoc.InnerXml);
         }
 
-        private byte[] HandleHttpCloseSession(string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse)
+        byte[] HandleHttpCloseSession(string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse)
         {
             DoExpire();
 
@@ -279,7 +285,7 @@ namespace Universe.Framework.ConsoleFramework
             return Encoding.UTF8.GetBytes(xmldoc.InnerXml);
         }
 
-        private byte[] HandleHttpSessionCommand(string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse)
+        byte[] HandleHttpSessionCommand(string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse)
         {
             DoExpire();
 
@@ -329,7 +335,7 @@ namespace Universe.Framework.ConsoleFramework
             return Encoding.UTF8.GetBytes(xmldoc.InnerXml);
         }
 
-        private Hashtable DecodePostString(string data)
+        Hashtable DecodePostString(string data)
         {
             Hashtable result = new Hashtable();
 
@@ -357,7 +363,7 @@ namespace Universe.Framework.ConsoleFramework
         {
             try
             {
-                string uri = "/ReadResponses/" + id.ToString() + "/";
+                string uri = "/ReadResponses/" + id + "/";
 
                 m_Server.RemovePollServiceHTTPHandler("", uri);
             }
@@ -366,9 +372,9 @@ namespace Universe.Framework.ConsoleFramework
             }
         }
 
-        private bool HasEvents(UUID RequestID, UUID sessionID)
+        bool HasEvents(UUID RequestID, UUID sessionID)
         {
-            ConsoleConnection c = null;
+            ConsoleConnection c;
 
             lock (m_Connections)
             {
@@ -382,9 +388,9 @@ namespace Universe.Framework.ConsoleFramework
             return false;
         }
 
-        private byte[] GetEvents(UUID RequestID, UUID sessionID, string req, OSHttpResponse response)
+         byte[] GetEvents(UUID RequestID, UUID sessionID, string req, OSHttpResponse response)
         {
-            ConsoleConnection c = null;
+            ConsoleConnection c;
 
             lock (m_Connections)
             {
@@ -401,8 +407,7 @@ namespace Universe.Framework.ConsoleFramework
                                                 "", "");
 
             xmldoc.AppendChild(xmlnode);
-            XmlElement rootElement = xmldoc.CreateElement("", "ConsoleSession",
-                                                          "");
+            XmlElement rootElement = xmldoc.CreateElement("", "ConsoleSession", "");
 
             if (c.newConnection)
             {
@@ -438,7 +443,7 @@ namespace Universe.Framework.ConsoleFramework
             return Encoding.UTF8.GetBytes(xmldoc.InnerXml);
         }
 
-        private byte[] NoEvents(UUID RequestID, UUID id, OSHttpResponse response)
+        byte[] NoEvents(UUID RequestID, UUID id, OSHttpResponse response)
         {
             XmlDocument xmldoc = new XmlDocument();
             XmlNode xmlnode = xmldoc.CreateNode(XmlNodeType.XmlDeclaration,

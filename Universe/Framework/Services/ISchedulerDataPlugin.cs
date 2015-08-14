@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -32,7 +32,7 @@ using Universe.Framework.Utilities;
 
 namespace Universe.Framework.Services
 {
-    public interface ISchedulerDataPlugin : IUniverseDataPlugin
+    public interface ISchedulerDataPlugin : IWhiteCoreDataPlugin
     {
         /// <summary>
         /// Save a Scheduler item.
@@ -132,5 +132,6 @@ namespace Universe.Framework.Services
         SchedulerItem Get(string scheduleFor, string fireFunction);
 
         SchedulerItem GetFunctionItem (string fireFunction);
+
     }
 }

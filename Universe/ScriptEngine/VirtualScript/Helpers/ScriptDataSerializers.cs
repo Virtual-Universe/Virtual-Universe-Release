@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,14 +25,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Utilities;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
+using System.Collections.Generic;
 
 namespace Universe.ScriptEngine.VirtualScript
 {
@@ -48,14 +47,14 @@ namespace Universe.ScriptEngine.VirtualScript
 
         public void AddScene(IScene scene)
         {
-            scene.UniverseEventManager.RegisterEventHandler("DeleteToInventory", UniverseEventManager_OnGenericEvent);
+            scene.WhiteCoreEventManager.RegisterEventHandler("DeleteToInventory", WhiteCoreEventManager_OnGenericEvent);
         }
 
         public void Close()
         {
         }
 
-        private object UniverseEventManager_OnGenericEvent(string FunctionName, object parameters)
+        private object WhiteCoreEventManager_OnGenericEvent(string FunctionName, object parameters)
         {
             if (FunctionName == "DeleteToInventory")
             {

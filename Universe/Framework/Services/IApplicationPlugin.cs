@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,12 +25,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using Nini.Config;
 using Universe.Framework.Modules;
+using Nini.Config;
 
 namespace Universe.Framework.Services
 {
@@ -60,7 +59,7 @@ namespace Universe.Framework.Services
         /// <summary>
         ///     Called when the application initialization is completed
         /// </summary>
-        void PostInitialize();
+        void PostInitialise();
 
         /// <summary>
         ///     Called when the application loading is completed
@@ -296,6 +295,8 @@ namespace Universe.Framework.Services
         public List<string> andIsNullFilters = new List<string>();
         public List<string> andIsNotNullFilters = new List<string>();
 
+//        public List<QueryFilter> subFilters = new List<QueryFilter>();
+
         public uint Count
         {
             get
@@ -321,6 +322,11 @@ namespace Universe.Framework.Services
                                         andIsNullFilters.Count +
                                         andIsNotNullFilters.Count
                                     );
+
+//                subFilters.ForEach(delegate(QueryFilter filter)
+//                {
+//                    total += filter.Count;
+//                });
 
                 return total;
             }
@@ -627,6 +633,17 @@ namespace Universe.Framework.Services
 
                 #endregion
 
+//                foreach (QueryFilter subFilter in subFilters)
+//                {
+//                    Dictionary<string, object> sps;
+//                    query += (had ? " AND" : string.Empty) + subFilter.ToSQL(prepared, out sps, ref i);
+//                    pss[pss.Length] = sps;
+//                    if (subFilter.Count > 0)
+//                    {
+//                        had = true;
+//                    }
+//                }
+
                 query += ")";
             }
             pss.SelectMany(x => x).ToLookup(x => x.Key, x => x.Value).ToDictionary(x => x.Key, x => x.First());
@@ -642,7 +659,7 @@ namespace Universe.Framework.Services
         }
     }
 
-    public interface IUniverseDataPlugin
+    public interface IWhiteCoreDataPlugin
     {
         /// <summary>
         ///     Returns the plugin name

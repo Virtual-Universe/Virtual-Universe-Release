@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -38,10 +38,12 @@ using Universe.Framework.Services.ClassHelpers.Profile;
 using Universe.Framework.Utilities;
 using RegionFlags = Universe.Framework.Services.RegionFlags;
 
+
 namespace Universe.Modules.Web
 {
     public class RegisterPage : IWebInterfacePage
     {
+
         public string[] FilePath
         {
             get
@@ -95,6 +97,7 @@ namespace Universe.Modules.Web
                 return "1";
             }
         }
+            
 
         public Dictionary<string, object> Fill(WebInterface webInterface, string filename, OSHttpRequest httpRequest,
                                                OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
@@ -109,10 +112,11 @@ namespace Universe.Modules.Web
             bool anonymousLogins;
 
             // allow configuration to override the web settings
-            IConfig config = webInterface.Registry.RequestModuleInterface<ISimulationBase>().ConfigSource.Configs ["LoginService"];
-            if (config != null)
+            var simBase = webInterface.Registry.RequestModuleInterface<ISimulationBase>();
+            IConfig loginServerConfig = simBase.ConfigSource.Configs["LoginService"];
+            if (loginServerConfig != null)
             {
-                anonymousLogins = config.GetBoolean ("AllowAnonymousLogin", allowRegistration);
+                anonymousLogins = loginServerConfig.GetBoolean ("AllowAnonymousLogin", allowRegistration);
                 allowRegistration = (allowRegistration || anonymousLogins);
             }
 
@@ -134,11 +138,6 @@ namespace Universe.Modules.Web
                 string FirstName = requestParameters["FirstName"].ToString();
                 string LastName = requestParameters["LastName"].ToString();
                 //removed - greythane - deemed not used
-                // Comment - The UserAddress and UserZip are used by currency for billing purposes
-                // when purchasing currency and regions. This is not asked for during registration
-                // but after the user has registered and logged into their account via the website.
-                // Here they can set their address and zip code as part of their billing information
-                // Emperor Starfinder - August 9, 2015
                 //string UserAddress = requestParameters["UserAddress"].ToString();
                 //string UserZip = requestParameters["UserZip"].ToString();
                 string UserCity = requestParameters["UserCity"].ToString();
@@ -298,6 +297,8 @@ namespace Universe.Modules.Web
             monthsArgs.Add(new Dictionary<string, object> {{"Value", translator.GetTranslatedString("Nov_Short")}});
             monthsArgs.Add(new Dictionary<string, object> {{"Value", translator.GetTranslatedString("Dec_Short")}});
 
+
+
             List<Dictionary<string, object>> yearsArgs = new List<Dictionary<string, object>>();
             for (int i = 1940; i <= 2013; i++)
                 yearsArgs.Add(new Dictionary<string, object> {{"Value", i}});
@@ -349,13 +350,12 @@ namespace Universe.Modules.Web
 
             vars.Add("AvatarArchive", avatarArchives);
 
-            IConfig loginServerConfig =
-                webInterface.Registry.RequestModuleInterface<ISimulationBase>().ConfigSource.Configs["LoginService"];
+
             string tosLocation = "";
             if (loginServerConfig != null && loginServerConfig.GetBoolean("UseTermsOfServiceOnFirstLogin", false))
             {
                 tosLocation = loginServerConfig.GetString("FileNameOfTOS", "");
-                tosLocation = PathHelpers.VerifyReadFile (tosLocation,  ".txt", Constants.DEFAULT_DATA_DIR);
+                tosLocation = PathHelpers.VerifyReadFile (tosLocation,  ".txt", simBase.DefaultDataPath);
             }
             string ToS = "There are no Terms of Service currently. This may be changed at any point in the future.";
 

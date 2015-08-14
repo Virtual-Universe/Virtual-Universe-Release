@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,10 +25,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using OpenMetaverse;
 using Universe.Framework.DatabaseInterfaces;
+using OpenMetaverse;
+using System.Collections.Generic;
 
 namespace Universe.Modules.Web
 {
@@ -36,7 +35,7 @@ namespace Universe.Modules.Web
     {
         public static readonly string Schema = "WebPages";
         private static GridPage _rootPage;
-        public static readonly uint CurrentVersion = 10;
+        public static readonly uint CurrentVersion = 11;
 
         private static void InitializeDefaults()
         {
@@ -297,9 +296,18 @@ namespace Universe.Modules.Web
                     new GridPage {
                         ShowInMenu = true,
                         AdminRequired = true,
+                        MenuID = "Abuse_admin",
+                        Location = "admin/abuse_list.html",
+                        MenuPosition = 6,
+                        MenuTitle = "MenuAbuse",
+                        MenuToolTip = "TooltipsMenuAbuse"
+                    },
+                    new GridPage {
+                        ShowInMenu = true,
+                        AdminRequired = true,
                         MenuID = "Transactions_admin",
                         Location = "admin/transactions.html",
-                        MenuPosition = 6,
+                        MenuPosition = 7,
                         MenuTitle = "MenuTransactions",
                         MenuToolTip = "TooltipsMenuTransactions"
                     },
@@ -308,7 +316,7 @@ namespace Universe.Modules.Web
                         AdminRequired = true,
                         MenuID = "Statistics",
                         Location = "admin/statistics.html",
-                        MenuPosition = 6,
+                        MenuPosition = 8,
                         MenuTitle = "MenuStatistics",
                         MenuToolTip = "TooltipsMenuStatistics"
                     }
@@ -374,7 +382,7 @@ namespace Universe.Modules.Web
                 }
             });
 
-
+            // these are indivual paages that can be called
             _rootPage.Children.Add(new GridPage
                                        {
                                            MenuID = "add_news",
@@ -383,8 +391,6 @@ namespace Universe.Modules.Web
                                            MenuPosition = 8,
                                            Location = "admin/add_news.html"
                                        });
-			
-			// These are individual pages that can be called
             _rootPage.Children.Add(new GridPage
                                        {
                                            MenuID = "edit_news",
@@ -408,6 +414,14 @@ namespace Universe.Modules.Web
                                            MenuID = "news_info",
                                            Location = "news.html"
                                        });
+            _rootPage.Children.Add(new GridPage
+            {
+                MenuID = "abuse_report",
+                ShowInMenu = false,
+                AdminRequired = true,
+                MenuPosition = 8,
+                Location = "admin/abuse_report.html"
+            });
 
             //Things added, but not used
             /*pages.Add(new Dictionary<string, object> { { "MenuItemID", "tweets" }, 

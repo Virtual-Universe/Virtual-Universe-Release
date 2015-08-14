@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -238,7 +238,12 @@ namespace Universe.ClientStack
 
             content = Math.Min(content + dripAmount, maxBurst);
             lastDrip = now;
-
+/*
+                if (dripAmount < 0 || content < 0)
+                    // sim has been idle for too long, integer is overflowing
+                    // previous calculation is meaningless, let's put it at correct max
+                    content = maxBurst;
+*/
             return true;
         }
     }

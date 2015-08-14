@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,6 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
 namespace Universe.Framework.Utilities
 {
     public static class Constants
@@ -34,14 +35,17 @@ namespace Universe.Framework.Utilities
         // some predefined folders
         public const string DEFAULT_CONFIG_DIR = "../Config";
         public const string DEFAULT_DATA_DIR = "../Data";
-        public const string DEFAULT_ASSETCACHE_DIR = DEFAULT_DATA_DIR+"/AssetCache";
-        public const string DEFAULT_SCRIPTENGINE_DIR = DEFAULT_DATA_DIR+"/ScriptEngines";
-        public const string DEFAULT_FILEASSETS_DIR = DEFAULT_DATA_DIR+"/FileAssets";
-        public const string DEFAULT_AVATARARCHIVE_DIR = DEFAULT_DATA_DIR+"/AvatarArchives";
-        public const string DEFAULT_OARARCHIVE_DIR = DEFAULT_DATA_DIR + "/OarFiles";
-        public const string DEFAULT_USERINVENTORY_DIR = DEFAULT_DATA_DIR+"/UserArchives";
 
-        public const string DEFAULT_USERHTML_DIR = DEFAULT_DATA_DIR+"/html/";
+        // all these are relative to the default data directory,
+        // set either as above or via configuration
+        public const string DEFAULT_ASSETCACHE_DIR = "AssetCache";
+        public const string DEFAULT_SCRIPTENGINE_DIR = "ScriptEngines";
+        public const string DEFAULT_FILEASSETS_DIR = "FileAssets";
+        public const string DEFAULT_AVATARARCHIVE_DIR = "AvatarArchives";
+        public const string DEFAULT_OARARCHIVE_DIR = "OarFiles";
+        public const string DEFAULT_USERINVENTORY_DIR = "UserArchives";
+
+        public const string DEFAULT_USERHTML_DIR = "html";
 
         public const int RegionSize = 256;
         public const int RegionHeight = 10000;
@@ -62,13 +66,13 @@ namespace Universe.Framework.Utilities
 
         // System Governor Avatar Account
         public const string GovernorUUID = "3d6181b0-6a4b-97ef-18d8-722652995cf1";
-        public const string GovernorName = "Governor White";
-        
+        public const string GovernorName = "Governor Universe";
+
         // System Estate
         public const string MainlandEstateName = "Universe Mainland";
         public const int MainlandEstateID = 1;
-		public const string SystemEstateName = "Universe Estate";
-		public const int SystemEstateID = 10;
+        public const string SystemEstateName = "Universe Estate";
+        public const int SystemEstateID = 10;
 
         // System Real Estate Maintenance Group
 		public const string RealEstateGroupUUID = "dc7b21cd-3c89-fcaa-31c8-25f9ffd224cd";
@@ -113,5 +117,6 @@ namespace Universe.Framework.Utilities
         public const int SCHEDULED_PAYMENTS_DELAY = 15;     // minutes to wait after stipend payments before processing scheduled payments
         public const int GROUP_PAYMENTS_DELAY = 30;         // minutes to wait after stipend payments before processing group payments
         public const int DIRECTORYFEE_GRACE_PERIOD = 2;     // hours grace period before a fee will be charged at least once
+
     }
 }

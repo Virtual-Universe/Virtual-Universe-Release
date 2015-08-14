@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -64,12 +64,15 @@ namespace Universe.Framework.Utilities
             FireFunction = sName;
             FireParams = sParams;
             RunOnce = runOnce;
+            //RunEvery = runEvery;
+            //RunEveryType = runEveryType;
             StartTime = DateTime.Now;                   // was UtcNow; but this is all relative to the server time not UTC
             TimeToRun = runSchedule;                    // dateTime to run this schedule
             CreateTime = DateTime.Now;                  // was UtcNow;
             ScheduleFor = agentID;
             Enabled = true;
         }
+
 
         void SimpleInitialize()
         {

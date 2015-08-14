@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,14 +25,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
+
+using Universe.Framework.Utilities;
 using OpenMetaverse;
 using OpenMetaverse.Packets;
-using Universe.Framework.Utilities;
+using System;
 
 namespace Universe.ClientStack
 {
-    public static class UniverseTerrainCompressor
+    public static class WhiteCoreTerrainCompressor
     {
         public const int END_OF_PATCHES = 97;
 
@@ -58,7 +59,7 @@ namespace Universe.ClientStack
         private static readonly float[] QuantizeTable16 =
             new float[Constants.TerrainPatchSize*Constants.TerrainPatchSize];
 
-        static UniverseTerrainCompressor()
+        static WhiteCoreTerrainCompressor()
         {
             // Initialize the decompression tables
             BuildDequantizeTable16();
@@ -154,6 +155,7 @@ namespace Universe.ClientStack
                 header.PatchIDs = (y & 0x1F);
                 header.PatchIDs += (x << 5);
             }
+
 
             // NOTE: No idea what prequant and postquant should be or what they do
 

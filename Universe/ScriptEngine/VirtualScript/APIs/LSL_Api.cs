@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,18 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Remoting.Lifetime;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.Packets;
-using OpenMetaverse.StructuredData;
+
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.DatabaseInterfaces;
@@ -54,6 +43,18 @@ using Universe.Framework.Services.ClassHelpers.Profile;
 using Universe.Framework.Utilities;
 using Universe.ScriptEngine.VirtualScript.Plugins;
 using Universe.ScriptEngine.VirtualScript.Runtime;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.Packets;
+using OpenMetaverse.StructuredData;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Remoting.Lifetime;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
 using GridRegion = Universe.Framework.Services.GridRegion;
 using LSL_Float = Universe.ScriptEngine.VirtualScript.LSL_Types.LSLFloat;
 using LSL_Integer = Universe.ScriptEngine.VirtualScript.LSL_Types.LSLInteger;

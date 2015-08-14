@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -61,7 +61,7 @@ namespace Universe.Framework.Utilities
         public static string GetServerReleaseNotesURL()
         {
 			return (MainServer.Instance.Secure ? "https://" : "http://") + MainServer.Instance.HostName +
-                   ":" + MainServer.Instance.Port + "/UniverseServerRelease" + UniverseServerVersion() + ".html";
+                   ":" + MainServer.Instance.Port + "/WhiteCoreServerRelease" + WhiteCoreServerVersion() + ".html";
         }
 
         /// <summary>
@@ -108,7 +108,7 @@ namespace Universe.Framework.Utilities
         ///     What is our version?
         /// </summary>
         /// <returns></returns>
-        public static string UniverseServerVersion()
+        public static string WhiteCoreServerVersion()
         {
             return VersionInfo.VERSION_NUMBER;
         }
@@ -451,6 +451,7 @@ namespace Universe.Framework.Utilities
             gzStream.Close();
             return uncompressedData;
         }
+
 
         /// <summary>
         ///     Download the file from downloadLink and save it to Universe + Version +
@@ -892,6 +893,7 @@ namespace Universe.Framework.Utilities
             "Warin", "Wilbordic", "Wilf", "Wulfwaru", "Yule"
         };
 
+
         public static string TransactionTypeInfo(TransactionType transType)
         {
             switch (transType) {
@@ -932,5 +934,6 @@ namespace Universe.Framework.Utilities
             default:                                return "System Generated";
             }
         }
+
     }
-}
+ }

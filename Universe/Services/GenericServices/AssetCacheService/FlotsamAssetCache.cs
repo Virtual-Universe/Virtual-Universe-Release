@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -453,7 +453,7 @@ namespace Universe.Services
                     {
                         LogException(e);
 
-                        // If there was a problem deserializing the asset, the asset may 
+                        // If there was a problem de-serializing the asset, the asset may 
                         // either be corrupted OR was serialized under an old format 
                         // {different version of AssetBase} -- we should attempt to
                         // delete it and re-cache
@@ -503,7 +503,7 @@ namespace Universe.Services
                 }
 
                 MainConsole.Instance.InfoFormat(
-                    "[FLOTSAM ASSET CACHE]: {0} unnessesary requests due to requests for assets that are currently downloading.",
+                    "[FLOTSAM ASSET CACHE]: {0} unnecessary requests due to requests for assets that are currently downloading.",
                     m_RequestsForInprogress);
             }
             if (_assetMonitor != null)
@@ -535,7 +535,7 @@ namespace Universe.Services
                 {
                     LogException(e);
 
-                    // If there was a problem deserializing the asset, the asset may 
+                    // If there was a problem de-serializing the asset, the asset may 
                     // either be corrupted OR was serialized under an old format 
                     // {different version of AssetBase} -- we should attempt to
                     // delete it and re-cache
@@ -674,7 +674,7 @@ namespace Universe.Services
         }
 
         /// <summary>
-        ///     Recurses through specified directory checking for asset files last
+        ///     Recursively through specified directory checking for asset files last
         ///     accessed prior to the specified purge line and deletes them.  Also
         ///     removes empty tier directories.
         /// </summary>
@@ -688,7 +688,7 @@ namespace Universe.Services
                     File.Delete(file);
             }
 
-            // Recurse into lower tiers
+            // Recursive into lower tiers
             foreach (string subdir in Directory.GetDirectories(dir))
             {
                 CleanExpiredFiles(subdir, purgeLine);

@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -887,7 +887,7 @@ namespace Universe.Services.SQLServices.InventoryService
 
             foreach (InventoryItemBase i in items)
             {
-                //refetch because we don't have Owner filled in properly
+                //re-fetch because we don't have Owner filled in properly
                 InventoryItemBase item = GetItem(UUID.Zero, i.ID);
                 if(item == null) continue;
                 // Cannot move this item, its from libraryowner
@@ -1238,7 +1238,7 @@ namespace Universe.Services.SQLServices.InventoryService
                 {
                     // Trying to do this right this time. This is evil. If
                     // you believe in Good, go elsewhere. Vampires and other
-                    // evil creatores only beyond this point. You have been
+                    // evil creators only beyond this point. You have been
                     // warned.
 
                     // We're going to mask a lot of things by the next perms
@@ -1249,7 +1249,7 @@ namespace Universe.Services.SQLServices.InventoryService
                     //
                     // Transfer
                     // Copy
-                    // Modufy
+                    // Modify
                     const uint permsMask = ~((uint) PermissionMask.Copy |
                                              (uint) PermissionMask.Transfer |
                                              (uint) PermissionMask.Modify);
@@ -1362,7 +1362,7 @@ namespace Universe.Services.SQLServices.InventoryService
                 itemCopy.SaleType = item.SaleType;
 
                 if (! AddItem(itemCopy))
-                    MainConsole.Instance.Warn ("[InventoryService]: Failed to insert inventory item copyinto database");
+                    MainConsole.Instance.Warn ("[InventoryService]: Failed to insert inventory item copy into database");
 
 
                 if ((item.CurrentPermissions & (uint)PermissionMask.Copy) == 0)
@@ -1529,7 +1529,7 @@ namespace Universe.Services.SQLServices.InventoryService
             }
             //Make sure that all default folders exist
             CreateUserInventory(account.PrincipalID, false);
-            //Refetch the skeleton now
+            //Re-fetch the skeleton now
             skeleton = GetInventorySkeleton(account.PrincipalID);
             Dictionary<int, UUID> defaultFolders = new Dictionary<int, UUID>();
             Dictionary<UUID, UUID> changedFolders = new Dictionary<UUID, UUID>();

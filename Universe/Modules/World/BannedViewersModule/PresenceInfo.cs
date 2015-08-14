@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -65,7 +65,7 @@ namespace Universe.Modules.Ban
         }
     }
 
-    public interface IPresenceInfo : IUniverseDataPlugin
+    public interface IPresenceInfo : IWhiteCoreDataPlugin
     {
         PresenceInfo GetPresenceInfo(UUID agentID);
         void UpdatePresenceInfo(PresenceInfo agent);

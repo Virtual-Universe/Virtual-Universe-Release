@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,7 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
 using System.Collections.Generic;
 using Universe.Framework.Services;
 
@@ -36,12 +35,12 @@ namespace Universe.Framework.Utilities
     /// </summary>
     public static class DataManager
     {
-        private static readonly Dictionary<string, IUniverseDataPlugin> Plugins =
-            new Dictionary<string, IUniverseDataPlugin>();
+        private static readonly Dictionary<string, IWhiteCoreDataPlugin> Plugins =
+            new Dictionary<string, IWhiteCoreDataPlugin>();
 
-        public static List<IUniverseDataPlugin> GetPlugins()
+        public static List<IWhiteCoreDataPlugin> GetPlugins()
         {
-            return new List<IUniverseDataPlugin>(Plugins.Values);
+            return new List<IWhiteCoreDataPlugin>(Plugins.Values);
         }
 
         /// <summary>
@@ -49,11 +48,11 @@ namespace Universe.Framework.Utilities
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static T RequestPlugin<T>() where T : IUniverseDataPlugin
+        public static T RequestPlugin<T>() where T : IWhiteCoreDataPlugin
         {
             if (Plugins.ContainsKey(typeof (T).Name))
             {
-                IUniverseDataPlugin Plugin;
+                IWhiteCoreDataPlugin Plugin;
                 Plugins.TryGetValue(typeof (T).Name, out Plugin);
                 return (T) Plugin;
             }
@@ -66,11 +65,11 @@ namespace Universe.Framework.Utilities
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static T RequestPlugin<T>(string name) where T : IUniverseDataPlugin
+        public static T RequestPlugin<T>(string name) where T : IWhiteCoreDataPlugin
         {
             if (Plugins.ContainsKey(name))
             {
-                IUniverseDataPlugin Plugin;
+                IWhiteCoreDataPlugin Plugin;
                 Plugins.TryGetValue(name, out Plugin);
                 return (T) Plugin;
             }
@@ -82,7 +81,7 @@ namespace Universe.Framework.Utilities
         ///     Register a new plugin to the registry
         /// </summary>
         /// <param name="plugin"></param>
-        public static void RegisterPlugin(IUniverseDataPlugin plugin)
+        public static void RegisterPlugin(IWhiteCoreDataPlugin plugin)
         {
             RegisterPlugin(plugin.Name, plugin);
         }
@@ -92,7 +91,7 @@ namespace Universe.Framework.Utilities
         /// </summary>
         /// <param name="name"></param>
         /// <param name="plugin"></param>
-        public static void RegisterPlugin(string name, IUniverseDataPlugin plugin)
+        public static void RegisterPlugin(string name, IWhiteCoreDataPlugin plugin)
         {
             if (!Plugins.ContainsKey(name))
                 Plugins.Add(name, plugin);

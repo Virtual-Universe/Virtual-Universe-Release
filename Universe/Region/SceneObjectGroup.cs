@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -2644,7 +2644,7 @@ namespace Universe.Region
             if (RootPart.PhysicsType == (byte)PhysicsShapeType.None ||
                 ((RootPart.Flags & PrimFlags.Phantom) == PrimFlags.Phantom && !RootPart.VolumeDetectActive))
             {
-                Scene.UniverseEventManager.FireGenericEventHandler("ObjectChangedPhysicalStatus", this);
+                Scene.WhiteCoreEventManager.FireGenericEventHandler("ObjectChangedPhysicalStatus", this);
                 if (OnFinishedPhysicalRepresentationBuilding != null)
                     OnFinishedPhysicalRepresentationBuilding();
                 OnFinishedPhysicalRepresentationBuilding = null;
@@ -2716,7 +2716,7 @@ namespace Universe.Region
             if (m_scene.PhysicsScene.AllowGroupLink)
                 RootPart.PhysActor.linkGroupToThis(actors);
 
-            Scene.UniverseEventManager.FireGenericEventHandler("ObjectChangedPhysicalStatus", this);
+            Scene.WhiteCoreEventManager.FireGenericEventHandler("ObjectChangedPhysicalStatus", this);
 
             FixVehicleParams(RootPart);
 

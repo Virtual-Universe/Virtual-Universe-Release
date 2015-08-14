@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -103,7 +103,7 @@ namespace Universe.DataManager.Tests
             var technology = DataManagerTechnology.SQLite;
             //var technology = DataManagerTechnology.MySql;
 
-            var mysqlconnectionstring = "Data Source=localhost;Database=Universetest;User ID=Universetest;Password=test;";
+            var mysqlconnectionstring = "Data Source=localhost;Database=WhiteCoretest;User ID=WhiteCoretest;Password=test;";
             var sqliteconnectionstring = string.Format("URI=file:{0},version=3", dbFileName);
             string connectionString = (technology==DataManagerTechnology.SQLite)?sqliteconnectionstring:mysqlconnectionstring;
 
@@ -130,7 +130,7 @@ namespace Universe.DataManager.Tests
             try
             {
                 migrationManager.ExecuteOperation();
-                Assert.AreEqual(testMigrator0.Version, genericData.GetUniverseVersion(), "Version of settings is updated");
+                Assert.AreEqual(testMigrator0.Version, genericData.GetWhiteCoreVersion(), "Version of settings is updated");
             }
             catch(MigrationOperationException)
             {

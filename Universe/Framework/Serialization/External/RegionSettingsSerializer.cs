@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -28,9 +28,9 @@
 using System.IO;
 using System.Text;
 using System.Xml;
-using OpenMetaverse;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Utilities;
+using OpenMetaverse;
 
 namespace Universe.Framework.Serialization.External
 {
@@ -208,6 +208,13 @@ namespace Universe.Framework.Serialization.External
                     case "SpawnPoint":
                         settings.TeleHub.SpawnPos.Add (Vector3.Parse (xtr.ReadElementContentAsString ()));
                         break;
+
+                    //case "SpawnPoint":
+                    //    string str = xtr.ReadElementContentAsString();
+                    //    SpawnPoint sp = SpawnPoint.Parse(str);
+                    //    settings.AddSpawnPoint(sp);
+                    //    break;
+
                 
                     case "TelehubName":
                         settings.TeleHub.Name = xtr.ReadElementContentAsString ();
@@ -268,6 +275,9 @@ namespace Universe.Framework.Serialization.External
             xtw.WriteElementString("TerrainLowerLimit", settings.TerrainLowerLimit.ToString());
             xtw.WriteElementString("UseEstateSun", settings.UseEstateSun.ToString());
             xtw.WriteElementString("FixedSun", settings.FixedSun.ToString());
+            // XXX: Need to expose interface to get sun phase information from sun module
+            // xtw.WriteStartElement("SunPhase", 
+
 
             // OAR format 0.8
             xtw.WriteStartElement("Telehub");

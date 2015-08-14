@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -179,7 +179,7 @@ namespace Universe.Services
 
             if (m_service.ClientCaps.GetRootCapsService().RegionHandle != m_service.RegionHandle)
             {
-                retVal.Add("reason", "Contacted by non-root region for teleport. Protocol implemention is wrong.");
+                retVal.Add("reason", "Contacted by non-root region for teleport. Protocol implementation is wrong.");
                 retVal.Add("success", OSD.FromBoolean(false));
                 return OSDParser.SerializeLLSDXmlBytes(retVal);
             }

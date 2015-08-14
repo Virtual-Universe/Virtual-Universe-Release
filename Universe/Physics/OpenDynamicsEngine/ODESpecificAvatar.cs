@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -33,7 +33,7 @@ using OpenMetaverse;
 
 namespace Universe.Physics.OpenDynamicsEngine
 {
-    public class ODESpecificAvatar : UniverseODECharacter
+    public class ODESpecificAvatar : WhiteCoreODECharacter
     {
         #region Declares
 
@@ -43,7 +43,7 @@ namespace Universe.Physics.OpenDynamicsEngine
 
         #region Constructor
 
-        public ODESpecificAvatar(String avName, UniverseODEPhysicsScene parent_scene, Vector3 pos, Quaternion rotation,
+        public ODESpecificAvatar(String avName, WhiteCoreODEPhysicsScene parent_scene, Vector3 pos, Quaternion rotation,
                                  Vector3 size) : base(avName, parent_scene, pos, rotation, size)
         {
             base._parent_ref = this;

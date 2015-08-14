@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -114,7 +114,7 @@ namespace Universe.Region
                 name = simConfig.GetString("DatabaseLoaderName", "FileBasedDatabase");
             }
 
-            ISimulationDataStore[] stores = UniverseModuleLoader.PickupModules<ISimulationDataStore>().ToArray();
+            ISimulationDataStore[] stores = WhiteCoreModuleLoader.PickupModules<ISimulationDataStore>().ToArray();
             
             List<string> storeNames = new List<string>();
             foreach (ISimulationDataStore store in stores)
@@ -140,7 +140,7 @@ namespace Universe.Region
             AddConsoleCommands();
 
             //Load the startup modules for the region
-            m_startupPlugins = UniverseModuleLoader.PickupModules<ISharedRegionStartupModule>();
+            m_startupPlugins = WhiteCoreModuleLoader.PickupModules<ISharedRegionStartupModule>();
         }
 
         public void ReloadConfiguration(IConfigSource config)
@@ -150,11 +150,11 @@ namespace Universe.Region
             foreach (IScene scene in m_scenes)
             {
                 scene.Config = config;
-                scene.PhysicsScene.PostInitialize(config);
+                scene.PhysicsScene.PostInitialise(config);
             }
         }
 
-        public void PostInitialize()
+        public void PostInitialise()
         {
         }
 
@@ -221,7 +221,7 @@ namespace Universe.Region
 
             m_startupTime = m_SimBase.StartupTime;                  // finished this timing period
 
-            UniverseModuleLoader.ClearCache();
+            WhiteCoreModuleLoader.ClearCache();
             // In 99.9% of cases it is a bad idea to manually force garbage collection. However,
             // this is a rare case where we know we have just went through a long cycle of heap
             // allocations, and there is no more work to be done until someone logs in
@@ -229,6 +229,7 @@ namespace Universe.Region
         }
 
         #endregion
+
 
         #region Add a region
 
@@ -260,8 +261,10 @@ namespace Universe.Region
         public void StartRegion(ISimulationDataStore simData, RegionInfo regionInfo)
         {
             MainConsole.Instance.InfoFormat("[SceneManager]: Starting region \"{0}\" at @ {1},{2}",
-                                            regionInfo.RegionName,
-                                            regionInfo.RegionLocX/256, regionInfo.RegionLocY/256);
+                regionInfo.RegionName,
+                regionInfo.RegionLocX/Constants.RegionSize,
+                regionInfo.RegionLocY/Constants.RegionSize);
+            
             ISceneLoader sceneLoader = m_SimBase.ApplicationRegistry.RequestModuleInterface<ISceneLoader>();
             if (sceneLoader == null)
                 throw new Exception("No Scene Loader Interface!");
@@ -282,7 +285,7 @@ namespace Universe.Region
             if (OnFinishedAddingScene != null)
                 OnFinishedAddingScene(scene);
 
-            //Start the heartbeats
+           //Start the heartbeats
             scene.StartHeartbeat();
             //Tell the scene that the startup is complete 
             // Note: this event is added in the scene constructor
@@ -334,7 +337,7 @@ namespace Universe.Region
             MainConsole.Instance.Warn("[SceneManager]: Region " + scene.RegionInfo.RegionName + " was removed\n"+
                 "To ensure all data is correct, you should consider restarting the simulator");
 
-            if (MainConsole.Instance.Prompt ("[SceneManager]: Do you wish to shutdown the systemn? (yes/no)", "no") == "yes")
+            if (MainConsole.Instance.Prompt ("[SceneManager]: Do you wish to shutdown the system? (yes/no)", "no") == "yes")
             {
                 MainConsole.Instance.Warn ("[SceneManager]: Shutting down in 5 seconds");
                 System.Threading.Thread.Sleep (5000);
@@ -470,7 +473,7 @@ namespace Universe.Region
             //Then finish the rest of the SharedRegionStartupModules
             foreach (ISharedRegionStartupModule module in m_startupPlugins)
             {
-                module.PostInitialize(scene, m_config, m_SimBase);
+                module.PostInitialise(scene, m_config, m_SimBase);
             }
             foreach (ISharedRegionStartupModule module in m_startupPlugins)
             {
@@ -697,7 +700,7 @@ namespace Universe.Region
 
             MainConsole.Instance.Commands.AddCommand("set region visibility",
                 "set region visibility [yes/no]",
-                "sets whether neighbouring regions can 'see into' this region", 
+                "sets whether neighboring regions can 'see into' this region", 
                 HandleSetRegionVisibility, true, true);
 
         }
@@ -1282,7 +1285,7 @@ namespace Universe.Region
                 if (regionName == "")
                     return;
             } else
-                regionName = Util.CombineParams(cmd, 2); // in case of spaces in the name eg Steam Island
+                regionName = Util.CombineParams(cmd, 2); // in case of spaces in the name e.g. Steam Island
 
             string rName;
             regionName = regionName.ToLower();
@@ -1418,13 +1421,13 @@ namespace Universe.Region
 
         public List<string> GetOARFilenames()
         {
-            var defaultOarDir = Constants.DEFAULT_OARARCHIVE_DIR;
+            var defaultOarDir =  Path.Combine(m_SimBase.DefaultDataPath, Constants.DEFAULT_OARARCHIVE_DIR);
             var retVals = new List<string>();
 
             if (Directory.Exists (defaultOarDir))
             {
-                var archives = new List<string> (Directory.GetFiles (Constants.DEFAULT_OARARCHIVE_DIR, "*.oar"));
-                archives.AddRange (new List<string> (Directory.GetFiles (Constants.DEFAULT_OARARCHIVE_DIR, "*.tgz")));
+                var archives = new List<string> (Directory.GetFiles (defaultOarDir, "*.oar"));
+                archives.AddRange (new List<string> (Directory.GetFiles (defaultOarDir, "*.tgz")));
                 foreach (string file in archives)
                     retVals.Add (Path.GetFileNameWithoutExtension (file));
             }
@@ -1478,7 +1481,8 @@ namespace Universe.Region
 				return;
 			}
 
-            fileName = PathHelpers.VerifyReadFile (fileName, new List<string>() {".oar","tgz"}, Constants.DEFAULT_OARARCHIVE_DIR);
+            var defaultOarPath = Path.Combine(m_SimBase.DefaultDataPath, Constants.DEFAULT_OARARCHIVE_DIR);
+            fileName = PathHelpers.VerifyReadFile (fileName, new List<string>() {".oar","tgz"}, defaultOarPath);
             if (fileName == "")                 // something wrong...
                 return;
             cmdparams [2] = fileName;           // reset passed filename
@@ -1553,7 +1557,8 @@ namespace Universe.Region
             else
                 fileName = cmdparams[2];
 
-            fileName = PathHelpers.VerifyWriteFile (fileName, ".oar", Constants.DEFAULT_OARARCHIVE_DIR, true);
+            var defaultOarPath = Path.Combine (m_SimBase.DefaultDataPath, Constants.DEFAULT_OARARCHIVE_DIR);
+            fileName = PathHelpers.VerifyWriteFile (fileName, ".oar", defaultOarPath, true);
             if (fileName == "")                 // something wrong...
                 return;
             cmdparams [2] = fileName;           // reset passed filename
@@ -1565,7 +1570,7 @@ namespace Universe.Region
         }
 
         /// <summary>
-        /// Resizes the scale of a primative/object with the name specified
+        /// Resizes the scale of a primitive/object with the name specified
         /// </summary>
         /// <param name="scene">Scene.</param>
         /// <param name="cmdparams">Cmdparams.</param>
@@ -1633,7 +1638,7 @@ namespace Universe.Region
 
             if (cmdparams.Length > 2)
             {
-                objectName = Util.CombineParams(cmdparams, 2); // in case of spaces in the name eg Steam Island
+                objectName = Util.CombineParams(cmdparams, 2); // in case of spaces in the name e.g. Steam Island
             }
 
             ISceneEntity[] entityList = scene.Entities.GetEntities ();
@@ -1758,7 +1763,7 @@ namespace Universe.Region
                     // offset above/below the current land height
                     var offsetZ = ent.AbsolutePosition.Z - heightmap.GetNormalizedGroundHeight( (int)ent.AbsolutePosition.X, (int)ent.AbsolutePosition.Y );
 
-                    offsetPos.Z = offsetZ;          // only scale theheight offset 
+                    offsetPos.Z = offsetZ;          // only scale the height offset 
                     offsetPos *= factor;    
 
                     var entParts = ent.ChildrenEntities ();
@@ -1839,7 +1844,7 @@ namespace Universe.Region
                 if (regionName == "")
                     return;
             } else
-                regionName = Util.CombineParams(cmd, 2); // in case of spaces in the name eg Steam Island
+                regionName = Util.CombineParams(cmd, 2); // in case of spaces in the name e.g. Steam Island
 
             regionName = regionName.ToLower();
             IScene delScene = m_scenes.Find((s) => s.RegionInfo.RegionName.ToLower() == regionName);
@@ -1873,7 +1878,7 @@ namespace Universe.Region
                 if (regionName == "")
                     return;
             } else
-                regionName = Util.CombineParams(cmd, 2); // in case of spaces in the name eg Steam Island
+                regionName = Util.CombineParams(cmd, 2); // in case of spaces in the name e.g. Steam Island
 
             regionName = regionName.ToLower();
             IScene resetScene = m_scenes.Find((s) => s.RegionInfo.RegionName.ToLower() == regionName);
@@ -1906,7 +1911,7 @@ namespace Universe.Region
                 if (regionName == "")
                     return;
             } else
-                regionName = Util.CombineParams(cmd, 2); // in case of spaces in the name eg Steam Island
+                regionName = Util.CombineParams(cmd, 2); // in case of spaces in the name e.g. Steam Island
 
             regionName = regionName.ToLower();
             IScene clearScene = m_scenes.Find((s) => s.RegionInfo.RegionName.ToLower() == regionName);
@@ -2102,7 +2107,7 @@ namespace Universe.Region
         }
 
         /// <summary>
-        /// Handles set region neighbour visibility.
+        /// Handles set region neighbor visibility.
         /// </summary>
         /// <param name="scene">Scene.</param>
         /// <param name="cmd">Cmd.</param>
@@ -2112,14 +2117,14 @@ namespace Universe.Region
             string response = "Yes";
 
             if (cmd.Length < 4)
-                response = MainConsole.Instance.Prompt ("[SceneManager]: Allow neighbours to see into " + regionName + "(yes/no)", response);
+                response = MainConsole.Instance.Prompt ("[SceneManager]: Allow neighbors to see into " + regionName + "(yes/no)", response);
             else
                 response = cmd [3];
 
             response = response.ToLower ();
             scene.RegionInfo.SeeIntoThisSimFromNeighbor = response.StartsWith ("y");
 
-            MainConsole.Instance.InfoFormat("[SceneManager]: Region has been set to {0} visibility from neighbours.",
+            MainConsole.Instance.InfoFormat("[SceneManager]: Region has been set to {0} visibility from neighbors.",
                 scene.RegionInfo.SeeIntoThisSimFromNeighbor ? " Allow": "Disallow"); 
 
             scene.SimulationDataService.ForceBackup();

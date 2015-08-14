@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -61,11 +61,13 @@ namespace Universe.Modules.Web
         protected Dictionary<string, IWebInterfacePage> _pages = new Dictionary<string, IWebInterfacePage>();
         protected List<ITranslator> _translators = new List<ITranslator>();
         protected ITranslator _defaultTranslator;
+        protected string m_localHtmlPath = "";
 
         // webpages and settings cacheing
         internal GridPage webPages;
         internal WebUISettings webUISettings;
         public GridSettings gridSettings;
+
 
         #endregion
 
@@ -123,7 +125,7 @@ namespace Universe.Modules.Web
         {
             Registry = registry;
 
-            var webPages = UniverseModuleLoader.PickupModules<IWebInterfacePage>();
+            var webPages = WhiteCoreModuleLoader.PickupModules<IWebInterfacePage>();
             foreach (var pages in webPages)
             {
                 foreach (var page in pages.FilePath)
@@ -132,7 +134,7 @@ namespace Universe.Modules.Web
                 }
             }
 
-            _translators = UniverseModuleLoader.PickupModules<ITranslator>();
+            _translators = WhiteCoreModuleLoader.PickupModules<ITranslator>();
             _defaultTranslator = _translators[0];
         }
 
@@ -160,6 +162,13 @@ namespace Universe.Modules.Web
                 var server = registry.RequestModuleInterface<ISimulationBase>().GetHttpServer(_port);
                 server.AddStreamHandler(new GenericStreamHandler("GET", "/", FindAndSendPage));
                 server.AddStreamHandler(new GenericStreamHandler("POST", "/", FindAndSendPage));
+
+                // set local path in case..
+                if (m_localHtmlPath == "")
+                {
+                    var defpath = registry.RequestModuleInterface<ISimulationBase> ().DefaultDataPath;
+                    m_localHtmlPath = Path.Combine (defpath, Constants.DEFAULT_USERHTML_DIR);
+                }
             }
         }
 
@@ -219,7 +228,7 @@ namespace Universe.Modules.Web
                                             : new Dictionary<string, object>();
                 if (filename.EndsWith(".xsl"))
                 {
-                    UniverseXmlDocument vars = GetXML(filename, httpRequest, httpResponse, requestParameters);
+                    WhiteCoreXmlDocument vars = GetXML(filename, httpRequest, httpResponse, requestParameters);
 
                     var xslt = new XslCompiledTransform();
                     if (File.Exists(path)) xslt.Load(GetFileNameFromHTMLPath(path, httpRequest.Query));
@@ -319,7 +328,7 @@ namespace Universe.Modules.Web
             return null;
         }
 
-        private UniverseXmlDocument GetXML(string filename, OSHttpRequest httpRequest, OSHttpResponse httpResponse,
+        private WhiteCoreXmlDocument GetXML(string filename, OSHttpRequest httpRequest, OSHttpResponse httpResponse,
                                          Dictionary<string, object> requestParameters)
         {
             IWebInterfacePage page = GetPage(filename);
@@ -344,7 +353,7 @@ namespace Universe.Modules.Web
                 }
                 string response = null;
                 return
-                    (UniverseXmlDocument)
+                    (WhiteCoreXmlDocument)
                     page.Fill(this, filename, httpRequest, httpResponse, requestParameters, translator, out response)[
                         "xml"];
             }
@@ -559,7 +568,7 @@ namespace Universe.Modules.Web
                 string file;
                 if (filePath.StartsWith("local/"))                      // local included files 
                 {
-                    file = Constants.DEFAULT_USERHTML_DIR+filePath.Remove(0,6);
+                    file = Path.Combine (m_localHtmlPath, filePath.Remove(0,6));
                 }
                 else                                                    // 'normal' page processing
                 {
@@ -713,6 +722,7 @@ namespace Universe.Modules.Web
             }
         }
 
+
         public List<Dictionary<string, object>> RegionTypeArgs(ITranslator translator)
         { 
             var args = new List<Dictionary<string, object>>();
@@ -818,7 +828,9 @@ namespace Universe.Modules.Web
             // change what's appropriate...
             ILoginService loginService = Registry.RequestModuleInterface<ILoginService>();
             loginService.WelcomeMessage = settings.WelcomeMessage;
+
         }
+
 
         #endregion
 
@@ -1116,8 +1128,8 @@ namespace Universe.Modules.Web
         public string Gridname = "Universe Grid";
         public string Gridnick = "Universe";
         public string WelcomeMessage = "Welcome to Universe, <USERNAME>!";
-        public string SystemEstateOwnerName = "Governor White";
-        public string SystemEstateName = "Whitecore Estate";
+        public string SystemEstateOwnerName = "Governor Universe";
+        public string SystemEstateName = "Universe Estate";
 
         public GridSettings()
         {
@@ -1205,4 +1217,5 @@ namespace Universe.Modules.Web
             return map;
         }
     }
+
 }

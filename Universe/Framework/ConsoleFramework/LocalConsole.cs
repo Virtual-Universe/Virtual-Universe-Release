@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-support/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -41,9 +41,9 @@ namespace Universe.Framework.ConsoleFramework
     public class LocalConsole : CommandConsole
     {
 
-        private static readonly ConsoleColor[] Colors =
+        static readonly ConsoleColor[] Colors =
             {
-                // the dark colors don't seem to be visible on some black background terminals like putty
+                // the dark colors don't seem to be visible on some black background terminals like putty :(
                 //ConsoleColor.DarkBlue,
                 //ConsoleColor.DarkGreen,
                 //ConsoleColor.Gray, 
@@ -75,26 +75,27 @@ namespace Universe.Framework.ConsoleFramework
 
         public override void Initialize(IConfigSource source, ISimulationBase simBase)
         {
-            if (source.Configs["Console"] != null)
+            if (source.Configs ["Console"] == null ||
+                source.Configs ["Console"].GetString ("Console", Name) != Name)
             {
-                if (source.Configs["Console"].GetString("Console", Name) != Name)
-                    return;
-            }
-            else
                 return;
+            }
 
             simBase.ApplicationRegistry.RegisterModuleInterface<ICommandConsole>(this);
             MainConsole.Instance = this;
 
-            m_Commands.AddCommand("help", "help",
-                                  "Get a general command list", base.Help, false, true);
+            m_Commands.AddCommand(
+                "help",
+                "help",
+                "Get a general command list",
+                Help, false, true);
 
             string logName = "";
-            string logPath = Constants.DEFAULT_DATA_DIR;
-            if (source.Configs ["Console"] != null) {
-                logName = source.Configs ["Console"].GetString ("LogAppendName", logName);
-                logPath = source.Configs ["Console"].GetString ("LogPath", logPath);
-            }
+            string logPath = "";
+            logName = source.Configs ["Console"].GetString ("LogAppendName", logName);
+            logPath = source.Configs ["Console"].GetString ("LogPath", logPath);
+            if (logPath == "")
+                logPath = simBase.DefaultDataPath;
 
             InitializeLog(logPath, logName);
         }
@@ -151,7 +152,7 @@ namespace Universe.Framework.ConsoleFramework
             {
                 int bh = Console.BufferHeight;
 
-                // On Mono 2.4.2.3 (and possibly above), the buffer value is sometimes erroneously zero
+                // On Mono 2.4.2.3 (and possibly above), the buffer value is sometimes erroneously zero (Mantis 4657)
                 if (bh > 0 && top >= bh)
                     top = bh - 1;
             }
@@ -415,7 +416,8 @@ namespace Universe.Framework.ConsoleFramework
 
             bool trailingSpace = cmdline.ToString().EndsWith(" ");
 
-            // Allow through while typing a URI?
+            // Allow ? through while typing a URI
+            //
             if (words.Length > 0 && words[words.Length - 1].StartsWith("http") && !trailingSpace)
                 return false;
 

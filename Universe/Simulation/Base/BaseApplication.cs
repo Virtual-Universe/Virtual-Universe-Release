@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -27,6 +27,11 @@
 
 //#define BlockUnsupportedVersions
 
+using Universe.Framework.Configuration;
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.Modules;
+using Universe.Framework.Utilities;
+using Nini.Config;
 using System;
 using System.Diagnostics;
 using System.Globalization;
@@ -34,19 +39,15 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
-using Nini.Config;
-using Universe.Framework.Configuration;
-using Universe.Framework.ConsoleFramework;
-using Universe.Framework.Modules;
-using Universe.Framework.Utilities;
 
 namespace Universe.Simulation.Base
 {
     /// <summary>
-    ///     Starting class for the Virtual Universe Server
+    ///     Starting class for the Universe Server
     /// </summary>
     public class BaseApplication
     {
+
         /// <summary>
         ///     Save Crashes in the bin/crashes folder.  Configurable with m_crashDir
         /// </summary>
@@ -62,7 +63,7 @@ namespace Universe.Simulation.Base
         /// </summary>
         public static string m_crashDir = "crashes";
 
-        static bool _IsHandlingException; // Make sure we don't go recursive on ourself
+        static bool _IsHandlingException; // Make sure we don't go recursive on ourselves
 
         //could move our main function into OpenSimMain and kill this class
         public static void BaseMain(string[] args, string defaultIniFile, ISimulationBase simBase)
@@ -91,7 +92,7 @@ namespace Universe.Simulation.Base
 
             BinMigratorService service = new BinMigratorService();
             service.MigrateBin();
-            // Configure nini aliases and localles
+            // Configure nIni aliases and localles
             Culture.SystemCultureInfo = CultureInfo.CurrentCulture;
             Culture.SetCurrentCulture();
             configSource.Alias.AddAlias("On", true);
@@ -130,14 +131,14 @@ namespace Universe.Simulation.Base
 
         public static void Configure(bool requested)
         {
-            string Universe_ConfigDir = Constants.DEFAULT_CONFIG_DIR;
-            bool isUniverseExe = AppDomain.CurrentDomain.FriendlyName == "Universe.exe" ||
+            string WhiteCore_ConfigDir = Constants.DEFAULT_CONFIG_DIR;
+            bool isWhiteCoreExe = AppDomain.CurrentDomain.FriendlyName == "Universe.exe" ||
                                AppDomain.CurrentDomain.FriendlyName == "Universe.vshost.exe";
 
              bool existingConfig = (
-                File.Exists(Path.Combine(Universe_ConfigDir,"MyWorld.ini")) ||
-                File.Exists(Path.Combine(Universe_ConfigDir,"Universe.ini")) ||
-                File.Exists(Path.Combine(Universe_ConfigDir,"Universe.Server.ini"))
+                File.Exists(Path.Combine(WhiteCore_ConfigDir,"MyWorld.ini")) ||
+                File.Exists(Path.Combine(WhiteCore_ConfigDir,"Universe.ini")) ||
+                File.Exists(Path.Combine(WhiteCore_ConfigDir,"Universe.Server.ini"))
                 );
 
             if ( requested || !existingConfig )
@@ -146,18 +147,18 @@ namespace Universe.Simulation.Base
                 if (!requested)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-					Console.WriteLine("\n\n************* Virtual Universe initial run. *************");
+					Console.WriteLine("\n\n************* Universe initial run. *************");
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     Console.WriteLine(
-                        "\n\n   This appears to be your first time running Virtual Universe.\n"+
+                        "\n\n   This appears to be your first time running Universe.\n"+
                         "If you have already configured your *.ini files, please ignore this warning and press enter;\n" +
-                        "Otherwise type 'yes' and Virtual Universe will guide you through the configuration process.\n\n"+
+                        "Otherwise type 'yes' and Universe will guide you through the configuration process.\n\n"+
                         "Remember, these file names are Case Sensitive in Linux and Proper Cased.\n"+
-                        "1. " + Universe_ConfigDir + "/Universe.ini\nand\n" +
-                        "2. " + Universe_ConfigDir + "/Sim/Standalone/StandaloneCommon.ini \nor\n" +
-                        "3. " + Universe_ConfigDir + "/Grid/GridCommon.ini\n" +
+                        "1. " + WhiteCore_ConfigDir + "/Universe.ini\nand\n" +
+                        "2. " + WhiteCore_ConfigDir + "/Sim/Standalone/StandaloneCommon.ini \nor\n" +
+                        "3. " + WhiteCore_ConfigDir + "/Grid/GridCommon.ini\n" +
                         "\nAlso, you will want to examine these files in great detail because only the basic system will " +
-                        "load by default. Virtual Universe can do a LOT more if you spend a little time going through these files.\n\n");
+                        "load by default. Universe can do a LOT more if you spend a little time going through these files.\n\n");
                 }
 
                 // Make sure...
@@ -171,18 +172,18 @@ namespace Universe.Simulation.Base
 
                 if (resp == "yes")
                 {
-                    string cfgFolder = Universe_ConfigDir + "/";           // Main Config folder >> "../Config" (default)
+                    string cfgFolder = WhiteCore_ConfigDir + "/";           // Main Config folder >> "../Config" (default)
 
                     string dbSource = "localhost";
-					string dbPasswd = "universe";
-					string dbSchema = "universe";
-					string dbUser = "universe";
+					string dbPasswd = "whitecore";
+					string dbSchema = "whitecore";
+					string dbUser = "whitecore";
                     string dbPort = "3306";
                     string gridIPAddress = Utilities.GetExternalIp();
                     string regionIPAddress = gridIPAddress;
                     bool isStandalone = true;
                     string dbType = "1";
-                    string gridName = "Virtual Universe Grid";
+                    string gridName = "Universe-Sim Grid";
                     string welcomeMessage = "";
                     string allowAnonLogin = "true";
                     uint port = 9000;
@@ -190,11 +191,11 @@ namespace Universe.Simulation.Base
 
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("====================================================================");
-					Console.WriteLine("======================= Virtual Universe Configurator ==============");
+					Console.WriteLine("======================= Universe CONFIGURATOR =====================");
                     Console.WriteLine("====================================================================");
                     Console.ResetColor();
 
-                    if (isUniverseExe)
+                    if (isWhiteCoreExe)
                     {
                         Console.WriteLine("This installation is going to run in");
                         Console.ForegroundColor = ConsoleColor.Cyan;
@@ -226,7 +227,7 @@ namespace Universe.Simulation.Base
                             Console.ForegroundColor = ConsoleColor.White;
                             Console.WriteLine(
                                 "\nNote: this setup does not automatically create a MySQL installation for you.\n" +
-                                " This will configure the Virtual Universe setting but you must install MySQL as well");
+                                " This will configure the Universe setting but you must install MySQL as well");
                             Console.ResetColor();
 
                             dbSource = ReadLine("MySQL database IP", dbSource);
@@ -243,7 +244,7 @@ namespace Universe.Simulation.Base
 
                     if (isStandalone)
                     {
-                        gridName = ReadLine("Name of your Virtual Universe Grid", gridName);
+                        gridName = ReadLine("Name of your Universe-Sim Grid", gridName);
 
                         welcomeMessage = "Welcome to " + gridName + ", <USERNAME>!";
                         Console.ForegroundColor = ConsoleColor.White;
@@ -268,7 +269,7 @@ namespace Universe.Simulation.Base
                     //Data.ini setup
                     if (isStandalone)
                     {
-                        string cfgDataFolder = isUniverseExe ? "Sim/" : "Grid/ServerConfiguration/";
+                        string cfgDataFolder = isWhiteCoreExe ? "Sim/" : "Grid/ServerConfiguration/";
 
                         MakeSureExists(cfgFolder + cfgDataFolder + "Data/Data.ini");
                         var data_ini = new IniConfigSource(
@@ -283,10 +284,10 @@ namespace Universe.Simulation.Base
                         else
                             conf.Set("Include-MySQL",  cfgDataFolder + "Data/MySQL.ini");
 
-                        if (isUniverseExe)
+                        if (isWhiteCoreExe)
                             conf.Set("Include-FileBased", "Sim/Data/FileBased.ini");
 
-                        conf = data_ini.AddConfig("UniverseConnectors");
+                        conf = data_ini.AddConfig("WhiteCoreConnectors");
                         conf.Set("ValidateTables", true);
 
                         data_ini.Save();
@@ -327,21 +328,21 @@ namespace Universe.Simulation.Base
                     }
 
                     // Region server
-                    if (isUniverseExe)
+                    if (isWhiteCoreExe)
                     {
 						MakeSureExists(cfgFolder + "Universe.ini");
-                        var universe_ini = new IniConfigSource(
+                        var whitecore_ini = new IniConfigSource(
                             cfgFolder + "Universe.ini",
                             Nini.Ini.IniFileType.AuroraStyle);
-                        var universe_ini_example = new IniConfigSource(
+                        var whitecore_ini_example = new IniConfigSource(
                             cfgFolder + "Universe.ini.example",
                             Nini.Ini.IniFileType.AuroraStyle);
 
                         bool setIp = false;
 
-						foreach (IConfig config in universe_ini_example.Configs)
+						foreach (IConfig config in whitecore_ini_example.Configs)
                         {
-							IConfig newConfig = universe_ini.AddConfig(config.Name);
+							IConfig newConfig = whitecore_ini.AddConfig(config.Name);
                             foreach (string key in config.GetKeys())
                             {
                                 if (key == "http_listener_port")
@@ -363,7 +364,7 @@ namespace Universe.Simulation.Base
                         }
 
 
-						universe_ini.Save();
+						whitecore_ini.Save();
                         Console.ForegroundColor = ConsoleColor.Green;
                         Console.WriteLine("Your Universe.ini has been successfully configured");
                         Console.ResetColor();
@@ -446,13 +447,13 @@ namespace Universe.Simulation.Base
                     }
 
                     // Grid server
-                    if (!isUniverseExe)
+                    if (!isWhiteCoreExe)
                     {
                         MakeSureExists(cfgFolder + "Universe.Server.ini");
-                        var universe_ini = new IniConfigSource(
+                        var whitecore_ini = new IniConfigSource(
                             cfgFolder + "Universe.Server.ini",
                             Nini.Ini.IniFileType.AuroraStyle);
-                        var universe_ini_example = new IniConfigSource(
+                        var whitecore_ini_example = new IniConfigSource(
                             cfgFolder + "Universe.Server.ini.example",
                             Nini.Ini.IniFileType.AuroraStyle);
 
@@ -460,9 +461,9 @@ namespace Universe.Simulation.Base
                             ReadLine("\nThe domain name or IP address of the grid server", gridIPAddress);
                         bool ipSet = false;
 
-                        foreach (IConfig config in universe_ini_example.Configs)
+                        foreach (IConfig config in whitecore_ini_example.Configs)
                         {
-                            IConfig newConfig = universe_ini.AddConfig(config.Name);
+                            IConfig newConfig = whitecore_ini.AddConfig(config.Name);
                             foreach (string key in config.GetKeys())
                             {
                                 if (key == "HostName")
@@ -481,7 +482,7 @@ namespace Universe.Simulation.Base
                             }
                         }
 
-                        universe_ini.Save();
+                        whitecore_ini.Save();
                         Console.ForegroundColor = ConsoleColor.Green;
                         Console.WriteLine("Your Universe.Server.ini has been successfully configured");
                         Console.ResetColor();
@@ -546,7 +547,7 @@ namespace Universe.Simulation.Base
                     {
                         Console.WriteLine("\nYour loginuri is ");
                         Console.ForegroundColor = ConsoleColor.Cyan;
-                        Console.WriteLine("http://" +  (isUniverseExe ? regionIPAddress : gridIPAddress) + ":" + (isUniverseExe ? port : gridPort) + "/");
+                        Console.WriteLine("http://" +  (isWhiteCoreExe ? regionIPAddress : gridIPAddress) + ":" + (isWhiteCoreExe ? port : gridPort) + "/");
                         Console.ResetColor();
                     }
                     else
@@ -562,7 +563,8 @@ namespace Universe.Simulation.Base
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     Console.WriteLine(" >> Please restart to use your new configuration. <<");
                     Console.ResetColor ();
-                    Console.WriteLine ("");                  
+                    Console.WriteLine ("");
+                    
                 }
             }
         }
@@ -658,7 +660,7 @@ namespace Universe.Simulation.Base
         }
 
         /// <summary>
-        ///     Deal with sending the error to the error reporting service and saving the dump to the harddrive if needed
+        ///     Deal with sending the error to the error reporting service and saving the dump to the hard-drive if needed
         /// </summary>
         /// <param name="msg"></param>
         /// <param name="ex"></param>

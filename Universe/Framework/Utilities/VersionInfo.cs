@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -46,10 +46,9 @@ namespace Universe.Framework.Utilities
 
         #endregion
 
-        // This is the current version information
-		public const string VERSION_NUMBER = "1.0.1";                             // Version Number includes Major, Minor, Build
-        public const Flavour VERSION_FLAVOUR = Flavour.Dev;                       // Version Flavor is whether it is Debug, Release, RC, or other
-        public const string VERSION_NAME = "Universe";                            // Software name
+		public const string VERSION_NUMBER = "0.9.3";
+        public const Flavour VERSION_FLAVOUR = Flavour.Dev;
+        public const string VERSION_NAME = "Universe";
 
         public static string Version
         {

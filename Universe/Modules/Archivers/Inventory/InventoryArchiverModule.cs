@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -40,14 +40,14 @@ using Universe.Framework.Utilities;
 namespace Universe.Modules.Archivers
 {
     /// <summary>
-    ///     This module loads and saves OpenSimulator inventory archives
+    ///     This module loads and saves Universe inventory archives
     /// </summary>
     public class InventoryArchiverModule : IService, IInventoryArchiverModule
     {
         /// <summary>
         /// The default save/load archive directory.
         /// </summary>
-        string m_archiveDirectory = Constants.DEFAULT_USERINVENTORY_DIR;
+        string m_archiveDirectory = "";
 
         /// <value>
         ///     All scenes that this module knows about
@@ -59,7 +59,7 @@ namespace Universe.Modules.Archivers
         /// </value>
         protected List<Guid> m_pendingConsoleSaves = new List<Guid>();
 
-        private IRegistryCore m_registry;
+        IRegistryCore m_registry;
 
         public string Name
         {
@@ -90,12 +90,12 @@ namespace Universe.Modules.Archivers
                     bool UseAssets = true;
                     if (options.ContainsKey("assets"))
                     {
-                        object Assets = null;
+                        object Assets;
                         options.TryGetValue("assets", out Assets);
                         bool.TryParse(Assets.ToString(), out UseAssets);
                     }
 
-                    string checkPermissions = "";;
+                    string checkPermissions = "";
                     if (options.ContainsKey("checkPermissions"))
                     {
                         Object temp;
@@ -143,6 +143,10 @@ namespace Universe.Modules.Archivers
             m_registry.RegisterModuleInterface<IInventoryArchiverModule>(this);
             if (m_scenes.Count == 0)
             {
+                // set default path to user archives
+                var defpath = registry.RequestModuleInterface<ISimulationBase>().DefaultDataPath;
+                m_archiveDirectory = Path.Combine (defpath, Constants.DEFAULT_USERINVENTORY_DIR);
+
                 OnInventoryArchiveSaved += SaveIARConsoleCommandCompleted;
 
                 if (MainConsole.Instance != null)
@@ -215,7 +219,7 @@ namespace Universe.Modules.Archivers
                     bool UseAssets = true;
                     if (options.ContainsKey("assets"))
                     {
-                        object Assets = null;
+                        object Assets;
                         options.TryGetValue("assets", out Assets);
                         bool.TryParse(Assets.ToString(), out UseAssets);
                     }
@@ -301,6 +305,7 @@ namespace Universe.Modules.Archivers
         /// <summary>
         ///     Load inventory from an inventory file archive
         /// </summary>
+        /// <param name="scene"></param>
         /// <param name="cmdparams"></param>
         protected void HandleLoadIARConsoleCommand(IScene scene, string[] cmdparams)
         {
@@ -379,7 +384,7 @@ namespace Universe.Modules.Archivers
                 }
 
                 // sanity checks...
-                var loadPath = PathHelpers.VerifyReadFile(archiveFileName, new List<string>() {".iar",".tgz"}, m_archiveDirectory);
+                var loadPath = PathHelpers.VerifyReadFile(archiveFileName, new List<string>{".iar",".tgz"}, m_archiveDirectory);
                 if (loadPath == "")
                 {
                     MainConsole.Instance.InfoFormat("   Sorry, IAR file '{0}' not found!", archiveFileName);

@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -48,7 +48,7 @@ namespace Universe.Services.SQLServices.InventoryService
     /// </summary>
     public class LibraryService : ILibraryService, IService
     {
-        // moved to Constants to allow for easier comparision from the WebUI
+        // moved to Constants to allow for easier comparison from the WebUI
         // readonly UUID libOwner = new UUID("11111111-1111-0000-0000-000100bba000");
         readonly UUID libOwner = new UUID (Constants.LibraryOwner);
 
@@ -138,7 +138,7 @@ namespace Universe.Services.SQLServices.InventoryService
                     "Could not find DefaultInventory/Inventory.ini or DefaultInventory/Inventory.ini.example");
                 return;
             }
-            List<IDefaultLibraryLoader> Loaders = UniverseModuleLoader.PickupModules<IDefaultLibraryLoader>();
+            List<IDefaultLibraryLoader> Loaders = WhiteCoreModuleLoader.PickupModules<IDefaultLibraryLoader>();
             try
             {
                 if (!File.Exists("DefaultInventory/Inventory.ini"))

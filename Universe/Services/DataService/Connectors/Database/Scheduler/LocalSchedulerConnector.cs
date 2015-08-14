@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -48,7 +48,7 @@ namespace Universe.Services.DataService.Connectors.Database.Scheduler
                                                       "schedule_for"
                                                   };
 
-        #region Implementation of IUniverseDataPlugin
+        #region Implementation of IWhiteCoreDataPlugin
 
         /// <summary>
         ///     Returns the plugin name
@@ -69,14 +69,14 @@ namespace Universe.Services.DataService.Connectors.Database.Scheduler
         public void Initialize(IGenericData GenericData, IConfigSource source, IRegistryCore simBase,
                                string DefaultConnectionString)
         {
-            if (source.Configs["UniverseConnectors"].GetString("SchedulerConnector", "LocalConnector") != "LocalConnector")
+            if (source.Configs["WhiteCoreConnectors"].GetString("SchedulerConnector", "LocalConnector") != "LocalConnector")
                 return;
 
             if (source.Configs[Name] != null)
                 DefaultConnectionString = source.Configs[Name].GetString("ConnectionString", DefaultConnectionString);
             if (GenericData != null)
                 GenericData.ConnectToDatabase(DefaultConnectionString, "Scheduler",
-                                              source.Configs["UniverseConnectors"].GetBoolean("ValidateTables", true));
+                                              source.Configs["WhiteCoreConnectors"].GetBoolean("ValidateTables", true));
 
             m_Gd = GenericData;
             Framework.Utilities.DataManager.RegisterPlugin(this);

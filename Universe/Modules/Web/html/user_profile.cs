@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,16 +25,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
+using Universe.Framework.Servers.HttpServer.Implementation;
+using Universe.Framework.Services;
 using System.Collections.Generic;
 using System.Linq;
 using OpenMetaverse;
+using Universe.Framework.Utilities;
+using Universe.Framework.Services.ClassHelpers.Profile;
 using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Modules;
-using Universe.Framework.Servers.HttpServer.Implementation;
-using Universe.Framework.Services;
-using Universe.Framework.Services.ClassHelpers.Profile;
-using Universe.Framework.Utilities;
 
 namespace Universe.Modules.Web
 {
@@ -178,7 +177,9 @@ namespace Universe.Modules.Web
                         { "GroupPictureURL", "../images/icons/no_groups.jpg" },
                         { "GroupName", "None yet" }
                     });
+
                 }
+
             }
 
             vars.Add("GroupNameText", translator.GetTranslatedString("GroupNameText"));

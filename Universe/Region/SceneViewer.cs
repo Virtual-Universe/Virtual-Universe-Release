@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -119,10 +119,10 @@ namespace Universe.Region
             m_presence.OnSignificantClientMovement += SignificantClientMovement;
             m_presence.Scene.EventManager.OnMakeChildAgent += EventManager_OnMakeChildAgent;
             m_scene.EventManager.OnClosingClient += EventManager_OnClosingClient;
-            m_presence.Scene.UniverseEventManager.RegisterEventHandler("DrawDistanceChanged",
-                                                                     UniverseEventManager_OnGenericEvent);
-            m_presence.Scene.UniverseEventManager.RegisterEventHandler("SignficantCameraMovement",
-                                                                     UniverseEventManager_OnGenericEvent);
+            m_presence.Scene.WhiteCoreEventManager.RegisterEventHandler("DrawDistanceChanged",
+                                                                     WhiteCoreEventManager_OnGenericEvent);
+            m_presence.Scene.WhiteCoreEventManager.RegisterEventHandler("SignficantCameraMovement",
+                                                                     WhiteCoreEventManager_OnGenericEvent);
             m_prioritizer = new Prioritizer(presence.Scene);
             m_culler = new Culler(presence.Scene);
         }
@@ -139,7 +139,7 @@ namespace Universe.Region
             RemoveAvatarFromView(presence);
         }
 
-        private object UniverseEventManager_OnGenericEvent(string FunctionName, object parameters)
+        private object WhiteCoreEventManager_OnGenericEvent(string FunctionName, object parameters)
         {
             if (m_culler != null && m_culler.UseCulling && FunctionName == "DrawDistanceChanged")
             {
@@ -147,7 +147,7 @@ namespace Universe.Region
                 if (sp.UUID != m_presence.UUID)
                     return null; //Only want our av
 
-                //Draw Distance chagned, force a cull check
+                //Draw Distance changed, force a cull check
                 m_forceCullCheck = true;
                 //Don't do this immediately as the viewer may keep changing the draw distance
                 lock (m_drawDistanceTimerLock)
@@ -163,7 +163,7 @@ namespace Universe.Region
             }
             else if (FunctionName == "SignficantCameraMovement")
             {
-                //Camera chagned, do a cull check
+                //Camera changed, do a cull check
                 m_forceCullCheck = true;
                 //Don't do this immediately as the viewer may keep changing the camera quickly
                 lock (m_drawDistanceTimerLock)
@@ -258,7 +258,7 @@ namespace Universe.Region
                     if ((o.Flags & flags) == o.Flags)
                         return; //Same, leave it alone!
                     o.Flags |= flags;
-                    return; //All done, its updated, no need to readd
+                    return; //All done, its updated, no need to re-add
                 }
 
                 m_presenceUpdatesToSend[presence.LocalId] = o;
@@ -280,7 +280,7 @@ namespace Universe.Region
 
             //Send a terse as well, since we are sending an animation
             if (m_presence.LocalId == presence.LocalId &&
-                presence.SittingOnUUID == UUID.Zero) //As long as we arn't sitting, in which we don't get terse updates
+                presence.SittingOnUUID == UUID.Zero) //As long as we aren't sitting, in which we don't get terse updates
             {
                 //Is this really necessary? -7/21
                 //Very much so... the client cannot get a terse update before a full update -7/25
@@ -323,7 +323,7 @@ namespace Universe.Region
                    m_presence.DrawDistance > m_presence.Scene.RegionInfo.RegionSizeY)) &&
                 !lastGrpsInView.Contains(part.ParentEntity))
             {
-                //This object entered our draw distance on its own, and we havn't seen it before
+                //This object entered our draw distance on its own, and we haven't seen it before
                 flags = PrimUpdateFlags.ForcedFullUpdate;
                 lock (m_objectUpdatesToSendLock)
                 {
@@ -904,10 +904,10 @@ namespace Universe.Region
             m_presence.OnSignificantClientMovement -= SignificantClientMovement;
             m_presence.Scene.EventManager.OnMakeChildAgent -= EventManager_OnMakeChildAgent;
             m_scene.EventManager.OnClosingClient -= EventManager_OnClosingClient;
-            m_presence.Scene.UniverseEventManager.UnregisterEventHandler("DrawDistanceChanged",
-                                                                       UniverseEventManager_OnGenericEvent);
-            m_presence.Scene.UniverseEventManager.UnregisterEventHandler("SignficantCameraMovement",
-                                                                       UniverseEventManager_OnGenericEvent);
+            m_presence.Scene.WhiteCoreEventManager.UnregisterEventHandler("DrawDistanceChanged",
+                                                                       WhiteCoreEventManager_OnGenericEvent);
+            m_presence.Scene.WhiteCoreEventManager.UnregisterEventHandler("SignficantCameraMovement",
+                                                                       WhiteCoreEventManager_OnGenericEvent);
             m_presence = null;
         }
 

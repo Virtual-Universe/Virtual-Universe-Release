@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,23 +25,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
+using System.IO;
+using Nini.Config;
+using OpenMetaverse.Packets;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
-using Nini.Config;
-using OpenMetaverse.Packets;
-using System;
-using System.IO;
 
 namespace Universe.Modules.Monitoring
 {
     public class BinaryLoggingModule : INonSharedRegionModule
     {
-        private static StatLogger m_statLog;
-        private static TimeSpan m_statLogPeriod = TimeSpan.FromSeconds(300);
-        private static string m_statsDir = MainConsole.Instance.LogPath;
-        private static readonly Object m_statLockObject = new Object();
+        static StatLogger m_statLog;
+        static TimeSpan m_statLogPeriod = TimeSpan.FromSeconds(300);
+        static string m_statsDir = MainConsole.Instance.LogPath;
+        static readonly Object m_statLockObject = new Object();
 
         protected bool m_collectStats;
         protected IScene m_scene;
@@ -116,7 +116,7 @@ namespace Universe.Modules.Monitoring
 
         #endregion
 
-        private void LogSimStats(SimStats stats)
+        void LogSimStats(SimStats stats)
         {
             SimStatsPacket pack = new SimStatsPacket
                                       {Region = stats.RegionBlock, Stat = stats.StatsBlock, Header = {Reliable = false}};
@@ -155,7 +155,7 @@ namespace Universe.Modules.Monitoring
                 }
                 catch (Exception ex)
                 {
-                    MainConsole.Instance.ErrorFormat("statistics gathering failed: {0}", ex.ToString());
+                    MainConsole.Instance.ErrorFormat("statistics gathering failed: {0}", ex);
                     if (m_statLog != null && m_statLog.Log != null)
                     {
                         m_statLog.Log.Close();

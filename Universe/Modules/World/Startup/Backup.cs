@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,15 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
+
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
@@ -43,6 +35,15 @@ using Universe.Framework.Serialization;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Utilities;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading;
 
 namespace Universe.Modules.Startup
 {
@@ -94,7 +95,7 @@ namespace Universe.Modules.Startup
             m_backup[scene] = new InternalSceneBackup(scene);
         }
 
-        public void PostInitialize(IScene scene, IConfigSource source, ISimulationBase simBase)
+        public void PostInitialise(IScene scene, IConfigSource source, ISimulationBase simBase)
         {
         }
 
@@ -132,7 +133,7 @@ namespace Universe.Modules.Startup
         /// <param name="cmdparams">Additional arguments passed to the command</param>
         public void RunCommand(IScene scene, string[] cmdparams)
         {
-            scene.UniverseEventManager.FireGenericEventHandler("Backup", null);
+            scene.WhiteCoreEventManager.FireGenericEventHandler("Backup", null);
         }
 
         public void EditScale(IScene scene, string[] cmdparams)
@@ -188,7 +189,7 @@ namespace Universe.Modules.Startup
 
         #region Per region backup class
 
-        protected class InternalSceneBackup : IBackupModule, IUniverseBackupModule
+        protected class InternalSceneBackup : IBackupModule, IWhiteCoreBackupModule
         {
             #region Declares
 
@@ -202,7 +203,7 @@ namespace Universe.Modules.Startup
             public InternalSceneBackup(IScene scene)
             {
                 m_scene = scene;
-                m_scene.StackModuleInterface<IUniverseBackupModule>(this);
+                m_scene.StackModuleInterface<IWhiteCoreBackupModule>(this);
                 m_scene.RegisterModuleInterface<IBackupModule>(this);
 
                 if (MainConsole.Instance != null)
@@ -302,7 +303,7 @@ namespace Universe.Modules.Startup
             {
                 LoadingPrims = true;
 
-                MainConsole.Instance.Info("[Backup Module]: Loading objects for " + m_scene.RegionInfo.RegionName +
+                MainConsole.Instance.Info("[BackupModule]: Loading objects for " + m_scene.RegionInfo.RegionName +
                                           " from " + m_scene.SimulationDataService.Name);
                 List<ISceneEntity> PrimsFromDB = m_scene.SimulationDataService.LoadObjects();
                 foreach (ISceneEntity group in PrimsFromDB)
@@ -311,12 +312,12 @@ namespace Universe.Modules.Startup
                     {
                         if (group == null)
                         {
-                            MainConsole.Instance.Warn("[Backup Module]: Null object while loading objects, ignoring.");
+                            MainConsole.Instance.Warn("[BackupModule]: Null object while loading objects, ignoring.");
                             continue;
                         }
                         if (group.RootChild.Shape == null)
                         {
-                            MainConsole.Instance.Warn("[Backup Module]: Broken object (" + group.Name +
+                            MainConsole.Instance.Warn("[BackupModule]: Broken object (" + group.Name +
                                                       ") found while loading objects, removing it from the database.");
                             //WTF went wrong here? Remove by passing it by on loading
                             continue;
@@ -326,7 +327,7 @@ namespace Universe.Modules.Startup
                                                     group.RootChild.Shape.PCode == (byte) PCode.Prim ||
                                                     group.RootChild.Shape.PCode == (byte) PCode.Avatar)))
                         {
-                            MainConsole.Instance.Warn("[Backup Module]: Broken state for object " + group.Name +
+                            MainConsole.Instance.Warn("[BackupModule]: Broken state for object " + group.Name +
                                                       " while loading objects, removing it from the database.");
                             //WTF went wrong here? Remove by passing it by on loading
                             continue;
@@ -336,7 +337,7 @@ namespace Universe.Modules.Startup
                             group.AbsolutePosition.Y > m_scene.RegionInfo.RegionSizeY + 10 ||
                             group.AbsolutePosition.Y < -10)
                         {
-                            MainConsole.Instance.Warn("[Backup Module]: Object outside the region (" + group.Name + ", " +
+                            MainConsole.Instance.Warn("[BackupModule]: Object outside the region (" + group.Name + ", " +
                                                       group.AbsolutePosition +
                                                       ") found while loading objects, removing it from the database.");
                             //WTF went wrong here? Remove by passing it by on loading
@@ -349,7 +350,7 @@ namespace Universe.Modules.Startup
                         if (group.RootChild == null)
                         {
                             MainConsole.Instance.ErrorFormat(
-                                "[Backup Module] Found a SceneObjectGroup with m_rootPart == null and {0} children",
+                                "[BackupModule] Found a SceneObjectGroup with m_rootPart == null and {0} children",
                                 group.ChildrenEntities().Count);
                             continue;
                         }
@@ -358,12 +359,12 @@ namespace Universe.Modules.Startup
                     catch (Exception ex)
                     {
                         MainConsole.Instance.WarnFormat(
-                            "[Backup Module]: Exception attempting to load object from the database, {0}, continuing...",
+                            "[BackupModule]: Exception attempting to load object from the database, {0}, continuing...",
                             ex.ToString());
                     }
                 }
                 LoadingPrims = false;
-                MainConsole.Instance.Info("[Backup Module]: Loaded " + PrimsFromDB.Count.ToString() + " object(s) in " +
+                MainConsole.Instance.Info("[BackupModule]: Loaded " + PrimsFromDB.Count.ToString() + " object(s) in " +
                                           m_scene.RegionInfo.RegionName);
                 PrimsFromDB.Clear();
             }
@@ -373,7 +374,7 @@ namespace Universe.Modules.Startup
             /// </summary>
             public void LoadAllLandObjectsFromStorage()
             {
-                MainConsole.Instance.Debug("[Backup Module]: Loading Land Objects from database... ");
+                MainConsole.Instance.Debug("[BackupModule]: Loading Land Objects from database... ");
                 m_scene.EventManager.TriggerIncomingLandDataFromStorage(
                     m_scene.SimulationDataService.LoadLandObjects(), Vector2.Zero);
             }
@@ -395,7 +396,7 @@ namespace Universe.Modules.Startup
             /// </summary>
             public void CreateScriptInstances()
             {
-                MainConsole.Instance.Info("[Backup Module]: Starting scripts in " + m_scene.RegionInfo.RegionName);
+                MainConsole.Instance.Info("[BackupModule]: Starting scripts in " + m_scene.RegionInfo.RegionName);
                 //Set loading prims here to block backup
                 LoadingPrims = true;
                 ISceneEntity[] entities = m_scene.Entities.GetEntities();
@@ -579,7 +580,7 @@ namespace Universe.Modules.Startup
 
             #endregion
 
-            #region IUniverseBackupModule Methods
+            #region IWhiteCoreBackupModule Methods
 
             bool m_isArchiving = false;
             readonly List<UUID> m_missingAssets = new List<UUID>();
@@ -663,7 +664,7 @@ namespace Universe.Modules.Startup
 
                 IDictionary<UUID, AssetType> assets = new Dictionary<UUID, AssetType>();
                 UuidGatherer assetGatherer = new UuidGatherer(m_scene.AssetService);
-                IUniverseBackupArchiver archiver = m_scene.RequestModuleInterface<IUniverseBackupArchiver>();
+                IWhiteCoreBackupArchiver archiver = m_scene.RequestModuleInterface<IWhiteCoreBackupArchiver>();
                 bool saveAssets = false;
                 if (archiver.AllowPrompting)
                     saveAssets =

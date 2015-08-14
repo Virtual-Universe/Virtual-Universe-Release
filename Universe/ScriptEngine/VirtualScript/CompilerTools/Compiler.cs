@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,6 +25,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.ModuleLoader;
+using OpenMetaverse;
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -32,9 +35,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using OpenMetaverse;
-using Universe.Framework.ConsoleFramework;
-using Universe.Framework.ModuleLoader;
 
 namespace Universe.ScriptEngine.VirtualScript.CompilerTools
 {
@@ -59,6 +59,7 @@ namespace Universe.ScriptEngine.VirtualScript.CompilerTools
         // * Returns assembly name ready for AppDomain load.
         //
         // Assembly is compiled using LSL_BaseClass as base. Look at debug C# code file created when LSL script is compiled for full details.
+        //
 
         private string DefaultCompileLanguage;
         private string FilePrefix;
@@ -102,7 +103,7 @@ namespace Universe.ScriptEngine.VirtualScript.CompilerTools
             //Find the default compiler
             FindDefaultCompiler();
 
-#if VS_DEBUG
+#if WDNE_DEBUG
             TestScripts();
         }
         
@@ -181,7 +182,7 @@ namespace Universe.ScriptEngine.VirtualScript.CompilerTools
 
         private void SetupCompilers()
         {
-            converters = UniverseModuleLoader.PickupModules<IScriptConverter>();
+            converters = WhiteCoreModuleLoader.PickupModules<IScriptConverter>();
             foreach (IScriptConverter convert in converters)
             {
                 convert.Initialize(this);
@@ -516,8 +517,10 @@ namespace Universe.ScriptEngine.VirtualScript.CompilerTools
             CompilerResults results = converter.Compile(parameters, WriteScriptSourceToDebugFile,
                                                         WriteScriptSourceToDebugFile ? srcFileName : script);
             parameters = null;
-
+            //
             // WARNINGS AND ERRORS
+            //
+
             if (results.Errors.Count > 0)
             {
                 try
@@ -547,6 +550,7 @@ namespace Universe.ScriptEngine.VirtualScript.CompilerTools
                         CharN = 1;
                         LineN = 1;
                     }
+
 
                     // The Second Life viewer's script editor begins
                     // countingn lines and columns at 0, so we subtract 1.

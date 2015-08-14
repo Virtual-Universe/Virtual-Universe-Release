@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -31,8 +31,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text;
-using Nini.Config;
-using OpenMetaverse.StructuredData;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.Servers;
@@ -40,6 +38,8 @@ using Universe.Framework.Servers.HttpServer;
 using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Servers.HttpServer.Interfaces;
 using Universe.Framework.Utilities;
+using Nini.Config;
+using OpenMetaverse.StructuredData;
 
 namespace Universe.Framework.Services
 {
@@ -114,7 +114,7 @@ namespace Universe.Framework.Services
             {
                 IConfigSource source = registry.RequestModuleInterface<ISimulationBase>().ConfigSource;
                 IConfig config;
-                if ((config = source.Configs["UniverseConnectors"]) != null)
+                if ((config = source.Configs["WhiteCoreConnectors"]) != null)
                 {
                     m_doRemoteCalls = config.Contains(name + "DoRemoteCalls")
                                           ? config.GetBoolean(name + "DoRemoteCalls", false)

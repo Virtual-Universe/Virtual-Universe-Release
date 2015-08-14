@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -909,7 +909,11 @@ public class ScriptClass : Universe.ScriptEngine.VirtualScript.Runtime.ScriptBas
                         if (a.kids.Count == 1)
                         {
                             SYMBOL assignmentChild = (SYMBOL) a.kids[0];
-                            if (assignmentChild is ListConstant)
+                            if (assignmentChild is IdentExpression)
+                            {
+// 20131224 not used                                IdentExpression identEx = (IdentExpression) assignmentChild;
+                            }
+                            else if (assignmentChild is ListConstant)
                             {
                                 ListConstant listConst = (ListConstant) assignmentChild;
                                 foreach (SYMBOL listChild in listConst.kids)
@@ -925,7 +929,7 @@ public class ScriptClass : Universe.ScriptEngine.VirtualScript.Runtime.ScriptBas
                                             p[i] = objChild;
                                             if (objChild is IdentExpression)
                                             {
-                                                // 20131224 not used IdentExpression identEx = (IdentExpression) objChild;
+// 20131224 not used                                                IdentExpression identEx = (IdentExpression) objChild;
                                             }
                                             i++;
                                         }

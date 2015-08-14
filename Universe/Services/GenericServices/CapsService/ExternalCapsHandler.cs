@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -161,7 +161,7 @@ namespace Universe.Services.GenericServices.CapsService
                 List<IExternalCapsRequestHandler> caps;
                 if (!m_caps.TryGetValue(agentID ^ regionID, out caps))
                 {
-                    caps = Universe.Framework.ModuleLoader.UniverseModuleLoader.PickupModules<IExternalCapsRequestHandler>();
+                    caps = Universe.Framework.ModuleLoader.WhiteCoreModuleLoader.PickupModules<IExternalCapsRequestHandler>();
                     m_caps.Add(agentID ^ regionID, caps);
                 }
                 return caps;

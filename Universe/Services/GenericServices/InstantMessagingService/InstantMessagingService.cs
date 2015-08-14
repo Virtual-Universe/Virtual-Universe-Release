@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -138,7 +138,7 @@ namespace Universe.Services
 
                 if (!isOnline)
                 {
-                    //If they are going offline, actually remove from from all group chats so that the next time they log in, they will be readded
+                    //If they are going offline, actually remove from from all group chats so that the next time they log in, they will be re-added
                     foreach (GroupMembershipData gmd in m_groupData.GetAgentGroupMemberships(us, us))
                     {
                         ChatSessionMember member = FindMember(gmd.GroupID, us);

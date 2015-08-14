@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -70,7 +70,7 @@ namespace Universe.Modules.Scripting
 
         bool m_Enabled;
         string m_HostName = string.Empty;
-        string m_InterObjectHostname = "lsl.universe.local";
+        string m_InterObjectHostname = "lsl.whitecore.local";
         const int m_MaxQueueSize = 50; // maximum size of an object mail queue
         bool m_localOnly = true;
         int m_MaxEmailSize = 4096; // largest email allowed by default, as per lsl docs.

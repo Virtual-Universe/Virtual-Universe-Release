@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -91,6 +91,10 @@ namespace Universe.Framework.SceneInfo
 
                 // MainConsole.Instance.DebugFormat("[TASK INVENTORY]: Instantiated {0} prim items in total from xml", Count);
             }
+            // else
+            // {
+            //     MainConsole.Instance.DebugFormat("[TASK INVENTORY]: Skipping empty element {0}", reader.Name);
+            // }
 
             // For some .net implementations, this last read is necessary so that we advance beyond the end tag
             // of the element wrapping this object so that the rest of the serialization can complete normally.
@@ -109,6 +113,8 @@ namespace Universe.Framework.SceneInfo
                     tiiSerializer.Serialize(writer, item);
                 }
             }
+
+            //tiiSerializer.Serialize(writer, Values);
         }
 
         #endregion

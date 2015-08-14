@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,12 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Remoting.Lifetime;
-using System.Xml;
-using OpenMetaverse;
+
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Modules;
@@ -38,6 +33,12 @@ using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Services;
 using Universe.ScriptEngine.VirtualScript.Runtime;
+using OpenMetaverse;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Remoting.Lifetime;
+using System.Xml;
 using LSL_Float = Universe.ScriptEngine.VirtualScript.LSL_Types.LSLFloat;
 using LSL_Integer = Universe.ScriptEngine.VirtualScript.LSL_Types.LSLInteger;
 using LSL_Key = Universe.ScriptEngine.VirtualScript.LSL_Types.LSLString;

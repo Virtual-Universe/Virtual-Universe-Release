@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,15 +25,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using Universe.Framework.Modules;
+using Universe.Framework.Utilities;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
+using ProtoBuf;
 using System;
 using System.IO;
 using System.Xml.Serialization;
 using System.Xml;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
-using ProtoBuf;
-using Universe.Framework.Modules;
-using Universe.Framework.Utilities;
 
 namespace Universe.Framework.SceneInfo
 {
@@ -309,6 +309,7 @@ namespace Universe.Framework.SceneInfo
                 m_regionTerrain = args["region_terrain"].AsString();
             if (args.ContainsKey("region_area"))
                 RegionArea = (uint) args["region_area"].AsInteger();
+
         }
 
         public override void FromOSD(OSDMap map)
@@ -322,6 +323,7 @@ namespace Universe.Framework.SceneInfo
         }
 
         // File based loading
+        //
 
         /// <summary>
         /// Initializes a new instance of a regions when loaded from a definition file"/> class.
@@ -330,6 +332,7 @@ namespace Universe.Framework.SceneInfo
         public void LoadRegionConfig(string fileName) 
         {
             RegionInfo ri = (RegionInfo)DeserializeObject(fileName);
+
 
             RegionID = ri.RegionID;
             RegionName = ri.RegionName;
@@ -344,8 +347,13 @@ namespace Universe.Framework.SceneInfo
             SeeIntoThisSimFromNeighbor = ri.SeeIntoThisSimFromNeighbor;
             InfiniteRegion = ri.InfiniteRegion;
             EstateSettings = ri.EstateSettings;
+            //RegionSettings = ri.RegionSettings;
+            //GridSecureSessionID = ri.GridSecureSessionID;
+            //OpenRegionSettings = ri.OpenRegionSettings;
+            //EnvironmentSettings =  ri.EnvironmentSettings;
             RegionTerrain = ri.RegionTerrain;
             RegionArea = ri.RegionArea;
+
         }
 
         public void SaveRegionConfig(string fileName) 

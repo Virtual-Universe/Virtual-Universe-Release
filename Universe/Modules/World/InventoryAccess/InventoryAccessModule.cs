@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Universe-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -77,7 +77,7 @@ namespace Universe.Modules.InventoryAccess
             }
         }
 
-        public virtual void PostInitialize()
+        public virtual void PostInitialise()
         {
         }
 
@@ -543,7 +543,7 @@ namespace Universe.Modules.InventoryAccess
 
             if (objectGroups.Count == 1)
             {
-                m_scene.UniverseEventManager.FireGenericEventHandler("DeleteToInventory", objectGroups[0]);
+                m_scene.WhiteCoreEventManager.FireGenericEventHandler("DeleteToInventory", objectGroups[0]);
                 AssetXML = objectGroups[0].ToXml2();
             }
             else
@@ -564,7 +564,7 @@ namespace Universe.Modules.InventoryAccess
 
                     objectGroup.AbsolutePosition = inventoryStoredPosition;
 
-                    m_scene.UniverseEventManager.FireGenericEventHandler("DeleteToInventory", objectGroup);
+                    m_scene.WhiteCoreEventManager.FireGenericEventHandler("DeleteToInventory", objectGroup);
                     AssetXML += objectGroup.ToXml2();
 
                     objectGroup.AbsolutePosition = originalPosition;
