@@ -269,7 +269,7 @@ namespace Universe.ClientStack
                 }
                 catch (Exception ex)
                 {
-                    MainConsole.Instance.Error("[UDPBase]: Hit error: " + ex.ToString());
+                    MainConsole.Instance.Error("[UDPBase]: Hit error: " + ex.ToString();
                 }
                 finally
                 {

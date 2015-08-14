@@ -140,7 +140,7 @@ namespace Universe.Framework.Utilities
                                                     Priority = m_info.priority,
                                                     Name =
                                                         (m_info.Name == "" ? "UniverseThreadPool" : m_info.Name) + "#" +
-                                                        i.ToString(),
+                                                        i,
                                                     IsBackground = true
                                                 };
                             try
