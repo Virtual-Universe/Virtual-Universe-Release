@@ -56,7 +56,7 @@ namespace Universe.Modules.Currency
 
         public bool IsLocal
         {
-            get { return !m_config.Configs ["WhiteCoreConnectors"].GetBoolean("DoRemoteCalls", false); }
+            get { return !m_config.Configs ["UniverseConnectors"].GetBoolean("DoRemoteCalls", false); }
         }
 
         public int UploadCharge
@@ -108,7 +108,7 @@ namespace Universe.Modules.Currency
         ///     Startup
         /// </summary>
         /// <param name="config"></param>
-        public void Initialise(IConfigSource config)
+        public void Initialize(IConfigSource config)
         {
             m_config = config;
             IConfig currencyConfig = config.Configs["Currency"];
@@ -249,7 +249,7 @@ namespace Universe.Modules.Currency
 
             quoteResponse.Add("success", false);
             quoteResponse.Add("errorMessage", "Invalid parameters passed to the quote box");
-			quoteResponse.Add("errorURI", "http://whitecore-sim.org/wiki");
+			quoteResponse.Add("errorURI", "http://virtual-planets.org/wiki");
             returnval.Value = quoteResponse;
             return returnval;
         }

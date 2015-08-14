@@ -42,11 +42,11 @@ using Universe.Framework.Utilities;
 
 namespace Universe.Modules.Archivers
 {
-    public class WhiteCoreArchiver : IService, IWhiteCoreBackupArchiver
+    public class UniverseArchiver : IService, IUniverseBackupArchiver
     {
         private Int64 m_AllowPrompting;
 
-        #region IWhiteCoreBackupArchiver Members
+        #region IUniverseBackupArchiver Members
 
         public bool AllowPrompting
         {
@@ -64,11 +64,11 @@ namespace Universe.Modules.Archivers
         {
             writer.WriteDir("assets"); //Used by many, create it by default
 
-            IWhiteCoreBackupModule[] modules = scene.RequestModuleInterfaces<IWhiteCoreBackupModule>();
-            foreach (IWhiteCoreBackupModule module in modules)
+            IUniverseBackupModule[] modules = scene.RequestModuleInterfaces<IUniverseBackupModule>();
+            foreach (IUniverseBackupModule module in modules)
                 module.SaveModuleToArchive(writer, scene);
 
-            foreach (IWhiteCoreBackupModule module in modules)
+            foreach (IUniverseBackupModule module in modules)
             {
                 while (module.IsArchiving) //Wait until all are done
                     Thread.Sleep(100);
@@ -81,26 +81,26 @@ namespace Universe.Modules.Archivers
 
         public void LoadRegionBackup(TarArchiveReader reader, IScene scene)
         {
-            IWhiteCoreBackupModule[] modules = scene.RequestModuleInterfaces<IWhiteCoreBackupModule>();
+            IUniverseBackupModule[] modules = scene.RequestModuleInterfaces<IUniverseBackupModule>();
 
             byte[] data;
             string filePath;
             TarArchiveReader.TarEntryType entryType;
 
-            foreach (IWhiteCoreBackupModule module in modules)
+            foreach (IUniverseBackupModule module in modules)
                 module.BeginLoadModuleFromArchive(scene);
 
             while ((data = reader.ReadEntry(out filePath, out entryType)) != null)
             {
                 if (TarArchiveReader.TarEntryType.TYPE_DIRECTORY == entryType)
                     continue;
-                foreach (IWhiteCoreBackupModule module in modules)
+                foreach (IUniverseBackupModule module in modules)
                     module.LoadModuleFromArchive(data, filePath, entryType, scene);
             }
 
             reader.Close();
 
-            foreach (IWhiteCoreBackupModule module in modules)
+            foreach (IUniverseBackupModule module in modules)
                 module.EndLoadModuleFromArchive(scene);
         }
 
