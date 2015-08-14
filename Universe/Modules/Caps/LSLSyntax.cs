@@ -101,7 +101,7 @@ namespace Universe.Modules.Caps
             //
             // After determining what the LSLSyntax Caps exactly does:
             //
-            // * Request comes in to see what version the newRegion.InfiniteRegion = true; LSLSyntax.xml file is
+            // * Request comes in to see what version the currency LSLSyntax.xml file is
             //
             // * If version of LSLSyntax.xml file is older, request the new version through the Caps
             //

@@ -189,7 +189,7 @@ namespace Universe.Modules.Startup
 
         #region Per region backup class
 
-        protected class InternalSceneBackup : IBackupModule, IUniverseBackupModule
+        protected class InternalSceneBackup : IBackupModule, IWhiteCoreBackupModule
         {
             #region Declares
 
@@ -203,7 +203,7 @@ namespace Universe.Modules.Startup
             public InternalSceneBackup(IScene scene)
             {
                 m_scene = scene;
-                m_scene.StackModuleInterface<IUniverseBackupModule>(this);
+                m_scene.StackModuleInterface<IWhiteCoreBackupModule>(this);
                 m_scene.RegisterModuleInterface<IBackupModule>(this);
 
                 if (MainConsole.Instance != null)
@@ -580,7 +580,7 @@ namespace Universe.Modules.Startup
 
             #endregion
 
-            #region IUniverseBackupModule Methods
+            #region IWhiteCoreBackupModule Methods
 
             bool m_isArchiving = false;
             readonly List<UUID> m_missingAssets = new List<UUID>();

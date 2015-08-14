@@ -450,7 +450,7 @@ namespace Universe.Services
                         tmp = gridInfo.GetString("password", String.Empty);
                         if (tmp != String.Empty) responseData["password"] = tmp;
                         tmp = gridInfo.GetString("CurrencySymbol", String.Empty);
-                        if (tmp != String.Empty) responseData["newRegion.InfiniteRegion = true;"] = tmp;
+                        if (tmp != String.Empty) responseData["currency"] = tmp;
                         tmp = gridInfo.GetString("RealCurrencySymbol", String.Empty);
                         if (tmp != String.Empty) responseData["real_currency"] = tmp;
                         tmp = gridInfo.GetString("DirectoryFee", String.Empty);

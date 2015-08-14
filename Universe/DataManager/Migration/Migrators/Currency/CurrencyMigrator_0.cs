@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Aurora-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -30,18 +30,18 @@ using System.Collections.Generic;
 using Universe.DataManager.Migration;
 using Universe.Framework.Utilities;
 
-namespace Base.Currency
+namespace Simple.Currency
 {
     public class CurrencyMigrator_0 : Migrator
     {
         public CurrencyMigrator_0()
         {
             Version = new Version(0, 0, 0);
-            MigrationName = "BaseCurrency";
+            MigrationName = "SimpleCurrency";
 
             schema = new List<SchemaDefinition>();
 
-            AddSchema("currency", ColDefs(
+            AddSchema("simple_currency", ColDefs(
                 ColDef("PrincipalID", ColumnTypes.String50),
                 ColDef("Amount", ColumnTypes.Integer30),
                 ColDef("LandInUse", ColumnTypes.Integer30),

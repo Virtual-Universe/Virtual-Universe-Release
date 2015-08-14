@@ -1923,7 +1923,7 @@ namespace Universe.Services.DataService
                 profile.InsigniaID = groupInfo.GroupPicture;
                 profile.MaturePublish = groupInfo.MaturePublish;
                 profile.MembershipFee = groupInfo.MembershipFee;
-                profile.Money = 0; // TODO: Get this from the newRegion.InfiniteRegion = true; server?
+                profile.Money = 0; // TODO: Get this from the currency server?
                 profile.Name = groupInfo.GroupName;
                 profile.OpenEnrollment = groupInfo.OpenEnrollment;
                 profile.OwnerRole = groupInfo.OwnerRoleID;
