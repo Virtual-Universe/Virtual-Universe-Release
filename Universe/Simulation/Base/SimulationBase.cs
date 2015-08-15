@@ -224,11 +224,11 @@ namespace Universe.Simulation.Base
         /// </summary>
         public virtual void Startup()
         {
-            MainConsole.Instance.Info("====================================================================");
+            MainConsole.Instance.Info("==============================================================");
             MainConsole.Instance.Info(
-				        string.Format("==================== Starting Virtual Universe ({0}) ===============",
+				        string.Format("================= Starting Virtual Universe ({0}) ============",
                               (IntPtr.Size == 4 ? "x86" : "x64")));
-            MainConsole.Instance.Info("====================================================================");
+            MainConsole.Instance.Info("==============================================================");
             MainConsole.Instance.Info("[Virtual Universe Startup]: Version: " + Version + "\n");
             if (Environment.Is64BitOperatingSystem)
                 MainConsole.Instance.Info("[Virtual Universe Startup]: Running on 64 bit architecture");

@@ -189,9 +189,9 @@ namespace Universe.Simulation.Base
                     uint gridPort = 8002;
 
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("====================================================================");
-					Console.WriteLine("======================= Virtual Universe Configurator ==============");
-                    Console.WriteLine("====================================================================");
+                    Console.WriteLine("==============================================================");
+					Console.WriteLine("==================== Virtual Universe Configurator ===========");
+                    Console.WriteLine("==============================================================");
                     Console.ResetColor();
 
                     if (isUniverseExe)
@@ -536,7 +536,7 @@ namespace Universe.Simulation.Base
                         Console.WriteLine ("");
                     }
 
-                    Console.WriteLine("\n====================================================================\n");
+                    Console.WriteLine("\n==============================================================\n");
                     Console.ResetColor();
                     Console.WriteLine("Your grid name is ");
                     Console.ForegroundColor = ConsoleColor.Cyan;
@@ -556,7 +556,7 @@ namespace Universe.Simulation.Base
                         Console.WriteLine("http://" + gridIPAddress + ":" + gridPort +"/");
                         Console.ResetColor();
                     }
-                    Console.WriteLine("\n====================================================================\n");
+                    Console.WriteLine("\n==============================================================\n");
                     Console.WriteLine(
                         "To re-run this configurator, enter \"run configurator\" into the console.");
                     Console.ForegroundColor = ConsoleColor.Yellow;
