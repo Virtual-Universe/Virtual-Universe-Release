@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,11 +27,6 @@
 
 //#define BlockUnsupportedVersions
 
-using Universe.Framework.Configuration;
-using Universe.Framework.ConsoleFramework;
-using Universe.Framework.Modules;
-using Universe.Framework.Utilities;
-using Nini.Config;
 using System;
 using System.Diagnostics;
 using System.Globalization;
@@ -39,11 +34,16 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
+using Nini.Config;
+using Universe.Framework.Configuration;
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.Modules;
+using Universe.Framework.Utilities;
 
 namespace Universe.Simulation.Base
 {
     /// <summary>
-    ///     Starting class for the Universe Server
+    ///     Starting class for the Virtual Universe Server
     /// </summary>
     public class BaseApplication
     {
@@ -65,7 +65,6 @@ namespace Universe.Simulation.Base
 
         static bool _IsHandlingException; // Make sure we don't go recursive on ourselves
 
-        //could move our main function into OpenSimMain and kill this class
         public static void BaseMain(string[] args, string defaultIniFile, ISimulationBase simBase)
         {
             // First line, hook the appdomain to the crash reporter
@@ -81,12 +80,12 @@ namespace Universe.Simulation.Base
             // Increase the number of IOCP threads available. Mono defaults to a tragically low number
             int workerThreads, iocpThreads;
             ThreadPool.GetMaxThreads(out workerThreads, out iocpThreads);
-            //MainConsole.Instance.InfoFormat("[Universe MAIN]: Runtime gave us {0} worker threads and {1} IOCP threads", workerThreads, iocpThreads);
+            //MainConsole.Instance.InfoFormat("[Virtual Universe Main]: Runtime gave us {0} worker threads and {1} IOCP threads", workerThreads, iocpThreads);
             if (workerThreads < 500 || iocpThreads < 1000)
             {
                 workerThreads = 500;
                 iocpThreads = 1000;
-                //MainConsole.Instance.Info("[Universe MAIN]: Bumping up to 500 worker threads and 1000 IOCP threads");
+                //MainConsole.Instance.Info("[Virtual Universe Main]: Bumping up to 500 worker threads and 1000 IOCP threads");
                 ThreadPool.SetMaxThreads(workerThreads, iocpThreads);
             }
 
@@ -147,18 +146,18 @@ namespace Universe.Simulation.Base
                 if (!requested)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-					Console.WriteLine("\n\n************* Universe initial run. *************");
+					Console.WriteLine("\n\n************* Virtual Universe initial run. *************");
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     Console.WriteLine(
-                        "\n\n   This appears to be your first time running Universe.\n"+
+                        "\n\n   This appears to be your first time running Virtual Universe.\n"+
                         "If you have already configured your *.ini files, please ignore this warning and press enter;\n" +
-                        "Otherwise type 'yes' and Universe will guide you through the configuration process.\n\n"+
+                        "Otherwise type 'yes' and Virtual Universe will guide you through the configuration process.\n\n"+
                         "Remember, these file names are Case Sensitive in Linux and Proper Cased.\n"+
                         "1. " + Universe_ConfigDir + "/Universe.ini\nand\n" +
                         "2. " + Universe_ConfigDir + "/Sim/Standalone/StandaloneCommon.ini \nor\n" +
                         "3. " + Universe_ConfigDir + "/Grid/GridCommon.ini\n" +
                         "\nAlso, you will want to examine these files in great detail because only the basic system will " +
-                        "load by default. Universe can do a LOT more if you spend a little time going through these files.\n\n");
+                        "load by default. Virtual Universe can do a LOT more if you spend a little time going through these files.\n\n");
                 }
 
                 // Make sure...
@@ -168,7 +167,7 @@ namespace Universe.Simulation.Base
                 Console.WriteLine("This will overwrite any existing configuration files!");
                 Console.ResetColor();
                 Console.WriteLine ("");
-                resp = ReadLine("Do you want to configure Universe now?  (yes/no)", resp);
+                resp = ReadLine("Do you want to configure Virtual Universe now?  (yes/no)", resp);
 
                 if (resp == "yes")
                 {
@@ -191,7 +190,7 @@ namespace Universe.Simulation.Base
 
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("====================================================================");
-					Console.WriteLine("======================= Universe CONFIGURATOR =====================");
+					Console.WriteLine("======================= Virtual Universe Configurator ==============");
                     Console.WriteLine("====================================================================");
                     Console.ResetColor();
 
@@ -227,7 +226,7 @@ namespace Universe.Simulation.Base
                             Console.ForegroundColor = ConsoleColor.White;
                             Console.WriteLine(
                                 "\nNote: this setup does not automatically create a MySQL installation for you.\n" +
-                                " This will configure the Universe setting but you must install MySQL as well");
+                                " This will configure the Virtual Universe setting but you must install MySQL as well");
                             Console.ResetColor();
 
                             dbSource = ReadLine("MySQL database IP", dbSource);
@@ -244,7 +243,7 @@ namespace Universe.Simulation.Base
 
                     if (isStandalone)
                     {
-                        gridName = ReadLine("Name of your Universe-Sim Grid", gridName);
+                        gridName = ReadLine("Name of your Virtual Universe Grid", gridName);
 
                         welcomeMessage = "Welcome to " + gridName + ", <USERNAME>!";
                         Console.ForegroundColor = ConsoleColor.White;

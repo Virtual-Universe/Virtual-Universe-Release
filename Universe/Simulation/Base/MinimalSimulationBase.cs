@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -58,7 +58,7 @@ namespace Universe.Simulation.Base
         protected ConfigurationLoader m_configurationLoader;
 
         /// <value>
-        ///     The config information passed into the Universe server.
+        ///     The config information passed into the Virtual Universe server.
         /// </value>
         protected IConfigSource m_config;
 
@@ -238,9 +238,9 @@ namespace Universe.Simulation.Base
             if (MainConsole.Instance != null)
             {
                 MainConsole.Instance.DefaultPrompt = m_consolePrompt;
-                MainConsole.Instance.Info(string.Format("[MINUniverse]: STARTING MIN Universe ({0})...",
+                MainConsole.Instance.Info(string.Format("[Min Virtual Universe]: Starting Min Virtual Universe ({0})...",
                                                         (IntPtr.Size == 4 ? "x86" : "x64")));
-                MainConsole.Instance.Info("[MINUniverse]: Version: " + Version + "\n");
+                MainConsole.Instance.Info("[Min Virtual Universe]: Version: " + Version + "\n");
             }
         }
 
@@ -249,7 +249,7 @@ namespace Universe.Simulation.Base
         /// </summary>
         public virtual void Startup()
         {
-            MainConsole.Instance.Info("[MINUniverse]: Startup completed in " +
+            MainConsole.Instance.Info("[Min Virtual Universe]: Startup completed in " +
                                       (DateTime.Now - this.StartupTime).TotalSeconds);
         }
 
@@ -502,7 +502,7 @@ namespace Universe.Simulation.Base
         public virtual void HandleForceGC(IScene scene, string[] cmd)
         {
             GC.Collect();
-            MainConsole.Instance.Warn("Garbage collection finished");
+            MainConsole.Instance.Warn("[Garbage Collector]: Garbage collection finished");
         }
 
         public virtual void runConfig(IScene scene, string[] cmd)
