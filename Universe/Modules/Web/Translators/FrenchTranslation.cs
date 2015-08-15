@@ -190,9 +190,9 @@
                 case "MenuWelcomeScreenManager": return "Gestion Ecran Bienvenue";
                 case "MenuNewsManager": return "Gestion des News";
                 case "MenuUserManager": return "Gestion Utilisateurs";
-                case "MenuFactoryReset": return "Réinitialiser";
-                case "ResetMenuInfoText": return "Réinitialise les éléments de menu aux valeurs par défaut les plus à jour";
-                case "ResetSettingsInfoText": return "Réinitialise les réglages de l'interface Web aux valeurs par défaut les plus à jour";
+                case "MenuFactoryReset": return "RéInitializer";
+                case "ResetMenuInfoText": return "RéInitialize les éléments de menu aux valeurs par défaut les plus à jour";
+                case "ResetSettingsInfoText": return "RéInitialize les réglages de l'interface Web aux valeurs par défaut les plus à jour";
                 case "MenuPageManager": return "Gestion des Pages";
                 case "MenuSettingsManager": return "Gestion des paramètres";
                 case "MenuManager": return "Gestion";
@@ -225,7 +225,7 @@
                 case "TooltipsMenuWelcomeScreenManager": return "Gestionnaire de l'Ecran de Bienvenue";
                 case "TooltipsMenuNewsManager": return "Gestionnaire des News";
                 case "TooltipsMenuUserManager": return "Gestionnaire des Utilisateurs";
-                case "TooltipsMenuFactoryReset": return "Réinitialiser";
+                case "TooltipsMenuFactoryReset": return "RéInitializer";
                 case "TooltipsMenuPageManager": return "Gestionnaire de Pages";
                 case "TooltipsMenuSettingsManager": return "Gestionnaire de paramètres";
                 case "TooltipsMenuManager": return "Gestion Administrative";
@@ -466,20 +466,20 @@
 
                 //factory_reset
                 case "FactoryReset":
-                    return "Réinitialiser";
+                    return "RéInitializer";
                 case "ResetMenuText":
-                    return "Réinitialiser les paramètres par défaut du menu";
+                    return "RéInitializer les paramètres par défaut du menu";
                 case "ResetSettingsText":
                     return "Rétablir les paramètres Web (page Gestionnaire de paramètres) par défaut";
                 case "Reset":
-                    return "Réinitialiser";
+                    return "RéInitializer";
                 case "Settings":
                     return "Paramètres";
                 case "Pages":
                     return "Pages";
                 case "DefaultsUpdated":
                     return
-                        "Mise à jour par défaut, rendez-vous sur \"Réinitialiseré\" ou \"Gestionnaire de paramètres\" pour désactiver cet avertissement.";
+                        "Mise à jour par défaut, rendez-vous sur \"RéInitializeré\" ou \"Gestionnaire de paramètres\" pour désactiver cet avertissement.";
 
                 //page_manager
                 case "PageManager":

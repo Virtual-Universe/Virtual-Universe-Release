@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -150,11 +150,11 @@ namespace Universe.Region
             foreach (IScene scene in m_scenes)
             {
                 scene.Config = config;
-                scene.PhysicsScene.PostInitialise(config);
+                scene.PhysicsScene.PostInitialize(config);
             }
         }
 
-        public void PostInitialise()
+        public void PostInitialize()
         {
         }
 
@@ -473,7 +473,7 @@ namespace Universe.Region
             //Then finish the rest of the SharedRegionStartupModules
             foreach (ISharedRegionStartupModule module in m_startupPlugins)
             {
-                module.PostInitialise(scene, m_config, m_SimBase);
+                module.PostInitialize(scene, m_config, m_SimBase);
             }
             foreach (ISharedRegionStartupModule module in m_startupPlugins)
             {

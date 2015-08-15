@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -42,13 +42,13 @@ namespace Universe.Framework.Modules
         void Initialize(IScene scene, IConfigSource source, ISimulationBase simBase);
 
         /// <summary>
-        ///     PostInitialise the module
+        ///     PostInitialize the module
         ///     This is used by IServices, DO NOT USE ANYTHING THAT REQUIRES IService here!
         /// </summary>
         /// <param name="scene"></param>
         /// <param name="source"></param>
         /// <param name="simBase"></param>
-        void PostInitialise(IScene scene, IConfigSource source, ISimulationBase simBase);
+        void PostInitialize(IScene scene, IConfigSource source, ISimulationBase simBase);
 
         /// <summary>
         ///     Do the functions of the module and set up any necessary functions

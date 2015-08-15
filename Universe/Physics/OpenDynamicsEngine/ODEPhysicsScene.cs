@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -259,7 +259,7 @@ namespace Universe.Physics.OpenDynamicsEngine
             WorldExtents = new Vector2(m_region.RegionSizeX, m_region.RegionSizeY);
         }
 
-        public override void PostInitialise(IConfigSource config)
+        public override void PostInitialize(IConfigSource config)
         {
             m_rayCastManager = new UniverseODERayCastRequestManager(this);
             m_config = config;
@@ -1529,7 +1529,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                                             	if (RegionTerrain != IntPtr.Zero)
                                                 {
 					                        		IntPtr sGeomIsIn = d.GeomGetSpace(RegionTerrain);       // 20140729 -greythane- this seems to correct the spaceremove crash
-                        							if (sGeomIsIn != IntPtr.Zero)                           // maybe 'space' has not yet been initialised??
+                        							if (sGeomIsIn != IntPtr.Zero)                           // maybe 'space' has not yet been Initialized??
                         							{
                             							if (d.GeomIsSpace(sGeomIsIn))
                                 							d.SpaceRemove(sGeomIsIn, RegionTerrain);
