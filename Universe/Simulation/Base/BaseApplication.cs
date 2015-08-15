@@ -174,9 +174,9 @@ namespace Universe.Simulation.Base
                     string cfgFolder = Universe_ConfigDir + "/";           // Main Config folder >> "../Config" (default)
 
                     string dbSource = "localhost";
-					string dbPasswd = "Universe";
-					string dbSchema = "Universe";
-					string dbUser = "Universe";
+					string dbPasswd = "universe";
+					string dbSchema = "universe";
+					string dbUser = "universe";
                     string dbPort = "3306";
                     string gridIPAddress = Utilities.GetExternalIp();
                     string regionIPAddress = gridIPAddress;
