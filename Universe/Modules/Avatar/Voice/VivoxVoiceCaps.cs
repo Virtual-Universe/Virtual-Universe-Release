@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,15 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
-using Universe.Framework.ConsoleFramework;
-using Universe.Framework.Modules;
-using Universe.Framework.Servers.HttpServer;
-using Universe.Framework.Servers.HttpServer.Implementation;
-using Universe.Framework.Services;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -41,6 +32,14 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Xml;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.Modules;
+using Universe.Framework.Servers.HttpServer;
+using Universe.Framework.Servers.HttpServer.Implementation;
+using Universe.Framework.Services;
 
 namespace Universe.Modules
 {
@@ -134,14 +133,14 @@ namespace Universe.Modules
                 // Validate against constraints and default if necessary
                 if (m_vivoxChannelRollOff < CHAN_ROLL_OFF_MIN || m_vivoxChannelRollOff > CHAN_ROLL_OFF_MAX)
                 {
-                    MainConsole.Instance.WarnFormat("[VivoxVoice] Invalid value for roll off ({0}), reset to {1}.",
+                    MainConsole.Instance.WarnFormat("[Vivox Voice] Invalid value for roll off ({0}), reset to {1}.",
                                                     m_vivoxChannelRollOff, CHAN_ROLL_OFF_DEFAULT);
                     m_vivoxChannelRollOff = CHAN_ROLL_OFF_DEFAULT;
                 }
 
                 if (m_vivoxChannelMaximumRange < CHAN_MAX_RANGE_MIN || m_vivoxChannelMaximumRange > CHAN_MAX_RANGE_MAX)
                 {
-                    MainConsole.Instance.WarnFormat("[VivoxVoice] Invalid value for maximum range ({0}), reset to {1}.",
+                    MainConsole.Instance.WarnFormat("[Vivox Voice] Invalid value for maximum range ({0}), reset to {1}.",
                                                     m_vivoxChannelMaximumRange, CHAN_MAX_RANGE_DEFAULT);
                     m_vivoxChannelMaximumRange = CHAN_MAX_RANGE_DEFAULT;
                 }
@@ -150,7 +149,7 @@ namespace Universe.Modules
                     m_vivoxChannelClampingDistance > CHAN_CLAMPING_DISTANCE_MAX)
                 {
                     MainConsole.Instance.WarnFormat(
-                        "[VivoxVoice] Invalid value for clamping distance ({0}), reset to {1}.",
+                        "[Vivox Voice] Invalid value for clamping distance ({0}), reset to {1}.",
                         m_vivoxChannelClampingDistance, CHAN_CLAMPING_DISTANCE_DEFAULT);
                     m_vivoxChannelClampingDistance = CHAN_CLAMPING_DISTANCE_DEFAULT;
                 }
@@ -167,7 +166,7 @@ namespace Universe.Modules
                         break;
                     default:
                         MainConsole.Instance.WarnFormat(
-                            "[VivoxVoice] Invalid value for channel mode ({0}), reset to {1}.",
+                            "[Vivox Voice] Invalid value for channel mode ({0}), reset to {1}.",
                             m_vivoxChannelMode, CHAN_MODE_DEFAULT);
                         m_vivoxChannelMode = CHAN_MODE_DEFAULT;
                         break;
@@ -181,7 +180,7 @@ namespace Universe.Modules
                         break;
                     default:
                         MainConsole.Instance.WarnFormat(
-                            "[VivoxVoice] Invalid value for channel type ({0}), reset to {1}.",
+                            "[Vivox Voice] Invalid value for channel type ({0}), reset to {1}.",
                             m_vivoxChannelType, CHAN_TYPE_DEFAULT);
                         m_vivoxChannelType = CHAN_TYPE_DEFAULT;
                         break;
@@ -195,25 +194,25 @@ namespace Universe.Modules
                     String.IsNullOrEmpty(m_vivoxAdminUser) ||
                     String.IsNullOrEmpty(m_vivoxAdminPassword))
                 {
-                    MainConsole.Instance.Error("[VivoxVoice] plugin has wrong configuration");
-                    MainConsole.Instance.Info("[VivoxVoice] plugin disabled: incomplete configuration");
+                    MainConsole.Instance.Error("[Vivox Voice] plugin has wrong configuration");
+                    MainConsole.Instance.Info("[Vivox Voice] plugin disabled: incomplete configuration");
                     return;
                 }
 
-                MainConsole.Instance.InfoFormat("[VivoxVoice] using vivox server {0}", m_vivoxServer);
+                MainConsole.Instance.InfoFormat("[Vivox Voice] using vivox server {0}", m_vivoxServer);
 
                 // Get admin rights and cleanup any residual channel definition
 
                 DoAdminLogin();
 
-                MainConsole.Instance.Info("[VivoxVoice]: plugin enabled");
+                MainConsole.Instance.Info("[Vivox Voice]: plugin enabled");
 
                 registry.RegisterModuleInterface<IVoiceService>(this);
                 m_registry = registry;
             }
             catch (Exception e)
             {
-                MainConsole.Instance.ErrorFormat("[VivoxVoice] plugin initialization failed: {0}", e.ToString());
+                MainConsole.Instance.ErrorFormat("[Vivox Voice] plugin initialization failed: {0}", e.ToString());
             }
         }
 
@@ -223,8 +222,6 @@ namespace Universe.Modules
 
         public void FinishedStartup()
         {
-            //if (m_pluginEnabled)
-            //    VivoxLogout();
         }
 
         #region IVoiceModule Members
@@ -257,7 +254,7 @@ namespace Universe.Modules
                             {
                                 case "201": // Account expired
                                     MainConsole.Instance.ErrorFormat(
-                                        "[VivoxVoice]: avatar \"{0}\": Get account information failed : expired credentials",
+                                        "[Vivox Voice]: avatar \"{0}\": Get account information failed : expired credentials",
                                         regionClient.ClientCaps.AccountInfo.Name);
                                     m_adminConnected = false;
                                     retry = DoAdminLogin();
@@ -265,19 +262,19 @@ namespace Universe.Modules
 
                                 case "202": // Missing credentials
                                     MainConsole.Instance.ErrorFormat(
-                                        "[VivoxVoice]: avatar \"{0}\": Get account information failed : missing credentials",
+                                        "[Vivox Voice]: avatar \"{0}\": Get account information failed : missing credentials",
                                         regionClient.ClientCaps.AccountInfo.Name);
                                     break;
 
                                 case "212": // Not authorized
                                     MainConsole.Instance.ErrorFormat(
-                                        "[VivoxVoice]: avatar \"{0}\": Get account information failed : not authorized",
+                                        "[Vivox Voice]: avatar \"{0}\": Get account information failed : not authorized",
                                         regionClient.ClientCaps.AccountInfo.Name);
                                     break;
 
                                 case "300": // Required parameter missing
                                     MainConsole.Instance.ErrorFormat(
-                                        "[VivoxVoice]: avatar \"{0}\": Get account information failed : parameter missing",
+                                        "[Vivox Voice]: avatar \"{0}\": Get account information failed : parameter missing",
                                         regionClient.ClientCaps.AccountInfo.Name);
                                     break;
 
@@ -290,7 +287,7 @@ namespace Universe.Modules
                                         {
                                             case "201": // Account expired
                                                 MainConsole.Instance.ErrorFormat(
-                                                    "[VivoxVoice]: avatar \"{0}\": Create account information failed : expired credentials",
+                                                    "[Vivox Voice]: avatar \"{0}\": Create account information failed : expired credentials",
                                                     regionClient.ClientCaps.AccountInfo.Name);
                                                 m_adminConnected = false;
                                                 retry = DoAdminLogin();
@@ -298,25 +295,25 @@ namespace Universe.Modules
 
                                             case "202": // Missing credentials
                                                 MainConsole.Instance.ErrorFormat(
-                                                    "[VivoxVoice]: avatar \"{0}\": Create account information failed : missing credentials",
+                                                    "[Vivox Voice]: avatar \"{0}\": Create account information failed : missing credentials",
                                                     regionClient.ClientCaps.AccountInfo.Name);
                                                 break;
 
                                             case "212": // Not authorized
                                                 MainConsole.Instance.ErrorFormat(
-                                                    "[VivoxVoice]: avatar \"{0}\": Create account information failed : not authorized",
+                                                    "[Vivox Voice]: avatar \"{0}\": Create account information failed : not authorized",
                                                     regionClient.ClientCaps.AccountInfo.Name);
                                                 break;
 
                                             case "300": // Required parameter missing
                                                 MainConsole.Instance.ErrorFormat(
-                                                    "[VivoxVoice]: avatar \"{0}\": Create account information failed : parameter missing",
+                                                    "[Vivox Voice]: avatar \"{0}\": Create account information failed : parameter missing",
                                                     regionClient.ClientCaps.AccountInfo.Name);
                                                 break;
 
                                             case "400": // Create failed
                                                 MainConsole.Instance.ErrorFormat(
-                                                    "[VivoxVoice]: avatar \"{0}\": Create account information failed : create failed",
+                                                    "[Vivox Voice]: avatar \"{0}\": Create account information failed : create failed",
                                                     regionClient.ClientCaps.AccountInfo.Name);
                                                 break;
                                         }
@@ -325,7 +322,7 @@ namespace Universe.Modules
 
                                 case "404": // Failed to retrieve account
                                     MainConsole.Instance.ErrorFormat(
-                                        "[VivoxVoice]: avatar \"{0}\": Get account information failed : retrieve failed");
+                                        "[Vivox Voice]: avatar \"{0}\": Get account information failed : retrieve failed");
                                     // [AMW] Sleep and retry for a fixed period? Or just abandon?
                                     break;
                             }
@@ -337,7 +334,7 @@ namespace Universe.Modules
             if (code != "OK")
             {
                 MainConsole.Instance.DebugFormat(
-                    "[VivoxVoice][PROVISIONVOICE]: Get Account Request failed for \"{0}\"",
+                    "[Vivox Voice][Provision Voice]: Get Account Request failed for \"{0}\"",
                     regionClient.ClientCaps.AccountInfo.Name);
                 throw new Exception("Unable to execute request");
             }
@@ -424,7 +421,7 @@ namespace Universe.Modules
                 if (VivoxTryGetDirectory(sceneUUID + "D", out channelId))
                 {
                     MainConsole.Instance.DebugFormat(
-                        "[VivoxVoice]: region {0}: uuid {1}: located directory id {2}",
+                        "[Vivox Voice]: region {0}: uuid {1}: located directory id {2}",
                         sceneName, sceneUUID, channelId);
 
                     XmlElement children = VivoxListChildren(channelId);
@@ -443,7 +440,7 @@ namespace Universe.Modules
                             {
                                 if (!IsOK(VivoxDeleteChannel(channelId, id)))
                                     MainConsole.Instance.WarnFormat(
-                                        "[VivoxVoice] Channel delete failed {0}:{1}:{2}",
+                                        "[Vivox Voice] Channel delete failed {0}:{1}:{2}",
                                         i, channelId, id);
                             }
                         }
@@ -456,12 +453,11 @@ namespace Universe.Modules
                                                  out channelId))
                     {
                         MainConsole.Instance.WarnFormat(
-                            "[VivoxVoice] Create failed <{0}:{1}:{2}>",
+                            "[Vivox Voice] Create failed <{0}:{1}:{2}>",
                             "*", sceneUUID, sceneName);
                         channelId = String.Empty;
                     }
                 }
-
 
                 // Create a dictionary entry unconditionally. This eliminates the
                 // need to check for a parent in the core code. The end result is
@@ -492,7 +488,7 @@ namespace Universe.Modules
                 landName = String.Format("{0}:{1}", regionName, parcelName);
                 landUUID = parcelID.ToString();
                 MainConsole.Instance.TraceFormat(
-                    "[VivoxVoice]: Region:Parcel \"{0}\": parcel id {1}: using channel name {2}",
+                    "[Vivox Voice]: Region:Parcel \"{0}\": parcel id {1}: using channel name {2}",
                     landName, localID, landUUID);
             }
             else
@@ -500,7 +496,7 @@ namespace Universe.Modules
                 landName = String.Format("{0}:{1}", regionName, regionName);
                 landUUID = regionID.ToString();
                 MainConsole.Instance.TraceFormat(
-                    "[VivoxVoice]: Region:Parcel \"{0}\": parcel id {1}: using channel name {2}",
+                    "[Vivox Voice]: Region:Parcel \"{0}\": parcel id {1}: using channel name {2}",
                     landName, localID, landUUID);
             }
 
@@ -508,14 +504,14 @@ namespace Universe.Modules
             {
                 // Added by Adam to help debug channel not available errors.
                 if (VivoxTryGetChannel(voiceParentID, landUUID, out channelId, out channelUri))
-                    MainConsole.Instance.DebugFormat("[VivoxVoice] Found existing channel at " + channelUri);
+                    MainConsole.Instance.DebugFormat("[Vivox Voice] Found existing channel at " + channelUri);
                 else if (VivoxTryCreateChannel(voiceParentID, landUUID, landName, out channelUri))
-                    MainConsole.Instance.InfoFormat("[VivoxVoice] Created new channel at {0} for {1}", channelUri, regionName);
+                    MainConsole.Instance.InfoFormat("[Vivox Voice] Created new channel at {0} for {1}", channelUri, regionName);
                 else
                     throw new Exception("vivox channel uri not available");
 
                 MainConsole.Instance.TraceFormat(
-                    "[VivoxVoice]: Region:Parcel \"{0}\": parent channel id {1}: retrieved parcel channel_uri {2} ",
+                    "[Vivox Voice]: Region:Parcel \"{0}\": parent channel id {1}: retrieved parcel channel_uri {2} ",
                     landName, voiceParentID, channelUri);
             }
 
@@ -539,27 +535,20 @@ namespace Universe.Modules
                 }
                 // Added by Adam to help debug channel not availible errors.
                 if (VivoxTryGetChannel(parentID, channelID, out channelID, out channelUri))
-                    MainConsole.Instance.DebugFormat("[VivoxVoice] Found existing channel at " + channelUri);
+                    MainConsole.Instance.DebugFormat("[Vivox Voice] Found existing channel at " + channelUri);
                 else if (VivoxTryCreateChannel(parentID, "Conff" + sessionid.ToString(), "Conff" + sessionid.ToString(),
                                                out channelUri))
-                    MainConsole.Instance.DebugFormat("[VivoxVoice] Created new channel at " + channelUri);
+                    MainConsole.Instance.DebugFormat("[Vivox Voice] Created new channel at " + channelUri);
                 else
                     throw new Exception("vivox channel uri not available");
 
-                MainConsole.Instance.TraceFormat("[VivoxVoice]: Conference \"{0}\": retrieved parcel channel_uri {1} ",
+                MainConsole.Instance.TraceFormat("[Vivox Voice]: Conference \"{0}\": retrieved parcel channel_uri {1} ",
                                                  channelID, channelUri);
             }
             voice_credentials["channel_uri"] = channelUri;
             voice_credentials["channel_credentials"] = "";
             map["voice_credentials"] = voice_credentials;
 
-            // <llsd><map>
-            //       <key>session-id</key><string>c0da7611-9405-e3a4-0172-c36a1120c77a</string>
-            //       <key>voice_credentials</key><map>
-            //           <key>channel_credentials</key><string>rh1iIIiT2v+ebJjRI+klpFHjFmo</string>
-            //           <key>channel_uri</key><string>sip:confctl-12574742@bhr.vivox.com</string>
-            //       </map>
-            // </map></llsd>
             return map;
         }
 
@@ -579,7 +568,6 @@ namespace Universe.Modules
             return VivoxCall(requrl, false);
         }
 
-
         private static readonly string m_vivoxLogoutPath = "http://{0}/api2/viv_signout.php?auth_token={1}";
 
         /// <summary>
@@ -590,7 +578,6 @@ namespace Universe.Modules
             string requrl = String.Format(m_vivoxLogoutPath, m_vivoxServer, m_authToken);
             return VivoxCall(requrl, false);
         }
-
 
         private static readonly string m_vivoxGetAccountPath =
             "http://{0}/api2/viv_get_acct.php?auth_token={1}&user_name={2}";
@@ -621,7 +608,6 @@ namespace Universe.Modules
             return VivoxCall(requrl, true);
         }
 
-
         private static readonly string m_vivoxPasswordPath =
             "http://{0}/api2/viv_adm_password.php?user_name={1}&new_pwd={2}&auth_token={3}";
 
@@ -633,7 +619,6 @@ namespace Universe.Modules
             string requrl = String.Format(m_vivoxPasswordPath, m_vivoxServer, user, password, m_authToken);
             return VivoxCall(requrl, true);
         }
-
 
         private static readonly string m_vivoxChannelPath =
             "http://{0}/api2/viv_chan_mod.php?mode={1}&chan_name={2}&auth_token={3}";
@@ -688,11 +673,6 @@ namespace Universe.Modules
         {
             string requrl = String.Format(m_vivoxChannelPath, m_vivoxServer, "create", dirId, m_authToken);
 
-            // if (parent != null && parent != String.Empty)
-            // {
-            //     requrl = String.Format("{0}&chan_parent={1}", requrl, parent);
-            // }
-
             if (!string.IsNullOrEmpty(description))
             {
                 requrl = String.Format("{0}&chan_desc={1}", requrl, description);
@@ -733,8 +713,6 @@ namespace Universe.Modules
             {
                 int channels = Convert.ToInt32(count);
 
-                // Bug in Vivox Server r2978 where count returns 0
-                // Found by Adam
                 if (channels == 0)
                 {
                     for (int j = 0; j < 100; j++)
@@ -759,7 +737,7 @@ namespace Universe.Modules
                     if (!XmlFind(resp, "response.level0.channel-search.channels.channels.level4.type", i, out type) ||
                         (type != "channel" && type != "positional_M"))
                     {
-                        MainConsole.Instance.Debug("[VivoxVoice] Skipping Channel " + i + " as it's not a channel.");
+                        MainConsole.Instance.Debug("[Vivox Voice] Skipping Channel " + i + " as it's not a channel.");
                         continue;
                     }
 
@@ -767,7 +745,7 @@ namespace Universe.Modules
                     if (!XmlFind(resp, "response.level0.channel-search.channels.channels.level4.name", i, out name) ||
                         name != channelName)
                     {
-                        MainConsole.Instance.Debug("[VivoxVoice] Skipping Channel " + i + " as it has no name.");
+                        MainConsole.Instance.Debug("[Vivox Voice] Skipping Channel " + i + " as it has no name.");
                         continue;
                     }
 
@@ -775,7 +753,7 @@ namespace Universe.Modules
                     if (channelParent != null &&
                         !XmlFind(resp, "response.level0.channel-search.channels.channels.level4.parent", i, out parent))
                     {
-                        MainConsole.Instance.Debug("[VivoxVoice] Skipping Channel " + i + "/" + name +
+                        MainConsole.Instance.Debug("[Vivox Voice] Skipping Channel " + i + "/" + name +
                                                    " as it's parent doesn't match");
                         continue;
                     }
@@ -783,7 +761,7 @@ namespace Universe.Modules
                     // skip if no channel id available
                     if (!XmlFind(resp, "response.level0.channel-search.channels.channels.level4.id", i, out id))
                     {
-                        MainConsole.Instance.Debug("[VivoxVoice] Skipping Channel " + i + "/" + name +
+                        MainConsole.Instance.Debug("[Vivox Voice] Skipping Channel " + i + "/" + name +
                                                    " as it has no channel ID");
                         continue;
                     }
@@ -791,7 +769,7 @@ namespace Universe.Modules
                     // skip if no channel uri available
                     if (!XmlFind(resp, "response.level0.channel-search.channels.channels.level4.uri", i, out uri))
                     {
-                        MainConsole.Instance.Debug("[VivoxVoice] Skipping Channel " + i + "/" + name +
+                        MainConsole.Instance.Debug("[Vivox Voice] Skipping Channel " + i + "/" + name +
                                                    " as it has no channel URI");
                         continue;
                     }
@@ -804,14 +782,14 @@ namespace Universe.Modules
             }
             else
             {
-                MainConsole.Instance.Debug("[VivoxVoice] No count element?");
+                MainConsole.Instance.Debug("[Vivox Voice] No count element?");
             }
 
             channelId = String.Empty;
             channelUri = String.Empty;
 
             // Useful incase something goes wrong.
-            //MainConsole.Instance.Debug("[VivoxVoice] Could not find channel in XMLRESP: " + resp.InnerXml);
+            //MainConsole.Instance.Debug("[Vivox Voice] Could not find channel in XMLRESP: " + resp.InnerXml);
 
             return false;
         }
@@ -855,18 +833,6 @@ namespace Universe.Modules
             return false;
         }
 
-        // private static readonly string m_vivoxChannelById = "http://{0}/api2/viv_chan_mod.php?mode={1}&chan_id={2}&auth_token={3}";
-
-        // private XmlElement VivoxGetChannelById(string parent, string channelid)
-        // {
-        //     string requrl = String.Format(m_vivoxChannelById, m_vivoxServer, "get", channelid, m_authToken);
-
-        //     if (parent != null && parent != String.Empty)
-        //         return VivoxGetChild(parent, channelid);
-        //     else
-        //         return VivoxCall(requrl, true);
-        // }
-
         /// <summary>
         ///     Delete a channel.
         ///     Once again, there a multitude of options possible. In the simplest case
@@ -903,37 +869,6 @@ namespace Universe.Modules
             return VivoxCall(requrl, true);
         }
 
-        // private XmlElement VivoxGetChild(string parent, string child)
-        // {
-
-        //     XmlElement children = VivoxListChildren(parent);
-        //     string count;
-
-        //    if (XmlFind(children, "response.level0.channel-search.count", out count))
-        //     {
-        //         int cnum = Convert.ToInt32(count);
-        //         for (int i = 0; i < cnum; i++)
-        //         {
-        //             string name;
-        //             string id;
-        //             if (XmlFind(children, "response.level0.channel-search.channels.channels.level4.name", i, out name))
-        //             {
-        //                 if (name == child)
-        //                 {
-        //                    if (XmlFind(children, "response.level0.channel-search.channels.channels.level4.id", i, out id))
-        //                     {
-        //                         return VivoxGetChannelById(null, id);
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //     }
-
-        //     // One we *know* does not exist.
-        //     return VivoxGetChannel(null, Guid.NewGuid().ToString());
-
-        // }
-
         /// <summary>
         ///     This method handles the WEB side of making a request over the
         ///     Vivox interface. The returned values are transferred to a hash
@@ -955,7 +890,7 @@ namespace Universe.Modules
             try
             {
                 // Otherwise prepare the request
-                MainConsole.Instance.TraceFormat("[VivoxVoice] Sending request <{0}>", requrl);
+                MainConsole.Instance.TraceFormat("[Vivox Voice] Sending request <{0}>", requrl);
 
                 HttpWebRequest req = (HttpWebRequest) WebRequest.Create(requrl);
                 HttpWebResponse rsp = null;
@@ -972,7 +907,7 @@ namespace Universe.Modules
             }
             catch (Exception e)
             {
-                MainConsole.Instance.ErrorFormat("[VivoxVoice] Error in admin call : {0}", e.Message);
+                MainConsole.Instance.ErrorFormat("[Vivox Voice] Error in admin call : {0}", e.Message);
             }
 
             // If we're debugging server responses, dump the whole
@@ -999,7 +934,7 @@ namespace Universe.Modules
         /// </summary>
         private bool DoAdminLogin()
         {
-            MainConsole.Instance.Debug("[VivoxVoice] Establishing admin connection");
+            MainConsole.Instance.Debug("[Vivox Voice] Establishing admin connection");
 
             lock (vlock)
             {
@@ -1014,18 +949,18 @@ namespace Universe.Modules
                     {
                         if (status == "Ok")
                         {
-                            MainConsole.Instance.Info("[VivoxVoice] Admin connection established");
+                            MainConsole.Instance.Info("[Vivox Voice] Admin connection established");
                             if (XmlFind(resp, "response.level0.body.auth_token", out m_authToken))
                             {
                                 if (m_dumpXml)
-                                    MainConsole.Instance.TraceFormat("[VivoxVoice] Auth Token <{0}>",
+                                    MainConsole.Instance.TraceFormat("[Vivox Voice] Auth Token <{0}>",
                                                                      m_authToken);
                                 m_adminConnected = true;
                             }
                         }
                         else
                         {
-                            MainConsole.Instance.WarnFormat("[VivoxVoice] Admin connection failed, status = {0}",
+                            MainConsole.Instance.WarnFormat("[Vivox Voice] Admin connection failed, status = {0}",
                                                             status);
                         }
                     }
@@ -1203,14 +1138,14 @@ namespace Universe.Modules
                 map["voice_sip_uri_hostname"] = m_vivoxSipUri;
                 map["voice_account_server_name"] = m_vivoxVoiceAccountApi;
 
-                MainConsole.Instance.DebugFormat("[VivoxVoice][PROVISIONVOICE]: avatar \"{0}\" added",
+                MainConsole.Instance.DebugFormat("[Vivox Voice][Provision Voice]: avatar \"{0}\" added",
                                                  m_service.ClientCaps.AccountInfo.Name);
 
                 return OSDParser.SerializeLLSDXmlBytes(map);
             }
             catch (Exception e)
             {
-                MainConsole.Instance.ErrorFormat("[VivoxVoice][PROVISIONVOICE]: : {0}, retry later", e.ToString());
+                MainConsole.Instance.ErrorFormat("[Vivox Voice][Provision Voice]: : {0}, retry later", e.ToString());
                 return Encoding.UTF8.GetBytes("<llsd><undef /></llsd>");
             }
         }
@@ -1238,14 +1173,14 @@ namespace Universe.Modules
                 ((OSDMap) map["voice_credentials"])["channel_uri"] = channel_uri;
 
                 MainConsole.Instance.DebugFormat(
-                    "[VivoxVoice][PARCELVOICE]: region \"{0}\": Parcel ({1}): avatar \"{2}\"",
+                    "[Vivox Voice][Parcel Voice]: region \"{0}\": Parcel ({1}): avatar \"{2}\"",
                     m_service.Region.RegionName, localID, m_service.ClientCaps.AccountInfo.Name);
                 return OSDParser.SerializeLLSDXmlBytes(map);
             }
             catch (Exception e)
             {
                 MainConsole.Instance.ErrorFormat(
-                    "[VivoxVoice][PARCELVOICE]: region \"{0}\": avatar \"{1}\": {2}, retry later",
+                    "[Vivox Voice][Parcel Voice]: region \"{0}\": avatar \"{1}\": {2}, retry later",
                     m_service.Region.RegionName, m_service.ClientCaps.AccountInfo.Name, e.ToString());
 
                 return Encoding.UTF8.GetBytes("<llsd><undef /></llsd>");
