@@ -34,7 +34,7 @@ using Nini.Config;
 namespace Universe.Framework.Services
 {
     /// <summary>
-    ///     Universe-Sim Application Plugin framework interface
+    ///     Virtual Universe Application Plugin framework interface
     /// </summary>
     public interface IApplicationPlugin
     {

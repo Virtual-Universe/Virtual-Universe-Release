@@ -182,7 +182,7 @@ namespace Universe.Simulation.Base
                     string regionIPAddress = gridIPAddress;
                     bool isStandalone = true;
                     string dbType = "1";
-                    string gridName = "Universe-Sim Grid";
+                    string gridName = "Virtual Universe Grid";
                     string welcomeMessage = "";
                     string allowAnonLogin = "true";
                     uint port = 9000;

@@ -10210,7 +10210,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) return "";
 
             if (name == "sim_channel")
-                return "Universe-Sim Server";
+                return "Virtual Universe Server";
             if (name == "sim_version")
                 return World.RequestModuleInterface<ISimulationBase>().Version;
             if (name == "frame_number")
