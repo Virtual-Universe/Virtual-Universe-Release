@@ -25,6 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
@@ -37,7 +38,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Universe.DataManager")]
-[assembly: AssemblyCopyright("Copyright © 2014-2015")]
+[assembly: AssemblyCopyright("Copyright © 2015-2025")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -62,4 +63,4 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 
-[assembly: AssemblyVersion("0.9.3.*")]
+[assembly: AssemblyVersion("1.0.1.*")]
