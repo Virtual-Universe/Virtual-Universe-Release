@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -138,7 +138,7 @@ namespace Universe.Services.SQLServices.InventoryService
                     "Could not find DefaultInventory/Inventory.ini or DefaultInventory/Inventory.ini.example");
                 return;
             }
-            List<IDefaultLibraryLoader> Loaders = WhiteCoreModuleLoader.PickupModules<IDefaultLibraryLoader>();
+            List<IDefaultLibraryLoader> Loaders = UniverseModuleLoader.PickupModules<IDefaultLibraryLoader>();
             try
             {
                 if (!File.Exists("DefaultInventory/Inventory.ini"))

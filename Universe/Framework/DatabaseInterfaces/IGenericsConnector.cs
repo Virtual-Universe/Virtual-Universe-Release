@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -44,7 +44,7 @@ namespace Universe.Framework.DatabaseInterfaces
     ///     - Value : The value of the row
     ///     This class deals with the Getting/Setting/Removing of these generic interfaces.
     /// </summary>
-    public interface IGenericsConnector : IWhiteCoreDataPlugin
+    public interface IGenericsConnector : IUniverseDataPlugin
     {
         /// <summary>
         ///     Gets a Generic type as set by the ownerID, Type, and Key

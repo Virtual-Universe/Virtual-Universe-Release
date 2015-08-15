@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -40,7 +40,7 @@ using Universe.Framework.Utilities;
 
 namespace Universe.Modules.Estate
 {
-    public class EstateInitializer : ISharedRegionStartupModule, IWhiteCoreBackupModule
+    public class EstateInitializer : ISharedRegionStartupModule, IUniverseBackupModule
     {
         string LastEstateName = "";
         string LastEstateOwner = Constants.RealEstateOwnerName;
@@ -49,7 +49,7 @@ namespace Universe.Modules.Estate
 
         public void Initialize(IScene scene, IConfigSource source, ISimulationBase simBase)
         {
-            scene.StackModuleInterface<IWhiteCoreBackupModule>(this);
+            scene.StackModuleInterface<IUniverseBackupModule>(this);
             m_registry = simBase.ApplicationRegistry;
         }
 

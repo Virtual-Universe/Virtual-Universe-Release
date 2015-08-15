@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -274,7 +274,7 @@ namespace Universe.BotManager
         ///     HereEvent - Triggered when a script passes TRIGGER_HERE_EVENT via botSetMap
         ///     ChangedState = Triggered when the state of a bot changes
         /// </summary>
-        public WhiteCoreEventManager EventManager = new WhiteCoreEventManager();
+        public UniverseEventManager EventManager = new UniverseEventManager();
 
         public BotState m_currentState = BotState.Idle;
         public BotState m_previousState = BotState.Idle;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -324,7 +324,7 @@ namespace Universe.Services
         {
             if (m_connectors.Count == 0)
             {
-                m_connectors = WhiteCoreModuleLoader.PickupModules<ICapsServiceConnector>();
+                m_connectors = UniverseModuleLoader.PickupModules<ICapsServiceConnector>();
             }
             return m_connectors;
         }

@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,7 +41,7 @@ namespace Universe.Services.DataService.Connectors.Database.Asset
     {
         private IGenericData m_Gd;
 
-        #region Implementation of IWhiteCoreDataPlugin
+        #region Implementation of IUniverseDataPlugin
 
         public string Name
         {
@@ -51,7 +51,7 @@ namespace Universe.Services.DataService.Connectors.Database.Asset
         public void Initialize(IGenericData genericData, IConfigSource source, IRegistryCore simBase,
                                string defaultConnectionString)
         {
-            if (source.Configs["WhiteCoreConnectors"].GetString("AssetConnector", "LocalConnector") != "LocalConnector")
+            if (source.Configs["UniverseConnectors"].GetString("AssetConnector", "LocalConnector") != "LocalConnector")
                 return;
             m_Gd = genericData;
 
@@ -60,7 +60,7 @@ namespace Universe.Services.DataService.Connectors.Database.Asset
 
             if (genericData != null)
                 genericData.ConnectToDatabase(defaultConnectionString, "Asset",
-                                              source.Configs["WhiteCoreConnectors"].GetBoolean("ValidateTables", true));
+                                              source.Configs["UniverseConnectors"].GetBoolean("ValidateTables", true));
             Framework.Utilities.DataManager.RegisterPlugin(this);
         }
 

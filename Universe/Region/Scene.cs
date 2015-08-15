@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -74,7 +74,7 @@ namespace Universe.Region
             get { return m_clientServers; }
         }
 
-        protected WhiteCoreEventManager m_WhiteCoreEventManager;
+        protected UniverseEventManager m_UniverseEventManager;
         protected EventManager m_eventManager;
 
         /// <value>
@@ -89,9 +89,9 @@ namespace Universe.Region
         /// <summary>
         ///     Generic manager to send and receive events. Used mainly by region modules
         /// </summary>
-        public WhiteCoreEventManager WhiteCoreEventManager
+        public UniverseEventManager UniverseEventManager
         {
-            get { return m_WhiteCoreEventManager; }
+            get { return m_UniverseEventManager; }
         }
 
         ISceneManager m_sceneManager;
@@ -289,7 +289,7 @@ namespace Universe.Region
             m_config = m_sceneManager.ConfigSource;
             m_authenticateHandler = authen;
 
-            m_WhiteCoreEventManager = new WhiteCoreEventManager();
+            m_UniverseEventManager = new UniverseEventManager();
             m_eventManager = new EventManager();
             m_permissions = new ScenePermissions(this);
 

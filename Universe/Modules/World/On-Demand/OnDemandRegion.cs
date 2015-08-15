@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -75,8 +75,8 @@ namespace Universe.Modules.OnDemand
                 scene.ShouldRunHeartbeat = false;
 
                 scene.EventManager.OnRemovePresence += OnRemovePresence;
-                scene.WhiteCoreEventManager.RegisterEventHandler("NewUserConnection", OnGenericEvent);
-                scene.WhiteCoreEventManager.RegisterEventHandler("AgentIsAZombie", OnGenericEvent);
+                scene.UniverseEventManager.RegisterEventHandler("NewUserConnection", OnGenericEvent);
+                scene.UniverseEventManager.RegisterEventHandler("AgentIsAZombie", OnGenericEvent);
             }
         }
 
@@ -115,7 +115,7 @@ namespace Universe.Modules.OnDemand
                     m_isRunning = true;
                     if (m_scene.RegionInfo.Startup == StartupType.Medium)
                     {
-                        m_scene.WhiteCoreEventManager.FireGenericEventHandler("MediumStartup", m_scene);
+                        m_scene.UniverseEventManager.FireGenericEventHandler("MediumStartup", m_scene);
                         MediumStartup();
                     }
                 }
@@ -137,7 +137,7 @@ namespace Universe.Modules.OnDemand
                 //If all clients are out of the region, we can close it again
                 if (m_scene.RegionInfo.Startup == StartupType.Medium)
                 {
-                    m_scene.WhiteCoreEventManager.FireGenericEventHandler("MediumShutdown", m_scene);
+                    m_scene.UniverseEventManager.FireGenericEventHandler("MediumShutdown", m_scene);
                     MediumShutdown();
                 }
                 m_isRunning = false;

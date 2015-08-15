@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -140,9 +140,9 @@ namespace Universe.Modules.Terrain
             m_scene.EventManager.OnNewClient += EventManager_OnNewClient;
             m_scene.EventManager.OnClosingClient += OnClosingClient;
             m_scene.EventManager.OnSignificantClientMovement += EventManager_OnSignificantClientMovement;
-            m_scene.WhiteCoreEventManager.RegisterEventHandler("DrawDistanceChanged", WhiteCoreEventManager_OnGenericEvent);
-            m_scene.WhiteCoreEventManager.RegisterEventHandler("SignficantCameraMovement",
-                                                            WhiteCoreEventManager_OnGenericEvent);
+            m_scene.UniverseEventManager.RegisterEventHandler("DrawDistanceChanged", UniverseEventManager_OnGenericEvent);
+            m_scene.UniverseEventManager.RegisterEventHandler("SignficantCameraMovement",
+                                                            UniverseEventManager_OnGenericEvent);
             m_scene.EventManager.OnNewPresence += OnNewPresence;
 
             m_queueTimer.Enabled = false;
@@ -161,10 +161,10 @@ namespace Universe.Modules.Terrain
             m_scene.EventManager.OnNewClient -= EventManager_OnNewClient;
             m_scene.EventManager.OnClosingClient -= OnClosingClient;
             m_scene.EventManager.OnSignificantClientMovement -= EventManager_OnSignificantClientMovement;
-            m_scene.WhiteCoreEventManager.UnregisterEventHandler("DrawDistanceChanged",
-                                                              WhiteCoreEventManager_OnGenericEvent);
-            m_scene.WhiteCoreEventManager.UnregisterEventHandler("SignficantCameraMovement",
-                                                              WhiteCoreEventManager_OnGenericEvent);
+            m_scene.UniverseEventManager.UnregisterEventHandler("DrawDistanceChanged",
+                                                              UniverseEventManager_OnGenericEvent);
+            m_scene.UniverseEventManager.UnregisterEventHandler("SignficantCameraMovement",
+                                                              UniverseEventManager_OnGenericEvent);
             m_scene.EventManager.OnNewPresence -= OnNewPresence;
 
             // remove the interface
@@ -682,7 +682,7 @@ namespace Universe.Modules.Terrain
             if (!Directory.Exists(plugineffectsPath))
                 return;
 
-            ITerrainLoader[] loaders = WhiteCoreModuleLoader.PickupModules<ITerrainLoader>().ToArray();
+            ITerrainLoader[] loaders = UniverseModuleLoader.PickupModules<ITerrainLoader>().ToArray();
             foreach (ITerrainLoader terLoader in loaders)
             {
                 m_loaders[terLoader.FileExtension] = terLoader;
@@ -772,7 +772,7 @@ namespace Universe.Modules.Terrain
             }
         }
 
-        object WhiteCoreEventManager_OnGenericEvent(string FunctionName, object parameters)
+        object UniverseEventManager_OnGenericEvent(string FunctionName, object parameters)
         {
             if (FunctionName == "DrawDistanceChanged" || FunctionName == "SignficantCameraMovement")
             {

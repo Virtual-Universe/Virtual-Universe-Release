@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -50,7 +50,7 @@ namespace Universe.DataManager.Migration
             this.genericData = genericData;
             this.migratorName = migratorName;
             this.validateTables = validateTables;
-            List<IMigrator> allMigrators = WhiteCoreModuleLoader.PickupModules<IMigrator>();
+            List<IMigrator> allMigrators = UniverseModuleLoader.PickupModules<IMigrator>();
 
             foreach (
                 IMigrator m in
@@ -75,7 +75,7 @@ namespace Universe.DataManager.Migration
             if (migratorName == "")
                 return;
             executed = false;
-            Version currentVersion = genericData.GetWhiteCoreVersion(migratorName);
+            Version currentVersion = genericData.GetUniverseVersion(migratorName);
 
             //if there is no Universe version, this is likely an entirely new installation
             if (currentVersion == null)

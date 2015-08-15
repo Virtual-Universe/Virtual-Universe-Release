@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -68,12 +68,12 @@ namespace Universe.ScriptEngine.VirtualScript
         public bool ScriptChangeIsRunning;
 
         private int SleepingScriptEventCount;
-        public WhiteCoreThreadPool cmdThreadpool;
+        public UniverseThreadPool cmdThreadpool;
         private int m_CheckingEvents;
         private int m_CheckingSleepers;
         public bool m_Started;
-        public WhiteCoreThreadPool scriptChangeThreadpool;
-        public WhiteCoreThreadPool scriptThreadpool;
+        public UniverseThreadPool scriptChangeThreadpool;
+        public UniverseThreadPool scriptThreadpool;
 
         public bool Started
         {
@@ -110,7 +110,7 @@ namespace Universe.ScriptEngine.VirtualScript
             //There IS a reason we start this, even if RunInMain is enabled
             // If this isn't enabled, we run into issues with the CmdHandlerQueue,
             // as it always must be async, so we must run the pool anyway
-            WhiteCoreThreadPoolStartInfo info = new WhiteCoreThreadPoolStartInfo
+            UniverseThreadPoolStartInfo info = new UniverseThreadPoolStartInfo
                                                  {
                                                      priority = ThreadPriority.Normal,
                                                      Threads = 1,
@@ -118,9 +118,9 @@ namespace Universe.ScriptEngine.VirtualScript
                                                      SleepIncrementTime = Engine.Config.GetInt("SleepIncrementTime", 1),
                                                      Name = "Script Cmd Thread Pools"
                                                  };
-            cmdThreadpool = new WhiteCoreThreadPool(info);
+            cmdThreadpool = new UniverseThreadPool(info);
             
-            WhiteCoreThreadPoolStartInfo scinfo = new WhiteCoreThreadPoolStartInfo
+            UniverseThreadPoolStartInfo scinfo = new UniverseThreadPoolStartInfo
                                                  {
                                                      priority = ThreadPriority.Normal,
                                                      Threads = 1,
@@ -129,10 +129,10 @@ namespace Universe.ScriptEngine.VirtualScript
                                                      Name = "Script Loading Thread Pools"
                                                  };
         
-            scriptChangeThreadpool = new WhiteCoreThreadPool(scinfo);
+            scriptChangeThreadpool = new UniverseThreadPool(scinfo);
 
             MaxScriptThreads = Engine.Config.GetInt("MaxScriptThreads", 100); // leave control threads out of user option
-            WhiteCoreThreadPoolStartInfo sinfo = new WhiteCoreThreadPoolStartInfo
+            UniverseThreadPoolStartInfo sinfo = new UniverseThreadPoolStartInfo
                                                   {
                                                       priority = ThreadPriority.Normal,
                                                       Threads = MaxScriptThreads,
@@ -141,7 +141,7 @@ namespace Universe.ScriptEngine.VirtualScript
                                                       KillThreadAfterQueueClear = true,
                                                       Name = "Script Event Thread Pools"
                                                   };
-            scriptThreadpool = new WhiteCoreThreadPool(sinfo);
+            scriptThreadpool = new UniverseThreadPool(sinfo);
 
             AppDomain.CurrentDomain.AssemblyResolve += m_ScriptEngine.AssemblyResolver.OnAssemblyResolve;
         }

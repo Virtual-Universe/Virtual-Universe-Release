@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -67,7 +67,7 @@ namespace Universe.Modules.Archivers
         /// </value>
         protected bool m_merge;
 
-        protected WhiteCoreThreadPool m_threadpool;
+        protected UniverseThreadPool m_threadpool;
 
         /// <value>
         ///     Should we ignore any assets when reloading the archive?
@@ -173,7 +173,7 @@ namespace Universe.Modules.Archivers
             TarArchiveReader archive = new TarArchiveReader(m_loadStream);
 
             if (!m_skipAssets)
-                m_threadpool = new WhiteCoreThreadPool(new WhiteCoreThreadPoolStartInfo()
+                m_threadpool = new UniverseThreadPool(new UniverseThreadPoolStartInfo()
                                                                          {
                                                                              Threads = 1,
                                                                              priority =

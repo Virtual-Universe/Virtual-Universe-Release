@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@ using System;
 
 namespace Universe.ClientStack
 {
-    public static class WhiteCoreTerrainCompressor
+    public static class UniverseTerrainCompressor
     {
         public const int END_OF_PATCHES = 97;
 
@@ -59,7 +59,7 @@ namespace Universe.ClientStack
         private static readonly float[] QuantizeTable16 =
             new float[Constants.TerrainPatchSize*Constants.TerrainPatchSize];
 
-        static WhiteCoreTerrainCompressor()
+        static UniverseTerrainCompressor()
         {
             // Initialize the decompression tables
             BuildDequantizeTable16();

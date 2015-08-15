@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,16 +31,16 @@ using Universe.Framework.Utilities;
 
 namespace Universe.DataManager.Migration.Migrators.Asset
 {
-    public class WhiteCoreAssetMigrator_1 : Migrator
+    public class UniverseAssetMigrator_1 : Migrator
     {
-        public WhiteCoreAssetMigrator_1()
+        public UniverseAssetMigrator_1()
         {
             Version = new Version(0, 0, 1);
             MigrationName = "BlackholeAsset";
 
             schema = new List<SchemaDefinition>();
 
-			AddSchema("whitecoreassets_A", ColDefs(
+			AddSchema("Universeassets_A", ColDefs(
                 ColDef("id", ColumnTypes.String36),
                 ColDef("hash_code", ColumnTypes.String64),
                 ColDef("parent_id", ColumnTypes.String36),
@@ -58,7 +58,7 @@ namespace Universe.DataManager.Migration.Migrators.Asset
                                                          IndexType.Primary)
                                                    ));
 
-			AddSchema("whitecoreassets_B", ColDefs(
+			AddSchema("Universeassets_B", ColDefs(
                 ColDef("id", ColumnTypes.String36),
                 ColDef("hash_code", ColumnTypes.String64),
                 ColDef("parent_id", ColumnTypes.String36),
@@ -76,7 +76,7 @@ namespace Universe.DataManager.Migration.Migrators.Asset
                                                          IndexType.Primary)
                                                    ));
 
-			AddSchema("whitecoreassets_C", ColDefs(
+			AddSchema("Universeassets_C", ColDefs(
                 ColDef("id", ColumnTypes.String36),
                 ColDef("hash_code", ColumnTypes.String64),
                 ColDef("parent_id", ColumnTypes.String36),
@@ -94,7 +94,7 @@ namespace Universe.DataManager.Migration.Migrators.Asset
                                                          IndexType.Primary)
                                                    ));
 
-			AddSchema("whitecoreassets_D", ColDefs(
+			AddSchema("Universeassets_D", ColDefs(
                 ColDef("id", ColumnTypes.String36),
                 ColDef("hash_code", ColumnTypes.String64),
                 ColDef("parent_id", ColumnTypes.String36),
@@ -112,7 +112,7 @@ namespace Universe.DataManager.Migration.Migrators.Asset
                                                          IndexType.Primary)
                                                    ));
 
-			AddSchema("whitecoreassets_E", ColDefs(
+			AddSchema("Universeassets_E", ColDefs(
                 ColDef("id", ColumnTypes.String36),
                 ColDef("hash_code", ColumnTypes.String64),
                 ColDef("parent_id", ColumnTypes.String36),
@@ -130,7 +130,7 @@ namespace Universe.DataManager.Migration.Migrators.Asset
                                                          IndexType.Primary)
                                                    ));
 
-			AddSchema("whitecoreassets_F", ColDefs(
+			AddSchema("Universeassets_F", ColDefs(
                 ColDef("id", ColumnTypes.String36),
                 ColDef("hash_code", ColumnTypes.String64),
                 ColDef("parent_id", ColumnTypes.String36),
@@ -148,7 +148,7 @@ namespace Universe.DataManager.Migration.Migrators.Asset
                                                          IndexType.Primary)
                                                    ));
 
-			AddSchema("whitecoreassets_0", ColDefs(
+			AddSchema("Universeassets_0", ColDefs(
                 ColDef("id", ColumnTypes.String36),
                 ColDef("hash_code", ColumnTypes.String64),
                 ColDef("parent_id", ColumnTypes.String36),
@@ -166,7 +166,7 @@ namespace Universe.DataManager.Migration.Migrators.Asset
                                                          IndexType.Primary)
                                                    ));
 
-			AddSchema("whitecoreassets_1", ColDefs(
+			AddSchema("Universeassets_1", ColDefs(
                 ColDef("id", ColumnTypes.String36),
                 ColDef("hash_code", ColumnTypes.String64),
                 ColDef("parent_id", ColumnTypes.String36),
@@ -184,7 +184,7 @@ namespace Universe.DataManager.Migration.Migrators.Asset
                                                          IndexType.Primary)
                                                    ));
 
-			AddSchema("whitecoreassets_2", ColDefs(
+			AddSchema("Universeassets_2", ColDefs(
                 ColDef("id", ColumnTypes.String36),
                 ColDef("hash_code", ColumnTypes.String64),
                 ColDef("parent_id", ColumnTypes.String36),
@@ -202,7 +202,7 @@ namespace Universe.DataManager.Migration.Migrators.Asset
                                                          IndexType.Primary)
                                                    ));
 
-			AddSchema("whitecoreassets_3", ColDefs(
+			AddSchema("Universeassets_3", ColDefs(
                 ColDef("id", ColumnTypes.String36),
                 ColDef("hash_code", ColumnTypes.String64),
                 ColDef("parent_id", ColumnTypes.String36),
@@ -220,7 +220,7 @@ namespace Universe.DataManager.Migration.Migrators.Asset
                                                          IndexType.Primary)
                                                    ));
 
-			AddSchema("whitecoreassets_4", ColDefs(
+			AddSchema("Universeassets_4", ColDefs(
                 ColDef("id", ColumnTypes.String36),
                 ColDef("hash_code", ColumnTypes.String64),
                 ColDef("parent_id", ColumnTypes.String36),
@@ -238,7 +238,7 @@ namespace Universe.DataManager.Migration.Migrators.Asset
                                                          IndexType.Primary)
                                                    ));
 
-			AddSchema("whitecoreassets_5", ColDefs(
+			AddSchema("Universeassets_5", ColDefs(
                 ColDef("id", ColumnTypes.String36),
                 ColDef("hash_code", ColumnTypes.String64),
                 ColDef("parent_id", ColumnTypes.String36),
@@ -256,7 +256,7 @@ namespace Universe.DataManager.Migration.Migrators.Asset
                                                          IndexType.Primary)
                                                    ));
 
-			AddSchema("whitecoreassets_6", ColDefs(
+			AddSchema("Universeassets_6", ColDefs(
                 ColDef("id", ColumnTypes.String36),
                 ColDef("hash_code", ColumnTypes.String64),
                 ColDef("parent_id", ColumnTypes.String36),
@@ -274,7 +274,7 @@ namespace Universe.DataManager.Migration.Migrators.Asset
                                                          IndexType.Primary)
                                                    ));
 
-			AddSchema("whitecoreassets_7", ColDefs(
+			AddSchema("Universeassets_7", ColDefs(
                 ColDef("id", ColumnTypes.String36),
                 ColDef("hash_code", ColumnTypes.String64),
                 ColDef("parent_id", ColumnTypes.String36),
@@ -292,7 +292,7 @@ namespace Universe.DataManager.Migration.Migrators.Asset
                                                          IndexType.Primary)
                                                    ));
 
-			AddSchema("whitecoreassets_8", ColDefs(
+			AddSchema("Universeassets_8", ColDefs(
                 ColDef("id", ColumnTypes.String36),
                 ColDef("hash_code", ColumnTypes.String64),
                 ColDef("parent_id", ColumnTypes.String36),
@@ -310,7 +310,7 @@ namespace Universe.DataManager.Migration.Migrators.Asset
                                                          IndexType.Primary)
                                                    ));
 
-			AddSchema("whitecoreassets_9", ColDefs(
+			AddSchema("Universeassets_9", ColDefs(
                 ColDef("id", ColumnTypes.String36),
                 ColDef("hash_code", ColumnTypes.String64),
                 ColDef("name", ColumnTypes.String64),
@@ -328,7 +328,7 @@ namespace Universe.DataManager.Migration.Migrators.Asset
                                                          IndexType.Primary)
                                                    ));
 
-			AddSchema("whitecoreassets_old", ColDefs(
+			AddSchema("Universeassets_old", ColDefs(
                 ColDef("id", ColumnTypes.String36),
                 ColDef("hash_code", ColumnTypes.String64),
                 ColDef("parent_id", ColumnTypes.String36),
@@ -347,7 +347,7 @@ namespace Universe.DataManager.Migration.Migrators.Asset
                                                       IndexType.Primary)
                                                      ));
 
-			AddSchema("whitecoreassets_tasks", ColDefs(
+			AddSchema("Universeassets_tasks", ColDefs(
                 ColDef("id", ColumnTypes.String36),
                 ColDef("task_type", ColumnTypes.String64),
                 ColDef("task_values", ColumnTypes.String255)
@@ -355,7 +355,7 @@ namespace Universe.DataManager.Migration.Migrators.Asset
                                                     IndexDef(new string[1] {"id"}, IndexType.Primary)
                                                        ));
 
-			AddSchema("whitecoreassets_temp", ColDefs(
+			AddSchema("Universeassets_temp", ColDefs(
                 ColDef("id", ColumnTypes.String36),
                 ColDef("hash_code", ColumnTypes.String64),
                 ColDef("creator_id", ColumnTypes.String36)

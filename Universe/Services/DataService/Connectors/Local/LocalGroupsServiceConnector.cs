@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -52,7 +52,7 @@ namespace Universe.Services.DataService
 
         #endregion
 
-        #region IWhiteCoreDataPlugin members
+        #region IUniverseDataPlugin members
 
         public void Initialize(IGenericData GenericData, IConfigSource source, IRegistryCore simBase,
                                string defaultConnectionString)
@@ -72,11 +72,11 @@ namespace Universe.Services.DataService
 
             if (data != null)
                 data.ConnectToDatabase (defaultConnectionString, "Groups",
-                    source.Configs ["WhiteCoreConnectors"].GetBoolean ("ValidateTables", true));
+                    source.Configs ["UniverseConnectors"].GetBoolean ("ValidateTables", true));
 
             Framework.Utilities.DataManager.RegisterPlugin (Name + "Local", this);
 
-            if (source.Configs ["WhiteCoreConnectors"].GetString ("GroupsConnector", "LocalConnector") == "LocalConnector")
+            if (source.Configs ["UniverseConnectors"].GetString ("GroupsConnector", "LocalConnector") == "LocalConnector")
             {
                 Framework.Utilities.DataManager.RegisterPlugin (this);
             }

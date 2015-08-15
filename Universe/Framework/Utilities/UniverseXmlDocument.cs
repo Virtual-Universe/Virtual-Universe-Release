@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,22 +34,22 @@ namespace Universe.Framework.Utilities
     /// <summary>
     ///     Summary description for NSXML.
     /// </summary>
-    public sealed class WhiteCoreXmlDocument : XmlDocument
+    public sealed class UniverseXmlDocument : XmlDocument
     {
         #region Constructors
 
         /// <summary>
         ///     Default Constructor
         /// </summary>
-        public WhiteCoreXmlDocument()
+        public UniverseXmlDocument()
         {
         }
 
         /// <summary>
-        ///     Creates a WhiteCoreXmlDocument and loads it with the xml
+        ///     Creates a UniverseXmlDocument and loads it with the xml
         /// </summary>
         /// <param name="xml"></param>
-        public WhiteCoreXmlDocument(string xml)
+        public UniverseXmlDocument(string xml)
             : this()
         {
             LoadXml(xml);
@@ -60,13 +60,13 @@ namespace Universe.Framework.Utilities
         #region root work
 
         /// <summary>
-        ///     Creates a new WhiteCoreXmlDocument with the specified rootName
+        ///     Creates a new UniverseXmlDocument with the specified rootName
         /// </summary>
         /// <param name="rootName"></param>
         /// <returns></returns>
-        public static WhiteCoreXmlDocument NewXmlDocumentWithRoot(string rootName)
+        public static UniverseXmlDocument NewXmlDocumentWithRoot(string rootName)
         {
-            return new WhiteCoreXmlDocument("<" + rootName + "/>");
+            return new UniverseXmlDocument("<" + rootName + "/>");
         }
 
         /// <summary>
@@ -249,7 +249,7 @@ namespace Universe.Framework.Utilities
         /// <param name="xPathFrom">XPath to the node or nodes you want to move</param>
         /// <param name="xPathTo">XPath to the node that you want to place the xml</param>
         /// <returns></returns>
-        public WhiteCoreXmlDocument AddXMLDoc(WhiteCoreXmlDocument XmlDoc, string xPathFrom, string xPathTo)
+        public UniverseXmlDocument AddXMLDoc(UniverseXmlDocument XmlDoc, string xPathFrom, string xPathTo)
         {
             if (DocumentElement == null) throw new Exception("DocumentElemnt is null");
             XmlNode node = XmlDoc.SelectSingleNode(xPathFrom);

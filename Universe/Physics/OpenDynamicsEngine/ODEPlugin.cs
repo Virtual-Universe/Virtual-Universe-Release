@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -40,10 +40,10 @@ namespace Universe.Physics.OpenDynamicsEngine
     /// <summary>
     ///     ODE plugin
     /// </summary>
-    public class WhiteCoreODEPlugin : IPhysicsPlugin
+    public class UniverseODEPlugin : IPhysicsPlugin
     {
         private static bool m_initialized;
-        private WhiteCoreODEPhysicsScene _mScene;
+        private UniverseODEPhysicsScene _mScene;
         private static object m_lock = new object();
 
         #region IPhysicsPlugin Members
@@ -67,7 +67,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                         m_initialized = true;
                     }
 
-                    _mScene = new WhiteCoreODEPhysicsScene();
+                    _mScene = new UniverseODEPhysicsScene();
                 }
             }
 

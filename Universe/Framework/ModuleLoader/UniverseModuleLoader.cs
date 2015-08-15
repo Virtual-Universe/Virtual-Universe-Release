@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@ using Universe.Framework.Utilities;
 
 namespace Universe.Framework.ModuleLoader
 {
-    public static class WhiteCoreModuleLoader
+    public static class UniverseModuleLoader
     {
         private static bool ALLOW_CACHE = true;
         private static List<string> dllBlackList;

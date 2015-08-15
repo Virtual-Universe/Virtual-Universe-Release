@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -50,7 +50,7 @@ using RegionFlags = Universe.Framework.Services.RegionFlags;
 
 namespace Universe.Modules.WorldMap
 {
-    public class WhiteCoreWorldMapModule : INonSharedRegionModule, IWorldMapModule
+    public class UniverseWorldMapModule : INonSharedRegionModule, IWorldMapModule
     {
         const string DEFAULT_WORLD_MAP_EXPORT_PATH = "exportmap.jpg";
 
@@ -62,8 +62,8 @@ namespace Universe.Modules.WorldMap
 
         readonly ConcurrentQueue<MapItemRequester> m_itemsToRequest = new ConcurrentQueue<MapItemRequester>();
         bool itemRequesterIsRunning;
-        static WhiteCoreThreadPool threadpool;
-        static WhiteCoreThreadPool blockthreadpool;
+        static UniverseThreadPool threadpool;
+        static UniverseThreadPool blockthreadpool;
         int MapViewLength = 8;
 
         #region INonSharedRegionModule Members
@@ -73,8 +73,8 @@ namespace Universe.Modules.WorldMap
             if (source.Configs["MapModule"] != null)
             {
                 if (source.Configs["MapModule"].GetString(
-                    "WorldMapModule", "WhiteCoreWorldMapModule") !=
-                    "WhiteCoreWorldMapModule")
+                    "WorldMapModule", "UniverseWorldMapModule") !=
+                    "UniverseWorldMapModule")
                     return;
                 m_Enabled = true;
                 MapViewLength = source.Configs["MapModule"].GetInt("MapViewLength", MapViewLength);
@@ -106,10 +106,10 @@ namespace Universe.Modules.WorldMap
             if (!m_Enabled)
                 return;
 
-            WhiteCoreThreadPoolStartInfo info = new WhiteCoreThreadPoolStartInfo
+            UniverseThreadPoolStartInfo info = new UniverseThreadPoolStartInfo
                                                  {priority = ThreadPriority.Lowest, Threads = 1};
-            threadpool = new WhiteCoreThreadPool(info);
-            blockthreadpool = new WhiteCoreThreadPool(info);
+            threadpool = new UniverseThreadPool(info);
+            blockthreadpool = new UniverseThreadPool(info);
         }
 
         public virtual void Close()
@@ -123,7 +123,7 @@ namespace Universe.Modules.WorldMap
 
         public virtual string Name
         {
-            get { return "WhiteCoreWorldMapModule"; }
+            get { return "UniverseWorldMapModule"; }
         }
 
         #endregion

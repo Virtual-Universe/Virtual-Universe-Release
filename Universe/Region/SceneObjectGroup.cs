@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -2644,7 +2644,7 @@ namespace Universe.Region
             if (RootPart.PhysicsType == (byte)PhysicsShapeType.None ||
                 ((RootPart.Flags & PrimFlags.Phantom) == PrimFlags.Phantom && !RootPart.VolumeDetectActive))
             {
-                Scene.WhiteCoreEventManager.FireGenericEventHandler("ObjectChangedPhysicalStatus", this);
+                Scene.UniverseEventManager.FireGenericEventHandler("ObjectChangedPhysicalStatus", this);
                 if (OnFinishedPhysicalRepresentationBuilding != null)
                     OnFinishedPhysicalRepresentationBuilding();
                 OnFinishedPhysicalRepresentationBuilding = null;
@@ -2716,7 +2716,7 @@ namespace Universe.Region
             if (m_scene.PhysicsScene.AllowGroupLink)
                 RootPart.PhysActor.linkGroupToThis(actors);
 
-            Scene.WhiteCoreEventManager.FireGenericEventHandler("ObjectChangedPhysicalStatus", this);
+            Scene.UniverseEventManager.FireGenericEventHandler("ObjectChangedPhysicalStatus", this);
 
             FixVehicleParams(RootPart);
 

@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -161,7 +161,7 @@ namespace Universe.Services.GenericServices.CapsService
                 List<IExternalCapsRequestHandler> caps;
                 if (!m_caps.TryGetValue(agentID ^ regionID, out caps))
                 {
-                    caps = Universe.Framework.ModuleLoader.WhiteCoreModuleLoader.PickupModules<IExternalCapsRequestHandler>();
+                    caps = Universe.Framework.ModuleLoader.UniverseModuleLoader.PickupModules<IExternalCapsRequestHandler>();
                     m_caps.Add(agentID ^ regionID, caps);
                 }
                 return caps;

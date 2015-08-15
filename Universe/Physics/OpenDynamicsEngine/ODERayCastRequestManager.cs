@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -42,7 +42,7 @@ namespace Universe.Physics.OpenDynamicsEngine
     ///     This ensures that it's thread safe and there will be no conflicts.
     ///     Requests get returned by a different thread then they were requested by.
     /// </summary>
-    public class WhiteCoreODERayCastRequestManager
+    public class UniverseODERayCastRequestManager
     {
         /// <summary>
         ///     ODE contact array to be filled by the collision testing
@@ -70,10 +70,10 @@ namespace Universe.Physics.OpenDynamicsEngine
         /// <summary>
         ///     Scene that created this object.
         /// </summary>
-        private WhiteCoreODEPhysicsScene m_scene;
+        private UniverseODEPhysicsScene m_scene;
 
 
-        public WhiteCoreODERayCastRequestManager(WhiteCoreODEPhysicsScene pScene)
+        public UniverseODERayCastRequestManager(UniverseODEPhysicsScene pScene)
         {
             m_scene = pScene;
             nearCallback = near;
@@ -385,11 +385,11 @@ namespace Universe.Physics.OpenDynamicsEngine
 
                 if (p1 != null)
                 {
-                    if (p1 is WhiteCoreODEPrim)
+                    if (p1 is UniverseODEPrim)
                     {
                         ContactResult collisionresult = new ContactResult
                                                             {
-                                                                ConsumerID = ((WhiteCoreODEPrim) p1).LocalID,
+                                                                ConsumerID = ((UniverseODEPrim) p1).LocalID,
                                                                 Pos =
                                                                     new Vector3(curContact.pos.X, curContact.pos.Y,
                                                                                 curContact.pos.Z),

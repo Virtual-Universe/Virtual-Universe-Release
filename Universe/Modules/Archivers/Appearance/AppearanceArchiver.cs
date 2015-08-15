@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -49,7 +49,7 @@ namespace Universe.Modules.Archivers
     /// <summary>
     ///     This module loads/saves the avatar's appearance from/down into an "Avatar Archive", also known as an AA.
     /// </summary>
-    public class WhiteCoreAvatarAppearanceArchiver : IService, IAvatarAppearanceArchiver
+    public class UniverseAvatarAppearanceArchiver : IService, IAvatarAppearanceArchiver
     {
         #region Declares
 
@@ -782,7 +782,7 @@ namespace Universe.Modules.Archivers
             }
 
             bool remoteCalls = false;
-            IConfig connectorConfig = config.Configs ["WhiteCoreConnectors"];
+            IConfig connectorConfig = config.Configs ["UniverseConnectors"];
             if ((connectorConfig != null) && connectorConfig.Contains ("DoRemoteCalls"))
                 remoteCalls = connectorConfig.GetBoolean ("DoRemoteCalls", false);
 

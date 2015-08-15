@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -543,7 +543,7 @@ namespace Universe.Modules.InventoryAccess
 
             if (objectGroups.Count == 1)
             {
-                m_scene.WhiteCoreEventManager.FireGenericEventHandler("DeleteToInventory", objectGroups[0]);
+                m_scene.UniverseEventManager.FireGenericEventHandler("DeleteToInventory", objectGroups[0]);
                 AssetXML = objectGroups[0].ToXml2();
             }
             else
@@ -564,7 +564,7 @@ namespace Universe.Modules.InventoryAccess
 
                     objectGroup.AbsolutePosition = inventoryStoredPosition;
 
-                    m_scene.WhiteCoreEventManager.FireGenericEventHandler("DeleteToInventory", objectGroup);
+                    m_scene.UniverseEventManager.FireGenericEventHandler("DeleteToInventory", objectGroup);
                     AssetXML += objectGroup.ToXml2();
 
                     objectGroup.AbsolutePosition = originalPosition;

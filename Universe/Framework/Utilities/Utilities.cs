@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -61,7 +61,7 @@ namespace Universe.Framework.Utilities
         public static string GetServerReleaseNotesURL()
         {
 			return (MainServer.Instance.Secure ? "https://" : "http://") + MainServer.Instance.HostName +
-                   ":" + MainServer.Instance.Port + "/WhiteCoreServerRelease" + WhiteCoreServerVersion() + ".html";
+                   ":" + MainServer.Instance.Port + "/UniverseServerRelease" + UniverseServerVersion() + ".html";
         }
 
         /// <summary>
@@ -108,7 +108,7 @@ namespace Universe.Framework.Utilities
         ///     What is our version?
         /// </summary>
         /// <returns></returns>
-        public static string WhiteCoreServerVersion()
+        public static string UniverseServerVersion()
         {
             return VersionInfo.VERSION_NUMBER;
         }

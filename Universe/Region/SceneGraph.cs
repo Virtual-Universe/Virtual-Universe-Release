@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -95,11 +95,11 @@ namespace Universe.Region
             m_parentScene.EventManager.OnNewClient += SubscribeToClientEvents;
             m_parentScene.EventManager.OnClosingClient += UnSubscribeToClientEvents;
 
-			IConfig whitecorestartupConfig = parent.Config.Configs["WhiteCoreStartup"];
-			if (whitecorestartupConfig != null)
+			IConfig UniversestartupConfig = parent.Config.Configs["UniverseStartup"];
+			if (UniversestartupConfig != null)
             {
-				m_DefaultObjectName = whitecorestartupConfig.GetString("DefaultObjectName", m_DefaultObjectName);
-				EnableFakeRaycasting = whitecorestartupConfig.GetBoolean("EnableFakeRaycasting", false);
+				m_DefaultObjectName = UniversestartupConfig.GetString("DefaultObjectName", m_DefaultObjectName);
+				EnableFakeRaycasting = UniversestartupConfig.GetBoolean("EnableFakeRaycasting", false);
             }
         }
 
@@ -1064,7 +1064,7 @@ namespace Universe.Region
                     sog.ApplyNextOwnerPermissions();
                 }
                 //Trigger the prim count event so that this parcel gets changed!
-                m_parentScene.WhiteCoreEventManager.FireGenericEventHandler("ObjectChangedOwner", sog);
+                m_parentScene.UniverseEventManager.FireGenericEventHandler("ObjectChangedOwner", sog);
             }
 
             foreach (uint localID in localIDs)

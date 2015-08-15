@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -62,7 +62,7 @@ namespace Universe.DataManager.Migration
 
         public bool Validate(IDataConnector genericData)
         {
-            if (genericData.GetWhiteCoreVersion(MigrationName) != Version)
+            if (genericData.GetUniverseVersion(MigrationName) != Version)
             {
                 return false;
             }
@@ -87,7 +87,7 @@ namespace Universe.DataManager.Migration
         public void Migrate(IDataConnector genericData)
         {
             DoMigrate(genericData);
-            genericData.WriteWhiteCoreVersion(Version, MigrationName);
+            genericData.WriteUniverseVersion(Version, MigrationName);
         }
 
         protected virtual void DoMigrate(IDataConnector genericData)
@@ -97,7 +97,7 @@ namespace Universe.DataManager.Migration
         public void CreateDefaults(IDataConnector genericData)
         {
             DoCreateDefaults(genericData);
-            genericData.WriteWhiteCoreVersion(Version, MigrationName);
+            genericData.WriteUniverseVersion(Version, MigrationName);
         }
 
         protected virtual void DoCreateDefaults(IDataConnector genericData)

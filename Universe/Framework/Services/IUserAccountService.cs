@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -254,7 +254,7 @@ namespace Universe.Framework.Services
     /// <summary>
     ///     An interface for connecting to the user accounts data-store
     /// </summary>
-    public interface IUserAccountData : IWhiteCoreDataPlugin
+    public interface IUserAccountData : IUniverseDataPlugin
     {
         string Realm { get; }
 

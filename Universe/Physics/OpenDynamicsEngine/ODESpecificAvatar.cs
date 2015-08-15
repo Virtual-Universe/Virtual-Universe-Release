@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@ using OpenMetaverse;
 
 namespace Universe.Physics.OpenDynamicsEngine
 {
-    public class ODESpecificAvatar : WhiteCoreODECharacter
+    public class ODESpecificAvatar : UniverseODECharacter
     {
         #region Declares
 
@@ -43,7 +43,7 @@ namespace Universe.Physics.OpenDynamicsEngine
 
         #region Constructor
 
-        public ODESpecificAvatar(String avName, WhiteCoreODEPhysicsScene parent_scene, Vector3 pos, Quaternion rotation,
+        public ODESpecificAvatar(String avName, UniverseODEPhysicsScene parent_scene, Vector3 pos, Quaternion rotation,
                                  Vector3 size) : base(avName, parent_scene, pos, rotation, size)
         {
             base._parent_ref = this;

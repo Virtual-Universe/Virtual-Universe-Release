@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -334,7 +334,7 @@ namespace Universe.Region
                 {
                     m_DrawDistance = value;
                     //Fire the event
-                    Scene.WhiteCoreEventManager.FireGenericEventHandler("DrawDistanceChanged", this);
+                    Scene.UniverseEventManager.FireGenericEventHandler("DrawDistanceChanged", this);
                     if (!IsChildAgent)
                     {
                         //Send an update to all child agents if we are a root agent
@@ -1158,7 +1158,7 @@ namespace Universe.Region
             if (Util.GetFlatDistanceTo(agentData.CameraCenter, m_lastCameraCenter) > SIGNIFICANT_MOVEMENT*10)
             {
                 m_lastCameraCenter = agentData.CameraCenter;
-                Scene.WhiteCoreEventManager.FireGenericEventHandler("SignficantCameraMovement", this);
+                Scene.UniverseEventManager.FireGenericEventHandler("SignficantCameraMovement", this);
             }
 
             // Camera location in world.  We'll need to raytrace

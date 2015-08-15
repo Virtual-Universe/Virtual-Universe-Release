@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -1156,7 +1156,7 @@ namespace Universe.ClientStack
                 {
                     type++;
                 }
-                LayerDataPacket layerpack = WhiteCoreTerrainCompressor.CreateLandPacket(map, xs, ys, type,
+                LayerDataPacket layerpack = UniverseTerrainCompressor.CreateLandPacket(map, xs, ys, type,
                                                                                      m_scene.RegionInfo.RegionSizeX,
                                                                                      m_scene.RegionInfo.RegionSizeY);
                 layerpack.Header.Zerocoded = true;
@@ -1215,7 +1215,7 @@ namespace Universe.ClientStack
                 {
                     type++;
                 }
-                LayerDataPacket layerpack = WhiteCoreTerrainCompressor.CreateLandPacket(map, x, y, type,
+                LayerDataPacket layerpack = UniverseTerrainCompressor.CreateLandPacket(map, x, y, type,
                                                                                      m_scene.RegionInfo.RegionSizeX,
                                                                                      m_scene.RegionInfo.RegionSizeY);
 
@@ -1261,7 +1261,7 @@ namespace Universe.ClientStack
                     Array.Copy(y, i, yTemp, 0, Size);
 
                     //Build the packet
-                    LayerDataPacket layerpack = WhiteCoreTerrainCompressor.CreateLandPacket(map, xTemp, yTemp, type,
+                    LayerDataPacket layerpack = UniverseTerrainCompressor.CreateLandPacket(map, xTemp, yTemp, type,
                                                                                          m_scene.RegionInfo.RegionSizeX,
                                                                                          m_scene.RegionInfo.RegionSizeY);
 
@@ -1347,7 +1347,7 @@ namespace Universe.ClientStack
             {
                 type += 2;
             }
-            LayerDataPacket layerpack = WhiteCoreTerrainCompressor.CreateLayerDataPacket(patches, type,
+            LayerDataPacket layerpack = UniverseTerrainCompressor.CreateLayerDataPacket(patches, type,
                                                                                       m_scene.RegionInfo.RegionSizeX,
                                                                                       m_scene.RegionInfo.RegionSizeY);
             layerpack.Header.Zerocoded = true;
@@ -1378,7 +1378,7 @@ namespace Universe.ClientStack
             {
                 type += 2;
             }
-            LayerDataPacket layerpack = WhiteCoreTerrainCompressor.CreateLayerDataPacket(patches, type,
+            LayerDataPacket layerpack = UniverseTerrainCompressor.CreateLayerDataPacket(patches, type,
                                                                                       m_scene.RegionInfo.RegionSizeX,
                                                                                       m_scene.RegionInfo.RegionSizeY);
             layerpack.Header.Zerocoded = true;

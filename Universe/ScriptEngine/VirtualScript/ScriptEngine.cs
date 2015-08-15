@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -242,31 +242,31 @@ namespace Universe.ScriptEngine.VirtualScript
                         "WDNE restart", 
                         "WDNE restart",
                         "Restarts all scripts and clears all script caches",
-                        WhiteCoreDotNetRestart, false, false);
+                        UniverseDotNetRestart, false, false);
                     
                 	MainConsole.Instance.Commands.AddCommand(
                         "WDNE stop",
                         "WDNE stop", 
                         "Stops all scripts",
-                        WhiteCoreDotNetStop, false, false);
+                        UniverseDotNetStop, false, false);
                     
                 	MainConsole.Instance.Commands.AddCommand(
                         "WDNE stats",
                         "WDNE stats",
                         "Tells stats about the script engine", 
-                        WhiteCoreDotNetStats, false, false);
+                        UniverseDotNetStats, false, false);
                     
                 	MainConsole.Instance.Commands.AddCommand(
                         "WDNE disable",
                         "WDNE disable",
                         "Disables the script engine temperarily",
-                        WhiteCoreDotNetDisable, false, false);
+                        UniverseDotNetDisable, false, false);
                     
                 	MainConsole.Instance.Commands.AddCommand(
                         "WDNE enable",
                         "WDNE enable", 
                         "Reenables the script engine",
-                        WhiteCoreDotNetEnable, false, false);
+                        UniverseDotNetEnable, false, false);
                 }
 
                 // Create all objects we'll be using
@@ -425,7 +425,7 @@ namespace Universe.ScriptEngine.VirtualScript
             }
         }
 
-        protected void WhiteCoreDotNetRestart(IScene scene, string[] cmdparams)
+        protected void UniverseDotNetRestart(IScene scene, string[] cmdparams)
         {
             string go =
                 MainConsole.Instance.Prompt(
@@ -460,7 +460,7 @@ namespace Universe.ScriptEngine.VirtualScript
             }
         }
 
-        protected void WhiteCoreDotNetStop(IScene scene, string[] cmdparams)
+        protected void UniverseDotNetStop(IScene scene, string[] cmdparams)
         {
             string go = MainConsole.Instance.Prompt("Are you sure you want to stop all scripts?", "no");
             if (go.Contains("yes") || go.Contains("Yes"))
@@ -475,7 +475,7 @@ namespace Universe.ScriptEngine.VirtualScript
             }
         }
 
-        protected void WhiteCoreDotNetStats(IScene scene, string[] cmdparams)
+        protected void UniverseDotNetStats(IScene scene, string[] cmdparams)
         {
             MainConsole.Instance.Info ("Universe DotNet Script Engine Stats:");
             MainConsole.Instance.CleanInfo ("    Region: " + scene.RegionInfo.RegionName);
@@ -495,13 +495,13 @@ namespace Universe.ScriptEngine.VirtualScript
             //MaintenanceThread.Stats();
         }
 
-        protected void WhiteCoreDotNetDisable(IScene scene, string[] cmdparams)
+        protected void UniverseDotNetDisable(IScene scene, string[] cmdparams)
         {
             ConsoleDisabled = true;
             MainConsole.Instance.Warn("[WDNE]: WDNE has been disabled.");
         }
 
-        protected void WhiteCoreDotNetEnable(IScene scene, string[] cmdparams)
+        protected void UniverseDotNetEnable(IScene scene, string[] cmdparams)
         {
             ConsoleDisabled = false;
             MaintenanceThread.Started = true;
@@ -1182,7 +1182,7 @@ namespace Universe.ScriptEngine.VirtualScript
         {
             if (m_APIs.Length == 0)
             {
-                m_APIs = WhiteCoreModuleLoader.PickupModules<IScriptApi>().ToArray();
+                m_APIs = UniverseModuleLoader.PickupModules<IScriptApi>().ToArray();
                 //Only add Apis that are considered safe
                 m_APIs = m_APIs.Where(api => ScriptProtection.CheckAPI(api.Name)).ToArray();
             }
@@ -1269,7 +1269,7 @@ namespace Universe.ScriptEngine.VirtualScript
         /// </summary>
         public void StartSharedScriptPlugins()
         {
-            List<IScriptPlugin> sharedPlugins = WhiteCoreModuleLoader.PickupModules<IScriptPlugin>();
+            List<IScriptPlugin> sharedPlugins = UniverseModuleLoader.PickupModules<IScriptPlugin>();
             foreach (IScriptPlugin plugin in sharedPlugins)
             {
                 plugin.Initialize(this);

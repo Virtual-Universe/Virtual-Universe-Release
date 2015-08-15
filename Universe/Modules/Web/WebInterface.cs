@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -125,7 +125,7 @@ namespace Universe.Modules.Web
         {
             Registry = registry;
 
-            var webPages = WhiteCoreModuleLoader.PickupModules<IWebInterfacePage>();
+            var webPages = UniverseModuleLoader.PickupModules<IWebInterfacePage>();
             foreach (var pages in webPages)
             {
                 foreach (var page in pages.FilePath)
@@ -134,7 +134,7 @@ namespace Universe.Modules.Web
                 }
             }
 
-            _translators = WhiteCoreModuleLoader.PickupModules<ITranslator>();
+            _translators = UniverseModuleLoader.PickupModules<ITranslator>();
             _defaultTranslator = _translators[0];
         }
 
@@ -228,7 +228,7 @@ namespace Universe.Modules.Web
                                             : new Dictionary<string, object>();
                 if (filename.EndsWith(".xsl"))
                 {
-                    WhiteCoreXmlDocument vars = GetXML(filename, httpRequest, httpResponse, requestParameters);
+                    UniverseXmlDocument vars = GetXML(filename, httpRequest, httpResponse, requestParameters);
 
                     var xslt = new XslCompiledTransform();
                     if (File.Exists(path)) xslt.Load(GetFileNameFromHTMLPath(path, httpRequest.Query));
@@ -328,7 +328,7 @@ namespace Universe.Modules.Web
             return null;
         }
 
-        private WhiteCoreXmlDocument GetXML(string filename, OSHttpRequest httpRequest, OSHttpResponse httpResponse,
+        private UniverseXmlDocument GetXML(string filename, OSHttpRequest httpRequest, OSHttpResponse httpResponse,
                                          Dictionary<string, object> requestParameters)
         {
             IWebInterfacePage page = GetPage(filename);
@@ -353,7 +353,7 @@ namespace Universe.Modules.Web
                 }
                 string response = null;
                 return
-                    (WhiteCoreXmlDocument)
+                    (UniverseXmlDocument)
                     page.Fill(this, filename, httpRequest, httpResponse, requestParameters, translator, out response)[
                         "xml"];
             }

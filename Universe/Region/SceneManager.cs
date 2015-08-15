@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -114,7 +114,7 @@ namespace Universe.Region
                 name = simConfig.GetString("DatabaseLoaderName", "FileBasedDatabase");
             }
 
-            ISimulationDataStore[] stores = WhiteCoreModuleLoader.PickupModules<ISimulationDataStore>().ToArray();
+            ISimulationDataStore[] stores = UniverseModuleLoader.PickupModules<ISimulationDataStore>().ToArray();
             
             List<string> storeNames = new List<string>();
             foreach (ISimulationDataStore store in stores)
@@ -140,7 +140,7 @@ namespace Universe.Region
             AddConsoleCommands();
 
             //Load the startup modules for the region
-            m_startupPlugins = WhiteCoreModuleLoader.PickupModules<ISharedRegionStartupModule>();
+            m_startupPlugins = UniverseModuleLoader.PickupModules<ISharedRegionStartupModule>();
         }
 
         public void ReloadConfiguration(IConfigSource config)
@@ -221,7 +221,7 @@ namespace Universe.Region
 
             m_startupTime = m_SimBase.StartupTime;                  // finished this timing period
 
-            WhiteCoreModuleLoader.ClearCache();
+            UniverseModuleLoader.ClearCache();
             // In 99.9% of cases it is a bad idea to manually force garbage collection. However,
             // this is a rare case where we know we have just went through a long cycle of heap
             // allocations, and there is no more work to be done until someone logs in

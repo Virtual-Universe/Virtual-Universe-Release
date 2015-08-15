@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -133,7 +133,7 @@ namespace Universe.Modules.Startup
         /// <param name="cmdparams">Additional arguments passed to the command</param>
         public void RunCommand(IScene scene, string[] cmdparams)
         {
-            scene.WhiteCoreEventManager.FireGenericEventHandler("Backup", null);
+            scene.UniverseEventManager.FireGenericEventHandler("Backup", null);
         }
 
         public void EditScale(IScene scene, string[] cmdparams)
@@ -189,7 +189,7 @@ namespace Universe.Modules.Startup
 
         #region Per region backup class
 
-        protected class InternalSceneBackup : IBackupModule, IWhiteCoreBackupModule
+        protected class InternalSceneBackup : IBackupModule, IUniverseBackupModule
         {
             #region Declares
 
@@ -203,7 +203,7 @@ namespace Universe.Modules.Startup
             public InternalSceneBackup(IScene scene)
             {
                 m_scene = scene;
-                m_scene.StackModuleInterface<IWhiteCoreBackupModule>(this);
+                m_scene.StackModuleInterface<IUniverseBackupModule>(this);
                 m_scene.RegisterModuleInterface<IBackupModule>(this);
 
                 if (MainConsole.Instance != null)
@@ -580,7 +580,7 @@ namespace Universe.Modules.Startup
 
             #endregion
 
-            #region IWhiteCoreBackupModule Methods
+            #region IUniverseBackupModule Methods
 
             bool m_isArchiving = false;
             readonly List<UUID> m_missingAssets = new List<UUID>();
@@ -664,7 +664,7 @@ namespace Universe.Modules.Startup
 
                 IDictionary<UUID, AssetType> assets = new Dictionary<UUID, AssetType>();
                 UuidGatherer assetGatherer = new UuidGatherer(m_scene.AssetService);
-                IWhiteCoreBackupArchiver archiver = m_scene.RequestModuleInterface<IWhiteCoreBackupArchiver>();
+                IUniverseBackupArchiver archiver = m_scene.RequestModuleInterface<IUniverseBackupArchiver>();
                 bool saveAssets = false;
                 if (archiver.AllowPrompting)
                     saveAssets =

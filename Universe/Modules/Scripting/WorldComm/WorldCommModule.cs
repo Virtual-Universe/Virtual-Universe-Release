@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -110,11 +110,11 @@ namespace Universe.Modules.Scripting
             int maxhandles = 64;
             try
             {
-                m_whisperdistance = config.Configs["WhiteCoreChat"].GetInt("whisper_distance", m_whisperdistance);
-                m_saydistance = config.Configs["WhiteCoreChat"].GetInt("say_distance", m_saydistance);
-                m_shoutdistance = config.Configs["WhiteCoreChat"].GetInt("shout_distance", m_shoutdistance);
-                maxlisteners = config.Configs["WhiteCoreChat"].GetInt("max_listens_per_region", maxlisteners);
-                maxhandles = config.Configs["WhiteCoreChat"].GetInt("max_listens_per_script", maxhandles);
+                m_whisperdistance = config.Configs["UniverseChat"].GetInt("whisper_distance", m_whisperdistance);
+                m_saydistance = config.Configs["UniverseChat"].GetInt("say_distance", m_saydistance);
+                m_shoutdistance = config.Configs["UniverseChat"].GetInt("shout_distance", m_shoutdistance);
+                maxlisteners = config.Configs["UniverseChat"].GetInt("max_listens_per_region", maxlisteners);
+                maxhandles = config.Configs["UniverseChat"].GetInt("max_listens_per_script", maxhandles);
             }
             catch (Exception)
             {

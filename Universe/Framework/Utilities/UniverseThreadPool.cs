@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,7 +31,7 @@ using System.Threading;
 
 namespace Universe.Framework.Utilities
 {
-    public class WhiteCoreThreadPoolStartInfo
+    public class UniverseThreadPoolStartInfo
     {
         public int InitialSleepTime = 10;
         public bool KillThreadAfterQueueClear;
@@ -42,16 +42,16 @@ namespace Universe.Framework.Utilities
         public ThreadPriority priority;
     }
 
-    public class WhiteCoreThreadPool
+    public class UniverseThreadPool
     {
         readonly int[] Sleeping;
         readonly Thread[] Threads;
-        readonly WhiteCoreThreadPoolStartInfo m_info;
+        readonly UniverseThreadPoolStartInfo m_info;
         readonly ConcurrentQueue<Action> queue = new ConcurrentQueue<Action>();
         public long nSleepingthreads;
         public long nthreads;
 
-        public WhiteCoreThreadPool(WhiteCoreThreadPoolStartInfo info)
+        public UniverseThreadPool(UniverseThreadPoolStartInfo info)
         {
             m_info = info;
             Threads = new Thread[m_info.Threads];
@@ -138,7 +138,7 @@ namespace Universe.Framework.Utilities
                                                 {
                                                     Priority = m_info.priority,
                                                     Name =
-                                                        (m_info.Name == "" ? "WhiteCoreThreadPool" : m_info.Name) + "#" + i,
+                                                        (m_info.Name == "" ? "UniverseThreadPool" : m_info.Name) + "#" + i,
                                                     IsBackground = true
                                                 };
                             try

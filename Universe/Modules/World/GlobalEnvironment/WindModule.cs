@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -90,7 +90,7 @@ namespace Universe.Modules.GlobalEnvironment
                 m_frame = 0;
 
                 // Register all the Wind Model Plug-ins
-                foreach (IWindModelPlugin windPlugin in WhiteCoreModuleLoader.PickupModules<IWindModelPlugin>())
+                foreach (IWindModelPlugin windPlugin in UniverseModuleLoader.PickupModules<IWindModelPlugin>())
                 {
                     //MainConsole.Instance.InfoFormat("[WIND] Found Plugin: {0}", windPlugin.Name);
                     m_availableWindPlugins.Add (windPlugin.Name, windPlugin);

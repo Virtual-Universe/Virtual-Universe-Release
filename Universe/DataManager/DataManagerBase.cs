@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -48,7 +48,7 @@ namespace Universe.DataManager
         public abstract bool TableExists(string table);
         public abstract void CreateTable(string table, ColumnDefinition[] columns, IndexDefinition[] indexDefinitions);
 
-        public Version GetWhiteCoreVersion(string migratorName)
+        public Version GetUniverseVersion(string migratorName)
         {
             if (!TableExists(VERSION_TABLE_NAME))
             {
@@ -90,7 +90,7 @@ namespace Universe.DataManager
             return null;
         }
 
-        public void WriteWhiteCoreVersion(Version version, string MigrationName)
+        public void WriteUniverseVersion(Version version, string MigrationName)
         {
             if (!TableExists(VERSION_TABLE_NAME))
             {

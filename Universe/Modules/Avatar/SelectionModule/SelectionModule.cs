@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -59,10 +59,10 @@ namespace Universe.Modules.Selection
 
         public void Initialize(IConfigSource source)
         {
-			IConfig whitecorestartupConfig = source.Configs["WhiteCoreStartup"];
-			if (whitecorestartupConfig != null)
+			IConfig UniversestartupConfig = source.Configs["UniverseStartup"];
+			if (UniversestartupConfig != null)
             {
-				m_UseSelectionParticles = whitecorestartupConfig.GetBoolean("UseSelectionParticles", true);
+				m_UseSelectionParticles = UniversestartupConfig.GetBoolean("UseSelectionParticles", true);
             }
         }
 

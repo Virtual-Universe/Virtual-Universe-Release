@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,12 +54,12 @@ namespace Universe.Services.DataService
 
             if (GD != null)
                 GD.ConnectToDatabase(defaultConnectionString, "Generics",
-                                     source.Configs["WhiteCoreConnectors"].GetBoolean("ValidateTables", true));
+                                     source.Configs["UniverseConnectors"].GetBoolean("ValidateTables", true));
 
             Framework.Utilities.DataManager.RegisterPlugin(Name + "Local", this);
 
-            m_maxOfflineMessages = source.Configs["WhiteCoreConnectors"].GetInt("MaxOfflineMessages", m_maxOfflineMessages);
-            if (source.Configs["WhiteCoreConnectors"].GetString("OfflineMessagesConnector", "LocalConnector") ==
+            m_maxOfflineMessages = source.Configs["UniverseConnectors"].GetInt("MaxOfflineMessages", m_maxOfflineMessages);
+            if (source.Configs["UniverseConnectors"].GetString("OfflineMessagesConnector", "LocalConnector") ==
                 "LocalConnector")
             {
                 Framework.Utilities.DataManager.RegisterPlugin(this);

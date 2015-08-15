@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,7 +41,7 @@ using OpenMetaverse;
 
 namespace Universe.Physics.OpenDynamicsEngine
 {
-    public class WhiteCoreODEPhysicsScene : PhysicsScene
+    public class UniverseODEPhysicsScene : PhysicsScene
     {
         #region Declares
 
@@ -105,14 +105,14 @@ namespace Universe.Physics.OpenDynamicsEngine
         protected bool m_filterCollisions;
 
         protected readonly d.NearCallback nearCallback;
-        protected readonly HashSet<WhiteCoreODECharacter> _characters = new HashSet<WhiteCoreODECharacter>();
-        protected readonly HashSet<WhiteCoreODEPrim> _prims = new HashSet<WhiteCoreODEPrim>();
+        protected readonly HashSet<UniverseODECharacter> _characters = new HashSet<UniverseODECharacter>();
+        protected readonly HashSet<UniverseODEPrim> _prims = new HashSet<UniverseODEPrim>();
         protected readonly object _activeprimsLock = new object();
-        protected readonly HashSet<WhiteCoreODEPrim> _activeprims = new HashSet<WhiteCoreODEPrim>();
+        protected readonly HashSet<UniverseODEPrim> _activeprims = new HashSet<UniverseODEPrim>();
 
         public override List<PhysicsActor> ActiveObjects
         {
-            get { return new List<WhiteCoreODEPrim>(_activeprims).ConvertAll<PhysicsActor>(prim => prim); }
+            get { return new List<UniverseODEPrim>(_activeprims).ConvertAll<PhysicsActor>(prim => prim); }
         }
 
         public ConcurrentQueue<NoParam> SimulationChangesQueue = new ConcurrentQueue<NoParam>();
@@ -190,7 +190,7 @@ namespace Universe.Physics.OpenDynamicsEngine
         public float m_flightCeilingHeight = 2048.0f; // rex
         public bool m_useFlightCeilingHeight;
 
-        protected WhiteCoreODERayCastRequestManager m_rayCastManager;
+        protected UniverseODERayCastRequestManager m_rayCastManager;
         protected bool IsLocked;
         protected ConcurrentQueue<PhysicsActor> RemoveQueue = new ConcurrentQueue<PhysicsActor>();
         protected ConcurrentQueue<PhysicsActor> DeleteQueue = new ConcurrentQueue<PhysicsActor>();
@@ -237,7 +237,7 @@ namespace Universe.Physics.OpenDynamicsEngine
         ///     Sets many properties that ODE requires to be stable
         ///     These settings need to be tweaked 'exactly' right or weird stuff happens.
         /// </summary>
-        public WhiteCoreODEPhysicsScene()
+        public UniverseODEPhysicsScene()
         {
             nearCallback = near;
             // Create the world and the first space
@@ -261,7 +261,7 @@ namespace Universe.Physics.OpenDynamicsEngine
 
         public override void PostInitialise(IConfigSource config)
         {
-            m_rayCastManager = new WhiteCoreODERayCastRequestManager(this);
+            m_rayCastManager = new UniverseODERayCastRequestManager(this);
             m_config = config;
             PID_D = 2200.0f;
             PID_P = 900.0f;
@@ -504,15 +504,15 @@ namespace Universe.Physics.OpenDynamicsEngine
 
                 PhysicsActor badObj;
                 if (actor_name_map.TryGetValue(g1, out badObj))
-                    if (badObj is WhiteCoreODEPrim)
-                        RemovePrim((WhiteCoreODEPrim) badObj);
-                    else if (badObj is WhiteCoreODECharacter)
-                        RemoveAvatar((WhiteCoreODECharacter) badObj);
+                    if (badObj is UniverseODEPrim)
+                        RemovePrim((UniverseODEPrim) badObj);
+                    else if (badObj is UniverseODECharacter)
+                        RemoveAvatar((UniverseODECharacter) badObj);
                 if (actor_name_map.TryGetValue(g2, out badObj))
-                    if (badObj is WhiteCoreODEPrim)
-                        RemovePrim((WhiteCoreODEPrim) badObj);
-                    else if (badObj is WhiteCoreODECharacter)
-                        RemoveAvatar((WhiteCoreODECharacter) badObj);
+                    if (badObj is UniverseODEPrim)
+                        RemovePrim((UniverseODEPrim) badObj);
+                    else if (badObj is UniverseODECharacter)
+                        RemoveAvatar((UniverseODECharacter) badObj);
                 return;
             }
 
@@ -564,7 +564,7 @@ namespace Universe.Physics.OpenDynamicsEngine
 // 20131224 not used                    maxContact = curContact;
                 }
             }
-            if (p1 is WhiteCoreODECharacter || p2 is WhiteCoreODECharacter)
+            if (p1 is UniverseODECharacter || p2 is UniverseODECharacter)
                 //This really should be maxContact, but there are crashes that users have reported when this is used...
                 //AddODECollision(maxContact, p1, p2, b1, b2, maxDepthContact, ref NotSkipedCount);
                 AddODECollision(curContact, p1, p2, b1, b2, maxDepthContact, ref NotSkipedCount);
@@ -605,7 +605,7 @@ namespace Universe.Physics.OpenDynamicsEngine
             bool p2col = true;
 
             // We only need to test p2 for 'jump crouch purposes'
-            if (p2 is WhiteCoreODECharacter && p1.PhysicsActorType == (int) ActorTypes.Prim)
+            if (p2 is UniverseODECharacter && p1.PhysicsActorType == (int) ActorTypes.Prim)
             {
                 // Testing if the collision is at the feet of the avatar
                 if ((p2.Position.Z - maxDepthContact.Position.Z) < (p2.Size.Z*0.5f))
@@ -621,8 +621,8 @@ namespace Universe.Physics.OpenDynamicsEngine
             // appears to be phantom for the world
 
             // No collision on volume detect prims
-            if ((p1 is WhiteCoreODEPrim && p1.VolumeDetect) ||
-                (p2 is WhiteCoreODEPrim && p2.VolumeDetect))
+            if ((p1 is UniverseODEPrim && p1.VolumeDetect) ||
+                (p2 is UniverseODEPrim && p2.VolumeDetect))
                 return;
 
             if (curContact.depth < 0f)
@@ -641,7 +641,7 @@ namespace Universe.Physics.OpenDynamicsEngine
             {
                 if (p2.PhysicsActorType == (int) ActorTypes.Prim)
                 {
-                    ((WhiteCoreODEPrim) p2).GetContactParam(p2, ref newGlobalcontact);
+                    ((UniverseODEPrim) p2).GetContactParam(p2, ref newGlobalcontact);
 
                     joint = CreateContacJoint(curContact);
                 }
@@ -667,7 +667,7 @@ namespace Universe.Physics.OpenDynamicsEngine
             else if (p1.PhysicsActorType == (int) ActorTypes.Prim)
             {
                 //Add restitution and friction changes
-                ((WhiteCoreODEPrim) p1).GetContactParam(p2, ref newGlobalcontact);
+                ((UniverseODEPrim) p1).GetContactParam(p2, ref newGlobalcontact);
 
                 joint = CreateContacJoint(curContact);
             }
@@ -759,17 +759,17 @@ namespace Universe.Physics.OpenDynamicsEngine
         {
             m_global_contactcount = 0;
             //Clear out all the colliding attributes before we begin to collide anyone
-            foreach (WhiteCoreODECharacter chr in _characters)
+            foreach (UniverseODECharacter chr in _characters)
             {
                 chr.IsColliding = false;
                 chr.IsTruelyColliding = false;
             }
-            List<IntPtr> shells = _characters.Where(chr => chr != null && chr.Shell != IntPtr.Zero && chr.Body != IntPtr.Zero).Select<WhiteCoreODECharacter, IntPtr>(chr => chr.Shell).ToList();
+            List<IntPtr> shells = _characters.Where(chr => chr != null && chr.Shell != IntPtr.Zero && chr.Body != IntPtr.Zero).Select<UniverseODECharacter, IntPtr>(chr => chr.Shell).ToList();
                 
             lock (_activeprimsLock)
             {
-                List<WhiteCoreODEPrim> removeprims = null;
-                foreach (WhiteCoreODEPrim chr in _activeprims)
+                List<UniverseODEPrim> removeprims = null;
+                foreach (UniverseODEPrim chr in _activeprims)
                 {
                     //Fix colliding atributes!
                     chr.IsColliding = false;
@@ -777,7 +777,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                 }
                 if (space != IntPtr.Zero)
                 {
-                    List<WhiteCoreODEPrim> primsToCollide = new List<WhiteCoreODEPrim>(_activeprims.Where(
+                    List<UniverseODEPrim> primsToCollide = new List<UniverseODEPrim>(_activeprims.Where(
                         prm => prm != null && prm.Body != IntPtr.Zero && d.BodyIsEnabled(prm.Body) && 
                             !prm.m_disabled && !prm.m_frozen && prm.prim_geom != IntPtr.Zero));
                     shells.AddRange(primsToCollide.ConvertAll<IntPtr>(prm => prm.prim_geom));
@@ -811,11 +811,11 @@ namespace Universe.Physics.OpenDynamicsEngine
                         List<UnmanagedODE.ContactGeom> contacts = UnmanagedODE.UnmanagedODEPhysics.CollisionLoop(space, shells);
                     }*/
 
-                    foreach (WhiteCoreODEPrim prm in
+                    foreach (UniverseODEPrim prm in
                         _activeprims.Where(prm => prm != null && (prm.m_frozen || prm.prim_geom == IntPtr.Zero)))
                     {
                         if (removeprims == null)
-                            removeprims = new List<WhiteCoreODEPrim>();
+                            removeprims = new List<UniverseODEPrim>();
                         removeprims.Add(prm);
                         if (prm.prim_geom == IntPtr.Zero)
                             MainConsole.Instance.Debug("[PHYSICS]: unable to collide test active prim against space. The space was zero, the geom was zero or " +
@@ -823,7 +823,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                     }
                     if (removeprims != null)
                     {
-                        foreach (WhiteCoreODEPrim chr in removeprims)
+                        foreach (UniverseODEPrim chr in removeprims)
                             _activeprims.Remove(chr);
                     }
                 }
@@ -950,7 +950,7 @@ namespace Universe.Physics.OpenDynamicsEngine
         ///     Internally locked, as it is called only in the Simulation Changes loop
         /// </summary>
         /// <param name="chr"></param>
-        internal void AddCharacter(WhiteCoreODECharacter chr)
+        internal void AddCharacter(UniverseODECharacter chr)
         {
             if (!_characters.Contains(chr))
                 _characters.Add(chr);
@@ -961,7 +961,7 @@ namespace Universe.Physics.OpenDynamicsEngine
         ///     Internally locked, as it is called only in the Simulation Changes loop
         /// </summary>
         /// <param name="chr"></param>
-        internal void RemoveCharacter(WhiteCoreODECharacter chr)
+        internal void RemoveCharacter(UniverseODECharacter chr)
         {
             _characters.Remove(chr);
         }
@@ -969,10 +969,10 @@ namespace Universe.Physics.OpenDynamicsEngine
         public override void RemoveAvatar(PhysicsActor actor)
         {
             //MainConsole.Instance.Debug("[PHYSICS]:ODELOCK");
-            ((WhiteCoreODECharacter) actor).Destroy();
+            ((UniverseODECharacter) actor).Destroy();
         }
 
-        internal void BadCharacter(WhiteCoreODECharacter chr)
+        internal void BadCharacter(UniverseODECharacter chr)
         {
             RemoveAvatar(chr);
             AddAvatar(chr.Name, new Vector3(m_region.RegionSizeX/2,
@@ -982,19 +982,19 @@ namespace Universe.Physics.OpenDynamicsEngine
                                   chr.CAPSULE_LENGTH*2), true, chr.LocalID, chr.UUID);
         }
 
-		internal void BadPrim(WhiteCoreODEPrim whitecoreODEPrim)
+		internal void BadPrim(UniverseODEPrim UniverseODEPrim)
         {
-			DeletePrim(whitecoreODEPrim);
+			DeletePrim(UniverseODEPrim);
             //Can't really do this here... as it will be readded before the delete gets called, which is wrong...
             //So... leave the prim out there for now
-			//AddPrimShape(whitecoreODEPrim.ParentEntity);
+			//AddPrimShape(UniverseODEPrim.ParentEntity);
         }
 
         public override PhysicsActor AddPrimShape(UUID primID, uint localID, string name, byte physicsType, PrimitiveBaseShape shape, Vector3 position,
                                                     Vector3 size, Quaternion rotation, bool isPhysical, int material, float friction, float restitution,
                                                     float gravityMultiplier, float density)
         {
-            WhiteCoreODEPrim newPrim = new WhiteCoreODEPrim(name, physicsType, shape, position, size, rotation, material, friction, restitution, gravityMultiplier, density, this);
+            UniverseODEPrim newPrim = new UniverseODEPrim(name, physicsType, shape, position, size, rotation, material, friction, restitution, gravityMultiplier, density, this);
             newPrim.UUID = primID;
             newPrim.LocalID = localID;
 
@@ -1007,7 +1007,7 @@ namespace Universe.Physics.OpenDynamicsEngine
             return newPrim;
         }
 
-        internal void addActivePrim(WhiteCoreODEPrim activatePrim)
+        internal void addActivePrim(UniverseODEPrim activatePrim)
         {
             // adds active prim..   (ones that should be iterated over in collisions_optimized
             lock (_activeprimsLock)
@@ -1023,7 +1023,7 @@ namespace Universe.Physics.OpenDynamicsEngine
             set { m_timeDilation = value; }
         }
 
-        internal void remActivePrim(WhiteCoreODEPrim deactivatePrim)
+        internal void remActivePrim(UniverseODEPrim deactivatePrim)
         {
             lock (_activeprimsLock)
                 _activeprims.Remove(deactivatePrim);
@@ -1049,7 +1049,7 @@ namespace Universe.Physics.OpenDynamicsEngine
         ///     that the space was using.
         /// </summary>
         /// <param name="prim"></param>
-        internal void RemovePrimThreadLocked(WhiteCoreODEPrim prim)
+        internal void RemovePrimThreadLocked(UniverseODEPrim prim)
         {
             remCollisionEventReporting(prim);
             remActivePrim(prim);
@@ -1080,7 +1080,7 @@ namespace Universe.Physics.OpenDynamicsEngine
             if (!prim.childPrim)
             {
                 lock (prim.childrenPrim)
-                    foreach (WhiteCoreODEPrim prm in prim.childrenPrim)
+                    foreach (UniverseODEPrim prm in prim.childrenPrim)
                         RemovePrimThreadLocked(prm);
             }
             lock (_prims)
@@ -1263,7 +1263,7 @@ namespace Universe.Physics.OpenDynamicsEngine
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        internal bool needsMeshing(WhiteCoreODEPrim prim, byte physicalType)
+        internal bool needsMeshing(UniverseODEPrim prim, byte physicalType)
         {
             PrimitiveBaseShape pbs = prim.Shape;
             // most of this is redundant now as the mesher will return null if it cant mesh a prim
@@ -1445,7 +1445,7 @@ namespace Universe.Physics.OpenDynamicsEngine
 
                     // Move other active objects
                     lock (_activeprimsLock)
-                        foreach (WhiteCoreODEPrim prim in _activeprims)
+                        foreach (UniverseODEPrim prim in _activeprims)
                             prim.Move(ODE_STEPSIZE);
 
                     if (m_rayCastManager != null)
@@ -1471,18 +1471,18 @@ namespace Universe.Physics.OpenDynamicsEngine
             PhysicsActor prm;
             while (RemoveQueue.TryDequeue(out prm))
             {
-                WhiteCoreODEPrim p = (WhiteCoreODEPrim) prm;
+                UniverseODEPrim p = (UniverseODEPrim) prm;
                 p.setPrimForRemoval();
             }
             while (DeleteQueue.TryDequeue(out prm))
             {
-                WhiteCoreODEPrim p = (WhiteCoreODEPrim) prm;
+                UniverseODEPrim p = (UniverseODEPrim) prm;
                 p.setPrimForDeletion();
             }
 
             if (!DisableCollisions)
             {
-                foreach (WhiteCoreODECharacter av in _characters.Where(av => av != null))
+                foreach (UniverseODECharacter av in _characters.Where(av => av != null))
                     av.SendCollisions();
                 lock (_collisionEventListLock)
                 {
@@ -1491,12 +1491,12 @@ namespace Universe.Physics.OpenDynamicsEngine
                 }
             }
 
-            foreach (WhiteCoreODECharacter actor in _characters.Where(actor => actor != null))
+            foreach (UniverseODECharacter actor in _characters.Where(actor => actor != null))
                 actor.UpdatePositionAndVelocity(nodesteps*ODE_STEPSIZE);
 
             lock (_activeprimsLock)
             {
-                foreach (WhiteCoreODEPrim actor in _activeprims.Where(actor => actor.IsPhysical))
+                foreach (UniverseODEPrim actor in _activeprims.Where(actor => actor.IsPhysical))
                     actor.UpdatePositionAndVelocity(nodesteps*ODE_STEPSIZE);
             }
         }
@@ -1610,7 +1610,7 @@ namespace Universe.Physics.OpenDynamicsEngine
         {
             lock (_prims)
             {
-                foreach (WhiteCoreODEPrim prm in _prims)
+                foreach (UniverseODEPrim prm in _prims)
                 {
                     RemovePrim(prm);
                 }
@@ -1639,11 +1639,11 @@ namespace Universe.Physics.OpenDynamicsEngine
         public override Dictionary<uint, float> GetTopColliders()
         {
             Dictionary<uint, float> returncolliders = new Dictionary<uint, float>();
-            List<WhiteCoreODEPrim> collidingPrims = new List<WhiteCoreODEPrim>();
+            List<UniverseODEPrim> collidingPrims = new List<UniverseODEPrim>();
             lock (_prims)
             {
                 foreach (
-                    WhiteCoreODEPrim prm in
+                    UniverseODEPrim prm in
                         _prims.Where(prm => prm.CollisionScore > 0).Where(prm => !collidingPrims.Contains(prm)))
                 {
                     collidingPrims.Add(prm);
@@ -1656,7 +1656,7 @@ namespace Universe.Physics.OpenDynamicsEngine
             if (collidingPrims.Count > 25)
                 collidingPrims.RemoveRange(25, collidingPrims.Count - 25);
 
-            foreach (WhiteCoreODEPrim prm in collidingPrims)
+            foreach (UniverseODEPrim prm in collidingPrims)
             {
                 returncolliders[prm.LocalID] = prm.CollisionScore;
                 prm.resetCollisionAccounting();

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,7 +36,7 @@ using Universe.Framework.Services;
 
 namespace Universe.Framework.DatabaseInterfaces
 {
-    public interface IGroupsServiceConnector : IWhiteCoreDataPlugin
+    public interface IGroupsServiceConnector : IUniverseDataPlugin
     {
         void CreateGroup(UUID groupID, string name, string charter, bool showInList, UUID insigniaID, int membershipFee,
                          bool openEnrollment, bool allowPublish, bool maturePublish, UUID founderID, UUID OwnerRoleID);

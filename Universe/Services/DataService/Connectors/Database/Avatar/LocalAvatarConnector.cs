@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -47,7 +47,7 @@ namespace Universe.Services.DataService
         public void Initialize(IGenericData GenericData, IConfigSource source, IRegistryCore simBase,
                                string defaultConnectionString)
         {
-            if (source.Configs["WhiteCoreConnectors"].GetString("AvatarConnector", "LocalConnector") == "LocalConnector")
+            if (source.Configs["UniverseConnectors"].GetString("AvatarConnector", "LocalConnector") == "LocalConnector")
             {
                 GD = GenericData;
 
@@ -57,7 +57,7 @@ namespace Universe.Services.DataService
 
                 if (GD != null)
                     GD.ConnectToDatabase(connectionString, "Avatars",
-                                         source.Configs["WhiteCoreConnectors"].GetBoolean("ValidateTables", true));
+                                         source.Configs["UniverseConnectors"].GetBoolean("ValidateTables", true));
 
                 Framework.Utilities.DataManager.RegisterPlugin(this);
             }

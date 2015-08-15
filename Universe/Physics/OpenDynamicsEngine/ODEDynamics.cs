@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -48,7 +48,7 @@ using OpenMetaverse;
 
 namespace Universe.Physics.OpenDynamicsEngine
 {
-    public class WhiteCoreODEDynamics
+    public class UniverseODEDynamics
     {
         public float Mass;
         private int frcount; // Used to limit dynamics debug output to
@@ -331,7 +331,7 @@ namespace Universe.Physics.OpenDynamicsEngine
 
 //end ProcessVehicleFlags
 
-        internal void ProcessTypeChange(WhiteCoreODEPrim parent, Vehicle pType, float timestep)
+        internal void ProcessTypeChange(UniverseODEPrim parent, Vehicle pType, float timestep)
         {
             // Set Defaults For Type
             m_type = pType;
@@ -517,7 +517,7 @@ namespace Universe.Physics.OpenDynamicsEngine
 
 //end SetDefaultsForType
 
-        internal void Enable(IntPtr pBody, WhiteCoreODEPrim parent, WhiteCoreODEPhysicsScene pParentScene)
+        internal void Enable(IntPtr pBody, UniverseODEPrim parent, UniverseODEPhysicsScene pParentScene)
         {
             if (m_enabled)
                 return;
@@ -533,7 +533,7 @@ namespace Universe.Physics.OpenDynamicsEngine
             GetMass(pBody);
         }
 
-        internal void Disable(WhiteCoreODEPrim parent)
+        internal void Disable(UniverseODEPrim parent)
         {
             if (!m_enabled || m_type == Vehicle.TYPE_NONE)
                 return;
@@ -558,7 +558,7 @@ namespace Universe.Physics.OpenDynamicsEngine
         }
 
 
-        internal void Step(IntPtr pBody, float pTimestep, WhiteCoreODEPhysicsScene pParentScene, WhiteCoreODEPrim parent)
+        internal void Step(IntPtr pBody, float pTimestep, UniverseODEPhysicsScene pParentScene, UniverseODEPrim parent)
         {
             m_body = pBody;
             if (pBody == IntPtr.Zero || m_type == Vehicle.TYPE_NONE)
@@ -584,7 +584,7 @@ namespace Universe.Physics.OpenDynamicsEngine
 
         // end Step
 
-        private void MoveLinear(float pTimestep, WhiteCoreODEPhysicsScene _pParentScene, WhiteCoreODEPrim parent)
+        private void MoveLinear(float pTimestep, UniverseODEPhysicsScene _pParentScene, UniverseODEPrim parent)
         {
             bool ishovering = false;
             bool bypass_buoyancy = false;
@@ -912,7 +912,7 @@ namespace Universe.Physics.OpenDynamicsEngine
 
         }
 
-        private void MoveAngular(float pTimestep, WhiteCoreODEPhysicsScene _pParentScene, WhiteCoreODEPrim parent)
+        private void MoveAngular(float pTimestep, UniverseODEPhysicsScene _pParentScene, UniverseODEPrim parent)
         {
             bool ishovering = false;
             d.Vector3 d_angularVelocity = d.BodyGetAngularVel(Body);
