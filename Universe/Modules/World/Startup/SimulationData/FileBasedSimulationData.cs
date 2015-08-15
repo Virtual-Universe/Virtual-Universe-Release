@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -130,7 +130,6 @@ namespace Universe.Modules
 
         public virtual List<string> FindRegionInfos(out bool newRegion, ISimulationBase simBase)
         {
-//			List<string> regions = new List<string>(Directory.GetFiles(".", "*.sim", SearchOption.TopDirectoryOnly));
 			ReadConfig(simBase);
 			MainConsole.Instance.Info("Looking for previous regions in: "+ m_storeDirectory);
 
@@ -162,7 +161,7 @@ namespace Universe.Modules
             {
                 if (Path.GetFileName (regBak).StartsWith(regionName)) 
                 {
-                    //        MainConsole.Instance.Debug ("Found: " + Path.GetFileNameWithoutExtension (regBak));
+                    //MainConsole.Instance.Debug ("Found: " + Path.GetFileNameWithoutExtension (regBak));
                     regionBaks.Add ( regBak);
                 }
             }
@@ -257,7 +256,7 @@ namespace Universe.Modules
 
                 ForceBackup();
 
-				MainConsole.Instance.Info("[FileBasedSimulationData]: Save completed.");
+				MainConsole.Instance.Info("[File Based Simulation Data]: Save completed.");
 			}
 
 			return regionInfo;
@@ -394,7 +393,8 @@ namespace Universe.Modules
                 // * Mainland / Openspace
                 //
                 // * Estate / Full Region   (Private)
-                //
+                // * Estate / Homestead
+                // * Estate / Openspace
                 info.RegionType = MainConsole.Instance.Prompt ("Region Type (Mainland/Estate)",
                     (info.RegionType == "" ? "Estate" : info.RegionType));
 
@@ -487,7 +487,7 @@ namespace Universe.Modules
                     info.Startup = StartupType.Normal;
                     info.SeeIntoThisSimFromNeighbor = true;
                     info.InfiniteRegion = true;
-                    info.ObjectCapacity = 50000;
+                    info.ObjectCapacity = 100000;
 
                 }
                 if (setupMode.StartsWith("o"))       
@@ -508,7 +508,7 @@ namespace Universe.Modules
                     info.Startup = StartupType.Medium;
                     info.SeeIntoThisSimFromNeighbor = true;
                     info.InfiniteRegion = true;
-                    info.ObjectCapacity = 750;
+                    info.ObjectCapacity = 50000;
                     info.RegionSettings.AgentLimit = 10;
                     info.RegionSettings.AllowLandJoinDivide = false;
                     info.RegionSettings.AllowLandResell = false;
@@ -526,7 +526,7 @@ namespace Universe.Modules
                     info.Startup = StartupType.Medium;
                     info.SeeIntoThisSimFromNeighbor = true;
                     info.InfiniteRegion = true;
-                    info.ObjectCapacity = 3750;
+                    info.ObjectCapacity = 75000;
                     info.RegionSettings.AgentLimit = 20;
                     info.RegionSettings.AllowLandJoinDivide = false;
                     info.RegionSettings.AllowLandResell = false;
@@ -541,7 +541,7 @@ namespace Universe.Modules
                     info.Startup = StartupType.Normal;
                     info.SeeIntoThisSimFromNeighbor = true;
                     info.InfiniteRegion = true;
-                    info.ObjectCapacity = 15000;
+                    info.ObjectCapacity = 100000;
                     info.RegionSettings.AgentLimit = 100;
                     if (info.RegionType.StartsWith ("M"))                           // defaults are 'true'
                     {
@@ -575,7 +575,7 @@ namespace Universe.Modules
 
                 m_scene.SimulationDataService.ForceBackup();
 
-                MainConsole.Instance.InfoFormat("[FileBasedSimulationData]: Save of {0} completed.",info.RegionName);
+                MainConsole.Instance.InfoFormat("[File Based Simulation Data]: Save of {0} completed.",info.RegionName);
             }
 
             return info;
@@ -755,7 +755,7 @@ namespace Universe.Modules
             }
             catch (Exception ex)
             {
-                MainConsole.Instance.Error("[FileBasedSimulationData]: Failed to save backup, exception occurred " + ex);
+                MainConsole.Instance.Error("[File Based Simulation Data]: Failed to save backup, exception occurred " + ex);
             }
         }
 
@@ -779,7 +779,7 @@ namespace Universe.Modules
             }
             catch (Exception ex)
             {
-                MainConsole.Instance.Error("[FileBasedSimulationData]: Failed to save backup, exception occurred " + ex);
+                MainConsole.Instance.Error("[File Based Simulation Data]: Failed to save backup, exception occurred " + ex);
             }
             if (m_saveTimer != null)
                 m_saveTimer.Start(); //Restart it as we just did a backup
@@ -808,7 +808,7 @@ namespace Universe.Modules
         /// <param name="simBase"></param>
         protected virtual void ReadConfig(ISimulationBase simBase)
         {
-            IConfig config = simBase.ConfigSource.Configs["FileBasedSimulationData"];
+            IConfig config = simBase.ConfigSource.Configs["File Based Simulation Data"];
             if (config != null)
             {
                 m_saveChanges = config.GetBoolean("SaveChanges", m_saveChanges);
@@ -903,7 +903,7 @@ namespace Universe.Modules
                 }
                 catch (Exception ex)
                 {
-                    MainConsole.Instance.Error("[FileBasedSimulationData]: Failed to save backup, exception occurred " +
+                    MainConsole.Instance.Error("[File Based Simulation Data]: Failed to save backup, exception occurred " +
                                                ex);
                 }
                 m_saveTimer.Start(); //Restart it as we just did a backup
@@ -911,7 +911,7 @@ namespace Universe.Modules
             else if (m_displayNotSavingNotice)
             {
                 m_displayNotSavingNotice = false;
-                MainConsole.Instance.Info("[FileBasedSimulationData]: Not saving backup, not required");
+                MainConsole.Instance.Info("[File Based Simulation Data]: Not saving backup, not required");
             }
         }
 
@@ -935,7 +935,7 @@ namespace Universe.Modules
             }
             catch (Exception ex)
             {
-                MainConsole.Instance.Error("[FileBasedSimulationData]: Failed to save backup, exception occurred " + ex);
+                MainConsole.Instance.Error("[File Based Simulation Data]: Failed to save backup, exception occurred " + ex);
             }
         }
 
@@ -999,7 +999,7 @@ namespace Universe.Modules
                 MainConsole.Instance.WarnFormat("[Backup]: Exception caught: {0}", ex);
             }
 
-            MainConsole.Instance.Info("[FileBasedSimulationData]: Backing up " +
+            MainConsole.Instance.Info("[File Based Simulation Data]: Backing up " +
                                       m_scene.RegionInfo.RegionName);
 
             RegionData regiondata = new RegionData();
@@ -1058,12 +1058,11 @@ namespace Universe.Modules
             {
                 if (File.Exists(filename + (isOldSave ? "" : ".tmp")))
                     File.Delete(filename + (isOldSave ? "" : ".tmp")); //Remove old tmp files
-                MainConsole.Instance.Error("[FileBasedSimulationData]: Failed to save backup for region " +
+                MainConsole.Instance.Error("[File Based Simulation Data]: Failed to save backup for region " +
                                            m_scene.RegionInfo.RegionName + "!");
                 return;
             }
 
-            //RegionData data = _regionLoader.LoadBackup(filename + ".tmp");
             if (!isOldSave)
             {
                 if (File.Exists(filename))
@@ -1089,7 +1088,7 @@ namespace Universe.Modules
             regiondata.Dispose();
             //Now make it the full file again
             MapTileNeedsGenerated = true;
-            MainConsole.Instance.Info("[FileBasedSimulationData]: Saved Backup for region " +
+            MainConsole.Instance.Info("[File Based Simulation Data]: Saved Backup for region " +
                                       m_scene.RegionInfo.RegionName);
         }
 
@@ -1135,7 +1134,7 @@ namespace Universe.Modules
         {
             BackupFile = fileName;
             string simName = Path.GetFileName(fileName); 
-            MainConsole.Instance.Info("[FileBasedSimulationData]: Restoring sim backup for region " + simName + "...");
+            MainConsole.Instance.Info("[File Based Simulation Data]: Restoring sim backup for region " + simName + "...");
 
             _regionData = _regionLoader.LoadBackup(BuildSaveFileName());
             if (_regionData == null)

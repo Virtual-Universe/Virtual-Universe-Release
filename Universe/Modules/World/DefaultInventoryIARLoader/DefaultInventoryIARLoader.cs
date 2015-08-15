@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,7 +25,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Nini.Config;
+using OpenMetaverse;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
@@ -33,12 +38,6 @@ using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Inventory;
 using Universe.Modules.Archivers;
 using Universe.Region;
-using Nini.Config;
-using OpenMetaverse;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 
 namespace Universe.Modules.DefaultInventoryIARLoader
 {
@@ -140,12 +139,12 @@ namespace Universe.Modules.DefaultInventoryIARLoader
 
             if (alreadyExists)
             {
-                MainConsole.Instance.InfoFormat("[LIBRARY INVENTORY]: Found previously loaded IAR file {0}, ignoring.",
+                MainConsole.Instance.InfoFormat("[Library Inventory]: Found previously loaded IAR file {0}, ignoring.",
                                                 iarFileName);
                 return;
             }
 
-            MainConsole.Instance.InfoFormat("[LIBRARY INVENTORY]: Loading IAR file {0}", iarFileName);
+            MainConsole.Instance.InfoFormat("[Library Inventory]: Loading IAR file {0}", iarFileName);
             InventoryFolderBase rootFolder = m_MockScene.InventoryService.GetRootFolder(uinfo.PrincipalID);
 
             if (null == rootFolder)
@@ -177,7 +176,7 @@ namespace Universe.Modules.DefaultInventoryIARLoader
             }
             catch (Exception e)
             {
-                MainConsole.Instance.DebugFormat("[LIBRARY MODULE]: Exception when processing archive {0}: {1}",
+                MainConsole.Instance.DebugFormat("[Library]: Exception when processing archive {0}: {1}",
                                                  iarFileName,
                                                  e.StackTrace);
             }
