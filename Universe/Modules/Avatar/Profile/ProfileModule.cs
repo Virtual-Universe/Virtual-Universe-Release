@@ -71,21 +71,21 @@ namespace Universe.Modules.Profiles
 
         #region INonSharedRegionModule Members
 
-        public void Initialize (IConfigSource config)
+        public void Initialize(IConfigSource config)
         {
-            IConfig profileConfig = config.Configs ["Profile"];
+            IConfig profileConfig = config.Configs["Profile"];
             if (profileConfig != null)
             {
-                if (profileConfig.GetString ("ProfileModule", Name) == Name)
+                if (profileConfig.GetString("ProfileModule", Name) == Name)
                 {
-                    m_ProfileEnambled = true;
-                    MainConsole.Instance.InfoFormat("[Profile Service]: Profile services have been enabled");
+                    m_ProfileEnabled = true;
+                    MainConsole.Instance.Info("[Profile Services] Profile Services are enabled");
                 }
             }
             else
             {
                 m_ProfileEnabled = false;
-                MainConsole.Instance.InfoFormat("[Profile Service]: Profile services are not configured.... Disabling for now.");
+                MainConsole.Instance.Info("[Profile Services] Not configured, disabling");
             }
         }
 
