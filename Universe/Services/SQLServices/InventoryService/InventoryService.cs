@@ -25,6 +25,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
@@ -33,12 +39,6 @@ using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Services.ClassHelpers.Inventory;
 using Universe.Framework.Utilities;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Universe.Services.SQLServices.InventoryService
 {
@@ -73,15 +73,9 @@ namespace Universe.Services.SQLServices.InventoryService
             if (invConfig != null)
                 m_AllowDelete = invConfig.GetBoolean("AllowDelete", true);
 
-            if (MainConsole.Instance != null)
-                MainConsole.Instance.Commands.AddCommand(
-                    "fix inventory",
-                    "fix inventory",
-                    "If the user's inventory has been corrupted, this function will attempt to fix it",
-                    FixInventory, false, true);
-
             registry.RegisterModuleInterface<IInventoryService>(this);
             Init(registry, Name, serverPath: "/inventory/", serverHandlerName: "InventoryServerURI");
+
         }
 
         public virtual void Start(IConfigSource config, IRegistryCore registry)
@@ -97,6 +91,15 @@ namespace Universe.Services.SQLServices.InventoryService
 
         public virtual void FinishedStartup()
         {
+            if (IsLocalConnector && (MainConsole.Instance != null))
+            {
+                MainConsole.Instance.Commands.AddCommand(
+                "fix inventory",
+                "fix inventory",
+                "If the user's inventory has been corrupted, this function will attempt to fix it",
+                FixInventory, false, true);
+            }
+
             _addInventoryItemQueue.Start(
                 0.5,
                 (agentID, itemsToAdd) =>

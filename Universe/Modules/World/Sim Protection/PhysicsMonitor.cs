@@ -25,19 +25,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
-using Universe.Framework.ConsoleFramework;
-using Universe.Framework.Modules;
-using Universe.Framework.Physics;
-using Universe.Framework.SceneInfo;
-using Universe.Framework.Utilities;
-using Nini.Config;
-using OpenMetaverse;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Timers;
 using System.Windows.Forms;
+using Nini.Config;
+using OpenMetaverse;
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.Modules;
+using Universe.Framework.Physics;
+using Universe.Framework.SceneInfo;
+using Universe.Framework.Utilities;
 using Timer = System.Timers.Timer;
 
 namespace Universe.Modules.SimProtection
@@ -223,7 +222,7 @@ namespace Universe.Modules.SimProtection
 
         protected virtual void PhysicsStatsCommand(IScene scene, string[] cmd)
         {
-            if (cmd.Length == 3)
+            if (cmd.Length < 3)
             {
                 if (m_Scene.RegionInfo.RegionName != cmd[2])
                     return;
@@ -271,7 +270,7 @@ namespace Universe.Modules.SimProtection
             thread.Start(new List<IScene>() {m_Scene});
         }
 
-        private void StartThread(object scenes)
+        void StartThread(object scenes)
         {
             Culture.SetCurrentCulture();
             try

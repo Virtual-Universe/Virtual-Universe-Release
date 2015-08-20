@@ -25,6 +25,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Net;
+using Nini.Config;
+using OpenMetaverse;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Modules;
@@ -32,12 +38,6 @@ using Universe.Framework.SceneInfo;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Profile;
 using Universe.Framework.Utilities;
-using Nini.Config;
-using OpenMetaverse;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Net;
 
 namespace Universe.Modules.Ban
 {
@@ -47,7 +47,7 @@ namespace Universe.Modules.Ban
     {
         #region Declares
 
-        private BanCheck m_module;
+        BanCheck m_module;
 
         public string Name
         {
@@ -76,19 +76,19 @@ namespace Universe.Modules.Ban
 
             if (request != null)
             {
-                ip = request.ContainsKey("ip") ? (string) request["ip"] : "";
-                version = request.ContainsKey("version") ? (string) request["version"] : "";
-                platform = request.ContainsKey("platform") ? (string) request["platform"] : "";
-                mac = request.ContainsKey("mac") ? (string) request["mac"] : "";
-                id0 = request.ContainsKey("id0") ? (string) request["id0"] : "";
+                ip = request.ContainsKey("ip") ? (string)request["ip"] : "";
+                version = request.ContainsKey("version") ? (string)request["version"] : "";
+                platform = request.ContainsKey("platform") ? (string)request["platform"] : "";
+                mac = request.ContainsKey("mac") ? (string)request["mac"] : "";
+                id0 = request.ContainsKey("id0") ? (string)request["id0"] : "";
             }
 
             string message;
             if (!m_module.CheckUser(account.PrincipalID, ip,
-                                    version,
-                                    platform,
-                                    mac,
-                                    id0, out message))
+                    version,
+                    platform,
+                    mac,
+                    id0, out message))
             {
                 return new LLFailedLoginResponse(LoginResponseEnum.Indeterminant, message, false);
             }
@@ -106,26 +106,25 @@ namespace Universe.Modules.Ban
     {
         #region Declares
 
-        private IPresenceInfo presenceInfo = null;
+        AllowLevel GrieferAllowLevel = AllowLevel.AllowCleanOnly;
+        IPresenceInfo presenceInfo;
+        IUserAccountService m_accountService;
+        List<string> m_bannedViewers = new List<string>();
+        List<string> m_allowedViewers = new List<string>();
+        bool m_useIncludeList;
+        bool m_debug;
+        bool m_checkOnLogin;
+        bool m_checkOnTimer = true;
+        bool m_enabled = true;
 
-        private AllowLevel GrieferAllowLevel = AllowLevel.AllowCleanOnly;
-        private IUserAccountService m_accountService = null;
-        private List<string> m_bannedViewers = new List<string>();
-        private List<string> m_allowedViewers = new List<string>();
-        private bool m_useIncludeList = false;
-        private bool m_debug = false;
-        private bool m_checkOnLogin = false;
-        private bool m_checkOnTimer = true;
-        private bool m_enabled = false;
-
-        private ListCombiningTimedSaving<PresenceInfo> _checkForSimilaritiesLater =
+        ListCombiningTimedSaving<PresenceInfo> _checkForSimilaritiesLater =
             new ListCombiningTimedSaving<PresenceInfo>();
 
         #endregion
 
         #region Enums
 
-        public enum AllowLevel : int
+        public enum AllowLevel
         {
             AllowCleanOnly = 0,
             AllowSuspected = 1,
@@ -160,77 +159,74 @@ namespace Universe.Modules.Ban
                 _checkForSimilaritiesLater.Start(5, CheckForSimilaritiesMultiple);
 
             GrieferAllowLevel =
-                (AllowLevel) Enum.Parse(typeof (AllowLevel), config.GetString("GrieferAllowLevel", "AllowKnown"));
+                (AllowLevel)Enum.Parse(typeof(AllowLevel), config.GetString("GrieferAllowLevel", "AllowKnown"));
 
             presenceInfo = Framework.Utilities.DataManager.RequestPlugin<IPresenceInfo>();
             m_accountService = UserAccountService;
 
-            if (!m_accountService.RemoteCalls())
-                AddCommands ();                     // only add if we are local
+            if (m_accountService.IsLocalConnector)
+                AddCommands();                     // only add if we are local
         }
 
-        private void AddCommands()
+        void AddCommands()
         {
-        
             if (MainConsole.Instance != null)
-
             {
                 MainConsole.Instance.Commands.AddCommand(
-                    "show user info", 
-                    "show user info", 
-                    "Display info on a given user", 
+                    "show user info",
+                    "show user info",
+                    "Display info on a given user",
                     UserInfo, false, true);
-                
-            	MainConsole.Instance.Commands.AddCommand(
-                    "set user info", 
-                    "set user info", 
-                    "Sets the info of the given user", 
+
+                MainConsole.Instance.Commands.AddCommand(
+                    "set user info",
+                    "set user info",
+                    "Sets the info of the given user",
                     SetUserInfo, false, true);
-                
-            	MainConsole.Instance.Commands.AddCommand(
-                    "block user", 
-                    "block user", 
-                    "Blocks a given user from connecting anymore", 
+
+                MainConsole.Instance.Commands.AddCommand(
+                    "block user",
+                    "block user",
+                    "Blocks a given user from connecting anymore",
                     BlockUser, false, true);
-                
-            	MainConsole.Instance.Commands.AddCommand(
-                    "ban user", 
-                    "ban user", 
-                    "Blocks a given user from connecting anymore", 
+
+                MainConsole.Instance.Commands.AddCommand(
+                    "ban user",
+                    "ban user",
+                    "Blocks a given user from connecting anymore",
                     BlockUser, false, true);
-                
-            	MainConsole.Instance.Commands.AddCommand(
-                    "unblock user", 
-                    "unblock user", 
-                    "Removes the block for logging in on a given user", 
+
+                MainConsole.Instance.Commands.AddCommand(
+                    "unblock user",
+                    "unblock user",
+                    "Removes the block for logging in on a given user",
                     UnBlockUser, false, true);
-                
-            	MainConsole.Instance.Commands.AddCommand(
-                    "unban user", 
-                    "unban user", 
-                    "Removes the block for logging in on a given user", 
+
+                MainConsole.Instance.Commands.AddCommand(
+                    "unban user",
+                    "unban user",
+                    "Removes the block for logging in on a given user",
                     UnBlockUser, false, true);
             }
-
         }
 
         #endregion
 
         #region Private and Protected members
 
-        private void CheckForSimilaritiesMultiple(UUID agentID, List<PresenceInfo> info)
+        void CheckForSimilaritiesMultiple(UUID agentID, List<PresenceInfo> info)
         {
             foreach (PresenceInfo i in info)
                 presenceInfo.Check(i, m_useIncludeList ? m_allowedViewers : m_bannedViewers, m_useIncludeList);
         }
 
-        private void CheckForSimilarities(PresenceInfo info)
+        void CheckForSimilarities(PresenceInfo info)
         {
             presenceInfo.Check(info, m_useIncludeList ? m_allowedViewers : m_bannedViewers, m_useIncludeList);
         }
 
-        private PresenceInfo UpdatePresenceInfo(UUID AgentID, PresenceInfo oldInfo, string ip, string version,
-                                                string platform, string mac, string id0)
+        PresenceInfo UpdatePresenceInfo(UUID AgentID, PresenceInfo oldInfo, string ip, string version,
+                                        string platform, string mac, string id0)
         {
             PresenceInfo info = new PresenceInfo();
             info.AgentID = AgentID;
@@ -267,7 +263,7 @@ namespace Universe.Modules.Ban
             return info;
         }
 
-        private PresenceInfo GetInformation(UUID AgentID)
+        PresenceInfo GetInformation(UUID AgentID)
         {
             PresenceInfo oldInfo = presenceInfo.GetPresenceInfo(AgentID);
             if (oldInfo == null)
@@ -322,7 +318,7 @@ namespace Universe.Modules.Ban
             IAgentInfo agentInfo = conn.GetAgent(AgentID);
             if (
                 MainConsole.Instance.Prompt("Do you want to have this only be a temporary ban?", "no",
-                                            new List<string>() {"yes", "no"}).ToLower() == "yes")
+                    new List<string>() { "yes", "no" }).ToLower() == "yes")
             {
                 float days = float.Parse(MainConsole.Instance.Prompt("How long (in days) should this ban last?", "5.0"));
 
@@ -365,7 +361,7 @@ namespace Universe.Modules.Ban
 
             agentInfo.Flags &= IAgentFlags.TempBan;
             agentInfo.Flags &= IAgentFlags.PermBan;
-            if (agentInfo.OtherAgentInformation.ContainsKey("TemperaryBanInfo") == true)
+            if (agentInfo.OtherAgentInformation.ContainsKey("TemperaryBanInfo"))
                 agentInfo.OtherAgentInformation.Remove("TemperaryBanInfo");
             conn.UpdateAgent(agentInfo);
 
@@ -392,19 +388,19 @@ namespace Universe.Modules.Ban
             {
                 info.Flags =
                     (PresenceInfo.PresenceInfoFlags)
-                    Enum.Parse(typeof (PresenceInfo.PresenceInfoFlags),
-                               MainConsole.Instance.Prompt("Flags (Clean, Suspected, Known, Banned): ", "Clean"));
+                    Enum.Parse(typeof(PresenceInfo.PresenceInfoFlags),
+                    MainConsole.Instance.Prompt("Flags (Clean, Suspected, Known, Banned): ", "Clean"));
             }
             catch
             {
                 MainConsole.Instance.Warn("Please choose a valid flag: Clean, Suspected, Known, Banned");
                 return;
             }
-            MainConsole.Instance.Info("Set Flags for " + info.AgentID.ToString() + " to " + info.Flags.ToString());
+            MainConsole.Instance.Info("Set Flags for " + info.AgentID + " to " + info.Flags);
             presenceInfo.UpdatePresenceInfo(info);
         }
 
-        private void DisplayUserInfo(PresenceInfo info)
+        void DisplayUserInfo(PresenceInfo info)
         {
             UserAccount account = m_accountService.GetUserAccount(null, info.AgentID);
             if (account != null)
@@ -432,7 +428,7 @@ namespace Universe.Modules.Ban
             }
         }
 
-        private bool CheckClient(UUID AgentID, out string message)
+        bool CheckClient(UUID AgentID, out string message)
         {
             message = "";
 
@@ -449,7 +445,7 @@ namespace Universe.Modules.Ban
             return CheckViewer(info, out message);
         }
 
-        private bool CheckViewer(PresenceInfo info, out string reason)
+        bool CheckViewer(PresenceInfo info, out string reason)
         {
             //Check for banned viewers
             if (IsViewerBanned(info.LastKnownViewer))
@@ -477,7 +473,7 @@ namespace Universe.Modules.Ban
             return false;
         }
 
-        private bool CheckThreatLevel(PresenceInfo info, out string message)
+        bool CheckThreatLevel(PresenceInfo info, out string message)
         {
             message = "";
             if ((info.Flags & PresenceInfo.PresenceInfoFlags.Banned) == PresenceInfo.PresenceInfoFlags.Banned)
@@ -487,7 +483,8 @@ namespace Universe.Modules.Ban
             }
             if (GrieferAllowLevel == AllowLevel.AllowKnown)
                 return true; //Allow all
-            else if (GrieferAllowLevel == AllowLevel.AllowCleanOnly)
+
+            if (GrieferAllowLevel == AllowLevel.AllowCleanOnly)
             {
                 //Allow people with only clean flag or suspected alt
                 if ((info.Flags & PresenceInfo.PresenceInfoFlags.Suspected) == PresenceInfo.PresenceInfoFlags.Suspected ||
@@ -562,8 +559,8 @@ namespace Universe.Modules.Ban
     {
         #region Declares
 
-        private List<IPAddress> IPBans = new List<IPAddress>();
-        private List<string> IPRangeBans = new List<string>();
+        List<IPAddress> IPBans = new List<IPAddress>();
+        List<string> IPRangeBans = new List<string>();
 
         public string Name
         {
@@ -594,12 +591,12 @@ namespace Universe.Modules.Ban
                                    string password, out object data)
         {
             data = null;
-            string ip = request != null && request.ContainsKey("ip") ? (string) request["ip"] : "127.0.0.1";
+            string ip = request != null && request.ContainsKey("ip") ? (string)request["ip"] : "127.0.0.1";
             ip = ip.Split(':')[0]; //Remove the port
             IPAddress userIP = IPAddress.Parse(ip);
             if (IPBans.Contains(userIP))
                 return new LLFailedLoginResponse(LoginResponseEnum.Indeterminant,
-                                                 "Your account cannot be accessed on this computer.", false);
+                    "Your account cannot be accessed on this computer.", false);
             foreach (string ipRange in IPRangeBans)
             {
                 string[] split = ipRange.Split('-');
@@ -610,7 +607,7 @@ namespace Universe.Modules.Ban
                 NetworkUtils.IPAddressRange range = new NetworkUtils.IPAddressRange(low, high);
                 if (range.IsInRange(userIP))
                     return new LLFailedLoginResponse(LoginResponseEnum.Indeterminant,
-                                                     "Your account cannot be accessed on this computer.", false);
+                        "Your account cannot be accessed on this computer.", false);
             }
             return null;
         }

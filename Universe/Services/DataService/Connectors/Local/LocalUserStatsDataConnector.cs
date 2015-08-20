@@ -25,21 +25,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
+using System.Collections.Generic;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.Messages.Linden;
 using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Modules;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.Messages.Linden;
-using System.Collections.Generic;
 
 namespace Universe.Services.DataService
 {
     public class LocalUserStatsDataConnector : IUserStatsDataConnector
     {
-        private IGenericData GD = null;
-        private const string m_realm = "statsdata";
+        IGenericData GD;
+        const string m_realm = "statsdata";
 
         public void Initialize(IGenericData GenericData, IConfigSource source, IRegistryCore simBase,
                                string defaultConnectionString)
@@ -53,10 +54,12 @@ namespace Universe.Services.DataService
                     defaultConnectionString = source.Configs[Name].GetString("ConnectionString", defaultConnectionString);
 
                 if (GD != null)
+                {
                     GD.ConnectToDatabase(defaultConnectionString, "Stats",
-                                         source.Configs["UniverseConnectors"].GetBoolean("ValidateTables", true));
+                        source.Configs["UniverseConnectors"].GetBoolean("ValidateTables", true));
 
-                Framework.Utilities.DataManager.RegisterPlugin(Name, this);
+                    Framework.Utilities.DataManager.RegisterPlugin(Name, this);
+                }
             }
         }
 
@@ -120,21 +123,21 @@ namespace Universe.Services.DataService
         public List<string> Get(string columnName)
         {
             QueryFilter filter = new QueryFilter();
-            return GD.Query(new string[1] {columnName}, m_realm, filter, null, null, null);
+            return GD.Query(new string[1] { columnName }, m_realm, filter, null, null, null);
         }
 
         public int GetCount(string columnName, KeyValuePair<string, object> whereCheck)
         {
             QueryFilter filter = new QueryFilter();
             filter.andFilters.Add(whereCheck.Key, whereCheck.Value);
-            return int.Parse(GD.Query(new string[1] {"count(" + columnName + ")"}, m_realm, filter, null, null, null)[0]);
+            return int.Parse(GD.Query(new string[1] { "count(" + columnName + ")" }, m_realm, filter, null, null, null)[0]);
         }
 
         public ViewerStatsMessage GetBySession(UUID sessionID)
         {
             QueryFilter filter = new QueryFilter();
             filter.andFilters.Add("session_id", sessionID);
-            List<string> results = GD.Query(new string[1] {"*"}, m_realm, filter, null, null, null);
+            List<string> results = GD.Query(new string[1] { "*" }, m_realm, filter, null, null, null);
             return BuildSession(results, 0);
         }
 
@@ -143,24 +146,24 @@ namespace Universe.Services.DataService
             GD.Delete(m_realm, null);
         }
 
-        public Dictionary<string,int> ViewerUsage()
+        public Dictionary<string, int> ViewerUsage()
         {
             QueryFilter filter = new QueryFilter();
-            List<string> client_viewers = GD.Query(new string[1] {"client_version"}, m_realm, filter, null, null, null);
-            client_viewers.Sort ();
+            List<string> client_viewers = GD.Query(new string[1] { "client_version" }, m_realm, filter, null, null, null);
+            client_viewers.Sort();
 
             //List<string> client_viewers = Get ("client_version");
             Dictionary<string, int> viewers = new Dictionary<string, int>();
-            foreach( var cli in client_viewers)
+            foreach (var cli in client_viewers)
                 if (viewers.ContainsKey(cli))
                     viewers[cli]++;
                 else
-                    viewers.Add (cli, 1);
+                    viewers.Add(cli, 1);
 
             return viewers;
         }
 
-        private ViewerStatsMessage BuildSession(List<string> results, int start)
+        ViewerStatsMessage BuildSession(List<string> results, int start)
         {
             ViewerStatsMessage message = new ViewerStatsMessage();
             for (int i = start; i < start + 33; i += 33)

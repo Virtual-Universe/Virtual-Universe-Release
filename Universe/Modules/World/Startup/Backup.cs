@@ -61,30 +61,30 @@ namespace Universe.Modules.Startup
             if (MainConsole.Instance != null && m_backup.Count == 0) //Only add them once
             {
                 MainConsole.Instance.Commands.AddCommand(
-                    "edit scale", 
+                    "edit scale",
                     "edit scale <name> <X> <Y> <Z>",
-                    "Change the scale of a named prim", 
+                    "Change the scale of a named prim",
                     EditScale, true, false);
-                
-            	MainConsole.Instance.Commands.AddCommand(
+
+                MainConsole.Instance.Commands.AddCommand(
                     "offset region prims",
                     "offset region prims <X> <Y> <Z>",
-                    "Offset all prims by the same amount", 
+                    "Offset all prims by the same amount",
                     OffsetPrims, true, false);
-                
-            	MainConsole.Instance.Commands.AddCommand(
+
+                MainConsole.Instance.Commands.AddCommand(
                     "backup",
                     "backup",
                     "Persist objects to the database now, if [all], will force the persistence of all prims",
                     RunCommand, true, false);
-                
-            	MainConsole.Instance.Commands.AddCommand(
+
+                MainConsole.Instance.Commands.AddCommand(
                     "disable backup",
                     "disable backup",
-                    "Disables persistence until re-enabled", 
+                    "Disables persistence until re-enabled",
                     DisableBackup, true, false);
-                
-            	MainConsole.Instance.Commands.AddCommand(
+
+                MainConsole.Instance.Commands.AddCommand(
                     "enable backup",
                     "enable backup",
                     "Enables persistence after 'disable backup' has been run",
@@ -109,7 +109,7 @@ namespace Universe.Modules.Startup
 
         public void StartupComplete()
         {
-            foreach(IScene scene in m_backup.Keys)
+            foreach (IScene scene in m_backup.Keys)
                 EnableBackup(scene, null);
         }
 
@@ -129,6 +129,7 @@ namespace Universe.Modules.Startup
         /// <summary>
         ///     Runs commands issued by the server console from the operator
         /// </summary>
+        /// <param name="scene">Currently selected scene</param>
         /// <param name="cmdparams">Additional arguments passed to the command</param>
         public void RunCommand(IScene scene, string[] cmdparams)
         {
@@ -137,22 +138,22 @@ namespace Universe.Modules.Startup
 
         public void EditScale(IScene scene, string[] cmdparams)
         {
-            scene.ForEachSceneEntity(delegate(ISceneEntity entity)
-                                                   {
-                                                       foreach (ISceneChildEntity child in entity.ChildrenEntities())
-                                                       {
-                                                           if (child.Name == cmdparams[2])
-                                                           {
-                                                               child.Resize(
-                                                                   new Vector3(Convert.ToSingle(cmdparams[3]),
-                                                                               Convert.ToSingle(cmdparams[4]),
-                                                                               Convert.ToSingle(cmdparams[5])));
+            scene.ForEachSceneEntity(delegate (ISceneEntity entity)
+            {
+                foreach (ISceneChildEntity child in entity.ChildrenEntities())
+                {
+                    if (child.Name == cmdparams[2])
+                    {
+                        child.Resize(
+                            new Vector3(Convert.ToSingle(cmdparams[3]),
+                                        Convert.ToSingle(cmdparams[4]),
+                                        Convert.ToSingle(cmdparams[5])));
 
-                                                               MainConsole.Instance.InfoFormat(
-                                                                   "Edited scale of Primitive: {0}", child.Name);
-                                                           }
-                                                       }
-                                                   });
+                        MainConsole.Instance.InfoFormat(
+                            "Edited scale of Primitive: {0}", child.Name);
+                    }
+                }
+            });
         }
 
         public void OffsetPrims(IScene scene, string[] cmdParams)
@@ -162,8 +163,9 @@ namespace Universe.Modules.Startup
                 MainConsole.Instance.Info("Not enough parameters");
                 return;
             }
+
             Vector3 offset = new Vector3(float.Parse(cmdParams[3]), float.Parse(cmdParams[4]), float.Parse(cmdParams[5]));
-            scene.ForEachSceneEntity(delegate(ISceneEntity entity)
+            scene.ForEachSceneEntity(delegate (ISceneEntity entity)
             {
                 entity.AbsolutePosition += offset;
                 entity.ScheduleGroupTerseUpdate();
@@ -210,25 +212,25 @@ namespace Universe.Modules.Startup
                     MainConsole.Instance.Commands.AddCommand(
                         "delete object owner",
                         "delete object owner <UUID>",
-                        "Delete object by owner", 
+                        "Delete object by owner",
                         HandleDeleteObject, true, false);
-                    
-                	MainConsole.Instance.Commands.AddCommand(
+
+                    MainConsole.Instance.Commands.AddCommand(
                         "delete object creator",
                         "delete object creator <UUID>",
-                        "Delete object by creator", 
+                        "Delete object by creator",
                         HandleDeleteObject, true, false);
-                    
-                	MainConsole.Instance.Commands.AddCommand(
+
+                    MainConsole.Instance.Commands.AddCommand(
                         "delete object uuid",
                         "delete object uuid <UUID>",
-                        "Delete object by uuid", 
+                        "Delete object by uuid",
                         HandleDeleteObject, true, false);
-                    
-                	MainConsole.Instance.Commands.AddCommand(
+
+                    MainConsole.Instance.Commands.AddCommand(
                         "delete object name",
                         "delete object name <name>",
-                        "Delete object by name", 
+                        "Delete object by name",
                         HandleDeleteObject, true, false);
                 }
             }
@@ -254,36 +256,36 @@ namespace Universe.Modules.Startup
                     case "owner":
                         if (!UUID.TryParse(o, out match))
                             return;
-                        scene.ForEachSceneEntity(delegate(ISceneEntity g)
-                                                       {
-                                                           if (g.OwnerID == match && !g.IsAttachment)
-                                                               deletes.Add(g);
-                                                       });
+                        scene.ForEachSceneEntity(delegate (ISceneEntity g)
+                        {
+                            if (g.OwnerID == match && !g.IsAttachment)
+                                deletes.Add(g);
+                        });
                         break;
                     case "creator":
                         if (!UUID.TryParse(o, out match))
                             return;
-                        scene.ForEachSceneEntity(delegate(ISceneEntity g)
-                                                       {
-                                                           if (g.RootChild.CreatorID == match && !g.IsAttachment)
-                                                               deletes.Add(g);
-                                                       });
+                        scene.ForEachSceneEntity(delegate (ISceneEntity g)
+                        {
+                            if (g.RootChild.CreatorID == match && !g.IsAttachment)
+                                deletes.Add(g);
+                        });
                         break;
                     case "uuid":
                         if (!UUID.TryParse(o, out match))
                             return;
-                        scene.ForEachSceneEntity(delegate(ISceneEntity g)
-                                                       {
-                                                           if (g.UUID == match && !g.IsAttachment)
-                                                               deletes.Add(g);
-                                                       });
+                        scene.ForEachSceneEntity(delegate (ISceneEntity g)
+                        {
+                            if (g.UUID == match && !g.IsAttachment)
+                                deletes.Add(g);
+                        });
                         break;
                     case "name":
-                        scene.ForEachSceneEntity(delegate(ISceneEntity g)
-                                                       {
-                                                           if (g.RootChild.Name == o && !g.IsAttachment)
-                                                               deletes.Add(g);
-                                                       });
+                        scene.ForEachSceneEntity(delegate (ISceneEntity g)
+                        {
+                            if (g.RootChild.Name == o && !g.IsAttachment)
+                                deletes.Add(g);
+                        });
                         break;
                 }
 
@@ -302,8 +304,8 @@ namespace Universe.Modules.Startup
             {
                 LoadingPrims = true;
 
-                MainConsole.Instance.Info("[Backup Module]: Loading objects for " + m_scene.RegionInfo.RegionName +
-                                          " from " + m_scene.SimulationDataService.Name);
+                MainConsole.Instance.InfoFormat("[Backup Module]: Loading objects for {0} from {1}",
+                    m_scene.RegionInfo.RegionName, m_scene.SimulationDataService.Name);
                 List<ISceneEntity> PrimsFromDB = m_scene.SimulationDataService.LoadObjects();
                 foreach (ISceneEntity group in PrimsFromDB)
                 {
@@ -318,17 +320,17 @@ namespace Universe.Modules.Startup
                         {
                             MainConsole.Instance.Warn("[Backup Module]: Broken object (" + group.Name +
                                                       ") found while loading objects, removing it from the database.");
-                            //What went wrong here? Remove by passing it by on loading
+                            //WTF went wrong here? Remove by passing it by on loading
                             continue;
                         }
                         if (group.IsAttachment || (group.RootChild.Shape.State != 0 &&
-                                                   (group.RootChild.Shape.PCode == (byte) PCode.None ||
-                                                    group.RootChild.Shape.PCode == (byte) PCode.Prim ||
-                                                    group.RootChild.Shape.PCode == (byte) PCode.Avatar)))
+                                                   (group.RootChild.Shape.PCode == (byte)PCode.None ||
+                                                    group.RootChild.Shape.PCode == (byte)PCode.Prim ||
+                                                    group.RootChild.Shape.PCode == (byte)PCode.Avatar)))
                         {
                             MainConsole.Instance.Warn("[Backup Module]: Broken state for object " + group.Name +
                                                       " while loading objects, removing it from the database.");
-                            //What went wrong here? Remove by passing it by on loading
+                            //WTF went wrong here? Remove by passing it by on loading
                             continue;
                         }
                         if (group.AbsolutePosition.X > m_scene.RegionInfo.RegionSizeX + 10 ||
@@ -336,10 +338,10 @@ namespace Universe.Modules.Startup
                             group.AbsolutePosition.Y > m_scene.RegionInfo.RegionSizeY + 10 ||
                             group.AbsolutePosition.Y < -10)
                         {
-                            MainConsole.Instance.Warn("[Backup Module]: Object outside the region (" + group.Name + ", " +
-                                                      group.AbsolutePosition +
-                                                      ") found while loading objects, removing it from the database.");
-                            //What went wrong here? Remove by passing it by on loading
+                            MainConsole.Instance.WarnFormat("[Backup Module]: Object outside the region " +
+                                "(" + group.Name + ", " + group.AbsolutePosition + ")" +
+                                " found while loading objects, removing it from the database.");
+                            //WTF went wrong here? Remove by passing it by on loading
                             continue;
                         }
                         m_scene.SceneGraph.CheckAllocationOfLocalIds(group);
@@ -358,12 +360,11 @@ namespace Universe.Modules.Startup
                     catch (Exception ex)
                     {
                         MainConsole.Instance.WarnFormat(
-                            "[Backup Module]: Exception attempting to load object from the database, {0}, continuing...",
-                            ex.ToString());
+                            "[Backup Module]: Exception attempting to load object from the database, {0}, continuing...", ex);
                     }
                 }
                 LoadingPrims = false;
-                MainConsole.Instance.Info("[Backup Module]: Loaded " + PrimsFromDB.Count.ToString() + " object(s) in " +
+                MainConsole.Instance.Info("[Backup Module]: Loaded " + PrimsFromDB.Count + " object(s) in " +
                                           m_scene.RegionInfo.RegionName);
                 PrimsFromDB.Clear();
             }
@@ -494,7 +495,8 @@ namespace Universe.Modules.Startup
                 {
                     if (grp == null)
                         continue;
-
+                    //if (group.IsAttachment)
+                    //    continue;
                     parts.AddRange(grp.ChildrenEntities());
                     DeleteSceneObject(grp, true, true);
                 }
@@ -572,7 +574,7 @@ namespace Universe.Modules.Startup
                     return true;
                 }
 
-                //MainConsole.Instance.DebugFormat("[SCENE]: Exit DeleteSceneObject() for {0} {1}", group.Name, group.UUID);
+                //MainConsole.Instance.DebugFormat("[Scene]: Exit DeleteSceneObject() for {0} {1}", group.Name, group.UUID);
                 return false;
             }
 
@@ -608,9 +610,8 @@ namespace Universe.Modules.Startup
                     foreach (ILandObject parcel in landObject)
                     {
                         OSDMap parcelMap = parcel.LandData.ToOSD();
-                        writer.WriteFile("parcels/" + parcel.LandData.GlobalID.ToString(),
+                        writer.WriteFile("parcels/" + parcel.LandData.GlobalID,
                                          OSDParser.SerializeLLSDBinary(parcelMap));
-                        parcelMap = null;
                     }
                 }
 
@@ -640,7 +641,6 @@ namespace Universe.Modules.Startup
                         {
                             sdata = WriteTerrainToStream(tModule.TerrainWaterMap);
                             writer.WriteFile("newstylewater/" + scene.RegionInfo.RegionID + ".terrain", sdata);
-                            sdata = null;
 
                             sdata = WriteTerrainToStream(tModule.TerrainWaterRevertMap);
                             writer.WriteFile(
@@ -678,13 +678,15 @@ namespace Universe.Modules.Startup
                             ((entity.RootChild.Flags & PrimFlags.Temporary) == PrimFlags.Temporary)
                             || ((entity.RootChild.Flags & PrimFlags.TemporaryOnRez) == PrimFlags.TemporaryOnRez))
                             continue;
+
                         //Write all entities
                         byte[] xml = entity.ToBinaryXml2();
                         writer.WriteFile("entities/" + entity.UUID, xml);
                         xml = null;
                         count++;
-                        if (count%3 == 0)
+                        if (count % 3 == 0)
                             Thread.Sleep(5);
+
                         //Get all the assets too
                         if (saveAssets)
                             assetGatherer.GatherAssetUuids(entity, assets);
@@ -721,15 +723,16 @@ namespace Universe.Modules.Startup
 
             static byte[] WriteTerrainToStream(ITerrainChannel tModule)
             {
-                int tMapSize = tModule.Width*tModule.Height;
-                byte[] sdata = new byte[tMapSize*2];
+                int tMapSize = tModule.Width * tModule.Height;
+                byte[] sdata = new byte[tMapSize * 2];
                 Buffer.BlockCopy(tModule.GetSerialised(), 0, sdata, 0, sdata.Length);
+
                 return sdata;
             }
 
             void RetrievedAsset(string id, Object sender, AssetBase asset)
             {
-                TarArchiveWriter writer = (TarArchiveWriter) sender;
+                TarArchiveWriter writer = (TarArchiveWriter)sender;
                 //Add the asset
                 WriteAsset(id, asset, writer);
                 m_missingAssets.Remove(UUID.Parse(id));
@@ -751,11 +754,13 @@ namespace Universe.Modules.Startup
                 IScriptModule[] modules = scene.RequestModuleInterfaces<IScriptModule>();
                 IParcelManagementModule parcelModule = scene.RequestModuleInterface<IParcelManagementModule>();
                 //Disable the script engine so that it doesn't load in the background and kill OAR loading
+
                 foreach (IScriptModule module in modules)
                 {
                     if (module != null)
                         module.Disabled = true;
                 }
+
                 //Disable backup for now as well
                 if (backup != null)
                 {
@@ -771,9 +776,9 @@ namespace Universe.Modules.Startup
                     if (!m_merge)
                     {
                         DateTime before = DateTime.Now;
-                        MainConsole.Instance.Info("[ARCHIVER]: Clearing all existing scene objects");
+                        MainConsole.Instance.Info("[Archiver]: Clearing all existing scene objects");
                         backup.DeleteAllSceneObjects();
-                        MainConsole.Instance.Info("[ARCHIVER]: Cleared all existing scene objects in " +
+                        MainConsole.Instance.Info("[Archiver]: Cleared all existing scene objects in " +
                                                   (DateTime.Now - before).Minutes + ":" +
                                                   (DateTime.Now - before).Seconds);
                         if (parcelModule != null)
@@ -786,11 +791,13 @@ namespace Universe.Modules.Startup
             {
                 IBackupModule backup = scene.RequestModuleInterface<IBackupModule>();
                 IScriptModule[] modules = scene.RequestModuleInterfaces<IScriptModule>();
+
                 //Reeanble now that we are done
                 foreach (IScriptModule module in modules)
                 {
                     module.Disabled = false;
                 }
+
                 //Reset backup too
                 if (backup != null)
                     backup.LoadingPrims = false;
@@ -808,7 +815,9 @@ namespace Universe.Modules.Startup
                             parcelManagementModule.UpdateLandObject(parcelManagementModule.GetLandObject(parcel.LocalID));
                         }
                     }
-                    else parcelManagementModule.ResetSimLandObjects();
+                    else
+                        parcelManagementModule.ResetSimLandObjects();
+
                     m_parcels.Clear();
                 }
 
@@ -864,11 +873,11 @@ namespace Universe.Modules.Startup
                         //Only use if we are not merging
                         LandData parcel = new LandData();
                         OSD parcelData = OSDParser.DeserializeLLSDBinary(data);
-                        parcel.FromOSD((OSDMap) parcelData);
+                        parcel.FromOSD((OSDMap)parcelData);
                         m_parcels.Add(parcel);
                     }
                 }
-                    #region New Style Terrain Loading
+                #region New Style Terrain Loading
 
                 else if (filePath.StartsWith("newstyleterrain/"))
                 {
@@ -890,8 +899,8 @@ namespace Universe.Modules.Startup
                     ITerrainModule terrainModule = scene.RequestModuleInterface<ITerrainModule>();
                     terrainModule.TerrainWaterRevertMap = ReadTerrain(data, scene);
                 }
-                    #endregion
-                    #region Old Style Terrain Loading
+                #endregion
+                #region Old Style Terrain Loading
 
                 else if (filePath.StartsWith("terrain/"))
                 {
@@ -925,15 +934,13 @@ namespace Universe.Modules.Startup
                     terrainModule.LoadWaterRevertMapFromStream(filePath, ms, 0, 0);
                     ms.Close();
                 }
-                    #endregion
+                #endregion
 
                 else if (filePath.StartsWith("entities/"))
                 {
                     MemoryStream ms = new MemoryStream(data);
                     ISceneEntity sceneObject = SceneEntitySerializer.SceneObjectSerializer.FromXml2Format(ref ms, scene);
                     ms.Close();
-                    ms = null;
-                    data = null;
                     m_groups.Add(sceneObject);
                 }
                 else if (filePath.StartsWith("assets/"))
@@ -949,7 +956,7 @@ namespace Universe.Modules.Startup
 
             ITerrainChannel ReadTerrain(byte[] data, IScene scene)
             {
-                short[] sdata = new short[data.Length/2];
+                short[] sdata = new short[data.Length / 2];
                 Buffer.BlockCopy(data, 0, sdata, 0, data.Length);
                 return new TerrainChannel(sdata, scene);
             }
@@ -959,8 +966,10 @@ namespace Universe.Modules.Startup
                 UserAccount acc;
                 if (m_cache.Get(uuid, out acc))
                     return acc != null;
+
                 acc = m_scene.UserAccountService.GetUserAccount(m_scene.RegionInfo.AllScopeIDs, uuid);
                 m_cache.Cache(uuid, acc);
+
                 return acc != null;
             }
 

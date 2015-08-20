@@ -25,17 +25,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Services;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Universe.Services
 {
@@ -64,13 +64,13 @@ namespace Universe.Services
                     m_messagePost.Get(regionClient.Region.ServerURI,
                                       BuildRequest("KickUserMessage", message, regionClient.AgentID.ToString()),
                                       (resp) =>
-                                          {
-                                              IAgentProcessing agentProcessor =
-                                                  m_registry.RequestModuleInterface<IAgentProcessing>();
-                                              if (agentProcessor != null)
-                                                  agentProcessor.LogoutAgent(regionClient, true);
-                                              MainConsole.Instance.Info("User has been kicked.");
-                                          });
+                                      {
+                                          IAgentProcessing agentProcessor =
+                                              m_registry.RequestModuleInterface<IAgentProcessing>();
+                                          if (agentProcessor != null)
+                                              agentProcessor.LogoutAgent(regionClient, true);
+                                          MainConsole.Instance.Info("User has been kicked.");
+                                      });
 
                     return;
                 }
@@ -110,13 +110,13 @@ namespace Universe.Services
                     where regionClient.RootAgent
                     select regionClient)
             {
-                MainConsole.Instance.Debug("[GridWideMessageModule]: Informed " +
+                MainConsole.Instance.Debug("[Grid Wide Message Service]: Informed " +
                                            regionClient.ClientCaps.AccountInfo.Name);
                 //Send the message to the client
                 m_messagePost.Post(regionClient.Region.ServerURI,
                                    BuildRequest("GridWideMessage", message, regionClient.AgentID.ToString()));
             }
-            MainConsole.Instance.Info("[GridWideMessageModule]: Sent alert, will be delivered across the grid shortly.");
+            MainConsole.Instance.Info("[Grid Wide Message Service]: Sent alert, will be delivered across the grid shortly.");
         }
 
         #endregion
@@ -132,23 +132,31 @@ namespace Universe.Services
             m_registry = registry;
             registry.RegisterModuleInterface<IGridWideMessageModule>(this);
             IConfig handlersConfig = config.Configs["Handlers"];
-            if (MainConsole.Instance != null && handlersConfig != null &&
-                handlersConfig.GetString("GridWideMessage", "") == "GridWideMessageModule")
+            if (handlersConfig == null)
+                return;
+            if (handlersConfig.GetString("GridWideMessage", "") != "GridWideMessageModule")
+                return;
+
+
+            if (MainConsole.Instance != null)
             {
-                MainConsole.Instance.Commands.AddCommand("grid send alert",
-                                                         "grid send alert <message>",
-                                                         "Sends a message to all users in the grid", 
-                                                         SendGridAlert, false, true);
-                
-            	MainConsole.Instance.Commands.AddCommand("grid send message",
-                                                         "grid send message <first> <last> <message>",
-                                                         "Sends a message to a user in the grid", 
-                                                         SendGridMessage, false, true);
-                
-            	MainConsole.Instance.Commands.AddCommand("grid kick user",
-                                                         "grid kick user <first> <last> <message>",
-                                                         "Kicks a user from the grid", 
-                                                         KickUserMessage, false, true);
+                MainConsole.Instance.Commands.AddCommand(
+                    "grid send alert",
+                    "grid send alert <message>",
+                    "Sends a message to all users in the grid",
+                    SendGridAlert, false, true);
+
+                MainConsole.Instance.Commands.AddCommand(
+                    "grid send message",
+                    "grid send message <first> <last> <message>",
+                    "Sends a message to a user in the grid",
+                    SendGridMessage, false, true);
+
+                MainConsole.Instance.Commands.AddCommand(
+                    "grid kick user",
+                    "grid kick user <first> <last> <message>",
+                    "Kicks a user from the grid",
+                    KickUserMessage, false, true);
             }
         }
 
@@ -166,17 +174,36 @@ namespace Universe.Services
 
         protected void SendGridAlert(IScene scene, string[] cmd)
         {
-            //Combine the parameters and figure out the message
-            string message = CombineParams(cmd, 3);
+            string message;
+            if (cmd.Length > 3)
+                message = CombineParams(cmd, 3);
+            else
+                message = MainConsole.Instance.Prompt("Message to send?", "");
+            if (message == "")
+                return;
 
             SendAlert(message);
         }
 
         protected void SendGridMessage(IScene scene, string[] cmd)
         {
-            //Combine the parameters and figure out the message
-            string user = CombineParams(cmd, 3, 5);
-            string message = CombineParams(cmd, 5);
+            string user;
+            string message;
+
+            if (cmd.Length >= 4)
+                user = CombineParams(cmd, 3, 5);
+            else
+                user = MainConsole.Instance.Prompt("User name? (First Last)", "");
+            if (user == "")
+                return;
+
+            if (cmd.Length > 5)
+                message = CombineParams(cmd, 5);
+            else
+                message = MainConsole.Instance.Prompt("Message to send?", "");
+            if (message == "")
+                return;
+
 
             IUserAccountService userService = m_registry.RequestModuleInterface<IUserAccountService>();
             UserAccount account = userService.GetUserAccount(null, user.Split(' ')[0], user.Split(' ')[1]);
@@ -206,7 +233,7 @@ namespace Universe.Services
             KickUser(account.PrincipalID, message);
         }
 
-        private string CombineParams(string[] commandParams, int pos)
+        string CombineParams(string[] commandParams, int pos)
         {
             string result = string.Empty;
             for (int i = pos; i < commandParams.Length; i++)
@@ -217,7 +244,7 @@ namespace Universe.Services
             return result;
         }
 
-        private string CombineParams(string[] commandParams, int pos, int end)
+        string CombineParams(string[] commandParams, int pos, int end)
         {
             string result = string.Empty;
             for (int i = pos; i < commandParams.Length && i < end; i++)
@@ -228,7 +255,7 @@ namespace Universe.Services
             return result;
         }
 
-        private OSDMap BuildRequest(string name, string value, string user)
+        OSDMap BuildRequest(string name, string value, string user)
         {
             OSDMap map = new OSDMap();
 
@@ -285,7 +312,7 @@ namespace Universe.Services
                         IScenePresence sp = null;
                         if (scene.TryGetScenePresence(UUID.Parse(user), out sp))
                         {
-                            sp.ControllingClient.Kick(value == "" ? "The Universe Grid Manager kicked you out." : value);
+                            sp.ControllingClient.Kick(value == "" ? "The Virtual Universe Grid Manager kicked you out." : value);
                             IEntityTransferModule transferModule =
                                 scene.RequestModuleInterface<IEntityTransferModule>();
                             if (transferModule != null)

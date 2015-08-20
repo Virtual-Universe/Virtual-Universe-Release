@@ -25,6 +25,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using Sider;
+using System;
+using System.IO;
+using Nini.Config;
+using OpenMetaverse;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
@@ -32,11 +37,6 @@ using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Utilities;
 using Universe.RedisServices.ConnectionHelpers;
-using Nini.Config;
-using OpenMetaverse;
-using Sider;
-using System;
-using System.IO;
 
 namespace Universe.RedisServices.AssetService
 {
@@ -45,13 +45,14 @@ namespace Universe.RedisServices.AssetService
         #region Declares
 
         protected const string DATA_PREFIX = "DATA";
-        protected bool doDatabaseCaching = false;
-        protected string m_connectionDNS = "localhost", m_connectionPassword = null;
+        protected bool doDatabaseCaching;
+        protected string m_connectionDNS = "localhost";
+        protected string m_connectionPassword;
         protected Pool<RedisClient<byte[]>> m_connectionPool;
         protected int m_connectionPort = 6379;
-        protected bool m_enabled = false;
+        protected bool m_enabled;
 
-        protected bool m_doConversion = false;
+        protected bool m_doConversion;
         protected IAssetDataPlugin m_assetService;
 
         #endregion
@@ -68,6 +69,7 @@ namespace Universe.RedisServices.AssetService
             IConfig handlerConfig = config.Configs["Handlers"];
             if (handlerConfig.GetString("AssetHandler", "") != "Redis" + Name)
                 return;
+
             m_enabled = true;
             Configure(config, registry);
             Init(registry, Name, serverPath: "/asset/", serverHandlerName: "AssetServerURI");
@@ -77,6 +79,7 @@ namespace Universe.RedisServices.AssetService
         {
             if (!m_enabled)
                 return;
+
             m_registry = registry;
 
             registry.RegisterModuleInterface<IAssetService>(this);
@@ -101,26 +104,25 @@ namespace Universe.RedisServices.AssetService
             m_connectionPool =
                 new Pool<RedisClient<byte[]>>(() => new RedisClient<byte[]>(m_connectionDNS, m_connectionPort));
 
-            if (MainConsole.Instance != null && !DoRemoteCalls)
+            if (IsLocalConnector && (MainConsole.Instance != null))
             {
                 MainConsole.Instance.Commands.AddCommand(
                     "show digest",
                     "show digest <ID>",
-                    "Show asset digest", 
+                    "Show asset digest",
                     HandleShowDigest, false, true);
 
                 MainConsole.Instance.Commands.AddCommand("delete asset",
                     "delete asset <ID>",
-                    "Delete asset from database", 
+                    "Delete asset from database",
                     HandleDeleteAsset, false, true);
 
                 MainConsole.Instance.Commands.AddCommand("get asset",
                     "get asset <ID>",
-                    "Gets info about asset from database", 
+                    "Gets info about asset from database",
                     HandleGetAsset, false, true);
-
-                MainConsole.Instance.Info("[REDIS ASSET SERVICE]: Redis asset service enabled");
             }
+            MainConsole.Instance.Info("[Redis Asset Service]: Redis asset service enabled");
         }
 
         public virtual void Start(IConfigSource config, IRegistryCore registry)
@@ -147,7 +149,7 @@ namespace Universe.RedisServices.AssetService
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
         public virtual AssetBase Get(string id)
         {
-            return Get (id, true);
+            return Get(id, true);
         }
 
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
@@ -168,8 +170,8 @@ namespace Universe.RedisServices.AssetService
             if (remoteValue != null || m_doRemoteOnly)
             {
                 if (doDatabaseCaching && cache != null)
-                    cache.Cache(id, (AssetBase) remoteValue);
-                return (AssetBase) remoteValue;
+                    cache.Cache(id, (AssetBase)remoteValue);
+                return (AssetBase)remoteValue;
             }
 
             AssetBase asset = RedisGetAsset(id);
@@ -206,7 +208,7 @@ namespace Universe.RedisServices.AssetService
             object remoteValue = DoRemoteByURL("AssetServerURI", id);
             if (remoteValue != null || m_doRemoteOnly)
             {
-                byte[] data = (byte[]) remoteValue;
+                byte[] data = (byte[])remoteValue;
                 if (doDatabaseCaching && cache != null && data != null)
                     cache.CacheData(id, data);
                 return data;
@@ -216,7 +218,7 @@ namespace Universe.RedisServices.AssetService
             if (doDatabaseCaching && cache != null)
                 cache.Cache(id, asset);
             if (asset != null) return asset.Data;
-// see assetservice.GetData            return new byte[0];
+            // see assetservice.GetData            return new byte[0];
             return null;
         }
 
@@ -225,7 +227,7 @@ namespace Universe.RedisServices.AssetService
         {
             object remoteValue = DoRemoteByURL("AssetServerURI", id);
             if (remoteValue != null || m_doRemoteOnly)
-                return remoteValue == null ? false : (bool) remoteValue;
+                return remoteValue == null ? false : (bool)remoteValue;
 
             return RedisExistsAsset(id);
         }
@@ -246,7 +248,7 @@ namespace Universe.RedisServices.AssetService
             {
                 if (remoteValue == null)
                     return UUID.Zero;
-                asset.ID = (UUID) remoteValue;
+                asset.ID = (UUID)remoteValue;
             }
             else
                 RedisSetAsset(asset);
@@ -266,7 +268,7 @@ namespace Universe.RedisServices.AssetService
         {
             object remoteValue = DoRemoteByURL("AssetServerURI", id, data);
             if (remoteValue != null || m_doRemoteOnly)
-                return remoteValue == null ? UUID.Zero : (UUID) remoteValue;
+                return remoteValue == null ? UUID.Zero : (UUID)remoteValue;
 
             AssetBase asset = RedisGetAsset(id.ToString());
             if (asset == null)
@@ -284,7 +286,7 @@ namespace Universe.RedisServices.AssetService
         {
             object remoteValue = DoRemoteByURL("AssetServerURI", id);
             if (remoteValue != null || m_doRemoteOnly)
-                return remoteValue == null ? false : (bool) remoteValue;
+                return remoteValue == null ? false : (bool)remoteValue;
 
             RedisDeleteAsset(id.ToString());
             return true;
@@ -292,7 +294,7 @@ namespace Universe.RedisServices.AssetService
 
         #endregion
 
-        private byte[] RedisEnsureConnection(Func<RedisClient<byte[]>, byte[]> func)
+        byte[] RedisEnsureConnection(Func<RedisClient<byte[]>, byte[]> func)
         {
             RedisClient<byte[]> client = null;
             try
@@ -322,7 +324,7 @@ namespace Universe.RedisServices.AssetService
             return null;
         }
 
-        private bool RedisEnsureConnection(Func<RedisClient<byte[]>, bool> func)
+        bool RedisEnsureConnection(Func<RedisClient<byte[]>, bool> func)
         {
             RedisClient<byte[]> client = null;
             try
@@ -362,22 +364,22 @@ namespace Universe.RedisServices.AssetService
             try
             {
                 RedisEnsureConnection((conn) =>
-                                          {
-                                              byte[] data = conn.Get(id);
-                                              if (data == null)
-                                                  return null;
+                {
+                    byte[] data = conn.Get(id);
+                    if (data == null)
+                        return null;
 
-                                              MemoryStream memStream = new MemoryStream(data);
-                                              asset = ProtoBuf.Serializer.Deserialize<AssetBase>(memStream);
-                                              if (asset.Type == -1)
-                                                  asset.Type = 0;
-                                              memStream.Close();
-                                              byte[] assetdata = conn.Get(DATA_PREFIX + asset.HashCode);
-                                              if (assetdata == null || asset.HashCode == "")
-                                                  return null;
-                                              asset.Data = assetdata;
-                                              return null;
-                                          });
+                    MemoryStream memStream = new MemoryStream(data);
+                    asset = ProtoBuf.Serializer.Deserialize<AssetBase>(memStream);
+                    if (asset.Type == -1)
+                        asset.Type = 0;
+                    memStream.Close();
+                    byte[] assetdata = conn.Get(DATA_PREFIX + asset.HashCode);
+                    if (assetdata == null || asset.HashCode == "")
+                        return null;
+                    asset.Data = assetdata;
+                    return null;
+                });
 
                 if (asset == null)
                     return CheckForConversion(id);
@@ -387,14 +389,14 @@ namespace Universe.RedisServices.AssetService
 #if DEBUG
                 long endTime = System.Diagnostics.Stopwatch.GetTimestamp();
                 if (MainConsole.Instance != null && asset != null)
-                    MainConsole.Instance.Warn("[REDIS ASSET SERVICE]: Took " + (endTime - startTime)/10000 +
+                    MainConsole.Instance.Warn("[Redis Asset Service]: Took " + (endTime - startTime)/10000 +
                                               " to get asset " + id + " sized " + asset.Data.Length/(1024) + "kbs");
 #endif
             }
             return asset;
         }
 
-        private AssetBase CheckForConversion(string id)
+        AssetBase CheckForConversion(string id)
         {
             if (!m_doConversion)
                 return null;
@@ -441,7 +443,7 @@ namespace Universe.RedisServices.AssetService
                 if (duplicate)
                 {
                     if (MainConsole.Instance != null)
-                        MainConsole.Instance.Debug("[REDIS ASSET SERVICE]: Found duplicate asset " + asset.IDString +
+                        MainConsole.Instance.Debug("[Redis Asset Service]: Found duplicate asset " + asset.IDString +
                                                    " for " + asset.IDString);
 
                     //Only set id --> asset, and not the hashcode --> data to de-duplicate
@@ -449,15 +451,16 @@ namespace Universe.RedisServices.AssetService
                     return true;
                 }
 
-                RedisEnsureConnection((conn) =>
-                                          {
-                                              conn.Pipeline((c) =>
-                                                                {
-                                                                    c.Set(asset.IDString, memStream.ToArray());
-                                                                    c.Set(DATA_PREFIX + hash, data);
-                                                                });
-                                              return true;
-                                          });
+                RedisEnsureConnection(
+                    (conn) =>
+                    {
+                        conn.Pipeline((c) =>
+                        {
+                            c.Set(asset.IDString, memStream.ToArray());
+                            c.Set(DATA_PREFIX + hash, data);
+                        });
+                        return true;
+                    });
                 return true;
             }
             catch
@@ -475,6 +478,7 @@ namespace Universe.RedisServices.AssetService
             AssetBase asset = RedisGetAsset(id);
             if (asset == null)
                 return;
+
             RedisEnsureConnection((conn) => conn.Del(id) == 1);
             //DON'T DO THIS, there might be other references to this hash
             //RedisEnsureConnection((conn) => conn.Del(DATA_PREFIX + asset.HashCode) == 1);
@@ -508,14 +512,15 @@ namespace Universe.RedisServices.AssetService
             MainConsole.Instance.InfoFormat("Name: {0}", asset.Name);
             MainConsole.Instance.InfoFormat("Description: {0}", asset.Description);
             MainConsole.Instance.InfoFormat("Type: {0}", asset.TypeAsset);
-            MainConsole.Instance.InfoFormat("Content-type: {0}", asset.TypeAsset.ToString());
+            MainConsole.Instance.InfoFormat("Content-type: {0}", asset.TypeAsset);
             MainConsole.Instance.InfoFormat("Flags: {0}", asset.Flags);
 
             for (i = 0; i < 5; i++)
             {
-                int off = i*16;
+                int off = i * 16;
                 if (asset.Data.Length <= off)
                     break;
+
                 int len = 16;
                 if (asset.Data.Length < off + len)
                     len = asset.Data.Length - off;
@@ -582,26 +587,26 @@ namespace Universe.RedisServices.AssetService
                 creatorName = "System";
             else
             {
-                var accountService = m_registry.RequestModuleInterface<IUserAccountService> ();
+                var accountService = m_registry.RequestModuleInterface<IUserAccountService>();
                 if (accountService != null)
                 {
-                    var account = accountService.GetUserAccount (null, asset.CreatorID);
+                    var account = accountService.GetUserAccount(null, asset.CreatorID);
                     if (account != null)
                         creatorName = account.Name;
                 }
             }
 
-            MainConsole.Instance.InfoFormat ("{0} - {1}",
+            MainConsole.Instance.InfoFormat("{0} - {1}",
                 asset.Name == "" ? "(No name)" : asset.Name,
                 asset.Description == "" ? "(No description)" : asset.Description
             );
 
-            MainConsole.Instance.CleanInfoFormat (
+            MainConsole.Instance.CleanInfoFormat(
                 "                  {0} created by {1} on {2}",
                 asset.AssetTypeInfo(),
                 creatorName,
                 asset.CreationDate.ToShortDateString()
-            );      
+            );
         }
 
         #endregion

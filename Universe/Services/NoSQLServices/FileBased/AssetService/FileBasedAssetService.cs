@@ -98,7 +98,7 @@ namespace Universe.FileBasedServices.AssetService
             if (handlers != null)
                 doDatabaseCaching = handlers.GetBoolean ("AssetHandlerUseCache", false);
 
-            if (MainConsole.Instance != null && !DoRemoteCalls)
+            if (IsLocalConnector && (MainConsole.Instance != null))
             {
                 MainConsole.Instance.Commands.AddCommand (
                     "show digest",
@@ -118,7 +118,7 @@ namespace Universe.FileBasedServices.AssetService
                     "Gets info about asset from database", 
                     HandleGetAsset, false, true);
 
-                MainConsole.Instance.Info ("[FILE ASSET SERVICE]: File based asset service enabled");
+                MainConsole.Instance.Info ("[File Based Asset Service]: File based asset service has been enabled");
             }
         }
 

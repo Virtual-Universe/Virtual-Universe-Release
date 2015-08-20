@@ -25,16 +25,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System;
+using Nini.Config;
+using OpenMetaverse;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Utilities;
-using Nini.Config;
-using OpenMetaverse;
-using System;
 
 namespace Universe.Services.SQLServices.AssetService
 {
@@ -75,7 +74,7 @@ namespace Universe.Services.SQLServices.AssetService
             if (handlers != null)
                 doDatabaseCaching = handlers.GetBoolean("AssetHandlerUseCache", false);
 
-            if (MainConsole.Instance != null && !DoRemoteCalls)
+            if (IsLocalConnector && (MainConsole.Instance != null))
             {
                 MainConsole.Instance.Commands.AddCommand(
                     "show digest",

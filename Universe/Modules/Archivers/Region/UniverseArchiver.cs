@@ -25,26 +25,28 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System;
+using System.IO;
+using System.IO.Compression;
+using System.Threading;
+using Nini.Config;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Serialization;
 using Universe.Framework.Services;
-using Microsoft.Win32;
-using Nini.Config;
-using System;
-using System.IO;
-using System.IO.Compression;
-using System.Threading;
+
+#if ISWIN
 using System.Windows.Forms;
+using Microsoft.Win32;
 using Universe.Framework.Utilities;
+#endif
 
 namespace Universe.Modules.Archivers
 {
     public class UniverseArchiver : IService, IUniverseBackupArchiver
     {
-        private Int64 m_AllowPrompting;
+        Int64 m_AllowPrompting;
 
         #region IUniverseBackupArchiver Members
 
@@ -115,20 +117,22 @@ namespace Universe.Modules.Archivers
                 MainConsole.Instance.Commands.AddCommand(
                     "save archive",
                     "save archive",
-                    "Saves a Universe '.abackup' archive (deprecated)",
+                    "Saves a Virtual Universe '.abackup' archive (depriecated)",
                     SaveUniverseArchive, true, false);
 
                 MainConsole.Instance.Commands.AddCommand(
                     "load archive",
                     "load archive",
-                    "Loads a Universe '.abackupArchive",
+                    "Loads a Virtual Universe '.abackup' archive",
                     LoadUniverseArchive, true, false);
             }
+
+#if ISWIN
             //Register the extension
             const string ext = ".abackup";
             try
             {
-                if(Util.IsWindows())
+                if (Util.IsWindows())
                 {
                     RegistryKey key = Registry.ClassesRoot.CreateSubKey(ext + "\\DefaultIcon");
                     key.SetValue("", Application.StartupPath + "\\CrateDownload.ico");
@@ -138,8 +142,11 @@ namespace Universe.Modules.Archivers
             catch
             {
             }
+#endif
+
             //Register the interface
             registry.RegisterModuleInterface<IUniverseBackupArchiver>(this);
+
         }
 
         public void Start(IConfigSource config, IRegistryCore registry)
@@ -152,21 +159,22 @@ namespace Universe.Modules.Archivers
 
         #endregion
 
-        private void LoadUniverseArchive(IScene scene, string[] cmd)
+        void LoadUniverseArchive(IScene scene, string[] cmd)
         {
             string fileName = MainConsole.Instance.Prompt("What file name should we load?",
-                                                          scene.RegionInfo.RegionName + ".abackup");
+                                  scene.RegionInfo.RegionName + ".abackup");
 
             // a couple of sanity checks
-            string extension = Path.GetExtension (fileName);
+            string extension = Path.GetExtension(fileName);
 
             if (extension == string.Empty)
             {
                 fileName = fileName + ".abackup";
             }
 
-            if (!File.Exists(fileName)) {
-                MainConsole.Instance.Info ("[Archiver]: Region archive file '"+fileName+"' not found.");
+            if (!File.Exists(fileName))
+            {
+                MainConsole.Instance.Info("[Archiver]: Region archive file '" + fileName + "' not found.");
                 return;
             }
 
@@ -183,13 +191,13 @@ namespace Universe.Modules.Archivers
             GC.Collect();
         }
 
-        private void SaveUniverseArchive(IScene scene, string[] cmd)
+        void SaveUniverseArchive(IScene scene, string[] cmd)
         {
             string fileName = MainConsole.Instance.Prompt("What file name will this be saved as?",
-                                                          scene.RegionInfo.RegionName + ".abackup");
+                                  scene.RegionInfo.RegionName + ".abackup");
 
             //some file sanity checks
-            string extension = Path.GetExtension (fileName);
+            string extension = Path.GetExtension(fileName);
 
             if (extension == string.Empty)
             {
@@ -197,18 +205,22 @@ namespace Universe.Modules.Archivers
             }
 
             string fileDir = Path.GetDirectoryName(fileName);
-            if (fileDir == "") { fileDir = "./"; }
+            if (fileDir == "")
+            {
+                fileDir = "./";
+            }
             if (!Directory.Exists(fileDir))
             {
-                MainConsole.Instance.Info ( "[Archiver]: The file path specified, '" + fileDir + "' does not exist!" );
+                MainConsole.Instance.Info("[Archiver]: The file path specified, '" + fileDir + "' does not exist!");
                 return;
             }
 
-            if (File.Exists(fileName)) {
-                if (MainConsole.Instance.Prompt ("[Archiver]: The Region archive file '" + fileName + "' already exists. Overwrite?", "yes" ) != "yes")
+            if (File.Exists(fileName))
+            {
+                if (MainConsole.Instance.Prompt("[Archiver]: The Region archive file '" + fileName + "' already exists. Overwrite?", "yes") != "yes")
                     return;
 
-                File.Delete (fileName);
+                File.Delete(fileName);
             }
 
             GZipStream m_saveStream = new GZipStream(new FileStream(fileName, FileMode.Create), CompressionMode.Compress);
