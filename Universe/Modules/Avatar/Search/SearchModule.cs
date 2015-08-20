@@ -32,6 +32,7 @@ using Nini.Config;
 using OpenMetaverse;
 using OpenMetaverse.Packets;
 using Universe.Framework.ClientInterfaces;
+using Universe.Framework.ConsoleFramework;
 using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
@@ -668,8 +669,16 @@ namespace Universe.Modules.Search
         {
             IConfig searchConfig = config.Configs ["Search"];
             if (searchConfig != null) //Check whether we are enabled
-                if (searchConfig.GetString ("SearchModule", Name) == Name)
-                m_SearchEnabled = true;
+            {
+                if (searchConfig.GetString("SearchModule", Name) == Name)
+                    m_SearchEnabled = true;
+                MainConsole.Instance.InfoFormat("[Seach Service]: Searches have been enabled.");
+            }
+            else
+            {
+                m_SearchEnabled = false;
+                MainCOnsole.Instance.InfoFormat("[Search Service]: Search Services are not configured.... Disabling.");
+            }
         }
 
         public void AddRegion (IScene scene)

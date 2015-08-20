@@ -74,14 +74,18 @@ namespace Universe.Modules.Profiles
         public void Initialize (IConfigSource config)
         {
             IConfig profileConfig = config.Configs ["Profile"];
-            if (profileConfig == null)
+            if (profileConfig != null)
             {
-                MainConsole.Instance.Info ("[Profile] Not configured, disabling");
-                return;
+                if (profileConfig.GetString ("ProfileModule", Name) == Name)
+                {
+                    m_profileEnambled = true;
+                    MainConsole.Instance.InfoFormat("[Profile Service]: Profile services have been enabled");
+                }
             }
-            if (profileConfig.GetString ("ProfileModule", Name) != Name)
+            else
             {
                 m_ProfileEnabled = false;
+                MainConsole.Instance.InfoFormat("[Profile Service]: Profile services are not configured.... Disabling for now.");
             }
         }
 
@@ -424,8 +428,8 @@ namespace Universe.Modules.Profiles
                 {
                     UserAccount parcelOwner =
                         remoteClient.Scene.UserAccountService.GetUserAccount (remoteClient.AllScopeIDs,
-                            targetlandObj.LandData
-                                                                                          .OwnerID);
+                            targetlandObj.LandData.OwnerID);
+
                     if (parcelOwner != null)
                         user = parcelOwner.Name;
 
@@ -678,8 +682,8 @@ namespace Universe.Modules.Profiles
             if (UPI == null)
                 return;
             UserAccount account = remoteClient.Scene.UserAccountService.GetUserAccount (remoteClient.AllScopeIDs,
-                                      remoteClient
-                                                                                           .AgentId);
+                                      remoteClient.AgentId);
+
             remoteClient.SendUserInfoReply (UPI.Visible, UPI.IMViaEmail, account.Email);
         }
 
