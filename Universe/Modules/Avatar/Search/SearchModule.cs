@@ -677,7 +677,7 @@ namespace Universe.Modules.Search
             else
             {
                 m_SearchEnabled = false;
-                MainCOnsole.Instance.InfoFormat("[Search Service]: Search Services are not configured.... Disabling.");
+                MainConsole.Instance.InfoFormat("[Search Service]: Search Services are not configured.... Disabling.");
             }
         }
 

@@ -78,7 +78,7 @@ namespace Universe.Modules.Profiles
             {
                 if (profileConfig.GetString ("ProfileModule", Name) == Name)
                 {
-                    m_profileEnambled = true;
+                    m_ProfileEnambled = true;
                     MainConsole.Instance.InfoFormat("[Profile Service]: Profile services have been enabled");
                 }
             }
