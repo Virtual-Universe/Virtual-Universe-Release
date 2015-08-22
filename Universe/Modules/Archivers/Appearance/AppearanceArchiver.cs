@@ -71,7 +71,7 @@ namespace Universe.Modules.Archivers
             UserAccount account = userAccountService.GetUserAccount(null, principalID);
             if (account == null)
             {
-                MainConsole.Instance.Error("[AvatarArchive]: User not found!");
+                MainConsole.Instance.Error("[Avatar Archive]: User not found!");
                 return null;
             }
 
@@ -79,10 +79,10 @@ namespace Universe.Modules.Archivers
             fileName = PathHelpers.VerifyReadFile (fileName, ".aa", m_storeDirectory);
             if (!File.Exists(fileName))
             {
-                MainConsole.Instance.Error("[AvatarArchive]: Unable to load from file: file does not exist!");
+                MainConsole.Instance.Error("[Avatar Archive]: Unable to load from file: file does not exist!");
                 return null;
             }
-            MainConsole.Instance.Info("[AvatarArchive]: Loading archive from " + fileName);
+            MainConsole.Instance.Info("[Avatar Archive]: Loading archive from " + fileName);
 
             archive.FromOSD((OSDMap)OSDParser.DeserializeLLSDXml(File.ReadAllText(fileName)));
 
@@ -121,7 +121,7 @@ namespace Universe.Modules.Archivers
             }
             catch (Exception ex)
             {
-                MainConsole.Instance.Warn("[AvatarArchiver]: Error loading assets and items, " + ex);
+                MainConsole.Instance.Warn("[Avatar Archiver]: Error loading assets and items, " + ex);
             }
 
             /*  implement fully if we need to
@@ -136,7 +136,7 @@ namespace Universe.Modules.Archivers
             SP.ControllingClient.SendBulkUpdateInventory(folderForAppearance);
             */
 
-            MainConsole.Instance.Info("[AvatarArchive]: Loaded archive from " + fileName);
+            MainConsole.Instance.Info("[Avatar Archive]: Loaded archive from " + fileName);
             archive.Appearance = appearance;
             return archive;
         }
@@ -157,14 +157,14 @@ namespace Universe.Modules.Archivers
             UserAccount account = userAccountService.GetUserAccount(null, principalID);
             if (account == null)
             {
-                MainConsole.Instance.Error("[AvatarArchive]: User not found!");
+                MainConsole.Instance.Error("[Avatar Archive]: User not found!");
                 return false;
             }
 
             AvatarAppearance appearance = avatarService.GetAppearance(account.PrincipalID);
             if (appearance == null)
             {
-                MainConsole.Instance.Error("[AvatarArchive] Appearance not found!");
+                MainConsole.Instance.Error("[Avatar Archive] Appearance not found!");
                 return false;
             }
 
@@ -190,7 +190,7 @@ namespace Universe.Modules.Archivers
                     }
                 }
             }
-            MainConsole.Instance.InfoFormat("[AvatarArchive] Adding {0} wearables to {1}",wearCount, archiveName);
+            MainConsole.Instance.InfoFormat("[Avatar Archive] Adding {0} wearables to {1}",wearCount, archiveName);
 
             int attachCount = 0;
             List<AvatarAttachment> attachments = appearance.GetAttachments();
@@ -200,7 +200,7 @@ namespace Universe.Modules.Archivers
                 SaveAsset(a.AssetID, ref archive, isPortable);
                 attachCount++;
             }
-            MainConsole.Instance.InfoFormat("[AvatarArchive] Adding {0} attachments to {1}", attachCount, archiveName);
+            MainConsole.Instance.InfoFormat("[Avatar Archive] Adding {0} attachments to {1}", attachCount, archiveName);
 
             //InventoryFolderBase clothingFolder = inventoryService.GetFolderForType(principalID, AssetType.Clothing);
 
@@ -218,10 +218,10 @@ namespace Universe.Modules.Archivers
             {
 
                 ExportArchiveImage (snapshotUUID, archiveName, filePath);
-                MainConsole.Instance.Info("[AvatarArchive] Saved archive snapshot");
+                MainConsole.Instance.Info("[Avatar Archive] Saved archive snapshot");
             }
 
-            MainConsole.Instance.Info("[AvatarArchive] Saved archive to " + fileName);
+            MainConsole.Instance.Info("[Avatar Archive] Saved archive to " + fileName);
 
             return true;
         }
@@ -328,7 +328,7 @@ namespace Universe.Modules.Archivers
             UserAccount account = userAccountService.GetUserAccount(null, userName);
             if (account == null)
             {
-                MainConsole.Instance.Info("[AvatarArchive]: Sorry, unable to find an account for " + userName +"!");
+                MainConsole.Instance.Info("[Avatar Archive]: Sorry, unable to find an account for " + userName +"!");
                 return;
             }
 
@@ -423,7 +423,7 @@ namespace Universe.Modules.Archivers
             UserAccount account = userAccountService.GetUserAccount(null, userName);
             if (account == null)
             {
-                MainConsole.Instance.Error("[AvatarArchive]: User '" + userName + "' not found!");
+                MainConsole.Instance.Error("[Avatar Archive]: User '" + userName + "' not found!");
                 return;
             }
 
@@ -524,13 +524,13 @@ namespace Universe.Modules.Archivers
             {
                 InventoryItemBase item = new InventoryItemBase();
                 item.FromOSD((OSDMap)kvp.Value);
-                MainConsole.Instance.Info("[AvatarArchive]: Loading item " + item.ID);
+                MainConsole.Instance.Info("[Avatar Archive]: Loading item " + item.ID);
                 litems.Add(item);
             }
             
             // Wearables
             AvatarWearable[] wearables = avatarAppearance.Wearables;
-            MainConsole.Instance.InfoFormat("[AvatarArchive] Adding {0} wearables", wearables.Length);
+            MainConsole.Instance.InfoFormat("[Avatar Archive] Adding {0} wearables", wearables.Length);
 
             for (int i = 0; i < wearables.Length; i++)
             {
@@ -556,7 +556,7 @@ namespace Universe.Modules.Archivers
                                                                                                             .ID,
                                                                                                         false, false);
                             items.Add(destinationItem);
-                            MainConsole.Instance.DebugFormat("[AvatarArchive]: Added item {0} to folder {1}",
+                            MainConsole.Instance.DebugFormat("[Avatar Archive]: Added item {0} to folder {1}",
                                                              destinationItem.ID, destinationFolder.ID);
 
                             // Wear item
@@ -566,7 +566,7 @@ namespace Universe.Modules.Archivers
                         }
                         else
                         {
-                            MainConsole.Instance.WarnFormat("[AvatarArchive]: Unable to transfer {0} to folder {1}",
+                            MainConsole.Instance.WarnFormat("[Avatar Archive]: Unable to transfer {0} to folder {1}",
                                                             wearable[ii].ItemID, destinationFolder.ID);
                         }
                     }
@@ -575,7 +575,7 @@ namespace Universe.Modules.Archivers
 
             // Attachments
             List<AvatarAttachment> attachments = avatarAppearance.GetAttachments();
-            MainConsole.Instance.InfoFormat("[AvatarArchive] Adding {0} attachments",attachments.Count);
+            MainConsole.Instance.InfoFormat("[Avatar Archive] Adding {0} attachments",attachments.Count);
 
             foreach (AvatarAttachment attachment in attachments)
             {
@@ -601,16 +601,16 @@ namespace Universe.Modules.Archivers
                                                                                                     destinationFolder.ID,
                                                                                                     false, false);
                         items.Add(destinationItem);
-                        MainConsole.Instance.DebugFormat("[AvatarArchive]: Added item {0} to folder {1}", destinationItem.ID,
+                        MainConsole.Instance.DebugFormat("[Avatar Archive]: Added item {0} to folder {1}", destinationItem.ID,
                                                          destinationFolder.ID);
 
                         // Attach item
                         avatarAppearance.SetAttachment(attachpoint, destinationItem.ID, destinationItem.AssetID);
-                        MainConsole.Instance.DebugFormat("[AvatarArchive]: Attached {0}", destinationItem.ID);
+                        MainConsole.Instance.DebugFormat("[Avatar Archive]: Attached {0}", destinationItem.ID);
                     }
                     else
                     {
-                        MainConsole.Instance.WarnFormat("[AvatarArchive]: Error transferring {0} to folder {1}", itemID,
+                        MainConsole.Instance.WarnFormat("[Avatar Archive]: Error transferring {0} to folder {1}", itemID,
                                                         destinationFolder.ID);
                     }
                 }
@@ -645,12 +645,12 @@ namespace Universe.Modules.Archivers
                 var asset = assetService.Get(kvp.Key.ToString());
                 if (asset != null)
                 {
-                    MainConsole.Instance.Debug("[AvatarArchive]: Saving asset " + asset.ID);
+                    MainConsole.Instance.Debug("[Avatar Archive]: Saving asset " + asset.ID);
                     archive.AssetsMap[asset.ID.ToString()] = asset.ToOSD();
                 }
                 else
                 {
-                    MainConsole.Instance.Debug("[AvatarArchive]: Could not find asset to save: " + asset.ID);
+                    MainConsole.Instance.Debug("[Avatar Archive]: Could not find asset to save: " + asset.ID);
                     return;
                 }
             }
@@ -668,10 +668,10 @@ namespace Universe.Modules.Archivers
             InventoryItemBase saveItem = inventoryService.GetItem(UUID.Zero, ItemID);
             if (saveItem == null)
             {
-                MainConsole.Instance.Warn("[AvatarArchive]: Could not find item to save: " + ItemID);
+                MainConsole.Instance.Warn("[Avatar Archive]: Could not find item to save: " + ItemID);
                 return;
             }
-            MainConsole.Instance.Info("[AvatarArchive]: Saving item " + ItemID);
+            MainConsole.Instance.Info("[Avatar Archive]: Saving item " + ItemID);
             archive.ItemsMap[ItemID.ToString()] = saveItem.ToOSD();
         }
 
@@ -686,12 +686,12 @@ namespace Universe.Modules.Archivers
                 AssetBase asset = assetService.Get(AssetID.ToString(), false);
                 if (asset == null) // Only save if it does not exist
                 {
-                    MainConsole.Instance.Info ("[AvatarArchive]: Saving asset " + AssetID);
+                    MainConsole.Instance.Info ("[Avatar Archive]: Saving asset " + AssetID);
 
                     asset = LoadAssetBase (assetMap);
                     asset.ID = assetService.Store (asset);
                 } else
-                    MainConsole.Instance.Debug ("[Avatararchive]: Asset " + AssetID + " already exists.");
+                    MainConsole.Instance.Debug ("[Avatar Archive]: Asset " + AssetID + " already exists.");
             }
         }
 
@@ -782,7 +782,7 @@ namespace Universe.Modules.Archivers
             }
 
             bool isLocal = true;
-            IConfig connectorConfig = config.Configs["WhiteCoreConnectors"];
+            IConfig connectorConfig = config.Configs["UniverseConnectors"];
             if ((connectorConfig != null) && connectorConfig.Contains("DoRemoteCalls"))
                 isLocal = !connectorConfig.GetBoolean("DoRemoteCalls", false);
 

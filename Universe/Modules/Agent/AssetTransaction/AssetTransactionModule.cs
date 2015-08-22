@@ -155,8 +155,8 @@ namespace Universe.Modules.Agent.AssetTransaction
                                                       uint callbackID, string description, string name, sbyte invType,
                                                       sbyte type, byte wearableType, uint nextOwnerMask)
         {
-            //            MainConsole.Instance.DebugFormat(
-            //                "[TRANSACTIONS MANAGER] Called HandleItemCreationFromTransaction with item {0}", name);
+            //MainConsole.Instance.DebugFormat(
+            //    "[Transactions Manager] Called HandleItemCreationFromTransaction with item {0}", name);
 
             AgentAssetTransactions transactions = GetUserTransactions(remoteClient.AgentId);
 
@@ -183,9 +183,8 @@ namespace Universe.Modules.Agent.AssetTransaction
         public void HandleItemUpdateFromTransaction(IClientAPI remoteClient, UUID transactionID,
                                                     InventoryItemBase item)
         {
-            //            MainConsole.Instance.DebugFormat(
-            //                "[TRANSACTIONS MANAGER] Called HandleItemUpdateFromTransaction with item {0}",
-            //                item.Name);
+            //MainConsole.Instance.DebugFormat(
+            //    "[Transactions Manager] Called HandleItemUpdateFromTransaction with item {0}", item.Name);
 
             AgentAssetTransactions transactions = GetUserTransactions(remoteClient.AgentId);
 
@@ -212,9 +211,8 @@ namespace Universe.Modules.Agent.AssetTransaction
         public void HandleTaskItemUpdateFromTransaction(
             IClientAPI remoteClient, ISceneChildEntity part, UUID transactionID, TaskInventoryItem item)
         {
-            //            MainConsole.Instance.DebugFormat(
-            //                "[TRANSACTIONS MANAGER] Called HandleTaskItemUpdateFromTransaction with item {0}",
-            //                item.Name);
+            //MainConsole.Instance.DebugFormat(
+            //    "[Transactions Manager] Called HandleTaskItemUpdateFromTransaction with item {0}", item.Name);
 
             AgentAssetTransactions transactions = GetUserTransactions(remoteClient.AgentId);
 
@@ -261,7 +259,7 @@ namespace Universe.Modules.Agent.AssetTransaction
         public void HandleUDPUploadRequest(IClientAPI remoteClient, UUID assetID, UUID transaction, sbyte type,
                                            byte[] data, bool storeLocal, bool tempFile)
         {
-//            MainConsole.Instance.Debug("HandleUDPUploadRequest - assetID: " + assetID.ToString() + " transaction: " + transaction.ToString() + " type: " + type.ToString() + " storelocal: " + storeLocal + " tempFile: " + tempFile);
+            //MainConsole.Instance.Debug("HandleUDPUploadRequest - assetID: " + assetID.ToString() + " transaction: " + transaction.ToString() + " type: " + type.ToString() + " storelocal: " + storeLocal + " tempFile: " + tempFile);
 
             if (((AssetType)type == AssetType.Texture ||
                 (AssetType)type == AssetType.Sound ||

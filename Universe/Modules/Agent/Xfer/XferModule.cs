@@ -25,15 +25,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System;
+using System.Collections.Generic;
+using Nini.Config;
+using OpenMetaverse;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
-using Nini.Config;
-using OpenMetaverse;
-using System;
-using System.Collections.Generic;
 
 namespace Universe.Modules.Agent.Xfer
 {

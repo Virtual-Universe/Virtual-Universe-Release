@@ -120,7 +120,7 @@ namespace Universe.Modules.Archivers
                 catch (EntryPointNotFoundException e)
                 {
                     MainConsole.Instance.ErrorFormat(
-                        "[ARCHIVER]: Mismatch between Mono and zlib1g library version when trying to create compression stream."
+                        "[Archiver]: Mismatch between Mono and zlib1g library version when trying to create compression stream."
                         + "If you've manually installed Mono, have you appropriately updated zlib1g as well?");
                     MainConsole.Instance.Error(e);
 
@@ -238,7 +238,7 @@ namespace Universe.Modules.Archivers
                 catch (EntryPointNotFoundException e)
                 {
                     MainConsole.Instance.ErrorFormat(
-                        "[ARCHIVER]: Mismatch between Mono and zlib1g library version when trying to create compression stream.\n"
+                        "[Archiver]: Mismatch between Mono and zlib1g library version when trying to create compression stream.\n"
                         + "If you've manually installed Mono, have you appropriately updated zlib1g as well?");
                     MainConsole.Instance.Error(e);
 
@@ -270,7 +270,7 @@ namespace Universe.Modules.Archivers
                 catch (EntryPointNotFoundException e)
                 {
                     MainConsole.Instance.ErrorFormat(
-                        "[ARCHIVER]: Mismatch between Mono and zlib1g library version when trying to create compression stream.\n"
+                        "[Archiver]: Mismatch between Mono and zlib1g library version when trying to create compression stream.\n"
                         + "If you've manually installed Mono, have you appropriately updated zlib1g as well?");
                     MainConsole.Instance.Error(e);
 

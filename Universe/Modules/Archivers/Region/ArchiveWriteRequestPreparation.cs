@@ -25,17 +25,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Universe.Framework.ConsoleFramework;
-using Universe.Framework.Modules;
-using Universe.Framework.SceneInfo;
-using Universe.Framework.SceneInfo.Entities;
-using Universe.Framework.Serialization;
-using OpenMetaverse;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using OpenMetaverse;
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.Modules;
+using Universe.Framework.SceneInfo;
+using Universe.Framework.SceneInfo.Entities;
+using Universe.Framework.Serialization;
 
 namespace Universe.Modules.Archivers
 {
@@ -70,7 +70,7 @@ namespace Universe.Modules.Archivers
             catch (EntryPointNotFoundException e)
             {
                 MainConsole.Instance.ErrorFormat(
-                    "[ARCHIVER]: Mismatch between Mono and zlib1g library version when trying to create compression stream."
+                    "[Archiver]: Mismatch between Mono and zlib1g library version when trying to create compression stream."
                     + "If you've manually installed Mono, have you appropriately updated zlib1g as well?");
                 MainConsole.Instance.Error(e);
             }
@@ -124,13 +124,13 @@ namespace Universe.Modules.Archivers
             }
 
             MainConsole.Instance.InfoFormat(
-                "[ARCHIVER]: {0} scene objects to serialize requiring save of {1} assets",
+                "[Archiver]: {0} scene objects to serialize requiring save of {1} assets",
                 sceneObjects.Count, assetUuids.Count);
 
             if (numObjectsSkippedPermissions > 0)
             {
                 MainConsole.Instance.DebugFormat(
-                    "[ARCHIVER]: {0} scene objects skipped due to lack of permissions",
+                    "[Archiver]: {0} scene objects skipped due to lack of permissions",
                     numObjectsSkippedPermissions);
             }
 
