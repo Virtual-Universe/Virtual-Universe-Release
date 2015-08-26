@@ -381,7 +381,7 @@ namespace Universe.Modules
 
         }
 
-        public void GetParcelChannelInfo(UUID avatarID, WhiteCore.Framework.Services.GridRegion region, string URL,
+        public void GetParcelChannelInfo(UUID avatarID, Framework.Services.GridRegion region, string URL,
                                          out bool success, out UUID parcelID, out string parcelName, out int localID,
                                          out uint parcelFlags, out string ParentID)
         {
@@ -417,7 +417,7 @@ namespace Universe.Modules
             }
         }
 
-        string GetParentIDForRegion(WhiteCore.Framework.Services.GridRegion region)
+        string GetParentIDForRegion(Framework.Services.GridRegion region)
         {
             lock (vlock)
             {
