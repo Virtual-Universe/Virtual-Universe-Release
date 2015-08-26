@@ -208,7 +208,7 @@ namespace Universe.Services.SQLServices.UserAccountService
                 MainConsole.Instance.Commands.AddCommand(
                     "load users",
                     "load user [<CSV file>]",
-                    "Loads users from a CSV file into WhiteCore",
+                    "Loads users from a CSV file into Virtual Universe",
                     HandleLoadUsers, false, true);
 
                 MainConsole.Instance.Commands.AddCommand(
@@ -512,7 +512,7 @@ namespace Universe.Services.SQLServices.UserAccountService
                 }
             }
 
-            MainConsole.Instance.InfoFormat("[Uuser Account Service]: Account {0} created successfully", newAccount.Name);
+            MainConsole.Instance.InfoFormat("[User Account Service]: Account {0} created successfully", newAccount.Name);
             //Cache it as well
             CacheAccount(newAccount);
             m_registry.RequestModuleInterface<ISimulationBase>()
@@ -1129,7 +1129,7 @@ namespace Universe.Services.SQLServices.UserAccountService
             // ensure the system users are left alone!
             if (Utilities.IsSystemUser(account.PrincipalID))
             {
-                MainConsole.Instance.Warn("[User Account Service]: Naughty!! You cannot delete system users!");
+                MainConsole.Instance.Warn("[User Account Service]: You cannot delete system users!");
                 return;
             }
 
