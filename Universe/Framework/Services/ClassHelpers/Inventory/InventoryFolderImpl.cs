@@ -44,7 +44,7 @@ namespace Universe.Framework.Services.ClassHelpers.Inventory
         /// <summary>
         ///     Child folders that are contained in this folder
         /// </summary>
-        private Dictionary<UUID, InventoryFolderImpl> m_childFolders = new Dictionary<UUID, InventoryFolderImpl>();
+        Dictionary<UUID, InventoryFolderImpl> m_childFolders = new Dictionary<UUID, InventoryFolderImpl>();
 
         // Constructors
         public InventoryFolderImpl(InventoryFolderBase folderbase)
@@ -91,7 +91,7 @@ namespace Universe.Framework.Services.ClassHelpers.Inventory
                                                           Name = folderName,
                                                           ID = folderID,
                                                           Type = (short) type,
-                                                          ParentID = this.ID,
+                                                          ParentID = ID,
                                                           Owner = Owner
                                                       };
                     m_childFolders.Add(subFold.ID, subFold);
@@ -294,7 +294,7 @@ namespace Universe.Framework.Services.ClassHelpers.Inventory
         /// </summary>
         /// <param name="type"></param>
         /// <returns>Returns null if no such folder is found</returns>
-        public InventoryFolderImpl FindFolderForType(int type)
+        public InventoryFolderImpl FindFolderForType(short type)
         {
             lock (m_childFolders)
             {

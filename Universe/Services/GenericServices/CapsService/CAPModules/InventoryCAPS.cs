@@ -318,13 +318,13 @@ namespace Universe.Services
             return OSDParser.SerializeLLSDXmlBytes(map);
         }
 
-        private bool ChargeUser(string asset_type, OSDMap map)
+        bool ChargeUser(string asset_type, OSDMap map)
         {
             int charge, cost;
             return ChargeUser(asset_type, map, out charge, out cost);
         }
 
-        private bool ChargeUser(string asset_type, OSDMap map, out int charge, out int resourceCost)
+        bool ChargeUser(string asset_type, OSDMap map, out int charge, out int resourceCost)
         {
             charge = 0;
             resourceCost = 0;
@@ -358,7 +358,7 @@ namespace Universe.Services
             return true;
         }
 
-        private OSDMap InternalNewAgentInventoryRequest(OSDMap map, OSHttpRequest httpRequest,
+        OSDMap InternalNewAgentInventoryRequest(OSDMap map, OSHttpRequest httpRequest,
                                                         OSHttpResponse httpResponse)
         {
             string asset_type = map["asset_type"].AsString();
@@ -481,9 +481,7 @@ namespace Universe.Services
                             textures.Add(textureAsset.ID);
                         }
 
-                        InventoryFolderBase meshFolder = m_inventoryService.GetFolderForType(m_agentID,
-                                                                                             InventoryType.Mesh,
-                                                                                             AssetType.Mesh);
+                        InventoryFolderBase meshFolder = m_inventoryService.GetFolderForType(m_agentID, InventoryType.Mesh, FolderType.Mesh);
                         for (int i = 0; i < mesh_list.Count; i++)
                         {
                             PrimitiveBaseShape pbs = PrimitiveBaseShape.CreateBox();
@@ -533,8 +531,7 @@ namespace Universe.Services
                             if (meshFolder == null)
                             {
                                 m_inventoryService.CreateUserInventory(m_agentID, false);
-                                meshFolder = m_inventoryService.GetFolderForType(m_agentID, InventoryType.Mesh,
-                                                                                 AssetType.Mesh);
+                                meshFolder = m_inventoryService.GetFolderForType(m_agentID, InventoryType.Mesh, FolderType.Mesh);
                             }
 
                             InventoryItemBase itemBase = new InventoryItemBase(UUID.Random(), m_agentID)
@@ -646,22 +643,18 @@ namespace Universe.Services
 
         public class AssetUploader
         {
-            private readonly UUID inventoryItemID;
-
-
-            private readonly string m_assetDes = String.Empty;
-            private readonly string m_assetName = String.Empty;
-
-            private readonly string m_assetType = String.Empty;
-
-            private readonly uint m_everyone_mask;
-            private readonly uint m_group_mask;
-            private readonly string m_invType = String.Empty;
-            private readonly uint m_next_owner_mask;
-            private readonly UUID parentFolder;
-            private readonly string uploaderPath = String.Empty;
-            private UUID newAssetID;
-            private UploadHandler m_uploadCompleteHandler;
+            readonly UUID inventoryItemID;
+            readonly string m_assetDes = String.Empty;
+            readonly string m_assetName = String.Empty;
+            readonly string m_assetType = String.Empty;
+            readonly uint m_everyone_mask;
+            readonly uint m_group_mask;
+            readonly string m_invType = String.Empty;
+            readonly uint m_next_owner_mask;
+            readonly UUID parentFolder;
+            readonly string uploaderPath = String.Empty;
+            UUID newAssetID;
+            UploadHandler m_uploadCompleteHandler;
             public delegate UUID UploadHandler(string assetName, string description, UUID assetID, UUID inventoryItem,
                                  UUID parentFolderID, byte[] data, string invType, string assetType,
                                  uint everyone_mask, uint group_mask, uint next_owner_mask);

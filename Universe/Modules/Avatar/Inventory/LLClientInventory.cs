@@ -1728,7 +1728,7 @@ namespace Universe.Modules.Inventory
                                        InventoryFolderBase rootFolder = m_scene.InventoryService.GetRootFolder(destID);
 
                                        InventoryFolderBase newFolder = new InventoryFolderBase(newFolderID, name, destID,
-                                                                                               -1, rootFolder.ID,
+                                                                                               (short) FolderType.None, rootFolder.ID,
                                                                                                rootFolder.Version);
                                        m_scene.InventoryService.AddFolder(newFolder);
 

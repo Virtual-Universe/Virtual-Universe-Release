@@ -52,7 +52,7 @@ namespace Universe.Services
     {
         public string ServiceURI { get; protected set; }
         protected IRegistryCore m_registry;
-        protected bool m_enabled = false;
+        protected bool m_enabled;
         protected IAssetService m_assetService;
         protected IAvatarService m_avatarService;
         protected IInventoryService m_inventoryService;
@@ -97,7 +97,7 @@ namespace Universe.Services
                 gridInfo.AgentAppearanceURI = ServiceURI;
         }
 
-        private byte[] GetBakedTexture(string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse)
+        byte[] GetBakedTexture (string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse)
         {
             string[] req = path.Split('/');
             UUID avID = UUID.Parse(req[2]);
@@ -121,10 +121,10 @@ namespace Universe.Services
             return texture.Data;
         }
 
-        private TextureData[] Textures = new TextureData[(int)AvatarTextureIndex.NumberOfEntries];
-        //private List<UUID> m_lastInventoryItemIDs = new List<UUID>();
+        TextureData[] Textures = new TextureData[(int)AvatarTextureIndex.NumberOfEntries];
+        // List<UUID> m_lastInventoryItemIDs = new List<UUID>();
 
-        private void BakeAvatar(IScene scene, string[] cmd)
+        void BakeAvatar (IScene scene, string[] cmd)
         {
             string name = MainConsole.Instance.Prompt("Name: ");
             IUserAccountService uas = m_registry.RequestModuleInterface<IUserAccountService>();
@@ -140,16 +140,16 @@ namespace Universe.Services
 
         public AvatarAppearance BakeAppearance(UUID agentID, int cof_version)
         {
-            AvatarAppearance appearance = m_avatarService.GetAppearance(agentID);
-            List<BakeType> pendingBakes = new List<BakeType>();
-            InventoryFolderBase cof = m_inventoryService.GetFolderForType(agentID, InventoryType.Unknown, AssetType.CurrentOutfitFolder);
+            AvatarAppearance appearance = m_avatarService.GetAppearance (agentID);
+            List<BakeType> pendingBakes = new List<BakeType> ();
+            InventoryFolderBase cof = m_inventoryService.GetFolderForType (agentID, InventoryType.Unknown, FolderType.CurrentOutfit);
             if (cof.Version < cof_version)
             {
                 int i = 0;
                 while (i < 10)
                 {
-                    cof = m_inventoryService.GetFolderForType(agentID, InventoryType.Unknown, AssetType.CurrentOutfitFolder);
-                    System.Threading.Thread.Sleep(100);
+                    cof = m_inventoryService.GetFolderForType (agentID, InventoryType.Unknown, FolderType.CurrentOutfit);
+                    System.Threading.Thread.Sleep (100);
                     if (cof.Version >= cof_version)
                         break;
                     i++;
@@ -194,11 +194,9 @@ namespace Universe.Services
                             }
                         }
                     }
-                    else
-                    {
-                    }
                 }
             }
+
             /*foreach (UUID id in m_lastInventoryItemIDs)
             {
                 if (!currentItemIDs.Contains(id))
@@ -255,13 +253,13 @@ namespace Universe.Services
             foreach (BakeType bakeType in pendingBakes)
             {
                 UUID assetID = UUID.Zero;
-                List<AvatarTextureIndex> textureIndices = OpenMetaverse.AppearanceManager.BakeTypeToTextures(bakeType);
-                Baker oven = new Baker(bakeType);
+                List<AvatarTextureIndex> textureIndices = AppearanceManager.BakeTypeToTextures (bakeType);
+                Baker oven = new Baker (bakeType);
 
                 for (int i = 0; i < textureIndices.Count; i++)
                 {
-                    int textureIndex = (int)textureIndices[i];
-                    TextureData texture = Textures[(int)textureIndex];
+                    int textureIndex = (int)textureIndices [i];
+                    TextureData texture = Textures [textureIndex];
                     texture.TextureIndex = (AvatarTextureIndex)textureIndex;
                     if (alphaWearable != null)
                     {
@@ -296,7 +294,7 @@ namespace Universe.Services
             MainConsole.Instance.ErrorFormat("[ServerSideAppearance]: Baking took {0} ms", (Environment.TickCount - start));
 
             appearance.Serial = cof_version + 1;
-            cof = m_inventoryService.GetFolderForType(agentID, InventoryType.Unknown, AssetType.CurrentOutfitFolder);
+            cof = m_inventoryService.GetFolderForType (agentID, InventoryType.Unknown, FolderType.CurrentOutfit);
             if (cof.Version > cof_version)
             {
                 //it changed during the baking... kill it with fire!

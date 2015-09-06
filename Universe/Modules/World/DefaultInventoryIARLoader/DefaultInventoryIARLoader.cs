@@ -86,8 +86,6 @@ namespace Universe.Modules.DefaultInventoryIARLoader
             m_assetTypes.Add("CallingCard", AssetType.CallingCard);
             m_assetTypes.Add("Calling Card", AssetType.CallingCard);
             m_assetTypes.Add("Clothing", AssetType.Clothing);
-            m_assetTypes.Add("CurrentOutfit", AssetType.CurrentOutfitFolder);
-            m_assetTypes.Add("Current Outfit", AssetType.CurrentOutfitFolder);
             m_assetTypes.Add("Gesture", AssetType.Gesture);
             m_assetTypes.Add("Landmark", AssetType.Landmark);
             m_assetTypes.Add("Script", AssetType.LSLText);
@@ -95,8 +93,6 @@ namespace Universe.Modules.DefaultInventoryIARLoader
             m_assetTypes.Add("Mesh", AssetType.Mesh);
             m_assetTypes.Add("Notecard", AssetType.Notecard);
             m_assetTypes.Add("Object", AssetType.Object);
-            m_assetTypes.Add("Photo", AssetType.SnapshotFolder);
-            m_assetTypes.Add("Snapshot", AssetType.SnapshotFolder);
             m_assetTypes.Add("Sound", AssetType.Sound);
             m_assetTypes.Add("Texture", AssetType.Texture);
             m_assetTypes.Add("Images", AssetType.Texture);
@@ -109,7 +105,7 @@ namespace Universe.Modules.DefaultInventoryIARLoader
         protected void LoadLibraries(string iarFileName)
         {
             RegionInfo regInfo = new RegionInfo();
-            IScene m_MockScene = null;
+            IScene m_MockScene;
             //Make the scene for the IAR loader
             if (m_registry is IScene)
                 m_MockScene = (IScene) m_registry;
@@ -147,7 +143,7 @@ namespace Universe.Modules.DefaultInventoryIARLoader
             MainConsole.Instance.InfoFormat("[Library Inventory]: Loading IAR file {0}", iarFileName);
             InventoryFolderBase rootFolder = m_MockScene.InventoryService.GetRootFolder(uinfo.PrincipalID);
 
-            if (null == rootFolder)
+            if (rootFolder == null)
             {
                 //We need to create the root folder, otherwise the IAR freaks
                 m_MockScene.InventoryService.CreateUserInventory(uinfo.PrincipalID, false);
@@ -170,7 +166,7 @@ namespace Universe.Modules.DefaultInventoryIARLoader
                 f.Name = iarFileName;
                 f.ParentID = UUID.Zero;
                 f.ID = m_service.LibraryRootFolderID;
-                f.Type = (int) AssetType.RootFolder;
+                f.Type = (short) FolderType.Root;
                 f.Version = 1;
                 m_MockScene.InventoryService.UpdateFolder(f);
             }
@@ -205,7 +201,7 @@ namespace Universe.Modules.DefaultInventoryIARLoader
 
                 if (folder.Type == -1)
                 {
-                    folder.Type = (int) AssetType.Folder;
+                    folder.Type = (int) FolderType.None;
                     m_MockScene.InventoryService.UpdateFolder(folder);
                 }
                 TraverseFolders(folder.ID, m_MockScene);

@@ -508,11 +508,7 @@ textures 1
                             AssetType = (int)AssetType.Clothing,
                             Name = "Default Underpants",
                             Folder =
-                                m_scene.InventoryService.GetFolderForType(client.AgentId,
-                                                                          InventoryType.
-                                                                              Wearable,
-                                                                          AssetType.
-                                                                              Clothing).ID,
+                                m_scene.InventoryService.GetFolderForType(client.AgentId, InventoryType.Wearable, FolderType.Clothing).ID,
                             Owner = client.AgentId,
                             CurrentPermissions = 0,
                             CreatorId = UUID.Zero.ToString(),
@@ -530,11 +526,7 @@ textures 1
                             AssetType = (int)AssetType.Clothing,
                             Name = "Default Underpants",
                             Folder =
-                                m_scene.InventoryService.GetFolderForType(client.AgentId,
-                                                                          InventoryType.
-                                                                              Wearable,
-                                                                          AssetType.
-                                                                              Clothing).ID,
+                                m_scene.InventoryService.GetFolderForType(client.AgentId, InventoryType.Wearable, FolderType.Clothing).ID,
                             Owner = client.AgentId,
                             CurrentPermissions = 0
                         };
@@ -564,11 +556,7 @@ textures 1
                             AssetType = (int)AssetType.Clothing,
                             Name = "Default Undershirt",
                             Folder =
-                                m_scene.InventoryService.GetFolderForType(client.AgentId,
-                                                                          InventoryType.
-                                                                              Wearable,
-                                                                          AssetType.
-                                                                              Clothing).ID,
+                                m_scene.InventoryService.GetFolderForType(client.AgentId, InventoryType.Wearable, FolderType.Clothing).ID,
                             Owner = client.AgentId,
                             CurrentPermissions = 0,
                             CreatorId = UUID.Zero.ToString(),
@@ -586,11 +574,7 @@ textures 1
                             AssetType = (int)AssetType.Clothing,
                             Name = "Default Undershirt",
                             Folder =
-                                m_scene.InventoryService.GetFolderForType(client.AgentId,
-                                                                          InventoryType.
-                                                                              Wearable,
-                                                                          AssetType.
-                                                                              Clothing).ID,
+                                m_scene.InventoryService.GetFolderForType(client.AgentId, InventoryType.Wearable, FolderType.Clothing).ID,
                             Owner = client.AgentId,
                             CurrentPermissions = 0
                         };

@@ -73,10 +73,12 @@ namespace Universe.Services.SQLServices.AvatarService
             registry.RegisterModuleInterface<IAvatarService>(this);
 
             if (MainConsole.Instance != null)
-                MainConsole.Instance.Commands.AddCommand("reset avatar appearance", 
-            	                                         "reset avatar appearance [Name]",
-                                                         "Resets the given avatar's appearance to the default",
-                                                         ResetAvatarAppearance, false, true);
+                MainConsole.Instance.Commands.AddCommand(
+                    "reset avatar appearance", 
+                    "reset avatar appearance [Name]",
+                    "Resets the given avatar's appearance to the default",
+                    ResetAvatarAppearance, false, true);
+
             Init(registry, Name, serverPath: "/avatar/", serverHandlerName: "AvatarServerURI");
         }
 
@@ -148,12 +150,8 @@ namespace Universe.Services.SQLServices.AvatarService
                 return;
             }
 
-            m_registry.RequestModuleInterface<ISimulationBase>().EventManager.FireGenericEventHandler("SetAppearance",
-                                                                                                      new object[2]
-                                                                                                          {
-                                                                                                              principalID,
-                                                                                                              appearance
-                                                                                                          });
+            var simBase = m_registry.RequestModuleInterface<ISimulationBase> ();
+            simBase.EventManager.FireGenericEventHandler("SetAppearance", new object[2] { principalID, appearance });
             m_Database.Store(principalID, appearance);
         }
 
@@ -169,7 +167,7 @@ namespace Universe.Services.SQLServices.AvatarService
             m_Database.Delete(principalID);
         }
 
-        private object DeleteUserInformation(string name, object param)
+        object DeleteUserInformation(string name, object param)
         {
             UUID user = (UUID) param;
             ResetAvatar(user);
@@ -182,8 +180,10 @@ namespace Universe.Services.SQLServices.AvatarService
 
         public void ResetAvatarAppearance(IScene scene, string[] cmd)
         {
-            string name = "";
-            name = cmd.Length == 3 ? MainConsole.Instance.Prompt("Avatar Name") : Util.CombineParams(cmd, 3);
+            string name;
+            name = cmd.Length == 3 
+                ? MainConsole.Instance.Prompt("Avatar Name") 
+                : Util.CombineParams(cmd, 3);
             UserAccount acc = m_registry.RequestModuleInterface<IUserAccountService>().GetUserAccount(null, name);
             if (acc == null)
             {
@@ -191,8 +191,7 @@ namespace Universe.Services.SQLServices.AvatarService
                 return;
             }
             ResetAvatar(acc.PrincipalID);
-            InventoryFolderBase folder = m_invService.GetFolderForType(acc.PrincipalID, (InventoryType) 0,
-                                                                       AssetType.CurrentOutfitFolder);
+            InventoryFolderBase folder = m_invService.GetFolderForType(acc.PrincipalID, (InventoryType) 0, FolderType.CurrentOutfit);
             if (folder != null)
                 m_invService.ForcePurgeFolder(folder);
 
