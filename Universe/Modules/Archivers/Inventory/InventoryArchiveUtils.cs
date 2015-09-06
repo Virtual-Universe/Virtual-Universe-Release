@@ -76,6 +76,9 @@ namespace Universe.Modules.Archivers
                 // we don't appear to have any inventory setup yet
                 if (!inventoryService.CreateUserInventory (userId, true))
                     return new List<InventoryFolderBase> ();
+
+                // Get the new root folder
+                rootFolder = inventoryService.GetRootFolder(userId);
             }
 
             return FindFolderByPath(inventoryService, rootFolder, path);
