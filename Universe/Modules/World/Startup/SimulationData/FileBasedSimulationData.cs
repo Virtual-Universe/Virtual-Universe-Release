@@ -808,7 +808,7 @@ namespace Universe.Modules
         /// <param name="simBase"></param>
         protected virtual void ReadConfig(ISimulationBase simBase)
         {
-            IConfig config = simBase.ConfigSource.Configs["File Based Simulation Data"];
+            IConfig config = simBase.ConfigSource.Configs["FileBasedSimulationData"];
             if (config != null)
             {
                 m_saveChanges = config.GetBoolean("SaveChanges", m_saveChanges);
