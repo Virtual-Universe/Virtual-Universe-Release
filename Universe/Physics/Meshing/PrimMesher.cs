@@ -54,7 +54,7 @@ namespace Universe.Physics.PrimMesher
         /// </summary>
         public float Z;
 
-        public Quat (float x, float y, float z, float w)
+        public Quat(float x, float y, float z, float w)
         {
             X = x;
             Y = y;
@@ -62,31 +62,31 @@ namespace Universe.Physics.PrimMesher
             W = w;
         }
 
-        public Quat (Coord axis, float angle)
+        public Quat(Coord axis, float angle)
         {
-            axis = axis.Normalize ();
+            axis = axis.Normalize();
 
             angle *= 0.5f;
-            float c = (float)Math.Cos (angle);
-            float s = (float)Math.Sin (angle);
+            float c = (float)Math.Cos(angle);
+            float s = (float)Math.Sin(angle);
 
             X = axis.X * s;
             Y = axis.Y * s;
             Z = axis.Z * s;
             W = c;
 
-            Normalize ();
+            Normalize();
         }
 
-        public float Length ()
+        public float Length()
         {
-            return (float)Math.Sqrt (X * X + Y * Y + Z * Z + W * W);
+            return (float)Math.Sqrt(X * X + Y * Y + Z * Z + W * W);
         }
 
-        public Quat Normalize ()
+        public Quat Normalize()
         {
             const float MAG_THRESHOLD = 0.0000001f;
-            float mag = Length ();
+            float mag = Length();
 
             // Catch very small rounding errors when normalizing
             if (mag > MAG_THRESHOLD)
@@ -96,7 +96,8 @@ namespace Universe.Physics.PrimMesher
                 Y *= oomag;
                 Z *= oomag;
                 W *= oomag;
-            } else
+            }
+            else
             {
                 X = 0f;
                 Y = 0f;
@@ -107,19 +108,19 @@ namespace Universe.Physics.PrimMesher
             return this;
         }
 
-        public static Quat operator * (Quat q1, Quat q2)
+        public static Quat operator *(Quat q1, Quat q2)
         {
             float x = q1.W * q2.X + q1.X * q2.W + q1.Y * q2.Z - q1.Z * q2.Y;
             float y = q1.W * q2.Y - q1.X * q2.Z + q1.Y * q2.W + q1.Z * q2.X;
             float z = q1.W * q2.Z + q1.X * q2.Y - q1.Y * q2.X + q1.Z * q2.W;
             float w = q1.W * q2.W - q1.X * q2.X - q1.Y * q2.Y - q1.Z * q2.Z;
-            return new Quat (x, y, z, w);
+            return new Quat(x, y, z, w);
         }
 
-        public override string ToString ()
+        public override string ToString()
         {
-//            return "< X: " + X. + ", Y: " + Y + ", Z: " + Z + ", W: " + W + ">";
-            return String.Format ("< X: {0}, Y: {1}, Z: {2}, W: {3} >", X, Y, Z, W);
+            //            return "< X: " + X. + ", Y: " + Y + ", Z: " + Z + ", W: " + W + ">";
+            return String.Format("< X: {0}, Y: {1}, Z: {2}, W: {3} >", X, Y, Z, W);
         }
     }
 
@@ -129,26 +130,26 @@ namespace Universe.Physics.PrimMesher
         public float Y;
         public float Z;
 
-        public Coord (float x, float y, float z)
+        public Coord(float x, float y, float z)
         {
             X = x;
             Y = y;
             Z = z;
         }
 
-        public Coord (OpenMetaverse.Vector3 vec)
+        public Coord(OpenMetaverse.Vector3 vec)
         {
             X = vec.X;
             Y = vec.Y;
             Z = vec.Z;
         }
 
-        public float Length ()
+        public float Length()
         {
-            return (float)Math.Sqrt (X * X + Y * Y + Z * Z);
+            return (float)Math.Sqrt(X * X + Y * Y + Z * Z);
         }
 
-        public Coord Invert ()
+        public Coord Invert()
         {
             X = -X;
             Y = -Y;
@@ -157,10 +158,10 @@ namespace Universe.Physics.PrimMesher
             return this;
         }
 
-        public Coord Normalize ()
+        public Coord Normalize()
         {
             const float MAG_THRESHOLD = 0.0000001f;
-            float mag = Length ();
+            float mag = Length();
 
             // Catch very small rounding errors when normalizing
             if (mag > MAG_THRESHOLD)
@@ -169,7 +170,8 @@ namespace Universe.Physics.PrimMesher
                 X *= oomag;
                 Y *= oomag;
                 Z *= oomag;
-            } else
+            }
+            else
             {
                 X = 0.0f;
                 Y = 0.0f;
@@ -179,31 +181,31 @@ namespace Universe.Physics.PrimMesher
             return this;
         }
 
-        public override string ToString ()
+        public override string ToString()
         {
             return X + " " + Y + " " + Z;
         }
 
-        public static Coord Cross (Coord c1, Coord c2)
+        public static Coord Cross(Coord c1, Coord c2)
         {
-            return new Coord (
+            return new Coord(
                 c1.Y * c2.Z - c2.Y * c1.Z,
                 c1.Z * c2.X - c2.Z * c1.X,
                 c1.X * c2.Y - c2.X * c1.Y
             );
         }
 
-        public static Coord operator + (Coord v, Coord a)
+        public static Coord operator +(Coord v, Coord a)
         {
-            return new Coord (v.X + a.X, v.Y + a.Y, v.Z + a.Z);
+            return new Coord(v.X + a.X, v.Y + a.Y, v.Z + a.Z);
         }
 
-        public static Coord operator * (Coord v, Coord m)
+        public static Coord operator *(Coord v, Coord m)
         {
-            return new Coord (v.X * m.X, v.Y * m.Y, v.Z * m.Z);
+            return new Coord(v.X * m.X, v.Y * m.Y, v.Z * m.Z);
         }
 
-        public static Coord operator * (Coord v, Quat q)
+        public static Coord operator *(Coord v, Quat q)
         {
             // From http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/transforms/
 
@@ -248,13 +250,13 @@ namespace Universe.Physics.PrimMesher
         public float V;
 
 
-        public UVCoord (float u, float v)
+        public UVCoord(float u, float v)
         {
             U = u;
             V = v;
         }
 
-        public UVCoord Flip ()
+        public UVCoord Flip()
         {
             U = 1.0f - U;
             V = 1.0f - V;
@@ -278,7 +280,7 @@ namespace Universe.Physics.PrimMesher
         public int v2;
         public int v3;
 
-        public Face (int vv1, int vv2, int vv3)
+        public Face(int vv1, int vv2, int vv3)
         {
             primFace = 0;
 
@@ -295,7 +297,7 @@ namespace Universe.Physics.PrimMesher
             uv3 = 0;
         }
 
-        public Face (int vv1, int vv2, int vv3, int nn1, int nn2, int nn3)
+        public Face(int vv1, int vv2, int vv3, int nn1, int nn2, int nn3)
         {
             primFace = 0;
 
@@ -312,16 +314,16 @@ namespace Universe.Physics.PrimMesher
             uv3 = 0;
         }
 
-        public Coord SurfaceNormal (List<Coord> coordList)
+        public Coord SurfaceNormal(List<Coord> coordList)
         {
-            Coord c1 = coordList [v1];
-            Coord c2 = coordList [v2];
-            Coord c3 = coordList [v3];
+            Coord c1 = coordList[v1];
+            Coord c2 = coordList[v2];
+            Coord c3 = coordList[v3];
 
-            Coord edge1 = new Coord (c2.X - c1.X, c2.Y - c1.Y, c2.Z - c1.Z);
-            Coord edge2 = new Coord (c3.X - c1.X, c3.Y - c1.Y, c3.Z - c1.Z);
+            Coord edge1 = new Coord(c2.X - c1.X, c2.Y - c1.Y, c2.Z - c1.Z);
+            Coord edge2 = new Coord(c3.X - c1.X, c3.Y - c1.Y, c3.Z - c1.Z);
 
-            return Coord.Cross (edge1, edge2).Normalize ();
+            return Coord.Cross(edge1, edge2).Normalize();
         }
     }
 
@@ -343,26 +345,26 @@ namespace Universe.Physics.PrimMesher
         public Coord v2;
         public Coord v3;
 
-        public ViewerFace (int primFaceNumberr)
+        public ViewerFace(int primFaceNumberr)
         {
             primFaceNumber = primFaceNumberr;
 
-            v1 = new Coord ();
-            v2 = new Coord ();
-            v3 = new Coord ();
+            v1 = new Coord();
+            v2 = new Coord();
+            v3 = new Coord();
 
             coordIndex1 = coordIndex2 = coordIndex3 = -1; // -1 means not assigned yet
 
-            n1 = new Coord ();
-            n2 = new Coord ();
-            n3 = new Coord ();
+            n1 = new Coord();
+            n2 = new Coord();
+            n3 = new Coord();
 
-            uv1 = new UVCoord ();
-            uv2 = new UVCoord ();
-            uv3 = new UVCoord ();
+            uv1 = new UVCoord();
+            uv2 = new UVCoord();
+            uv3 = new UVCoord();
         }
 
-        public void Scale (float x, float y, float z)
+        public void Scale(float x, float y, float z)
         {
             v1.X *= x;
             v1.Y *= y;
@@ -377,7 +379,7 @@ namespace Universe.Physics.PrimMesher
             v3.Z *= z;
         }
 
-        public void AddPos (float x, float y, float z)
+        public void AddPos(float x, float y, float z)
         {
             v1.X += x;
             v2.X += x;
@@ -392,7 +394,7 @@ namespace Universe.Physics.PrimMesher
             v3.Z += z;
         }
 
-        public void AddRot (Quat q)
+        public void AddRot(Quat q)
         {
             v1 *= q;
             v2 *= q;
@@ -403,12 +405,12 @@ namespace Universe.Physics.PrimMesher
             n3 *= q;
         }
 
-        public void CalcSurfaceNormal ()
+        public void CalcSurfaceNormal()
         {
-            Coord edge1 = new Coord (v2.X - v1.X, v2.Y - v1.Y, v2.Z - v1.Z);
-            Coord edge2 = new Coord (v3.X - v1.X, v3.Y - v1.Y, v3.Z - v1.Z);
+            Coord edge1 = new Coord(v2.X - v1.X, v2.Y - v1.Y, v2.Z - v1.Z);
+            Coord edge2 = new Coord(v3.X - v1.X, v3.Y - v1.Y, v3.Z - v1.Z);
 
-            n1 = n2 = n3 = Coord.Cross (edge1, edge2).Normalize ();
+            n1 = n2 = n3 = Coord.Cross(edge1, edge2).Normalize();
         }
     }
 
@@ -418,7 +420,7 @@ namespace Universe.Physics.PrimMesher
         internal float Y;
         internal float angle;
 
-        internal Angle (float aangle, float x, float y)
+        internal Angle(float aangle, float x, float y)
         {
             angle = aangle;
             X = x;
@@ -491,20 +493,19 @@ namespace Universe.Physics.PrimMesher
         // intersection point
         internal List<Coord> normals;
 
-        Angle interpolatePoints (float newPoint, Angle p1, Angle p2)
+        Angle interpolatePoints(float newPoint, Angle p1, Angle p2)
         {
             float m = (newPoint - p1.angle) / (p2.angle - p1.angle);
-            return new Angle (newPoint, p1.X + m * (p2.X - p1.X), p1.Y + m * (p2.Y - p1.Y));
+            return new Angle(newPoint, p1.X + m * (p2.X - p1.X), p1.Y + m * (p2.Y - p1.Y));
         }
 
-        void intersection (double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
+        void intersection(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
         {
             // ref: http://local.wasp.uwa.edu.au/~pbourke/geometry/lineline2d/
             double denom = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
             double uaNumerator = (x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3);
 
-//            if (denom != 0.0)
-            if (Math.Abs(denom) <= Constants.FloatDifference)
+            if (Math.Abs(denom) > Constants.FloatDifference)
             {
                 double ua = uaNumerator / denom;
                 iX = (float)(x1 + ua * (x2 - x1));
@@ -512,18 +513,18 @@ namespace Universe.Physics.PrimMesher
             }
         }
 
-        internal void makeAngles (int sides, float startAngle, float stopAngle)
+        internal void makeAngles(int sides, float startAngle, float stopAngle)
         {
-            angles = new List<Angle> ();
-            normals = new List<Coord> ();
+            angles = new List<Angle>();
+            normals = new List<Coord>();
 
             const double twoPi = Math.PI * 2.0;
             const float twoPiInv = 1.0f / (float)twoPi;
 
             if (sides < 1)
-                throw new Exception ("number of sides not greater than zero");
+                throw new Exception("number of sides not greater than zero");
             if (stopAngle <= startAngle)
-                throw new Exception ("stopAngle not greater than startAngle");
+                throw new Exception("stopAngle not greater than startAngle");
 
             if ((sides == 3 || sides == 4 || sides == 24))
             {
@@ -547,23 +548,24 @@ namespace Universe.Physics.PrimMesher
 
                 for (int angleIndex = startAngleIndex; angleIndex < endAngleIndex + 1; angleIndex++)
                 {
-                    angles.Add (sourceAngles [angleIndex]);
+                    angles.Add(sourceAngles[angleIndex]);
                     if (sides == 3)
-                        normals.Add (normals3 [angleIndex]);
+                        normals.Add(normals3[angleIndex]);
                     else if (sides == 4)
-                        normals.Add (normals4 [angleIndex]);
+                        normals.Add(normals4[angleIndex]);
                 }
 
                 if (startAngle > 0.0f)
-                    angles [0] = interpolatePoints (startAngle, angles [0], angles [1]);
+                    angles[0] = interpolatePoints(startAngle, angles[0], angles[1]);
 
                 if (stopAngle < 1.0f)
                 {
                     int lastAngleIndex = angles.Count - 1;
-                    angles [lastAngleIndex] = interpolatePoints (stopAngle, angles [lastAngleIndex - 1],
-                        angles [lastAngleIndex]);
+                    angles[lastAngleIndex] = interpolatePoints(stopAngle, angles[lastAngleIndex - 1],
+                        angles[lastAngleIndex]);
                 }
-            } else
+            }
+            else
             {
                 double stepSize = twoPi / sides;
 
@@ -584,34 +586,34 @@ namespace Universe.Physics.PrimMesher
                 {
                     Angle newAngle;
                     newAngle.angle = (float)angle;
-                    newAngle.X = (float)Math.Cos (angle);
-                    newAngle.Y = (float)Math.Sin (angle);
-                    angles.Add (newAngle);
+                    newAngle.X = (float)Math.Cos(angle);
+                    newAngle.Y = (float)Math.Sin(angle);
+                    angles.Add(newAngle);
                     step += 1;
                     angle = stepSize * step;
                 }
 
-                if (startAngle > angles [0].angle)
+                if (startAngle > angles[0].angle)
                 {
                     Angle newAngle;
-                    intersection (angles [0].X, angles [0].Y, angles [1].X, angles [1].Y, 0.0f, 0.0f,
-                        Math.Cos (startAngle), Math.Sin (startAngle));
+                    intersection(angles[0].X, angles[0].Y, angles[1].X, angles[1].Y, 0.0f, 0.0f,
+                        Math.Cos(startAngle), Math.Sin(startAngle));
                     newAngle.angle = startAngle;
                     newAngle.X = iX;
                     newAngle.Y = iY;
-                    angles [0] = newAngle;
+                    angles[0] = newAngle;
                 }
 
                 int index = angles.Count - 1;
-                if (stopAngle < angles [index].angle)
+                if (stopAngle < angles[index].angle)
                 {
                     Angle newAngle;
-                    intersection (angles [index - 1].X, angles [index - 1].Y, angles [index].X, angles [index].Y, 0.0f, 0.0f,
-                        Math.Cos (stopAngle), Math.Sin (stopAngle));
+                    intersection(angles[index - 1].X, angles[index - 1].Y, angles[index].X, angles[index].Y, 0.0f, 0.0f,
+                        Math.Cos(stopAngle), Math.Sin(stopAngle));
                     newAngle.angle = stopAngle;
                     newAngle.X = iX;
                     newAngle.Y = iY;
-                    angles [index] = newAngle;
+                    angles[index] = newAngle;
                 }
             }
         }
@@ -633,7 +635,7 @@ namespace Universe.Physics.PrimMesher
         internal Coord cutNormal1;
         internal Coord cutNormal2;
         internal string errorMessage;
-        internal Coord faceNormal = new Coord (0.0f, 0.0f, 1.0f);
+        internal Coord faceNormal = new Coord(0.0f, 0.0f, 1.0f);
         internal List<int> faceNumbers;
         internal List<UVCoord> faceUVs;
         internal List<Face> faces;
@@ -649,47 +651,47 @@ namespace Universe.Physics.PrimMesher
         internal List<float> us;
         internal List<Coord> vertexNormals;
 
-        internal Profile ()
+        internal Profile()
         {
-            coords = new List<Coord> ();
-            faces = new List<Face> ();
-            vertexNormals = new List<Coord> ();
-            us = new List<float> ();
-            faceUVs = new List<UVCoord> ();
-            faceNumbers = new List<int> ();
+            coords = new List<Coord>();
+            faces = new List<Face>();
+            vertexNormals = new List<Coord>();
+            us = new List<float>();
+            faceUVs = new List<UVCoord>();
+            faceNumbers = new List<int>();
         }
 
-        internal Profile (int sides, float profileStart, float profileEnd, float hollow, int hollowSides,
+        internal Profile(int sides, float profileStart, float profileEnd, float hollow, int hollowSides,
                          bool createFaces, bool calcVertexNormals)
         {
             this.calcVertexNormals = calcVertexNormals;
-            coords = new List<Coord> ();
-            faces = new List<Face> ();
-            vertexNormals = new List<Coord> ();
-            us = new List<float> ();
-            faceUVs = new List<UVCoord> ();
-            faceNumbers = new List<int> ();
+            coords = new List<Coord>();
+            faces = new List<Face>();
+            vertexNormals = new List<Coord>();
+            us = new List<float>();
+            faceUVs = new List<UVCoord>();
+            faceNumbers = new List<int>();
 
-            Coord center = new Coord (0.0f, 0.0f, 0.0f);
+            Coord center = new Coord(0.0f, 0.0f, 0.0f);
 
-            List<Coord> hollowCoords = new List<Coord> ();
-            List<Coord> hollowNormals = new List<Coord> ();
-            List<float> hollowUs = new List<float> ();
+            List<Coord> hollowCoords = new List<Coord>();
+            List<Coord> hollowNormals = new List<Coord>();
+            List<float> hollowUs = new List<float>();
 
             if (calcVertexNormals)
             {
-                outerCoordIndices = new List<int> ();
-                hollowCoordIndices = new List<int> ();
-                cut1CoordIndices = new List<int> ();
-                cut2CoordIndices = new List<int> ();
+                outerCoordIndices = new List<int>();
+                hollowCoordIndices = new List<int>();
+                cut1CoordIndices = new List<int>();
+                cut2CoordIndices = new List<int>();
             }
 
             bool hasHollow = (hollow > 0.0f);
 
             bool hasProfileCut = (profileStart > 0.0f || profileEnd < 1.0f);
 
-            AngleList angles = new AngleList ();
-            AngleList hollowAngles = new AngleList ();
+            AngleList angles = new AngleList();
+            AngleList hollowAngles = new AngleList();
 
             float xScale = 0.5f;
             float yScale = 0.5f;
@@ -704,8 +706,9 @@ namespace Universe.Physics.PrimMesher
 
             try
             {
-                angles.makeAngles (sides, startAngle, stopAngle);
-            } catch (Exception ex)
+                angles.makeAngles(sides, startAngle, stopAngle);
+            }
+            catch (Exception ex)
             {
                 errorMessage = "makeAngles failed: Exception: " + ex +
                     "\nsides: " + sides + " startAngle: " + startAngle + " stopAngle: " + stopAngle;
@@ -726,8 +729,9 @@ namespace Universe.Physics.PrimMesher
                 {
                     try
                     {
-                        hollowAngles.makeAngles (hollowSides, startAngle, stopAngle);
-                    } catch (Exception ex)
+                        hollowAngles.makeAngles(hollowSides, startAngle, stopAngle);
+                    }
+                    catch (Exception ex)
                     {
                         errorMessage = "makeAngles failed: Exception: " + ex +
                         "\nsides: " + sides + " startAngle: " + startAngle + " stopAngle: " + stopAngle;
@@ -736,41 +740,42 @@ namespace Universe.Physics.PrimMesher
                     }
                 }
                 numHollowVerts = hollowAngles.angles.Count;
-            } else if (!simpleFace)
+            }
+            else if (!simpleFace)
             {
-                coords.Add (center);
+                coords.Add(center);
 
                 if (this.calcVertexNormals)
-                    vertexNormals.Add (new Coord (0.0f, 0.0f, 1.0f));
-                us.Add (0.0f);
+                    vertexNormals.Add(new Coord(0.0f, 0.0f, 1.0f));
+                us.Add(0.0f);
             }
 
             const float z = 0.0f;
 
             Angle angle;
-            Coord newVert = new Coord ();
+            Coord newVert = new Coord();
             if (hasHollow && hollowSides != sides)
             {
                 int numHollowAngles = hollowAngles.angles.Count;
                 for (int i = 0; i < numHollowAngles; i++)
                 {
-                    angle = hollowAngles.angles [i];
+                    angle = hollowAngles.angles[i];
                     newVert.X = hollow * xScale * angle.X;
                     newVert.Y = hollow * yScale * angle.Y;
                     newVert.Z = z;
 
-                    hollowCoords.Add (newVert);
+                    hollowCoords.Add(newVert);
                     if (this.calcVertexNormals)
                     {
-                        hollowNormals.Add (hollowSides < 5
-                                              ? hollowAngles.normals [i].Invert ()
-                                              : new Coord (-angle.X, -angle.Y, 0.0f));
+                        hollowNormals.Add(hollowSides < 5
+                                              ? hollowAngles.normals[i].Invert()
+                                              : new Coord(-angle.X, -angle.Y, 0.0f));
 
                         if (hollowSides == 4)
                             hollowUs.Add(angle.angle * hollow * 0.707107f);
                         else
                             hollowUs.Add(angle.angle * hollow);
-                        
+
                     }
                 }
             }
@@ -780,24 +785,25 @@ namespace Universe.Physics.PrimMesher
 
             for (int i = 0; i < numAngles; i++)
             {
-                angle = angles.angles [i];
+                angle = angles.angles[i];
                 newVert.X = angle.X * xScale;
                 newVert.Y = angle.Y * yScale;
                 newVert.Z = z;
-                coords.Add (newVert);
+                coords.Add(newVert);
                 if (this.calcVertexNormals)
                 {
-                    outerCoordIndices.Add (coords.Count - 1);
+                    outerCoordIndices.Add(coords.Count - 1);
 
                     if (sides < 5)
                     {
-                        vertexNormals.Add (angles.normals [i]);
+                        vertexNormals.Add(angles.normals[i]);
                         float u = angle.angle;
-                        us.Add (u);
-                    } else
+                        us.Add(u);
+                    }
+                    else
                     {
-                        vertexNormals.Add (new Coord (angle.X, angle.Y, 0.0f));
-                        us.Add (angle.angle);
+                        vertexNormals.Add(new Coord(angle.X, angle.Y, 0.0f));
+                        us.Add(angle.angle);
                     }
                 }
 
@@ -808,32 +814,33 @@ namespace Universe.Physics.PrimMesher
                         newVert.X *= hollow;
                         newVert.Y *= hollow;
                         newVert.Z = z;
-                        hollowCoords.Add (newVert);
+                        hollowCoords.Add(newVert);
                         if (this.calcVertexNormals)
                         {
-                            hollowNormals.Add (sides < 5
-                                                  ? angles.normals [i].Invert ()
-                                                  : new Coord (-angle.X, -angle.Y, 0.0f));
+                            hollowNormals.Add(sides < 5
+                                                  ? angles.normals[i].Invert()
+                                                  : new Coord(-angle.X, -angle.Y, 0.0f));
 
-                            hollowUs.Add (angle.angle * hollow);
+                            hollowUs.Add(angle.angle * hollow);
                         }
                     }
-                } else if (!simpleFace && createFaces && angle.angle > 0.0001f)
+                }
+                else if (!simpleFace && createFaces && angle.angle > 0.0001f)
                 {
                     Face newFace = new Face { v1 = 0, v2 = index, v3 = index + 1 };
 
-                    faces.Add (newFace);
+                    faces.Add(newFace);
                 }
                 index += 1;
             }
 
             if (hasHollow)
             {
-                hollowCoords.Reverse ();
+                hollowCoords.Reverse();
                 if (this.calcVertexNormals)
                 {
-                    hollowNormals.Reverse ();
-                    hollowUs.Reverse ();
+                    hollowNormals.Reverse();
+                    hollowUs.Reverse();
                 }
 
                 if (createFaces)
@@ -842,71 +849,73 @@ namespace Universe.Physics.PrimMesher
 
                     if (numOuterVerts == numHollowVerts)
                     {
-                        Face newFace = new Face ();
+                        Face newFace = new Face();
 
                         for (int coordIndex = 0; coordIndex < numOuterVerts - 1; coordIndex++)
                         {
                             newFace.v1 = coordIndex;
                             newFace.v2 = coordIndex + 1;
                             newFace.v3 = numTotalVerts - coordIndex - 1;
-                            faces.Add (newFace);
+                            faces.Add(newFace);
 
                             newFace.v1 = coordIndex + 1;
                             newFace.v2 = numTotalVerts - coordIndex - 2;
                             newFace.v3 = numTotalVerts - coordIndex - 1;
-                            faces.Add (newFace);
+                            faces.Add(newFace);
                         }
-                    } else
+                    }
+                    else
                     {
                         if (numOuterVerts < numHollowVerts)
                         {
-                            Face newFace = new Face ();
+                            Face newFace = new Face();
                             int j = 0; // j is the index for outer vertices
                             int maxJ = numOuterVerts - 1;
                             for (int i = 0; i < numHollowVerts; i++) // i is the index for inner vertices
                             {
                                 if (j < maxJ)
-                                if (angles.angles [j + 1].angle - hollowAngles.angles [i].angle <
-                                        hollowAngles.angles [i].angle - angles.angles [j].angle + 0.000001f)
-                                {
-                                    newFace.v1 = numTotalVerts - i - 1;
-                                    newFace.v2 = j;
-                                    newFace.v3 = j + 1;
+                                    if (angles.angles[j + 1].angle - hollowAngles.angles[i].angle <
+                                            hollowAngles.angles[i].angle - angles.angles[j].angle + 0.000001f)
+                                    {
+                                        newFace.v1 = numTotalVerts - i - 1;
+                                        newFace.v2 = j;
+                                        newFace.v3 = j + 1;
 
-                                    faces.Add (newFace);
-                                    j += 1;
-                                }
+                                        faces.Add(newFace);
+                                        j += 1;
+                                    }
 
                                 newFace.v1 = j;
                                 newFace.v2 = numTotalVerts - i - 2;
                                 newFace.v3 = numTotalVerts - i - 1;
 
-                                faces.Add (newFace);
+                                faces.Add(newFace);
                             }
-                        } else // numHollowVerts < numOuterVerts
+                        }
+                        else // numHollowVerts < numOuterVerts
                         {
-                            Face newFace = new Face ();
+                            Face newFace = new Face();
                             int j = 0; // j is the index for inner vertices
                             int maxJ = numHollowVerts - 1;
                             for (int i = 0; i < numOuterVerts; i++)
                             {
                                 if (j < maxJ)
-                                if (hollowAngles.angles [j + 1].angle - angles.angles [i].angle <
-                                        angles.angles [i].angle - hollowAngles.angles [j].angle + 0.000001f)
-                                {
-                                    newFace.v1 = i;
-                                    newFace.v2 = numTotalVerts - j - 2;
-                                    newFace.v3 = numTotalVerts - j - 1;
+                                    if (hollowAngles.angles[j + 1].angle - angles.angles[i].angle <
+                                            angles.angles[i].angle - hollowAngles.angles[j].angle + 0.000001f)
+                                    {
+                                        newFace.v1 = i;
+                                        newFace.v2 = numTotalVerts - j - 2;
+                                        newFace.v3 = numTotalVerts - j - 1;
 
-                                    faces.Add (newFace);
-                                    j += 1;
-                                }
+                                        faces.Add(newFace);
+                                        j += 1;
+                                    }
 
                                 newFace.v1 = numTotalVerts - j - 1;
                                 newFace.v2 = i;
                                 newFace.v3 = i + 1;
 
-                                faces.Add (newFace);
+                                faces.Add(newFace);
                             }
                         }
                     }
@@ -916,27 +925,28 @@ namespace Universe.Physics.PrimMesher
                 {
                     foreach (Coord hc in hollowCoords)
                     {
-                        coords.Add (hc);
-                        hollowCoordIndices.Add (coords.Count - 1);
+                        coords.Add(hc);
+                        hollowCoordIndices.Add(coords.Count - 1);
                     }
-                } else
-                    coords.AddRange (hollowCoords);
+                }
+                else
+                    coords.AddRange(hollowCoords);
 
                 if (this.calcVertexNormals)
                 {
-                    vertexNormals.AddRange (hollowNormals);
-                    us.AddRange (hollowUs);
+                    vertexNormals.AddRange(hollowNormals);
+                    us.AddRange(hollowUs);
                 }
             }
 
             if (simpleFace && createFaces)
             {
                 if (sides == 3)
-                    faces.Add (new Face (0, 1, 2));
+                    faces.Add(new Face(0, 1, 2));
                 else if (sides == 4)
                 {
-                    faces.Add (new Face (0, 1, 2));
-                    faces.Add (new Face (0, 2, 3));
+                    faces.Add(new Face(0, 1, 2));
+                    faces.Add(new Face(0, 2, 3));
                 }
             }
 
@@ -946,36 +956,37 @@ namespace Universe.Physics.PrimMesher
 
                 if (hasHollow)
                 {
-                    cut1CoordIndices.Add (0);
-                    cut1CoordIndices.Add (coords.Count - 1);
+                    cut1CoordIndices.Add(0);
+                    cut1CoordIndices.Add(coords.Count - 1);
 
-                    cut2CoordIndices.Add (lastOuterVertIndex + 1);
-                    cut2CoordIndices.Add (lastOuterVertIndex);
+                    cut2CoordIndices.Add(lastOuterVertIndex + 1);
+                    cut2CoordIndices.Add(lastOuterVertIndex);
 
-                    cutNormal1.X = coords [0].Y - coords [coords.Count - 1].Y;
-                    cutNormal1.Y = -(coords [0].X - coords [coords.Count - 1].X);
+                    cutNormal1.X = coords[0].Y - coords[coords.Count - 1].Y;
+                    cutNormal1.Y = -(coords[0].X - coords[coords.Count - 1].X);
 
-                    cutNormal2.X = coords [lastOuterVertIndex + 1].Y - coords [lastOuterVertIndex].Y;
-                    cutNormal2.Y = -(coords [lastOuterVertIndex + 1].X - coords [lastOuterVertIndex].X);
-                } else
-                {
-                    cut1CoordIndices.Add (0);
-                    cut1CoordIndices.Add (1);
-
-                    cut2CoordIndices.Add (lastOuterVertIndex);
-                    cut2CoordIndices.Add (0);
-
-                    cutNormal1.X = vertexNormals [1].Y;
-                    cutNormal1.Y = -vertexNormals [1].X;
-
-                    cutNormal2.X = -vertexNormals [vertexNormals.Count - 2].Y;
-                    cutNormal2.Y = vertexNormals [vertexNormals.Count - 2].X;
+                    cutNormal2.X = coords[lastOuterVertIndex + 1].Y - coords[lastOuterVertIndex].Y;
+                    cutNormal2.Y = -(coords[lastOuterVertIndex + 1].X - coords[lastOuterVertIndex].X);
                 }
-                cutNormal1.Normalize ();
-                cutNormal2.Normalize ();
+                else
+                {
+                    cut1CoordIndices.Add(0);
+                    cut1CoordIndices.Add(1);
+
+                    cut2CoordIndices.Add(lastOuterVertIndex);
+                    cut2CoordIndices.Add(0);
+
+                    cutNormal1.X = vertexNormals[1].Y;
+                    cutNormal1.Y = -vertexNormals[1].X;
+
+                    cutNormal2.X = -vertexNormals[vertexNormals.Count - 2].Y;
+                    cutNormal2.Y = vertexNormals[vertexNormals.Count - 2].X;
+                }
+                cutNormal1.Normalize();
+                cutNormal2.Normalize();
             }
 
-            MakeFaceUVs ();
+            MakeFaceUVs();
 
             hollowCoords = null;
             hollowNormals = null;
@@ -993,14 +1004,14 @@ namespace Universe.Physics.PrimMesher
 
                 int startVert = hasProfileCut && !hasHollow ? 1 : 0;
                 if (startVert > 0)
-                    faceNumbers.Add (-1);
+                    faceNumbers.Add(-1);
                 for (int i = 0; i < numOuterVerts - 1; i++)
-                    faceNumbers.Add (sides < 5 && i <= sides ? faceNum++ : faceNum);
+                    faceNumbers.Add(sides < 5 && i <= sides ? faceNum++ : faceNum);
 
                 //if (!hasHollow && !hasProfileCut)
                 //    this.bottomFaceNumber = faceNum++;
 
-                faceNumbers.Add (hasProfileCut ? -1 : faceNum++);
+                faceNumbers.Add(hasProfileCut ? -1 : faceNum++);
 
                 if (sides > 4 && (hasHollow || hasProfileCut))
                     faceNum++;
@@ -1011,7 +1022,7 @@ namespace Universe.Physics.PrimMesher
                 if (hasHollow)
                 {
                     for (int i = 0; i < numHollowVerts; i++)
-                        faceNumbers.Add (faceNum);
+                        faceNumbers.Add(faceNum);
 
                     hollowFaceNumber = faceNum++;
                 }
@@ -1020,51 +1031,51 @@ namespace Universe.Physics.PrimMesher
                 bottomFaceNumber = faceNum++;
 
                 if (hasHollow && hasProfileCut)
-                    faceNumbers.Add (faceNum++);
+                    faceNumbers.Add(faceNum++);
 
                 for (int i = 0; i < faceNumbers.Count; i++)
-                    if (faceNumbers [i] == -1)
-                        faceNumbers [i] = faceNum++;
+                    if (faceNumbers[i] == -1)
+                        faceNumbers[i] = faceNum++;
 
                 numPrimFaces = faceNum;
             }
         }
 
-        internal void MakeFaceUVs ()
+        internal void MakeFaceUVs()
         {
-            faceUVs = new List<UVCoord> ();
+            faceUVs = new List<UVCoord>();
             foreach (Coord c in coords)
-                faceUVs.Add (new UVCoord (1.0f - (0.5f + c.X), 1.0f - (0.5f - c.Y)));
-// original 20150712               faceUVs.Add (new UVCoord (0.5f + c.X, 0.5f - c.Y));
+                faceUVs.Add(new UVCoord(1.0f - (0.5f + c.X), 1.0f - (0.5f - c.Y)));
+            // original 20150712               faceUVs.Add (new UVCoord (0.5f + c.X, 0.5f - c.Y));
         }
 
-        internal Profile Copy ()
+        internal Profile Copy()
         {
-            return Copy (true);
+            return Copy(true);
         }
 
-        internal Profile Copy (bool needFaces)
+        internal Profile Copy(bool needFaces)
         {
-            Profile copy = new Profile ();
+            Profile copy = new Profile();
 
-            copy.coords.AddRange (coords);
-            copy.faceUVs.AddRange (faceUVs);
+            copy.coords.AddRange(coords);
+            copy.faceUVs.AddRange(faceUVs);
 
             if (needFaces)
-                copy.faces.AddRange (faces);
+                copy.faces.AddRange(faces);
             if ((copy.calcVertexNormals = calcVertexNormals))
             {
-                copy.vertexNormals.AddRange (vertexNormals);
+                copy.vertexNormals.AddRange(vertexNormals);
                 copy.faceNormal = faceNormal;
                 copy.cutNormal1 = cutNormal1;
                 copy.cutNormal2 = cutNormal2;
-                copy.us.AddRange (us);
-                copy.faceNumbers.AddRange (faceNumbers);
+                copy.us.AddRange(us);
+                copy.faceNumbers.AddRange(faceNumbers);
 
-                copy.cut1CoordIndices = new List<int> (cut1CoordIndices);
-                copy.cut2CoordIndices = new List<int> (cut2CoordIndices);
-                copy.hollowCoordIndices = new List<int> (hollowCoordIndices);
-                copy.outerCoordIndices = new List<int> (outerCoordIndices);
+                copy.cut1CoordIndices = new List<int>(cut1CoordIndices);
+                copy.cut2CoordIndices = new List<int>(cut2CoordIndices);
+                copy.hollowCoordIndices = new List<int>(hollowCoordIndices);
+                copy.outerCoordIndices = new List<int>(outerCoordIndices);
             }
             copy.numOuterVerts = numOuterVerts;
             copy.numHollowVerts = numHollowVerts;
@@ -1072,39 +1083,39 @@ namespace Universe.Physics.PrimMesher
             return copy;
         }
 
-        internal void AddPos (Coord v)
+        internal void AddPos(Coord v)
         {
-            AddPos (v.X, v.Y, v.Z);
+            AddPos(v.X, v.Y, v.Z);
         }
 
-        internal void AddPos (float x, float y, float z)
+        internal void AddPos(float x, float y, float z)
         {
             int i;
             int numVerts = coords.Count;
 
             for (i = 0; i < numVerts; i++)
             {
-                Coord vert = coords [i];
+                Coord vert = coords[i];
                 vert.X += x;
                 vert.Y += y;
                 vert.Z += z;
-                coords [i] = vert;
+                coords[i] = vert;
             }
         }
 
-        internal void AddRot (Quat q)
+        internal void AddRot(Quat q)
         {
             int i;
             int numVerts = coords.Count;
 
             for (i = 0; i < numVerts; i++)
-                coords [i] *= q;
+                coords[i] *= q;
 
             if (calcVertexNormals)
             {
                 int numNormals = vertexNormals.Count;
                 for (i = 0; i < numNormals; i++)
-                    vertexNormals [i] *= q;
+                    vertexNormals[i] *= q;
 
                 faceNormal *= q;
                 cutNormal1 *= q;
@@ -1112,35 +1123,35 @@ namespace Universe.Physics.PrimMesher
             }
         }
 
-        internal void Scale (float x, float y)
+        internal void Scale(float x, float y)
         {
             int i;
             int numVerts = coords.Count;
 
             for (i = 0; i < numVerts; i++)
             {
-                Coord vert = coords [i];
+                Coord vert = coords[i];
                 vert.X *= x;
                 vert.Y *= y;
-                coords [i] = vert;
+                coords[i] = vert;
             }
         }
 
         /// <summary>
         ///     Changes order of the vertex indices and negates the center vertex normal. Does not alter vertex normals of radial vertices
         /// </summary>
-        internal void FlipNormals ()
+        internal void FlipNormals()
         {
             int i;
             int numFaces = faces.Count;
 
             for (i = 0; i < numFaces; i++)
             {
-                Face tmpFace = faces [i];
+                Face tmpFace = faces[i];
                 int tmp = tmpFace.v3;
                 tmpFace.v3 = tmpFace.v1;
                 tmpFace.v1 = tmp;
-                faces [i] = tmpFace;
+                faces[i] = tmpFace;
             }
 
             if (calcVertexNormals)
@@ -1148,9 +1159,9 @@ namespace Universe.Physics.PrimMesher
                 int normalCount = vertexNormals.Count;
                 if (normalCount > 0)
                 {
-                    Coord n = vertexNormals [normalCount - 1];
+                    Coord n = vertexNormals[normalCount - 1];
                     n.Z = -n.Z;
-                    vertexNormals [normalCount - 1] = n;
+                    vertexNormals[normalCount - 1] = n;
                 }
             }
 
@@ -1161,58 +1172,58 @@ namespace Universe.Physics.PrimMesher
             int numfaceUVs = faceUVs.Count;
             for (i = 0; i < numfaceUVs; i++)
             {
-                UVCoord uv = faceUVs [i];
+                UVCoord uv = faceUVs[i];
                 uv.V = 1.0f - uv.V;
-                faceUVs [i] = uv;
+                faceUVs[i] = uv;
             }
         }
 
-        internal void AddValue2FaceVertexIndices (int num)
+        internal void AddValue2FaceVertexIndices(int num)
         {
             int numFaces = faces.Count;
             for (int i = 0; i < numFaces; i++)
             {
-                Face tmpFace = faces [i];
+                Face tmpFace = faces[i];
                 tmpFace.v1 += num;
                 tmpFace.v2 += num;
                 tmpFace.v3 += num;
 
-                faces [i] = tmpFace;
+                faces[i] = tmpFace;
             }
         }
 
-        internal void AddValue2FaceNormalIndices (int num)
+        internal void AddValue2FaceNormalIndices(int num)
         {
             if (calcVertexNormals)
             {
                 int numFaces = faces.Count;
                 for (int i = 0; i < numFaces; i++)
                 {
-                    Face tmpFace = faces [i];
+                    Face tmpFace = faces[i];
                     tmpFace.n1 += num;
                     tmpFace.n2 += num;
                     tmpFace.n3 += num;
 
-                    faces [i] = tmpFace;
+                    faces[i] = tmpFace;
                 }
             }
         }
 
-        internal void DumpRaw (String path, String name, String title)
+        internal void DumpRaw(String path, String name, String title)
         {
             if (path == null)
                 return;
             String fileName = name + "_" + title + ".raw";
-            String completePath = System.IO.Path.Combine (path, fileName);
-            StreamWriter sw = new StreamWriter (completePath);
+            String completePath = System.IO.Path.Combine(path, fileName);
+            StreamWriter sw = new StreamWriter(completePath);
 
             for (int i = 0; i < faces.Count; i++)
             {
-                string s = coords [faces [i].v1] + " " + coords [faces [i].v2] + " " + coords [faces [i].v3];
-                sw.WriteLine (s);
+                string s = coords[faces[i].v1] + " " + coords[faces[i].v2] + " " + coords[faces[i].v3];
+                sw.WriteLine(s);
             }
 
-            sw.Close ();
+            sw.Close();
         }
     }
 
@@ -1242,7 +1253,7 @@ namespace Universe.Physics.PrimMesher
         public float holeSizeY = 0.25f;
         public float pathCutBegin;
         public float pathCutEnd = 1.0f;
-        public List<PathNode> pathNodes = new List<PathNode> ();
+        public List<PathNode> pathNodes = new List<PathNode>();
         public float radius;
         public float revolutions = 1.0f;
         public float skew;
@@ -1254,7 +1265,7 @@ namespace Universe.Physics.PrimMesher
         public float twistBegin;
         public float twistEnd;
 
-        public void Create (PathType pathType, int steps)
+        public void Create(PathType pathType, int steps)
         {
             if (taperX > 0.999f)
                 taperX = 0.999f;
@@ -1271,7 +1282,7 @@ namespace Universe.Physics.PrimMesher
 
                 float length = pathCutEnd - pathCutBegin;
                 float twistTotal = twistEnd - twistBegin;
-                float twistTotalAbs = Math.Abs (twistTotal);
+                float twistTotalAbs = Math.Abs(twistTotal);
                 if (twistTotalAbs > 0.01f)
                     steps += (int)(twistTotalAbs * 3.66); //  dahlia's magic number
 
@@ -1312,11 +1323,11 @@ namespace Universe.Physics.PrimMesher
 
                     float twist = twistBegin + twistTotal * percentOfPath;
 
-                    newNode.rotation = new Quat (new Coord (0.0f, 0.0f, 1.0f), twist);
-                    newNode.position = new Coord (xOffset, yOffset, zOffset);
+                    newNode.rotation = new Quat(new Coord(0.0f, 0.0f, 1.0f), twist);
+                    newNode.position = new Coord(xOffset, yOffset, zOffset);
                     newNode.percentOfPath = percentOfPath;
 
-                    pathNodes.Add (newNode);
+                    pathNodes.Add(newNode);
 
                     if (step < steps)
                     {
@@ -1327,7 +1338,8 @@ namespace Universe.Physics.PrimMesher
                         zOffset += stepSize;
                         if (percentOfPath > pathCutEnd)
                             done = true;
-                    } else
+                    }
+                    else
                         done = true;
                 }
             } // end of linear path code
@@ -1339,7 +1351,7 @@ namespace Universe.Physics.PrimMesher
                 // if the profile has a lot of twist, add more layers otherwise the layers may overlap
                 // and the resulting mesh may be quite inaccurate. This method is arbitrary and doesn't
                 // accurately match the viewer
-                float twistTotalAbs = Math.Abs (twistTotal);
+                float twistTotalAbs = Math.Abs(twistTotal);
                 if (twistTotalAbs > 0.01f)
                 {
                     if (twistTotalAbs > Math.PI * 1.5f)
@@ -1353,7 +1365,7 @@ namespace Universe.Physics.PrimMesher
                 float totalSkew = skew * 2.0f * pathLength;
                 float skewStart = pathCutBegin * 2.0f * skew - skew;
                 float xOffsetTopShearXFactor = topShearX * (0.25f + 0.5f * (0.5f - holeSizeY));
-                float yShearCompensation = 1.0f + Math.Abs (topShearY) * 0.25f;
+                float yShearCompensation = 1.0f + Math.Abs(topShearY) * 0.25f;
 
                 // It's not quite clear what pushY (Y top shear) does, but subtracting it from the start and end
                 // angles appears to approximate it's effects on path cut. Likewise, adding it to the angle used
@@ -1373,9 +1385,9 @@ namespace Universe.Physics.PrimMesher
                 bool done = false;
                 while (!done) // loop through the length of the path and add the layers
                 {
-                    PathNode newNode = new PathNode ();
+                    PathNode newNode = new PathNode();
 
-                    float xProfileScale = (1.0f - Math.Abs (skew)) * holeSizeX;
+                    float xProfileScale = (1.0f - Math.Abs(skew)) * holeSizeX;
                     float yProfileScale = holeSizeY;
 
                     float percentOfPath = angle / (twoPi * revolutions);
@@ -1403,27 +1415,26 @@ namespace Universe.Physics.PrimMesher
                     float twist = twistBegin + twistTotal * percentOfPath;
 
                     float xOffset = 0.5f * (skewStart + totalSkew * percentOfAngles);
-                    xOffset += (float)Math.Sin (angle) * xOffsetTopShearXFactor;
+                    xOffset += (float)Math.Sin(angle) * xOffsetTopShearXFactor;
 
-                    float yOffset = yShearCompensation * (float)Math.Cos (angle) * (0.5f - yPathScale) * radiusScale;
+                    float yOffset = yShearCompensation * (float)Math.Cos(angle) * (0.5f - yPathScale) * radiusScale;
 
-                    float zOffset = (float)Math.Sin (angle + topShearY) * (0.5f - yPathScale) * radiusScale;
+                    float zOffset = (float)Math.Sin(angle + topShearY) * (0.5f - yPathScale) * radiusScale;
 
-                    newNode.position = new Coord (xOffset, yOffset, zOffset);
+                    newNode.position = new Coord(xOffset, yOffset, zOffset);
 
                     // now orient the rotation of the profile layer relative to it's position on the path
                     // adding taperY to the angle used to generate the quat appears to approximate the viewer
 
-                    newNode.rotation = new Quat (new Coord (1.0f, 0.0f, 0.0f), angle + topShearY);
+                    newNode.rotation = new Quat(new Coord(1.0f, 0.0f, 0.0f), angle + topShearY);
 
                     // next apply twist rotation to the profile layer
-                    //if (twistTotal != 0.0f || twistBegin != 0.0f)
-                    if (Math.Abs(twistTotal) <= Constants.FloatDifference || Math.Abs(twistBegin) <= Constants.FloatDifference)
-                        newNode.rotation *= new Quat (new Coord (0.0f, 0.0f, 1.0f), twist);
+                    if ((Math.Abs(twistTotal) > Constants.FloatDifference) || (Math.Abs(twistBegin) > Constants.FloatDifference))
+                        newNode.rotation *= new Quat(new Coord(0.0f, 0.0f, 1.0f), twist);
 
                     newNode.percentOfPath = percentOfPath;
 
-                    pathNodes.Add (newNode);
+                    pathNodes.Add(newNode);
 
                     // calculate terms for next iteration
                     // calculate the angle for the next iteration of the loop
@@ -1494,7 +1505,7 @@ namespace Universe.Physics.PrimMesher
         ///     Human readable string representation of the parameters used to create a mesh.
         /// </summary>
         /// <returns></returns>
-        public string ParamsToDisplayString ()
+        public string ParamsToDisplayString()
         {
             string s = "";
             s += "sides..................: " + sides;
@@ -1555,10 +1566,10 @@ namespace Universe.Physics.PrimMesher
         /// <param name="profileEnd"></param>
         /// <param name="hollow"></param>
         /// <param name="hollowSides"></param>
-        public PrimMesh (int sides, float profileStart, float profileEnd, float hollow, int hollowSides)
+        public PrimMesh(int sides, float profileStart, float profileEnd, float hollow, int hollowSides)
         {
-            coords = new List<Coord> ();
-            faces = new List<Face> ();
+            coords = new List<Coord>();
+            faces = new List<Face>();
 
             this.sides = sides;
             this.profileStart = profileStart;
@@ -1587,21 +1598,21 @@ namespace Universe.Physics.PrimMesher
         /// <summary>
         ///     Extrudes a profile along a path.
         /// </summary>
-        public void Extrude (PathType pathType)
+        public void Extrude(PathType pathType)
         {
             bool needEndFaces = false;
 
-            coords = new List<Coord> ();
-            faces = new List<Face> ();
+            coords = new List<Coord>();
+            faces = new List<Face>();
 
             if (viewerMode)
             {
-                viewerFaces = new List<ViewerFace> ();
+                viewerFaces = new List<ViewerFace>();
                 calcVertexNormals = true;
             }
 
             if (calcVertexNormals)
-                normals = new List<Coord> ();
+                normals = new List<Coord>();
 
             int steps = 1;
 
@@ -1612,7 +1623,7 @@ namespace Universe.Physics.PrimMesher
             {
                 // prisms don't taper well so add some vertical resolution
                 // other prims may benefit from this but just do prisms for now
-                if (Math.Abs (taperX) > 0.01 || Math.Abs (taperY) > 0.01)
+                if (Math.Abs(taperX) > 0.01 || Math.Abs(taperY) > 0.01)
                     steps = (int)(steps * 4.5 * length);
             }
 
@@ -1625,7 +1636,7 @@ namespace Universe.Physics.PrimMesher
             float twistBegin2 = twistBegin / 360.0f * twoPi;
             float twistEnd2 = twistEnd / 360.0f * twoPi;
             float twistTotal = twistEnd2 - twistBegin2;
-            float twistTotalAbs = Math.Abs (twistTotal);
+            float twistTotalAbs = Math.Abs(twistTotal);
             if (twistTotalAbs > 0.01f)
                 steps += (int)(twistTotalAbs * 3.66); //  dahlia's magic number
 
@@ -1643,14 +1654,17 @@ namespace Universe.Physics.PrimMesher
                         if (hollow2 > 0.7f)
                             hollow2 = 0.7f;
                         hollow2 *= 0.707f;
-                    } else
+                    }
+                    else
                         hollow2 *= 0.5f;
-                } else if (sides == 4)
+                }
+                else if (sides == 4)
                 {
                     initialProfileRot = 0.25f * (float)Math.PI;
                     if (hollowSides != 4)
                         hollow2 *= 0.707f;
-                } else if (sides > 4)
+                }
+                else if (sides > 4)
                 {
                     initialProfileRot = (float)Math.PI;
                     if (hollowSides == 4)
@@ -1660,7 +1674,8 @@ namespace Universe.Physics.PrimMesher
                         hollow2 /= 0.7f;
                     }
                 }
-            } else
+            }
+            else
             {
                 if (sides == 3)
                 {
@@ -1669,18 +1684,21 @@ namespace Universe.Physics.PrimMesher
                         if (hollow2 > 0.7f)
                             hollow2 = 0.7f;
                         hollow2 *= 0.707f;
-                    } else
+                    }
+                    else
                         hollow2 *= 0.5f;
-                } else if (sides == 4)
+                }
+                else if (sides == 4)
                 {
                     initialProfileRot = 1.25f * (float)Math.PI;
                     if (hollowSides != 4)
                         hollow2 *= 0.707f;
-                } else if (sides == 24 && hollowSides == 4)
+                }
+                else if (sides == 24 && hollowSides == 4)
                     hollow2 *= 1.414f;
             }
 
-            Profile profile = new Profile (sides, profileStart, profileEnd, hollow2, hollowSides, true,
+            Profile profile = new Profile(sides, profileStart, profileEnd, hollow2, hollowSides, true,
                                   calcVertexNormals);
             errorMessage = profile.errorMessage;
 
@@ -1715,17 +1733,18 @@ namespace Universe.Physics.PrimMesher
 
             if (initialProfileRot != 0.0f)
             {
-                profile.AddRot (new Quat (new Coord (0.0f, 0.0f, 1.0f), initialProfileRot));
+                profile.AddRot(new Quat(new Coord(0.0f, 0.0f, 1.0f), initialProfileRot));
                 if (viewerMode)
-                    profile.MakeFaceUVs ();
+                    profile.MakeFaceUVs();
             }
 
-            Coord lastCutNormal1 = new Coord ();
-            Coord lastCutNormal2 = new Coord ();
+            Coord lastCutNormal1 = new Coord();
+            Coord lastCutNormal2 = new Coord();
             float thisV = 0.0f;
             float lastV = 0.0f;
 
-            Path path = new Path {
+            Path path = new Path
+            {
                 twistBegin = twistBegin2,
                 twistEnd = twistEnd2,
                 topShearX = topShearX,
@@ -1744,7 +1763,7 @@ namespace Universe.Physics.PrimMesher
                 stepsPerRevolution = stepsPerRevolution
             };
 
-            path.Create (pathType, steps);
+            path.Create(pathType, steps);
 
 
             if (pathType == PathType.Circular)
@@ -1760,36 +1779,37 @@ namespace Universe.Physics.PrimMesher
                     needEndFaces = true;
                 else if (radius != 0.0f)
                     needEndFaces = true;
-            } else
+            }
+            else
                 needEndFaces = true;
 
             for (int nodeIndex = 0; nodeIndex < path.pathNodes.Count; nodeIndex++)
             {
-                PathNode node = path.pathNodes [nodeIndex];
-                Profile newLayer = profile.Copy ();
-                newLayer.Scale (node.xScale, node.yScale);
+                PathNode node = path.pathNodes[nodeIndex];
+                Profile newLayer = profile.Copy();
+                newLayer.Scale(node.xScale, node.yScale);
 
-                newLayer.AddRot (node.rotation);
-                newLayer.AddPos (node.position);
+                newLayer.AddRot(node.rotation);
+                newLayer.AddPos(node.position);
 
                 if (needEndFaces && nodeIndex == 0)
                 {
-                    newLayer.FlipNormals ();
+                    newLayer.FlipNormals();
 
                     // add the top faces to the viewerFaces list here
                     if (viewerMode)
                     {
                         Coord faceNormal = newLayer.faceNormal;
-                        ViewerFace newViewerFace = new ViewerFace (profile.bottomFaceNumber);
+                        ViewerFace newViewerFace = new ViewerFace(profile.bottomFaceNumber);
                         int numFaces = newLayer.faces.Count;
                         List<Face> faces2 = newLayer.faces;
 
                         for (int i = 0; i < numFaces; i++)
                         {
-                            Face face = faces2 [i];
-                            newViewerFace.v1 = newLayer.coords [face.v1];
-                            newViewerFace.v2 = newLayer.coords [face.v2];
-                            newViewerFace.v3 = newLayer.coords [face.v3];
+                            Face face = faces2[i];
+                            newViewerFace.v1 = newLayer.coords[face.v1];
+                            newViewerFace.v2 = newLayer.coords[face.v2];
+                            newViewerFace.v3 = newLayer.coords[face.v3];
 
                             newViewerFace.coordIndex1 = face.v1;
                             newViewerFace.coordIndex2 = face.v2;
@@ -1799,9 +1819,9 @@ namespace Universe.Physics.PrimMesher
                             newViewerFace.n2 = faceNormal;
                             newViewerFace.n3 = faceNormal;
 
-                            newViewerFace.uv1 = newLayer.faceUVs [face.v1];
-                            newViewerFace.uv2 = newLayer.faceUVs [face.v2];
-                            newViewerFace.uv3 = newLayer.faceUVs [face.v3];
+                            newViewerFace.uv1 = newLayer.faceUVs[face.v1];
+                            newViewerFace.uv2 = newLayer.faceUVs[face.v2];
+                            newViewerFace.uv3 = newLayer.faceUVs[face.v3];
 
                             if (pathType == PathType.Linear)
                             {
@@ -1809,7 +1829,7 @@ namespace Universe.Physics.PrimMesher
                                 newViewerFace.uv2.Flip();
                                 newViewerFace.uv3.Flip();
                             }
-                            viewerFaces.Add (newViewerFace);
+                            viewerFaces.Add(newViewerFace);
                         }
                     }
                 } // if (nodeIndex == 0)
@@ -1817,18 +1837,18 @@ namespace Universe.Physics.PrimMesher
                 // append this layer
 
                 int coordsLen = coords.Count;
-                newLayer.AddValue2FaceVertexIndices (coordsLen);
+                newLayer.AddValue2FaceVertexIndices(coordsLen);
 
-                coords.AddRange (newLayer.coords);
+                coords.AddRange(newLayer.coords);
 
                 if (calcVertexNormals)
                 {
-                    newLayer.AddValue2FaceNormalIndices (normals.Count);
-                    normals.AddRange (newLayer.vertexNormals);
+                    newLayer.AddValue2FaceNormalIndices(normals.Count);
+                    normals.AddRange(newLayer.vertexNormals);
                 }
 
                 if (node.percentOfPath < pathCutBegin + 0.01f || node.percentOfPath > pathCutEnd - 0.01f)
-                    faces.AddRange (newLayer.faces);
+                    faces.AddRange(newLayer.faces);
 
                 // fill faces between layers
 
@@ -1836,8 +1856,8 @@ namespace Universe.Physics.PrimMesher
                 thisV = 1.0f - node.percentOfPath;
                 if (nodeIndex > 0)
                 {
-                    Face newFace1 = new Face ();
-                    Face newFace2 = new Face ();
+                    Face newFace1 = new Face();
+                    Face newFace2 = new Face();
 
                     int startVert = coordsLen + 1;
                     int endVert = coords.Count;
@@ -1875,23 +1895,24 @@ namespace Universe.Physics.PrimMesher
                         {
                             // add the side faces to the list of viewerFaces here
 
-                            int primFaceNum = profile.faceNumbers [whichVert];
+                            int primFaceNum = profile.faceNumbers[whichVert];
                             if (!needEndFaces)
                                 primFaceNum -= 1;
 
-                            ViewerFace newViewerFace1 = new ViewerFace (primFaceNum);
-                            ViewerFace newViewerFace2 = new ViewerFace (primFaceNum);
+                            ViewerFace newViewerFace1 = new ViewerFace(primFaceNum);
+                            ViewerFace newViewerFace2 = new ViewerFace(primFaceNum);
 
-                            float u1 = newLayer.us [whichVert];
+                            float u1 = newLayer.us[whichVert];
                             float u2 = 1.0f;
                             if (whichVert < newLayer.us.Count - 1)
-                                u2 = newLayer.us [whichVert + 1];
+                                u2 = newLayer.us[whichVert + 1];
 
                             if (whichVert == cut1Vert || whichVert == cut2Vert)
                             {
                                 u1 = 0.0f;
                                 u2 = 1.0f;
-                            } else if (sides < 5)
+                            }
+                            else if (sides < 5)
                             {
                                 if (whichVert < profile.numOuterVerts)
                                 {
@@ -1903,7 +1924,8 @@ namespace Universe.Physics.PrimMesher
                                     u1 -= u1;
                                     if (u2 < 0.1f)
                                         u2 = 1.0f;
-                                } else if (whichVert > profile.coords.Count - profile.numHollowVerts - 1)
+                                }
+                                else if (whichVert > profile.coords.Count - profile.numHollowVerts - 1)
                                 {
                                     u1 *= 2.0f;
                                     u2 *= 2.0f;
@@ -1931,25 +1953,25 @@ namespace Universe.Physics.PrimMesher
                             newViewerFace1.uv2.U = u1;
                             newViewerFace1.uv3.U = u2;
 
-                            newViewerFace1.uv1.V = 1.0f - node.percentOfPath;
+                            newViewerFace1.uv1.V = thisV;
                             newViewerFace1.uv2.V = lastV;
-                            newViewerFace1.uv3.V = lastV;
+                            newViewerFace1.uv3.V = thisV;
 
-                            newViewerFace2.uv1.U = u1;
-                            newViewerFace2.uv2.U = u2;
+                            newViewerFace2.uv1.U = u2;
+                            newViewerFace2.uv2.U = u1;
                             newViewerFace2.uv3.U = u2;
 
-                            newViewerFace2.uv1.V = 1.0f - node.percentOfPath;
+                            newViewerFace2.uv1.V = thisV;
                             newViewerFace2.uv2.V = lastV;
-                            newViewerFace2.uv3.V = 1.0f - node.percentOfPath;
+                            newViewerFace2.uv3.V = lastV;
 
-                            newViewerFace1.v1 = coords [i];
-                            newViewerFace1.v2 = coords [i - numVerts];
-                            newViewerFace1.v3 = coords [iNext - numVerts];
+                            newViewerFace1.v1 = coords[i];
+                            newViewerFace1.v2 = coords[i - numVerts];
+                            newViewerFace1.v3 = coords[iNext - numVerts];
 
-                            newViewerFace2.v1 = coords [i];
-                            newViewerFace2.v2 = coords [iNext - numVerts];
-                            newViewerFace2.v3 = coords [iNext];
+                            newViewerFace2.v1 = coords[i];
+                            newViewerFace2.v2 = coords[iNext - numVerts];
+                            newViewerFace2.v3 = coords[iNext];
 
                             newViewerFace1.coordIndex1 = i;
                             newViewerFace1.coordIndex2 = i - numVerts;
@@ -1967,35 +1989,38 @@ namespace Universe.Physics.PrimMesher
 
                                 newViewerFace2.n1 = newViewerFace2.n3 = newLayer.cutNormal1;
                                 newViewerFace2.n2 = lastCutNormal1;
-                            } else if (whichVert == cut2Vert)
+                            }
+                            else if (whichVert == cut2Vert)
                             {
                                 newViewerFace1.n1 = newLayer.cutNormal2;
                                 newViewerFace1.n2 = newViewerFace1.n3 = lastCutNormal2;
 
                                 newViewerFace2.n1 = newViewerFace2.n3 = newLayer.cutNormal2;
                                 newViewerFace2.n2 = lastCutNormal2;
-                            } else // outer and hollow faces
+                            }
+                            else // outer and hollow faces
                             {
                                 if ((sides < 5 && whichVert < newLayer.numOuterVerts) ||
                                     (hollowSides < 5 && whichVert >= newLayer.numOuterVerts))
                                 {
                                     // looks terrible when path is twisted... need vertex normals here
-                                    newViewerFace1.CalcSurfaceNormal ();
-                                    newViewerFace2.CalcSurfaceNormal ();
-                                } else
+                                    newViewerFace1.CalcSurfaceNormal();
+                                    newViewerFace2.CalcSurfaceNormal();
+                                }
+                                else
                                 {
-                                    newViewerFace1.n1 = normals [i];
-                                    newViewerFace1.n2 = normals [i - numVerts];
-                                    newViewerFace1.n3 = normals [iNext - numVerts];
+                                    newViewerFace1.n1 = normals[i];
+                                    newViewerFace1.n2 = normals[i - numVerts];
+                                    newViewerFace1.n3 = normals[iNext - numVerts];
 
-                                    newViewerFace2.n1 = normals [i];
-                                    newViewerFace2.n2 = normals [iNext - numVerts];
-                                    newViewerFace2.n3 = normals [iNext];
+                                    newViewerFace2.n1 = normals[i];
+                                    newViewerFace2.n2 = normals[iNext - numVerts];
+                                    newViewerFace2.n3 = normals[iNext];
                                 }
                             }
 
-                            viewerFaces.Add (newViewerFace1);
-                            viewerFaces.Add (newViewerFace2);
+                            viewerFaces.Add(newViewerFace1);
+                            viewerFaces.Add(newViewerFace2);
                         }
                     }
                 }
@@ -2014,10 +2039,10 @@ namespace Universe.Physics.PrimMesher
 
                     for (int i = 0; i < numFaces; i++)
                     {
-                        Face face = faces2 [i];
-                        newViewerFace.v1 = newLayer.coords [face.v1 - coordsLen];
-                        newViewerFace.v2 = newLayer.coords [face.v2 - coordsLen];
-                        newViewerFace.v3 = newLayer.coords [face.v3 - coordsLen];
+                        Face face = faces2[i];
+                        newViewerFace.v1 = newLayer.coords[face.v1 - coordsLen];
+                        newViewerFace.v2 = newLayer.coords[face.v2 - coordsLen];
+                        newViewerFace.v3 = newLayer.coords[face.v3 - coordsLen];
 
                         newViewerFace.coordIndex1 = face.v1 - coordsLen;
                         newViewerFace.coordIndex2 = face.v2 - coordsLen;
@@ -2027,9 +2052,9 @@ namespace Universe.Physics.PrimMesher
                         newViewerFace.n2 = faceNormal;
                         newViewerFace.n3 = faceNormal;
 
-                        newViewerFace.uv1 = newLayer.faceUVs [face.v1 - coordsLen];
-                        newViewerFace.uv2 = newLayer.faceUVs [face.v2 - coordsLen];
-                        newViewerFace.uv3 = newLayer.faceUVs [face.v3 - coordsLen];
+                        newViewerFace.uv1 = newLayer.faceUVs[face.v1 - coordsLen];
+                        newViewerFace.uv2 = newLayer.faceUVs[face.v2 - coordsLen];
+                        newViewerFace.uv3 = newLayer.faceUVs[face.v3 - coordsLen];
 
                         if (pathType == PathType.Linear)
                         {
@@ -2037,7 +2062,7 @@ namespace Universe.Physics.PrimMesher
                             newViewerFace.uv2.Flip();
                             newViewerFace.uv3.Flip();
                         }
-                        viewerFaces.Add (newViewerFace);
+                        viewerFaces.Add(newViewerFace);
                     }
                 }
             } // for (int nodeIndex = 0; nodeIndex < path.pathNodes.Count; nodeIndex++)
@@ -2048,9 +2073,9 @@ namespace Universe.Physics.PrimMesher
         ///     DEPRICATED - use Extrude(PathType.Linear) instead
         ///     Extrudes a profile along a straight line path. Used for prim types box, cylinder, and prism.
         /// </summary>
-        public void ExtrudeLinear ()
+        public void ExtrudeLinear()
         {
-            Extrude (PathType.Linear);
+            Extrude(PathType.Linear);
         }
 
 
@@ -2058,27 +2083,27 @@ namespace Universe.Physics.PrimMesher
         ///     DEPRICATED - use Extrude(PathType.Circular) instead
         ///     Extrude a profile into a circular path prim mesh. Used for prim types torus, tube, and ring.
         /// </summary>
-        public void ExtrudeCircular ()
+        public void ExtrudeCircular()
         {
-            Extrude (PathType.Circular);
+            Extrude(PathType.Circular);
         }
 
 
-        Coord SurfaceNormal (Coord c1, Coord c2, Coord c3)
+        Coord SurfaceNormal(Coord c1, Coord c2, Coord c3)
         {
-            Coord edge1 = new Coord (c2.X - c1.X, c2.Y - c1.Y, c2.Z - c1.Z);
-            Coord edge2 = new Coord (c3.X - c1.X, c3.Y - c1.Y, c3.Z - c1.Z);
+            Coord edge1 = new Coord(c2.X - c1.X, c2.Y - c1.Y, c2.Z - c1.Z);
+            Coord edge2 = new Coord(c3.X - c1.X, c3.Y - c1.Y, c3.Z - c1.Z);
 
-            Coord normal = Coord.Cross (edge1, edge2);
+            Coord normal = Coord.Cross(edge1, edge2);
 
-            normal.Normalize ();
+            normal.Normalize();
 
             return normal;
         }
 
-        private Coord SurfaceNormal (Face face)
+        Coord SurfaceNormal(Face face)
         {
-            return SurfaceNormal (coords [face.v1], coords [face.v2], coords [face.v3]);
+            return SurfaceNormal(coords[face.v1], coords[face.v2], coords[face.v3]);
         }
 
         /// <summary>
@@ -2086,22 +2111,23 @@ namespace Universe.Physics.PrimMesher
         /// </summary>
         /// <param name="faceIndex"></param>
         /// <returns></returns>
-        public Coord SurfaceNormal (int faceIndex)
+        public Coord SurfaceNormal(int faceIndex)
         {
             int numFaces = faces.Count;
             if (faceIndex < 0 || faceIndex >= numFaces)
-                throw new Exception ("faceIndex out of range");
+                throw new Exception("faceIndex out of range");
 
-            return SurfaceNormal (faces [faceIndex]);
+            return SurfaceNormal(faces[faceIndex]);
         }
 
         /// <summary>
         ///     Duplicates a PrimMesh object. All object properties are copied by value, including lists.
         /// </summary>
         /// <returns></returns>
-        public PrimMesh Copy ()
+        public PrimMesh Copy()
         {
-            PrimMesh copy = new PrimMesh (sides, profileStart, profileEnd, hollow, hollowSides) {
+            PrimMesh copy = new PrimMesh(sides, profileStart, profileEnd, hollow, hollowSides)
+            {
                 twistBegin = twistBegin,
                 twistEnd = twistEnd,
                 topShearX = topShearX,
@@ -2123,10 +2149,10 @@ namespace Universe.Physics.PrimMesher
                 viewerMode = viewerMode,
                 numPrimFaces = numPrimFaces,
                 errorMessage = errorMessage,
-                coords = new List<Coord> (coords),
-                faces = new List<Face> (faces),
-                viewerFaces = new List<ViewerFace> (viewerFaces),
-                normals = new List<Coord> (normals)
+                coords = new List<Coord>(coords),
+                faces = new List<Face>(faces),
+                viewerFaces = new List<ViewerFace>(viewerFaces),
+                normals = new List<Coord>(normals)
             };
 
 
@@ -2136,7 +2162,7 @@ namespace Universe.Physics.PrimMesher
         /// <summary>
         ///     Calculate surface normals for all of the faces in the list of faces in this mesh
         /// </summary>
-        public void CalcNormals ()
+        public void CalcNormals()
         {
             if (normalsProcessed)
                 return;
@@ -2146,20 +2172,20 @@ namespace Universe.Physics.PrimMesher
             int numFaces = faces.Count;
 
             if (!calcVertexNormals)
-                normals = new List<Coord> ();
+                normals = new List<Coord>();
 
             for (int i = 0; i < numFaces; i++)
             {
-                Face face = faces [i];
+                Face face = faces[i];
 
-                normals.Add (SurfaceNormal (i).Normalize ());
+                normals.Add(SurfaceNormal(i).Normalize());
 
                 int normIndex = normals.Count - 1;
                 face.n1 = normIndex;
                 face.n2 = normIndex;
                 face.n3 = normIndex;
 
-                faces [i] = face;
+                faces[i] = face;
             }
         }
 
@@ -2169,18 +2195,18 @@ namespace Universe.Physics.PrimMesher
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <param name="z"></param>
-        public void AddPos (float x, float y, float z)
+        public void AddPos(float x, float y, float z)
         {
             int i;
             int numVerts = coords.Count;
 
             for (i = 0; i < numVerts; i++)
             {
-                Coord vert = coords [i];
+                Coord vert = coords[i];
                 vert.X += x;
                 vert.Y += y;
                 vert.Z += z;
-                coords [i] = vert;
+                coords[i] = vert;
             }
 
             if (viewerFaces != null)
@@ -2189,9 +2215,9 @@ namespace Universe.Physics.PrimMesher
 
                 for (i = 0; i < numViewerFaces; i++)
                 {
-                    ViewerFace v = viewerFaces [i];
-                    v.AddPos (x, y, z);
-                    viewerFaces [i] = v;
+                    ViewerFace v = viewerFaces[i];
+                    v.AddPos(x, y, z);
+                    viewerFaces[i] = v;
                 }
             }
         }
@@ -2200,19 +2226,19 @@ namespace Universe.Physics.PrimMesher
         ///     Rotates the mesh
         /// </summary>
         /// <param name="q"></param>
-        public void AddRot (Quat q)
+        public void AddRot(Quat q)
         {
             int i;
             int numVerts = coords.Count;
 
             for (i = 0; i < numVerts; i++)
-                coords [i] *= q;
+                coords[i] *= q;
 
             if (normals != null)
             {
                 int numNormals = normals.Count;
                 for (i = 0; i < numNormals; i++)
-                    normals [i] *= q;
+                    normals[i] *= q;
             }
 
             if (viewerFaces != null)
@@ -2221,7 +2247,7 @@ namespace Universe.Physics.PrimMesher
 
                 for (i = 0; i < numViewerFaces; i++)
                 {
-                    ViewerFace v = viewerFaces [i];
+                    ViewerFace v = viewerFaces[i];
                     v.v1 *= q;
                     v.v2 *= q;
                     v.v3 *= q;
@@ -2229,7 +2255,7 @@ namespace Universe.Physics.PrimMesher
                     v.n1 *= q;
                     v.n2 *= q;
                     v.n3 *= q;
-                    viewerFaces [i] = v;
+                    viewerFaces[i] = v;
                 }
             }
         }
@@ -2249,25 +2275,25 @@ namespace Universe.Physics.PrimMesher
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <param name="z"></param>
-        public void Scale (float x, float y, float z)
+        public void Scale(float x, float y, float z)
         {
             int i;
             int numVerts = coords.Count;
 
-            Coord m = new Coord (x, y, z);
+            Coord m = new Coord(x, y, z);
             for (i = 0; i < numVerts; i++)
-                coords [i] *= m;
+                coords[i] *= m;
 
             if (viewerFaces != null)
             {
                 int numViewerFaces = viewerFaces.Count;
                 for (i = 0; i < numViewerFaces; i++)
                 {
-                    ViewerFace v = viewerFaces [i];
+                    ViewerFace v = viewerFaces[i];
                     v.v1 *= m;
                     v.v2 *= m;
                     v.v3 *= m;
-                    viewerFaces [i] = v;
+                    viewerFaces[i] = v;
                 }
             }
         }
@@ -2278,21 +2304,21 @@ namespace Universe.Physics.PrimMesher
         /// <param name="path"></param>
         /// <param name="name"></param>
         /// <param name="title"></param>
-        public void DumpRaw (String path, String name, String title)
+        public void DumpRaw(String path, String name, String title)
         {
             if (path == null)
                 return;
             String fileName = name + "_" + title + ".raw";
-            String completePath = System.IO.Path.Combine (path, fileName);
-            StreamWriter sw = new StreamWriter (completePath);
+            String completePath = System.IO.Path.Combine(path, fileName);
+            StreamWriter sw = new StreamWriter(completePath);
 
             for (int i = 0; i < faces.Count; i++)
             {
-                string s = coords [faces [i].v1] + " " + coords [faces [i].v2] + " " + coords [faces [i].v3];
-                sw.WriteLine (s);
+                string s = coords[faces[i].v1] + " " + coords[faces[i].v2] + " " + coords[faces[i].v3];
+                sw.WriteLine(s);
             }
 
-            sw.Close ();
+            sw.Close();
         }
     }
 }
