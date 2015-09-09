@@ -56,5 +56,10 @@ namespace Universe.Framework.Modules
         ///     Restart the scene that this module is running in
         /// </summary>
         void RestartScene();
+
+        /// <summary>
+        /// Serializes the scene
+        /// </summary>
+        void SerializeScene();
     }
 }
