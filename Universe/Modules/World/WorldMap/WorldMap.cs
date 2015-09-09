@@ -67,7 +67,7 @@ namespace Universe.Modules.WorldMap
 
         #region INonSharedRegionModule Members
 
-        public virtual void Initialise(IConfigSource source)
+        public virtual void Initialize(IConfigSource source)
         {
             if (source.Configs["MapModule"] != null)
             {
