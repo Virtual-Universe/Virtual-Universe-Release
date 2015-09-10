@@ -25,6 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
 using System.Net;
 using System.Text;
 
@@ -72,7 +73,6 @@ namespace Universe.Framework.Servers.HttpServer.Implementation
         /// </summary>
         public string RedirectLocation
         {
-            // get { return _redirectLocation; }
             set { _httpResponse.Redirect(value); }
         }
 
@@ -123,9 +123,7 @@ namespace Universe.Framework.Servers.HttpServer.Implementation
         {
             _httpResponse.Cookies.Add(new Cookie(cookie.Name, cookie.Value, cookie.Path, cookie.Domain)
                                           {
-                                              Expires =
-                                                  cookie
-                                                  .Expires
+                                              Expires = cookie.Expires
                                           });
         }
 

@@ -25,10 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Universe.Framework.ConsoleFramework;
-using Universe.Framework.Servers.HttpServer.Implementation;
-using Universe.Framework.Servers.HttpServer.Interfaces;
-using Nwc.XmlRpc;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -36,29 +32,34 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Xml;
+using Nwc.XmlRpc;
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.Servers.HttpServer.Implementation;
+using Universe.Framework.Servers.HttpServer.Interfaces;
 
 namespace Universe.Framework.Servers.HttpServer
 {
     public class BaseHttpServer : IHttpServer, IDisposable
     {
-        public volatile bool HTTPDRunning = false;
+        public volatile bool HTTPDRunning;
 
         protected HttpListenerManager m_internalServer;
         protected Dictionary<string, XmlRpcMethod> m_rpcHandlers = new Dictionary<string, XmlRpcMethod>();
-        
+
         protected Dictionary<string, IStreamedRequestHandler> m_streamHandlers =
             new Dictionary<string, IStreamedRequestHandler>();
 
         protected Dictionary<string, PollServiceEventArgs> m_pollHandlers =
             new Dictionary<string, PollServiceEventArgs>();
 
-        public Action<HttpListenerContext> OnOverrideRequest = null;
+        public Action<HttpListenerContext> OnOverrideRequest;
         protected bool m_isSecure;
         protected uint m_port, m_threadCount;
         protected string m_hostName;
         protected int NotSocketErrors;
         protected IPAddress m_listenIPAddress = IPAddress.Any;
-        private PollServiceRequestManager m_PollServiceManager;
+
+        PollServiceRequestManager m_PollServiceManager;
 
         internal PollServiceRequestManager PollServiceManager
         {
@@ -150,7 +151,7 @@ namespace Universe.Framework.Servers.HttpServer
             {
                 if (!m_streamHandlers.ContainsKey(handlerKey))
                 {
-                    // MainConsole.Instance.DebugFormat("[BASE HTTP SERVER]: Adding handler key {0}", handlerKey);
+                    // MainConsole.Instance.DebugFormat("[Base Http Server]: Adding handler key {0}", handlerKey);
                     m_streamHandlers.Add(handlerKey, handler);
                 }
             }
@@ -262,9 +263,9 @@ namespace Universe.Framework.Servers.HttpServer
 
         #region 400 and 500 responses
 
-        private string GetHTTP404()
+        string GetHTTP404()
         {
-            string file = Path.Combine(".", "http_404.html"); // Shouldn't this point to the html folder ?
+            string file = Path.Combine(".", "http_404.html");
             if (!File.Exists(file))
                 return getDefaultHTTP404();
 
@@ -274,9 +275,9 @@ namespace Universe.Framework.Servers.HttpServer
             return result;
         }
 
-        private string GetHTTP500()
+        string GetHTTP500()
         {
-            string file = Path.Combine(".", "http_500.html"); // Shouldn't this point to the html folder ?
+            string file = Path.Combine(".", "http_500.html");
             if (!File.Exists(file))
                 return getDefaultHTTP500();
 
@@ -287,22 +288,22 @@ namespace Universe.Framework.Servers.HttpServer
         }
 
         // Fallback HTTP responses in case the HTTP error response files don't exist
-        private string getDefaultHTTP404()
+        string getDefaultHTTP404()
         {
             return
-                "<HTML><HEAD><TITLE>404 Page not found</TITLE><BODY><BR /><H1>Ooops!</H1><P>The page you requested has been absconded with by gnomes. Find hippos quick!</P><P>If you are trying to log-in, your link parameters should have: &quot;-loginpage " +
+                "<HTML><HEAD><TITLE>404 Page not found</TITLE><BODY><BR /><H1>Ooops!</H1><P>The page you requested has been absconded with by gnomes!</P><P>If you are trying to log-in, your link parameters should have: &quot;-loginpage " +
                  ServerURI + "/?method=login -loginuri " + ServerURI + "/&quot; in your link </P></BODY></HTML>";
         }
 
-        private static string getDefaultHTTP500()
+        static string getDefaultHTTP500()
         {
             return
-                "<HTML><HEAD><TITLE>500 Internal Server Error</TITLE><BODY><BR /><H1>Ooops!</H1><P>The server you requested is overrun by gnomes! Find hippos quick!</P></BODY></HTML>";
+                "<HTML><HEAD><TITLE>500 Internal Server Error</TITLE><BODY><BR /><H1>Ooops!</H1><P>The server you requested is overrun by gnomes!</P></BODY></HTML>";
         }
 
         #endregion
 
-        private void OnRequest(HttpListenerContext context)
+        void OnRequest(HttpListenerContext context)
         {
             try
             {
@@ -329,7 +330,7 @@ namespace Universe.Framework.Servers.HttpServer
             }
             catch (Exception e)
             {
-                MainConsole.Instance.ErrorFormat("[BASE HTTP SERVER]: OnRequest() failed: {0} ", e.ToString());
+                MainConsole.Instance.ErrorFormat("[Base Http Server]: OnRequest() failed: {0} ", e.ToString());
             }
         }
 
@@ -364,8 +365,7 @@ namespace Universe.Framework.Servers.HttpServer
 
                 try
                 {
-                    System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US",
-                                                                                                                true);
+                    System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US",                                                                                                                true);
 
                     string path = request.RawUrl;
                     string handlerKey = GetHandlerKey(request.HttpMethod, path);
@@ -405,7 +405,7 @@ namespace Universe.Framework.Servers.HttpServer
                                     HttpServerHandlerHelpers.WriteChunked(stream, buffer);
                                 }
                             }
-                            //response.ContentLength64 = buffer.LongLength;
+
                             response.Close();
                         }
                         else
@@ -417,7 +417,7 @@ namespace Universe.Framework.Servers.HttpServer
                             !HttpListenerManager.IGNORE_ERROR_CODES.Contains(((HttpListenerException)ex).ErrorCode))
                         {
                             MainConsole.Instance.WarnFormat(
-                                "[BASE HTTP SERVER]: HandleRequest failed to write all data to the stream: {0}", ex.ToString());
+                                "[Base Http Server]: HandleRequest failed to write all data to the stream: {0}", ex.ToString());
                         }
                         response.Abort();
                     }
@@ -426,7 +426,7 @@ namespace Universe.Framework.Servers.HttpServer
                 }
                 catch (Exception e)
                 {
-                    MainConsole.Instance.ErrorFormat("[BASE HTTP SERVER]: HandleRequest() threw {0} ", e.ToString());
+                    MainConsole.Instance.ErrorFormat("[Base Http Server]: HandleRequest() threw {0} ", e.ToString());
                     response.Abort();
                 }
                 finally
@@ -436,8 +436,8 @@ namespace Universe.Framework.Servers.HttpServer
                     int tickdiff = requestEndTick - requestStartTick;
                     if (tickdiff > 3000 && requestHandler != null)
                     {
-                        MainConsole.Instance.InfoFormat(
-                            "[BASE HTTP SERVER]: Slow handling of {0} {1} took {2}ms",
+                        MainConsole.Instance.DebugFormat(
+                            "[Base Http Server]: Slow handling of {0} {1} took {2}ms",
                             requestMethod,
                             uriString,
                             tickdiff);
@@ -445,7 +445,7 @@ namespace Universe.Framework.Servers.HttpServer
                     else if (MainConsole.Instance.IsTraceEnabled)
                     {
                         MainConsole.Instance.TraceFormat(
-                            "[BASE HTTP SERVER]: Handling {0} {1} took {2}ms",
+                            "[Base Http Server]: Handling {0} {1} took {2}ms",
                             requestMethod,
                             uriString,
                             tickdiff);
@@ -460,7 +460,7 @@ namespace Universe.Framework.Servers.HttpServer
         /// </summary>
         /// <param name="request"></param>
         /// <param name="response"></param>
-        private byte[] HandleXmlRpcRequests(OSHttpRequest request, OSHttpResponse response)
+        byte[] HandleXmlRpcRequests(OSHttpRequest request, OSHttpResponse response)
         {
             string requestBody = HttpServerHandlerHelpers.ReadString(request.InputStream);
 
@@ -470,12 +470,12 @@ namespace Universe.Framework.Servers.HttpServer
 
             try
             {
-                xmlRprcRequest = (XmlRpcRequest) (new XmlRpcRequestDeserializer()).Deserialize(requestBody);
+                xmlRprcRequest = (XmlRpcRequest)(new XmlRpcRequestDeserializer()).Deserialize(requestBody);
             }
             catch (XmlException e)
             {
                 MainConsole.Instance.WarnFormat(
-                    "[BASE HTTP SERVER]: Got XMLRPC request with invalid XML from {0}.  XML was '{1}'.  Sending blank response.  Exception: {2}",
+                    "[Base Http Server]: Got XMLRPC request with invalid XML from {0}.  XML was '{1}'.  Sending blank response.  Exception: {2}",
                     request.RemoteIPEndPoint, requestBody, e.ToString());
             }
 
@@ -519,7 +519,7 @@ namespace Universe.Framework.Servers.HttpServer
                                     "Requested method [{0}] from {1} threw exception: {2} {3}",
                                     methodName, request.RemoteIPEndPoint.Address, e.Message, e.StackTrace);
 
-                            MainConsole.Instance.ErrorFormat("[BASE HTTP SERVER]: {0}", errorMessage);
+                            MainConsole.Instance.ErrorFormat("[Base Http Server]: {0}", errorMessage);
 
                             // if the registered XmlRpc method threw an exception, we pass a fault-code along
                             xmlRpcResponse = new XmlRpcResponse();
@@ -543,14 +543,13 @@ namespace Universe.Framework.Servers.HttpServer
                 }
                 else
                 {
-                    //HandleLLSDRequests(request, response);
                     response.ContentType = "text/plain";
                     response.StatusCode = 404;
                     response.StatusDescription = "Not Found";
                     responseString = "Not found";
 
                     MainConsole.Instance.ErrorFormat(
-                        "[BASE HTTP SERVER]: Handler not found for http request {0} {1}",
+                        "[Base Http Server]: Handler not found for http request {0} {1}",
                         request.HttpMethod, request.Url.PathAndQuery);
                 }
             }
@@ -600,12 +599,10 @@ namespace Universe.Framework.Servers.HttpServer
         public void Start()
         {
             MainConsole.Instance.InfoFormat(
-                "[BASE HTTP SERVER]: Starting {0} server on port {1}", Secure ? "HTTPS" : "HTTP", Port);
+                "[Base Http Server]: Starting {0} server on port {1}", Secure ? "HTTPS" : "HTTP", Port);
 
             try
             {
-                //m_httpListener = new HttpListener();
-
                 NotSocketErrors = 0;
                 m_internalServer = new HttpListenerManager(m_threadCount, Secure);
                 if (OnOverrideRequest != null)
@@ -622,12 +619,12 @@ namespace Universe.Framework.Servers.HttpServer
             }
             catch (Exception e)
             {
-                if (e is HttpListenerException && ((HttpListenerException) e).Message == "Access is denied")
-                    MainConsole.Instance.Error("[BASE HTTP SERVER]: You must run this program as an administrator.");
+                if (e is HttpListenerException && ((HttpListenerException)e).Message == "Access is denied")
+                    MainConsole.Instance.Error("[Base Http Server]: You must run this program as an administrator.");
                 else
                 {
-                    MainConsole.Instance.Error("[BASE HTTP SERVER]: Error - " + e.Message);
-                    MainConsole.Instance.Error("[BASE HTTP SERVER]: Tip: Do you have permission to listen on port " +
+                    MainConsole.Instance.Error("[Base Http Server]: Error - " + e.Message);
+                    MainConsole.Instance.Error("[Base Http Server]: Tip: Do you have permission to listen on port " +
                                                m_port + "?");
                 }
 
@@ -647,7 +644,7 @@ namespace Universe.Framework.Servers.HttpServer
             }
             catch (NullReferenceException)
             {
-                MainConsole.Instance.Warn("[BASE HTTP SERVER]: Null Reference when stopping HttpServer.");
+                MainConsole.Instance.Warn("[Base Http Server]: Null Reference when stopping HttpServer.");
             }
         }
 
@@ -657,7 +654,7 @@ namespace Universe.Framework.Servers.HttpServer
         {
             string handlerKey = GetHandlerKey(httpMethod, path);
 
-            //MainConsole.Instance.DebugFormat("[BASE HTTP SERVER]: Removing handler key {0}", handlerKey);
+            //MainConsole.Instance.DebugFormat("[Base Http Server]: Removing handler key {0}", handlerKey);
 
             lock (m_streamHandlers) m_streamHandlers.Remove(handlerKey);
         }

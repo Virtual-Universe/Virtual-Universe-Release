@@ -108,7 +108,7 @@ namespace Universe.Framework.Servers.HttpServer.Implementation
             get { return _contentType; }
         }
 
-        private string _contentType;
+        string _contentType;
 
         public HttpCookieCollection Cookies
         {
@@ -147,19 +147,18 @@ namespace Universe.Framework.Servers.HttpServer.Implementation
             get { return _queryString; }
         }
 
-        private NameValueCollection _queryString;
+        NameValueCollection _queryString;
 
         public Hashtable Query
         {
             get { return _query; }
         }
 
-        private Hashtable _query;
+        Hashtable _query;
 
         /// <value>
         ///     POST request values, if applicable
         /// </value>
-        //        public Hashtable Form { get; private set; }
         public string RawUrl
         {
             get { return _request.RawUrl; }
@@ -200,7 +199,7 @@ namespace Universe.Framework.Servers.HttpServer.Implementation
                     }
                     catch (InvalidCastException)
                     {
-                        MainConsole.Instance.DebugFormat("[OSHttpRequest]: error parsing {0} query item, skipping it",
+                        MainConsole.Instance.DebugFormat("[OS Http Request]: error parsing {0} query item, skipping it",
                                                          item);
                         continue;
                     }
@@ -208,7 +207,7 @@ namespace Universe.Framework.Servers.HttpServer.Implementation
             }
             catch (Exception)
             {
-                MainConsole.Instance.Error("[OSHttpRequest]: Error parsing query-string");
+                MainConsole.Instance.Error("[OS Http Request]: Error parsing query-string");
             }
 
             if (ContentType != null && ContentType.StartsWith("multipart/form-data"))
@@ -262,14 +261,6 @@ namespace Universe.Framework.Servers.HttpServer.Implementation
                                        };
                         Files.Add(element.Name, file);
                     }
-                    /*else
-                    {
-                        var buffer = new byte[element.Length];
-                        message.Body.Seek(element.Start, SeekOrigin.Begin);
-                        message.Body.Read(buffer, 0, (int)element.Length);
-
-                        form.Add(Uri.UnescapeDataString(element.Name), message.ContentEncoding.GetString(buffer));
-                    }*/
                 }
             }
         }

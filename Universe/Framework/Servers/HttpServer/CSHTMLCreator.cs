@@ -81,7 +81,7 @@ namespace Universe.Framework.Servers.HttpServer
             return navUrl;
         }
 
-        private static byte[] HandleResponse(OSHttpRequest httpRequest, OSHttpResponse response, Stream stream,
+        static byte[] HandleResponse(OSHttpRequest httpRequest, OSHttpResponse response, Stream stream,
                                              string urlToAppend, Dictionary<string, object> variables,
                                              HTTPReturned eventHandler)
         {
@@ -104,7 +104,7 @@ namespace Universe.Framework.Servers.HttpServer
             return Encoding.UTF8.GetBytes(html);
         }
 
-        private static byte[] SetUpWebpage(OSHttpResponse response, string url, string html,
+        static byte[] SetUpWebpage(OSHttpResponse response, string url, string html,
                                            Dictionary<string, object> vars)
         {
             response.ContentType = "text/html";
