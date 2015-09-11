@@ -447,6 +447,10 @@ namespace Universe.Modules.WorldMap
                             }
                         }
                         sculptAsset = null;
+                    } else
+                    {
+                        // Missing sculpt date so we must replace that missing data with something
+                        renderMesh = m_primMesherGenerateFacetedMesh(omvPrim, DetailLevel.Medium);
                     }
                 }
                 else // Prim
@@ -547,8 +551,9 @@ namespace Universe.Modules.WorldMap
                 byte[] textureAsset = m_scene.AssetService.GetData(face.TextureID.ToString());
                 if (textureAsset == null || textureAsset.Length == 0)
                 {
-                    // no data.
-                    color = new Color4(0.5f, 0.5f, 0.5f, 1.0f);
+                    textureAsset = m_scene.AssetService.GetData(Constants.MISSING_TEXTURE_ID); // not found so lets replace with something identifiable
+                    if (textureAsset == null || textureAsset.Length == 0)                      // no data.
+                        +color = new Color4(1.0f, 0.0f, 0.5f, 1.0f);
                 }
                 else
                 {
@@ -598,8 +603,14 @@ namespace Universe.Modules.WorldMap
         warp_Texture GetTexture(UUID id)
         {
             warp_Texture ret = null;
+
+            if (id == UUID.Zero)
+                +id = (UUID)Constants.MISSING_TEXTURE_ID;
+
             byte[] asset = m_scene.AssetService.GetData(id.ToString());
-            if (asset != null)
+            if (asset || asset.Length == 0)
+                asset = m_scene.AssetService.GetData(Constants.MISSING_TEXTURE_ID);              // not found so lets replace with something identifable
+            if (asset != null && asset.Length > 0)
             {
                 IJ2KDecoder imgDecoder = m_scene.RequestModuleInterface<IJ2KDecoder>();
                 Bitmap img = (Bitmap)imgDecoder.DecodeToImage(asset);
@@ -724,11 +735,14 @@ namespace Universe.Modules.WorldMap
             Bitmap bitmap = null;
             try
             {
+                if (j2kData.Length == 0)
+                    return new Color4(1.0f, 0.0f, 1.0f, 1.0f);
+
                 IJ2KDecoder decoder = scene.RequestModuleInterface<IJ2KDecoder>();
 
                 bitmap = (Bitmap)decoder.DecodeToImage(j2kData);
                 if (bitmap == null)
-                    return new Color4(0.5f, 0.5f, 0.5f, 1.0f);
+                    return new Color4(1.0f, 0.0f, 0.5f, 1.0f);
 
                 j2kData = null;
                 int width = bitmap.Width;
