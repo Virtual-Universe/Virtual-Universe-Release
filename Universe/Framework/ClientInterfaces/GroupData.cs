@@ -429,4 +429,28 @@ namespace Universe.Framework.ClientInterfaces
         public int NumVotes;
         public string VoteCast;
     }
+
+    public class GroupBannedAgentsData : IDataTransferable
+    {
+        public UUID AgentID;
+        public DateTime BanDate;     
+
+        public GroupBannedAgentsData()
+        {
+        }
+
+        public override OSDMap ToOSD()
+        {
+            OSDMap values = new OSDMap();
+            values["AgentID"] = AgentID;
+            values["BanDate"] = BanDate;
+            return values;
+        }
+
+        public override void FromOSD(OSDMap values)
+        {
+            AgentID = values["AgentID"];
+            BanDate = values["BanDate"];
+        }
+    }
 }
