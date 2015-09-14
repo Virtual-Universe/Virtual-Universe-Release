@@ -1587,9 +1587,9 @@ namespace Universe.Services.DataService
         }
 
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
-        public bool IsGroupBannedUser(UUID requestingAgentID, UUID groupID, UUID agentID)
+        public bool IsGroupBannedUser(UUID groupID, UUID agentID)
         {
-            object remoteValue = DoRemote(requestingAgentID, groupID, agentID);
+            object remoteValue = DoRemote(groupID, agentID);
             if (remoteValue != null || m_doRemoteOnly)
                 return (bool) remoteValue;
 
@@ -1597,9 +1597,11 @@ namespace Universe.Services.DataService
             filter.andFilters["GroupID"] = groupID;
             filter.andFilters["AgentID"] = agentID;
 
-            List<string> banned = data.Query(new[] { "AgentID, BanTime" }, "group_bans", filter, null, null, null);
+            List<string> banned = data.Query(new[] { "AgentID" }, "group_bans", filter, null, null, null);
 
-            return (banned.Count != 0);        // true if banned
+            bool isBanned = (banned.Count > 0);        // true if found (banned)
+
+            return isBanned;
         }
 
         // Search
