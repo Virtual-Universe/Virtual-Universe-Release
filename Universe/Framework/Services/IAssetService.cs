@@ -27,10 +27,10 @@
 
 using System;
 using System.Collections.Generic;
-using Universe.Framework.Modules;
-using Universe.Framework.Services.ClassHelpers.Assets;
 using Nini.Config;
 using OpenMetaverse;
+using Universe.Framework.Modules;
+using Universe.Framework.Services.ClassHelpers.Assets;
 
 namespace Universe.Framework.Services
 {

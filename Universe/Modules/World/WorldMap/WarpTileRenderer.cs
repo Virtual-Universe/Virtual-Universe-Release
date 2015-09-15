@@ -102,7 +102,6 @@ namespace Universe.Modules.WorldMap
                 m_renderMeshes = mapConfig.GetBoolean("RenderMeshes", m_renderMeshes);
             }
 
-
             ReadCacheMap();
         }
 
@@ -141,7 +140,6 @@ namespace Universe.Modules.WorldMap
             viewport.Height = size;
 
             return TerrainBitmap(viewport, false);
-
         }
 
         public Bitmap TerrainBitmap(Viewport viewport, bool threeD)
@@ -195,7 +193,6 @@ namespace Universe.Modules.WorldMap
             renderer.Scene.addLight("Light1", new warp_Light(new warp_Vector(1.0f, 0.5f, 1f), 0xffffff, 0, 320, 40));
             renderer.Scene.addLight("Light2", new warp_Light(new warp_Vector(-1f, -1f, 1f), 0xffffff, 0, 100, 40));
 
-
             try
             {
                 CreateWater(renderer, threeD);
@@ -246,7 +243,6 @@ namespace Universe.Modules.WorldMap
             Viewport viewport = new Viewport(camPos, camDir, fov, 1024f, 0.1f, width, height);
             return TerrainBitmap(viewport, true);
         }
-
 
         #endregion
 
@@ -413,7 +409,6 @@ namespace Universe.Modules.WorldMap
         {
             try
             {
-
                 if ((PCode)prim.Shape.PCode != PCode.Prim)
                     return;
                 if (prim.Scale.LengthSquared() < MIN_PRIM_SIZE * MIN_PRIM_SIZE)
@@ -448,6 +443,12 @@ namespace Universe.Modules.WorldMap
                         }
                         sculptAsset = null;
                     }
+                    else
+                    {
+                        // missing sculpt data so lets replace with something
+                        renderMesh = m_primMesher.GenerateFacetedMesh(omvPrim, DetailLevel.Medium);
+                    }
+
                 }
                 else // Prim
                 {
@@ -547,8 +548,9 @@ namespace Universe.Modules.WorldMap
                 byte[] textureAsset = m_scene.AssetService.GetData(face.TextureID.ToString());
                 if (textureAsset == null || textureAsset.Length == 0)
                 {
-                    // no data.
-                    color = new Color4(0.5f, 0.5f, 0.5f, 1.0f);
+                    textureAsset = m_scene.AssetService.GetData(Constants.MISSING_TEXTURE_ID);      // not found so lets replace with something identifable
+                    if (textureAsset == null || textureAsset.Length == 0)                           // no data.
+                        color = new Color4(1.0f, 0.0f, 0.5f, 1.0f);
                 }
                 else
                 {
@@ -598,8 +600,14 @@ namespace Universe.Modules.WorldMap
         warp_Texture GetTexture(UUID id)
         {
             warp_Texture ret = null;
+
+            if (id == UUID.Zero)
+                id = (UUID)Constants.MISSING_TEXTURE_ID;
+
             byte[] asset = m_scene.AssetService.GetData(id.ToString());
-            if (asset != null)
+            if (asset == null || asset.Length == 0)
+                asset = m_scene.AssetService.GetData(Constants.MISSING_TEXTURE_ID);              // not foundso lets replace with something identifable
+            if (asset != null && asset.Length > 0)
             {
                 IJ2KDecoder imgDecoder = m_scene.RequestModuleInterface<IJ2KDecoder>();
                 Bitmap img = (Bitmap)imgDecoder.DecodeToImage(asset);
@@ -608,6 +616,7 @@ namespace Universe.Modules.WorldMap
                     return new warp_Texture(img);
                 }
             }
+            MainConsole.Instance.Debug("Gettexture returning null, asset id: " + id);
             return ret;
         }
 
@@ -724,11 +733,14 @@ namespace Universe.Modules.WorldMap
             Bitmap bitmap = null;
             try
             {
-                IJ2KDecoder decoder = scene.RequestModuleInterface<IJ2KDecoder>();
 
+                if (j2kData.Length == 0)
+                    return new Color4(1.0f, 0.0f, 1.0f, 1.0f);
+
+                IJ2KDecoder decoder = scene.RequestModuleInterface<IJ2KDecoder>();
                 bitmap = (Bitmap)decoder.DecodeToImage(j2kData);
                 if (bitmap == null)
-                    return new Color4(0.5f, 0.5f, 0.5f, 1.0f);
+                    return new Color4(1.0f, 0.0f, 0.5f, 1.0f);
 
                 j2kData = null;
                 int width = bitmap.Width;
