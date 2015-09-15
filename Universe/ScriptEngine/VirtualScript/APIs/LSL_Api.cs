@@ -25,7 +25,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Remoting.Lifetime;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.Packets;
+using OpenMetaverse.StructuredData;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.DatabaseInterfaces;
@@ -43,18 +54,6 @@ using Universe.Framework.Services.ClassHelpers.Profile;
 using Universe.Framework.Utilities;
 using Universe.ScriptEngine.VirtualScript.Plugins;
 using Universe.ScriptEngine.VirtualScript.Runtime;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.Packets;
-using OpenMetaverse.StructuredData;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Remoting.Lifetime;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
 using GridRegion = Universe.Framework.Services.GridRegion;
 using LSL_Float = Universe.ScriptEngine.VirtualScript.LSL_Types.LSLFloat;
 using LSL_Integer = Universe.ScriptEngine.VirtualScript.LSL_Types.LSLInteger;
@@ -134,11 +133,11 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
         protected int m_sleepMsOnXorBase64Strings = 300;
         protected int m_sleepMsOnSetParcelMusicURL = 2000;
         protected int m_sleepMsOnGetPrimMediaParams = 1000;
-        protected int m_sleepMsOnGetLinkMedia = 1000;
+        //protected int m_sleepMsOnGetLinkMedia = 1000;
         protected int m_sleepMsOnSetPrimMediaParams = 1000;
-        protected int m_sleepMsOnSetLinkMedia = 1000;
+        //protected int m_sleepMsOnSetLinkMedia = 1000;
         protected int m_sleepMsOnClearPrimMedia = 1000;
-        protected int m_sleepMsOnClearLinkMedia = 1000;
+        //protected int m_sleepMsOnClearLinkMedia = 1000;
         protected int m_sleepMsOnRequestSimulatorData = 1000;
         protected int m_sleepMsOnLoadURL = 10000;
         protected int m_sleepMsOnParcelMediaCommandList = 2000;
@@ -10879,7 +10878,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
                 return new LSL_List();
 
-            PScriptSleep(m_sleepMsOnGetLinkMedia);
+            //PScriptSleep(m_sleepMsOnGetLinkMedia);
             List<ISceneChildEntity> entities = GetLinkParts(link);
             if (entities.Count == 0 || face < 0 || face > entities[0].GetNumberOfSides() - 1)
                 return new LSL_List();
@@ -10995,7 +10994,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
         public LSL_Integer llClearLinkMedia(LSL_Integer link, LSL_Integer face)
         {
             if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) return 0;
-            PScriptSleep(m_sleepMsOnClearLinkMedia);
+            //PScriptSleep(m_sleepMsOnClearLinkMedia);
 
             List<ISceneChildEntity> entities = GetLinkParts(link);
             if (entities.Count == 0 || face < 0 || face > entities[0].GetNumberOfSides() - 1)
@@ -11036,7 +11035,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_Integer llSetLinkMedia(LSL_Integer link, LSL_Integer face, LSL_List rules)
         {
-            PScriptSleep(m_sleepMsOnSetLinkMedia);
+            //PScriptSleep(m_sleepMsOnSetLinkMedia);
 
             // LSL Spec http://wiki.secondlife.com/wiki/LlSetPrimMediaParams says to fail silently if face is invalid
             // Assuming silently fail means sending back STATUS_OK.  Ideally, need to check this.
