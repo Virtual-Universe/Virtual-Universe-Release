@@ -1478,7 +1478,7 @@ namespace Universe.Services.SQLServices.UserAccountService
                     string check = CreateUser(UserUUID, UUID.Zero, FirstName + " " + LastName, Util.Md5Hash(Password), Email);
                     if (check != "")
                     {
-                        MainConsole.Instance.ErrorFormat("Couldn't create the user'{0} {1}'. Reason: {2}",
+                        MainConsole.Instance.ErrorFormat("Couldn't create the user '{0} {1}'. Reason: {2}",
                             FirstName, LastName, check);
                         continue;
                     }
