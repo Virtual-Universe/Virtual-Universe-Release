@@ -98,7 +98,7 @@ namespace Universe.Modules.Estate
             m_estateConnector = Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ();
 
             // these are only valid if we are local
-            if (!m_accountService.IsLocalConnector)
+            if (m_accountService.IsLocalConnector)
             {
                 // check and/or create default system estates
                 CheckSystemEstateInfo (Constants.SystemEstateID, systemEstateName, (UUID) Constants.RealEstateOwnerUUID);
@@ -412,7 +412,7 @@ namespace Universe.Modules.Estate
                 MainConsole.Instance.WarnFormat ("[USER ACCOUNT SERVICE]: The user, '{0}' was not found!", estateOwner);
 
                 // temporary fix until remote user creation can be implemented
-                if (!accountService.IsLocalConnector)
+                if (accountService.IsLocalConnector)
                 {
                     string createUser = MainConsole.Instance.Prompt ("Do you wish to create this user?  (yes/no)", "yes").ToLower ();
                     if (!createUser.StartsWith ("y"))
