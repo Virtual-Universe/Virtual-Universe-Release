@@ -27,10 +27,10 @@
 
 using System;
 using System.Runtime.Serialization;
+using OpenMetaverse;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
-using OpenMetaverse;
 
 namespace Universe.ScriptEngine.VirtualScript
 {
@@ -183,7 +183,7 @@ namespace Universe.ScriptEngine.VirtualScript
             {
                 if (value == null)
                 {
-                    // Initialise to defaults if no value
+                    // Initialize to defaults if no value
                     initializeSurfaceTouch();
                 }
                 else

@@ -50,7 +50,7 @@ namespace Universe.ScriptEngine.VirtualScript.CompilerTools
         ///     Starts the converter module and gives the ref to the Compiler itself
         /// </summary>
         /// <param name="compiler"></param>
-        void Initialise(Compiler compiler);
+        void Initialize(Compiler compiler);
 
         /// <summary>
         ///     Convert the given script

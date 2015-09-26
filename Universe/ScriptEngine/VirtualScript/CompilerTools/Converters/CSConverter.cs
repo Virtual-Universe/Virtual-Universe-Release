@@ -47,7 +47,7 @@ namespace Universe.ScriptEngine.VirtualScript.CompilerTools
             get { return ""; }
         }
 
-        public void Initialise(Compiler compiler)
+        public void Initialize(Compiler compiler)
         {
         }
 
