@@ -446,7 +446,7 @@ namespace Universe.ScriptEngine.VirtualScript.Runtime
         public static readonly LSL_Types.LSLInteger PRIM_SCULPT_TYPE_TORUS = 2;
         public static readonly LSL_Types.LSLInteger PRIM_SCULPT_TYPE_PLANE = 3;
         public static readonly LSL_Types.LSLInteger PRIM_SCULPT_TYPE_CYLINDER = 4;
-        //Virtual Universe const only
+        //Universe-Sim const only
         public static readonly LSL_Types.LSLInteger PRIM_SCULPT_TYPE_MESH = 5;
         //???
         public static readonly LSL_Types.LSLInteger PRIM_SCULPT_FLAG_INVERT = 64;
@@ -621,8 +621,8 @@ namespace Universe.ScriptEngine.VirtualScript.Runtime
         public static readonly LSL_Types.LSLInteger CAMERA_POSITION_LAG = 5;
         public static readonly LSL_Types.LSLInteger CAMERA_FOCUS_LAG = 6;
         public static readonly LSL_Types.LSLInteger CAMERA_DISTANCE = 7;
-        public static readonly LSL_Types.LSLInteger CAMERA_BEHINDNESS_ANGLE = 8;
-        public static readonly LSL_Types.LSLInteger CAMERA_BEHINDNESS_LAG = 9;
+        public static readonly LSL_Types.LSLInteger CAMERA_BEHINVSSS_ANGLE = 8;
+        public static readonly LSL_Types.LSLInteger CAMERA_BEHINVSSS_LAG = 9;
         public static readonly LSL_Types.LSLInteger CAMERA_POSITION_THRESHOLD = 10;
         public static readonly LSL_Types.LSLInteger CAMERA_FOCUS_THRESHOLD = 11;
         public static readonly LSL_Types.LSLInteger CAMERA_ACTIVE = 12;
