@@ -25,6 +25,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.ModuleLoader;
+using OpenMetaverse;
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -32,9 +35,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using OpenMetaverse;
-using Universe.Framework.ConsoleFramework;
-using Universe.Framework.ModuleLoader;
 
 namespace Universe.ScriptEngine.VirtualScript.CompilerTools
 {
