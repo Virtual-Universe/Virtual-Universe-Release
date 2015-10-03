@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Aurora-Sim Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -106,7 +106,7 @@ namespace Universe.Modules.Currency
 
 
             // these are only valid if we are local
-            if (!m_connector.IsLocalConnector)
+            if (m_connector.IsLocalConnector)
             {
                 m_userInfoService = m_registry.RequestModuleInterface<IAgentInfoService> ();
                 m_userAccountService = m_registry.RequestModuleInterface<IUserAccountService> ();
@@ -191,7 +191,7 @@ namespace Universe.Modules.Currency
         }
 
         public bool IsLocal {
-            get { return !m_connector.IsLocalConnector; }
+            get { return m_connector.IsLocalConnector; }
         }
 
         public int UploadCharge {
@@ -614,8 +614,8 @@ namespace Universe.Modules.Currency
             var currency = m_connector.GetUserCurrency(account.PrincipalID);
             MainConsole.Instance.Info(account.Name + " has " + StrUserBalance((int)currency.Amount));
         }
-
-/*
+        
+        /*
         protected void HandleStipendSet(IScene scene, string[] cmd)
         {
             string rawDate = MainConsole.Instance.Prompt("Date to pay next Stipend? (MM/dd/yyyy)");
@@ -624,14 +624,15 @@ namespace Universe.Modules.Currency
             
             // Make a new DateTime from rawDate
             DateTime newDate = DateTime.ParseExact(rawDate, "MM/dd/yyyy", CultureInfo.InvariantCulture);
-//            GiveStipends.StipendDate = newDate;
+            //GiveStipends.StipendDate = newDate;
 
             // Code needs to be added to run through the scheduler and change the 
             // RunsNext to the date that the user wants the scheduler to be
             // Fly-Man- 2-5-2015
             MainConsole.Instance.Info("Stipend Date has been set to" + newDate);
         }
-*/
+        */
+
         protected void HandleShowTransactions(IScene scene, string [] cmd)
         {
             UserAccount account = GetUserAccount ();

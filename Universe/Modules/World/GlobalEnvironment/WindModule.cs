@@ -36,7 +36,7 @@ using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 
-namespace Universe.Modules.GlobalEnvironment
+namespace Universe.Modules.Wind
 {
     public class WindModule : IWindModule, INonSharedRegionModule
     {
@@ -346,7 +346,6 @@ namespace Universe.Modules.GlobalEnvironment
                 IWindModelPlugin windPlugin = m_availableWindPlugins [plugin];
                 return windPlugin.WindParamGet (param);
             }
-
             throw new Exception (String.Format ("Could not find plugin {0}", plugin));
         }
 
@@ -356,8 +355,8 @@ namespace Universe.Modules.GlobalEnvironment
             {
                 if (m_activeWindPlugin != null)
                     return m_activeWindPlugin.Name;
- 
-                    return String.Empty;
+
+                return String.Empty;
             }
         }
 

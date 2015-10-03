@@ -303,12 +303,12 @@ namespace Universe.Region
 
             #region Region Config
 
-			IConfig UniversestartupConfig = m_config.Configs["UniverseStartup"];
-			if (UniversestartupConfig != null)
+			IConfig whitecorestartupConfig = m_config.Configs["UniverseStartup"];
+			if (whitecorestartupConfig != null)
             {
                 //Region specific is still honored here, the RegionInfo checks for it, and if it is 0, it didn't set it
                 if (RegionInfo.ObjectCapacity == 0)
-					RegionInfo.ObjectCapacity = UniversestartupConfig.GetInt("ObjectCapacity", 80000);
+					RegionInfo.ObjectCapacity = whitecorestartupConfig.GetInt("ObjectCapacity", 80000);
             }
 
             IConfig packetConfig = m_config.Configs["PacketPool"];

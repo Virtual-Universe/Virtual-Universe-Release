@@ -25,6 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -71,7 +72,7 @@ namespace Universe.Modules.WorldMap
         {
             if (source.Configs["MapModule"] != null)
             {
-                if (source.Configs["MapModule"].GetString("WorldMapModule", "WorldMapModule") != Name)
+                if (source.Configs["MapModule"].GetString( "WorldMapModule", "WorldMapModule") != Name)
                     return;
                 m_Enabled = true;
                 MapViewLength = source.Configs["MapModule"].GetInt("MapViewLength", MapViewLength);
@@ -104,7 +105,7 @@ namespace Universe.Modules.WorldMap
                 return;
 
             UniverseThreadPoolStartInfo info = new UniverseThreadPoolStartInfo
-            { priority = ThreadPriority.Lowest, Threads = 1 };
+                                                 {priority = ThreadPriority.Lowest, Threads = 1};
             threadpool = new UniverseThreadPool(info);
             blockthreadpool = new UniverseThreadPool(info);
         }
@@ -130,7 +131,7 @@ namespace Universe.Modules.WorldMap
         {
             string regionimage = "/index.php?method=regionImage" + m_scene.RegionInfo.RegionID;
             regionimage = regionimage.Replace("-", "");
-            MainConsole.Instance.Debug("[World Map]: JPEG Map location: " + MainServer.Instance.ServerURI +
+            MainConsole.Instance.Debug("[WORLD MAP]: JPEG Map location: " + MainServer.Instance.ServerURI +
                                        regionimage);
 
             MainServer.Instance.AddStreamHandler(new GenericStreamHandler("GET", regionimage, OnHTTPGetMapImage));
@@ -185,7 +186,7 @@ namespace Universe.Modules.WorldMap
 
             List<mapItemReply> mapitems = new List<mapItemReply>();
             int tc = Environment.TickCount;
-            if (itemtype == (int)GridItemType.AgentLocations)
+            if (itemtype == (int) GridItemType.AgentLocations)
             {
                 //If its local, just let it do it on its own.
                 if (regionhandle == 0 || regionhandle == m_scene.RegionInfo.RegionHandle)
@@ -196,35 +197,35 @@ namespace Universe.Modules.WorldMap
                     if (entityCountModule != null && entityCountModule.RootAgents <= 1)
                     {
                         mapitem = new mapItemReply
-                        {
-                            x = xstart + 1,
-                            y = ystart + 1,
-                            id = UUID.Zero,
-                            name = Util.Md5Hash(m_scene.RegionInfo.RegionName + tc),
-                            Extra = 0,
-                            Extra2 = 0
-                        };
+                                      {
+                                          x = xstart + 1,
+                                          y = ystart + 1,
+                                          id = UUID.Zero,
+                                          name = Util.Md5Hash(m_scene.RegionInfo.RegionName + tc),
+                                          Extra = 0,
+                                          Extra2 = 0
+                                      };
                         mapitems.Add(mapitem);
                         remoteClient.SendMapItemReply(mapitems.ToArray(), itemtype, flags);
                         return;
                     }
-                    m_scene.ForEachScenePresence(delegate (IScenePresence sp)
-                    {
-                        // Don't send a green dot for yourself
-                        if (!sp.IsChildAgent && sp.UUID != remoteClient.AgentId)
+                    m_scene.ForEachScenePresence(delegate(IScenePresence sp)
                         {
-                            mapitem = new mapItemReply
+                            // Don't send a green dot for yourself
+                            if (!sp.IsChildAgent && sp.UUID != remoteClient.AgentId)
                             {
-                                x = (uint)(xstart + sp.AbsolutePosition.X),
-                                y = (uint)(ystart + sp.AbsolutePosition.Y),
-                                id = UUID.Zero,
-                                name = Util.Md5Hash(m_scene.RegionInfo.RegionName + tc),
-                                Extra = 1,
-                                Extra2 = 0
-                            };
-                            mapitems.Add(mapitem);
-                        }
-                    });
+                                mapitem = new mapItemReply
+                                { 
+                                    x = (uint) (xstart + sp.AbsolutePosition.X),
+                                    y = (uint) (ystart + sp.AbsolutePosition.Y),
+                                    id = UUID.Zero,
+                                    name = Util.Md5Hash( m_scene.RegionInfo.RegionName + tc),
+                                    Extra = 1,
+                                    Extra2 = 0
+                                };
+                                mapitems.Add(mapitem);
+                            }
+                        });
                     remoteClient.SendMapItemReply(mapitems.ToArray(), itemtype, flags);
                 }
                 else
@@ -233,12 +234,12 @@ namespace Universe.Modules.WorldMap
                     if (!m_mapItemCache.TryGetValue(regionhandle, out reply))
                     {
                         m_itemsToRequest.Enqueue(new MapItemRequester
-                        {
-                            flags = flags,
-                            itemtype = itemtype,
-                            regionhandle = regionhandle,
-                            remoteClient = remoteClient
-                        });
+                                                     {
+                                                         flags = flags,
+                                                         itemtype = itemtype,
+                                                         regionhandle = regionhandle,
+                                                         remoteClient = remoteClient
+                                                     });
 
                         if (!itemRequesterIsRunning)
                             threadpool.QueueEvent(GetMapItems, 3);
@@ -262,11 +263,11 @@ namespace Universe.Modules.WorldMap
 
                 List<mapItemReply> mapitems;
                 if (!m_mapItemCache.TryGetValue(item.regionhandle, out mapitems))
-                //try again, might have gotten picked up by this already
+                    //try again, might have gotten picked up by this already
                 {
                     multipleMapItemReply allmapitems = m_scene.GridService.GetMapItems(item.remoteClient.AllScopeIDs,
                                                                                        item.regionhandle,
-                                                                                       (GridItemType)item.itemtype);
+                                                                                       (GridItemType) item.itemtype);
 
                     if (allmapitems == null)
                         continue;
@@ -278,7 +279,7 @@ namespace Universe.Modules.WorldMap
                         //Update the cache
                         foreach (KeyValuePair<ulong, List<mapItemReply>> kvp in allmapitems.items)
                         {
-                            m_mapItemCache.AddOrUpdate(kvp.Key, kvp.Value, 3 * 60); //3 mins
+                            m_mapItemCache.AddOrUpdate(kvp.Key, kvp.Value, 3*60); //3 mins
                         }
                     }
                 }
@@ -325,14 +326,14 @@ namespace Universe.Modules.WorldMap
         protected virtual void ClickedOnTile(IClientAPI remoteClient, int minX, int minY, int maxX, int maxY, uint flag)
         {
             m_blockitemsToRequest.Enqueue(new MapBlockRequester
-            {
-                maxX = maxX,
-                maxY = maxY,
-                minX = minX,
-                minY = minY,
-                mapBlocks = (uint)(flag & ~0x10000),
-                remoteClient = remoteClient
-            });
+                                              {
+                                                  maxX = maxX,
+                                                  maxY = maxY,
+                                                  minX = minX,
+                                                  minY = minY,
+                                                  mapBlocks = (uint) (flag & ~0x10000),
+                                                  remoteClient = remoteClient
+                                              });
             if (!blockRequesterIsRunning)
                 blockthreadpool.QueueEvent(GetMapBlocks, 3);
         }
@@ -341,14 +342,14 @@ namespace Universe.Modules.WorldMap
                                                    uint flag)
         {
             m_blockitemsToRequest.Enqueue(new MapBlockRequester
-            {
-                maxX = maxX,
-                maxY = maxY,
-                minX = minX,
-                minY = minY,
-                mapBlocks = 0, //Map
-                remoteClient = remoteClient
-            });
+                                              {
+                                                  maxX = maxX,
+                                                  maxY = maxY,
+                                                  minX = minX,
+                                                  minY = minY,
+                                                  mapBlocks = 0, //Map
+                                                  remoteClient = remoteClient
+                                              });
             if (!blockRequesterIsRunning)
                 blockthreadpool.QueueEvent(GetMapBlocks, 3);
         }
@@ -357,14 +358,14 @@ namespace Universe.Modules.WorldMap
                                                        uint flag)
         {
             m_blockitemsToRequest.Enqueue(new MapBlockRequester
-            {
-                maxX = maxX,
-                maxY = maxY,
-                minX = minX,
-                minY = minY,
-                mapBlocks = 1, //Terrain
-                remoteClient = remoteClient
-            });
+                                              {
+                                                  maxX = maxX,
+                                                  maxY = maxY,
+                                                  minX = minX,
+                                                  minY = minY,
+                                                  mapBlocks = 1, //Terrain
+                                                  remoteClient = remoteClient
+                                              });
             if (!blockRequesterIsRunning)
                 blockthreadpool.QueueEvent(GetMapBlocks, 3);
         }
@@ -399,19 +400,19 @@ namespace Universe.Modules.WorldMap
                     if (item.minX == item.maxX && item.minY == item.maxY)
                     {
                         List<GridRegion> regions = m_scene.GridService.GetRegionRange(item.remoteClient.AllScopeIDs,
-                                                                                      (item.minX) * Constants.RegionSize,
-                                                                                      (item.maxX) * Constants.RegionSize,
-                                                                                      (item.minY) * Constants.RegionSize,
-                                                                                      (item.maxY) * Constants.RegionSize);
+                                                                                      (item.minX)*Constants.RegionSize,
+                                                                                      (item.maxX)*Constants.RegionSize,
+                                                                                      (item.minY)*Constants.RegionSize,
+                                                                                      (item.maxY)*Constants.RegionSize);
 
                         foreach (GridRegion region in regions)
                         {
                             if ((item.mapBlocks & 1) == 1)
                                 mapBlocks.Add(TerrainBlockFromGridRegion(region));
-                            else if ((item.mapBlocks & 2) == 2) //V2 viewer, we need to deal with it a bit
+							else if ((item.mapBlocks & 2) == 2) //V2 viewer, we need to deal with it a bit
                                 mapBlocks.AddRange(Map2BlockFromGridRegion(region));
-                            else
-                                mapBlocks.Add(MapBlockFromGridRegion(region, region.RegionLocX, region.RegionLocY));
+							else
+								mapBlocks.Add(MapBlockFromGridRegion(region, region.RegionLocX, region.RegionLocY));
                         }
                         if (regions.Count == 0)
                         {
@@ -424,13 +425,13 @@ namespace Universe.Modules.WorldMap
                     else
                     {
                         List<GridRegion> regions = m_scene.GridService.GetRegionRange(item.remoteClient.AllScopeIDs,
-                                                                                      (item.minX - 4) *
+                                                                                      (item.minX - 4)*
                                                                                       Constants.RegionSize,
-                                                                                      (item.maxX + 4) *
+                                                                                      (item.maxX + 4)*
                                                                                       Constants.RegionSize,
-                                                                                      (item.minY - 4) *
+                                                                                      (item.minY - 4)*
                                                                                       Constants.RegionSize,
-                                                                                      (item.maxY + 4) *
+                                                                                      (item.maxY + 4)*
                                                                                       Constants.RegionSize);
 
                         foreach (GridRegion region in regions)
@@ -439,8 +440,8 @@ namespace Universe.Modules.WorldMap
                                 mapBlocks.Add(TerrainBlockFromGridRegion(region));
                             else if ((item.mapBlocks & 2) == 2) //V2 viewer, we need to deal with it a bit
                                 mapBlocks.AddRange(Map2BlockFromGridRegion(region));
-                            else
-                                mapBlocks.Add(MapBlockFromGridRegion(region, region.RegionLocX, region.RegionLocY));
+							else
+								mapBlocks.Add(MapBlockFromGridRegion(region, region.RegionLocX, region.RegionLocY));
                         }
 
                         item.remoteClient.SendMapBlock(mapBlocks, item.mapBlocks);
@@ -459,23 +460,23 @@ namespace Universe.Modules.WorldMap
             MapBlockData block = new MapBlockData();
             if (r == null)
             {
-                block.Access = (byte)SimAccess.NonExistent;
-                block.X = (ushort)x;
-                block.Y = (ushort)y;
+                block.Access = (byte) SimAccess.NonExistent;
+                block.X = (ushort) x;
+                block.Y = (ushort) y;
                 block.MapImageID = UUID.Zero;
                 return block;
             }
-            if ((r.Flags & (int)RegionFlags.RegionOnline) ==
-                (int)RegionFlags.RegionOnline)
+            if ((r.Flags & (int) RegionFlags.RegionOnline) ==
+                (int) RegionFlags.RegionOnline)
                 block.Access = r.Access;
             else
-                block.Access = (byte)SimAccess.Down;
+                block.Access = (byte) SimAccess.Down;
             block.MapImageID = r.TerrainImage;
             block.Name = r.RegionName;
-            block.X = (ushort)(r.RegionLocX / Constants.RegionSize);
-            block.Y = (ushort)(r.RegionLocY / Constants.RegionSize);
-            block.SizeX = (ushort)r.RegionSizeX;
-            block.SizeY = (ushort)r.RegionSizeY;
+            block.X = (ushort) (r.RegionLocX/Constants.RegionSize);
+            block.Y = (ushort) (r.RegionLocY/Constants.RegionSize);
+            block.SizeX = (ushort) r.RegionSizeX;
+            block.SizeY = (ushort) r.RegionSizeY;
 
             return block;
         }
@@ -486,41 +487,41 @@ namespace Universe.Modules.WorldMap
             MapBlockData block = new MapBlockData();
             if (r == null)
             {
-                block.Access = (byte)SimAccess.Down;
+                block.Access = (byte) SimAccess.Down;
                 block.MapImageID = UUID.Zero;
                 blocks.Add(block);
                 return blocks;
             }
-            if ((r.Flags & (int)RegionFlags.RegionOnline) ==
-                (int)RegionFlags.RegionOnline)
+            if ((r.Flags & (int) RegionFlags.RegionOnline) ==
+                (int) RegionFlags.RegionOnline)
                 block.Access = r.Access;
             else
-                block.Access = (byte)SimAccess.Down;
+                block.Access = (byte) SimAccess.Down;
             block.MapImageID = r.TerrainImage;
             block.Name = r.RegionName;
-            block.X = (ushort)(r.RegionLocX / Constants.RegionSize);
-            block.Y = (ushort)(r.RegionLocY / Constants.RegionSize);
-            block.SizeX = (ushort)r.RegionSizeX;
-            block.SizeY = (ushort)r.RegionSizeY;
+            block.X = (ushort) (r.RegionLocX/Constants.RegionSize);
+            block.Y = (ushort) (r.RegionLocY/Constants.RegionSize);
+            block.SizeX = (ushort) r.RegionSizeX;
+            block.SizeY = (ushort) r.RegionSizeY;
             blocks.Add(block);
             if (r.RegionSizeX > Constants.RegionSize || r.RegionSizeY > Constants.RegionSize)
             {
-                for (int x = 0; x < r.RegionSizeX / Constants.RegionSize; x++)
+                for (int x = 0; x < r.RegionSizeX/Constants.RegionSize; x++)
                 {
-                    for (int y = 0; y < r.RegionSizeY / Constants.RegionSize; y++)
+                    for (int y = 0; y < r.RegionSizeY/Constants.RegionSize; y++)
                     {
                         if (x == 0 && y == 0)
                             continue;
                         block = new MapBlockData
-                        {
-                            Access = r.Access,
-                            MapImageID = r.TerrainImage,
-                            Name = r.RegionName,
-                            X = (ushort)((r.RegionLocX / Constants.RegionSize) + x),
-                            Y = (ushort)((r.RegionLocY / Constants.RegionSize) + y),
-                            SizeX = (ushort)r.RegionSizeX,
-                            SizeY = (ushort)r.RegionSizeY
-                        };
+                                    {
+                                        Access = r.Access,
+                                        MapImageID = r.TerrainImage,
+                                        Name = r.RegionName,
+                                        X = (ushort) ((r.RegionLocX/Constants.RegionSize) + x),
+                                        Y = (ushort) ((r.RegionLocY/Constants.RegionSize) + y),
+                                        SizeX = (ushort) r.RegionSizeX,
+                                        SizeY = (ushort) r.RegionSizeY
+                                    };
                         //Child piece, so ignore it
                         blocks.Add(block);
                     }
@@ -556,8 +557,8 @@ namespace Universe.Modules.WorldMap
             if (TryCoordsSearch)
             {
                 GridRegion region = m_scene.GridService.GetRegionByPosition(remoteClient.AllScopeIDs,
-                                                                            XCoord * Constants.RegionSize,
-                                                                            YCoord * Constants.RegionSize);
+                                                                            XCoord*Constants.RegionSize,
+                                                                            YCoord*Constants.RegionSize);
                 if (region != null)
                 {
                     region.RegionName = mapName + " - " + region.RegionName;
@@ -578,13 +579,13 @@ namespace Universe.Modules.WorldMap
                     //Then send surrounding regions
                     List<GridRegion> regions = m_scene.GridService.GetRegionRange(remoteClient.AllScopeIDs,
                                                                                   (region.RegionLocX -
-                                                                                   (4 * Constants.RegionSize)),
+                                                                                   (4*Constants.RegionSize)),
                                                                                   (region.RegionLocX +
-                                                                                   (4 * Constants.RegionSize)),
+                                                                                   (4*Constants.RegionSize)),
                                                                                   (region.RegionLocY -
-                                                                                   (4 * Constants.RegionSize)),
+                                                                                   (4*Constants.RegionSize)),
                                                                                   (region.RegionLocY +
-                                                                                   (4 * Constants.RegionSize)));
+                                                                                   (4*Constants.RegionSize)));
                     if (regions != null)
                     {
                         foreach (GridRegion r in regions)
@@ -601,18 +602,18 @@ namespace Universe.Modules.WorldMap
 
             // final block, closing the search result
             MapBlockData data = new MapBlockData
-            {
-                Agents = 0,
-                Access = 255,
-                MapImageID = UUID.Zero,
-                Name = mapName,
-                RegionFlags = 0,
-                WaterHeight = 0,
-                X = 0,
-                Y = 0,
-                SizeX = 256,
-                SizeY = 256
-            };
+                                    {
+                                        Agents = 0,
+                                        Access = 255,
+                                        MapImageID = UUID.Zero,
+                                        Name = mapName,
+                                        RegionFlags = 0,
+                                        WaterHeight = 0,
+                                        X = 0,
+                                        Y = 0,
+                                        SizeX = 256,
+                                        SizeY = 256
+                                    };
             // not used
             blocks.Add(data);
 
@@ -624,7 +625,7 @@ namespace Universe.Modules.WorldMap
             MapBlockData block = new MapBlockData();
             if (r == null)
             {
-                block.Access = (byte)SimAccess.Down;
+                block.Access = (byte) SimAccess.Down;
                 block.MapImageID = UUID.Zero;
                 return block;
             }
@@ -636,10 +637,10 @@ namespace Universe.Modules.WorldMap
                 block.Name = r.RegionName;
             block.MapImageID = r.TerrainImage;
             block.Name = r.RegionName;
-            block.X = (ushort)(r.RegionLocX / Constants.RegionSize);
-            block.Y = (ushort)(r.RegionLocY / Constants.RegionSize);
-            block.SizeX = (ushort)r.RegionSizeX;
-            block.SizeY = (ushort)r.RegionSizeY;
+            block.X = (ushort) (r.RegionLocX/Constants.RegionSize);
+            block.Y = (ushort) (r.RegionLocY/Constants.RegionSize);
+            block.SizeX = (ushort) r.RegionSizeX;
+            block.SizeY = (ushort) r.RegionSizeY;
             return block;
         }
 
@@ -648,7 +649,7 @@ namespace Universe.Modules.WorldMap
             MapBlockData block = new MapBlockData();
             if (r == null)
             {
-                block.Access = (byte)SimAccess.Down;
+                block.Access = (byte) SimAccess.Down;
                 block.MapImageID = UUID.Zero;
                 return block;
             }
@@ -659,17 +660,17 @@ namespace Universe.Modules.WorldMap
                 block.Name = r.RegionName + " (offline)";
             else
                 block.Name = r.RegionName;
-            block.X = (ushort)(r.RegionLocX / Constants.RegionSize);
-            block.Y = (ushort)(r.RegionLocY / Constants.RegionSize);
-            block.SizeX = (ushort)r.RegionSizeX;
-            block.SizeY = (ushort)r.RegionSizeY;
+            block.X = (ushort) (r.RegionLocX/Constants.RegionSize);
+            block.Y = (ushort) (r.RegionLocY/Constants.RegionSize);
+            block.SizeX = (ushort) r.RegionSizeX;
+            block.SizeY = (ushort) r.RegionSizeY;
             return block;
         }
 
         public byte[] OnHTTPGetMapImage(string path, Stream request, OSHttpRequest httpRequest,
                                         OSHttpResponse httpResponse)
         {
-            MainConsole.Instance.Debug("[World Map]: Sending map image jpeg");
+            MainConsole.Instance.Debug("[WORLD MAP]: Sending map image jpeg");
             byte[] jpeg = new byte[0];
 
             MemoryStream imgstream = new MemoryStream();
@@ -708,7 +709,7 @@ namespace Universe.Modules.WorldMap
             catch (Exception)
             {
                 // Dummy!
-                MainConsole.Instance.Warn("[World Map]: Unable to generate Map image");
+                MainConsole.Instance.Warn("[WORLD MAP]: Unable to generate Map image");
             }
             finally
             {

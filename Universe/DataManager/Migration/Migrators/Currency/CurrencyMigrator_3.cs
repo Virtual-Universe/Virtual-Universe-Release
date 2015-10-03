@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org//
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Aurora-Sim Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -30,18 +30,18 @@ using System.Collections.Generic;
 using Universe.DataManager.Migration;
 using Universe.Framework.Utilities;
 
-namespace Simple.Currency
+namespace Base.Currency
 {
     public class CurrencyMigrator_3 : Migrator
     {
         public CurrencyMigrator_3()
         {
             Version = new Version(0, 0, 3);
-            MigrationName = "SimpleCurrency";
+            MigrationName = "BaseCurrency";
 
             schema = new List<SchemaDefinition>();
 
-            AddSchema("simple_currency", ColDefs(
+            AddSchema("currency", ColDefs(
                 ColDef("PrincipalID", ColumnTypes.String50),
                 ColDef("Amount", ColumnTypes.Integer30),
                 ColDef("LandInUse", ColumnTypes.Integer30),
@@ -63,7 +63,7 @@ namespace Simple.Currency
                           ));
 
             // Currency Transaction Logs
-            AddSchema("simple_currency_history", ColDefs(
+            AddSchema("currency_history", ColDefs(
                 ColDef("TransactionID", ColumnTypes.String36),
                 ColDef("Description", ColumnTypes.String128),
                 ColDef("FromPrincipalID", ColumnTypes.String36),
@@ -83,7 +83,7 @@ namespace Simple.Currency
                     ));
 
             // this is actually used for all purchases now.. a better name would be _purchased
-            AddSchema("simple_purchased", ColDefs(
+            AddSchema("currency_purchased", ColDefs(
                 ColDef("PurchaseID", ColumnTypes.String36),
                 ColDef("PrincipalID", ColumnTypes.String36),
                 ColDef("IP", ColumnTypes.String64),

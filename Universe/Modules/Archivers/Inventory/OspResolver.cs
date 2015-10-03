@@ -25,11 +25,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Text;
-using OpenMetaverse;
+
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Services;
+using OpenMetaverse;
+using System.Text;
 
 namespace Universe.Modules.Archivers
 {
@@ -100,7 +100,7 @@ namespace Universe.Modules.Archivers
 
                 if (tupleSeparatorIndex < 0)
                 {
-                    MainConsole.Instance.WarnFormat("[OSP Resolver]: Ignoring non-tuple component {0} in OSPA {1}",
+                    MainConsole.Instance.WarnFormat("[OSP RESOLVER]: Ignoring non-tuple component {0} in OSPA {1}",
                                                     tuple, ospa);
                     continue;
                 }
@@ -143,7 +143,7 @@ namespace Universe.Modules.Archivers
 
             if (nameSeparatorIndex < 0)
             {
-                MainConsole.Instance.WarnFormat("[OSP Resolver: Ignoring un-separated name {0}", name);
+                MainConsole.Instance.WarnFormat("[OSP RESOLVER]: Ignoring un-separated name {0}", name);
                 return UUID.Zero;
             }
 

@@ -58,8 +58,8 @@ namespace Universe.Framework.Modules
         void RestartScene();
 
         /// <summary>
-        /// Serializes the scene
+        /// Serializes the scene.
         /// </summary>
-        void SerializeScene();
+        void SerializeScene ();
     }
 }

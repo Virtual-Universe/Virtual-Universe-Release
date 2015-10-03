@@ -25,6 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -69,6 +70,7 @@ namespace Universe.Modules.DefaultInventoryIARLoader
                 }
                 if (libConfig.GetBoolean("PreviouslyLoaded", false))
                     return; //If it is loaded, don't reload
+                
                 foreach (string iarFileName in Directory.GetFiles(pLibrariesLocation, "*.iar"))
                 {
                     LoadLibraries(iarFileName);
@@ -121,26 +123,24 @@ namespace Universe.Modules.DefaultInventoryIARLoader
             if (uinfo == null)
             {
                 MainConsole.Instance.Warn("Creating user " + m_service.LibraryOwnerName);
-                m_MockScene.UserAccountService.CreateUser(m_service.LibraryOwner, UUID.Zero, m_service.LibraryOwnerName,
-                                                          "", "");
+                m_MockScene.UserAccountService.CreateUser(m_service.LibraryOwner, UUID.Zero, m_service.LibraryOwnerName, "", "");
                 uinfo = m_MockScene.UserAccountService.GetUserAccount(null, m_service.LibraryOwner);
                 m_MockScene.InventoryService.CreateUserInventory(uinfo.PrincipalID, false);
             }
             if (m_MockScene.InventoryService.GetRootFolder(m_service.LibraryOwner) == null)
                 m_MockScene.InventoryService.CreateUserInventory(uinfo.PrincipalID, false);
 
-            List<InventoryFolderBase> rootFolders = m_MockScene.InventoryService.GetFolderFolders(uinfo.PrincipalID,
-                                                                                                  UUID.Zero);
+            List<InventoryFolderBase> rootFolders = m_MockScene.InventoryService.GetFolderFolders(uinfo.PrincipalID, UUID.Zero);
             bool alreadyExists = rootFolders.Any(folder => folder.Name == iarFileName);
 
             if (alreadyExists)
             {
-                MainConsole.Instance.InfoFormat("[Library Inventory]: Found previously loaded IAR file {0}, ignoring.",
+                MainConsole.Instance.InfoFormat("[LIBRARY INVENTORY]: Found previously loaded IAR file {0}, ignoring.",
                                                 iarFileName);
                 return;
             }
 
-            MainConsole.Instance.InfoFormat("[Library Inventory]: Loading IAR file {0}", iarFileName);
+            MainConsole.Instance.InfoFormat("[LIBRARY INVENTORY]: Loading IAR file {0}", iarFileName);
             InventoryFolderBase rootFolder = m_MockScene.InventoryService.GetRootFolder(uinfo.PrincipalID);
 
             if (rootFolder == null)
@@ -158,6 +158,7 @@ namespace Universe.Modules.DefaultInventoryIARLoader
                 List<InventoryNodeBase> nodes = new List<InventoryNodeBase>(archread.Execute(true));
                 if (nodes.Count == 0)
                     return;
+                
                 InventoryFolderBase f = (InventoryFolderBase) nodes[0];
                 UUID IARRootID = f.ID;
 
@@ -172,7 +173,7 @@ namespace Universe.Modules.DefaultInventoryIARLoader
             }
             catch (Exception e)
             {
-                MainConsole.Instance.DebugFormat("[Library]: Exception when processing archive {0}: {1}",
+                MainConsole.Instance.DebugFormat("[LIBRARY MODULE]: Exception when processing archive {0}: {1}",
                                                  iarFileName,
                                                  e.StackTrace);
             }

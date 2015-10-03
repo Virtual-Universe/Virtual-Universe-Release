@@ -25,6 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
 using System;
 using Nini.Config;
 using OpenMetaverse;
@@ -95,7 +96,7 @@ namespace Universe.Services.SQLServices.AssetService
 
             }
 
-            MainConsole.Instance.Debug("[Asset Service]: Local asset service enabled");
+            MainConsole.Instance.Debug("[ASSET SERVICE]: Local asset service enabled");
         }
 
         public virtual void Start(IConfigSource config, IRegistryCore registry)
@@ -188,7 +189,7 @@ namespace Universe.Services.SQLServices.AssetService
             if (doDatabaseCaching && cache != null)
                 cache.Cache(id, asset);
             if (asset != null) return asset.Data;
-            // An empty array is NOT null and a lot of tests depend on this//            return new byte[0];
+// An empty array is NOT null and a lot of tests depend on this//            return new byte[0];
             return null;
         }
 
@@ -378,6 +379,7 @@ namespace Universe.Services.SQLServices.AssetService
                 asset.CreationDate.ToShortDateString()
             );      
         }
+
 
         #endregion
     }

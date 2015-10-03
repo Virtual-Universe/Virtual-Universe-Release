@@ -55,9 +55,10 @@ namespace Universe.Services
                                      new GenericStreamHandler("POST", service.CreateCAPS("GroupMemberData", ""),
                                                               GroupMemberData));
 
+
             var apiUri = service.CreateCAPS("GroupAPIv1", "");
-            service.AddStreamHandler("GroupAPIv1", new GenericStreamHandler("GET", apiUri, ProcessGetGroupAPI));
-            service.AddStreamHandler("GroupAPIv1", new GenericStreamHandler("POST", apiUri, ProcessPostGroupAPI));
+            service.AddStreamHandler ("GroupAPIv1", new GenericStreamHandler ("GET", apiUri, ProcessGetGroupAPI));
+            service.AddStreamHandler ("GroupAPIv1", new GenericStreamHandler ("POST", apiUri, ProcessPostGroupAPI));
 
         }
 
@@ -67,9 +68,9 @@ namespace Universe.Services
 
         public void DeregisterCaps()
         {
-            m_service.RemoveStreamHandler("GroupMemberData", "POST");
-            m_service.RemoveStreamHandler("GroupAPIv1", "GET");
-            m_service.RemoveStreamHandler("GroupAPIv1", "POST");
+            m_service.RemoveStreamHandler ("GroupMemberData", "POST");
+            m_service.RemoveStreamHandler ("GroupAPIv1", "GET");
+            m_service.RemoveStreamHandler ("GroupAPIv1", "POST");
         }
 
         #region Group Members
@@ -79,11 +80,11 @@ namespace Universe.Services
         {
             try
             {
-                OSDMap rm = (OSDMap)OSDParser.DeserializeLLSDXml(HttpServerHandlerHelpers.ReadFully(request));
+                OSDMap rm = (OSDMap) OSDParser.DeserializeLLSDXml(HttpServerHandlerHelpers.ReadFully(request));
                 UUID groupID = rm["group_id"].AsUUID();
 
                 OSDMap defaults = new OSDMap();
-                ulong EveryonePowers = (ulong)(GroupPowers.Accountable |
+                ulong EveryonePowers = (ulong) (GroupPowers.Accountable |
                                                 GroupPowers.AllowSetHome |
                                                 GroupPowers.ReceiveNotices |
                                                 GroupPowers.JoinChat |
@@ -106,7 +107,7 @@ namespace Universe.Services
                     else
                     {
                         titles.Add(gmd.Title);
-                        member["title"] = titles.Count - 1;
+                        member["title"] = titles.Count-1;
                     }
                     member["powers"] = gmd.AgentPowers;
                     count++;
@@ -123,13 +124,14 @@ namespace Universe.Services
             }
             catch (Exception e)
             {
-                MainConsole.Instance.Error("[CAPS]: " + e);
+                MainConsole.Instance.Error("[Caps]: " + e);
             }
 
             return null;
         }
 
-        public byte[] ProcessGetGroupAPI(string path, Stream request, OSHttpRequest httpRequest,
+
+        public byte[] ProcessGetGroupAPI (string path, Stream request, OSHttpRequest httpRequest,
             OSHttpResponse httpResponse)
         {
             string groupID;
@@ -141,10 +143,10 @@ namespace Universe.Services
                 // Get group banned member list
                 OSDMap bannedUsers = new OSDMap();
 
-                foreach (GroupBannedAgentsData user in m_groupService.GetGroupBannedMembers(m_service.AgentID, (UUID)groupID))
+                foreach (GroupBannedAgentsData user in m_groupService.GetGroupBannedMembers(m_service.AgentID, (UUID) groupID))
                 {
                     OSDMap banned = new OSDMap();
-                    banned["ban_date"] = user.BanDate;
+                    banned["ban_date"] = user.BanDate;  
                     bannedUsers[user.AgentID.ToString()] = banned;
                 }
 
@@ -152,12 +154,13 @@ namespace Universe.Services
                 map["group_id"] = groupID;
                 map["ban_list"] = bannedUsers;
                 return OSDParser.SerializeLLSDXmlBytes(map);
+
             }
 
             return null;
         }
 
-        public byte[] ProcessPostGroupAPI(string path, Stream request, OSHttpRequest httpRequest,
+        public byte[] ProcessPostGroupAPI (string path, Stream request, OSHttpRequest httpRequest,
             OSHttpResponse httpResponse)
         {
             string groupID;
@@ -173,35 +176,36 @@ namespace Universe.Services
 
                 MainConsole.Instance.Debug("[GroupAPIv1] Requesting a POST for group_id: " + groupID);
 
-                if (map.ContainsKey("ban_ids"))
-                    banUsers = ((OSDArray)map["ban_ids"]).ConvertAll<UUID>(o => o);
+                if (map.ContainsKey ("ban_ids"))
+                    banUsers = ((OSDArray) map["ban_ids"]).ConvertAll<UUID>(o => o);
 
-                if (map.ContainsKey("ban_action"))
+                if (map.ContainsKey ("ban_action"))
                 {
-                    if (map["ban_action"].AsInteger() == 1)
+                    if (map ["ban_action"].AsInteger () == 1)
                     {
-                        m_groupService.AddGroupBannedAgent(m_service.AgentID, (UUID)groupID, banUsers);
+                        m_groupService.AddGroupBannedAgent (m_service.AgentID, (UUID) groupID, banUsers);
                         return null;
                     }
-                    if (map["ban_action"].AsInteger() == 2)
+                    if (map ["ban_action"].AsInteger () == 2)
                     {
-                        m_groupService.RemoveGroupBannedAgent(m_service.AgentID, (UUID)groupID, banUsers);
+                        m_groupService.RemoveGroupBannedAgent (m_service.AgentID, (UUID) groupID, banUsers);
                         return null;
                     }
                 }
 
                 // get banned agent details
-                var banUser = m_groupService.GetGroupBannedUser(m_service.AgentID, (UUID)groupID, banUsers[0]);
+                var banUser = m_groupService.GetGroupBannedUser(m_service.AgentID, (UUID) groupID, banUsers[0]);
                 OSDMap retMap = new OSDMap();
                 retMap["group_id"] = groupID;
 
                 OSDMap banned = new OSDMap();
-                banned["ban_date"] = banUser.BanDate;
+                banned["ban_date"] = banUser.BanDate;               
                 banned[banUser.AgentID.ToString()] = banned;
 
                 retMap["ban_list"] = banned;
 
                 return OSDParser.SerializeLLSDXmlBytes(retMap);
+
             }
             return null;
         }

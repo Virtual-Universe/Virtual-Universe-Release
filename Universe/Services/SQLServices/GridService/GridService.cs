@@ -141,83 +141,84 @@ namespace Universe.Services.SQLServices.GridService
             Configure (config, registry);
         }
 
-        public virtual void Configure(IConfigSource config, IRegistryCore registry)
+        public virtual void Configure (IConfigSource config, IRegistryCore registry)
         {
             m_config = config;
-            IConfig gridConfig = config.Configs["GridService"];
+            IConfig gridConfig = config.Configs ["GridService"];
             if (gridConfig != null)
             {
-                m_DisableRegistrations = gridConfig.GetBoolean("DisableRegistrations", m_DisableRegistrations);
-                m_AllowNewRegistrations = gridConfig.GetBoolean("AllowNewRegistrations", m_AllowNewRegistrations);
-                m_AllowNewRegistrationsWithPass = gridConfig.GetBoolean("AllowNewRegistrationsWithPass",
+                m_DisableRegistrations = gridConfig.GetBoolean ("DisableRegistrations", m_DisableRegistrations);
+                m_AllowNewRegistrations = gridConfig.GetBoolean ("AllowNewRegistrations", m_AllowNewRegistrations);
+                m_AllowNewRegistrationsWithPass = gridConfig.GetBoolean ("AllowNewRegistrationsWithPass",
                     m_AllowNewRegistrationsWithPass);
                 m_RegisterRegionPassword =
-                    Util.Md5Hash(gridConfig.GetString("RegisterRegionPassword", m_RegisterRegionPassword));
-                m_maxRegionSize = gridConfig.GetInt("MaxRegionSize", m_maxRegionSize);
-                m_cachedRegionViewSize = gridConfig.GetInt("RegionSightSize", m_cachedRegionViewSize);
-                m_UseSessionID = !gridConfig.GetBoolean("DisableSessionID", !m_UseSessionID);
-                m_AllowDuplicateNames = gridConfig.GetBoolean("AllowDuplicateNames", m_AllowDuplicateNames);
+                    Util.Md5Hash (gridConfig.GetString ("RegisterRegionPassword", m_RegisterRegionPassword));
+                m_maxRegionSize = gridConfig.GetInt ("MaxRegionSize", m_maxRegionSize);
+                m_cachedRegionViewSize = gridConfig.GetInt ("RegionSightSize", m_cachedRegionViewSize);
+                m_UseSessionID = !gridConfig.GetBoolean ("DisableSessionID", !m_UseSessionID);
+                m_AllowDuplicateNames = gridConfig.GetBoolean ("AllowDuplicateNames", m_AllowDuplicateNames);
             }
 
-            registry.RegisterModuleInterface<IGridService>(this);
-            Init(registry, Name, serverPath: "/grid/", serverHandlerName: "GridServerURI");
+            registry.RegisterModuleInterface<IGridService> (this);
+            Init (registry, Name, serverPath: "/grid/", serverHandlerName: "GridServerURI");
 
             if (IsLocalConnector && (MainConsole.Instance != null))
             {
-                MainConsole.Instance.Commands.AddCommand(
+                MainConsole.Instance.Commands.AddCommand (
                     "show region",
                     "show region [Region name]",
                     "Show details on a region",
                     HandleShowRegion, false, true);
 
-                MainConsole.Instance.Commands.AddCommand(
+                MainConsole.Instance.Commands.AddCommand (
                     "set region flags",
                     "set region flags [Region name] [flags]",
                     "Set database flags for region",
                     HandleSetFlags, false, true);
 
-                MainConsole.Instance.Commands.AddCommand(
+                MainConsole.Instance.Commands.AddCommand (
                     "set region scope",
                     "set region scope [Region name] [UUID]",
                     "Set database scope for region",
                     HandleSetScope, false, true);
 
-                MainConsole.Instance.Commands.AddCommand(
+                MainConsole.Instance.Commands.AddCommand (
                     "grid clear all regions",
                     "grid clear all regions",
                     "Clears all regions from the database",
                     HandleClearAllRegions, false, true);
 
-                MainConsole.Instance.Commands.AddCommand(
+                MainConsole.Instance.Commands.AddCommand (
                     "grid clear down regions",
                     "grid clear down regions",
                     "Clears all regions that are offline from the database",
                     HandleClearAllDownRegions, false, true);
 
-                MainConsole.Instance.Commands.AddCommand(
+                MainConsole.Instance.Commands.AddCommand (
                     "grid clear region",
                     "grid clear region [RegionName]",
                     "Clears the regions with the given name from the database",
                     HandleClearRegion, false, true);
 
-                MainConsole.Instance.Commands.AddCommand(
+                MainConsole.Instance.Commands.AddCommand (
                     "grid enable region registration",
                     "grid enable region registration",
                     "Allows new regions to be registered with the grid",
                     HandleRegionRegistration, false, true);
 
-                MainConsole.Instance.Commands.AddCommand(
+                MainConsole.Instance.Commands.AddCommand (
                     "grid disable region registration",
                     "grid disable region registration",
                     "Disallows new regions to be registered with the grid",
                     HandleRegionRegistration, false, true);
 
-                MainConsole.Instance.Commands.AddCommand(
+                MainConsole.Instance.Commands.AddCommand (
                     "show full grid",
                     "show full grid",
                     "Show details of the grid regions",
                     HandleShowFullGrid, false, true);
             }
+
         }
 
         public virtual void Start (IConfigSource config, IRegistryCore registry)
@@ -230,6 +231,7 @@ namespace Universe.Services.SQLServices.GridService
         public virtual void FinishedStartup ()
         {
             m_gridServerInfo = m_registry.RequestModuleInterface<IGridServerInfoService> ();
+
         }
 
         public virtual string Name

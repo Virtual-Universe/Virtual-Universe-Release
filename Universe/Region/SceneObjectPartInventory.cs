@@ -337,7 +337,7 @@ namespace Universe.Region
         public void CreateScriptInstance(TaskInventoryItem item, int startParam, bool postOnRez, StateSource stateSource)
         {
             // MainConsole.Instance.InfoFormat(
-            //     "[PRIM INVENTORY]: " +
+            //     "[Prim Inventory]: " +
             //     "Starting script {0}, {1} in prim {2}, {3}",
             //     item.Name, item.ItemID, Name, UUID);
 
@@ -415,7 +415,7 @@ namespace Universe.Region
                 CreateScriptInstance(item, startParam, postOnRez, stateSource);
             else
                 MainConsole.Instance.ErrorFormat(
-                    "[PRIM INVENTORY]: " +
+                    "[Prim Inventory]: " +
                     "Couldn't start script with ID {0} since it couldn't be found for prim {1}, {2} at {3} in {4}",
                     itemId, m_part.Name, m_part.UUID,
                     m_part.AbsolutePosition, m_part.ParentGroup.Scene.RegionInfo.RegionName);
@@ -449,7 +449,7 @@ namespace Universe.Region
             else
             {
                 MainConsole.Instance.ErrorFormat(
-                    "[PRIM INVENTORY]: " +
+                    "[Prim Inventory]: " +
                     "Couldn't stop script with ID {0} since it couldn't be found for prim {1}, {2} at {3} in {4}",
                     itemId, m_part.Name, m_part.UUID,
                     m_part.AbsolutePosition, m_part.ParentGroup.Scene.RegionInfo.RegionName);
@@ -632,7 +632,7 @@ namespace Universe.Region
             if (null == rezAsset)
             {
                 MainConsole.Instance.WarnFormat(
-                    "[PRIM INVENTORY]: Could not find asset {0} for inventory item {1} in {2}",
+                    "[Prim Inventory]: Could not find asset {0} for inventory item {1} in {2}",
                     item.AssetID, item.Name, m_part.Name);
                 return null;
             }
@@ -739,7 +739,7 @@ namespace Universe.Region
                 return true;
             }
             MainConsole.Instance.ErrorFormat(
-                "[PRIM INVENTORY]: " +
+                "[Prim Inventory]: " +
                 "Tried to retrieve item ID {0} from prim {1}, {2} at {3} in {4} but the item does not exist in this inventory",
                 item.ItemID, m_part.Name, m_part.UUID,
                 m_part.AbsolutePosition, m_part.ParentGroup.Scene.RegionInfo.RegionName);
@@ -889,7 +889,7 @@ namespace Universe.Region
             m_fileData = Utils.StringToBytes(str);
 
             //MainConsole.Instance.Debug(Utils.BytesToString(fileData));
-            //MainConsole.Instance.Debug("[PRIM INVENTORY]: RequestInventoryFile fileData: " + Utils.BytesToString(fileData));
+            //MainConsole.Instance.Debug("[Prim Inventory]: RequestInventoryFile fileData: " + Utils.BytesToString(fileData));
 
             if (m_fileData.Length > 2)
             {

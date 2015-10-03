@@ -25,7 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
+
 using System.Collections.Generic;
 using Nini.Config;
 using OpenMetaverse;
@@ -44,7 +44,7 @@ namespace Universe.Services.DataService
         #region IAbuseReportsConnector Members
 
         public void Initialize(IGenericData GenericData, IConfigSource source, IRegistryCore simBase,
-                              string defaultConnectionString)
+                               string defaultConnectionString)
         {
             GD = GenericData;
 
@@ -53,16 +53,16 @@ namespace Universe.Services.DataService
 
             if (GD != null)
             {
-                GD.ConnectToDatabase(defaultConnectionString, "AbuseReports",
-                    source.Configs["UniverseConnectors"].GetBoolean("ValidateTables", true));
+                GD.ConnectToDatabase (defaultConnectionString, "AbuseReports",
+                    source.Configs ["UniverseConnectors"].GetBoolean ("ValidateTables", true));
 
-
-                Framework.Utilities.DataManager.RegisterPlugin(Name + "Local", this);
-                if (source.Configs["UniverseConnectors"].GetString("AbuseReportsConnector", "LocalConnector") ==
+            
+                Framework.Utilities.DataManager.RegisterPlugin (Name + "Local", this);
+                if (source.Configs ["UniverseConnectors"].GetString ("AbuseReportsConnector", "LocalConnector") ==
                     "LocalConnector")
                 {
                     m_enabled = true;
-                    Framework.Utilities.DataManager.RegisterPlugin(this);
+                    Framework.Utilities.DataManager.RegisterPlugin (this);
                 }
             }
         }

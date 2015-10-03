@@ -25,6 +25,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
+using System.Collections.Generic;
+using Nini.Config;
+using OpenMetaverse;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
@@ -32,10 +36,6 @@ using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Inventory;
-using Nini.Config;
-using OpenMetaverse;
-using System;
-using System.Collections.Generic;
 
 namespace Universe.Modules.Inventory
 {
@@ -79,7 +79,6 @@ namespace Universe.Modules.Inventory
             scene.EventManager.OnIncomingInstantMessage += OnGridInstantMessage;
 
             moneyService =  scene.RequestModuleInterface<IMoneyModule>();
-
         }
 
         public void RegionLoaded(IScene scene)
@@ -90,7 +89,7 @@ namespace Universe.Modules.Inventory
                 if (m_TransferModule == null)
                 {
                     MainConsole.Instance.Error(
-                        "[INVENTORY TRANSFER]: No Message transfer module found, transfers will be local only");
+                        "[Inventory Transfer]: No Message transfer module found, transfers will be local only");
                     m_Enabled = false;
 
                     m_Scenelist.Clear();
@@ -152,11 +151,11 @@ namespace Universe.Modules.Inventory
 
         void OnInstantMessage(IClientAPI client, GridInstantMessage im)
         {
-            //MainConsole.Instance.InfoFormat("[INVENTORY TRANSFER]: OnInstantMessage {0}", im.dialog);
+            //MainConsole.Instance.InfoFormat("[Inventory Transfer]: OnInstantMessage {0}", im.dialog);
             IScene clientScene = FindClientScene(client.AgentId);
             if (clientScene == null) // Something seriously wrong here.
             {
-                MainConsole.Instance.DebugFormat ("[INVENTORY TRANSFER]: Cannot find originating user scene");
+                MainConsole.Instance.DebugFormat ("[Inventory Transfer]: Cannot find originating user scene");
                 return;
             }
 
@@ -166,7 +165,7 @@ namespace Universe.Modules.Inventory
 
                 if (im.BinaryBucket.Length < 17) // Invalid
                 {
-                    MainConsole.Instance.DebugFormat ("[INVENTORY TRANSFER]: Invalid length {0} for asset type {1}",
+                    MainConsole.Instance.DebugFormat ("[Inventory Transfer]: Invalid length {0} for asset type {1}",
                         im.BinaryBucket.Length, ((AssetType)im.BinaryBucket[0]));
                     return;
                 }
@@ -190,7 +189,7 @@ namespace Universe.Modules.Inventory
                         UUID folderID = new UUID (im.BinaryBucket, 1);
 
                         MainConsole.Instance.DebugFormat (
-                            "[INVENTORY TRANSFER]: Inserting original folder {0} into agent {1}'s inventory",
+                            "[Inventory Transfer]: Inserting original folder {0} into agent {1}'s inventory",
                             folderID, im.ToAgentID);
 
 
@@ -215,8 +214,8 @@ namespace Universe.Modules.Inventory
                                 im.BinaryBucket [0] = (byte)AssetType.Folder;
                                 Array.Copy (copyIDBytes, 0, im.BinaryBucket, 1, copyIDBytes.Length);
 
-//                                m_currencyService.UserCurrencyTransfer(im.FromAgentID, im.ToAgentID, 0,
-//                                    "Inworld inventory folder transfer", TransactionType.GiveInventory, UUID.Zero);
+                                //m_currencyService.UserCurrencyTransfer(im.FromAgentID, im.ToAgentID, 0,
+                                //    "Inworld inventory folder transfer", TransactionType.GiveInventory, UUID.Zero);
                             if (moneyService != null)
                                 moneyService.Transfer(im.ToAgentID, im.FromAgentID, 0,
                                 "Inworld inventory folder transfer", TransactionType.GiveInventory);
@@ -237,7 +236,7 @@ namespace Universe.Modules.Inventory
                         UUID itemID = new UUID (im.BinaryBucket, 1);
 
                         MainConsole.Instance.DebugFormat (
-                            "[INVENTORY TRANSFER]: (giving) Inserting item {0} into agent {1}'s inventory",
+                            "[Inventory Transfer]: (giving) Inserting item {0} into agent {1}'s inventory",
                             itemID, im.ToAgentID);
 
                         clientScene.InventoryService.GiveInventoryItemAsync (
@@ -251,7 +250,7 @@ namespace Universe.Modules.Inventory
                                 if (itemCopy == null)
                                 {
                                     MainConsole.Instance.DebugFormat (
-                                        "[INVENTORY TRANSFER]: (giving) Unable to find item {0} to give to agent {1}'s inventory",
+                                        "[Inventory Transfer]: (giving) Unable to find item {0} to give to agent {1}'s inventory",
                                         itemID, im.ToAgentID);
                                     client.SendAgentAlertMessage ("Can't find item to give. Nothing given.", false);
                                     return;
@@ -288,7 +287,7 @@ namespace Universe.Modules.Inventory
             else if (im.Dialog == (byte) InstantMessageDialog.InventoryAccepted)
             {
                 IScenePresence user = clientScene.GetScenePresence(im.ToAgentID);
-                MainConsole.Instance.DebugFormat ("[INVENTORY TRANSFER]: Acceptance message received");
+                MainConsole.Instance.DebugFormat ("[Inventory Transfer]: Acceptance message received");
 
                 if (user != null) // Local
                 {
@@ -305,9 +304,8 @@ namespace Universe.Modules.Inventory
                 // Here, the recipient is local and we can assume that the
                 // inventory is loaded. Courtesy of the above bulk update,
                 // It will have been pushed to the client, too
-                //
                 IInventoryService invService = clientScene.InventoryService;
-                MainConsole.Instance.DebugFormat ("[INVENTORY TRANSFER]: Declined message received");
+                MainConsole.Instance.DebugFormat ("[Inventory Transfer]: Declined message received");
 
                 InventoryFolderBase trashFolder =
                     invService.GetFolderForType(client.AgentId, InventoryType.Unknown, FolderType.Trash);
@@ -386,7 +384,7 @@ namespace Universe.Modules.Inventory
             IScene userScene = FindClientScene(msg.ToAgentID);
             if (userScene == null)
             {
-                MainConsole.Instance.DebugFormat ("[INVENTORY TRANSFER]: Cannot find user scene for instant message");
+                MainConsole.Instance.DebugFormat ("[Inventory Transfer]: Cannot find user scene for instant message");
                 return;
             }
 

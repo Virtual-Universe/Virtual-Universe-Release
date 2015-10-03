@@ -25,18 +25,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Universe.Framework.ConsoleFramework;
-using Universe.Framework.PresenceInfo;
-using Universe.Framework.Services;
-using Universe.Framework.Services.ClassHelpers.Inventory;
-using Universe.Framework.Utilities;
-using Nini.Config;
-using OpenMetaverse;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using Nini.Config;
+using OpenMetaverse;
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.PresenceInfo;
+using Universe.Framework.Services;
+using Universe.Framework.Services.ClassHelpers.Inventory;
+using Universe.Framework.Utilities;
 using FriendInfo = Universe.Framework.Services.FriendInfo;
 using GridRegion = Universe.Framework.Services.GridRegion;
 

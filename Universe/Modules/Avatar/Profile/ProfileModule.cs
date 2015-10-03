@@ -71,21 +71,21 @@ namespace Universe.Modules.Profiles
 
         #region INonSharedRegionModule Members
 
-        public void Initialize(IConfigSource config)
+        public void Initialize (IConfigSource config)
         {
-            IConfig profileConfig = config.Configs["Profile"];
+            IConfig profileConfig = config.Configs ["Profile"];
             if (profileConfig != null)
             {
-                if (profileConfig.GetString("ProfileModule", Name) == Name)
-                {
-                    m_ProfileEnabled = true;
-                    MainConsole.Instance.Info("[Profile Services] Profile Services are enabled");
-                }
+            	if (profileConfig.GetString ("ProfileModule", Name) == Name)
+            	{
+            		m_ProfileEnabled = true;
+            		MainConsole.Instance.Info ("[Profile] Profile Services are enabled");
+            	}
             }
             else
             {
-                m_ProfileEnabled = false;
-                MainConsole.Instance.Info("[Profile Services] Not configured, disabling");
+            	m_ProfileEnabled = false;
+            	MainConsole.Instance.Info ("[Profile] Not configured, disabling");
             }
         }
 
@@ -429,7 +429,6 @@ namespace Universe.Modules.Profiles
                     UserAccount parcelOwner =
                         remoteClient.Scene.UserAccountService.GetUserAccount (remoteClient.AllScopeIDs,
                             targetlandObj.LandData.OwnerID);
-
                     if (parcelOwner != null)
                         user = parcelOwner.Name;
 
@@ -633,8 +632,7 @@ namespace Universe.Modules.Profiles
             // When charterMember set this character └ the viewer recognizes it
             // as a Grid Master. Not sure what we want to do with that in Universe
             //
-            // Perhaps a talk with viewer devs to allow more options for this
-            
+            // Perhaps a talk with viewer devs to allow more options for this        
             if (Utilities.IsSystemUser (Profile.PrincipalID))
             {
                 charterMember = Utils.StringToBytes ("└");
@@ -681,7 +679,6 @@ namespace Universe.Modules.Profiles
                 return;
             UserAccount account = remoteClient.Scene.UserAccountService.GetUserAccount (remoteClient.AllScopeIDs,
                                       remoteClient.AgentId);
-
             remoteClient.SendUserInfoReply (UPI.Visible, UPI.IMViaEmail, account.Email);
         }
 

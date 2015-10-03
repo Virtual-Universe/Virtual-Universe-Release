@@ -45,7 +45,7 @@ namespace Universe.DataManager.Migration.Migrators.Groups
             
             schema = new List<SchemaDefinition>();
 
-            // Group Agent table
+            // existing tables
             AddSchema("group_agent", ColDefs(
                 ColDef("AgentID", ColumnTypes.String50),
                 ColDef("ActiveGroupID", ColumnTypes.String50)
@@ -53,7 +53,6 @@ namespace Universe.DataManager.Migration.Migrators.Groups
                 IndexDef(new string[1] {"AgentID"}, IndexType.Primary)
             ));
 
-            // Group Data table
             AddSchema("group_data", ColDefs(
                 ColDef("GroupID", ColumnTypes.String50),
                 ColDef("Name", ColumnTypes.String50),
@@ -71,7 +70,6 @@ namespace Universe.DataManager.Migration.Migrators.Groups
                 IndexDef(new string[1] {"Name"}, IndexType.Unique)
             ));
 
-            // Group Invites table
             AddSchema("group_invite", ColDefs(
                 ColDef("InviteID", ColumnTypes.String50),
                 ColDef("GroupID", ColumnTypes.String50),
@@ -85,7 +83,6 @@ namespace Universe.DataManager.Migration.Migrators.Groups
                 IndexDef(new string[2] {"AgentID", "InviteID"}, IndexType.Index)
             ));
 
-            // Group Membership table
             AddSchema("group_membership", ColDefs(
                 ColDef("GroupID", ColumnTypes.String50),
                 ColDef("AgentID", ColumnTypes.String50),
@@ -98,7 +95,6 @@ namespace Universe.DataManager.Migration.Migrators.Groups
                 IndexDef(new string[1] {"AgentID"}, IndexType.Index)
             ));
 
-            // Group Notice table
             AddSchema("group_notice", ColDefs(
                 ColDef("GroupID", ColumnTypes.String50),
                 ColDef("NoticeID", ColumnTypes.String50),
@@ -115,7 +111,6 @@ namespace Universe.DataManager.Migration.Migrators.Groups
                     IndexType.Primary)
             ));
 
-            // Group Role Membership table
             AddSchema("group_role_membership", ColDefs(
                 ColDef("GroupID", ColumnTypes.String50),
                 ColDef("RoleID", ColumnTypes.String50),
@@ -126,7 +121,6 @@ namespace Universe.DataManager.Migration.Migrators.Groups
                 IndexDef(new string[2] {"AgentID", "GroupID"}, IndexType.Index)
             ));
 
-            // Group Roles table
             AddSchema("group_roles", ColDefs(
                 ColDef("GroupID", ColumnTypes.String50),
                 ColDef("RoleID", ColumnTypes.String50),
@@ -139,7 +133,8 @@ namespace Universe.DataManager.Migration.Migrators.Groups
                 IndexDef(new string[1] {"RoleID"}, IndexType.Index)
             ));
 
-            // Group Proposals table
+            // TODO:  Group proposals & votes are saved as generic data currently.
+            //        Should these be dropped or the appropriate functions re-worked to use these tables??
             AddSchema("group_proposals", ColDefs(
             	ColDef("GroupID", ColumnTypes.String50),
             	ColDef("Duration", ColumnTypes.Integer11),
@@ -152,17 +147,17 @@ namespace Universe.DataManager.Migration.Migrators.Groups
             	ColDef("Ending", ColumnTypes.DateTime),
             	ColDef("VoteID", ColumnTypes.String50)));
             
-            // Group Proposal Votes table
             AddSchema("group_proposals_votes", ColDefs(
             	ColDef("ProposalID", ColumnTypes.String50),
             	ColDef("UserID", ColumnTypes.String50),
             	ColDef("Vote", ColumnTypes.String10)));
-
-            // Group Ban table
+            
+            // Add new table for groupbans
+            
             AddSchema("group_bans", ColDefs(
-                ColDef("GroupID", ColumnTypes.String50),
-                ColDef("AgentID", ColumnTypes.String50),
-                ColDef("BanTime", ColumnTypes.String10)));
+            	ColDef("GroupID", ColumnTypes.String50),
+            	ColDef("AgentID", ColumnTypes.String50),
+            	ColDef("BanTime", ColumnTypes.DateTime)));
         }
 
         protected override void DoCreateDefaults(IDataConnector genericData)

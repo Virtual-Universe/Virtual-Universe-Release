@@ -26,6 +26,8 @@
  */
 
 
+using Nini.Config;
+using OpenMetaverse;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
@@ -33,8 +35,6 @@ using Universe.Framework.SceneInfo;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Inventory;
 using Universe.Framework.Utilities;
-using Nini.Config;
-using OpenMetaverse;
 
 namespace Universe.Services.SQLServices.AvatarService
 {

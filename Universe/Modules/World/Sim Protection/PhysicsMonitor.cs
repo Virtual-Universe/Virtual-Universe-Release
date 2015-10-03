@@ -25,6 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -223,7 +224,7 @@ namespace Universe.Modules.SimProtection
         protected virtual void PhysicsStatsCommand(IScene scene, string[] cmd)
         {
             if (cmd.Length < 3)
-            {
+            {   
                 if (m_Scene.RegionInfo.RegionName != cmd[2])
                     return;
             }

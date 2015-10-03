@@ -58,7 +58,7 @@ namespace Universe.Simulation.Base
         protected ConfigurationLoader m_configurationLoader;
 
         /// <value>
-        ///     The config information passed into the Virtual Universe server.
+        ///     The config information passed into the Universe server.
         /// </value>
         protected IConfigSource m_config;
 
@@ -224,22 +224,22 @@ namespace Universe.Simulation.Base
         /// </summary>
         public virtual void Startup()
         {
-            MainConsole.Instance.Info("==============================================================");
+            MainConsole.Instance.Info("====================================================================");
             MainConsole.Instance.Info(
-				        string.Format("================= Starting Virtual Universe ({0}) ============",
+				        string.Format("==================== STARTING Universe ({0}) ======================",
                               (IntPtr.Size == 4 ? "x86" : "x64")));
-            MainConsole.Instance.Info("==============================================================");
-            MainConsole.Instance.Info("[Virtual Universe Startup]: Version: " + Version + "\n");
+            MainConsole.Instance.Info("====================================================================");
+            MainConsole.Instance.Info("[UniverseStartup]: Version: " + Version + "\n");
             if (Environment.Is64BitOperatingSystem)
-                MainConsole.Instance.Info("[Virtual Universe Startup]: Running on 64 bit architecture");
+                MainConsole.Instance.Info("[UniverseStartup]: Running on 64 bit architecture");
             // get memory allocation
             Process proc = Process.GetCurrentProcess();
-            MainConsole.Instance.Info("[Virtual Universe Startup]: Allocated RAM " + proc.WorkingSet64);
+            MainConsole.Instance.Info("[UniverseStartup]: Allocated RAM " + proc.WorkingSet64);
             if (Utilities.IsLinuxOs)
             {
                 var pc = new PerformanceCounter ("Mono Memory", "Total Physical Memory");
                 var bytes = pc.RawValue;
-                MainConsole.Instance.InfoFormat ("[Virtual Universe Startup]: Physical RAM (Mbytes): {0}", bytes / 1024000);
+                MainConsole.Instance.InfoFormat ("[UniverseStartup]: Physical RAM (Mbytes): {0}", bytes / 1024000);
             }
 
             SetUpHTTPServer();
@@ -518,7 +518,7 @@ namespace Universe.Simulation.Base
         public virtual void HandleForceGC(IScene scene, string[] cmd)
         {
             GC.Collect();
-            MainConsole.Instance.Warn("[Garbage Collector]: Garbage collection finished");
+            MainConsole.Instance.Warn("Garbage collection finished");
         }
 
         public virtual void runConfig(IScene scene, string[] cmd)
@@ -550,7 +550,7 @@ namespace Universe.Simulation.Base
             string hostName =
                 m_config.Configs["Network"].GetString("HostName", "http://127.0.0.1");
             //Clean it up a bit
-            // these are doing nothing?
+            // these are doing nothing??
             hostName.Replace("http://", "");
             hostName.Replace("https://", "");
             if (hostName.EndsWith("/"))

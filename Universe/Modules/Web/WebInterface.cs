@@ -1128,8 +1128,8 @@ namespace Universe.Modules.Web
         public string Gridname = "Universe Grid";
         public string Gridnick = "Universe";
         public string WelcomeMessage = "Welcome to Universe, <USERNAME>!";
-        public string SystemEstateOwnerName = "Governor Universe";
-        public string SystemEstateName = "Universe Estate";
+        public string SystemEstateOwnerName = "Governor White";
+        public string SystemEstateName = "Whitecore Estate";
 
         public GridSettings()
         {

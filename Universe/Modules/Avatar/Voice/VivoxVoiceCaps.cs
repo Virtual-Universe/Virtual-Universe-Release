@@ -25,6 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -41,39 +42,40 @@ using Universe.Framework.Servers.HttpServer;
 using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Services;
 
+
 namespace Universe.Modules
 {
     public class VivoxVoiceService : IVoiceService, IService
     {
         // channel distance model values
-        public const int CHAN_DIST_NONE = 0; // no attenuation
-        public const int CHAN_DIST_INVERSE = 1; // inverse distance attenuation
-        public const int CHAN_DIST_LINEAR = 2; // linear attenuation
+        public const int CHAN_DIST_NONE     = 0; // no attenuation
+        public const int CHAN_DIST_INVERSE  = 1; // inverse distance attenuation
+        public const int CHAN_DIST_LINEAR   = 2; // linear attenuation
         public const int CHAN_DIST_EXPONENT = 3; // exponential attenuation
-        public const int CHAN_DIST_DEFAULT = CHAN_DIST_LINEAR;
+        public const int CHAN_DIST_DEFAULT  = CHAN_DIST_LINEAR;
 
         // channel type values
-        public static readonly string CHAN_TYPE_POSITIONAL = "positional";
-        public static readonly string CHAN_TYPE_CHANNEL = "channel";
-        public static readonly string CHAN_TYPE_DEFAULT = CHAN_TYPE_POSITIONAL;
+        public static readonly string CHAN_TYPE_POSITIONAL   = "positional";
+        public static readonly string CHAN_TYPE_CHANNEL      = "channel";
+        public static readonly string CHAN_TYPE_DEFAULT      = CHAN_TYPE_POSITIONAL;
 
         // channel mode values
-        public static readonly string CHAN_MODE_OPEN = "open";
-        public static readonly string CHAN_MODE_LECTURE = "lecture";
+        public static readonly string CHAN_MODE_OPEN         = "open";
+        public static readonly string CHAN_MODE_LECTURE      = "lecture";
         public static readonly string CHAN_MODE_PRESENTATION = "presentation";
-        public static readonly string CHAN_MODE_AUDITORIUM = "auditorium";
-        public static readonly string CHAN_MODE_DEFAULT = CHAN_MODE_OPEN;
+        public static readonly string CHAN_MODE_AUDITORIUM   = "auditorium";
+        public static readonly string CHAN_MODE_DEFAULT      = CHAN_MODE_OPEN;
 
         // unconstrained default values
-        public const double CHAN_ROLL_OFF_DEFAULT = 2.0; // rate of attenuation
-        public const double CHAN_ROLL_OFF_MIN = 1.0;
-        public const double CHAN_ROLL_OFF_MAX = 4.0;
-        public const int CHAN_MAX_RANGE_DEFAULT = 80; // distance at which channel is silent
-        public const int CHAN_MAX_RANGE_MIN = 0;
-        public const int CHAN_MAX_RANGE_MAX = 160;
-        public const int CHAN_CLAMPING_DISTANCE_DEFAULT = 10; // distance before attenuation applies
-        public const int CHAN_CLAMPING_DISTANCE_MIN = 0;
-        public const int CHAN_CLAMPING_DISTANCE_MAX = 160;
+        public const double CHAN_ROLL_OFF_DEFAULT           = 2.0; // rate of attenuation
+        public const double CHAN_ROLL_OFF_MIN               = 1.0;
+        public const double CHAN_ROLL_OFF_MAX               = 4.0;
+        public const int CHAN_MAX_RANGE_DEFAULT             = 80; // distance at which channel is silent
+        public const int CHAN_MAX_RANGE_MIN                 = 0;
+        public const int CHAN_MAX_RANGE_MAX                 = 160;
+        public const int CHAN_CLAMPING_DISTANCE_DEFAULT     = 10; // distance before attenuation applies
+        public const int CHAN_CLAMPING_DISTANCE_MIN         = 0;
+        public const int CHAN_CLAMPING_DISTANCE_MAX         = 160;
 
         static readonly Object vlock = new Object();
 
@@ -100,7 +102,7 @@ namespace Universe.Modules
 
         public void Initialize(IConfigSource config, IRegistryCore registry)
         {
-
+            
             IConfig voiceconfig = config.Configs["Voice"];
             if (voiceconfig == null)
                 return;
@@ -121,7 +123,7 @@ namespace Universe.Modules
             IConfig wcconf = config.Configs["UniverseConnectors"];
             if (wcconf == null)
                 return;                             // something major if we don't have this!!
-            if (wcconf.GetBoolean("DoRemoteCalls", false))
+            if (wcconf.GetBoolean("DoRemoteCalls",false))
                 return;
 
             MainConsole.Instance.InfoFormat("[Vivox Voice] Using Vivox for voice communications");
@@ -219,13 +221,13 @@ namespace Universe.Modules
 
                 // Get admin rights and cleanup any residual channel definition
                 DoAdminLogin();
-
+                 
                 // if we get here then all is well
                 MainConsole.Instance.Info("[Vivox Voice]: plugin enabled");
 
                 registry.RegisterModuleInterface<IVoiceService>(this);
-
-            }
+                
+             }
             catch (Exception e)
             {
                 MainConsole.Instance.ErrorFormat("[Vivox Voice] plugin initialization failed: {0}", e);
@@ -238,6 +240,8 @@ namespace Universe.Modules
 
         public void FinishedStartup()
         {
+            //if (m_pluginEnabled)
+            //    VivoxLogout();
         }
 
         #region IVoiceModule Members
@@ -389,14 +393,14 @@ namespace Universe.Modules
             OSDMap request = new OSDMap();
             request["AvatarID"] = avatarID;
             request["Method"] = "GetParcelChannelInfo";
-            request["RegionName"] = region.RegionName;
+            request ["RegionName"] = region.RegionName;
             OSDMap response = null;
             syncPoster.Get(URL, request, resp => { response = resp; });
             while (response == null)
-                Thread.Sleep(5);
+                Thread.Sleep (5);
 
             success = response["Success"];
-            bool noAgents = response["NoAgent"];
+            bool noAgents = response ["NoAgent"];
             if (!success || noAgents)
             {
                 // parcel is not voice enabled or there are no agents here
@@ -405,15 +409,14 @@ namespace Universe.Modules
                 localID = 0;
                 parcelFlags = 0;
                 ParentID = "";
-            }
-            else
+            } else
             {
                 // set parcel details
-                parcelID = response["ParcelID"];
-                parcelName = response["ParcelName"];
-                localID = response["LocalID"];
-                parcelFlags = response["ParcelFlags"];
-                ParentID = GetParentIDForRegion(region);
+                parcelID = response ["ParcelID"];
+                parcelName = response ["ParcelName"];
+                localID = response ["LocalID"];
+                parcelFlags = response ["ParcelFlags"];
+                ParentID = GetParentIDForRegion (region);
             }
         }
 
@@ -445,7 +448,7 @@ namespace Universe.Modules
                     XmlElement children = VivoxListChildren(channelId);
                     string count;
 
-                    if (XmlFind(children, "response.level0.channel-search.count", out count))
+                    if ( XmlFind(children, "response.level0.channel-search.count", out count) )
                     {
                         int cnum = Convert.ToInt32(count);
                         for (int i = 0; i < cnum; i++)
@@ -465,7 +468,7 @@ namespace Universe.Modules
                 }
                 else
                 {
-                    if (!VivoxTryCreateDirectory(sceneUUID + "D", sceneName, out channelId))
+                    if ( !VivoxTryCreateDirectory(sceneUUID + "D", sceneName, out channelId) )
                     {
                         MainConsole.Instance.WarnFormat(
                             "[Vivox Voice] Create failed <{0}:{1}:{2}>",
@@ -473,6 +476,7 @@ namespace Universe.Modules
                         channelId = String.Empty;
                     }
                 }
+
 
                 // Create a dictionary entry unconditionally. This eliminates the
                 // need to check for a parent in the core code. The end result is
@@ -486,8 +490,8 @@ namespace Universe.Modules
             }
         }
 
-        string RegionGetOrCreateChannel(UUID regionID, string regionName, UUID parcelID, string parcelName,
-                                               int localID, uint parcelFlags, string voiceParentID)
+         string RegionGetOrCreateChannel(UUID regionID, string regionName, UUID parcelID, string parcelName,
+                                                int localID, uint parcelFlags, string voiceParentID)
         {
             string channelUri;
             string channelId;
@@ -498,7 +502,7 @@ namespace Universe.Modules
             // Create parcel voice channel. If no parcel exists, then the voice channel ID is the same
             // as the directory ID. Otherwise, it reflects the parcel's ID.
 
-            if (localID != 1 && (parcelFlags & (uint)ParcelFlags.UseEstateVoiceChan) == 0)
+            if (localID != 1 && (parcelFlags & (uint) ParcelFlags.UseEstateVoiceChan) == 0)
             {
                 landName = String.Format("{0}:{1}", regionName, parcelName);
                 landUUID = parcelID.ToString();
@@ -546,6 +550,7 @@ namespace Universe.Modules
                 if (!VivoxTryCreateDirectory("Server" + sessionid + "D", sessionid.ToString(), out parentID))
                 {
                     VivoxTryGetDirectory("Server" + sessionid + "D", out parentID);
+                    //parentID = String.Empty;
                 }
                 // Added by Adam to help debug channel not availible errors.
                 if (VivoxTryGetChannel(parentID, channelID, out channelID, out channelUri))
@@ -563,6 +568,13 @@ namespace Universe.Modules
             voice_credentials["channel_credentials"] = "";
             map["voice_credentials"] = voice_credentials;
 
+            // <llsd><map>
+            //       <key>session-id</key><string>c0da7611-9405-e3a4-0172-c36a1120c77a</string>
+            //       <key>voice_credentials</key><map>
+            //           <key>channel_credentials</key><string>rh1iIIiT2v+ebJjRI+klpFHjFmo</string>
+            //           <key>channel_uri</key><string>sip:confctl-12574742@bhr.vivox.com</string>
+            //       </map>
+            // </map></llsd>
             return map;
         }
 
@@ -582,6 +594,7 @@ namespace Universe.Modules
             return VivoxCall(requrl, false);
         }
 
+
         static readonly string m_vivoxLogoutPath = "http://{0}/api2/viv_signout.php?auth_token={1}";
 
         /// <summary>
@@ -592,6 +605,7 @@ namespace Universe.Modules
             string requrl = String.Format(m_vivoxLogoutPath, m_vivoxServer, m_authToken);
             return VivoxCall(requrl, false);
         }
+
 
         static readonly string m_vivoxGetAccountPath =
             "http://{0}/api2/viv_get_acct.php?auth_token={1}&user_name={2}";
@@ -605,6 +619,7 @@ namespace Universe.Modules
             string requrl = String.Format(m_vivoxGetAccountPath, m_vivoxServer, m_authToken, user);
             return VivoxCall(requrl, true);
         }
+
 
         static readonly string m_vivoxNewAccountPath =
             "http://{0}/api2/viv_adm_acct_new.php?username={1}&pwd={2}&auth_token={3}";
@@ -621,6 +636,7 @@ namespace Universe.Modules
             return VivoxCall(requrl, true);
         }
 
+
         static readonly string m_vivoxPasswordPath =
             "http://{0}/api2/viv_adm_password.php?user_name={1}&new_pwd={2}&auth_token={3}";
 
@@ -632,6 +648,7 @@ namespace Universe.Modules
             string requrl = String.Format(m_vivoxPasswordPath, m_vivoxServer, user, password, m_authToken);
             return VivoxCall(requrl, true);
         }
+
 
         static readonly string m_vivoxChannelPath =
             "http://{0}/api2/viv_chan_mod.php?mode={1}&chan_name={2}&auth_token={3}";
@@ -685,6 +702,11 @@ namespace Universe.Modules
         bool VivoxTryCreateDirectory(string dirId, string description, out string channelId)
         {
             string requrl = String.Format(m_vivoxChannelPath, m_vivoxServer, "create", dirId, m_authToken);
+
+            // if (parent != null && parent != String.Empty)
+            // {
+            //     requrl = String.Format("{0}&chan_parent={1}", requrl, parent);
+            // }
 
             if (!string.IsNullOrEmpty(description))
             {
@@ -848,6 +870,18 @@ namespace Universe.Modules
             return false;
         }
 
+        // static readonly string m_vivoxChannelById = "http://{0}/api2/viv_chan_mod.php?mode={1}&chan_id={2}&auth_token={3}";
+
+        // XmlElement VivoxGetChannelById(string parent, string channelid)
+        // {
+        //     string requrl = String.Format(m_vivoxChannelById, m_vivoxServer, "get", channelid, m_authToken);
+
+        //     if (parent != null && parent != String.Empty)
+        //         return VivoxGetChild(parent, channelid);
+        //     else
+        //         return VivoxCall(requrl, true);
+        // }
+
         /// <summary>
         ///     Delete a channel.
         ///     Once again, there a multitude of options possible. In the simplest case
@@ -884,6 +918,37 @@ namespace Universe.Modules
             return VivoxCall(requrl, true);
         }
 
+        // XmlElement VivoxGetChild(string parent, string child)
+        // {
+
+        //     XmlElement children = VivoxListChildren(parent);
+        //     string count;
+
+        //    if (XmlFind(children, "response.level0.channel-search.count", out count))
+        //     {
+        //         int cnum = Convert.ToInt32(count);
+        //         for (int i = 0; i < cnum; i++)
+        //         {
+        //             string name;
+        //             string id;
+        //             if (XmlFind(children, "response.level0.channel-search.channels.channels.level4.name", i, out name))
+        //             {
+        //                 if (name == child)
+        //                 {
+        //                    if (XmlFind(children, "response.level0.channel-search.channels.channels.level4.id", i, out id))
+        //                     {
+        //                         return VivoxGetChannelById(null, id);
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     }
+
+        //     // One we *know* does not exist.
+        //     return VivoxGetChannel(null, Guid.NewGuid().ToString());
+
+        // }
+
         /// <summary>
         ///     This method handles the WEB side of making a request over the
         ///     Vivox interface. The returned values are transferred to a hash
@@ -907,14 +972,14 @@ namespace Universe.Modules
                 // Otherwise prepare the request
                 MainConsole.Instance.TraceFormat("[Vivox Voice] Sending request <{0}>", requrl);
 
-                HttpWebRequest req = (HttpWebRequest)WebRequest.Create(requrl);
+                HttpWebRequest req = (HttpWebRequest) WebRequest.Create(requrl);
                 HttpWebResponse rsp;
 
                 // We are sending just parameters, no content
                 req.ContentLength = 0;
 
                 // Send request and retrieve the response
-                rsp = (HttpWebResponse)req.GetResponse();
+                rsp = (HttpWebResponse) req.GetResponse();
 
                 XmlTextReader rdr = new XmlTextReader(rsp.GetResponseStream());
                 doc.Load(rdr);
@@ -1002,7 +1067,7 @@ namespace Universe.Modules
                     switch (node.NodeType)
                     {
                         case XmlNodeType.Element:
-                            XmlScanl((XmlElement)node, index + 1);
+                            XmlScanl((XmlElement) node, index + 1);
                             break;
                         case XmlNodeType.Text:
                             MainConsole.Instance.DebugFormat("\"{0}\"".PadLeft(index + 5), node.Value);
@@ -1016,7 +1081,7 @@ namespace Universe.Modules
             }
         }
 
-        static readonly char[] C_POINT = { '.' };
+        static readonly char[] C_POINT = {'.'};
 
         /// <summary>
         ///     The Find method is passed an element whose
@@ -1088,7 +1153,7 @@ namespace Universe.Modules
                 {
                     if (node.NodeType == XmlNodeType.Element)
                     {
-                        if (XmlSearch((XmlElement)node, tags, index + 1, ref nth, out result))
+                        if (XmlSearch((XmlElement) node, tags, index + 1, ref nth, out result))
                             return true;
                     }
                 }
@@ -1183,7 +1248,7 @@ namespace Universe.Modules
                 map["region_name"] = m_service.Region.RegionName;
                 map["parcel_local_id"] = localID;
                 map["voice_credentials"] = new OSDMap();
-                ((OSDMap)map["voice_credentials"])["channel_uri"] = channel_uri;
+                ((OSDMap) map["voice_credentials"])["channel_uri"] = channel_uri;
 
                 MainConsole.Instance.DebugFormat(
                     "[Vivox Voice][Parcel Voice]: region \"{0}\": Parcel ({1}): avatar \"{2}\"",

@@ -25,10 +25,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
+
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Simulation.Base;
+using System;
 
 namespace Universe.Server
 {
@@ -45,7 +46,7 @@ namespace Universe.Server
             if (MainConsole.Instance != null)
             {
                 MainConsole.Instance.DefaultPrompt = "Universe.WebServer ";
-                MainConsole.Instance.Info("[Virtual Universe Startup]: Startup completed in " +
+                MainConsole.Instance.Info("[UniverseSTARTUP]: Startup completed in " +
                                           (DateTime.Now - this.StartupTime).TotalSeconds);
             }
         }

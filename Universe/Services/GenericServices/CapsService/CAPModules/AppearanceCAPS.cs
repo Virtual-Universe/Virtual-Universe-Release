@@ -117,7 +117,7 @@ namespace Universe.Services
             }
             catch (Exception e)
             {
-                MainConsole.Instance.Error("[CAPS]: " + e);
+                MainConsole.Instance.Error("[Caps]: " + e);
             }
 
             return null;

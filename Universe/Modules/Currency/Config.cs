@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Aurora-Sim Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -109,7 +109,7 @@ namespace Universe.Modules.Currency
                 }
                 catch (Exception)
                 {
-                    MainConsole.Instance.Warn("[BaseCurrency]: Exception reading economy config: " + propertyInfo.Name);
+                    MainConsole.Instance.Warn("[Currency]: Exception reading economy config: " + propertyInfo.Name);
                 }
             }
         }
@@ -143,7 +143,7 @@ namespace Universe.Modules.Currency
                 }
                 catch (Exception ex)
                 {
-                    MainConsole.Instance.Warn("[BaseCurrency]: Exception toOSD() config: " + ex.ToString());
+                    MainConsole.Instance.Warn("[Currency]: Exception toOSD() config: " + ex.ToString());
                 }
             }
             return returnvalue;
@@ -170,7 +170,7 @@ namespace Universe.Modules.Currency
                     }
                     catch (Exception ex)
                     {
-                        MainConsole.Instance.Warn("[BaseCurrency]: Exception reading fromOSD() config: " +
+                        MainConsole.Instance.Warn("[Currency]: Exception reading fromOSD() config: " +
                                                   ex.ToString());
                     }
                 }
@@ -407,4 +407,3 @@ namespace Universe.Modules.Currency
         }
     }
 }
-

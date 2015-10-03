@@ -51,6 +51,7 @@ namespace Universe.Framework.Servers.HttpServer
                          (urlToAppend == "" ? "" : "/") + urlToAppend + "/index.php?method=" + methodName + secret;
             MainServer.Instance.RemoveStreamHandler("GET", "/index.php?method=" + methodName + secret);
             MainServer.Instance.RemoveStreamHandler("GET", "/index.php?method=" + methodName + secret2);
+
             variables["url"] = url;
             MainServer.Instance.AddStreamHandler(new GenericStreamHandler("GET", "/index.php?method=" + methodName + secret2,
                                                                         delegate(string path, Stream request,

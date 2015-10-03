@@ -290,7 +290,7 @@ namespace Universe.Framework.Services.ClassHelpers.Inventory
         }
 
         /// <summary>
-        ///     Look through all child subfolders for a folder marked as one for a particular asset type, and return it.
+        ///     Look through all child subfolders for a folder marked as one for a particular folder type, and return it.
         /// </summary>
         /// <param name="type"></param>
         /// <returns>Returns null if no such folder is found</returns>

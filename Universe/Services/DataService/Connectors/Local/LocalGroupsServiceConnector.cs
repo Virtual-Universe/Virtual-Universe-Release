@@ -227,10 +227,20 @@ namespace Universe.Services.DataService
             row["OwnerRoleID"] = OwnerRoleID;
 
             data.Insert("group_data", row);
+
+            // const ulong EveryonePowers = 8796495740928;             // >> 0x80018010000
+            //
+            // 03-07-2015 Fly-Man- Removed this part in favor of using the real values
+            //
             
             //Add everyone role to group
             AddRoleToGroup(founderID, groupID, UUID.Zero, "Everyone", "Everyone in the group is in the everyone role.",
                            "Member of " + name, EveryonePowers);
+
+            // const ulong OfficersPowers = 436506116225230;           // >> 0x 18cfffffff8ce
+            //
+            // 03-07-2015 Fly-Man- Removed this part in favor of using the real values
+            //
 
             UUID officersRole = UUID.Random();
             //Add officers role to group
@@ -255,8 +265,13 @@ namespace Universe.Services.DataService
             SetAgentActiveGroup(founderID, groupID);
         }
 
+        //[CanBeReflected(ThreatLevel = ThreatLevel.Full)]
         public void UpdateGroupFounder(UUID groupID, UUID newOwner, bool keepOldOwnerInGroup)
         {
+            /*object remoteValue = DoRemote(groupID, newOwner, keepOldOwnerInGroup);
+            if (remoteValue != null || m_doRemoteOnly)
+                return;*/
+
             GroupRecord record = GetGroupRecord(UUID.Zero, groupID, "");
             bool newUserExists = GetAgentGroupMemberData(newOwner, groupID, newOwner) != null;
 
@@ -713,7 +728,7 @@ namespace Universe.Services.DataService
             values["ListInProfile"] = ListInProfile;
 
             QueryFilter filter = new QueryFilter();
-            // these look the wrong way around
+            // these look the wrong way around ~ SignpostMarv
             filter.andFilters["GroupID"] = AgentID;
             filter.andFilters["AgentID"] = GroupID;
 
@@ -816,7 +831,10 @@ namespace Universe.Services.DataService
                 }
                 if (yes + no < p.Quorum)
                     p.Result = false;
-                
+                /*if (yes > no)
+                    p.Result = true;
+                else
+                    p.Result = false;*/
                 p.HasCalculatedResult = true;
                 GenericUtils.AddGeneric(p.GroupID, "Proposal", p.VoteID.ToString(), p.ToOSD(), data);
             }
@@ -1003,6 +1021,8 @@ namespace Universe.Services.DataService
         public List<GroupRecord> GetGroupRecords(UUID requestingAgentID, uint start, uint count,
                                                  Dictionary<string, bool> sort, Dictionary<string, bool> boolFields)
         {
+            //            List<string> filter = new List<string>();
+
             object remoteValue = DoRemote(requestingAgentID, start, count, boolFields);
             if (remoteValue != null || m_doRemoteOnly)
                 return (List<GroupRecord>) remoteValue;
@@ -1233,6 +1253,7 @@ namespace Universe.Services.DataService
             return GMD;
         }
 
+
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
         public List<GroupTitlesData> GetGroupTitles(UUID requestingAgentID, UUID GroupID)
         {
@@ -1335,6 +1356,8 @@ namespace Universe.Services.DataService
             }
             return results;
         }
+
+
 
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
         public GroupInviteInfo GetAgentToGroupInvite(UUID requestingAgentID, UUID inviteID)
@@ -1493,6 +1516,7 @@ namespace Universe.Services.DataService
             return list;
         }
 
+
         // Banned users
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
         public List<GroupBannedAgentsData> GetGroupBannedMembers(UUID requestingAgentID, UUID groupID)
@@ -1503,7 +1527,7 @@ namespace Universe.Services.DataService
 
             QueryFilter filter = new QueryFilter();
             filter.andFilters["GroupID"] = groupID;
-            List<string> bannedAgents = data.Query(new[] { "AgentID, BanTime" }, "group_bans", filter, null, null, null);
+            List<string> bannedAgents = data.Query(new[] {"AgentID, BanTime"}, "group_bans", filter, null, null, null);
 
             var userList = new List<GroupBannedAgentsData>();
             if (bannedAgents.Count == 0)
@@ -1511,11 +1535,11 @@ namespace Universe.Services.DataService
                 return userList;
             }
 
-            for (int i = 0; i<bannedAgents.Count; i += 2)
+            for (int i = 0; i < bannedAgents.Count; i += 2)
             {
                 GroupBannedAgentsData banUser = new GroupBannedAgentsData();
-                banUser.AgentID = UUID.Parse (bannedAgents[i]);
-                banUser.BanDate = DateTime.Parse(bannedAgents[i + 1]).ToLocalTime();    
+                banUser.AgentID = UUID.Parse (bannedAgents [i]);
+                banUser.BanDate = DateTime.Parse(bannedAgents [i+1]).ToLocalTime();    
 
                 userList.Add(banUser);
             }
@@ -1533,15 +1557,16 @@ namespace Universe.Services.DataService
             {
                 foreach (UUID userID in bannedUserID)
                 {
-                    Dictionary<string, object> row = new Dictionary<string, object>(3);
-                    row["GroupID"] = groupID;
-                    row["AgentID"] = userID;
-                    row["BanTime"] = DateTime.UtcNow; 
+                    Dictionary<string, object> row = new Dictionary<string, object> (3);
+                    row ["GroupID"] = groupID;
+                    row ["AgentID"] = userID;
+                    row ["BanTime"] = DateTime.UtcNow; 
 
                     data.Insert ("group_bans", row);
                 }
             }
         }
+
 
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
         public void RemoveGroupBannedAgent(UUID requestingAgentID, UUID groupID, List<UUID> bannedUserID)
@@ -1554,9 +1579,9 @@ namespace Universe.Services.DataService
             {
                 foreach (UUID userID in bannedUserID)
                 {
-                    QueryFilter filter = new QueryFilter();
-                    filter.andFilters["GroupID"] = groupID;
-                    filter.andFilters["AgentID"] = userID;
+                    QueryFilter filter = new QueryFilter ();
+                    filter.andFilters ["GroupID"] = groupID;
+                    filter.andFilters ["AgentID"] = userID;
 
                     data.Delete ("group_bans", filter);
                 }
@@ -1572,19 +1597,20 @@ namespace Universe.Services.DataService
 
             QueryFilter filter = new QueryFilter();
             filter.andFilters["GroupID"] = groupID;
-            filter.andFilters["AgentID"] = agentID;
+            filter.andFilters ["AgentID"] = agentID;
 
-            List<string> bUser = data.Query(new[] { "AgentID, BanTime" }, "group_bans", filter, null, null, null);
+            List<string>  bUser = data.Query(new[] {"AgentID, BanTime"}, "group_bans", filter, null, null, null);
 
-            GroupBannedAgentsData bannedUser = new GroupBannedAgentsData();
+            GroupBannedAgentsData bannedUser = new GroupBannedAgentsData ();
             if (bUser.Count > 0)
             {
-                bannedUser.AgentID = UUID.Parse (bUser[0]);
-                bannedUser.BanDate = Util.ToDateTime (int.Parse(bUser[1]));   
+                bannedUser.AgentID = UUID.Parse (bUser [0]);
+                bannedUser.BanDate = Util.ToDateTime (int.Parse (bUser [1]));   
             }
                             
             return bannedUser;
         }
+
 
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
         public bool IsGroupBannedUser(UUID groupID, UUID agentID)
@@ -1595,17 +1621,15 @@ namespace Universe.Services.DataService
 
             QueryFilter filter = new QueryFilter();
             filter.andFilters["GroupID"] = groupID;
-            filter.andFilters["AgentID"] = agentID;
+            filter.andFilters ["AgentID"] = agentID;
 
-            List<string> banned = data.Query(new[] { "AgentID" }, "group_bans", filter, null, null, null);
-
+            List<string>  banned = data.Query(new[] {"AgentID"}, "group_bans", filter, null, null, null);
             bool isBanned = (banned.Count > 0);        // true if found (banned)
 
             return isBanned;
         }
 
         // Search
-
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
         public List<DirGroupsReplyData> FindGroups(UUID requestingAgentID, string search, uint? start, uint? count,
                                                    uint queryflags)

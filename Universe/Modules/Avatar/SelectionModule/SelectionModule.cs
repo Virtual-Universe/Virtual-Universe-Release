@@ -25,7 +25,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.Packets;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
@@ -33,12 +38,6 @@ using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Utilities;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.Packets;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Universe.Modules.Selection
 {
@@ -59,10 +58,10 @@ namespace Universe.Modules.Selection
 
         public void Initialize(IConfigSource source)
         {
-			IConfig UniversestartupConfig = source.Configs["UniverseStartup"];
-			if (UniversestartupConfig != null)
+			IConfig whitecorestartupConfig = source.Configs["UniverseStartup"];
+			if (whitecorestartupConfig != null)
             {
-				m_UseSelectionParticles = UniversestartupConfig.GetBoolean("UseSelectionParticles", true);
+				m_UseSelectionParticles = whitecorestartupConfig.GetBoolean("UseSelectionParticles", true);
             }
         }
 
@@ -157,7 +156,7 @@ namespace Universe.Modules.Selection
                     IObjectCache cache = remoteClient.Scene.RequestModuleInterface<IObjectCache>();
                     if (cache != null)
                         cache.RemoveObject(remoteClient.AgentId, entity.LocalId, cacheMissType);
-                    MainConsole.Instance.WarnFormat("[ObjectCache]: Avatar didn't have {0}, miss type {1}, CRC {2}",
+                    MainConsole.Instance.WarnFormat("[Object Cache]: Avatar didn't have {0}, miss type {1}, CRC {2}",
                                                     primLocalID,
                                                     cacheMissType, ((ISceneEntity) entity).RootChild.CRC);
                 }
@@ -203,7 +202,7 @@ namespace Universe.Modules.Selection
                 else
                 {
                     MainConsole.Instance.ErrorFormat(
-                        "[SCENEPACKETHANDLER]: Could not find prim {0} in SelectPrim, killing prim.",
+                        "[Scene Packet Handler]: Could not find prim {0} in SelectPrim, killing prim.",
                         primLocalID);
                     //Send a kill packet to the viewer so it doesn't come up again
                     remoteClient.SendKillObject(scene.RegionInfo.RegionHandle, new uint[1] {primLocalID});
@@ -363,7 +362,7 @@ namespace Universe.Modules.Selection
             {
                 if (m_presence == null)
                     return;
-                //We can't deregister ourselves... our reference is lost... so just hope we stop getting called soon
+                //We can't deregister ourselves. Our reference is lost. So just hope we stop getting called soon
                 if (!m_presence.IsChildAgent && m_module.UseSelectionParticles && (m_effectsLastSent == 0 ||
                                                                                    Util.EnvironmentTickCountSubtract(
                                                                                        m_effectsLastSent) > 900))
@@ -382,7 +381,7 @@ namespace Universe.Modules.Selection
                     return;
 
                 ISceneChildEntity SOP = m_SelectedUUID;
-                if (SOP == null) //This IS necessary, this is how we can clear this out
+                if (SOP == null) //This is necessary, this is how we can clear this out
                 {
                     IsSelecting = false;
                     return;

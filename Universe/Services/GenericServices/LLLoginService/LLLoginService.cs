@@ -25,6 +25,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Net;
+using System.Text.RegularExpressions;
+using System.Xml;
+using Nini.Config;
+using OpenMetaverse;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.DatabaseInterfaces;
@@ -36,14 +44,6 @@ using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Inventory;
 using Universe.Framework.Services.ClassHelpers.Profile;
 using Universe.Framework.Utilities;
-using Nini.Config;
-using OpenMetaverse;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Net;
-using System.Text.RegularExpressions;
-using System.Xml;
 using FriendInfo = Universe.Framework.Services.FriendInfo;
 using GridRegion = Universe.Framework.Services.GridRegion;
 using GridSettings = Universe.Modules.Web.GridSettings;
@@ -1002,8 +1002,7 @@ namespace Universe.Services
                                  clientIP);
             aCircuit.TeleportFlags = (uint) tpFlags;
             MainConsole.Instance.DebugFormat("[LoginService]: Attempting to log {0} into {1} at {2}...", account.Name, destination.RegionName, destination.ServerURI);
-            LoginAgentArgs args = m_registry.RequestModuleInterface<IAgentProcessing>().
-                                             LoginAgent(destination, aCircuit, friendsToInform);
+            LoginAgentArgs args = m_registry.RequestModuleInterface<IAgentProcessing>().LoginAgent(destination, aCircuit, friendsToInform);
             aCircuit.CachedUserInfo = args.CircuitData.CachedUserInfo;
             aCircuit.RegionUDPPort = args.CircuitData.RegionUDPPort;
 
@@ -1091,7 +1090,8 @@ namespace Universe.Services
                                   LoginAgent(r, aCircuit, friendsToInform);
                 if (args.Success)
                 {
-                    aCircuit = MakeAgent(r, account, session, secureSession, circuitCode, position, clientIP);
+                    //aCircuit = MakeAgent(r, account, session, secureSession, circuitCode, position, clientIP);
+                    MakeAgent(r, account, session, secureSession, circuitCode, position, clientIP);
                     destination = r;
                     reason = args.Reason;
                     seedCap = args.SeedCap;
@@ -1193,6 +1193,7 @@ namespace Universe.Services
                 bool alreadyThere = false;
                 List<UUID> items2RemoveFromAppearence = new List<UUID>();
                 List<UUID> toDelete = new List<UUID>();
+
                 foreach (InventoryFolderBase folder in userFolders)
                 {
                     if (folder.Name == folderForAppearance.Name)

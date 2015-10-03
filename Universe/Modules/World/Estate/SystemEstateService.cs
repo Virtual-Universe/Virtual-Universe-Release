@@ -429,7 +429,7 @@ namespace Universe.Modules.Estate
                     if (account == null)
                     {
                         MainConsole.Instance.ErrorFormat (
-                            "[Estate Service]: Unable to store account details.\n   If this simulator is connected to a grid, create the estate owner account first at the grid level.");
+                            "[EstateService]: Unable to store account details.\n   If this simulator is connected to a grid, create the estate owner account first at the grid level.");
                         return;
                     }
                 } else
@@ -444,7 +444,7 @@ namespace Universe.Modules.Estate
             // check for bogies...
             if (Utilities.IsSystemUser (account.PrincipalID))
             {
-                MainConsole.Instance.Info ("[Estate Service]: Tsk, tsk.  System users should not be used as estate managers!");
+                MainConsole.Instance.Info ("[EstateService]: Tsk, tsk.  System users should not be used as estate managers!");
                 return;
             }
 
@@ -461,7 +461,7 @@ namespace Universe.Modules.Estate
                 //EstateName holds the error. See LocalEstateConnector for more info.
 
             } else
-                MainConsole.Instance.InfoFormat ("[Estate Service]: The estate '{0}' owned by '{1}' has been created.", estateName, estateOwner);
+                MainConsole.Instance.InfoFormat ("[EstateService]: The estate '{0}' owned by '{1}' has been created.", estateName, estateOwner);
         }
 
         protected void SetEstateOwnerCommand (IScene scene, string[] cmd)
@@ -484,7 +484,7 @@ namespace Universe.Modules.Estate
             EstateSettings ES = estateConnector.GetEstateSettings (estateName);
             if (ES == null)
             {
-                MainConsole.Instance.WarnFormat ("[Estate Service]: The estate '{0}' does not exist!", estateName);
+                MainConsole.Instance.WarnFormat ("[EstateService]: The estate '{0}' does not exist!", estateName);
                 return;
             }
 
@@ -513,7 +513,7 @@ namespace Universe.Modules.Estate
             // check for bogies...
             if (Utilities.IsSystemUser (ownerAccount.PrincipalID))
             {
-                MainConsole.Instance.Info ("[Estate Service]: Tsk, tsk.  System users should not be used as estate managers!");
+                MainConsole.Instance.Info ("[EstateService]: Tsk, tsk.  System users should not be used as estate managers!");
                 return;
             }
 
@@ -521,7 +521,7 @@ namespace Universe.Modules.Estate
             ES.EstateOwner = ownerAccount.PrincipalID;
             estateConnector.SaveEstateSettings (ES);
 
-            MainConsole.Instance.InfoFormat ("[Estate Service]: Estate owner for '{0}' changed to '{1}'", estateName, estateOwner);
+            MainConsole.Instance.InfoFormat ("[EstateService]: Estate owner for '{0}' changed to '{1}'", estateName, estateOwner);
         }
 
         protected void SetEstateNameCommand (IScene scene, string[] cmd)
@@ -542,13 +542,13 @@ namespace Universe.Modules.Estate
             EstateSettings ES = estateConnector.GetEstateSettings (estateName);
             if (ES == null)
             {
-                MainConsole.Instance.ErrorFormat ("[Estate Service]: The estate '{0}' does not exist!", estateName);
+                MainConsole.Instance.ErrorFormat ("[EstateService]: The estate '{0}' does not exist!", estateName);
                 return;
             }
 
             // check for passed  estate new name
             estateNewName = (cmd.Length < 4) 
-                ? MainConsole.Instance.Prompt ("New name for the estate") 
+                ? MainConsole.Instance.Prompt ("New name for the Estate") 
                 : cmd [4];
             if (estateNewName == "")
                 return;
@@ -557,31 +557,31 @@ namespace Universe.Modules.Estate
             ES.EstateName = estateNewName;
             estateConnector.SaveEstateSettings (ES);
 
-            MainConsole.Instance.InfoFormat ("[Estate Service]: Estate '{0}' changed to '{1}'", estateName, estateNewName);
+            MainConsole.Instance.InfoFormat ("[EstateService]: Estate '{0}' changed to '{1}'", estateName, estateNewName);
         }
 
 
 
-        void EstateLinkRegionCommand(IScene scene, string[] cmd)
+        void EstateLinkRegionCommand (IScene scene, string[] cmd)
         {
-            IEstateConnector estateConnector = Framework.Utilities.DataManager.RequestPlugin<IEstateConnector>();
-            IGridService gridService = m_registry.RequestModuleInterface<IGridService>();
+            IEstateConnector estateConnector = Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ();
+            IGridService gridService = m_registry.RequestModuleInterface<IGridService> ();
 
             string estateName = "";
             string regionName = "";
 
             // check for passed estate name
-            estateName = (cmd.Length < 4)
-                ? MainConsole.Instance.Prompt("Estate name")
-                : cmd[3];
+            estateName = (cmd.Length < 4) 
+                ? MainConsole.Instance.Prompt ("Estate name") 
+                : cmd [3];
             if (estateName == "")
                 return;
 
             // verify that the estate does exist
-            EstateSettings ES = estateConnector.GetEstateSettings(estateName);
+            EstateSettings ES = estateConnector.GetEstateSettings (estateName);
             if (ES == null)
             {
-                MainConsole.Instance.ErrorFormat("[Estate Service]: The estate '{0}' does not exist!", estateName);
+                MainConsole.Instance.ErrorFormat ("[EstateService]: The estate '{0}' does not exist!", estateName);
                 return;
             }
 
@@ -589,32 +589,31 @@ namespace Universe.Modules.Estate
             if (scene != null)
                 regionName = scene.RegionInfo.RegionName;
 
-            regionName = (cmd.Length < 4)
-                ? MainConsole.Instance.Prompt("Region to add to " + estateName, regionName)
-                : cmd[4];
+            regionName = (cmd.Length < 4) 
+                ? MainConsole.Instance.Prompt ("Region to add to " + estateName, regionName) 
+                : cmd [4];
             if (regionName == "")
                 return;
 
             // verify that the region does exist
-            var region = gridService.GetRegionByName(null, regionName);
+            var region = gridService.GetRegionByName (null, regionName);
             if (region == null)
             {
-                MainConsole.Instance.ErrorFormat("[Estate Service]: The requested region '{0}' does not exist!", regionName);
+                MainConsole.Instance.ErrorFormat ("[EstateService]: The requested region '{0}' does not exist!", regionName);
                 return;
             }
 
             // have all details.. do it...
-            if (estateConnector.LinkRegion(region.RegionID, (int)ES.EstateID))
+            if (estateConnector.LinkRegion (region.RegionID, (int)ES.EstateID))
             {
                 // check for update..
-                var es = estateConnector.GetEstateSettings(region.RegionID);
+                var es = estateConnector.GetEstateSettings (region.RegionID);
                 if ((es == null) || (es.EstateID == 0))
-                    MainConsole.Instance.Warn("The region link failed, please try again soon.");
+                    MainConsole.Instance.Warn ("The region link failed, please try again soon.");
                 else
-                    MainConsole.Instance.InfoFormat("Region '{0}' is now attached to estate '{1}'", regionName, estateName);
-            }
-            else
-                MainConsole.Instance.Warn("Joining the estate failed. Please try again.");
+                    MainConsole.Instance.InfoFormat ("Region '{0}' is now attached to estate '{1}'", regionName, estateName);
+            } else
+                MainConsole.Instance.Warn ("Joining the estate failed. Please try again.");
 
         }
 
@@ -637,7 +636,7 @@ namespace Universe.Modules.Estate
             EstateSettings ES = estateConnector.GetEstateSettings (estateName);
             if (ES == null)
             {
-                MainConsole.Instance.ErrorFormat ("[Estate Service]: The estate '{0}' does not exist!", estateName);
+                MainConsole.Instance.ErrorFormat ("[EstateService]: The estate '{0}' does not exist!", estateName);
                 return;
             }
 
@@ -655,7 +654,7 @@ namespace Universe.Modules.Estate
             var region = gridService.GetRegionByName (null, regionName);
             if (region == null)
             {
-                MainConsole.Instance.ErrorFormat ("[Estate Service]: The requested region '{0}' does not exist!", regionName);
+                MainConsole.Instance.ErrorFormat ("[EstateService]: The requested region '{0}' does not exist!", regionName);
                 return;
             }
 
@@ -766,7 +765,7 @@ namespace Universe.Modules.Estate
             EstateSettings ES = estateConnector.GetEstateSettings (estateName);
             if (ES == null)
             {
-                MainConsole.Instance.ErrorFormat ("[Estate Service]: The estate '{0}' does not exist!", estateName);
+                MainConsole.Instance.ErrorFormat ("[EstateService]: The estate '{0}' does not exist!", estateName);
                 return;
             }
 

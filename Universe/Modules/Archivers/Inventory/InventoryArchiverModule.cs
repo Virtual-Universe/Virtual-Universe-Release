@@ -40,7 +40,7 @@ using Universe.Framework.Utilities;
 namespace Universe.Modules.Archivers
 {
     /// <summary>
-    ///     This module loads and saves Virtual Universe inventory archives
+    ///     This module loads and saves Universe inventory archives
     /// </summary>
     public class InventoryArchiverModule : IService, IInventoryArchiverModule
     {
@@ -116,7 +116,7 @@ namespace Universe.Modules.Archivers
                 catch (EntryPointNotFoundException e)
                 {
                     MainConsole.Instance.ErrorFormat(
-                        "[Archiver]: Mismatch between Mono and zlib1g library version when trying to create compression stream."
+                        "[ARCHIVER]: Mismatch between Mono and zlib1g library version when trying to create compression stream."
                         + "If you've manually installed Mono, have you appropriately updated zlib1g as well?");
                     MainConsole.Instance.Error(e);
 
@@ -139,13 +139,13 @@ namespace Universe.Modules.Archivers
 
             // set default path to user archives
             var defpath = m_registry.RequestModuleInterface<ISimulationBase>().DefaultDataPath;
-            m_archiveDirectory = Path.Combine(defpath, Constants.DEFAULT_USERINVENTORY_DIR);
+            m_archiveDirectory = Path.Combine (defpath, Constants.DEFAULT_USERINVENTORY_DIR);
 
             // check if this is a local service
-            IConfig connectorConfig = config.Configs["UniverseConnectors"];
-            if ((connectorConfig != null) && connectorConfig.Contains("DoRemoteCalls"))
-                isLocal = !connectorConfig.GetBoolean("DoRemoteCalls", false);
-
+            IConfig connectorConfig = config.Configs ["UniverseConnectors"];
+            if ((connectorConfig != null) && connectorConfig.Contains ("DoRemoteCalls"))
+                isLocal = ! connectorConfig.GetBoolean ("DoRemoteCalls", false);
+            
         }
 
         public void Start(IConfigSource config, IRegistryCore registry)
@@ -172,8 +172,8 @@ namespace Universe.Modules.Archivers
                         + "<first> is user's first name." + Environment.NewLine
                         + "<last> is user's last name." + Environment.NewLine
                         + "<IAR path> is the filesystem path or URI from which to load the IAR." + Environment.NewLine
-                        + "           If this is not given then 'UserArchives' in the " + m_archiveDirectory + " directory is used\n"
-                        + "<inventory path> is the path inside the user's inventory where the IAR should be loaded."
+                        + "           If this is not given then 'UserArchives' in the "+ m_archiveDirectory + " directory is used\n"
+                        + "<inventory path> is the path inside the user's inventory where the IAR should be loaded." 
                         + "                 (Default is '/iar_import')",
                         HandleLoadIARConsoleCommand, false, true);
 
@@ -187,7 +187,7 @@ namespace Universe.Modules.Archivers
                         + "<inventory path> is the path inside the user's inventory for the folder/item to be saved.\n"
                         + "                 (Default is all folders)\n"
                         + " --noassets : if present, save withOUT assets.\n"
-                        + "               This version will NOT load on another grid/standalone other than the current grid/standalone!"
+                        +"               This version will NOT load on another grid/standalone other than the current grid/standalone!"
                         + "--perm=<permissions> : If present, verify asset permissions before saving.\n"
                         + "   <permissions> can include 'C' (Copy), 'M' (Modify, 'T' (Transfer)",
                         HandleSaveIARConsoleCommand, false, true);
@@ -244,7 +244,7 @@ namespace Universe.Modules.Archivers
                 catch (EntryPointNotFoundException e)
                 {
                     MainConsole.Instance.ErrorFormat(
-                        "[Archiver]: Mismatch between Mono and zlib1g library version when trying to create compression stream.\n"
+                        "[ARCHIVER]: Mismatch between Mono and zlib1g library version when trying to create compression stream.\n"
                         + "If you've manually installed Mono, have you appropriately updated zlib1g as well?");
                     MainConsole.Instance.Error(e);
 
@@ -267,7 +267,7 @@ namespace Universe.Modules.Archivers
             if (userInfo != null)
             {
                 InventoryArchiveReadRequest request;
-                bool merge = (options.ContainsKey("merge") && (bool)options["merge"]);
+                bool merge = (options.ContainsKey("merge") && (bool) options["merge"]);
 
                 try
                 {
@@ -276,7 +276,7 @@ namespace Universe.Modules.Archivers
                 catch (EntryPointNotFoundException e)
                 {
                     MainConsole.Instance.ErrorFormat(
-                        "[Archiver]: Mismatch between Mono and zlib1g library version when trying to create compression stream.\n"
+                        "[ARCHIVER]: Mismatch between Mono and zlib1g library version when trying to create compression stream.\n"
                         + "If you've manually installed Mono, have you appropriately updated zlib1g as well?");
                     MainConsole.Instance.Error(e);
 
@@ -297,12 +297,12 @@ namespace Universe.Modules.Archivers
         {
             var retVals = new List<string>();
 
-            if (Directory.Exists(m_archiveDirectory))
+            if (Directory.Exists (m_archiveDirectory))
             {
-                var archives = new List<string>(Directory.GetFiles(m_archiveDirectory, "*.iar"));
-                archives.AddRange(new List<string>(Directory.GetFiles(m_archiveDirectory, "*.tgz")));
+                var archives = new List<string> (Directory.GetFiles (m_archiveDirectory, "*.iar"));
+                archives.AddRange (new List<string> (Directory.GetFiles (m_archiveDirectory, "*.tgz")));
                 foreach (string file in archives)
-                    retVals.Add(Path.GetFileNameWithoutExtension(file));
+                    retVals.Add (Path.GetFileNameWithoutExtension (file));
             }
 
             return retVals;
@@ -327,7 +327,7 @@ namespace Universe.Modules.Archivers
                     {
                         options["skip-assets"] = true;
                         newParams.Remove(param);
-                    }
+                    } 
 
                     if (param.StartsWith("--merge", StringComparison.CurrentCultureIgnoreCase))
                     {
@@ -354,13 +354,12 @@ namespace Universe.Modules.Archivers
                     } while (names.Length < 2);
                     firstName = names[0];
                     lastName = names[1];
-                }
-                else
+                } else
                 {
                     firstName = newParams[2];
                     lastName = newParams[3];
                 }
-                string archiveFileName = firstName + "_" + lastName + ".iar";         // assume this is the IAR to load initially
+                string archiveFileName = firstName+"_"+lastName+".iar";         // assume this is the IAR to load initially
 
                 // optional...
                 if (newParams.Count > 4)
@@ -379,20 +378,19 @@ namespace Universe.Modules.Archivers
                             var archives = GetIARFilenames();
                             if (archives.Count > 0)
                             {
-                                MainConsole.Instance.CleanInfo(" Available archives are : ");
+                                MainConsole.Instance.CleanInfo (" Available archives are : ");
                                 foreach (string file in archives)
-                                    MainConsole.Instance.CleanInfo("   " + file);
-                            }
-                            else
-                                MainConsole.Instance.CleanInfo("Sorry, no archives are available.");
+                                    MainConsole.Instance.CleanInfo ("   " + file);
+                            } else
+                                MainConsole.Instance.CleanInfo ("Sorry, no archives are available.");
 
-                            archiveFileName = "";
+                            archiveFileName = "";    
                         }
                     } while (archiveFileName == "");
                 }
 
                 // sanity checks...
-                var loadPath = PathHelpers.VerifyReadFile(archiveFileName, new List<string> { ".iar", ".tgz" }, m_archiveDirectory);
+                var loadPath = PathHelpers.VerifyReadFile(archiveFileName, new List<string>{".iar",".tgz"}, m_archiveDirectory);
                 if (loadPath == "")
                 {
                     MainConsole.Instance.InfoFormat("   Sorry, IAR file '{0}' not found!", archiveFileName);
@@ -439,7 +437,7 @@ namespace Universe.Modules.Archivers
         /// <param name="cmdparams"></param>
         protected void HandleSaveIARConsoleCommand(IScene scene, string[] cmdparams)
         {
-            Dictionary<string, object> options = new Dictionary<string, object> { { "Assets", true } };
+            Dictionary<string, object> options = new Dictionary<string, object> {{"Assets", true}};
             List<string> newParams = new List<string>(cmdparams);
             foreach (string param in cmdparams)
             {
@@ -474,8 +472,7 @@ namespace Universe.Modules.Archivers
                     } while (names.Length < 2);
                     firstName = names[0];
                     lastName = names[1];
-                }
-                else
+                } else
                 {
                     firstName = newParams[2];
                     lastName = newParams[3];
@@ -491,16 +488,15 @@ namespace Universe.Modules.Archivers
                 string archiveFileName;
                 if (newParams.Count < 4)
                 {
-                    archiveFileName = firstName + "_" + lastName;
+                    archiveFileName = firstName+"_"+lastName;
                     archiveFileName = MainConsole.Instance.Prompt("IAR file to save: ", archiveFileName);
-                }
-                else
+                } else
                     archiveFileName = newParams[4];
-
+                
 
                 //some file sanity checks
                 string savePath;
-                savePath = PathHelpers.VerifyWriteFile(archiveFileName, ".iar", m_archiveDirectory, true);
+                savePath = PathHelpers.VerifyWriteFile (archiveFileName, ".iar", m_archiveDirectory, true);
 
                 MainConsole.Instance.InfoFormat(
                     "[Inventory Archiver]: Saving archive {0} using inventory path {1} for {2} {3}",

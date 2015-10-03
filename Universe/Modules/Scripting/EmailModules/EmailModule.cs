@@ -70,7 +70,7 @@ namespace Universe.Modules.Scripting
 
         bool m_Enabled;
         string m_HostName = string.Empty;
-        string m_InterObjectHostname = "lsl.Universe.local";
+        string m_InterObjectHostname = "lsl.whitecore.local";
         const int m_MaxQueueSize = 50; // maximum size of an object mail queue
         bool m_localOnly = true;
         int m_MaxEmailSize = 4096; // largest email allowed by default, as per lsl docs.

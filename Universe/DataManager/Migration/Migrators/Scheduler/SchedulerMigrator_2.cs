@@ -53,10 +53,21 @@ namespace Universe.DataManager.Migration.Migrators.Scheduler
                 ColDef("create_time", ColumnTypes.DateTime),
                 ColDef("start_time", ColumnTypes.DateTime),
                 ColDef("run_every_type", ColumnTypes.Integer30),
-                ColDef("enabled", ColumnTypes.TinyInt1)
+                ColDef("enabled", ColumnTypes.TinyInt1),
+                new ColumnDefinition
+                    {
+                        Name = "schedule_for",
+                        Type = new ColumnTypeDef
+                                   {
+                                       Type = ColumnType.String,
+                                       Size = 36,
+                                       defaultValue = OpenMetaverse.UUID.Zero.ToString()
+                                   }
+                    }
                                        ), IndexDefs(
                                            IndexDef(new[] {"id"}, IndexType.Primary),
-                                           IndexDef(new[] {"runs_next", "enabled"}, IndexType.Index)
+                                           IndexDef(new[] {"runs_next", "enabled"}, IndexType.Index),
+                                           IndexDef(new[] {"schedule_for", "fire_function"}, IndexType.Index)
                                               ));
 
             AddSchema("scheduler_history", ColDefs(

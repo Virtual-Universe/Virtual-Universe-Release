@@ -240,8 +240,8 @@ namespace Universe.Modules.Restart
         /// </summary>
         public void SerializeScene()
         {
-            MainConsole.Instance.InfoFormat("[Restart]: Saving current users on {0} ready for restart", m_scene.RegionInfo.RegionName);
-            SerializeUsers(m_scene);
+            MainConsole.Instance.InfoFormat ("[Restart]: Saving current users on {0} ready for restart", m_scene.RegionInfo.RegionName);
+            SerializeUsers (m_scene);
         }
 
         #endregion

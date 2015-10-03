@@ -25,11 +25,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using Universe.Framework.ConsoleFramework;
+using Universe.Region;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Universe.Framework.ConsoleFramework;
-using Universe.Region;
 
 namespace Universe.Modules
 {
@@ -75,7 +75,7 @@ namespace Universe.Modules
             }
             catch (Exception ex)
             {
-                MainConsole.Instance.Warn("[Protobuf Region Loader]: Failed to load backup: " + ex.ToString());
+                MainConsole.Instance.Warn("[ProtobufRegionLoader]: Failed to load backup: " + ex.ToString());
                 return null;
             }
         }
@@ -90,7 +90,7 @@ namespace Universe.Modules
             }
             catch (Exception ex)
             {
-                MainConsole.Instance.Warn("[Protobuf Region Loader]: Failed to save backup: " + ex.ToString());
+                MainConsole.Instance.Warn("[ProtobufRegionLoader]: Failed to save backup: " + ex.ToString());
                 return false;
             }
             finally

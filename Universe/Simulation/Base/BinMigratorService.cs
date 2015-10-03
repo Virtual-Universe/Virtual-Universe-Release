@@ -25,11 +25,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using Nini.Config;
+using Nini.Ini;
 using System;
 using System.IO;
 using System.Reflection;
-using Nini.Config;
-using Nini.Ini;
 
 namespace Universe.Simulation.Base
 {

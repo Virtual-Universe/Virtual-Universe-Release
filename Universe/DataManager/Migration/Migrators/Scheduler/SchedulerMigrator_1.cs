@@ -46,24 +46,27 @@ namespace Universe.DataManager.Migration.Migrators.Scheduler
                 ColDef("fire_params", ColumnTypes.String1024),
                 ColDef("run_once", ColumnTypes.TinyInt1),
                 ColDef("run_every", ColumnTypes.Integer30),
-                ColDef("runs_next", ColumnTypes.Integer30),
+                ColDef("runs_next", ColumnTypes.DateTime),
                 ColDef("keep_history", ColumnTypes.TinyInt1),
                 ColDef("require_reciept", ColumnTypes.TinyInt1),
                 ColDef("last_history_id", ColumnTypes.String36),
-                ColDef("create_time", ColumnTypes.Integer30),
+                ColDef("create_time", ColumnTypes.DateTime),
+                ColDef("start_time", ColumnTypes.DateTime),
+                ColDef("run_every_type", ColumnTypes.Integer30),
                 ColDef("enabled", ColumnTypes.TinyInt1)
                                        ), IndexDefs(
-                                           IndexDef(new string[3] {"id", "runs_next", "enabled"}, IndexType.Primary)
+                                           IndexDef(new[] {"id"}, IndexType.Primary),
+                                           IndexDef(new[] {"runs_next", "enabled"}, IndexType.Index)
                                               ));
 
             AddSchema("scheduler_history", ColDefs(
                 ColDef("id", ColumnTypes.String36),
                 ColDef("scheduler_id", ColumnTypes.String36),
-                ColDef("ran_time", ColumnTypes.Integer30),
-                ColDef("run_time", ColumnTypes.Integer30),
+                ColDef("ran_time", ColumnTypes.DateTime),
+                ColDef("run_time", ColumnTypes.DateTime),
                 ColDef("reciept", ColumnTypes.String1024),
                 ColDef("is_complete", ColumnTypes.TinyInt1),
-                ColDef("complete_time", ColumnTypes.Integer30)
+                ColDef("complete_time", ColumnTypes.DateTime)
                                                ), IndexDefs(
                                                    IndexDef(new string[2] {"id", "scheduler_id"}, IndexType.Primary)
                                                       ));

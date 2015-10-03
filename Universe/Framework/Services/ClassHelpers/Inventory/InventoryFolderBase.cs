@@ -75,31 +75,36 @@ namespace Universe.Framework.Services.ClassHelpers.Inventory
 
 
         /* Current Inventory folder types (as they do not appear to be listed anywhere)
-            -1  User Defined
+            -1  None
             0	Textures
-            1	Sounds
+            1	Sound
             2	Calling Cards
             3	Landmarks
             5	Clothing
             6	Objects
             7	Notecards
-            9	My Inventory ( Universe 0.7.x)
-            10	Scripts
+            8	Root (My Inventory)  // Previously 9 for versions prior to Sep 2015
+            10	LSL Text (Scripts)
             13	Body Parts
             14	Trash
             15	Photo Album
             16	Lost and Found
             20	Animations
-            21	Gestures          
+            21	Gestures
             23	Favorites
             26	ENSEMBLE Start (These are reserved for special clothing)
             45	ENSEMBLE End (These are reserved for special clothing)
             46	Current Outfit
+            47  Outfit
             48	My Outfits
-            50	Received Items
+            49  Mesh
+            50	Inbox (Received Items)
             51	Merchant Outbox
-            53	Marketplace Listings
-            100	My Suitcase
+            52  BasicRoot
+            53	VMMListings (Marketplace Listings)
+            54  VMMStocks (Marketplace Stocks)
+            53  VMMVersions (Marketplace Versions)
+            100	HG Suitcase
         */
         public short Type { get; set; }
 

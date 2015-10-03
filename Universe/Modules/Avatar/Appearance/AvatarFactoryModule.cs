@@ -25,6 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -158,8 +159,8 @@ textures 1
 
             if (MainConsole.Instance != null)
             {
-                MainConsole.Instance.Commands.AddCommand(
-                    "force send appearance",
+                MainConsole.Instance.Commands.AddCommand (
+                    "force send appearance", 
                     "force send appearance <first> <last>",
                     "Force send the avatar's appearance",
                     HandleConsoleForceSendAppearance, true, false);
@@ -304,13 +305,18 @@ textures 1
                 CachedAgentArgs r = new CachedAgentArgs();
                 r.TextureIndex = arg.TextureIndex;
                 //V2 changed to send the actual texture index, and not the baked texture index
-                int index = arg.TextureIndex >= 5 ? arg.TextureIndex :
-                    (int)AppearanceManager.BakeTypeToAgentTextureIndex((BakeType)arg.TextureIndex);
-                r.ID = app.Appearance.Texture.FaceTextures[index] == null ||
+                int index = arg.TextureIndex >= 5 
+                    ? arg.TextureIndex 
+                    : (int)AppearanceManager.BakeTypeToAgentTextureIndex((BakeType)arg.TextureIndex);
+                
+                r.ID = (
+                    app.Appearance.Texture.FaceTextures[index] == null ||
                     app.Appearance.WearableCache.Count == 0 ||
                     !app.Appearance.WearableCache.ContainsKey(index.ToString()) ||
-                    app.Appearance.WearableCache[index.ToString()] != arg.ID ?
-                    UUID.Zero : app.Appearance.Texture.FaceTextures[index].TextureID;
+                    app.Appearance.WearableCache[index.ToString()] != arg.ID 
+                        ? UUID.Zero 
+                        : app.Appearance.Texture.FaceTextures[index].TextureID );
+                    
                 resp.Add(r);
             }
 
@@ -379,7 +385,7 @@ textures 1
             }
             IAvatarAppearanceModule appearance = sp.RequestModuleInterface<IAvatarAppearanceModule>();
 
-            // MainConsole.Instance.WarnFormat("[AvatarFactory]: Handle appearance send for {0}", agentid);
+            // MainConsole.Instance.WarnFormat("[Avatar Factory]: Handle appearance send for {0}", agentid);
 
             // Send the appearance to everyone in the scene
             appearance.SendAppearanceToAllOtherAgents();
@@ -535,8 +541,7 @@ textures 1
                         {
                             m_underPantsUUID = UUID.Random();
                             AssetBase asset = new AssetBase(m_underPantsUUID, "Default Underpants", AssetType.Clothing,
-                                                            UUID.Zero)
-                            { Data = Utils.StringToBytes(m_defaultUnderPants) };
+                                                            UUID.Zero) { Data = Utils.StringToBytes(m_defaultUnderPants) };
                             asset.ID = m_scene.AssetService.Store(asset);
                             m_underPantsUUID = asset.ID;
                         }
@@ -583,8 +588,7 @@ textures 1
                         {
                             m_underShirtUUID = UUID.Random();
                             AssetBase asset = new AssetBase(m_underShirtUUID, "Default Undershirt", AssetType.Clothing,
-                                                            UUID.Zero)
-                            { Data = Utils.StringToBytes(m_defaultUnderShirt) };
+                                                            UUID.Zero) { Data = Utils.StringToBytes(m_defaultUnderShirt) };
                             asset.ID = m_scene.AssetService.Store(asset);
                             m_underShirtUUID = asset.ID;
                         }
@@ -706,20 +710,19 @@ textures 1
             if (cmds.Length < 5)
             {
                 string name = "";
-                name = MainConsole.Instance.Prompt("User Name <first last>: ", name);
+                name = MainConsole.Instance.Prompt ("User Name <first last>: ", name);
                 if (name == "")
                     return;
-                var names = name.Split(' ');
+                var names = name.Split (' ');
                 if (names.Length < 2)
                     return;
-                firstName = names[0];
-                lastName = names[1];
+                firstName = names [0];
+                lastName = names [1];
 
-            }
-            else
+            } else
             {
-                firstName = cmds[3];
-                lastName = cmds[4];
+                firstName = cmds [3];
+                lastName = cmds [4];
             }
 
             IScenePresence SP;
@@ -777,12 +780,12 @@ textures 1
                 // only send update from root agents to other clients; children are only "listening posts"
                 if (m_sp.IsChildAgent)
                 {
-                    MainConsole.Instance.Warn("[Scene Presence Service]: attempt to send avatar data from a child agent");
+                    MainConsole.Instance.Warn("[Scene Presence] attempt to send avatar data from a child agent");
                     return;
                 }
 
                 int count = 0;
-                m_sp.Scene.ForEachScenePresence(delegate (IScenePresence scenePresence)
+                m_sp.Scene.ForEachScenePresence(delegate(IScenePresence scenePresence)
                 {
                     if (scenePresence.UUID != m_sp.UUID)
                     {
@@ -802,7 +805,7 @@ textures 1
             /// <param name="sendAppearance"></param>
             public void SendAvatarDataToAgent(IScenePresence avatar, bool sendAppearance)
             {
-                //MainConsole.Instance.WarnFormat("[Scene Presence]: Send avatar data from {0} to {1}",m_uuid,avatar.ControllingClient.AgentId);
+                //MainConsole.Instance.WarnFormat("[Scene Presence] Send avatar data from {0} to {1}",m_uuid,avatar.ControllingClient.AgentId);
                 if (!sendAppearance)
                     avatar.SceneViewer.SendPresenceFullUpdate(m_sp);
                 else
@@ -818,12 +821,12 @@ textures 1
                 // only send update from root agents to other clients; children are only "listening posts"
                 if (m_sp.IsChildAgent)
                 {
-                    MainConsole.Instance.Warn("[Scene Presnence Service]: attempt to send avatar data from a child agent");
+                    MainConsole.Instance.Warn("[Scene Presence] attempt to send avatar data from a child agent");
                     return;
                 }
 
                 int count = 0;
-                m_sp.Scene.ForEachScenePresence(delegate (IScenePresence scenePresence)
+                m_sp.Scene.ForEachScenePresence(delegate(IScenePresence scenePresence)
                 {
                     if (scenePresence.UUID == m_sp.UUID)
                         return;
@@ -843,7 +846,7 @@ textures 1
             public void SendOtherAgentsAppearanceToMe()
             {
                 int count = 0;
-                m_sp.Scene.ForEachScenePresence(delegate (IScenePresence scenePresence)
+                m_sp.Scene.ForEachScenePresence(delegate(IScenePresence scenePresence)
                 {
                     // only send information about root agents
                     if (scenePresence.IsChildAgent)
@@ -910,7 +913,7 @@ textures 1
             public void SendOtherAgentsAvatarDataToMe()
             {
                 int count = 0;
-                m_sp.Scene.ForEachScenePresence(delegate (IScenePresence scenePresence)
+                m_sp.Scene.ForEachScenePresence(delegate(IScenePresence scenePresence)
                 {
                     // only send information about root agents
                     if (scenePresence.IsChildAgent)
@@ -945,7 +948,7 @@ textures 1
                 {
                     //Force send!
                     m_InitialHasWearablesBeenSent = true;
-                    MainConsole.Instance.Warn("[AvatarAppearanceModule]: Been 10 seconds since root agent " + m_sp.Name +
+                    MainConsole.Instance.Warn("[Avatar Appearance Module]: Been 10 seconds since root agent " + m_sp.Name +
                                               " was added and appearance was not sent, force sending now.");
 
                     m_sp.ControllingClient.SendWearables(Appearance.Wearables, Appearance.Serial);

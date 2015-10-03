@@ -26,6 +26,13 @@
  */
 
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
@@ -37,13 +44,6 @@ using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Services.ClassHelpers.Inventory;
 using Universe.Framework.Utilities;
 using Universe.Region;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 
 namespace Universe.Services
 {
@@ -59,13 +59,13 @@ namespace Universe.Services
 
         #endregion
         
-        private IAssetService m_assetService;
-        private IInventoryService m_inventoryService;
-        private ILibraryService m_libraryService;
-        private IMoneyModule m_moneyModule;
-        private UUID m_agentID;
-        private IInventoryData m_inventoryData;
-        private List<string> m_uris = new List<string>();
+        IAssetService m_assetService;
+        IInventoryService m_inventoryService;
+        ILibraryService m_libraryService;
+        IMoneyModule m_moneyModule;
+        UUID m_agentID;
+        IInventoryData m_inventoryData;
+        List<string> m_uris = new List<string>();
 
         #region ICapsServiceConnector Members
 
@@ -362,7 +362,7 @@ namespace Universe.Services
                                                         OSHttpResponse httpResponse)
         {
             string asset_type = map["asset_type"].AsString();
-            //MainConsole.Instance.Info("[CAPS]: NewAgentInventoryRequest Request is: " + map.ToString());
+            //MainConsole.Instance.Info("[Caps]: NewAgentInventoryRequest Request is: " + map.ToString());
             //MainConsole.Instance.Debug("asset upload request via CAPS" + llsdRequest.inventory_type + " , " + llsdRequest.asset_type);
 
             string assetName = map["name"].AsString();

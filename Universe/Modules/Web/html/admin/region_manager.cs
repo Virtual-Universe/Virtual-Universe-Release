@@ -132,7 +132,7 @@ namespace Universe.Modules.Web
 
                 newRegion.RegionPort = RegionPort;
                 newRegion.SeeIntoThisSimFromNeighbor = true;
-                newRegion.InfiniteRegion = true;
+                newRegion.InfiniteRegion = false;
                 newRegion.ObjectCapacity = 50000;
                 newRegion.Startup = StartupType.Normal;
 
@@ -149,15 +149,15 @@ namespace Universe.Modules.Web
 
                 }
 
-                if (regionPreset.StartsWith("u"))
+                if (regionPreset.StartsWith("w"))
                 {
                     // 'standard' setup
-                    newRegion.RegionType = newRegion.RegionType + "Universe";                   
+                    newRegion.RegionType = newRegion.RegionType + "Whitecore";                   
                     //info.RegionPort;            // use auto assigned port
                     newRegion.RegionTerrain = "Flatland";
                     newRegion.Startup = StartupType.Normal;
                     newRegion.SeeIntoThisSimFromNeighbor = true;
-                    newRegion.InfiniteRegion = true;
+                    newRegion.InfiniteRegion = false;
                     newRegion.ObjectCapacity = 50000;
                     newRegion.RegionPort = RegionPort;
  
@@ -174,7 +174,7 @@ namespace Universe.Modules.Web
                         newRegion.RegionTerrain = "Grassland";
                     newRegion.Startup = StartupType.Medium;
                     newRegion.SeeIntoThisSimFromNeighbor = true;
-                    newRegion.InfiniteRegion = true;
+                    newRegion.InfiniteRegion = false;
                     newRegion.ObjectCapacity = 750;
                     newRegion.RegionSettings.AgentLimit = 10;
                     newRegion.RegionSettings.AllowLandJoinDivide = false;
@@ -188,7 +188,7 @@ namespace Universe.Modules.Web
                     newRegion.RegionTerrain = "Homestead";
                     newRegion.Startup = StartupType.Medium;
                     newRegion.SeeIntoThisSimFromNeighbor = true;
-                    newRegion.InfiniteRegion = true;
+                    newRegion.InfiniteRegion = false;
                     newRegion.ObjectCapacity = 3750;
                     newRegion.RegionSettings.AgentLimit = 20;
                     newRegion.RegionSettings.AllowLandJoinDivide = false;
@@ -203,7 +203,7 @@ namespace Universe.Modules.Web
                     newRegion.RegionTerrain = RegionTerrain;
                     newRegion.Startup = StartupType.Normal;
                     newRegion.SeeIntoThisSimFromNeighbor = true;
-                    newRegion.InfiniteRegion = true;
+                    newRegion.InfiniteRegion = false;
                     newRegion.ObjectCapacity = 15000;
                     newRegion.RegionSettings.AgentLimit = 100;
                     if (newRegion.RegionType.StartsWith ("M"))                           // defaults are 'true'

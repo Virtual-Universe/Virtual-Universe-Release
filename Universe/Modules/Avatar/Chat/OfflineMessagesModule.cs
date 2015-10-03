@@ -93,7 +93,7 @@ namespace Universe.Modules.Chat
                     m_Scene = null;
 
                     MainConsole.Instance.Error(
-                        "[OFFLINE MESSAGING] No message transfer module or OfflineMessagesConnector is enabled. Disabling offline messages");
+                        "[Offline Messaging] No message transfer module or OfflineMessagesConnector is enabled. Disabling offline messages");
                     return;
                 }
                 m_TransferModule.OnUndeliveredMessage += UndeliveredMessage;
@@ -177,7 +177,6 @@ namespace Universe.Modules.Chat
                 //
                 // Needed for proper state management for stored group
                 // invitations
-                //
                 IM.Offline = 1;
                 m_Scene.EventManager.TriggerIncomingInstantMessage(IM);
             }

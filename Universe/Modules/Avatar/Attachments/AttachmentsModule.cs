@@ -25,7 +25,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Nini.Config;
+using OpenMetaverse;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
@@ -36,11 +40,6 @@ using Universe.Framework.Serialization;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Services.ClassHelpers.Inventory;
 using Universe.Framework.Utilities;
-using Nini.Config;
-using OpenMetaverse;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using GridRegion = Universe.Framework.Services.GridRegion;
 
 namespace Universe.Modules.Attachments
@@ -134,7 +133,7 @@ namespace Universe.Modules.Attachments
                                        if (null == appearance || null == appearance.Appearance)
                                        {
                                            MainConsole.Instance.WarnFormat(
-                                               "[ATTACHMENT]: Appearance has not been initialized for agent {0}",
+                                               "[Attachment]: Appearance has not been initialized for agent {0}",
                                                presence.UUID);
                                            return;
                                        }
@@ -145,7 +144,7 @@ namespace Universe.Modules.Attachments
 
                                        List<AvatarAttachment> attachments = appearance.Appearance.GetAttachments();
                                        MainConsole.Instance.InfoFormat(
-                                           "[ATTACHMENTS MODULE]:  Found {0} attachments to attach to avatar {1}",
+                                           "[Attachments Module]:  Found {0} attachments to attach to avatar {1}",
                                            attachments.Count, presence.Name);
                                        foreach (AvatarAttachment attach in attachments)
                                        {
@@ -157,7 +156,7 @@ namespace Universe.Modules.Attachments
                                            catch (Exception e)
                                            {
                                                MainConsole.Instance.ErrorFormat(
-                                                   "[ATTACHMENT]: Unable to rez attachment: {0}", e);
+                                                   "[Attachment]: Unable to rez attachment: {0}", e);
                                            }
                                        }
                                        presence.AttachmentsLoaded = true;
@@ -303,7 +302,6 @@ namespace Universe.Modules.Attachments
             ISceneEntity group = m_scene.GetGroupByPrim(objectLocalID);
             if (group != null)
             {
-                //group.DetachToGround();
                 DetachSingleAttachmentToInventory(group.RootChild.FromUserInventoryItemID, remoteClient);
             }
             else
@@ -319,7 +317,7 @@ namespace Universe.Modules.Attachments
 
         protected void ClientAttachObject(IClientAPI remoteClient, uint objectLocalID, int AttachmentPt, bool silent)
         {
-            MainConsole.Instance.Debug("[ATTACHMENTS MODULE]: Invoking AttachObject");
+            MainConsole.Instance.Debug("[Attachments Module]: Invoking AttachObject");
 
             try
             {
@@ -333,7 +331,7 @@ namespace Universe.Modules.Attachments
             }
             catch (Exception e)
             {
-                MainConsole.Instance.DebugFormat("[ATTACHMENTS MODULE]: exception upon Attach Object {0}", e);
+                MainConsole.Instance.DebugFormat("[Attachments Module]: exception upon Attach Object {0}", e);
             }
         }
 
@@ -381,7 +379,7 @@ namespace Universe.Modules.Attachments
             IClientAPI remoteClient, UUID itemID, UUID assetID, int AttachmentPt, bool updateUUIDs)
         {
             MainConsole.Instance.DebugFormat(
-                "[ATTACHMENTS MODULE]: Rezzing attachment to point {0} from item {1} for {2}",
+                "[Attachments Module]: Rezzing attachment to point {0} from item {1} for {2}",
                 (AttachmentPoint) AttachmentPt, itemID, remoteClient.Name);
             IInventoryAccessModule invAccess = m_scene.RequestModuleInterface<IInventoryAccessModule>();
             if (invAccess != null)
@@ -483,7 +481,7 @@ namespace Universe.Modules.Attachments
                             bool success = m_scene.SceneGraph.RestorePrimToScene(objatt, false);
                             if (!success)
                             {
-                                MainConsole.Instance.Error("[AttachmentModule]: Failed to add attachment " + objatt.Name +
+                                MainConsole.Instance.Error("[Attachment Module]: Failed to add attachment " + objatt.Name +
                                                            " for user " + remoteClient.Name + "!");
                                 return null;
                             }
@@ -507,7 +505,7 @@ namespace Universe.Modules.Attachments
                                 prim.LocalId = 0;
                             bool success = m_scene.SceneGraph.RestorePrimToScene(objatt, true);
                             if (!success)
-                                MainConsole.Instance.Error("[AttachmentModule]: Failed to add attachment " + objatt.Name + " for user " + remoteClient.Name + "!"); */
+                                MainConsole.Instance.Error("[Attachment Module]: Failed to add attachment " + objatt.Name + " for user " + remoteClient.Name + "!"); */
                         }
                     }
                     catch
@@ -527,7 +525,7 @@ namespace Universe.Modules.Attachments
                 else
                 {
                     MainConsole.Instance.WarnFormat(
-                        "[ATTACHMENTS MODULE]: Could not retrieve item {0} for attaching to avatar {1} at point {2}",
+                        "[Attachments Module]: Could not retrieve item {0} for attaching to avatar {1} at point {2}",
                         itemID, remoteClient.Name, AttachmentPt);
                 }
 
@@ -560,7 +558,7 @@ namespace Universe.Modules.Attachments
                         return; //Its not attached! What are we doing!
                 }
 
-                MainConsole.Instance.Debug("[ATTACHMENTS MODULE]: Detaching from UserID: " + remoteClient.AgentId +
+                MainConsole.Instance.Debug("[Attachments Module]: Detaching from UserID: " + remoteClient.AgentId +
                                            ", ItemID: " + itemID);
                 if (AvatarFactory != null)
                     AvatarFactory.QueueAppearanceSave(remoteClient.AgentId);
@@ -779,7 +777,7 @@ namespace Universe.Modules.Attachments
             }
 
             MainConsole.Instance.DebugFormat(
-                "[ATTACHMENTS MODULE]: Retrieved single object {0} for attachment to {1} on point {2} localID {3}",
+                "[Attachments Module]: Retrieved single object {0} for attachment to {1} on point {2} localID {3}",
                 group.Name, remoteClient.Name, AttachmentPt, group.LocalId);
 
             //Update where we are put
@@ -830,7 +828,6 @@ namespace Universe.Modules.Attachments
             // Killing it here will cause the client to deselect it
             // It then reappears on the avatar, deselected
             // through the full update below
-            //
             if (group.IsSelected)
             {
                 foreach (ISceneChildEntity part in group.ChildrenEntities())
@@ -868,7 +865,7 @@ namespace Universe.Modules.Attachments
                 if (UUID.Zero == itemID)
                 {
                     MainConsole.Instance.Error(
-                        "[ATTACHMENTS MODULE]: Unable to save attachment. Error inventory item ID.");
+                        "[Attachments Module]: Unable to save attachment. Error inventory item ID.");
                     remoteClient.SendAgentAlertMessage(
                         "Unable to save attachment. Error inventory item ID.", false);
                     return;
@@ -903,7 +900,6 @@ namespace Universe.Modules.Attachments
                     AvatarFactory.QueueAppearanceSave(remoteClient.AgentId);
                 }
             }
-
 
             // In case it is later dropped again, don't let
             // it get cleaned up
@@ -961,7 +957,7 @@ namespace Universe.Modules.Attachments
                 if (attModule != null) presence.SetAttachments(attModule.Get());
             }
 
-            MainConsole.Instance.Debug("[ATTACHMENTS MODULE]: Saving attachpoint: " +
+            MainConsole.Instance.Debug("[Attachments Module]: Saving attachpoint: " +
                                        ((uint) group.GetAttachmentPoint()).ToString());
 
             //Update the saved attach points
@@ -1003,7 +999,7 @@ namespace Universe.Modules.Attachments
             {
                 if (!grp.HasGroupChanged)
                 {
-                    //MainConsole.Instance.WarnFormat("[ATTACHMENTS MODULE]: Save request for {0} which is unchanged", grp.UUID);
+                    //MainConsole.Instance.WarnFormat("[Attachments Module]: Save request for {0} which is unchanged", grp.UUID);
                     return UUID.Zero;
                 }
 
@@ -1011,7 +1007,7 @@ namespace Universe.Modules.Attachments
                 grp.BackupPreparation();
 
                 MainConsole.Instance.InfoFormat(
-                    "[ATTACHMENTS MODULE]: Updating asset for attachment {0}, attachpoint {1}",
+                    "[Attachments Module]: Updating asset for attachment {0}, attachpoint {1}",
                     grp.UUID, grp.GetAttachmentPoint());
 
                 string sceneObjectXml = SceneEntitySerializer.SceneObjectSerializer.ToOriginalXmlFormat(grp);

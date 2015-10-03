@@ -113,12 +113,12 @@ namespace Universe.Framework.Servers.HttpServer
 
             try
             {
-                if (_listener.IsListening)
+                if(_listener.IsListening)
                     context = _listener.EndGetContext(result);
             }
             catch (Exception ex)
             {
-                MainConsole.Instance.ErrorFormat("[Http Listener Manager]: Exception occurred: {0}", ex.ToString());
+                MainConsole.Instance.ErrorFormat("[HttpListenerManager]: Exception occurred: {0}", ex.ToString());
                 return;
             }
             finally
@@ -174,12 +174,12 @@ namespace Universe.Framework.Servers.HttpServer
                 }
                 try
                 {
-                    if (context != null)
+                    if(context != null)
                         ProcessRequest(context);
                 }
                 catch (Exception e)
                 {
-                    MainConsole.Instance.ErrorFormat("[Http Listener Manager]: Exception occurred: {0}", e.ToString());
+                    MainConsole.Instance.ErrorFormat("[HttpListenerManager]: Exception occurred: {0}", e.ToString());
                 }
             }
         }

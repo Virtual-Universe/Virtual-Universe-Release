@@ -25,6 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
 using System;
 using System.Text;
 using Nini.Config;
@@ -43,7 +44,7 @@ namespace Universe.Modules.Voice
 {
     public class GenericVoiceModule : INonSharedRegionModule
     {
-        bool m_enabled = true;
+        bool m_enabled;
         IScene m_scene;
 
         #region INonSharedRegionModule Members
@@ -53,13 +54,14 @@ namespace Universe.Modules.Voice
             IConfig voiceconfig = config.Configs["Voice"];
             if (voiceconfig == null)
                 return;
-
+            
             const string voiceModule = "GenericVoice";
             if (voiceconfig.GetString("Module", voiceModule) != voiceModule)
                 return;
 
-            // We use GenericVoice calls to keep the viewer happy
+            // We are using generic voice calls to keep the viewer happy
             m_enabled = true;
+
         }
 
         public void AddRegion(IScene scene)
