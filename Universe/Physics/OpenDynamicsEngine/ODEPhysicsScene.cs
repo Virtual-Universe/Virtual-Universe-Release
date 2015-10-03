@@ -982,12 +982,12 @@ namespace Universe.Physics.OpenDynamicsEngine
                                   chr.CAPSULE_LENGTH*2), true, chr.LocalID, chr.UUID);
         }
 
-		internal void BadPrim(UniverseODEPrim UniverseODEPrim)
+		internal void BadPrim(UniverseODEPrim whitecoreODEPrim)
         {
-			DeletePrim(UniverseODEPrim);
+			DeletePrim(whitecoreODEPrim);
             //Can't really do this here... as it will be readded before the delete gets called, which is wrong...
             //So... leave the prim out there for now
-			//AddPrimShape(UniverseODEPrim.ParentEntity);
+			//AddPrimShape(whitecoreODEPrim.ParentEntity);
         }
 
         public override PhysicsActor AddPrimShape(UUID primID, uint localID, string name, byte physicsType, PrimitiveBaseShape shape, Vector3 position,
@@ -1529,7 +1529,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                                             	if (RegionTerrain != IntPtr.Zero)
                                                 {
 					                        		IntPtr sGeomIsIn = d.GeomGetSpace(RegionTerrain);       // 20140729 -greythane- this seems to correct the spaceremove crash
-                        							if (sGeomIsIn != IntPtr.Zero)                           // maybe 'space' has not yet been Initialized??
+                        							if (sGeomIsIn != IntPtr.Zero)                           // maybe 'space' has not yet been initialised??
                         							{
                             							if (d.GeomIsSpace(sGeomIsIn))
                                 							d.SpaceRemove(sGeomIsIn, RegionTerrain);
