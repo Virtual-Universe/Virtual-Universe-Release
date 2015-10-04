@@ -1507,6 +1507,61 @@
       </Files>
     </Project>
 
+    <Project frameworkVersion="v4_5" name="Universe.Services.WebAPI" path="Universe/Services/WebAPI" type="Library">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="AnyCPU">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="AnyCPU">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../../../VirtualUniverse/bin/</ReferencePath>
+      <Reference name="Microsoft.CSharp"/>
+      <Reference name="System"/>
+      <Reference name="System.Core"/>
+      <Reference name="System.Data"/>
+      <Reference name="System.Drawing"/>
+      <Reference name="System.Xml"/>
+      <Reference name="System.Web"/>
+
+      <Reference name="Universe.Framework"/>
+
+      <Reference name="Nini" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverseTypes" path="../../../VirtualUniverse/bin/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+
     <?include file="addon-modules/*/prebuild*.xml" ?>
 
   </Solution>
