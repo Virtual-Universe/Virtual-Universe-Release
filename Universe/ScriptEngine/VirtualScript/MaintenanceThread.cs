@@ -31,11 +31,11 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
+using OpenMetaverse;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Utilities;
-using OpenMetaverse;
 
 namespace Universe.ScriptEngine.VirtualScript
 {
@@ -345,7 +345,7 @@ namespace Universe.ScriptEngine.VirtualScript
 
         public void Stats()
         {
-#pragma warning disable 618
+#pragma warning disable 612, 618
             foreach (Thread t in scriptThreadpool.GetThreads())
             {
                 if (t != null)
@@ -385,7 +385,7 @@ namespace Universe.ScriptEngine.VirtualScript
                     MainConsole.Instance.Debug(trace.GetFrames());
                 }
             }
-#pragma warning restore 618
+#pragma warning restore 612, 618
         }
 
         /// <summary>
