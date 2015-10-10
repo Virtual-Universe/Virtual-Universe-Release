@@ -926,57 +926,62 @@ namespace Universe.Services.SQLServices.GridService
             MainConsole.Instance.Warn ("[GridService]: Cleared all down regions");
         }
 
-        void HandleShowRegion (IScene scene, string[] cmd)
+        void HandleShowRegion(IScene scene, string[] cmd)
         {
             if (cmd.Length < 3)
             {
-                MainConsole.Instance.Info ("Syntax: show region <region name>");
+                MainConsole.Instance.Info("Syntax: show region <region name>");
                 return;
             }
-            string regionname = cmd [2];
+            string regionname = cmd[2];
             if (cmd.Length > 3)
             {
                 for (int ii = 3; ii < cmd.Length; ii++)
                 {
-                    regionname += " " + cmd [ii];
+                    regionname += " " + cmd[ii];
                 }
             }
 
 
-            List<GridRegion> regions = GetRegionsByName (null, regionname, null, null);
+            List<GridRegion> regions = GetRegionsByName(null, regionname, null, null);
             if (regions == null || regions.Count < 1)
             {
-                MainConsole.Instance.Info ("Region not found");
+                MainConsole.Instance.Info("Region not found");
                 return;
             }
 
-            IUserAccountService accountService = m_registry.RequestModuleInterface<IUserAccountService> ();
+            IUserAccountService accountService = m_registry.RequestModuleInterface<IUserAccountService>();
             // not yet  // IRegionInfoConnector regionService = m_registry.RequestModuleInterface<IRegionInfoConnector>();
 
             foreach (GridRegion r in regions)
             {
-                RegionFlags flags = (RegionFlags)Convert.ToInt32 (r.Flags);
+                RegionFlags flags = (RegionFlags)Convert.ToInt32(r.Flags);
                 int RegionPosX = r.RegionLocX / Constants.RegionSize;
                 int RegionPosY = r.RegionLocY / Constants.RegionSize;
 
-                UserAccount account = accountService.GetUserAccount (null, r.EstateOwner);
+                UserAccount account = accountService.GetUserAccount(null, r.EstateOwner);
 
-                MainConsole.Instance.Info (
+                MainConsole.Instance.Info(
                     "-------------------------------------------------------------------------------");
-                MainConsole.Instance.Info ("Region Name    : " + r.RegionName);
-                MainConsole.Instance.Info ("Region UUID    : " + r.RegionID);
-                MainConsole.Instance.Info ("Region ScopeID : " + r.ScopeID);
-                MainConsole.Instance.Info ("Region Location: " + String.Format ("{0},{1}", RegionPosX, RegionPosY));
-                MainConsole.Instance.Info ("Region Size    : " + String.Format ("{0} x {1}", r.RegionSizeX, r.RegionSizeY));
-                MainConsole.Instance.Info ("Region URI     : " + r.RegionURI);	
-                MainConsole.Instance.Info ("Map tile UUID  : " + r.TerrainMapImage);
-                MainConsole.Instance.Info ("Region Owner   : " + account.Name + " [" + r.EstateOwner + "]");
-                MainConsole.Instance.Info ("Region Flags   : " + flags);
-                //MainConsole.Instance.Info("Gridserver URI : " + r.ServerURI);				
-
-                MainConsole.Instance.CleanInfo ("");
-                MainConsole.Instance.CleanInfo ("Type         : " + r.RegionType);                   
-                MainConsole.Instance.CleanInfo ("Terrain      : " + r.RegionTerrain);                   
+                MainConsole.Instance.Info("Region Name      : " + r.RegionName);
+                MainConsole.Instance.Info("Region Maturity  : " + Utilities.GetRegionMaturity(r.Access));
+                MainConsole.Instance.Info("Region UUID      : " + r.RegionID);
+                MainConsole.Instance.Info("Region ScopeID   : " + r.ScopeID);
+                MainConsole.Instance.Info("Region Location  : " + String.Format("{0},{1}", RegionPosX, RegionPosY));
+                MainConsole.Instance.Info("Region Size      : " + String.Format("{0} x {1}", r.RegionSizeX, r.RegionSizeY));
+                MainConsole.Instance.Info("Region URI       : " + r.RegionURI);
+                MainConsole.Instance.Info("Map tile UUID    : " + r.TerrainMapImage);
+                MainConsole.Instance.Info("Region Owner     : " + account.Name + " [" + r.EstateOwner + "]");
+                MainConsole.Instance.Info("Region Flags     : " + flags);
+                //MainConsole.Instance.Info ("Gridserver URI    : " + r.ServerURI);				
+                MainConsole.Instance.Info("");
+                MainConsole.Instance.Info("========== Extended Region Information ==========");
+                MainConsole.Instance.Info("");
+                MainConsole.Instance.Info("Region Type      : " + r.RegionType);
+                MainConsole.Instance.Info("Region Terrain   : " + r.RegionTerrain);
+                MainConsole.Instance.Info("Region Online    : " + r.IsOnline);
+                MainConsole.Instance.Info("Region Last Seen : " + Utils.UnixTimeToDateTime(r.LastSeen));
+                MainConsole.Instance.Info("Region Area Size : " + r.RegionArea);
 
                 /* Not yet
                 var ri = regionService.GetRegionInfo (r.RegionID);
@@ -988,9 +993,9 @@ namespace Universe.Services.SQLServices.GridService
                 MainConsole.Instance.CleanInfo ("Allow divide : {0}" + String.Format( ri.RegionSettings.AllowLandJoinDivide ? "Yes" : "No"));
                 MainConsole.Instance.CleanInfo ("Allow resale : {0}" + String.Format( ri.RegionSettings.AllowLandResell ? "Yes" : "No"));
                 */
-                MainConsole.Instance.Info (
+                MainConsole.Instance.Info(
                     "-------------------------------------------------------------------------------");
-                MainConsole.Instance.CleanInfo (string.Empty);
+                MainConsole.Instance.CleanInfo(string.Empty);
             }
         }
 
