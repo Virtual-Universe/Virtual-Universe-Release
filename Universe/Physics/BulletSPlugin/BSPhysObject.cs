@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/, http://whitecore-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyrightD
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the OpenSimulator Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -28,10 +28,10 @@
 using System;
 using OMV = OpenMetaverse;
 using Universe.Framework.Physics;
-using Universe.Framework.Utilities;
 using Universe.Framework.SceneInfo;
+using Universe.Framework.Utilities;
 
-namespace Universe.Region.Physics.BulletSPlugin
+namespace Universe.Physics.BulletSPlugin
 {
     /*
      * Class to wrap all objects.
@@ -85,7 +85,6 @@ namespace Universe.Region.Physics.BulletSPlugin
             // Initialize variables kept in base.
             GravityMultiplier = 1.0f;
             Gravity = new OMV.Vector3(0f, 0f, BSParam.Gravity);
-            //HoverActive = false;
 
             // We don't have any physical representation yet.
             PhysBody = new BulletBody(localID);
@@ -113,7 +112,7 @@ namespace Universe.Region.Physics.BulletSPlugin
         public virtual void Destroy()
         {
             PhysicalActors.Enable(false);
-            PhysicsScene.TaintedObject("BSPhysObject.Destroy", delegate() { PhysicalActors.Dispose(); });
+            PhysicsScene.TaintedObject(LocalID, "BSPhysObject.Destroy", delegate() { PhysicalActors.Dispose(); });
         }
 
         public BSScene PhysicsScene { get; protected set; }
@@ -147,11 +146,17 @@ namespace Universe.Region.Physics.BulletSPlugin
         {
             Unknown,
             Waiting,
-            Failed,
+            FailedAssetFetch,
+            FailedMeshing,
             Fetched
         }
 
         public PrimAssetCondition PrimAssetState { get; set; }
+        public virtual bool AssetFailed()
+        {
+            return ( (PrimAssetState == PrimAssetCondition.FailedAssetFetch)
+                  || (PrimAssetState == PrimAssetCondition.FailedMeshing) );
+        }
 
         // The objects base shape information. Null if not a prim type shape.
         public PrimitiveBaseShape BaseShape { get; protected set; }
@@ -180,6 +185,7 @@ namespace Universe.Region.Physics.BulletSPlugin
         public abstract bool IsSolid { get; }
         public abstract bool IsStatic { get; }
         public abstract bool IsSelected { get; }
+        public abstract bool IsVolumeDetect { get; }
 
         // Materialness
         public MaterialAttributes.Material Material { get; private set; }
@@ -196,6 +202,11 @@ namespace Universe.Region.Physics.BulletSPlugin
             // DetailLog("{0},{1}.SetMaterial,Mat={2},frict={3},rest={4},den={5}", LocalID, TypeName, Material, Friction, Restitution, Density);
         }
 
+    	  public override float Density
+        {
+            get { return base.Density; }
+            set { base.Density = value; }
+        }
         // Stop all physical motion.
         public abstract void ZeroMotion(bool inTaintTime);
         public abstract void ZeroAngularMotion(bool inTaintTime);
@@ -266,8 +277,14 @@ namespace Universe.Region.Physics.BulletSPlugin
         // Called in taint-time!!
         public void ActivateIfPhysical(bool forceIt)
         {
-            if (IsPhysical && PhysBody.HasPhysicalBody)
-                PhysicsScene.PE.Activate(PhysBody, forceIt);
+            //if (IsPhysical && PhysBody.HasPhysicalBody)
+            if (PhysBody.HasPhysicalBody)
+            {
+                if (IsPhysical)
+                    PhysicsScene.PE.Activate(PhysBody, forceIt);
+                else
+                    PhysicsScene.PE.ClearCollisionProxyCache(PhysicsScene.World, PhysBody);
+            }
         }
 
         // 'actors' act on the physical object to change or constrain its motion. These can range from
@@ -316,6 +333,8 @@ namespace Universe.Region.Physics.BulletSPlugin
         // On a collision, check the collider and remember if the last collider was moving
         //    Used to modify the standing of avatars (avatars on stationary things stand still)
         public bool ColliderIsMoving;
+    	  // 'true' if the last collider was a volume detect object
+        public bool ColliderIsVolumeDetect;
         // Used by BSCharacter to manage standing (and not slipping)
         public bool IsStationary;
 
@@ -375,10 +394,10 @@ namespace Universe.Region.Physics.BulletSPlugin
             bool p2col = true;
 
             // We only need to test p2 for 'jump crouch purposes'
-            if (this.TypeName == "BSCharacter" && collidee is BSPrim)
+            if (TypeName == "BSCharacter" && collidee is BSPrim)
             {
                 // Testing if the collision is at the feet of the avatar
-                if ((this.Position.Z - contactPoint.Z) < (this.Size.Z * 0.5f))
+                if ((Position.Z - contactPoint.Z) < (Size.Z * 0.5f))
                     p2col = false;
             }
 
@@ -391,6 +410,7 @@ namespace Universe.Region.Physics.BulletSPlugin
 
             // For movement tests, remember if we are colliding with an object that is moving.
             ColliderIsMoving = collidee != null ? (collidee.RawVelocity != OMV.Vector3.Zero) : false;
+            ColliderIsVolumeDetect = collidee != null ? (collidee.IsVolumeDetect) : false;
 
             // If someone has subscribed for collision events log the collision so it will be reported up
             if (SubscribedEvents())
@@ -428,7 +448,7 @@ namespace Universe.Region.Physics.BulletSPlugin
                 NextCollisionOkTime = PhysicsScene.SimulationNowTime + SubscribedEventsMs;
 
                 // We are called if we previously had collisions. If there are no collisions
-                //   this time, send up one last empty event so Universe can sense collision end.
+                //   this time, send up one last empty event so WhiteCore can sense collision end.
                 if (CollisionCollection.Count == 0)
                 {
                     // If I have no collisions this time, remove me from the list of objects with collisions.
@@ -462,7 +482,7 @@ namespace Universe.Region.Physics.BulletSPlugin
                 // make sure first collision happens
                 NextCollisionOkTime = Util.EnvironmentTickCountSubtract(SubscribedEventsMs);
 
-                PhysicsScene.TaintedObject(TypeName + ".SubscribeEvents", delegate()
+                PhysicsScene.TaintedObject(LocalID, TypeName + ".SubscribeEvents", delegate()
                 {
                     if (PhysBody.HasPhysicalBody)
                         CurrentCollisionFlags = PhysicsScene.PE.AddToCollisionFlags(PhysBody,
@@ -480,7 +500,7 @@ namespace Universe.Region.Physics.BulletSPlugin
         {
             // DetailLog("{0},{1}.UnSubscribeEvents,unsubscribing", LocalID, TypeName);
             SubscribedEventsMs = 0;
-            PhysicsScene.TaintedObject(TypeName + ".UnSubscribeEvents", delegate()
+            PhysicsScene.TaintedObject(LocalID, TypeName + ".UnSubscribeEvents", delegate()
             {
                 // Make sure there is a body there because sometimes destruction happens in an un-ideal order.
                 if (PhysBody.HasPhysicalBody)

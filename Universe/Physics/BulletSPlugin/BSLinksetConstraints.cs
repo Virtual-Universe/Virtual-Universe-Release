@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/, http://whitecore-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyrightD
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the OpenSimulator Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -27,7 +27,7 @@
 
 using OMV = OpenMetaverse;
 
-namespace Universe.Region.Physics.BulletSPlugin
+namespace Universe.Physics.BulletSPlugin
 {
     public sealed class BSLinksetConstraints : BSLinkset
     {
@@ -71,7 +71,7 @@ namespace Universe.Region.Physics.BulletSPlugin
 
         // The object is going static (non-physical). Do any setup necessary for a static linkset.
         // Return 'true' if any properties updated on the passed object.
-        // This doesn't normally happen -- Universe removes the objects from the physical
+        // This doesn't normally happen -- WhiteCore removes the objects from the physical
         //     world if it is a static linkset.
         // Called at taint-time!
         public override bool MakeStatic(BSPrimLinkable child)
@@ -137,7 +137,7 @@ namespace Universe.Region.Physics.BulletSPlugin
 
         // Remove the specified child from the linkset.
         // Safe to call even if the child is not really in my linkset.
-        protected override void RemoveChildFromLinkset(BSPrimLinkable child)
+        protected override void RemoveChildFromLinkset(BSPrimLinkable child, bool inTaintTime)
         {
             if (m_children.Remove(child))
             {
@@ -149,7 +149,7 @@ namespace Universe.Region.Physics.BulletSPlugin
                     rootx.LocalID, rootx.PhysBody.AddrString,
                     childx.LocalID, childx.PhysBody.AddrString);
 
-                PhysicsScene.TaintedObject("BSLinksetConstraints.RemoveChildFromLinkset",
+                PhysicsScene.TaintedObject(inTaintTime,"BSLinksetConstraints.RemoveChildFromLinkset",
                     delegate() { PhysicallyUnlinkAChildFromRoot(rootx, childx); });
                 // See that the linkset parameters are recomputed at the end of the taint time.
                 Refresh(LinksetRoot);
@@ -164,13 +164,13 @@ namespace Universe.Region.Physics.BulletSPlugin
 
         // Create a constraint between me (root of linkset) and the passed prim (the child).
         // Called at taint time!
-        private void PhysicallyLinkAChildToRoot(BSPrimLinkable rootPrim, BSPrimLinkable childPrim)
+        void PhysicallyLinkAChildToRoot(BSPrimLinkable rootPrim, BSPrimLinkable childPrim)
         {
             // Don't build the constraint when asked. Put it off until just before the simulation step.
             Refresh(rootPrim);
         }
 
-        private BSConstraint BuildConstraint(BSPrimLinkable rootPrim, BSPrimLinkable childPrim)
+        BSConstraint BuildConstraint(BSPrimLinkable rootPrim, BSPrimLinkable childPrim)
         {
             // Zero motion for children so they don't interpolate
             childPrim.ZeroMotion(true);
@@ -245,7 +245,7 @@ namespace Universe.Region.Physics.BulletSPlugin
         // The root and child bodies are passed in because we need to remove the constraint between
         //      the bodies that were present at unlink time.
         // Called at taint time!
-        private bool PhysicallyUnlinkAChildFromRoot(BSPrimLinkable rootPrim, BSPrimLinkable childPrim)
+        bool PhysicallyUnlinkAChildFromRoot(BSPrimLinkable rootPrim, BSPrimLinkable childPrim)
         {
             bool ret = false;
             DetailLog(
@@ -268,7 +268,7 @@ namespace Universe.Region.Physics.BulletSPlugin
         // Remove linkage between myself and any possible children I might have.
         // Returns 'true' of any constraints were destroyed.
         // Called at taint time!
-        private bool PhysicallyUnlinkAllChildrenFromRoot(BSPrimLinkable rootPrim)
+        bool PhysicallyUnlinkAllChildrenFromRoot(BSPrimLinkable rootPrim)
         {
             DetailLog("{0},BSLinksetConstraint.PhysicallyUnlinkAllChildren,taint", rootPrim.LocalID);
 
@@ -280,7 +280,7 @@ namespace Universe.Region.Physics.BulletSPlugin
         // Called before the simulation step to make sure the constraint based linkset
         //    is all initialized.
         // Called at taint time!!
-        private void RecomputeLinksetConstraints()
+        void RecomputeLinksetConstraints()
         {
             float linksetMass = LinksetMass;
             LinksetRoot.UpdatePhysicalMassProperties(linksetMass, true);

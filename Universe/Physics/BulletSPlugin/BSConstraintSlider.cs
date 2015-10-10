@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
@@ -25,45 +25,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Universe.Framework.Physics;
+using OpenMetaverse;
 
 namespace Universe.Physics.BulletSPlugin
 {
-    /// <summary>
-    /// Entry for a port of Bullet (http://bulletphysics.org/) to WhiteCore.
-    /// This module interfaces to an unmanaged C++ library which makes the
-    /// actual calls into the Bullet physics engine.
-    /// The unmanaged library is found in opensim-libs::trunk/unmanaged/BulletSim/.
-    /// The unmanaged library is compiled and linked statically with Bullet
-    /// to create BulletSim.dll and libBulletSim.so (for both 32 and 64 bit).
-    /// </summary>
-    public class BSPlugin : IPhysicsPlugin
+    public sealed class BSConstraintSlider : BSConstraint
     {
-        BSScene _mScene;
+        public override ConstraintType Type { get { return ConstraintType.SLIDER_CONSTRAINT_TYPE; } }
 
-        public BSPlugin()
+        public BSConstraintSlider(BulletWorld world, BulletBody obj1, BulletBody obj2,
+                    Vector3 frameInAloc, Quaternion frameInArot,
+                    Vector3 frameInBloc, Quaternion frameInBrot,
+                    bool useLinearReferenceFrameA, bool disableCollisionsBetweenLinkedBodies)
+        : base(world)
         {
-        }
-
-        public bool Init()
-        {
-            return true;
-        }
-
-        public PhysicsScene GetScene()
-        {
-            if (_mScene == null)
-                _mScene = new BSScene();
-            return (_mScene);
-        }
-
-        public string GetName()
-        {
-            return ("BulletSim");
-        }
-
-        public void Dispose()
-        {
+            m_body1 = obj1;
+            m_body2 = obj2;
+            m_constraint = PhysicsScene.PE.CreateSliderConstraint(world, obj1, obj2,
+                                frameInAloc, frameInArot, frameInBloc, frameInBrot,
+                                useLinearReferenceFrameA, disableCollisionsBetweenLinkedBodies);
+            m_enabled = true;
         }
     }
 }

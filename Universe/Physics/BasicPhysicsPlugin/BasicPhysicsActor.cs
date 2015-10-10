@@ -25,8 +25,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Universe.Framework.Physics;
 using OpenMetaverse;
+using Universe.Framework.Physics;
 
 namespace Universe.Physics.BasicPhysicsPlugin
 {
@@ -52,7 +52,8 @@ namespace Universe.Physics.BasicPhysicsPlugin
 
         public override int PhysicsActorType
         {
-            get { return (int) ActorTypes.Agent; }
+            get { return (int)ActorTypes.Agent; }
+            set { return; }
         }
 
         public override Vector3 RotationalVelocity { get; set; }
@@ -66,6 +67,11 @@ namespace Universe.Physics.BasicPhysicsPlugin
         public override uint LocalID
         {
             get { return 0; }
+            set { return; }
+        }
+
+        public override bool Grabbed
+        {
             set { return; }
         }
 
@@ -99,13 +105,19 @@ namespace Universe.Physics.BasicPhysicsPlugin
             set
             {
                 _size = value;
-                _size.Z = _size.Z/2.0f;
+                _size.Z = _size.Z / 2.0f;
             }
         }
 
         public override float Mass
         {
             get { return 0f; }
+        }
+
+        public override bool Kinematic
+        {
+            get { return false; }
+            set { return; }
         }
 
         public override Vector3 Force
@@ -149,7 +161,12 @@ namespace Universe.Physics.BasicPhysicsPlugin
 
     public class BasicObjectActor : PhysicsActor
     {
-        private Vector3 _size;
+        Vector3 _size;
+
+        public override bool Grabbed
+        {
+            set { return; }
+        }
 
         public override bool Selected
         {
@@ -158,7 +175,8 @@ namespace Universe.Physics.BasicPhysicsPlugin
 
         public override int PhysicsActorType
         {
-            get { return (int) ActorTypes.Agent; }
+            get { return (int)ActorTypes.Agent; }
+            set { return; }
         }
 
         public override Vector3 RotationalVelocity { get; set; }
@@ -186,6 +204,12 @@ namespace Universe.Physics.BasicPhysicsPlugin
             set { return; }
         }
 
+        public override bool Kinematic
+        {
+            get { return false; }
+            set { return; }
+        }
+
         public override bool ThrottleUpdates
         {
             get { return false; }
@@ -203,7 +227,7 @@ namespace Universe.Physics.BasicPhysicsPlugin
             set
             {
                 _size = value;
-                _size.Z = _size.Z/2.0f;
+                _size.Z = _size.Z / 2.0f;
             }
         }
 
