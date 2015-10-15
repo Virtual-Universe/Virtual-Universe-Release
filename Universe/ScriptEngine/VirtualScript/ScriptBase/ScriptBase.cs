@@ -282,15 +282,15 @@ namespace Universe.ScriptEngine.VirtualScript.Runtime
             LSL_Types.list v = (LSL_Types.list) o;
             foreach (object ob in v.Data)
             {
-                if (ob.GetType() == typeof (LSL_Types.LSLInteger))
+                if (ob is (LSL_Types.LSLInteger))
                     cur = "i" + ob;
-                else if (ob.GetType() == typeof (LSL_Types.LSLFloat))
+                else if (ob is (LSL_Types.LSLFloat))
                     cur = "f" + ob;
-                else if (ob.GetType() == typeof (LSL_Types.Vector3))
+                else if (ob is (LSL_Types.Vector3))
                     cur = "v" + ob;
-                else if (ob.GetType() == typeof (LSL_Types.Quaternion))
+                else if (ob is (LSL_Types.Quaternion))
                     cur = "q" + ob;
-                else if (ob.GetType() == typeof (LSL_Types.LSLString))
+                else if (ob is (LSL_Types.LSLString))
                     cur = "\"" + EscapeString(ob.ToString()) + "\"";
                 else if (o.GetType() == typeof (LSL_Types.list))
                     cur = "{" + ListToString(ob) + "}";
@@ -325,15 +325,15 @@ namespace Universe.ScriptEngine.VirtualScript.Runtime
                     LSL_Types.list v = (LSL_Types.list) field.GetValue(this);
                     foreach (object o in v.Data)
                     {
-                        if (o.GetType() == typeof (LSL_Types.LSLInteger))
+                        if (o is (LSL_Types.LSLInteger))
                             cur = "i" + o;
-                        else if (o.GetType() == typeof (LSL_Types.LSLFloat))
+                        else if (o is (LSL_Types.LSLFloat))
                             cur = "f" + o;
-                        else if (o.GetType() == typeof (LSL_Types.Vector3))
+                        else if (o is (LSL_Types.Vector3))
                             cur = "v" + o;
-                        else if (o.GetType() == typeof (LSL_Types.Quaternion))
+                        else if (o is (LSL_Types.Quaternion))
                             cur = "q" + o;
-                        else if (o.GetType() == typeof (LSL_Types.LSLString))
+                        else if (o is (LSL_Types.LSLString))
                             cur = "\"" + EscapeString(o.ToString()) + "\"";
                         else if (o.GetType() == typeof (LSL_Types.list))
                             cur = "{" + ListToString(o) + "}";
@@ -582,6 +582,7 @@ namespace Universe.ScriptEngine.VirtualScript.Runtime
 
         public void Dispose()
         {
+            GC.SuppressFinalize(this);
         }
 
         private Type m_typeCache; //This shouldn't normally be used
