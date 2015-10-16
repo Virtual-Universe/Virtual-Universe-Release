@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/, http://whitecore-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyrightD
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the OpenSimulator Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -28,12 +28,12 @@
 using System.Text;
 using OMV = OpenMetaverse;
 
-namespace Universe.Region.Physics.BulletSPlugin
+namespace Universe.Physics.BulletSPlugin
 {
     // When a child is linked, the relationship position of the child to the parent
     //    is remembered so the child's world position can be recomputed when it is
     //    removed from the linkset.
-    internal sealed class BSLinksetCompoundInfo : BSLinksetInfo
+    sealed class BSLinksetCompoundInfo : BSLinksetInfo
     {
         public int Index;
         public OMV.Vector3 OffsetFromRoot;
@@ -90,7 +90,7 @@ namespace Universe.Region.Physics.BulletSPlugin
 
     public sealed class BSLinksetCompound : BSLinkset
     {
-        private static string LogHeader = "[BULLETSIM LINKSET COMPOUND]";
+        static string LogHeader = "[BULLETSIM LINKSET COMPOUND]";
 
         public BSLinksetCompound(BSScene scene, BSPrimLinkable parent)
             : base(scene, parent)
@@ -170,7 +170,7 @@ namespace Universe.Region.Physics.BulletSPlugin
 
         // The object is going static (non-physical). Do any setup necessary for a static linkset.
         // Return 'true' if any properties updated on the passed object.
-        // This doesn't normally happen -- Universe removes the objects from the physical
+        // This doesn't normally happen -- WhiteCore removes the objects from the physical
         //     world if it is a static linkset.
         // Called at taint-time!
         public override bool MakeStatic(BSPrimLinkable child)
@@ -312,7 +312,7 @@ namespace Universe.Region.Physics.BulletSPlugin
         // When the linkset is built, the child shape is added to the compound shape relative to the
         //    root shape. The linkset then moves around but this does not move the actual child
         //    prim. The child prim's location must be recomputed based on the location of the root shape.
-        private void RecomputeChildWorldPosition(BSPrimLinkable child, bool inTaintTime)
+        void RecomputeChildWorldPosition(BSPrimLinkable child, bool inTaintTime)
         {
             // For the moment (20130201), disable this computation (converting the child physical addr back to
             //    a region address) until we have a good handle on center-of-mass offsets and what the physics
@@ -376,7 +376,7 @@ namespace Universe.Region.Physics.BulletSPlugin
 
         // Remove the specified child from the linkset.
         // Safe to call even if the child is not really in the linkset.
-        protected override void RemoveChildFromLinkset(BSPrimLinkable child)
+        protected override void RemoveChildFromLinkset(BSPrimLinkable child, bool inTaintTime)
         {
             child.ClearDisplacement();
 
@@ -388,19 +388,17 @@ namespace Universe.Region.Physics.BulletSPlugin
                     child.LocalID, child.PhysBody.AddrString);
 
                 // Cause the child's body to be rebuilt and thus restored to normal operation
-                RecomputeChildWorldPosition(child, false);
-                child.LinksetInfo = null;
-                child.ForceBodyShapeRebuild(false);
+                child.ForceBodyShapeRebuild(inTaintTime);
 
                 if (!HasAnyChildren)
                 {
                     // The linkset is now empty. The root needs rebuilding.
-                    LinksetRoot.ForceBodyShapeRebuild(false);
+                    LinksetRoot.ForceBodyShapeRebuild(inTaintTime);
                 }
                 else
                 {
                     // Rebuild the compound shape with the child removed
-                    ScheduleRebuild(LinksetRoot);
+                    Refresh(LinksetRoot);
                 }
             }
             return;
@@ -411,9 +409,9 @@ namespace Universe.Region.Physics.BulletSPlugin
         // Constraint linksets are rebuilt every time.
         // Note that this works for rebuilding just the root after a linkset is taken apart.
         // Called at taint time!!
-        private bool disableCOM = true; // DEBUG DEBUG: disable until we get this debugged
+        bool disableCOM = true; // DEBUG DEBUG: disable until we get this debugged
 
-        private void RecomputeLinksetCompound()
+        void RecomputeLinksetCompound()
         {
             try
             {

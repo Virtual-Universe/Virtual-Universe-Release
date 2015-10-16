@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/, http://whitecore-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyrightD
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the OpenSimulator Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -27,11 +27,11 @@
 
 using OMV = OpenMetaverse;
 
-namespace Universe.Region.Physics.BulletSPlugin
+namespace Universe.Physics.BulletSPlugin
 {
     public class BSActorSetTorque : BSActor
     {
-        private BSFMotor m_torqueMotor;
+        BSFMotor m_torqueMotor;
 
         public BSActorSetTorque(BSScene physicsScene, BSPhysObject pObj, string actorName)
             : base(physicsScene, pObj, actorName)
@@ -51,6 +51,7 @@ namespace Universe.Region.Physics.BulletSPlugin
         public override void Dispose()
         {
             Enabled = false;
+        DeactivateSetTorque();
         }
 
         // Called when physical parameters (properties set in Bullet) need to be re-applied.
@@ -91,7 +92,7 @@ namespace Universe.Region.Physics.BulletSPlugin
         }
 
         // If a hover motor has not been created, create one and start the hovering.
-        private void ActivateSetTorque()
+        void ActivateSetTorque()
         {
             if (m_torqueMotor == null)
             {
@@ -102,7 +103,7 @@ namespace Universe.Region.Physics.BulletSPlugin
             }
         }
 
-        private void DeactivateSetTorque()
+        void DeactivateSetTorque()
         {
             if (m_torqueMotor != null)
             {
@@ -112,7 +113,7 @@ namespace Universe.Region.Physics.BulletSPlugin
         }
 
         // Called just before the simulation step. Update the vertical position for hoverness.
-        private void Mover(float timeStep)
+        void Mover(float timeStep)
         {
             // Don't do force while the object is selected.
             if (!isActive)

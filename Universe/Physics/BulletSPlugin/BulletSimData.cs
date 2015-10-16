@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/, http://whitecore-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyrightD
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the OpenSimulator Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -29,7 +29,7 @@ using System.Collections.Generic;
 using System.Text;
 using OMV = OpenMetaverse;
 
-namespace Universe.Region.Physics.BulletSPlugin
+namespace Universe.Physics.BulletSPlugin
 {
     // Classes to allow some type checking for the API
     // These hold pointers to allocated objects in the unmanaged space.
@@ -112,12 +112,12 @@ namespace Universe.Region.Physics.BulletSPlugin
     {
         public BulletShape()
         {
-            type = BSPhysicsShapeType.SHAPE_UNKNOWN;
+            shapeType = BSPhysicsShapeType.SHAPE_UNKNOWN;
             shapeKey = (System.UInt64)FixedShapeKey.KEY_NONE;
             isNativeShape = false;
         }
 
-        public BSPhysicsShapeType type;
+        public BSPhysicsShapeType shapeType;
         public System.UInt64 shapeKey;
         public bool isNativeShape;
 
@@ -154,7 +154,7 @@ namespace Universe.Region.Physics.BulletSPlugin
             buff.Append("<p=");
             buff.Append(AddrString);
             buff.Append(",s=");
-            buff.Append(type.ToString());
+            buff.Append(shapeType.ToString());
             buff.Append(",k=");
             buff.Append(shapeKey.ToString("X"));
             buff.Append(",n=");
@@ -193,7 +193,7 @@ namespace Universe.Region.Physics.BulletSPlugin
     //      than making copies.
     public class BulletHMapInfo
     {
-        public BulletHMapInfo(uint id, float[] hm)
+    	public BulletHMapInfo(uint id, float[] hm, float pSizeX, float pSizeY)
         {
             ID = id;
             heightMap = hm;
@@ -201,7 +201,8 @@ namespace Universe.Region.Physics.BulletSPlugin
             minCoords = new OMV.Vector3(100f, 100f, 25f);
             maxCoords = new OMV.Vector3(101f, 101f, 26f);
             minZ = maxZ = 0f;
-            sizeX = sizeY = 256f;
+            sizeX = pSizeX;
+            sizeY = pSizeY;
         }
 
         public uint ID;
@@ -219,6 +220,7 @@ namespace Universe.Region.Physics.BulletSPlugin
     public enum CollisionType
     {
         Avatar,
+        PhantomToOthersAvatar, // An avatar that it phantom to other avatars but not to anything else
         Groundplane,
         Terrain,
         Static,
@@ -264,11 +266,18 @@ namespace Universe.Region.Physics.BulletSPlugin
                         (uint) CollisionFilterGroups.BAllGroup)
                 },
                 {
+                    CollisionType.PhantomToOthersAvatar,
+                    new CollisionTypeFilterGroup(CollisionType.PhantomToOthersAvatar,
+                        (uint)CollisionFilterGroups.BCharacterGroup,
+                        (uint)(CollisionFilterGroups.BAllGroup & ~CollisionFilterGroups.BCharacterGroup))
+                },
+                {
                     CollisionType.Groundplane,
                     new CollisionTypeFilterGroup(CollisionType.Groundplane,
                         (uint) CollisionFilterGroups.BGroundPlaneGroup,
-                        (uint) CollisionFilterGroups.BAllGroup)
-                },
+                        //(uint) CollisionFilterGroups.BAllGroup)
+                        (uint)(CollisionFilterGroups.BCharacterGroup | CollisionFilterGroups.BSolidGroup))
+                 },
                 {
                     CollisionType.Terrain,
                     new CollisionTypeFilterGroup(CollisionType.Terrain,

@@ -6,7 +6,7 @@
  * modification, are permitted provided that the following conditions are met:
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyrightD
+ *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
  *     * Neither the name of the Virtual Universe Project nor the
@@ -25,45 +25,41 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Universe.Framework.Physics;
+using System.Reflection;
+using System.Runtime.InteropServices;
 
-namespace Universe.Physics.BulletSPlugin
-{
-    /// <summary>
-    /// Entry for a port of Bullet (http://bulletphysics.org/) to WhiteCore.
-    /// This module interfaces to an unmanaged C++ library which makes the
-    /// actual calls into the Bullet physics engine.
-    /// The unmanaged library is found in opensim-libs::trunk/unmanaged/BulletSim/.
-    /// The unmanaged library is compiled and linked statically with Bullet
-    /// to create BulletSim.dll and libBulletSim.so (for both 32 and 64 bit).
-    /// </summary>
-    public class BSPlugin : IPhysicsPlugin
-    {
-        BSScene _mScene;
+// General Information about an assembly is controlled through the following 
+// set of attributes. Change these attribute values to modify the information
+// associated with an assembly.
 
-        public BSPlugin()
-        {
-        }
+[assembly: AssemblyTitle("Universe.Services.WebAPI")]
+[assembly: AssemblyDescription("")]
+[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("Universe.Services.WebAPI")]
+[assembly: AssemblyCopyright("Copyright © 2015-2025")]
+[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCulture("")]
 
-        public bool Init()
-        {
-            return true;
-        }
+// Setting ComVisible to false makes the types in this assembly not visible 
+// to COM components.  If you need to access a type in this assembly from 
+// COM, set the ComVisible attribute to true on that type.
 
-        public PhysicsScene GetScene()
-        {
-            if (_mScene == null)
-                _mScene = new BSScene();
-            return (_mScene);
-        }
+[assembly: ComVisible(false)]
 
-        public string GetName()
-        {
-            return ("BulletSim");
-        }
+// The following GUID is for the ID of the typelib if this project is exposed to COM
 
-        public void Dispose()
-        {
-        }
-    }
-}
+[assembly: Guid("269c99ff-0740-4886-8593-7527903090bf")]
+
+// Version information for an assembly consists of the following four values:
+//
+//      Major Version
+//      Minor Version 
+//      Build Number
+//      Revision
+//
+// You can specify all the values or you can default the Build and Revision Numbers 
+// by using the '*' as shown below:
+// [assembly: AssemblyVersion("1.0.*")]
+
+[assembly: AssemblyVersion("1.0.1.*")]

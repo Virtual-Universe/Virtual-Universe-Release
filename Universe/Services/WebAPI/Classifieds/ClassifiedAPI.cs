@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
@@ -6,7 +6,7 @@
  * modification, are permitted provided that the following conditions are met:
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyrightD
+ *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
  *     * Neither the name of the Virtual Universe Project nor the
@@ -24,46 +24,38 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+ 
+using System.IO;
+using System.Text;
+using Nini.Config;
+using Universe.Framework.Modules;
+using Universe.Framework.Servers;
+using Universe.Framework.Servers.HttpServer;
+using Universe.Framework.Servers.HttpServer.Implementation;
+using Universe.Framework.Services;
 
-using Universe.Framework.Physics;
-
-namespace Universe.Physics.BulletSPlugin
+namespace Universe.Services.WebAPI
 {
-    /// <summary>
-    /// Entry for a port of Bullet (http://bulletphysics.org/) to WhiteCore.
-    /// This module interfaces to an unmanaged C++ library which makes the
-    /// actual calls into the Bullet physics engine.
-    /// The unmanaged library is found in opensim-libs::trunk/unmanaged/BulletSim/.
-    /// The unmanaged library is compiled and linked statically with Bullet
-    /// to create BulletSim.dll and libBulletSim.so (for both 32 and 64 bit).
-    /// </summary>
-    public class BSPlugin : IPhysicsPlugin
-    {
-        BSScene _mScene;
-
-        public BSPlugin()
-        {
-        }
-
-        public bool Init()
-        {
-            return true;
-        }
-
-        public PhysicsScene GetScene()
-        {
-            if (_mScene == null)
-                _mScene = new BSScene();
-            return (_mScene);
-        }
-
-        public string GetName()
-        {
-            return ("BulletSim");
-        }
-
-        public void Dispose()
-        {
-        }
-    }
+	public class ClassifiedAPI : IService
+	{
+		#region IService implementation
+		public void Initialize(IConfigSource config, IRegistryCore registry)
+		{
+		}
+        
+		public void Start(IConfigSource config, IRegistryCore registry)
+		{
+			MainServer.Instance.AddStreamHandler(new GenericStreamHandler("GET", "/API/Classifieds/", HandleClassifieds));
+		}
+        
+		public void FinishedStartup()
+		{
+		}
+		#endregion
+        
+		public byte[] HandleClassifieds(string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse)
+		{
+			return Encoding.UTF8.GetBytes("");
+		}
+	}
 }

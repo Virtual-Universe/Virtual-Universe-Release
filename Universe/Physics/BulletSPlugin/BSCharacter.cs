@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/, http://whitecore-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyrightD
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the OpenSimulator Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -27,39 +27,46 @@
 
 using System;
 using OMV = OpenMetaverse;
+using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Physics;
 using Universe.Framework.SceneInfo;
-using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Utilities;
 
-namespace Universe.Region.Physics.BulletSPlugin
+namespace Universe.Physics.BulletSPlugin
 {
     public sealed class BSCharacter : BSPhysObject
     {
-        private static readonly string LogHeader = "[BULLETS CHAR]";
+        static readonly string LogHeader = "[BULLETS CHAR]";
 
         // private bool _stopped;
-        private OMV.Vector3 _size;
-        private bool _selected;
-        private OMV.Vector3 _position;
-        private float _mass;
-        private float _avatarVolume;
-        private float _collisionScore;
-        private OMV.Vector3 _acceleration;
-        private OMV.Quaternion _orientation;
-        private bool _flying;
-        private bool _setAlwaysRun;
-        private bool _throttleUpdates;
-        private bool _floatOnWater;
-        private OMV.Vector3 _rotationalVelocity;
-        private float _buoyancy;
-        private BSActorAvatarMove m_moveActor;
-        private const string AvatarMoveActorName = "BSCharacter.AvatarMove";
+        OMV.Vector3 _size;
+        bool _grabbed;
+        bool _selected;
+        OMV.Vector3 _position;
+        float _mass;
+        float _avatarVolume;
+        float _collisionScore;
+        OMV.Vector3 _acceleration;
+        OMV.Quaternion _orientation;
+        int _physicsActorType;
+        bool _isPhysical;
+        bool _flying;
+        bool _setAlwaysRun;
+        bool _throttleUpdates;
+        bool _floatOnWater;
+        OMV.Vector3 _rotationalVelocity;
+        bool _kinematic;  
+        bool _isVolumeDetect;
+        float _buoyancy;
+        BSActorAvatarMove m_moveActor;
+        const string AvatarMoveActorName = "BSCharacter.AvatarMove";
 
         public BSCharacter(uint localID, String avName, BSScene parent_scene, OMV.Vector3 pos, OMV.Vector3 size,
             bool isFlying)
             : base(parent_scene, localID, avName, "BSCharacter")
         {
+            _physicsActorType = (int)ActorTypes.Agent;
+            _isPhysical = true;
             _position = pos;
 
             _flying = isFlying;
@@ -92,7 +99,7 @@ namespace Universe.Region.Physics.BulletSPlugin
                 LocalID, _size, Scale, Density, _avatarVolume, RawMass);
 
             // do actual creation in taint time
-            PhysicsScene.TaintedObject("BSCharacter.create", delegate()
+            PhysicsScene.TaintedObject(LocalID, "BSCharacter.create", delegate()
             {
                 DetailLog("{0},BSCharacter.create,taint", LocalID);
                 // New body and shape into PhysBody and PhysShape
@@ -111,7 +118,7 @@ namespace Universe.Region.Physics.BulletSPlugin
             base.Destroy();
 
             DetailLog("{0},BSCharacter.Destroy", LocalID);
-            PhysicsScene.TaintedObject("BSCharacter.destroy", delegate()
+            PhysicsScene.TaintedObject(LocalID,"BSCharacter.destroy", delegate()
             {
                 PhysicsScene.Shapes.DereferenceBody(PhysBody, null /* bodyCallback */);
                 PhysBody.Clear();
@@ -120,7 +127,7 @@ namespace Universe.Region.Physics.BulletSPlugin
             });
         }
 
-        private void SetPhysicalProperties()
+        void SetPhysicalProperties()
         {
             PhysicsScene.PE.RemoveObjectFromWorld(PhysicsScene.World, PhysBody);
 
@@ -163,8 +170,11 @@ namespace Universe.Region.Physics.BulletSPlugin
             PhysicsScene.PE.ForceActivationState(PhysBody, ActivationState.DISABLE_DEACTIVATION);
             PhysicsScene.PE.UpdateSingleAabb(PhysicsScene.World, PhysBody);
 
-            // Do this after the object has been added to the world
+        // Do this after the object has been added to the world
+        if (BSParam.AvatarToAvatarCollisionsByDefault)
             PhysBody.collisionType = CollisionType.Avatar;
+        else
+            PhysBody.collisionType = CollisionType.PhantomToOthersAvatar;
             PhysBody.ApplyCollisionMask(PhysicsScene);
         }
 
@@ -183,6 +193,9 @@ namespace Universe.Region.Physics.BulletSPlugin
 
             set
             {
+				// This is how much the avatar size is changing. Positive means getting bigger.
+				// The avatar altitude must be adjusted for this change.
+				float heightChange = value.Z - _size.Z;
                 _size = value;
                 // Old versions of ScenePresence passed only the height. If width and/or depth are zero,
                 //     replace with the default values.
@@ -194,12 +207,14 @@ namespace Universe.Region.Physics.BulletSPlugin
                 DetailLog("{0},BSCharacter.setSize,call,size={1},scale={2},density={3},volume={4},mass={5}",
                     LocalID, _size, Scale, Density, _avatarVolume, RawMass);
 
-                PhysicsScene.TaintedObject("BSCharacter.setSize", delegate()
+                PhysicsScene.TaintedObject(LocalID, "BSCharacter.setSize", delegate()
                 {
                     if (PhysBody.HasPhysicalBody && PhysShape.HasPhysicalShape)
                     {
                         PhysicsScene.PE.SetLocalScaling(PhysShape, Scale);
                         UpdatePhysicalMassProperties(RawMass, true);
+						// Adjust the avatar's position to account for the increase/decrease in size
+						ForcePosition = new OMV.Vector3(_position.X, _position.Y, _position.Z + heightChange / 2f);
                         // Make sure this change appears as a property update event
                         PhysicsScene.PE.PushUpdate(PhysBody);
                     }
@@ -210,6 +225,10 @@ namespace Universe.Region.Physics.BulletSPlugin
         public override PrimitiveBaseShape Shape
         {
             set { BaseShape = value; }
+        }
+
+        public override bool Grabbed {
+            set { _grabbed = value; }
         }
 
         // I want the physics engine to make an avatar capsule
@@ -277,7 +296,6 @@ namespace Universe.Region.Physics.BulletSPlugin
             });
         }
 
-
         public override void LockAngularMotion(OMV.Vector3 axis)
         {
             return;
@@ -301,7 +319,7 @@ namespace Universe.Region.Physics.BulletSPlugin
             {
                 _position = value;
 
-                PhysicsScene.TaintedObject("BSCharacter.setPosition", delegate()
+                PhysicsScene.TaintedObject(LocalID, "BSCharacter.setPosition", delegate()
                 {
                     DetailLog("{0},BSCharacter.SetPosition,taint,pos={1},orient={2}", LocalID, _position, _orientation);
                     PositionSanityCheck();
@@ -327,11 +345,10 @@ namespace Universe.Region.Physics.BulletSPlugin
             }
         }
 
-
         // Check that the current position is sane and, if not, modify the position to make it so.
         // Check for being below terrain or on water.
         // Returns 'true' of the position was made sane by some action.
-        private bool PositionSanityCheck()
+        bool PositionSanityCheck()
         {
             bool ret = false;
 
@@ -372,7 +389,7 @@ namespace Universe.Region.Physics.BulletSPlugin
         // A version of the sanity check that also makes sure a new position value is
         //    pushed back to the physics engine. This routine would be used by anyone
         //    who is not already pushing the value.
-        private bool PositionSanityCheck(bool inTaintTime)
+        bool PositionSanityCheck(bool inTaintTime)
         {
             bool ret = false;
             if (PositionSanityCheck())
@@ -403,6 +420,7 @@ namespace Universe.Region.Physics.BulletSPlugin
 
         public override void UpdatePhysicalMassProperties(float physMass, bool inWorld)
         {
+			//OMV.Vector3 localInertia = PhysicsScene.PE.CalculateLocalInertia(PhysShape.physShapeInfo, physMass);  // new
             OMV.Vector3 localInertia = PhysicsScene.PE.CalculateLocalInertia(PhysShape, physMass);
             PhysicsScene.PE.SetMassProps(PhysBody, physMass, localInertia);
         }
@@ -414,7 +432,7 @@ namespace Universe.Region.Physics.BulletSPlugin
             {
                 RawForce = value;
                 // MainConsole.Instance.DebugFormat("{0}: Force = {1}", LogHeader, _force);
-                PhysicsScene.TaintedObject("BSCharacter.SetForce", delegate()
+                PhysicsScene.TaintedObject(LocalID, "BSCharacter.SetForce", delegate()
                 {
                     DetailLog("{0},BSCharacter.setForce,taint,force={1}", LocalID, RawForce);
                     if (PhysBody.HasPhysicalBody)
@@ -445,6 +463,9 @@ namespace Universe.Region.Physics.BulletSPlugin
         public override void VehicleFlags(int param, bool remove)
         {
         }
+            
+        public override bool VolumeDetect{ get; set; }
+        public override bool IsVolumeDetect { get { return false; } }
 
         public override OMV.Vector3 CenterOfMass
         {
@@ -468,7 +489,7 @@ namespace Universe.Region.Physics.BulletSPlugin
                 m_targetVelocity = targetVel * (1f / PhysicsScene.TimeDilation);
 
                 if (m_moveActor != null)
-                    m_moveActor.SetVelocityAndTarget(RawVelocity, m_targetVelocity, false /* inTaintTime */, 3);
+                    m_moveActor.SetVelocityAndTarget(RawVelocity, m_targetVelocity, false, 3);
             }
         }
 
@@ -479,14 +500,15 @@ namespace Universe.Region.Physics.BulletSPlugin
             set
             {
                 RawVelocity = value;
-                // MainConsole.Instance.DebugFormat("{0}: set velocity = {1}", LogHeader, RawVelocity);
-                PhysicsScene.TaintedObject("BSCharacter.setVelocity", delegate()
+                OMV.Vector3 vel = value;
+                // MainConsole.Instance.DebugFormat("{0}: set velocity = {1}", LogHeader, vel);
+                PhysicsScene.TaintedObject(LocalID, "BSCharacter.setVelocity", delegate()
                 {
                     if (m_moveActor != null)
-                        m_moveActor.SetVelocityAndTarget(RawVelocity, RawVelocity, true /* inTaintTime */, 3);
+                        m_moveActor.SetVelocityAndTarget(vel, vel, true, 3);
 
-                    DetailLog("{0},BSCharacter.setVelocity,taint,vel={1}", LocalID, RawVelocity);
-                    ForceVelocity = RawVelocity;
+                    DetailLog("{0},BSCharacter.setVelocity,taint,vel={1}", LocalID, vel);
+                    ForceVelocity = vel;
                 });
             }
         }
@@ -538,8 +560,22 @@ namespace Universe.Region.Physics.BulletSPlugin
                 if (_orientation != value)
                 {
                     _orientation = value;
-                    PhysicsScene.TaintedObject("BSCharacter.setOrientation",
-                        delegate() { ForceOrientation = _orientation; });
+						// Bullet assumes we know what we are doing when forcing orientation
+						//    so it lets us go against all the rules and just compensates for them later.
+						// This forces rotation to be only around the Z axis and doesn't change any of the other axis.
+						// This keeps us from flipping the capsule over which the veiwer does not understand.
+
+					  PhysicsScene.TaintedObject(LocalID, "BSCharacter.setOrientation", delegate() {
+						float oRoll, oPitch, oYaw;
+						_orientation.GetEulerAngles(out oRoll, out oPitch, out oYaw);
+						OMV.Quaternion trimmedOrientation = OMV.Quaternion.CreateFromEulers(0f, 0f, oYaw);
+						ForceOrientation = trimmedOrientation;
+						// DetailLog("{0},BSCharacter.setOrientation,taint,val={1},valDir={2},conv={3},convDir={4}",
+						//                 _orientation, OMV.Vector3.UnitX * _orientation,
+						//                 trimmedOrientation, OMV.Vector3.UnitX * trimmedOrientation);
+					});
+                   // PhysicsScene.TaintedObject("BSCharacter.setOrientation",
+                   //     delegate() { ForceOrientation = _orientation; });
                 }
             }
         }
@@ -565,13 +601,14 @@ namespace Universe.Region.Physics.BulletSPlugin
 
         public override int PhysicsActorType
         {
-            get { return (int)ActorTypes.Agent; }
+            get { return _physicsActorType; }
+            set { _physicsActorType = value; }
         }
 
         public override bool IsPhysical
         {
-            get { return true; }
-            set { }
+            get { return _isPhysical; }
+            set { _isPhysical = value; }
         }
 
         public override bool IsSolid
@@ -603,13 +640,12 @@ namespace Universe.Region.Physics.BulletSPlugin
 
         // Flying is implimented by changing the avatar's buoyancy.
         // Would this be done better with a vehicle type?
-        private float ComputeBuoyancyFromFlying(bool ifFlying)
+        float ComputeBuoyancyFromFlying(bool ifFlying)
         {
             return ifFlying ? 1f : 0f;
         }
 
-        public override bool
-            SetAlwaysRun
+        public override bool SetAlwaysRun
         {
             get { return _setAlwaysRun; }
             set { _setAlwaysRun = value; }
@@ -626,7 +662,7 @@ namespace Universe.Region.Physics.BulletSPlugin
             set
             {
                 _floatOnWater = value;
-                PhysicsScene.TaintedObject("BSCharacter.setFloatOnWater", delegate()
+                PhysicsScene.TaintedObject(LocalID, "BSCharacter.setFloatOnWater", delegate()
                 {
                     if (PhysBody.HasPhysicalBody)
                     {
@@ -653,6 +689,11 @@ namespace Universe.Region.Physics.BulletSPlugin
             set { _rotationalVelocity = value; }
         }
 
+        public override bool Kinematic {
+            get { return _kinematic; }
+            set { _kinematic = value; }
+        }
+            
         // neg=fall quickly, 0=1g, 1=0g, pos=float up
         public override float Buoyancy
         {
@@ -660,7 +701,7 @@ namespace Universe.Region.Physics.BulletSPlugin
             set
             {
                 _buoyancy = value;
-                PhysicsScene.TaintedObject("BSCharacter.setBuoyancy", delegate()
+                PhysicsScene.TaintedObject(LocalID, "BSCharacter.setBuoyancy", delegate()
                 {
                     DetailLog("{0},BSCharacter.setBuoyancy,taint,buoy={1}", LocalID, _buoyancy);
                     ForceBuoyancy = _buoyancy;
@@ -692,7 +733,7 @@ namespace Universe.Region.Physics.BulletSPlugin
             AddForce(addForce, pushforce, false);
         }
 
-        private void AddForce(OMV.Vector3 force, bool pushforce, bool inTaintTime)
+        void AddForce(OMV.Vector3 force, bool pushforce, bool inTaintTime)
         {
             if (force.IsFinite())
             {
@@ -721,7 +762,7 @@ namespace Universe.Region.Physics.BulletSPlugin
         {
         }
 
-        private OMV.Vector3 ComputeAvatarScale(OMV.Vector3 size)
+        OMV.Vector3 ComputeAvatarScale(OMV.Vector3 size)
         {
             OMV.Vector3 newScale;
 
@@ -736,12 +777,29 @@ namespace Universe.Region.Physics.BulletSPlugin
             //     for a asymmetrical capsule, other parts of the code presume it is cylindrical.
 
             // Scale is multiplier of radius with one of "0.5"
+  		float heightAdjust = BSParam.AvatarHeightMidFudge;
+			if (BSParam.AvatarHeightLowFudge != 0f || BSParam.AvatarHeightHighFudge != 0f) {
+				const float AVATAR_LOW = 1.1f;
+				const float AVATAR_MID = 1.775f; // 1.87f
+				const float AVATAR_HI = 2.45f;
+				// An avatar is between 1.1 and 2.45 meters. Midpoint is 1.775m.
+				float midHeightOffset = size.Z - AVATAR_MID;
+				if (midHeightOffset < 0f) {
+					// Small avatar. Add the adjustment based on the distance from midheight
+					heightAdjust += ((-1f * midHeightOffset) / (AVATAR_MID - AVATAR_LOW)) * BSParam.AvatarHeightLowFudge;
+				} else {
+					// Large avatar. Add the adjustment based on the distance from midheight
+					heightAdjust += ((midHeightOffset) / (AVATAR_HI - AVATAR_MID)) * BSParam.AvatarHeightHighFudge;
+				}
+			}
+
             newScale.X = size.X / 2f;
             newScale.Y = size.Y / 2f;
 
             // The total scale height is the central cylindar plus the caps on the two ends.
-            newScale.Z = (size.Z + (Math.Min(size.X, size.Y) * 2)) / 2f;
-            // If smaller than the endcaps, just fake like we're almost that small
+            //newScale.Z = (size.Z + (Math.Min(size.X, size.Y) * 2)) / 2f;
+            newScale.Z = (size.Z + (Math.Min(size.X, size.Y) * 2) + heightAdjust) / 2f;
+          // If smaller than the endcaps, just fake like we're almost that small
             if (newScale.Z < 0)
                 newScale.Z = 0.1f;
 
@@ -749,7 +807,7 @@ namespace Universe.Region.Physics.BulletSPlugin
         }
 
         // set _avatarVolume and _mass based on capsule size, _density and Scale
-        private void ComputeAvatarVolumeAndMass()
+        void ComputeAvatarVolumeAndMass()
         {
             _avatarVolume = (float)(
                 Math.PI

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/, http://whitecore-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyrightD
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the OpenSimulator Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -27,13 +27,13 @@
 
 using OpenMetaverse;
 
-namespace Universe.Region.Physics.BulletSPlugin
+namespace Universe.Physics.BulletSPlugin
 {
     public sealed class BSTerrainHeightmap : BSTerrainPhys
     {
-        private static string LogHeader = "[BULLETSIM TERRAIN HEIGHTMAP]";
+        static string LogHeader = "[BULLETSIM TERRAIN HEIGHTMAP]";
 
-        private BulletHMapInfo m_mapInfo = null;
+        BulletHMapInfo m_mapInfo = null;
 
         // Constructor to build a default, flat heightmap terrain.
         public BSTerrainHeightmap(BSScene physicsScene, Vector3 regionBase, uint id, Vector3 regionSize)
@@ -48,7 +48,7 @@ namespace Universe.Region.Physics.BulletSPlugin
             {
                 initialMap[ii] = BSTerrainManager.HEIGHT_INITIALIZATION;
             }
-            m_mapInfo = new BulletHMapInfo(id, initialMap);
+            m_mapInfo = new BulletHMapInfo(id, initialMap, regionSize.X, regionSize.Y);
             m_mapInfo.minCoords = minTerrainCoords;
             m_mapInfo.maxCoords = maxTerrainCoords;
             m_mapInfo.terrainRegionBase = TerrainBase;
@@ -62,7 +62,7 @@ namespace Universe.Region.Physics.BulletSPlugin
             Vector3 minCoords, Vector3 maxCoords)
             : base(physicsScene, regionBase, id)
         {
-            m_mapInfo = new BulletHMapInfo(id, initialMap);
+            m_mapInfo = new BulletHMapInfo(id, initialMap, maxCoords.X - minCoords.X, maxCoords.Y - minCoords.Y);
             m_mapInfo.minCoords = minCoords;
             m_mapInfo.maxCoords = maxCoords;
             m_mapInfo.minZ = minCoords.Z;
@@ -79,7 +79,7 @@ namespace Universe.Region.Physics.BulletSPlugin
         }
 
         // Using the information in m_mapInfo, create the physical representation of the heightmap.
-        private void BuildHeightmapTerrain()
+        void BuildHeightmapTerrain()
         {
             // Create the terrain shape from the mapInfo
             m_mapInfo.terrainShape = PhysicsScene.PE.CreateTerrainShape(m_mapInfo.ID,
@@ -118,7 +118,7 @@ namespace Universe.Region.Physics.BulletSPlugin
         }
 
         // If there is information in m_mapInfo pointing to physical structures, release same.
-        private void ReleaseHeightMapTerrain()
+        void ReleaseHeightMapTerrain()
         {
             if (m_mapInfo != null)
             {

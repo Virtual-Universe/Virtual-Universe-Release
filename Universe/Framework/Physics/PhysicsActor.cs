@@ -27,9 +27,9 @@
 
 using System;
 using System.Collections.Generic;
+using OpenMetaverse;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.SceneInfo.Entities;
-using OpenMetaverse;
 
 namespace Universe.Framework.Physics
 {
@@ -54,7 +54,7 @@ namespace Universe.Framework.Physics
         // Raising the event on the object, so don't need to provide location..  further up the tree knows that info.
 
         public bool Cleared;
-        private Dictionary<uint, ContactPoint> m_objCollisionList = new Dictionary<uint, ContactPoint>();
+        Dictionary<uint, ContactPoint> m_objCollisionList = new Dictionary<uint, ContactPoint>();
 
         public CollisionEventUpdate()
         {
@@ -151,6 +151,7 @@ namespace Universe.Framework.Physics
 
         public abstract Vector3 Size { get; set; }
         public virtual uint LocalID { get; set; }
+        public abstract bool Grabbed { set; }
         public virtual string Name { get; set; }
         public virtual UUID UUID { get; set; }
 
@@ -215,7 +216,7 @@ namespace Universe.Framework.Physics
         public abstract float Mass { get; }
         public abstract float CollisionScore { get; set; }
         public abstract Quaternion Orientation { get; set; }
-        public abstract int PhysicsActorType { get; }
+        public abstract int PhysicsActorType { get; set; }
         public abstract bool IsPhysical { get; set; }
         public abstract bool ThrottleUpdates { get; set; }
         public abstract bool IsColliding { get; set; }
@@ -267,6 +268,7 @@ namespace Universe.Framework.Physics
         public virtual void SubscribeEvents(int ms) { }
         public virtual void UnSubscribeEvents() { }
         public virtual bool VolumeDetect { get; set; }
+        public abstract bool Kinematic { get; set; }
 
         public event BlankHandler OnPhysicalRepresentationChanged;
 
@@ -333,6 +335,11 @@ namespace Universe.Framework.Physics
         public override uint LocalID
         {
             get { return 0; }
+            set { return; }
+        }
+
+        public override bool Grabbed
+        {
             set { return; }
         }
 
@@ -420,12 +427,19 @@ namespace Universe.Framework.Physics
 
         public override int PhysicsActorType
         {
-            get { return (int) ActorTypes.Ground; }
+            get { return (int)ActorTypes.Ground; }
+            set { return; }
         }
 
         public override Vector3 RotationalVelocity
         {
             get { return Vector3.Zero; }
+            set { return; }
+        }
+
+        public override bool Kinematic
+        {
+            get { return false; }
             set { return; }
         }
 
@@ -500,6 +514,11 @@ namespace Universe.Framework.Physics
             set { return; }
         }
 
+        public override bool Grabbed
+        {
+            set { return; }
+        }
+
         public override bool FloatOnWater
         {
             set { return; }
@@ -563,12 +582,20 @@ namespace Universe.Framework.Physics
 
         public override int PhysicsActorType
         {
-            get { return (int) ActorTypes.Unknown; }
+            get { return (int)ActorTypes.Unknown; }
+            set { return; }
+
         }
 
         public override Vector3 RotationalVelocity
         {
             get { return Vector3.Zero; }
+            set { return; }
+        }
+
+        public override bool Kinematic
+        {
+            get { return false; }
             set { return; }
         }
 
