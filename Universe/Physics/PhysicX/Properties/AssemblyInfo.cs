@@ -36,11 +36,11 @@ using System.Resources;
 /// set of attributes.  Change these attribute values to modify the information
 /// associated with an assembly.
 /// </summary>
-[assembly: AssemblyTitle("Universe.Framework")]
+[assembly: AssemblyTitle("Universe.Physics.PhysicX")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Universe.Framework")]
+[assembly: AssemblyProduct("Universe.Physics.PhysicX")]
 [assembly: AssemblyCopyright("Copyright © 2015-2025")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
