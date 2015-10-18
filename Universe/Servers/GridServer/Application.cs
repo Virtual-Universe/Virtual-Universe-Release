@@ -25,17 +25,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System;
+using System.Collections.Generic;
 using Universe.Framework.Modules;
 using Universe.Framework.Services;
 using Universe.Simulation.Base;
-using System;
-using System.Collections.Generic;
 
 namespace Universe.Servers.GridServer
 {
     /// <summary>
-    ///     Starting class for the Universe Server
+    ///     Starting class for the Virtual Universe Server
     /// </summary>
     public class Application
     {

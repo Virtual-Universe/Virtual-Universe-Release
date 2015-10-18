@@ -34,7 +34,7 @@ using Universe.Framework.Modules;
 namespace Universe.Servers.AvatarServer
 {
     /// <summary>
-    ///     Starting class for the Universe Server
+    ///     Starting class for the Virtual Universe Server
     /// </summary>
     public class Application
     {

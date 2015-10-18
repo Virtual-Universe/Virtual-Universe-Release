@@ -26,10 +26,10 @@
  */
 
 
+using System;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Simulation.Base;
-using System;
 
 namespace Universe.Server
 {

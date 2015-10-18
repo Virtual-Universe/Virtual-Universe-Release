@@ -30,7 +30,6 @@ using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Simulation.Base;
 
-
 namespace Universe.Server
 {
     public class UniverseBase : SimulationBase
@@ -46,7 +45,7 @@ namespace Universe.Server
             if (MainConsole.Instance != null)
 			{
 				MainConsole.Instance.DefaultPrompt = "Universe.Server ";
-				MainConsole.Instance.Info ("[UniverseSTARTUP]: Startup completed in " +
+				MainConsole.Instance.Info ("[Universe Startup]: Startup completed in " +
 					(DateTime.Now - this.StartupTime).TotalSeconds);
 			}
         }
