@@ -67,7 +67,7 @@ OSX:
 *To see how to configure Virtual Universe, look at "Setting up Virtual Universe.txt" in the UniverseDocs folder for more information*
 
 +## Contribute to Virtual Universe
-+If you would like to contribute code to Virtual Universe please see Documentation/How to contribute Code.txt for more information.
++If you would like to contribute code to Virtual Universe please see BuildTools/How to contribute Code.txt for more information.
 
 ## Router issues
 If you are having issues logging into your simulator, take a look at http://forums.osgrid.org/viewtopic.php?f=14&t=2082 in the Router Configuration section for more information on ways to resolve this issue.
