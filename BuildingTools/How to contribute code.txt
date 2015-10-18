@@ -11,11 +11,15 @@ How to contribute code
 Contributing code to Virtual Universe is actually really easy to do.  Just follow these steps and we will
  take it from there.
 
-1. Fork a copy of Virtual-Universe to your github account.
+1. Fork a copy of one of the following repositories to your github account:
+
+1-A For contributing to the stable version of the architecture use Virtual-Universe/Virtual-Universe
+
+1-B For contributing to the development version of the architecture use Virtual-Universe/Virtual-Dev
 
 2. If you are contributing code which:
 
-2-A. Requires the addition of a new .cs file please use the file in Documentation/EmptyClass.cs
+2-A. Requires the addition of a new .cs file please use the file in BuildingTools/EmptyClass.cs
  then move to next step.
 
 2-B. Adds, Edits, or Removes code from a current .cs file move to next step.
@@ -32,11 +36,23 @@ Note: Be sure your code does not contain Windows line endings.  The coding stand
 
 4-B. Push your commits to your repository on github.
 
-4-C. Create an issue at https://github.com/Virtual-Universe/Virtual-Universe/issues describing your request.
+4-C. Create an issue at the appropriate repository you are contributing to describing your request:
+
+4-C-1. For pull requests being submitted to the stable architecture open issue at https://github.com/Virtual-Universe/Virtual-Universe/issues
+
+4-C-2. For pull requests being submitted to the development architecture open issue at https://github.com/Virtual-Universe/Virtual-Dev/issues
 
 4-D. Create a pull request.  Make sure to click the "compare across forks" link.  The forks must be as follows:
+
+For the stable architecture repository:
+
  base fork Virtual-Universe/Virtual-Universe base master
  head fork <user>/Virtual-Universe compare master
+
+For the development architecture repository:
+
+ base fork Virtual-Universe/Virtual-Dev base master
+ head fork <user>/Virtual-Dev compare master
 
 Then click the Create Pull Request button when your commit shows up and press the green button to submit the request.
   Be sure to reference your issue number in your pull request.
