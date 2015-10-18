@@ -60,7 +60,7 @@ OSX:
 
 *To compile Virtual Universe, look at the Compiling.txt in the Docs folder for more information*
 
-*NOTE: For Windows 7 and 8, when compiling, you may see some warnings indicating that the core library does not match what is specified. This is an issue with how Microsoft provides the Net 4.5 packages and can be safely ignored as Windows will actually use the correct library when WhiteCore is run *
+*NOTE: For Windows 7 and 8, when compiling, you may see some warnings indicating that the core library does not match what is specified. This is an issue with how Microsoft provides the Net 4.5 packages and can be safely ignored as Windows will actually use the correct library when Virtual Universe is run *
 
 ## Virtual Universe Configuration
 
