@@ -238,9 +238,9 @@ namespace Universe.Simulation.Base
             if (MainConsole.Instance != null)
             {
                 MainConsole.Instance.DefaultPrompt = m_consolePrompt;
-                MainConsole.Instance.Info(string.Format("[MINUniverse]: STARTING MIN Universe ({0})...",
+                MainConsole.Instance.Info(string.Format("[Mini Virtual Universe]: Starting Mini Virtual Universe ({0})...",
                                                         (IntPtr.Size == 4 ? "x86" : "x64")));
-                MainConsole.Instance.Info("[MINUniverse]: Version: " + Version + "\n");
+                MainConsole.Instance.Info("[Mini Virtual Universe]: Version: " + Version + "\n");
             }
         }
 
@@ -249,7 +249,7 @@ namespace Universe.Simulation.Base
         /// </summary>
         public virtual void Startup()
         {
-            MainConsole.Instance.Info("[MINUniverse]: Startup completed in " +
+            MainConsole.Instance.Info("[Mini Virtual Universe]: Startup completed in " +
                                       (DateTime.Now - this.StartupTime).TotalSeconds);
         }
 
