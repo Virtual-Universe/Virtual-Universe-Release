@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://opensimulator.org/, http://whitecore-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -71,7 +71,7 @@ namespace Universe.Physics.BulletSPlugin
 
         // The object is going static (non-physical). Do any setup necessary for a static linkset.
         // Return 'true' if any properties updated on the passed object.
-        // This doesn't normally happen -- WhiteCore removes the objects from the physical
+        // This doesn't normally happen -- Universe removes the objects from the physical
         //     world if it is a static linkset.
         // Called at taint-time!
         public override bool MakeStatic(BSPrimLinkable child)

@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://opensimulator.org/, http://whitecore-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@ using Universe.Framework.Physics;
 namespace Universe.Physics.BulletSPlugin
 {
     /// <summary>
-    /// Entry for a port of Bullet (http://bulletphysics.org/) to WhiteCore.
+    /// Entry for a port of Bullet (http://bulletphysics.org/) to Universe.
     /// This module interfaces to an unmanaged C++ library which makes the
     /// actual calls into the Bullet physics engine.
     /// The unmanaged library is found in opensim-libs::trunk/unmanaged/BulletSim/.

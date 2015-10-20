@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org//
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -109,7 +109,7 @@ namespace Universe.Modules.Currency
                 }
                 catch (Exception)
                 {
-                    MainConsole.Instance.Warn("[Currency]: Exception reading economy config: " + propertyInfo.Name);
+                    MainConsole.Instance.Warn("[BaseCurrency]: Exception reading economy config: " + propertyInfo.Name);
                 }
             }
         }
@@ -143,7 +143,7 @@ namespace Universe.Modules.Currency
                 }
                 catch (Exception ex)
                 {
-                    MainConsole.Instance.Warn("[Currency]: Exception toOSD() config: " + ex.ToString());
+                    MainConsole.Instance.Warn("[BaseCurrency]: Exception toOSD() config: " + ex.ToString());
                 }
             }
             return returnvalue;
@@ -170,7 +170,7 @@ namespace Universe.Modules.Currency
                     }
                     catch (Exception ex)
                     {
-                        MainConsole.Instance.Warn("[Currency]: Exception reading fromOSD() config: " +
+                        MainConsole.Instance.Warn("[BaseCurrency]: Exception reading fromOSD() config: " +
                                                   ex.ToString());
                     }
                 }
@@ -407,3 +407,4 @@ namespace Universe.Modules.Currency
         }
     }
 }
+

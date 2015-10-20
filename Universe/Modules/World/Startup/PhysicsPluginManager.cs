@@ -26,13 +26,13 @@
  */
 
 
+using System;
+using System.Collections.Generic;
+using Nini.Config;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.ModuleLoader;
 using Universe.Framework.Physics;
 using Universe.Framework.SceneInfo;
-using Nini.Config;
-using System;
-using System.Collections.Generic;
 
 namespace Universe.Modules.Startup
 {
@@ -41,8 +41,8 @@ namespace Universe.Modules.Startup
     /// </summary>
     public class PhysicsPluginManager
     {
-        private readonly Dictionary<string, IMeshingPlugin> _MeshPlugins = new Dictionary<string, IMeshingPlugin>();
-        private readonly Dictionary<string, IPhysicsPlugin> _PhysPlugins = new Dictionary<string, IPhysicsPlugin>();
+        readonly Dictionary<string, IMeshingPlugin> _MeshPlugins = new Dictionary<string, IMeshingPlugin>();
+        readonly Dictionary<string, IPhysicsPlugin> _PhysPlugins = new Dictionary<string, IPhysicsPlugin>();
 
         /// <summary>
         ///     Get a physics scene for the given physics engine and mesher.
@@ -81,7 +81,7 @@ namespace Universe.Modules.Startup
                 MainConsole.Instance.Debug("[Physics]: Loading physics engine: " + physEngineName);
                 PhysicsScene result = _PhysPlugins[physEngineName].GetScene();
                 result.Initialize(meshEngine, scene);
-                result.PostInitialize(config);
+                result.PostInitialise(config);
                 return result;
             }
             else

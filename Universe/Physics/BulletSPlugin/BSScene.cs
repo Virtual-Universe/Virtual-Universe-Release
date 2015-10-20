@@ -1,5 +1,5 @@
-﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
+﻿    /*
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://opensimulator.org/, http://whitecore-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -58,7 +58,7 @@ namespace Universe.Physics.BulletSPlugin
         public HashSet<BSPhysObject> ObjectsWithCollisions = new HashSet<BSPhysObject>();
         public HashSet<BSPhysObject> ObjectsWithNoMoreCollisions = new HashSet<BSPhysObject>();
         // Keep track of all the avatars so we can send them a collision event
-        //    every tick so WhiteCore will update its animation.
+        //    every tick so Universe will update its animation.
         HashSet<BSPhysObject> m_avatars = new HashSet<BSPhysObject>();
 
         // let my minuions use my logger
@@ -123,7 +123,7 @@ namespace Universe.Physics.BulletSPlugin
         internal int m_maxUpdatesPerFrame;
         internal EntityProperties[] m_updateArray;
 
-        public const uint TERRAIN_ID = 0; // WhiteCore senses terrain with a localID of zero
+        public const uint TERRAIN_ID = 0; // Universe senses terrain with a localID of zero
         public const uint GROUNDPLANE_ID = 1;
         public const uint CHILDTERRAIN_ID = 2; // Terrain allocated based on our mega-prim childre start here
 
@@ -260,7 +260,7 @@ namespace Universe.Physics.BulletSPlugin
             m_initialized = true;
         }
 
-        public override void PostInitialize(IConfigSource config)
+        public override void PostInitialise(IConfigSource config)
         {
         }
 
@@ -420,7 +420,7 @@ namespace Universe.Physics.BulletSPlugin
 
             // TODO: Remove kludge someday.
             // We must generate a collision for avatars whether they collide or not.
-            // This is required by WhiteCore to update avatar animations, etc.
+            // This is required by Universe to update avatar animations, etc.
             lock (m_avatars)
                 m_avatars.Add(actor);
 
@@ -786,8 +786,8 @@ namespace Universe.Physics.BulletSPlugin
         {
             get { return false; }
         }
-        
-        /* not yet implemented
+
+/* not yet implemented
         #region Extensions
         public override object Extension(string pFunct, params object[] pParams)
         {
@@ -864,7 +864,7 @@ namespace Universe.Physics.BulletSPlugin
 
             return buff.ToString();
         }
-        */
+*/
         #region Taints
 
         // The simulation execution order is:
@@ -1038,3 +1038,4 @@ namespace Universe.Physics.BulletSPlugin
         public const string DetailLogZero = "0000000000";
     }
 }
+

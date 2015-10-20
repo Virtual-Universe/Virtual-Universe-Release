@@ -1,12 +1,12 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://opensimulator.org/, http://whitecore-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyrightD
+ *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
  *     * Neither the name of the Virtual Universe Project nor the
@@ -52,11 +52,11 @@ namespace Universe.Physics.BulletSPlugin
     [StructLayout(LayoutKind.Sequential)]
     public struct ConvexHull
     {
-        /* not currently used?
-        Vector3 Offset;
-        int VertexCount;
-        Vector3[] Vertices;
-        */
+        /* not currently used??
+	Vector3 Offset;
+	int VertexCount;
+	Vector3[] Vertices;
+	*/
     }
 
     public enum BSPhysicsShapeType
@@ -290,8 +290,7 @@ namespace Universe.Physics.BulletSPlugin
         BDebrisGroup = 1 << 3, // 0008
         BSensorTrigger = 1 << 4, // 0010
         BCharacterGroup = 1 << 5, // 0020
-        /*
-        BAllGroup = 0x000FFFFF,
+/*        BAllGroup = 0x000FFFFF,
         // Filter groups defined by BulletSim
         BGroundPlaneGroup = 1 << 10, // 0400
         BTerrainGroup = 1 << 11, // 0800
@@ -299,7 +298,7 @@ namespace Universe.Physics.BulletSPlugin
         BSolidGroup = 1 << 13, // 2000
         // BLinksetGroup        = xx  // a linkset proper is either static or dynamic
         BLinksetChildGroup = 1 << 14, // 4000
-        */
+*/
         BAllGroup               = 0x0007FFF,        // collision flags are a signed short
         // Filter groups defined by BulletSim
         BGroundPlaneGroup       = 1 << 8,  // 0400

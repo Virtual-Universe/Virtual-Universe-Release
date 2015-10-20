@@ -216,7 +216,7 @@ namespace Universe.Framework.Physics
         public abstract float Mass { get; }
         public abstract float CollisionScore { get; set; }
         public abstract Quaternion Orientation { get; set; }
-        public abstract int PhysicsActorType { get; set; }
+        public abstract int PhysicsActorType { get; set;}
         public abstract bool IsPhysical { get; set; }
         public abstract bool ThrottleUpdates { get; set; }
         public abstract bool IsColliding { get; set; }
@@ -427,7 +427,7 @@ namespace Universe.Framework.Physics
 
         public override int PhysicsActorType
         {
-            get { return (int)ActorTypes.Ground; }
+            get { return (int) ActorTypes.Ground; }
             set { return; }
         }
 
@@ -437,12 +437,11 @@ namespace Universe.Framework.Physics
             set { return; }
         }
 
-        public override bool Kinematic
-        {
+        public override bool Kinematic {
             get { return false; }
             set { return; }
         }
-
+           
         public override void CrossingFailure()
         {
         }
@@ -582,7 +581,7 @@ namespace Universe.Framework.Physics
 
         public override int PhysicsActorType
         {
-            get { return (int)ActorTypes.Unknown; }
+            get { return (int) ActorTypes.Unknown; }
             set { return; }
 
         }
@@ -593,8 +592,7 @@ namespace Universe.Framework.Physics
             set { return; }
         }
 
-        public override bool Kinematic
-        {
+        public override bool Kinematic {
             get { return false; }
             set { return; }
         }

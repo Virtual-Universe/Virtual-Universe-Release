@@ -554,7 +554,7 @@ namespace Universe.Modules.Archivers
                     else
                     {
                         MainConsole.Instance.WarnFormat(
-                            "[Agent Inventory]: Could not find root folder for {0} when trying to add item {1} with no parent folder specified",
+                            "[AGENT INVENTORY]: Could not find root folder for {0} when trying to add item {1} with no parent folder specified",
                             item.Owner, item.Name);
                         return false;
                     }
@@ -573,7 +573,7 @@ namespace Universe.Modules.Archivers
                 if (!m_inventoryService.AddItem (item))
                 {
                     MainConsole.Instance.WarnFormat (
-                        "[Agent Inventory]: Agent {0} could not add item {1} {2}",
+                        "[AGENT INVENTORY]: Agent {0} could not add item {1} {2}",
                         item.Owner, item.Name, item.ID);
                     return false;
                 }

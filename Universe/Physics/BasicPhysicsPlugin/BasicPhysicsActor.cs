@@ -25,8 +25,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using OpenMetaverse;
 using Universe.Framework.Physics;
+using OpenMetaverse;
 
 namespace Universe.Physics.BasicPhysicsPlugin
 {
@@ -52,7 +52,7 @@ namespace Universe.Physics.BasicPhysicsPlugin
 
         public override int PhysicsActorType
         {
-            get { return (int)ActorTypes.Agent; }
+            get { return (int) ActorTypes.Agent; }
             set { return; }
         }
 
@@ -70,8 +70,7 @@ namespace Universe.Physics.BasicPhysicsPlugin
             set { return; }
         }
 
-        public override bool Grabbed
-        {
+        public override bool Grabbed {
             set { return; }
         }
 
@@ -105,7 +104,7 @@ namespace Universe.Physics.BasicPhysicsPlugin
             set
             {
                 _size = value;
-                _size.Z = _size.Z / 2.0f;
+                _size.Z = _size.Z/2.0f;
             }
         }
 
@@ -114,8 +113,7 @@ namespace Universe.Physics.BasicPhysicsPlugin
             get { return 0f; }
         }
 
-        public override bool Kinematic
-        {
+        public override bool Kinematic {
             get { return false; }
             set { return; }
         }
@@ -175,7 +173,7 @@ namespace Universe.Physics.BasicPhysicsPlugin
 
         public override int PhysicsActorType
         {
-            get { return (int)ActorTypes.Agent; }
+            get { return (int) ActorTypes.Agent; } 
             set { return; }
         }
 
@@ -204,8 +202,7 @@ namespace Universe.Physics.BasicPhysicsPlugin
             set { return; }
         }
 
-        public override bool Kinematic
-        {
+        public override bool Kinematic {
             get { return false; }
             set { return; }
         }
@@ -227,7 +224,7 @@ namespace Universe.Physics.BasicPhysicsPlugin
             set
             {
                 _size = value;
-                _size.Z = _size.Z / 2.0f;
+                _size.Z = _size.Z/2.0f;
             }
         }
 

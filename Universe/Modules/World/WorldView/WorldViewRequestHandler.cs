@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org//
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,6 +37,7 @@ namespace Universe.Modules.WorldView
 {
     public class WorldViewRequestHandler : BaseRequestHandler
     {
+
         protected WorldViewModule m_WorldViewModule;
         protected Object m_RequestLock = new Object();
 
@@ -73,7 +74,7 @@ namespace Universe.Modules.WorldView
                         // we have specific parameters
                         var worldviewImage = SendWorldView(requestData);
                         if (worldviewImage != null)
-                            SaveCachedImage(uri, worldviewImage);
+                            SaveCachedImage(uri,worldviewImage);
 
                         return worldviewImage;
                     }
@@ -81,14 +82,16 @@ namespace Universe.Modules.WorldView
                     // create and return a default image
                     var stdWworldview = GetWorldView();
                     if (stdWworldview != null)
-                        SaveCachedImage(uri, stdWworldview);
+                        SaveCachedImage(uri,stdWworldview);
 
                     return stdWworldview;
+
+
                 }
             }
             catch (Exception e)
             {
-                MainConsole.Instance.Debug("[World View]: Exception: " + e);
+                MainConsole.Instance.Debug("[WORLDVIEW]: Exception: " + e);
             }
 
             return new Byte[0];
@@ -157,14 +160,16 @@ namespace Universe.Modules.WorldView
             return m_WorldViewModule.GenerateWorldView(pos, rot, fov, width, height, usetex);
         }
 
+
         /// <summary>
         /// Generates a standard world view.
         /// </summary>
         /// <returns>The world view.</returns>
         public Byte[] GetWorldView()
         {
+
             // set some basic defaults
-            Vector3 camPos = new Vector3();
+            Vector3 camPos = new Vector3 ();
 
             // this is the basic topdown view used for a map tile
             //camPos.Y = scene.RegionInfo.RegionSizeY / 2 - 0.5f;
@@ -175,18 +180,19 @@ namespace Universe.Modules.WorldView
             camPos.Y = 75.25f;
             camPos.Z = 61.0f;
 
-            Vector3 camDir = new Vector3();
+            Vector3 camDir = new Vector3 ();
             camDir.X = .687462f;                        // -1  -< y/x > 1
             camDir.Y = .687462f;
             camDir.Z = -0.23536f;                       // -1 (up) < Z > (down) 1
 
             float fov = 89f;                            // degrees
 
-            int width = 256;
-            int height = 256;
+            int width = 256;           
+            int height = 256;  
 
             return m_WorldViewModule.GenerateWorldView(camPos, camDir, fov, width, height, true);
         }
+
 
         /// <summary>
         /// Finds the cached world view image.
@@ -223,5 +229,8 @@ namespace Universe.Modules.WorldView
             string cacheFile = cacheDir + "/" + name;
             File.WriteAllBytes(cacheFile, data);
         }
+
+
     }
 }
+

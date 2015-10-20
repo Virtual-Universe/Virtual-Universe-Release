@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://opensimulator.org/, http://whitecore-sim.org, http://virtualnexus.eu
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -1221,8 +1221,7 @@ namespace Universe.Physics.BulletSPlugin
                 });
             }
         }
-        */
-
+*/
         public override void AddForce(OMV.Vector3 force, bool pushforce)
         {
             // Per documentation, max force is limited.
@@ -1561,6 +1560,7 @@ namespace Universe.Physics.BulletSPlugin
                     break;
             }
 
+
             float taperX1;
             float taperY1;
             float taperX;
@@ -1644,8 +1644,7 @@ namespace Universe.Physics.BulletSPlugin
         {
             PhysicalActors.RemoveBodyDependencies();
         }
-        
-        /* not yet implemented
+/* not yet implemented
         #region Extension
         public override object Extension(string pFunct, params object[] pParams)
         {
@@ -1880,8 +1879,7 @@ namespace Universe.Physics.BulletSPlugin
             return;
         }
         #endregion  // Extension
-        */
-    
+*/
     // The physics engine says that properties have updated. Update same and inform
     // the world that things have changed.
     // NOTE: BSPrim.UpdateProperties is overloaded by BSPrimLinkable which modifies updates from root and children prims.
@@ -1962,7 +1960,7 @@ namespace Universe.Physics.BulletSPlugin
             // commented out by fine (spam at the console)
             // PhysicsScene.DetailLog(msg, args);
             // commented out by fine (spam at the console)
-            // WhiteCore.Framework.ConsoleFramework.MainConsole.Instance.InfoFormat("[BulletPrim]: " + msg, args);
+            // Universe.Framework.ConsoleFramework.MainConsole.Instance.InfoFormat("[BulletPrim]: " + msg, args);
         }
     }
 }

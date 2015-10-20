@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -96,7 +96,7 @@ namespace Universe.Modules.Chat
             m_TransferModule = m_scene.RequestModuleInterface<IMessageTransferModule> ();
 
             if (m_TransferModule == null)
-                MainConsole.Instance.Error ("[Instant Message]: No message transfer module, lures will not work!");
+                MainConsole.Instance.Error ("[INSTANT MESSAGE]: No message transfer module, lures will not work!");
         }
 
         public Type ReplaceableInterface
@@ -185,7 +185,7 @@ namespace Universe.Modules.Chat
             if (im.Dialog == (byte)InstantMessageDialog.RequestTeleport)
             {
                 MainConsole.Instance.DebugFormat (
-                    "[HG Lure Module]: RequestTeleport sessionID={0}, regionID={1}, message={2}",
+                    "[HG LURE MODULE]: RequestTeleport sessionID={0}, regionID={1}, message={2}",
                     im.SessionID, im.RegionID, im.Message);
 
                 // Forward. We do this, because the IM module explicitly rejects

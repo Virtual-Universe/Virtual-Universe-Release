@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -413,10 +413,10 @@ namespace Universe.Modules.AbuseReports
 
         public void AbuseTextureUploaded(UUID agentID, UUID assetID, byte[] data)
         {
-            //MainConsole.Instance.InfoFormat("[Asset CAPS]: Received baked texture {0}", assetID.ToString());
+            //MainConsole.Instance.InfoFormat("[AssetCAPS]: Received baked texture {0}", assetID.ToString());
             AssetBase asset = new AssetBase(assetID, "Abuse Texture", AssetType.Texture, agentID) { Data = data };
             asset.ID = m_Scene.AssetService.Store(asset);
-            MainConsole.Instance.DebugFormat("[Abuse CAPS]: texture new id {0}", assetID);
+            MainConsole.Instance.DebugFormat("[AbuseCAPS]: texture new id {0}", assetID);
         }
 
         #endregion

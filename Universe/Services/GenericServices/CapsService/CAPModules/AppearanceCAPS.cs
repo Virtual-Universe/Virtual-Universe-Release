@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -117,7 +117,7 @@ namespace Universe.Services
             }
             catch (Exception e)
             {
-                MainConsole.Instance.Error("[Caps]: " + e);
+                MainConsole.Instance.Error("[CAPS]: " + e);
             }
 
             return null;

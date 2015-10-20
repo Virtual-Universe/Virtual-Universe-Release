@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org//
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -75,7 +75,7 @@ namespace Universe.Modules.Currency
         string stipendPayDay;           // the good day
         string stipendPayTime;          // the time to start work
         bool stipendsPremiumOnly;       // Premium members only
-        //bool stipendsLoadOldUsers;      //  ?? not sure if needed
+//        bool stipendsLoadOldUsers;      //  ?? not sure if needed
         bool stipendsLoginRequired;     // login required in the last week
         int schedulerInterval = 0;      // seconds
 
@@ -119,11 +119,10 @@ namespace Universe.Modules.Currency
                     InitializeScheduleTimer ();
                     MainConsole.Instance.Info ("[Currency]: Stipend payments enabled. Next payment: " + String.Format ("{0:f}", nextStipendPayment));
                 }
-
                 if (payGroups)
                 {
-                    MainConsole.Instance.Info ("[Currency]: Group payments have been enabled");
-                }
+                	MainConsole.Instance.Info ("[Currency]: Group payments enabled.");
+                }            
             }
         }
 
@@ -217,7 +216,7 @@ namespace Universe.Modules.Currency
                 stipendPayDay = currCfg.GetString("StipendPayDay",Constants.STIPEND_PAY_DAY);
                 stipendPayTime = currCfg.GetString("StipendPayTime",Constants.STIPEND_PAY_TIME);
 				stipendsPremiumOnly = currCfg.GetBoolean("StipendsPremiumOnly",false);
-				//stipendsLoadOldUsers = currCfg.GetBoolean ("StipendsLoadOldUsers", false);
+//				stipendsLoadOldUsers = currCfg.GetBoolean ("StipendsLoadOldUsers", false);
 				stipendsLoginRequired = currCfg.GetBoolean ("StipendsLoginRequired", false);
                 schedulerInterval = currCfg.GetInt ("SchedulerInterval", Constants.SCHEDULER_INTERVAL);
 
@@ -403,6 +402,7 @@ namespace Universe.Modules.Currency
             }
             return null;
         }
+
 
         bool CheckWhetherUserShouldPay(UUID agentID, string text)
         {
@@ -744,7 +744,7 @@ namespace Universe.Modules.Currency
             string paymentInfo;
 
             paymentInfo = String.Format ("{0, -20}", "User");
-            //paymentInfo += String.Format ("{0, -34}", "Description");
+//            paymentInfo += String.Format ("{0, -34}", "Description");
             paymentInfo += String.Format ("{0, -30}", "Transaction");
             paymentInfo += String.Format ("{0, -10}", "Amount");
 
@@ -767,7 +767,7 @@ namespace Universe.Modules.Currency
                 var user = userService.GetUserAccount (null, agentID);
 
                 paymentInfo = String.Format ("{0, -20}", user.Name);
-                //paymentInfo += String.Format ("{0, -34}", description.Substring (0, 32));   
+  //              paymentInfo += String.Format ("{0, -34}", description.Substring (0, 32));   
                 paymentInfo += String.Format ("{0, -30}", Utilities.TransactionTypeInfo(transType));
                 paymentInfo += String.Format ("{0, -10}", amount);
 
@@ -914,9 +914,8 @@ namespace Universe.Modules.Currency
 
 
         }
-        
-        /*
-        void ProcessGroupPayments()
+
+      /*  void ProcessGroupPayments()
         {
             if (!payGroups)
             {
@@ -952,8 +951,8 @@ namespace Universe.Modules.Currency
             MainConsole.Instance.InfoFormat ("[Currency]: The next Group payment is scheduled for {0}",
                 String.Format("{0:f}",nextGroupPayment));
         }
-        */
 
+*/
         void ProcessGroupLiability()
         {
             if (!payGroups)
@@ -1159,6 +1158,7 @@ namespace Universe.Modules.Currency
                 }
             }
 
+
             // reset for the next payment
             nextGroupDividend = GetGroupDisbursmentPaytime ( Constants.GROUP_PAYMENTS_DELAY );
 
@@ -1212,6 +1212,7 @@ namespace Universe.Modules.Currency
 				
 			if(promptUser)
 			{
+
 			    // prompt for details...");
                 stipendAmount = int.Parse (MainConsole.Instance.Prompt ("Stipend amount ?", "0"));
                 if (stipendAmount == 0)
@@ -1256,6 +1257,7 @@ namespace Universe.Modules.Currency
                 if (!stipendsPremiumOnly)
                     stipendsLoginRequired = MainConsole.Instance.Prompt ("Require a recent login for Free members? (yes/no)", "no").ToLower() == "yes";
                 // not sure about this one??  //StipendsLoadOldUsers = currCfg.GetBoolean ("StipendsLoadOldUsers", false);
+
             }
 
 			// ensure we are enabled
@@ -1265,6 +1267,7 @@ namespace Universe.Modules.Currency
             MainConsole.Instance.Info ("[Currency]; Stipend payments have been enabled");
             MainConsole.Instance.CleanInfoFormat ("          The next stipend payment of {0}{1} is scheduled for {2}",
                 moneyModule.InWorldCurrencySymbol, stipendAmount, nextStipendPayment.ToLongDateString());
+
 		}
 
 		protected void HandleStipendDisable(IScene scene, string[] cmd)
@@ -1295,7 +1298,9 @@ namespace Universe.Modules.Currency
             nextStipendPayment = DateTime.Now; 
             SetSchedTimer (10);
             MainConsole.Instance.InfoFormat ("[Currency]: Stipend payments will commence in {0} seconds.", 10);
+
         }
+
 
         protected void HandleStipendReset(IScene scene, string[] cmd)
         {
@@ -1304,7 +1309,9 @@ namespace Universe.Modules.Currency
 
             MainConsole.Instance.Info ("[Currency]; Stipend configuration reloaded");
             StipendInfo ();
+
         }
+
 
         protected void HandleGrouppayEnable(IScene scene, string[] cmd)
         {
@@ -1324,6 +1331,7 @@ namespace Universe.Modules.Currency
             MainConsole.Instance.Info ("[Currency]; Group payments have been enabled");
             MainConsole.Instance.CleanInfoFormat ("          The next group payment cycle is scheduled for {0}",
                   nextGroupPayment.ToLongDateString());
+
         }
 
         protected void HandleGrouppayDisable(IScene scene, string[] cmd)
@@ -1354,6 +1362,7 @@ namespace Universe.Modules.Currency
             nextGroupPayment = DateTime.Now; 
             SetSchedTimer(10);
             MainConsole.Instance.InfoFormat ("[Currency]: Group payments will commence in {0} seconds.", 10);
+
         }
 
         protected void HandleGrouppayPayDividends(IScene scene, string[] cmd)
@@ -1362,6 +1371,7 @@ namespace Universe.Modules.Currency
             nextGroupDividend = DateTime.Now; 
             SetSchedTimer(10);
             MainConsole.Instance.InfoFormat ("[Currency]: Group dividend payments will commence in {0} seconds.", 10);
+
         }
 
         protected void HandleScheduledPayInfo (IScene scene, string[] cmd)
@@ -1375,6 +1385,7 @@ namespace Universe.Modules.Currency
             nextScheduledPayment = DateTime.Now; 
             SetSchedTimer(10);
             MainConsole.Instance.InfoFormat ("[Currency]: Scheduled payments will commence in {0} seconds.", 10);
+
         }
 
         #endregion

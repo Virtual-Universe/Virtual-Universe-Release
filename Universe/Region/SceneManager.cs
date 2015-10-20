@@ -150,11 +150,11 @@ namespace Universe.Region
             foreach (IScene scene in m_scenes)
             {
                 scene.Config = config;
-                scene.PhysicsScene.PostInitialize(config);
+                scene.PhysicsScene.PostInitialise(config);
             }
         }
 
-        public void PostInitialize()
+        public void PostInitialise()
         {
         }
 
@@ -473,7 +473,7 @@ namespace Universe.Region
             //Then finish the rest of the SharedRegionStartupModules
             foreach (ISharedRegionStartupModule module in m_startupPlugins)
             {
-                module.PostInitialize(scene, m_config, m_SimBase);
+                module.PostInitialise(scene, m_config, m_SimBase);
             }
             foreach (ISharedRegionStartupModule module in m_startupPlugins)
             {

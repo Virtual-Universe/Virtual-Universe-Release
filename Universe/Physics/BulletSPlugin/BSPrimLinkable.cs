@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://opensimulator.org/, http://whitecore-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,9 +27,9 @@
 
 using System;
 using System.Linq;
-using OMV = OpenMetaverse;
 using Universe.Framework.Physics;
 using Universe.Framework.SceneInfo;
+using OMV = OpenMetaverse;
 
 namespace Universe.Physics.BulletSPlugin
 {
@@ -48,7 +48,7 @@ namespace Universe.Physics.BulletSPlugin
         {
             Linkset = BSLinkset.Factory(PhysicsScene, this);
 
-            PhysicsScene.TaintedObject(LocalID, "BSPrimLinksetCompound.Refresh", delegate ()
+            PhysicsScene.TaintedObject(LocalID, "BSPrimLinksetCompound.Refresh", delegate()
             {
                 SetMaterial(material);
                 Friction = friction;
@@ -121,7 +121,7 @@ namespace Universe.Physics.BulletSPlugin
             {
                 base.Position = value;
                 PhysicsScene.TaintedObject(LocalID, "BSPrimLinkset.setPosition",
-                    delegate () { Linkset.UpdateProperties(UpdatedProperties.Position, this); });
+                    delegate() { Linkset.UpdateProperties(UpdatedProperties.Position, this); });
             }
         }
 
@@ -132,8 +132,8 @@ namespace Universe.Physics.BulletSPlugin
             set
             {
                 base.Orientation = value;
-                PhysicsScene.TaintedObject(LocalID, "BSPrimLinkset.setOrientation",
-                    delegate () { Linkset.UpdateProperties(UpdatedProperties.Orientation, this); });
+                PhysicsScene.TaintedObject(LocalID,"BSPrimLinkset.setOrientation",
+                    delegate() { Linkset.UpdateProperties(UpdatedProperties.Orientation, this); });
             }
         }
 
@@ -228,15 +228,15 @@ namespace Universe.Physics.BulletSPlugin
             set
             {
                 if (value)
-                    SomeCollisionSimulationStep = PhysicsScene.SimulationStep;
+                        SomeCollisionSimulationStep = PhysicsScene.SimulationStep;
                 else
                     SomeCollisionSimulationStep = 0;
 
-                base.IsColliding = value;
+                    base.IsColliding = value;
             }
         }
 
-        /* not sure what this is for yet - 20150925 -
+ /* not sure what this is for yet - 20150925 -
         // Convert the existing linkset of this prim into a new type.
         public bool ConvertLinkset(BSLinkset.LinksetImplementation newType)
         {
@@ -282,8 +282,7 @@ namespace Universe.Physics.BulletSPlugin
             }
             return ret;
         }
-        */
-
+*/
         /* not ported yet - 20150925
         #region Extension
         public override object Extension(string pFunct, params object[] pParams)
@@ -350,5 +349,5 @@ namespace Universe.Physics.BulletSPlugin
         }
         #endregion  // Extension
     */
-    }
+}
 }

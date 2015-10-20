@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,16 +25,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using Nini.Config;
-using OpenMetaverse;
+
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Services.ClassHelpers.Inventory;
 using Universe.Framework.Utilities;
+using Nini.Config;
+using OpenMetaverse;
+using System;
+using System.Collections.Generic;
 
 namespace Universe.Modules.CallingCards
 {
@@ -108,7 +109,7 @@ namespace Universe.Modules.CallingCards
 
         private void OnNewClient(IClientAPI client)
         {
-            // calling card handling...
+            // ... calling card handling...
             client.OnOfferCallingCard += OnOfferCallingCard;
             client.OnAcceptCallingCard += OnAcceptCallingCard;
             client.OnDeclineCallingCard += OnDeclineCallingCard;
@@ -134,7 +135,7 @@ namespace Universe.Modules.CallingCards
         /// <param name="name"></param>
         public void CreateCallingCard(IClientAPI client, UUID creator, UUID folder, string name)
         {
-            MainConsole.Instance.Debug("[Calling Card Module]: Creating calling card for " + client.Name);
+            MainConsole.Instance.Debug("[Universe CALLING CARD MODULE]: Creating calling card for " + client.Name);
             InventoryItemBase item = new InventoryItemBase
                                          {
                                              AssetID = UUID.Zero,
@@ -173,7 +174,7 @@ namespace Universe.Modules.CallingCards
         private void OnOfferCallingCard(IClientAPI client, UUID destID, UUID transactionID)
         {
             MainConsole.Instance.DebugFormat(
-                "[Calling Card Module]: Got offer from {0} for {1}, transaction {2}",
+                "[Universe CALLING CARD MODULE]: Got offer from {0} for {1}, transaction {2}",
                 client.AgentId, destID, transactionID);
 
             IClientAPI friendClient = LocateClientObject(destID);
@@ -200,7 +201,7 @@ namespace Universe.Modules.CallingCards
         private void OnAcceptCallingCard(IClientAPI client, UUID transactionID, UUID folderID)
         {
             MainConsole.Instance.DebugFormat(
-                "[Calling Card Module]: User {0} ({1}) accepted tid {2}, folder {3}",
+                "[Universe CALLING CARD MODULE]: User {0} ({1}) accepted tid {2}, folder {3}",
                 client.AgentId,
                 client.Name,
                 transactionID, folderID);
@@ -210,7 +211,7 @@ namespace Universe.Modules.CallingCards
                 if (!m_pendingCallingcardRequests.TryGetValue(transactionID, out destID))
                 {
                     MainConsole.Instance.WarnFormat(
-                        "[Calling Card Module]: Got a AcceptCallingCard from {0} without an offer before.",
+                        "[Universe CALLING CARD MODULE]: Got a AcceptCallingCard from {0} without an offer before.",
                         client.Name);
                     return;
                 }
@@ -235,7 +236,7 @@ namespace Universe.Modules.CallingCards
         /// <param name="transactionID"></param>
         private void OnDeclineCallingCard(IClientAPI client, UUID transactionID)
         {
-            MainConsole.Instance.DebugFormat("[Calling Card Module]: User {0} (ID:{1}) declined card, tid {2}",
+            MainConsole.Instance.DebugFormat("[Universe CALLING CARD MODULE]: User {0} (ID:{1}) declined card, tid {2}",
                                              client.Name, client.AgentId, transactionID);
             UUID destID;
             lock (m_pendingCallingcardRequests)
@@ -243,7 +244,7 @@ namespace Universe.Modules.CallingCards
                 if (!m_pendingCallingcardRequests.TryGetValue(transactionID, out destID))
                 {
                     MainConsole.Instance.WarnFormat(
-                        "[Calling Card Module]: Got a AcceptCallingCard from {0} without an offer before.",
+                        "[Universe CALLING CARD MODULE]: Got a AcceptCallingCard from {0} without an offer before.",
                         client.Name);
                     return;
                 }

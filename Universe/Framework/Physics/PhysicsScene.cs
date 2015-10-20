@@ -102,7 +102,7 @@ namespace Universe.Framework.Physics
         public virtual int StatCollisionAccountingTime { get; protected set; }
 
         public abstract void Initialize(IMesher meshmerizer, IScene scene);
-        public abstract void PostInitialize(IConfigSource config);
+        public abstract void PostInitialise(IConfigSource config);
         public abstract string EngineType { get; }
 
         public abstract PhysicsActor AddAvatar(string avName, Vector3 position, Quaternion rotation, Vector3 size,
@@ -224,7 +224,7 @@ namespace Universe.Framework.Physics
             // Does nothing right now
         }
 
-        public override void PostInitialize(IConfigSource config)
+        public override void PostInitialise(IConfigSource config)
         {
         }
 

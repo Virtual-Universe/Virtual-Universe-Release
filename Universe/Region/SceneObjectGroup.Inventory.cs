@@ -150,7 +150,7 @@ namespace Universe.Region
                 return true;
             }
             MainConsole.Instance.ErrorFormat(
-                "[Prim Inventory]: " +
+                "[PRIM INVENTORY]: " +
                 "Couldn't find prim local ID {0} in group {1}, {2} to add inventory item ID {3}",
                 localID, Name, UUID, newItemId);
 
@@ -171,7 +171,7 @@ namespace Universe.Region
                 return part.Inventory.GetInventoryItem(itemID);
             }
             MainConsole.Instance.ErrorFormat(
-                "[Prim Inventory]: " +
+                "[PRIM INVENTORY]: " +
                 "Couldn't find prim local ID {0} in prim {1}, {2} to get inventory item ID {3}",
                 primID, "unknown", "unknown", itemID);
 
@@ -196,7 +196,7 @@ namespace Universe.Region
                 return true;
             }
             MainConsole.Instance.ErrorFormat(
-                "[Prim Inventory]: " +
+                "[PRIM INVENTORY]: " +
                 "Couldn't find prim ID {0} to update item {1}, {2}",
                 item.ParentPartID, item.Name, item.ItemID);
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -363,7 +363,7 @@ namespace Universe.Simulation.Base
                 plugin.Initialize(this);
 
             foreach (IApplicationPlugin plugin in m_applicationPlugins)
-                plugin.PostInitialize();
+                plugin.PostInitialise();
 
             foreach (IApplicationPlugin plugin in m_applicationPlugins)
                 plugin.Start();

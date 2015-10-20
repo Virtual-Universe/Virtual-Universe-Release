@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://opensimulator.org/, http://whitecore-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -1414,7 +1414,7 @@ namespace Universe.Physics.BulletSPlugin
             /* TODO */
             ConfigurationParameters[] configparms = new ConfigurationParameters[1];
             configparms[0] = parms;
-            //Vector3 worldExtent = new Vector3(Constants.RegionSize, Constants.RegionSize, Constants.RegionHeight);
+//            Vector3 worldExtent = new Vector3(Constants.RegionSize, Constants.RegionSize, Constants.RegionHeight);
             Vector3 worldExtent = maxPosition;
             m_maxCollisions = maxCollisions;
             m_maxUpdatesPerFrame = maxUpdates;
@@ -2111,8 +2111,7 @@ namespace Universe.Physics.BulletSPlugin
             float pratio, bool pdisableCollisionsBetweenLinkedBodies)
         {
             Generic6DofConstraint constrain = null;
-        /*   
-        BulletXNA does not have a gear constraint
+            /*   BulletXNA does not have a gear constraint
         GearConstraint constrain = null;
         DiscreteDynamicsWorld world = (pWorld as BulletWorldXNA).world;
         RigidBody rb1 = (pBody1 as BulletBodyXNA).rigidBody;
@@ -2299,15 +2298,16 @@ namespace Universe.Physics.BulletSPlugin
                 sw.WriteLine(string.Format("Vertices[{0}]={1};", iter, vertices[iter].ToString("0.0000")));
             }
 
-            /*
-            for (int i = 0; i < pVerticesCount; i++)
-            {
-                string s = vertices[indices[i * 3]].ToString("0.0000");
-                s += " " + vertices[indices[i * 3 + 1]].ToString("0.0000");
-                s += " " + vertices[indices[i * 3 + 2]].ToString("0.0000");
-                sw.Write(s + "\n");
-            }
-            */
+            // for (int i = 0; i < pVerticesCount; i++)
+            // {
+            //
+            //     string s = vertices[indices[i * 3]].ToString("0.0000");
+            //     s += " " + vertices[indices[i * 3 + 1]].ToString("0.0000");
+            //    s += " " + vertices[indices[i * 3 + 2]].ToString("0.0000");
+            //
+            //     sw.Write(s + "\n");
+            //}
+
             sw.Close();
         }
 
@@ -2320,7 +2320,7 @@ namespace Universe.Physics.BulletSPlugin
                 heightMap, scaleFactor,
                 minHeight, maxHeight, upAxis,
                 false);
-            //terrainShape.SetMargin(collisionMargin + 0.5f);
+  //          terrainShape.SetMargin(collisionMargin + 0.5f);
             terrainShape.SetMargin(collisionMargin);
             terrainShape.SetUseDiamondSubdivision(true);
             terrainShape.SetUserPointer(id);
@@ -2449,9 +2449,11 @@ namespace Universe.Physics.BulletSPlugin
                 //updatedEntities = new List<BulletXNA.EntityProperties>();
                 //updatedEntityCount = 0;
 
+
                 //collidersCount = 0;
 
                 updatedEntities = new EntityProperties[0];
+
 
                 colliders = new CollisionDesc[0];
             }
@@ -2589,7 +2591,7 @@ namespace Universe.Physics.BulletSPlugin
                         world.RayTest(ref rOrigin, ref rEnd, rayCallback);
                         if (rayCallback.HasHit())
                         {
-                            // 20131224 not used  IndexedVector3 hitLocation = rayCallback.m_hitPointWorld;
+                            // 20131224 not used                        IndexedVector3 hitLocation = rayCallback.m_hitPointWorld;
                         }
                         return rayCallback.HasHit();
                     }
@@ -2598,6 +2600,7 @@ namespace Universe.Physics.BulletSPlugin
             return false;
         }
     }
+
 
     public class SimMotionState : DefaultMotionState
     {

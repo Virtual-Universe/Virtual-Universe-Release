@@ -77,7 +77,7 @@ namespace Universe.Modules.InventoryAccess
             }
         }
 
-        public virtual void PostInitialize()
+        public virtual void PostInitialise()
         {
         }
 
@@ -216,7 +216,7 @@ namespace Universe.Modules.InventoryAccess
                 return "";
             }
             MainConsole.Instance.ErrorFormat(
-                "[Agent Inventory]: Could not find item {0} for caps inventory update",
+                "[AGENT INVENTORY]: Could not find item {0} for caps inventory update",
                 itemID);
 
             return "";
@@ -341,7 +341,7 @@ namespace Universe.Modules.InventoryAccess
                 if (null == item)
                 {
                     MainConsole.Instance.DebugFormat(
-                        "[Agent Inventory]: Object {0} {1} scheduled for save to inventory has already been deleted.",
+                        "[AGENT INVENTORY]: Object {0} {1} scheduled for save to inventory has already been deleted.",
                         objectGroups[0].Name, objectGroups[0].UUID);
                     return UUID.Zero;
                 }
@@ -850,7 +850,7 @@ namespace Universe.Modules.InventoryAccess
             ISceneChildEntity rootPart = group.GetChildPart(group.UUID);
             if (rootPart == null)
             {
-                MainConsole.Instance.Error("[Agent Inventory]: Error rezzing ItemID: " + itemID +
+                MainConsole.Instance.Error("[AGENT INVENTORY]: Error rezzing ItemID: " + itemID +
                                            " object has no rootpart.");
                 return null;
             }

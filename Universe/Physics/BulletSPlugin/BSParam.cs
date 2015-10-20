@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://opensimulator.org/, http://whitecore-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -293,17 +293,16 @@ namespace Universe.Physics.BulletSPlugin
                 objectSet = pObjSetter;
             }
 
-            /*
-            Wish I could simplify using this definition but CLR doesn't store references so closure around delegates of references won't work
-            public ParameterDefn(string pName, string pDesc, T pDefault, ref T loc)
+            /* Wish I could simplify using this definition but CLR doesn't store references so closure around delegates of references won't work
+        public ParameterDefn(string pName, string pDesc, T pDefault, ref T loc)
             : base(pName, pDesc)
-            {
-                defaultValue = pDefault;
-                setter = (s, v) => { loc = v; };
-                getter = (s) => { return loc; };
-                objectSet = null;
-            }
-            */
+        {
+            defaultValue = pDefault;
+            setter = (s, v) => { loc = v; };
+            getter = (s) => { return loc; };
+            objectSet = null;
+        }
+         */
 
             public override void AssignDefault(BSScene s)
             {

@@ -393,7 +393,7 @@ namespace Universe.Modules.Installer
             {
                 plugin.PreStartup(m_registry.RequestModuleInterface<ISimulationBase>());
                 plugin.Initialize(m_registry.RequestModuleInterface<ISimulationBase>());
-                plugin.PostInitialize();
+                plugin.PostInitialise();
                 plugin.Start();
                 plugin.PostStart();
             }

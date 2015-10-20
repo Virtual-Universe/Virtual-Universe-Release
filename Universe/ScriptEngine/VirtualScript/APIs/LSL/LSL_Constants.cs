@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -621,8 +621,8 @@ namespace Universe.ScriptEngine.VirtualScript.Runtime
         public static readonly LSL_Types.LSLInteger CAMERA_POSITION_LAG = 5;
         public static readonly LSL_Types.LSLInteger CAMERA_FOCUS_LAG = 6;
         public static readonly LSL_Types.LSLInteger CAMERA_DISTANCE = 7;
-        public static readonly LSL_Types.LSLInteger CAMERA_BEHINVSSS_ANGLE = 8;
-        public static readonly LSL_Types.LSLInteger CAMERA_BEHINVSSS_LAG = 9;
+        public static readonly LSL_Types.LSLInteger CAMERA_BEHINDNESS_ANGLE = 8;
+        public static readonly LSL_Types.LSLInteger CAMERA_BEHINDNESS_LAG = 9;
         public static readonly LSL_Types.LSLInteger CAMERA_POSITION_THRESHOLD = 10;
         public static readonly LSL_Types.LSLInteger CAMERA_FOCUS_THRESHOLD = 11;
         public static readonly LSL_Types.LSLInteger CAMERA_ACTIVE = 12;

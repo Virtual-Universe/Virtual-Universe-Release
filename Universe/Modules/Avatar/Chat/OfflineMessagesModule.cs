@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -93,7 +93,7 @@ namespace Universe.Modules.Chat
                     m_Scene = null;
 
                     MainConsole.Instance.Error(
-                        "[Offline Messaging] No message transfer module or OfflineMessagesConnector is enabled. Disabling offline messages");
+                        "[OFFLINE MESSAGING] No message transfer module or OfflineMessagesConnector is enabled. Disabling offline messages");
                     return;
                 }
                 m_TransferModule.OnUndeliveredMessage += UndeliveredMessage;
@@ -177,6 +177,7 @@ namespace Universe.Modules.Chat
                 //
                 // Needed for proper state management for stored group
                 // invitations
+                //
                 IM.Offline = 1;
                 m_Scene.EventManager.TriggerIncomingInstantMessage(IM);
             }

@@ -1,12 +1,12 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://opensimulator.org/, http://whitecore-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyrightD
+ *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
  *     * Neither the name of the Virtual Universe Project nor the
@@ -23,9 +23,7 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/*
+ *
  * The quotations from http://wiki.secondlife.com/wiki/Linden_Vehicle_Tutorial
  * are Copyright (c) 2009 Linden Research, Inc and are used under their license
  * of Creative Commons Attribution-Share Alike 3.0
@@ -105,10 +103,9 @@ namespace Universe.Physics.BulletSPlugin
                 OrientationDisplacement = Quaternion.Identity;
             }
         }
-        
-        //original
-        /*   
-        public override Vector3 ForcePosition
+
+//original
+/*        public override Vector3 ForcePosition
         {
             get { return base.ForcePosition; }
             set
@@ -119,7 +116,7 @@ namespace Universe.Physics.BulletSPlugin
                     base.ForcePosition = value;
             }
         }
-        */
+*/
 
         // 'ForcePosition' is the one way to set the physical position of the body in the physics engine.
         // Displace the simulator idea of position (center of root prim) to the physical position.

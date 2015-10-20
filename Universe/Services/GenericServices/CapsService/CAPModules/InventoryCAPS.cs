@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -362,7 +362,7 @@ namespace Universe.Services
                                                         OSHttpResponse httpResponse)
         {
             string asset_type = map["asset_type"].AsString();
-            //MainConsole.Instance.Info("[Caps]: NewAgentInventoryRequest Request is: " + map.ToString());
+            //MainConsole.Instance.Info("[CAPS]: NewAgentInventoryRequest Request is: " + map.ToString());
             //MainConsole.Instance.Debug("asset upload request via CAPS" + llsdRequest.inventory_type + " , " + llsdRequest.asset_type);
 
             string assetName = map["name"].AsString();

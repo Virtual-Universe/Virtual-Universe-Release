@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://opensimulator.org/, http://whitecore-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,10 +26,10 @@
  */
 
 using System;
-using OMV = OpenMetaverse;
 using Universe.Framework.Physics;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Utilities;
+using OMV = OpenMetaverse;
 
 namespace Universe.Physics.BulletSPlugin
 {
@@ -448,7 +448,7 @@ namespace Universe.Physics.BulletSPlugin
                 NextCollisionOkTime = PhysicsScene.SimulationNowTime + SubscribedEventsMs;
 
                 // We are called if we previously had collisions. If there are no collisions
-                //   this time, send up one last empty event so WhiteCore can sense collision end.
+                //   this time, send up one last empty event so Universe can sense collision end.
                 if (CollisionCollection.Count == 0)
                 {
                     // If I have no collisions this time, remove me from the list of objects with collisions.

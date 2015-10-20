@@ -89,7 +89,7 @@ namespace Universe.Modules.Groups
         public void ActivateGroup(IClientAPI remoteClient, UUID groupID)
         {
             if (m_debugEnabled)
-                MainConsole.Instance.DebugFormat("[Groups]: {0} called", MethodBase.GetCurrentMethod().Name);
+                MainConsole.Instance.DebugFormat("[GROUPS]: {0} called", MethodBase.GetCurrentMethod().Name);
 
             string title = m_groupData.SetAgentActiveGroup(GetRequestingAgentID(remoteClient), groupID);
             m_cachedGroupTitles.Remove(remoteClient.AgentId);
@@ -106,7 +106,7 @@ namespace Universe.Modules.Groups
         public List<GroupTitlesData> GroupTitlesRequest(IClientAPI remoteClient, UUID groupID)
         {
             if (m_debugEnabled)
-                MainConsole.Instance.DebugFormat("[Groups]: {0} called", MethodBase.GetCurrentMethod().Name);
+                MainConsole.Instance.DebugFormat("[GROUPS]: {0} called", MethodBase.GetCurrentMethod().Name);
 
             return m_groupData.GetGroupTitles(GetRequestingAgentID(remoteClient), groupID);
         }
@@ -114,14 +114,14 @@ namespace Universe.Modules.Groups
         public List<GroupMembersData> GroupMembersRequest(IClientAPI remoteClient, UUID groupID)
         {
             if (m_debugEnabled)
-                MainConsole.Instance.DebugFormat("[Groups]: {0} called", MethodBase.GetCurrentMethod().Name);
+                MainConsole.Instance.DebugFormat("[GROUPS]: {0} called", MethodBase.GetCurrentMethod().Name);
             List<GroupMembersData> data = m_groupData.GetGroupMembers(GetRequestingAgentID(remoteClient), groupID);
 
             if (m_debugEnabled)
             {
                 foreach (GroupMembersData member in data)
                 {
-                    MainConsole.Instance.DebugFormat("[Groups]: Member({0}) - IsOwner({1})", member.AgentID,
+                    MainConsole.Instance.DebugFormat("[GROUPS]: Member({0}) - IsOwner({1})", member.AgentID,
                                                      member.IsOwner);
                 }
             }
@@ -132,7 +132,7 @@ namespace Universe.Modules.Groups
         public List<GroupRolesData> GroupRoleDataRequest(IClientAPI remoteClient, UUID groupID)
         {
             if (m_debugEnabled)
-                MainConsole.Instance.DebugFormat("[Groups]: {0} called", MethodBase.GetCurrentMethod().Name);
+                MainConsole.Instance.DebugFormat("[GROUPS]: {0} called", MethodBase.GetCurrentMethod().Name);
 
             return m_groupData.GetGroupRoles(GetRequestingAgentID(remoteClient), groupID);
         }
@@ -140,7 +140,7 @@ namespace Universe.Modules.Groups
         public List<GroupRoleMembersData> GroupRoleMembersRequest(IClientAPI remoteClient, UUID groupID)
         {
             if (m_debugEnabled)
-                MainConsole.Instance.DebugFormat("[Groups]: {0} called", MethodBase.GetCurrentMethod().Name);
+                MainConsole.Instance.DebugFormat("[GROUPS]: {0} called", MethodBase.GetCurrentMethod().Name);
 
             List<GroupRoleMembersData> data = m_groupData.GetGroupRoleMembers(GetRequestingAgentID(remoteClient),
                                                                               groupID);
@@ -149,7 +149,7 @@ namespace Universe.Modules.Groups
             {
                 foreach (GroupRoleMembersData member in data)
                 {
-                    MainConsole.Instance.DebugFormat("[Groups]: Member({0}) - Role({1})", member.MemberID, member.RoleID);
+                    MainConsole.Instance.DebugFormat("[GROUPS]: Member({0}) - Role({1})", member.MemberID, member.RoleID);
                 }
             }
             return data;
@@ -158,7 +158,7 @@ namespace Universe.Modules.Groups
         public GroupProfileData GroupProfileRequest(IClientAPI remoteClient, UUID groupID)
         {
             if (m_debugEnabled)
-                MainConsole.Instance.DebugFormat("[Groups]: {0} called", MethodBase.GetCurrentMethod().Name);
+                MainConsole.Instance.DebugFormat("[GROUPS]: {0} called", MethodBase.GetCurrentMethod().Name);
 
             return m_groupData.GetGroupProfile(GetRequestingAgentID(remoteClient), groupID);
         }
@@ -166,7 +166,7 @@ namespace Universe.Modules.Groups
         public List<GroupMembersData> GetGroupMembers(UUID requestingAgentID, UUID groupID)
         {
             if (m_debugEnabled)
-                MainConsole.Instance.DebugFormat("[Groups]: {0} called", MethodBase.GetCurrentMethod().Name);
+                MainConsole.Instance.DebugFormat("[GROUPS]: {0} called", MethodBase.GetCurrentMethod().Name);
 
             return m_groupData.GetGroupMembers(requestingAgentID, groupID);
         }
@@ -174,7 +174,7 @@ namespace Universe.Modules.Groups
         public GroupMembershipData[] GetMembershipData(UUID agentID)
         {
             if (m_debugEnabled)
-                MainConsole.Instance.DebugFormat("[Groups]: {0} called", MethodBase.GetCurrentMethod().Name);
+                MainConsole.Instance.DebugFormat("[GROUPS]: {0} called", MethodBase.GetCurrentMethod().Name);
 
             return m_groupData.GetAgentGroupMemberships(UUID.Zero, agentID).ToArray();
         }
@@ -183,7 +183,7 @@ namespace Universe.Modules.Groups
         {
             if (m_debugEnabled)
                 MainConsole.Instance.DebugFormat(
-                    "[Groups]: {0} called with groupID={1}, agentID={2}",
+                    "[GROUPS]: {0} called with groupID={1}, agentID={2}",
                     MethodBase.GetCurrentMethod().Name, groupID, agentID);
 
             return AttemptFindGroupMembershipData(UUID.Zero, agentID, groupID);
@@ -194,7 +194,7 @@ namespace Universe.Modules.Groups
                                     bool maturePublish)
         {
             if (m_debugEnabled)
-                MainConsole.Instance.DebugFormat("[Groups]: {0} called", MethodBase.GetCurrentMethod().Name);
+                MainConsole.Instance.DebugFormat("[GROUPS]: {0} called", MethodBase.GetCurrentMethod().Name);
 
             // Note: Permissions checking for modification rights is handled by the Groups Server/Service
             m_groupData.UpdateGroup(GetRequestingAgentID(remoteClient), groupID, charter, showInList ? 1 : 0, insigniaID,
@@ -206,7 +206,7 @@ namespace Universe.Modules.Groups
         {
             // Note: Permissions checking for modification rights is handled by the Groups Server/Service
             if (m_debugEnabled)
-                MainConsole.Instance.DebugFormat("[Groups]: {0} called", MethodBase.GetCurrentMethod().Name);
+                MainConsole.Instance.DebugFormat("[GROUPS]: {0} called", MethodBase.GetCurrentMethod().Name);
 
             m_groupData.SetAgentGroupInfo(GetRequestingAgentID(remoteClient), GetRequestingAgentID(remoteClient),
                                           groupID, acceptNotices ? 1 : 0, listInProfile ? 1 : 0);
@@ -230,7 +230,7 @@ namespace Universe.Modules.Groups
                                 int membershipFee, bool openEnrollment, bool allowPublish, bool maturePublish)
         {
             if (m_debugEnabled)
-                MainConsole.Instance.DebugFormat("[Groups]: {0} called", MethodBase.GetCurrentMethod().Name);
+                MainConsole.Instance.DebugFormat("[GROUPS]: {0} called", MethodBase.GetCurrentMethod().Name);
 
             if (m_groupData.GetGroupRecord(GetRequestingAgentID(remoteClient), UUID.Zero, name) != null)
             {
@@ -277,7 +277,7 @@ namespace Universe.Modules.Groups
         public GroupNoticeData[] GroupNoticesListRequest(IClientAPI remoteClient, UUID groupID)
         {
             if (m_debugEnabled)
-                MainConsole.Instance.DebugFormat("[Groups]: {0} called", MethodBase.GetCurrentMethod().Name);
+                MainConsole.Instance.DebugFormat("[GROUPS]: {0} called", MethodBase.GetCurrentMethod().Name);
 
             return m_groupData.GetGroupNotices(GetRequestingAgentID(remoteClient), 0,0, groupID).ToArray();
         }
@@ -288,7 +288,7 @@ namespace Universe.Modules.Groups
         public string GetGroupTitle(UUID avatarID)
         {
             if (m_debugEnabled)
-                MainConsole.Instance.DebugFormat("[Groups]: {0} called", MethodBase.GetCurrentMethod().Name);
+                MainConsole.Instance.DebugFormat("[GROUPS]: {0} called", MethodBase.GetCurrentMethod().Name);
 
             //Check the cache first
             GroupMembershipData membership;
@@ -312,7 +312,7 @@ namespace Universe.Modules.Groups
         public void GroupTitleUpdate(IClientAPI remoteClient, UUID groupID, UUID titleRoleID)
         {
             if (m_debugEnabled)
-                MainConsole.Instance.DebugFormat("[Groups]: {0} called", MethodBase.GetCurrentMethod().Name);
+                MainConsole.Instance.DebugFormat("[GROUPS]: {0} called", MethodBase.GetCurrentMethod().Name);
 
             string title = m_groupData.SetAgentGroupSelectedRole(GetRequestingAgentID(remoteClient), groupID, titleRoleID);
             m_cachedGroupTitles.Remove(remoteClient.AgentId);
@@ -342,7 +342,7 @@ namespace Universe.Modules.Groups
                                     string title, ulong powers, byte updateType)
         {
             if (m_debugEnabled)
-                MainConsole.Instance.DebugFormat("[Groups]: {0} called", MethodBase.GetCurrentMethod().Name);
+                MainConsole.Instance.DebugFormat("[GROUPS]: {0} called", MethodBase.GetCurrentMethod().Name);
 
             // Security Checks are handled in the Groups Service.
 
@@ -363,7 +363,7 @@ namespace Universe.Modules.Groups
                     if (m_debugEnabled)
                     {
                         GroupPowers gp = (GroupPowers) powers;
-                        MainConsole.Instance.DebugFormat("[Groups]: Role ({0}) updated with Powers ({1}) ({2})", name,
+                        MainConsole.Instance.DebugFormat("[GROUPS]: Role ({0}) updated with Powers ({1}) ({2})", name,
                                                          powers.ToString(), gp.ToString());
                     }
                     m_groupData.UpdateRole(GetRequestingAgentID(remoteClient), groupID, roleID, name, description,
@@ -395,7 +395,7 @@ namespace Universe.Modules.Groups
         public void GroupRoleChanges(IClientAPI remoteClient, UUID groupID, UUID roleID, UUID memberID, uint changes)
         {
             if (m_debugEnabled)
-                MainConsole.Instance.DebugFormat("[Groups]: {0} called", MethodBase.GetCurrentMethod().Name);
+                MainConsole.Instance.DebugFormat("[GROUPS]: {0} called", MethodBase.GetCurrentMethod().Name);
 
             switch (changes)
             {
@@ -410,7 +410,7 @@ namespace Universe.Modules.Groups
 
                     break;
                 default:
-                    MainConsole.Instance.ErrorFormat("[Groups]: {0} does not understand changes == {1}",
+                    MainConsole.Instance.ErrorFormat("[GROUPS]: {0} does not understand changes == {1}",
                                                      MethodBase.GetCurrentMethod().Name, changes);
                     break;
             }
@@ -422,7 +422,7 @@ namespace Universe.Modules.Groups
         public void GroupNoticeRequest(IClientAPI remoteClient, UUID groupNoticeID)
         {
             if (m_debugEnabled)
-                MainConsole.Instance.DebugFormat("[Groups]: {0} called", MethodBase.GetCurrentMethod().Name);
+                MainConsole.Instance.DebugFormat("[GROUPS]: {0} called", MethodBase.GetCurrentMethod().Name);
 
             GroupNoticeInfo data = m_groupData.GetGroupNotice(GetRequestingAgentID(remoteClient), groupNoticeID);
 
@@ -436,7 +436,7 @@ namespace Universe.Modules.Groups
         public GridInstantMessage CreateGroupNoticeIM(UUID agentID, GroupNoticeInfo info, byte dialog)
         {
             if (m_debugEnabled)
-                MainConsole.Instance.DebugFormat("[Groups]: {0} called", MethodBase.GetCurrentMethod().Name);
+                MainConsole.Instance.DebugFormat("[GROUPS]: {0} called", MethodBase.GetCurrentMethod().Name);
 
             GridInstantMessage msg = new GridInstantMessage
                                          {
@@ -480,7 +480,7 @@ namespace Universe.Modules.Groups
         public void SendAgentGroupDataUpdate(IClientAPI remoteClient)
         {
             if (m_debugEnabled)
-                MainConsole.Instance.DebugFormat("[Groups]: {0} called", MethodBase.GetCurrentMethod().Name);
+                MainConsole.Instance.DebugFormat("[GROUPS]: {0} called", MethodBase.GetCurrentMethod().Name);
 
             // Send agent information about his groups
             SendAgentGroupDataUpdate(remoteClient, GetRequestingAgentID(remoteClient));
@@ -489,7 +489,7 @@ namespace Universe.Modules.Groups
         public void JoinGroupRequest(IClientAPI remoteClient, UUID groupID)
         {
             if (m_debugEnabled)
-                MainConsole.Instance.DebugFormat("[Groups]: {0} called", MethodBase.GetCurrentMethod().Name);
+                MainConsole.Instance.DebugFormat("[GROUPS]: {0} called", MethodBase.GetCurrentMethod().Name);
 
             var requestingAgentID = GetRequestingAgentID (remoteClient);
 
@@ -544,7 +544,7 @@ namespace Universe.Modules.Groups
         public void LeaveGroupRequest(IClientAPI remoteClient, UUID groupID)
         {
             if (m_debugEnabled)
-                MainConsole.Instance.DebugFormat("[Groups]: {0} called", MethodBase.GetCurrentMethod().Name);
+                MainConsole.Instance.DebugFormat("[GROUPS]: {0} called", MethodBase.GetCurrentMethod().Name);
 
             if (
                 !m_groupData.RemoveAgentFromGroup(GetRequestingAgentID(remoteClient), GetRequestingAgentID(remoteClient),
@@ -593,7 +593,7 @@ namespace Universe.Modules.Groups
         public void EjectGroupMember(IClientAPI remoteClient, UUID agentID, UUID groupID, UUID ejecteeID)
         {
             if (m_debugEnabled)
-                MainConsole.Instance.DebugFormat("[Groups]: {0} called", MethodBase.GetCurrentMethod().Name);
+                MainConsole.Instance.DebugFormat("[GROUPS]: {0} called", MethodBase.GetCurrentMethod().Name);
             if (!m_groupData.RemoveAgentFromGroup(GetRequestingAgentID(remoteClient), ejecteeID, groupID))
                 return;
 
@@ -710,7 +710,7 @@ namespace Universe.Modules.Groups
         public void InviteGroup(IClientAPI remoteClient, UUID agentID, UUID groupID, UUID invitedAgentID, UUID roleID)
         {
             if (m_debugEnabled)
-                MainConsole.Instance.DebugFormat("[Groups]: {0} called", MethodBase.GetCurrentMethod().Name);
+                MainConsole.Instance.DebugFormat("[GROUPS]: {0} called", MethodBase.GetCurrentMethod().Name);
 
             string agentName;
             RegionInfo regionInfo;
@@ -835,7 +835,7 @@ namespace Universe.Modules.Groups
                                                     GroupMembershipData[] data)
         {
             if (m_debugEnabled)
-                MainConsole.Instance.InfoFormat("[Groups]: {0} called", MethodBase.GetCurrentMethod().Name);
+                MainConsole.Instance.InfoFormat("[GROUPS]: {0} called", MethodBase.GetCurrentMethod().Name);
 
             OSDArray AgentData = new OSDArray(1);
             OSDMap AgentDataMap = new OSDMap(1) {{"AgentID", OSD.FromUUID(dataForAgentID)}};
@@ -880,7 +880,7 @@ namespace Universe.Modules.Groups
                                       };
 
             if (m_debugEnabled)
-                MainConsole.Instance.InfoFormat("[Groups]: {0}", OSDParser.SerializeJsonString(llDataStruct));
+                MainConsole.Instance.InfoFormat("[GROUPS]: {0}", OSDParser.SerializeJsonString(llDataStruct));
 
             IEventQueueService queue = remoteClient.Scene.RequestModuleInterface<IEventQueueService>();
 
@@ -899,7 +899,7 @@ namespace Universe.Modules.Groups
         void SendScenePresenceUpdate(UUID AgentID, string Title)
         {
             if (m_debugEnabled)
-                MainConsole.Instance.DebugFormat("[Groups]: Updating scene title for {0} with title: {1}", AgentID,
+                MainConsole.Instance.DebugFormat("[GROUPS]: Updating scene title for {0} with title: {1}", AgentID,
                                                  Title);
 
             IScenePresence presence = m_scene.GetScenePresence(AgentID);
@@ -922,7 +922,7 @@ namespace Universe.Modules.Groups
         void UpdateAllClientsWithGroupInfo(UUID dataForAgentID, string activeGroupTitle)
         {
             if (m_debugEnabled)
-                MainConsole.Instance.InfoFormat("[Groups]: {0} called", MethodBase.GetCurrentMethod().Name);
+                MainConsole.Instance.InfoFormat("[GROUPS]: {0} called", MethodBase.GetCurrentMethod().Name);
 
             // TODO: Probably isn't nessesary to update every client in every scene.
             // Need to examine client updates and do only what's nessesary.
@@ -936,7 +936,7 @@ namespace Universe.Modules.Groups
                                       {
                                           if (m_debugEnabled)
                                               MainConsole.Instance.InfoFormat(
-                                                  "[Groups]: SendAgentGroupDataUpdate called for {0}", client.Name);
+                                                  "[GROUPS]: SendAgentGroupDataUpdate called for {0}", client.Name);
 
                                           // TODO: All the client update functions need to be re-examined 
                                           // because most do too much and send too much stuff
@@ -964,7 +964,7 @@ namespace Universe.Modules.Groups
         void SendAgentGroupDataUpdate(IClientAPI remoteClient, UUID dataForAgentID)
         {
             if (m_debugEnabled)
-                MainConsole.Instance.InfoFormat("[Groups]: SendAgentGroupDataUpdate called for {0}", remoteClient.Name);
+                MainConsole.Instance.InfoFormat("[GROUPS]: SendAgentGroupDataUpdate called for {0}", remoteClient.Name);
 
             // TODO: All the client update functions need to be re-examined 
             // because most do too much and send too much stuff
@@ -980,7 +980,7 @@ namespace Universe.Modules.Groups
         void SendNewAgentGroupDataUpdate(IClientAPI remoteClient)
         {
             if (m_debugEnabled)
-                MainConsole.Instance.InfoFormat("[Groups]: SendAgentGroupDataUpdate called for {0}", remoteClient.Name);
+                MainConsole.Instance.InfoFormat("[GROUPS]: SendAgentGroupDataUpdate called for {0}", remoteClient.Name);
 
             // TODO: All the client update functions need to be re-examined 
             // because most do too much and send too much stuff
@@ -1019,12 +1019,12 @@ namespace Universe.Modules.Groups
 
             if (m_debugEnabled)
             {
-                MainConsole.Instance.InfoFormat("[Groups]: Get group membership information for {0} requested by {1}",
+                MainConsole.Instance.InfoFormat("[GROUPS]: Get group membership information for {0} requested by {1}",
                                                 dataForAgentID,
                                                 requestingClient.AgentId);
                 foreach (GroupMembershipData membership in membershipArray)
                 {
-                    MainConsole.Instance.InfoFormat("[Groups]: {0} :: {1} - {2} - {3}", dataForAgentID,
+                    MainConsole.Instance.InfoFormat("[GROUPS]: {0} :: {1} - {2} - {3}", dataForAgentID,
                                                     membership.GroupName,
                                                     membership.GroupTitle, membership.GroupPowers);
                 }
@@ -1041,18 +1041,19 @@ namespace Universe.Modules.Groups
         {
             // Notify all group members of a change in group roles and/or
             // permissions
+            //
         }
 
         void OutgoingInstantMessage(GridInstantMessage msg, UUID msgTo)
         {
             if (m_debugEnabled)
-                MainConsole.Instance.InfoFormat("[Groups]: {0} called", MethodBase.GetCurrentMethod().Name);
+                MainConsole.Instance.InfoFormat("[GROUPS]: {0} called", MethodBase.GetCurrentMethod().Name);
 
             IClientAPI localClient = GetActiveClient(msgTo);
             if (localClient != null)
             {
                 if (m_debugEnabled)
-                    MainConsole.Instance.InfoFormat("[Groups]: MsgTo ({0}) is local, delivering directly",
+                    MainConsole.Instance.InfoFormat("[GROUPS]: MsgTo ({0}) is local, delivering directly",
                                                     localClient.Name);
                 localClient.SendInstantMessage(msg);
             }
@@ -1060,7 +1061,7 @@ namespace Universe.Modules.Groups
             {
                 if (m_debugEnabled)
                     MainConsole.Instance.InfoFormat(
-                        "[Groups]: MsgTo ({0}) is not local, delivering via TransferModule", msgTo);
+                        "[GROUPS]: MsgTo ({0}) is not local, delivering via TransferModule", msgTo);
                 m_msgTransferModule.SendInstantMessage(msg);
             }
         }
@@ -1068,13 +1069,13 @@ namespace Universe.Modules.Groups
         void OutgoingInstantMessage(GridInstantMessage msg, UUID msgTo, bool localOnly)
         {
             if (m_debugEnabled)
-                MainConsole.Instance.InfoFormat("[Groups]: {0} called", MethodBase.GetCurrentMethod().Name);
+                MainConsole.Instance.InfoFormat("[GROUPS]: {0} called", MethodBase.GetCurrentMethod().Name);
 
             IClientAPI localClient = GetActiveClient(msgTo);
             if (localClient != null)
             {
                 if (m_debugEnabled)
-                    MainConsole.Instance.InfoFormat("[Groups]: MsgTo ({0}) is local, delivering directly",
+                    MainConsole.Instance.InfoFormat("[GROUPS]: MsgTo ({0}) is local, delivering directly",
                                                     localClient.Name);
                 localClient.SendInstantMessage(msg);
             }
@@ -1082,7 +1083,7 @@ namespace Universe.Modules.Groups
             {
                 if (m_debugEnabled)
                     MainConsole.Instance.InfoFormat(
-                        "[Groups]: MsgTo ({0}) is not local, delivering via TransferModule", msgTo);
+                        "[GROUPS]: MsgTo ({0}) is not local, delivering via TransferModule", msgTo);
                 m_msgTransferModule.SendInstantMessage(msg);
             }
         }
@@ -1113,7 +1114,7 @@ namespace Universe.Modules.Groups
                 return;
             }
 
-            //MainConsole.Instance.InfoFormat("[Groups]: Initializing {0}", this.Name);
+            //MainConsole.Instance.InfoFormat("[GROUPS]: Initializing {0}", this.Name);
 
             m_groupNoticesEnabled = groupsConfig.GetBoolean("NoticesEnabled", true);
             m_debugEnabled = groupsConfig.GetBoolean("DebugEnabled", true);
@@ -1132,7 +1133,7 @@ namespace Universe.Modules.Groups
                 return;
 
             if (m_debugEnabled)
-                MainConsole.Instance.DebugFormat("[Groups]: {0} called", MethodBase.GetCurrentMethod().Name);
+                MainConsole.Instance.DebugFormat("[GROUPS]: {0} called", MethodBase.GetCurrentMethod().Name);
 
             m_groupData = Universe.Framework.Utilities.DataManager.RequestPlugin<IGroupsServiceConnector>();
 
@@ -1140,7 +1141,7 @@ namespace Universe.Modules.Groups
             if (m_groupData == null)
             {
                 m_groupsEnabled = false;
-                MainConsole.Instance.Error("[Groups]: Could not get IGroupsServicesConnector");
+                MainConsole.Instance.Error("[GROUPS]: Could not get IGroupsServicesConnector");
                 Close();
                 return;
             }
@@ -1152,7 +1153,7 @@ namespace Universe.Modules.Groups
             if (m_msgTransferModule == null)
             {
                 m_groupsEnabled = false;
-                MainConsole.Instance.Error("[Groups]: Could not get MessageTransferModule");
+                MainConsole.Instance.Error("[GROUPS]: Could not get MessageTransferModule");
                 Close();
                 return;
             }
@@ -1177,7 +1178,7 @@ namespace Universe.Modules.Groups
                 return;
 
             if (m_debugEnabled)
-                MainConsole.Instance.DebugFormat("[Groups]: {0} called", MethodBase.GetCurrentMethod().Name);
+                MainConsole.Instance.DebugFormat("[GROUPS]: {0} called", MethodBase.GetCurrentMethod().Name);
 
             m_scene = null;
 
@@ -1194,7 +1195,7 @@ namespace Universe.Modules.Groups
             if (!m_groupsEnabled)
                 return;
 
-            if (m_debugEnabled) MainConsole.Instance.Debug("[Groups]: Shutting down Groups module.");
+            if (m_debugEnabled) MainConsole.Instance.Debug("[GROUPS]: Shutting down Groups module.");
         }
 
         public Type ReplaceableInterface
@@ -1214,7 +1215,7 @@ namespace Universe.Modules.Groups
         void OnNewClient(IClientAPI client)
         {
             if (m_debugEnabled)
-                MainConsole.Instance.DebugFormat("[Groups]: {0} called", MethodBase.GetCurrentMethod().Name);
+                MainConsole.Instance.DebugFormat("[GROUPS]: {0} called", MethodBase.GetCurrentMethod().Name);
 
             client.OnUUIDGroupNameRequest += HandleUUIDGroupNameRequest;
             client.OnAgentDataUpdateRequest += OnAgentDataUpdateRequest;
@@ -1241,7 +1242,7 @@ namespace Universe.Modules.Groups
         void OnClosingClient(IClientAPI client)
         {
             if (m_debugEnabled)
-                MainConsole.Instance.DebugFormat("[Groups]: {0} called", MethodBase.GetCurrentMethod().Name);
+                MainConsole.Instance.DebugFormat("[GROUPS]: {0} called", MethodBase.GetCurrentMethod().Name);
 
             client.OnUUIDGroupNameRequest -= HandleUUIDGroupNameRequest;
             client.OnAgentDataUpdateRequest -= OnAgentDataUpdateRequest;
@@ -1360,7 +1361,7 @@ namespace Universe.Modules.Groups
         void OnRequestAvatarProperties(IClientAPI remoteClient, UUID avatarID)
         {
             if (m_debugEnabled)
-                MainConsole.Instance.DebugFormat("[Groups]: {0} called", MethodBase.GetCurrentMethod().Name);
+                MainConsole.Instance.DebugFormat("[GROUPS]: {0} called", MethodBase.GetCurrentMethod().Name);
 
             //GroupMembershipData[] avatarGroups = m_groupData.GetAgentGroupMemberships(GetRequestingAgentID(remoteClient), avatarID).ToArray();
             GroupMembershipData[] avatarGroups = GetProfileListedGroupMemberships(remoteClient, avatarID);
@@ -1425,7 +1426,7 @@ namespace Universe.Modules.Groups
          * , so as long as we don't keep a reference to the client laying around, the client can still be GC'ed
         void OnClientClosed(UUID AgentId)
         {
-            if (m_debugEnabled) MainConsole.Instance.DebugFormat("[Groups]: {0} called", System.Reflection.MethodBase.GetCurrentMethod().Name);
+            if (m_debugEnabled) MainConsole.Instance.DebugFormat("[GROUPS]: {0} called", System.Reflection.MethodBase.GetCurrentMethod().Name);
 
             lock (m_ActiveClients)
             {
@@ -1441,7 +1442,7 @@ namespace Universe.Modules.Groups
                 }
                 else
                 {
-                    if (m_debugEnabled) MainConsole.Instance.WarnFormat("[Groups]: Client closed that wasn't registered here.");
+                    if (m_debugEnabled) MainConsole.Instance.WarnFormat("[GROUPS]: Client closed that wasn't registered here.");
                 }
 
                 
@@ -1457,7 +1458,7 @@ namespace Universe.Modules.Groups
             {
                 if (m_debugEnabled)
                     MainConsole.Instance.DebugFormat(
-                        "[Groups]: {0} called with queryText({1}) queryFlags({2}) queryStart({3})",
+                        "[GROUPS]: {0} called with queryText({1}) queryFlags({2}) queryStart({3})",
                         MethodBase.GetCurrentMethod().Name, queryText, (DirectoryManager.DirFindFlags) queryFlags,
                         queryStart);
 
@@ -1475,7 +1476,7 @@ namespace Universe.Modules.Groups
         void OnAgentDataUpdateRequest(IClientAPI remoteClient, UUID dataForAgentID, UUID sessionID, bool sendToAll)
         {
             if (m_debugEnabled)
-                MainConsole.Instance.DebugFormat("[Groups]: {0} called", MethodBase.GetCurrentMethod().Name);
+                MainConsole.Instance.DebugFormat("[GROUPS]: {0} called", MethodBase.GetCurrentMethod().Name);
 
             UUID activeGroupID = UUID.Zero;
             string activeGroupTitle = string.Empty;
@@ -1508,7 +1509,7 @@ namespace Universe.Modules.Groups
         void HandleUUIDGroupNameRequest(UUID GroupID, IClientAPI remoteClient)
         {
             if (m_debugEnabled)
-                MainConsole.Instance.DebugFormat("[Groups]: {0} called", MethodBase.GetCurrentMethod().Name);
+                MainConsole.Instance.DebugFormat("[GROUPS]: {0} called", MethodBase.GetCurrentMethod().Name);
 
             string GroupName;
 
@@ -1521,7 +1522,7 @@ namespace Universe.Modules.Groups
         void OnInstantMessage(IClientAPI remoteClient, GridInstantMessage im)
         {
             if (m_debugEnabled)
-                MainConsole.Instance.DebugFormat("[Groups]: {0} called", MethodBase.GetCurrentMethod().Name);
+                MainConsole.Instance.DebugFormat("[GROUPS]: {0} called", MethodBase.GetCurrentMethod().Name);
 
             // Group invitations
             if ((im.Dialog == (byte) InstantMessageDialog.GroupInvitationAccept) ||
@@ -1535,13 +1536,13 @@ namespace Universe.Modules.Groups
                 {
                     if (m_debugEnabled)
                         MainConsole.Instance.WarnFormat(
-                            "[Groups]: Received an Invite IM for an invite that does not exist {0}.",
+                            "[GROUPS]: Received an Invite IM for an invite that does not exist {0}.",
                             inviteID);
                     return;
                 }
 
                 if (m_debugEnabled)
-                    MainConsole.Instance.DebugFormat("[Groups]: Invite is for Agent {0} to Group {1}.",
+                    MainConsole.Instance.DebugFormat("[GROUPS]: Invite is for Agent {0} to Group {1}.",
                                                      inviteInfo.AgentID,
                                                      inviteInfo.GroupID);
 
@@ -1552,7 +1553,7 @@ namespace Universe.Modules.Groups
                     if (im.Dialog == (byte) InstantMessageDialog.GroupInvitationAccept)
                     {
                         if (m_debugEnabled)
-                            MainConsole.Instance.DebugFormat("[Groups]: Received an accept invite notice.");
+                            MainConsole.Instance.DebugFormat("[GROUPS]: Received an accept invite notice.");
 
                         // and the sessionid is the role
                         UserAccount account = m_scene.UserAccountService.GetUserAccount(remoteClient.AllScopeIDs,
@@ -1599,7 +1600,7 @@ namespace Universe.Modules.Groups
                     if (im.Dialog == (byte) InstantMessageDialog.GroupInvitationDecline)
                     {
                         if (m_debugEnabled)
-                            MainConsole.Instance.DebugFormat("[Groups]: Received a reject invite notice.");
+                            MainConsole.Instance.DebugFormat("[GROUPS]: Received a reject invite notice.");
                         m_groupData.RemoveAgentInvite(GetRequestingAgentID(remoteClient), inviteID);
                     }
                     RemoveFromGroupPowersCache(remoteClient.AgentId, inviteInfo.GroupID);
@@ -1774,14 +1775,14 @@ namespace Universe.Modules.Groups
                     if (targetUser != null)
                     {
                         MainConsole.Instance.DebugFormat(
-                            "[Groups]: Prepping group notice {0} for agent: {1} who Accepts Notices ({2})",
+                            "[GROUPS]: Prepping group notice {0} for agent: {1} who Accepts Notices ({2})",
                             notice.noticeData.NoticeID, targetUser.FirstName + " " + targetUser.LastName,
                             member.AcceptNotices);
                     }
                     else
                     {
                         MainConsole.Instance.DebugFormat(
-                            "[Groups]: Prepping group notice {0} for agent: {1} who Accepts Notices ({2})",
+                            "[GROUPS]: Prepping group notice {0} for agent: {1} who Accepts Notices ({2})",
                             notice.noticeData.NoticeID, member.AgentID, member.AcceptNotices);
                     }
                 }
@@ -1813,7 +1814,7 @@ namespace Universe.Modules.Groups
         void OnGridInstantMessage(GridInstantMessage msg)
         {
             if (m_debugEnabled)
-                MainConsole.Instance.InfoFormat("[Groups]: {0} called", MethodBase.GetCurrentMethod().Name);
+                MainConsole.Instance.InfoFormat("[GROUPS]: {0} called", MethodBase.GetCurrentMethod().Name);
 
             // Trigger the above event handler
             OnInstantMessage(null, msg);

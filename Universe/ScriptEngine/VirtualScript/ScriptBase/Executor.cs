@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,8 +29,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using OpenMetaverse;
 using Universe.Framework.Utilities;
+using OpenMetaverse;
 
 namespace Universe.ScriptEngine.VirtualScript.Runtime
 {
@@ -286,7 +286,7 @@ namespace Universe.ScriptEngine.VirtualScript.Runtime
             m_eventFlagsMap.Add("not_at_rot_target", scriptEvents.not_at_rot_target);
             m_eventFlagsMap.Add("not_at_target", scriptEvents.not_at_target);
             m_eventFlagsMap.Add("no_sensor", scriptEvents.no_sensor);
-            m_eventFlagsMap.Add("object_rez", scriptEvents.object_rez);
+            m_eventFlagsMap.Add("object_rez", scriptEvents.object_rez);            
             m_eventFlagsMap.Add("on_rez", scriptEvents.on_rez);
             m_eventFlagsMap.Add("remote_data", scriptEvents.remote_data);
             m_eventFlagsMap.Add("run_time_permissions", scriptEvents.run_time_permissions);

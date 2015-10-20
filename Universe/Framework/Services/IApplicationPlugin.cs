@@ -59,7 +59,7 @@ namespace Universe.Framework.Services
         /// <summary>
         ///     Called when the application initialization is completed
         /// </summary>
-        void PostInitialize();
+        void PostInitialise();
 
         /// <summary>
         ///     Called when the application loading is completed

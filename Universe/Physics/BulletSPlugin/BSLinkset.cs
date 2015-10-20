@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://opensimulator.org/, http://whitecore-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -79,7 +79,7 @@ namespace Universe.Physics.BulletSPlugin
             if (ret == null)
             {
                 physScene.Logger.ErrorFormat(
-                    "[Bulletsim Linkset]: Factory could not create linkset. Parent name={1}, ID={2}", parent.Name,
+                    "[BULLETSIM LINKSET] Factory could not create linkset. Parent name={1}, ID={2}", parent.Name,
                     parent.LocalID);
             }
             return ret;

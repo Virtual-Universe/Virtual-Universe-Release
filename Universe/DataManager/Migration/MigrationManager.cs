@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -80,8 +80,8 @@ namespace Universe.DataManager.Migration
             //if there is no Universe version, this is likely an entirely new installation
             if (currentVersion == null)
             {
-                MainConsole.Instance.InfoFormat("[Migrator]: Clean installation for {0} found", migratorName);
-                Migrator defaultMigrator = GetHighestVersionMigratorThatCanProvideDefaultSetup();
+            	MainConsole.Instance.InfoFormat("[Migrator]: Clean installation for {0} found", migratorName);
+            	Migrator defaultMigrator = GetHighestVersionMigratorThatCanProvideDefaultSetup();
                 currentVersion = defaultMigrator.Version;
                 Migrator startMigrator = GetMigratorAfterVersion(defaultMigrator.Version);
                 var latestMigrator = GetLatestVersionMigrator();
@@ -98,7 +98,7 @@ namespace Universe.DataManager.Migration
                 if (startMigrator != null)
                 {
                     Migrator targetMigrator = GetLatestVersionMigrator();
-                    MainConsole.Instance.InfoFormat("[Migrator]: New migration manager script for {0} found", migratorName);
+                    MainConsole.Instance.InfoFormat("[Migrator]: New migration script for {0} found", migratorName);
                     operationDescription = new MigrationOperationDescription(MigrationOperationTypes.UpgradeToTarget,
                                                                              currentVersion, startMigrator.Version,
                                                                              targetMigrator.Version);
@@ -192,7 +192,7 @@ namespace Universe.DataManager.Migration
                     }
                 }
                 //else
-                //    MainConsole.Instance.Fatal (string.Format ("[Migrator]: Failed to validate migration {0}-{1}, continueing...", currentMigrator.MigrationName, currentMigrator.Version));
+                //    MainConsole.Instance.Fatal (string.Format ("Failed to validate migration {0}-{1}, continueing...", currentMigrator.MigrationName, currentMigrator.Version));
 
 
                 bool restoreTaken = false;

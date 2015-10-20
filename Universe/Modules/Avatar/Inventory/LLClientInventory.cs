@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -256,7 +256,7 @@ namespace Universe.Modules.Inventory
             if (!m_scene.InventoryService.AddFolder(folder))
             {
                 MainConsole.Instance.WarnFormat(
-                    "[Agent Inventory]: Failed to create folder for user {0} {1}",
+                    "[AGENT INVENTORY]: Failed to create folder for user {0} {1}",
                     remoteClient.Name, remoteClient.AgentId);
             }
         }
@@ -275,8 +275,8 @@ namespace Universe.Modules.Inventory
         protected void HandleUpdateInventoryFolder(IClientAPI remoteClient, UUID folderID, ushort type, string name,
                                                    UUID parentID)
         {
-            //MainConsole.Instance.DebugFormat(
-            //    "[Agent Inventory]: Updating inventory folder {0} {1} for {2} {3}", folderID, name, remoteClient.Name, remoteClient.AgentId);
+            //            MainConsole.Instance.DebugFormat(
+            //                "[AGENT INVENTORY]: Updating inventory folder {0} {1} for {2} {3}", folderID, name, remoteClient.Name, remoteClient.AgentId);
 
             InventoryFolderBase folder = new InventoryFolderBase(folderID, remoteClient.AgentId);
             folder = m_scene.InventoryService.GetFolder(folder);
@@ -288,7 +288,7 @@ namespace Universe.Modules.Inventory
                 if (!m_scene.InventoryService.UpdateFolder(folder))
                 {
                     MainConsole.Instance.ErrorFormat(
-                        "[Agent Inventory]: Failed to update folder for user {0} {1}",
+                        "[AGENT INVENTORY]: Failed to update folder for user {0} {1}",
                         remoteClient.Name, remoteClient.AgentId);
                 }
             }
@@ -308,14 +308,14 @@ namespace Universe.Modules.Inventory
             {
                 folder.ParentID = parentID;
                 if (!m_scene.InventoryService.MoveFolder(folder))
-                    MainConsole.Instance.WarnFormat("[Agent Inventory]: could not move folder {0}", folderID);
+                    MainConsole.Instance.WarnFormat("[AGENT INVENTORY]: could not move folder {0}", folderID);
                 else
-                    MainConsole.Instance.DebugFormat("[Agent Inventory]: folder {0} moved to parent {1}", folderID,
+                    MainConsole.Instance.DebugFormat("[AGENT INVENTORY]: folder {0} moved to parent {1}", folderID,
                                                      parentID);
             }
             else
             {
-                MainConsole.Instance.WarnFormat("[Agent Inventory]: request to move folder {0} but folder not found",
+                MainConsole.Instance.WarnFormat("[AGENT INVENTORY]: request to move folder {0} but folder not found",
                                                 folderID);
             }
         }
@@ -328,9 +328,9 @@ namespace Universe.Modules.Inventory
         protected void HandlePurgeInventoryDescendents(IClientAPI remoteClient, UUID folderID)
         {
             if (m_scene.InventoryService.PurgeFolder(new InventoryFolderBase(folderID, remoteClient.AgentId)))
-                MainConsole.Instance.DebugFormat("[Agent Inventory]: folder {0} purged successfully", folderID);
+                MainConsole.Instance.DebugFormat("[AGENT INVENTORY]: folder {0} purged successfully", folderID);
             else
-                MainConsole.Instance.WarnFormat("[Agent Inventory]: could not purge folder {0} for client {1}", folderID,
+                MainConsole.Instance.WarnFormat("[AGENT INVENTORY]: could not purge folder {0} for client {1}", folderID,
                                                 remoteClient.AgentId);
         }
 
@@ -473,7 +473,7 @@ namespace Universe.Modules.Inventory
         /// <param name="itemIDs"></param>
         protected void RemoveInventoryItem(IClientAPI remoteClient, List<UUID> itemIDs)
         {
-            //MainConsole.Instance.Debug("[Scene Inventory]: user " + remoteClient.AgentId);
+            //MainConsole.Instance.Debug("[SCENE INVENTORY]: user " + remoteClient.AgentId);
             m_scene.InventoryService.DeleteItems(remoteClient.AgentId, itemIDs);
         }
 
@@ -485,7 +485,7 @@ namespace Universe.Modules.Inventory
         /// <param name="folderIDs"></param>
         protected void RemoveInventoryFolder(IClientAPI remoteClient, List<UUID> folderIDs)
         {
-            MainConsole.Instance.DebugFormat("[Scene Inventory]: RemoveInventoryFolders count {0}", folderIDs.Count);
+            MainConsole.Instance.DebugFormat("[SCENE INVENTORY]: RemoveInventoryFolders count {0}", folderIDs.Count);
             m_scene.InventoryService.DeleteFolders(remoteClient.AgentId, folderIDs);
         }
 
@@ -557,7 +557,7 @@ namespace Universe.Modules.Inventory
                                               sbyte assetType,
                                               byte wearableType, uint nextOwnerMask, int creationDate)
         {
-            //MainConsole.Instance.DebugFormat("[Agent Inventory]: Received request to create inventory item {0} in folder {1}", name, folderID);
+            //MainConsole.Instance.DebugFormat("[AGENT INVENTORY]: Received request to create inventory item {0} in folder {1}", name, folderID);
 
             if (!m_scene.Permissions.CanCreateUserInventory(invType, remoteClient.AgentId))
                 return;
@@ -653,7 +653,7 @@ namespace Universe.Modules.Inventory
                                                uint callbackID, string description, string name,
                                                sbyte invType, sbyte type, UUID olditemID)
         {
-            //MainConsole.Instance.DebugFormat("[Agent Inventory]: Received request to create inventory item link {0} in folder {1} pointing to {2}", name, folderID, olditemID);
+            //MainConsole.Instance.DebugFormat("[AGENT INVENTORY]: Received request to create inventory item link {0} in folder {1} pointing to {2}", name, folderID, olditemID);
 
             if (!m_scene.Permissions.CanCreateUserInventory(invType, remoteClient.AgentId))
                 return;
@@ -693,7 +693,7 @@ namespace Universe.Modules.Inventory
         protected void MoveInventoryItem(IClientAPI remoteClient, List<InventoryItemBase> items)
         {
             //MainConsole.Instance.DebugFormat(
-            //    "[Agent Inventory]: Moving {0} items for user {1}", items.Count, remoteClient.AgentId);
+            //    "[AGENT INVENTORY]: Moving {0} items for user {1}", items.Count, remoteClient.AgentId);
 
             m_scene.InventoryService.MoveItemsAsync(remoteClient.AgentId, items, null);
         }
@@ -711,14 +711,14 @@ namespace Universe.Modules.Inventory
                                          UUID newFolderID, string newName)
         {
             MainConsole.Instance.DebugFormat(
-                "[Agent Inventory]: CopyInventoryItem received by {0} with oldAgentID {1}, oldItemID {2}, new FolderID {3}, newName {4}",
+                "[AGENT INVENTORY]: CopyInventoryItem received by {0} with oldAgentID {1}, oldItemID {2}, new FolderID {3}, newName {4}",
                 remoteClient.AgentId, oldAgentID, oldItemID, newFolderID, newName);
 
             //Use UUID.Zero as it might be a library item
             InventoryItemBase item = m_scene.InventoryService.GetItem(UUID.Zero, oldItemID);
             if (item == null)
             {
-                MainConsole.Instance.Error("[Agent Inventory]: Failed to find item " + oldItemID.ToString());
+                MainConsole.Instance.Error("[AGENT INVENTORY]: Failed to find item " + oldItemID.ToString());
                 return;
             }
 
@@ -784,7 +784,7 @@ namespace Universe.Modules.Inventory
                                                                             else
                                                                             {
                                                                                 MainConsole.Instance.ErrorFormat(
-                                                                                    "[Agent Inventory]: Could not copy item {0} since asset {1} could not be found",
+                                                                                    "[AGENT INVENTORY]: Could not copy item {0} since asset {1} could not be found",
                                                                                     item.Name, item.AssetID);
                                                                             }
                                                                         });
@@ -919,7 +919,7 @@ namespace Universe.Modules.Inventory
             else
             {
                 MainConsole.Instance.Error(
-                    "[Agent Inventory]: Item ID " + itemID + " not found for an inventory item update.");
+                    "[AGENTINVENTORY]: Item ID " + itemID + " not found for an inventory item update.");
             }
         }
 
@@ -943,7 +943,7 @@ namespace Universe.Modules.Inventory
             else
             {
                 MainConsole.Instance.Error(
-                    "[Agent Inventory]: Item ID " + itemID + " not found for an inventory item update.");
+                    "[AGENTINVENTORY]: Item ID " + itemID + " not found for an inventory item update.");
             }
         }
 
@@ -962,7 +962,7 @@ namespace Universe.Modules.Inventory
             else
             {
                 MainConsole.Instance.ErrorFormat(
-                    "[Prim Inventory]: " +
+                    "[PRIM INVENTORY]: " +
                     "Couldn't find part {0} to request inventory data",
                     primLocalID);
             }
@@ -995,7 +995,7 @@ namespace Universe.Modules.Inventory
                 else
                 {
                     MainConsole.Instance.ErrorFormat(
-                        "[Prim Inventory]: " +
+                        "[PRIM INVENTORY]: " +
                         "Removal of item {0} requested of prim {1} but this prim does not exist",
                         itemID,
                         localID);
@@ -1020,7 +1020,7 @@ namespace Universe.Modules.Inventory
             if (null == part)
             {
                 MainConsole.Instance.WarnFormat(
-                    "[Prim Inventory]: " +
+                    "[PRIM INVENTORY]: " +
                     "Move of inventory item {0} from prim with local id {1} failed because the prim could not be found",
                     itemId, primLocalId);
 
@@ -1032,7 +1032,7 @@ namespace Universe.Modules.Inventory
             if (null == taskItem)
             {
                 MainConsole.Instance.WarnFormat(
-                    "[Prim Inventory]: Move of inventory item {0} from prim with local id {1} failed"
+                    "[PRIM INVENTORY]: Move of inventory item {0} from prim with local id {1} failed"
                     + " because the inventory item could not be found",
                     itemId, primLocalId);
 
@@ -1104,7 +1104,7 @@ namespace Universe.Modules.Inventory
             InventoryFolderBase containingFolder = new InventoryFolderBase(folder.ID, client.AgentId);
             containingFolder = m_scene.InventoryService.GetFolder(containingFolder);
 
-            //MainConsole.Instance.DebugFormat("[Agent Inventory]: Sending inventory folder contents ({0} nodes) for \"{1}\" to {2} {3}",
+            //MainConsole.Instance.DebugFormat("[AGENT INVENTORY]: Sending inventory folder contents ({0} nodes) for \"{1}\" to {2} {3}",
             //    contents.Folders.Count + contents.Items.Count, containingFolder.Name, client.FirstName, client.LastName);
 
             if (containingFolder != null)
@@ -1154,7 +1154,7 @@ namespace Universe.Modules.Inventory
                         {
                             part.ParentEntity.AddInventoryItem(remoteClient, primLocalID, item, copyID);
                             MainConsole.Instance.InfoFormat(
-                                "[Prim Inventory]: Update with item {0} requested of prim {1} for {2}",
+                                "[PRIM INVENTORY]: Update with item {0} requested of prim {1} for {2}",
                                 item.Name, primLocalID, remoteClient.Name);
                             part.GetProperties(remoteClient);
                             if (!m_scene.Permissions.BypassPermissions())
@@ -1169,7 +1169,7 @@ namespace Universe.Modules.Inventory
                         else
                         {
                             MainConsole.Instance.ErrorFormat(
-                                "[Prim Inventory]: Could not find inventory item {0} to update for {1}!",
+                                "[PRIM INVENTORY]: Could not find inventory item {0} to update for {1}!",
                                 itemID, remoteClient.Name);
                         }
                     }
@@ -1215,7 +1215,7 @@ namespace Universe.Modules.Inventory
             else
             {
                 MainConsole.Instance.WarnFormat(
-                    "[Prim Inventory]: " +
+                    "[PRIM INVENTORY]: " +
                     "Update with item {0} requested of prim {1} for {2} but this prim does not exist",
                     itemID, primLocalID, remoteClient.Name);
             }
@@ -1249,13 +1249,15 @@ namespace Universe.Modules.Inventory
                         part.ParentEntity.AddInventoryItem(remoteClient, localID, item, copyID);
                         part.Inventory.CreateScriptInstance(copyID, 0, false, 0);
 
-                        // MainConsole.Instance.InfoFormat("[Prim Inventory]: " + "Rezzed script {0} into prim local ID {1} for user {2}", item.inventoryName, localID, remoteClient.Name);
+                        //                        MainConsole.Instance.InfoFormat("[PRIMINVENTORY]: " +
+                        //                                         "Rezzed script {0} into prim local ID {1} for user {2}",
+                        //                                         item.inventoryName, localID, remoteClient.Name);
                         part.GetProperties(remoteClient);
                     }
                     else
                     {
                         MainConsole.Instance.ErrorFormat(
-                            "[Prim Inventory]: " +
+                            "[PRIM INVENTORY]: " +
                             "Could not rez script {0} into prim local ID {1} for user {2}"
                             + " because the prim could not be found in the region!",
                             item.Name, localID, remoteClient.Name);
@@ -1264,7 +1266,7 @@ namespace Universe.Modules.Inventory
                 else
                 {
                     MainConsole.Instance.ErrorFormat(
-                        "[Prim Inventory]: Could not find script inventory item {0} to rez for {1}!",
+                        "[PRIM INVENTORY]: Could not find script inventory item {0} to rez for {1}!",
                         itemID, remoteClient.Name);
                 }
             }
@@ -1337,7 +1339,7 @@ namespace Universe.Modules.Inventory
             if (null == taskItem)
             {
                 MainConsole.Instance.ErrorFormat(
-                    "[Prim Inventory]: Tried to retrieve item ID {0} from prim {1}, {2} for creating an avatar"
+                    "[PRIM INVENTORY]: Tried to retrieve item ID {0} from prim {1}, {2} for creating an avatar"
                     + " inventory item from a prim's inventory item "
                     + " but the required item does not exist in the prim's inventory",
                     itemId, part.Name, part.UUID);
@@ -1455,7 +1457,7 @@ namespace Universe.Modules.Inventory
             if (srcTaskItem == null)
             {
                 MainConsole.Instance.ErrorFormat(
-                    "[Prim Inventory]: Could not find part {0} to insert script item {1} from {2} {3} in {4}",
+                    "[PRIM INVENTORY]: Could not find part {0} to insert script item {1} from {2} {3} in {4}",
                     destId, srcId, srcPart.Name, srcPart.UUID, Name);
                 return;
             }
@@ -1465,7 +1467,7 @@ namespace Universe.Modules.Inventory
             if (destPart == null)
             {
                 MainConsole.Instance.ErrorFormat(
-                    "[Prim Inventory]: " +
+                    "[PRIM INVENTORY]: " +
                     "Could not find script for ID {0}",
                     destId);
                 return;
@@ -1488,7 +1490,7 @@ namespace Universe.Modules.Inventory
             if (destPart.ScriptAccessPin == 0 || destPart.ScriptAccessPin != pin)
             {
                 MainConsole.Instance.WarnFormat(
-                    "[Prim Inventory]: " +
+                    "[PRIM INVENTORY]: " +
                     "Script in object {0} : {1}, attempted to load script {2} : {3} into object {4} : {5} with invalid pin {6}",
                     srcPart.Name, srcId, srcTaskItem.Name, srcTaskItem.ItemID, destPart.Name, destId, pin);
                 // the LSL Wiki says we are supposed to shout on the DEBUG_CHANNEL -
@@ -1581,7 +1583,7 @@ namespace Universe.Modules.Inventory
             if (srcTaskItem == null)
             {
                 MainConsole.Instance.ErrorFormat(
-                    "[Prim Inventory]: Tried to retrieve item ID {0} from prim {1}, {2} for moving"
+                    "[PRIM INVENTORY]: Tried to retrieve item ID {0} from prim {1}, {2} for moving"
                     + " but the item does not exist in this inventory",
                     itemId, part.Name, part.UUID);
 
@@ -1593,7 +1595,7 @@ namespace Universe.Modules.Inventory
             if (destPart == null)
             {
                 MainConsole.Instance.ErrorFormat(
-                    "[Prim Inventory]: " +
+                    "[PRIM INVENTORY]: " +
                     "Could not find prim for ID {0}",
                     destId);
                 return;
@@ -1830,7 +1832,7 @@ namespace Universe.Modules.Inventory
             {
                 MainConsole.Instance.Debug("[Scene]: ScriptTaskInventory Request in region: " +
                                            m_scene.RegionInfo.RegionName);
-                //MainConsole.Instance.DebugFormat("[Caps]: request: {0}, path: {1}, param: {2}", request, path, param);
+                //MainConsole.Instance.DebugFormat("[CAPS]: request: {0}, path: {1}, param: {2}", request, path, param);
                 OSDMap map = (OSDMap) OSDParser.DeserializeLLSDXml(HttpServerHandlerHelpers.ReadFully(request));
                 UUID item_id = map["item_id"].AsUUID();
                 UUID task_id = map["task_id"].AsUUID();
@@ -1861,7 +1863,7 @@ namespace Universe.Modules.Inventory
             }
             catch (Exception e)
             {
-                MainConsole.Instance.Error("[Caps]: " + e);
+                MainConsole.Instance.Error("[CAPS]: " + e);
             }
 
             return null;
@@ -1909,7 +1911,7 @@ namespace Universe.Modules.Inventory
             }
             catch (Exception e)
             {
-                MainConsole.Instance.Error("[Caps]: " + e);
+                MainConsole.Instance.Error("[CAPS]: " + e);
             }
 
             return null;
@@ -1927,8 +1929,8 @@ namespace Universe.Modules.Inventory
         public byte[] NoteCardAgentInventory(UUID AgentID, string path, Stream request, OSHttpRequest httpRequest,
                                              OSHttpResponse httpResponse)
         {
-            //MainConsole.Instance.Debug("[Caps]: NoteCardAgentInventory Request in region: " + m_regionName + "\n" + request);
-            //MainConsole.Instance.Debug("[Caps]: NoteCardAgentInventory Request is: " + request);
+            //MainConsole.Instance.Debug("[CAPS]: NoteCardAgentInventory Request in region: " + m_regionName + "\n" + request);
+            //MainConsole.Instance.Debug("[CAPS]: NoteCardAgentInventory Request is: " + request);
 
             OSDMap map = (OSDMap) OSDParser.DeserializeLLSDXml(HttpServerHandlerHelpers.ReadFully(request));
 
@@ -2037,7 +2039,9 @@ namespace Universe.Modules.Inventory
             {
                 try
                 {
-                    //MainConsole.Instance.InfoFormat("[Caps]: " + "TaskInventoryScriptUpdater received data: {0}, path: {1}, param: {2}", data, path, param));
+                    //                    MainConsole.Instance.InfoFormat("[CAPS]: " +
+                    //                                     "TaskInventoryScriptUpdater received data: {0}, path: {1}, param: {2}",
+                    //                                     data, path, param));
 
                     IClientAPI client;
                     m_scene.ClientManager.TryGetValue(AgentID, out client);
@@ -2060,7 +2064,7 @@ namespace Universe.Modules.Inventory
                 }
                 catch (Exception e)
                 {
-                    MainConsole.Instance.Error("[Caps]: " + e.ToString());
+                    MainConsole.Instance.Error("[CAPS]: " + e.ToString());
                 }
 
                 // XXX Maybe this should be some meaningful error packet
@@ -2093,7 +2097,7 @@ namespace Universe.Modules.Inventory
                 if (null == part || null == part.ParentEntity)
                 {
                     MainConsole.Instance.ErrorFormat(
-                        "[Prim Inventory]: " +
+                        "[PRIM INVENTORY]: " +
                         "Prim inventory update requested for item ID {0} in prim ID {1} but this prim does not exist",
                         itemId, primId);
 
@@ -2108,7 +2112,7 @@ namespace Universe.Modules.Inventory
                 if (null == item)
                 {
                     MainConsole.Instance.ErrorFormat(
-                        "[Prim Inventory]: Tried to retrieve item ID {0} from prim {1}, {2} for caps script update "
+                        "[PRIM INVENTORY]: Tried to retrieve item ID {0} from prim {1}, {2} for caps script update "
                         + " but the item does not exist in this inventory",
                         itemId, part.Name, part.UUID);
 
@@ -2215,7 +2219,7 @@ namespace Universe.Modules.Inventory
                 }
                 catch (Exception e)
                 {
-                    MainConsole.Instance.Error("[Caps]: " + e.ToString());
+                    MainConsole.Instance.Error("[CAPS]: " + e.ToString());
                 }
 
                 // XXX Maybe this should be some meaningful error packet

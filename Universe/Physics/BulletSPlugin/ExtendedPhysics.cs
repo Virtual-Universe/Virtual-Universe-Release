@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@ using Universe.Region;
 
 namespace Universe.Physics.BulletSPlugin
 {
-    /* Not yet implemented fully - 20151010 -QueenStarfinder-
+    /* Not yet implemented fully - 20151004 -greythane-
     public class ExtendedPhysics : INonSharedRegionModule
     {
         static string LogHeader = "[EXTENDED PHYSICS]";
@@ -68,7 +68,7 @@ namespace Universe.Physics.BulletSPlugin
 
         public string Name { get { return GetType().Name; } }
 
-        public void Initialise(IConfigSource config)
+        public void Initialize(IConfigSource config)
         {
             BaseScene = null;
             Enabled = false;

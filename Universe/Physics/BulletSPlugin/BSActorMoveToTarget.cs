@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://opensimulator.org/, http://whitecore-sim.org, http://virtualnexus.eu
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -121,6 +121,7 @@ namespace Universe.Physics.BulletSPlugin
                 m_targetMotor.SetTarget(m_controllingPrim.MoveToTargetTarget);
                 m_targetMotor.SetCurrent(m_controllingPrim.RawPosition);
             }
+
         }
 
         void DeactivateMoveToTarget()

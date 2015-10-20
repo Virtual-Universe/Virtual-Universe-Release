@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -175,9 +175,9 @@ namespace Universe.Simulation.Base
                     string cfgFolder = Universe_ConfigDir + "/";           // Main Config folder >> "../Config" (default)
 
                     string dbSource = "localhost";
-					string dbPasswd = "whitecore";
-					string dbSchema = "whitecore";
-					string dbUser = "whitecore";
+					string dbPasswd = "universe";
+					string dbSchema = "universe";
+					string dbUser = "universe";
                     string dbPort = "3306";
                     string gridIPAddress = Utilities.GetExternalIp();
                     string regionIPAddress = gridIPAddress;
@@ -331,18 +331,18 @@ namespace Universe.Simulation.Base
                     if (isUniverseExe)
                     {
 						MakeSureExists(cfgFolder + "Universe.ini");
-                        var whitecore_ini = new IniConfigSource(
+                        var universe_ini = new IniConfigSource(
                             cfgFolder + "Universe.ini",
                             Nini.Ini.IniFileType.AuroraStyle);
-                        var whitecore_ini_example = new IniConfigSource(
+                        var universe_ini_example = new IniConfigSource(
                             cfgFolder + "Universe.ini.example",
                             Nini.Ini.IniFileType.AuroraStyle);
 
                         bool setIp = false;
 
-						foreach (IConfig config in whitecore_ini_example.Configs)
+						foreach (IConfig config in universe_ini_example.Configs)
                         {
-							IConfig newConfig = whitecore_ini.AddConfig(config.Name);
+							IConfig newConfig = universe_ini.AddConfig(config.Name);
                             foreach (string key in config.GetKeys())
                             {
                                 if (key == "http_listener_port")
@@ -364,7 +364,7 @@ namespace Universe.Simulation.Base
                         }
 
 
-						whitecore_ini.Save();
+						universe_ini.Save();
                         Console.ForegroundColor = ConsoleColor.Green;
                         Console.WriteLine("Your Universe.ini has been successfully configured");
                         Console.ResetColor();
@@ -450,10 +450,10 @@ namespace Universe.Simulation.Base
                     if (!isUniverseExe)
                     {
                         MakeSureExists(cfgFolder + "Universe.Server.ini");
-                        var whitecore_ini = new IniConfigSource(
+                        var universe_ini = new IniConfigSource(
                             cfgFolder + "Universe.Server.ini",
                             Nini.Ini.IniFileType.AuroraStyle);
-                        var whitecore_ini_example = new IniConfigSource(
+                        var universe_ini_example = new IniConfigSource(
                             cfgFolder + "Universe.Server.ini.example",
                             Nini.Ini.IniFileType.AuroraStyle);
 
@@ -461,9 +461,9 @@ namespace Universe.Simulation.Base
                             ReadLine("\nThe domain name or IP address of the grid server", gridIPAddress);
                         bool ipSet = false;
 
-                        foreach (IConfig config in whitecore_ini_example.Configs)
+                        foreach (IConfig config in universe_ini_example.Configs)
                         {
-                            IConfig newConfig = whitecore_ini.AddConfig(config.Name);
+                            IConfig newConfig = universe_ini.AddConfig(config.Name);
                             foreach (string key in config.GetKeys())
                             {
                                 if (key == "HostName")
@@ -482,7 +482,7 @@ namespace Universe.Simulation.Base
                             }
                         }
 
-                        whitecore_ini.Save();
+                        universe_ini.Save();
                         Console.ForegroundColor = ConsoleColor.Green;
                         Console.WriteLine("Your Universe.Server.ini has been successfully configured");
                         Console.ResetColor();

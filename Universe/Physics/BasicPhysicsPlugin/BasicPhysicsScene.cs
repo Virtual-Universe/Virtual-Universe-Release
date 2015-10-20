@@ -62,7 +62,7 @@ namespace Universe.Physics.BasicPhysicsPlugin
             m_region = scene.RegionInfo;
         }
 
-        public override void PostInitialize(IConfigSource config)
+        public override void PostInitialise(IConfigSource config)
         {
         }
 

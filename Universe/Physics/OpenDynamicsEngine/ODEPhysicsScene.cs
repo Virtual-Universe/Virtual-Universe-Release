@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -259,7 +259,7 @@ namespace Universe.Physics.OpenDynamicsEngine
             WorldExtents = new Vector2(m_region.RegionSizeX, m_region.RegionSizeY);
         }
 
-        public override void PostInitialize(IConfigSource config)
+        public override void PostInitialise(IConfigSource config)
         {
             m_rayCastManager = new UniverseODERayCastRequestManager(this);
             m_config = config;
@@ -982,12 +982,12 @@ namespace Universe.Physics.OpenDynamicsEngine
                                   chr.CAPSULE_LENGTH*2), true, chr.LocalID, chr.UUID);
         }
 
-		internal void BadPrim(UniverseODEPrim whitecoreODEPrim)
+		internal void BadPrim(UniverseODEPrim universeODEPrim)
         {
-			DeletePrim(whitecoreODEPrim);
+			DeletePrim(universeODEPrim);
             //Can't really do this here... as it will be readded before the delete gets called, which is wrong...
             //So... leave the prim out there for now
-			//AddPrimShape(whitecoreODEPrim.ParentEntity);
+			//AddPrimShape(universeODEPrim.ParentEntity);
         }
 
         public override PhysicsActor AddPrimShape(UUID primID, uint localID, string name, byte physicsType, PrimitiveBaseShape shape, Vector3 position,
