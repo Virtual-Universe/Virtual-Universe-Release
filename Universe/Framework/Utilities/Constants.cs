@@ -67,7 +67,7 @@ namespace Universe.Framework.Utilities
 
         // System Governor Avatar Account
         public const string GovernorUUID = "3d6181b0-6a4b-97ef-18d8-722652995cf1";
-        public const string GovernorName = "Governor White";
+        public const string GovernorName = "Governor Universe";
 
         // System Estate
         public const string MainlandEstateName = "Universe Mainland";
