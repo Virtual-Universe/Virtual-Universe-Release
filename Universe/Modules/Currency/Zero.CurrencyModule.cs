@@ -402,6 +402,5 @@ namespace Universe.Modules.Currency
         {
             return new List<AgentPurchase> ();
         }
-
     }
 }

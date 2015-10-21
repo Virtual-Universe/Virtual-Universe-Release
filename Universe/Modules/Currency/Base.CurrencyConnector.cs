@@ -42,9 +42,9 @@ namespace Universe.Modules.Currency
     public class BaseCurrencyConnector : ConnectorBase, IBaseCurrencyConnector
     {
         #region Declares
-        const string _REALM = "simple_currency";
-        const string _REALMHISTORY = "simple_currency_history";
-        const string _REALMPURCHASE = "simple_purchased";
+        const string _REALM = "currency";
+        const string _REALMHISTORY = "currency_history";
+        const string _REALMPURCHASE = "currency_purchased";
 
         IGenericData m_gd;
         BaseCurrencyConfig m_config;
@@ -85,7 +85,7 @@ namespace Universe.Modules.Currency
                 defaultConnectionString = source.Configs[Name].GetString("ConnectionString", defaultConnectionString);
 
             if (GenericData != null)
-                GenericData.ConnectToDatabase(defaultConnectionString, "SimpleCurrency", true);
+                GenericData.ConnectToDatabase(defaultConnectionString, "BaseCurrency", true);
             Framework.Utilities.DataManager.RegisterPlugin(Name, this);
 
             m_config = new BaseCurrencyConfig(config);
