@@ -25,11 +25,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System.Collections.Generic;
+using Nini.Config;
 using Universe.Framework.ModuleLoader;
 using Universe.Framework.Modules;
 using Universe.Framework.Services;
-using Nini.Config;
-using System.Collections.Generic;
 
 namespace Universe.CoreApplicationPlugins.ServicesLoader
 {
