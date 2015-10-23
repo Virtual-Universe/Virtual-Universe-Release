@@ -769,7 +769,7 @@ namespace Universe.Region
             m_controllingClient.MoveAgentIntoRegion(Scene.RegionInfo, AbsolutePosition, look);
 
             MainConsole.Instance.DebugFormat(
-                "[SCENE]: Upgrading child to root agent for {0} in {1}",
+                "[Scene]: Upgrading child to root agent for {0} in {1}",
                 Name, m_scene.RegionInfo.RegionName);
 
             // On the next prim update, all objects will be sent
