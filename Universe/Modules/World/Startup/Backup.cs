@@ -575,7 +575,7 @@ namespace Universe.Modules.Startup
                     return true;
                 }
 
-                //MainConsole.Instance.DebugFormat("[SCENE]: Exit DeleteSceneObject() for {0} {1}", group.Name, group.UUID);
+                //MainConsole.Instance.DebugFormat("[Scene]: Exit DeleteSceneObject() for {0} {1}", group.Name, group.UUID);
                 return false;
             }
 

@@ -654,7 +654,7 @@ namespace Universe.Modules.EntityTransfer
                 catch (Exception)
                 {
                     MainConsole.Instance.Warn(
-                        "[SCENE]: exception when trying to return the prim that crossed the border.");
+                        "[Scene]: exception when trying to return the prim that crossed the border.");
                 }
                 return false;
             }
@@ -951,7 +951,7 @@ namespace Universe.Modules.EntityTransfer
         public virtual bool IncomingChildAgentDataUpdate(IScene scene, AgentData cAgentData)
         {
             MainConsole.Instance.DebugFormat(
-                "[SCENE]: Incoming child agent update for {0} in {1}", cAgentData.AgentID, scene.RegionInfo.RegionName);
+                "[Scene]: Incoming child agent update for {0} in {1}", cAgentData.AgentID, scene.RegionInfo.RegionName);
 
             //No null updates!
             if (cAgentData == null)
@@ -1035,7 +1035,7 @@ namespace Universe.Modules.EntityTransfer
         /// <param name="agentID"></param>
         public bool IncomingCloseAgent(IScene scene, UUID agentID)
         {
-            //MainConsole.Instance.DebugFormat("[SCENE]: Processing incoming close agent for {0}", agentID);
+            //MainConsole.Instance.DebugFormat("[Scene]: Processing incoming close agent for {0}", agentID);
 
             IScenePresence presence = scene.GetScenePresence(agentID);
             if (presence != null)
