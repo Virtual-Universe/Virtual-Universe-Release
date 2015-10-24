@@ -26,11 +26,11 @@
  */
 
 using System.Collections.Generic;
+using Nini.Config;
+using OpenMetaverse;
 using Universe.Framework.Modules;
 using Universe.Framework.Physics;
 using Universe.Framework.SceneInfo;
-using Nini.Config;
-using OpenMetaverse;
 
 namespace Universe.Physics.BasicPhysicsPlugin
 {
@@ -94,13 +94,6 @@ namespace Universe.Physics.BasicPhysicsPlugin
                 _actors.Remove(act);
             }
         }
-
-/*
-        public override PhysicsActor AddPrim(Vector3 position, Vector3 size, Quaternion rotation)
-        {
-            return null;
-        }
-*/
 
         public override PhysicsActor AddPrimShape(UUID primID, uint localID, string name, byte physicsType, PrimitiveBaseShape shape,
                                                 Vector3 position, Vector3 size, Quaternion rotation, bool isPhysical, int material,
