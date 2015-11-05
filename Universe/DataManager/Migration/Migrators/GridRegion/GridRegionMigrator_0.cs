@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Virtual-Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -40,11 +40,6 @@ namespace Universe.DataManager.Migration.Migrators.GridRegion
 
             schema = new List<SchemaDefinition>();
 
-            //
-            // Change summery:
-            //
-            //   Add the new 'gridregions' table to replace the old 'regions' table
-            //
             AddSchema("gridregions", ColDefs(
                 ColDef("ScopeID", ColumnTypes.String45),
                 ColDef("RegionUUID", ColumnTypes.String45),
@@ -61,7 +56,10 @@ namespace Universe.DataManager.Migration.Migrators.GridRegion
                 ColDef("SessionID", ColumnTypes.String45),
                 ColDef("Info", ColumnTypes.Text)
                                          ), IndexDefs(
-                                             IndexDef(new string[1] {"RegionUUID"}, IndexType.Primary)
+                                             IndexDef(new string[2] { "ScopeID", "RegionUUID" }, IndexType.Primary),
+                                             IndexDef(new string[1] { "RegionName" }, IndexType.Unique),
+                                             IndexDef(new string[2] { "Flags", "ScopeID" }, IndexType.Index),
+                                             IndexDef(new string[3] { "LocX", "LocY", "ScopeID" }, IndexType.Unique)
                                                 ));
         }
 

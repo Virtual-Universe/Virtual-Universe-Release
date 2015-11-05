@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Virtual-Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -41,6 +41,7 @@ namespace Base.Currency
 
             schema = new List<SchemaDefinition>();
 
+            // Currency table
             AddSchema("currency", ColDefs(
                 ColDef("PrincipalID", ColumnTypes.String50),
                 ColDef("Amount", ColumnTypes.Integer30),
@@ -48,19 +49,52 @@ namespace Base.Currency
                 ColDef("Tier", ColumnTypes.Integer30),
                 ColDef("IsGroup", ColumnTypes.TinyInt1),
                 new ColumnDefinition
+                {
+                    Name = "StipendsBalance",
+                    Type = new ColumnTypeDef
                     {
-                        Name = "StipendsBalance",
-                        Type = new ColumnTypeDef
-                                   {
-                                       Type = ColumnType.Integer,
-                                       Size = 11,
-                                       defaultValue = "0"
-                                   }
+                        Type = ColumnType.Integer,
+                        Size = 11,
+                        defaultValue = "0"
                     }
+                }
                                              ),
                       IndexDefs(
-                          IndexDef(new string[1] {"PrincipalID"}, IndexType.Primary)
+                          IndexDef(new string[1] { "PrincipalID" }, IndexType.Primary)
                           ));
+
+            // Currency Transaction Logs
+            AddSchema("currency_history", ColDefs(
+                ColDef("TransactionID", ColumnTypes.String36),
+                ColDef("Description", ColumnTypes.String128),
+                ColDef("FromPrincipalID", ColumnTypes.String36),
+                ColDef("FromName", ColumnTypes.String128),
+                ColDef("ToPrincipalID", ColumnTypes.String36),
+                ColDef("ToName", ColumnTypes.String128),
+                ColDef("Amount", ColumnTypes.Integer30),
+                ColDef("TransType", ColumnTypes.Integer11),
+                ColDef("Created", ColumnTypes.Integer30),
+                ColDef("ToBalance", ColumnTypes.Integer30),
+                ColDef("FromBalance", ColumnTypes.Integer30),
+                ColDef("FromObjectName", ColumnTypes.String50),
+                ColDef("ToObjectName", ColumnTypes.String50),
+                ColDef("RegionID", ColumnTypes.Char36)),
+                IndexDefs(
+                    IndexDef(new string[1] { "TransactionID" }, IndexType.Primary)
+                    ));
+
+            // This is used for all purchases
+            AddSchema("currency_purchased", ColDefs(
+                ColDef("PurchaseID", ColumnTypes.String36),
+                ColDef("PrincipalID", ColumnTypes.String36),
+                ColDef("IP", ColumnTypes.String64),
+                ColDef("Amount", ColumnTypes.Integer30),
+                ColDef("RealAmount", ColumnTypes.Integer30),
+                ColDef("Created", ColumnTypes.Integer30),
+                ColDef("Updated", ColumnTypes.Integer30)),
+                IndexDefs(
+                    IndexDef(new string[1] { "PurchaseID" }, IndexType.Primary)
+                ));
         }
 
         protected override void DoCreateDefaults(IDataConnector genericData)

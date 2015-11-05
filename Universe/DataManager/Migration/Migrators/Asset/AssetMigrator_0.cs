@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Virtual-Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -45,37 +45,24 @@ namespace Universe.DataManager.Migration.Migrators.Asset
                 ColDef("KeySetting", ColumnTypes.String50),
                 ColDef("ValueSetting", ColumnTypes.String50)
                                             ), IndexDefs(
-                                                IndexDef(new string[2] {"Token", "KeySetting"}, IndexType.Primary)
+                                                IndexDef(new string[2] { "Token", "KeySetting" }, IndexType.Primary)
                                                    ));
 
-            AddSchema("assetblob", ColDefs(
-                ColDef("AssetID", ColumnTypes.Char36),
-                ColDef("AssetType", ColumnTypes.Integer11),
-                ColDef("OwnerID", ColumnTypes.Char36),
-                ColDef("Data", ColumnTypes.LongBlob),
-                ColDef("Info", ColumnTypes.String512)
-                                       ), IndexDefs(
-                                           IndexDef(new string[2] {"AssetID", "OwnerID"}, IndexType.Primary)
-                                              ));
-
-            AddSchema("assettext", ColDefs(
-                ColDef("AssetID", ColumnTypes.Char36),
-                ColDef("AssetType", ColumnTypes.Integer11),
-                ColDef("OwnerID", ColumnTypes.Char36),
-                ColDef("Data", ColumnTypes.Text),
-                ColDef("Info", ColumnTypes.String512)
-                                       ), IndexDefs(
-                                           IndexDef(new string[2] {"AssetID", "OwnerID"}, IndexType.Primary)
-                                              ));
-
-            AddSchema("assetmesh", ColDefs(
-                ColDef("AssetID", ColumnTypes.Char36),
-                ColDef("OwnerID", ColumnTypes.Char36),
-                ColDef("Data", ColumnTypes.LongBlob),
-                ColDef("Info", ColumnTypes.String512)
-                                       ), IndexDefs(
-                                           IndexDef(new string[2] {"AssetID", "OwnerID"}, IndexType.Primary)
-                                              ));
+            AddSchema("assets", ColDefs(
+                ColDef("id", ColumnTypes.Char36),
+                ColDef("name", ColumnTypes.String64),
+                ColDef("description", ColumnTypes.String128),
+                ColDef("assetType", ColumnTypes.TinyInt4),
+                ColDef("local", ColumnTypes.TinyInt1),
+                ColDef("temporary", ColumnTypes.TinyInt1),
+                ColDef("asset_flags", ColumnTypes.String45),
+                ColDef("creatorID", ColumnTypes.String36),
+                ColDef("data", ColumnTypes.LongBlob),
+                ColDef("create_time", ColumnTypes.Integer11),
+                ColDef("access_time", ColumnTypes.Integer11)
+                                    ), IndexDefs(
+                                        IndexDef(new string[1] { "id" }, IndexType.Primary)
+                                           ));
         }
 
         protected override void DoCreateDefaults(IDataConnector genericData)

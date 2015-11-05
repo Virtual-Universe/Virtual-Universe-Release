@@ -1,5 +1,5 @@
-/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+﻿/*
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Virtual-Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -56,7 +56,7 @@ namespace Universe.DataManager.Migration
                 IMigrator m in
                     allMigrators.Where(m => m.MigrationName != null).Where(m => m.MigrationName == migratorName))
             {
-                migrators.Add((Migrator) m);
+                migrators.Add((Migrator)m);
             }
         }
 
@@ -80,8 +80,8 @@ namespace Universe.DataManager.Migration
             //if there is no Universe version, this is likely an entirely new installation
             if (currentVersion == null)
             {
-            	MainConsole.Instance.InfoFormat("[Migrator]: Clean installation for {0} found", migratorName);
-            	Migrator defaultMigrator = GetHighestVersionMigratorThatCanProvideDefaultSetup();
+                MainConsole.Instance.InfoFormat("[Migrator]: Clean installation for {0} found", migratorName);
+                Migrator defaultMigrator = GetHighestVersionMigratorThatCanProvideDefaultSetup();
                 currentVersion = defaultMigrator.Version;
                 Migrator startMigrator = GetMigratorAfterVersion(defaultMigrator.Version);
                 var latestMigrator = GetLatestVersionMigrator();
@@ -173,7 +173,7 @@ namespace Universe.DataManager.Migration
                         SchemaDefinition rec;
                         currentMigrator.DebugTestThatAllTablesValidate(genericData, out rec);
                         MainConsole.Instance.Fatal(string.Format(
-                            "[Migrator]: FAILED TO REVALIDATE MIGRATION {0}-{1}, FIXING TABLE FORCIBLY... NEW TABLE NAME {2}",
+                            "[Migrator]: Failed to revalidate migration {0}-{1}, Fixing table forcibly... New table name {2}",
                             currentMigrator.MigrationName,
                             currentMigrator.Version,
                             rec.Name + "_broken"
@@ -194,7 +194,6 @@ namespace Universe.DataManager.Migration
                 //else
                 //    MainConsole.Instance.Fatal (string.Format ("Failed to validate migration {0}-{1}, continueing...", currentMigrator.MigrationName, currentMigrator.Version));
 
-
                 bool restoreTaken = false;
                 //Loop through versions from start to end, migrating then validating
                 Migrator executingMigrator = GetMigratorByVersion(operationDescription.StartVersion);
@@ -209,7 +208,6 @@ namespace Universe.DataManager.Migration
                         restoreTaken = true;
                     }
                 }
-
 
                 while (executingMigrator != null)
                 {

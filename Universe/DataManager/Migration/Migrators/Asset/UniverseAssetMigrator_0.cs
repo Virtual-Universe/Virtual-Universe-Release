@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Virtual-Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -40,7 +40,7 @@ namespace Universe.DataManager.Migration.Migrators.Asset
 
             schema = new List<SchemaDefinition>();
 
-			AddSchema("whitecoreassets_A", ColDefs(
+            AddSchema("universeassets_A", ColDefs(
                 ColDef("id", ColumnTypes.String36),
                 ColDef("hash_code", ColumnTypes.String64),
                 ColDef("parent_id", ColumnTypes.String36),
@@ -54,11 +54,12 @@ namespace Universe.DataManager.Migration.Migrators.Asset
                 ColDef("owner_id", ColumnTypes.String36),
                 ColDef("host_uri", ColumnTypes.String1024)
                                             ), IndexDefs(
-                                                IndexDef(new string[4] {"id", "hash_code", "parent_id", "creator_id"},
-                                                         IndexType.Primary)
+                                                IndexDef(new string[4] { "id", "hash_code", "parent_id", "creator_id" },
+                                                         IndexType.Primary),
+                                                IndexDef(new string[1] { "hash_code" }, IndexType.Index)
                                                    ));
 
-			AddSchema("whitecoreassets_B", ColDefs(
+            AddSchema("universeassets_B", ColDefs(
                 ColDef("id", ColumnTypes.String36),
                 ColDef("hash_code", ColumnTypes.String64),
                 ColDef("parent_id", ColumnTypes.String36),
@@ -72,11 +73,12 @@ namespace Universe.DataManager.Migration.Migrators.Asset
                 ColDef("owner_id", ColumnTypes.String36),
                 ColDef("host_uri", ColumnTypes.String1024)
                                             ), IndexDefs(
-                                                IndexDef(new string[4] {"id", "hash_code", "parent_id", "creator_id"},
-                                                         IndexType.Primary)
+                                                IndexDef(new string[4] { "id", "hash_code", "parent_id", "creator_id" },
+                                                         IndexType.Primary),
+                                                IndexDef(new string[1] { "hash_code" }, IndexType.Index)
                                                    ));
 
-			AddSchema("whitecoreassets_C", ColDefs(
+            AddSchema("universeassets_C", ColDefs(
                 ColDef("id", ColumnTypes.String36),
                 ColDef("hash_code", ColumnTypes.String64),
                 ColDef("parent_id", ColumnTypes.String36),
@@ -90,11 +92,12 @@ namespace Universe.DataManager.Migration.Migrators.Asset
                 ColDef("owner_id", ColumnTypes.String36),
                 ColDef("host_uri", ColumnTypes.String1024)
                                             ), IndexDefs(
-                                                IndexDef(new string[4] {"id", "hash_code", "parent_id", "creator_id"},
-                                                         IndexType.Primary)
+                                                IndexDef(new string[4] { "id", "hash_code", "parent_id", "creator_id" },
+                                                         IndexType.Primary),
+                                                IndexDef(new string[1] { "hash_code" }, IndexType.Index)
                                                    ));
 
-			AddSchema("whitecoreassets_D", ColDefs(
+            AddSchema("universeassets_D", ColDefs(
                 ColDef("id", ColumnTypes.String36),
                 ColDef("hash_code", ColumnTypes.String64),
                 ColDef("parent_id", ColumnTypes.String36),
@@ -108,11 +111,12 @@ namespace Universe.DataManager.Migration.Migrators.Asset
                 ColDef("owner_id", ColumnTypes.String36),
                 ColDef("host_uri", ColumnTypes.String1024)
                                             ), IndexDefs(
-                                                IndexDef(new string[4] {"id", "hash_code", "parent_id", "creator_id"},
-                                                         IndexType.Primary)
+                                                IndexDef(new string[4] { "id", "hash_code", "parent_id", "creator_id" },
+                                                         IndexType.Primary),
+                                                IndexDef(new string[1] { "hash_code" }, IndexType.Index)
                                                    ));
 
-			AddSchema("whitecoreassets_E", ColDefs(
+            AddSchema("universeassets_E", ColDefs(
                 ColDef("id", ColumnTypes.String36),
                 ColDef("hash_code", ColumnTypes.String64),
                 ColDef("parent_id", ColumnTypes.String36),
@@ -126,11 +130,12 @@ namespace Universe.DataManager.Migration.Migrators.Asset
                 ColDef("owner_id", ColumnTypes.String36),
                 ColDef("host_uri", ColumnTypes.String1024)
                                             ), IndexDefs(
-                                                IndexDef(new string[4] {"id", "hash_code", "parent_id", "creator_id"},
-                                                         IndexType.Primary)
+                                                IndexDef(new string[4] { "id", "hash_code", "parent_id", "creator_id" },
+                                                         IndexType.Primary),
+                                                IndexDef(new string[1] { "hash_code" }, IndexType.Index)
                                                    ));
 
-			AddSchema("whitecoreassets_F", ColDefs(
+            AddSchema("universeassets_F", ColDefs(
                 ColDef("id", ColumnTypes.String36),
                 ColDef("hash_code", ColumnTypes.String64),
                 ColDef("parent_id", ColumnTypes.String36),
@@ -144,11 +149,12 @@ namespace Universe.DataManager.Migration.Migrators.Asset
                 ColDef("owner_id", ColumnTypes.String36),
                 ColDef("host_uri", ColumnTypes.String1024)
                                             ), IndexDefs(
-                                                IndexDef(new string[4] {"id", "hash_code", "parent_id", "creator_id"},
-                                                         IndexType.Primary)
+                                                IndexDef(new string[4] { "id", "hash_code", "parent_id", "creator_id" },
+                                                         IndexType.Primary),
+                                                IndexDef(new string[1] { "hash_code" }, IndexType.Index)
                                                    ));
 
-			AddSchema("whitecoreassets_0", ColDefs(
+            AddSchema("universeassets_0", ColDefs(
                 ColDef("id", ColumnTypes.String36),
                 ColDef("hash_code", ColumnTypes.String64),
                 ColDef("parent_id", ColumnTypes.String36),
@@ -162,11 +168,12 @@ namespace Universe.DataManager.Migration.Migrators.Asset
                 ColDef("owner_id", ColumnTypes.String36),
                 ColDef("host_uri", ColumnTypes.String1024)
                                             ), IndexDefs(
-                                                IndexDef(new string[4] {"id", "hash_code", "parent_id", "creator_id"},
-                                                         IndexType.Primary)
+                                                IndexDef(new string[4] { "id", "hash_code", "parent_id", "creator_id" },
+                                                         IndexType.Primary),
+                                                IndexDef(new string[1] { "hash_code" }, IndexType.Index)
                                                    ));
 
-			AddSchema("whitecoreassets_1", ColDefs(
+            AddSchema("universeassets_1", ColDefs(
                 ColDef("id", ColumnTypes.String36),
                 ColDef("hash_code", ColumnTypes.String64),
                 ColDef("parent_id", ColumnTypes.String36),
@@ -180,11 +187,12 @@ namespace Universe.DataManager.Migration.Migrators.Asset
                 ColDef("owner_id", ColumnTypes.String36),
                 ColDef("host_uri", ColumnTypes.String1024)
                                             ), IndexDefs(
-                                                IndexDef(new string[4] {"id", "hash_code", "parent_id", "creator_id"},
-                                                         IndexType.Primary)
+                                                IndexDef(new string[4] { "id", "hash_code", "parent_id", "creator_id" },
+                                                         IndexType.Primary),
+                                                IndexDef(new string[1] { "hash_code" }, IndexType.Index)
                                                    ));
 
-			AddSchema("whitecoreassets_2", ColDefs(
+            AddSchema("universeassets_2", ColDefs(
                 ColDef("id", ColumnTypes.String36),
                 ColDef("hash_code", ColumnTypes.String64),
                 ColDef("parent_id", ColumnTypes.String36),
@@ -198,11 +206,12 @@ namespace Universe.DataManager.Migration.Migrators.Asset
                 ColDef("owner_id", ColumnTypes.String36),
                 ColDef("host_uri", ColumnTypes.String1024)
                                             ), IndexDefs(
-                                                IndexDef(new string[4] {"id", "hash_code", "parent_id", "creator_id"},
-                                                         IndexType.Primary)
+                                                IndexDef(new string[4] { "id", "hash_code", "parent_id", "creator_id" },
+                                                         IndexType.Primary),
+                                                IndexDef(new string[1] { "hash_code" }, IndexType.Index)
                                                    ));
 
-			AddSchema("whitecoreassets_3", ColDefs(
+            AddSchema("universeassets_3", ColDefs(
                 ColDef("id", ColumnTypes.String36),
                 ColDef("hash_code", ColumnTypes.String64),
                 ColDef("parent_id", ColumnTypes.String36),
@@ -216,11 +225,12 @@ namespace Universe.DataManager.Migration.Migrators.Asset
                 ColDef("owner_id", ColumnTypes.String36),
                 ColDef("host_uri", ColumnTypes.String1024)
                                             ), IndexDefs(
-                                                IndexDef(new string[4] {"id", "hash_code", "parent_id", "creator_id"},
-                                                         IndexType.Primary)
+                                                IndexDef(new string[4] { "id", "hash_code", "parent_id", "creator_id" },
+                                                         IndexType.Primary),
+                                                IndexDef(new string[1] { "hash_code" }, IndexType.Index)
                                                    ));
 
-			AddSchema("whitecoreassets_4", ColDefs(
+            AddSchema("universeassets_4", ColDefs(
                 ColDef("id", ColumnTypes.String36),
                 ColDef("hash_code", ColumnTypes.String64),
                 ColDef("parent_id", ColumnTypes.String36),
@@ -234,11 +244,12 @@ namespace Universe.DataManager.Migration.Migrators.Asset
                 ColDef("owner_id", ColumnTypes.String36),
                 ColDef("host_uri", ColumnTypes.String1024)
                                             ), IndexDefs(
-                                                IndexDef(new string[4] {"id", "hash_code", "parent_id", "creator_id"},
-                                                         IndexType.Primary)
+                                                IndexDef(new string[4] { "id", "hash_code", "parent_id", "creator_id" },
+                                                         IndexType.Primary),
+                                                IndexDef(new string[1] { "hash_code" }, IndexType.Index)
                                                    ));
 
-			AddSchema("whitecoreassets_5", ColDefs(
+            AddSchema("universeassets_5", ColDefs(
                 ColDef("id", ColumnTypes.String36),
                 ColDef("hash_code", ColumnTypes.String64),
                 ColDef("parent_id", ColumnTypes.String36),
@@ -252,11 +263,12 @@ namespace Universe.DataManager.Migration.Migrators.Asset
                 ColDef("owner_id", ColumnTypes.String36),
                 ColDef("host_uri", ColumnTypes.String1024)
                                             ), IndexDefs(
-                                                IndexDef(new string[4] {"id", "hash_code", "parent_id", "creator_id"},
-                                                         IndexType.Primary)
+                                                IndexDef(new string[4] { "id", "hash_code", "parent_id", "creator_id" },
+                                                         IndexType.Primary),
+                                                IndexDef(new string[1] { "hash_code" }, IndexType.Index)
                                                    ));
 
-			AddSchema("whitecoreassets_6", ColDefs(
+            AddSchema("universeassets_6", ColDefs(
                 ColDef("id", ColumnTypes.String36),
                 ColDef("hash_code", ColumnTypes.String64),
                 ColDef("parent_id", ColumnTypes.String36),
@@ -270,11 +282,12 @@ namespace Universe.DataManager.Migration.Migrators.Asset
                 ColDef("owner_id", ColumnTypes.String36),
                 ColDef("host_uri", ColumnTypes.String1024)
                                             ), IndexDefs(
-                                                IndexDef(new string[4] {"id", "hash_code", "parent_id", "creator_id"},
-                                                         IndexType.Primary)
+                                                IndexDef(new string[4] { "id", "hash_code", "parent_id", "creator_id" },
+                                                         IndexType.Primary),
+                                                IndexDef(new string[1] { "hash_code" }, IndexType.Index)
                                                    ));
 
-			AddSchema("whitecoreassets_7", ColDefs(
+            AddSchema("universeassets_7", ColDefs(
                 ColDef("id", ColumnTypes.String36),
                 ColDef("hash_code", ColumnTypes.String64),
                 ColDef("parent_id", ColumnTypes.String36),
@@ -288,11 +301,12 @@ namespace Universe.DataManager.Migration.Migrators.Asset
                 ColDef("owner_id", ColumnTypes.String36),
                 ColDef("host_uri", ColumnTypes.String1024)
                                             ), IndexDefs(
-                                                IndexDef(new string[4] {"id", "hash_code", "parent_id", "creator_id"},
-                                                         IndexType.Primary)
+                                                IndexDef(new string[4] { "id", "hash_code", "parent_id", "creator_id" },
+                                                         IndexType.Primary),
+                                                IndexDef(new string[1] { "hash_code" }, IndexType.Index)
                                                    ));
 
-			AddSchema("whitecoreassets_8", ColDefs(
+            AddSchema("Universeassets_8", ColDefs(
                 ColDef("id", ColumnTypes.String36),
                 ColDef("hash_code", ColumnTypes.String64),
                 ColDef("parent_id", ColumnTypes.String36),
@@ -306,11 +320,12 @@ namespace Universe.DataManager.Migration.Migrators.Asset
                 ColDef("owner_id", ColumnTypes.String36),
                 ColDef("host_uri", ColumnTypes.String1024)
                                             ), IndexDefs(
-                                                IndexDef(new string[4] {"id", "hash_code", "parent_id", "creator_id"},
-                                                         IndexType.Primary)
+                                                IndexDef(new string[4] { "id", "hash_code", "parent_id", "creator_id" },
+                                                         IndexType.Primary),
+                                                IndexDef(new string[1] { "hash_code" }, IndexType.Index)
                                                    ));
 
-			AddSchema("whitecoreassets_9", ColDefs(
+            AddSchema("universeassets_9", ColDefs(
                 ColDef("id", ColumnTypes.String36),
                 ColDef("hash_code", ColumnTypes.String64),
                 ColDef("name", ColumnTypes.String64),
@@ -324,11 +339,12 @@ namespace Universe.DataManager.Migration.Migrators.Asset
                 ColDef("host_uri", ColumnTypes.String1024),
                 ColDef("parent_id", ColumnTypes.String36)
                                             ), IndexDefs(
-                                                IndexDef(new string[4] {"id", "hash_code", "creator_id", "parent_id"},
-                                                         IndexType.Primary)
+                                                IndexDef(new string[4] { "id", "hash_code", "creator_id", "parent_id" },
+                                                         IndexType.Primary),
+                                                IndexDef(new string[1] { "hash_code" }, IndexType.Index)
                                                    ));
 
-			AddSchema("whitecoreassets_old", ColDefs(
+            AddSchema("universeassets_old", ColDefs(
                 ColDef("id", ColumnTypes.String36),
                 ColDef("hash_code", ColumnTypes.String64),
                 ColDef("parent_id", ColumnTypes.String36),
@@ -343,25 +359,27 @@ namespace Universe.DataManager.Migration.Migrators.Asset
                 ColDef("host_uri", ColumnTypes.String1024)
                                               ), IndexDefs(
                                                   IndexDef(
-                                                      new string[4] {"id", "hash_code", "parent_id", "creator_id"},
-                                                      IndexType.Primary)
+                                                      new string[4] { "id", "hash_code", "parent_id", "creator_id" },
+                                                      IndexType.Primary),
+                                                  IndexDef(new string[1] { "hash_code" }, IndexType.Index)
                                                      ));
 
-			AddSchema("whitecoreassets_tasks", ColDefs(
+            AddSchema("universeassets_tasks", ColDefs(
                 ColDef("id", ColumnTypes.String36),
                 ColDef("task_type", ColumnTypes.String64),
-                ColDef("task_values", ColumnTypes.String36)
+                ColDef("task_values", ColumnTypes.String255)
                                                 ), IndexDefs(
-                                                    IndexDef(new string[1] {"id"}, IndexType.Primary)
+                                                    IndexDef(new string[1] { "id" }, IndexType.Primary)
                                                        ));
 
-			AddSchema("whitecoreassets_temp", ColDefs(
+            AddSchema("universeassets_temp", ColDefs(
                 ColDef("id", ColumnTypes.String36),
                 ColDef("hash_code", ColumnTypes.String64),
                 ColDef("creator_id", ColumnTypes.String36)
                                                ), IndexDefs(
-                                                   IndexDef(new string[3] {"id", "hash_code", "creator_id"},
-                                                            IndexType.Primary)
+                                                   IndexDef(new string[3] { "id", "hash_code", "creator_id" },
+                                                            IndexType.Primary),
+                                                   IndexDef(new string[2] { "hash_code", "creator_id" }, IndexType.Index)
                                                       ));
         }
 

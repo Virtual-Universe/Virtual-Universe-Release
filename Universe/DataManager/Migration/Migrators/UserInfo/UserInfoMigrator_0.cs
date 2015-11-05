@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Virtual-Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -29,25 +29,34 @@ using System;
 using System.Collections.Generic;
 using Universe.Framework.Utilities;
 
-namespace Universe.DataManager.Migration.Migrators.Generics
+namespace Universe.DataManager.Migration.Migrators.UserInfo
 {
-    public class GenericsMigrator_5 : Migrator
+    public class UserInfoMigrator_0 : Migrator
     {
-        public GenericsMigrator_5()
+        public UserInfoMigrator_0()
         {
-            Version = new Version(0, 0, 5);
-            MigrationName = "Generics";
+            Version = new Version(0, 0, 0);
+            MigrationName = "UserInfo";
 
             schema = new List<SchemaDefinition>();
 
-            AddSchema("generics", ColDefs(
-                ColDef("OwnerID", ColumnTypes.String36),
-                ColDef("Type", ColumnTypes.String64),
-                ColDef("Key", ColumnTypes.String64),
-                ColDef("Value", ColumnTypes.LongText)
+            AddSchema("user_info", ColDefs(
+                ColDef("UserID", ColumnTypes.String50),
+                ColDef("RegionID", ColumnTypes.String50),
+                ColDef("LastSeen", ColumnTypes.Integer30),
+                ColDef("IsOnline", ColumnTypes.String36),
+                ColDef("LastLogin", ColumnTypes.String50),
+                ColDef("LastLogout", ColumnTypes.String50),
+                ColDef("Info", ColumnTypes.String512),
+                ColDef("CurrentRegionID", ColumnTypes.Char36),
+                ColDef("CurrentPosition", ColumnTypes.String36),
+                ColDef("CurrentLookat", ColumnTypes.String36),
+                ColDef("HomeRegionID", ColumnTypes.Char36),
+                ColDef("HomePosition", ColumnTypes.String36),
+                ColDef("HomeLookat", ColumnTypes.String36),
+                ColDef("CurrentRegionURI", ColumnTypes.String255)
                                       ), IndexDefs(
-                                          IndexDef(new string[3] {"OwnerID", "Type", "Key"}, IndexType.Primary),
-                                          IndexDef(new string[2] {"Type", "Key"}, IndexType.Index)
+                                          IndexDef(new string[1] { "UserID" }, IndexType.Primary)
                                              ));
         }
 

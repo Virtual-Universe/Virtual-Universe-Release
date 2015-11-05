@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Virtual-Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -40,22 +40,22 @@ namespace Universe.DataManager.Migration.Migrators.Inventory
 
             schema = new List<SchemaDefinition>();
 
-            AddSchema("inventoryfolders", ColDefs(
+            AddSchema("inventory_folders", ColDefs(
                 ColDef("folderID", ColumnTypes.Char36),
                 ColDef("agentID", ColumnTypes.Char36),
                 ColDef("parentFolderID", ColumnTypes.Char36),
-                ColDef("folderName", ColumnTypes.String64),
+                ColDef("folderName", ColumnTypes.String128),
                 ColDef("type", ColumnTypes.Integer11),
                 ColDef("version", ColumnTypes.Integer11)
                                               ), IndexDefs(
-                                                  IndexDef(new string[3] {"folderID", "agentID", "parentFolderID"},
+                                                  IndexDef(new string[3] { "folderID", "agentID", "parentFolderID" },
                                                            IndexType.Primary)
                                                      ));
 
-            AddSchema("inventoryitems", ColDefs(
+            AddSchema("inventory_items", ColDefs(
                 ColDef("assetID", ColumnTypes.Char36),
                 ColDef("assetType", ColumnTypes.Integer11),
-                ColDef("inventoryName", ColumnTypes.String64),
+                ColDef("inventoryName", ColumnTypes.String128),
                 ColDef("inventoryDescription", ColumnTypes.String128),
                 ColDef("inventoryNextPermissions", ColumnTypes.Integer11),
                 ColDef("inventoryCurrentPermissions", ColumnTypes.Integer11),
@@ -79,7 +79,11 @@ namespace Universe.DataManager.Migration.Migrators.Inventory
                                                         {
                                                             "assetType", "flags", "inventoryID", "avatarID",
                                                             "parentFolderID"
-                                                        }, IndexType.Primary)
+                                                        }, IndexType.Primary),
+                                                IndexDef(new string[2] { "parentFolderID", "avatarID" }, IndexType.Index),
+                                                IndexDef(new string[2] { "avatarID", "assetType" }, IndexType.Index),
+                                                IndexDef(new string[1] { "inventoryID" }, IndexType.Index),
+                                                IndexDef(new string[2] { "assetID", "avatarID" }, IndexType.Index)
                                                    ));
         }
 

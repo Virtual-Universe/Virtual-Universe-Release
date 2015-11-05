@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Virtual-Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -35,7 +35,7 @@ namespace Universe.DataManager.Migration.Migrators.Scheduler
     {
         public SchedulerMigrator_0()
         {
-            Version = new Version(0, 0, 1);
+            Version = new Version(0, 0, 0);
             MigrationName = "Scheduler";
 
             schema = new List<SchemaDefinition>();
@@ -46,26 +46,40 @@ namespace Universe.DataManager.Migration.Migrators.Scheduler
                 ColDef("fire_params", ColumnTypes.String1024),
                 ColDef("run_once", ColumnTypes.TinyInt1),
                 ColDef("run_every", ColumnTypes.Integer30),
-                ColDef("runs_next", ColumnTypes.Integer30),
+                ColDef("runs_next", ColumnTypes.DateTime),
                 ColDef("keep_history", ColumnTypes.TinyInt1),
                 ColDef("require_reciept", ColumnTypes.TinyInt1),
                 ColDef("last_history_id", ColumnTypes.String36),
-                ColDef("create_time", ColumnTypes.Integer30),
-                ColDef("enabled", ColumnTypes.TinyInt1)
+                ColDef("create_time", ColumnTypes.DateTime),
+                ColDef("start_time", ColumnTypes.DateTime),
+                ColDef("run_every_type", ColumnTypes.Integer30),
+                ColDef("enabled", ColumnTypes.TinyInt1),
+                new ColumnDefinition
+                {
+                    Name = "schedule_for",
+                    Type = new ColumnTypeDef
+                    {
+                        Type = ColumnType.String,
+                        Size = 36,
+                        defaultValue = OpenMetaverse.UUID.Zero.ToString()
+                    }
+                }
                                        ), IndexDefs(
-                                           IndexDef(new string[3] {"id", "runs_next", "enabled"}, IndexType.Primary)
+                                           IndexDef(new[] { "id" }, IndexType.Primary),
+                                           IndexDef(new[] { "runs_next", "enabled" }, IndexType.Index),
+                                           IndexDef(new[] { "schedule_for", "fire_function" }, IndexType.Index)
                                               ));
 
             AddSchema("scheduler_history", ColDefs(
                 ColDef("id", ColumnTypes.String36),
                 ColDef("scheduler_id", ColumnTypes.String36),
-                ColDef("ran_time", ColumnTypes.Integer30),
-                ColDef("run_time", ColumnTypes.Integer30),
+                ColDef("ran_time", ColumnTypes.DateTime),
+                ColDef("run_time", ColumnTypes.DateTime),
                 ColDef("reciept", ColumnTypes.String1024),
                 ColDef("is_complete", ColumnTypes.TinyInt1),
-                ColDef("complete_time", ColumnTypes.Integer30)
+                ColDef("complete_time", ColumnTypes.DateTime)
                                                ), IndexDefs(
-                                                   IndexDef(new string[2] {"id", "scheduler_id"}, IndexType.Primary)
+                                                   IndexDef(new string[2] { "id", "scheduler_id" }, IndexType.Primary)
                                                       ));
         }
 

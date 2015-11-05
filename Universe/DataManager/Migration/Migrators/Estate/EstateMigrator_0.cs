@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Virtual-Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -40,13 +40,25 @@ namespace Universe.DataManager.Migration.Migrators.Estate
 
             schema = new List<SchemaDefinition>();
 
-            AddSchema("estates", ColDefs(
-                ColDef("ID", ColumnTypes.String45),
-                ColDef("Key", ColumnTypes.String50),
-                ColDef("Value", ColumnTypes.Text)
-                                     ), IndexDefs(
-                                         IndexDef(new string[2] {"ID", "Key"}, IndexType.Primary)
-                                            ));
+            AddSchema("estate_regions", ColDefs(
+                ColDef("RegionID", ColumnTypes.String36),
+                ColDef("EstateID", ColumnTypes.Integer11)
+                                           ), IndexDefs(
+                                               IndexDef(new string[1] { "RegionID" }, IndexType.Primary),
+                                               IndexDef(new string[1] { "EstateID" }, IndexType.Index)
+                                                  ));
+
+            AddSchema("estate_settings", ColDefs(
+                ColDef("EstateID", ColumnTypes.Integer11),
+                ColDef("EstateName", ColumnTypes.String100),
+                ColDef("EstateOwner", ColumnTypes.String36),
+                ColDef("ParentEstateID", ColumnTypes.Integer11),
+                ColDef("Settings", ColumnTypes.Text)
+                                            ), IndexDefs(
+                                                IndexDef(new string[1] { "EstateID" }, IndexType.Primary),
+                                                IndexDef(new string[1] { "EstateOwner" }, IndexType.Index),
+                                                IndexDef(new string[2] { "EstateName", "EstateOwner" }, IndexType.Index)
+                                                   ));
         }
 
         protected override void DoCreateDefaults(IDataConnector genericData)
