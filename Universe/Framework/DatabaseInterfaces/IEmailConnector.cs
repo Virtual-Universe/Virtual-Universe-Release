@@ -65,7 +65,7 @@ namespace Universe.Framework.DatabaseInterfaces
         }
     }
 
-    public interface IEmailConnector : IWhiteCoreDataPlugin
+    public interface IEmailConnector : IUniverseDataPlugin
     {
         /// <summary>
         ///     Adds an email to the database for the prim to get later
