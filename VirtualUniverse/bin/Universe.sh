@@ -1,1 +1,1 @@
-mono --debug WhiteCore.exe
+mono --debug Universe.exe

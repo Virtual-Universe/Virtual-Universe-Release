@@ -159,7 +159,7 @@ var SLURL = {
 				if(typeof result == 'string'){
 					mapWindow(result, x, y);
 				}else if((result == null || result.error) && SLURL.debugMode){
-					alert('The coordinates of the WCURL (' + x + ', ' + y + ') were not recognised as being in a WhiteCore region.');
+					alert('The coordinates of the WCURL (' + x + ', ' + y + ') were not recognised as being in a Virtual Universe region.');
 				}
 			}, SLURL.getRegionCoordsByNameVar());
 		}else{
@@ -730,7 +730,7 @@ SLURL.Map.prototype.showTileNameToolTip = function(slMap, tileX, tileY){
 				if(typeof result == 'string'){
 					nameTip(result);
 				} else if((result == null || result.error) && SLURL.debugMode){
-					alert('The coordinates of the WCURL (' + x + ', ' + y + ') were not recognised as being in a WhiteCore region.');
+					alert('The coordinates of the WCURL (' + x + ', ' + y + ') were not recognised as being in a Virtual Universe region.');
 				}
 			}, SLURL.getRegionNameByCoordsVar());
 }
@@ -744,8 +744,8 @@ SLURL.Map.prototype.hoverWindowCloseHandler = function(){
 SLURL.Map.prototype.CreateMapTypes = function(){
 	var mapTypes = [];
 	
-		var copyCollection = new GCopyrightCollection('WhiteCore');
-		var copyright = new GCopyright(1, new GLatLngBounds(new GLatLng(0, 0), new GLatLng(-90, 90)), 0, "(C) 2014 - " + (new Date).getFullYear() + " WhiteCore-Sim.org");
+		var copyCollection = new GCopyrightCollection('Virtual Universe');
+		var copyright = new GCopyright(1, new GLatLngBounds(new GLatLng(0, 0), new GLatLng(-90, 90)), 0, "(C) 2015-2025 - " + (new Date).getFullYear() + " virtual-planets.org");
 		copyCollection.addCopyright(copyright);
 
 		// Create the 'Land' type of map
@@ -803,7 +803,7 @@ SLURL.Map.prototype.CreateMapDiv = function(mainDiv){
 		formLabelSpan.appendChild(formLabel);
 
 		// Text field for the region name
-		formText.value = "WhiteCore";
+		formText.value = "Universe";
 		formText.size = 15;
 
 		// Button to activate 'go to region'
