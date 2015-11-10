@@ -26,7 +26,7 @@ GroupsConnector = LocalConnector
 EmailConnector = LocalConnector
 
 ;; Max non-group chat messages that the server will store per user
-MaxOfflineMessages = 500
+MaxOfflineMessages = 50
 
 DoRemoteCalls = False
 AllowRemoteCalls = False
