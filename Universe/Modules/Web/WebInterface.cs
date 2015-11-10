@@ -1125,9 +1125,9 @@ namespace Universe.Modules.Web
 
     public class GridSettings : IDataTransferable
     {
-        public string Gridname = "Universe Grid";
+        public string Gridname = "Virtual Universe Grid";
         public string Gridnick = "Universe";
-        public string WelcomeMessage = "Welcome to Universe, <USERNAME>!";
+        public string WelcomeMessage = "Welcome to Virtual Universe, <USERNAME>!";
         public string SystemEstateOwnerName = Constants.GovernorName;
         public string SystemEstateName = Constants.SystemEstateName;
 
