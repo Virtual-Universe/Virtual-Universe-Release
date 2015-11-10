@@ -57,7 +57,7 @@ namespace Universe.Modules.Startup
 
         #region ISharedRegionStartupModule Members
 
-        public void Initialize(IScene scene, IConfigSource source, ISimulationBase simBase)
+        public void Initialise(IScene scene, IConfigSource source, ISimulationBase simBase)
         {
             if (MainConsole.Instance != null && m_backup.Count == 0) //Only add them once
             {
@@ -561,7 +561,7 @@ namespace Universe.Modules.Startup
                 if (group.RootChild.PhysActor != null)
                 {
                     //Remove us from the physics sim
-                    m_scene.PhysicsScene.DeletePrim(group.RootChild.PhysActor);
+                    m_scene.PhysicsScene.RemovePrim(group.RootChild.PhysActor);
                     group.RootChild.PhysActor = null;
                 }
 
@@ -575,7 +575,7 @@ namespace Universe.Modules.Startup
                     return true;
                 }
 
-                //MainConsole.Instance.DebugFormat("[Scene]: Exit DeleteSceneObject() for {0} {1}", group.Name, group.UUID);
+                //MainConsole.Instance.DebugFormat("[SCENE]: Exit DeleteSceneObject() for {0} {1}", group.Name, group.UUID);
                 return false;
             }
 

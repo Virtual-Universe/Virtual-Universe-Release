@@ -587,7 +587,7 @@ namespace Universe.Region
                 }
                 catch (Exception e)
                 {
-                    MainConsole.Instance.Error("[Region]: Failed with exception " + e + " in region: " +
+                    MainConsole.Instance.Error("[REGION]: Failed with exception " + e + " in region: " +
                                                RegionInfo.RegionName);
                     return true;
                 }
@@ -791,15 +791,15 @@ namespace Universe.Region
                                   catch (Exception e)
                                   {
                                       MainConsole.Instance.Error(
-                                          "[Scene] Scene.cs:RemoveClient:Presence.Close exception: " + e);
+                                          "[SCENE] Scene.cs:RemoveClient:Presence.Close exception: " + e);
                                   }
 
                                   //Remove any interfaces it might have stored
                                   presence.RemoveAllInterfaces();
 
                                   AuthenticateHandler.RemoveCircuit(presence.UUID);
-                                  //MainConsole.Instance.InfoFormat("[Scene] Memory pre  GC {0}", System.GC.GetTotalMemory(false));
-                                  //MainConsole.Instance.InfoFormat("[Scene] Memory post GC {0}", System.GC.GetTotalMemory(true));
+                                  //MainConsole.Instance.InfoFormat("[SCENE] Memory pre  GC {0}", System.GC.GetTotalMemory(false));
+                                  //MainConsole.Instance.InfoFormat("[SCENE] Memory post GC {0}", System.GC.GetTotalMemory(true));
                               });
             return true;
         }

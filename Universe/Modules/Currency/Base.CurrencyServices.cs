@@ -615,7 +615,7 @@ namespace Universe.Modules.Currency
             MainConsole.Instance.Info(account.Name + " has " + StrUserBalance((int)currency.Amount));
         }
 
-        /*
+/*
         protected void HandleStipendSet(IScene scene, string[] cmd)
         {
             string rawDate = MainConsole.Instance.Prompt("Date to pay next Stipend? (MM/dd/yyyy)");
@@ -624,15 +624,14 @@ namespace Universe.Modules.Currency
             
             // Make a new DateTime from rawDate
             DateTime newDate = DateTime.ParseExact(rawDate, "MM/dd/yyyy", CultureInfo.InvariantCulture);
-            GiveStipends.StipendDate = newDate;
+//            GiveStipends.StipendDate = newDate;
 
             // Code needs to be added to run through the scheduler and change the 
             // RunsNext to the date that the user wants the scheduler to be
             // Fly-Man- 2-5-2015
             MainConsole.Instance.Info("Stipend Date has been set to" + newDate);
         }
-        */
-
+*/
         protected void HandleShowTransactions(IScene scene, string [] cmd)
         {
             UserAccount account = GetUserAccount ();

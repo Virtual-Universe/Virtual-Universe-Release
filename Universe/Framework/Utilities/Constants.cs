@@ -34,7 +34,6 @@ namespace Universe.Framework.Utilities
         public const string MISSING_TEXTURE_ID = "41fcdbb9-0896-495d-8889-1eb6fad88da3";       // texture to use when all else fails...
 
         // some predefined folders
-        public const string DEFAULT_CRASH_DIR = "../Data/Crashes";
         public const string DEFAULT_CONFIG_DIR = "../Config";
         public const string DEFAULT_DATA_DIR = "../Data";
 
@@ -68,7 +67,7 @@ namespace Universe.Framework.Utilities
 
         // System Governor Avatar Account
         public const string GovernorUUID = "3d6181b0-6a4b-97ef-18d8-722652995cf1";
-        public const string GovernorName = "Governor Universe";
+        public const string GovernorName = "Governor White";
 
         // System Estate
         public const string MainlandEstateName = "Universe Mainland";

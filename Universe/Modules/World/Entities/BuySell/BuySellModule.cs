@@ -208,7 +208,7 @@ namespace Universe.Modules.Entities.BuySell
             get { return null; }
         }
 
-        public void Initialize(IConfigSource source)
+        public void Initialise(IConfigSource source)
         {
         }
 

@@ -405,7 +405,7 @@ namespace Universe.Modules.Installer
                 {
                     foreach (IScene scene in manager.Scenes)
                     {
-                        nsrm.Initialize(m_config);
+                        nsrm.Initialise(m_config);
                         nsrm.AddRegion(scene);
                         nsrm.RegionLoaded(scene);
                         rmc.AllModules.Add(nsrm);

@@ -216,196 +216,37 @@
 	  <Compile Include="Migration\Migrators\Agent\AgentMigrator_0.cs">
 		<SubType>Code</SubType>
 	  </Compile>
-	  <Compile Include="Migration\Migrators\Agent\AgentMigrator_1.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Agent\AgentMigrator_2.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Agent\AgentMigrator_3.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Agent\AgentMigrator_4.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Agent\AgentMigrator_5.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Agent\AgentMigrator_6.cs">
-		<SubType>Code</SubType>
-	  </Compile>
 	  <Compile Include="Migration\Migrators\Asset\AssetMigrator_0.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Asset\AssetMigrator_1.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Asset\AssetMigrator_2.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Asset\UniverseAssetMigrator_0.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Asset\UniverseAssetMigrator_1.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Asset\UniverseAssetMigrator_2.cs">
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="Migration\Migrators\Auth\AuthMigrator_0.cs">
 		<SubType>Code</SubType>
 	  </Compile>
-	  <Compile Include="Migration\Migrators\Auth\AuthMigrator_1.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Auth\AuthMigrator_2.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Auth\AuthMigrator_3.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Auth\AuthMigrator_4.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Auth\AuthMigrator_5.cs">
-		<SubType>Code</SubType>
-	  </Compile>
 	  <Compile Include="Migration\Migrators\Avatars\AvatarsMigrator_0.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Avatars\AvatarsMigrator_1.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Avatars\AvatarsMigrator_2.cs">
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="Migration\Migrators\Currency\CurrencyMigrator_0.cs">
 		<SubType>Code</SubType>
 	  </Compile>
-	  <Compile Include="Migration\Migrators\Currency\CurrencyMigrator_1.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Currency\CurrencyMigrator_2.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Currency\CurrencyMigrator_3.cs">
-		<SubType>Code</SubType>
-	  </Compile>
 	  <Compile Include="Migration\Migrators\Directory\DirectoryMigrator_0.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Directory\DirectoryMigrator_1.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Directory\DirectoryMigrator_10.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Directory\DirectoryMigrator_11.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Directory\DirectoryMigrator_12.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Directory\DirectoryMigrator_2.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Directory\DirectoryMigrator_3.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Directory\DirectoryMigrator_4.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Directory\DirectoryMigrator_5.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Directory\DirectoryMigrator_6.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Directory\DirectoryMigrator_7.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Directory\DirectoryMigrator_8.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Directory\DirectoryMigrator_9.cs">
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="Migration\Migrators\Estate\EstateMigrator_0.cs">
 		<SubType>Code</SubType>
 	  </Compile>
-	  <Compile Include="Migration\Migrators\Estate\EstateMigrator_1.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Estate\EstateMigrator_2.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Estate\EstateMigrator_3.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Estate\EstateMigrator_4.cs">
-		<SubType>Code</SubType>
-	  </Compile>
 	  <Compile Include="Migration\Migrators\Friends\FriendsMigrator_0.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Friends\FriendsMigrator_1.cs">
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="Migration\Migrators\Generics\GenericsMigrator_0.cs">
 		<SubType>Code</SubType>
 	  </Compile>
-	  <Compile Include="Migration\Migrators\Generics\GenericsMigrator_1.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Generics\GenericsMigrator_4.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Generics\GenericsMigrator_5.cs">
-		<SubType>Code</SubType>
-	  </Compile>
 	  <Compile Include="Migration\Migrators\GridRegion\GridRegionMigrator_0.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\GridRegion\GridRegionMigrator_1.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\GridRegion\GridRegionMigrator_2.cs">
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="Migration\Migrators\Groups\GroupsMigrator_0.cs">
 		<SubType>Code</SubType>
 	  </Compile>
-	  <Compile Include="Migration\Migrators\Groups\GroupsMigrator_1.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Groups\GroupsMigrator_2.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Groups\GroupsMigrator_3.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Groups\GroupsMigrator_4.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Groups\GroupsMigrator_5.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Groups\GroupsMigrator_6.cs">
-		<SubType>Code</SubType>
-	  </Compile>
 	  <Compile Include="Migration\Migrators\Inventory\InventoryMigrator_0.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Inventory\InventoryMigrator_1.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Inventory\InventoryMigrator_2.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Inventory\InventoryMigrator_3.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Inventory\InventoryMigrator_4.cs">
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="Migration\Migrators\Parcel\ParcelMigrator_0.cs">
@@ -417,61 +258,13 @@
 	  <Compile Include="Migration\Migrators\Scheduler\SchedulerMigrator_0.cs">
 		<SubType>Code</SubType>
 	  </Compile>
-	  <Compile Include="Migration\Migrators\Scheduler\SchedulerMigrator_1.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Scheduler\SchedulerMigrator_2.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Scheduler\SchedulerMigrator_3.cs">
-		<SubType>Code</SubType>
-	  </Compile>
 	  <Compile Include="Migration\Migrators\Stats\StatsMigrator_0.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Stats\StatsMigrator_1.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\Stats\StatsMigrator_2.cs">
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="Migration\Migrators\UserAccounts\UserAccountsMigrator_0.cs">
 		<SubType>Code</SubType>
 	  </Compile>
-	  <Compile Include="Migration\Migrators\UserAccounts\UserAccountsMigrator_1.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\UserAccounts\UserAccountsMigrator_2.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\UserAccounts\UserAccountsMigrator_3.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\UserAccounts\UserAccountsMigrator_4.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\UserAccounts\UserAccountsMigrator_5.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\UserAccounts\UserAccountsMigrator_6.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\UserInfo\UserInfosMigrator_0.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\UserInfo\UserInfosMigrator_1.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\UserInfo\UserInfosMigrator_2.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\UserInfo\UserInfosMigrator_3.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\UserInfo\UserInfosMigrator_4.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\UserInfo\UserInfosMigrator_5.cs">
+	  <Compile Include="Migration\Migrators\UserInfo\UserInfoMigrator_0.cs">
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="Properties\AssemblyInfo.cs">

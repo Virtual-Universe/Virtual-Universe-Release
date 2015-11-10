@@ -44,7 +44,7 @@ namespace Universe.Modules.Vegetation
 
         #region INonSharedRegionModule Members
 
-        public void Initialize(IConfigSource source)
+        public void Initialise(IConfigSource source)
         {
         }
 

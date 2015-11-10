@@ -25,8 +25,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using OpenMetaverse;
 using Universe.Framework.Physics;
+using OpenMetaverse;
 
 namespace Universe.Physics.BasicPhysicsPlugin
 {
@@ -94,7 +94,6 @@ namespace Universe.Physics.BasicPhysicsPlugin
         public override bool Flying { get; set; }
 
         public override bool IsTruelyColliding { get; set; }
-
         public override bool IsColliding { get; set; }
 
         public override Vector3 Position { get; set; }
@@ -203,8 +202,7 @@ namespace Universe.Physics.BasicPhysicsPlugin
             set { return; }
         }
 
-        public override bool Kinematic
-        {
+        public override bool Kinematic {
             get { return false; }
             set { return; }
         }
@@ -216,7 +214,6 @@ namespace Universe.Physics.BasicPhysicsPlugin
         }
 
         public override bool IsTruelyColliding { get; set; }
-
         public override bool IsColliding { get; set; }
 
         public override Vector3 Position { get; set; }

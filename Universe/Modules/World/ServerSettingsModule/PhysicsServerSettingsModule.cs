@@ -34,7 +34,7 @@ namespace Universe.Modules.World.ServerSettingsModule
 {
     public class PhysicsServerSettingsModule : INonSharedRegionModule
     {
-        public void Initialize(IConfigSource source)
+        public void Initialise(IConfigSource source)
         {
         }
 

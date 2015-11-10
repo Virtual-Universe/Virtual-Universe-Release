@@ -264,9 +264,6 @@
 	  <Compile Include="BSLinksetConstraints.cs">
 		<SubType>Code</SubType>
 	  </Compile>
-	  <Compile Include="BSLinksetGroupCompound.cs">
-		<SubType>Code</SubType>
-	  </Compile>
 	  <Compile Include="BSMaterials.cs">
 		<SubType>Code</SubType>
 	  </Compile>

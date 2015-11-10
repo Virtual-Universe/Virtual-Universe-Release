@@ -47,7 +47,7 @@ namespace Universe.Modules.Estate
         protected IRegistryCore m_registry;
          
 
-        public void Initialize(IScene scene, IConfigSource source, ISimulationBase simBase)
+        public void Initialise(IScene scene, IConfigSource source, ISimulationBase simBase)
         {
             scene.StackModuleInterface<IUniverseBackupModule>(this);
             m_registry = simBase.ApplicationRegistry;

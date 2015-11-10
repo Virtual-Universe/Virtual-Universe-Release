@@ -53,7 +53,7 @@ namespace Universe.Modules.Wind.Plugins
             get { return "SimpleRandomWind"; }
         }
 
-        public void Initialize ()
+        public void Initialise ()
         {
         }
 

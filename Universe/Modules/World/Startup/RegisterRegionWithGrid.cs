@@ -234,7 +234,7 @@ namespace Universe.Modules.Startup
 
         #region ISharedRegionStartupModule Members
 
-        public void Initialize (IScene scene, IConfigSource source, ISimulationBase simBase)
+        public void Initialise (IScene scene, IConfigSource source, ISimulationBase simBase)
         {
             m_scene = scene;
             //Register the interface

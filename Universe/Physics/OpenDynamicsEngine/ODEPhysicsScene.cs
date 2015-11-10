@@ -251,7 +251,7 @@ namespace Universe.Physics.OpenDynamicsEngine
         }
 
         // Initialize the mesh plugin
-        public override void Initialize(IMesher meshmerizer, IScene scene)
+        public override void Initialise(IMesher meshmerizer, IScene scene)
         {
             mesher = meshmerizer;
             m_region = scene.RegionInfo;
@@ -984,7 +984,7 @@ namespace Universe.Physics.OpenDynamicsEngine
 
 		internal void BadPrim(UniverseODEPrim universeODEPrim)
         {
-			DeletePrim(universeODEPrim);
+			RemovePrim(universeODEPrim);
             //Can't really do this here... as it will be readded before the delete gets called, which is wrong...
             //So... leave the prim out there for now
 			//AddPrimShape(universeODEPrim.ParentEntity);
@@ -1035,11 +1035,6 @@ namespace Universe.Physics.OpenDynamicsEngine
             RemoveQueue.Enqueue(prim);
         }
 
-        public override void DeletePrim(PhysicsActor prim)
-        {
-            //Add the prim to a queue which will be removed when Simulate has finished what it's doing.
-            DeleteQueue.Enqueue(prim);
-        }
 
         /// <summary>
         ///     This is called from within simulate but outside the locked portion

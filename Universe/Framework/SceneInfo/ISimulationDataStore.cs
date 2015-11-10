@@ -57,7 +57,7 @@ namespace Universe.Framework.SceneInfo
         /// <summary>
         ///     Initializes the data storage engine
         /// </summary>
-        void Initialize();
+        void Initialise();
 
         /// <summary>
         ///     Entirely removes the region, this includes everything about the region

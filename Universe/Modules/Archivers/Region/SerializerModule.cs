@@ -84,7 +84,7 @@ namespace Universe.Modules.Archivers
             get { return null; }
         }
 
-        public void Initialize(IConfigSource source)
+        public void Initialise(IConfigSource source)
         {
         }
 

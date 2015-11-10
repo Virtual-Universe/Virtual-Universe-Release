@@ -102,7 +102,7 @@ namespace Universe.Modules.Scripting
 
         #region INonSharedRegionModule Members
 
-        public void Initialize(IConfigSource config)
+        public void Initialise(IConfigSource config)
         {
             // wrap this in a try block so that defaults will work if
             // the config file doesn't specify otherwise.
@@ -700,12 +700,12 @@ namespace Universe.Modules.Scripting
 
         public ListenerInfo(int handle, UUID ItemID, UUID hostID, int channel, string name, UUID id, string message, int regexBitfield)
         {
-            Initialize(handle, ItemID, hostID, channel, name, id, message, regexBitfield);
+            Initialise(handle, ItemID, hostID, channel, name, id, message, regexBitfield);
         }
 
         public ListenerInfo(ListenerInfo li, string name, UUID id, string message)
         {
-            Initialize(li.m_handle, li.m_itemID, li.m_hostID, li.m_channel, name, id, message, 0);
+            Initialise(li.m_handle, li.m_itemID, li.m_hostID, li.m_channel, name, id, message, 0);
         }
 
         #region IWorldCommListenerInfo Members
@@ -776,7 +776,7 @@ namespace Universe.Modules.Scripting
 
         #endregion
 
-        private void Initialize(int handle, UUID ItemID, UUID hostID, int channel, string name,
+        private void Initialise(int handle, UUID ItemID, UUID hostID, int channel, string name,
                                 UUID id, string message, int regexBitfield)
         {
             m_active = true;

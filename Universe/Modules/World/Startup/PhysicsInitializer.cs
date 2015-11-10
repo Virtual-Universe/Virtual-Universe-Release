@@ -39,7 +39,7 @@ namespace Universe.Modules.Startup
     {
         #region ISharedRegionStartupModule Members
 
-        public void Initialize(IScene scene, IConfigSource source, ISimulationBase simBase)
+        public void Initialise(IScene scene, IConfigSource source, ISimulationBase simBase)
         {
             IConfig PhysConfig = source.Configs["Physics"];
             IConfig MeshingConfig = source.Configs["Meshing"];

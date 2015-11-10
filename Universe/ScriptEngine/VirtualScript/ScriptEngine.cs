@@ -202,7 +202,7 @@ namespace Universe.ScriptEngine.VirtualScript
 
         #region ISharedRegionModule
 
-        public void Initialize(IConfigSource config)
+        public void Initialise(IConfigSource config)
         {
             m_ConfigSource = config;
             ScriptConfigSource = config.Configs[ScriptEngineName];
@@ -239,32 +239,32 @@ namespace Universe.ScriptEngine.VirtualScript
                 if (MainConsole.Instance != null)
                 {
                     MainConsole.Instance.Commands.AddCommand(
-                        "WDNE restart", 
-                        "WDNE restart",
+                        "VS restart", 
+                        "VS restart",
                         "Restarts all scripts and clears all script caches",
                         UniverseDotNetRestart, false, false);
                     
                 	MainConsole.Instance.Commands.AddCommand(
-                        "WDNE stop",
-                        "WDNE stop", 
+                        "VS stop",
+                        "VS stop", 
                         "Stops all scripts",
                         UniverseDotNetStop, false, false);
                     
                 	MainConsole.Instance.Commands.AddCommand(
-                        "WDNE stats",
-                        "WDNE stats",
+                        "VS stats",
+                        "VS stats",
                         "Tells stats about the script engine", 
                         UniverseDotNetStats, false, false);
                     
                 	MainConsole.Instance.Commands.AddCommand(
-                        "WDNE disable",
-                        "WDNE disable",
+                        "VS disable",
+                        "VS disable",
                         "Disables the script engine temperarily",
                         UniverseDotNetDisable, false, false);
                     
                 	MainConsole.Instance.Commands.AddCommand(
-                        "WDNE enable",
-                        "WDNE enable", 
+                        "VS enable",
+                        "VS enable", 
                         "Reenables the script engine",
                         UniverseDotNetEnable, false, false);
                 }
@@ -452,11 +452,11 @@ namespace Universe.ScriptEngine.VirtualScript
                 MaintenanceThread.StartScripts(
                     scripts.Select(ID => new LUStruct {Action = LUType.Load, ID = ID}).ToArray());
 
-                MainConsole.Instance.Warn("[Virtual Script]: All scripts have been restarted.");
+                MainConsole.Instance.Warn("[VS]: All scripts have been restarted.");
             }
             else
             {
-                MainConsole.Instance.Info("[Virtual Script]: Not restarting all scripts");
+                MainConsole.Instance.Info("[VS]: Not restarting all scripts");
             }
         }
 
@@ -467,11 +467,11 @@ namespace Universe.ScriptEngine.VirtualScript
             {
                 StopAllScripts();
                 MaintenanceThread.Stop();
-                MainConsole.Instance.Warn("[Virtual Script]: All scripts have been stopped.");
+                MainConsole.Instance.Warn("[VS]: All scripts have been stopped.");
             }
             else
             {
-                MainConsole.Instance.Info("[Virtual Script]: Not restarting all scripts");
+                MainConsole.Instance.Info("[VS]: Not restarting all scripts");
             }
         }
 
@@ -498,14 +498,14 @@ namespace Universe.ScriptEngine.VirtualScript
         protected void UniverseDotNetDisable(IScene scene, string[] cmdparams)
         {
             ConsoleDisabled = true;
-            MainConsole.Instance.Warn("[Virtual Script]: WDNE has been disabled.");
+            MainConsole.Instance.Warn("[VS]: VS has been disabled.");
         }
 
         protected void UniverseDotNetEnable(IScene scene, string[] cmdparams)
         {
             ConsoleDisabled = false;
             MaintenanceThread.Started = true;
-            MainConsole.Instance.Warn("[Virtual Script]: WDNE has been enabled.");
+            MainConsole.Instance.Warn("[VS]: VS has been enabled.");
         }
 
         #endregion

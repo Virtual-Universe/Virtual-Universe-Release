@@ -36,9 +36,9 @@ namespace Universe.Physics.BasicPhysicsPlugin
 {
     public class BasicScene : PhysicsScene
     {
-        private readonly List<PhysicsActor> _actors = new List<PhysicsActor>();
-        private short[] _heightMap;
-        private RegionInfo m_region;
+        readonly List<PhysicsActor> _actors = new List<PhysicsActor>();
+        short[] _heightMap;
+        RegionInfo m_region;
 
         public BasicScene()
         {
@@ -57,7 +57,7 @@ namespace Universe.Physics.BasicPhysicsPlugin
             get { return false; }
         }
 
-        public override void Initialize(IMesher meshmerizer, IScene scene)
+        public override void Initialise(IMesher meshmerizer, IScene scene)
         {
             m_region = scene.RegionInfo;
         }
@@ -82,10 +82,6 @@ namespace Universe.Physics.BasicPhysicsPlugin
         {
         }
 
-        public override void DeletePrim(PhysicsActor prim)
-        {
-        }
-
         public override void RemoveAvatar(PhysicsActor actor)
         {
             BasicCharacterActor act = (BasicCharacterActor) actor;
@@ -94,6 +90,13 @@ namespace Universe.Physics.BasicPhysicsPlugin
                 _actors.Remove(act);
             }
         }
+
+/*
+        public override PhysicsActor AddPrim(Vector3 position, Vector3 size, Quaternion rotation)
+        {
+            return null;
+        }
+*/
 
         public override PhysicsActor AddPrimShape(UUID primID, uint localID, string name, byte physicsType, PrimitiveBaseShape shape,
                                                 Vector3 position, Vector3 size, Quaternion rotation, bool isPhysical, int material,

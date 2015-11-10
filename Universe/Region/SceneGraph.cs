@@ -25,13 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.Packets;
+
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
@@ -41,6 +35,13 @@ using Universe.Framework.SceneInfo;
 using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.Packets;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 
 namespace Universe.Region
 {
@@ -57,7 +58,7 @@ namespace Universe.Region
         protected RegionInfo m_regInfo;
         protected IScene m_parentScene;
         protected bool EnableFakeRaycasting = false;
-        protected string m_DefaultObjectName = "Object";
+        protected string m_DefaultObjectName = "Primitive";
 
         /// <summary>
         ///     The last allocated local prim id.  When a new local id is requested, the next number in the sequence is
@@ -296,7 +297,7 @@ namespace Universe.Region
             if (!Entities.Remove(agent))
             {
                 MainConsole.Instance.WarnFormat(
-                    "[Scene]: Tried to remove non-existent scene presence with agent ID {0} from scene Entities list",
+                    "[SCENE]: Tried to remove non-existent scene presence with agent ID {0} from scene Entities list",
                     agent.UUID);
                 return;
             }
@@ -472,7 +473,7 @@ namespace Universe.Region
                 catch (Exception e)
                 {
                     // Catch it and move on. This includes situations where splist has inconsistent info
-                    MainConsole.Instance.WarnFormat("[Scene]: Problem processing action in ForEachSOG: {0}",
+                    MainConsole.Instance.WarnFormat("[SCENE]: Problem processing action in ForEachSOG: {0}",
                                                     e.ToString());
                 }
             }
@@ -496,8 +497,8 @@ namespace Universe.Region
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.Info("[Bug] in " + m_parentScene.RegionInfo.RegionName + ": " + e.ToString());
-                        MainConsole.Instance.Info("[Bug] Stack Trace: " + e.StackTrace);
+                        MainConsole.Instance.Info("[BUG] in " + m_parentScene.RegionInfo.RegionName + ": " + e.ToString());
+                        MainConsole.Instance.Info("[BUG] Stack Trace: " + e.StackTrace);
                     }
                 });
             Parallel.ForEach<ScenePresence>(GetScenePresences(), protectedAction);
@@ -512,8 +513,8 @@ namespace Universe.Region
                 }
                 catch (Exception e)
                 {
-                    MainConsole.Instance.Info("[Bug] in " + m_parentScene.RegionInfo.RegionName + ": " + e.ToString());
-                    MainConsole.Instance.Info("[Bug] Stack Trace: " + e.StackTrace);
+                    MainConsole.Instance.Info("[BUG] in " + m_parentScene.RegionInfo.RegionName + ": " + e.ToString());
+                    MainConsole.Instance.Info("[BUG] Stack Trace: " + e.StackTrace);
                 }
             }
         }
@@ -886,6 +887,7 @@ namespace Universe.Region
                 AddPrimToScene(sceneObject);
                 sceneObject.ScheduleGroupUpdate(PrimUpdateFlags.ForcedFullUpdate);
             }
+
 
             return sceneObject;
         }
@@ -1517,7 +1519,7 @@ namespace Universe.Region
             // * User owns object
             //use CanEditObject
 
-            //Object can be ADDED to search if:
+            //Object can be ADDED to search IFF:
             // * User owns object
             // * Asset/DRM permission bit "modify" is enabled
             //use CanEditObjectPosition
@@ -1548,7 +1550,7 @@ namespace Universe.Region
         /// <returns></returns>
         public bool DuplicateObject(uint LocalID, Vector3 offset, uint flags, UUID AgentID, UUID GroupID, Quaternion rot)
         {
-            //MainConsole.Instance.DebugFormat("[Scene]: Duplication of object {0} at offset {1} requested by agent {2}", originalPrim, offset, AgentID);
+            //MainConsole.Instance.DebugFormat("[SCENE]: Duplication of object {0} at offset {1} requested by agent {2}", originalPrim, offset, AgentID);
             IEntity entity;
 
             if (TryGetEntity(LocalID, out entity))
@@ -1634,13 +1636,13 @@ namespace Universe.Region
 
             if (root == null)
             {
-                MainConsole.Instance.DebugFormat("[Link]: Can't find linkset root prim {0}", parentPrimId);
+                MainConsole.Instance.DebugFormat("[LINK]: Can't find linkset root prim {0}", parentPrimId);
                 return;
             }
 
             if (!m_parentScene.Permissions.CanLinkObject(client.AgentId, root.ParentEntity.UUID))
             {
-                MainConsole.Instance.DebugFormat("[Link]: Refusing link. No permissions on root prim");
+                MainConsole.Instance.DebugFormat("[LINK]: Refusing link. No permissions on root prim");
                 return;
             }
 
@@ -1662,14 +1664,14 @@ namespace Universe.Region
             //
             if (owners.Count > 1)
             {
-                MainConsole.Instance.DebugFormat("[Link]: Refusing link. Too many owners");
+                MainConsole.Instance.DebugFormat("[LINK]: Refusing link. Too many owners");
                 client.SendAlertMessage("Permissions: Cannot link, too many owners.");
                 return;
             }
 
             if (children.Count == 0)
             {
-                MainConsole.Instance.DebugFormat("[Link]: Refusing link. No permissions to link any of the children");
+                MainConsole.Instance.DebugFormat("[LINK]: Refusing link. No permissions to link any of the children");
                 client.SendAlertMessage("Permissions: Cannot link, not enough permissions.");
                 return;
             }

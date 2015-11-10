@@ -170,7 +170,7 @@ namespace Universe.Modules.SimProtection
             get { return null; }
         }
 
-        public void Initialize(IConfigSource source)
+        public void Initialise(IConfigSource source)
         {
             if (m_physicsStatTimer == null)
             {

@@ -131,7 +131,7 @@ namespace Universe.Modules.Land
             get { return null; }
         }
 
-        public void Initialize(IConfigSource source)
+        public void Initialise(IConfigSource source)
         {
             IConfig config = source.Configs["LandManagement"];
             if (config != null)

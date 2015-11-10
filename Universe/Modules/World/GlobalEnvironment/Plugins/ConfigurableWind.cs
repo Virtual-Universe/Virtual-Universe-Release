@@ -64,7 +64,7 @@ namespace Universe.Modules.Wind.Plugins
             get { return "ConfigurableWind"; }
         }
 
-        public void Initialize ()
+        public void Initialise ()
         {
         }
 

@@ -349,7 +349,7 @@ namespace Universe.Modules.Chat
 
         #region INonSharedRegionModule Members
 
-        public virtual void Initialize (IConfigSource config)
+        public virtual void Initialise (IConfigSource config)
         {
             m_config = config.Configs ["Chat"];
 

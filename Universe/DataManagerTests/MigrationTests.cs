@@ -1,5 +1,5 @@
-﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+/*
+ * Copyright (c) Contributors, http://Universe-sim.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -28,15 +28,16 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using NUnit.Framework;
 using Universe.DataManager.Migration;
 using Universe.DataManager.Migration.Migrators;
 using Universe.DataManager.MySQL;
 using Universe.DataManager.SQLite;
+using NUnit.Framework;
+
 
 namespace Universe.DataManager.Tests
 {
-    public class MigrationTests
+    public class MigrationTests 
     {
         private string dbFileName = "TestMigration.db";
 
@@ -50,7 +51,7 @@ namespace Universe.DataManager.Tests
                 schema = new List<Rec<string, ColumnDefinition[]>>();
 
                 AddSchema("test_table", ColDefs(
-                    ColDef("id", ColumnTypes.Integer, true),
+                    ColDef("id", ColumnTypes.Integer,true),
                     ColDef("test_string", ColumnTypes.String),
                     ColDef("test_string1", ColumnTypes.String1),
                     ColDef("test_string2", ColumnTypes.String2),
@@ -104,12 +105,12 @@ namespace Universe.DataManager.Tests
 
             var mysqlconnectionstring = "Data Source=localhost;Database=Universetest;User ID=Universetest;Password=test;";
             var sqliteconnectionstring = string.Format("URI=file:{0},version=3", dbFileName);
-            string connectionString = (technology == DataManagerTechnology.SQLite) ? sqliteconnectionstring : mysqlconnectionstring;
+            string connectionString = (technology==DataManagerTechnology.SQLite)?sqliteconnectionstring:mysqlconnectionstring;
 
             CreateEmptyDatabase();
             DataSessionProvider sessionProvider = new DataSessionProvider(technology, connectionString);
-            IDataConnector genericData = ((technology == DataManagerTechnology.SQLite) ? (IDataConnector)new SQLiteLoader() : new MySQLDataLoader());
-
+            IDataConnector genericData = ((technology==DataManagerTechnology.SQLite)? (IDataConnector) new SQLiteLoader():new MySQLDataLoader());
+            
             genericData.ConnectToDatabase(connectionString);
 
             var migrators = new List<Migrator>();
@@ -118,7 +119,7 @@ namespace Universe.DataManager.Tests
 
             var migrationManager = new MigrationManager(sessionProvider, genericData, migrators);
             Assert.AreEqual(testMigrator0.Version, migrationManager.LatestVersion, "Latest version is correct");
-            Assert.IsNull(migrationManager.GetDescriptionOfCurrentOperation(), "Description should be null before deciding what to do.");
+            Assert.IsNull(migrationManager.GetDescriptionOfCurrentOperation(),"Description should be null before deciding what to do.");
             migrationManager.DetermineOperation();
             var operationDescription = migrationManager.GetDescriptionOfCurrentOperation();
             Assert.AreEqual(MigrationOperationTypes.CreateDefaultAndUpgradeToTarget, operationDescription.OperationType, "Operation type is correct.");
@@ -131,12 +132,12 @@ namespace Universe.DataManager.Tests
                 migrationManager.ExecuteOperation();
                 Assert.AreEqual(testMigrator0.Version, genericData.GetUniverseVersion(), "Version of settings is updated");
             }
-            catch (MigrationOperationException)
+            catch(MigrationOperationException)
             {
-                Assert.Fail("Something failed during execution we weren't expecting.");
+                Assert.Fail("Something failed during execution we weren't expecting.");  
             }
             bool valid = migrationManager.ValidateVersion(migrationManager.LatestVersion);
-            Assert.AreEqual(true, valid, "Database is a valid version");
+            Assert.AreEqual(true,valid,"Database is a valid version");
 
             migrationManager.DetermineOperation();
             var operationDescription2 = migrationManager.GetDescriptionOfCurrentOperation();
@@ -145,13 +146,13 @@ namespace Universe.DataManager.Tests
             Assert.IsNull(operationDescription2.StartVersion, "Start migration version is correct");
             Assert.IsNull(operationDescription2.EndVersion, "End migration version is correct");
             migrationManager.ExecuteOperation();
-
+            
             genericData.CloseDatabase();
         }
 
         private void CreateEmptyDatabase()
         {
-            if (File.Exists(dbFileName))
+            if( File.Exists(dbFileName))
             {
                 File.Delete(dbFileName);
             }

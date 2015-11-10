@@ -954,7 +954,7 @@ namespace Universe.Modules.Estate
 
         #region ISharedRegionStartupModule Members
 
-        public void Initialize (IScene scene, IConfigSource source, ISimulationBase simBase)
+        public void Initialise (IScene scene, IConfigSource source, ISimulationBase simBase)
         {
             IConfig config = source.Configs ["EstateSettingsModule"];
             if (config != null)

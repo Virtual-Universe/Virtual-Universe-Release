@@ -105,7 +105,7 @@ namespace Universe.Modules.Terrain
         ///     Creates and initializes a terrain module for a region
         /// </summary>
         /// <param name="config">Config for the region</param>
-        public void Initialize(IConfigSource config)
+        public void Initialise(IConfigSource config)
         {
             if (config.Configs["TerrainModule"] != null)
             {

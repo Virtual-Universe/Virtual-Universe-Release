@@ -130,7 +130,7 @@ namespace Universe.Modules.Friends
 
         #region INonSharedRegionModule Members
 
-        public void Initialize (IConfigSource config)
+        public void Initialise (IConfigSource config)
         {
         }
 

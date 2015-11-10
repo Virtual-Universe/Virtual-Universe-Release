@@ -51,7 +51,7 @@ namespace Universe.Modules.Avatar.Groups
             get { return null; }
         }
 
-        public void Initialize(IConfigSource source)
+        public void Initialise(IConfigSource source)
         {
             IConfig config = source.Configs["GroupMoney"];
             if (config != null)

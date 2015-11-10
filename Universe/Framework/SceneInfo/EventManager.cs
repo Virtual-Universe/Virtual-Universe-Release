@@ -32,6 +32,7 @@ using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Servers;
 using Universe.Framework.Servers.HttpServer.Interfaces;
 using Universe.Framework.Services;
+using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Utilities;
 using OpenMetaverse;
 using OpenMetaverse.StructuredData;
@@ -222,10 +223,18 @@ namespace Universe.Framework.SceneInfo
 
         public delegate void FinishedStartup(string name, List<string> data);
 
+        public delegate void PhysicsRequestAsset(UUID assetID, AssetReceivedDelegate callback);
+
+        public delegate void AssetReceivedDelegate(AssetBase asset);
+
         public delegate void StartupComplete(IScene scene, List<string> data);
 
         public event FinishedStartup OnModuleFinishedStartup;
         public event AddToStartupQueue OnAddToStartupQueue;
+
+        public event PhysicsRequestAsset OnPhysicsRequestAsset;
+        public event AssetReceivedDelegate OnAssetReceivedDelegate;
+
         public event StartupComplete OnStartupComplete;
         //This is called after OnStartupComplete is done, it should ONLY be registered to the Scene
         public event StartupComplete OnStartupFullyComplete;

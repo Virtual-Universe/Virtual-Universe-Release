@@ -157,7 +157,7 @@ namespace Universe.Modules.Sun
 
         #region IRegion Methods
 
-        public void Initialize (IConfigSource config)
+        public void Initialise (IConfigSource config)
         {
             m_frame = 0;
             m_config = config;

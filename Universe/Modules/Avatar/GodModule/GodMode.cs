@@ -52,7 +52,7 @@ namespace Universe.Modules.Gods
 
         #region INonSharedRegionModule
 
-        public void Initialize (IConfigSource source)
+        public void Initialise (IConfigSource source)
         {
             if (source.Configs ["GodModule"] != null)
             {

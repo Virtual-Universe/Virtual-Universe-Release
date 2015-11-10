@@ -69,7 +69,7 @@ namespace Universe.Modules.Attachments
 
         #region INonSharedRegionModule Methods
 
-        public void Initialize(IConfigSource source)
+        public void Initialise(IConfigSource source)
         {
             if (source.Configs["Attachments"] != null)
             {
@@ -816,7 +816,7 @@ namespace Universe.Modules.Attachments
 
             if (group.RootChild.PhysActor != null)
             {
-                m_scene.PhysicsScene.DeletePrim(group.RootChild.PhysActor);
+                m_scene.PhysicsScene.RemovePrim(group.RootChild.PhysActor);
                 group.RootChild.PhysActor = null;
             }
 
