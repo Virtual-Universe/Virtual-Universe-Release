@@ -599,7 +599,6 @@ namespace Universe.Modules.Web
             }
         }
 
-
         public static Dictionary<string, object> ParseQueryString(string query)
         {
             Dictionary<string, object> result = new Dictionary<string, object>();
@@ -1125,11 +1124,11 @@ namespace Universe.Modules.Web
 
     public class GridSettings : IDataTransferable
     {
-        public string Gridname = "Universe Grid";
+        public string Gridname = "Virtual Universe Grid";
         public string Gridnick = "Universe";
-        public string WelcomeMessage = "Welcome to Universe, <USERNAME>!";
-        public string SystemEstateOwnerName = "Governor White";
-        public string SystemEstateName = "Whitecore Estate";
+        public string WelcomeMessage = "Welcome to Virtual Universe, <USERNAME>!";
+        public string SystemEstateOwnerName = "Governor Universe";
+        public string SystemEstateName = "Universe Estate";
 
         public GridSettings()
         {
@@ -1217,5 +1216,4 @@ namespace Universe.Modules.Web
             return map;
         }
     }
-
 }
