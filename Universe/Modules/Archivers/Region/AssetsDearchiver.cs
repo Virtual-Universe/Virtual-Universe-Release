@@ -154,7 +154,7 @@ namespace Universe.Modules.Archivers
                     filename = filename.Remove(filename.Length - extension.Length);
                 }
 
-                MainConsole.Instance.DebugFormat("[ARCHIVER]: Importing asset {0}", filename);
+                MainConsole.Instance.DebugFormat("[Archiver]: Importing asset {0}", filename);
 
                 AssetBase asset = new AssetBase(filename, metadata.Name, (AssetType) metadata.AssetType, UUID.Zero)
                                       {Description = metadata.Description, Data = data, MetaOnly = false};

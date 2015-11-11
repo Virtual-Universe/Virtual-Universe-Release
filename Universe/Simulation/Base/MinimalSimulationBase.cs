@@ -238,9 +238,9 @@ namespace Universe.Simulation.Base
             if (MainConsole.Instance != null)
             {
                 MainConsole.Instance.DefaultPrompt = m_consolePrompt;
-                MainConsole.Instance.Info(string.Format("[MINUniverse]: STARTING MIN Universe ({0})...",
+                MainConsole.Instance.Info(string.Format("[Mini Virtual Universe]: Starting Mini Virtual Universe ({0})...",
                                                         (IntPtr.Size == 4 ? "x86" : "x64")));
-                MainConsole.Instance.Info("[MINUniverse]: Version: " + Version + "\n");
+                MainConsole.Instance.Info("[Mini Virtual Universe]: Version: " + Version + "\n");
             }
         }
 
@@ -249,7 +249,7 @@ namespace Universe.Simulation.Base
         /// </summary>
         public virtual void Startup()
         {
-            MainConsole.Instance.Info("[MINUniverse]: Startup completed in " +
+            MainConsole.Instance.Info("[Mini Virtual Universe]: Startup completed in " +
                                       (DateTime.Now - this.StartupTime).TotalSeconds);
         }
 
@@ -464,7 +464,7 @@ namespace Universe.Simulation.Base
 
         private void HandleQuit(IScene scene, string[] args)
         {
-            var ok = MainConsole.Instance.Prompt ("[CONSOLE]: Shutdown the simulator. Are you sure? (yes/no)", "no").ToLower();
+            var ok = MainConsole.Instance.Prompt ("[Console]: Shutdown the simulator. Are you sure? (yes/no)", "no").ToLower();
             if (ok.StartsWith("y"))
                 Shutdown(true);
         }
@@ -477,7 +477,7 @@ namespace Universe.Simulation.Base
         {
             if (File.Exists(fileName))
             {
-                MainConsole.Instance.Info("[COMMANDFILE]: Running " + fileName);
+                MainConsole.Instance.Info("[Command File]: Running " + fileName);
                 List<string> commands = new List<string>();
                 using (StreamReader readFile = File.OpenText(fileName))
                 {
@@ -493,7 +493,7 @@ namespace Universe.Simulation.Base
                 }
                 foreach (string currentCommand in commands)
                 {
-                    MainConsole.Instance.Info("[COMMANDFILE]: Running '" + currentCommand + "'");
+                    MainConsole.Instance.Info("[Command File]: Running '" + currentCommand + "'");
                     MainConsole.Instance.RunCommand(currentCommand);
                 }
             }
@@ -502,7 +502,7 @@ namespace Universe.Simulation.Base
         public virtual void HandleForceGC(IScene scene, string[] cmd)
         {
             GC.Collect();
-            MainConsole.Instance.Warn("Garbage collection finished");
+            MainConsole.Instance.Warn("[Garbage Collection]: Garbage collection finished");
         }
 
         public virtual void runConfig(IScene scene, string[] cmd)
@@ -514,10 +514,10 @@ namespace Universe.Simulation.Base
         {
             if (cmd.Length != 5)
             {
-                MainConsole.Instance.Warn("[CONSOLE]: Timer Interval command did not have enough parameters.");
+                MainConsole.Instance.Warn("[Console]: Timer Interval command did not have enough parameters.");
                 return;
             }
-            MainConsole.Instance.Warn("[CONSOLE]: Set Timer Interval to " + cmd[4]);
+            MainConsole.Instance.Warn("[Console]: Set Timer Interval to " + cmd[4]);
             m_TimerScriptTime = int.Parse(cmd[4]);
             m_TimerScriptTimer.Enabled = false;
             m_TimerScriptTimer.Interval = m_TimerScriptTime*60*1000;
@@ -611,9 +611,9 @@ namespace Universe.Simulation.Base
                 }
 
                 if (close)
-                    MainConsole.Instance.Info("[SHUTDOWN]: Terminating");
+                    MainConsole.Instance.Info("[Shut Down]: Terminating");
 
-                MainConsole.Instance.Info("[SHUTDOWN]: Shutdown processing on main thread complete. " +
+                MainConsole.Instance.Info("[Shut Down]: Shutdown processing on main thread complete. " +
                                           (close ? " Exiting..." : ""));
 
                 if (close)

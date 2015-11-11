@@ -253,7 +253,7 @@ namespace Universe.Modules.Terrain
             }
             catch (IOException e)
             {
-                MainConsole.Instance.Warn("[TERRAIN]: LoadWorldMap() - Failed with exception " + e + " Regenerating");
+                MainConsole.Instance.Warn("[Terrain]: LoadWorldMap() - Failed with exception " + e + " Regenerating");
                 // Non standard region size.    If there's an old terrain in the database, it might read past the buffer
                 if (m_scene.RegionInfo.RegionSizeX != Constants.RegionSize ||
                     m_scene.RegionInfo.RegionSizeY != Constants.RegionSize)
@@ -265,21 +265,21 @@ namespace Universe.Modules.Terrain
             }
             catch (IndexOutOfRangeException e)
             {
-                MainConsole.Instance.Warn("[TERRAIN]: LoadWorldMap() - Failed with exception " + e + " Regenerating");
+                MainConsole.Instance.Warn("[Terrain]: LoadWorldMap() - Failed with exception " + e + " Regenerating");
                 m_revert = m_channel.MakeCopy();
 
                 m_scene.SimulationDataService.Tainted();
             }
             catch (ArgumentOutOfRangeException e)
             {
-                MainConsole.Instance.Warn("[TERRAIN]: LoadWorldMap() - Failed with exception " + e + " Regenerating");
+                MainConsole.Instance.Warn("[Terrain]: LoadWorldMap() - Failed with exception " + e + " Regenerating");
                 m_revert = m_channel.MakeCopy();
 
                 m_scene.SimulationDataService.Tainted();
             }
             catch (Exception e)
             {
-                MainConsole.Instance.Warn("[TERRAIN]: Scene.cs: LoadWorldMap() - Failed with exception " + e);
+                MainConsole.Instance.Warn("[Terrain]: Scene.cs: LoadWorldMap() - Failed with exception " + e);
             }
         }
 
@@ -294,7 +294,7 @@ namespace Universe.Modules.Terrain
                                                           m_scene.RegionInfo.RegionSizeY);
                 if (m_channel == null)
                 {
-                    MainConsole.Instance.Info("[TERRAIN]: No default terrain. Generating a new terrain.");
+                    MainConsole.Instance.Info("[Terrain]: No default terrain. Generating a new terrain.");
                     m_channel = new TerrainChannel(m_scene);
 
                     m_scene.SimulationDataService.Tainted();
@@ -302,7 +302,7 @@ namespace Universe.Modules.Terrain
             }
             catch (IOException e)
             {
-                MainConsole.Instance.Warn("[TERRAIN]: LoadWorldMap() - Failed with exception " + e + " Regenerating");
+                MainConsole.Instance.Warn("[Terrain]: LoadWorldMap() - Failed with exception " + e + " Regenerating");
                 // Non standard region size.    If there's an old terrain in the database, it might read past the buffer
                 if (m_scene.RegionInfo.RegionSizeX != Constants.RegionSize ||
                     m_scene.RegionInfo.RegionSizeY != Constants.RegionSize)
@@ -314,21 +314,21 @@ namespace Universe.Modules.Terrain
             }
             catch (IndexOutOfRangeException e)
             {
-                MainConsole.Instance.Warn("[TERRAIN]: LoadWorldMap() - Failed with exception " + e + " Regenerating");
+                MainConsole.Instance.Warn("[Terrain]: LoadWorldMap() - Failed with exception " + e + " Regenerating");
                 m_channel = new TerrainChannel(m_scene);
 
                 m_scene.SimulationDataService.Tainted();
             }
             catch (ArgumentOutOfRangeException e)
             {
-                MainConsole.Instance.Warn("[TERRAIN]: LoadWorldMap() - Failed with exception " + e + " Regenerating");
+                MainConsole.Instance.Warn("[Terrain]: LoadWorldMap() - Failed with exception " + e + " Regenerating");
                 m_channel = new TerrainChannel(m_scene);
 
                 m_scene.SimulationDataService.Tainted();
             }
             catch (Exception e)
             {
-                MainConsole.Instance.Warn("[TERRAIN]: Scene.cs: LoadWorldMap() - Failed with exception " + e);
+                MainConsole.Instance.Warn("[Terrain]: Scene.cs: LoadWorldMap() - Failed with exception " + e);
                 m_channel = new TerrainChannel(m_scene);
 
                 m_scene.SimulationDataService.Tainted();
@@ -380,7 +380,7 @@ namespace Universe.Modules.Terrain
                 {
                     try
                     {
-                        MainConsole.Instance.Info ("[TERRAIN]: Loading " + filename + " to " + m_scene.RegionInfo.RegionName);
+                        MainConsole.Instance.Info ("[Terrain]: Loading " + filename + " to " + m_scene.RegionInfo.RegionName);
                         ITerrainChannel channel = loader.LoadFile (filename, m_scene);
                         channel.Scene = m_scene;
                         if (m_scene.RegionInfo.RegionSizeY == channel.Height &&
@@ -388,7 +388,7 @@ namespace Universe.Modules.Terrain
                         {
                             m_channel = channel;
                             m_scene.RegisterModuleInterface (m_channel);
-                            MainConsole.Instance.DebugFormat ("[TERRAIN]: Loaded terrain, wd/ht: {0}/{1}", channel.Width,
+                            MainConsole.Instance.DebugFormat ("[Terrain]: Loaded terrain, wd/ht: {0}/{1}", channel.Width,
                                 channel.Height);
                         } else
                         {
@@ -397,7 +397,7 @@ namespace Universe.Modules.Terrain
                                 (offsetY + channel.Height) > m_channel.Height)
                             {
                                 MainConsole.Instance.Error (
-                                    "[TERRAIN]: Unable to load heightmap, the terrain you have given is larger than the current region.");
+                                    "[Terrain]: Unable to load heightmap, the terrain you have given is larger than the current region.");
                                 return;
                             } else
                             {
@@ -409,7 +409,7 @@ namespace Universe.Modules.Terrain
                                         m_channel [x, y] = channel [x - offsetX, y - offsetY];
                                     }
                                 }
-                                MainConsole.Instance.DebugFormat ("[TERRAIN]: Loaded terrain, wd/ht: {0}/{1}",
+                                MainConsole.Instance.DebugFormat ("[Terrain]: Loaded terrain, wd/ht: {0}/{1}",
                                     channel.Width,
                                     channel.Height);
                             }
@@ -417,27 +417,27 @@ namespace Universe.Modules.Terrain
                         UpdateRevertMap ();
                     } catch (NotImplementedException)
                     {
-                        MainConsole.Instance.Error ("[TERRAIN]: Unable to load heightmap, the " + loader +
+                        MainConsole.Instance.Error ("[Terrain]: Unable to load heightmap, the " + loader +
                         " parser does not support file loading. (May be save only)");
                     } catch (FileNotFoundException)
                     {
                         MainConsole.Instance.ErrorFormat (
-                            "[TERRAIN]: Unable to load heightmap, file {0} not found. (directory permissions errors may also cause this)", filename);
+                            "[Terrain]: Unable to load heightmap, file {0} not found. (directory permissions errors may also cause this)", filename);
                     } catch (ArgumentException e)
                     {
-                        MainConsole.Instance.ErrorFormat ("[TERRAIN]: Unable to load heightmap: {0}", e.Message);
+                        MainConsole.Instance.ErrorFormat ("[Terrain]: Unable to load heightmap: {0}", e.Message);
                     } catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat ("[TERRAIN]: Something crashed during load. {0} Exception.", e);
+                        MainConsole.Instance.ErrorFormat ("[Terrain]: Something crashed during load. {0} Exception.", e);
                     }
                 }
 
                 CheckForTerrainUpdates();
-                MainConsole.Instance.Info("[TERRAIN]: File (" + filename + ") loaded successfully");
+                MainConsole.Instance.Info("[Terrain]: File (" + filename + ") loaded successfully");
                 return;
             }
 
-            MainConsole.Instance.Error("[TERRAIN]: Unable to load heightmap, Unable to locate a file loader for " + filename);
+            MainConsole.Instance.Error("[Terrain]: Unable to load heightmap, Unable to locate a file loader for " + filename);
         }
 
 
@@ -472,11 +472,11 @@ namespace Universe.Modules.Terrain
             }
             catch (IOException ioe)
             {
-                MainConsole.Instance.ErrorFormat("[TERRAIN]: Unable to save to {0}, {1}", filename, ioe.Message);
+                MainConsole.Instance.ErrorFormat("[Terrain]: Unable to save to {0}, {1}", filename, ioe.Message);
             }
 			catch (Exception e)
 			{
-				MainConsole.Instance.Error(String.Format("[TERRAIN]: Something crashed during save. {0} Exception.", e));
+				MainConsole.Instance.Error(String.Format("[Terrain]: Something crashed during save. {0} Exception.", e));
 			}
         }
 
@@ -527,7 +527,7 @@ namespace Universe.Modules.Terrain
                                             m_channel[x, y] = channel[x, y];
                                         }
                                     }
-                                    //MainConsole.Instance.Error("[TERRAIN]: Unable to load heightmap, the terrain you have given is larger than the current region.");
+                                    //MainConsole.Instance.Error("[Terrain]: Unable to load heightmap, the terrain you have given is larger than the current region.");
                                     //return;
                                 }
                                 else
@@ -540,7 +540,7 @@ namespace Universe.Modules.Terrain
                                             m_channel[x, y] = channel[x, y];
                                         }
                                     }
-                                    MainConsole.Instance.DebugFormat("[TERRAIN]: Loaded terrain, wd/ht: {0}/{1}",
+                                    MainConsole.Instance.DebugFormat("[Terrain]: Loaded terrain, wd/ht: {0}/{1}",
                                                                      channel.Width,
                                                                      channel.Height);
                                 }
@@ -550,17 +550,17 @@ namespace Universe.Modules.Terrain
                     }
                     catch (NotImplementedException)
                     {
-                        MainConsole.Instance.Error("[TERRAIN]: Unable to load heightmap, the " + loader +
+                        MainConsole.Instance.Error("[Terrain]: Unable to load heightmap, the " + loader +
                                                    " parser does not support file loading. (May be save only)");
                     }
                 }
 
                 CheckForTerrainUpdates();
-                MainConsole.Instance.Info("[TERRAIN]: File (" + filename + ") loaded successfully");
+                MainConsole.Instance.Info("[Terrain]: File (" + filename + ") loaded successfully");
                 return;
             }
 
-            MainConsole.Instance.ErrorFormat("[TERRAIN]: Unable to load heightmap from {0}, no file loader available for that format.", filename);
+            MainConsole.Instance.ErrorFormat("[Terrain]: Unable to load heightmap from {0}, no file loader available for that format.", filename);
         }
 
         /// <summary>
@@ -928,7 +928,7 @@ namespace Universe.Modules.Terrain
             }
             catch (IOException e)
             {
-                MainConsole.Instance.Warn("[TERRAIN]: LoadRevertWaterMap() - Failed with exception " + e +
+                MainConsole.Instance.Warn("[Terrain]: LoadRevertWaterMap() - Failed with exception " + e +
                                           " Regenerating");
                 // Non standard region size.    If there's an old terrain in the database, it might read past the buffer
                 if (m_scene.RegionInfo.RegionSizeX != Constants.RegionSize ||
@@ -941,7 +941,7 @@ namespace Universe.Modules.Terrain
             }
             catch (IndexOutOfRangeException e)
             {
-                MainConsole.Instance.Warn("[TERRAIN]: LoadRevertWaterMap() - Failed with exception " + e +
+                MainConsole.Instance.Warn("[Terrain]: LoadRevertWaterMap() - Failed with exception " + e +
                                           " Regenerating");
                 m_waterRevert = m_waterChannel.MakeCopy();
 
@@ -949,7 +949,7 @@ namespace Universe.Modules.Terrain
             }
             catch (ArgumentOutOfRangeException e)
             {
-                MainConsole.Instance.Warn("[TERRAIN]: LoadRevertWaterMap() - Failed with exception " + e +
+                MainConsole.Instance.Warn("[Terrain]: LoadRevertWaterMap() - Failed with exception " + e +
                                           " Regenerating");
                 m_waterRevert = m_waterChannel.MakeCopy();
 
@@ -957,7 +957,7 @@ namespace Universe.Modules.Terrain
             }
             catch (Exception e)
             {
-                MainConsole.Instance.Warn("[TERRAIN]: LoadRevertWaterMap() - Failed with exception " + e);
+                MainConsole.Instance.Warn("[Terrain]: LoadRevertWaterMap() - Failed with exception " + e);
                 m_waterRevert = m_waterChannel.MakeCopy();
 
                 m_scene.SimulationDataService.Tainted();
@@ -977,7 +977,7 @@ namespace Universe.Modules.Terrain
                                                         m_scene.RegionInfo.RegionSizeY);
                 if (m_waterChannel == null)
                 {
-                    MainConsole.Instance.Info("[TERRAIN]: No default water. Generating a new water.");
+                    MainConsole.Instance.Info("[Terrain]: No default water. Generating a new water.");
                     m_waterChannel = new TerrainChannel(m_scene);
                     for (int x = 0; x < m_waterChannel.Height; x++)
                     {
@@ -992,7 +992,7 @@ namespace Universe.Modules.Terrain
             }
             catch (IOException e)
             {
-                MainConsole.Instance.Warn("[TERRAIN]: LoadWorldWaterMap() - Failed with exception " + e +
+                MainConsole.Instance.Warn("[Terrain]: LoadWorldWaterMap() - Failed with exception " + e +
                                           " Regenerating");
                 // Non standard region size.    If there's an old terrain in the database, it might read past the buffer
                 if (m_scene.RegionInfo.RegionSizeX != Constants.RegionSize ||
@@ -1012,7 +1012,7 @@ namespace Universe.Modules.Terrain
             }
             catch (IndexOutOfRangeException e)
             {
-                MainConsole.Instance.Warn("[TERRAIN]: LoadWorldWaterMap() - Failed with exception " + e +
+                MainConsole.Instance.Warn("[Terrain]: LoadWorldWaterMap() - Failed with exception " + e +
                                           " Regenerating");
                 m_waterChannel = new TerrainChannel(m_scene);
                 for (int x = 0; x < m_waterChannel.Height; x++)
@@ -1027,7 +1027,7 @@ namespace Universe.Modules.Terrain
             }
             catch (ArgumentOutOfRangeException e)
             {
-                MainConsole.Instance.Warn("[TERRAIN]: LoadWorldWaterMap() - Failed with exception " + e +
+                MainConsole.Instance.Warn("[Terrain]: LoadWorldWaterMap() - Failed with exception " + e +
                                           " Regenerating");
                 m_waterChannel = new TerrainChannel(m_scene);
                 for (int x = 0; x < m_waterChannel.Height; x++)
@@ -1042,7 +1042,7 @@ namespace Universe.Modules.Terrain
             }
             catch (Exception e)
             {
-                MainConsole.Instance.Warn("[TERRAIN]: Scene.cs: LoadWorldMap() - Failed with exception " + e);
+                MainConsole.Instance.Warn("[Terrain]: Scene.cs: LoadWorldMap() - Failed with exception " + e);
                 m_waterChannel = new TerrainChannel(m_scene);
                 for (int x = 0; x < m_waterChannel.Height; x++)
                 {
@@ -1119,7 +1119,7 @@ namespace Universe.Modules.Terrain
                                     (offsetY + channel.Height) > update.Height)
                                 {
                                     MainConsole.Instance.Error(
-                                        "[TERRAIN]: Unable to load heightmap, the terrain you have given is larger than the current region.");
+                                        "[Terrain]: Unable to load heightmap, the terrain you have given is larger than the current region.");
                                     return null;
                                 }
                                 else
@@ -1139,16 +1139,16 @@ namespace Universe.Modules.Terrain
                     }
                     catch (NotImplementedException)
                     {
-                        MainConsole.Instance.Error("[TERRAIN]: Unable to load heightmap, the " + loader +
+                        MainConsole.Instance.Error("[Terrain]: Unable to load heightmap, the " + loader +
                                                    " parser does not support file loading. (May be save only)");
                     }
                 }
 
-                MainConsole.Instance.Info("[TERRAIN]: File (" + filename + ") loaded successfully");
+                MainConsole.Instance.Info("[Terrain]: File (" + filename + ") loaded successfully");
                 return channel;
             }
 
-            MainConsole.Instance.ErrorFormat("[TERRAIN]: Unable to load heightmap from {0}, no file loader available for that format.", filename);
+            MainConsole.Instance.ErrorFormat("[Terrain]: Unable to load heightmap from {0}, no file loader available for that format.", filename);
             return channel;
         }
 
@@ -1256,7 +1256,7 @@ namespace Universe.Modules.Terrain
                 {
                     lock (m_scene)
                     {
-						MainConsole.Instance.Info("[TERRAIN]: Loading "+filename+" to "+m_scene.RegionInfo.RegionName);
+						MainConsole.Instance.Info("[Terrain]: Loading "+filename+" to "+m_scene.RegionInfo.RegionName);
                         ITerrainChannel channel = loader.LoadFile(filename, m_scene, offsetX, offsetY,
                                                                         fileWidth, fileHeight,
                                                                         m_scene.RegionInfo.RegionSizeX,
@@ -1590,7 +1590,7 @@ namespace Universe.Modules.Terrain
 			List<TerrainModule> m = FindModuleForScene(MainConsole.Instance.ConsoleScene);
 			foreach (TerrainModule tmodule in m)
             {
-				MainConsole.Instance.Info("[TERRAIN]: Loading "+cmd[2]+" to scene "+tmodule.m_scene.RegionInfo.RegionName);
+				MainConsole.Instance.Info("[Terrain]: Loading "+cmd[2]+" to scene "+tmodule.m_scene.RegionInfo.RegionName);
                 tmodule.LoadFromFile(cmd[2], offsetX, offsetY);
             }
             // LoadFromFile(cmd[2], offsetX, offsetY);
@@ -1632,7 +1632,7 @@ namespace Universe.Modules.Terrain
             List<TerrainModule> m = FindModuleForScene(MainConsole.Instance.ConsoleScene);
 			foreach (TerrainModule tmodule in m)
             {
-				MainConsole.Instance.Info("[TERRAIN]: Loading "+cmd[2]+" tile to scene "+tmodule.m_scene.RegionInfo.RegionName);
+				MainConsole.Instance.Info("[Terrain]: Loading "+cmd[2]+" tile to scene "+tmodule.m_scene.RegionInfo.RegionName);
                 tmodule.LoadFromFile (cmd [2], fileWidth, fileHeight, xOffset, yOffset);
 			}
         }
@@ -1647,7 +1647,7 @@ namespace Universe.Modules.Terrain
  			List<TerrainModule> m = FindModuleForScene(MainConsole.Instance.ConsoleScene);
 			foreach (TerrainModule tmodule in m)
             {
-				MainConsole.Instance.Info("[TERRAIN]: Saving scene "+tmodule.m_scene.RegionInfo.RegionName+ " to "+cmd[2]);
+				MainConsole.Instance.Info("[Terrain]: Saving scene "+tmodule.m_scene.RegionInfo.RegionName+ " to "+cmd[2]);
            		tmodule.SaveToFile(cmd[2]);
 			}
         }
@@ -1657,7 +1657,7 @@ namespace Universe.Modules.Terrain
         	List<TerrainModule> m = FindModuleForScene(MainConsole.Instance.ConsoleScene);
 
 			foreach (TerrainModule tmodule in m) {
-				MainConsole.Instance.Info("[TERRAIN]: Saving scene "+tmodule.m_scene.RegionInfo.RegionName+ " physics");
+				MainConsole.Instance.Info("[Terrain]: Saving scene "+tmodule.m_scene.RegionInfo.RegionName+ " physics");
 				tmodule.m_scene.PhysicsScene.SetTerrain (tmodule.m_channel, tmodule.m_channel.GetSerialised ());
 			}
         }
@@ -1666,7 +1666,7 @@ namespace Universe.Modules.Terrain
         {
 	        List<TerrainModule> m = FindModuleForScene(MainConsole.Instance.ConsoleScene);
 			foreach (TerrainModule tmodule in m) {
-				MainConsole.Instance.Info ("[TERRAIN]: Saving scene " + tmodule.m_scene.RegionInfo.RegionName + " physics");
+				MainConsole.Instance.Info ("[Terrain]: Saving scene " + tmodule.m_scene.RegionInfo.RegionName + " physics");
 				tmodule.UpdateRevertMap ();
 			}
         }

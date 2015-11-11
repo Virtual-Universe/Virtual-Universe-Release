@@ -655,7 +655,7 @@ namespace Universe.Modules.Estate
                 } catch (IOException e)
                 {
                     MainConsole.Instance.ErrorFormat (
-                        "[TERRAIN]: Error Saving a terrain file uploaded via the estate tools.  It gave us the following error: {0}",
+                        "[Terrain]: Error Saving a terrain file uploaded via the estate tools.  It gave us the following error: {0}",
                         e);
                     remoteClient.SendAlertMessage (
                         "There was an IO Exception loading your terrain.  Please check free space.");
@@ -664,7 +664,7 @@ namespace Universe.Modules.Estate
                 } catch (SecurityException e)
                 {
                     MainConsole.Instance.ErrorFormat (
-                        "[TERRAIN]: Error Saving a terrain file uploaded via the estate tools.  It gave us the following error: {0}",
+                        "[Terrain]: Error Saving a terrain file uploaded via the estate tools.  It gave us the following error: {0}",
                         e);
                     remoteClient.SendAlertMessage (
                         "There was a security Exception loading your terrain.  Please check the security on the simulator drive");
@@ -673,7 +673,7 @@ namespace Universe.Modules.Estate
                 } catch (UnauthorizedAccessException e)
                 {
                     MainConsole.Instance.ErrorFormat (
-                        "[TERRAIN]: Error Saving a terrain file uploaded via the estate tools.  It gave us the following error: {0}",
+                        "[Terrain]: Error Saving a terrain file uploaded via the estate tools.  It gave us the following error: {0}",
                         e);
                     remoteClient.SendAlertMessage (
                         "There was a security Exception loading your terrain.  Please check the security on the simulator drive");
@@ -682,7 +682,7 @@ namespace Universe.Modules.Estate
                 } catch (Exception e)
                 {
                     MainConsole.Instance.ErrorFormat (
-                        "[TERRAIN]: Error loading a terrain file uploaded via the estate tools.  It gave us the following error: {0}",
+                        "[Terrain]: Error loading a terrain file uploaded via the estate tools.  It gave us the following error: {0}",
                         e);
                     remoteClient.SendAlertMessage (
                         "There was a general error loading your terrain.  Please fix the terrain file and try again");

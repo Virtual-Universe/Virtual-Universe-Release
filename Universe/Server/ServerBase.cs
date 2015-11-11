@@ -46,7 +46,7 @@ namespace Universe.Server
             if (MainConsole.Instance != null)
 			{
 				MainConsole.Instance.DefaultPrompt = "Universe.Server ";
-				MainConsole.Instance.Info ("[UniverseSTARTUP]: Startup completed in " +
+				MainConsole.Instance.Info ("[Virtual Universe Startup]: Startup completed in " +
 					(DateTime.Now - this.StartupTime).TotalSeconds);
 			}
         }

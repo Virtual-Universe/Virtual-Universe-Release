@@ -381,7 +381,7 @@ namespace Universe.Modules.Estate
                 Position.X > scene.RegionInfo.RegionSizeX + 2 || Position.Y > scene.RegionInfo.RegionSizeY + 2)
             {
                 MainConsole.Instance.DebugFormat (
-                    "[EstateService]: AllowedIncomingTeleport was given an illegal position of {0} for avatar {1}, {2}. Clamping",
+                    "[Estate Service]: AllowedIncomingTeleport was given an illegal position of {0} for avatar {1}, {2}. Clamping",
                     Position, Name, userID);
                 bool changedX = false;
                 bool changedY = false;

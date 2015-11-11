@@ -74,11 +74,11 @@ namespace Universe.Services
             auth.PasswordSalt = passwordSalt;
             if (!m_Database.Store(auth))
             {
-                MainConsole.Instance.DebugFormat("[AUTHENTICATION DB]: Failed to store authentication data");
+                MainConsole.Instance.DebugFormat("[Authentication Database]: Failed to store authentication data");
                 return false;
             }
 
-            MainConsole.Instance.InfoFormat("[AUTHENTICATION DB]: Set password for principalID {0}", principalID);
+            MainConsole.Instance.InfoFormat("[Authentication Database]: Set password for principalID {0}", principalID);
             return true;
         }
 
@@ -111,11 +111,11 @@ namespace Universe.Services
             auth.PasswordSalt = passwordSalt;
             if (!m_Database.Store(auth))
             {
-                MainConsole.Instance.DebugFormat("[AUTHENTICATION DB]: Failed to store authentication data");
+                MainConsole.Instance.DebugFormat("[Authentication Database]: Failed to store authentication data");
                 return false;
             }
 
-            MainConsole.Instance.InfoFormat("[AUTHENTICATION DB]: Set password for principalID {0}", principalID);
+            MainConsole.Instance.InfoFormat("[Authentication Database]: Set password for principalID {0}", principalID);
             return true;
         }
 
@@ -130,11 +130,11 @@ namespace Universe.Services
             auth.PasswordSalt = "";
             if (!m_Database.Store(auth))
             {
-                MainConsole.Instance.DebugFormat("[AUTHENTICATION DB]: Failed to store authentication data");
+                MainConsole.Instance.DebugFormat("[Authentication Database]: Failed to store authentication data");
                 return false;
             }
 
-            MainConsole.Instance.InfoFormat("[AUTHENTICATION DB]: Set password for principalID {0}", principalID);
+            MainConsole.Instance.InfoFormat("[Authentication Database]: Set password for principalID {0}", principalID);
             return true;
         }
     }

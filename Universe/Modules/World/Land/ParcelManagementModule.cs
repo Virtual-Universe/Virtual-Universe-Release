@@ -529,7 +529,7 @@ namespace Universe.Modules.Land
             while (fullSimParcel.LandData.OwnerID == UUID.Zero || account == null)
             {
                 MainConsole.Instance.Warn(
-                    "[ParcelManagement]: Could not find user for parcel, please give a valid user to make the owner");
+                    "[Parcel Management]: Could not find user for parcel, please give a valid user to make the owner");
                 string userName = MainConsole.Instance.Prompt("User Name:", "");
                 if (userName == "")
                 {
@@ -547,7 +547,7 @@ namespace Universe.Modules.Land
             }
 
             MainConsole.Instance.InfoFormat (
-                "[ParcelManagement]: Setting land owner for region {0} to {1}",
+                "[Parcel Management]: Setting land owner for region {0} to {1}",
                 m_scene.RegionInfo.RegionName,
                 ownerName);                 //  was >>   fullSimParcel.LandData.OwnerID);
 

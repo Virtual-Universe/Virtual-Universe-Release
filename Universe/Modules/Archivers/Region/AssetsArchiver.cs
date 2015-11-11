@@ -124,7 +124,7 @@ namespace Universe.Modules.Archivers
             else
             {
                 MainConsole.Instance.ErrorFormat(
-                    "[ARCHIVER]: Unrecognized asset type {0} with uuid {1}.  This asset will be saved but not reloaded",
+                    "[Archiver]: Unrecognized asset type {0} with uuid {1}.  This asset will be saved but not reloaded",
                     asset.Type, asset.ID);
             }
 
@@ -134,10 +134,10 @@ namespace Universe.Modules.Archivers
 
             m_assetsWritten++;
 
-            //MainConsole.Instance.DebugFormat("[ARCHIVER]: Added asset {0}", m_assetsWritten);
+            //MainConsole.Instance.DebugFormat("[Archiver]: Added asset {0}", m_assetsWritten);
 
             if (m_assetsWritten%LOG_ASSET_LOAD_NOTIFICATION_INTERVAL == 0)
-                MainConsole.Instance.InfoFormat("[ARCHIVER]: Added {0} assets to archive", m_assetsWritten);
+                MainConsole.Instance.InfoFormat("[Archiver]: Added {0} assets to archive", m_assetsWritten);
         }
 
         /// <summary>

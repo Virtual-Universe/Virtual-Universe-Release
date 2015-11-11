@@ -345,7 +345,7 @@ textures 1
             IScenePresence sp = m_scene.GetScenePresence(agentid);
             if (sp == null)
             {
-                MainConsole.Instance.WarnFormat("[AvatarFactory]: Agent {0} no longer in the scene", agentid);
+                MainConsole.Instance.WarnFormat("[Avatar Factory]: Agent {0} no longer in the scene", agentid);
                 return;
             }
             IAvatarAppearanceModule appearance = sp.RequestModuleInterface<IAvatarAppearanceModule>();
@@ -359,7 +359,7 @@ textures 1
             IScenePresence sp = m_scene.GetScenePresence(agentid);
             if (sp == null)
             {
-                MainConsole.Instance.WarnFormat("[AvatarFactory]: Agent {0} no longer in the scene", agentid);
+                MainConsole.Instance.WarnFormat("[Avatar Factory]: Agent {0} no longer in the scene", agentid);
                 return;
             }
             IAvatarAppearanceModule appearance = sp.RequestModuleInterface<IAvatarAppearanceModule>();
@@ -380,12 +380,12 @@ textures 1
             if (sp == null)
             {
                 MainConsole.Instance.WarnFormat(
-                    "[AvatarFactory]: Agent {0} no longer in the scene to send appearance for.", agentid);
+                    "[Avatar Factory]: Agent {0} no longer in the scene to send appearance for.", agentid);
                 return;
             }
             IAvatarAppearanceModule appearance = sp.RequestModuleInterface<IAvatarAppearanceModule>();
 
-            // MainConsole.Instance.WarnFormat("[AvatarFactory]: Handle appearance send for {0}", agentid);
+            // MainConsole.Instance.WarnFormat("[Avatar Factory]: Handle appearance send for {0}", agentid);
 
             // Send the appearance to everyone in the scene
             appearance.SendAppearanceToAllOtherAgents();
@@ -426,12 +426,12 @@ textures 1
             if (sp == null)
             {
                 MainConsole.Instance.WarnFormat(
-                    "[AvatarFactory]: Agent {0} no longer in the scene to send appearance for.", agentid);
+                    "[Avatar Factory]: Agent {0} no longer in the scene to send appearance for.", agentid);
                 return;
             }
             IAvatarAppearanceModule appearance = sp.RequestModuleInterface<IAvatarAppearanceModule>();
 
-            MainConsole.Instance.InfoFormat("[AvatarFactory]: Handle initial appearance send for {0}", agentid);
+            MainConsole.Instance.InfoFormat("[Avatar Factory]: Handle initial appearance send for {0}", agentid);
 
             // This agent just became root. We are going to tell everyone about it.
             appearance.SendAvatarDataToAllAgents(true);
@@ -465,7 +465,7 @@ textures 1
             IScenePresence sp = m_scene.GetScenePresence(client.AgentId);
             if (sp == null)
             {
-                MainConsole.Instance.WarnFormat("[AvatarFactory]: SendWearables unable to find presence for {0}",
+                MainConsole.Instance.WarnFormat("[Avatar Factory]: SendWearables unable to find presence for {0}",
                                                 client.AgentId);
                 return;
             }
@@ -484,12 +484,12 @@ textures 1
             IScenePresence sp = m_scene.GetScenePresence(client.AgentId);
             if (sp == null)
             {
-                MainConsole.Instance.WarnFormat("[AvatarFactory]: AvatarIsWearing unable to find presence for {0}",
+                MainConsole.Instance.WarnFormat("[Avatar Factory]: AvatarIsWearing unable to find presence for {0}",
                                                 client.AgentId);
                 return;
             }
 
-            MainConsole.Instance.DebugFormat("[AvatarFactory]: AvatarIsWearing called for {0}", client.AgentId);
+            MainConsole.Instance.DebugFormat("[Avatar Factory]: AvatarIsWearing called for {0}", client.AgentId);
 
             // operate on a copy of the appearance so we don't have to lock anything
             IAvatarAppearanceModule appearance = sp.RequestModuleInterface<IAvatarAppearanceModule>();
@@ -665,7 +665,7 @@ textures 1
                     else
                     {
                         MainConsole.Instance.ErrorFormat(
-                            "[AvatarFactory]: Can't find inventory item {0} for {1}, setting to default",
+                            "[Avatar Factory]: Can't find inventory item {0} for {1}, setting to default",
                             appearance.Wearables[i][j].ItemID, (WearableType)i);
 
                         appearance.Wearables[i].RemoveItem(appearance.Wearables[i][j].ItemID);
@@ -686,7 +686,7 @@ textures 1
             IScenePresence sp = m_scene.GetScenePresence(agentid);
             if (sp == null || sp.IsChildAgent)
             {
-                MainConsole.Instance.WarnFormat("[AvatarFactory]: Agent {0} no longer in the scene", agentid);
+                MainConsole.Instance.WarnFormat("[Avatar Factory]: Agent {0} no longer in the scene", agentid);
                 return;
             }
 

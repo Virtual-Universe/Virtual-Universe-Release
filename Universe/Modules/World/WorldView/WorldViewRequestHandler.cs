@@ -91,7 +91,7 @@ namespace Universe.Modules.WorldView
             }
             catch (Exception e)
             {
-                MainConsole.Instance.Debug("[WORLDVIEW]: Exception: " + e);
+                MainConsole.Instance.Debug("[World View]: Exception: " + e);
             }
 
             return new Byte[0];

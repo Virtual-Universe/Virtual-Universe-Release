@@ -273,7 +273,7 @@ namespace Universe.Services
         public virtual byte[] CapsRequest(string path, Stream request, OSHttpRequest httpRequest,
                                           OSHttpResponse httpResponse)
         {
-            MainConsole.Instance.Info("[CapsHandlers]: Handling Seed Cap request at " + CapsUrl);
+            MainConsole.Instance.Info("[Caps Handlers]: Handling Seed Cap request at " + CapsUrl);
             return OSDParser.SerializeLLSDXmlBytes(registeredCAPS);
         }
 
