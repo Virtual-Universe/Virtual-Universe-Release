@@ -25,7 +25,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Xml.Serialization;
+using OpenMetaverse;
+using OpenMetaverse.Packets;
+using OpenMetaverse.StructuredData;
+using ProtoBuf;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
@@ -35,15 +43,6 @@ using Universe.Framework.SceneInfo;
 using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Serialization;
 using Universe.Framework.Utilities;
-using OpenMetaverse;
-using OpenMetaverse.Packets;
-using OpenMetaverse.StructuredData;
-using ProtoBuf;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Xml.Serialization;
 using GridRegion = Universe.Framework.Services.GridRegion;
 
 namespace Universe.Region
@@ -2711,10 +2710,10 @@ namespace Universe.Region
                 actors[i] = part.PhysActor;
                 
                 if(!m_scene.PhysicsScene.AllowGroupLink)
-                    part.PhysActor.link(RootPart.PhysActor);
+                    part.PhysActor.Link(RootPart.PhysActor);
             }
             if (m_scene.PhysicsScene.AllowGroupLink)
-                RootPart.PhysActor.linkGroupToThis(actors);
+                RootPart.PhysActor.LinkGroupToThis(actors);
 
             Scene.UniverseEventManager.FireGenericEventHandler("ObjectChangedPhysicalStatus", this);
 
@@ -3201,7 +3200,7 @@ namespace Universe.Region
                 if (linkPart.PhysActor != null && m_rootPart.PhysActor != null)
                 {
                     if (linkPart.PhysicsType != (byte) PhysicsShapeType.None)
-                        linkPart.PhysActor.link(m_rootPart.PhysActor);
+                        linkPart.PhysActor.Link(m_rootPart.PhysActor);
                 }
                 //rest of parts
                 foreach (
@@ -3210,7 +3209,7 @@ namespace Universe.Region
                     LinkNonRootPart(part, oldGroupPosition, oldRootRotation, linkNum++);
                     part.FixOffsetPosition(part.OffsetPosition, true);
                     if (part.PhysActor != null && m_rootPart.PhysActor != null)
-                        part.PhysActor.link(m_rootPart.PhysActor);
+                        part.PhysActor.Link(m_rootPart.PhysActor);
                 }
             }
             // Here's the deal, this is ABSOLUTELY CRITICAL so the physics scene gets the update about the 
