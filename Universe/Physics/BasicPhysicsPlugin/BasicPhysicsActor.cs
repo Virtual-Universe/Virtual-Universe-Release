@@ -25,8 +25,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Universe.Framework.Physics;
 using OpenMetaverse;
+using Universe.Framework.Physics;
 
 namespace Universe.Physics.BasicPhysicsPlugin
 {
@@ -152,7 +152,7 @@ namespace Universe.Physics.BasicPhysicsPlugin
             return false;
         }
 
-        public override void AddCollisionEvent(uint CollidedWith, ContactPoint contact)
+        public override void AddCollisionEvent(uint collidedWith, ContactPoint contact)
         {
         }
     }
@@ -299,7 +299,7 @@ namespace Universe.Physics.BasicPhysicsPlugin
             return false;
         }
 
-        public override void AddCollisionEvent(uint CollidedWith, ContactPoint contact)
+        public override void AddCollisionEvent(uint collidedWith, ContactPoint contact)
         {
         }
     }

@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://opensimulator.org//, http://universe-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://opensimulator.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -255,12 +255,12 @@ namespace Universe.Physics.BulletSPlugin
             return;
         }
 
-        public override void link(PhysicsActor obj)
+        public override void Link(PhysicsActor obj)
         {
             return;
         }
 
-        public override void delink()
+        public override void Delink()
         {
             return;
         }
