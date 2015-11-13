@@ -25,16 +25,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Nini.Config;
+using OpenMetaverse;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.SceneInfo.Entities;
-using Nini.Config;
-using OpenMetaverse;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Universe.Modules.Land
 {
@@ -175,17 +174,6 @@ namespace Universe.Modules.Land
                                     m_Scene.RegionInfo.ObjectCapacity *
                                     (float)m_Scene.RegionInfo.RegionSettings.ObjectBonus);
         }
-
-        // This is hard coded and needs to be fixed
-        /*public int GetParcelMaxPrimCount(ILandObject thisObject)
-        {
-            // Normal Calculations
-            return (int) Math.Round(((float) thisObject.LandData.Area/
-                                     (256*256))*
-                                    m_Scene.RegionInfo.ObjectCapacity*
-                                    (float) m_Scene.RegionInfo.RegionSettings.ObjectBonus);
-        }
-        */
 
         public IPrimCounts GetPrimCounts(UUID parcelID)
         {
