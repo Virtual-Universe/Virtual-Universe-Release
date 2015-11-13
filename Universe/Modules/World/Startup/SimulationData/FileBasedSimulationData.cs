@@ -429,7 +429,7 @@ namespace Universe.Modules
                     info.SeeIntoThisSimFromNeighbor = true;
                     info.InfiniteRegion = true;
                     info.ObjectCapacity = 25000;
-                    info.RegionSettings.AgentLimit = 10;
+                    info.RegionSettings.AgentLimit = 25;
                     info.RegionSettings.AllowLandJoinDivide = false;
                     info.RegionSettings.AllowLandResell = false;
                                    }
@@ -447,7 +447,7 @@ namespace Universe.Modules
                     info.SeeIntoThisSimFromNeighbor = true;
                     info.InfiniteRegion = true;
                     info.ObjectCapacity = 50000;
-                    info.RegionSettings.AgentLimit = 20;
+                    info.RegionSettings.AgentLimit = 50;
                     info.RegionSettings.AllowLandJoinDivide = false;
                     info.RegionSettings.AllowLandResell = false;
                 }
@@ -461,7 +461,7 @@ namespace Universe.Modules
                     info.Startup = StartupType.Normal;
                     info.SeeIntoThisSimFromNeighbor = true;
                     info.InfiniteRegion = true;
-                    info.ObjectCapacity = 10000;
+                    info.ObjectCapacity = 100000;
                     info.RegionSettings.AgentLimit = 100;
                     if (info.RegionType.StartsWith ("M"))                           // defaults are 'true'
                     {
@@ -687,7 +687,7 @@ namespace Universe.Modules
             regInfo.ObjectCapacity =
                 int.Parse (MainConsole.Instance.Prompt ("Object capacity",
                     regInfo.ObjectCapacity == 0
-                    ? "50000"
+                    ? "100000"
                     : regInfo.ObjectCapacity.ToString ()));
             if (regInfo.ObjectCapacity != oldCap)
                 updated = true;

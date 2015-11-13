@@ -164,7 +164,20 @@ namespace Universe.Modules.Land
                 m_Tainted = true;
         }
 
+
         public int GetParcelMaxPrimCount(ILandObject thisObject)
+        {
+            // Normal Calculations
+            // Max = (this land area) / (calculated region area) * region capacity * bonus [bonus is normally = 1]
+            return (int)Math.Round(((float)thisObject.LandData.Area /
+                                     (m_Scene.RegionInfo.RegionSizeX * m_Scene.RegionInfo.RegionSizeY)) *
+                                     // (256*256))*
+                                    m_Scene.RegionInfo.ObjectCapacity *
+                                    (float)m_Scene.RegionInfo.RegionSettings.ObjectBonus);
+        }
+
+        // This is hard coded and needs to be fixed
+        /*public int GetParcelMaxPrimCount(ILandObject thisObject)
         {
             // Normal Calculations
             return (int) Math.Round(((float) thisObject.LandData.Area/
@@ -172,6 +185,7 @@ namespace Universe.Modules.Land
                                     m_Scene.RegionInfo.ObjectCapacity*
                                     (float) m_Scene.RegionInfo.RegionSettings.ObjectBonus);
         }
+        */
 
         public IPrimCounts GetPrimCounts(UUID parcelID)
         {
