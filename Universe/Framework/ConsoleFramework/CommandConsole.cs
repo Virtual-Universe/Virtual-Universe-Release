@@ -601,7 +601,7 @@ namespace Universe.Framework.ConsoleFramework
 
             if (line != String.Empty && line.Replace(" ", "") != String.Empty) //If there is a space, its fine
             {
-                MainConsole.Instance.Info("[CONSOLE] Invalid command");
+                MainConsole.Instance.Info("[Console] Invalid command");
             }
         }
 

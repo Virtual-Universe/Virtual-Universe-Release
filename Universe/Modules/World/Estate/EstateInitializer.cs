@@ -86,7 +86,7 @@ namespace Universe.Modules.Estate
                 else if (ES.EstateID == 0)
                 {
                     //This region does not belong to an estate, make a new one or join and existing one
-                    MainConsole.Instance.Warn("[Estate Initializer]: Your region '" + scene.RegionInfo.RegionName +
+                    MainConsole.Instance.Warn("[EstateInitializer]: Your region '" + scene.RegionInfo.RegionName +
                         "' is not part of an estate.");
 
                     ES = CreateEstateInfo(scene);

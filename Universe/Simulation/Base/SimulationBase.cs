@@ -226,7 +226,7 @@ namespace Universe.Simulation.Base
         {
             MainConsole.Instance.Info("====================================================================");
             MainConsole.Instance.Info(
-				        string.Format("================ Starting Virtual Universe ({0}) ===================",
+				        string.Format("==================== Starting Virtual Universe ({0}) ======================",
                               (IntPtr.Size == 4 ? "x86" : "x64")));
             MainConsole.Instance.Info("====================================================================");
             MainConsole.Instance.Info("[Virtual Universe Startup]: Version: " + Version + "\n");
@@ -518,7 +518,7 @@ namespace Universe.Simulation.Base
         public virtual void HandleForceGC(IScene scene, string[] cmd)
         {
             GC.Collect();
-            MainConsole.Instance.Warn("[Garbage Collection]: Garbage collection finished");
+            MainConsole.Instance.Warn("[Garbage Collection Service]: Garbage collection finished");
         }
 
         public virtual void runConfig(IScene scene, string[] cmd)
@@ -559,7 +559,7 @@ namespace Universe.Simulation.Base
             {
                 server.HostName = hostName;
             }
-            MainConsole.Instance.Info("Finished reloading configuration.");
+            MainConsole.Instance.Info("[Virtual Universe Configuration]: Finished reloading configuration.");
         }
 
         public virtual void HandleShowInfo(IScene scene, string[] cmd)

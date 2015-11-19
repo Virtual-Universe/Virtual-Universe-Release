@@ -41,9 +41,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-//using Ode.Net;
 using OpenMetaverse;
 using Universe.Framework.Physics;
+
+//using Ode.NET;
 
 namespace Universe.Physics.OpenDynamicsEngine
 {
@@ -62,7 +63,7 @@ namespace Universe.Physics.OpenDynamicsEngine
         float m_VhoverTargetHeight = -1.0f; // if <0 then no hover, else its the current target height
         float m_VhoverTimescale;
         // Linear properties
-        //private Vector3 m_lastVertAttractor = Vector3.Zero;             // what VA was last applied to body
+        //       private Vector3 m_lastVertAttractor = Vector3.Zero;             // what VA was last applied to body
 
         //Deflection properties
         float m_angularDeflectionEfficiency;
@@ -83,11 +84,11 @@ namespace Universe.Physics.OpenDynamicsEngine
         bool m_enabled;
         VehicleFlag m_flags = 0; // Boolean settings:
         List<Vector3> m_forcelist = new List<Vector3>();
-        // not used        Vector3 m_lastAngVelocity = Vector3.Zero;
+// not used        Vector3 m_lastAngVelocity = Vector3.Zero;
         Vector3 m_lastAngularVelocity = Vector3.Zero; // what was last applied to body
         Vector3 m_lastLinearVelocityVector = Vector3.Zero;
         Vector3 m_lastPositionVector = Vector3.Zero;
-        // not used        Vector3 m_lastVelocity = Vector3.Zero;
+// not used        Vector3 m_lastVelocity = Vector3.Zero;
         Vector3 m_lastposChange = Vector3.Zero;
         float m_linearDeflectionEfficiency;
         float m_linearDeflectionTimescale;
@@ -510,6 +511,7 @@ namespace Universe.Physics.OpenDynamicsEngine
             }
         }
 
+
         internal void Enable(IntPtr pBody, ODEPrim parent, ODEPhysicsScene pParentScene)
         {
             if (m_enabled)
@@ -549,6 +551,7 @@ namespace Universe.Physics.OpenDynamicsEngine
 
             Mass = mass.mass;
         }
+
 
         internal void Step(IntPtr pBody, float pTimestep, ODEPhysicsScene pParentScene, ODEPrim parent)
         {
@@ -988,6 +991,7 @@ namespace Universe.Physics.OpenDynamicsEngine
             else
                 friction.Z -= angularVelocity.Z * angularVelocity.Z / m_angularFrictionTimescale.Z;
 
+
             if(Math.Abs(m_angularMotorDirection.X) > 0.01f) friction.X = 0.0f;
             if(Math.Abs(m_angularMotorDirection.Y) > 0.01f) friction.Y = 0.0f;
             if(Math.Abs(m_angularMotorDirection.Z) > 0.01f) friction.Z = 0.0f;
@@ -1137,6 +1141,7 @@ namespace Universe.Physics.OpenDynamicsEngine
             return remainder;
         }
 
+
         internal void LimitRotation(float timestep)
         {
             if (m_RollreferenceFrame != Quaternion.Identity || (m_flags & VehicleFlag.LOCK_ROTATION) != 0)
@@ -1170,7 +1175,7 @@ namespace Universe.Physics.OpenDynamicsEngine
         {
             //m_referenceFrame -= m_lastCameraRotation;
             //m_referenceFrame += CameraRotation;
-            // 20151111 - greythane- set but not used at present?
+            // 20151111 - greythane- set but not used at present??
             m_userLookAt = CameraRotation;
         }
 
@@ -1252,6 +1257,7 @@ namespace Universe.Physics.OpenDynamicsEngine
             }
             return rotBetween;
         }
+
 
         public int m_angularMotorApply { get; set; }
 

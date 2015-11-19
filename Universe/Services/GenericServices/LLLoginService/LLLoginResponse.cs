@@ -164,7 +164,7 @@ namespace Universe.Services
             catch (Exception e)
             {
                 MainConsole.Instance.WarnFormat(
-                    "[LLLOGIN SERVICE]: Error processing inventory skeleton of agent {0} - {1}",
+                    "[LLLogin Service]: Error processing inventory skeleton of agent {0} - {1}",
                     agentID, e);
 
                 // ignore and continue

@@ -1,7 +1,7 @@
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
 	<PropertyGroup>
 	  <ProjectType>Local</ProjectType>
-	  <ProductVersion>12.0.31101</ProductVersion>
+	  <ProductVersion>9.0.30729</ProductVersion>
 	  <SchemaVersion>2.0</SchemaVersion>
 	  <ProjectGuid>{0D5DC47C-0000-0000-0000-000000000000}</ProjectGuid>
 	  <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -22,25 +22,25 @@
 	  <FileUpgradeFlags>
 	  </FileUpgradeFlags>
 	</PropertyGroup>
-	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
 	  <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 	  <BaseAddress>285212672</BaseAddress>
 	  <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
 	  <ConfigurationOverrideFile>
 	  </ConfigurationOverrideFile>
-	  <DefineConstants>TRACE;DEBUG;ISWIN;NET_4_5</DefineConstants>
+	  <DefineConstants>TRACE;DEBUG;LINUX;NET_4_5</DefineConstants>
 	  <DocumentationFile></DocumentationFile>
 	  <DebugSymbols>True</DebugSymbols>
 	  <FileAlignment>4096</FileAlignment>
 	  <Optimize>False</Optimize>
-	  <OutputPath>bin\</OutputPath>
+	  <OutputPath>../../../VirtualUniverse/bin/Physics/</OutputPath>
 	  <RegisterForComInterop>False</RegisterForComInterop>
 	  <RemoveIntegerChecks>False</RemoveIntegerChecks>
 	  <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
 	  <WarningLevel>4</WarningLevel>
 	  <NoStdLib>False</NoStdLib>
 	  <NoWarn></NoWarn>
-	  <PlatformTarget>x64</PlatformTarget>
+	  <PlatformTarget>x86</PlatformTarget>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
 	  <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
@@ -48,12 +48,12 @@
 	  <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
 	  <ConfigurationOverrideFile>
 	  </ConfigurationOverrideFile>
-	  <DefineConstants>TRACE;DEBUG;ISWIN;NET_4_5</DefineConstants>
+	  <DefineConstants>TRACE;DEBUG;LINUX;NET_4_5</DefineConstants>
 	  <DocumentationFile></DocumentationFile>
 	  <DebugSymbols>True</DebugSymbols>
 	  <FileAlignment>4096</FileAlignment>
 	  <Optimize>False</Optimize>
-	  <OutputPath>..\..\..\VirtualUniverse\bin\Physics\</OutputPath>
+	  <OutputPath>bin/</OutputPath>
 	  <RegisterForComInterop>False</RegisterForComInterop>
 	  <RemoveIntegerChecks>False</RemoveIntegerChecks>
 	  <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
@@ -62,38 +62,18 @@
 	  <NoWarn></NoWarn>
 	  <PlatformTarget>AnyCPU</PlatformTarget>
 	</PropertyGroup>
-	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
 	  <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 	  <BaseAddress>285212672</BaseAddress>
 	  <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
 	  <ConfigurationOverrideFile>
 	  </ConfigurationOverrideFile>
-	  <DefineConstants>TRACE;DEBUG;ISWIN;NET_4_5</DefineConstants>
+	  <DefineConstants>TRACE;DEBUG;LINUX;NET_4_5</DefineConstants>
 	  <DocumentationFile></DocumentationFile>
 	  <DebugSymbols>True</DebugSymbols>
 	  <FileAlignment>4096</FileAlignment>
 	  <Optimize>False</Optimize>
-	  <OutputPath>bin\</OutputPath>
-	  <RegisterForComInterop>False</RegisterForComInterop>
-	  <RemoveIntegerChecks>False</RemoveIntegerChecks>
-	  <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-	  <WarningLevel>4</WarningLevel>
-	  <NoStdLib>False</NoStdLib>
-	  <NoWarn></NoWarn>
-	  <PlatformTarget>x86</PlatformTarget>
-	</PropertyGroup>
-	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
-	  <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-	  <BaseAddress>285212672</BaseAddress>
-	  <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
-	  <ConfigurationOverrideFile>
-	  </ConfigurationOverrideFile>
-	  <DefineConstants>ISWIN;NET_4_5</DefineConstants>
-	  <DocumentationFile></DocumentationFile>
-	  <DebugSymbols>False</DebugSymbols>
-	  <FileAlignment>4096</FileAlignment>
-	  <Optimize>True</Optimize>
-	  <OutputPath>bin\</OutputPath>
+	  <OutputPath>../../../VirtualUniverse/bin/Physics/</OutputPath>
 	  <RegisterForComInterop>False</RegisterForComInterop>
 	  <RemoveIntegerChecks>False</RemoveIntegerChecks>
 	  <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
@@ -102,18 +82,38 @@
 	  <NoWarn></NoWarn>
 	  <PlatformTarget>x64</PlatformTarget>
 	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+	  <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+	  <BaseAddress>285212672</BaseAddress>
+	  <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+	  <ConfigurationOverrideFile>
+	  </ConfigurationOverrideFile>
+	  <DefineConstants>LINUX;NET_4_5</DefineConstants>
+	  <DocumentationFile></DocumentationFile>
+	  <DebugSymbols>False</DebugSymbols>
+	  <FileAlignment>4096</FileAlignment>
+	  <Optimize>True</Optimize>
+	  <OutputPath>../../../VirtualUniverse/bin/Physics/</OutputPath>
+	  <RegisterForComInterop>False</RegisterForComInterop>
+	  <RemoveIntegerChecks>False</RemoveIntegerChecks>
+	  <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+	  <WarningLevel>4</WarningLevel>
+	  <NoStdLib>False</NoStdLib>
+	  <NoWarn></NoWarn>
+	  <PlatformTarget>x86</PlatformTarget>
+	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
 	  <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 	  <BaseAddress>285212672</BaseAddress>
 	  <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
 	  <ConfigurationOverrideFile>
 	  </ConfigurationOverrideFile>
-	  <DefineConstants>ISWIN;NET_4_5</DefineConstants>
+	  <DefineConstants>LINUX;NET_4_5</DefineConstants>
 	  <DocumentationFile></DocumentationFile>
 	  <DebugSymbols>False</DebugSymbols>
 	  <FileAlignment>4096</FileAlignment>
 	  <Optimize>True</Optimize>
-	  <OutputPath>..\..\..\VirtualUniverse\bin\Physics\</OutputPath>
+	  <OutputPath>bin/</OutputPath>
 	  <RegisterForComInterop>False</RegisterForComInterop>
 	  <RemoveIntegerChecks>False</RemoveIntegerChecks>
 	  <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
@@ -122,25 +122,25 @@
 	  <NoWarn></NoWarn>
 	  <PlatformTarget>AnyCPU</PlatformTarget>
 	</PropertyGroup>
-	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
 	  <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 	  <BaseAddress>285212672</BaseAddress>
 	  <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
 	  <ConfigurationOverrideFile>
 	  </ConfigurationOverrideFile>
-	  <DefineConstants>ISWIN;NET_4_5</DefineConstants>
+	  <DefineConstants>LINUX;NET_4_5</DefineConstants>
 	  <DocumentationFile></DocumentationFile>
 	  <DebugSymbols>False</DebugSymbols>
 	  <FileAlignment>4096</FileAlignment>
 	  <Optimize>True</Optimize>
-	  <OutputPath>bin\</OutputPath>
+	  <OutputPath>../../../VirtualUniverse/bin/Physics/</OutputPath>
 	  <RegisterForComInterop>False</RegisterForComInterop>
 	  <RemoveIntegerChecks>False</RemoveIntegerChecks>
 	  <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
 	  <WarningLevel>4</WarningLevel>
 	  <NoStdLib>False</NoStdLib>
 	  <NoWarn></NoWarn>
-	  <PlatformTarget>x86</PlatformTarget>
+	  <PlatformTarget>x64</PlatformTarget>
 	</PropertyGroup>
 	<ItemGroup>
 	  <Reference Include="System" >
@@ -163,6 +163,9 @@
 	<ItemGroup>
 	</ItemGroup>
 	<ItemGroup>
+	  <Compile Include="CTri.cs">
+		<SubType>Code</SubType>
+	  </Compile>
 	  <Compile Include="Concavity.cs">
 		<SubType>Code</SubType>
 	  </Compile>
@@ -175,7 +178,28 @@
 	  <Compile Include="ConvexResult.cs">
 		<SubType>Code</SubType>
 	  </Compile>
-	  <Compile Include="CTri.cs">
+	  <Compile Include="HullClasses.cs">
+		<SubType>Code</SubType>
+	  </Compile>
+	  <Compile Include="HullTriangle.cs">
+		<SubType>Code</SubType>
+	  </Compile>
+	  <Compile Include="HullUtils.cs">
+		<SubType>Code</SubType>
+	  </Compile>
+	  <Compile Include="Plane.cs">
+		<SubType>Code</SubType>
+	  </Compile>
+	  <Compile Include="PlaneTri.cs">
+		<SubType>Code</SubType>
+	  </Compile>
+	  <Compile Include="Quaternion.cs">
+		<SubType>Code</SubType>
+	  </Compile>
+	  <Compile Include="SplitPlane.cs">
+		<SubType>Code</SubType>
+	  </Compile>
+	  <Compile Include="VertexLookup.cs">
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="float2.cs">
@@ -193,34 +217,10 @@
 	  <Compile Include="float4x4.cs">
 		<SubType>Code</SubType>
 	  </Compile>
-	  <Compile Include="HullClasses.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="HullTriangle.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="HullUtils.cs">
-		<SubType>Code</SubType>
-	  </Compile>
 	  <Compile Include="int3.cs">
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="int4.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Plane.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="PlaneTri.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Quaternion.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="SplitPlane.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="VertexLookup.cs">
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="Properties\AssemblyInfo.cs">

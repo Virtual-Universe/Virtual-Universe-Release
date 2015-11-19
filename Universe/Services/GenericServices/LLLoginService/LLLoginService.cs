@@ -905,7 +905,7 @@ namespace Universe.Services
                     if ((regions == null) || (regions.Count == 0))
                     {
                         MainConsole.Instance.InfoFormat(
-                            "[LLLOGIN SERVICE]: Got Custom Login URI {0}, can't locate region {1}. Trying defaults.",
+                            "[LLLogin Service]: Got Custom Login URI {0}, can't locate region {1}. Trying defaults.",
                             startLocation, regionName);
                         regions = m_GridService.GetDefaultRegions(account.AllScopeIDs);
                         if (regions != null && regions.Count > 0)
@@ -927,7 +927,7 @@ namespace Universe.Services
                             return safeRegions[0];
                         }
                         MainConsole.Instance.InfoFormat(
-                            "[LLLOGIN SERVICE]: Got Custom Login URI {0}, Grid does not have any available regions.",
+                            "[LLLogin Service]: Got Custom Login URI {0}, Grid does not have any available regions.",
                             startLocation);
                         return null;
                     }
@@ -938,7 +938,7 @@ namespace Universe.Services
                 if (parts.Length < 2)
                 {
                     MainConsole.Instance.InfoFormat(
-                        "[LLLOGIN SERVICE]: Got Custom Login URI {0}, can't locate region {1}",
+                        "[LLLogin Service]: Got Custom Login URI {0}, can't locate region {1}",
                         startLocation, regionName);
                     return null;
                 }
@@ -975,7 +975,7 @@ namespace Universe.Services
                             return safeRegions[0];
                         }
                         MainConsole.Instance.InfoFormat(
-                            "[LLLOGIN SERVICE]: Got Custom Login URI {0}, Grid does not have any available regions.",
+                            "[LLLogin Service]: Got Custom Login URI {0}, Grid does not have any available regions.",
                             startLocation);
                         return null;
                     }

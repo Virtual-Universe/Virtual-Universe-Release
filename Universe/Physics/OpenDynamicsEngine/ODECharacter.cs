@@ -63,8 +63,8 @@ namespace Universe.Physics.OpenDynamicsEngine
                                                                 CollisionCategories.Character | 
                                                                 CollisionCategories.Land);
 
-        //float m_UpdateTimecntr = 0;
-        //float m_UpdateFPScntr = 0.05f;
+        //        float m_UpdateTimecntr = 0;
+        //        float m_UpdateFPScntr = 0.05f;
         protected bool m_isJumping;
         protected bool m_kinematic;
         protected bool m_iscolliding;
@@ -142,7 +142,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                 _position.Y = _parent_scene.Region.RegionSizeY*0.5f;
                 _position.Z = _parent_scene.GetTerrainHeightAtXY(_position.X, _position.Y) + 10f;
 
-                MainConsole.Instance.Warn("[Physics]: Got NaN Position on Character Create");
+                MainConsole.Instance.Warn("[PHYSICS]: Got NaN Position on Character Create");
             }
 
 
@@ -155,7 +155,7 @@ namespace Universe.Physics.OpenDynamicsEngine
         {
             if (!(Shell == IntPtr.Zero && Body == IntPtr.Zero))
             {
-                MainConsole.Instance.Debug("[Physics]: re-creating the following avatar ODE data, even though it already exists - "
+                MainConsole.Instance.Debug("[PHYSICS]: re-creating the following avatar ODE data, even though it already exists - "
                                           + (Shell != IntPtr.Zero ? "Shell " : "")
                                           + (Body != IntPtr.Zero ? "Body " : ""));
             }
@@ -298,7 +298,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                 }
                 else
                 {
-                    MainConsole.Instance.Warn("[Physics]: Got a NaN Position from Scene on a Character");
+                    MainConsole.Instance.Warn("[PHYSICS]: Got a NaN Position from Scene on a Character");
                 }
             }
         }
@@ -339,7 +339,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                 }
                 else
                 {
-                    MainConsole.Instance.Warn("[Physics]: Got a NaN Size from Scene on a Character");
+                    MainConsole.Instance.Warn("[PHYSICS]: Got a NaN Size from Scene on a Character");
                 }
             }
         }
@@ -377,7 +377,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                     m_targetVelocity = value;
                 else
                 {
-                    MainConsole.Instance.Warn("[Physics]: Got a NaN velocity from Scene in a Character");
+                    MainConsole.Instance.Warn("[PHYSICS]: Got a NaN velocity from Scene in a Character");
                 }
             }
         }
@@ -482,7 +482,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                 vec = new Vector3(_position.X, _position.Y, _position.Z);
                 RaiseOutOfBounds(_position); // Tells ScenePresence that there's a problem!
                 MainConsole.Instance.WarnFormat(
-                    "[ODE Plugin]: Avatar Null reference for Avatar {0}, physical actor {1}", Name, m_uuid);
+                    "[ODEPLUGIN]: Avatar Null reference for Avatar {0}, physical actor {1}", Name, m_uuid);
             }
 
             // vec is a ptr into internal ode data better not mess with it
@@ -559,14 +559,14 @@ namespace Universe.Physics.OpenDynamicsEngine
                 VelIsZero = true;
 
             // slow down updates, changed y mind: updates should go at physics fps, acording to movement conditions
-            /*
+/*
             m_UpdateTimecntr += timestep;
             m_UpdateFPScntr = 2.5f * _parent_scene.StepTime;
             if(m_UpdateTimecntr < m_UpdateFPScntr)
                 return;
 
             m_UpdateTimecntr = 0;
-            */
+*/
             float VELOCITY_TOLERANCE = 0.025f*0.25f;
             if (_parent_scene.TimeDilation < 0.5)
             {
@@ -593,9 +593,9 @@ namespace Universe.Physics.OpenDynamicsEngine
             {
                 needSendUpdate = true;
                 m_ZeroUpdateSent = 3;
-                //_lastorientation = Orientation;
-                //base.RequestPhysicsterseUpdate();
-                //base.TriggerSignificantMovement();
+                //                            _lastorientation = Orientation;
+                //                        base.RequestPhysicsterseUpdate();
+                //                        base.TriggerSignificantMovement();
             }
             else if (VelIsZero)
             {
@@ -609,7 +609,7 @@ namespace Universe.Physics.OpenDynamicsEngine
             if (needSendUpdate)
             {
                 m_lastPosition = _position;
-                //m_lastRotationalVelocity = RotationalVelocity;
+                //                        m_lastRotationalVelocity = RotationalVelocity;
                 m_lastVelocity = _velocity;
                 m_lastAngVelocity = RotationalVelocity;
 
@@ -623,8 +623,8 @@ namespace Universe.Physics.OpenDynamicsEngine
         #endregion
 
         #region Unused code
-        
-        /* suspended
+
+/* suspended
         void AlignAvatarTiltWithCurrentDirectionOfMovement(Vector3 movementVector)
             {
             if (!_parent_scene.IsAvCapsuleTilted)
@@ -683,7 +683,7 @@ namespace Universe.Physics.OpenDynamicsEngine
             float xTiltComponent = -movementVector.X * m_tiltMagnitudeWhenProjectedOnXYPlane;
             float yTiltComponent = -movementVector.Y * m_tiltMagnitudeWhenProjectedOnXYPlane;
             //MainConsole.Instance.Debug(movementVector.X + " " + movementVector.Y);
-            //MainConsole.Instance.Debug("[Physics] changing avatar tilt");
+            //MainConsole.Instance.Debug("[PHYSICS] changing avatar tilt");
             d.JointSetAMotorAngle(Amotor, 0, xTiltComponent);
             d.JointSetAMotorAngle(Amotor, 1, yTiltComponent);
             d.JointSetAMotorAngle(Amotor, 2, 0);
@@ -694,30 +694,30 @@ namespace Universe.Physics.OpenDynamicsEngine
             d.JointSetAMotorParam(Amotor, (int)dParam.LoStop3, - 0.001f);
             d.JointSetAMotorParam(Amotor, (int)dParam.HiStop3, 0.001f); // same as lowstop
             }
-            */
-            
-            //      This code is very useful. Written by DanX0r. We're just not using it right now.
-            //      Commented out to prevent a warning.
-            //
-            //         void standupStraight()
-            //         {
-            //             // The purpose of this routine here is to quickly stabilize the Body while it's popped up in the air.
-            //             // The amotor needs a few seconds to stabilize so without it, the avatar shoots up sky high when you
-            //             // change appearance and when you enter the simulator
-            //             // After this routine is done, the amotor stabilizes much quicker
-            //             d.Vector3 feet;
-            //             d.Vector3 head;
-            //             d.BodyGetRelPointPos(Body, 0.0f, 0.0f, -1.0f, out feet);
-            //             d.BodyGetRelPointPos(Body, 0.0f, 0.0f, 1.0f, out head);
-            //             float posture = head.Z - feet.Z;
-            
-            //             // restoring force proportional to lack of posture:
-            //             float servo = (2.5f - posture) * POSTURE_SERVO;
-            //             d.BodyAddForceAtRelPos(Body, 0.0f, 0.0f, servo, 0.0f, 0.0f, 1.0f);
-            //             d.BodyAddForceAtRelPos(Body, 0.0f, 0.0f, -servo, 0.0f, 0.0f, -1.0f);
-            //             //d.Matrix3 bodyrotation = d.BodyGetRotation(Body);
-            //             //MainConsole.Instance.Info("[PHYSICSAV]: Rotation: " + bodyrotation.M00 + " : " + bodyrotation.M01 + " : " + bodyrotation.M02 + " : " + bodyrotation.M10 + " : " + bodyrotation.M11 + " : " + bodyrotation.M12 + " : " + bodyrotation.M20 + " : " + bodyrotation.M21 + " : " + bodyrotation.M22);
-            //         }
+*/
+
+//      This code is very useful. Written by DanX0r. We're just not using it right now.
+//      Commented out to prevent a warning.
+//
+//         void standupStraight()
+//         {
+//             // The purpose of this routine here is to quickly stabilize the Body while it's popped up in the air.
+//             // The amotor needs a few seconds to stabilize so without it, the avatar shoots up sky high when you
+//             // change appearance and when you enter the simulator
+//             // After this routine is done, the amotor stabilizes much quicker
+//             d.Vector3 feet;
+//             d.Vector3 head;
+//             d.BodyGetRelPointPos(Body, 0.0f, 0.0f, -1.0f, out feet);
+//             d.BodyGetRelPointPos(Body, 0.0f, 0.0f, 1.0f, out head);
+//             float posture = head.Z - feet.Z;
+
+//             // restoring force proportional to lack of posture:
+//             float servo = (2.5f - posture) * POSTURE_SERVO;
+//             d.BodyAddForceAtRelPos(Body, 0.0f, 0.0f, servo, 0.0f, 0.0f, 1.0f);
+//             d.BodyAddForceAtRelPos(Body, 0.0f, 0.0f, -servo, 0.0f, 0.0f, -1.0f);
+//             //d.Matrix3 bodyrotation = d.BodyGetRotation(Body);
+//             //MainConsole.Instance.Info("[PHYSICSAV]: Rotation: " + bodyrotation.M00 + " : " + bodyrotation.M01 + " : " + bodyrotation.M02 + " : " + bodyrotation.M10 + " : " + bodyrotation.M11 + " : " + bodyrotation.M12 + " : " + bodyrotation.M20 + " : " + bodyrotation.M21 + " : " + bodyrotation.M22);
+        //         }
 
         #endregion
 
@@ -750,7 +750,7 @@ namespace Universe.Physics.OpenDynamicsEngine
             }
             else
             {
-                MainConsole.Instance.Warn("[Physics]: Got a NaN force applied to a Character");
+                MainConsole.Instance.Warn("[PHYSICS]: Got a NaN force applied to a Character");
             }
             //m_lastUpdateSent = false;
         }

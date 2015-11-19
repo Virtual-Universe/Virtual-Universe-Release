@@ -1,5 +1,5 @@
 ﻿    /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://opensimulator.org//, http://universe-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://opensimulator.org, http://universe-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -213,6 +213,10 @@ namespace Universe.Physics.BulletSPlugin
             PhysObjects = new Dictionary<uint, BSPhysObject>();
             Shapes = new BSShapeCollection(this);
 
+            // some identifiers
+            RegionName = scene.RegionInfo.RegionName;
+            PhysicsSceneName = RegionName;
+
             // Allocate pinned memory to pass parameters.
             UnmanagedParams = new ConfigurationParameters[1];
 
@@ -361,8 +365,9 @@ namespace Universe.Physics.BulletSPlugin
             }
             else
             {
-                MainConsole.Instance.WarnFormat("{0} Selected bullet engine {1} -> {2}/{3}", LogHeader, engineName,
-                    ret.BulletEngineName, ret.BulletEngineVersion);
+                //MainConsole.Instance.WarnFormat("{0} Selected bullet engine {1} -> {2}/{3}", LogHeader, engineName,
+                //    ret.BulletEngineName, ret.BulletEngineVersion);
+                MainConsole.Instance.WarnFormat("{0} Selected bullet engine {1} -> {2}", LogHeader, engineName, ret.BulletEngineVersion);
             }
 
             return ret;

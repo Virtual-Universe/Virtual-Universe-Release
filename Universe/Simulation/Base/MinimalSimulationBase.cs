@@ -238,7 +238,7 @@ namespace Universe.Simulation.Base
             if (MainConsole.Instance != null)
             {
                 MainConsole.Instance.DefaultPrompt = m_consolePrompt;
-                MainConsole.Instance.Info(string.Format("[Mini Virtual Universe]: Starting Mini Virtual Universe ({0})...",
+                MainConsole.Instance.Info(string.Format("[Mini Virtual Universe]: STARTING MIN Universe ({0})...",
                                                         (IntPtr.Size == 4 ? "x86" : "x64")));
                 MainConsole.Instance.Info("[Mini Virtual Universe]: Version: " + Version + "\n");
             }
@@ -502,7 +502,7 @@ namespace Universe.Simulation.Base
         public virtual void HandleForceGC(IScene scene, string[] cmd)
         {
             GC.Collect();
-            MainConsole.Instance.Warn("[Garbage Collection]: Garbage collection finished");
+            MainConsole.Instance.Warn("[Garbage Collection Service]: Garbage collection finished");
         }
 
         public virtual void runConfig(IScene scene, string[] cmd)
@@ -541,7 +541,7 @@ namespace Universe.Simulation.Base
             {
                 server.HostName = hostName;
             }
-            MainConsole.Instance.Info("Finished reloading configuration.");
+            MainConsole.Instance.Info("[Virtual Universe Configuration]: Finished reloading configuration.");
         }
 
         public virtual void HandleShowInfo(IScene scene, string[] cmd)

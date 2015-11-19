@@ -97,7 +97,7 @@ namespace Universe.Physics.OpenDynamicsEngine
 
             if (!localPos.IsFinite())
             {
-                MainConsole.Instance.Warn("[Physics]: Avatar Position is non-finite!");
+                MainConsole.Instance.Warn("[PHYSICS]: Avatar Position is non-finite!");
 
                 _parent_scene.BadCharacter(this);
                 return;
@@ -412,14 +412,14 @@ namespace Universe.Physics.OpenDynamicsEngine
             if (CAPSULE_LENGTH <= 0)
             {
                 MainConsole.Instance.Warn(
-                    "[Physics]: The capsule size you specified in Universe.ini is invalid!  Setting it to the smallest possible size!");
+                    "[PHYSICS]: The capsule size you specified in Universe.ini is invalid!  Setting it to the smallest possible size!");
                 CAPSULE_LENGTH = 1.2f;
             }
 
             if (CAPSULE_RADIUS <= 0)
             {
                 MainConsole.Instance.Warn(
-                    "[Physics]: The capsule size you specified in Universe.ini is invalid!  Setting it to the normal size!");
+                    "[PHYSICS]: The capsule size you specified in Universe.ini is invalid!  Setting it to the normal size!");
                 CAPSULE_RADIUS = 0.37f;
             }
             Shell = d.CreateCapsule(_parent_scene.space, CAPSULE_RADIUS, CAPSULE_LENGTH);
@@ -434,6 +434,7 @@ namespace Universe.Physics.OpenDynamicsEngine
             // rescale PID parameters 
             PID_D = _parent_scene.PID_D;
             PID_P = _parent_scene.PID_P;
+
 
             // rescale PID parameters so that this aren't so affected by mass
             // but more importante, don't get unstable
@@ -473,6 +474,7 @@ namespace Universe.Physics.OpenDynamicsEngine
             d.JointSetAMotorAngle(Amotor, 0, 0);
             d.JointSetAMotorAngle(Amotor, 1, 0);
             d.JointSetAMotorAngle(Amotor, 2, 0);
+
 
             d.JointSetAMotorParam(Amotor, (int) dParam.StopCFM, 0f); // make it HARD
             d.JointSetAMotorParam(Amotor, (int) dParam.StopCFM2, 0f);

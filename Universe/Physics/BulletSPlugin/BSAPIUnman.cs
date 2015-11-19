@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://opensimulator.org//, http://universe-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://opensimulator.org, http://universe-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -168,6 +168,8 @@ namespace Universe.Physics.BulletSPlugin
             // If not Windows, loading is performed by the
             // Mono loader as specified in
             // "bin/Physics/Universe.Physics.BulletSPlugin.dll.config".
+            BulletEngineVersion = "2.82";
+
         }
 
         // Initialization and simulation
@@ -197,7 +199,7 @@ namespace Universe.Physics.BulletSPlugin
             // Get the version of the DLL
             // TODO: this doesn't work yet. Something wrong with marshaling the returned string.
             // BulletEngineVersion = BulletSimAPI.GetVersion2();
-            BulletEngineVersion = "";
+            BulletEngineVersion = "2.82";
 
             // Call the unmanaged code with the buffers and other information
             return new BulletWorldUnman(0, PhysicsScene,

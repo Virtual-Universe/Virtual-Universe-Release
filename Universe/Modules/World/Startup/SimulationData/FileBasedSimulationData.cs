@@ -350,7 +350,7 @@ namespace Universe.Modules
                     responses.Add("Full Region");
                     responses.Add("Homestead");
                     responses.Add ("Openspace");
-                    responses.Add ("Universe");                            // TODO: remove?
+                    responses.Add ("Whitecore");                            // TODO: remove?
                     responses.Add ("Custom");                               
                     setupMode = MainConsole.Instance.Prompt("Mainland region type?", "Full Region", responses).ToLower ();
 
@@ -366,7 +366,7 @@ namespace Universe.Modules
                     info.RegionType = "Estate / ";                   
                     responses.Add("Full Region");
                     responses.Add("Homestead");
-                    responses.Add ("Universe");                            // TODO: Universe 'standard' setup, rename??
+                    responses.Add ("Whitecore");                            // TODO: Universe 'standard' setup, rename??
                     responses.Add ("Custom");
                     setupMode = MainConsole.Instance.Prompt("Estate region type?","Full Region", responses).ToLower();
                 }
@@ -398,16 +398,16 @@ namespace Universe.Modules
 
                 } 
 
-                if (setupMode.StartsWith("u"))
+                if (setupMode.StartsWith("w"))
                 {
                     // 'standard' setup
-                    info.RegionType = info.RegionType + "Universe";                   
+                    info.RegionType = info.RegionType + "Whitecore";                   
                     //info.RegionPort;            // use auto assigned port
                     info.RegionTerrain = "Flatland";
                     info.Startup = StartupType.Normal;
                     info.SeeIntoThisSimFromNeighbor = true;
-                    info.InfiniteRegion = true;
-                    info.ObjectCapacity = 100000;
+                    info.InfiniteRegion = false;
+                    info.ObjectCapacity = 50000;
 
                 }
                 if (setupMode.StartsWith("o"))       
@@ -427,9 +427,9 @@ namespace Universe.Modules
 
                     info.Startup = StartupType.Medium;
                     info.SeeIntoThisSimFromNeighbor = true;
-                    info.InfiniteRegion = true;
-                    info.ObjectCapacity = 25000;
-                    info.RegionSettings.AgentLimit = 25;
+                    info.InfiniteRegion = false;
+                    info.ObjectCapacity = 750;
+                    info.RegionSettings.AgentLimit = 10;
                     info.RegionSettings.AllowLandJoinDivide = false;
                     info.RegionSettings.AllowLandResell = false;
                                    }
@@ -445,9 +445,9 @@ namespace Universe.Modules
 
                     info.Startup = StartupType.Medium;
                     info.SeeIntoThisSimFromNeighbor = true;
-                    info.InfiniteRegion = true;
-                    info.ObjectCapacity = 50000;
-                    info.RegionSettings.AgentLimit = 50;
+                    info.InfiniteRegion = false;
+                    info.ObjectCapacity = 3750;
+                    info.RegionSettings.AgentLimit = 20;
                     info.RegionSettings.AllowLandJoinDivide = false;
                     info.RegionSettings.AllowLandResell = false;
                 }
@@ -460,8 +460,8 @@ namespace Universe.Modules
                     info.RegionTerrain = terrainFull;
                     info.Startup = StartupType.Normal;
                     info.SeeIntoThisSimFromNeighbor = true;
-                    info.InfiniteRegion = true;
-                    info.ObjectCapacity = 100000;
+                    info.InfiniteRegion = false;
+                    info.ObjectCapacity = 15000;
                     info.RegionSettings.AgentLimit = 100;
                     if (info.RegionType.StartsWith ("M"))                           // defaults are 'true'
                     {
@@ -471,9 +471,9 @@ namespace Universe.Modules
                 }
 
                 // re-proportion allocations based on actual region area <> std area
-                var regFactor = (info.RegionSizeX * info.RegionSizeY) / (Constants.RegionSize * Constants.RegionSize);
-                info.ObjectCapacity = (int)Math.Round((float)(info.ObjectCapacity * regFactor));
-                info.RegionSettings.AgentLimit = (int)Math.Round((float)(info.RegionSettings.AgentLimit * regFactor));
+                var regFactor = ( info.RegionSizeX * info.RegionSizeY) / (Constants.RegionSize * Constants.RegionSize);
+                info.ObjectCapacity = (int)Math.Round ((float)(info.ObjectCapacity * regFactor));
+                info.RegionSettings.AgentLimit = (int) Math.Round ((float)(info.RegionSettings.AgentLimit * regFactor));
             }
 
             // are we updating or adding??
@@ -691,7 +691,7 @@ namespace Universe.Modules
             regInfo.ObjectCapacity =
                 int.Parse (MainConsole.Instance.Prompt ("Object capacity",
                     regInfo.ObjectCapacity == 0
-                    ? "100000"
+                    ? "50000"
                     : regInfo.ObjectCapacity.ToString ()));
             if (regInfo.ObjectCapacity != oldCap)
                 updated = true;

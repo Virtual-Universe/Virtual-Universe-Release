@@ -36,7 +36,7 @@ namespace Universe.Framework.Utilities
         // some predefined folders
         public const string DEFAULT_CONFIG_DIR = "../Config";
         public const string DEFAULT_DATA_DIR = "../Data";
-        public const string DEFAULT_CRASH_DIR = "../Data/Crashes";
+		public const string DEFAULT_CRASH_DIR = "../Data/Crashes";
 
         // all these are relative to the default data directory,
         // set either as above or via configuration
@@ -64,7 +64,7 @@ namespace Universe.Framework.Utilities
 
         // System Real Estate Avatar Account
         public const string RealEstateOwnerUUID = "bbb55499-7938-4752-ab7c-f7136e36cced";
-		public const string RealEstateOwnerName = "RealEstate Owner";
+		public const string RealEstateOwnerName = "RealEstate Universe";
 
         // System Governor Avatar Account
         public const string GovernorUUID = "3d6181b0-6a4b-97ef-18d8-722652995cf1";
@@ -78,15 +78,15 @@ namespace Universe.Framework.Utilities
 
         // System Real Estate Maintenance Group
 		public const string RealEstateGroupUUID = "dc7b21cd-3c89-fcaa-31c8-25f9ffd224cd";
-		public const string RealEstateGroupName = "Maintenance";
+		public const string RealEstateGroupName = "Universe Maintenance";
 
         // System Banker Avatar
         public const string BankerUUID = "f4261829-2796-4688-bfe2-085190cb639b";
-        public const string BankerName = "Universe Banker";
+        public const string BankerName = "Treasurer Universe";
 
         // System Marketplace Avatar
         public const string MarketplaceOwnerUUID = "198e72a6-cef6-4bbb-ae08-c0a79e6b7d1e";
-        public const string MarketplaceOwnerName = "Marketplace Concierge";
+        public const string MarketplaceOwnerName = "Marketplace Universe";
 
 
         // user levels

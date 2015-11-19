@@ -232,7 +232,7 @@ namespace Universe.Framework.Physics
         public abstract bool SubscribedEvents();
 
         public abstract bool SendCollisions();
-        public abstract void AddCollisionEvent(uint collideWith, ContactPoint contact);
+        public abstract void AddCollisionEvent(uint collidedWith, ContactPoint contact);
 
         public virtual void ForceSetVelocity(Vector3 velocity) { }
         public virtual void ForceSetRotVelocity(Vector3 velocity) { }

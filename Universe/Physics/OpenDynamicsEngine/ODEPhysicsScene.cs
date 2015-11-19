@@ -126,6 +126,7 @@ namespace Universe.Physics.OpenDynamicsEngine
 
         public Dictionary<IntPtr, PhysicsActor> actor_name_map = new Dictionary<IntPtr, PhysicsActor>();
 
+
         public IntPtr RegionTerrain;
         protected short[] TerrainHeightFieldHeights;
         protected float[] ODETerrainHeightFieldHeights;
@@ -138,6 +139,7 @@ namespace Universe.Physics.OpenDynamicsEngine
         public float m_preJumpForceMultiplierY = 6;
         public float m_preJumpForceMultiplierZ = 4.5f;
         public float m_AvFlySpeed = 4.0f;
+
 
         protected int m_physicsiterations = 10;
         //protected int m_timeBetweenRevertingAutoConfigIterations = 50;
@@ -176,6 +178,7 @@ namespace Universe.Physics.OpenDynamicsEngine
         protected IConfigSource m_config;
 
         protected volatile int m_global_contactcount;
+
 
         public Vector2 WorldExtents;
 
@@ -236,10 +239,13 @@ namespace Universe.Physics.OpenDynamicsEngine
         /// </summary>
         public ODEPhysicsScene()
         {
+            MainConsole.Instance.WarnFormat("[PHYSICS]: Selected engine -> Open Dynamics");
+
             nearCallback = IsNearBody;
             // Create the world and the first space
             world = d.WorldCreate();
             space = d.HashSpaceCreate(IntPtr.Zero);
+
 
             contactgroup = d.JointGroupCreate(0);
 
@@ -470,7 +476,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                 }
                 catch (Exception e)
                 {
-                    MainConsole.Instance.WarnFormat("[Physics]: SpaceCollide2 failed: {0} ", e);
+                    MainConsole.Instance.WarnFormat("[PHYSICS]: SpaceCollide2 failed: {0} ", e);
                     return;
                 }
                 return;
@@ -496,7 +502,7 @@ namespace Universe.Physics.OpenDynamicsEngine
             }
             catch (Exception e)
             {
-                MainConsole.Instance.WarnFormat("[Physics]:  ode Collide failed: {0} ", e);
+                MainConsole.Instance.WarnFormat("[PHYSICS]:  ode Collide failed: {0} ", e);
 
                 PhysicsActor badObj;
                 if (actor_name_map.TryGetValue(g1, out badObj))
@@ -534,7 +540,7 @@ namespace Universe.Physics.OpenDynamicsEngine
 
             ContactPoint maxDepthContact = new ContactPoint();
             d.ContactGeom curContact = new d.ContactGeom();
-            // 20131224 not used            d.ContactGeom maxContact = new d.ContactGeom();
+// 20131224 not used            d.ContactGeom maxContact = new d.ContactGeom();
 
             int NotSkipedCount = 0;
 
@@ -557,7 +563,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                     maxDepthContact.SurfaceNormal.X = curContact.normal.X;
                     maxDepthContact.SurfaceNormal.Y = curContact.normal.Y;
                     maxDepthContact.SurfaceNormal.Z = curContact.normal.Z;
-                    // 20131224 not used                    maxContact = curContact;
+// 20131224 not used                    maxContact = curContact;
                 }
             }
             if (p1 is ODECharacter || p2 is ODECharacter)
@@ -775,7 +781,8 @@ namespace Universe.Physics.OpenDynamicsEngine
                     List<ODEPrim> primsToCollide = new List<ODEPrim>(_activeprims.Where(
                         prm => prm != null && prm.Body != IntPtr.Zero && d.BodyIsEnabled(prm.Body) && 
                             !prm.m_disabled && !prm.m_frozen && prm.prim_geom != IntPtr.Zero));
-                    shells.AddRange(primsToCollide.ConvertAll<IntPtr>(prm => prm.prim_geom));                  
+                    shells.AddRange(primsToCollide.ConvertAll<IntPtr>(prm => prm.prim_geom));
+                    
                     
                     foreach (IntPtr shell in shells)
                     {
@@ -796,7 +803,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                         }
                         catch (AccessViolationException)
                         {
-                            MainConsole.Instance.Warn("[Physics]: Unable to space collide");
+                            MainConsole.Instance.Warn("[PHYSICS]: Unable to space collide");
                         }
                     }
 
@@ -812,7 +819,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                             removeprims = new List<ODEPrim>();
                         removeprims.Add(prm);
                         if (prm.prim_geom == IntPtr.Zero)
-                            MainConsole.Instance.Debug("[Physics]: unable to collide test active prim against space. The space was zero, the geom was zero or " +
+                            MainConsole.Instance.Debug("[PHYSICS]: unable to collide test active prim against space. The space was zero, the geom was zero or " +
                                 "it was in the process of being removed.  Removed it from the active prim list.  This needs to be fixed!");
                     }
                     if (removeprims != null)
@@ -898,6 +905,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                 h2 = ((TerrainHeightFieldHeights[iy + m_region.RegionSizeX + ix])*invterrainscale - h0) * (1 - dx);
             
             return h0 + h1 + h2;
+
         }
 
         public void AddCollisionEventReporting(PhysicsActor obj)
@@ -929,6 +937,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                                               Flying = isFlying,
                                               MinimumGroundFlightOffset = minimumGroundFlightOffset
                                           };
+
             return newAv;
         }
 
@@ -955,7 +964,7 @@ namespace Universe.Physics.OpenDynamicsEngine
 
         public override void RemoveAvatar(PhysicsActor actor)
         {
-            //MainConsole.Instance.Debug("[Physics]:ODELOCK");
+            //MainConsole.Instance.Debug("[PHYSICS]:ODELOCK");
             ((ODECharacter) actor).Destroy();
         }
 
@@ -969,12 +978,12 @@ namespace Universe.Physics.OpenDynamicsEngine
                                   chr.CAPSULE_LENGTH*2), true, chr.LocalID, chr.UUID);
         }
 
-		internal void BadPrim(ODEPrim whitecoreODEPrim)
+		internal void BadPrim(ODEPrim universeODEPrim)
         {
-			RemovePrim(whitecoreODEPrim);
+			RemovePrim(universeODEPrim);
             //Can't really do this here... as it will be readded before the delete gets called, which is wrong...
             //So... leave the prim out there for now
-			//AddPrimShape(whitecoreODEPrim.ParentEntity);
+			//AddPrimShape(universeODEPrim.ParentEntity);
         }
 
         public override PhysicsActor AddPrimShape(UUID primID, uint localID, string name, byte physicsType, PrimitiveBaseShape shape, Vector3 position,
@@ -1049,13 +1058,13 @@ namespace Universe.Physics.OpenDynamicsEngine
                     }
                     else
                     {
-                        MainConsole.Instance.Warn("[Physics]: Unable to remove prim from physics scene");
+                        MainConsole.Instance.Warn("[PHYSICS]: Unable to remove prim from physics scene");
                     }
                 }
                 catch (AccessViolationException)
                 {
                     MainConsole.Instance.Info(
-                        "[Physics]: Couldn't remove prim from physics scene, it was already be removed.");
+                        "[PHYSICS]: Couldn't remove prim from physics scene, it was already be removed.");
                 }
             }
             if (!prim.childPrim)
@@ -1115,8 +1124,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                         }
                     }
                 }
-                
-                /* don't delete spaces
+/* don't delete spaces
                 //If there are no more geometries in the sub-space, we don't need it in the main space anymore
                 if (d.SpaceGetNumGeoms(currentspace) == 0)
                 {
@@ -1139,7 +1147,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                         }
                     }
                 }
-                */
+ */
             }
             else
             {
@@ -1176,16 +1184,16 @@ namespace Universe.Physics.OpenDynamicsEngine
             // The routines in the Position and Size sections do the 'inserting' into the space,
             // so all we have to do is make sure that the space that we're putting the prim into
             // is in the 'main' space.
-            //int[] iprimspaceArrItem = calculateSpaceArrayItemFromPos(pos);
+//            int[] iprimspaceArrItem = calculateSpaceArrayItemFromPos(pos);
             IntPtr newspace = CalculateSpaceForGeom(pos);
-            
-            /*  spaces aren't deleted so already created
+
+/*  spaces aren't deleted so already created
             if (newspace == IntPtr.Zero)
             {
                 newspace = createprimspace(iprimspaceArrItem[0], iprimspaceArrItem[1]);
                 d.HashSpaceSetLevels(newspace, HashspaceLow, HashspaceHigh);
             }
-            */
+*/
             return newspace;
         }
 
@@ -1253,8 +1261,8 @@ namespace Universe.Physics.OpenDynamicsEngine
             //    //if (pbs.PathCurve == (byte)Primitive.PathCurve.Circle && pbs.ProfileCurve == (byte)Primitive.ProfileCurve.Circle && pbs.PathScaleY <= 0.75f)
             //    //MainConsole.Instance.Debug("needsMeshing: " + " pathCurve: " + pbs.PathCurve.ToString() + " profileCurve: " + pbs.ProfileCurve.ToString() + " pathScaleY: " + Primitive.UnpackPathScale(pbs.PathScaleY).ToString());
             int iPropertiesNotSupportedDefault = 0;
-            
-            //return true;
+
+//            return true;
 
             if (forceSimplePrimMeshing)
                 return true;
@@ -1441,7 +1449,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                 }
                 catch (Exception e)
                 {
-                    MainConsole.Instance.ErrorFormat("[Physics]: {0}, {1}, {2}", e, e.TargetSite, e);
+                    MainConsole.Instance.ErrorFormat("[PHYSICS]: {0}, {1}, {2}", e, e.TargetSite, e);
                 }
 
                 step_time -= ODE_STEPSIZE;
@@ -1456,8 +1464,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                 ODEPrim p = (ODEPrim) prm;
                 p.SetPrimForRemoval();
             }
-            
-            // dup of removequeue?
+// dup of removequeue??
             //while (DeleteQueue.TryDequeue(out prm))
             //{
             //    UniverseODEPrim p = (UniverseODEPrim) prm;
@@ -1525,6 +1532,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                                                        //d.GeomDestroy(RegionTerrain);
                                                     GC.RemoveMemoryPressure(_heightmap.Length);
                                                 }
+
 
                                                    const float scale = 1f;
                                                    const float offset = 0.0f;
