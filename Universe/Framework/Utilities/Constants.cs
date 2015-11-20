@@ -25,7 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 namespace Universe.Framework.Utilities
 {
     public static class Constants
@@ -58,6 +57,8 @@ namespace Universe.Framework.Utilities
 
 		public const int SystemUserCount = 5;
 
+		// System User Accounts
+
         // System library Avatar Account
         public const string LibraryOwner = "11111111-1111-0000-0000-000100bba000";
         public const string LibraryRootFolderID = "00000112-000f-0000-0000-000100bba000";
@@ -70,24 +71,26 @@ namespace Universe.Framework.Utilities
         public const string GovernorUUID = "3d6181b0-6a4b-97ef-18d8-722652995cf1";
         public const string GovernorName = "Governor Universe";
 
+		// System Banker Avatar
+		public const string BankerUUID = "f4261829-2796-4688-bfe2-085190cb639b";
+		public const string BankerName = "Treasurer Universe";
+
+		// System Marketplace Avatar
+		public const string MarketplaceOwnerUUID = "198e72a6-cef6-4bbb-ae08-c0a79e6b7d1e";
+		public const string MarketplaceOwnerName = "Marketplace Universe";
+
+
         // System Estate
         public const string MainlandEstateName = "Universe Mainland";
         public const int MainlandEstateID = 1;
         public const string SystemEstateName = "Universe Estate";
         public const int SystemEstateID = 10;
 
+		// System Groups
+
         // System Real Estate Maintenance Group
 		public const string RealEstateGroupUUID = "dc7b21cd-3c89-fcaa-31c8-25f9ffd224cd";
 		public const string RealEstateGroupName = "Universe Maintenance";
-
-        // System Banker Avatar
-        public const string BankerUUID = "f4261829-2796-4688-bfe2-085190cb639b";
-        public const string BankerName = "Treasurer Universe";
-
-        // System Marketplace Avatar
-        public const string MarketplaceOwnerUUID = "198e72a6-cef6-4bbb-ae08-c0a79e6b7d1e";
-        public const string MarketplaceOwnerName = "Marketplace Universe";
-
 
         // user levels
         public const int USER_DISABLED = -2;
@@ -108,6 +111,8 @@ namespace Universe.Framework.Utilities
         public const int USER_FLAG_CONTRACTOR = 800;        // Contracted
         public const int USER_FLAG_CHARTERMEMBER = 3840;    // Charter member
 
+		// Currency Related Constants
+
         public const int SCHEDULER_INTERVAL = 300;          // seconds between scheduler checks
 
         public const string STIPEND_PAY_DAY = "tuesday";    // the day stipend payments are processed
@@ -119,6 +124,5 @@ namespace Universe.Framework.Utilities
         public const int SCHEDULED_PAYMENTS_DELAY = 15;     // minutes to wait after stipend payments before processing scheduled payments
         public const int GROUP_PAYMENTS_DELAY = 30;         // minutes to wait after stipend payments before processing group payments
         public const int DIRECTORYFEE_GRACE_PERIOD = 2;     // hours grace period before a fee will be charged at least once
-
     }
 }
