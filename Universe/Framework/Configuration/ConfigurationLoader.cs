@@ -29,9 +29,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Universe.Framework.Utilities;
 using Nini.Config;
 using Nini.Ini;
+using Universe.Framework.Utilities;
 
 namespace Universe.Framework.Configuration
 {
@@ -293,7 +293,8 @@ namespace Universe.Framework.Configuration
                 Console.WriteLine(string.Format("[CONFIG]: Could not load any configuration"));
                 Console.WriteLine(string.Format("[CONFIG]: .. or Configuration possibly exists, but there was an error loading it!"));
                 Console.WriteLine(string.Format("[CONFIG]: Configuration : " + mainIniDirectory+", "+mainIniFileName));
-                throw new NotSupportedException();
+                //throw new NotSupportedException();
+                return null;
             }
             // Make sure command line options take precedence
             if (argvSource != null)
@@ -302,7 +303,7 @@ namespace Universe.Framework.Configuration
             return m_config;
         }
 
-        private void FixDefines(ref IConfigSource m_config)
+        void FixDefines(ref IConfigSource m_config)
         {
             if (m_defines.Count == 0)
                 return;
@@ -334,7 +335,7 @@ namespace Universe.Framework.Configuration
         /// <param name="cntr">Where should we start inserting sources into the list?</param>
         /// <param name="triedPaths"></param>
         /// <param name="configSource"></param>
-        private void AddIncludes(List<string> sources, string basePath, ref int cntr, ref List<string> triedPaths,
+        void AddIncludes(List<string> sources, string basePath, ref int cntr, ref List<string> triedPaths,
                                  IConfigSource configSource)
         {
             int cn = cntr;
@@ -448,7 +449,7 @@ namespace Universe.Framework.Configuration
         /// </summary>
         /// <param name="file">String uri to the remote resource</param>
         /// <returns>true if we can convert the string to a Uri object</returns>
-        private bool IsUri(string file)
+        static bool IsUri(string file)
         {
             Uri configUri;
 
@@ -463,7 +464,7 @@ namespace Universe.Framework.Configuration
         /// <param name="i"></param>
         /// <param name="source"></param>
         /// <returns></returns>
-        private bool ReadConfig(string iniPath, int i, IConfigSource source)
+        bool ReadConfig(string iniPath, int i, IConfigSource source)
         {
             bool success = false;
 
@@ -511,7 +512,7 @@ namespace Universe.Framework.Configuration
             return success;
         }
 
-        private void WriteConfigFile(int i, IConfigSource m_config)
+        void WriteConfigFile(int i, IConfigSource m_config)
         {
             string m_fileName = "ConfigFileDump" + i + ".ini";
             Console.WriteLine(string.Format("Writing config dump file to " + m_fileName));
@@ -521,7 +522,7 @@ namespace Universe.Framework.Configuration
                 FileStream stream = new FileStream(m_fileName, FileMode.Create);
                 StreamWriter m_streamWriter = new StreamWriter(stream);
                 m_streamWriter.BaseStream.Position += m_streamWriter.BaseStream.Length;
-                m_streamWriter.WriteLine(m_config.ToString());
+                m_streamWriter.WriteLine(m_config);
                 m_streamWriter.Close();
             }
             catch
