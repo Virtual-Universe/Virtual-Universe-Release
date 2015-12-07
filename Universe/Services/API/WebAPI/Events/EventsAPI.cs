@@ -34,9 +34,9 @@ using Universe.Framework.Servers.HttpServer;
 using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Services;
 
-namespace Universe.Services.WebAPI
+namespace Universe.Services.API
 {
-	public class CurrencyAPI : IService
+	public class EventsAPI : IService
 	{
 		#region IService implementation
 		public void Initialize(IConfigSource config, IRegistryCore registry)
@@ -45,7 +45,7 @@ namespace Universe.Services.WebAPI
         
 		public void Start(IConfigSource config, IRegistryCore registry)
 		{
-			MainServer.Instance.AddStreamHandler(new GenericStreamHandler("GET", "/API/Currency/", HandleCurrency));
+			MainServer.Instance.AddStreamHandler(new GenericStreamHandler("GET", "/API/Events/", HandleEvents));
 		}
         
 		public void FinishedStartup()
@@ -53,7 +53,7 @@ namespace Universe.Services.WebAPI
 		}
 		#endregion
         
-		public byte[] HandleCurrency(string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse)
+		public byte[] HandleEvents(string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse)
 		{
 			return Encoding.UTF8.GetBytes("");
 		}

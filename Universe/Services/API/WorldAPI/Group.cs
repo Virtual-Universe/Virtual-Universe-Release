@@ -24,38 +24,3 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
- 
-using System.IO;
-using System.Text;
-using Nini.Config;
-using Universe.Framework.Modules;
-using Universe.Framework.Servers;
-using Universe.Framework.Servers.HttpServer;
-using Universe.Framework.Servers.HttpServer.Implementation;
-using Universe.Framework.Services;
-
-namespace Universe.Services.WebAPI
-{
-	public class RegionAPI : IService
-	{
-		#region IService implementation
-		public void Initialize(IConfigSource config, IRegistryCore registry)
-		{
-		}
-        
-		public void Start(IConfigSource config, IRegistryCore registry)
-		{
-			MainServer.Instance.AddStreamHandler(new GenericStreamHandler("GET", "/API/Region/", HandleRegion));
-		}
-        
-		public void FinishedStartup()
-		{
-		}
-		#endregion
-        
-		public byte[] HandleRegion(string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse)
-		{
-			return Encoding.UTF8.GetBytes("");
-		}
-	}
-}

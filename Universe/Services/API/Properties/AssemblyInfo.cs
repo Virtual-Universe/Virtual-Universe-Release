@@ -36,11 +36,11 @@ using System.Runtime.InteropServices;
 ///     following set of attirbutes.  We change these attirbute values to modify the
 ///     information associated with an assembly.
 /// </summary>
-[assembly: AssemblyTitle("Universe.Services.WebAPI")]
+[assembly: AssemblyTitle("Universe.Services.API")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Virtual Universe Development Team")]
-[assembly: AssemblyProduct("Universe.Services.WebAPI")]
+[assembly: AssemblyProduct("Universe.Services.API")]
 [assembly: AssemblyCopyright("Copyright © 2015-2025")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

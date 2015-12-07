@@ -34,7 +34,7 @@ using Universe.Framework.Servers.HttpServer;
 using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Services;
 
-namespace Universe.Services.WebAPI
+namespace Universe.Services.API
 {
 	public class MarketPlaceAPI : IService
 	{
