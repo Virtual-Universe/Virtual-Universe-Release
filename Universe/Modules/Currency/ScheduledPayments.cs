@@ -75,7 +75,7 @@ namespace Universe.Modules.Currency
         string stipendPayDay;           // the good day
         string stipendPayTime;          // the time to start work
         bool stipendsPremiumOnly;       // Premium members only
-                                        //        bool stipendsLoadOldUsers;      //  ?? not sure if needed
+        //bool stipendsLoadOldUsers;      //  ?? not sure if needed
         bool stipendsLoginRequired;     // login required in the last week
         int schedulerInterval = 300;    // default to 5 mins
         bool showSchedulerTick = false;
@@ -387,6 +387,7 @@ namespace Universe.Modules.Currency
                     // check for a 'runOnce' charge
                     if ((schItem != null) && schItem.RunOnce)
                         scheduler.RemoveID(scdID);
+
                 }
                 else
                 {
@@ -772,12 +773,13 @@ namespace Universe.Modules.Currency
                 //string scdID = itemInfo ["SchedulerID"];
                 //string description = itemInfo ["Text"];
                 int amount = itemInfo["Amount"];
+                DateTime chargeTime = itemInfo["StartTime"];
                 TransactionType transType = !itemInfo.ContainsKey("Type") ? TransactionType.SystemGenerated : (TransactionType)itemInfo["Type"].AsInteger();
 
                 var user = userService.GetUserAccount(null, agentID);
 
                 paymentInfo = String.Format("{0, -20}", user.Name);
-                //paymentInfo += String.Format ("{0, -34}", description.Substring (0, 32));   
+                //              paymentInfo += String.Format ("{0, -34}", description.Substring (0, 32));   
                 paymentInfo += String.Format("{0, -30}", Utilities.TransactionTypeInfo(transType));
                 paymentInfo += String.Format("{0, -10}", amount);
                 paymentInfo += String.Format("{0:f}", chargeTime);
@@ -801,7 +803,7 @@ namespace Universe.Modules.Currency
                 nextSched.Minutes,
                 nextSched.Minutes == 1 ? "" : "s"
             );
-            //MainConsole.Instance.InfoFormat("             Cycle  : {0} {1}{2}",
+            // MainConsole.Instance.InfoFormat ("             Cycle  : {0} {1}{2}",
             //    stipendInterval, stipendPeriod, stipendInterval == 1 ? "" : "s");
             MainConsole.Instance.InfoFormat("          Payments  : {0}", payments);
             MainConsole.Instance.InfoFormat("              Fees  : {0}{1}", currencySymbol, payValue);
@@ -1341,16 +1343,13 @@ namespace Universe.Modules.Currency
             nextGroupPayment = DateTime.Now;
             SetSchedTimer(10);
             MainConsole.Instance.InfoFormat("[Currency]: Group payments will commence in {0} seconds.", 10);
-
         }
 
         protected void HandleGrouppayPayDividends(IScene scene, string[] cmd)
         {
-
             nextGroupDividend = DateTime.Now;
             SetSchedTimer(10);
             MainConsole.Instance.InfoFormat("[Currency]: Group dividend payments will commence in {0} seconds.", 10);
-
         }
 
         protected void HandleScheduledPayInfo(IScene scene, string[] cmd)
@@ -1360,11 +1359,9 @@ namespace Universe.Modules.Currency
 
         protected void HandleScheduledPayNow(IScene scene, string[] cmd)
         {
-
             nextScheduledPayment = DateTime.Now;
             SetSchedTimer(10);
             MainConsole.Instance.InfoFormat("[Currency]: Scheduled payments will commence in {0} seconds.", 10);
-
         }
 
         protected void HandleShowSchedulerTick(IScene scene, string[] cmd)
