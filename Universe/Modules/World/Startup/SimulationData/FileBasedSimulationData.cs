@@ -61,7 +61,6 @@ namespace Universe.Modules
         protected bool m_saveBackups;
         protected int m_removeArchiveDays = 30;
         protected bool m_saveChanges = true;
-        protected Timer m_saveTimer;
         protected IScene m_scene;
         protected int m_timeBetweenBackupSaves = 1440; //One day
         protected int m_timeBetweenSaves = 5;
@@ -131,9 +130,11 @@ namespace Universe.Modules
         public virtual List<string> FindRegionInfos(out bool newRegion, ISimulationBase simBase)
         {
 			ReadConfig(simBase);
-			MainConsole.Instance.Info("Looking for previous regions in: "+ m_storeDirectory);
+            MainConsole.Instance.Info("Retrieving region data from: " + m_storeDirectory);
+            if (m_keepOldSave)
+                MainConsole.Instance.Info("Region archives saved to:    " + m_oldSaveDirectory);
 
-			List<string> regions = new List<string>(Directory.GetFiles(m_storeDirectory, "*.sim", SearchOption.TopDirectoryOnly));
+            List<string> regions = new List<string>(Directory.GetFiles(m_storeDirectory, "*.sim", SearchOption.TopDirectoryOnly));
             newRegion = regions.Count == 0;
             List<string> retVals = new List<string>();
 
@@ -173,9 +174,7 @@ namespace Universe.Modules
             if (m_oldSaveDirectory == "")
                 return null;
 
-            MainConsole.Instance.Info("Looking for sim backups in: "+ m_oldSaveDirectory);
             List<string> archives = new List<string>(Directory.GetFiles(m_oldSaveDirectory, "*.sim", SearchOption.TopDirectoryOnly));
-            MainConsole.Instance.InfoFormat ("Found {0} archive files", archives.Count);
 
             return archives;
         }
@@ -1000,7 +999,7 @@ namespace Universe.Modules
 
             if (m_saveChanges && m_timeBetweenBackupSaves != 0)
             {
-                m_backupSaveTimer = new Timer(m_timeBetweenBackupSaves*60*1000);
+                m_backupSaveTimer = new Timer(m_timeBetweenBackupSaves*60*1000 + 5000);
                 m_backupSaveTimer.Elapsed += m_backupSaveTimer_Elapsed;
                 m_backupSaveTimer.Start();
             }
@@ -1077,19 +1076,28 @@ namespace Universe.Modules
             }
             catch (Exception ex)
             {
-                MainConsole.Instance.Error("[File Based Simulation Data]: Failed to save backup, exception occurred " + ex);
+                MainConsole.Instance.Error("[File Based Simulation Data]: Failed to save archive, exception occurred " + ex);
             }
         }
 
         public void DeleteUpOldArchives(int daysOld)
         {
+            if (m_scene == null)
+                return;
 
             if (daysOld < 0)
                 return;
 
-            var regionArchives = FindBackupRegionFiles();
+            var simRegion = m_scene.RegionInfo.RegionName;
+            if (String.IsNullOrEmpty(simRegion))
+                return;
+            
+            var regionArchives = FindRegionBackupFiles(simRegion);
+
             if (regionArchives.Count == 0)
                 return;
+
+            MainConsole.Instance.InfoFormat("[File Based Simulation Data]: Found {0} archive files", regionArchives.Count);
 
             int removed = 0;
             DateTime archiveDate = DateTime.Today.AddDays(-daysOld);
