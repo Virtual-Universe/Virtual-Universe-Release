@@ -49,7 +49,7 @@ namespace Universe.Services
         private bool m_allowCapsMessage = true;
         private IGridService m_gridService;
         private UUID m_agentID;
-        private Universe.Framework.Services.GridRegion m_region;
+        private Framework.Services.GridRegion m_region;
         private string m_uri;
         private List<UUID> m_userScopeIDs = new List<UUID>();
 
@@ -57,7 +57,7 @@ namespace Universe.Services
 
         public string Name { get { return GetType().Name; } }
 
-        public void IncomingCapsRequest(UUID agentID, Universe.Framework.Services.GridRegion region, ISimulationBase simbase, ref OSDMap capURLs)
+        public void IncomingCapsRequest(UUID agentID, Framework.Services.GridRegion region, ISimulationBase simbase, ref OSDMap capURLs)
         {
             m_agentID = agentID;
             m_region = region;

@@ -185,7 +185,7 @@ namespace Universe.ClientStack
         /// <summary>
         ///     Outgoing queues for throttled packets
         /// </summary>
-//        private readonly Universe.Framework.LocklessQueue<OutgoingPacket>[] m_packetOutboxes = new Universe.Framework.LocklessQueue<OutgoingPacket>[(int)ThrottleOutPacketType.Count];
+        //private readonly Framework.LocklessQueue<OutgoingPacket>[] m_packetOutboxes = new Universe.Framework.LocklessQueue<OutgoingPacket>[(int)ThrottleOutPacketType.Count];
         private readonly int[] PacketsCounts = new int[(int) ThrottleOutPacketType.Count];
 
         /// <summary>

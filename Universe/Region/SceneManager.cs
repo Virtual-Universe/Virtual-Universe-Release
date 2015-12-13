@@ -54,8 +54,8 @@ namespace Universe.Region
 
         static SceneManager()
         {
-            Universe.Framework.Serialization.SceneEntitySerializer.SceneObjectSerializer =
-                new Universe.Region.Serialization.SceneObjectSerializer();
+            Framework.Serialization.SceneEntitySerializer.SceneObjectSerializer =
+                new Region.Serialization.SceneObjectSerializer();
         }
 
         #endregion

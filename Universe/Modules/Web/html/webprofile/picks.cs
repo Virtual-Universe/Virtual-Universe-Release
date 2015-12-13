@@ -131,8 +131,8 @@ namespace Universe.Modules.Web
                         url = webhttpService.GetTextureURL(pick.SnapshotUUID);
 
                     Vector3 pickLoc = pick.GlobalPos;
-                    pickLoc.X /= Universe.Framework.Utilities.Constants.RegionSize;
-                    pickLoc.Y /= Universe.Framework.Utilities.Constants.RegionSize;
+                    pickLoc.X /= Framework.Utilities.Constants.RegionSize;
+                    pickLoc.Y /= Framework.Utilities.Constants.RegionSize;
 
                     picks.Add(new Dictionary<string, object>
                                   {

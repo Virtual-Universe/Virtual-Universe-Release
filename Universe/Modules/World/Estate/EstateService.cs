@@ -125,7 +125,7 @@ namespace Universe.Modules.Estate
                 BannedUserID = SP.UUID,
                 EstateID = ES.EstateID
             });
-            Universe.Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ().
+            Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ().
                 SaveEstateSettings (ES);
             if (alert != "")
                 SP.ControllingClient.Kick (alert);
@@ -149,7 +149,7 @@ namespace Universe.Modules.Estate
             }
             EstateSettings ES = scene.RegionInfo.EstateSettings;
             ES.RemoveBan (account.PrincipalID);
-            Universe.Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ().
+            Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ().
                 SaveEstateSettings (ES);
         }
 
@@ -232,7 +232,7 @@ namespace Universe.Modules.Estate
 
             #endregion
 
-            Universe.Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ().
+            Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ().
                 SaveEstateSettings (m_scene.RegionInfo.EstateSettings);
         }
 
@@ -770,7 +770,7 @@ namespace Universe.Modules.Estate
                                 BannedHostNameMask = ban.BannedHostNameMask
                             });
                             //Update the database
-                            Universe.Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ().
+                            Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ().
                                 SaveEstateSettings (ES);
                         }
                     }
@@ -802,7 +802,7 @@ namespace Universe.Modules.Estate
                             BannedHostAddress = agent.IPAddress,
                             BannedHostNameMask = agent.IPAddress
                         });
-                        Universe.Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ().
+                        Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ().
                             SaveEstateSettings (ES);
 
                         reason = "Banned from this region.";

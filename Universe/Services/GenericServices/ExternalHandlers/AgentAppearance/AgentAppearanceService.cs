@@ -110,7 +110,7 @@ namespace Universe.Services
             UUID textureID = UUID.Parse (req [4]);
 
             //IAvatarService avService = m_registry.RequestModuleInterface<IAvatarService>();
-            //Universe.Framework.ClientInterfaces.AvatarAppearance appearance = avService.GetAppearance(avID);
+            //Framework.ClientInterfaces.AvatarAppearance appearance = avService.GetAppearance(avID);
             //AvatarTextureIndex textureIndex = AppearanceManager.BakeTypeToAgentTextureIndex((BakeType)Enum.Parse(typeof(BakeType), type, true));
             //AssetBase texture = m_assetService.Get(appearance.Texture.FaceTextures[(int)textureIndex].TextureID.ToString());
             AssetBase texture = m_assetService.Get (textureID.ToString ());

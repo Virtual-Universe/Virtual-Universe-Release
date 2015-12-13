@@ -1984,7 +1984,7 @@ namespace Universe.Physics.BulletSPlugin
             // commented out by fine (spam at the console)
             // PhysicsScene.DetailLog(msg, args);
             // commented out by fine (spam at the console)
-            // Universe.Framework.ConsoleFramework.MainConsole.Instance.InfoFormat("[BulletPrim]: " + msg, args);
+            // Framework.ConsoleFramework.MainConsole.Instance.InfoFormat("[BulletPrim]: " + msg, args);
         }
     }
 }

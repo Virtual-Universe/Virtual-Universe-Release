@@ -53,8 +53,8 @@ namespace Universe.Services
 
         static InventoryCAPS()
         {
-            Universe.Framework.Serialization.SceneEntitySerializer.SceneObjectSerializer =
-                new Universe.Region.Serialization.SceneObjectSerializer();
+            Framework.Serialization.SceneEntitySerializer.SceneObjectSerializer =
+                new Region.Serialization.SceneObjectSerializer();
         }
 
         #endregion
@@ -71,7 +71,7 @@ namespace Universe.Services
 
         public string Name { get { return GetType().Name; } }
 
-        public void IncomingCapsRequest(UUID agentID, Universe.Framework.Services.GridRegion region, ISimulationBase simbase, ref OSDMap capURLs)
+        public void IncomingCapsRequest(UUID agentID, Framework.Services.GridRegion region, ISimulationBase simbase, ref OSDMap capURLs)
         {
             m_agentID = agentID;
             m_moneyModule = simbase.ApplicationRegistry.RequestModuleInterface<IMoneyModule>();

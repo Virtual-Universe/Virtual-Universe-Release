@@ -62,7 +62,7 @@ namespace Universe.Services
 
         public string Name { get { return GetType().Name; } }
 
-        public void IncomingCapsRequest(UUID agentID, Universe.Framework.Services.GridRegion region, ISimulationBase simbase, ref OSDMap capURLs)
+        public void IncomingCapsRequest(UUID agentID, Framework.Services.GridRegion region, ISimulationBase simbase, ref OSDMap capURLs)
         {
             m_AgentID = agentID;
             m_assetService = simbase.ApplicationRegistry.RequestModuleInterface<IAssetService>();

@@ -444,8 +444,8 @@ namespace Universe.Services
                 reason = "Could not find neighbor to inform";
                 return false;
             }
-            /*if ((neighbor.Flags & (int)Universe.Framework.RegionFlags.RegionOnline) == 0 &&
-                (neighbor.Flags & (int)(Universe.Framework.RegionFlags.Foreign | Universe.Framework.RegionFlags.Hyperlink)) == 0)
+            /*if ((neighbor.Flags & (int)Framework.RegionFlags.RegionOnline) == 0 &&
+                (neighbor.Flags & (int)(Framework.RegionFlags.Foreign | Universe.Framework.RegionFlags.Hyperlink)) == 0)
             {
                 reason = "The region you are attempting to teleport to is offline";
                 return false;

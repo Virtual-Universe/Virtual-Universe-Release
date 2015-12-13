@@ -183,7 +183,7 @@ namespace Universe.Modules.Estate
                 m_scene.RegionInfo.EstateSettings.SunPosition = sun_hour;
             }
 
-            Universe.Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ().
+            Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ().
                 SaveEstateSettings (m_scene.RegionInfo.EstateSettings);
 
             TriggerEstateInfoChange ();
@@ -989,7 +989,7 @@ namespace Universe.Modules.Estate
             m_scene.RegionInfo.RegionSettings.BlockShowInSearch = (parms1 & (uint)RegionFlags.BlockParcelSearch) ==
             (uint)RegionFlags.BlockParcelSearch;
 
-            Universe.Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ().
+            Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ().
                 SaveEstateSettings (m_scene.RegionInfo.EstateSettings);
             TriggerEstateInfoChange ();
             TriggerEstateSunUpdate ();

@@ -161,7 +161,7 @@ namespace Universe.Services.GenericServices.CapsService
                 List<IExternalCapsRequestHandler> caps;
                 if (!m_caps.TryGetValue(agentID ^ regionID, out caps))
                 {
-                    caps = Universe.Framework.ModuleLoader.UniverseModuleLoader.PickupModules<IExternalCapsRequestHandler>();
+                    caps = Framework.ModuleLoader.UniverseModuleLoader.PickupModules<IExternalCapsRequestHandler>();
                     m_caps.Add(agentID ^ regionID, caps);
                 }
                 return caps;
