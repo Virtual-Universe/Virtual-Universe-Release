@@ -621,7 +621,7 @@ namespace Universe.Modules.Estate
 
             if (terr != null)
             {
-                MainConsole.Instance.Warn ("[CLIENT]: Got Request to Send Terrain in region " +
+                MainConsole.Instance.Warn ("[Client]: Got Request to Send Terrain in region " +
                 m_scene.RegionInfo.RegionName);
 
                 try
@@ -719,7 +719,7 @@ namespace Universe.Modules.Estate
 
             if (terr != null)
             {
-                MainConsole.Instance.Warn ("[CLIENT]: Got Request to Send Terrain in region " +
+                MainConsole.Instance.Warn ("[Client]: Got Request to Send Terrain in region " +
                 m_scene.RegionInfo.RegionName);
                 if (File.Exists (Util.dataDir () + "/terrain.raw"))
                 {
@@ -735,7 +735,7 @@ namespace Universe.Modules.Estate
                 if (xfer != null)
                     xfer.AddNewFile ("terrain.raw", bdata);
                 // Tell client about it
-                MainConsole.Instance.Warn ("[CLIENT]: Sending Terrain to " + remote_client.Name);
+                MainConsole.Instance.Warn ("[Client]: Sending Terrain to " + remote_client.Name);
                 remote_client.SendInitiateDownload ("terrain.raw", clientFileName);
             }
         }

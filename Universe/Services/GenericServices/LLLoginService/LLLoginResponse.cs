@@ -466,7 +466,7 @@ namespace Universe.Services
             }
             catch (Exception e)
             {
-                MainConsole.Instance.Warn("[CLIENT]: LoginResponse: Error creating Hashtable Response: " + e);
+                MainConsole.Instance.Warn("[Client]: LoginResponse: Error creating Hashtable Response: " + e);
 
                 return LLFailedLoginResponse.InternalError.ToHashtable();
             }
