@@ -1139,7 +1139,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                 World.RegionInfo.EstateSettings.UseGlobalTime = !sunFixed;
                 World.RegionInfo.EstateSettings.SunPosition = sunHour;
                 World.RegionInfo.EstateSettings.FixedSun = sunFixed;
-                Framework.Utilities.DataManager.RequestPlugin<IEstateConnector>().
+                Universe.Framework.Utilities.DataManager.RequestPlugin<IEstateConnector>().
                     SaveEstateSettings(World.RegionInfo.EstateSettings);
 
                 World.EventManager.TriggerEstateToolsSunUpdate(World.RegionInfo.RegionHandle, sunFixed,
@@ -2641,7 +2641,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             if (!ScriptProtection.CheckThreatLevel(ThreatLevel.Low, "osAddAgentToGroup", m_host, "OSSL", m_itemID))
                 return new LSL_Integer();
 
-            IGroupsServiceConnector m_groupData = Framework.Utilities.DataManager.RequestPlugin<IGroupsServiceConnector>();
+            IGroupsServiceConnector m_groupData = Universe.Framework.Utilities.DataManager.RequestPlugin<IGroupsServiceConnector>();
 
             // No groups module, no functionality
             if (m_groupData == null)
