@@ -240,7 +240,8 @@ namespace Universe.Simulation.Base
                 MainConsole.Instance.DefaultPrompt = m_consolePrompt;
                 MainConsole.Instance.Info(string.Format("[Mini Virtual Universe]: STARTING MIN Universe ({0})...",
                                                         (IntPtr.Size == 4 ? "x86" : "x64")));
-                MainConsole.Instance.Info("[Mini Virtual Universe]: Version: " + Version + "\n");
+                MainConsole.Instance.Info("[Mini Virtual Universe]: Version : " + Version + "\n");
+                MainConsole.Instance.Info("[Mini Virtual Universe]: Git Base: " + VersionInfo.GitVersion + "\n");
             }
         }
 
