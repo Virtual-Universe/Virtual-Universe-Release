@@ -11,7 +11,7 @@ AssetCaching = "FlotsamAssetCache"
 CacheDirectory = ../Data/AssetCache
 
 ; Other examples:
-;CacheDirectory = /directory/writeable/by/UniverseSim/instance
+;CacheDirectory = /directory/writeable/by/Universe/instance
 
 ; Log level
 ; 0 - (Error) Errors only
