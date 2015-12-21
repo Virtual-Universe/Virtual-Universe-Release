@@ -25,13 +25,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Universe.Framework.Servers.HttpServer.Implementation;
-using System.Collections.Generic;
-using Universe.Framework.Modules;
-using Universe.Framework.Utilities;
 using System;
-using OpenMetaverse;
+using System.Collections.Generic;
+using OpemMetaverse;
+using Universe.Framework.Modules;
+using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Services;
+using Universe.Framework.Utilities;
 
 namespace Universe.Modules.Web
 {
@@ -115,7 +115,6 @@ namespace Universe.Modules.Web
                 vars.Add ("NextOne", start + 1 > maxPages ? start : start + 1);
                 vars.Add ("BackOne", start - 1 < 0 ? 0 : start - 1);
 
-
                 // Transaction Logs
                 var timeNow = DateTime.Now.ToString ("HH:mm:ss");
                 var dateFrom = DateTime.Parse (DateStart + " " + timeNow);
@@ -126,7 +125,6 @@ namespace Universe.Modules.Web
                     transactions = moneyModule.GetTransactionHistory (UserID, UUID.Zero, dateFrom, dateTo, (uint)start, amountPerQuery);
                 else
                     transactions = moneyModule.GetTransactionHistory (dateFrom, dateTo, (uint)start, amountPerQuery);
-
 
                 // data
                 if (transactions.Count > 0)
@@ -162,7 +160,6 @@ namespace Universe.Modules.Web
                     {"Description", translator.GetTranslatedString ("NoTransactionsText")},
                     {"Amount",""},
                     {"ToBalance",""}
-
                 });
             }
 

@@ -25,17 +25,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using OpenMetaverse;
 using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Modules;
 using Universe.Framework.Servers.HttpServer;
 using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Profile;
-using OpenMetaverse;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 
 namespace Universe.Modules.Web
 {
@@ -142,7 +141,6 @@ namespace Universe.Modules.Web
                                       {"PickLocation", pickLoc}
                                   });
                 }
-
             }
 
             if (picks.Count == 0)

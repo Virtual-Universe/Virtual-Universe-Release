@@ -25,10 +25,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System.Collections.Generic;
+using OpenMetaverse;
 using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Servers.HttpServer.Implementation;
-using OpenMetaverse;
-using System.Collections.Generic;
 
 namespace Universe.Modules.Web
 {
@@ -78,7 +78,6 @@ namespace Universe.Modules.Web
                 vars.Add("SendCommandText", translator.GetTranslatedString("SendCommandText"));
 
                 vars.Add("Login", translator.GetTranslatedString("Login"));
-
             }
             return vars;
         }

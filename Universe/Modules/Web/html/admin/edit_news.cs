@@ -25,12 +25,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System.Collections.Generic;
+using OpenMetaverse;
 using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Servers.HttpServer;
 using Universe.Framework.Servers.HttpServer.Implementation;
-using OpenMetaverse;
-using System.Collections.Generic;
 
 namespace Universe.Modules.Web
 {
@@ -80,7 +79,6 @@ namespace Universe.Modules.Web
                            "</script>";
                 return null;
             }
-
 
             news = connector.GetGeneric<GridNewsItem>(UUID.Zero, "WebGridNews", httpRequest.Query["newsid"].ToString());
             vars.Add("NewsTitle", news.Title);

@@ -25,14 +25,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Universe.Framework.DatabaseInterfaces;
-using Universe.Framework.Modules;
-using Universe.Framework.Servers.HttpServer.Implementation;
-using Universe.Framework.Services;
-using OpenMetaverse;
 using System.Collections.Generic;
 using System.IO;
+using OpenMetaverse;
+using Universe.Framework.DatabaseInterfaces;
+using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
+using Universe.Framework.Servers.HttpServer.Implementation;
+using Universe.Framework.Services;
 using Universe.Framework.Utilities;
 using GridRegion = Universe.Framework.Services.GridRegion;
 using RegionFlags = Universe.Framework.Services.RegionFlags;
@@ -160,7 +160,6 @@ namespace Universe.Modules.Web
                 vars.Add("NumberOfUsersInRegionText", translator.GetTranslatedString("NumberOfUsersInRegionText"));
                 vars.Add("ParcelsInRegionText", translator.GetTranslatedString("ParcelsInRegionText"));
                 vars.Add ("MainServerURL", webInterface.GridURL);
-
             }
 
             return vars;

@@ -25,11 +25,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Universe.Framework.Servers.HttpServer.Implementation;
-using Universe.Framework.Services;
-using OpenMetaverse;
 using System.Collections.Generic;
 using System.Linq;
+using OpenMetaverse;
+using Universe.Framework.Servers.HttpServer.Implementation;
+using Universe.Framework.Services;
 
 namespace Universe.Modules.Web
 {

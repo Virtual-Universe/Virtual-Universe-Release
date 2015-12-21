@@ -79,7 +79,6 @@ namespace Universe.Modules.Web
                 ? int.Parse (httpRequest.Query ["cardid"].ToString ())
                 : int.Parse (requestParameters ["cardid"].ToString ());
             
-
             rpt = abuseModule.GetAbuseReport (cardID);
             if (rpt == null)
             {
@@ -95,10 +94,9 @@ namespace Universe.Modules.Web
             // updating?
             if (requestParameters.ContainsKey ("SubmitUpdates"))
             {
-                {
-                    string newNote = requestParameters ["AbuseNoteText"].ToString ();
-                    if (newNote != "")
-                        rpt.Notes = newNote;
+                string newNote = requestParameters ["AbuseNoteText"].ToString ();
+                if (newNote != "")
+                    rpt.Notes = newNote;
 
                     rpt.Checked = (requestParameters ["Checked"].ToString ().ToLower () == "yes");
                     rpt.Active = (requestParameters ["Active"].ToString ().ToLower () == "yes");
@@ -107,8 +105,6 @@ namespace Universe.Modules.Web
                     abuseModule.UpdateAbuseReport (rpt);
 
                     infoMessage = translator.GetTranslatedString ("ChangesSavedSuccessfully");
-                }
-
             }
 
             // get admin users
@@ -123,7 +119,6 @@ namespace Universe.Modules.Web
             adminUsersList.Add (new Dictionary<string, object> { { "Value", "No One" } });
             vars.Add ("AdminUsersList", adminUsersList);
 
-                
             // details
             vars.Add ("CardNumber", rpt.Number);
             //vars.Add("Date"), Culture.LocaleDate (transaction.TransferDate.ToLocalTime(), "MMM dd, hh:mm:ss tt");
@@ -183,4 +178,3 @@ namespace Universe.Modules.Web
         }
     }
 }
-

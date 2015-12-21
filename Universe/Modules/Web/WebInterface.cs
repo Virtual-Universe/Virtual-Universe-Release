@@ -68,7 +68,6 @@ namespace Universe.Modules.Web
         internal WebUISettings webUISettings;
         public GridSettings gridSettings;
 
-
         #endregion
 
         #region Public Properties
@@ -599,7 +598,6 @@ namespace Universe.Modules.Web
             }
         }
 
-
         public static Dictionary<string, object> ParseQueryString(string query)
         {
             Dictionary<string, object> result = new Dictionary<string, object>();
@@ -722,7 +720,6 @@ namespace Universe.Modules.Web
             }
         }
 
-
         public List<Dictionary<string, object>> RegionTypeArgs(ITranslator translator)
         { 
             var args = new List<Dictionary<string, object>>();
@@ -828,9 +825,7 @@ namespace Universe.Modules.Web
             // change what's appropriate...
             ILoginService loginService = Registry.RequestModuleInterface<ILoginService>();
             loginService.WelcomeMessage = settings.WelcomeMessage;
-
         }
-
 
         #endregion
 
@@ -1217,5 +1212,4 @@ namespace Universe.Modules.Web
             return map;
         }
     }
-
 }
