@@ -452,11 +452,11 @@ namespace Universe.ScriptEngine.VirtualScript
                 MaintenanceThread.StartScripts(
                     scripts.Select(ID => new LUStruct {Action = LUType.Load, ID = ID}).ToArray());
 
-                MainConsole.Instance.Warn("[WDNE]: All scripts have been restarted.");
+                MainConsole.Instance.Warn("[Virtual Script]: All scripts have been restarted.");
             }
             else
             {
-                MainConsole.Instance.Info("[WDNE]: Not restarting all scripts");
+                MainConsole.Instance.Info("[Virtual Script]: Not restarting all scripts");
             }
         }
 
@@ -467,11 +467,11 @@ namespace Universe.ScriptEngine.VirtualScript
             {
                 StopAllScripts();
                 MaintenanceThread.Stop();
-                MainConsole.Instance.Warn("[WDNE]: All scripts have been stopped.");
+                MainConsole.Instance.Warn("[Virtual Script]: All scripts have been stopped.");
             }
             else
             {
-                MainConsole.Instance.Info("[WDNE]: Not restarting all scripts");
+                MainConsole.Instance.Info("[Virtual Script]: Not restarting all scripts");
             }
         }
 
@@ -498,14 +498,14 @@ namespace Universe.ScriptEngine.VirtualScript
         protected void UniverseDotNetDisable(IScene scene, string[] cmdparams)
         {
             ConsoleDisabled = true;
-            MainConsole.Instance.Warn("[WDNE]: WDNE has been disabled.");
+            MainConsole.Instance.Warn("[Virtual Script]: WDNE has been disabled.");
         }
 
         protected void UniverseDotNetEnable(IScene scene, string[] cmdparams)
         {
             ConsoleDisabled = false;
             MaintenanceThread.Started = true;
-            MainConsole.Instance.Warn("[WDNE]: WDNE has been enabled.");
+            MainConsole.Instance.Warn("[Virtual Script]: WDNE has been enabled.");
         }
 
         #endregion
