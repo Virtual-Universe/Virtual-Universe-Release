@@ -103,7 +103,7 @@ namespace Universe.ScriptEngine.VirtualScript.CompilerTools
             //Find the default compiler
             FindDefaultCompiler();
 
-#if WDNE_DEBUG
+#if VS_DEBUG
             TestScripts();
         }
         
