@@ -25,14 +25,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Universe.Framework.ConsoleFramework;
-using Universe.Framework.Modules;
-using Universe.Framework.SceneInfo;
-using Nini.Config;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Nini.Config;
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.Modules;
+using Universe.Framework.SceneInfo;
 
 namespace Universe.Modules.Archivers
 {
@@ -59,7 +59,6 @@ namespace Universe.Modules.Archivers
         {
             get { return null; }
         }
-
 
         public void Initialise(IConfigSource source)
         {
@@ -169,7 +168,6 @@ namespace Universe.Modules.Archivers
             return DearchiveRegion(newParams.Count > 2 ? newParams[2] : DEFAULT_OAR_BACKUP_FILENAME, mergeOar, skipAssets,
                             skipTerrain, offsetX, offsetY, offsetZ, flipX, flipY,
                             useParcelOwnership, checkOwnership);
-
         }
 
         /// <summary>

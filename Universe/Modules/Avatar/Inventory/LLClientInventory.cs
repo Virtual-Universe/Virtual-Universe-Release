@@ -256,7 +256,7 @@ namespace Universe.Modules.Inventory
             if (!m_scene.InventoryService.AddFolder(folder))
             {
                 MainConsole.Instance.WarnFormat(
-                    "[AGENT INVENTORY]: Failed to create folder for user {0} {1}",
+                    "[Agent Inventory]: Failed to create folder for user {0} {1}",
                     remoteClient.Name, remoteClient.AgentId);
             }
         }
@@ -276,7 +276,7 @@ namespace Universe.Modules.Inventory
                                                    UUID parentID)
         {
             //            MainConsole.Instance.DebugFormat(
-            //                "[AGENT INVENTORY]: Updating inventory folder {0} {1} for {2} {3}", folderID, name, remoteClient.Name, remoteClient.AgentId);
+            //                "[Agent Inventory]: Updating inventory folder {0} {1} for {2} {3}", folderID, name, remoteClient.Name, remoteClient.AgentId);
 
             InventoryFolderBase folder = new InventoryFolderBase(folderID, remoteClient.AgentId);
             folder = m_scene.InventoryService.GetFolder(folder);
@@ -288,7 +288,7 @@ namespace Universe.Modules.Inventory
                 if (!m_scene.InventoryService.UpdateFolder(folder))
                 {
                     MainConsole.Instance.ErrorFormat(
-                        "[AGENT INVENTORY]: Failed to update folder for user {0} {1}",
+                        "[Agent Inventory]: Failed to update folder for user {0} {1}",
                         remoteClient.Name, remoteClient.AgentId);
                 }
             }
@@ -308,14 +308,14 @@ namespace Universe.Modules.Inventory
             {
                 folder.ParentID = parentID;
                 if (!m_scene.InventoryService.MoveFolder(folder))
-                    MainConsole.Instance.WarnFormat("[AGENT INVENTORY]: could not move folder {0}", folderID);
+                    MainConsole.Instance.WarnFormat("[Agent Inventory]: could not move folder {0}", folderID);
                 else
-                    MainConsole.Instance.DebugFormat("[AGENT INVENTORY]: folder {0} moved to parent {1}", folderID,
+                    MainConsole.Instance.DebugFormat("[Agent Inventory]: folder {0} moved to parent {1}", folderID,
                                                      parentID);
             }
             else
             {
-                MainConsole.Instance.WarnFormat("[AGENT INVENTORY]: request to move folder {0} but folder not found",
+                MainConsole.Instance.WarnFormat("[Agent Inventory]: request to move folder {0} but folder not found",
                                                 folderID);
             }
         }
@@ -328,9 +328,9 @@ namespace Universe.Modules.Inventory
         protected void HandlePurgeInventoryDescendents(IClientAPI remoteClient, UUID folderID)
         {
             if (m_scene.InventoryService.PurgeFolder(new InventoryFolderBase(folderID, remoteClient.AgentId)))
-                MainConsole.Instance.DebugFormat("[AGENT INVENTORY]: folder {0} purged successfully", folderID);
+                MainConsole.Instance.DebugFormat("[Agent Inventory]: folder {0} purged successfully", folderID);
             else
-                MainConsole.Instance.WarnFormat("[AGENT INVENTORY]: could not purge folder {0} for client {1}", folderID,
+                MainConsole.Instance.WarnFormat("[Agent Inventory]: could not purge folder {0} for client {1}", folderID,
                                                 remoteClient.AgentId);
         }
 
@@ -557,7 +557,7 @@ namespace Universe.Modules.Inventory
                                               sbyte assetType,
                                               byte wearableType, uint nextOwnerMask, int creationDate)
         {
-            //MainConsole.Instance.DebugFormat("[AGENT INVENTORY]: Received request to create inventory item {0} in folder {1}", name, folderID);
+            //MainConsole.Instance.DebugFormat("[Agent Inventory]: Received request to create inventory item {0} in folder {1}", name, folderID);
 
             if (!m_scene.Permissions.CanCreateUserInventory(invType, remoteClient.AgentId))
                 return;
@@ -653,7 +653,7 @@ namespace Universe.Modules.Inventory
                                                uint callbackID, string description, string name,
                                                sbyte invType, sbyte type, UUID olditemID)
         {
-            //MainConsole.Instance.DebugFormat("[AGENT INVENTORY]: Received request to create inventory item link {0} in folder {1} pointing to {2}", name, folderID, olditemID);
+            //MainConsole.Instance.DebugFormat("[Agent Inventory]: Received request to create inventory item link {0} in folder {1} pointing to {2}", name, folderID, olditemID);
 
             if (!m_scene.Permissions.CanCreateUserInventory(invType, remoteClient.AgentId))
                 return;
@@ -693,7 +693,7 @@ namespace Universe.Modules.Inventory
         protected void MoveInventoryItem(IClientAPI remoteClient, List<InventoryItemBase> items)
         {
             //MainConsole.Instance.DebugFormat(
-            //    "[AGENT INVENTORY]: Moving {0} items for user {1}", items.Count, remoteClient.AgentId);
+            //    "[Agent Inventory]: Moving {0} items for user {1}", items.Count, remoteClient.AgentId);
 
             m_scene.InventoryService.MoveItemsAsync(remoteClient.AgentId, items, null);
         }
@@ -711,14 +711,14 @@ namespace Universe.Modules.Inventory
                                          UUID newFolderID, string newName)
         {
             MainConsole.Instance.DebugFormat(
-                "[AGENT INVENTORY]: CopyInventoryItem received by {0} with oldAgentID {1}, oldItemID {2}, new FolderID {3}, newName {4}",
+                "[Agent Inventory]: CopyInventoryItem received by {0} with oldAgentID {1}, oldItemID {2}, new FolderID {3}, newName {4}",
                 remoteClient.AgentId, oldAgentID, oldItemID, newFolderID, newName);
 
             //Use UUID.Zero as it might be a library item
             InventoryItemBase item = m_scene.InventoryService.GetItem(UUID.Zero, oldItemID);
             if (item == null)
             {
-                MainConsole.Instance.Error("[AGENT INVENTORY]: Failed to find item " + oldItemID.ToString());
+                MainConsole.Instance.Error("[Agent Inventory]: Failed to find item " + oldItemID.ToString());
                 return;
             }
 
@@ -784,7 +784,7 @@ namespace Universe.Modules.Inventory
                                                                             else
                                                                             {
                                                                                 MainConsole.Instance.ErrorFormat(
-                                                                                    "[AGENT INVENTORY]: Could not copy item {0} since asset {1} could not be found",
+                                                                                    "[Agent Inventory]: Could not copy item {0} since asset {1} could not be found",
                                                                                     item.Name, item.AssetID);
                                                                             }
                                                                         });
@@ -1104,7 +1104,7 @@ namespace Universe.Modules.Inventory
             InventoryFolderBase containingFolder = new InventoryFolderBase(folder.ID, client.AgentId);
             containingFolder = m_scene.InventoryService.GetFolder(containingFolder);
 
-            //MainConsole.Instance.DebugFormat("[AGENT INVENTORY]: Sending inventory folder contents ({0} nodes) for \"{1}\" to {2} {3}",
+            //MainConsole.Instance.DebugFormat("[Agent Inventory]: Sending inventory folder contents ({0} nodes) for \"{1}\" to {2} {3}",
             //    contents.Folders.Count + contents.Items.Count, containingFolder.Name, client.FirstName, client.LastName);
 
             if (containingFolder != null)

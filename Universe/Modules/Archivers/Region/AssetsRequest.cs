@@ -227,13 +227,13 @@ namespace Universe.Modules.Archivers
 
                     if (asset != null)
                     {
-//                        MainConsole.Instance.DebugFormat("[Archiver]: Writing asset {0}", id);
+                        //MainConsole.Instance.DebugFormat("[Archiver]: Writing asset {0}", id);
                         m_foundAssetUuids.Add(asset.ID);
                         m_assetsArchiver.WriteAsset(asset);
                     }
                     else
                     {
-//                        MainConsole.Instance.DebugFormat("[Archiver]: Recording asset {0} as not found", id);
+                        //MainConsole.Instance.DebugFormat("[Archiver]: Recording asset {0} as not found", id);
                         m_notFoundAssetUuids.Add(new UUID(assetID));
                     }
 

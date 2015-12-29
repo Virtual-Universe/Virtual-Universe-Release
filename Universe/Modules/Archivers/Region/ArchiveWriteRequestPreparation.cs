@@ -25,17 +25,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Universe.Framework.ConsoleFramework;
-using Universe.Framework.Modules;
-using Universe.Framework.SceneInfo;
-using Universe.Framework.SceneInfo.Entities;
-using Universe.Framework.Serialization;
-using OpenMetaverse;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using OpenMetaverse;
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.Modules;
+using Universe.Framework.SceneInfo;
+using Universe.Framework.SceneInfo.Entities;
+using Universe.Framework.Serialization;
 
 namespace Universe.Modules.Archivers
 {
@@ -218,7 +218,6 @@ namespace Universe.Modules.Archivers
                 {
                     canTransfer |= (obj.EveryoneMask & (uint) PermissionMask.Copy) != 0;
                 }
-
 
                 bool partPermitted = true;
                 if (checkPermissions.Contains("C") && !canCopy)

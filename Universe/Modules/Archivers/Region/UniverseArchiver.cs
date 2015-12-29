@@ -146,7 +146,6 @@ namespace Universe.Modules.Archivers
 
             //Register the interface
             registry.RegisterModuleInterface<IUniverseBackupArchiver> (this);
-
         }
 
         public void Start (IConfigSource config, IRegistryCore registry)

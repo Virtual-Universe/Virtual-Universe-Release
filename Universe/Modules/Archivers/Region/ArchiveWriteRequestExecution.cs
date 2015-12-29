@@ -98,9 +98,8 @@ namespace Universe.Modules.Archivers
                 MainConsole.Instance.DebugFormat("[Archiver]: Could not find asset {0}", uuid);
             }
 
-//            MainConsole.Instance.InfoFormat(
-//                "[Archiver]: Received {0} of {1} assets requested",
-//                assetsFoundUuids.Count, assetsFoundUuids.Count + assetsNotFoundUuids.Count);
+            //MainConsole.Instance.InfoFormat(
+            //    "[Archiver]: Received {0} of {1} assets requested", assetsFoundUuids.Count, assetsFoundUuids.Count + assetsNotFoundUuids.Count);
 
             MainConsole.Instance.InfoFormat("[Archiver]: Creating archive file.  This may take some time.");
 

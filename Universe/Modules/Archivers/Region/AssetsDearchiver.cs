@@ -25,17 +25,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
-using Universe.Framework.ConsoleFramework;
-using Universe.Framework.Serialization;
-using Universe.Framework.Services;
-using Universe.Framework.Services.ClassHelpers.Assets;
-using OpenMetaverse;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Xml;
+using OpenMetaverse;
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.Serialization;
+using Universe.Framework.Services;
+using Universe.Framework.Services.ClassHelpers.Assets;
 
 namespace Universe.Modules.Archivers
 {
@@ -104,7 +103,7 @@ namespace Universe.Modules.Archivers
                 AssetMetadata metadata = new AssetMetadata();
 
                 string filename = reader.ReadElementString("filename");
-                MainConsole.Instance.DebugFormat("[DEARCHIVER]: Reading node {0}", filename);
+                MainConsole.Instance.DebugFormat("[Dearchiver]: Reading node {0}", filename);
 
                 metadata.Name = reader.ReadElementString("name");
                 metadata.Description = reader.ReadElementString("description");
@@ -118,7 +117,7 @@ namespace Universe.Modules.Archivers
                 reader.Read();
             }
 
-            MainConsole.Instance.DebugFormat("[DEARCHIVER]: Resolved {0} items of asset metadata", m_metadata.Count);
+            MainConsole.Instance.DebugFormat("[Dearchiver]: Resolved {0} items of asset metadata", m_metadata.Count);
 
             ResolvePendingAssetData();
         }
@@ -163,7 +162,7 @@ namespace Universe.Modules.Archivers
             else
             {
                 MainConsole.Instance.ErrorFormat(
-                    "[DEARCHIVER]: Tried to de-archive data with filename {0} without any corresponding metadata",
+                    "[Dearchiver]: Tried to de-archive data with filename {0} without any corresponding metadata",
                     assetPath);
             }
         }

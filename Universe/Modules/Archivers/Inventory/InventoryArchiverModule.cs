@@ -191,10 +191,8 @@ namespace Universe.Modules.Archivers
                         + "--perm=<permissions> : If present, verify asset permissions before saving.\n"
                         + "   <permissions> can include 'C' (Copy), 'M' (Modify, 'T' (Transfer)",
                         HandleSaveIARConsoleCommand, false, true);
-
                 }
             }
-
         }
 
         #endregion
@@ -451,7 +449,6 @@ namespace Universe.Modules.Archivers
                     options["CheckPermissions"] = param.Substring(7);
                     newParams.Remove(param);
                 }
-
             }
 
             string firstName;
@@ -478,7 +475,6 @@ namespace Universe.Modules.Archivers
                     lastName = newParams[3];
                 }
 
-
                 // optional...
                 string iarPath = "/*";
                 if (newParams.Count > 5)
@@ -493,7 +489,6 @@ namespace Universe.Modules.Archivers
                 } else
                     archiveFileName = newParams[4];
                 
-
                 //some file sanity checks
                 string savePath;
                 savePath = PathHelpers.VerifyWriteFile (archiveFileName, ".iar", m_archiveDirectory, true);
