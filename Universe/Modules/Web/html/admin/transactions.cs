@@ -27,7 +27,7 @@
 
 using System;
 using System.Collections.Generic;
-using OpemMetaverse;
+using OpenMetaverse;
 using Universe.Framework.Modules;
 using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Services;
