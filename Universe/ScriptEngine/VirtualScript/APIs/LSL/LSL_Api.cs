@@ -9855,7 +9855,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
         //  then a null pointer exception will be thrown
         //  while their lengths are being determined.
         //
-        //  A small amount of working memoryis required
+        //  A small amount of working memory is required
         //  of approximately 8*#tokenizers.
         //
         //  There are many ways in which this function
