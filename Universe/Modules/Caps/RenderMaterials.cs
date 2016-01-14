@@ -211,7 +211,7 @@ namespace Universe.Modules.Caps
 
                                                 } catch (Exception e)
                                                 { 
-                                                    MainConsole.Instance.Warn ("[MaterialsDemoModule]: cannot decode \"Material\" from matsMap: " + e.Message); 
+                                                    MainConsole.Instance.Warn ("[Materials Demo Module]: cannot decode \"Material\" from matsMap: " + e.Message); 
                                                     continue;
                                                 }
                                             }
@@ -228,7 +228,6 @@ namespace Universe.Modules.Caps
                                                 MainConsole.Instance.Debug ("[Materials]: null SOP for localId: " + matLocalID);
                                             else
                                             {
-                                                //var te = sop.Shape.Textures;
                                                 var te = new Primitive.TextureEntry (sop.Shape.TextureEntry, 0, sop.Shape.TextureEntry.Length);
 
                                                 if (te == null)
@@ -247,13 +246,14 @@ namespace Universe.Modules.Caps
                                                                 MainConsole.Instance.Debug ("[Materials]: te.DefaultTexture is null");
                                                             else
                                                             {
-//## FixMe ##
-// comparison always results in 'False'                                   if (te.DefaultTexture.MaterialID == null)
-//                                                                    MainConsole.Instance.Debug("[MaterialsDemoModule]: te.DefaultTexture.MaterialID is null");
-//                                                                else
-//                                                                {
+                                                                //## FixMe ##
+                                                                // comparison always results in 'False'
+                                                                //if (te.DefaultTexture.MaterialID == null)
+                                                                // MainConsole.Instance.Debug("[MaterialsDemoModule]: te.DefaultTexture.MaterialID is null");
+                                                                // else
+                                                                // {
                                                                 te.DefaultTexture.MaterialID = id;
-//                                                                }
+                                                                // }
                                                             }
                                                         } else
                                                         {

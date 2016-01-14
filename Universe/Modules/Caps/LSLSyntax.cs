@@ -25,11 +25,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
+using System.IO;
 using Nini.Config;
 using OpenMetaverse;
 using OpenMetaverse.StructuredData;
-using System;
-using System.IO;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Servers.HttpServer;
@@ -106,8 +106,6 @@ namespace Universe.Modules.Caps
             // * If version of LSLSyntax.xml file is older, request the new version through the Caps
             //
             // * Including a bogus file for the time being in bin/Caps
-            //
-            // Fly-Man- 17 May 2015
             throw new NotImplementedException();
         }
     }
