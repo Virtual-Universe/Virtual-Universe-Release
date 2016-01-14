@@ -436,7 +436,7 @@ namespace Universe.Services
         {
             try
             {
-                //MainConsole.Instance.Debug("[CAPS]: UploadBakedTexture Request in region: " +
+                //MainConsole.Instance.Debug("[Caps]: UploadBakedTexture Request in region: " +
                 //        m_regionName);
 
                 string uploadpath = "/CAPS/Upload/" + UUID.Random() + "/";
@@ -454,7 +454,7 @@ namespace Universe.Services
             }
             catch (Exception e)
             {
-                MainConsole.Instance.Error("[CAPS]: " + e);
+                MainConsole.Instance.Error("[Caps]: " + e);
             }
 
             return null;

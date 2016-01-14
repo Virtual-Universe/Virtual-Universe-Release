@@ -82,7 +82,7 @@ namespace Universe.Modules.Chat
 
                 if (m_TransferModule == null)
                 {
-                    MainConsole.Instance.Error("[INSTANT MESSAGE]: No message transfer module, IM will not work!");
+                    MainConsole.Instance.Error("[Instant Message]: No message transfer module, IM will not work!");
                     scene.EventManager.OnNewClient -= EventManager_OnNewClient;
                     scene.EventManager.OnClosingClient -= EventManager_OnClosingClient;
                     scene.EventManager.OnIncomingInstantMessage -= OnGridInstantMessage;

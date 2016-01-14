@@ -76,13 +76,13 @@ namespace Universe.Modules.Gods
                     if (sp.GodLevel == Constants.USER_NORMAL)
                         sp.GodLevel = Constants.USER_GOD_MAINTENANCE;
 
-                    MainConsole.Instance.InfoFormat ("[GODS]: God level set for {0}, level {1}", sp.Name, sp.GodLevel);
+                    MainConsole.Instance.InfoFormat ("[Gods]: God level set for {0}, level {1}", sp.Name, sp.GodLevel);
                     sp.ControllingClient.SendAdminResponse (token, (uint)sp.GodLevel);
                 } else
                 {
                     if (m_dialogModule != null)
                         m_dialogModule.SendAlertToUser ( agentID, "Request for god powers denied. This request has been logged.");
-                    MainConsole.Instance.Info ("[GODS]: God powers requested by " + sp.Name +
+                    MainConsole.Instance.Info ("[Gods]: God powers requested by " + sp.Name +
                         ", user is not allowed to have god powers");
                 }
             }

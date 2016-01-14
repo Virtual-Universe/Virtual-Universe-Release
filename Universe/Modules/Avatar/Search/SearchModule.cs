@@ -341,7 +341,7 @@ namespace Universe.Modules.Search
                      : m_Scene.GridService.GetRegionByPosition (remoteClient.AllScopeIDs, (int)xstart, (int)ystart);
             if (GR == null)
             {
-                //No region???
+                //No region?
                 return;
             }
 
@@ -672,12 +672,12 @@ namespace Universe.Modules.Search
             {
                 if (searchConfig.GetString ("SearchModule", Name) == Name)
                 m_SearchEnabled = true;
-            	MainConsole.Instance.Info ("[Search] Search Services are enabled");
+            	MainConsole.Instance.Info ("[Search]: Search Services are enabled");
             }
             else
             {
             	m_SearchEnabled = false;
-            	MainConsole.Instance.Info ("[Search] Not configured, disabling");
+            	MainConsole.Instance.Info ("[Search]: Not configured, disabling");
             }
         }
 

@@ -25,7 +25,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Nini.Config;
+using OpenMetaverse;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
@@ -36,11 +40,6 @@ using Universe.Framework.Serialization;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Services.ClassHelpers.Inventory;
 using Universe.Framework.Utilities;
-using Nini.Config;
-using OpenMetaverse;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using GridRegion = Universe.Framework.Services.GridRegion;
 
 namespace Universe.Modules.Attachments
@@ -134,7 +133,7 @@ namespace Universe.Modules.Attachments
                                        if (null == appearance || null == appearance.Appearance)
                                        {
                                            MainConsole.Instance.WarnFormat(
-                                               "[ATTACHMENT]: Appearance has not been initialized for agent {0}",
+                                               "[Attachment]: Appearance has not been initialized for agent {0}",
                                                presence.UUID);
                                            return;
                                        }
@@ -157,7 +156,7 @@ namespace Universe.Modules.Attachments
                                            catch (Exception e)
                                            {
                                                MainConsole.Instance.ErrorFormat(
-                                                   "[ATTACHMENT]: Unable to rez attachment: {0}", e);
+                                                   "[Attachment]: Unable to rez attachment: {0}", e);
                                            }
                                        }
                                        presence.AttachmentsLoaded = true;
@@ -303,7 +302,6 @@ namespace Universe.Modules.Attachments
             ISceneEntity group = m_scene.GetGroupByPrim(objectLocalID);
             if (group != null)
             {
-                //group.DetachToGround();
                 DetachSingleAttachmentToInventory(group.RootChild.FromUserInventoryItemID, remoteClient);
             }
             else
@@ -483,7 +481,7 @@ namespace Universe.Modules.Attachments
                             bool success = m_scene.SceneGraph.RestorePrimToScene(objatt, false);
                             if (!success)
                             {
-                                MainConsole.Instance.Error("[AttachmentModule]: Failed to add attachment " + objatt.Name +
+                                MainConsole.Instance.Error("[Attachment Module]: Failed to add attachment " + objatt.Name +
                                                            " for user " + remoteClient.Name + "!");
                                 return null;
                             }
@@ -507,7 +505,7 @@ namespace Universe.Modules.Attachments
                                 prim.LocalId = 0;
                             bool success = m_scene.SceneGraph.RestorePrimToScene(objatt, true);
                             if (!success)
-                                MainConsole.Instance.Error("[AttachmentModule]: Failed to add attachment " + objatt.Name + " for user " + remoteClient.Name + "!"); */
+                                MainConsole.Instance.Error("[Attachment Module]: Failed to add attachment " + objatt.Name + " for user " + remoteClient.Name + "!"); */
                         }
                     }
                     catch
@@ -647,11 +645,8 @@ namespace Universe.Modules.Attachments
                 sog.UpdateGroupPosition(pos, true);
                 sog.RootChild.AttachedPos = pos;
                 sog.RootChild.FixOffsetPosition((pos), false);
-                //sog.AbsolutePosition = sog.RootChild.AttachedPos;
                 sog.SetAttachmentPoint(attachmentPoint);
                 sog.ScheduleGroupUpdate(PrimUpdateFlags.TerseUpdate);
-                //Don't update right now, wait until logout
-                //UpdateKnownItem(client, sog, sog.GetFromItemID(), sog.OwnerID);
             }
             else
             {
@@ -903,7 +898,6 @@ namespace Universe.Modules.Attachments
                     AvatarFactory.QueueAppearanceSave(remoteClient.AgentId);
                 }
             }
-
 
             // In case it is later dropped again, don't let
             // it get cleaned up

@@ -362,7 +362,7 @@ namespace Universe.Services
                                                         OSHttpResponse httpResponse)
         {
             string asset_type = map["asset_type"].AsString();
-            //MainConsole.Instance.Info("[CAPS]: NewAgentInventoryRequest Request is: " + map.ToString());
+            //MainConsole.Instance.Info("[Caps]: NewAgentInventoryRequest Request is: " + map.ToString());
             //MainConsole.Instance.Debug("asset upload request via CAPS" + llsdRequest.inventory_type + " , " + llsdRequest.asset_type);
 
             string assetName = map["name"].AsString();
