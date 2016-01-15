@@ -25,17 +25,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
-using Universe.Framework.ConsoleFramework;
-using Universe.Framework.Modules;
-using Universe.Framework.SceneInfo;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.Imaging;
 using System;
 using System.Drawing;
 using System.IO;
 using System.Net;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.Imaging;
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.Modules;
+using Universe.Framework.SceneInfo;
 
 namespace Universe.Modules.Scripting
 {
@@ -152,7 +151,6 @@ namespace Universe.Modules.Scripting
             }
 
             RequestState state = new RequestState((HttpWebRequest) request, requestID);
-            // IAsyncResult result = request.BeginGetResponse(new AsyncCallback(HttpRequestReturn), state);
             request.BeginGetResponse(HttpRequestReturn, state);
 
             TimeSpan t = (DateTime.UtcNow - new DateTime(1970, 1, 1));
@@ -212,12 +210,12 @@ namespace Universe.Modules.Scripting
                         catch (Exception)
                         {
                             MainConsole.Instance.Error(
-                                "[LOADIMAGEURLMODULE]: OpenJpeg Encode Failed.  Empty byte data returned!");
+                                "[Load Image Url Module]: OpenJpeg Encode Failed.  Empty byte data returned!");
                         }
                     }
                     else
                     {
-                        MainConsole.Instance.WarnFormat("[LOADIMAGEURLMODULE] No data returned");
+                        MainConsole.Instance.WarnFormat("[Load Image Url Module] No data returned");
                     }
                 }
             }
@@ -234,7 +232,7 @@ namespace Universe.Modules.Scripting
                     stream.Close();
                 }
             }
-            MainConsole.Instance.DebugFormat("[LOADIMAGEURLMODULE] Returning {0} bytes of image data for request {1}",
+            MainConsole.Instance.DebugFormat("[Load Image Url Module] Returning {0} bytes of image data for request {1}",
                                              imageJ2000.Length, state.RequestID);
             m_textureManager.ReturnData(state.RequestID, imageJ2000);
         }
