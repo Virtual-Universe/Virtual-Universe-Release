@@ -29,6 +29,8 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 //#if LINUX
 //using System.Net.Security;
 //using System.Security.Cryptography.X509Certificates;
