@@ -41,7 +41,7 @@ namespace Universe.Physics.BulletSPlugin
 {
     public sealed class BSScene : PhysicsScene
     {
-        internal static readonly string LogHeader = "[BULLETS SCENE]";
+        internal static readonly string LogHeader = "[Bulletsim Scene]";
 
         // The name of the region we're working for.
         public string RegionName { get; private set; }

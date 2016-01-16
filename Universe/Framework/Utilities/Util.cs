@@ -786,12 +786,12 @@ namespace Universe.Framework.Utilities
             else
                 nativeLibraryPath = "lib32/" + libraryName;
 
-            MainConsole.Instance.DebugFormat("[UTIL]: Loading native Windows library at {0}", nativeLibraryPath);
+            MainConsole.Instance.DebugFormat("[Util]: Loading native Windows library at {0}", nativeLibraryPath);
 
             if (Util.LoadLibrary(nativeLibraryPath) == IntPtr.Zero)
             {
                 MainConsole.Instance.ErrorFormat(
-                    "[UTIL]: Couldn't find native Windows library at {0}", nativeLibraryPath);
+                    "[Util]: Couldn't find native Windows library at {0}", nativeLibraryPath);
 
                 return false;
             }
@@ -1802,7 +1802,7 @@ namespace Universe.Framework.Utilities
                 }
                 catch (Exception ex)
                 {
-                    MainConsole.Instance.ErrorFormat("[UTIL]: Asynchronous method threw an exception: {0}", ex.ToString());
+                    MainConsole.Instance.ErrorFormat("[Util]: Asynchronous method threw an exception: {0}", ex.ToString());
                 }
 
                 ar.AsyncWaitHandle.Close();
@@ -2589,7 +2589,7 @@ namespace Universe.Framework.Utilities
                 }
                 catch (Exception e)
                 {
-                    MainConsole.Instance.WarnFormat("[UTIL]: Exception parsing XFF header {0}: {1}", xff, e.Message);
+                    MainConsole.Instance.WarnFormat("[Util]: Exception parsing XFF header {0}: {1}", xff, e.Message);
                 }
             }
 
@@ -2610,7 +2610,7 @@ namespace Universe.Framework.Utilities
                 }
                 catch (Exception e)
                 {
-                    MainConsole.Instance.WarnFormat("[UTIL]: exception in GetCallerIP: {0}", e.Message);
+                    MainConsole.Instance.WarnFormat("[Util]: exception in GetCallerIP: {0}", e.Message);
                 }
             }
             return string.Empty;
@@ -2751,7 +2751,7 @@ namespace Universe.Framework.Utilities
             }
             catch (Exception e)
             {
-                MainConsole.Instance.WarnFormat("[UTIL]: An error occurred while resolving host name {0}, {1}",
+                MainConsole.Instance.WarnFormat("[Util]: An error occurred while resolving host name {0}, {1}",
                                                 dnsAddress, e.ToString());
 
                 InternetFailure();
