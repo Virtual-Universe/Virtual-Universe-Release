@@ -31,7 +31,7 @@ namespace Universe.Physics.BulletSPlugin
 {
     public sealed class BSTerrainHeightmap : BSTerrainPhys
     {
-        static string LogHeader = "[BULLETSIM TERRAIN HEIGHTMAP]";
+        static string LogHeader = "[Bulletsim Terrain Heightmap]";
 
         BulletHMapInfo m_mapInfo = null;
 
