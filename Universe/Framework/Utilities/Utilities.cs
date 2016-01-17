@@ -79,11 +79,11 @@ namespace Universe.Framework.Utilities
         	switch(Maturity)
         	{
         	case 13:
-        		return "PG";
+        		return "PG"; // V3 viewers call this a General rating
         	case 21:
-        		return "Mature";
+        		return "Mature"; // V3 viewers call this a Moderate rating
         	case 42:
-        		return "Adult";
+        		return "Adult"; // V3 viewers call this Adult rating
         	default:
         		return "Unknown";
         	}
@@ -934,7 +934,5 @@ namespace Universe.Framework.Utilities
             default:                                return "System Generated";
             }
         }
-
     }
  }
-

@@ -208,7 +208,7 @@ namespace Universe.Modules.Web
                 return MainServer.BlankResponse;
             if (httpRequest.HttpMethod == "POST")
                 httpResponse.KeepAlive = false;
-            MainConsole.Instance.Debug("[WebInterface]: Serving " + filename + ", keep-alive: " + httpResponse.KeepAlive);
+            MainConsole.Instance.Debug("[Web Interface]: Serving " + filename + ", keep-alive: " + httpResponse.KeepAlive);
             IWebInterfacePage page = GetPage(filename);
             if (page != null)
             {
