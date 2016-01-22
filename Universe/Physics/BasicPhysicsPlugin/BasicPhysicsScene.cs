@@ -57,12 +57,12 @@ namespace Universe.Physics.BasicPhysicsPlugin
             get { return false; }
         }
 
-        public override void Initialise(IMesher meshmerizer, IScene scene)
+        public override void Initialize(IMesher meshmerizer, IScene scene)
         {
             m_region = scene.RegionInfo;
         }
 
-        public override void PostInitialise(IConfigSource config)
+        public override void PostInitialize(IConfigSource config)
         {
         }
 

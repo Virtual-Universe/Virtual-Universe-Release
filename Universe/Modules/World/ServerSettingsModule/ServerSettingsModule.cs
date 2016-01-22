@@ -45,7 +45,7 @@ namespace Universe.Modules
     {
         private List<ServerSetting> m_settings = new List<ServerSetting>();
 
-        public void Initialise(IConfigSource source)
+        public void Initialize(IConfigSource source)
         {
         }
 

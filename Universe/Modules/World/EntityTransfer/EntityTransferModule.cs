@@ -69,7 +69,7 @@ namespace Universe.Modules.EntityTransfer
             get { return "BasicEntityTransferModule"; }
         }
 
-        public virtual void Initialise(IConfigSource source)
+        public virtual void Initialize(IConfigSource source)
         {
             IConfig moduleConfig = source.Configs["Modules"];
             if (moduleConfig != null)

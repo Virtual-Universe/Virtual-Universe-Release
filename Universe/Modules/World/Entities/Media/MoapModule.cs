@@ -153,7 +153,7 @@ namespace Universe.Modules.Entities.Media
             get { return null; }
         }
 
-        public void Initialise(IConfigSource configSource)
+        public void Initialize(IConfigSource configSource)
         {
             IConfig config = configSource.Configs["MediaOnAPrim"];
 

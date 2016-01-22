@@ -61,7 +61,7 @@ namespace Universe.Modules.GlobalEnvironment
 
         #region IRegion Methods
 
-        public void Initialise (IConfigSource config)
+        public void Initialize (IConfigSource config)
         {
             windConfig = config.Configs ["Wind"];
             desiredWindPlugin = m_dWindPluginName;
@@ -105,7 +105,7 @@ namespace Universe.Modules.GlobalEnvironment
 
                     if (windConfig != null)
                     {
-                        m_activeWindPlugin.Initialise ();
+                        m_activeWindPlugin.Initialize ();
                         m_activeWindPlugin.WindConfig (m_scene, windConfig);
                     }
                 }

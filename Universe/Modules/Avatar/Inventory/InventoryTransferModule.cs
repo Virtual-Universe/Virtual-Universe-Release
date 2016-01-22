@@ -49,7 +49,7 @@ namespace Universe.Modules.Inventory
 
         #region INonSharedRegionModule Members
 
-        public void Initialise(IConfigSource config)
+        public void Initialize(IConfigSource config)
         {
             if (config.Configs["Messaging"] != null)
             {

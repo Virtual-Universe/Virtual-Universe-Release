@@ -73,7 +73,7 @@ namespace Universe.Modules.WorldMap
 
         #region IMapTileTerrainRenderer Members
 
-        public void Initialise(IScene scene, IConfigSource config)
+        public void Initialize(IScene scene, IConfigSource config)
         {
             m_scene = scene;
             m_imgDecoder = m_scene.RequestModuleInterface<IJ2KDecoder>();

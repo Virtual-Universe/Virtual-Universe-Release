@@ -170,7 +170,7 @@ namespace Universe.Services
 
         #region Initialize
 
-        public void Initialise(IClientCapsService clientCapsService, IRegionCapsService regionCapsService,
+        public void Initialize(IClientCapsService clientCapsService, IRegionCapsService regionCapsService,
                                string capsBase, AgentCircuitData circuitData, uint port)
         {
             m_clientCapsService = clientCapsService;

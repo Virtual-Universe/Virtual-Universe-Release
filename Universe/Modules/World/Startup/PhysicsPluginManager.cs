@@ -80,8 +80,8 @@ namespace Universe.Modules.Startup
             {
                 MainConsole.Instance.Debug("[Physics]: Loading physics engine: " + physEngineName);
                 PhysicsScene result = _PhysPlugins[physEngineName].GetScene();
-                result.Initialise(meshEngine, scene);
-                result.PostInitialise(config);
+                result.Initialize(meshEngine, scene);
+                result.PostInitialize(config);
                 return result;
             }
             else

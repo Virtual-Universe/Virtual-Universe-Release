@@ -88,11 +88,11 @@ namespace Universe.Services
         #region Initialize
 
         /// <summary>
-        ///     Initialise the service
+        ///     Initialize the service
         /// </summary>
         /// <param name="regionID"></param>
         /// <param name="registry"></param>
-        public void Initialise(UUID regionID, IRegistryCore registry)
+        public void Initialize(UUID regionID, IRegistryCore registry)
         {
             m_RegionID = regionID;
             m_registry = registry;

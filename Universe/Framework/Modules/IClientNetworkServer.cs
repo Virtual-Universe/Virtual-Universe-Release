@@ -35,7 +35,7 @@ namespace Universe.Framework.Modules
 {
     public interface IClientNetworkServer
     {
-        void Initialise(uint port, IConfigSource configSource, AgentCircuitManager authenticateClass);
+        void Initialize(uint port, IConfigSource configSource, AgentCircuitManager authenticateClass);
         void UpdatePort(uint port);
         void AddScene(IScene x);
         void Start();
