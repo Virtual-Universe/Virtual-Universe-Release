@@ -11,29 +11,29 @@ Greythane
 
 --------------- WhiteCore-Sim contributors (Thanks for all the patches :)) -----------------------
 
-Nhede
 Emperorstarfinder
 Fine77
+Nhede
 Any that we might have forgotten
 
 --------------- Aurora contributors (Thanks for all the patches :)) --------------------------
 
-Revolution Smythe
-Mahakala Dharmapala
-Ubit Umarov
-Kristen Mynx
-Whitestar Magic
-Major Rasputin
-Quilz
-Skidz Tweak
-Matto Destiny
-Enrico Nirvana
 djphil
-SignpostMarv
-JAllard
+Enrico Nirvana
 Fly-Man-
+JAllard
 Kevin Whitman (@Keverw)
+Kristen Mynx
+Mahakala Dharmapala
+Major Rasputin
 Masterful
+Matto Destiny
+Quilz
+Revolution Smythe
+SignpostMarv
+Skidz Tweak
+Ubit Umarov
+Whitestar Magic
 
 ------------------ OpenSim ------------------
 
