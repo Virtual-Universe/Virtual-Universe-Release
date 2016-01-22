@@ -8,6 +8,7 @@ Assigned to IrishwolfStarfinder
 * Redesign the WebUI to use the WebAPI (In progress)
 * Consider implementation of NodeJS
 * Marketplace (to be added to webUI both builtin and standalone)
+* Consider changing encryption from SHA1 and MD5 to a more secure encryption method
 
 Space Gate:
 ----------
