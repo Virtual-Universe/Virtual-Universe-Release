@@ -25,7 +25,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading;
+using System.Xml;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.Messages.Linden;
+using OpenMetaverse.Packets;
+using OpenMetaverse.StructuredData;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
@@ -36,17 +46,6 @@ using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Services.ClassHelpers.Inventory;
 using Universe.Framework.Utilities;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.Messages.Linden;
-using OpenMetaverse.Packets;
-using OpenMetaverse.StructuredData;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading;
-using System.Xml;
 using RegionFlags = OpenMetaverse.RegionFlags;
 
 namespace Universe.ClientStack
@@ -1576,42 +1575,57 @@ namespace Universe.ClientStack
         public void SendPlacesQuery(ExtendedLandData[] LandData, UUID queryID, UUID transactionID)
         {
             PlacesReplyPacket PlacesReply = new PlacesReplyPacket();
-            
+
+            PlacesReplyPacket.QueryDataBlock[] Query = new PlacesReplyPacket.QueryDataBlock[LandData.Length + 1];
+
             // Since we don't have Membership we should send an empty QueryData block 
             // here to keep the viewer happy
-            
-            PlacesReplyPacket.QueryDataBlock[] Query = new PlacesReplyPacket.QueryDataBlock[LandData.Length];
+
+            PlacesReplyPacket.QueryDataBlock MembershipBlock = new PlacesReplyPacket.QueryDataBlock
+            {
+                ActualArea = 0,
+                BillableArea = 0,
+                Desc = Utils.StringToBytes(""),
+                Dwell = 0,
+                Flags = 0,
+                GlobalX = 0,
+                GlobalY = 0,
+                GlobalZ = 0,
+                Name = Utils.StringToBytes(""),
+                OwnerID = UUID.Zero,
+                Price = 0,
+                SimName = Utils.StringToBytes(""),
+                SnapshotID = UUID.Zero
+            };
+            Query[0] = MembershipBlock;
+
             //Note: Nothing is ever done with this?????
             int totalarea = 0;
             List<string> RegionTypes = new List<string>();
             for (int i = 0; i < LandData.Length; i++)
             {
                 PlacesReplyPacket.QueryDataBlock QueryBlock = new PlacesReplyPacket.QueryDataBlock
-                                                                  {
-                                                                      ActualArea = LandData[i].LandData.Area,
-                                                                      BillableArea = LandData[i].LandData.Area,
-                                                                      Desc =
-                                                                          Utils.StringToBytes(
-                                                                              LandData[i].LandData.Description),
-                                                                      Dwell = LandData[i].LandData.Dwell,
-                                                                      Flags = 0,
-                                                                      GlobalX = LandData[i].GlobalPosX,
-                                                                      GlobalY = LandData[i].GlobalPosY,
-                                                                      GlobalZ = 0,
-                                                                      Name =
-                                                                          Utils.StringToBytes(LandData[i].LandData.Name),
-                                                                      OwnerID = LandData[i].LandData.OwnerID,
-                                                                      Price = LandData[i].LandData.SalePrice,
-                                                                      SimName =
-                                                                          Utils.StringToBytes(LandData[i].RegionName),
-                                                                      SnapshotID = LandData[i].LandData.SnapshotID
-                                                                  };
-                Query[i] = QueryBlock;
+                {
+                    ActualArea = LandData[i].LandData.Area,
+                    BillableArea = LandData[i].LandData.Area,
+                    Desc = Utils.StringToBytes(LandData[i].LandData.Description),
+                    Dwell = LandData[i].LandData.Dwell,
+                    Flags = 0,
+                    GlobalX = LandData[i].GlobalPosX,
+                    GlobalY = LandData[i].GlobalPosY,
+                    GlobalZ = 0,
+                    Name = Utils.StringToBytes(LandData[i].LandData.Name),
+                    OwnerID = LandData[i].LandData.OwnerID,
+                    Price = LandData[i].LandData.SalePrice,
+                    SimName = Utils.StringToBytes(LandData[i].RegionName),
+                    SnapshotID = LandData[i].LandData.SnapshotID
+                };
+                Query[i + 1] = QueryBlock;
                 totalarea += LandData[i].LandData.Area;
                 RegionTypes.Add(LandData[i].RegionType);
             }
             PlacesReply.QueryData = Query;
-            PlacesReply.AgentData = new PlacesReplyPacket.AgentDataBlock {AgentID = AgentId, QueryID = queryID};
+            PlacesReply.AgentData = new PlacesReplyPacket.AgentDataBlock { AgentID = AgentId, QueryID = queryID };
             PlacesReply.TransactionData.TransactionID = transactionID;
             try
             {
