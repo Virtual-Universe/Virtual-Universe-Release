@@ -117,7 +117,6 @@ namespace Universe.Modules.WorldMap.Warp3DMap
         {
             float aspectRatio = Width/(float) Height;
 
-//            float hFoV = FieldOfView*DEG_TO_RAD;  ///This is done in the camera settings already!!
             float hFoV = FieldOfView;
             float zn = NearPlaneDistance;
             float zf = FarPlaneDistance;

@@ -25,19 +25,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
-using Universe.Framework.ConsoleFramework;
-using Universe.Framework.Modules;
-using Universe.Framework.Services;
-using Universe.Framework.Services.ClassHelpers.Assets;
-using Universe.Framework.Utilities;
-using CSJ2K;
-using OpenMetaverse;
 using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using CSJ2K;
+using OpenMetaverse;
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.Modules;
+using Universe.Framework.Services;
+using Universe.Framework.Services.ClassHelpers.Assets;
+using Universe.Framework.Utilities;
 
 namespace Universe.Modules.WorldMap.Warp3DMap
 {
@@ -207,8 +206,8 @@ namespace Universe.Modules.WorldMap.Warp3DMap
 
             #region Layer Map
 
-            float diffX = 1.0f;//(float) heightmap.Width/(float) Constants.RegionSize;
-            float diffY = 1.0f;//(float) heightmap.Height/(float) Constants.RegionSize;
+            float diffX = 1.0f;
+            float diffY = 1.0f;
             int newRsX = heightmap.Width / (int)diffX;
             int newRsY = heightmap.Height / (int)diffY;
 
