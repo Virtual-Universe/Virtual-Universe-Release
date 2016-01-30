@@ -86,7 +86,6 @@ namespace Universe.Modules.WorldMap
 
         public void CreateMapTile(out Bitmap terrainBMP, out Bitmap mapBMP)
         {
-
             int start = Environment.TickCount;
             bool drawPrimVolume = true;
             string tileRenderer = "WarpTileRenderer";
@@ -141,9 +140,7 @@ namespace Universe.Modules.WorldMap
 
             MainConsole.Instance.InfoFormat("[Map Tile Generator]: Maptile generation took {0} ms",
                 (Environment.TickCount - start));
-
         }
-
 
         public void CreateMapTile(out byte[] terrain, out byte[] map)
         {
@@ -161,8 +158,7 @@ namespace Universe.Modules.WorldMap
             {
                 map = OpenJPEG.EncodeFromImage(mapBMP, true);
                 mapBMP.Dispose();
-            }
-                
+            }           
         }
 
         public Bitmap CreateViewImage(Vector3 camPos, Vector3 camDir, float fov, int width, int height, bool useTextures)
@@ -266,7 +262,6 @@ namespace Universe.Modules.WorldMap
                 m_assetMapCacheDir = Path.Combine (m_assetCacheDir, "mapzoomlevels");
                 m_assetWorldviewCacheDir = Path.Combine (m_assetCacheDir, "Worldview");
             }
-
 
             m_scene.RegisterModuleInterface<IMapImageGenerator>(this);
 
@@ -387,7 +382,6 @@ namespace Universe.Modules.WorldMap
                 );
                 ClearWorldviewCachedImages (m_scene.RegionInfo.RegionID);
             }
-
         }
 
         /// <summary>
@@ -433,8 +427,7 @@ namespace Universe.Modules.WorldMap
             else
             {
                 Util.FireAndForget(CreateMapTileAsync);
-            }
-                
+            }             
         }
 
         #region Async map tile
@@ -543,13 +536,6 @@ namespace Universe.Modules.WorldMap
             IGridRegisterModule gridRegModule = m_scene.RequestModuleInterface<IGridRegisterModule>();
             if (gridRegModule != null)
                 gridRegModule.UpdateGridRegion(m_scene);
-
-            // clear out... these are all redundant?
-            //terraindata = null;
-            //mapdata = null;
-            //overlay = null;
-            //terrain = null;
-
          }
 
         /// <summary>
@@ -585,7 +571,7 @@ namespace Universe.Modules.WorldMap
 
             foreach (ILandObject land in parcels)
             {
-                // MainConsole.Instance.DebugFormat("[WORLD MAP]: Parcel {0} flags {1}", land.LandData.Name, land.LandData.Flags);
+                // MainConsole.Instance.DebugFormat("[World Map]: Parcel {0} flags {1}", land.LandData.Name, land.LandData.Flags);
                 if ((land.LandData.Flags & (uint) ParcelFlags.ForSale) != 0)
                 {
                     landForSale = true;
@@ -656,7 +642,7 @@ namespace Universe.Modules.WorldMap
             catch (Exception)
             {
                 // Dummy!
-                MainConsole.Instance.Warn("[WORLD MAP]: Unable to generate Map image");
+                MainConsole.Instance.Warn("[World Map]: Unable to generate Map image");
             }
             finally
             {
@@ -697,10 +683,9 @@ namespace Universe.Modules.WorldMap
         Bitmap DrawObjectVolume(IScene whichScene, Bitmap mapbmp)
         {
             ITerrainChannel heightmap = whichScene.RequestModuleInterface<ITerrainChannel>();
-            //MainConsole.Instance.Info("[MAPTILE]: Generating Maptile Step 2: Object Volume Profile");
+            //MainConsole.Instance.Info("[Map Tile]: Generating Maptile Step 2: Object Volume Profile");
             ISceneEntity[] objs = whichScene.Entities.GetEntities();
             Dictionary<uint, DrawStruct> z_sort = new Dictionary<uint, DrawStruct>();
-            //SortedList<float, RectangleDrawStruct> z_sort = new SortedList<float, RectangleDrawStruct>();
             List<float> z_sortheights = new List<float>();
             List<uint> z_localIDs = new List<uint>();
 
@@ -749,7 +734,6 @@ namespace Universe.Modules.WorldMap
                             if (isBelow256AboveTerrain)
                             {
                                 // Try to get the RGBA of the default texture entry..
-                                //
                                 try
                                 {
                                     // get the null checks out of the way
@@ -833,7 +817,6 @@ namespace Universe.Modules.WorldMap
 
                                 Vector3[] vertexes = new Vector3[8];
 
-                                // float[] distance = new float[6];
                                 Vector3[] FaceA = new Vector3[6]; // vertex A for Facei
                                 Vector3[] FaceB = new Vector3[6]; // vertex B for Facei
                                 Vector3[] FaceC = new Vector3[6]; // vertex C for Facei
@@ -842,9 +825,6 @@ namespace Universe.Modules.WorldMap
                                 tScale = new Vector3(lscale.X, -lscale.Y, lscale.Z);
                                 scale = ((tScale*part.GetWorldRotation()));
                                 vertexes[0] = (new Vector3((pos.X + scale.X), (pos.Y + scale.Y), (pos.Z + scale.Z)));
-                                // vertexes[0].x = pos.X + vertexes[0].x;
-                                //vertexes[0].y = pos.Y + vertexes[0].y;
-                                //vertexes[0].z = pos.Z + vertexes[0].z;
 
                                 FaceA[0] = vertexes[0];
                                 FaceB[3] = vertexes[0];
@@ -853,10 +833,6 @@ namespace Universe.Modules.WorldMap
                                 tScale = lscale;
                                 scale = ((tScale*part.GetWorldRotation()));
                                 vertexes[1] = (new Vector3((pos.X + scale.X), (pos.Y + scale.Y), (pos.Z + scale.Z)));
-
-                                // vertexes[1].x = pos.X + vertexes[1].x;
-                                // vertexes[1].y = pos.Y + vertexes[1].y;
-                                //vertexes[1].z = pos.Z + vertexes[1].z;
 
                                 FaceB[0] = vertexes[1];
                                 FaceA[1] = vertexes[1];
@@ -867,10 +843,6 @@ namespace Universe.Modules.WorldMap
 
                                 vertexes[2] = (new Vector3((pos.X + scale.X), (pos.Y + scale.Y), (pos.Z + scale.Z)));
 
-                                //vertexes[2].x = pos.X + vertexes[2].x;
-                                //vertexes[2].y = pos.Y + vertexes[2].y;
-                                //vertexes[2].z = pos.Z + vertexes[2].z;
-
                                 FaceC[0] = vertexes[2];
                                 FaceD[3] = vertexes[2];
                                 FaceC[5] = vertexes[2];
@@ -878,10 +850,6 @@ namespace Universe.Modules.WorldMap
                                 tScale = new Vector3(lscale.X, lscale.Y, -lscale.Z);
                                 scale = ((tScale*part.GetWorldRotation()));
                                 vertexes[3] = (new Vector3((pos.X + scale.X), (pos.Y + scale.Y), (pos.Z + scale.Z)));
-
-                                //vertexes[3].x = pos.X + vertexes[3].x;
-                                // vertexes[3].y = pos.Y + vertexes[3].y;
-                                // vertexes[3].z = pos.Z + vertexes[3].z;
 
                                 FaceD[0] = vertexes[3];
                                 FaceC[1] = vertexes[3];
@@ -891,9 +859,6 @@ namespace Universe.Modules.WorldMap
                                 scale = ((tScale*part.GetWorldRotation()));
                                 vertexes[4] = (new Vector3((pos.X + scale.X), (pos.Y + scale.Y), (pos.Z + scale.Z)));
 
-                                // vertexes[4].x = pos.X + vertexes[4].x;
-                                // vertexes[4].y = pos.Y + vertexes[4].y;
-                                // vertexes[4].z = pos.Z + vertexes[4].z;
 
                                 FaceB[1] = vertexes[4];
                                 FaceA[2] = vertexes[4];
@@ -903,10 +868,6 @@ namespace Universe.Modules.WorldMap
                                 scale = ((tScale*part.GetWorldRotation()));
                                 vertexes[5] = (new Vector3((pos.X + scale.X), (pos.Y + scale.Y), (pos.Z + scale.Z)));
 
-                                // vertexes[5].x = pos.X + vertexes[5].x;
-                                // vertexes[5].y = pos.Y + vertexes[5].y;
-                                // vertexes[5].z = pos.Z + vertexes[5].z;
-
                                 FaceD[1] = vertexes[5];
                                 FaceC[2] = vertexes[5];
                                 FaceB[5] = vertexes[5];
@@ -914,10 +875,6 @@ namespace Universe.Modules.WorldMap
                                 tScale = new Vector3(-lscale.X, -lscale.Y, lscale.Z);
                                 scale = ((tScale*part.GetWorldRotation()));
                                 vertexes[6] = (new Vector3((pos.X + scale.X), (pos.Y + scale.Y), (pos.Z + scale.Z)));
-
-                                // vertexes[6].x = pos.X + vertexes[6].x;
-                                // vertexes[6].y = pos.Y + vertexes[6].y;
-                                // vertexes[6].z = pos.Z + vertexes[6].z;
 
                                 FaceB[2] = vertexes[6];
                                 FaceA[3] = vertexes[6];
@@ -927,19 +884,12 @@ namespace Universe.Modules.WorldMap
                                 scale = ((tScale*part.GetWorldRotation()));
                                 vertexes[7] = (new Vector3((pos.X + scale.X), (pos.Y + scale.Y), (pos.Z + scale.Z)));
 
-                                // vertexes[7].x = pos.X + vertexes[7].x;
-                                // vertexes[7].y = pos.Y + vertexes[7].y;
-                                // vertexes[7].z = pos.Z + vertexes[7].z;
-
                                 FaceD[2] = vertexes[7];
                                 FaceC[3] = vertexes[7];
                                 FaceD[5] = vertexes[7];
 
                                 #endregion
 
-                                //int wy = 0;
-
-                                //bool breakYN = false; // If we run into an error drawing, break out of the
                                 // loop so we don't lag to death on error handling
                                 DrawStruct ds = new DrawStruct {brush = new SolidBrush(mapdotspot)};
                                 if (mapdot.RootChild.Shape.ProfileShape == ProfileShape.Circle)
@@ -956,10 +906,9 @@ namespace Universe.Modules.WorldMap
                                                             (int) Math.Abs(part.Shape.Scale.X),
                                                             (int) Math.Abs(part.Shape.Scale.Y));
                                 }
-                                else //if (mapdot.RootPart.Shape.ProfileShape == ProfileShape.Square)
+                                else
                                 {
                                     ds.dr = DrawRoutine.Rectangle;
-                                    //ds.rect = new Rectangle(mapdrawstartX, (255 - mapdrawstartY), mapdrawendX - mapdrawstartX, mapdrawendY - mapdrawstartY);
 
                                     ds.trns = new face[FaceA.Length];
 
@@ -1013,12 +962,11 @@ namespace Universe.Modules.WorldMap
                         {
                             g.FillEllipse(rectDrawStruct.brush, rectDrawStruct.rect);
                         }
-                        //g.FillRectangle(rectDrawStruct.brush , rectDrawStruct.rect);
                     }
                 }
             } // lock entities objs
 
-            //MainConsole.Instance.Info("[MAPTILE]: Generating Maptile Step 2: Done in " + (Environment.TickCount - tc) + " ms");
+            //MainConsole.Instance.Info("[Map Tile]: Generating Maptile Step 2: Done in " + (Environment.TickCount - tc) + " ms");
             return mapbmp;
         }
 
@@ -1128,18 +1076,18 @@ namespace Universe.Modules.WorldMap
             catch (DllNotFoundException)
             {
                 MainConsole.Instance.ErrorFormat(
-                    "[TexturedMapTileRenderer]: OpenJpeg is not installed correctly on this system.   Asset Data is empty for {0}",
+                    "[Textured Map Tile Renderer]: OpenJpeg is not installed correctly on this system.   Asset Data is empty for {0}",
                     id);
             }
             catch (IndexOutOfRangeException)
             {
                 MainConsole.Instance.ErrorFormat(
-                    "[TexturedMapTileRenderer]: OpenJpeg was unable to encode this.   Asset Data is empty for {0}", id);
+                    "[Textured Map Tile Renderer]: OpenJpeg was unable to encode this.   Asset Data is empty for {0}", id);
             }
             catch (Exception)
             {
                 MainConsole.Instance.ErrorFormat(
-                    "[TexturedMapTileRenderer]: OpenJpeg was unable to encode this.   Asset Data is empty for {0}", id);
+                    "[Textured Map Tile Renderer]: OpenJpeg was unable to encode this.   Asset Data is empty for {0}", id);
             }
             return null;
         }
@@ -1176,14 +1124,7 @@ namespace Universe.Modules.WorldMap
         {
             Point returnpt = new Point
                                  {X = (int) point3d.X, Y = (int) ((m_scene.RegionInfo.RegionSizeY - 1) - point3d.Y)};
-            //originpos = point3d;
-            //int d = (int)(256f / 1.5f);
 
-            //Vector3 topos = new Vector3(0, 0, 0);
-            // float z = -point3d.z - topos.z;
-
-            //(int)((topos.x - point3d.x) / z * d);
-            //(int)(255 - (((topos.y - point3d.y) / z * d)));
             returnpt.X /= m_scene.RegionInfo.RegionSizeX/Constants.RegionSize;
             returnpt.Y /= m_scene.RegionInfo.RegionSizeY/Constants.RegionSize;
             return returnpt;
