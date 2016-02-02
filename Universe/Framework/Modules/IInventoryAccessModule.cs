@@ -25,13 +25,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System.Collections.Generic;
+using OpenMetaverse;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Services.ClassHelpers.Inventory;
-using OpenMetaverse;
-using System.Collections.Generic;
 
 namespace Universe.Framework.Modules
 {
@@ -67,6 +67,16 @@ namespace Universe.Framework.Modules
         /// <param name="assetID"></param>
         /// <returns></returns>
         ISceneEntity CreateObjectFromInventory(IClientAPI remoteClient, UUID itemID, UUID assetID, InventoryItemBase item);
+
+        /// <summary>
+        /// Restores the object in world.
+        /// </summary>
+        /// <returns><c>true</c>, if object was restored, <c>false</c> otherwise.</returns>
+        /// <param name="remoteClient">Remote client.</param>
+        /// <param name="itemID">Item I.</param>
+        /// <param name="item">Item.</param>
+        /// <param name="groupID">Group I.</param>
+        bool RezRestoreToWorld(IClientAPI remoteClient, UUID itemID, InventoryItemBase item, UUID groupID);
 
         /// <summary>
         ///     Rez an object from inventory and add it to the scene

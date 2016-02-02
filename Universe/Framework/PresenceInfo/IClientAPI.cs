@@ -25,17 +25,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Net;
+using OpenMetaverse;
+using OpenMetaverse.Packets;
+using OpenMetaverse.StructuredData;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Services.ClassHelpers.Inventory;
-using OpenMetaverse;
-using OpenMetaverse.Packets;
-using OpenMetaverse.StructuredData;
-using System;
-using System.Collections.Generic;
-using System.Net;
 
 namespace Universe.Framework.PresenceInfo
 {
@@ -59,6 +59,8 @@ namespace Universe.Framework.PresenceInfo
     public delegate void RezObject(IClientAPI remoteClient, UUID itemID, Vector3 RayEnd, Vector3 RayStart,
                                    UUID RayTargetID, byte BypassRayCast, bool RayEndIsIntersection,
                                    bool RezSelected, bool RemoveItem, UUID fromTaskID);
+
+    public delegate void RezRestoreToWorld(IClientAPI remoteClient, UUID itemID, UUID GroupID);
 
     public delegate UUID RezSingleAttachmentFromInv(IClientAPI remoteClient, UUID itemID, int AttachmentPt);
 
@@ -963,6 +965,7 @@ namespace Universe.Framework.PresenceInfo
         event ChatMessage OnChatFromClient;
         // [Obsolete("LLClientView Specific - Remove bitbuckets. Adam, can you be more specific here..  as I don't see any bit buckets.")]
         event RezObject OnRezObject;
+        event RezRestoreToWorld OnRezRestoreToWorld;
         // [Obsolete("LLClientView Specific - Replace with more suitable arguments.")]
         event ModifyTerrain OnModifyTerrain;
         event BakeTerrain OnBakeTerrain;
