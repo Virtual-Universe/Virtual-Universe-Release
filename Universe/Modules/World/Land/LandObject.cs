@@ -604,7 +604,7 @@ namespace Universe.Modules.Land
         {
             // This apparently causes problems with newer viewers
             //if (flags == (uint)AccessList.Access || flags == (uint)AccessList.Both)
-            if (flags == (uint)AccessList.Access == (uint)AccessList.Access)
+            if ((flags & (uint)AccessList.Access) == (uint)AccessList.Access)
             {
                 List<List<UUID>> avatars = CreateAccessListArrayByFlag (AccessList.Access);
                 foreach (List<UUID> accessListAvs in avatars)
@@ -615,7 +615,7 @@ namespace Universe.Modules.Land
 
             // This apparently causes problems with newer viewers
             //if (flags == (uint)AccessList.Ban || flags == (uint)AccessList.Both)
-            if (flags & (uint)AccessList.Ban == (uint)AccessList.Ban)
+            if ((flags & (uint)AccessList.Ban) == (uint)AccessList.Ban)
             {
                 List<List<UUID>> avatars = CreateAccessListArrayByFlag (AccessList.Ban);
                 foreach (List<UUID> accessListAvs in avatars)
