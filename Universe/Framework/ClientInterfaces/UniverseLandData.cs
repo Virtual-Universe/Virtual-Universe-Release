@@ -25,9 +25,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using OpenMetaverse.StructuredData;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
-using OpenMetaverse.StructuredData;
 
 namespace Universe.Framework.ClientInterfaces
 {
@@ -41,7 +41,7 @@ namespace Universe.Framework.ClientInterfaces
         public string RegionTerrain;
         public uint RegionArea;
 
-        public override void FromOSD(OpenMetaverse.StructuredData.OSDMap map)
+        public override void FromOSD(OSDMap map)
         {
             GlobalPosX = map["GlobalPosX"];
             GlobalPosY = map["GlobalPosY"];
