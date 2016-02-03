@@ -130,7 +130,7 @@ namespace Universe.Modules.Land
             get { return null; }
         }
 
-        public void Initialise(IConfigSource source)
+        public void Initialize(IConfigSource source)
         {
             IConfig config = source.Configs["LandManagement"];
             if (config != null)
@@ -159,7 +159,7 @@ namespace Universe.Modules.Land
             UUID godParcelOwner;
             var regionType = scene.RegionInfo.RegionType.ToLower();
             if (regionType.StartsWith("m"))
-                godParcelOwner = (UUID)Constants.GovernorUUID;              // Mainland reverts to Governor WhiteCore
+                godParcelOwner = (UUID)Constants.GovernorUUID;              // Mainland reverts to Governor Universe
             else
                 godParcelOwner = (UUID)Constants.RealEstateOwnerUUID;       // Estates revert to RealEstate Owner
 
@@ -183,8 +183,8 @@ namespace Universe.Modules.Land
             m_scene.EventManager.OnRegisterCaps += EventManagerOnRegisterCaps;
             m_scene.EventManager.OnClosingClient += OnClosingClient;
             m_scene.EventManager.OnFrame += EventManager_OnFrame;
-            m_scene.WhiteCoreEventManager.RegisterEventHandler("ObjectAddedFlag", WhiteCoreEventManager_OnGenericEvent);
-            m_scene.WhiteCoreEventManager.RegisterEventHandler("ObjectRemovedFlag", WhiteCoreEventManager_OnGenericEvent);
+            m_scene.UniverseEventManager.RegisterEventHandler("ObjectAddedFlag", UniverseEventManager_OnGenericEvent);
+            m_scene.UniverseEventManager.RegisterEventHandler("ObjectRemovedFlag", UniverseEventManager_OnGenericEvent);
             if (m_UpdateDirectoryOnTimer)
                 m_scene.EventManager.OnStartupComplete += EventManager_OnStartupComplete;
 
@@ -310,7 +310,7 @@ namespace Universe.Modules.Land
             }
         }
 
-        object WhiteCoreEventManager_OnGenericEvent(string functionName, object parameters)
+        object UniverseEventManager_OnGenericEvent(string functionName, object parameters)
         {
             if (functionName == "ObjectAddedFlag")
             {
@@ -954,7 +954,7 @@ namespace Universe.Modules.Land
                         param[0] = group;
                         param[1] = over.LandData.GlobalID;
                         param[2] = oldParcelUUID;
-                        m_scene.WhiteCoreEventManager.FireGenericEventHandler("ObjectEnteringNewParcel", param);
+                        m_scene.UniverseEventManager.FireGenericEventHandler("ObjectEnteringNewParcel", param);
                     }
                 }
             }

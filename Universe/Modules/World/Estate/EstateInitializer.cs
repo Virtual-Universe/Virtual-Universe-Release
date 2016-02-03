@@ -40,17 +40,17 @@ using Universe.Framework.Utilities;
 
 namespace Universe.Modules.Estate
 {
-    public class EstateInitializer : ISharedRegionStartupModule, IWhiteCoreBackupModule
+    public class EstateInitializer : ISharedRegionStartupModule, IUniverseBackupModule
     {
         protected IRegistryCore m_registry;
 
-        public void Initialise(IScene scene, IConfigSource source, ISimulationBase simBase)
+        public void Initialize(IScene scene, IConfigSource source, ISimulationBase simBase)
         {
-            scene.StackModuleInterface<IWhiteCoreBackupModule>(this);
+            scene.StackModuleInterface<IUniverseBackupModule>(this);
             m_registry = simBase.ApplicationRegistry;
         }
 
-        public void PostInitialise(IScene scene, IConfigSource source, ISimulationBase simBase)
+        public void PostInitialize(IScene scene, IConfigSource source, ISimulationBase simBase)
         {
         }
 
