@@ -25,7 +25,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System;
+using System.IO;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Modules;
@@ -36,17 +40,12 @@ using Universe.Framework.Servers.HttpServer;
 using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Servers.HttpServer.Interfaces;
 using Universe.Framework.Utilities;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
-using System;
-using System.IO;
 
 namespace Universe.Modules.Auction
 {
     public class AuctionModule : IAuctionModule, INonSharedRegionModule
     {
-        private IScene m_scene;
+        IScene m_scene;
 
         #region INonSharedRegionModule Members
 
@@ -96,7 +95,7 @@ namespace Universe.Modules.Auction
             client.OnViewerStartAuction += StartAuction;
         }
 
-        private void OnClosingClient(IClientAPI client)
+        void OnClosingClient(IClientAPI client)
         {
             client.OnViewerStartAuction -= StartAuction;
         }
@@ -122,7 +121,7 @@ namespace Universe.Modules.Auction
             return retVal;
         }
 
-        private byte[] ViewerStartAuction(string path, Stream request,
+        byte[] ViewerStartAuction(string path, Stream request,
                                           OSHttpRequest httpRequest, OSHttpResponse httpResponse)
         {
             //OSDMap rm = (OSDMap)OSDParser.DeserializeLLSDXml(HttpServerHandlerHelpers.ReadFully(request));
@@ -145,8 +144,9 @@ namespace Universe.Modules.Auction
                 landObject.LandData.SnapshotID = SnapshotID;
                 landObject.LandData.AuctionID = (uint) Util.RandomClass.Next(0, int.MaxValue);
                 // landObject.LandData.Status = ParcelStatus.Abandoned;
-                // 150730 Fly-Man- Only when an parcel is Abandoned the Status is changed to Abandoned.
+                // The Abandoned status is only temporary as all land must actually be owned
                 // During an Auction, the Status of an parcel stays "Leased"
+                // Consider changing the auction status for a parcel at auction to "Pending"
                 landObject.LandData.Status = ParcelStatus.Leased;
                 landObject.SendLandUpdateToAvatarsOverMe();
             }
@@ -206,7 +206,7 @@ namespace Universe.Modules.Auction
             }
         }
 
-        private void SaveAuctionInfo(int LocalID, AuctionInfo info)
+        void SaveAuctionInfo(int LocalID, AuctionInfo info)
         {
             IParcelManagementModule parcelManagement = m_scene.RequestModuleInterface<IParcelManagementModule>();
             if (parcelManagement != null)
@@ -218,7 +218,7 @@ namespace Universe.Modules.Auction
             }
         }
 
-        private AuctionInfo GetAuctionInfo(int LocalID)
+        AuctionInfo GetAuctionInfo(int LocalID)
         {
             IParcelManagementModule parcelManagement = m_scene.RequestModuleInterface<IParcelManagementModule>();
             if (parcelManagement != null)
