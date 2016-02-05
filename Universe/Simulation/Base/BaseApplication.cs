@@ -61,7 +61,7 @@ namespace Universe.Simulation.Base
         /// <summary>
         ///     Directory to save crash reports to.  Relative to Data/Crashes/
         /// </summary>
-        public static string m_crashDir = Constants.CrashDir;
+        public static string m_crashDir = Constants.DEFAULT_CRASH_DIR;
 
         static bool _IsHandlingException; // Make sure we don't go recursive on ourselves
 
