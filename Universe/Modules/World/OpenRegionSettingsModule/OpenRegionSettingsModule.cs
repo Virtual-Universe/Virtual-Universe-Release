@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,12 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
+
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
@@ -39,6 +34,12 @@ using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Servers.HttpServer.Interfaces;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
+using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace Universe.Modules.OpenRegionSettingsModule
 {
@@ -225,7 +226,7 @@ namespace Universe.Modules.OpenRegionSettingsModule
 
         #region INonSharedRegionModule
 
-        public void Initialize(IConfigSource source)
+        public void Initialise(IConfigSource source)
         {
         }
 
@@ -259,6 +260,15 @@ namespace Universe.Modules.OpenRegionSettingsModule
                 m_settings.SayDistance = chatmodule.SayDistance;
                 m_settings.ShoutDistance = chatmodule.ShoutDistance;
             }
+            /*IScriptModule scriptmodule = scene.RequestModuleInterface<IScriptModule>();
+            if (scriptmodule != null)
+            {
+                List<string> FunctionNames = scriptmodule.GetAllFunctionNames();
+                foreach (string FunctionName in FunctionNames)
+                {
+                    m_settings.LSLCommands.Add(OSD.FromString(FunctionName));
+                }
+            }*/
         }
 
         public string Name

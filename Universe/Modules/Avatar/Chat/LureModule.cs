@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -55,7 +55,7 @@ namespace Universe.Modules.Chat
 
         #region INonSharedRegionModule
 
-        public void Initialize (IConfigSource source)
+        public void Initialise (IConfigSource source)
         {
             IConfig ccmModuleConfig = source.Configs ["Messaging"];
             if (ccmModuleConfig != null)
@@ -96,7 +96,7 @@ namespace Universe.Modules.Chat
             m_TransferModule = m_scene.RequestModuleInterface<IMessageTransferModule> ();
 
             if (m_TransferModule == null)
-                MainConsole.Instance.Error ("[Instant Message]: No message transfer module, lures will not work!");
+                MainConsole.Instance.Error ("[INSTANT MESSAGE]: No message transfer module, lures will not work!");
         }
 
         public Type ReplaceableInterface

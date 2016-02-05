@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,11 +34,12 @@ using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
-using Nini.Config;
-using OpenMetaverse;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Utilities;
+using Nini.Config;
+using OpenMetaverse;
+
 
 /*****************************************************
  *
@@ -92,11 +93,15 @@ namespace Universe.Modules.Scripting
         private int httpTimeout = 30000;
         private string m_name = "HttpScriptRequests";
 
+        // <itemID, HttpRequestClasss>
         private Dictionary<UUID, List<HttpRequestClass>> m_pendingRequests;
         private string m_proxyexcepts = "";
         private string m_proxyurl = "";
+        // <reqID, itemID>
         private IScene m_scene;
         private IScriptModule m_scriptModule;
+
+        // private Queue<HttpRequestClass> rpcQueue = new Queue<HttpRequestClass>();
 
         public HttpRequestModule()
         {
@@ -293,7 +298,7 @@ namespace Universe.Modules.Scripting
 
         #region INonSharedRegionModule Members
 
-        public void Initialize(IConfigSource config)
+        public void Initialise(IConfigSource config)
         {
             m_proxyurl = config.Configs["HTTPScriptModule"].GetString("HttpProxy");
             m_proxyexcepts = config.Configs["HTTPScriptModule"].GetString("HttpProxyExceptions");
@@ -456,8 +461,13 @@ namespace Universe.Modules.Scripting
                 {
                     // Connection Group Name is probably not used so we hijack it to identify
                     // a desired security exception
+//                  Request.ConnectionGroupName="NoVerify";
                     Request.Headers.Add("NoVerifyCert", "true");
                 }
+//              else
+//              {
+//                  Request.ConnectionGroupName="Verify";
+//              }
 
                 if (!string.IsNullOrEmpty(proxyurl))
                 {

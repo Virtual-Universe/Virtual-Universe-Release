@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9855,7 +9855,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
         //  then a null pointer exception will be thrown
         //  while their lengths are being determined.
         //
-        //  A small amount of working memory is required
+        //  A small amount of working memoryis required
         //  of approximately 8*#tokenizers.
         //
         //  There are many ways in which this function
@@ -10210,7 +10210,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) return "";
 
             if (name == "sim_channel")
-                return "Universe-Sim Server";
+                return "Virtual Universe Server";
             if (name == "sim_version")
                 return World.RequestModuleInterface<ISimulationBase>().Version;
             if (name == "frame_number")

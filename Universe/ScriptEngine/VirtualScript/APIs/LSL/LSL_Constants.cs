@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -446,7 +446,7 @@ namespace Universe.ScriptEngine.VirtualScript.Runtime
         public static readonly LSL_Types.LSLInteger PRIM_SCULPT_TYPE_TORUS = 2;
         public static readonly LSL_Types.LSLInteger PRIM_SCULPT_TYPE_PLANE = 3;
         public static readonly LSL_Types.LSLInteger PRIM_SCULPT_TYPE_CYLINDER = 4;
-        //Universe-Sim const only
+        //Virtual Universe const only
         public static readonly LSL_Types.LSLInteger PRIM_SCULPT_TYPE_MESH = 5;
         //???
         public static readonly LSL_Types.LSLInteger PRIM_SCULPT_FLAG_INVERT = 64;

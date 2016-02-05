@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,17 +25,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Nini.Config;
-using OpenMetaverse;
+
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Servers;
 using Universe.Framework.Servers.HttpServer;
 using Universe.Framework.Servers.HttpServer.Implementation;
+using Nini.Config;
+using OpenMetaverse;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace Universe.Modules.Scripting
 {
@@ -57,6 +58,7 @@ namespace Universe.Modules.Scripting
         public int responseCode;
         public string responseBody;
         public string contentType;
+        //public ManualResetEvent ev;
         public bool requestDone;
         public int startTime;
         public string uri;
@@ -88,7 +90,7 @@ namespace Universe.Modules.Scripting
             get { return "UrlModule"; }
         }
 
-        public void Initialize(IConfigSource config)
+        public void Initialise(IConfigSource config)
         {
         }
 
@@ -193,11 +195,12 @@ namespace Universe.Modules.Scripting
                 UrlData urlData = m_RequestMap[request];
                 urlData.requests[request].responseCode = status;
                 urlData.requests[request].responseBody = body;
+                //urlData.requests[request].ev.Set();
                 urlData.requests[request].requestDone = true;
             }
             else
             {
-                MainConsole.Instance.Info("[Http Request Handler] There is no http-in request with id " +
+                MainConsole.Instance.Info("[HttpRequestHandler] There is no http-in request with id " +
                                           request.ToString());
             }
         }
@@ -213,7 +216,7 @@ namespace Universe.Modules.Scripting
             }
             else
             {
-                MainConsole.Instance.Warn("[Http Request Handler] There was no http-in request with id " + requestId);
+                MainConsole.Instance.Warn("[HttpRequestHandler] There was no http-in request with id " + requestId);
             }
             return String.Empty;
         }
@@ -267,6 +270,7 @@ namespace Universe.Modules.Scripting
             }
         }
 
+
         private void RemoveUrl(UrlData data)
         {
             MainServer.Instance.RemovePollServiceHTTPHandler("", "/lslhttp/" + data.urlcode.ToString() + "/");
@@ -296,6 +300,7 @@ namespace Universe.Modules.Scripting
 
                 return Encoding.UTF8.GetBytes("Script timeout");
             }
+
 
             return MainServer.BlankResponse;
         }
@@ -404,6 +409,7 @@ namespace Universe.Modules.Scripting
                     requestData.headers["x-script-url"] = url.url;
                     requestData.contentType = "text/plain";
 
+                    //requestData.ev = new ManualResetEvent(false);
                     lock (url.requests)
                     {
                         url.requests.Add(requestID, requestData);
@@ -424,7 +430,7 @@ namespace Universe.Modules.Scripting
                 catch (Exception we)
                 {
                     //Hashtable response = new Hashtable();
-                    MainConsole.Instance.Warn("[Http Request Handler]: http-in request failed");
+                    MainConsole.Instance.Warn("[HttpRequestHandler]: http-in request failed");
                     MainConsole.Instance.Warn(we.Message);
                     MainConsole.Instance.Warn(we.StackTrace);
                 }

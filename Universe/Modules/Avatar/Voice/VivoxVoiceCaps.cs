@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -240,6 +240,8 @@ namespace Universe.Modules
 
         public void FinishedStartup()
         {
+            //if (m_pluginEnabled)
+            //    VivoxLogout();
         }
 
         #region IVoiceModule Members
@@ -548,6 +550,7 @@ namespace Universe.Modules
                 if (!VivoxTryCreateDirectory("Server" + sessionid + "D", sessionid.ToString(), out parentID))
                 {
                     VivoxTryGetDirectory("Server" + sessionid + "D", out parentID);
+                    //parentID = String.Empty;
                 }
                 // Added by Adam to help debug channel not availible errors.
                 if (VivoxTryGetChannel(parentID, channelID, out channelID, out channelUri))
@@ -565,6 +568,13 @@ namespace Universe.Modules
             voice_credentials["channel_credentials"] = "";
             map["voice_credentials"] = voice_credentials;
 
+            // <llsd><map>
+            //       <key>session-id</key><string>c0da7611-9405-e3a4-0172-c36a1120c77a</string>
+            //       <key>voice_credentials</key><map>
+            //           <key>channel_credentials</key><string>rh1iIIiT2v+ebJjRI+klpFHjFmo</string>
+            //           <key>channel_uri</key><string>sip:confctl-12574742@bhr.vivox.com</string>
+            //       </map>
+            // </map></llsd>
             return map;
         }
 
@@ -584,6 +594,7 @@ namespace Universe.Modules
             return VivoxCall(requrl, false);
         }
 
+
         static readonly string m_vivoxLogoutPath = "http://{0}/api2/viv_signout.php?auth_token={1}";
 
         /// <summary>
@@ -594,6 +605,7 @@ namespace Universe.Modules
             string requrl = String.Format(m_vivoxLogoutPath, m_vivoxServer, m_authToken);
             return VivoxCall(requrl, false);
         }
+
 
         static readonly string m_vivoxGetAccountPath =
             "http://{0}/api2/viv_get_acct.php?auth_token={1}&user_name={2}";
@@ -607,6 +619,7 @@ namespace Universe.Modules
             string requrl = String.Format(m_vivoxGetAccountPath, m_vivoxServer, m_authToken, user);
             return VivoxCall(requrl, true);
         }
+
 
         static readonly string m_vivoxNewAccountPath =
             "http://{0}/api2/viv_adm_acct_new.php?username={1}&pwd={2}&auth_token={3}";
@@ -623,6 +636,7 @@ namespace Universe.Modules
             return VivoxCall(requrl, true);
         }
 
+
         static readonly string m_vivoxPasswordPath =
             "http://{0}/api2/viv_adm_password.php?user_name={1}&new_pwd={2}&auth_token={3}";
 
@@ -634,6 +648,7 @@ namespace Universe.Modules
             string requrl = String.Format(m_vivoxPasswordPath, m_vivoxServer, user, password, m_authToken);
             return VivoxCall(requrl, true);
         }
+
 
         static readonly string m_vivoxChannelPath =
             "http://{0}/api2/viv_chan_mod.php?mode={1}&chan_name={2}&auth_token={3}";
@@ -687,6 +702,11 @@ namespace Universe.Modules
         bool VivoxTryCreateDirectory(string dirId, string description, out string channelId)
         {
             string requrl = String.Format(m_vivoxChannelPath, m_vivoxServer, "create", dirId, m_authToken);
+
+            // if (parent != null && parent != String.Empty)
+            // {
+            //     requrl = String.Format("{0}&chan_parent={1}", requrl, parent);
+            // }
 
             if (!string.IsNullOrEmpty(description))
             {
@@ -850,6 +870,18 @@ namespace Universe.Modules
             return false;
         }
 
+        // static readonly string m_vivoxChannelById = "http://{0}/api2/viv_chan_mod.php?mode={1}&chan_id={2}&auth_token={3}";
+
+        // XmlElement VivoxGetChannelById(string parent, string channelid)
+        // {
+        //     string requrl = String.Format(m_vivoxChannelById, m_vivoxServer, "get", channelid, m_authToken);
+
+        //     if (parent != null && parent != String.Empty)
+        //         return VivoxGetChild(parent, channelid);
+        //     else
+        //         return VivoxCall(requrl, true);
+        // }
+
         /// <summary>
         ///     Delete a channel.
         ///     Once again, there a multitude of options possible. In the simplest case
@@ -885,6 +917,37 @@ namespace Universe.Modules
             string requrl = String.Format(m_vivoxChannelSearch, m_vivoxServer, channelid, m_authToken);
             return VivoxCall(requrl, true);
         }
+
+        // XmlElement VivoxGetChild(string parent, string child)
+        // {
+
+        //     XmlElement children = VivoxListChildren(parent);
+        //     string count;
+
+        //    if (XmlFind(children, "response.level0.channel-search.count", out count))
+        //     {
+        //         int cnum = Convert.ToInt32(count);
+        //         for (int i = 0; i < cnum; i++)
+        //         {
+        //             string name;
+        //             string id;
+        //             if (XmlFind(children, "response.level0.channel-search.channels.channels.level4.name", i, out name))
+        //             {
+        //                 if (name == child)
+        //                 {
+        //                    if (XmlFind(children, "response.level0.channel-search.channels.channels.level4.id", i, out id))
+        //                     {
+        //                         return VivoxGetChannelById(null, id);
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     }
+
+        //     // One we *know* does not exist.
+        //     return VivoxGetChannel(null, Guid.NewGuid().ToString());
+
+        // }
 
         /// <summary>
         ///     This method handles the WEB side of making a request over the
@@ -1188,14 +1251,14 @@ namespace Universe.Modules
                 ((OSDMap) map["voice_credentials"])["channel_uri"] = channel_uri;
 
                 MainConsole.Instance.DebugFormat(
-                    "[Vivox Voice][PARCELVOICE]: region \"{0}\": Parcel ({1}): avatar \"{2}\"",
+                    "[Vivox Voice][Parcel Voice]: region \"{0}\": Parcel ({1}): avatar \"{2}\"",
                     m_service.Region.RegionName, localID, m_service.ClientCaps.AccountInfo.Name);
                 return OSDParser.SerializeLLSDXmlBytes(map);
             }
             catch (Exception e)
             {
                 MainConsole.Instance.ErrorFormat(
-                    "[Vivox Voice][PARCELVOICE]: region \"{0}\": avatar \"{1}\": {2}, retry later",
+                    "[Vivox Voice][Parcel Voice]: region \"{0}\": avatar \"{1}\": {2}, retry later",
                     m_service.Region.RegionName, m_service.ClientCaps.AccountInfo.Name, e);
 
                 return Encoding.UTF8.GetBytes("<llsd><undef /></llsd>");

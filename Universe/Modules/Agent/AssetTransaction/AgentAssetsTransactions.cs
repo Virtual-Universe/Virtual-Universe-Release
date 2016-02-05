@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,13 +25,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System.Collections.Generic;
-using OpenMetaverse;
+
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Services.ClassHelpers.Inventory;
+using OpenMetaverse;
+using System.Collections.Generic;
 
 namespace Universe.Modules.Agent.AssetTransaction
 {
@@ -72,8 +73,8 @@ namespace Universe.Modules.Agent.AssetTransaction
                 {
                     uploader = new AssetXferUploader(this, m_Scene, transactionID, m_dumpAssetsToFile);
 
-                    //MainConsole.Instance.DebugFormat(
-                    //     "[Agent Assets Transactions]: Adding asset xfer uploader {0} since it didn't previously exist", transactionID);
+                    //                    MainConsole.Instance.DebugFormat(
+                    //                        "[AGENT ASSETS TRANSACTIONS]: Adding asset xfer uploader {0} since it didn't previously exist", transactionID);
 
                     XferUploaders.Add(transactionID, uploader);
                 }
@@ -101,8 +102,9 @@ namespace Universe.Modules.Agent.AssetTransaction
             {
                 foreach (AssetXferUploader uploader in XferUploaders.Values)
                 {
-                    //MainConsole.Instance.DebugFormat(
-                    //     "[Agent Assets Transactions]: In HandleXfer, inspect xfer upload with xfer id {0}", uploader.XferID);
+                    //                    MainConsole.Instance.DebugFormat(
+                    //                        "[AGENT ASSETS TRANSACTIONS]: In HandleXfer, inspect xfer upload with xfer id {0}",
+                    //                        uploader.XferID);
 
                     if (uploader.XferID == xferID)
                     {
@@ -114,8 +116,9 @@ namespace Universe.Modules.Agent.AssetTransaction
 
             if (foundUploader != null)
             {
-                //MainConsole.Instance.DebugFormat(
-                //     "[Agent Assets Transactions]: Found xfer uploader for xfer id {0}, packet id {1}, data length {2}", xferID, packetID, data.Length);
+                //                MainConsole.Instance.DebugFormat(
+                //                    "[AGENT ASSETS TRANSACTIONS]: Found xfer uploader for xfer id {0}, packet id {1}, data length {2}",
+                //                    xferID, packetID, data.Length);
 
                 foundUploader.HandleXferPacket(xferID, packetID, data);
             }
@@ -129,10 +132,11 @@ namespace Universe.Modules.Agent.AssetTransaction
 
                 if (!removed)
                     MainConsole.Instance.WarnFormat(
-                        "[Agent Asset Transactions]: Received request to remove xfer uploader with transaction ID {0} but none found",
+                        "[AGENT ASSET TRANSACTIONS]: Received request to remove xfer uploader with transaction ID {0} but none found",
                         transactionID);
-                //else
-                //  MainConsole.Instance.DebugFormat("[Agent Asset Transactions]: Removed xfer uploader with transaction ID {0}", transactionID);
+                //                else
+                //                    MainConsole.Instance.DebugFormat(
+                //                        "[AGENT ASSET TRANSACTIONS]: Removed xfer uploader with transaction ID {0}", transactionID);
 
                 return removed;
             }

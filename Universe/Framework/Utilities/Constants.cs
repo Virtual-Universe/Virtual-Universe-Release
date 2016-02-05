@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,6 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
 namespace Universe.Framework.Utilities
 {
     public static class Constants
@@ -35,7 +36,7 @@ namespace Universe.Framework.Utilities
         // some predefined folders
         public const string DEFAULT_CONFIG_DIR = "../Config";
         public const string DEFAULT_DATA_DIR = "../Data";
-		public const string DEFAULT_CRASH_DIR = "../Data/Crashes";
+        public const string DEFAULT_CRASH_DIR = "../Data/Crashes";
 
         // all these are relative to the default data directory,
         // set either as above or via configuration
@@ -57,28 +58,17 @@ namespace Universe.Framework.Utilities
 
 		public const int SystemUserCount = 5;
 
-		// System User Accounts
-
         // System library Avatar Account
         public const string LibraryOwner = "11111111-1111-0000-0000-000100bba000";
         public const string LibraryRootFolderID = "00000112-000f-0000-0000-000100bba000";
 
         // System Real Estate Avatar Account
         public const string RealEstateOwnerUUID = "bbb55499-7938-4752-ab7c-f7136e36cced";
-		public const string RealEstateOwnerName = "RealEstate Universe";
+		public const string RealEstateOwnerName = "RealEstate Owner";
 
         // System Governor Avatar Account
         public const string GovernorUUID = "3d6181b0-6a4b-97ef-18d8-722652995cf1";
         public const string GovernorName = "Governor Universe";
-
-		// System Banker Avatar
-		public const string BankerUUID = "f4261829-2796-4688-bfe2-085190cb639b";
-		public const string BankerName = "Treasurer Universe";
-
-		// System Marketplace Avatar
-		public const string MarketplaceOwnerUUID = "198e72a6-cef6-4bbb-ae08-c0a79e6b7d1e";
-		public const string MarketplaceOwnerName = "Marketplace Universe";
-
 
         // System Estate
         public const string MainlandEstateName = "Universe Mainland";
@@ -86,11 +76,18 @@ namespace Universe.Framework.Utilities
         public const string SystemEstateName = "Universe Estate";
         public const int SystemEstateID = 10;
 
-		// System Groups
-
         // System Real Estate Maintenance Group
 		public const string RealEstateGroupUUID = "dc7b21cd-3c89-fcaa-31c8-25f9ffd224cd";
-		public const string RealEstateGroupName = "Universe Maintenance";
+		public const string RealEstateGroupName = "Maintenance";
+
+        // System Banker Avatar
+        public const string BankerUUID = "f4261829-2796-4688-bfe2-085190cb639b";
+        public const string BankerName = "Treasurer Universe";
+
+        // System Marketplace Avatar
+        public const string MarketplaceOwnerUUID = "198e72a6-cef6-4bbb-ae08-c0a79e6b7d1e";
+        public const string MarketplaceOwnerName = "Marketplace Concierge";
+
 
         // user levels
         public const int USER_DISABLED = -2;
@@ -111,8 +108,6 @@ namespace Universe.Framework.Utilities
         public const int USER_FLAG_CONTRACTOR = 800;        // Contracted
         public const int USER_FLAG_CHARTERMEMBER = 3840;    // Charter member
 
-		// Currency Related Constants
-
         public const int SCHEDULER_INTERVAL = 300;          // seconds between scheduler checks
 
         public const string STIPEND_PAY_DAY = "tuesday";    // the day stipend payments are processed
@@ -125,5 +120,6 @@ namespace Universe.Framework.Utilities
         public const int GROUP_PAYMENTS_DELAY = 30;         // minutes to wait after stipend payments before processing group payments
         public const int GROUP_DISBURSMENTS_DELAY = 5;      // offset disbursments by 5 minutes
         public const int DIRECTORYFEE_GRACE_PERIOD = 2;     // hours grace period before a fee will be charged at least once
+
     }
 }

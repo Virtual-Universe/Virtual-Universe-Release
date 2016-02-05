@@ -1,5 +1,5 @@
-﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+/*
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,57 +25,33 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
 using System.Reflection;
-using System.Resources;
 using System.Runtime.InteropServices;
 
-/// <summary>
-///     General Information:
-///     This is general information about an assembly which is controlled through the
-///     following set of attirbutes.  We change these attirbute values to modify the
-///     information associated with an assembly.
-/// </summary>
-[assembly: AssemblyTitle("Universe.Physics.BasicPhysicsPlugin")]
+// Information about this assembly is defined by the following
+// attributes.
+//
+// change them to the information which is associated with the assembly
+// you compile.
+
+[assembly: AssemblyTitle("BasicPhysicsPlugin")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Virtual Universe Development Team")]
-[assembly: AssemblyProduct("Universe.Physics.BasicPhysicsPlugin")]
-[assembly: AssemblyCopyright("Copyright © 2015-2025")]
+[assembly: AssemblyCompany("http://Universe-sim.org")]
+[assembly: AssemblyCopyright("Copyright © 2014-2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
-/// <summary>
-///     ConVisible Information:
-///     We set the ConVisible to false to make the types in this assembly not visible
-///     to the COM service.  if you need to access a type in this assembly from COM,
-///     set the ConVisible attribute to true on that type.
-/// </summary>
+// This sets the default COM visibility of types in the assembly to invisible.
+// If you need to expose a type to COM, use [ComVisible(true)] on that type.
+
 [assembly: ComVisible(false)]
 
-/// <Summary>
-///     GUID Information:
-///     The following GUID is for the ID of the typelib if this project is exposed to 
-///     COM.
-/// </Summary>
-[assembly: Guid("49c249ce-8510-40c3-a39d-ff4295b27734")]
+// The assembly version has following format :
+//
+// Major.Minor.Build.Revision
+//
+// You can specify all values by your own or you can build default build and revision
+// numbers with the '*' character (the default):
 
-/// <Summary>
-///     Version Information:
-///     THis is the version information for the assembly.  it consists of the following 
-///     four values:
-///         
-///         Major Version
-///         Minor Version
-///         Build Number
-///         Revision Number
-/// 
-///     You can specify all the above values, or you can default the Build and Revision Numbers 
-///     by using the "*" as shown below:
-///         
-///         [assembly: AssemblyVersion("1.0.*")]
-/// 
-///     The above values must be the same in all AssemblyInfo files.
-/// </Summary>
-[assembly: AssemblyVersion("1.0.1.*")]
-[assembly: NeutralResourcesLanguageAttribute("en")]
+[assembly: AssemblyVersion("0.9.4.*")]

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,16 +25,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.Serialization;
+using Universe.Framework.Services;
+using Universe.Framework.Services.ClassHelpers.Assets;
+using OpenMetaverse;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Xml;
-using OpenMetaverse;
-using Universe.Framework.ConsoleFramework;
-using Universe.Framework.Serialization;
-using Universe.Framework.Services;
-using Universe.Framework.Services.ClassHelpers.Assets;
 
 namespace Universe.Modules.Archivers
 {
@@ -103,7 +104,7 @@ namespace Universe.Modules.Archivers
                 AssetMetadata metadata = new AssetMetadata();
 
                 string filename = reader.ReadElementString("filename");
-                MainConsole.Instance.DebugFormat("[Dearchiver]: Reading node {0}", filename);
+                MainConsole.Instance.DebugFormat("[DEARCHIVER]: Reading node {0}", filename);
 
                 metadata.Name = reader.ReadElementString("name");
                 metadata.Description = reader.ReadElementString("description");
@@ -117,7 +118,7 @@ namespace Universe.Modules.Archivers
                 reader.Read();
             }
 
-            MainConsole.Instance.DebugFormat("[Dearchiver]: Resolved {0} items of asset metadata", m_metadata.Count);
+            MainConsole.Instance.DebugFormat("[DEARCHIVER]: Resolved {0} items of asset metadata", m_metadata.Count);
 
             ResolvePendingAssetData();
         }
@@ -153,7 +154,7 @@ namespace Universe.Modules.Archivers
                     filename = filename.Remove(filename.Length - extension.Length);
                 }
 
-                MainConsole.Instance.DebugFormat("[Archiver]: Importing asset {0}", filename);
+                MainConsole.Instance.DebugFormat("[ARCHIVER]: Importing asset {0}", filename);
 
                 AssetBase asset = new AssetBase(filename, metadata.Name, (AssetType) metadata.AssetType, UUID.Zero)
                                       {Description = metadata.Description, Data = data, MetaOnly = false};
@@ -162,7 +163,7 @@ namespace Universe.Modules.Archivers
             else
             {
                 MainConsole.Instance.ErrorFormat(
-                    "[Dearchiver]: Tried to de-archive data with filename {0} without any corresponding metadata",
+                    "[DEARCHIVER]: Tried to de-archive data with filename {0} without any corresponding metadata",
                     assetPath);
             }
         }

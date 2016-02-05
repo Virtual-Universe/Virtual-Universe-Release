@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -105,8 +105,8 @@ namespace Universe.Modules.Web
             vars.Add ("AbuseReportsList", abuseReportsList);
             vars.Add ("NoDetailsText", noDetails);
             vars.Add ("AbuseReportText", translator.GetTranslatedString ("MenuAbuse"));
-            
-            //vars.Add("DateText", translator.GetTranslatedString("DateText"));
+
+//            vars.Add("DateText", translator.GetTranslatedString("DateText"));
             vars.Add ("CategoryText", translator.GetTranslatedString ("CategoryText"));
             vars.Add ("AbuseReporterNameText", translator.GetTranslatedString ("AbuseReporterNameText"));
             vars.Add ("AbuserNameText", translator.GetTranslatedString ("AbuserNameText"));
@@ -125,3 +125,4 @@ namespace Universe.Modules.Web
         }
     }
 }
+

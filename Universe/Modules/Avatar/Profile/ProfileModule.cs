@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -71,7 +71,7 @@ namespace Universe.Modules.Profiles
 
         #region INonSharedRegionModule Members
 
-        public void Initialize (IConfigSource config)
+        public void Initialise (IConfigSource config)
         {
             IConfig profileConfig = config.Configs ["Profile"];
             if (profileConfig != null)
@@ -629,10 +629,13 @@ namespace Universe.Modules.Profiles
             } else
                 charterMember = Utils.StringToBytes (Profile.MembershipGroup);
             
+            // 19-06-2015 Fly-Man-
             // When charterMember set this character └ the viewer recognizes it
             // as a Grid Master. Not sure what we want to do with that in Universe
             //
             // Perhaps a talk with viewer devs to allow more options for this
+            //
+            
             if (Utilities.IsSystemUser (Profile.PrincipalID))
             {
                 charterMember = Utils.StringToBytes ("└");

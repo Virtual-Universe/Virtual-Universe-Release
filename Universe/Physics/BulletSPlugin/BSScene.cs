@@ -1,5 +1,5 @@
 ﻿    /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org,
+ * Copyright (c) Contributors, http://opensimulator.org/, http://virtual-planets.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyrightD
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the OpenSimulator Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -203,7 +203,7 @@ namespace Universe.Physics.BulletSPlugin
 
         #region Construction and Initialization
 
-        public override void Initialize(IMesher meshmerizer, IScene scene)
+        public override void Initialise(IMesher meshmerizer, IScene scene)
         {
             Scene = scene;
             mesher = meshmerizer;
@@ -265,7 +265,7 @@ namespace Universe.Physics.BulletSPlugin
             m_initialized = true;
         }
 
-        public override void PostInitialize(IConfigSource config)
+        public override void PostInitialise(IConfigSource config)
         {
         }
 
@@ -360,7 +360,7 @@ namespace Universe.Physics.BulletSPlugin
             if (ret == null)
             {
                 MainConsole.Instance.ErrorFormat(
-                    "{0} COULD NOT SELECT BULLET ENGINE: '[BulletSim]PhysicsEngine' must be either 'BulletUnmanaged-*' or 'BulletXNA-*'",
+                    "[Physics Engine]: {0} Could not select bullet engine: '[BulletSim]PhysicsEngine' must be either 'BulletUnmanaged-*' or 'BulletXNA-*'",
                     LogHeader);
             }
             else

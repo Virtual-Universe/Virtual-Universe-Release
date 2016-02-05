@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,10 +30,10 @@ using System.IO;
 using OpenMetaverse;
 using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Modules;
-using Universe.Framework.SceneInfo;
 using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
+using Universe.Framework.SceneInfo;
 using GridRegion = Universe.Framework.Services.GridRegion;
 using RegionFlags = Universe.Framework.Services.RegionFlags;
 
@@ -144,46 +144,41 @@ namespace Universe.Modules.Web
                     newRegion.Startup = delayStartup.StartsWith ("n") ? StartupType.Normal : StartupType.Medium;
                 }
 
-                if (regionPreset.StartsWith("w"))
+                if (regionPreset.StartsWith("u"))
                 {
                     // 'standard' setup
-                    newRegion.RegionType = newRegion.RegionType + "Whitecore";                   
-                    //info.RegionPort;            // use auto assigned port
+                    newRegion.RegionType = newRegion.RegionType + "Universe";
                     newRegion.RegionTerrain = "Flatland";
                     newRegion.Startup = StartupType.Normal;
                     newRegion.SeeIntoThisSimFromNeighbor = true;
-                    newRegion.InfiniteRegion = false;
+                    newRegion.InfiniteRegion = true;
                     newRegion.ObjectCapacity = 50000;
                     newRegion.RegionPort = RegionPort;
                 }
-
                 if (regionPreset.StartsWith("o"))       
                 {
                     // 'Openspace' setup
-                    newRegion.RegionType = newRegion.RegionType + "Openspace";                   
-                    //newRegion.RegionPort;            // use auto assigned port
+                    newRegion.RegionType = newRegion.RegionType + "Openspace";
                     if (RegionTerrain.StartsWith("a"))
                         newRegion.RegionTerrain = "Aquatic";
                     else
                         newRegion.RegionTerrain = "Grassland";
                     newRegion.Startup = StartupType.Medium;
                     newRegion.SeeIntoThisSimFromNeighbor = true;
-                    newRegion.InfiniteRegion = false;
+                    newRegion.InfiniteRegion = true;
                     newRegion.ObjectCapacity = 750;
                     newRegion.RegionSettings.AgentLimit = 10;
                     newRegion.RegionSettings.AllowLandJoinDivide = false;
                     newRegion.RegionSettings.AllowLandResell = false;
                 }
-
                 if (regionPreset.StartsWith("h"))       
                 {
                     // 'Homestead' setup
-                    newRegion.RegionType = newRegion.RegionType + "Homestead";                   
-                    //info.RegionPort;            // use auto assigned port
+                    newRegion.RegionType = newRegion.RegionType + "Homestead";
                     newRegion.RegionTerrain = "Homestead";
                     newRegion.Startup = StartupType.Medium;
                     newRegion.SeeIntoThisSimFromNeighbor = true;
-                    newRegion.InfiniteRegion = false;
+                    newRegion.InfiniteRegion = true;
                     newRegion.ObjectCapacity = 3750;
                     newRegion.RegionSettings.AgentLimit = 20;
                     newRegion.RegionSettings.AllowLandJoinDivide = false;
@@ -193,12 +188,11 @@ namespace Universe.Modules.Web
                 if (regionPreset.StartsWith("f"))       
                 {
                     // 'Full Region' setup
-                    newRegion.RegionType = newRegion.RegionType + "Full Region";                   
-                    //newRegion.RegionPort;            // use auto assigned port
+                    newRegion.RegionType = newRegion.RegionType + "Full Region";
                     newRegion.RegionTerrain = RegionTerrain;
                     newRegion.Startup = StartupType.Normal;
                     newRegion.SeeIntoThisSimFromNeighbor = true;
-                    newRegion.InfiniteRegion = false;
+                    newRegion.InfiniteRegion = true;
                     newRegion.ObjectCapacity = 15000;
                     newRegion.RegionSettings.AgentLimit = 100;
                     if (newRegion.RegionType.StartsWith ("M"))                           // defaults are 'true'
@@ -214,7 +208,7 @@ namespace Universe.Modules.Web
                     newRegion.RegionTerrain = "Custom";
                 }
 
-                /* Disabled as this is a worl=k in progress and will break with the current scenemanager (Dec 5 - greythane-
+                /* Disabled as this is a work in progress and will break with the current scenemanager (Dec 5 - greythane-
                 // TODO: !!! Assumes everything is local for now !!!               
                 ISceneManager scenemanager = webInterface.Registry.RequestModuleInterface<ISceneManager> ();
                 if (scenemanager.CreateRegion(newRegion))
@@ -222,18 +216,17 @@ namespace Universe.Modules.Web
                     IGridRegisterModule gridRegister = webInterface.Registry.RequestModuleInterface<IGridRegisterModule>();
                     if( gridRegister.RegisterRegionWithGrid(null, true, false, null)) 
                     {
- 
                         response = "<h3>Successfully created region, redirecting to main page</h3>" +
                             "<script language=\"javascript\">" +
                             "setTimeout(function() {window.location.href = \"index.html\";}, 3000);" +
                             "</script>";
                     }
                     else
-                    //  response = "<h3>" + error + "</h3>";
-                        response = "<h3> Error registering region with grid</h3>";
+                        //response = "<h3>" + error + "</h3>";
+                            response = "<h3> Error registering region with grid</h3>";
                 }
                 else
-                */
+*/
                 response = "<h3>Error creating this region.</h3>";
                 return null;
             }
@@ -286,7 +279,7 @@ namespace Universe.Modules.Web
                     if (userNameSeed != "")
                         m_userNameSeed = userNameSeed.Split (',');
                 }
-                */
+*/
                 Utilities.MarkovNameGenerator rNames = new Utilities.MarkovNameGenerator();
                 string regionName = rNames.FirstName (m_regionNameSeed == null ? Utilities.RegionNames: m_regionNameSeed, 3,7);
                 vars.Add ("RegionName", regionName);
@@ -297,7 +290,7 @@ namespace Universe.Modules.Web
 
                 // get some current details
                 //List<GridRegion> regions = gridService.GetRegionsByName(null, "", null,null);
-                
+
                 //var currentInfo = scenemanager.FindCurrentRegionInfo ();
                 Dictionary<string, int> currentInfo = null;
                 if (currentInfo != null)
@@ -311,16 +304,16 @@ namespace Universe.Modules.Web
                     vars.Add ("RegionLocY", settings.MapCenter.Y);
                     vars.Add("RegionPort", 9000);
                 }
-                 
+
                 vars.Add ("RegionSizeX", Constants.RegionSize);
                 vars.Add ("RegionSizeY", Constants.RegionSize);
                 vars.Add ("RegionType", webInterface.RegionTypeArgs(translator));
                 vars.Add ("RegionPresetType", webInterface.RegionPresetArgs(translator));
-                vars.Add ("RegionTerrain", webInterface.RegionTerrainArgs(translator));            
+                vars.Add ("RegionTerrain", webInterface.RegionTerrainArgs(translator));           
             }
 
-            // Labels
-            //vars.Add ("RegionInformationText", translator.GetTranslatedString ("RegionInformationText"));
+                // Labels
+                //vars.Add ("RegionInformationText", translator.GetTranslatedString ("RegionInformationText"));
             vars.Add ("RegionNameText", translator.GetTranslatedString ("RegionNameText"));
             vars.Add ("RegionLocationText", translator.GetTranslatedString ("RegionLocationText"));
             vars.Add ("RegionSizeText", translator.GetTranslatedString ("RegionSizeText"));
@@ -339,7 +332,6 @@ namespace Universe.Modules.Web
             vars.Add("Submit", translator.GetTranslatedString("Submit"));
             vars.Add("SubmitURL", "home.html");
             vars.Add("ErrorMessage", "");
-
             return vars;
         }
 

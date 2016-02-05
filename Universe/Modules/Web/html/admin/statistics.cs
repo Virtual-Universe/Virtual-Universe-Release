@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,10 +25,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System.Collections.Generic;
-using System.Linq;
-using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Servers.HttpServer.Implementation;
+using System.Collections.Generic;
+using Universe.Framework.DatabaseInterfaces;
+using System.Linq;
 
 namespace Universe.Modules.Web
 {
@@ -67,6 +67,7 @@ namespace Universe.Modules.Web
             {
                 response = "Sorry... Statistics information is not available";
                 return null;
+
             }
 
             // Clear statistics
@@ -108,6 +109,8 @@ namespace Universe.Modules.Web
             var pingTime = dc.Get ("ping").ConvertAll<float> ((s) => float.Parse (s));
             var agentsInView = dc.Get ("agents_in_view").ConvertAll<int> ((s) => int.Parse (s));
 
+
+
             // data
             vars.Add("ViewersList",viewerList);
             vars.Add("GPUList",gpuList);
@@ -131,7 +134,8 @@ namespace Universe.Modules.Web
             vars.Add("AgentsInViewText", translator.GetTranslatedString("AgentsInViewText"));
 
             vars.Add("ClearStatsText", translator.GetTranslatedString("ClearStatsText"));
-                 
+
+                    
             return vars;
         }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -457,7 +457,7 @@ namespace Universe.Region
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.Error("[Scene Presence]: ABSOLUTE POSITION " + e);
+                        MainConsole.Instance.Error("[SCENEPRESENCE]: ABSOLUTE POSITION " + e);
                     }
                 }
 
@@ -533,7 +533,7 @@ namespace Universe.Region
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.Error("[Scene Presence]: VELOCITY " + e.Message);
+                        MainConsole.Instance.Error("[SCENEPRESENCE]: VELOCITY " + e.Message);
                     }
                 }
                 else
@@ -769,7 +769,7 @@ namespace Universe.Region
             m_controllingClient.MoveAgentIntoRegion(Scene.RegionInfo, AbsolutePosition, look);
 
             MainConsole.Instance.DebugFormat(
-                "[SCENE]: Upgrading child to root agent for {0} in {1}",
+                "[Scene]: Upgrading child to root agent for {0} in {1}",
                 Name, m_scene.RegionInfo.RegionName);
 
             // On the next prim update, all objects will be sent
@@ -843,7 +843,7 @@ namespace Universe.Region
                 Animator.ResetAnimations();
 
             MainConsole.Instance.DebugFormat(
-                "[Scene Presence]: Downgrading root agent {0}, {1} to a child agent in {2}",
+                "[SCENEPRESENCE]: Downgrading root agent {0}, {1} to a child agent in {2}",
                 Name, UUID, m_scene.RegionInfo.RegionName);
 
             RemoveFromPhysicalScene();
@@ -1586,7 +1586,7 @@ namespace Universe.Region
             catch (Exception ex)
             {
                 //Why did I get this error?
-                MainConsole.Instance.Error("[Scene Presence]: DoMoveToPosition" + ex);
+                MainConsole.Instance.Error("[SCENEPRESENCE]: DoMoveToPosition" + ex);
             }
         }
 
@@ -2050,7 +2050,7 @@ namespace Universe.Region
             {
                 // WHAT??? we can't make them a root agent though... what if they shouldn't be here?
                 //  Or even worse, what if they are spoofing the client???
-                MainConsole.Instance.Info("[Scene Presence]: AddNewMovement() called on child agent for " + Name +
+                MainConsole.Instance.Info("[SCENEPRESENCE]: AddNewMovement() called on child agent for " + Name +
                                           "! Possible attempt to force a fake agent into a sim!");
                 return;
             }
@@ -2168,7 +2168,7 @@ namespace Universe.Region
         /// <param name="remoteClient"></param>
         public virtual void SendTerseUpdateToClient(IScenePresence remoteClient)
         {
-            //MainConsole.Instance.DebugFormat("[Scene Presence]: TerseUpdate: Pos={0} Rot={1} Vel={2}", m_pos, m_bodyRot, m_velocity);
+            //MainConsole.Instance.DebugFormat("[SCENEPRESENCE]: TerseUpdate: Pos={0} Rot={1} Vel={2}", m_pos, m_bodyRot, m_velocity);
             remoteClient.SceneViewer.QueuePresenceForUpdate(
                 this,
                 PrimUpdateFlags.TerseUpdate);
@@ -2832,7 +2832,7 @@ namespace Universe.Region
                 RemoveFromPhysicalScene();
             }
             MainConsole.Instance.Error(
-                "[Avatar]: NonFinite Avatar position detected... Reset Position, the client may be messed up now.");
+                "[AVATAR]: NonFinite Avatar position detected... Reset Position, the client may be messed up now.");
 
             //Make them fly so that they don't just fall
             AddToPhysicalScene(true, false);

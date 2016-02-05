@@ -1,5 +1,5 @@
-﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+/*
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,29 +30,25 @@ using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Simulation.Base;
 
+
 namespace Universe.Server
 {
     public class UniverseBase : SimulationBase
     {
         /// <summary>
-        ///     Initialization Information:
-        ///     This performs the initialization of the scene, such as loading configurations
-        ///     from disk.
+        ///     Performs initialization of the scene, such as loading configuration from disk.
         /// </summary>
         public override void Startup()
         {
             base.Startup();
 
-            // Lets fix the default prompt
-            {
-                //Fix the default prompt
-                if (MainConsole.Instance != null)
-                {
-                    MainConsole.Instance.DefaultPrompt = "Universe.Server ";
-                    MainConsole.Instance.Info("[Virtual Universe Startup]: Startup completed in " +
-                        (DateTime.Now - this.StartupTime).TotalSeconds);
-                }
-            }
+            //Fix the default prompt
+            if (MainConsole.Instance != null)
+			{
+				MainConsole.Instance.DefaultPrompt = "Universe.Server ";
+				MainConsole.Instance.Info ("[Virtual Universe Startup]: Startup completed in " +
+					(DateTime.Now - this.StartupTime).TotalSeconds);
+			}
         }
 
         public override ISimulationBase Copy()

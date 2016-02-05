@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -67,20 +67,20 @@ namespace Universe.Framework.ConsoleFramework
         public void AddCommand(string command, string commandHelp, string infomessage, CommandDelegate fn, bool requiresAScene, bool fireOnceForAllScenes)
         {
             CommandInfo info = new CommandInfo
-            {
-                command = command,
-                commandHelp = commandHelp,
-                info = infomessage,
-                fireOnceForAllScenes = fireOnceForAllScenes,
-                requiresAScene = requiresAScene,
-                fn = new List<CommandDelegate> { fn }
-            };
+                                   {
+                                       command = command,
+                                       commandHelp = commandHelp,
+                                       info = infomessage,
+                                       fireOnceForAllScenes = fireOnceForAllScenes,
+                                       requiresAScene = requiresAScene,
+                                       fn = new List<CommandDelegate> {fn}
+                                   };
             tree.AddCommand(info);
         }
 
         public bool ContainsCommand(string command)
         {
-            return tree.FindCommands(new string[1] { command }).Length > 0;
+            return tree.FindCommands(new string[1] {command}).Length > 0;
         }
 
         public string[] FindNextOption(string[] cmd)
@@ -171,7 +171,7 @@ namespace Universe.Framework.ConsoleFramework
                 {
                     innerPath = innerPath.Remove(0, 1);
                 }
-                string[] commandPath = innerPath.Split(new string[1] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                string[] commandPath = innerPath.Split(new string[1] {" "}, StringSplitOptions.RemoveEmptyEntries);
                 if (commandPath.Length == 1 || !m_allowSubSets)
                 {
                     //Only one command after our path, its ours
@@ -226,43 +226,42 @@ namespace Universe.Framework.ConsoleFramework
                         for (i = 1; i <= commandPath.Length; i++)
                         {
                             string[] comm = new string[i];
-                            Array.Copy(commandPath, comm, i);
-                            string com = string.Join(" ", comm);
+                            Array.Copy (commandPath, comm, i);
+                            string com = string.Join (" ", comm);
                             //Only one command after our path, its ours
-                            if (commands.ContainsKey(com))
+                            if (commands.ContainsKey (com))
                             {
                                 MainConsole.Instance.HasProcessedCurrentCommand = false;
 
                                 foreach (CommandDelegate fn in commands[com].fn.Where(fn => fn != null))
                                 {
-                                    cmdList = new List<string>(commandPath);
-                                    cmdList.AddRange(commandOptions);
+                                    cmdList = new List<string> (commandPath);
+                                    cmdList.AddRange (commandOptions);
                                     foreach (IScene scene in GetScenes(commands[com]))
-                                        fn(scene, cmdList.ToArray());
+                                        fn (scene, cmdList.ToArray ());
                                 }
                                 return new string[0];
                             }
 
-                            if (commandPath[0] == "help")
+                            if (commandPath [0] == "help")
                             {
-                                List<string> help = GetHelp(commandOptions);
+                                List<string> help = GetHelp (commandOptions);
 
                                 foreach (string s in help)
                                 {
-                                    MainConsole.Instance.FormatNoTime(Level.Off, s);
+                                    MainConsole.Instance.FormatNoTime (Level.Off, s);
                                 }
                                 return new string[0];
-                            }
-                            else
+                            } else
                             {
                                 foreach (KeyValuePair<string, CommandInfo> cmd in commands)
                                 {
-                                    string[] cmdSplit = cmd.Key.Split(' ');
+                                    string[] cmdSplit = cmd.Key.Split (' ');
                                     if (cmdSplit.Length == commandPath.Length)
                                     {
                                         bool any = false;
                                         for (int k = 0; k < commandPath.Length; k++)
-                                            if (!cmdSplit[k].StartsWith(commandPath[k]))
+                                            if (!cmdSplit [k].StartsWith (commandPath [k]))
                                             {
                                                 any = true;
                                                 break;
@@ -272,12 +271,12 @@ namespace Universe.Framework.ConsoleFramework
                                         {
                                             foreach (CommandDelegate fn in cmd.Value.fn)
                                             {
-                                                cmdList = new List<string>(commandPath);
-                                                cmdList.AddRange(commandOptions);
+                                                cmdList = new List<string> (commandPath);
+                                                cmdList.AddRange (commandOptions);
                                                 if (fn != null)
                                                 {
                                                     foreach (IScene scene in GetScenes(cmd.Value))
-                                                        fn(scene, cmdList.ToArray());
+                                                        fn (scene, cmdList.ToArray ());
                                                 }
                                             }
                                             return new string[0];
@@ -287,9 +286,9 @@ namespace Universe.Framework.ConsoleFramework
                             }
                         }
                         // unable to determine multi word command
-                        MainConsole.Instance.Warn(" Sorry.. missed that...");
+                        MainConsole.Instance.Warn (" Sorry.. missed that...");
                     }
-                    else if (commandPath.Length > 0)
+                    else if(commandPath.Length > 0)
                     {
                         string cmdToExecute = commandPath[0];
                         if (cmdToExecute == "help")
@@ -315,23 +314,23 @@ namespace Universe.Framework.ConsoleFramework
                                 KeyValuePair<string, CommandSet> cmd in
                                     commandsets.Where(cmd => cmd.Key.StartsWith(commandPath[0])))
                             {
-                                cmdList = new List<string>(commandPath);
-                                cmdList.AddRange(commandOptions);
-                                return cmd.Value.ExecuteCommand(cmdList.ToArray());
+                                cmdList = new List<string> (commandPath);
+                                cmdList.AddRange (commandOptions);
+                                return cmd.Value.ExecuteCommand (cmdList.ToArray ());
                             }
 
-                            if (commands.ContainsKey(cmdToExecute))
+                            if (commands.ContainsKey (cmdToExecute))
                             {
                                 foreach (CommandDelegate fn in commands[cmdToExecute].fn.Where(fn => fn != null))
                                 {
-                                    cmdList = new List<string>(commandPath);
-                                    cmdList.AddRange(commandOptions);
+                                    cmdList = new List<string> (commandPath);
+                                    cmdList.AddRange (commandOptions);
                                     foreach (IScene scene in GetScenes(commands[cmdToExecute]))
-                                        fn(scene, cmdList.ToArray());
+                                        fn (scene, cmdList.ToArray ());
                                 }
                                 return new string[0];
                             }
-                            MainConsole.Instance.Warn(" Sorry.. missed that...");
+                            MainConsole.Instance.Warn (" Sorry.. missed that...");
 
                         }
                     }
@@ -349,10 +348,10 @@ namespace Universe.Framework.ConsoleFramework
                         if (cmd.fireOnceForAllScenes)
                         {
                             if (MainConsole.Instance.ConsoleScenes.Count == 1)
-                                return new List<IScene> { MainConsole.Instance.ConsoleScenes[0] };
-
-                            MainConsole.Instance.Warn("[Warning] This command requires a selected region");
-                            return new List<IScene>();
+                                return new List<IScene> { MainConsole.Instance.ConsoleScenes [0] };
+ 
+                            MainConsole.Instance.Warn ("[Warning] This command requires a selected region");
+                            return new List<IScene> ();
                         }
 
                         return MainConsole.Instance.ConsoleScenes;
@@ -382,7 +381,7 @@ namespace Universe.Framework.ConsoleFramework
                     if (innerPath.StartsWith(" "))
                         innerPath = innerPath.Remove(0, 1);
 
-                    string[] commandPath = innerPath.Split(new string[1] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                    string[] commandPath = innerPath.Split(new string[1] {" "}, StringSplitOptions.RemoveEmptyEntries);
                     if ((commandPath.Length == 1 || !m_allowSubSets))
                     {
                         string fullcommand = string.Join(" ", command, 0, 2 > command.Length ? command.Length : 2);
@@ -479,7 +478,7 @@ namespace Universe.Framework.ConsoleFramework
                     //    string.Format("-- {0}  [{1}]:   {2}", command.command, command.commandHelp, command.info)));
                     commands.Values.Select(
                         command =>
-                        string.Format("-- {0}:\n      {1}", command.commandHelp, command.info.Replace("\n", "\n        "))));
+                        string.Format("-- {0}:\n      {1}", command.commandHelp, command.info.Replace("\n","\n        "))));
 
                 help.Add("");
                 help.AddRange(StringUtils.AlphanumericSort(paths));
@@ -501,21 +500,21 @@ namespace Universe.Framework.ConsoleFramework
 
             int index;
             int startingIndex = -1;
-            string[] unquoted = text.Split(new[] { '"' });
+            string[] unquoted = text.Split(new[] {'"'});
 
             for (index = 0; index < unquoted.Length; index++)
             {
                 if (unquoted[index].StartsWith("/") || startingIndex >= 0)
                 {
                     startingIndex = index;
-                    string qstr = unquoted[index].Trim();
+                    string qstr = unquoted [index].Trim();
                     if (qstr != "")
                         result.Add(qstr);
                 }
                 else
                 {
                     startingIndex = 0;
-                    string[] words = unquoted[index].Split(new[] { ' ' });
+                    string[] words = unquoted[index].Split(new[] {' '});
                     result.AddRange(words.Where(w => w != String.Empty));
                 }
             }
@@ -538,8 +537,8 @@ namespace Universe.Framework.ConsoleFramework
 
         public string LogPath
         {
-            get { return m_logPath; }
-            set { m_logPath = value; }
+            get{ return m_logPath; }
+            set{ m_logPath = value;}
         }
 
         public virtual void Initialize(IConfigSource source, ISimulationBase simBase)
@@ -558,8 +557,8 @@ namespace Universe.Framework.ConsoleFramework
             // set the default path as preset or configured
             string logName = "";
             string logPath = "";
-            logName = source.Configs["Console"].GetString("LogAppendName", logName);
-            logPath = source.Configs["Console"].GetString("LogPath", logPath);
+            logName = source.Configs ["Console"].GetString ("LogAppendName", logName);
+            logPath = source.Configs ["Console"].GetString ("LogPath", logPath);
             if (logPath == "")
                 logPath = simBase.DefaultDataPath;
 
@@ -569,11 +568,11 @@ namespace Universe.Framework.ConsoleFramework
         protected void InitializeLog(string logPath, string appendName)
         {
             // check the logPath to ensure correct format
-            if (!logPath.EndsWith("/"))
+            if (!logPath.EndsWith ("/")) 
                 logPath = logPath + "/";
             m_logPath = logPath;
 
-            string runFilename = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
+            string runFilename = System.Diagnostics.Process.GetCurrentProcess ().MainModule.FileName;
             string runProcess = Path.GetFileNameWithoutExtension(runFilename);
             m_logFile = StreamWriter.Synchronized(new StreamWriter(logPath + runProcess + appendName + ".log", true));
         }
@@ -603,7 +602,7 @@ namespace Universe.Framework.ConsoleFramework
 
             if (line != String.Empty && line.Replace(" ", "") != String.Empty) //If there is a space, its fine
             {
-                MainConsole.Instance.Info("[Console] Invalid command");
+                MainConsole.Instance.Info("[CONSOLE] Invalid command");
             }
         }
 
@@ -677,7 +676,7 @@ namespace Universe.Framework.ConsoleFramework
             bool itisdone = false;
             string optstr = options.Aggregate(String.Empty, (current, s) => current + (" " + s));
             string temp = InternalPrompt(prompt, defaultresponse, options);
-
+ 
             while (!itisdone && options.Count > 0)
             {
                 if (options.Contains(temp))
@@ -720,7 +719,7 @@ namespace Universe.Framework.ConsoleFramework
             if (options.Count > 0)
             {
                 foreach (string option in options)
-                    if (option.StartsWith(ret))
+                    if (option.StartsWith (ret))
                         ret = option;
             }
             return ret;
@@ -741,7 +740,7 @@ namespace Universe.Framework.ConsoleFramework
             if (Threshold <= level)
             {
                 MainConsole.TriggerLog(level.ToString(), text);
-                text = string.Format("{0} ; {1}", Culture.LocaleLogStamp(), text);
+                text = string.Format ("{0} ; {1}", Culture.LocaleLogStamp (), text);
 
                 Console.WriteLine(text);
                 if (m_logFile != null)
@@ -876,18 +875,22 @@ namespace Universe.Framework.ConsoleFramework
         {
             Output(string.Format(format, args), Level.Debug);
         }
+
         public void Error(object message)
         {
             Output(message.ToString(), Level.Error);
         }
+
         public void ErrorFormat(string format, params object[] args)
         {
             Output(string.Format(format, args), Level.Error);
         }
+
         public void Fatal(object message)
         {
             Output(message.ToString(), Level.Fatal);
         }
+
         public void FatalFormat(string format, params object[] args)
         {
             Output(string.Format(format, args), Level.Fatal);
@@ -897,6 +900,7 @@ namespace Universe.Framework.ConsoleFramework
         {
             Output(string.Format(format, args), level);
         }
+
         public void FormatNoTime(Level level, string format, params object[] args)
         {
             OutputNoTime(string.Format(format, args), level);
@@ -906,6 +910,7 @@ namespace Universe.Framework.ConsoleFramework
         {
             Output(message.ToString(), Level.Info);
         }
+
         public void CleanInfo(object message)
         {
             OutputNoTime(message.ToString(), Level.Info);
@@ -915,6 +920,7 @@ namespace Universe.Framework.ConsoleFramework
         {
             OutputNoTime(string.Format(format, args), Level.Error);
         }
+
         public void Ticker()
         {
             Console.Write(".");
@@ -924,6 +930,7 @@ namespace Universe.Framework.ConsoleFramework
         {
             Output(string.Format(format, args), Level.Info);
         }
+
         public void Log(Level level, object message)
         {
             Output(message.ToString(), level);

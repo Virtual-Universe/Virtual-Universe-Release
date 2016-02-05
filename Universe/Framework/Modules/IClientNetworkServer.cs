@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@ namespace Universe.Framework.Modules
 {
     public interface IClientNetworkServer
     {
-        void Initialize(uint port, IConfigSource configSource, AgentCircuitManager authenticateClass);
+        void Initialise(uint port, IConfigSource configSource, AgentCircuitManager authenticateClass);
         void UpdatePort(uint port);
         void AddScene(IScene x);
         void Start();

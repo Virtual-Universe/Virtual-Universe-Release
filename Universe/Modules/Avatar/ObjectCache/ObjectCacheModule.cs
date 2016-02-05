@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,13 +28,14 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Utilities;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
+
 
 namespace Universe.Modules.ObjectCache
 {
@@ -54,7 +55,7 @@ namespace Universe.Modules.ObjectCache
 
         #region INonSharedRegionModule
 
-        public virtual void Initialize(IConfigSource source)
+        public virtual void Initialise(IConfigSource source)
         {
             IConfig moduleConfig = source.Configs["ObjectCache"];
             if (moduleConfig != null)
@@ -240,7 +241,7 @@ namespace Universe.Modules.ObjectCache
 
         #endregion
 
-        public virtual void PostInitialize()
+        public virtual void PostInitialise()
         {
         }
 

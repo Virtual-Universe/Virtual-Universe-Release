@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,6 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
 using System;
 using System.IO;
 using Nini.Config;
@@ -49,7 +50,7 @@ namespace Universe.Modules.Auction
 
         #region INonSharedRegionModule Members
 
-        public void Initialize(IConfigSource pSource)
+        public void Initialise(IConfigSource pSource)
         {
         }
 
@@ -143,10 +144,9 @@ namespace Universe.Modules.Auction
                     return;
                 landObject.LandData.SnapshotID = SnapshotID;
                 landObject.LandData.AuctionID = (uint) Util.RandomClass.Next(0, int.MaxValue);
-                // landObject.LandData.Status = ParcelStatus.Abandoned;
-                // The Abandoned status is only temporary as all land must actually be owned
+ 
                 // During an Auction, the Status of an parcel stays "Leased"
-                // Consider changing the auction status for a parcel at auction to "Pending"
+                // 20160204 -greythane- maybe this could be set to 'pending'?
                 landObject.LandData.Status = ParcelStatus.Leased;
                 landObject.SendLandUpdateToAvatarsOverMe();
             }

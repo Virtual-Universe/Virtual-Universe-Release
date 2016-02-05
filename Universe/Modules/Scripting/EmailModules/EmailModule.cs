@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,6 +29,14 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.DatabaseInterfaces;
+using Universe.Framework.Modules;
+using Universe.Framework.PresenceInfo;
+using Universe.Framework.SceneInfo;
+using Universe.Framework.Utilities;
+using Nini.Config;
+using OpenMetaverse;
 using System.Net;
 using System.Net.Mail;
 //#if LINUX
@@ -36,20 +44,14 @@ using System.Net.Mail;
 //using System.Security.Cryptography.X509Certificates;
 //#endif
 using System.Threading;
-using Nini.Config;
-using OpenMetaverse;
-using Universe.Framework.ConsoleFramework;
-using Universe.Framework.DatabaseInterfaces;
-using Universe.Framework.Modules;
-using Universe.Framework.PresenceInfo;
-using Universe.Framework.SceneInfo;
-using Universe.Framework.Utilities;
 
 namespace Universe.Modules.Scripting
 {
     public class EmailModule : IEmailModule
     {
+        //
         // Module vars
+        //
         readonly Dictionary<UUID, DateTime> m_LastGetEmailCall = new Dictionary<UUID, DateTime>();
         readonly Dictionary<UUID, List<Email>> m_MailQueues = new Dictionary<UUID, List<Email>>();
 
@@ -57,6 +59,8 @@ namespace Universe.Modules.Scripting
         // 2 hours without llGetNextEmail drops the queue
 
         // Scenes by Region Handle
+
+
         string SMTP_SERVER_HOSTNAME = string.Empty;
         string SMTP_SERVER_LOGIN = string.Empty;
         string SMTP_SERVER_PASSWORD = string.Empty;
@@ -96,16 +100,26 @@ namespace Universe.Modules.Scripting
             if (address == string.Empty)
                 return;
 
+            /*
+             * //FIXED:Check the email is correct form in REGEX
+            //const string EMailpatternStrict = @"^(([^<>()[\]\\.,;:\s@\""]+"
+            //                                  + @"(\.[^<>()[\]\\.,;:\s@\""]+)*)|(\"".+\""))@"
+            //                                  + @"((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}"
+            //                                  + @"\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+"
+            //                                  + @"[a-zA-Z]{2,}))$";
+            */
+            //Regex EMailreStrict = new Regex(EMailpatternStrict);
+            //bool isEMailStrictMatch = EMailreStrict.IsMatch(address);
             bool isEMailStrictMatch = Utilities.IsValidEmail(address);
             if (!isEMailStrictMatch)
             {
-                MainConsole.Instance.Error("[Email] REGEX Problem in EMail Address: " + address);
+                MainConsole.Instance.Error("[EMAIL] REGEX Problem in EMail Address: " + address);
                 return;
             }
             //FIXME:Check if subject + body = 4096 Byte
             if ((subject.Length + body.Length) > m_MaxEmailSize)
             {
-                MainConsole.Instance.Error("[Email] subject + body larger than limit of " + m_MaxEmailSize + " bytes");
+                MainConsole.Instance.Error("[EMAIL] subject + body larger than limit of " + m_MaxEmailSize + " bytes");
                 return;
             }
 
@@ -129,6 +143,7 @@ namespace Universe.Modules.Scripting
                             try
                             {
                                 //Creation EmailMessage
+
                                 string fromEmailAddress;
 
                                 if (scene != null && objectID != UUID.Zero)
@@ -157,18 +172,30 @@ namespace Universe.Modules.Scripting
                                 smtpServer.UseDefaultCredentials = false;
                                 smtpServer.Credentials = new NetworkCredential (SMTP_SERVER_LOGIN, SMTP_SERVER_PASSWORD);
                                 smtpServer.Timeout = 15000;
-
+                               
                                 // Beware !! This effectively ignores the ssl validation and assumes that all is correct 
                                 // For Mono, requires importation of the Google smtpd certificate (see SMTPEmail.ini.example)
                                 // Possibly not needed for Windows
-                                ServicePointManager.ServerCertificateValidationCallback = delegate {
-                                    return true;
+                                //ServicePointManager.ServerCertificateValidationCallback = 
+                                //    delegate(object sim, X509Certificate certificate, X509Chain chain SslPolicyErrors sslPolicyErrors)
+                                //{ return true; };
+
+                                // if ((!SMTP_SERVER_MONO_CERT) && (Utilities.IsLinuxOs))
+                                    ServicePointManager.ServerCertificateValidationCallback = delegate {
+                                        return true;
                                     };
 
                                 // create the message
                                 var emailMessage = new MailMessage (fromAddress, toAddress);
                                 emailMessage.Subject = subject;
                                 emailMessage.Body = body;
+
+                                // sample for adding attachments is needed sometime :)
+                                //if File(Exist(fullFileName))
+                                //{
+                                //    var mailAttactment = new Attachment(fullFileName);
+                                //    emailMessage.Attachments.Add(mailAttactment);
+                                //}
 
                                 // send the message
                                 try
@@ -178,15 +205,15 @@ namespace Universe.Modules.Scripting
                                 {
                                     SmtpStatusCode status = ex.StatusCode;
                                     if (status == SmtpStatusCode.Ok)
-                                        MainConsole.Instance.Info ("[Email] EMail sent to: " + address + " from object: " +
+                                        MainConsole.Instance.Info ("[EMAIL] EMail sent to: " + address + " from object: " +
                                         fromEmailAddress);
                                     else
-                                        MainConsole.Instance.Info ("[Email] EMail error sending to: " + address + " from object: " +
+                                        MainConsole.Instance.Info ("[EMAIL] EMail error sending to: " + address + " from object: " +
                                         fromEmailAddress + " status: " + ex.Message);
                                 }
                             } catch (Exception e)
                             {
-                                MainConsole.Instance.Error ("[Email] DefaultEmailModule Exception: " + e.Message);
+                                MainConsole.Instance.Error ("[EMAIL] DefaultEmailModule Exception: " + e.Message);
                                 didError = true;
                             }
                         });
@@ -386,6 +413,7 @@ namespace Universe.Modules.Scripting
             // It's tempting to create the queue here.  Don't; objects which have
             // not yet called GetNextEmail should have no queue, and emails to them
             // should be silently dropped.
+
             lock (m_MailQueues)
             {
                 if (m_MailQueues.ContainsKey(to))
@@ -489,7 +517,7 @@ namespace Universe.Modules.Scripting
                            }
             catch (Exception e)
             {
-                MainConsole.Instance.Error("[Email] DefaultEmailModule not configured: " + e.Message);
+                MainConsole.Instance.Error("[EMAIL] DefaultEmailModule not configured: " + e.Message);
                 m_Enabled = false;
             }
         }

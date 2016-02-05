@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -79,11 +79,11 @@ namespace Universe.Framework.Utilities
         	switch(Maturity)
         	{
         	case 13:
-        		return "PG"; // V3 viewers call this a General rating
+        		return "PG";
         	case 21:
-        		return "Mature"; // V3 viewers call this a Moderate rating
+        		return "Mature";
         	case 42:
-        		return "Adult"; // V3 viewers call this Adult rating
+        		return "Adult";
         	default:
         		return "Unknown";
         	}
@@ -934,5 +934,7 @@ namespace Universe.Framework.Utilities
             default:                                return "System Generated";
             }
         }
+
     }
  }
+

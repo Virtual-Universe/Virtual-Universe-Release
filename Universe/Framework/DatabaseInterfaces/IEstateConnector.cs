@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,10 +25,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System.Collections.Generic;
-using OpenMetaverse;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Services;
+using OpenMetaverse;
+using System.Collections.Generic;
 
 namespace Universe.Framework.DatabaseInterfaces
 {
@@ -65,7 +65,7 @@ namespace Universe.Framework.DatabaseInterfaces
         /// </summary>
         /// <returns>The the estateID</returns>
         /// <param name="es">Es.</param>
-        int CreateNewEstate(EstateSettings es);
+        int CreateNewEstate (EstateSettings es);
 
         /// <summary>
         ///     Creates a new estate from the given info, and link to a region
@@ -158,7 +158,7 @@ namespace Universe.Framework.DatabaseInterfaces
         /// </summary>
         /// <returns><c>true</c>, if exists, <c>false</c> otherwise.</returns>
         /// <param name="name">Name.</param>
-        bool EstateExists(string name);
+        bool EstateExists (string name);
 
         /// <summary>
         /// Cheks to see if region is part of an estate.
@@ -167,5 +167,6 @@ namespace Universe.Framework.DatabaseInterfaces
         /// <param name="estateID">Estate ID</param>
         /// <param name="regionID">Region ID</param>
         bool EstateRegionExists(int estateID, UUID regionID);
+
     }
 }
