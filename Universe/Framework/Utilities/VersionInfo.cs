@@ -45,7 +45,7 @@ namespace Universe.Framework.Utilities
 
         #endregion
 
-        public const string VERSION_NUMBER = "0.9.4";
+        public const string VERSION_NUMBER = "1.0.1";
         public const Flavour VERSION_FLAVOUR = Flavour.Development;
         public const string VERSION_NAME = "Universe";
 
