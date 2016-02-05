@@ -31,11 +31,11 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
+using OpenMetaverse;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Utilities;
-using OpenMetaverse;
 
 namespace Universe.ScriptEngine.VirtualScript
 {

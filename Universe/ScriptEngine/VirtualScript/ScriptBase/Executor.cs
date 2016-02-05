@@ -29,8 +29,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using Universe.Framework.Utilities;
 using OpenMetaverse;
+using Universe.Framework.Utilities;
 
 namespace Universe.ScriptEngine.VirtualScript.Runtime
 {
