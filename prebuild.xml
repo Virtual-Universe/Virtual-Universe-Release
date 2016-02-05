@@ -1217,6 +1217,55 @@
         </Match>
       </Files>
     </Project>
+    
+        <Project frameworkVersion="v4_5" name="Universe.ScriptEngine.Phlox" path="Universe/ScriptEngine/Phlox" type="Library">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../../../VirtualUniverse/bin/</ReferencePath>
+      <Reference name="Microsoft.CSharp"/>
+      <Reference name="System"/>
+      <Reference name="System.Core"/>
+      <Reference name="System.Data"/>
+      <Reference name="System.Drawing"/>
+      <Reference name="System.Runtime.Remoting"/>
+      <Reference name="System.Xml"/>
+
+      <Reference name="Universe.DataManager"/>
+      <Reference name="Universe.Framework"/>
+      
+      <Reference name="Nini" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="ScriptEngineParser" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverseTypes" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="SmartThreadPool.dll" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="Tools" path="../../../VirtualUniverse/bin/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
 
     <Project frameworkVersion="v4_5" name="Universe.BotManager" path="Universe/BotManager" type="Library">
       <Configuration name="Debug" platform="x86">
@@ -1250,6 +1299,7 @@
       <Reference name="Universe.DataManager"/>
       <Reference name="Universe.Framework"/>
       <Reference name="Universe.ScriptEngine.VirtualScript"/>
+      <Reference name="Universe.ScriptEngine.Phlox"/>
       
       <Reference name="Nini" path="../../VirtualUniverse/bin/"/>
       <Reference name="OpenMetaverse" path="../../VirtualUniverse/bin/"/>
