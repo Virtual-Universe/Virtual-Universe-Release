@@ -142,7 +142,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                 _position.Y = _parent_scene.Region.RegionSizeY*0.5f;
                 _position.Z = _parent_scene.GetTerrainHeightAtXY(_position.X, _position.Y) + 10f;
 
-                MainConsole.Instance.Warn("[PHYSICS]: Got NaN Position on Character Create");
+                MainConsole.Instance.Warn("[Physics]: Got NaN Position on Character Create");
             }
 
 
@@ -155,7 +155,7 @@ namespace Universe.Physics.OpenDynamicsEngine
         {
             if (!(Shell == IntPtr.Zero && Body == IntPtr.Zero))
             {
-                MainConsole.Instance.Debug("[PHYSICS]: re-creating the following avatar ODE data, even though it already exists - "
+                MainConsole.Instance.Debug("[Physics]: re-creating the following avatar ODE data, even though it already exists - "
                                           + (Shell != IntPtr.Zero ? "Shell " : "")
                                           + (Body != IntPtr.Zero ? "Body " : ""));
             }
@@ -298,7 +298,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                 }
                 else
                 {
-                    MainConsole.Instance.Warn("[PHYSICS]: Got a NaN Position from Scene on a Character");
+                    MainConsole.Instance.Warn("[Physics]: Got a NaN Position from Scene on a Character");
                 }
             }
         }
@@ -339,7 +339,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                 }
                 else
                 {
-                    MainConsole.Instance.Warn("[PHYSICS]: Got a NaN Size from Scene on a Character");
+                    MainConsole.Instance.Warn("[Physics]: Got a NaN Size from Scene on a Character");
                 }
             }
         }
@@ -377,7 +377,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                     m_targetVelocity = value;
                 else
                 {
-                    MainConsole.Instance.Warn("[PHYSICS]: Got a NaN velocity from Scene in a Character");
+                    MainConsole.Instance.Warn("[Physics]: Got a NaN velocity from Scene in a Character");
                 }
             }
         }
@@ -683,7 +683,7 @@ namespace Universe.Physics.OpenDynamicsEngine
             float xTiltComponent = -movementVector.X * m_tiltMagnitudeWhenProjectedOnXYPlane;
             float yTiltComponent = -movementVector.Y * m_tiltMagnitudeWhenProjectedOnXYPlane;
             //MainConsole.Instance.Debug(movementVector.X + " " + movementVector.Y);
-            //MainConsole.Instance.Debug("[PHYSICS] changing avatar tilt");
+            //MainConsole.Instance.Debug("[Physics] changing avatar tilt");
             d.JointSetAMotorAngle(Amotor, 0, xTiltComponent);
             d.JointSetAMotorAngle(Amotor, 1, yTiltComponent);
             d.JointSetAMotorAngle(Amotor, 2, 0);
@@ -750,7 +750,7 @@ namespace Universe.Physics.OpenDynamicsEngine
             }
             else
             {
-                MainConsole.Instance.Warn("[PHYSICS]: Got a NaN force applied to a Character");
+                MainConsole.Instance.Warn("[Physics]: Got a NaN force applied to a Character");
             }
             //m_lastUpdateSent = false;
         }

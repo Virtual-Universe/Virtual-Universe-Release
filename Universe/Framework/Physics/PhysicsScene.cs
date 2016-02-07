@@ -243,7 +243,7 @@ namespace Universe.Framework.Physics
         public override PhysicsActor AddAvatar(string avName, Vector3 position, Quaternion rotation, Vector3 size,
                                                    bool isFlying, uint localID, UUID UUID)
         {
-            MainConsole.Instance.InfoFormat("[PHYSICS]: NullPhysicsScene : AddAvatar({0})", position);
+            MainConsole.Instance.InfoFormat("[Physics]: NullPhysicsScene : AddAvatar({0})", position);
             return new NullCharacterPhysicsActor();
         }
 
@@ -281,7 +281,7 @@ namespace Universe.Framework.Physics
 
         public override void SetTerrain(ITerrainChannel channel, short[] heightMap)
         {
-            MainConsole.Instance.InfoFormat("[PHYSICS]: NullPhysicsScene : SetTerrain({0} items)", heightMap.Length);
+            MainConsole.Instance.InfoFormat("[Physics]: NullPhysicsScene : SetTerrain({0} items)", heightMap.Length);
         }
 
         public override void Dispose()

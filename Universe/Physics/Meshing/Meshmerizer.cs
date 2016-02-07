@@ -615,18 +615,18 @@ namespace Universe.Physics.Meshing
                 } catch (DllNotFoundException)
                 {
                     MainConsole.Instance.Error (
-                        "[PHYSICS]: OpenJpeg is not installed correctly on this system. Physics Proxy generation failed.\n" +
+                        "[Physics]: OpenJpeg is not installed correctly on this system. Physics Proxy generation failed.\n" +
                         "Often times this is because of an old version of GLIBC.  You must have version 2.4 or above!");
                     return null;
                 } catch (IndexOutOfRangeException)
                 {
                     MainConsole.Instance.Error (
-                        "[PHYSICS]: OpenJpeg was unable to decode this. Physics Proxy generation failed");
+                        "[Physics]: OpenJpeg was unable to decode this. Physics Proxy generation failed");
                     return null;
                 } catch (Exception ex)
                 {
                     MainConsole.Instance.Error (
-                        "[PHYSICS]: Unable to generate a Sculpty physics proxy. Sculpty texture decode failed: " +
+                        "[Physics]: Unable to generate a Sculpty physics proxy. Sculpty texture decode failed: " +
                         ex);
                     return null;
                 }

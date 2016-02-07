@@ -130,7 +130,7 @@ namespace Universe.Region
             if (m_selectedDataService == null)
             {
                 MainConsole.Instance.ErrorFormat(
-                    "[SceneManager]: FAILED TO LOAD THE SIMULATION SERVICE AT '{0}', ONLY OPTIONS ARE {1}, QUITING...",
+                    "[Scene Manager]: FAILED TO LOAD THE SIMULATION SERVICE AT '{0}', ONLY OPTIONS ARE {1}, QUITING...",
                     name, string.Join(", ", storeNames.ToArray()));
                 Console.Read(); //Wait till they see
                 Environment.Exit(0);
@@ -216,7 +216,7 @@ namespace Universe.Region
                timeTaken = DateTime.Now - m_startupTime;            // time for a restart etc
 
             MainConsole.Instance.InfoFormat(
-                "[SceneManager]: Startup Complete. This took {0}m {1}.{2}s",
+                "[Scene Manager]: Startup Complete. This took {0}m {1}.{2}s",
                 timeTaken.Minutes, timeTaken.Seconds, timeTaken.Milliseconds);
 
             m_startupTime = m_SimBase.StartupTime;                  // finished this timing period
@@ -260,7 +260,7 @@ namespace Universe.Region
 
         public void StartRegion(ISimulationDataStore simData, RegionInfo regionInfo)
         {
-            MainConsole.Instance.InfoFormat("[SceneManager]: Starting region \"{0}\" at @ {1},{2}",
+            MainConsole.Instance.InfoFormat("[Scene Manager]: Starting region \"{0}\" at @ {1},{2}",
                 regionInfo.RegionName,
                 regionInfo.RegionLocX/Constants.RegionSize,
                 regionInfo.RegionLocY/Constants.RegionSize);
@@ -334,12 +334,12 @@ namespace Universe.Region
             IGridRegisterModule gridRegisterModule = scene.RequestModuleInterface<IGridRegisterModule>();
             gridRegisterModule.DeleteRegion(scene);
 
-            MainConsole.Instance.Warn("[SceneManager]: Region " + scene.RegionInfo.RegionName + " was removed\n"+
+            MainConsole.Instance.Warn("[Scene Manager]: Region " + scene.RegionInfo.RegionName + " was removed\n"+
                 "To ensure all data is correct, you should consider restarting the simulator");
 
-            if (MainConsole.Instance.Prompt ("[SceneManager]: Do you wish to shutdown the system? (yes/no)", "no") == "yes")
+            if (MainConsole.Instance.Prompt ("[Scene Manager]: Do you wish to shutdown the system? (yes/no)", "no") == "yes")
             {
-                MainConsole.Instance.Warn ("[SceneManager]: Shutting down in 5 seconds");
+                MainConsole.Instance.Warn ("[Scene Manager]: Shutting down in 5 seconds");
                 System.Threading.Thread.Sleep (5000);
                 Environment.Exit (0);
             }
@@ -369,12 +369,12 @@ namespace Universe.Region
                 RegionInfo region = m_selectedDataService.LoadRegionNameInfo (regionName, m_SimBase);
 
                 StartRegion (m_selectedDataService, region);
-                MainConsole.Instance.Info ("[SceneManager]: " + regionName + " has been restarted");
+                MainConsole.Instance.Info ("[Scene Manager]: " + regionName + " has been restarted");
             }
             else
             {
                 //Kill us now
-                MainConsole.Instance.Warn ("[SceneManager]: Shutting down as per [Startup] configuration");
+                MainConsole.Instance.Warn ("[Scene Manager]: Shutting down as per [Startup] configuration");
                 m_SimBase.Shutdown(true);
             }
         }
@@ -422,20 +422,20 @@ namespace Universe.Region
 
             if (RegionNameExists(regionInfo.RegionName))
             {
-                MainConsole.Instance.InfoFormat ("[SceneManager]: A region already exists with the name '{0}'",
+                MainConsole.Instance.InfoFormat ("[Scene Manager]: A region already exists with the name '{0}'",
                     regionInfo.RegionName);
                 return false;
             }
 
             if ( RegionAtLocationExists(regionInfo.RegionLocX, regionInfo.RegionLocY))
             {
-            MainConsole.Instance.InfoFormat ("[SceneManager]: A region at @ {0},{1} already exists",
+            MainConsole.Instance.InfoFormat ("[Scene Manager]: A region at @ {0},{1} already exists",
                 regionInfo.RegionLocX / Constants.RegionSize, regionInfo.RegionLocY / Constants.RegionSize);
                 return false;
             }
 
             // we should be ok..
-            MainConsole.Instance.InfoFormat ("[SceneManager]: Creating new region \"{0}\" at @ {1},{2}",
+            MainConsole.Instance.InfoFormat ("[Scene Manager]: Creating new region \"{0}\" at @ {1},{2}",
                 regionInfo.RegionName, regionInfo.RegionLocX / Constants.RegionSize, regionInfo.RegionLocY / Constants.RegionSize);
 
             var currentInfo = FindCurrentRegionInfo ();
@@ -495,7 +495,7 @@ namespace Universe.Region
                 }
                 catch (Exception ex)
                 {
-                    MainConsole.Instance.Warn("[SceneManager]: Exception running StartupComplete, " + ex);
+                    MainConsole.Instance.Warn("[Scene Manager]: Exception running StartupComplete, " + ex);
                 }
             }
         }
@@ -894,7 +894,7 @@ namespace Universe.Region
                 return;
 
             // let's do it...
-            MainConsole.Instance.Info ( "[SceneManager]: Loading region definition...." );
+            MainConsole.Instance.Info ( "[Scene Manager]: Loading region definition...." );
             RegionInfo loadRegion = new RegionInfo ();
             loadRegion.LoadRegionConfig( regionFile );
 
@@ -968,7 +968,7 @@ namespace Universe.Region
             {
 //                regionFile = Path.Combine( regionsDir, scene.RegionInfo.RegionName + ".xml");
 
-                MainConsole.Instance.InfoFormat ("[SceneManager]: Saving region configuration for {0} to {1} ...", 
+                MainConsole.Instance.InfoFormat ("[Scene Manager]: Saving region configuration for {0} to {1} ...", 
                     scene.RegionInfo.RegionName, regionFile);
                 scene.RegionInfo.SaveRegionConfig (regionFile);
             }
@@ -1110,7 +1110,7 @@ namespace Universe.Region
             if ( (MainConsole.Instance.ConsoleScene == null) &&
                 (m_scenes.IndexOf(scene) == 0) )
             {
-                MainConsole.Instance.Info ("[SceneManager]: Operating on the 'root' scene will run this command for all regions");
+                MainConsole.Instance.Info ("[Scene Manager]: Operating on the 'root' scene will run this command for all regions");
                 //    if (MainConsole.Instance.Prompt ("Are you sure you want to do this? (yes/no)", "no") != "yes")
                 //    return;
             }
@@ -1307,7 +1307,7 @@ namespace Universe.Region
                 {
                     MainConsole.Instance.ConsoleScene = newScene;
                     rName = newScene.RegionInfo.RegionName;
-                    MainConsole.Instance.Info ("[SceneManager]: Changed to region " + rName);
+                    MainConsole.Instance.Info ("[Scene Manager]: Changed to region " + rName);
                 }
             }
             SetRegionPrompt(rName);
@@ -1492,8 +1492,8 @@ namespace Universe.Region
             if (MainConsole.Instance.ConsoleScene == null)
             {
                 if ( m_scenes.IndexOf(scene) == 0 )
-                    MainConsole.Instance.Warn ("[SceneManager]: Operating on the 'root' will load the OAR into all regions");
-                if (MainConsole.Instance.Prompt ("[SceneManager]: Do you wish to load this OAR into " + regionName + "? (yes/no)", "no") != "yes")
+                    MainConsole.Instance.Warn ("[Scene Manager]: Operating on the 'root' will load the OAR into all regions");
+                if (MainConsole.Instance.Prompt ("[Scene Manager]: Do you wish to load this OAR into " + regionName + "? (yes/no)", "no") != "yes")
                     return;
             }
 
@@ -1512,7 +1512,7 @@ namespace Universe.Region
                         if(success)
                         {
                             scene.RegionInfo = m_selectedDataService.LoadRegionNameInfo (regionName, m_SimBase);
-                            MainConsole.Instance.Warn ("[SceneManager]: Region has been reloaded from the previous backup");
+                            MainConsole.Instance.Warn ("[Scene Manager]: Region has been reloaded from the previous backup");
                         }
                     }
 
@@ -1538,7 +1538,7 @@ namespace Universe.Region
 
             if (MainConsole.Instance.ConsoleScene == null) 
             {
-                MainConsole.Instance.Info ("[SceneManager]: This command requires a region to be selected\n          Please change to a region first");
+                MainConsole.Instance.Info ("[Scene Manager]: This command requires a region to be selected\n          Please change to a region first");
                 return;
             }
 
@@ -1851,7 +1851,7 @@ namespace Universe.Region
 
             if (delScene == null)
             {
-                MainConsole.Instance.WarnFormat ("[SceneManager]: Sorry, {0} was not found", regionName);
+                MainConsole.Instance.WarnFormat ("[Scene Manager]: Sorry, {0} was not found", regionName);
                 return;
             }
 
@@ -1885,7 +1885,7 @@ namespace Universe.Region
 
             if (resetScene == null)
             {
-                MainConsole.Instance.WarnFormat ("[SceneManager]: Sorry, {0} was not found", regionName);
+                MainConsole.Instance.WarnFormat ("[Scene Manager]: Sorry, {0} was not found", regionName);
                 return;
             }
 
@@ -1918,7 +1918,7 @@ namespace Universe.Region
 
             if (clearScene == null)
             {
-                MainConsole.Instance.WarnFormat ("[SceneManager]: Sorry, {0} was not found", regionName);
+                MainConsole.Instance.WarnFormat ("[Scene Manager]: Sorry, {0} was not found", regionName);
                 return;
             }
 
@@ -1961,7 +1961,7 @@ namespace Universe.Region
 
                 if (loadScene == null)
                 {
-                    MainConsole.Instance.WarnFormat ("[SceneManager]: Sorry, {0} was not found", regionName);
+                    MainConsole.Instance.WarnFormat ("[Scene Manager]: Sorry, {0} was not found", regionName);
                     return;
                 }
 
@@ -1985,14 +1985,14 @@ namespace Universe.Region
                 backupFileName = simStore.GetLastBackupFileName (regionName);
                 if (backupFileName == "")
                 {
-                    MainConsole.Instance.Warn ("[SceneManager]: Sorry, unable to find any backups for " + regionName);
+                    MainConsole.Instance.Warn ("[Scene Manager]: Sorry, unable to find any backups for " + regionName);
                     return;
                 }
             } else
             {
                 if (!backupFileName.ToLower ().StartsWith (regionName))
                 {
-                    MainConsole.Instance.Warn ("[SceneManager]: Only backups from the same region should be restored!");
+                    MainConsole.Instance.Warn ("[Scene Manager]: Only backups from the same region should be restored!");
                     return;
                 }
             }
@@ -2016,7 +2016,7 @@ namespace Universe.Region
                 RegionInfo region = m_selectedDataService.LoadRegionNameInfo (regionName, m_SimBase);
 
                 StartRegion (m_selectedDataService, region);
-                MainConsole.Instance.WarnFormat ("[SceneManager]: {0} has been reloaded from the backup", regionName);
+                MainConsole.Instance.WarnFormat ("[Scene Manager]: {0} has been reloaded from the backup", regionName);
             }
         }
 
@@ -2034,7 +2034,7 @@ namespace Universe.Region
 
             if (cmd.Length < 4)
             {
-                var response = MainConsole.Instance.Prompt ("[SceneManager]: New prim capacity for " + regionName + "(-1 to cancel)", regionCapacity.ToString());
+                var response = MainConsole.Instance.Prompt ("[Scene Manager]: New prim capacity for " + regionName + "(-1 to cancel)", regionCapacity.ToString());
                 int.TryParse (response, out newCapacity);
                 if (newCapacity == -1)
                     return;
@@ -2052,7 +2052,7 @@ namespace Universe.Region
             if (setCapacity)
             {
                 scene.RegionInfo.ObjectCapacity = newCapacity;
-                MainConsole.Instance.InfoFormat("[SceneManager]: New prim capacity for {0} set to {1}", regionName, newCapacity); 
+                MainConsole.Instance.InfoFormat("[Scene Manager]: New prim capacity for {0} set to {1}", regionName, newCapacity); 
                 scene.SimulationDataService.ForceBackup();
             }
         }
@@ -2069,14 +2069,14 @@ namespace Universe.Region
             string response = "No";
 
             if (cmd.Length < 4)
-                response = MainConsole.Instance.Prompt ("[SceneManager]: Delay " + regionName + " script startup? (yes/no)", response);
+                response = MainConsole.Instance.Prompt ("[Scene Manager]: Delay " + regionName + " script startup? (yes/no)", response);
             else
                 response = cmd [3];
 
             response = response.ToLower ();
             scene.RegionInfo.Startup = response.StartsWith ("n") ? StartupType.Normal : StartupType.Medium;
 
-            MainConsole.Instance.InfoFormat("[SceneManager]: Region has been set for {0} script startup.",
+            MainConsole.Instance.InfoFormat("[Scene Manager]: Region has been set for {0} script startup.",
                 (scene.RegionInfo.Startup == StartupType.Normal) ? "Normal": "Delayed"); 
             scene.SimulationDataService.ForceBackup();
         }
@@ -2093,14 +2093,14 @@ namespace Universe.Region
             string response = "No";
 
             if (cmd.Length < 4)
-                response = MainConsole.Instance.Prompt ("[SceneManager]: Set " + regionName + " as infinite? (yes/no)", response);
+                response = MainConsole.Instance.Prompt ("[Scene Manager]: Set " + regionName + " as infinite? (yes/no)", response);
             else
                 response = cmd [3];
 
             response = response.ToLower ();
             scene.RegionInfo.InfiniteRegion = response.StartsWith ("y");
 
-            MainConsole.Instance.Info("[SceneManager]: Region has been set as " +
+            MainConsole.Instance.Info("[Scene Manager]: Region has been set as " +
                 (scene.RegionInfo.InfiniteRegion ? "Infinite": "Finite")); 
 
             scene.SimulationDataService.ForceBackup();
@@ -2117,14 +2117,14 @@ namespace Universe.Region
             string response = "Yes";
 
             if (cmd.Length < 4)
-                response = MainConsole.Instance.Prompt ("[SceneManager]: Allow neighbors to see into " + regionName + "(yes/no)", response);
+                response = MainConsole.Instance.Prompt ("[Scene Manager]: Allow neighbors to see into " + regionName + "(yes/no)", response);
             else
                 response = cmd [3];
 
             response = response.ToLower ();
             scene.RegionInfo.SeeIntoThisSimFromNeighbor = response.StartsWith ("y");
 
-            MainConsole.Instance.InfoFormat("[SceneManager]: Region has been set to {0} visibility from neighbors.",
+            MainConsole.Instance.InfoFormat("[Scene Manager]: Region has been set to {0} visibility from neighbors.",
                 scene.RegionInfo.SeeIntoThisSimFromNeighbor ? " Allow": "Disallow"); 
 
             scene.SimulationDataService.ForceBackup();

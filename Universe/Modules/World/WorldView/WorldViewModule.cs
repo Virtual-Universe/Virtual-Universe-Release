@@ -119,8 +119,8 @@ namespace Universe.Modules.WorldView
                 IHttpServer server = simulationBase.GetHttpServer(0);
                 server.AddStreamHandler(new WorldViewRequestHandler(this,
                         scene.RegionInfo.RegionID.ToString()));
-                MainConsole.Instance.Info("[WORLDVIEW]: Configured and enabled for " + scene.RegionInfo.RegionName);
-                MainConsole.Instance.Info("[WORLDVIEW]: RegionID " + scene.RegionInfo.RegionID);
+                MainConsole.Instance.Info("[World View]: Configured and enabled for " + scene.RegionInfo.RegionName);
+                MainConsole.Instance.Info("[World View]: RegionID " + scene.RegionInfo.RegionID);
             }
         }
 
