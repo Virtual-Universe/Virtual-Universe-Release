@@ -1,5 +1,5 @@
-﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+/*
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,15 +27,14 @@
 
 using System;
 using System.Collections.Generic;
-using Universe.Framework.Modules;
 using Universe.Framework.Services;
 using Universe.Simulation.Base;
+using Universe.Framework.Modules;
 
 namespace Universe.Servers.AvatarServer
 {
     /// <summary>
-    ///     Starting Class:
-    ///     This is the starting class for the Virtual Universe Server
+    ///     Starting class for the Universe Server
     /// </summary>
     public class Application
     {
@@ -43,27 +42,27 @@ namespace Universe.Servers.AvatarServer
         {
             BaseApplication.BaseMain(args, "Universe.AvatarServer.ini",
                                      new MinimalSimulationBase("Universe.AvatarServer ",
-                                     new List<Type>
-                                     {
-                                         typeof (IAvatarData),
-                                         typeof (IInventoryData),
-                                         typeof (IUserAccountData),
-                                         typeof (IAssetDataPlugin)
-                                     },
-                                     new List<Type>
-                                     {
-                                         typeof (IAvatarService),
-                                         typeof (IInventoryService),
-                                         typeof (IUserAccountService),
-                                         typeof (IAssetService),
-                                         typeof (ISyncMessagePosterService),
-                                         typeof (ISyncMessageRecievedService),
-                                         typeof (IExternalCapsHandler),
-                                         typeof (IConfigurationService),
-                                         typeof (IGridServerInfoService),
-                                         typeof (IAgentAppearanceService),
-                                         typeof (IJ2KDecoder)
-                                     }));
+                                                               new List<Type>
+                                                                   {
+                                                                       typeof (IAvatarData),
+                                                                       typeof (IInventoryData),
+                                                                       typeof (IUserAccountData),
+                                                                       typeof (IAssetDataPlugin)
+                                                                   },
+                                                               new List<Type>
+                                                                   {
+                                                                       typeof (IAvatarService),
+                                                                       typeof (IInventoryService),
+                                                                       typeof (IUserAccountService),
+                                                                       typeof (IAssetService),
+                                                                       typeof (ISyncMessagePosterService),
+                                                                       typeof (ISyncMessageRecievedService),
+                                                                       typeof (IExternalCapsHandler),
+                                                                       typeof (IConfigurationService),
+                                                                       typeof (IGridServerInfoService),
+                                                                       typeof (IAgentAppearanceService),
+                                                                       typeof (IJ2KDecoder)
+                                                                   }));
         }
     }
 }

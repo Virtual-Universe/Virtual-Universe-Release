@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -55,7 +55,7 @@ namespace Universe.Modules.Agent.AssetTransaction
 
         #region INonSharedRegionModule Members
 
-        public void Initialize(IConfigSource config)
+        public void Initialise(IConfigSource config)
         {
         }
 
@@ -128,7 +128,7 @@ namespace Universe.Modules.Agent.AssetTransaction
         /// <param name="userID"></param>
         public void RemoveAgentAssetTransactions(UUID userID)
         {
-            // MainConsole.Instance.DebugFormat("[Transactions Manager]: Removing agent asset transactions structure for agent {0}", userID);
+            // MainConsole.Instance.DebugFormat("Removing agent asset transactions structure for agent {0}", userID);
 
             lock (AgentTransactions)
             {
@@ -155,8 +155,8 @@ namespace Universe.Modules.Agent.AssetTransaction
                                                       uint callbackID, string description, string name, sbyte invType,
                                                       sbyte type, byte wearableType, uint nextOwnerMask)
         {
-            //MainConsole.Instance.DebugFormat(
-            //     "[Transactions Manager] Called HandleItemCreationFromTransaction with item {0}", name);
+            //            MainConsole.Instance.DebugFormat(
+            //                "[TRANSACTIONS MANAGER] Called HandleItemCreationFromTransaction with item {0}", name);
 
             AgentAssetTransactions transactions = GetUserTransactions(remoteClient.AgentId);
 
@@ -183,8 +183,9 @@ namespace Universe.Modules.Agent.AssetTransaction
         public void HandleItemUpdateFromTransaction(IClientAPI remoteClient, UUID transactionID,
                                                     InventoryItemBase item)
         {
-            //MainConsole.Instance.DebugFormat(
-            //     "[Transactions Manager] Called HandleItemUpdateFromTransaction with item {0}", item.Name);
+            //            MainConsole.Instance.DebugFormat(
+            //                "[TRANSACTIONS MANAGER] Called HandleItemUpdateFromTransaction with item {0}",
+            //                item.Name);
 
             AgentAssetTransactions transactions = GetUserTransactions(remoteClient.AgentId);
 
@@ -211,8 +212,9 @@ namespace Universe.Modules.Agent.AssetTransaction
         public void HandleTaskItemUpdateFromTransaction(
             IClientAPI remoteClient, ISceneChildEntity part, UUID transactionID, TaskInventoryItem item)
         {
-            //MainConsole.Instance.DebugFormat(
-            //     "[Transactions Manager] Called HandleTaskItemUpdateFromTransaction with item {0}", item.Name);
+            //            MainConsole.Instance.DebugFormat(
+            //                "[TRANSACTIONS MANAGER] Called HandleTaskItemUpdateFromTransaction with item {0}",
+            //                item.Name);
 
             AgentAssetTransactions transactions = GetUserTransactions(remoteClient.AgentId);
 
@@ -259,7 +261,7 @@ namespace Universe.Modules.Agent.AssetTransaction
         public void HandleUDPUploadRequest(IClientAPI remoteClient, UUID assetID, UUID transaction, sbyte type,
                                            byte[] data, bool storeLocal, bool tempFile)
         {
-            //MainConsole.Instance.Debug("[Transactions Manager]: HandleUDPUploadRequest - assetID: " + assetID.ToString() + " transaction: " + transaction.ToString() + " type: " + type.ToString() + " storelocal: " + storeLocal + " tempFile: " + tempFile);
+//            MainConsole.Instance.Debug("HandleUDPUploadRequest - assetID: " + assetID.ToString() + " transaction: " + transaction.ToString() + " type: " + type.ToString() + " storelocal: " + storeLocal + " tempFile: " + tempFile);
 
             if (((AssetType)type == AssetType.Texture ||
                 (AssetType)type == AssetType.Sound ||
@@ -274,7 +276,7 @@ namespace Universe.Modules.Agent.AssetTransaction
                 {
                     if (!mm.Charge (remoteClient.AgentId, mm.UploadCharge, "Upload asset", TransactionType.UploadCharge))
                     {
-                        remoteClient.SendAgentAlertMessage("[Transactions Manager]: Unable to upload asset. Insufficient funds.", false);
+                        remoteClient.SendAgentAlertMessage("Unable to upload asset. Insufficient funds.", false);
                         return;
                     }
                 }
@@ -299,7 +301,7 @@ namespace Universe.Modules.Agent.AssetTransaction
         /// <param name="data"></param>
         public void HandleXfer(IClientAPI remoteClient, ulong xferID, uint packetID, byte[] data)
         {
-            //MainConsole.Instance.Debug("[Transactions Manager]: xferID: " + xferID + "  packetID: " + packetID + "  data!");
+            //MainConsole.Instance.Debug("xferID: " + xferID + "  packetID: " + packetID + "  data!");
             AgentAssetTransactions transactions = GetUserTransactions(remoteClient.AgentId);
 
             IMonitorModule monitorModule = m_scene.RequestModuleInterface<IMonitorModule>();

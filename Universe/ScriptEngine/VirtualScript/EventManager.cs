@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,10 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using OpenMetaverse;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
@@ -36,6 +32,10 @@ using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Utilities;
+using OpenMetaverse;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Universe.ScriptEngine.VirtualScript
 {
@@ -56,6 +56,7 @@ namespace Universe.ScriptEngine.VirtualScript
         //
         // You can check debug C# dump of an LSL script if you need to
         // verify what exact parameters are needed.
+        //
 
         private readonly Dictionary<uint, Dictionary<UUID, DetectParams>> CoalescedTouchEvents =
             new Dictionary<uint, Dictionary<UUID, DetectParams>>();
@@ -69,7 +70,8 @@ namespace Universe.ScriptEngine.VirtualScript
 
         public void HookUpRegionEvents(IScene Scene)
         {
-            //MainConsole.Instance.Info("[" + myScriptEngine.ScriptEngineName + "]: Hooking up to server events");
+            //MainConsole.Instance.Info("[" + myScriptEngine.ScriptEngineName +
+            //           "]: Hooking up to server events");
 
             Scene.EventManager.OnObjectGrab +=
                 touch_start;
@@ -106,6 +108,7 @@ namespace Universe.ScriptEngine.VirtualScript
             Scene.EventManager.OnScriptMovingEndEvent += moving_end;
 
             Scene.EventManager.OnRezScripts += rez_scripts;
+
 
             IMoneyModule moneyModule =
                 Scene.RequestModuleInterface<IMoneyModule>();
@@ -766,7 +769,7 @@ namespace Universe.ScriptEngine.VirtualScript
                 //This will happen if the script doesn't compile correctly
                 if (ID.Script == null)
                 {
-                    MainConsole.Instance.Info("[Virtual Script]: Could not load script from item '" +
+                    MainConsole.Instance.Info("[VirtualScript]: Could not load script from item '" +
                                               ID.InventoryItem.Name +
                                               "' to fire event " + FunctionName);
                     return false;
@@ -835,11 +838,13 @@ namespace Universe.ScriptEngine.VirtualScript
 
                         // If the last message was a 0 (nothing held)
                         // and this one is also nothing held, drop it
+                        //
                         if (ID.LastControlLevel == held && held == 0)
                             return true;
 
                         // If there is one or more queued, then queue
                         // only changed ones, else queue unconditionally
+                        //
                         if (ID.ControlEventsInQueue > 0)
                         {
                             if (ID.LastControlLevel == held)

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -183,7 +183,7 @@ namespace Universe.Modules.Estate
                 m_scene.RegionInfo.EstateSettings.SunPosition = sun_hour;
             }
 
-            Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ().
+            Universe.Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ().
                 SaveEstateSettings (m_scene.RegionInfo.EstateSettings);
 
             TriggerEstateInfoChange ();
@@ -336,8 +336,8 @@ namespace Universe.Modules.Estate
 
                 TriggerEstateSunUpdate ();
 
-                //MainConsole.Instance.Debug("[ESTATE]: UFS: " + UseFixedSun.ToString());
-                //MainConsole.Instance.Debug("[ESTATE]: SunHour: " + SunHour.ToString());
+                //MainConsole.Instance.Debug("[Estate]: UFS: " + UseFixedSun.ToString());
+                //MainConsole.Instance.Debug("[Estate]: SunHour: " + SunHour.ToString());
 
                 sendRegionInfoPacketToAll ();
                 TriggerRegionInfoChange ();
@@ -989,7 +989,7 @@ namespace Universe.Modules.Estate
             m_scene.RegionInfo.RegionSettings.BlockShowInSearch = (parms1 & (uint)RegionFlags.BlockParcelSearch) ==
             (uint)RegionFlags.BlockParcelSearch;
 
-            Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ().
+            Universe.Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ().
                 SaveEstateSettings (m_scene.RegionInfo.EstateSettings);
             TriggerEstateInfoChange ();
             TriggerEstateSunUpdate ();
@@ -1001,7 +1001,7 @@ namespace Universe.Modules.Estate
 
         #region IRegionModule Members
 
-        public void Initialize (IConfigSource source)
+        public void Initialise (IConfigSource source)
         {
         }
 

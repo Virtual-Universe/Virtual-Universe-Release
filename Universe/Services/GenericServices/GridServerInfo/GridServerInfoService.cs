@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -106,7 +106,7 @@ namespace Universe.Services.GenericServices
 
             if (m_gridURIs.Count < m_defaultURICount)
             {
-                MainConsole.Instance.WarnFormat("[Grid Server Info Service]: Retrieve URIs failed, only had {0} of {1} URIs needed", m_gridURIs.Count, m_defaultURICount);
+                MainConsole.Instance.WarnFormat("[GridServerInfoService]: Retrieve URIs failed, only had {0} of {1} URIs needed", m_gridURIs.Count, m_defaultURICount);
                 return new Dictionary<string, List<string>>();
             }
 
@@ -131,7 +131,7 @@ namespace Universe.Services.GenericServices
             }
 
 
-            MainConsole.Instance.InfoFormat("[Grid Server Info Service]: Adding {0} uris", uri.Count);
+            MainConsole.Instance.InfoFormat("[GridServerInfoService]: Adding {0} uris", uri.Count);
 
             foreach (KeyValuePair<string, string> kvp in uri)
             {
@@ -169,7 +169,7 @@ namespace Universe.Services.GenericServices
             m_gridURIs[key].Add(value);
             m_registry.RequestModuleInterface<IGridInfo>().UpdateGridInfo();
 
-            MainConsole.Instance.InfoFormat("[Grid Server Info Service]: Adding 1 uri");
+            MainConsole.Instance.InfoFormat("[GridServerInfoService]: Adding 1 uri");
         }
     }
 }

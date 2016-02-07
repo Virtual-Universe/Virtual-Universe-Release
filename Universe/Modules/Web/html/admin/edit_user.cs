@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,14 +25,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using OpenMetaverse;
 using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Profile;
 using Universe.Framework.Utilities;
+using OpenMetaverse;
+using System;
+using System.Collections.Generic;
 
 namespace Universe.Modules.Web
 {
@@ -59,6 +59,7 @@ namespace Universe.Modules.Web
             get { return true; }
         }
 
+
         public Dictionary<string, object> Fill(WebInterface webInterface, string filename, OSHttpRequest httpRequest,
                                                OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
                                                ITranslator translator, out string response)
@@ -83,6 +84,7 @@ namespace Universe.Modules.Web
             if (requestParameters.ContainsKey("Submit") &&
                 requestParameters["Submit"].ToString() == "SubmitSetUserType")
             {
+
                 string UserType = requestParameters ["UserType"].ToString ();
                 int UserFlags = webInterface.UserTypeToUserFlags (UserType);
 
@@ -210,6 +212,7 @@ namespace Universe.Modules.Web
             if (requestParameters.ContainsKey("Submit") &&
                 requestParameters["Submit"].ToString() == "SubmitUnbanUser")
             {
+
                 if (agent != null)
                 {
                     agent.Flags &= ~IAgentFlags.TempBan;

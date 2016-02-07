@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,12 +26,12 @@
  */
 
 using System;
-using Nini.Config;
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
+using Nini.Config;
 
-namespace Universe.Modules.GlobalEnvironment
+namespace Universe.Modules.Cloud
 {
     public class CloudModule : ICloudModule
     {
@@ -48,7 +48,7 @@ namespace Universe.Modules.GlobalEnvironment
 
         #region ICloudModule Members
 
-        public void Initialize(IConfigSource config)
+        public void Initialise(IConfigSource config)
         {
             IConfig cloudConfig = config.Configs["Cloud"];
 

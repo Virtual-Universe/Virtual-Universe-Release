@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Virtual-Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,16 +25,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
 using System;
 using System.Reflection;
-using System.Resources;
 using System.Runtime.InteropServices;
+using System.Resources;
 
 /// <summary>
-///     General Information:
-///     This is general information about an assembly which is controlled through the
-///     following set of attirbutes.  We change these attirbute values to modify the
-///     information associated with an assembly.
+/// General information about an assembly is controlled through the following
+/// set of attributes.  Change these attribute values to modify the information
+/// associated with an assembly.
 /// </summary>
 [assembly: AssemblyTitle("Universe.Services.DataService")]
 [assembly: AssemblyDescription("")]
@@ -46,36 +46,28 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCulture("")]
 
 /// <summary>
-///     ConVisible Information:
-///     We set the ConVisible to false to make the types in this assembly not visible
-///     to the COM service.  if you need to access a type in this assembly from COM,
-///     set the ConVisible attribute to true on that type.
+/// Setting ComVisible to false makes the types in this assembly not visible 
+/// to COM components.  If you need to access a type in this assembly from 
+/// COM, set the ComVisible attribute to true on that type.
 /// </summary>
 [assembly: ComVisible(false)]
 
-/// <Summary>
-///     GUID Information:
-///     The following GUID is for the ID of the typelib if this project is exposed to 
-///     COM.
-/// </Summary>
-[assembly: Guid("49c249ce-8510-40c3-a39d-ff4295b27734")]
+/// <summary>
+/// The following GUID is for the ID of the typelib if this project is exposed to COM
+/// </summary>
+[assembly: Guid("269c99ff-0740-4886-8593-7527903090bf")]
 
-/// <Summary>
-///     Version Information:
-///     THis is the version information for the assembly.  it consists of the following 
-///     four values:
-///         
-///         Major Version
-///         Minor Version
-///         Build Number
-///         Revision Number
-/// 
-///     You can specify all the above values, or you can default the Build and Revision Numbers 
-///     by using the "*" as shown below:
-///         
-///         [assembly: AssemblyVersion("1.0.*")]
-/// 
-///     The above values must be the same in all AssemblyInfo files.
-/// </Summary>
+/// <summary>
+/// Version information for an assembly consists of the following four values:
+///
+///      Major Version
+///      Minor Version 
+///      Build Number
+///      Revision
+///
+/// You can specify all the values or you can default the Build and Revision Numbers 
+/// by using the '*' as shown below:
+/// [assembly: AssemblyVersion("1.0.*")]
+/// </summary>
 [assembly: AssemblyVersion("1.0.1.*")]
 [assembly: NeutralResourcesLanguageAttribute("en")]

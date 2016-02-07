@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,17 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading;
-using System.Xml;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.Messages.Linden;
-using OpenMetaverse.Packets;
-using OpenMetaverse.StructuredData;
+
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
@@ -46,6 +36,17 @@ using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Services.ClassHelpers.Inventory;
 using Universe.Framework.Utilities;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.Messages.Linden;
+using OpenMetaverse.Packets;
+using OpenMetaverse.StructuredData;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading;
+using System.Xml;
 using RegionFlags = OpenMetaverse.RegionFlags;
 
 namespace Universe.ClientStack
@@ -77,8 +78,8 @@ namespace Universe.ClientStack
         public event ImprovedInstantMessage OnInstantMessage;
         public event PreSendImprovedInstantMessage OnPreSendInstantMessage;
         public event ChatMessage OnChatFromClient;
-        public event RezObject OnRezObject;
         public event RezRestoreToWorld OnRezRestoreToWorld;
+        public event RezObject OnRezObject;
         public event DeRezObject OnDeRezObject;
         public event ModifyTerrain OnModifyTerrain;
         public event Action<IClientAPI> OnRegionHandShakeReply;
@@ -1576,57 +1577,61 @@ namespace Universe.ClientStack
         public void SendPlacesQuery(ExtendedLandData[] LandData, UUID queryID, UUID transactionID)
         {
             PlacesReplyPacket PlacesReply = new PlacesReplyPacket();
-
+            
             PlacesReplyPacket.QueryDataBlock[] Query = new PlacesReplyPacket.QueryDataBlock[LandData.Length + 1];
-
+            
             // Since we don't have Membership we should send an empty QueryData block 
             // here to keep the viewer happy
-
+            
             PlacesReplyPacket.QueryDataBlock MembershipBlock = new PlacesReplyPacket.QueryDataBlock
             {
-                ActualArea = 0,
-                BillableArea = 0,
-                Desc = Utils.StringToBytes(""),
-                Dwell = 0,
-                Flags = 0,
-                GlobalX = 0,
-                GlobalY = 0,
-                GlobalZ = 0,
-                Name = Utils.StringToBytes(""),
-                OwnerID = UUID.Zero,
-                Price = 0,
-                SimName = Utils.StringToBytes(""),
-                SnapshotID = UUID.Zero
+            	ActualArea = 0,
+            	BillableArea = 0,
+            	Desc = Utils.StringToBytes(""),
+            	Dwell = 0,
+            	Flags = 0,
+            	GlobalX= 0,
+            	GlobalY = 0,
+            	GlobalZ = 0,
+            	Name = Utils.StringToBytes(""),
+            	OwnerID = UUID.Zero,
+            	Price = 0,
+            	SimName = Utils.StringToBytes(""),
+            	SnapshotID = UUID.Zero 
             };
             Query[0] = MembershipBlock;
-
+            
             //Note: Nothing is ever done with this?????
             int totalarea = 0;
             List<string> RegionTypes = new List<string>();
             for (int i = 0; i < LandData.Length; i++)
             {
                 PlacesReplyPacket.QueryDataBlock QueryBlock = new PlacesReplyPacket.QueryDataBlock
-                {
-                    ActualArea = LandData[i].LandData.Area,
-                    BillableArea = LandData[i].LandData.Area,
-                    Desc = Utils.StringToBytes(LandData[i].LandData.Description),
-                    Dwell = LandData[i].LandData.Dwell,
-                    Flags = 0,
-                    GlobalX = LandData[i].GlobalPosX,
-                    GlobalY = LandData[i].GlobalPosY,
-                    GlobalZ = 0,
-                    Name = Utils.StringToBytes(LandData[i].LandData.Name),
-                    OwnerID = LandData[i].LandData.OwnerID,
-                    Price = LandData[i].LandData.SalePrice,
-                    SimName = Utils.StringToBytes(LandData[i].RegionName),
-                    SnapshotID = LandData[i].LandData.SnapshotID
-                };
-                Query[i + 1] = QueryBlock;
+                                                                  {
+                                                                      ActualArea = LandData[i].LandData.Area,
+                                                                      BillableArea = LandData[i].LandData.Area,
+                                                                      Desc =
+                                                                          Utils.StringToBytes(
+                                                                              LandData[i].LandData.Description),
+                                                                      Dwell = LandData[i].LandData.Dwell,
+                                                                      Flags = 0,
+                                                                      GlobalX = LandData[i].GlobalPosX,
+                                                                      GlobalY = LandData[i].GlobalPosY,
+                                                                      GlobalZ = 0,
+                                                                      Name =
+                                                                          Utils.StringToBytes(LandData[i].LandData.Name),
+                                                                      OwnerID = LandData[i].LandData.OwnerID,
+                                                                      Price = LandData[i].LandData.SalePrice,
+                                                                      SimName =
+                                                                          Utils.StringToBytes(LandData[i].RegionName),
+                                                                      SnapshotID = LandData[i].LandData.SnapshotID
+                                                                  };
+                Query[i+1] = QueryBlock;
                 totalarea += LandData[i].LandData.Area;
                 RegionTypes.Add(LandData[i].RegionType);
             }
             PlacesReply.QueryData = Query;
-            PlacesReply.AgentData = new PlacesReplyPacket.AgentDataBlock { AgentID = AgentId, QueryID = queryID };
+            PlacesReply.AgentData = new PlacesReplyPacket.AgentDataBlock {AgentID = AgentId, QueryID = queryID};
             PlacesReply.TransactionData.TransactionID = transactionID;
             try
             {
@@ -4678,7 +4683,7 @@ namespace Universe.ClientStack
 
             packet.ParamList = returnblock;
             packet.Header.Reliable = false;
-            //MainConsole.Instance.Debug("[ESTATE]: SIM--->" + packet.ToString());
+            //MainConsole.Instance.Debug("[Estate]: SIM--->" + packet.ToString());
             OutPacket(packet, ThrottleOutPacketType.AvatarInfo);
         }
 
@@ -4860,7 +4865,7 @@ namespace Universe.ClientStack
             if (notifyCount > 32)
             {
                 MainConsole.Instance.InfoFormat(
-                    "[LAND]: Mor e than {0} avatars own prims on this parcel.  Only sending back details of first {0}"
+                    "[Land]: Mor e than {0} avatars own prims on this parcel.  Only sending back details of first {0}"
                     + " - a developer might want to investigate whether this is a hard limit", 32);
 
                 notifyCount = 32;
@@ -6457,7 +6462,7 @@ namespace Universe.ClientStack
 
             #endregion
 
-            //MainConsole.Instance.Info("[LAND]: LAND:" + modify.ToString());
+            //MainConsole.Instance.Info("[Land]: LAND:" + modify.ToString());
             if (modify.ParcelData.Length > 0)
             {
                 if (OnModifyTerrain != null)
@@ -6675,9 +6680,8 @@ namespace Universe.ClientStack
             return true;
         }
 
-        /* Original HandlerRezRestoreToWorld
-        This assumed incorrectly that all objects were attachments
-        private bool HandlerRezRestoreToWorld(IClientAPI sender, Packet Pack)
+     /* original - assumed all objects were attachments
+      private bool HandlerRezRestoreToWorld(IClientAPI sender, Packet Pack)
         {
             RezSingleAttachmentFromInv handlerRezSingleAttachment = OnRezSingleAttachmentFromInv;
             if (handlerRezSingleAttachment != null)
@@ -6695,13 +6699,15 @@ namespace Universe.ClientStack
 
                 #endregion
 
-                handlerRezSingleAttachment(this, rez.InventoryData.ItemID, 0);
+                handlerRezSingleAttachment(this, rez.InventoryData.ItemID,
+                                           0);
             }
 
             return true;
-        }*/
+        }
+       */
 
-        // 2015/02/01 - Corrected HandlerRezRestoreToWorld
+        // update 20160129 - greythane-
         bool HandlerRezRestoreToWorld(IClientAPI sender, Packet Pack)
         {
             RezRestoreToWorld handlerRezRestoreToWorld = OnRezRestoreToWorld;

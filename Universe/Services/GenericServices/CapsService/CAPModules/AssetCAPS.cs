@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -62,7 +62,7 @@ namespace Universe.Services
 
         public string Name { get { return GetType().Name; } }
 
-        public void IncomingCapsRequest(UUID agentID, Framework.Services.GridRegion region, ISimulationBase simbase, ref OSDMap capURLs)
+        public void IncomingCapsRequest(UUID agentID, Universe.Framework.Services.GridRegion region, ISimulationBase simbase, ref OSDMap capURLs)
         {
             m_AgentID = agentID;
             m_assetService = simbase.ApplicationRegistry.RequestModuleInterface<IAssetService>();
@@ -436,7 +436,7 @@ namespace Universe.Services
         {
             try
             {
-                //MainConsole.Instance.Debug("[Caps]: UploadBakedTexture Request in region: " +
+                //MainConsole.Instance.Debug("[CAPS]: UploadBakedTexture Request in region: " +
                 //        m_regionName);
 
                 string uploadpath = "/CAPS/Upload/" + UUID.Random() + "/";
@@ -454,7 +454,7 @@ namespace Universe.Services
             }
             catch (Exception e)
             {
-                MainConsole.Instance.Error("[Caps]: " + e);
+                MainConsole.Instance.Error("[CAPS]: " + e);
             }
 
             return null;

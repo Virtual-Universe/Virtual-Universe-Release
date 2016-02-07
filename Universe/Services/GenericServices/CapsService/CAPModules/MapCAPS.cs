@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -49,7 +49,7 @@ namespace Universe.Services
         private bool m_allowCapsMessage = true;
         private IGridService m_gridService;
         private UUID m_agentID;
-        private Framework.Services.GridRegion m_region;
+        private Universe.Framework.Services.GridRegion m_region;
         private string m_uri;
         private List<UUID> m_userScopeIDs = new List<UUID>();
 
@@ -57,7 +57,7 @@ namespace Universe.Services
 
         public string Name { get { return GetType().Name; } }
 
-        public void IncomingCapsRequest(UUID agentID, Framework.Services.GridRegion region, ISimulationBase simbase, ref OSDMap capURLs)
+        public void IncomingCapsRequest(UUID agentID, Universe.Framework.Services.GridRegion region, ISimulationBase simbase, ref OSDMap capURLs)
         {
             m_agentID = agentID;
             m_region = region;

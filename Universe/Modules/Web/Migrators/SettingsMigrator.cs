@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,9 +25,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Nini.Config;
-using OpenMetaverse;
 using Universe.Framework.DatabaseInterfaces;
+using OpenMetaverse;
+using Nini.Config;
 using Universe.Framework.Modules;
 
 namespace Universe.Modules.Web
@@ -101,12 +101,12 @@ namespace Universe.Modules.Web
             }
 
             // Library
-            // config =  configSrc.Configs ["LibraryService"];
-            // if (config != null)
-            // {
-            //    _settingsGrid.LibraryName = config.GetString("LibraryName", _settingsGrid.LibraryName);
-            //    _settingsGrid.LibraryOwnerName = config.GetString("LibraryOwnerName", _settingsGrid.LibraryOwnerName);
-            // }
+//            config =  configSrc.Configs ["LibraryService"];
+//            if (config != null)
+//            {
+//                _settingsGrid.LibraryName = config.GetString("LibraryName", _settingsGrid.LibraryName);
+//                _settingsGrid.LibraryOwnerName = config.GetString("LibraryOwnerName", _settingsGrid.LibraryOwnerName);
+//            }
             // RealEstate
             config =  configSrc.Configs ["EstateService"];
             if (config != null)
@@ -114,6 +114,8 @@ namespace Universe.Modules.Web
                 _settingsGrid.SystemEstateOwnerName = config.GetString("SystemEstateOwnerName", _settingsGrid.SystemEstateOwnerName);
                 _settingsGrid.SystemEstateName = config.GetString("SystemEstateName", _settingsGrid.SystemEstateName);
             }
+
+
         }
 
         public static void ResetToDefaults(WebInterface webinterface)

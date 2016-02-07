@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -240,17 +240,17 @@ namespace Universe.Services.DataService
         {
             object remoteValue = DoRemote(estateID, regionID);
             if (remoteValue != null || m_doRemoteOnly)
-                return remoteValue == null ? false : (bool)remoteValue;
+                return remoteValue == null ? false : (bool) remoteValue;
 
             bool found = false;
-            var eRegions = GetRegions(estateID);
+            var eRegions = GetRegions (estateID);
             if (eRegions.Count == 0)
                 return found;
 
             foreach (UUID rId in eRegions)
                 if (rId == regionID)
                     found = true;
-
+            
             return found;
         }
 

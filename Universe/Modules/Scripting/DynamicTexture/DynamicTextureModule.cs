@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,19 +25,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.Imaging;
+
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Utilities;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.Imaging;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace Universe.Modules.Scripting
 {
@@ -215,7 +216,7 @@ namespace Universe.Modules.Scripting
 
         #region INonSharedRegionModule Members
 
-        public void Initialize(IConfigSource config)
+        public void Initialise(IConfigSource config)
         {
         }
 
@@ -381,6 +382,7 @@ namespace Universe.Modules.Scripting
                     // I'm pretty sure we always want to force this to true
                     // I'm pretty sure no one wants to set fullbright true if it wasn't true before.
                     // tmptex.DefaultTexture.Fullbright = true;
+
                     part.UpdateTexture(tmptex, true);
                 }
 
@@ -425,7 +427,7 @@ namespace Universe.Modules.Scripting
                         catch (Exception)
                         {
                             MainConsole.Instance.Error(
-                                "[Dynamic Texture Module]: OpenJpeg Encode Failed.  Empty byte data returned!");
+                                "[DYNAMICTEXTUREMODULE]: OpenJpeg Encode Failed.  Empty byte data returned!");
                         }
 
                         return result;

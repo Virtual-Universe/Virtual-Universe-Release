@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -105,7 +105,7 @@ namespace Universe.Modules.Terrain
         ///     Creates and initializes a terrain module for a region
         /// </summary>
         /// <param name="config">Config for the region</param>
-        public void Initialize(IConfigSource config)
+        public void Initialise(IConfigSource config)
         {
             if (config.Configs["TerrainModule"] != null)
             {

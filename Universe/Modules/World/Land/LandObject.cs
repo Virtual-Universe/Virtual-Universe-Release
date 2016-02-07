@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -374,7 +374,7 @@ namespace Universe.Modules.Land
 
                 } catch (Exception ex)
                 {
-                    MainConsole.Instance.Warn ("[LAND]: Error updating land object " + LandData.Name + " in region " +
+                    MainConsole.Instance.Warn ("[Land]: Error updating land object " + LandData.Name + " in region " +
                     m_scene.RegionInfo.RegionName + " : " + ex);
                 }
             }
@@ -758,7 +758,7 @@ namespace Universe.Modules.Land
                     }
                 } catch (InvalidOperationException)
                 {
-                    MainConsole.Instance.Error ("[LAND]: Unable to force select the parcel objects. Arr.");
+                    MainConsole.Instance.Error ("[Land]: Unable to force select the parcel objects. Arr.");
                 }
 
                 remote_client.SendForceClientSelectObjects (resultLocalIDs);

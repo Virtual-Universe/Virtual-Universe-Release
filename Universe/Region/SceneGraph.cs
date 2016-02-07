@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -297,7 +297,7 @@ namespace Universe.Region
             if (!Entities.Remove(agent))
             {
                 MainConsole.Instance.WarnFormat(
-                    "[SCENE]: Tried to remove non-existent scene presence with agent ID {0} from scene Entities list",
+                    "[Scene]: Tried to remove non-existent scene presence with agent ID {0} from scene Entities list",
                     agent.UUID);
                 return;
             }
@@ -473,7 +473,7 @@ namespace Universe.Region
                 catch (Exception e)
                 {
                     // Catch it and move on. This includes situations where splist has inconsistent info
-                    MainConsole.Instance.WarnFormat("[SCENE]: Problem processing action in ForEachSOG: {0}",
+                    MainConsole.Instance.WarnFormat("[Scene]: Problem processing action in ForEachSOG: {0}",
                                                     e.ToString());
                 }
             }
@@ -1550,7 +1550,7 @@ namespace Universe.Region
         /// <returns></returns>
         public bool DuplicateObject(uint LocalID, Vector3 offset, uint flags, UUID AgentID, UUID GroupID, Quaternion rot)
         {
-            //MainConsole.Instance.DebugFormat("[SCENE]: Duplication of object {0} at offset {1} requested by agent {2}", originalPrim, offset, AgentID);
+            //MainConsole.Instance.DebugFormat("[Scene]: Duplication of object {0} at offset {1} requested by agent {2}", originalPrim, offset, AgentID);
             IEntity entity;
 
             if (TryGetEntity(LocalID, out entity))

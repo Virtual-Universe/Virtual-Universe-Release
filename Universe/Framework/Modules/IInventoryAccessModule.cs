@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,13 +25,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System.Collections.Generic;
-using OpenMetaverse;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Services.ClassHelpers.Inventory;
+using OpenMetaverse;
+using System.Collections.Generic;
 
 namespace Universe.Framework.Modules
 {
@@ -68,6 +68,7 @@ namespace Universe.Framework.Modules
         /// <returns></returns>
         ISceneEntity CreateObjectFromInventory(IClientAPI remoteClient, UUID itemID, UUID assetID, InventoryItemBase item);
 
+
         /// <summary>
         /// Restores the object in world.
         /// </summary>
@@ -76,7 +77,7 @@ namespace Universe.Framework.Modules
         /// <param name="itemID">Item I.</param>
         /// <param name="item">Item.</param>
         /// <param name="groupID">Group I.</param>
-        bool RezRestoreToWorld(IClientAPI remoteClient, UUID itemID, InventoryItemBase item, UUID groupID);
+        bool RezRestoreToWorld (IClientAPI remoteClient, UUID itemID, InventoryItemBase item, UUID groupID);
 
         /// <summary>
         ///     Rez an object from inventory and add it to the scene

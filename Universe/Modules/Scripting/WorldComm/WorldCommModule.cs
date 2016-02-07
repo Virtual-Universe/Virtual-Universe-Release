@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,19 +25,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
+
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Utilities;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 /*****************************************************
  *
@@ -101,7 +102,7 @@ namespace Universe.Modules.Scripting
 
         #region INonSharedRegionModule Members
 
-        public void Initialize(IConfigSource config)
+        public void Initialise(IConfigSource config)
         {
             // wrap this in a try block so that defaults will work if
             // the config file doesn't specify otherwise.
@@ -367,7 +368,7 @@ namespace Universe.Modules.Scripting
             m_scriptModule.PokeThreads(UUID.Zero);
             if (BlockedChannels.Contains(channel))
                 return;
-            // MainConsole.Instance.DebugFormat("[World Comm] got[2] type {0}, channel {1}, name {2}, id {3}, msg {4}",
+            // MainConsole.Instance.DebugFormat("[WorldComm] got[2] type {0}, channel {1}, name {2}, id {3}, msg {4}",
             //                   type, channel, name, id, msg);
 
             // Determine which listen event filters match the given set of arguments, this results
@@ -689,6 +690,7 @@ namespace Universe.Modules.Scripting
         private bool m_active; // Listener is active or not
         private int m_channel; // Channel
         private int m_handle; // Assigned handle of this listener
+        //private uint m_localID; // Local ID from script engine
         private UUID m_hostID; // ID of the host/scene part
         private UUID m_id; // ID to filter messages from
         private UUID m_itemID; // ID of the host script engine
@@ -698,12 +700,12 @@ namespace Universe.Modules.Scripting
 
         public ListenerInfo(int handle, UUID ItemID, UUID hostID, int channel, string name, UUID id, string message, int regexBitfield)
         {
-            Initialize(handle, ItemID, hostID, channel, name, id, message, regexBitfield);
+            Initialise(handle, ItemID, hostID, channel, name, id, message, regexBitfield);
         }
 
         public ListenerInfo(ListenerInfo li, string name, UUID id, string message)
         {
-            Initialize(li.m_handle, li.m_itemID, li.m_hostID, li.m_channel, name, id, message, 0);
+            Initialise(li.m_handle, li.m_itemID, li.m_hostID, li.m_channel, name, id, message, 0);
         }
 
         #region IWorldCommListenerInfo Members
@@ -774,7 +776,7 @@ namespace Universe.Modules.Scripting
 
         #endregion
 
-        private void Initialize(int handle, UUID ItemID, UUID hostID, int channel, string name,
+        private void Initialise(int handle, UUID ItemID, UUID hostID, int channel, string name,
                                 UUID id, string message, int regexBitfield)
         {
             m_active = true;

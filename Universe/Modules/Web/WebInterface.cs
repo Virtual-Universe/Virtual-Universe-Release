@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -67,6 +67,7 @@ namespace Universe.Modules.Web
         internal GridPage webPages;
         internal WebUISettings webUISettings;
         public GridSettings gridSettings;
+
 
         #endregion
 
@@ -208,7 +209,7 @@ namespace Universe.Modules.Web
                 return MainServer.BlankResponse;
             if (httpRequest.HttpMethod == "POST")
                 httpResponse.KeepAlive = false;
-            MainConsole.Instance.Debug("[Web Interface]: Serving " + filename + ", keep-alive: " + httpResponse.KeepAlive);
+            MainConsole.Instance.Debug("[WebInterface]: Serving " + filename + ", keep-alive: " + httpResponse.KeepAlive);
             IWebInterfacePage page = GetPage(filename);
             if (page != null)
             {
@@ -598,6 +599,7 @@ namespace Universe.Modules.Web
             }
         }
 
+
         public static Dictionary<string, object> ParseQueryString(string query)
         {
             Dictionary<string, object> result = new Dictionary<string, object>();
@@ -720,6 +722,7 @@ namespace Universe.Modules.Web
             }
         }
 
+
         public List<Dictionary<string, object>> RegionTypeArgs(ITranslator translator)
         { 
             var args = new List<Dictionary<string, object>>();
@@ -825,7 +828,9 @@ namespace Universe.Modules.Web
             // change what's appropriate...
             ILoginService loginService = Registry.RequestModuleInterface<ILoginService>();
             loginService.WelcomeMessage = settings.WelcomeMessage;
+
         }
+
 
         #endregion
 
@@ -1120,11 +1125,11 @@ namespace Universe.Modules.Web
 
     public class GridSettings : IDataTransferable
     {
-        public string Gridname = "Universe Grid";
+        public string Gridname = "Virtual Universe Grid";
         public string Gridnick = "Universe";
-        public string WelcomeMessage = "Welcome to Universe, <USERNAME>!";
-        public string SystemEstateOwnerName = "Governor Universe";
-        public string SystemEstateName = "Whitecore Estate";
+        public string WelcomeMessage = "Welcome to Virtual Universe, <USERNAME>!";
+        public string SystemEstateOwnerName = Constants.GovernorName;
+        public string SystemEstateName = Constants.SystemEstateName;
 
         public GridSettings()
         {
@@ -1212,4 +1217,5 @@ namespace Universe.Modules.Web
             return map;
         }
     }
+
 }

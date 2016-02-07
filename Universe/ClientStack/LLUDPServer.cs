@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -194,7 +194,7 @@ namespace Universe.ClientStack
 
         #region IClientNetworkServer Members
 
-        public void Initialize(uint port, IConfigSource configSource, AgentCircuitManager circuitManager)
+        public void Initialise(uint port, IConfigSource configSource, AgentCircuitManager circuitManager)
         {
             IConfig networkConfig = configSource.Configs["Network"];
             IPAddress internalIP = IPAddress.Any;
@@ -203,7 +203,7 @@ namespace Universe.ClientStack
 
             InitThreadPool(15);
 
-            base.Initialize(internalIP, (int)port);
+            base.Initialise(internalIP, (int)port);
 
             #region Environment.TickCount Measurement
 
@@ -217,7 +217,7 @@ namespace Universe.ClientStack
                     now = Environment.TickCount;
                 TickCountResolution += (now - start)*0.2f;
             }
-            //MainConsole.Instance.Info("[LLUDP Server]: Average Environment.TickCount resolution: " + TickCountResolution + "ms");
+            //MainConsole.Instance.Info("[LLUDPSERVER]: Average Environment.TickCount resolution: " + TickCountResolution + "ms");
             TickCountResolution = (float) Math.Ceiling(TickCountResolution);
 
             #endregion Environment.TickCount Measurement
@@ -287,16 +287,16 @@ namespace Universe.ClientStack
             if (networkConfig != null)
                 IPAddress.TryParse(networkConfig.GetString("internal_ip", "0.0.0.0"), out internalIP);
             
-            base.Initialize(internalIP, (int)port);
+            base.Initialise(internalIP, (int)port);
         }
 
         public void Start()
         {
             if (m_scene == null)
                 throw new InvalidOperationException(
-                    "[LLUDP Server]: Cannot LLUDPServer.Start() without an IScene reference");
+                    "[LLUDPSERVER]: Cannot LLUDPServer.Start() without an IScene reference");
 
-            //MainConsole.Instance.Info("[LLUDP Server]: Starting the LLUDP server in " + (m_asyncPacketHandling ? "asynchronous" : "synchronous") + " mode");
+            //MainConsole.Instance.Info("[LLUDPSERVER]: Starting the LLUDP server in " + (m_asyncPacketHandling ? "asynchronous" : "synchronous") + " mode");
 
             Start(m_recvBufferSize, m_asyncPacketHandling);
 
@@ -316,7 +316,7 @@ namespace Universe.ClientStack
 
         public new void Stop()
         {
-            MainConsole.Instance.Debug("[LLUDP Server]: Shutting down the LLUDP server for " +
+            MainConsole.Instance.Debug("[LLUDPSERVER]: Shutting down the LLUDP server for " +
                                        m_scene.RegionInfo.RegionName);
             incomingPacketMonitor.Stop();
             outgoingPacketMonitor.Stop();
@@ -333,7 +333,7 @@ namespace Universe.ClientStack
         {
             if (m_scene != null)
             {
-                MainConsole.Instance.Error("[LLUDP Server]: AddScene() called on an LLUDPServer that already has a scene");
+                MainConsole.Instance.Error("[LLUDPSERVER]: AddScene() called on an LLUDPServer that already has a scene");
                 return;
             }
             m_scene = scene;
@@ -402,7 +402,7 @@ namespace Universe.ClientStack
                 int packetCount = datas.Length;
 
                 if (packetCount < 1)
-                    MainConsole.Instance.Error("[LLUDP Server]: Failed to split " + packet.Type +
+                    MainConsole.Instance.Error("[LLUDPSERVER]: Failed to split " + packet.Type +
                                                " with estimated length " +
                                                packet.Length);
 
@@ -446,7 +446,7 @@ namespace Universe.ClientStack
                 int packetCount = datas.Length;
 
                 if (packetCount < 1)
-                    MainConsole.Instance.Error("[LLUDP Server]: Failed to split " + packet.Type +
+                    MainConsole.Instance.Error("[LLUDPSERVER]: Failed to split " + packet.Type +
                                                " with estimated length " +
                                                packet.Length);
 
@@ -491,7 +491,7 @@ namespace Universe.ClientStack
                     // The packet grew larger than the bufferSize while zerocoding.
                     // Remove the MSG_ZEROCODED flag and send the unencoded data
                     // instead
-                    MainConsole.Instance.Debug("[LLUDP Server]: Packet exceeded buffer size during zerocoding for " +
+                    MainConsole.Instance.Debug("[LLUDPSERVER]: Packet exceeded buffer size during zerocoding for " +
                                                packet.Type +
                                                ". DataLength=" + dataLength +
                                                " and BufferLength=" + buffer.Data.Length +
@@ -512,7 +512,7 @@ namespace Universe.ClientStack
                     bufferSize = dataLength;
                     buffer = new UDPPacketBuffer(udpClient.RemoteEndPoint, bufferSize);
 
-                    // MainConsole.Instance.Error("[LLUDP Server]: Packet exceeded buffer size! This could be an indication of packet assembly not obeying the MTU. Type=" +
+                    // MainConsole.Instance.Error("[LLUDPSERVER]: Packet exceeded buffer size! This could be an indication of packet assembly not obeying the MTU. Type=" +
                     //     type + ", DataLength=" + dataLength + ", BufferLength=" + buffer.Data.Length + ". Dropping packet");
                     Buffer.BlockCopy(data, 0, buffer.Data, 0, dataLength);
                 }
@@ -584,7 +584,7 @@ namespace Universe.ClientStack
             if ((Environment.TickCount & Int32.MaxValue) - udpClient.TickLastPacketReceived > 1000*ClientTimeOut &&
                 !udpClient.IsPaused)
             {
-                MainConsole.Instance.Warn("[LLUDP Server]: Ack timeout, disconnecting " + udpClient.AgentID);
+                MainConsole.Instance.Warn("[LLUDPSERVER]: Ack timeout, disconnecting " + udpClient.AgentID);
 
                 ILoginMonitor monitor = m_scene.RequestModuleInterface<IMonitorModule>().GetMonitor<ILoginMonitor>(null);
                 if (monitor != null)
@@ -599,7 +599,7 @@ namespace Universe.ClientStack
 
             if (expiredPackets != null)
             {
-                //MainConsole.Instance.Debug("[LLUDP Server]: Resending " + expiredPackets.Count + " packets to " + udpClient.AgentID + ", RTO=" + udpClient.RTO);
+                //MainConsole.Instance.Debug("[LLUDPSERVER]: Resending " + expiredPackets.Count + " packets to " + udpClient.AgentID + ", RTO=" + udpClient.RTO);
 
                 // Exponential back off of the retransmission timeout
                 udpClient.BackoffRTO();
@@ -612,7 +612,7 @@ namespace Universe.ClientStack
                 // Resend packets
                 foreach (OutgoingPacket outgoingPacket in expiredPackets.Where(t => t.UnackedMethod == null))
                 {
-                    //MainConsole.Instance.DebugFormat("[LLUDP Server]: Resending packet #{0} (attempt {1}), {2}ms have passed",
+                    //MainConsole.Instance.DebugFormat("[LLUDPSERVER]: Resending packet #{0} (attempt {1}), {2}ms have passed",
                     //    outgoingPacket.SequenceNumber, outgoingPacket.ResendCount, Environment.TickCount - outgoingPacket.TickCount);
 
                     // Set the resent flag
@@ -756,7 +756,7 @@ namespace Universe.ClientStack
             if (packet == null)
             {
                 MainConsole.Instance.ErrorFormat(
-                    "[LLUDP Server]: Malformed data, cannot parse {0} byte packet from {1}:",
+                    "[LLUDPSERVER]: Malformed data, cannot parse {0} byte packet from {1}:",
                     buffer.DataLength, buffer.RemoteEndPoint);
                 MainConsole.Instance.Error(Utils.BytesToHexString(buffer.Data, buffer.DataLength, null));
                 return;
@@ -804,7 +804,7 @@ namespace Universe.ClientStack
             if (!m_scene.ClientManager.TryGetValue(address, out client) || !(client is LLClientView))
             {
                 if (client != null)
-                    MainConsole.Instance.Warn("[LLUDP Server]: Received a " + packet.Type +
+                    MainConsole.Instance.Warn("[LLUDPSERVER]: Received a " + packet.Type +
                                               " packet from an unrecognized source: " +
                                               address + " in " + m_scene.RegionInfo.RegionName);
                 return;
@@ -874,9 +874,9 @@ namespace Universe.ClientStack
             if (packet.Header.Reliable && !udpClient.PacketArchive.TryEnqueue(packet.Header.Sequence))
             {
                 //if (packet.Header.Resent)
-                //    MainConsole.Instance.Debug("[LLUDP Server]: Received a resend of already processed packet #" + packet.Header.Sequence + ", type: " + packet.Type);
+                //    MainConsole.Instance.Debug("[LLUDPSERVER]: Received a resend of already processed packet #" + packet.Header.Sequence + ", type: " + packet.Type);
                 //else
-                //    MainConsole.Instance.Warn("[LLUDP Server]: Received a duplicate (not marked as resend) of packet #" + packet.Header.Sequence + ", type: " + packet.Type);
+                //    MainConsole.Instance.Warn("[LLUDPSERVER]: Received a duplicate (not marked as resend) of packet #" + packet.Header.Sequence + ", type: " + packet.Type);
 
                 // Avoid firing a callback twice for the same packet
                 return;
@@ -944,7 +944,7 @@ namespace Universe.ClientStack
                 SendAckImmediate(remoteEndPoint, ack);
 
                 MainConsole.Instance.InfoFormat(
-                    "[LLUDP Server]: Handling UseCircuitCode request from {0} took {1}ms",
+                    "[LLUDPSERVER]: Handling UseCircuitCode request from {0} took {1}ms",
                     remoteEndPoint, (DateTime.Now - startTime).Milliseconds);
             }
         }
@@ -1006,7 +1006,7 @@ namespace Universe.ClientStack
             else
             {
                 MainConsole.Instance.DebugFormat(
-                    "[LLUDP Server]: Ignoring a repeated UseCircuitCode ({0}) from {1} at {2} ",
+                    "[LLUDPSERVER]: Ignoring a repeated UseCircuitCode ({0}) from {1} at {2} ",
                     circuitCode, agentID, remoteEndPoint);
             }
             return true;
@@ -1104,7 +1104,7 @@ namespace Universe.ClientStack
             catch (Exception ex)
             {
                 MainConsole.Instance.ErrorFormat(
-                    "[LLUDP Server]: OutgoingPacketHandler loop threw an exception: {0}", ex);
+                    "[LLUDPSERVER]: OutgoingPacketHandler loop threw an exception: {0}", ex);
             }
             return true;
         }
@@ -1137,7 +1137,7 @@ namespace Universe.ClientStack
             }
             catch (Exception ex)
             {
-                MainConsole.Instance.ErrorFormat("[LLUDP Server]: OutgoingPacketHandler iteration for " + client.Name +
+                MainConsole.Instance.ErrorFormat("[LLUDPSERVER]: OutgoingPacketHandler iteration for " + client.Name +
                                            " threw an exception: " + ex);
                 return;
             }
@@ -1162,7 +1162,7 @@ namespace Universe.ClientStack
                 // If it works, a more elegant solution can be devised
                 if (Environment.OSVersion.Platform == PlatformID.Unix && Util.FireAndForgetCount() < 2)
                 {
-                    //MainConsole.Instance.Debug("[LLUDP Server]: Incoming packet handler is sleeping");
+                    //MainConsole.Instance.Debug("[LLUDPSERVER]: Incoming packet handler is sleeping");
                     Thread.Sleep(30);
                 }
 
@@ -1171,7 +1171,7 @@ namespace Universe.ClientStack
             }
             catch (Exception ex)
             {
-                MainConsole.Instance.ErrorFormat("[LLUDP Server]: Error in the incoming packet handler loop: " + ex);
+                MainConsole.Instance.ErrorFormat("[LLUDPSERVER]: Error in the incoming packet handler loop: " + ex);
             }
             return true;
         }
@@ -1187,7 +1187,7 @@ namespace Universe.ClientStack
             if (packet == null || udpClient == null)
             {
                 MainConsole.Instance.WarnFormat(
-                    "[LLUDP Server]: Processing a packet with incomplete state. Packet=\"{0}\", UDPClient=\"{1}\"",
+                    "[LLUDPSERVER]: Processing a packet with incomplete state. Packet=\"{0}\", UDPClient=\"{1}\"",
                     packet, udpClient);
             }
 
@@ -1206,7 +1206,7 @@ namespace Universe.ClientStack
                         // Don't let a failure in an individual client thread crash the whole sim.
                         if (packet != null)
                             MainConsole.Instance.ErrorFormat(
-                                "[LLUDP Server]: Client packet handler for {0} for packet {1} threw an exception: {2}",
+                                "[LLUDPSERVER]: Client packet handler for {0} for packet {1} threw an exception: {2}",
                                 udpClient.AgentID, packet.Type, e);
                     }
                 }
@@ -1216,7 +1216,7 @@ namespace Universe.ClientStack
                 if (packet != null)
                     if (udpClient != null)
                         MainConsole.Instance.DebugFormat(
-                            "[LLUDP Server]: Dropping incoming {0} packet for dead client {1}", packet.Type,
+                            "[LLUDPSERVER]: Dropping incoming {0} packet for dead client {1}", packet.Type,
                             udpClient.AgentID);
             }
         }

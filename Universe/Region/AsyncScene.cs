@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -587,7 +587,7 @@ namespace Universe.Region
                 }
                 catch (Exception e)
                 {
-                    MainConsole.Instance.Error("[REGION]: Failed with exception " + e + " in region: " +
+                    MainConsole.Instance.Error("[Region]: Failed with exception " + e + " in region: " +
                                                RegionInfo.RegionName);
                     return true;
                 }
@@ -791,15 +791,15 @@ namespace Universe.Region
                                   catch (Exception e)
                                   {
                                       MainConsole.Instance.Error(
-                                          "[SCENE] Scene.cs:RemoveClient:Presence.Close exception: " + e);
+                                          "[Scene] Scene.cs:RemoveClient:Presence.Close exception: " + e);
                                   }
 
                                   //Remove any interfaces it might have stored
                                   presence.RemoveAllInterfaces();
 
                                   AuthenticateHandler.RemoveCircuit(presence.UUID);
-                                  //MainConsole.Instance.InfoFormat("[SCENE] Memory pre  GC {0}", System.GC.GetTotalMemory(false));
-                                  //MainConsole.Instance.InfoFormat("[SCENE] Memory post GC {0}", System.GC.GetTotalMemory(true));
+                                  //MainConsole.Instance.InfoFormat("[Scene] Memory pre  GC {0}", System.GC.GetTotalMemory(false));
+                                  //MainConsole.Instance.InfoFormat("[Scene] Memory post GC {0}", System.GC.GetTotalMemory(true));
                               });
             return true;
         }

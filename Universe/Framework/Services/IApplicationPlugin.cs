@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,7 +34,7 @@ using Nini.Config;
 namespace Universe.Framework.Services
 {
     /// <summary>
-    ///     Universe-Sim Application Plugin framework interface
+    ///     Virtual Universe Application Plugin framework interface
     /// </summary>
     public interface IApplicationPlugin
     {
@@ -59,7 +59,7 @@ namespace Universe.Framework.Services
         /// <summary>
         ///     Called when the application initialization is completed
         /// </summary>
-        void PostInitialize();
+        void PostInitialise();
 
         /// <summary>
         ///     Called when the application loading is completed

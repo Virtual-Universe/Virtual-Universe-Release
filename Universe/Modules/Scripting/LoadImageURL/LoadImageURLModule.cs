@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,16 +25,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.Modules;
+using Universe.Framework.SceneInfo;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.Imaging;
 using System;
 using System.Drawing;
 using System.IO;
 using System.Net;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.Imaging;
-using Universe.Framework.ConsoleFramework;
-using Universe.Framework.Modules;
-using Universe.Framework.SceneInfo;
 
 namespace Universe.Modules.Scripting
 {
@@ -95,7 +96,7 @@ namespace Universe.Modules.Scripting
 
         #region INonSharedRegionModule Members
 
-        public void Initialize(IConfigSource config)
+        public void Initialise(IConfigSource config)
         {
             m_proxyurl = config.Configs["Startup"].GetString("HttpProxy");
             m_proxyexcepts = config.Configs["Startup"].GetString("HttpProxyExceptions");
@@ -151,6 +152,7 @@ namespace Universe.Modules.Scripting
             }
 
             RequestState state = new RequestState((HttpWebRequest) request, requestID);
+            // IAsyncResult result = request.BeginGetResponse(new AsyncCallback(HttpRequestReturn), state);
             request.BeginGetResponse(HttpRequestReturn, state);
 
             TimeSpan t = (DateTime.UtcNow - new DateTime(1970, 1, 1));
@@ -210,12 +212,12 @@ namespace Universe.Modules.Scripting
                         catch (Exception)
                         {
                             MainConsole.Instance.Error(
-                                "[Load Image Url Module]: OpenJpeg Encode Failed.  Empty byte data returned!");
+                                "[LOADIMAGEURLMODULE]: OpenJpeg Encode Failed.  Empty byte data returned!");
                         }
                     }
                     else
                     {
-                        MainConsole.Instance.WarnFormat("[Load Image Url Module] No data returned");
+                        MainConsole.Instance.WarnFormat("[LOADIMAGEURLMODULE] No data returned");
                     }
                 }
             }
@@ -232,7 +234,7 @@ namespace Universe.Modules.Scripting
                     stream.Close();
                 }
             }
-            MainConsole.Instance.DebugFormat("[Load Image Url Module] Returning {0} bytes of image data for request {1}",
+            MainConsole.Instance.DebugFormat("[LOADIMAGEURLMODULE] Returning {0} bytes of image data for request {1}",
                                              imageJ2000.Length, state.RequestID);
             m_textureManager.ReturnData(state.RequestID, imageJ2000);
         }

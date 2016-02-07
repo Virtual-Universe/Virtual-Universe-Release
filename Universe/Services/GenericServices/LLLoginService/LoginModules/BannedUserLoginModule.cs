@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -147,7 +147,7 @@ namespace Universe.Services
             if ((agentInfo.Flags & IAgentFlags.PermBan) == IAgentFlags.PermBan)
             {
                 MainConsole.Instance.InfoFormat(
-                    "[LLogin Service]: Login failed for user {0}, reason: user is permanently banned.", account.Name);
+                    "[LLOGIN SERVICE]: Login failed for user {0}, reason: user is permanently banned.", account.Name);
                 data = "Permanently banned";
                 return LLFailedLoginResponse.PermanentBannedProblem;
             }
@@ -174,7 +174,7 @@ namespace Universe.Services
                 if (IsBanned)
                 {
                     MainConsole.Instance.InfoFormat(
-                        "[LLogin Service]: Login failed for user {0}, reason: user is temporarily banned {1}.",
+                        "[LLOGIN SERVICE]: Login failed for user {0}, reason: user is temporarily banned {1}.",
                         account.Name, until);
                     data =  string.Format("You are blocked from connecting to this service{0}.", until);
                     return new LLFailedLoginResponse(LoginResponseEnum.Indeterminant,

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -99,7 +99,7 @@ namespace Universe.Modules.Friends
             IClientAPI friendClient = LocateClientObject (FriendToInformID);
             if (friendClient != null)
             {
-                MainConsole.Instance.InfoFormat ("[Friends Module]: Local Status Notify {0} that {1} users are {2}", FriendToInformID, userIDs.Length, online);
+                MainConsole.Instance.InfoFormat ("[FriendsModule]: Local Status Notify {0} that {1} users are {2}", FriendToInformID, userIDs.Length, online);
                 // the  friend in this sim as root agent
                 if (online)
                     friendClient.SendAgentOnline (userIDs);
@@ -109,7 +109,7 @@ namespace Universe.Modules.Friends
                 return;
             }
 
-            MainConsole.Instance.ErrorFormat ("[Friends Module]: Could not send status update to non-existent client {0}.", 
+            MainConsole.Instance.ErrorFormat ("[FriendsModule]: Could not send status update to non-existent client {0}.", 
                 FriendToInformID);
 
         }
@@ -130,7 +130,7 @@ namespace Universe.Modules.Friends
 
         #region INonSharedRegionModule Members
 
-        public void Initialize (IConfigSource config)
+        public void Initialise (IConfigSource config)
         {
         }
 
@@ -229,6 +229,7 @@ namespace Universe.Modules.Friends
                 LocalFriendshipTerminated (ExFriend, Requester);
             } else if (message ["Method"] == "FriendshipOffered")
             {
+                //UUID Requester = message["Requester"].AsUUID();
                 UUID Friend = message ["Friend"].AsUUID ();
                 GridInstantMessage im = new GridInstantMessage ();
                 im.FromOSD ((OSDMap)message ["Message"]);
@@ -298,7 +299,7 @@ namespace Universe.Modules.Friends
                 UserAccount reciever = m_scene.UserAccountService.GetUserAccount (m_scene.RegionInfo.AllScopeIDs,
                                            friendID);
 
-                MainConsole.Instance.DebugFormat ("[Friends Module]: {0} offered friendship to {1}", sender.Name, reciever.Name);
+                MainConsole.Instance.DebugFormat ("[Friends]: {0} offered friendship to {1}", sender.Name, reciever.Name);
                 // This user wants to be friends with the other user.
                 // Let's add the relation backwards, in case the other is not online
                 FriendsService.StoreFriend (friendID, principalID.ToString (), 0);
@@ -329,7 +330,7 @@ namespace Universe.Modules.Friends
 
         void OnApproveFriendRequest (IClientAPI client, UUID agentID, UUID friendID, List<UUID> callingCardFolders)
         {
-            MainConsole.Instance.DebugFormat ("[Friends Module]: {0} accepted friendship from {1}", agentID, friendID);
+            MainConsole.Instance.DebugFormat ("[Friends]: {0} accepted friendship from {1}", agentID, friendID);
 
             FriendsService.StoreFriend (agentID, friendID.ToString (), 1);
             FriendsService.StoreFriend (friendID, agentID.ToString (), 1);
@@ -364,7 +365,7 @@ namespace Universe.Modules.Friends
 
         void OnDenyFriendRequest (IClientAPI client, UUID agentID, UUID friendID, List<UUID> callingCardFolders)
         {
-            MainConsole.Instance.DebugFormat ("[Friends Module]: {0} denied friendship to {1}", agentID, friendID);
+            MainConsole.Instance.DebugFormat ("[Friends]: {0} denied friendship to {1}", agentID, friendID);
 
 
             FriendInfo[] friends = FriendsService.GetFriendsRequest (agentID).ToArray ();
@@ -420,7 +421,7 @@ namespace Universe.Modules.Friends
             if (friends.Length == 0)
                 return;
 
-            MainConsole.Instance.DebugFormat ("[Friends Module]: User {0} changing rights to {1} for friend {2}",
+            MainConsole.Instance.DebugFormat ("[FRIENDS MODULE]: User {0} changing rights to {1} for friend {2}",
                 requester, rights,
                 target);
 
@@ -587,7 +588,7 @@ namespace Universe.Modules.Friends
                 // update local cache
                 UpdateFriendsCache (exfriendID);
                 // the friend in this sim as root agent
-                // you do NOT send the friend his uuid
+                // you do NOT send the friend his uuid...  /me sighs...    - Revolution
                 friendClient.SendTerminateFriend (terminatingUser);
                 return true;
             }

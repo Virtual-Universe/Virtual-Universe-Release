@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -49,7 +49,7 @@ namespace Universe.Modules.ActivityDetectors
 
         #region INonSharedRegionModule Members
 
-        public void Initialize(IConfigSource source)
+        public void Initialise(IConfigSource source)
         {
         }
 
@@ -145,7 +145,7 @@ namespace Universe.Modules.ActivityDetectors
             client.Scene.TryGetScenePresence(client.AgentId, out sp);
             if (client.IsLoggingOut && sp != null & !sp.IsChildAgent)
             {
-                MainConsole.Instance.InfoFormat("[Activity Detector]: Detected logout of user {0} in region {1}",
+                MainConsole.Instance.InfoFormat("[ActivityDetector]: Detected logout of user {0} in region {1}",
                                                 client.Name,
                                                 client.Scene.RegionInfo.RegionName);
 

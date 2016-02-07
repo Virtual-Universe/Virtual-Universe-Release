@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,7 @@ using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Servers;
 
-namespace Universe.Modules.Currency.BaseCurrency
+namespace Universe.Modules.Currency
 {
     /* This module provides the necessary economy functionality for the viewer
        but with all values being $0
@@ -108,7 +108,7 @@ namespace Universe.Modules.Currency.BaseCurrency
         ///     Startup
         /// </summary>
         /// <param name="config"></param>
-        public void Initialize(IConfigSource config)
+        public void Initialise(IConfigSource config)
         {
             m_config = config;
             IConfig currencyConfig = config.Configs["Currency"];
@@ -249,7 +249,7 @@ namespace Universe.Modules.Currency.BaseCurrency
 
             quoteResponse.Add("success", false);
             quoteResponse.Add("errorMessage", "Invalid parameters passed to the quote box");
-			quoteResponse.Add("errorURI", "http://universe-sim.org/wiki");
+			quoteResponse.Add("errorURI", "http://virtual-planets.org/wiki");
             returnval.Value = quoteResponse;
             return returnval;
         }

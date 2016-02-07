@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -150,7 +150,7 @@ namespace Universe.Modules.WorldMap
 
         #region IMapTileTerrainRenderer Members
 
-        public void Initialize(IScene scene, IConfigSource source)
+        public void Initialise(IScene scene, IConfigSource source)
         {
             m_scene = scene;
             // m_config = source; // not used currently
@@ -180,7 +180,7 @@ namespace Universe.Modules.WorldMap
             FastBitmap unsafeBMP = new FastBitmap(mapbmp);
             unsafeBMP.LockBitmap();
             //DateTime start = DateTime.Now;
-            //MainConsole.Instance.Info("[Map Tile]: Generating Maptile Step 1: Terrain");
+            //MainConsole.Instance.Info("[MAPTILE]: Generating Maptile Step 1: Terrain");
 
             // These textures should be in the AssetCache anyway, as every client connecting to this
             // region needs them. Except on start, when the map is recreated (before anyone connected),
@@ -224,6 +224,9 @@ namespace Universe.Modules.WorldMap
                         // add a bit noise for breaking up those flat colors:
                         // - a large-scale noise, for the "patches" (using an doubled s-curve for sharper contrast)
                         // - a small-scale noise, for bringing in some small scale variation
+                        //float bigNoise = (float)TerrainUtil.InterpolatedNoise(x / 8.0, y / 8.0) * .5f + .5f; // map to 0.0 - 1.0
+                        //float smallNoise = (float)TerrainUtil.InterpolatedNoise(x + 33, y + 43) * .5f + .5f;
+                        //float hmod = heightvalue + smallNoise * 3f + S(S(bigNoise)) * 10f;
                         float hmod =
                             heightvalue; // 0 - 10
 
@@ -277,7 +280,7 @@ namespace Universe.Modules.WorldMap
                 m_mapping.Clear();
             }
             unsafeBMP.UnlockBitmap();
-            //MainConsole.Instance.Info("[Map Tile]: Generating Maptile Step 1: Done in " + (DateTime.Now - start).TotalSeconds + " ms");
+            //MainConsole.Instance.Info("[MAPTILE]: Generating Maptile Step 1: Done in " + (DateTime.Now - start).TotalSeconds + " ms");
             return unsafeBMP.Bitmap();
         }
 
@@ -378,19 +381,19 @@ namespace Universe.Modules.WorldMap
                 catch (DllNotFoundException)
                 {
                     MainConsole.Instance.ErrorFormat(
-                        "[Textured Map Tile Renderer]: OpenJpeg is not installed correctly on this system.   Asset Data is empty for {0}",
+                        "[TexturedMapTileRenderer]: OpenJpeg is not installed correctly on this system.   Asset Data is empty for {0}",
                         id);
                 }
                 catch (IndexOutOfRangeException)
                 {
                     MainConsole.Instance.ErrorFormat(
-                        "[Textured Map Tile Renderer]: OpenJpeg was unable to encode this.   Asset Data is empty for {0}",
+                        "[TexturedMapTileRenderer]: OpenJpeg was unable to encode this.   Asset Data is empty for {0}",
                         id);
                 }
                 catch (Exception)
                 {
                     MainConsole.Instance.ErrorFormat(
-                        "[Textured Map Tile Renderer]: OpenJpeg was unable to encode this.   Asset Data is empty for {0}",
+                        "[TexturedMapTileRenderer]: OpenJpeg was unable to encode this.   Asset Data is empty for {0}",
                         id);
                 }
             }

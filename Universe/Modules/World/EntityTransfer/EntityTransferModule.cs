@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -69,7 +69,7 @@ namespace Universe.Modules.EntityTransfer
             get { return "BasicEntityTransferModule"; }
         }
 
-        public virtual void Initialize(IConfigSource source)
+        public virtual void Initialise(IConfigSource source)
         {
             IConfig moduleConfig = source.Configs["Modules"];
             if (moduleConfig != null)
@@ -654,7 +654,7 @@ namespace Universe.Modules.EntityTransfer
                 catch (Exception)
                 {
                     MainConsole.Instance.Warn(
-                        "[SCENE]: exception when trying to return the prim that crossed the border.");
+                        "[Scene]: exception when trying to return the prim that crossed the border.");
                 }
                 return false;
             }
@@ -850,7 +850,7 @@ namespace Universe.Modules.EntityTransfer
 
             // Don't disable this log message - it's too helpful
             MainConsole.Instance.TraceFormat(
-                "[Connection Begin]: Region {0} told of incoming {1} agent {2} (circuit code {3}, teleportflags {4})",
+                "[ConnectionBegin]: Region {0} told of incoming {1} agent {2} (circuit code {3}, teleportflags {4})",
                 scene.RegionInfo.RegionName, agent.IsChildAgent ? "child" : "root", agent.AgentID,
                 agent.CircuitCode, teleportFlags);
 
@@ -887,7 +887,7 @@ namespace Universe.Modules.EntityTransfer
             scene.AuthenticateHandler.AddNewCircuit(agent.CircuitCode, agent);
 
             MainConsole.Instance.InfoFormat(
-                "[Connection Begin]: Region {0} authenticated and authorized incoming {1} agent {2} (circuit code {3})",
+                "[ConnectionBegin]: Region {0} authenticated and authorized incoming {1} agent {2} (circuit code {3})",
                 scene.RegionInfo.RegionName, agent.IsChildAgent ? "child" : "root", agent.AgentID,
                 agent.CircuitCode);
 
@@ -927,7 +927,7 @@ namespace Universe.Modules.EntityTransfer
                 if (!AuthorizationService.IsAuthorizedForRegion(ourRegion, agent, !agent.IsChildAgent, out reason))
                 {
                     MainConsole.Instance.WarnFormat(
-                        "[Connection Begin]: Denied access to {0} at {1} because the user does not have access to the region, reason: {2}",
+                        "[ConnectionBegin]: Denied access to {0} at {1} because the user does not have access to the region, reason: {2}",
                         agent.AgentID, scene.RegionInfo.RegionName, reason);
                     reason = String.Format("You do not have access to the region {0}, reason: {1}",
                                            scene.RegionInfo.RegionName, reason);
@@ -951,7 +951,7 @@ namespace Universe.Modules.EntityTransfer
         public virtual bool IncomingChildAgentDataUpdate(IScene scene, AgentData cAgentData)
         {
             MainConsole.Instance.DebugFormat(
-                "[SCENE]: Incoming child agent update for {0} in {1}", cAgentData.AgentID, scene.RegionInfo.RegionName);
+                "[Scene]: Incoming child agent update for {0} in {1}", cAgentData.AgentID, scene.RegionInfo.RegionName);
 
             //No null updates!
             if (cAgentData == null)
@@ -1035,7 +1035,7 @@ namespace Universe.Modules.EntityTransfer
         /// <param name="agentID"></param>
         public bool IncomingCloseAgent(IScene scene, UUID agentID)
         {
-            //MainConsole.Instance.DebugFormat("[SCENE]: Processing incoming close agent for {0}", agentID);
+            //MainConsole.Instance.DebugFormat("[Scene]: Processing incoming close agent for {0}", agentID);
 
             IScenePresence presence = scene.GetScenePresence(agentID);
             if (presence != null)

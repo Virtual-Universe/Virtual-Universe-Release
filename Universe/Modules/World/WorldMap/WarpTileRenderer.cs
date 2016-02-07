@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -55,6 +55,7 @@ namespace Universe.Modules.WorldMap
 
         static readonly Color4 WATER_COLOR = new Color4(29, 72, 96, 216);
         static readonly Color4 OPAQUE_WATER_COLOR = new Color4(34, 92, 114, 255);
+        //static readonly Color4 SKY_COLOR = new Color4(106, 178, 236, 216);
         static readonly Int32 SKYCOLOR = 0x8BC4EC;
 
         readonly Dictionary<UUID, Color4> m_colors = new Dictionary<UUID, Color4>();
@@ -72,7 +73,7 @@ namespace Universe.Modules.WorldMap
 
         #region IMapTileTerrainRenderer Members
 
-        public void Initialize(IScene scene, IConfigSource config)
+        public void Initialise(IScene scene, IConfigSource config)
         {
             m_scene = scene;
             m_imgDecoder = m_scene.RequestModuleInterface<IJ2KDecoder>();
@@ -88,11 +89,11 @@ namespace Universe.Modules.WorldMap
             if (renderers.Count > 0)
             {
                 m_primMesher = RenderingLoader.LoadRenderer(renderers[0]);
-                MainConsole.Instance.Debug("[Map Tile]: Loaded prim mesher " + m_primMesher);
+                MainConsole.Instance.Debug("[MAPTILE]: Loaded prim mesher " + m_primMesher);
             }
             else
             {
-                MainConsole.Instance.Info("[Map TIle]: No prim mesher loaded, prim rendering will be disabled");
+                MainConsole.Instance.Info("[MAPTILE]: No prim mesher loaded, prim rendering will be disabled");
             }
 
             var mapConfig = m_config.Configs ["MapModule"];
@@ -242,6 +243,7 @@ namespace Universe.Modules.WorldMap
         public Bitmap CreateViewImage(Vector3 camPos, Vector3 camDir, float fov, int width, int height, bool useTextures)
         {
             Viewport viewport = new Viewport(camPos, camDir, fov, 1024f,  0.1f, width, height);
+//             Viewport viewport = new Viewport(camPos, camDir, fov, Constants.RegionSize,  0.1f, width, height);
             return TerrainBitmap(viewport, true);
         }
 
@@ -268,6 +270,7 @@ namespace Universe.Modules.WorldMap
                     (m_scene.RegionInfo.RegionSizeY / 2) - 0.5f);
                 
                 waterColormaterial = new warp_Material (ConvertColor (WATER_COLOR));
+//                waterColormaterial.setTransparency ((byte)((1f - WATER_COLOR.A) * 255f) * 2);
                 waterColormaterial.setTransparency ((byte)((1f - WATER_COLOR.A) * 255f));
             } else
             {
@@ -284,6 +287,7 @@ namespace Universe.Modules.WorldMap
                
                 waterColormaterial = new warp_Material(ConvertColor(OPAQUE_WATER_COLOR));
                 waterColormaterial.setTransparency (48);
+                //waterColormaterial.opaque = true;
             }
 
             waterColormaterial.setReflectivity(0);
@@ -295,8 +299,8 @@ namespace Universe.Modules.WorldMap
         {
             ITerrainChannel terrain = m_scene.RequestModuleInterface<ITerrainChannel>();
 
-            float diffX = 1.0f;
-            float diffY = 1.0f;
+            float diffX = 1.0f; //(float) m_scene.RegionInfo.RegionSizeX/(float) Constants.RegionSize;
+            float diffY = 1.0f; //(float) m_scene.RegionInfo.RegionSizeY/(float) Constants.RegionSize;
             int newRsX = m_scene.RegionInfo.RegionSizeX / (int)diffX;
             int newRsY = m_scene.RegionInfo.RegionSizeY / (int)diffY;
 
@@ -410,6 +414,7 @@ namespace Universe.Modules.WorldMap
         {
             try
             {
+
                 if ((PCode) prim.Shape.PCode != PCode.Prim)
                     return;
                 if (prim.Scale.LengthSquared() < MIN_PRIM_SIZE*MIN_PRIM_SIZE)
@@ -732,6 +737,7 @@ namespace Universe.Modules.WorldMap
             Bitmap bitmap = null;
             try
             {
+
                 if (j2kData.Length == 0)
                     return new Color4(1.0f, 0.0f, 1.0f, 1.0f);
 
@@ -784,7 +790,7 @@ namespace Universe.Modules.WorldMap
             }
             catch (Exception ex)
             {
-                MainConsole.Instance.WarnFormat("[Map Tile]: Error decoding JPEG2000 texture {0} ({1} bytes): {2}",
+                MainConsole.Instance.WarnFormat("[MAPTILE]: Error decoding JPEG2000 texture {0} ({1} bytes): {2}",
                                                 textureID,
                                                 j2kData.Length, ex.Message);
                 return new Color4(0.5f, 0.5f, 0.5f, 1.0f);

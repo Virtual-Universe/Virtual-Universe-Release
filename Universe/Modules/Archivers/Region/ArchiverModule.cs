@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,14 +25,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.Modules;
+using Universe.Framework.SceneInfo;
+using Nini.Config;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Nini.Config;
-using Universe.Framework.ConsoleFramework;
-using Universe.Framework.Modules;
-using Universe.Framework.SceneInfo;
 
 namespace Universe.Modules.Archivers
 {
@@ -60,16 +60,17 @@ namespace Universe.Modules.Archivers
             get { return null; }
         }
 
-        public void Initialize(IConfigSource source)
+
+        public void Initialise(IConfigSource source)
         {
-            //MainConsole.Instance.Debug("[Archiver] Initializing");
+            //MainConsole.Instance.Debug("[ARCHIVER] Initializing");
         }
 
         public void AddRegion(IScene scene)
         {
             m_scene = scene;
             m_scene.RegisterModuleInterface<IRegionArchiverModule>(this);
-            //MainConsole.Instance.DebugFormat("[Archiver]: Enabled for region {0}", scene.RegionInfo.RegionName);
+            //MainConsole.Instance.DebugFormat("[ARCHIVER]: Enabled for region {0}", scene.RegionInfo.RegionName);
         }
 
         public void RegionLoaded(IScene scene)
@@ -168,6 +169,7 @@ namespace Universe.Modules.Archivers
             return DearchiveRegion(newParams.Count > 2 ? newParams[2] : DEFAULT_OAR_BACKUP_FILENAME, mergeOar, skipAssets,
                             skipTerrain, offsetX, offsetY, offsetZ, flipX, flipY,
                             useParcelOwnership, checkOwnership);
+
         }
 
         /// <summary>
@@ -205,7 +207,7 @@ namespace Universe.Modules.Archivers
         public void ArchiveRegion(string savePath, Guid requestId, string permissions)
         {
             MainConsole.Instance.InfoFormat(
-                "[Archiver]: Writing archive for region {0} to {1}", m_scene.RegionInfo.RegionName, savePath);
+                "[ARCHIVER]: Writing archive for region {0} to {1}", m_scene.RegionInfo.RegionName, savePath);
 
             new ArchiveWriteRequestPreparation(m_scene, savePath, requestId, permissions).ArchiveRegion();
         }
@@ -225,7 +227,7 @@ namespace Universe.Modules.Archivers
                                     bool useParcelOwnership, bool checkOwnership)
         {
             MainConsole.Instance.InfoFormat(
-                "[Archiver]: Loading archive to region {0} from {1}", m_scene.RegionInfo.RegionName, loadPath);
+                "[ARCHIVER]: Loading archive to region {0} from {1}", m_scene.RegionInfo.RegionName, loadPath);
 
             var archiveRead = new ArchiveReadRequest (m_scene, loadPath, merge, skipAssets, skipTerrain, offsetX,
                                   offsetY, offsetZ, flipX, flipY, useParcelOwnership, checkOwnership);

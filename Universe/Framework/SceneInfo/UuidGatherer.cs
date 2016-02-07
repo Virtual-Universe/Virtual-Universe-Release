@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -126,7 +126,7 @@ namespace Universe.Framework.SceneInfo
             foreach (ISceneChildEntity part in parts)
             {
 //                MainConsole.Instance.DebugFormat(
-//                    "[Archiver]: Getting part {0}, {1} for object {2}", part.Name, part.UUID, sceneObject.UUID);
+//                    "[ARCHIVER]: Getting part {0}, {1} for object {2}", part.Name, part.UUID, sceneObject.UUID);
 
                 try
                 {
@@ -281,13 +281,13 @@ namespace Universe.Framework.SceneInfo
             if (null != scriptAsset)
             {
                 string script = Utils.BytesToString(scriptAsset.Data);
-                //MainConsole.Instance.DebugFormat("[Archiver]: Script {0}", script);
+                //MainConsole.Instance.DebugFormat("[ARCHIVER]: Script {0}", script);
                 MatchCollection uuidMatches = Util.UUIDPattern.Matches(script);
-                //MainConsole.Instance.DebugFormat("[Archiver]: Found {0} matches in script", uuidMatches.Count);
+                //MainConsole.Instance.DebugFormat("[ARCHIVER]: Found {0} matches in script", uuidMatches.Count);
 
                 foreach (UUID uuid in from Match uuidMatch in uuidMatches select new UUID(uuidMatch.Value))
                 {
-                    //MainConsole.Instance.DebugFormat("[Archiver]: Recording {0} in script", uuid);
+                    //MainConsole.Instance.DebugFormat("[ARCHIVER]: Recording {0} in script", uuid);
 
                     // Assume AssetIDs embedded in scripts are textures
                     assetUuids[uuid] = AssetType.Texture;
@@ -311,7 +311,7 @@ namespace Universe.Framework.SceneInfo
                 wearableAsset.Decode();
 
                 //MainConsole.Instance.DebugFormat(
-                //    "[Archiver]: Wearable asset {0} references {1} assets", wearableAssetUuid, wearableAsset.Textures.Count);
+                //    "[ARCHIVER]: Wearable asset {0} references {1} assets", wearableAssetUuid, wearableAsset.Textures.Count);
 
                 foreach (UUID uuid in wearableAsset.Textures.Values)
                 {

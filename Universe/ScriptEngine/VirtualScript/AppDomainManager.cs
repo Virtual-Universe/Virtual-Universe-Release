@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -98,7 +98,7 @@ namespace Universe.ScriptEngine.VirtualScript
                 {
                     lock (m_appDomainLock)
                     {
-                        currentAD = new AppDomainStructure { CurrentAppDomain = AppDomain.CurrentDomain };
+                        currentAD = new AppDomainStructure {CurrentAppDomain = AppDomain.CurrentDomain};
                         AppDomain.CurrentDomain.AssemblyResolve += m_scriptEngine.AssemblyResolver.OnAssemblyResolve;
                         return currentAD;
                     }
@@ -111,7 +111,7 @@ namespace Universe.ScriptEngine.VirtualScript
                     if (currentAD == null)
                     {
                         // Create a new current AppDomain
-                        currentAD = new AppDomainStructure { CurrentAppDomain = PrepareNewAppDomain() };
+                        currentAD = new AppDomainStructure {CurrentAppDomain = PrepareNewAppDomain()};
                     }
                 }
                 else
@@ -131,7 +131,7 @@ namespace Universe.ScriptEngine.VirtualScript
                     if (currentAD == null)
                     {
                         // Create a new current AppDomain
-                        currentAD = new AppDomainStructure { CurrentAppDomain = PrepareNewAppDomain() };
+                        currentAD = new AppDomainStructure {CurrentAppDomain = PrepareNewAppDomain()};
                     }
                 }
             }
@@ -147,14 +147,14 @@ namespace Universe.ScriptEngine.VirtualScript
 
             // Construct and initialize settings for a second AppDomain.
             AppDomainSetup ads = new AppDomainSetup
-            {
-                ApplicationBase = AppDomain.CurrentDomain.BaseDirectory,
-                DisallowBindingRedirects = true,
-                DisallowCodeDownload = true,
-                LoaderOptimization = LoaderOptimization.MultiDomainHost,
-                ShadowCopyFiles = "false",
-                ConfigurationFile = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile
-            };
+                                     {
+                                         ApplicationBase = AppDomain.CurrentDomain.BaseDirectory,
+                                         DisallowBindingRedirects = true,
+                                         DisallowCodeDownload = true,
+                                         LoaderOptimization = LoaderOptimization.MultiDomainHost,
+                                         ShadowCopyFiles = "false",
+                                         ConfigurationFile = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile
+                                     };
             // Disable shadowing
 
             AppDomain AD = CreateRestrictedDomain(m_PermissionLevel,
@@ -165,6 +165,7 @@ namespace Universe.ScriptEngine.VirtualScript
             // Return the new AppDomain
             return AD;
         }
+
 
         /// From MRMModule.cs by Adam Frisby
         /// <summary>
@@ -205,7 +206,7 @@ namespace Universe.ScriptEngine.VirtualScript
             AppDomain restrictedDomain = null;
 
 #if LINUX
-#pragma warning disable 612, 618
+	#pragma warning disable 612, 618
             PolicyStatement emptyPolicy = new PolicyStatement(new PermissionSet(PermissionState.None));
             UnionCodeGroup policyRoot = new UnionCodeGroup(new AllMembershipCondition(), emptyPolicy);
 
@@ -255,12 +256,12 @@ namespace Universe.ScriptEngine.VirtualScript
             // create an AppDomain where this policy will be in effect
             restrictedDomain = AppDomain.CreateDomain(appDomainName, null, ads);
             restrictedDomain.SetAppDomainPolicy(appDomainLevel);
-#pragma warning restore 612, 618
+	#pragma warning restore 612, 618
 #else
             SecurityZone zone = SecurityZone.MyComputer;
             try
             {
-                zone = (SecurityZone)Enum.Parse(typeof(SecurityZone), permissionSetName);
+                zone = (SecurityZone) Enum.Parse(typeof (SecurityZone), permissionSetName);
             }
             catch
             {
@@ -313,7 +314,7 @@ namespace Universe.ScriptEngine.VirtualScript
                     if (currentAD.ScriptsLoaded <= currentAD.ScriptsWaitingUnload)
                     {
                         if (currentAD.CurrentAppDomain.Id != AppDomain.CurrentDomain.Id)
-                        //Don't kill the current app domain!
+                            //Don't kill the current app domain!
                         {
                             try
                             {
@@ -343,6 +344,7 @@ namespace Universe.ScriptEngine.VirtualScript
 
             return mbrt;
         }
+
 
         // Increase "dead script" counter for an AppDomain
         public void UnloadScriptAppDomain(AppDomain ad)

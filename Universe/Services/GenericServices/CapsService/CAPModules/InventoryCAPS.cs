@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,8 +53,8 @@ namespace Universe.Services
 
         static InventoryCAPS()
         {
-            Framework.Serialization.SceneEntitySerializer.SceneObjectSerializer =
-                new Region.Serialization.SceneObjectSerializer();
+            Universe.Framework.Serialization.SceneEntitySerializer.SceneObjectSerializer =
+                new Universe.Region.Serialization.SceneObjectSerializer();
         }
 
         #endregion
@@ -71,7 +71,7 @@ namespace Universe.Services
 
         public string Name { get { return GetType().Name; } }
 
-        public void IncomingCapsRequest(UUID agentID, Framework.Services.GridRegion region, ISimulationBase simbase, ref OSDMap capURLs)
+        public void IncomingCapsRequest(UUID agentID, Universe.Framework.Services.GridRegion region, ISimulationBase simbase, ref OSDMap capURLs)
         {
             m_agentID = agentID;
             m_moneyModule = simbase.ApplicationRegistry.RequestModuleInterface<IMoneyModule>();
@@ -362,7 +362,7 @@ namespace Universe.Services
                                                         OSHttpResponse httpResponse)
         {
             string asset_type = map["asset_type"].AsString();
-            //MainConsole.Instance.Info("[Caps]: NewAgentInventoryRequest Request is: " + map.ToString());
+            //MainConsole.Instance.Info("[CAPS]: NewAgentInventoryRequest Request is: " + map.ToString());
             //MainConsole.Instance.Debug("asset upload request via CAPS" + llsdRequest.inventory_type + " , " + llsdRequest.asset_type);
 
             string assetName = map["name"].AsString();

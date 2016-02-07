@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -238,7 +238,7 @@ namespace Universe.Simulation.Base
             if (MainConsole.Instance != null)
             {
                 MainConsole.Instance.DefaultPrompt = m_consolePrompt;
-                MainConsole.Instance.Info(string.Format("[Mini Virtual Universe]: STARTING MIN Universe ({0})...",
+                MainConsole.Instance.Info(string.Format("[Mini Virtual Universe]: Starting Mini Virtual Universe ({0})...",
                                                         (IntPtr.Size == 4 ? "x86" : "x64")));
                 MainConsole.Instance.Info("[Mini Virtual Universe]: Version : " + Version + "\n");
                 MainConsole.Instance.Info("[Mini Virtual Universe]: Git Base: " + VersionInfo.GitVersion + "\n");
@@ -333,7 +333,7 @@ namespace Universe.Simulation.Base
         public virtual void InitializeModules()
         {
             LocalDataService lds = new LocalDataService();
-            lds.Initialize(ConfigSource, ApplicationRegistry, m_dataPlugins);
+            lds.Initialise(ConfigSource, ApplicationRegistry, m_dataPlugins);
 
             List<dynamic> modules = new List<dynamic>();
             foreach (Type t in m_servicePlugins)
@@ -503,7 +503,7 @@ namespace Universe.Simulation.Base
         public virtual void HandleForceGC(IScene scene, string[] cmd)
         {
             GC.Collect();
-            MainConsole.Instance.Warn("[Garbage Collection Service]: Garbage collection finished");
+            MainConsole.Instance.Warn("[Garbage Collection]: Garbage collection finished");
         }
 
         public virtual void runConfig(IScene scene, string[] cmd)
@@ -515,10 +515,10 @@ namespace Universe.Simulation.Base
         {
             if (cmd.Length != 5)
             {
-                MainConsole.Instance.Warn("[Console]: Timer Interval command did not have enough parameters.");
+                MainConsole.Instance.Warn("[Command File]: Timer Interval command did not have enough parameters.");
                 return;
             }
-            MainConsole.Instance.Warn("[Console]: Set Timer Interval to " + cmd[4]);
+            MainConsole.Instance.Warn("[Command File]: Set Timer Interval to " + cmd[4]);
             m_TimerScriptTime = int.Parse(cmd[4]);
             m_TimerScriptTimer.Enabled = false;
             m_TimerScriptTimer.Interval = m_TimerScriptTime*60*1000;

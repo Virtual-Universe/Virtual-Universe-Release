@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -202,7 +202,7 @@ namespace Universe.ScriptEngine.VirtualScript
 
         #region ISharedRegionModule
 
-        public void Initialize(IConfigSource config)
+        public void Initialise(IConfigSource config)
         {
             m_ConfigSource = config;
             ScriptConfigSource = config.Configs[ScriptEngineName];
@@ -498,14 +498,14 @@ namespace Universe.ScriptEngine.VirtualScript
         protected void UniverseDotNetDisable(IScene scene, string[] cmdparams)
         {
             ConsoleDisabled = true;
-            MainConsole.Instance.Warn("[Virtual Script]: VirtualScript has been disabled.");
+            MainConsole.Instance.Warn("[Virtual Script]: Virtual Script has been disabled.");
         }
 
         protected void UniverseDotNetEnable(IScene scene, string[] cmdparams)
         {
             ConsoleDisabled = false;
             MaintenanceThread.Started = true;
-            MainConsole.Instance.Warn("[Virtual Script]: VirtualScript has been enabled.");
+            MainConsole.Instance.Warn("[Virtual Script]: Virtual Script has been enabled.");
         }
 
         #endregion

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,12 +35,8 @@ using System.Net;
 using System.Runtime.Remoting.Lifetime;
 using System.Text;
 using System.Text.RegularExpressions;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
-using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
@@ -50,6 +46,9 @@ using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Utilities;
 using Universe.ScriptEngine.VirtualScript.Runtime;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
 using GridRegion = Universe.Framework.Services.GridRegion;
 using Group = System.Text.RegularExpressions.Group;
 using LSL_Float = Universe.ScriptEngine.VirtualScript.LSL_Types.LSLFloat;
@@ -59,6 +58,7 @@ using LSL_List = Universe.ScriptEngine.VirtualScript.LSL_Types.list;
 using LSL_Rotation = Universe.ScriptEngine.VirtualScript.LSL_Types.Quaternion;
 using LSL_String = Universe.ScriptEngine.VirtualScript.LSL_Types.LSLString;
 using LSL_Vector = Universe.ScriptEngine.VirtualScript.LSL_Types.Vector3;
+using Universe.Framework.DatabaseInterfaces;
 
 namespace Universe.ScriptEngine.VirtualScript.APIs
 {
@@ -1139,7 +1139,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                 World.RegionInfo.EstateSettings.UseGlobalTime = !sunFixed;
                 World.RegionInfo.EstateSettings.SunPosition = sunHour;
                 World.RegionInfo.EstateSettings.FixedSun = sunFixed;
-                Framework.Utilities.DataManager.RequestPlugin<IEstateConnector>().
+                Universe.Framework.Utilities.DataManager.RequestPlugin<IEstateConnector>().
                     SaveEstateSettings(World.RegionInfo.EstateSettings);
 
                 World.EventManager.TriggerEstateToolsSunUpdate(World.RegionInfo.RegionHandle, sunFixed,
@@ -2641,7 +2641,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             if (!ScriptProtection.CheckThreatLevel(ThreatLevel.Low, "osAddAgentToGroup", m_host, "OSSL", m_itemID))
                 return new LSL_Integer();
 
-            IGroupsServiceConnector m_groupData = Framework.Utilities.DataManager.RequestPlugin<IGroupsServiceConnector>();
+            IGroupsServiceConnector m_groupData = Universe.Framework.Utilities.DataManager.RequestPlugin<IGroupsServiceConnector>();
 
             // No groups module, no functionality
             if (m_groupData == null)
