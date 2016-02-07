@@ -82,20 +82,7 @@ namespace Universe.ScriptEngine.VirtualScript.Runtime
             m_useStateSaves = useStateSaves;
         }
 
-        // This is the correct way to do this
-        public override Object InitializeLifeTimeService()
-        {
-            ILease lease = (ILease) base.InitializeLifetimeService();
-
-            if (lease.CurrentState == LeaseState.Initial)
-            {
-                lease.InitialLeaseTime = TimeSpan.Zero;
-            }
-
-            return lease;
-        }
-
-        /* This is the old way to handle the AppDomain lease
+         //This is the old way to handle the AppDomain lease
          public override Object InitializeLifetimeService()
          {
              try
@@ -104,8 +91,8 @@ namespace Universe.ScriptEngine.VirtualScript.Runtime
 
                  if (lease.CurrentState == LeaseState.Initial)
                  {
-                     // Infinite : lease.InitialLeaseTime = TimeSpan.FromMinutes(0);
-                     lease.InitialLeaseTime = TimeSpan.FromMinutes(0);
+                    // Infinite : lease.InitialLeaseTime = TimeSpan.FromMinutes(0);
+                    lease.InitialLeaseTime = TimeSpan.Zero;
                      //lease.InitialLeaseTime = TimeSpan.FromMinutes(0);
                      //lease.RenewOnCallTime = TimeSpan.FromMinutes(10.0);
                      //lease.SponsorshipTimeout = TimeSpan.FromMinutes(1.0);
@@ -116,7 +103,7 @@ namespace Universe.ScriptEngine.VirtualScript.Runtime
              {
                  return null;
              }
-         } */
+         }
 
         public ScriptBaseClass()
         {
