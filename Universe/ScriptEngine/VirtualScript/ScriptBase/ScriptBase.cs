@@ -82,27 +82,41 @@ namespace Universe.ScriptEngine.VirtualScript.Runtime
             m_useStateSaves = useStateSaves;
         }
 
-        public override Object InitializeLifetimeService()
+        // This is the correct way to do this
+        public override Object InitializeLifeTimeService()
         {
-            try
-            {
-                ILease lease = (ILease) base.InitializeLifetimeService();
+            ILease lease = (ILease) base.InitializeLifetimeService();
 
-                if (lease.CurrentState == LeaseState.Initial)
-                {
-                    // Infinite : lease.InitialLeaseTime = TimeSpan.FromMinutes(0);
-                    lease.InitialLeaseTime = TimeSpan.FromMinutes(0);
-                    //lease.InitialLeaseTime = TimeSpan.FromMinutes(0);
-                    //lease.RenewOnCallTime = TimeSpan.FromMinutes(10.0);
-                    //lease.SponsorshipTimeout = TimeSpan.FromMinutes(1.0);
-                }
-                return lease;
-            }
-            catch (Exception)
+            if (lease.CurrentState == LeaseState.Initial)
             {
-                return null;
+                lease.InitialLeaseTime = TimeSpan.Zero;
             }
+
+            return lease;
         }
+
+        /* This is the old way to handle the AppDomain lease
+         public override Object InitializeLifetimeService()
+         {
+             try
+             {
+                 ILease lease = (ILease) base.InitializeLifetimeService();
+
+                 if (lease.CurrentState == LeaseState.Initial)
+                 {
+                     // Infinite : lease.InitialLeaseTime = TimeSpan.FromMinutes(0);
+                     lease.InitialLeaseTime = TimeSpan.FromMinutes(0);
+                     //lease.InitialLeaseTime = TimeSpan.FromMinutes(0);
+                     //lease.RenewOnCallTime = TimeSpan.FromMinutes(10.0);
+                     //lease.SponsorshipTimeout = TimeSpan.FromMinutes(1.0);
+                 }
+                 return lease;
+             }
+             catch (Exception)
+             {
+                 return null;
+             }
+         } */
 
         public ScriptBaseClass()
         {
