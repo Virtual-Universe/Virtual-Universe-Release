@@ -25,9 +25,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
 using OpenMetaverse.StructuredData;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
+using Universe.Framework.Utilities;
 
 namespace Universe.Framework.ClientInterfaces
 {
@@ -43,10 +45,12 @@ namespace Universe.Framework.ClientInterfaces
 
         public override void FromOSD(OSDMap map)
         {
-            GlobalPosX = map["GlobalPosX"];
-            GlobalPosY = map["GlobalPosY"];
+            GlobalPosX = (float)Convert.ToDecimal(map["GlobalPosX"].AsString(), Culture.NumberFormatInfo);
+            GlobalPosY = (float)Convert.ToDecimal(map["GlobalPosY"].AsString(), Culture.NumberFormatInfo);
+            //GlobalPosX = map["GlobalPosX"];
+            //GlobalPosY = map["GlobalPosY"];
             LandData = new LandData();
-            LandData.FromOSD((OSDMap) map["LandData"]);
+            LandData.FromOSD((OSDMap)map["LandData"]);
             RegionName = map["RegionName"];
             RegionType = map["RegionType"];
             RegionTerrain = map["RegionTerrain"];
@@ -56,8 +60,10 @@ namespace Universe.Framework.ClientInterfaces
         public override OSDMap ToOSD()
         {
             OSDMap map = new OSDMap();
-            map["GlobalPosX"] = GlobalPosX;
-            map["GlobalPosY"] = GlobalPosY;
+            map["GlobalPosX"] = OSD.FromReal(GlobalPosX).ToString();
+            map["GlobalPosY"] = OSD.FromReal(GlobalPosY).ToString();
+            //map["GlobalPosX"] = GlobalPosX;
+            //map["GlobalPosY"] = GlobalPosY;
             map["LandData"] = LandData.ToOSD();
             map["RegionName"] = RegionName;
             map["RegionType"] = RegionType;
