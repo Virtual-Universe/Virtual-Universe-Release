@@ -85,7 +85,7 @@ namespace Universe.Modules.Currency
                 defaultConnectionString = source.Configs[Name].GetString("ConnectionString", defaultConnectionString);
 
             if (GenericData != null)
-                GenericData.ConnectToDatabase(defaultConnectionString, "SimpleCurrency", true);
+                GenericData.ConnectToDatabase(defaultConnectionString, "BaseCurrency", true);
             Framework.Utilities.DataManager.RegisterPlugin(Name, this);
 
             m_config = new BaseCurrencyConfig(config);
