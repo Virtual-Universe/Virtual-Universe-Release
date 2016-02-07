@@ -55,7 +55,7 @@ namespace Universe.Modules.Agent.AssetTransaction
 
         #region INonSharedRegionModule Members
 
-        public void Initialise(IConfigSource config)
+        public void Initialize(IConfigSource config)
         {
         }
 

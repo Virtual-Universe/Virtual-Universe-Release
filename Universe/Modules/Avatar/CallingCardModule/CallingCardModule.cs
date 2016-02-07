@@ -51,7 +51,7 @@ namespace Universe.Modules.CallingCards
 
         #region INonSharedRegionModule
 
-        public void Initialise(IConfigSource source)
+        public void Initialize(IConfigSource source)
         {
             IConfig ccmModuleConfig = source.Configs["CallingCardModule"];
             if (ccmModuleConfig != null)

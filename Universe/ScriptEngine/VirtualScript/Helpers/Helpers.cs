@@ -183,7 +183,7 @@ namespace Universe.ScriptEngine.VirtualScript
             {
                 if (value == null)
                 {
-                    // Initialise to defaults if no value
+                    // Initialize to defaults if no value
                     initializeSurfaceTouch();
                 }
                 else

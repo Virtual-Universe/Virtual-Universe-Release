@@ -25,26 +25,6 @@
 	<PropertyGroup>
 	  <ApplicationManifest>app.manifest</ApplicationManifest>
 	</PropertyGroup>
-	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-	  <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
-	  <BaseAddress>285212672</BaseAddress>
-	  <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
-	  <ConfigurationOverrideFile>
-	  </ConfigurationOverrideFile>
-	  <DefineConstants>ISWIN;NET_4_5</DefineConstants>
-	  <DocumentationFile></DocumentationFile>
-	  <DebugSymbols>False</DebugSymbols>
-	  <FileAlignment>4096</FileAlignment>
-	  <Optimize>False</Optimize>
-	  <OutputPath>..\..\..\VirtualUniverse\bin\</OutputPath>
-	  <RegisterForComInterop>False</RegisterForComInterop>
-	  <RemoveIntegerChecks>False</RemoveIntegerChecks>
-	  <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-	  <WarningLevel>4</WarningLevel>
-	  <NoStdLib>False</NoStdLib>
-	  <NoWarn></NoWarn>
-	  <PlatformTarget>AnyCPU</PlatformTarget>
-	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
 	  <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 	  <BaseAddress>285212672</BaseAddress>
@@ -85,8 +65,8 @@
 	  <NoWarn></NoWarn>
 	  <PlatformTarget>x86</PlatformTarget>
 	</PropertyGroup>
-	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-	  <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+	  <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 	  <BaseAddress>285212672</BaseAddress>
 	  <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
 	  <ConfigurationOverrideFile>
@@ -95,7 +75,7 @@
 	  <DocumentationFile></DocumentationFile>
 	  <DebugSymbols>False</DebugSymbols>
 	  <FileAlignment>4096</FileAlignment>
-	  <Optimize>False</Optimize>
+	  <Optimize>True</Optimize>
 	  <OutputPath>..\..\..\VirtualUniverse\bin\</OutputPath>
 	  <RegisterForComInterop>False</RegisterForComInterop>
 	  <RemoveIntegerChecks>False</RemoveIntegerChecks>
@@ -103,7 +83,7 @@
 	  <WarningLevel>4</WarningLevel>
 	  <NoStdLib>False</NoStdLib>
 	  <NoWarn></NoWarn>
-	  <PlatformTarget>AnyCPU</PlatformTarget>
+	  <PlatformTarget>x64</PlatformTarget>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
 	  <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
@@ -124,26 +104,6 @@
 	  <NoStdLib>False</NoStdLib>
 	  <NoWarn></NoWarn>
 	  <PlatformTarget>x86</PlatformTarget>
-	</PropertyGroup>
-	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
-	  <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-	  <BaseAddress>285212672</BaseAddress>
-	  <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
-	  <ConfigurationOverrideFile>
-	  </ConfigurationOverrideFile>
-	  <DefineConstants>ISWIN;NET_4_5</DefineConstants>
-	  <DocumentationFile></DocumentationFile>
-	  <DebugSymbols>False</DebugSymbols>
-	  <FileAlignment>4096</FileAlignment>
-	  <Optimize>True</Optimize>
-	  <OutputPath>..\..\..\VirtualUniverse\bin\</OutputPath>
-	  <RegisterForComInterop>False</RegisterForComInterop>
-	  <RemoveIntegerChecks>False</RemoveIntegerChecks>
-	  <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-	  <WarningLevel>4</WarningLevel>
-	  <NoStdLib>False</NoStdLib>
-	  <NoWarn></NoWarn>
-	  <PlatformTarget>x64</PlatformTarget>
 	</PropertyGroup>
 	<ItemGroup>
 	  <Reference Include="Nini" >

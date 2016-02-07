@@ -85,7 +85,7 @@ namespace Universe.Services
                                                      HandleGetLogLevel, false, true);
         }
 
-        public void PostInitialise()
+        public void PostInitialize()
         {
         }
 

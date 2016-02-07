@@ -50,7 +50,7 @@ namespace Universe.Modules.SetHome
 
         #region INonSharedRegionModule Members
 
-        public void Initialise(IConfigSource pSource)
+        public void Initialize(IConfigSource pSource)
         {
         }
 

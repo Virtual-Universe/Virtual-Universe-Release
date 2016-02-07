@@ -57,7 +57,7 @@ namespace Universe.Modules.Selection
 
         #region INonSharedRegionModule Members
 
-        public void Initialise(IConfigSource source)
+        public void Initialize(IConfigSource source)
         {
 			IConfig universestartupConfig = source.Configs["UniverseStartup"];
 			if (universestartupConfig != null)

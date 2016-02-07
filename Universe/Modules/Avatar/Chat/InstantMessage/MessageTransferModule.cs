@@ -132,7 +132,7 @@ namespace Universe.Modules.Chat
 
         #region INonSharedRegionModule Members
 
-        public virtual void Initialise(IConfigSource config)
+        public virtual void Initialize(IConfigSource config)
         {
             IConfig cnf = config.Configs["Messaging"];
             if (cnf != null)

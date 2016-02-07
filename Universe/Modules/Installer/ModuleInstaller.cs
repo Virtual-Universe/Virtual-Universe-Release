@@ -393,7 +393,7 @@ namespace Universe.Modules.Installer
             {
                 plugin.PreStartup(m_registry.RequestModuleInterface<ISimulationBase>());
                 plugin.Initialize(m_registry.RequestModuleInterface<ISimulationBase>());
-                plugin.PostInitialise();
+                plugin.PostInitialize();
                 plugin.Start();
                 plugin.PostStart();
             }
@@ -405,7 +405,7 @@ namespace Universe.Modules.Installer
                 {
                     foreach (IScene scene in manager.Scenes)
                     {
-                        nsrm.Initialise(m_config);
+                        nsrm.Initialize(m_config);
                         nsrm.AddRegion(scene);
                         nsrm.RegionLoaded(scene);
                         rmc.AllModules.Add(nsrm);

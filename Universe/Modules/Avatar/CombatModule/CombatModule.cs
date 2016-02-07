@@ -103,7 +103,7 @@ namespace Universe.Modules.Combat
             get { return null; }
         }
 
-        public void Initialise(IConfigSource source)
+        public void Initialize(IConfigSource source)
         {
             m_config = source.Configs["CombatModule"];
             if (m_config != null)

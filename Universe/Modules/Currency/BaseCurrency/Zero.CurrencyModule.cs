@@ -108,7 +108,7 @@ namespace Universe.Modules.Currency
         ///     Startup
         /// </summary>
         /// <param name="config"></param>
-        public void Initialise(IConfigSource config)
+        public void Initialize(IConfigSource config)
         {
             m_config = config;
             IConfig currencyConfig = config.Configs["Currency"];

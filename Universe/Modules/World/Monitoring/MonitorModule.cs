@@ -956,7 +956,7 @@ namespace Universe.Modules.Monitoring
         {
         }
 
-        public void PostInitialise()
+        public void PostInitialize()
         {
             ISceneManager manager = m_simulationBase.ApplicationRegistry.RequestModuleInterface<ISceneManager>();
             if (manager != null)

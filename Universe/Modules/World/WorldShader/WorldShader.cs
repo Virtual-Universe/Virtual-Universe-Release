@@ -50,7 +50,7 @@ namespace Universe.Modules.WorldShader
 
         #region ISharedRegionModule Members
 
-        public void Initialise(IConfigSource source)
+        public void Initialize(IConfigSource source)
         {
         }
 

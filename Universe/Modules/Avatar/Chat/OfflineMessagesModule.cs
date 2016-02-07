@@ -53,7 +53,7 @@ namespace Universe.Modules.Chat
         Dictionary<UUID, List<GridInstantMessage>> m_offlineMessagesCache =
             new Dictionary<UUID, List<GridInstantMessage>>();
 
-        public void Initialise(IConfigSource config)
+        public void Initialize(IConfigSource config)
         {
             IConfig cnf = config.Configs["Messaging"];
             if (cnf != null)

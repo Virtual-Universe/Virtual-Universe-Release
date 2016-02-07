@@ -58,7 +58,7 @@ namespace Universe.Modules.Caps
             get { return null; }
         }
 
-        public void Initialise(IConfigSource source)
+        public void Initialize(IConfigSource source)
         {
         }
 

@@ -1092,7 +1092,7 @@ namespace Universe.Modules.Groups
 
         #region INonSharedRegionModule Members
 
-        public void Initialise(IConfigSource config)
+        public void Initialize(IConfigSource config)
         {
             IConfig groupsConfig = config.Configs["Groups"];
 

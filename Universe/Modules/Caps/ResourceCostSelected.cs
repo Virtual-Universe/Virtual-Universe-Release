@@ -51,7 +51,7 @@ namespace Universe.Modules.Caps
 
         #region INonSharedRegionModule Members
 
-        public void Initialise(IConfigSource pSource)
+        public void Initialize(IConfigSource pSource)
         {
         }
 

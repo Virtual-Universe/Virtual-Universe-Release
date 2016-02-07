@@ -33,7 +33,7 @@ namespace Universe.Framework.Modules
 {
     public interface IMapTileTerrainRenderer
     {
-        void Initialise(IScene scene, IConfigSource config);
+        void Initialize(IScene scene, IConfigSource config);
         Bitmap TerrainToBitmap(Bitmap mapbmp);
     }
 }

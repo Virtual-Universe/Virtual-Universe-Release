@@ -79,7 +79,7 @@ namespace Universe.Modules.Land
             get { return null; }
         }
 
-        public void Initialise(IConfigSource source)
+        public void Initialize(IConfigSource source)
         {
         }
 

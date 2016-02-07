@@ -48,7 +48,7 @@ namespace Universe.Modules.Cloud
 
         #region ICloudModule Members
 
-        public void Initialise(IConfigSource config)
+        public void Initialize(IConfigSource config)
         {
             IConfig cloudConfig = config.Configs["Cloud"];
 

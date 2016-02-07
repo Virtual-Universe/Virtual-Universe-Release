@@ -234,7 +234,7 @@ namespace Universe.Modules.Startup
 
         #region ISharedRegionStartupModule Members
 
-        public void Initialise (IScene scene, IConfigSource source, ISimulationBase simBase)
+        public void Initialize (IScene scene, IConfigSource source, ISimulationBase simBase)
         {
             m_scene = scene;
             //Register the interface
@@ -253,7 +253,7 @@ namespace Universe.Modules.Startup
             RegisterRegionWithGrid (scene, false, true, m_RegisterRegionPassword);
         }
 
-        public void PostInitialise (IScene scene, IConfigSource source, ISimulationBase simBase)
+        public void PostInitialize (IScene scene, IConfigSource source, ISimulationBase simBase)
         {
         }
 

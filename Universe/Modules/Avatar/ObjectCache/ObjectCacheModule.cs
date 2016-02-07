@@ -55,7 +55,7 @@ namespace Universe.Modules.ObjectCache
 
         #region INonSharedRegionModule
 
-        public virtual void Initialise(IConfigSource source)
+        public virtual void Initialize(IConfigSource source)
         {
             IConfig moduleConfig = source.Configs["ObjectCache"];
             if (moduleConfig != null)
@@ -241,7 +241,7 @@ namespace Universe.Modules.ObjectCache
 
         #endregion
 
-        public virtual void PostInitialise()
+        public virtual void PostInitialize()
         {
         }
 
