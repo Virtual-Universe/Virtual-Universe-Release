@@ -145,7 +145,7 @@ namespace Universe.Modules.ActivityDetectors
             client.Scene.TryGetScenePresence(client.AgentId, out sp);
             if (client.IsLoggingOut && sp != null & !sp.IsChildAgent)
             {
-                MainConsole.Instance.InfoFormat("[ActivityDetector]: Detected logout of user {0} in region {1}",
+                MainConsole.Instance.InfoFormat("[Activity Detector]: Detected logout of user {0} in region {1}",
                                                 client.Name,
                                                 client.Scene.RegionInfo.RegionName);
 
