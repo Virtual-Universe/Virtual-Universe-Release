@@ -25,21 +25,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System;
+using System.Drawing;
+using Nini.Config;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
-using Nini.Config;
-using System;
-using System.Drawing;
 
 namespace Universe.Modules.WorldMap
 {
     public class ShadedMapTileRenderer : IMapTileTerrainRenderer
     {
-        private static readonly Color WATER_COLOR = Color.FromArgb(29, 71, 95);
+        static readonly Color WATER_COLOR = Color.FromArgb(29, 71, 95);
 
-        private IScene m_scene;
+        IScene m_scene;
         //private IConfigSource m_config; // not used currently
 
         #region IMapTileTerrainRenderer Members
@@ -52,7 +51,7 @@ namespace Universe.Modules.WorldMap
 
         public Bitmap TerrainToBitmap(Bitmap mapbmp)
         {
-            //MainConsole.Instance.Info("[MAPTILE]: Generating Maptile Step 1: Terrain");
+            //MainConsole.Instance.Info("[Map Tile]: Generating Maptile Step 1: Terrain");
 
             ITerrainChannel heightmap = m_scene.RequestModuleInterface<ITerrainChannel>();
             bool ShadowDebugContinue = true;
@@ -73,7 +72,7 @@ namespace Universe.Modules.WorldMap
                 }
             }
 
-            float waterHeight = (float) m_scene.RegionInfo.RegionSettings.WaterHeight;
+            float waterHeight = (float)m_scene.RegionInfo.RegionSettings.WaterHeight;
 
             for (int x = 0; x < m_scene.RegionInfo.RegionSizeX; x++)
             {
@@ -97,15 +96,13 @@ namespace Universe.Modules.WorldMap
                         else if (heightvalue < 0f)
                             heightvalue = 0f;
 
-                        Color color = Color.FromArgb((int) heightvalue, 100, (int) heightvalue);
+                        Color color = Color.FromArgb((int)heightvalue, 100, (int)heightvalue);
 
                         mapbmp.SetPixel(x, yr, color);
 
                         try
                         {
                             //X
-                            // .
-                            //
                             // Shade the terrain for shadows
                             if (x < (m_scene.RegionInfo.RegionSizeX - 1) && yr < (m_scene.RegionInfo.RegionSizeY - 1))
                             {
@@ -132,25 +129,22 @@ namespace Universe.Modules.WorldMap
 
                                 try
                                 {
-                                    // hfdiffi = Math.Abs((int)((hfdiff * 4) + (hfdiff * 0.5))) + 1;
-                                    hfdiffi = Math.Abs((int) (hfdiff*4.5f)) + 1;
-                                    if (hfdiff%1f != 0)
+                                    hfdiffi = Math.Abs((int)(hfdiff * 4.5f)) + 1;
+                                    if (hfdiff % 1f != 0)
                                     {
-                                        // hfdiffi = hfdiffi + Math.Abs((int)(((hfdiff % 1) * 0.5f) * 10f) - 1);
-                                        hfdiffi = hfdiffi + Math.Abs((int) ((hfdiff%1f)*5f) - 1);
+                                        hfdiffi = hfdiffi + Math.Abs((int)((hfdiff % 1f) * 5f) - 1);
                                     }
 
-                                    hfdiffihighlight = Math.Abs((int) ((hfdiff*highlightfactor)*4.5f)) + 1;
-                                    if (hfdiff%1f != 0)
+                                    hfdiffihighlight = Math.Abs((int)((hfdiff * highlightfactor) * 4.5f)) + 1;
+                                    if (hfdiff % 1f != 0)
                                     {
-                                        // hfdiffi = hfdiffi + Math.Abs((int)(((hfdiff % 1) * 0.5f) * 10f) - 1);
                                         hfdiffihighlight = hfdiffihighlight +
-                                                           Math.Abs((int) (((hfdiff*highlightfactor)%1f)*5f) - 1);
+                                                           Math.Abs((int)(((hfdiff * highlightfactor) % 1f) * 5f) - 1);
                                     }
                                 }
                                 catch (OverflowException)
                                 {
-                                    MainConsole.Instance.Debug("[MAPTILE]: Shadow failed at value: " + hfdiff.ToString());
+                                    MainConsole.Instance.Debug("[MAPTILE]: Shadow failed at value: " + hfdiff);
                                     ShadowDebugContinue = false;
                                 }
 
@@ -202,7 +196,7 @@ namespace Universe.Modules.WorldMap
                             if (!terraincorruptedwarningsaid)
                             {
                                 MainConsole.Instance.WarnFormat(
-                                    "[MAPIMAGE]: Your terrain is corrupted in region {0}, it might take a few minutes to generate the map image depending on the corruption level",
+                                    "[Map Image]: Your terrain is corrupted in region {0}, it might take a few minutes to generate the map image depending on the corruption level",
                                     m_scene.RegionInfo.RegionName);
                                 terraincorruptedwarningsaid = true;
                             }
@@ -223,7 +217,7 @@ namespace Universe.Modules.WorldMap
                         else if (heightvalue < 0f)
                             heightvalue = 0f;
 
-                        heightvalue = 100f - (heightvalue*100f)/19f;
+                        heightvalue = 100f - (heightvalue * 100f) / 19f;
 
                         try
                         {
@@ -234,7 +228,7 @@ namespace Universe.Modules.WorldMap
                             if (!terraincorruptedwarningsaid)
                             {
                                 MainConsole.Instance.WarnFormat(
-                                    "[MAPIMAGE]: Your terrain is corrupted in region {0}, it might take a few minutes to generate the map image depending on the corruption level",
+                                    "[Map Image]: Your terrain is corrupted in region {0}, it might take a few minutes to generate the map image depending on the corruption level",
                                     m_scene.RegionInfo.RegionName);
                                 terraincorruptedwarningsaid = true;
                             }
@@ -244,7 +238,7 @@ namespace Universe.Modules.WorldMap
                     }
                 }
             }
-            // MainConsole.Instance.Info("[MAPTILE]: Generating Maptile Step 1: Done in " + (Environment.TickCount - tc) + " ms");
+            // MainConsole.Instance.Info("[Map Tile]: Generating Maptile Step 1: Done in " + (Environment.TickCount - tc) + " ms");
             return mapbmp;
         }
 

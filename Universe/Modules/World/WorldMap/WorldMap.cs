@@ -131,7 +131,7 @@ namespace Universe.Modules.WorldMap
         {
             string regionimage = "/index.php?method=regionImage" + m_scene.RegionInfo.RegionID;
             regionimage = regionimage.Replace("-", "");
-            MainConsole.Instance.Debug("[WORLD MAP]: JPEG Map location: " + MainServer.Instance.ServerURI +
+            MainConsole.Instance.Debug("[World Map]: JPEG Map location: " + MainServer.Instance.ServerURI +
                                        regionimage);
 
             MainServer.Instance.AddStreamHandler(new GenericStreamHandler("GET", regionimage, OnHTTPGetMapImage));
@@ -670,7 +670,7 @@ namespace Universe.Modules.WorldMap
         public byte[] OnHTTPGetMapImage(string path, Stream request, OSHttpRequest httpRequest,
                                         OSHttpResponse httpResponse)
         {
-            MainConsole.Instance.Debug("[WORLD MAP]: Sending map image jpeg");
+            MainConsole.Instance.Debug("[World Map]: Sending map image jpeg");
             byte[] jpeg = new byte[0];
 
             MemoryStream imgstream = new MemoryStream();
@@ -709,7 +709,7 @@ namespace Universe.Modules.WorldMap
             catch (Exception)
             {
                 // Dummy!
-                MainConsole.Instance.Warn("[WORLD MAP]: Unable to generate Map image");
+                MainConsole.Instance.Warn("[World Map]: Unable to generate Map image");
             }
             finally
             {
