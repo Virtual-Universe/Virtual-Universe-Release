@@ -387,7 +387,7 @@ namespace Universe.Modules.WorldMap
                 ClearWorldviewCachedImages(m_scene.RegionInfo.RegionID);
 
                 CreateTerrainTexture();
-                +m_scene.SimulationDataService.MapTileNeedsGenerated = false;
+                m_scene.SimulationDataService.MapTileNeedsGenerated = false;
             }
         }
 
