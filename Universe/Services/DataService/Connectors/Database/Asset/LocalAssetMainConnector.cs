@@ -240,7 +240,7 @@ namespace Universe.Services.DataService.Connectors.Database.Asset
                     return LoadAssetFromDataRead(dr.DataReader);
                 }
                 if (showWarnings && MainConsole.Instance != null)
-                    MainConsole.Instance.WarnFormat("[Local Asset Database] GetAsset({0}) - Asset UUID was not found.", uuid);
+                    MainConsole.Instance.WarnFormat("[Local Asset Database] GetAsset({0}) - Unfortunately we were unable to find the asset associated with this UUID in the database. Please check if the asset with this UUID is in the database:", uuid);
             }
             catch (Exception e)
             {
