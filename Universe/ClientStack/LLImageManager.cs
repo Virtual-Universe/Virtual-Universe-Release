@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,16 +25,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System;
+using System.Collections.Generic;
+using OpenMetaverse;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Utilities;
-using OpenMetaverse;
-using System;
-using System.Collections.Generic;
 
 namespace Universe.ClientStack
 {
@@ -58,7 +57,7 @@ namespace Universe.ClientStack
 
             if (m_missingImage == null)
                 MainConsole.Instance.Error(
-                    "[ClientView] - Couldn't set missing image asset, falling back to missing image packet. This is known to crash the client");
+                    "[Client View] - Couldn't set missing image asset, falling back to missing image packet. This is known to crash the client");
 
             m_j2kDecodeModule = pJ2kDecodeModule;
         }
@@ -89,7 +88,7 @@ namespace Universe.ClientStack
                 {
                     if (newRequest.DiscardLevel == -1 && newRequest.Priority == 0f)
                     {
-                        //MainConsole.Instance.Debug("[TEX]: (CAN) ID=" + newRequest.RequestedAssetID);
+                        //MainConsole.Instance.Debug("[Tex]: (CAN) ID=" + newRequest.RequestedAssetID);
 
                         try
                         {
@@ -102,7 +101,7 @@ namespace Universe.ClientStack
                     }
                     else
                     {
-                        //MainConsole.Instance.DebugFormat("[TEX]: (UPD) ID={0}: D={1}, S={2}, P={3}",
+                        //MainConsole.Instance.DebugFormat("[Tex]: (UPD) ID={0}: D={1}, S={2}, P={3}",
                         //    newRequest.RequestedAssetID, newRequest.DiscardLevel, newRequest.PacketNumber, newRequest.Priority);
 
                         //Check the packet sequence to make sure this isn't older than 
@@ -133,13 +132,13 @@ namespace Universe.ClientStack
                 {
                     if (newRequest.DiscardLevel == -1 && newRequest.Priority == 0f)
                     {
-                        //MainConsole.Instance.Debug("[TEX]: (CAN) ID=" + newRequest.RequestedAssetID);
-                        //MainConsole.Instance.DebugFormat("[TEX]: (IGN) ID={0}: D={1}, S={2}, P={3}",
+                        //MainConsole.Instance.Debug("[Tex]: (CAN) ID=" + newRequest.RequestedAssetID);
+                        //MainConsole.Instance.DebugFormat("[Tex]: (IGN) ID={0}: D={1}, S={2}, P={3}",
                         //    newRequest.RequestedAssetID, newRequest.DiscardLevel, newRequest.PacketNumber, newRequest.Priority);
                     }
                     else
                     {
-                        //MainConsole.Instance.DebugFormat("[TEX]: (NEW) ID={0}: D={1}, S={2}, P={3}",
+                        //MainConsole.Instance.DebugFormat("[Tex]: (NEW) ID={0}: D={1}, S={2}, P={3}",
                         //    newRequest.RequestedAssetID, newRequest.DiscardLevel, newRequest.PacketNumber, newRequest.Priority);
 
                         imgrequest = new J2KImage()
@@ -307,24 +306,6 @@ namespace Universe.ClientStack
 
             #endregion
         }
-
-        #endregion
-
-        #region Nested type: J2KImageComparer
-
-/*
-        private sealed class J2KImageComparer : IComparer<J2KImage>
-        {
-            #region IComparer<J2KImage> Members
-
-            public int Compare(J2KImage x, J2KImage y)
-            {
-                return x.Priority.CompareTo(y.Priority);
-            }
-
-            #endregion
-        }
-*/
 
         #endregion
     }

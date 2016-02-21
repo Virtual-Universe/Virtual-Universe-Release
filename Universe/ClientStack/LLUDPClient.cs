@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,16 +27,15 @@
 
 //#define Debug
 
-
-using Universe.Framework.ClientInterfaces;
-using Universe.Framework.ConsoleFramework;
-using Universe.Framework.Modules;
-using Universe.Framework.Utilities;
-using OpenMetaverse;
 using System;
 using System.Collections.Concurrent;
 using System.Net;
 using System.Threading;
+using OpenMetaverse;
+using Universe.Framework.ClientInterfaces;
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.Modules;
+using Universe.Framework.Utilities;
 
 namespace Universe.ClientStack
 {
@@ -185,7 +184,6 @@ namespace Universe.ClientStack
         /// <summary>
         ///     Outgoing queues for throttled packets
         /// </summary>
-//        private readonly Universe.Framework.LocklessQueue<OutgoingPacket>[] m_packetOutboxes = new Universe.Framework.LocklessQueue<OutgoingPacket>[(int)ThrottleOutPacketType.Count];
         private readonly int[] PacketsCounts = new int[(int) ThrottleOutPacketType.Count];
 
         /// <summary>
@@ -472,11 +470,8 @@ namespace Universe.ClientStack
             int avatarinfo = (int) (state*AVATAR_INFO_STATE_PERCENTAGE);
             state -= avatarinfo;
 
-//            int total = resend + land + wind + cloud + task + texture + asset + state + avatarinfo;
-
             // Make sure none of the throttles are set below our packet MTU,
             // otherwise a throttle could become permanently clogged
-
 
             Rates[(int) ThrottleOutPacketType.Resend] = resend;
             Rates[(int) ThrottleOutPacketType.Land] = land;
@@ -493,8 +488,7 @@ namespace Universe.ClientStack
                 TotalRateMin = MINPERCLIENTRATE;
             total = TotalRateMin; // let it grow slowly
 
-
-            //MainConsole.Instance.WarnFormat("[LLUDPCLIENT]: {0} is setting throttles. Resend={1}, Land={2}, Wind={3}, Cloud={4}, Task={5}, Texture={6}, Asset={7}, State={8}, AvatarInfo={9}, Transfer={10}, TaskFull={11}, Total={12}",
+            //MainConsole.Instance.WarnFormat("[LLUDP Client]: {0} is setting throttles. Resend={1}, Land={2}, Wind={3}, Cloud={4}, Task={5}, Texture={6}, Asset={7}, State={8}, AvatarInfo={9}, Transfer={10}, TaskFull={11}, Total={12}",
             //    AgentID, resend, land, wind, cloud, task, texture, asset, state, avatarinfo, transfer, task + state + avatarinfo, total);
 
             // Update the token buckets with new throttle values
@@ -620,7 +614,6 @@ namespace Universe.ClientStack
                 }
             }
 
-
             if (m_nextOnQueueEmpty != 0 && Util.EnvironmentTickCountSubtract(m_nextOnQueueEmpty) >= 0)
             {
                 // Use a value of 0 to signal that FireQueueEmpty is running
@@ -682,7 +675,7 @@ namespace Universe.ClientStack
 
             RTO = rto;
 
-            //MainConsole.Instance.Debug("[LLUDPCLIENT]: Setting agent " + this.Agent.FullName + "'s RTO to " + RTO + "ms with an RTTVAR of " +
+            //MainConsole.Instance.Debug("[LLUDP Client]: Setting agent " + this.Agent.FullName + "'s RTO to " + RTO + "ms with an RTTVAR of " +
             //    RTTVAR + " based on new RTT of " + r + "ms");
         }
 
@@ -726,13 +719,11 @@ namespace Universe.ClientStack
                 }
                 catch (Exception e)
                 {
-                    MainConsole.Instance.ErrorFormat("[LLUDPCLIENT]: OnQueueEmpty() threw an exception: {0}", e.ToString());
+                    MainConsole.Instance.ErrorFormat("[LLUDP Client]: OnQueueEmpty() threw an exception: {0}", e.ToString());
                 }
             }
 
             m_nextOnQueueEmpty = start + MIN_CALLBACK_MS;
-//            if (m_nextOnQueueEmpty == 0)
-//                m_nextOnQueueEmpty = 1;
         }
     }
 }

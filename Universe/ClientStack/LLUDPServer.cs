@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -67,7 +67,6 @@ namespace Universe.ClientStack
         readonly ExpiringCache<UUID, uint> m_inQueueCircuitCodes = new ExpiringCache<UUID, uint>();
         readonly ThreadMonitor outgoingPacketMonitor = new ThreadMonitor();
 
-        //PacketEventDictionary packetEvents = new PacketEventDictionary();
         /// <summary>
         ///     Handlers for incoming packets
         /// </summary>
@@ -169,7 +168,6 @@ namespace Universe.ClientStack
         /// </summary>
         bool m_sendPing;
 
-        //private UDPClientCollection m_clients = new UDPClientCollection();
         /// <summary>
         /// </summary>
         /// <summary>
@@ -299,7 +297,6 @@ namespace Universe.ClientStack
             //MainConsole.Instance.Info("[LLUDP Server]: Starting the LLUDP server in " + (m_asyncPacketHandling ? "asynchronous" : "synchronous") + " mode");
 
             Start(m_recvBufferSize, m_asyncPacketHandling);
-
 
             // Start the packet processing threads
             //Give it the heartbeat delegate with an infinite timeout
@@ -489,8 +486,7 @@ namespace Universe.ClientStack
                 catch (IndexOutOfRangeException)
                 {
                     // The packet grew larger than the bufferSize while zerocoding.
-                    // Remove the MSG_ZEROCODED flag and send the unencoded data
-                    // instead
+                    // Remove the MSG_ZEROCODED flag and send the unencoded data instead
                     MainConsole.Instance.Debug("[LLUDP Server]: Packet exceeded buffer size during zerocoding for " +
                                                packet.Type +
                                                ". DataLength=" + dataLength +
@@ -708,12 +704,6 @@ namespace Universe.ClientStack
 
             // Stats tracking
             Interlocked.Increment(ref udpClient.PacketsSent);
-//            if (isReliable)
-//                Interlocked.Add(ref udpClient.UnackedBytes, outgoingPacket.Buffer.DataLength);
-
-            // Put the UDP payload on the wire
-//            AsyncBeginSend(buffer);
-
             SyncSend(buffer);
 
             // Keep track of when this packet was sent out (right now)
@@ -728,11 +718,6 @@ namespace Universe.ClientStack
 
         protected override void PacketReceived(UDPPacketBuffer buffer)
         {
-            //MainConsole.Instance.Info("[llupdserver] PacketReceived");
-            // Debugging/Profiling
-            //try { Thread.CurrentThread.Name = "PacketReceived (" + m_scene.RegionInfo.RegionName + ")"; }
-            //catch (Exception) { }
-
             LLUDPClient udpClient;
             Packet packet = null;
             int packetEnd = buffer.DataLength - 1;
@@ -780,7 +765,7 @@ namespace Universe.ClientStack
                         m_inQueueCircuitCodes.AddOrUpdate(sessionData.AgentID, cPacket.Header.Sequence, 5);
                         if (contains)
                         {
-                            MainConsole.Instance.Debug("[LLUDPServer] AddNewClient - already here");
+                            MainConsole.Instance.Debug("[LLUDP Server] AddNewClient - already here");
                             return;
                         }
                     }
@@ -793,7 +778,7 @@ namespace Universe.ClientStack
                 else
                     // Don't create circuits for unauthorized clients
                     MainConsole.Instance.WarnFormat(
-                        "[LLUDPServer]: Connection request for client {0} connecting with un-notified circuit code {1} from {2}",
+                        "[LLUDP Server]: Connection request for client {0} connecting with un-notified circuit code {1} from {2}",
                         cPacket.CircuitCode.ID, cPacket.CircuitCode.Code, remoteEndPoint);
 
                 return;
@@ -919,7 +904,7 @@ namespace Universe.ClientStack
 
         void HandleUseCircuitCode(object o)
         {
-            MainConsole.Instance.Debug("[LLUDPServer] HandelUserCircuitCode");
+            MainConsole.Instance.Debug("[LLUDP Server] HandelUserCircuitCode");
             DateTime startTime = DateTime.Now;
             object[] array = (object[]) o;
             UDPPacketBuffer buffer = (UDPPacketBuffer) array[0];
@@ -986,7 +971,7 @@ namespace Universe.ClientStack
         public virtual bool AddClient(uint circuitCode, UUID agentID, UUID sessionID, IPEndPoint remoteEndPoint,
                                          AgentCircuitData sessionInfo)
         {
-            MainConsole.Instance.Debug("[LLUDPServer] AddClient-" + circuitCode + "-" + agentID + "-" + sessionID + "-" +
+            MainConsole.Instance.Debug("[LLUDP Server] AddClient-" + circuitCode + "-" + agentID + "-" + sessionID + "-" +
                                        remoteEndPoint + "-" + sessionInfo);
             IScenePresence SP;
             if (!m_scene.TryGetScenePresence(agentID, out SP))

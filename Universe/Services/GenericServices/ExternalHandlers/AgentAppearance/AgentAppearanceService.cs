@@ -163,7 +163,7 @@ namespace Universe.Services
 
             List<InventoryItemBase> items = m_inventoryService.GetFolderItems (agentID, cof.ID);
             foreach (InventoryItemBase itm in items)
-                MainConsole.Instance.Warn ("[ServerSideAppearance]: Baking " + itm.Name);
+                MainConsole.Instance.Warn ("[Server Side Appearance]: Baking " + itm.Name);
 
             for (int i = 0; i < Textures.Length; i++)
                 Textures [i] = new TextureData ();
@@ -292,12 +292,12 @@ namespace Universe.Services
                 assetID = m_assetService.Store (newBakedAsset);
                 bake_complete:
                 newBakeIDs.Add (assetID);
-                MainConsole.Instance.WarnFormat ("[ServerSideAppearance]: Baked {0}", assetID);
+                MainConsole.Instance.WarnFormat ("[Server Side Appearance]: Baked {0}", assetID);
                 int place = (int)AppearanceManager.BakeTypeToAgentTextureIndex (bakeType);
                 appearance.Texture.FaceTextures [place].TextureID = assetID;
             }
 
-            MainConsole.Instance.ErrorFormat ("[ServerSideAppearance]: Baking took {0} ms", (Environment.TickCount - start));
+            MainConsole.Instance.ErrorFormat ("[Server Side Appearance]: Baking took {0} ms", (Environment.TickCount - start));
 
             appearance.Serial = cof_version + 1;
             cof = m_inventoryService.GetFolderForType (agentID, InventoryType.Unknown, FolderType.CurrentOutfit);

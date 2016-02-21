@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,14 +25,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System;
+using OpenMetaverse;
+using OpenMetaverse.Imaging;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Assets;
-using OpenMetaverse;
-using OpenMetaverse.Imaging;
-using System;
 
 namespace Universe.ClientStack
 {
@@ -157,7 +156,7 @@ namespace Universe.ClientStack
                     if (m_asset == null)
                     {
                         MainConsole.Instance.Debug(
-                            "[J2KIMAGE]: RunUpdate() called with missing asset data (no missing image texture?). Canceling texture transfer");
+                            "[J2K Image]: RunUpdate() called with missing asset data (no missing image texture?). Canceling texture transfer");
                         m_currentPacket = m_stopPacket;
                         return;
                     }
@@ -168,7 +167,7 @@ namespace Universe.ClientStack
                         if (Layers == null)
                         {
                             MainConsole.Instance.Warn(
-                                "[J2KIMAGE]: RunUpdate() called with missing Layers. Canceling texture transfer");
+                                "[J2K Image]: RunUpdate() called with missing Layers. Canceling texture transfer");
                             m_currentPacket = m_stopPacket;
                             return;
                         }
@@ -212,7 +211,7 @@ namespace Universe.ClientStack
 
             if (m_asset == null)
             {
-                MainConsole.Instance.Warn("[J2KIMAGE]: Sending ImageNotInDatabase for texture " + TextureID);
+                MainConsole.Instance.Warn("[J2K Image]: Sending ImageNotInDatabase for texture " + TextureID);
                 client.SendImageNotFound(TextureID);
                 return true;
             }
@@ -233,7 +232,7 @@ namespace Universe.ClientStack
             catch (Exception)
             {
                 MainConsole.Instance.ErrorFormat(
-                    "[J2KIMAGE]: Texture block copy for the first packet failed. textureid={0}, assetlength={1}",
+                    "[J2K Image]: Texture block copy for the first packet failed. textureid={0}, assetlength={1}",
                     TextureID, m_asset.Length);
                 return true;
             }
@@ -281,7 +280,7 @@ namespace Universe.ClientStack
                     catch (Exception e)
                     {
                         MainConsole.Instance.ErrorFormat(
-                            "[J2KIMAGE]: Texture block copy for the first packet failed. textureid={0}, assetlength={1}, currentposition={2}, imagepacketsize={3}, exception={4}",
+                            "[J2K Image]: Texture block copy for the first packet failed. textureid={0}, assetlength={1}, currentposition={2}, imagepacketsize={3}, exception={4}",
                             TextureID, m_asset.Length, currentPosition, imagePacketSize, e.Message);
                         return false;
                     }
