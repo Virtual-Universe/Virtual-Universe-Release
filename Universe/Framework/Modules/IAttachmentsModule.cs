@@ -26,9 +26,9 @@
  */
 
 using System;
+using OpenMetaverse;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo.Entities;
-using OpenMetaverse;
 
 namespace Universe.Framework.Modules
 {
@@ -56,6 +56,18 @@ namespace Universe.Framework.Modules
         /// <param name="updateUUIDs">ONLY make this true if you know that the user will not be crossing or teleporting when this call will be happening</param>
         /// <returns>The scene object that was attached.  Null if the scene object could not be found</returns>
         ISceneEntity RezSingleAttachmentFromInventory(
+            IClientAPI remoteClient, UUID itemID, UUID assetID, int AttachmentPt, bool updateUUIDs);
+
+        /// <summary>
+        ///     Rez an attachment from user inventory
+        /// </summary>
+        /// <param name="remoteClient"></param>
+        /// <param name="itemID"></param>
+        /// <param name="assetID"></param>
+        /// <param name="AttachmentPt"></param>
+        /// <param name="updateUUIDs">ONLY make this true if you know that the user will not be crossing or teleporting when this call will be happening</param>
+        /// <returns>The scene object that was attached.  Null if the scene object could not be found</returns>
+        ISceneEntity RezMultipleAttachmentsFromInventory(
             IClientAPI remoteClient, UUID itemID, UUID assetID, int AttachmentPt, bool updateUUIDs);
 
         /// <summary>

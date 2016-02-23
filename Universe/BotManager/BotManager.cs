@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -167,6 +167,9 @@ namespace Universe.BotManager
                 foreach (AvatarAttachment att in attachments)
                     attModule.RezSingleAttachmentFromInventory(SP.ControllingClient, att.ItemID, att.AssetID, 0, true);
 
+                foreach (AvatarAttachment att in attachments)
+                    attModule.RezMultipleAttachmentsFromInventory(SP.ControllingClient, att.ItemID, att.AssetID, 0, true);
+            
             //Save them in the bots list
             m_bots.Add(m_character.AgentId, bot);
             AddTagToBot(m_character.AgentId, "AllBots", bot.AvatarCreatorID);

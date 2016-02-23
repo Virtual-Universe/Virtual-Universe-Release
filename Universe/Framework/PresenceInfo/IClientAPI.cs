@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -975,6 +975,7 @@ namespace Universe.Framework.PresenceInfo
         // [Obsolete("LLClientView Specific - Replace and rename OnAvatarUpdate. Difference from SetAppearance?")]
         event AvatarNowWearing OnAvatarNowWearing;
         event RezSingleAttachmentFromInv OnRezSingleAttachmentFromInv;
+        event RezMultipleAttachmentsFromInv OnRezMultipleAttachmentsFromInv;
         event UUIDNameRequest OnDetachAttachmentIntoInv;
         event ObjectAttach OnObjectAttach;
         event ObjectDeselect OnObjectDetach;
@@ -1233,7 +1234,7 @@ namespace Universe.Framework.PresenceInfo
         void Stop();
         void Kick(string message);
 
-        //     void ActivateGesture(UUID assetId, UUID gestureId);
+        //void ActivateGesture(UUID assetId, UUID gestureId);
 
         /// <summary>
         ///     Tell this client what items it should be wearing now
