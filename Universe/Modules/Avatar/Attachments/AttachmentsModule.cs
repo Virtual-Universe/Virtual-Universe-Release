@@ -49,7 +49,7 @@ namespace Universe.Modules.Attachments
         #region Declares
 
         protected IScene m_scene = null;
-        protected bool m_allowMultipleAttachments = true;
+        protected bool m_allowMultipleAttachments = false;
         protected int m_maxNumberOfAttachments = 38;
 
         public string Name
