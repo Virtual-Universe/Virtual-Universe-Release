@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -105,7 +105,7 @@ namespace Universe.Modules.Terrain
         ///     Creates and initializes a terrain module for a region
         /// </summary>
         /// <param name="config">Config for the region</param>
-        public void Initialize(IConfigSource config)
+        public void Initialise(IConfigSource config)
         {
             if (config.Configs["TerrainModule"] != null)
             {
@@ -147,7 +147,7 @@ namespace Universe.Modules.Terrain
 
             m_queueTimer.Enabled = false;
             m_queueTimer.AutoReset = true;
-            m_queueTimer.Interval = m_savetime*1000;
+            m_queueTimer.Interval = m_savetime * 1000;
             m_queueTimer.Elapsed += TerrainUpdateTimer;
         }
 
@@ -253,7 +253,7 @@ namespace Universe.Modules.Terrain
             }
             catch (IOException e)
             {
-                MainConsole.Instance.Warn("[Terrain]: LoadWorldMap() - Failed with exception " + e + " Regenerating");
+                MainConsole.Instance.Warn("[Terrain Module]: LoadWorldMap() - Failed with exception " + e + " Regenerating");
                 // Non standard region size.    If there's an old terrain in the database, it might read past the buffer
                 if (m_scene.RegionInfo.RegionSizeX != Constants.RegionSize ||
                     m_scene.RegionInfo.RegionSizeY != Constants.RegionSize)
@@ -265,21 +265,21 @@ namespace Universe.Modules.Terrain
             }
             catch (IndexOutOfRangeException e)
             {
-                MainConsole.Instance.Warn("[Terrain]: LoadWorldMap() - Failed with exception " + e + " Regenerating");
+                MainConsole.Instance.Warn("[Terrain Module]: LoadWorldMap() - Failed with exception " + e + " Regenerating");
                 m_revert = m_channel.MakeCopy();
 
                 m_scene.SimulationDataService.Tainted();
             }
             catch (ArgumentOutOfRangeException e)
             {
-                MainConsole.Instance.Warn("[Terrain]: LoadWorldMap() - Failed with exception " + e + " Regenerating");
+                MainConsole.Instance.Warn("[Terrain Module]: LoadWorldMap() - Failed with exception " + e + " Regenerating");
                 m_revert = m_channel.MakeCopy();
 
                 m_scene.SimulationDataService.Tainted();
             }
             catch (Exception e)
             {
-                MainConsole.Instance.Warn("[Terrain]: Scene.cs: LoadWorldMap() - Failed with exception " + e);
+                MainConsole.Instance.Warn("[Terrain Module]: Scene.cs: LoadWorldMap() - Failed with exception " + e);
             }
         }
 
@@ -294,7 +294,7 @@ namespace Universe.Modules.Terrain
                                                           m_scene.RegionInfo.RegionSizeY);
                 if (m_channel == null)
                 {
-                    MainConsole.Instance.Info("[Terrain]: No default terrain. Generating a new terrain.");
+                    MainConsole.Instance.Info("[Terrain Module]: No default terrain. Generating a new terrain.");
                     m_channel = new TerrainChannel(m_scene);
 
                     m_scene.SimulationDataService.Tainted();
@@ -302,7 +302,7 @@ namespace Universe.Modules.Terrain
             }
             catch (IOException e)
             {
-                MainConsole.Instance.Warn("[Terrain]: LoadWorldMap() - Failed with exception " + e + " Regenerating");
+                MainConsole.Instance.Warn("[Terrain Module]: LoadWorldMap() - Failed with exception " + e + " Regenerating");
                 // Non standard region size.    If there's an old terrain in the database, it might read past the buffer
                 if (m_scene.RegionInfo.RegionSizeX != Constants.RegionSize ||
                     m_scene.RegionInfo.RegionSizeY != Constants.RegionSize)
@@ -314,21 +314,21 @@ namespace Universe.Modules.Terrain
             }
             catch (IndexOutOfRangeException e)
             {
-                MainConsole.Instance.Warn("[Terrain]: LoadWorldMap() - Failed with exception " + e + " Regenerating");
+                MainConsole.Instance.Warn("[Terrain Module]: LoadWorldMap() - Failed with exception " + e + " Regenerating");
                 m_channel = new TerrainChannel(m_scene);
 
                 m_scene.SimulationDataService.Tainted();
             }
             catch (ArgumentOutOfRangeException e)
             {
-                MainConsole.Instance.Warn("[Terrain]: LoadWorldMap() - Failed with exception " + e + " Regenerating");
+                MainConsole.Instance.Warn("[Terrain Module]: LoadWorldMap() - Failed with exception " + e + " Regenerating");
                 m_channel = new TerrainChannel(m_scene);
 
                 m_scene.SimulationDataService.Tainted();
             }
             catch (Exception e)
             {
-                MainConsole.Instance.Warn("[Terrain]: Scene.cs: LoadWorldMap() - Failed with exception " + e);
+                MainConsole.Instance.Warn("[Terrain Module]: Scene.cs: LoadWorldMap() - Failed with exception " + e);
                 m_channel = new TerrainChannel(m_scene);
 
                 m_scene.SimulationDataService.Tainted();
@@ -357,12 +357,11 @@ namespace Universe.Modules.Terrain
             {
                 if (fileExt != floader.Key)
                     continue;
-            
+
                 loader = floader.Value;
             }
             return loader;
         }
-
 
         /// <summary>
         ///     Loads a terrain file from disk and installs it in the scene.
@@ -373,73 +372,82 @@ namespace Universe.Modules.Terrain
         public void LoadFromFile(string filename, int offsetX, int offsetY)
         {
 
-            var loader = GetTerrainLoader (filename);
+            var loader = GetTerrainLoader(filename);
             if (loader != null)
             {
                 lock (m_scene)
                 {
                     try
                     {
-                        MainConsole.Instance.Info ("[Terrain]: Loading " + filename + " to " + m_scene.RegionInfo.RegionName);
-                        ITerrainChannel channel = loader.LoadFile (filename, m_scene);
+                        MainConsole.Instance.Info("[Terrain Module]: Loading " + filename + " to " + m_scene.RegionInfo.RegionName);
+                        ITerrainChannel channel = loader.LoadFile(filename, m_scene);
                         channel.Scene = m_scene;
+
                         if (m_scene.RegionInfo.RegionSizeY == channel.Height &&
                             m_scene.RegionInfo.RegionSizeX == channel.Width)
                         {
+                            if (offsetX > 0 || offsetY > 0)
+                                MainConsole.Instance.Warn("[Terrain Module]: The terrain file is the same size as the region! Offsets will be ignored");
+
                             m_channel = channel;
-                            m_scene.RegisterModuleInterface (m_channel);
-                            MainConsole.Instance.DebugFormat ("[Terrain]: Loaded terrain, wd/ht: {0}/{1}", channel.Width,
+                            m_scene.RegisterModuleInterface(m_channel);
+                            MainConsole.Instance.DebugFormat("[Terrain Module]: Loaded terrain, wd/ht: {0}/{1}", channel.Width,
                                 channel.Height);
-                        } else
+                        }
+                        else
                         {
                             //Make sure it is in bounds
                             if ((offsetX + channel.Width) > m_channel.Width ||
                                 (offsetY + channel.Height) > m_channel.Height)
                             {
-                                MainConsole.Instance.Error (
-                                    "[Terrain]: Unable to load heightmap, the terrain you have given is larger than the current region.");
+                                MainConsole.Instance.Error(
+                                    "[Terrain Module]: Unable to load heightmap, the terrain details you have specified are not able to fit in the current region." +
+                                    "\n      Maybe the 'terrain load-tile' command is what you need?");
                                 return;
-                            } else
-                            {
-                                //Merge the terrains together at the specified offset
-                                for (int x = offsetX; x < offsetX + channel.Width; x++)
-                                {
-                                    for (int y = offsetY; y < offsetY + channel.Height; y++)
-                                    {
-                                        m_channel [x, y] = channel [x - offsetX, y - offsetY];
-                                    }
-                                }
-                                MainConsole.Instance.DebugFormat ("[Terrain]: Loaded terrain, wd/ht: {0}/{1}",
-                                    channel.Width,
-                                    channel.Height);
                             }
+
+                            // Merge the new terrain at the specified offset with the existing terrain
+                            for (int x = offsetX; x < offsetX + channel.Width; x++)
+                            {
+                                for (int y = offsetY; y < offsetY + channel.Height; y++)
+                                {
+                                    m_channel[x, y] = channel[x - offsetX, y - offsetY];
+                                }
+                            }
+                            MainConsole.Instance.DebugFormat("[Terrain Module]: Loaded terrain, wd/ht: {0}/{1}",
+                                channel.Width,
+                                channel.Height);
+
                         }
-                        UpdateRevertMap ();
-                    } catch (NotImplementedException)
+                        UpdateRevertMap();
+                    }
+                    catch (NotImplementedException)
                     {
-                        MainConsole.Instance.Error ("[Terrain]: Unable to load heightmap, the " + loader +
+                        MainConsole.Instance.Error("[Terrain Module]: Unable to load heightmap, the " + loader +
                         " parser does not support file loading. (May be save only)");
-                    } catch (FileNotFoundException)
+                    }
+                    catch (FileNotFoundException)
                     {
-                        MainConsole.Instance.ErrorFormat (
-                            "[Terrain]: Unable to load heightmap, file {0} not found. (directory permissions errors may also cause this)", filename);
-                    } catch (ArgumentException e)
+                        MainConsole.Instance.ErrorFormat(
+                            "[Terrain Module]: Unable to load heightmap, file {0} not found. (Directory permissions errors may also cause this)", filename);
+                    }
+                    catch (ArgumentException e)
                     {
-                        MainConsole.Instance.ErrorFormat ("[Terrain]: Unable to load heightmap: {0}", e.Message);
-                    } catch (Exception e)
+                        MainConsole.Instance.ErrorFormat("[Terrain Module]: Unable to load heightmap: {0}", e.Message);
+                    }
+                    catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat ("[Terrain]: Something crashed during load. {0} Exception.", e);
+                        MainConsole.Instance.ErrorFormat("[Terrain Module]: Something crashed during load. {0} Exception.", e);
                     }
                 }
 
                 CheckForTerrainUpdates();
-                MainConsole.Instance.Info("[Terrain]: File (" + filename + ") loaded successfully");
+                MainConsole.Instance.Info("[Terrain Module]: File (" + filename + ") loaded successfully");
                 return;
             }
 
-            MainConsole.Instance.Error("[Terrain]: Unable to load heightmap, Unable to locate a file loader for " + filename);
+            MainConsole.Instance.Error("[Terrain Module]: Unable to locate a file loader for " + filename);
         }
-
 
         /// <summary>
         ///     Saves the current heightmap to a specified file.
@@ -447,17 +455,17 @@ namespace Universe.Modules.Terrain
         /// <param name="filename">The destination filename</param>
         public void SaveToFile(string filename)
         {
-			if (File.Exists(filename))
-			{
-				if (MainConsole.Instance.Prompt("File '"+filename+"' exists. Overwrite?", "yes") != "yes")
-					return;
+            if (File.Exists(filename))
+            {
+                if (MainConsole.Instance.Prompt("File '" + filename + "' exists. Overwrite?", "yes") != "yes")
+                    return;
 
-				File.Delete (filename);
-			}
+                File.Delete(filename);
+            }
 
             try
             {
-                var loader = GetTerrainLoader (filename);
+                var loader = GetTerrainLoader(filename);
                 if (loader != null)
                 {
 
@@ -472,12 +480,12 @@ namespace Universe.Modules.Terrain
             }
             catch (IOException ioe)
             {
-                MainConsole.Instance.ErrorFormat("[Terrain]: Unable to save to {0}, {1}", filename, ioe.Message);
+                MainConsole.Instance.ErrorFormat("[Terrain Module]: Unable to save to {0}, {1}", filename, ioe.Message);
             }
-			catch (Exception e)
-			{
-				MainConsole.Instance.Error(String.Format("[Terrain]: Something crashed during save. {0} Exception.", e));
-			}
+            catch (Exception e)
+            {
+                MainConsole.Instance.Error(String.Format("[Terrain Module]: Something crashed during save. {0} Exception.", e));
+            }
         }
 
         /// <summary>
@@ -497,7 +505,7 @@ namespace Universe.Modules.Terrain
         /// <param name="stream"></param>
         public void LoadFromStream(string filename, Stream stream)
         {
-            var loader = GetTerrainLoader (filename);
+            var loader = GetTerrainLoader(filename);
             if (loader != null)
             {
                 lock (m_scene)
@@ -527,7 +535,7 @@ namespace Universe.Modules.Terrain
                                             m_channel[x, y] = channel[x, y];
                                         }
                                     }
-                                    //MainConsole.Instance.Error("[Terrain]: Unable to load heightmap, the terrain you have given is larger than the current region.");
+                                    //MainConsole.Instance.Error("[Terrain Module]: Unable to load heightmap, the terrain you have given is larger than the current region.");
                                     //return;
                                 }
                                 else
@@ -540,7 +548,7 @@ namespace Universe.Modules.Terrain
                                             m_channel[x, y] = channel[x, y];
                                         }
                                     }
-                                    MainConsole.Instance.DebugFormat("[Terrain]: Loaded terrain, wd/ht: {0}/{1}",
+                                    MainConsole.Instance.DebugFormat("[Terrain Module]: Loaded terrain, wd/ht: {0}/{1}",
                                                                      channel.Width,
                                                                      channel.Height);
                                 }
@@ -550,17 +558,17 @@ namespace Universe.Modules.Terrain
                     }
                     catch (NotImplementedException)
                     {
-                        MainConsole.Instance.Error("[Terrain]: Unable to load heightmap, the " + loader +
+                        MainConsole.Instance.Error("[Terrain Module]: Unable to load heightmap, the " + loader +
                                                    " parser does not support file loading. (May be save only)");
                     }
                 }
 
                 CheckForTerrainUpdates();
-                MainConsole.Instance.Info("[Terrain]: File (" + filename + ") loaded successfully");
+                MainConsole.Instance.Info("[Terrain Module]: File (" + filename + ") loaded successfully");
                 return;
             }
 
-            MainConsole.Instance.ErrorFormat("[Terrain]: Unable to load heightmap from {0}, no file loader available for that format.", filename);
+            MainConsole.Instance.ErrorFormat("[Terrain Module]: Unable to load heightmap from {0}, no file loader available for that format.", filename);
         }
 
         /// <summary>
@@ -650,7 +658,7 @@ namespace Universe.Modules.Terrain
                 //    KeyValuePair<string, ITerrainLoader> loader in
                 //        m_loaders.Where(loader => Path.GetExtension(filename.ToLower()) == loader.Key))
                 //{
-                var loader = GetTerrainLoader (filename);
+                var loader = GetTerrainLoader(filename);
                 if (loader != null)
                 {
 
@@ -707,7 +715,7 @@ namespace Universe.Modules.Terrain
 
         public void QueueTerrainUpdate()
         {
-            m_queueNextSave = DateTime.Now.Ticks + Convert.ToInt64(m_savetime*1000*10000);
+            m_queueNextSave = DateTime.Now.Ticks + Convert.ToInt64(m_savetime * 1000 * 10000);
             m_queueTimer.Start();
         }
 
@@ -776,14 +784,14 @@ namespace Universe.Modules.Terrain
         {
             if (FunctionName == "DrawDistanceChanged" || FunctionName == "SignficantCameraMovement")
             {
-                SendTerrainUpdatesForClient((IScenePresence) parameters);
+                SendTerrainUpdatesForClient((IScenePresence)parameters);
             }
             return null;
         }
 
         void EventManager_OnSignificantClientMovement(IScenePresence presence)
         {
-            if (Vector3.DistanceSquared(presence.AbsolutePosition, m_previousCheckedPosition) > 16*16)
+            if (Vector3.DistanceSquared(presence.AbsolutePosition, m_previousCheckedPosition) > 16 * 16)
             {
                 m_previousCheckedPosition = presence.AbsolutePosition;
                 SendTerrainUpdatesForClient(presence);
@@ -812,35 +820,35 @@ namespace Universe.Modules.Terrain
             if (terrainarray == null)
             {
                 int xSize = m_scene.RegionInfo.RegionSizeX != int.MaxValue
-                                ? m_scene.RegionInfo.RegionSizeX/Constants.TerrainPatchSize
-                                : Constants.RegionSize/Constants.TerrainPatchSize;
+                                ? m_scene.RegionInfo.RegionSizeX / Constants.TerrainPatchSize
+                                : Constants.RegionSize / Constants.TerrainPatchSize;
                 int ySize = m_scene.RegionInfo.RegionSizeX != int.MaxValue
-                                ? m_scene.RegionInfo.RegionSizeY/Constants.TerrainPatchSize
-                                : Constants.RegionSize/Constants.TerrainPatchSize;
-                terrainarray = new bool[xSize,ySize];
+                                ? m_scene.RegionInfo.RegionSizeY / Constants.TerrainPatchSize
+                                : Constants.RegionSize / Constants.TerrainPatchSize;
+                terrainarray = new bool[xSize, ySize];
                 fillLater = true;
             }
 
             List<int> xs = new List<int>();
             List<int> ys = new List<int>();
-            int startX = (((int) (presence.AbsolutePosition.X - presence.DrawDistance))/Constants.TerrainPatchSize) - 2;
+            int startX = (((int)(presence.AbsolutePosition.X - presence.DrawDistance)) / Constants.TerrainPatchSize) - 2;
             startX = Math.Max(startX, 0);
-            startX = Math.Min(startX, m_scene.RegionInfo.RegionSizeX/Constants.TerrainPatchSize);
-            int startY = (((int) (presence.AbsolutePosition.Y - presence.DrawDistance))/Constants.TerrainPatchSize) - 2;
+            startX = Math.Min(startX, m_scene.RegionInfo.RegionSizeX / Constants.TerrainPatchSize);
+            int startY = (((int)(presence.AbsolutePosition.Y - presence.DrawDistance)) / Constants.TerrainPatchSize) - 2;
             startY = Math.Max(startY, 0);
-            startY = Math.Min(startY, m_scene.RegionInfo.RegionSizeY/Constants.TerrainPatchSize);
-            int endX = (((int) (presence.AbsolutePosition.X + presence.DrawDistance))/Constants.TerrainPatchSize) + 2;
+            startY = Math.Min(startY, m_scene.RegionInfo.RegionSizeY / Constants.TerrainPatchSize);
+            int endX = (((int)(presence.AbsolutePosition.X + presence.DrawDistance)) / Constants.TerrainPatchSize) + 2;
             endX = Math.Max(endX, 0);
-            endX = Math.Min(endX, m_scene.RegionInfo.RegionSizeX/Constants.TerrainPatchSize);
-            int endY = (((int) (presence.AbsolutePosition.Y + presence.DrawDistance))/Constants.TerrainPatchSize) + 2;
+            endX = Math.Min(endX, m_scene.RegionInfo.RegionSizeX / Constants.TerrainPatchSize);
+            int endY = (((int)(presence.AbsolutePosition.Y + presence.DrawDistance)) / Constants.TerrainPatchSize) + 2;
             endY = Math.Max(endY, 0);
-            endY = Math.Min(endY, m_scene.RegionInfo.RegionSizeY/Constants.TerrainPatchSize);
+            endY = Math.Min(endY, m_scene.RegionInfo.RegionSizeY / Constants.TerrainPatchSize);
             for (int x = startX; x < endX; x++)
             {
                 for (int y = startY; y < endY; y++)
                 {
-                    if (x < 0 || y < 0 || x >= m_scene.RegionInfo.RegionSizeX/Constants.TerrainPatchSize ||
-                        y >= m_scene.RegionInfo.RegionSizeY/Constants.TerrainPatchSize)
+                    if (x < 0 || y < 0 || x >= m_scene.RegionInfo.RegionSizeX / Constants.TerrainPatchSize ||
+                        y >= m_scene.RegionInfo.RegionSizeY / Constants.TerrainPatchSize)
                         continue;
                     //Need to make sure we don't send the same ones over and over
                     if (!terrainarray[x, y])
@@ -851,13 +859,13 @@ namespace Universe.Modules.Terrain
                         //Check which has less distance, camera or avatar position, both have to be done
                         if (Util.DistanceLessThan(posToCheckFrom,
                                                   new Vector3(
-                                                      x*Constants.TerrainPatchSize,
-                                                      y*Constants.TerrainPatchSize,
+                                                      x * Constants.TerrainPatchSize,
+                                                      y * Constants.TerrainPatchSize,
                                                       0), presence.DrawDistance + 50) ||
                             Util.DistanceLessThan(presence.CameraPosition,
-                                                  new Vector3(x*Constants.TerrainPatchSize, y*Constants.TerrainPatchSize,
+                                                  new Vector3(x * Constants.TerrainPatchSize, y * Constants.TerrainPatchSize,
                                                               0), presence.DrawDistance + 50))
-                            //Its not a radius, its a diameter and we add 35 so that it doesn't look like it cuts off
+                        //Its not a radius, its a diameter and we add 35 so that it doesn't look like it cuts off
                         {
                             //They can see it, send it to them
                             terrainarray[x, y] = true;
@@ -869,6 +877,7 @@ namespace Universe.Modules.Terrain
                     }
                 }
             }
+
             if (xs.Count != 0)
             {
                 //Send all the terrain patches at once
@@ -882,6 +891,7 @@ namespace Universe.Modules.Terrain
                                                              TerrainPatch.LayerType.Water);
                 }
             }
+
             if ((xs.Count != 0) || (fillLater))
             {
                 if (m_terrainPatchesSent.ContainsKey(presence.UUID))
@@ -928,7 +938,7 @@ namespace Universe.Modules.Terrain
             }
             catch (IOException e)
             {
-                MainConsole.Instance.Warn("[Terrain]: LoadRevertWaterMap() - Failed with exception " + e +
+                MainConsole.Instance.Warn("[Terrain Module]: LoadRevertWaterMap() - Failed with exception " + e +
                                           " Regenerating");
                 // Non standard region size.    If there's an old terrain in the database, it might read past the buffer
                 if (m_scene.RegionInfo.RegionSizeX != Constants.RegionSize ||
@@ -941,7 +951,7 @@ namespace Universe.Modules.Terrain
             }
             catch (IndexOutOfRangeException e)
             {
-                MainConsole.Instance.Warn("[Terrain]: LoadRevertWaterMap() - Failed with exception " + e +
+                MainConsole.Instance.Warn("[Terrain Module]: LoadRevertWaterMap() - Failed with exception " + e +
                                           " Regenerating");
                 m_waterRevert = m_waterChannel.MakeCopy();
 
@@ -949,7 +959,7 @@ namespace Universe.Modules.Terrain
             }
             catch (ArgumentOutOfRangeException e)
             {
-                MainConsole.Instance.Warn("[Terrain]: LoadRevertWaterMap() - Failed with exception " + e +
+                MainConsole.Instance.Warn("[Terrain Module]: LoadRevertWaterMap() - Failed with exception " + e +
                                           " Regenerating");
                 m_waterRevert = m_waterChannel.MakeCopy();
 
@@ -957,7 +967,7 @@ namespace Universe.Modules.Terrain
             }
             catch (Exception e)
             {
-                MainConsole.Instance.Warn("[Terrain]: LoadRevertWaterMap() - Failed with exception " + e);
+                MainConsole.Instance.Warn("[Terrain Module]: LoadRevertWaterMap() - Failed with exception " + e);
                 m_waterRevert = m_waterChannel.MakeCopy();
 
                 m_scene.SimulationDataService.Tainted();
@@ -977,13 +987,13 @@ namespace Universe.Modules.Terrain
                                                         m_scene.RegionInfo.RegionSizeY);
                 if (m_waterChannel == null)
                 {
-                    MainConsole.Instance.Info("[Terrain]: No default water. Generating a new water.");
+                    MainConsole.Instance.Info("[Terrain Module]: No default water. Generating a new water.");
                     m_waterChannel = new TerrainChannel(m_scene);
                     for (int x = 0; x < m_waterChannel.Height; x++)
                     {
                         for (int y = 0; y < m_waterChannel.Height; y++)
                         {
-                            m_waterChannel[x, y] = (float) m_scene.RegionInfo.RegionSettings.WaterHeight;
+                            m_waterChannel[x, y] = (float)m_scene.RegionInfo.RegionSettings.WaterHeight;
                         }
                     }
 
@@ -992,7 +1002,7 @@ namespace Universe.Modules.Terrain
             }
             catch (IOException e)
             {
-                MainConsole.Instance.Warn("[Terrain]: LoadWorldWaterMap() - Failed with exception " + e +
+                MainConsole.Instance.Warn("[Terrain Module]: LoadWorldWaterMap() - Failed with exception " + e +
                                           " Regenerating");
                 // Non standard region size.    If there's an old terrain in the database, it might read past the buffer
                 if (m_scene.RegionInfo.RegionSizeX != Constants.RegionSize ||
@@ -1003,7 +1013,7 @@ namespace Universe.Modules.Terrain
                     {
                         for (int y = 0; y < m_waterChannel.Height; y++)
                         {
-                            m_waterChannel[x, y] = (float) m_scene.RegionInfo.RegionSettings.WaterHeight;
+                            m_waterChannel[x, y] = (float)m_scene.RegionInfo.RegionSettings.WaterHeight;
                         }
                     }
 
@@ -1012,14 +1022,14 @@ namespace Universe.Modules.Terrain
             }
             catch (IndexOutOfRangeException e)
             {
-                MainConsole.Instance.Warn("[Terrain]: LoadWorldWaterMap() - Failed with exception " + e +
+                MainConsole.Instance.Warn("[Terrain Module]: LoadWorldWaterMap() - Failed with exception " + e +
                                           " Regenerating");
                 m_waterChannel = new TerrainChannel(m_scene);
                 for (int x = 0; x < m_waterChannel.Height; x++)
                 {
                     for (int y = 0; y < m_waterChannel.Height; y++)
                     {
-                        m_waterChannel[x, y] = (float) m_scene.RegionInfo.RegionSettings.WaterHeight;
+                        m_waterChannel[x, y] = (float)m_scene.RegionInfo.RegionSettings.WaterHeight;
                     }
                 }
 
@@ -1027,14 +1037,14 @@ namespace Universe.Modules.Terrain
             }
             catch (ArgumentOutOfRangeException e)
             {
-                MainConsole.Instance.Warn("[Terrain]: LoadWorldWaterMap() - Failed with exception " + e +
+                MainConsole.Instance.Warn("[Terrain Module]: LoadWorldWaterMap() - Failed with exception " + e +
                                           " Regenerating");
                 m_waterChannel = new TerrainChannel(m_scene);
                 for (int x = 0; x < m_waterChannel.Height; x++)
                 {
                     for (int y = 0; y < m_waterChannel.Height; y++)
                     {
-                        m_waterChannel[x, y] = (float) m_scene.RegionInfo.RegionSettings.WaterHeight;
+                        m_waterChannel[x, y] = (float)m_scene.RegionInfo.RegionSettings.WaterHeight;
                     }
                 }
 
@@ -1042,13 +1052,13 @@ namespace Universe.Modules.Terrain
             }
             catch (Exception e)
             {
-                MainConsole.Instance.Warn("[Terrain]: Scene.cs: LoadWorldMap() - Failed with exception " + e);
+                MainConsole.Instance.Warn("[Terrain Module]: Scene.cs: LoadWorldMap() - Failed with exception " + e);
                 m_waterChannel = new TerrainChannel(m_scene);
                 for (int x = 0; x < m_waterChannel.Height; x++)
                 {
                     for (int y = 0; y < m_waterChannel.Height; y++)
                     {
-                        m_waterChannel[x, y] = (float) m_scene.RegionInfo.RegionSettings.WaterHeight;
+                        m_waterChannel[x, y] = (float)m_scene.RegionInfo.RegionSettings.WaterHeight;
                     }
                 }
 
@@ -1070,16 +1080,16 @@ namespace Universe.Modules.Terrain
         {
             ITerrainChannel channel = null;
 
-			// find the loader to use..
-			//var fileExt = Path.GetExtension(filename.ToLower());
+            // find the loader to use..
+            //var fileExt = Path.GetExtension(filename.ToLower());
             //foreach (KeyValuePair<string, ITerrainLoader> floader in m_loaders)
-           // {
-			//	if (fileExt != floader.Key)
-			//		continue;
+            // {
+            //	if (fileExt != floader.Key)
+            //		continue;
             //
-			//	ITerrainLoader loader = floader.Value;
+            //	ITerrainLoader loader = floader.Value;
             //{
-            var loader = GetTerrainLoader (filename);
+            var loader = GetTerrainLoader(filename);
             if (loader != null)
             {
                 lock (m_scene)
@@ -1119,7 +1129,7 @@ namespace Universe.Modules.Terrain
                                     (offsetY + channel.Height) > update.Height)
                                 {
                                     MainConsole.Instance.Error(
-                                        "[Terrain]: Unable to load heightmap, the terrain you have given is larger than the current region.");
+                                        "[Terrain Module]: Unable to load heightmap, the terrain you have given is larger than the current region.");
                                     return null;
                                 }
                                 else
@@ -1139,22 +1149,22 @@ namespace Universe.Modules.Terrain
                     }
                     catch (NotImplementedException)
                     {
-                        MainConsole.Instance.Error("[Terrain]: Unable to load heightmap, the " + loader +
+                        MainConsole.Instance.Error("[Terrain Module]: Unable to load heightmap, the " + loader +
                                                    " parser does not support file loading. (May be save only)");
                     }
                 }
 
-                MainConsole.Instance.Info("[Terrain]: File (" + filename + ") loaded successfully");
+                MainConsole.Instance.Info("[Terrain Module]: File (" + filename + ") loaded successfully");
                 return channel;
             }
 
-            MainConsole.Instance.ErrorFormat("[Terrain]: Unable to load heightmap from {0}, no file loader available for that format.", filename);
+            MainConsole.Instance.ErrorFormat("[Terrain Module]: Unable to load heightmap from {0}, no file loader available for that format.", filename);
             return channel;
         }
 
         static Stream URIFetch(Uri uri)
         {
-            HttpWebRequest request = (HttpWebRequest) WebRequest.Create(uri);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
 
             // request.Credentials = credentials;
 
@@ -1167,7 +1177,7 @@ namespace Universe.Modules.Terrain
             if (response.ContentLength == 0)
             {
                 MainConsole.Instance.ErrorFormat("{0} returned an empty file", uri);
-                return new BufferedStream(file,0);
+                return new BufferedStream(file, 0);
             }
 
             // return new BufferedStream(file, (int) response.ContentLength);
@@ -1231,44 +1241,46 @@ namespace Universe.Modules.Terrain
         }
 
         /// <summary>
-        ///     Loads a tile from a larger terrain file and installs it into the region.
+        ///     Loads a 256x256 tile from a larger terrain file and installs it into the region.
         /// </summary>
         /// <param name="filename">The terrain file to load</param>
-        /// <param name="fileWidth">The width of the file in units</param>
-        /// <param name="fileHeight">The height of the file in units</param>
-        /// <param name="fileStartX">Where to begin our slice</param>
-        /// <param name="fileStartY">Where to begin our slice</param>
-        public void LoadFromFile(string filename, int fileWidth, int fileHeight, int fileStartX, int fileStartY)
+        /// <param name="fileWidth">The width of the file</param>
+        /// <param name="fileHeight">The height of the file</param>
+        /// <param name="tileLocX">Where to begin our slice</param>
+        /// <param name="tileLocY">Where to begin our slice</param>
+        public void LoadTileFromFile(string filename, int fileTileWidth, int fileTileHeight, int tileLocX, int tileLocY)
         {
-            int offsetX = (m_scene.RegionInfo.RegionLocX/Constants.RegionSize) - fileStartX;
-            int offsetY = (m_scene.RegionInfo.RegionLocY/Constants.RegionSize) - fileStartY;
+            int offsetX = (m_scene.RegionInfo.RegionLocX / Constants.RegionSize) - tileLocX;
+            int offsetY = (m_scene.RegionInfo.RegionLocY / Constants.RegionSize) - tileLocY;
 
-            if (offsetX >= 0 && offsetX < fileWidth && offsetY >= 0 && offsetY < fileHeight)
+            if (offsetX >= 0 && offsetX < fileTileWidth && offsetY >= 0 && offsetY < fileTileHeight)
             {
-                // this region is included in the tile request
-                //foreach (
-                //    KeyValuePair<string, ITerrainLoader> loader in
-                //        m_loaders.Where(loader => Path.GetExtension(filename.ToLower()) == loader.Key))
-                //{
-                //{
-                var loader = GetTerrainLoader (filename);
+                var loader = GetTerrainLoader(filename);
                 if (loader != null)
                 {
                     lock (m_scene)
                     {
-						MainConsole.Instance.Info("[Terrain]: Loading "+filename+" to "+m_scene.RegionInfo.RegionName);
-                        ITerrainChannel channel = loader.LoadFile(filename, m_scene, offsetX, offsetY,
-                                                                        fileWidth, fileHeight,
-                                                                        m_scene.RegionInfo.RegionSizeX,
-                                                                        m_scene.RegionInfo.RegionSizeY);
+                        MainConsole.Instance.Info("[Terrain Module]: Loading " + filename + " to " + m_scene.RegionInfo.RegionName);
+                        ITerrainChannel channel = loader.LoadFile(
+                            filename, m_scene,
+                            offsetX, offsetY,
+                            fileTileWidth, fileTileHeight,
+                            m_scene.RegionInfo.RegionSizeX,
+                            m_scene.RegionInfo.RegionSizeY);
+
                         channel.Scene = m_scene;
                         m_channel = channel;
                         m_scene.RegisterModuleInterface(m_channel);
                         UpdateRevertMap();
                     }
+                    CheckForTerrainUpdates();
+                    MainConsole.Instance.Info("[Terrain Module]: File (" + filename + ") loaded successfully");
                     return;
                 }
+                MainConsole.Instance.Error("[Terrain Module]: Unable to locate a file loader for " + filename);
+                return;
             }
+            MainConsole.Instance.Error("[Terrain Module]: Tile location is outside of image");
         }
 
         void client_onGodlikeMessage(IClientAPI client, UUID requester, string Method, List<string> Parameters)
@@ -1335,12 +1347,13 @@ namespace Universe.Modules.Terrain
                 {
                     if (channel.Tainted(x, y) || forceSendOfTerrainInfo)
                     {
-                        xs.Add(x/Constants.TerrainPatchSize);
-                        ys.Add(y/Constants.TerrainPatchSize);
+                        xs.Add(x / Constants.TerrainPatchSize);
+                        ys.Add(y / Constants.TerrainPatchSize);
                         shouldTaint = true;
                     }
                 }
             }
+
             if (shouldTaint || forceSendOfTerrainInfo)
             {
                 QueueTerrainUpdate();
@@ -1373,9 +1386,9 @@ namespace Universe.Modules.Terrain
 
             // loop through the height map for this patch and compare it against
             // the revert map
-            for (int x = 0; x < m_scene.RegionInfo.RegionSizeX/Constants.TerrainPatchSize; x++)
+            for (int x = 0; x < m_scene.RegionInfo.RegionSizeX / Constants.TerrainPatchSize; x++)
             {
-                for (int y = 0; y < m_scene.RegionInfo.RegionSizeY/+Constants.TerrainPatchSize; y++)
+                for (int y = 0; y < m_scene.RegionInfo.RegionSizeY / +Constants.TerrainPatchSize; y++)
                 {
                     float requestedHeight = channel[x, y];
 
@@ -1403,14 +1416,14 @@ namespace Universe.Modules.Terrain
         bool LimitChannelChanges(ITerrainChannel channel, ITerrainChannel revert)
         {
             bool changesLimited = false;
-            float minDelta = (float) m_scene.RegionInfo.RegionSettings.TerrainLowerLimit;
-            float maxDelta = (float) m_scene.RegionInfo.RegionSettings.TerrainRaiseLimit;
+            float minDelta = (float)m_scene.RegionInfo.RegionSettings.TerrainLowerLimit;
+            float maxDelta = (float)m_scene.RegionInfo.RegionSettings.TerrainRaiseLimit;
 
             // loop through the height map for this patch and compare it against
             // the revert map
-            for (int x = 0; x < m_scene.RegionInfo.RegionSizeX/Constants.TerrainPatchSize; x++)
+            for (int x = 0; x < m_scene.RegionInfo.RegionSizeX / Constants.TerrainPatchSize; x++)
             {
-                for (int y = 0; y < m_scene.RegionInfo.RegionSizeY/Constants.TerrainPatchSize; y++)
+                for (int y = 0; y < m_scene.RegionInfo.RegionSizeY / Constants.TerrainPatchSize; y++)
                 {
                     float requestedHeight = channel[x, y];
                     float bakedHeight = revert[x, y];
@@ -1453,10 +1466,10 @@ namespace Universe.Modules.Terrain
             const byte WATER_CONST = 128;
             if (north == south && east == west)
             {
-                if (m_painteffects.ContainsKey((StandardTerrainEffects) action))
+                if (m_painteffects.ContainsKey((StandardTerrainEffects)action))
                 {
                     StoreUndoState();
-                    m_painteffects[(StandardTerrainEffects) action].PaintEffect(
+                    m_painteffects[(StandardTerrainEffects)action].PaintEffect(
                         m_channel, user, west, south, height, size, seconds, BrushSize);
 
                     //revert changes outside estate limits
@@ -1464,10 +1477,10 @@ namespace Universe.Modules.Terrain
                 }
                 else
                 {
-                    if (m_painteffects.ContainsKey((StandardTerrainEffects) (action - WATER_CONST)))
+                    if (m_painteffects.ContainsKey((StandardTerrainEffects)(action - WATER_CONST)))
                     {
                         StoreUndoState();
-                        m_painteffects[(StandardTerrainEffects) action - WATER_CONST].PaintEffect(
+                        m_painteffects[(StandardTerrainEffects)action - WATER_CONST].PaintEffect(
                             m_waterChannel, user, west, south, height, size, seconds, BrushSize);
 
                         //revert changes outside estate limits
@@ -1479,10 +1492,10 @@ namespace Universe.Modules.Terrain
             }
             else
             {
-                if (m_floodeffects.ContainsKey((StandardTerrainEffects) action))
+                if (m_floodeffects.ContainsKey((StandardTerrainEffects)action))
                 {
                     StoreUndoState();
-                    m_floodeffects[(StandardTerrainEffects) action].FloodEffect(
+                    m_floodeffects[(StandardTerrainEffects)action].FloodEffect(
                         m_channel, user, north, west, south, east, size);
 
                     //revert changes outside estate limits
@@ -1490,10 +1503,10 @@ namespace Universe.Modules.Terrain
                 }
                 else
                 {
-                    if (m_floodeffects.ContainsKey((StandardTerrainEffects) (action - WATER_CONST)))
+                    if (m_floodeffects.ContainsKey((StandardTerrainEffects)(action - WATER_CONST)))
                     {
                         StoreUndoState();
-                        m_floodeffects[(StandardTerrainEffects) action - WATER_CONST].FloodEffect(
+                        m_floodeffects[(StandardTerrainEffects)action - WATER_CONST].FloodEffect(
                             m_waterChannel, user, north, west, south, east, size);
 
                         //revert changes outside estate limits
@@ -1543,7 +1556,7 @@ namespace Universe.Modules.Terrain
             if (scene == null)
             {
                 string line =
-                    MainConsole.Instance.Prompt("Are you sure that you want to do this command on all scenes?", "yes");
+                    MainConsole.Instance.Prompt("Are you sure that you want to do this command on all regions?", "yes");
                 if (!line.Equals("yes", StringComparison.CurrentCultureIgnoreCase))
                     return modules;
                 //Return them all
@@ -1557,20 +1570,39 @@ namespace Universe.Modules.Terrain
 
         void InterfaceLoadFile(IScene scene, string[] cmd)
         {
-            if (cmd.Length < 3)
-			{
-				MainConsole.Instance.Info(
-					"You need to specify a filename to load [opt: xoffset  and/or yoffset].");
-				return;
-			}
-			if (!File.Exists(cmd[2])) {
-				MainConsole.Instance.Info("Terrain file '"+cmd[2]+"' not found.");
-				return;
-			}
- 
-			int offsetX = 0;
+            if (scene == null)
+            {
+                MainConsole.Instance.Warn("[Terrain Module]: Please change to your region before loading terrain");
+                return;
+            }
+
+            bool prompt = false;
+            string loadFile;
+            if (cmd.Length > 2)
+            {
+                loadFile = cmd[2];
+                if (!File.Exists(loadFile))
+                {
+                    MainConsole.Instance.Info("Terrain file '" + loadFile + "' not found.");
+                    return;
+                }
+            }
+            else {
+                var defpath = scene.RequestModuleInterface<ISimulationBase>().DefaultDataPath;
+
+                loadFile = PathHelpers.GetReadFilename("Terrain file to load into " + scene.RegionInfo.RegionName,
+                    defpath,
+                    new List<string>() { "png", "jpg", "bmp", "gif", "raw", "tiff" },
+                    true);
+                if (loadFile == "")
+                    return;
+                prompt = true;
+            }
+
+            int offsetX = 0;
             int offsetY = 0;
 
+            // check for offsets
             int i = 0;
             foreach (string param in cmd)
             {
@@ -1587,152 +1619,212 @@ namespace Universe.Modules.Terrain
                 i++;
             }
 
-			List<TerrainModule> m = FindModuleForScene(MainConsole.Instance.ConsoleScene);
-			foreach (TerrainModule tmodule in m)
+            // check if interactive
+            if (prompt)
             {
-				MainConsole.Instance.Info("[Terrain]: Loading "+cmd[2]+" to scene "+tmodule.m_scene.RegionInfo.RegionName);
-                tmodule.LoadFromFile(cmd[2], offsetX, offsetY);
+                var enterOffsets = "no";
+                enterOffsets = MainConsole.Instance.Prompt("Do you wish to offset this terrain in the region? (y/n)", enterOffsets);
+                if (enterOffsets.ToLower().StartsWith("y"))
+                {
+                    MainConsole.Instance.Info("Note: The region should fit into the terrain image (including any offsets)");
+                    int.TryParse(MainConsole.Instance.Prompt("X offset?", offsetX.ToString()), out offsetX);
+                    int.TryParse(MainConsole.Instance.Prompt("Y offset?", offsetY.ToString()), out offsetY);
+                }
             }
-            // LoadFromFile(cmd[2], offsetX, offsetY);
+
+            List<TerrainModule> m = FindModuleForScene(MainConsole.Instance.ConsoleScene);
+            foreach (TerrainModule tmodule in m)
+            {
+                tmodule.LoadFromFile(loadFile, offsetX, offsetY);
+            }
         }
 
         void InterfaceLoadTileFile(IScene scene, string[] cmd)
         {
-
-            if (cmd.Length < 7)
-			{
-				MainConsole.Instance.Info(
-					"You do not have enough parameters. Please look at 'terrain help' for more info.");
-				return;
-			}
-			if (!File.Exists(cmd[2])) {
-				MainConsole.Instance.Info("Terrain file '"+cmd[2]+"' not found.");
-				return;
-			}
-
-            var fileWidth = int.Parse (cmd [3]);
-            var fileHeight = int.Parse (cmd [4]);
-            var xOffset = int.Parse (cmd [5]);
-            var yOffset = int.Parse (cmd [6]);
-
-            if ((fileWidth < scene.RegionInfo.RegionSizeX) ||
-                (fileHeight < scene.RegionInfo.RegionSizeY))
+            if (scene == null)
             {
-                MainConsole.Instance.Info ("The region is larger than the image size!");
+                MainConsole.Instance.Warn("[Terrain Module]: Please change to your region before loading terrain");
                 return;
             }
 
-            if ( ((fileWidth+xOffset)  < scene.RegionInfo.RegionSizeX) ||
-                 ((fileHeight+yOffset) < scene.RegionInfo.RegionSizeY) )
+            bool prompt = false;
+            string loadFile;
+            if (cmd.Length > 2)
             {
-                MainConsole.Instance.Info ("The region will not fit into the image given the offsets provided!");
+                loadFile = cmd[2];
+                if (!File.Exists(loadFile))
+                {
+                    MainConsole.Instance.Info("Terrain file '" + loadFile + "' not found.");
+                    return;
+                }
+            }
+            else {
+                var defpath = scene.RequestModuleInterface<ISimulationBase>().DefaultDataPath;
+
+                loadFile = PathHelpers.GetReadFilename("Terrain file to load into " + scene.RegionInfo.RegionName,
+                    defpath,
+                    new List<string>() { "png", "jpg", "bmp", "gif", "raw", "tiff" },
+                    true);
+                if (loadFile == "")
+                    return;
+                prompt = true;
+            }
+
+            int fileTileWidth = 0;
+            int fileTileHeight = 0;
+            int xOffset = 0;
+            int yOffset = 0;
+            if (prompt)
+            {
+                MainConsole.Instance.Info("Please enter the height and width (in 256x256 tiles) of the terrain file");
+                int.TryParse(MainConsole.Instance.Prompt("Terrain image width (tiles)?", fileTileWidth.ToString()), out fileTileWidth);
+                if (fileTileWidth == 0)
+                    return;
+                fileTileHeight = fileTileWidth;
+                int.TryParse(MainConsole.Instance.Prompt("Terrain image hetight (tiles)?", fileTileHeight.ToString()), out fileTileHeight);
+                if (fileTileHeight == 0)
+                    return;
+
+                string regSize = Constants.RegionSize.ToString();
+                string tileSize = regSize + "x" + regSize;
+                MainConsole.Instance.Info("   The tile location is the X/Y position of the region tile (" + tileSize + ") within the image");
+                int.TryParse(MainConsole.Instance.Prompt("Region X tile location?", xOffset.ToString()), out xOffset);
+                int.TryParse(MainConsole.Instance.Prompt("Region Y tile location?", yOffset.ToString()), out yOffset);
+            }
+            else
+            {
+                fileTileWidth = int.Parse(cmd[3]);
+                fileTileHeight = int.Parse(cmd[4]);
+                xOffset = int.Parse(cmd[5]);
+                yOffset = int.Parse(cmd[6]);
+
+                if (fileTileHeight == 0 || fileTileWidth == 0)
+                {
+                    MainConsole.Instance.Error("[Terrain Module]: The file tile height and/or width must be specified");
+                    return;
+                }
+            }
+
+            if (((fileTileWidth * Constants.RegionSize) < scene.RegionInfo.RegionSizeX) ||
+                ((fileTileHeight * Constants.RegionSize) < scene.RegionInfo.RegionSizeY))
+            {
+                MainConsole.Instance.Info("The region is larger than the image size (Use the 'terrain load' command instead)!");
+                return;
+            }
+
+            if ((((fileTileWidth + xOffset) * Constants.RegionSize) < scene.RegionInfo.RegionSizeX) ||
+                 (((fileTileHeight + yOffset) * Constants.RegionSize) < scene.RegionInfo.RegionSizeY))
+            {
+                MainConsole.Instance.Info("The region will not fit into the image given the offsets provided!");
                 return;
             }
 
             List<TerrainModule> m = FindModuleForScene(MainConsole.Instance.ConsoleScene);
-			foreach (TerrainModule tmodule in m)
+            foreach (TerrainModule tmodule in m)
             {
-				MainConsole.Instance.Info("[Terrain]: Loading "+cmd[2]+" tile to scene "+tmodule.m_scene.RegionInfo.RegionName);
-                tmodule.LoadFromFile (cmd [2], fileWidth, fileHeight, xOffset, yOffset);
-			}
+                tmodule.LoadTileFromFile(loadFile, fileTileWidth, fileTileHeight, xOffset, yOffset);
+            }
         }
 
         void InterfaceSaveFile(IScene scene, string[] cmd)
         {
-			if (cmd.Length < 3)
-			{
-				MainConsole.Instance.Info("You need to specify a filename.");
-				return;
-			}
- 			List<TerrainModule> m = FindModuleForScene(MainConsole.Instance.ConsoleScene);
-			foreach (TerrainModule tmodule in m)
+            if (cmd.Length < 3)
             {
-				MainConsole.Instance.Info("[Terrain]: Saving scene "+tmodule.m_scene.RegionInfo.RegionName+ " to "+cmd[2]);
-           		tmodule.SaveToFile(cmd[2]);
-			}
+                MainConsole.Instance.Info("You need to specify a filename.");
+                return;
+            }
+            List<TerrainModule> m = FindModuleForScene(MainConsole.Instance.ConsoleScene);
+            foreach (TerrainModule tmodule in m)
+            {
+                MainConsole.Instance.Info("[Terrain Module]: Saving scene " + tmodule.m_scene.RegionInfo.RegionName + " to " + cmd[2]);
+                tmodule.SaveToFile(cmd[2]);
+            }
         }
 
         void InterfaceSavePhysics(IScene scene, string[] cmd)
         {
-        	List<TerrainModule> m = FindModuleForScene(MainConsole.Instance.ConsoleScene);
+            List<TerrainModule> m = FindModuleForScene(MainConsole.Instance.ConsoleScene);
 
-			foreach (TerrainModule tmodule in m) {
-				MainConsole.Instance.Info("[Terrain]: Saving scene "+tmodule.m_scene.RegionInfo.RegionName+ " physics");
-				tmodule.m_scene.PhysicsScene.SetTerrain (tmodule.m_channel, tmodule.m_channel.GetSerialised ());
-			}
+            foreach (TerrainModule tmodule in m)
+            {
+                MainConsole.Instance.Info("[Terrain Module]: Saving scene " + tmodule.m_scene.RegionInfo.RegionName + " physics");
+                tmodule.m_scene.PhysicsScene.SetTerrain(tmodule.m_channel, tmodule.m_channel.GetSerialised());
+            }
         }
 
         void InterfaceBakeTerrain(IScene scene, string[] cmd)
         {
-	        List<TerrainModule> m = FindModuleForScene(MainConsole.Instance.ConsoleScene);
-			foreach (TerrainModule tmodule in m) {
-				MainConsole.Instance.Info ("[Terrain]: Saving scene " + tmodule.m_scene.RegionInfo.RegionName + " physics");
-				tmodule.UpdateRevertMap ();
-			}
+            List<TerrainModule> m = FindModuleForScene(MainConsole.Instance.ConsoleScene);
+            foreach (TerrainModule tmodule in m)
+            {
+                MainConsole.Instance.Info("[Terrain Module]: Saving scene " + tmodule.m_scene.RegionInfo.RegionName + " physics");
+                tmodule.UpdateRevertMap();
+            }
         }
 
         void InterfaceRevertTerrain(IScene scene, string[] cmd)
         {
-			List<TerrainModule> m = FindModuleForScene(MainConsole.Instance.ConsoleScene);
-			foreach (TerrainModule tmodule in m) {
-				int x, y;
-				for (x = 0; x < tmodule.m_channel.Width; x++)
-					for (y = 0; y < tmodule.m_channel.Height; y++)
-						tmodule.m_channel [x, y] = m_revert [x, y];
+            List<TerrainModule> m = FindModuleForScene(MainConsole.Instance.ConsoleScene);
+            foreach (TerrainModule tmodule in m)
+            {
+                int x, y;
+                for (x = 0; x < tmodule.m_channel.Width; x++)
+                    for (y = 0; y < tmodule.m_channel.Height; y++)
+                        tmodule.m_channel[x, y] = m_revert[x, y];
 
-				tmodule.CheckForTerrainUpdates ();
-			}
+                tmodule.CheckForTerrainUpdates();
+            }
         }
 
         void InterfaceFlipTerrain(IScene scene, string[] cmd)
         {
-			if (cmd.Length < 3)
-			{
-				MainConsole.Instance.Info(
-					"You need to specify a direction x or y.");
-				return;
-			}
+            if (cmd.Length < 3)
+            {
+                MainConsole.Instance.Info(
+                    "You need to specify a direction x or y.");
+                return;
+            }
 
             String direction = cmd[2];
 
-			List<TerrainModule> m = FindModuleForScene(MainConsole.Instance.ConsoleScene);
-			foreach (TerrainModule tmodule in m)
-			{
-				if (direction.ToLower ().StartsWith ("y"))
-				{
-					for (int x = 0; x < tmodule.m_scene.RegionInfo.RegionSizeX; x++)
-					{
-						for (int y = 0; y < tmodule.m_scene.RegionInfo.RegionSizeY/2; y++)
-						{
-							float height = tmodule.m_channel [x, y];
-							float flippedHeight = tmodule.m_channel [x, tmodule.m_scene.RegionInfo.RegionSizeY - 1 - y];
-                        	
-							tmodule.m_channel [x, y] = flippedHeight;
-							tmodule.m_channel [x, m_scene.RegionInfo.RegionSizeY - 1 - y] = height;
-						}
-					}
-				} else if (direction.ToLower ().StartsWith ("x"))
-				{
-					for (int y = 0; y < tmodule.m_scene.RegionInfo.RegionSizeY; y++)
-					{
-						for (int x = 0; x < tmodule.m_scene.RegionInfo.RegionSizeX/2; x++)
-						{
-							float height = tmodule.m_channel [x, y];
-							float flippedHeight = tmodule.m_channel [tmodule.m_scene.RegionInfo.RegionSizeX - 1 - x, y];
-                        	
-							tmodule.m_channel [x, y] = flippedHeight;
-							tmodule.m_channel [tmodule.m_scene.RegionInfo.RegionSizeX - 1 - x, y] = height;
-						}
-					}
-				
-				} else
-				{
-					MainConsole.Instance.Error ("Unrecognised direction - need x or y");
-				}
+            List<TerrainModule> m = FindModuleForScene(MainConsole.Instance.ConsoleScene);
+            foreach (TerrainModule tmodule in m)
+            {
+                if (direction.ToLower().StartsWith("y"))
+                {
+                    for (int x = 0; x < tmodule.m_scene.RegionInfo.RegionSizeX; x++)
+                    {
+                        for (int y = 0; y < tmodule.m_scene.RegionInfo.RegionSizeY / 2; y++)
+                        {
+                            float height = tmodule.m_channel[x, y];
+                            float flippedHeight = tmodule.m_channel[x, tmodule.m_scene.RegionInfo.RegionSizeY - 1 - y];
 
-				tmodule.CheckForTerrainUpdates ();
-			}
+                            tmodule.m_channel[x, y] = flippedHeight;
+                            tmodule.m_channel[x, m_scene.RegionInfo.RegionSizeY - 1 - y] = height;
+                        }
+                    }
+                }
+                else if (direction.ToLower().StartsWith("x"))
+                {
+                    for (int y = 0; y < tmodule.m_scene.RegionInfo.RegionSizeY; y++)
+                    {
+                        for (int x = 0; x < tmodule.m_scene.RegionInfo.RegionSizeX / 2; x++)
+                        {
+                            float height = tmodule.m_channel[x, y];
+                            float flippedHeight = tmodule.m_channel[tmodule.m_scene.RegionInfo.RegionSizeX - 1 - x, y];
 
+                            tmodule.m_channel[x, y] = flippedHeight;
+                            tmodule.m_channel[tmodule.m_scene.RegionInfo.RegionSizeX - 1 - x, y] = height;
+                        }
+                    }
+                }
+                else
+                {
+                    MainConsole.Instance.Error("Unrecognised direction - need x or y");
+                }
+
+                tmodule.CheckForTerrainUpdates();
+            }
         }
 
         void InterfaceRescaleTerrain(IScene scene, string[] cmd)
@@ -1744,57 +1836,65 @@ namespace Universe.Modules.Terrain
                 return;
             }
 
-
             List<TerrainModule> m = FindModuleForScene(MainConsole.Instance.ConsoleScene);
-			foreach (TerrainModule tmodule in m)
-			{
-				float desiredMin = float.Parse (cmd [2]);
-				float desiredMax = float.Parse (cmd [3]);
+            foreach (TerrainModule tmodule in m)
+            {
+                float desiredMin = float.Parse(cmd[2]);
+                float desiredMax = float.Parse(cmd[3]);
 
-				// determine desired scaling factor
-				float desiredRange = desiredMax - desiredMin;
-				//MainConsole.Instance.InfoFormat("Desired {0}, {1} = {2}", new Object[] { desiredMin, desiredMax, desiredRange });
+                // determine desired scaling factor
+                float desiredRange = desiredMax - desiredMin;
+                //MainConsole.Instance.InfoFormat("Desired {0}, {1} = {2}", new Object[] { desiredMin, desiredMax, desiredRange });
 
-				// a bit ambiguous here... // if (desiredRange == 0d) {
-				if (desiredRange >= 0) {
-					// delta is zero so flatten at requested height
-					tmodule.InterfaceFillTerrain (scene, cmd);
-				} else {
-					//work out current heightmap range
-					float currMin = float.MaxValue;
-					float currMax = float.MinValue;
+                // a bit ambiguous here... // if (desiredRange == 0d) {
+                if (desiredRange >= 0)
+                {
+                    // delta is zero so flatten at requested height
+                    tmodule.InterfaceFillTerrain(scene, cmd);
+                }
+                else {
+                    //work out current heightmap range
+                    float currMin = float.MaxValue;
+                    float currMax = float.MinValue;
 
-					int width = tmodule.m_channel.Width;
-					int height = tmodule.m_channel.Height;
+                    int width = tmodule.m_channel.Width;
+                    int height = tmodule.m_channel.Height;
 
-					for (int x = 0; x < width; x++) {
-						for (int y = 0; y < height; y++) {
-							float currHeight = tmodule.m_channel [x, y];
-							if (currHeight < currMin) {
-								currMin = currHeight;
-							} else if (currHeight > currMax) {
-								currMax = currHeight;
-							}
-						}
-					}
+                    for (int x = 0; x < width; x++)
+                    {
+                        for (int y = 0; y < height; y++)
+                        {
+                            float currHeight = tmodule.m_channel[x, y];
+                            if (currHeight < currMin)
+                            {
+                                currMin = currHeight;
+                            }
+                            else if (currHeight > currMax)
+                            {
+                                currMax = currHeight;
+                            }
+                        }
+                    }
 
-					float currRange = currMax - currMin;
-					float scale = desiredRange / currRange;
+                    float currRange = currMax - currMin;
+                    float scale = desiredRange / currRange;
 
-					//MainConsole.Instance.InfoFormat("Current {0}, {1} = {2}", new Object[] { currMin, currMax, currRange });
-					//MainConsole.Instance.InfoFormat("Scale = {0}", scale);
+                    //MainConsole.Instance.InfoFormat("Current {0}, {1} = {2}", new Object[] { currMin, currMax, currRange });
+                    //MainConsole.Instance.InfoFormat("Scale = {0}", scale);
 
-					// scale the heightmap accordingly
-					for (int x = 0; x < width; x++) {
-						for (int y = 0; y < height; y++) {
-							float currHeight = tmodule.m_channel [x, y] - currMin;
-							tmodule.m_channel [x, y] = desiredMin + (currHeight * scale);
-						}
-					}
+                    // scale the heightmap accordingly
+                    for (int x = 0; x < width; x++)
+                    {
+                        for (int y = 0; y < height; y++)
+                        {
+                            float currHeight = tmodule.m_channel[x, y] - currMin;
+                            tmodule.m_channel[x, y] = desiredMin + (currHeight * scale);
+                        }
+                    }
 
-					tmodule.CheckForTerrainUpdates ();
-				}
-			}
+                    tmodule.CheckForTerrainUpdates();
+                }
+            }
         }
 
         void InterfaceElevateTerrain(IScene scene, string[] cmd)
@@ -1806,15 +1906,15 @@ namespace Universe.Modules.Terrain
                 return;
             }
 
-			List<TerrainModule> m = FindModuleForScene(MainConsole.Instance.ConsoleScene);
-			foreach (TerrainModule tmodule in m)
-			{
-				int x, y;
-				for (x = 0; x < tmodule.m_channel.Width; x++)
-					for (y = 0; y < tmodule.m_channel.Height; y++)
-						tmodule.m_channel [x, y] += float.Parse (cmd [2]);
-				tmodule.CheckForTerrainUpdates ();
-			}
+            List<TerrainModule> m = FindModuleForScene(MainConsole.Instance.ConsoleScene);
+            foreach (TerrainModule tmodule in m)
+            {
+                int x, y;
+                for (x = 0; x < tmodule.m_channel.Width; x++)
+                    for (y = 0; y < tmodule.m_channel.Height; y++)
+                        tmodule.m_channel[x, y] += float.Parse(cmd[2]);
+                tmodule.CheckForTerrainUpdates();
+            }
         }
 
         void InterfaceMultiplyTerrain(IScene scene, string[] cmd)
@@ -1826,15 +1926,15 @@ namespace Universe.Modules.Terrain
                 return;
             }
 
-			List<TerrainModule> m = FindModuleForScene(MainConsole.Instance.ConsoleScene);
-			foreach (TerrainModule tmodule in m)
-			{
-				int x, y;
-				for (x = 0; x < tmodule.m_channel.Width; x++)
-					for (y = 0; y < tmodule.m_channel.Height; y++)
-						tmodule.m_channel [x, y] *= float.Parse (cmd [2]);
-				tmodule.CheckForTerrainUpdates ();
-			}
+            List<TerrainModule> m = FindModuleForScene(MainConsole.Instance.ConsoleScene);
+            foreach (TerrainModule tmodule in m)
+            {
+                int x, y;
+                for (x = 0; x < tmodule.m_channel.Width; x++)
+                    for (y = 0; y < tmodule.m_channel.Height; y++)
+                        tmodule.m_channel[x, y] *= float.Parse(cmd[2]);
+                tmodule.CheckForTerrainUpdates();
+            }
         }
 
         void InterfaceLowerTerrain(IScene scene, string[] cmd)
@@ -1846,15 +1946,15 @@ namespace Universe.Modules.Terrain
                 return;
             }
 
-			List<TerrainModule> m = FindModuleForScene(MainConsole.Instance.ConsoleScene);
-			foreach (TerrainModule tmodule in m)
-			{
-				int x, y;
-				for (x = 0; x < tmodule.m_channel.Width; x++)
-					for (y = 0; y < tmodule.m_channel.Height; y++)
-						tmodule.m_channel [x, y] -= float.Parse (cmd [2]);
-				tmodule.CheckForTerrainUpdates ();
-			}
+            List<TerrainModule> m = FindModuleForScene(MainConsole.Instance.ConsoleScene);
+            foreach (TerrainModule tmodule in m)
+            {
+                int x, y;
+                for (x = 0; x < tmodule.m_channel.Width; x++)
+                    for (y = 0; y < tmodule.m_channel.Height; y++)
+                        tmodule.m_channel[x, y] -= float.Parse(cmd[2]);
+                tmodule.CheckForTerrainUpdates();
+            }
         }
 
         void InterfaceFillTerrain(IScene scene, string[] cmd)
@@ -1866,116 +1966,122 @@ namespace Universe.Modules.Terrain
                 return;
             }
 
-			List<TerrainModule> m = FindModuleForScene(MainConsole.Instance.ConsoleScene);
-			foreach (TerrainModule tmodule in m)
-			{
-				int x, y;
+            List<TerrainModule> m = FindModuleForScene(MainConsole.Instance.ConsoleScene);
+            foreach (TerrainModule tmodule in m)
+            {
+                int x, y;
 
-				for (x = 0; x < tmodule.m_channel.Width; x++)
-					for (y = 0; y < tmodule.m_channel.Height; y++)
-						tmodule.m_channel [x, y] = float.Parse (cmd [2]);
-				tmodule.CheckForTerrainUpdates ();
-			}
+                for (x = 0; x < tmodule.m_channel.Width; x++)
+                    for (y = 0; y < tmodule.m_channel.Height; y++)
+                        tmodule.m_channel[x, y] = float.Parse(cmd[2]);
+                tmodule.CheckForTerrainUpdates();
+            }
         }
 
-		/// <summary>
-		/// User interface for user generation of terrain in the selected region.
-		/// </summary>
-		/// <param name="scene">Scene.</param>
-		/// <param name="cmd">Cmd.</param>
-		void InterfaceGenerateTerrain(IScene scene, string[] cmd)
-		{
+        /// <summary>
+        /// User interface for user generation of terrain in the selected region.
+        /// </summary>
+        /// <param name="scene">Scene.</param>
+        /// <param name="cmd">Cmd.</param>
+        void InterfaceGenerateTerrain(IScene scene, string[] cmd)
+        {
             string terrainType;
             //assume grassland paramters
-            float waterHeight = (float) m_scene.RegionInfo.RegionSettings.WaterHeight;
+            float waterHeight = (float)m_scene.RegionInfo.RegionSettings.WaterHeight;
             float minHeight = waterHeight - 5f;
             float maxHeight = minHeight + 10f;
             int smoothing = 1;
 
             if (cmd.Length < 3)
-			{
-                MainConsole.Instance.Info ("Available terrains: Flatland, Grassland, Hills, Mountainous, Island, Swamp or Aquatic");
-				terrainType = MainConsole.Instance.Prompt("What terrain type to use?","Flatland");
-            } else
+            {
+                MainConsole.Instance.Info("Available terrains: Flatland, Grassland, Hills, Mountainous, Island, Swamp or Aquatic");
+                terrainType = MainConsole.Instance.Prompt("What terrain type to use?", "Flatland");
+            }
+            else
                 terrainType = cmd[2];
             terrainType = terrainType.ToLower();
 
             // have heights?
-            bool presets = ( terrainType.StartsWith ("f") || terrainType.StartsWith ("a") );
+            bool presets = (terrainType.StartsWith("f") || terrainType.StartsWith("a"));
             if (!presets && (cmd.Length < 5))
             {
-                if (terrainType.StartsWith ("i"))
+                if (terrainType.StartsWith("i"))
                 {
-                    minHeight = waterHeight - 5f;                                     
+                    minHeight = waterHeight - 5f;
                     maxHeight = 30;
                     smoothing = 3;
-                } else if (terrainType.StartsWith("h"))
-                {       
-                    minHeight = waterHeight;                                     
+                }
+                else if (terrainType.StartsWith("h"))
+                {
+                    minHeight = waterHeight;
                     maxHeight = 40;
                     smoothing = 3;
-                } else if (terrainType.StartsWith("m"))
-                {       
-                    minHeight = waterHeight;                                     
+                }
+                else if (terrainType.StartsWith("m"))
+                {
+                    minHeight = waterHeight;
                     maxHeight = 60;
                     smoothing = 2;
-                } else if (terrainType.StartsWith("g"))
-                {       
-                    minHeight = waterHeight-0.25f;                                     
-                    maxHeight = waterHeight+2f;
+                }
+                else if (terrainType.StartsWith("g"))
+                {
+                    minHeight = waterHeight - 0.25f;
+                    maxHeight = waterHeight + 2f;
                     smoothing = 5;
-                }  else if (terrainType.StartsWith("s"))
-                {       
-                    minHeight = waterHeight-0.25f;                                     
-                    maxHeight = waterHeight+0.75f;
+                }
+                else if (terrainType.StartsWith("s"))
+                {
+                    minHeight = waterHeight - 0.25f;
+                    maxHeight = waterHeight + 0.75f;
                     smoothing = 3;
                 }
 
                 // prompt for custom heights...
-                minHeight = float.Parse (MainConsole.Instance.Prompt ("Minimum land height", minHeight.ToString ()));
-                maxHeight = float.Parse (MainConsole.Instance.Prompt ("Maximum land height", maxHeight.ToString ()));
-                smoothing = int.Parse (MainConsole.Instance.Prompt ("Smoothing passes", smoothing.ToString ()));
+                minHeight = float.Parse(MainConsole.Instance.Prompt("Minimum land height", minHeight.ToString()));
+                maxHeight = float.Parse(MainConsole.Instance.Prompt("Maximum land height", maxHeight.ToString()));
+                smoothing = int.Parse(MainConsole.Instance.Prompt("Smoothing passes", smoothing.ToString()));
 
-            } else if (terrainType.StartsWith ("a"))
+            }
+            else if (terrainType.StartsWith("a"))
             {
                 minHeight = 0;                                      // Aquatic
                 maxHeight = waterHeight - 5f;
                 smoothing = 4;
-            } else if (terrainType.StartsWith ("f"))
+            }
+            else if (terrainType.StartsWith("f"))
             {
                 minHeight = 0.01f;                                  // Flatland
                 maxHeight = 0.012f;
-            } else
-			{
-				minHeight = float.Parse (cmd [3]);
-				maxHeight = float.Parse (cmd [4]);
-			}
+            }
+            else
+            {
+                minHeight = float.Parse(cmd[3]);
+                maxHeight = float.Parse(cmd[4]);
+            }
 
             //have smoothing?
-			if (cmd.Length == 6)
-				smoothing = int.Parse (cmd [5]);
+            if (cmd.Length == 6)
+                smoothing = int.Parse(cmd[5]);
 
-			List<TerrainModule> m = FindModuleForScene(scene);
-			foreach (TerrainModule tmodule in m)
-			{
-				// try for the land type
-                tmodule.m_channel.GenerateTerrain (terrainType, minHeight, maxHeight, smoothing, scene);
-				tmodule.CheckForTerrainUpdates ();
+            List<TerrainModule> m = FindModuleForScene(scene);
+            foreach (TerrainModule tmodule in m)
+            {
+                // try for the land type
+                tmodule.m_channel.GenerateTerrain(terrainType, minHeight, maxHeight, smoothing, scene);
+                tmodule.CheckForTerrainUpdates();
 
                 uint regionArea = scene.RegionInfo.RegionArea;
-                string rArea = regionArea < 1000000? regionArea + " m2": (regionArea/1000000) + " km2";
+                string rArea = regionArea < 1000000 ? regionArea + " m2" : (regionArea / 1000000) + " km2";
                 MainConsole.Instance.InfoFormat("New terrain  of {0} generated.", rArea);
-
-			}
-		}
+            }
+        }
 
         void InterfaceCalcArea(IScene scene, string[] cmd)
         {
-
             uint regionArea = CalcLandArea(scene);
 
-            string rArea = regionArea < 1000000? regionArea + " m2": (regionArea/1000000) + " km2";
-            MainConsole.Instance.InfoFormat("Land area for {0} is {1}", scene.RegionInfo.RegionName, rArea );
+            string rArea = regionArea < 1000000 ? regionArea + " m2" : (regionArea / 1000000) + " km2";
+            MainConsole.Instance.InfoFormat("Land area for {0} is {1}", scene.RegionInfo.RegionName, rArea);
         }
 
         /// <summary>
@@ -1984,7 +2090,6 @@ namespace Universe.Modules.Terrain
         /// <param name="scene">Scene.</param>
         public uint CalcLandArea(IScene scene)
         {
-
             //We need to update the grid server as well
             IGridRegisterModule gridRegisterModule = scene.RequestModuleInterface<IGridRegisterModule>();
             uint regionArea = 0;
@@ -1992,7 +2097,7 @@ namespace Universe.Modules.Terrain
             List<TerrainModule> m = FindModuleForScene(scene);
             foreach (TerrainModule tmodule in m)
             {
-                TerrainMap.ReCalcLandArea ();
+                TerrainMap.ReCalcLandArea();
             }
 
             if (gridRegisterModule != null)
@@ -2001,58 +2106,59 @@ namespace Universe.Modules.Terrain
             return regionArea;
         }
 
-		void InterfaceShowDebugStats(IScene scene, string[] cmd)
+        void InterfaceShowDebugStats(IScene scene, string[] cmd)
         {
-			List<TerrainModule> m = FindModuleForScene(MainConsole.Instance.ConsoleScene);
-			foreach (TerrainModule tmodule in m)
-			{
-				float max = float.MinValue;
-				float min = float.MaxValue;
-				float sum = 0;
+            List<TerrainModule> m = FindModuleForScene(MainConsole.Instance.ConsoleScene);
+            foreach (TerrainModule tmodule in m)
+            {
+                float max = float.MinValue;
+                float min = float.MaxValue;
+                float sum = 0;
 
-				int x;
-				for (x = 0; x < tmodule.m_channel.Width; x++)
-				{
-					int y;
-					for (y = 0; y < tmodule.m_channel.Height; y++)
-					{
-						sum += tmodule.m_channel [x, y];
-						if (max < tmodule.m_channel [x, y])
-							max = tmodule.m_channel [x, y];
-						if (min > tmodule.m_channel [x, y])
-							min = tmodule.m_channel [x, y];
-					}
-				}
-            
-				double avg = sum / (tmodule.m_channel.Height * tmodule.m_channel.Width);
+                int x;
+                for (x = 0; x < tmodule.m_channel.Width; x++)
+                {
+                    int y;
+                    for (y = 0; y < tmodule.m_channel.Height; y++)
+                    {
+                        sum += tmodule.m_channel[x, y];
+                        if (max < tmodule.m_channel[x, y])
+                            max = tmodule.m_channel[x, y];
+                        if (min > tmodule.m_channel[x, y])
+                            min = tmodule.m_channel[x, y];
+                    }
+                }
 
-				MainConsole.Instance.Info ("Channel " + tmodule.m_channel.Width + "x" + tmodule.m_channel.Height);
-				MainConsole.Instance.Info ("max/min/avg/sum: " + max + "/" + min + "/" + avg + "/" + sum);
-			}
+                double avg = sum / (tmodule.m_channel.Height * tmodule.m_channel.Width);
+
+                MainConsole.Instance.Info("Channel " + tmodule.m_channel.Width + "x" + tmodule.m_channel.Height);
+                MainConsole.Instance.Info("max/min/avg/sum: " + max + "/" + min + "/" + avg + "/" + sum);
+            }
         }
 
         void InterfaceEnableExperimentalBrushes(IScene scene, string[] cmd)
         {
-        	List<TerrainModule> m = FindModuleForScene(MainConsole.Instance.ConsoleScene);
-			foreach (TerrainModule tmodule in m)
-			{
-				if (bool.Parse (cmd [2]))
-				{
-					tmodule.m_painteffects [StandardTerrainEffects.Revert] = new WeatherSphere ();
-					tmodule.m_painteffects [StandardTerrainEffects.Flatten] = new OlsenSphere ();
-					tmodule.m_painteffects [StandardTerrainEffects.Smooth] = new ErodeSphere ();
-				} else
-				{
-					tmodule.InstallDefaultEffects ();
-				}
-			}
+            List<TerrainModule> m = FindModuleForScene(MainConsole.Instance.ConsoleScene);
+            foreach (TerrainModule tmodule in m)
+            {
+                if (bool.Parse(cmd[2]))
+                {
+                    tmodule.m_painteffects[StandardTerrainEffects.Revert] = new WeatherSphere();
+                    tmodule.m_painteffects[StandardTerrainEffects.Flatten] = new OlsenSphere();
+                    tmodule.m_painteffects[StandardTerrainEffects.Smooth] = new ErodeSphere();
+                }
+                else
+                {
+                    tmodule.InstallDefaultEffects();
+                }
+            }
         }
 
-		/// <summary>
-		/// Command line interface help.
-		/// </summary>
-		/// <param name="scene">Scene.</param>
-		/// <param name="cmd">Cmd.</param>
+        /// <summary>
+        /// Command line interface help.
+        /// </summary>
+        /// <param name="scene">Scene.</param>
+        /// <param name="cmd">Cmd.</param>
         void InterfaceHelp(IScene scene, string[] cmd)
         {
             if (!MainConsole.Instance.HasProcessedCurrentCommand)
@@ -2063,21 +2169,22 @@ namespace Universe.Modules.Terrain
                                                                  current +
                                                                  (" " + loader.Key + " (" + loader.Value + ")"));
 
-			MainConsole.Instance.Info(
-                "terrain load <FileName> - Loads a terrain from a specified file. "+
-				"\n FileName: The file you wish to load from, the file extension determines the loader to be used."+
-				"\n Supported extensions include: " +
+            MainConsole.Instance.Info(
+                "terrain load <FileName> - Loads a terrain from a specified file. " +
+                "\n FileName: The file you wish to load from, the file extension determines the loader to be used." +
+                "\n Supported extensions include: " +
                 supportedFileExtensions);
 
             MainConsole.Instance.Info(
-                "terrain save <FileName> - Saves the current heightmap to a specified file. "+
-				"\n FileName: The destination filename for your heightmap, the file extension determines the format to save in. "+
-				"\n Supported extensions include: " +
+                "terrain save <FileName> - Saves the current heightmap to a specified file. " +
+                "\n FileName: The destination filename for your heightmap, the file extension determines the format to save in. " +
+                "\n Supported extensions include: " +
                 supportedFileExtensions);
 
             MainConsole.Instance.Info(
-                "terrain load-tile <file width> <file height> <minimum X tile> <minimum Y tile>\n" +
+                "terrain load-tile <FileName> <file width> <file height> <minimum X tile> <minimum Y tile>\n" +
                 "     - Loads a terrain from a section of a larger file.\n" +
+                "\n FileName: The image file to use for tiling" +
                 "\n file width: The width of the file image" +
                 "\n file height: The height of the file image" +
                 "\n minimum X tile: The X region coordinate of the first section on the file" +
@@ -2121,22 +2228,21 @@ namespace Universe.Modules.Terrain
                 "\n Min: min terrain height after rescaling" +
                 "\n Max: max terrain height after rescaling");
 
-			MainConsole.Instance.Info(
-				"terrain generate <type> <Min> <Max> [smoothing]- Genrate new terrain to fit between the given min and max heights" +
-				"\n Type: Flatland, Mainland, Island, Aquatic" +
-				"\n Min: min terrain height after rescaling" +
-				"\n Max: max terrain height after rescaling"+
-				"\n Smoothing: [Optional] number of smoothing passes");
+            MainConsole.Instance.Info(
+                "terrain generate <type> <Min> <Max> [smoothing]- Genrate new terrain to fit between the given min and max heights" +
+                "\n Type: Flatland, Mainland, Island, Aquatic" +
+                "\n Min: min terrain height after rescaling" +
+                "\n Max: max terrain height after rescaling" +
+                "\n Smoothing: [Optional] number of smoothing passes");
 
             MainConsole.Instance.Info(
                 "terrain calc area - Calulates the region land area. ");
-
         }
 
-		/// <summary>
-		/// Adds the console commands.
-		/// </summary>
-		void AddConsoleCommands()
+        /// <summary>
+        /// Adds the console commands.
+        /// </summary>
+        void AddConsoleCommands()
         {
             // Load / Save
             string supportedFileExtensions = m_loaders.Aggregate("",
@@ -2163,57 +2269,58 @@ namespace Universe.Modules.Terrain
                     "terrain load <FileName> <OffsetX=> <OffsetY=>",
                     "Loads a terrain from a specified file. FileName: The file you wish to load from. Supported extensions include: " +
                     supportedFileExtensions,
-                    InterfaceLoadFile, true, false);
+                    InterfaceLoadFile, true, true);
 
-                MainConsole.Instance.Commands.AddCommand (
+                MainConsole.Instance.Commands.AddCommand(
                     "terrain load-tile",
-                    "terrain load-tile <file width> <file height> <minimum X tile> <minimum Y tile>",
+                    "terrain load-tile <FileName> <file width> <file height> <minimum X tile> <minimum Y tile>",
                     "Loads a terrain from a section of a larger file." +
+                    "\n FileName: The image file to use for tiling" +
                     "\n file width: The width of the file image" +
                     "\n file height: The height of the file image" +
                     "\n minimum X tile: The X region coordinate of the first section on the file" +
                     "\n minimum Y tile: The Y region coordinate of the first section on the file",
-                    InterfaceLoadTileFile, true, false);
+                    InterfaceLoadTileFile, true, true);
 
                 MainConsole.Instance.Commands.AddCommand(
                     "terrain fill",
                     "terrain fill <value> ",
                     "Fills the current heightmap with a specified value." +
                     "\n value: The numeric value of the height you wish to set your region to.",
-                    InterfaceFillTerrain, true, false);
+                    InterfaceFillTerrain, true, true);
 
                 MainConsole.Instance.Commands.AddCommand(
                     "terrain elevate",
                     "terrain elevate <amount> ",
                     "Raises the current heightmap by the specified amount." +
                     "\n amount: The amount of height to remove from the terrain in meters.",
-                    InterfaceElevateTerrain, true, false);
+                    InterfaceElevateTerrain, true, true);
 
                 MainConsole.Instance.Commands.AddCommand(
                     "terrain lower",
                     "terrain lower <amount> ",
                     "Lowers the current heightmap by the specified amount." +
                     "\n amount: The amount of height to remove from the terrain in meters.",
-                    InterfaceLowerTerrain, true, false);
+                    InterfaceLowerTerrain, true, true);
 
-                MainConsole.Instance.Commands.AddCommand (
+                MainConsole.Instance.Commands.AddCommand(
                     "terrain multiply",
                     "terrain multiply <value> ",
                     "Multiplies the heightmap by the value specified." +
                     "\n value: The value to multiply the heightmap by.",
-                    InterfaceMultiplyTerrain, true, false);
+                    InterfaceMultiplyTerrain, true, true);
 
-                MainConsole.Instance.Commands.AddCommand (
+                MainConsole.Instance.Commands.AddCommand(
                     "terrain bake",
                     "terrain bake",
                     "Saves the current terrain into the regions revert map.",
                     InterfaceBakeTerrain, true, false);
 
-                MainConsole.Instance.Commands.AddCommand (
+                MainConsole.Instance.Commands.AddCommand(
                     "terrain revert",
                     "terrain revert",
                     "Loads the revert map terrain into the regions heightmap.",
-                    InterfaceRevertTerrain, true, false);
+                    InterfaceRevertTerrain, true, true);
 
                 MainConsole.Instance.Commands.AddCommand(
                     "terrain stats",
@@ -2221,21 +2328,21 @@ namespace Universe.Modules.Terrain
                     "Shows some information about the regions heightmap for debugging purposes.",
                     InterfaceShowDebugStats, true, false);
 
-                MainConsole.Instance.Commands.AddCommand (
+                MainConsole.Instance.Commands.AddCommand(
                     "terrain newbrushes",
                     "terrain newbrushes <enabled> ",
                     "Enables experimental brushes which replace the standard terrain brushes." +
                     "\n enabled: true / false - Enable new brushes",
                     InterfaceEnableExperimentalBrushes, true, false);
 
-                MainConsole.Instance.Commands.AddCommand (
+                MainConsole.Instance.Commands.AddCommand(
                     "terrain flip",
                     "terrain flip <direction> ",
                     "Flips the current terrain about the X or Y axis" +
                     "\n direction: [x|y] the direction to flip the terrain in",
                     InterfaceFlipTerrain, true, true);
 
-                MainConsole.Instance.Commands.AddCommand (
+                MainConsole.Instance.Commands.AddCommand(
                     "terrain rescale",
                     "terrain rescale <min> <max>",
                     "Rescales the current terrain to fit between the given min and max heights" +
@@ -2243,7 +2350,7 @@ namespace Universe.Modules.Terrain
                     "\n Max: max terrain height after rescaling",
                     InterfaceRescaleTerrain, true, true);
 
-				MainConsole.Instance.Commands.AddCommand(
+                MainConsole.Instance.Commands.AddCommand(
                     "terrain generate",
                     "terrain generate <type> <min> <max> [smoothing]",
                     "Generate new terrain to fit between the given min and max heights" +
@@ -2263,7 +2370,6 @@ namespace Universe.Modules.Terrain
                     "terrain calc area",
                     "Calculates the region land area above the water line",
                     InterfaceCalcArea, true, false);
-
             }
         }
 
