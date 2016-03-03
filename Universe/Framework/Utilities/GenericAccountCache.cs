@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -79,7 +79,7 @@ namespace Universe.Framework.Utilities
             if (account != null && !string.IsNullOrEmpty(account.Name))
                 m_NameCache.AddOrUpdate(account.Name, account.PrincipalID, CACHE_EXPIRATION_SECONDS);
 
-            //MainConsole.Instance.DebugFormat("[USER CACHE]: cached user {0}", userID);
+            //MainConsole.Instance.DebugFormat("[User Cache]: cached user {0}", userID);
         }
 
         public void Remove(UUID userID, string name)

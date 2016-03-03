@@ -125,12 +125,12 @@ namespace Universe.Modules.Estate
                 BannedUserID = SP.UUID,
                 EstateID = ES.EstateID
             });
-            Universe.Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ().
+            Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ().
                 SaveEstateSettings (ES);
             if (alert != "")
                 SP.ControllingClient.Kick (alert);
             else
-                SP.ControllingClient.Kick ("\nThe Universe manager banned and kicked you out.\n");
+                SP.ControllingClient.Kick ("\nThe Virtual Universe manager banned and kicked you out.\n");
 
             // kick client...
             IEntityTransferModule transferModule = SP.Scene.RequestModuleInterface<IEntityTransferModule> ();
@@ -375,13 +375,12 @@ namespace Universe.Modules.Estate
                 return false; //NO!
             }
 
-
             //Make sure that this user is inside the region as well
             if (Position.X < -2f || Position.Y < -2f ||
                 Position.X > scene.RegionInfo.RegionSizeX + 2 || Position.Y > scene.RegionInfo.RegionSizeY + 2)
             {
                 MainConsole.Instance.DebugFormat (
-                    "[EstateService]: AllowedIncomingTeleport was given an illegal position of {0} for avatar {1}, {2}. Clamping",
+                    "[Estate Service]: AllowedIncomingTeleport was given an illegal position of {0} for avatar {1}, {2}. Clamping",
                     Position, Name, userID);
                 bool changedX = false;
                 bool changedY = false;
@@ -621,7 +620,6 @@ namespace Universe.Modules.Estate
                 }
             }
 
-
             if ((ILO.LandData.Flags & (int)ParcelFlags.DenyAnonymous) != 0)
             {
                 if (account != null &&
@@ -654,7 +652,6 @@ namespace Universe.Modules.Estate
                 }
             }
 
-            //newPosition = Position;
             reason = "";
             return true;
         }
@@ -787,7 +784,7 @@ namespace Universe.Modules.Estate
                         rDNS = Dns.GetHostEntry (end);
                     } catch (SocketException)
                     {
-                        MainConsole.Instance.WarnFormat ("[IPBAN] IP address \"{0}\" cannot be resolved via DNS", end);
+                        MainConsole.Instance.WarnFormat ("[IP Ban] IP address \"{0}\" cannot be resolved via DNS", end);
                         rDNS = null;
                     }
                     if (ban.BannedHostIPMask == agent.IPAddress ||
@@ -802,7 +799,7 @@ namespace Universe.Modules.Estate
                             BannedHostAddress = agent.IPAddress,
                             BannedHostNameMask = agent.IPAddress
                         });
-                        Universe.Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ().
+                        Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ().
                             SaveEstateSettings (ES);
 
                         reason = "Banned from this region.";

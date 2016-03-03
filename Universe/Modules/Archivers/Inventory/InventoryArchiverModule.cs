@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -191,10 +191,8 @@ namespace Universe.Modules.Archivers
                         + "--perm=<permissions> : If present, verify asset permissions before saving.\n"
                         + "   <permissions> can include 'C' (Copy), 'M' (Modify, 'T' (Transfer)",
                         HandleSaveIARConsoleCommand, false, true);
-
                 }
             }
-
         }
 
         #endregion
@@ -478,7 +476,6 @@ namespace Universe.Modules.Archivers
                     lastName = newParams[3];
                 }
 
-
                 // optional...
                 string iarPath = "/*";
                 if (newParams.Count > 5)
@@ -491,8 +488,7 @@ namespace Universe.Modules.Archivers
                     archiveFileName = firstName+"_"+lastName;
                     archiveFileName = MainConsole.Instance.Prompt("IAR file to save: ", archiveFileName);
                 } else
-                    archiveFileName = newParams[4];
-                
+                    archiveFileName = newParams[4];          
 
                 //some file sanity checks
                 string savePath;
@@ -517,7 +513,6 @@ namespace Universe.Modules.Archivers
         void SaveIARConsoleCommandCompleted(
             Guid id, bool succeeded, UserAccount userInfo, string invPath, Stream saveStream,
             Exception reportedException)
-
         {
             lock (m_pendingConsoleSaves)
             {

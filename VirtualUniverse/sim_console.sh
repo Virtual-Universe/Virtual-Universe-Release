@@ -1,5 +1,5 @@
 #!/bin/bash
-# Start the Universe-Sim server only
+# Start the Virtual Universe server only
 # Versions 0.9.2+
 #
 # May 2014

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -99,7 +99,7 @@ namespace Universe.Modules.Friends
             IClientAPI friendClient = LocateClientObject (FriendToInformID);
             if (friendClient != null)
             {
-                MainConsole.Instance.InfoFormat ("[FriendsModule]: Local Status Notify {0} that {1} users are {2}", FriendToInformID, userIDs.Length, online);
+                MainConsole.Instance.InfoFormat ("[Friends Module]: Local Status Notify {0} that {1} users are {2}", FriendToInformID, userIDs.Length, online);
                 // the  friend in this sim as root agent
                 if (online)
                     friendClient.SendAgentOnline (userIDs);
@@ -109,7 +109,7 @@ namespace Universe.Modules.Friends
                 return;
             }
 
-            MainConsole.Instance.ErrorFormat ("[FriendsModule]: Could not send status update to non-existent client {0}.", 
+            MainConsole.Instance.ErrorFormat ("[Friends Module]: Could not send status update to non-existent client {0}.", 
                 FriendToInformID);
 
         }
@@ -421,7 +421,7 @@ namespace Universe.Modules.Friends
             if (friends.Length == 0)
                 return;
 
-            MainConsole.Instance.DebugFormat ("[FRIENDS MODULE]: User {0} changing rights to {1} for friend {2}",
+            MainConsole.Instance.DebugFormat ("[Friends Module]: User {0} changing rights to {1} for friend {2}",
                 requester, rights,
                 target);
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,7 +24,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 
 using System;
 using System.Collections.Generic;
@@ -222,10 +221,8 @@ namespace Universe.Simulation.Base
                 if (stpMaxThreads < 2)
                     stpMaxThreads = 2;
                 if (stpMinThreads > stpMaxThreads)
-                    stpMinThreads = stpMaxThreads;
-                
+                    stpMinThreads = stpMaxThreads;         
             }
-
 
             if (Util.FireAndForgetMethod == FireAndForgetMethod.SmartThreadPool)
                 Util.InitThreadPool(stpMinThreads, stpMaxThreads);
@@ -503,7 +500,7 @@ namespace Universe.Simulation.Base
         public virtual void HandleForceGC(IScene scene, string[] cmd)
         {
             GC.Collect();
-            MainConsole.Instance.Warn("[Garbage Collection]: Garbage collection finished");
+            MainConsole.Instance.Warn("[Garbage Collection Service]: Garbage collection finished");
         }
 
         public virtual void runConfig(IScene scene, string[] cmd)
@@ -515,10 +512,10 @@ namespace Universe.Simulation.Base
         {
             if (cmd.Length != 5)
             {
-                MainConsole.Instance.Warn("[Command File]: Timer Interval command did not have enough parameters.");
+                MainConsole.Instance.Warn("[Console]: Timer Interval command did not have enough parameters.");
                 return;
             }
-            MainConsole.Instance.Warn("[Command File]: Set Timer Interval to " + cmd[4]);
+            MainConsole.Instance.Warn("[Console]: Set Timer Interval to " + cmd[4]);
             m_TimerScriptTime = int.Parse(cmd[4]);
             m_TimerScriptTimer.Enabled = false;
             m_TimerScriptTimer.Interval = m_TimerScriptTime*60*1000;

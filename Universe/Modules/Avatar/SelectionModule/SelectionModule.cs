@@ -157,7 +157,7 @@ namespace Universe.Modules.Selection
                     IObjectCache cache = remoteClient.Scene.RequestModuleInterface<IObjectCache>();
                     if (cache != null)
                         cache.RemoveObject(remoteClient.AgentId, entity.LocalId, cacheMissType);
-                    MainConsole.Instance.WarnFormat("[ObjectCache]: Avatar didn't have {0}, miss type {1}, CRC {2}",
+                    MainConsole.Instance.WarnFormat("[Object Cache]: Avatar didn't have {0}, miss type {1}, CRC {2}",
                                                     primLocalID,
                                                     cacheMissType, ((ISceneEntity) entity).RootChild.CRC);
                 }
@@ -203,7 +203,7 @@ namespace Universe.Modules.Selection
                 else
                 {
                     MainConsole.Instance.ErrorFormat(
-                        "[SCENEPACKETHANDLER]: Could not find prim {0} in SelectPrim, killing prim.",
+                        "[Scene Packet Handler]: Could not find prim {0} in SelectPrim, killing prim.",
                         primLocalID);
                     //Send a kill packet to the viewer so it doesn't come up again
                     remoteClient.SendKillObject(scene.RegionInfo.RegionHandle, new uint[1] {primLocalID});

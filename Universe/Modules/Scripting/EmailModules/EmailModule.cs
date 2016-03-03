@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -113,13 +113,13 @@ namespace Universe.Modules.Scripting
             bool isEMailStrictMatch = Utilities.IsValidEmail(address);
             if (!isEMailStrictMatch)
             {
-                MainConsole.Instance.Error("[EMAIL] REGEX Problem in EMail Address: " + address);
+                MainConsole.Instance.Error("[Email] REGEX Problem in EMail Address: " + address);
                 return;
             }
             //FIXME:Check if subject + body = 4096 Byte
             if ((subject.Length + body.Length) > m_MaxEmailSize)
             {
-                MainConsole.Instance.Error("[EMAIL] subject + body larger than limit of " + m_MaxEmailSize + " bytes");
+                MainConsole.Instance.Error("[Email] subject + body larger than limit of " + m_MaxEmailSize + " bytes");
                 return;
             }
 
@@ -205,15 +205,15 @@ namespace Universe.Modules.Scripting
                                 {
                                     SmtpStatusCode status = ex.StatusCode;
                                     if (status == SmtpStatusCode.Ok)
-                                        MainConsole.Instance.Info ("[EMAIL] EMail sent to: " + address + " from object: " +
+                                        MainConsole.Instance.Info ("[Email] EMail sent to: " + address + " from object: " +
                                         fromEmailAddress);
                                     else
-                                        MainConsole.Instance.Info ("[EMAIL] EMail error sending to: " + address + " from object: " +
+                                        MainConsole.Instance.Info ("[Email] EMail error sending to: " + address + " from object: " +
                                         fromEmailAddress + " status: " + ex.Message);
                                 }
                             } catch (Exception e)
                             {
-                                MainConsole.Instance.Error ("[EMAIL] DefaultEmailModule Exception: " + e.Message);
+                                MainConsole.Instance.Error ("[Email] DefaultEmailModule Exception: " + e.Message);
                                 didError = true;
                             }
                         });
@@ -282,7 +282,6 @@ namespace Universe.Modules.Scripting
             }
         }
             
-
         /// <summary>
         ///     Gets any emails that a prim may have asynchronously
         /// </summary>
@@ -517,7 +516,7 @@ namespace Universe.Modules.Scripting
                            }
             catch (Exception e)
             {
-                MainConsole.Instance.Error("[EMAIL] DefaultEmailModule not configured: " + e.Message);
+                MainConsole.Instance.Error("[Email] DefaultEmailModule not configured: " + e.Message);
                 m_Enabled = false;
             }
         }

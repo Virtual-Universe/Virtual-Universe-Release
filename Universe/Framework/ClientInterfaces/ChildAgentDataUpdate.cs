@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -317,7 +317,7 @@ namespace Universe.Framework.ClientInterfaces
         public override OSDMap ToOSD()
         {
             // DEBUG ON
-            //MainConsole.Instance.WarnFormat("[CHILDAGENTDATAUPDATE] Pack data");
+            //MainConsole.Instance.WarnFormat("[Child Agent Data Update] Pack data");
             // DEBUG OFF
 
             OSDMap args = new OSDMap();
@@ -497,7 +497,7 @@ namespace Universe.Framework.ClientInterfaces
                     Appearance = new AvatarAppearance(AgentID, (OSDMap) args["packed_appearance"]);
                     // DEBUG ON
                 else
-                    MainConsole.Instance.Warn("[CHILDAGENTDATAUPDATE] No packed appearance");
+                    MainConsole.Instance.Warn("[Child Agent Data Update] No packed appearance");
                 // DEBUG OFF
             }
             catch

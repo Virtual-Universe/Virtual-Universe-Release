@@ -173,7 +173,7 @@ namespace Universe.Modules.DefaultInventoryIARLoader
             }
             catch (Exception e)
             {
-                MainConsole.Instance.DebugFormat("[LIBRARY MODULE]: Exception when processing archive {0}: {1}",
+                MainConsole.Instance.DebugFormat("[Library Module]: Exception when processing archive {0}: {1}",
                                                  iarFileName,
                                                  e.StackTrace);
             }

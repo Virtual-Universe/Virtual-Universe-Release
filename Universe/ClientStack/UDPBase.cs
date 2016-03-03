@@ -173,6 +173,7 @@ namespace Universe.ClientStack
         void AsyncBeginReceive()
         {
             // allocate a packet buffer
+            //WrappedObject<UDPPacketBuffer> wrappedBuffer = Pool.CheckOut();
             UDPPacketBuffer buf = new UDPPacketBuffer();
 
             if (!m_shutdownFlag)
@@ -181,12 +182,14 @@ namespace Universe.ClientStack
                 {
                     // kick off an async read
                     m_udpSocket.BeginReceiveFrom(
+                        //wrappedBuffer.Instance.Data,
                         buf.Data,
                         0,
                         UDPPacketBuffer.BUFFER_SIZE,
                         SocketFlags.None,
                         ref buf.RemoteEndPoint,
                         AsyncEndReceive,
+                        //wrappedBuffer);
                         buf);
                 }
                 catch (SocketException e)
@@ -202,12 +205,14 @@ namespace Universe.ClientStack
                             try
                             {
                                 m_udpSocket.BeginReceiveFrom(
+                                    //wrappedBuffer.Instance.Data,
                                     buf.Data,
                                     0,
                                     UDPPacketBuffer.BUFFER_SIZE,
                                     SocketFlags.None,
                                     ref buf.RemoteEndPoint,
                                     AsyncEndReceive,
+                                    //wrappedBuffer);
                                     buf);
                                 salvaged = true;
                             }
@@ -242,6 +247,8 @@ namespace Universe.ClientStack
 
                 // get the buffer that was created in AsyncBeginReceive
                 // this is the received data
+                //WrappedObject<UDPPacketBuffer> wrappedBuffer = (WrappedObject<UDPPacketBuffer>)iar.AsyncState;
+                //UDPPacketBuffer buffer = wrappedBuffer.Instance;
                 UDPPacketBuffer buffer = (UDPPacketBuffer) iar.AsyncState;
 
                 try
@@ -266,6 +273,8 @@ namespace Universe.ClientStack
                 }
                 finally
                 {
+                    //wrappedBuffer.Dispose();
+
                     // Synchronous mode waits until the packet callback completes
                     // before starting the receive to fetch another packet
                     if (!m_asyncPacketHandling)

@@ -67,6 +67,7 @@ namespace Universe.ClientStack
         readonly ExpiringCache<UUID, uint> m_inQueueCircuitCodes = new ExpiringCache<UUID, uint>();
         readonly ThreadMonitor outgoingPacketMonitor = new ThreadMonitor();
 
+        //PacketEventDictionary packetEvents = new PacketEventDictionary();
         /// <summary>
         ///     Handlers for incoming packets
         /// </summary>
@@ -168,6 +169,7 @@ namespace Universe.ClientStack
         /// </summary>
         bool m_sendPing;
 
+        //private UDPClientCollection m_clients = new UDPClientCollection();
         /// <summary>
         /// </summary>
         /// <summary>
@@ -298,6 +300,7 @@ namespace Universe.ClientStack
 
             Start(m_recvBufferSize, m_asyncPacketHandling);
 
+
             // Start the packet processing threads
             //Give it the heartbeat delegate with an infinite timeout
             incomingPacketMonitor.StartTrackingThread(0, IncomingPacketHandlerLoop);
@@ -313,7 +316,7 @@ namespace Universe.ClientStack
 
         public new void Stop()
         {
-            MainConsole.Instance.Debug("[LLUDP Server]: Shutting down the LLUDP server for " +
+            MainConsole.Instance.Debug("[LLUD Server]: Shutting down the LLUDP server for " +
                                        m_scene.RegionInfo.RegionName);
             incomingPacketMonitor.Stop();
             outgoingPacketMonitor.Stop();
@@ -486,7 +489,8 @@ namespace Universe.ClientStack
                 catch (IndexOutOfRangeException)
                 {
                     // The packet grew larger than the bufferSize while zerocoding.
-                    // Remove the MSG_ZEROCODED flag and send the unencoded data instead
+                    // Remove the MSG_ZEROCODED flag and send the unencoded data
+                    // instead
                     MainConsole.Instance.Debug("[LLUDP Server]: Packet exceeded buffer size during zerocoding for " +
                                                packet.Type +
                                                ". DataLength=" + dataLength +
@@ -704,6 +708,12 @@ namespace Universe.ClientStack
 
             // Stats tracking
             Interlocked.Increment(ref udpClient.PacketsSent);
+//            if (isReliable)
+//                Interlocked.Add(ref udpClient.UnackedBytes, outgoingPacket.Buffer.DataLength);
+
+            // Put the UDP payload on the wire
+//            AsyncBeginSend(buffer);
+
             SyncSend(buffer);
 
             // Keep track of when this packet was sent out (right now)
@@ -718,6 +728,11 @@ namespace Universe.ClientStack
 
         protected override void PacketReceived(UDPPacketBuffer buffer)
         {
+            //MainConsole.Instance.Info("[LLUDP Server] PacketReceived");
+            // Debugging/Profiling
+            //try { Thread.CurrentThread.Name = "PacketReceived (" + m_scene.RegionInfo.RegionName + ")"; }
+            //catch (Exception) { }
+
             LLUDPClient udpClient;
             Packet packet = null;
             int packetEnd = buffer.DataLength - 1;

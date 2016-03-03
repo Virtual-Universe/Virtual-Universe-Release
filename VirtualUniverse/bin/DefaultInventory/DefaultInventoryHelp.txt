@@ -1,7 +1,7 @@
-This folder is the place where you can add Default Inventory .iar files to load to populate your Default Inventory in Virtual Universe.
+This folder is the place where you can add Default Inventory .iar files to load to populate your Default Inventory in Aurora.
 There are no inventory files by default, however you can download one (from Virtual Universe) at 
 
-https://github.com/Virtual-Universe/Optional-Modules/zipball/master
+https://github.com/universe/Virtual Universe-Optional-Modules/zipball/master
 
 This will download a few other modules as well, but all that is needed for this is the DefaultAssets/ folder. 
 There will be a help file in there to help you set it up.

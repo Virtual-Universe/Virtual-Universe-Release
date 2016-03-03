@@ -133,7 +133,7 @@ namespace Universe.Modules.Attachments
                                        if (null == appearance || null == appearance.Appearance)
                                        {
                                            MainConsole.Instance.WarnFormat(
-                                               "[Attachments Module]: Appearance has not been initialized for agent {0}",
+                                               "[Attachment]: Appearance has not been initialized for agent {0}",
                                                presence.UUID);
                                            return;
                                        }
@@ -152,14 +152,11 @@ namespace Universe.Modules.Attachments
                                            {
                                                RezSingleAttachmentFromInventory(presence.ControllingClient,
                                                                                 attach.ItemID, attach.AssetID, 0, false);
-
-                                              // RezMultipleAttachmentFromInventory(presence.ControllingClient,
-                                              //                                  attach.ItemID, attach.AssetID, 0, false);
                                            }
                                            catch (Exception e)
                                            {
                                                MainConsole.Instance.ErrorFormat(
-                                                   "[Attachments Module]: Unable to rez attachment: {0}", e);
+                                                   "[Attachment]: Unable to rez attachment: {0}", e);
                                            }
                                        }
                                        presence.AttachmentsLoaded = true;
@@ -266,7 +263,6 @@ namespace Universe.Modules.Attachments
         protected void SubscribeToClientEvents(IClientAPI client)
         {
             client.OnRezSingleAttachmentFromInv += ClientRezSingleAttachmentFromInventory;
-            //client.OnRezMultipleAttachmentsFromInv += ClientRezMultipleAttachmentsFromInventory;
             client.OnObjectAttach += ClientAttachObject;
             client.OnObjectDetach += ClientDetachObject;
             client.OnObjectDrop += ClientDropObject;
@@ -277,7 +273,6 @@ namespace Universe.Modules.Attachments
         protected void UnsubscribeFromClientEvents(IClientAPI client)
         {
             client.OnRezSingleAttachmentFromInv -= ClientRezSingleAttachmentFromInventory;
-            //client.OnRezMultipleAttachmentsFromInv -= ClientRezMultipleAttachmentsFromInventory;
             client.OnObjectAttach -= ClientAttachObject;
             client.OnObjectDetach -= ClientDetachObject;
             client.OnObjectDrop -= ClientDropObject;
@@ -312,21 +307,6 @@ namespace Universe.Modules.Attachments
             }
             else
                 SendKillEntity(objectLocalID);
-        }
-
-        protected UUID ClientRezMultipleAttachmentsFromInventory(
-            IClientAPI remoteClient, UUID itemID, int AttachmentPt)
-        {
-            IScenePresence presence = m_scene.GetScenePresence(remoteClient.AgentId);
-            if (presence != null && presence.SuccessfullyMadeRootAgent)
-            {
-                ISceneEntity att = RezMultipleAttachmentsFromInventory(remoteClient, itemID, UUID.Zero, AttachmentPt, false);
-
-                if (null == att)
-                    return UUID.Zero;
-                return att.UUID;
-            }
-            return UUID.Zero;
         }
 
         protected void ClientDropObject(uint objectLocalID, IClientAPI remoteClient)
@@ -514,166 +494,6 @@ namespace Universe.Modules.Attachments
                                 if (m_scene.SceneGraph.AddPrimToScene(objatt))
                                     forceUpdateOnNextDeattach = true;
                                         //If the user has information stored about this object, we need to force updating next time
-                            }
-                            else
-                            {
-                                if (e as ISceneEntity != null)
-                                    (e as ISceneEntity).ScheduleGroupUpdate(PrimUpdateFlags.ForcedFullUpdate);
-
-                                return (e as ISceneEntity); //It was already added
-                            }
-                            /*foreach (var prim in objatt.ChildrenEntities())
-                                prim.LocalId = 0;
-                            bool success = m_scene.SceneGraph.RestorePrimToScene(objatt, true);
-                            if (!success)
-                                MainConsole.Instance.Error("[Attachments Module]: Failed to add attachment " + objatt.Name + " for user " + remoteClient.Name + "!"); */
-                        }
-                    }
-                    catch
-                    {
-                    }
-
-                    //If we updated the attachment, we need to save the change
-                    IScenePresence presence = m_scene.GetScenePresence(remoteClient.AgentId);
-                    if (presence != null)
-                        FindAttachmentPoint(remoteClient, objatt.LocalId, objatt, AttachmentPt, assetID,
-                                            forceUpdateOnNextDeattach, false);
-                    else
-                        objatt = null; //Presence left, kill the attachment
-
-                    #endregion
-                }
-                else
-                {
-                    MainConsole.Instance.WarnFormat(
-                        "[Attachments Module]: Could not retrieve item {0} for attaching to avatar {1} at point {2}",
-                        itemID, remoteClient.Name, AttachmentPt);
-                }
-
-                return objatt;
-            }
-
-            return null;
-        }
-
-        public ISceneEntity RezMultipleAttachmentsFromInventory(
-            IClientAPI remoteClient, UUID itemID, UUID assetID, int AttachmentPt, bool updateUUIDs)
-        {
-            MainConsole.Instance.DebugFormat(
-                "[Attachments Module]: Rezzing attachment to point {0} from item {1} for {2}",
-                (AttachmentPoint)AttachmentPt, itemID, remoteClient.Name);
-            IInventoryAccessModule invAccess = m_scene.RequestModuleInterface<IInventoryAccessModule>();
-            if (invAccess != null)
-            {
-                InventoryItemBase item = null;
-                ISceneEntity objatt = assetID == UUID.Zero
-                                          ? invAccess.CreateObjectFromInventory(remoteClient,
-                                                                                itemID, out item)
-                                          : invAccess.CreateObjectFromInventory(remoteClient, itemID, assetID, null);
-
-                if (objatt != null)
-                {
-                    #region Set up object for attachment status
-
-                    if (item != null)
-                    {
-                        assetID = item.AssetID;
-
-                        // Since renaming the item in the inventory does not affect the name stored
-                        // in the serialization, transfer the correct name from the inventory to the
-                        // object itself before we rez.
-                        objatt.RootChild.Name = item.Name;
-                        objatt.RootChild.Description = item.Description;
-                    }
-
-                    objatt.RootChild.Flags |= PrimFlags.Phantom;
-                    objatt.RootChild.IsAttachment = true;
-                    objatt.SetFromItemID(itemID, assetID);
-
-                    List<ISceneChildEntity> partList = new List<ISceneChildEntity>(objatt.ChildrenEntities());
-
-                    foreach (ISceneChildEntity part in partList)
-                        part.AttachedAvatar = remoteClient.AgentId;
-
-                    objatt.SetGroup(remoteClient.ActiveGroupId, remoteClient.AgentId, false);
-                    if (objatt.RootChild.OwnerID != remoteClient.AgentId)
-                    {
-                        //Need to kill the for sale here
-                        objatt.RootChild.ObjectSaleType = 0;
-                        objatt.RootChild.SalePrice = 10;
-
-                        if (m_scene.Permissions.PropagatePermissions())
-                        {
-                            if (item == null)
-                                item = m_scene.InventoryService.GetItem(remoteClient.AgentId, itemID);
-                            if (item == null)
-                                return null;
-                            if ((item.CurrentPermissions & 8) != 0)
-                            {
-                                foreach (ISceneChildEntity part in partList)
-                                {
-                                    part.EveryoneMask = item.EveryOnePermissions;
-                                    part.NextOwnerMask = item.NextPermissions;
-                                    part.GroupMask = 0; // DO NOT propagate here
-                                }
-                            }
-
-                            objatt.ApplyNextOwnerPermissions();
-                        }
-                    }
-
-                    foreach (ISceneChildEntity part in partList)
-                    {
-                        if (part.OwnerID != remoteClient.AgentId)
-                        {
-                            part.LastOwnerID = part.OwnerID;
-                            part.OwnerID = remoteClient.AgentId;
-                            part.Inventory.ChangeInventoryOwner(remoteClient.AgentId);
-                        }
-                    }
-                    objatt.RootChild.TrimPermissions();
-                    objatt.RootChild.IsAttachment = true;
-                    objatt.IsDeleted = false;
-
-                    //Update the ItemID with the new item
-                    objatt.SetFromItemID(itemID, assetID);
-
-                    //DO NOT SEND THIS KILL ENTITY
-                    // If we send this, when someone copies an inworld object, then wears it, the inworld objects disappears
-                    // If a bug is caused by this, we need to figure out some other workaround.
-                    //SendKillEntity(objatt.RootChild);
-                    //We also have to reset the IDs so that it doesn't have the same IDs as one inworld (possibly)!
-                    ISceneEntity[] atts = GetAttachmentsForAvatar(remoteClient.AgentId);
-                    foreach (var obj in atts)
-                        if (obj.UUID == objatt.UUID)
-                            updateUUIDs = false; //If the user is already wearing it, don't re-add
-                    bool forceUpdateOnNextDeattach = false;
-                    try
-                    {
-                        bool foundDuplicate = false;
-                        foreach (var obj in atts)
-                            if (obj.RootChild.FromUserInventoryItemID == objatt.RootChild.FromUserInventoryItemID)
-                                foundDuplicate = true;
-                        IEntity e;
-                        if (!m_scene.SceneGraph.TryGetEntity(objatt.UUID, out e)) //if (updateUUIDs)
-                        {
-                            foreach (var prim in objatt.ChildrenEntities())
-                                prim.LocalId = 0;
-                            bool success = m_scene.SceneGraph.RestorePrimToScene(objatt, false);
-                            if (!success)
-                            {
-                                MainConsole.Instance.Error("[Attachments Module]: Failed to add attachment " + objatt.Name +
-                                                           " for user " + remoteClient.Name + "!");
-                                return null;
-                            }
-                        }
-                        else
-                        {
-                            if (!foundDuplicate)
-                            {
-                                if (m_scene.SceneGraph.AddPrimToScene(objatt))
-                                    forceUpdateOnNextDeattach = true;
-                                //If the user has information stored about this object, we need to force updating next time
                             }
                             else
                             {
@@ -1009,6 +829,7 @@ namespace Universe.Modules.Attachments
             // Killing it here will cause the client to deselect it
             // It then reappears on the avatar, deselected
             // through the full update below
+            //
             if (group.IsSelected)
             {
                 foreach (ISceneChildEntity part in group.ChildrenEntities())

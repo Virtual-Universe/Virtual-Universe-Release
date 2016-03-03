@@ -39,7 +39,7 @@ UseVariableRegionSightDistance = false
 MaxDistanceVariableRegionSightDistance = 512
 
 [LibraryService]
-;; Set these if you want to change the name or owner of the Universe Library
+;; Set this if you want to change the name or owner of the Universe Library
 ;;  (This is the system default inventory)
 LibraryName = "Universe Library"
 LibraryOwnerName = "Library Owner"
@@ -49,11 +49,10 @@ LibraryOwnerName = "Library Owner"
 GovernorName = "Governor Universe"
 RealEstateOwnerName = "RealEstate Owner"
 BankerName = "Universe Banker"
-MarketplaceOwnerName = "Marketplace Concierge"
+MarketplaceOwnerName = "Marketplace Universe"
 
 [EstateService]
 ;;  Modify this if you want to change the Universe system Estate name
-MainlandEstateName = "Universe Mainland"
 SystemEstateName = "Universe Estate"
 
 [LoginService]

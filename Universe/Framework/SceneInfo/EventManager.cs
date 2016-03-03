@@ -1795,7 +1795,5 @@ namespace Universe.Framework.SceneInfo
                 }
             }
         }
-
-
     }
 }

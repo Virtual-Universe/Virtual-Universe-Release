@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,13 +54,13 @@ namespace Universe.Modules.WorldMap
         }
 
         // (for info about algorithm, see http://en.wikipedia.org/wiki/HSL_and_HSV)
-        public HSV(Color c)
+        public HSV (Color c)
         {
             float r = c.R / 255f;
             float g = c.G / 255f;
             float b = c.B / 255f;
-            float max = Math.Max(Math.Max(r, g), b);
-            float min = Math.Min(Math.Min(r, g), b);
+            float max = Math.Max (Math.Max (r, g), b);
+            float min = Math.Min (Math.Min (r, g), b);
             float diff = max - min;
 
             if (max == min)
@@ -83,7 +83,7 @@ namespace Universe.Modules.WorldMap
         }
 
         // (for info about algorithm, see http://en.wikipedia.org/wiki/HSL_and_HSV)
-        public Color toColor()
+        public Color ToColor ()
         {
             float f = h / 60f;
             int sector = (int)f % 6;
@@ -93,29 +93,29 @@ namespace Universe.Modules.WorldMap
             int ti = (int)(v * (1f - (1f - f) * s) * 255f);
             int vi = (int)(v * 255f);
 
-            if (pi < 0) pi = 0;
+            if (pi < 0)   pi = 0;
             if (pi > 255) pi = 255;
-            if (qi < 0) qi = 0;
+            if (qi < 0)   qi = 0;
             if (qi > 255) qi = 255;
-            if (ti < 0) ti = 0;
+            if (ti < 0)   ti = 0;
             if (ti > 255) ti = 255;
-            if (vi < 0) vi = 0;
+            if (vi < 0)   vi = 0;
             if (vi > 255) vi = 255;
 
             switch (sector)
             {
-                case 0:
-                    return Color.FromArgb(vi, ti, pi);
-                case 1:
-                    return Color.FromArgb(qi, vi, pi);
-                case 2:
-                    return Color.FromArgb(pi, vi, ti);
-                case 3:
-                    return Color.FromArgb(pi, qi, vi);
-                case 4:
-                    return Color.FromArgb(ti, pi, vi);
-                default:
-                    return Color.FromArgb(vi, pi, qi);
+            case 0:
+                return Color.FromArgb (vi, ti, pi);
+            case 1:
+                return Color.FromArgb (qi, vi, pi);
+            case 2:
+                return Color.FromArgb (pi, vi, ti);
+            case 3:
+                return Color.FromArgb (pi, qi, vi);
+            case 4:
+                return Color.FromArgb (ti, pi, vi);
+            default:
+                return Color.FromArgb (vi, pi, qi);
             }
         }
     }
@@ -139,8 +139,6 @@ namespace Universe.Modules.WorldMap
 
         #endregion
 
-        // IConfigSource m_config; // not used currently
-
         // mapping from texture UUIDs to averaged color. This will contain all the textures in the sim.
         //   This could be considered a memory-leak, but it's *hopefully* taken care of after the terrain is generated
         Dictionary<UUID, Color> m_mapping;
@@ -153,13 +151,12 @@ namespace Universe.Modules.WorldMap
         public void Initialize(IScene scene, IConfigSource source)
         {
             m_scene = scene;
-            // m_config = source; // not used currently
 
             // get cache dir
-            m_assetCacheDir = source.Configs["AssetCache"].GetString("CacheDirectory", m_assetCacheDir);
+            m_assetCacheDir = source.Configs ["AssetCache"].GetString ("CacheDirectory",m_assetCacheDir);
             if (m_assetCacheDir == "")
             {
-                var defpath = scene.RequestModuleInterface<ISimulationBase>().DefaultDataPath;
+                var defpath = scene.RequestModuleInterface<ISimulationBase> ().DefaultDataPath;
                 m_assetCacheDir = Path.Combine(defpath, Constants.DEFAULT_ASSETCACHE_DIR);
             }
 
@@ -179,7 +176,6 @@ namespace Universe.Modules.WorldMap
         {
             FastBitmap unsafeBMP = new FastBitmap(mapbmp);
             unsafeBMP.LockBitmap();
-            //DateTime start = DateTime.Now;
             //MainConsole.Instance.Info("[Map Tile]: Generating Maptile Step 1: Terrain");
 
             // These textures should be in the AssetCache anyway, as every client connecting to this
@@ -194,52 +190,49 @@ namespace Universe.Modules.WorldMap
             HSV hsv3 = new HSV(computeAverageColor(settings.TerrainTexture3, defaultColor3));
             HSV hsv4 = new HSV(computeAverageColor(settings.TerrainTexture4, defaultColor4));
 
-            float levelNElow = (float)settings.Elevation1NE;
-            float levelNEhigh = (float)settings.Elevation2NE;
+            float levelNElow = (float) settings.Elevation1NE;
+            float levelNEhigh = (float) settings.Elevation2NE;
 
-            float levelNWlow = (float)settings.Elevation1NW;
-            float levelNWhigh = (float)settings.Elevation2NW;
+            float levelNWlow = (float) settings.Elevation1NW;
+            float levelNWhigh = (float) settings.Elevation2NW;
 
-            float levelSElow = (float)settings.Elevation1SE;
-            float levelSEhigh = (float)settings.Elevation2SE;
+            float levelSElow = (float) settings.Elevation1SE;
+            float levelSEhigh = (float) settings.Elevation2SE;
 
-            float levelSWlow = (float)settings.Elevation1SW;
-            float levelSWhigh = (float)settings.Elevation2SW;
+            float levelSWlow = (float) settings.Elevation1SW;
+            float levelSWhigh = (float) settings.Elevation2SW;
 
-            float waterHeight = (float)settings.WaterHeight;
+            float waterHeight = (float) settings.WaterHeight;
 
             ITerrainChannel heightmap = m_scene.RequestModuleInterface<ITerrainChannel>();
-            float sizeRatio = m_scene.RegionInfo.RegionSizeX / (float)Constants.RegionSize;
+            float sizeRatio = m_scene.RegionInfo.RegionSizeX/(float) Constants.RegionSize;
             for (float y = 0; y < m_scene.RegionInfo.RegionSizeY; y += sizeRatio)
             {
-                float rowRatio = y / (m_scene.RegionInfo.RegionSizeY - 1); // 0 - 1, for interpolation
+                float rowRatio = y/(m_scene.RegionInfo.RegionSizeY - 1); // 0 - 1, for interpolation
                 for (float x = 0; x < m_scene.RegionInfo.RegionSizeX; x += sizeRatio)
                 {
-                    float columnRatio = x / (m_scene.RegionInfo.RegionSizeX - 1); // 0 - 1, for interpolation
+                    float columnRatio = x/(m_scene.RegionInfo.RegionSizeX - 1); // 0 - 1, for interpolation
 
-                    float heightvalue = getHeight(heightmap, (int)x, (int)y);
+                    float heightvalue = getHeight(heightmap, (int) x, (int) y);
 
                     if (heightvalue > waterHeight)
                     {
                         // add a bit noise for breaking up those flat colors:
                         // - a large-scale noise, for the "patches" (using an doubled s-curve for sharper contrast)
                         // - a small-scale noise, for bringing in some small scale variation
-                        //float bigNoise = (float)TerrainUtil.InterpolatedNoise(x / 8.0, y / 8.0) * .5f + .5f; // map to 0.0 - 1.0
-                        //float smallNoise = (float)TerrainUtil.InterpolatedNoise(x + 33, y + 43) * .5f + .5f;
-                        //float hmod = heightvalue + smallNoise * 3f + S(S(bigNoise)) * 10f;
                         float hmod =
                             heightvalue; // 0 - 10
 
                         // find the low/high values for this point (interpolated bilinearily)
                         // (and remember, x=0,y=0 is SW)
-                        float low = levelSWlow * (1f - rowRatio) * (1f - columnRatio) +
-                                    levelSElow * (1f - rowRatio) * columnRatio +
-                                    levelNWlow * rowRatio * (1f - columnRatio) +
-                                    levelNElow * rowRatio * columnRatio;
-                        float high = levelSWhigh * (1f - rowRatio) * (1f - columnRatio) +
-                                     levelSEhigh * (1f - rowRatio) * columnRatio +
-                                     levelNWhigh * rowRatio * (1f - columnRatio) +
-                                     levelNEhigh * rowRatio * columnRatio;
+                        float low = levelSWlow*(1f - rowRatio)*(1f - columnRatio) +
+                                    levelSElow*(1f - rowRatio)*columnRatio +
+                                    levelNWlow*rowRatio*(1f - columnRatio) +
+                                    levelNElow*rowRatio*columnRatio;
+                        float high = levelSWhigh*(1f - rowRatio)*(1f - columnRatio) +
+                                     levelSEhigh*(1f - rowRatio)*columnRatio +
+                                     levelNWhigh*rowRatio*(1f - columnRatio) +
+                                     levelNEhigh*rowRatio*columnRatio;
                         if (high < low)
                         {
                             // someone tried to fool us. High value should be higher than low every time
@@ -255,22 +248,22 @@ namespace Universe.Modules.WorldMap
                         {
                             // HSV-interpolate along the colors
                             // first, rescale h to 0.0 - 1.0
-                            hmod = (hmod - low) / (high - low);
+                            hmod = (hmod - low)/(high - low);
                             // now we have to split: 0.00 => color1, 0.33 => color2, 0.67 => color3, 1.00 => color4
-                            if (hmod < 1f / 3f) hsv = interpolateHSV(ref hsv1, ref hsv2, hmod * 3f);
-                            else if (hmod < 2f / 3f) hsv = interpolateHSV(ref hsv2, ref hsv3, (hmod * 3f) - 1f);
-                            else hsv = interpolateHSV(ref hsv3, ref hsv4, (hmod * 3f) - 2f);
+                            if (hmod < 1f/3f) hsv = interpolateHSV(ref hsv1, ref hsv2, hmod*3f);
+                            else if (hmod < 2f/3f) hsv = interpolateHSV(ref hsv2, ref hsv3, (hmod*3f) - 1f);
+                            else hsv = interpolateHSV(ref hsv3, ref hsv4, (hmod*3f) - 2f);
                         }
                         //get the data from the original image
-                        Color hsvColor = hsv.toColor();
-                        unsafeBMP.SetPixel((int)(x / sizeRatio),
-                                           (int)(((m_scene.RegionInfo.RegionSizeY - 1) - y) / sizeRatio), hsvColor);
+                        Color hsvColor = hsv.ToColor();
+                        unsafeBMP.SetPixel((int) (x/sizeRatio),
+                                           (int) (((m_scene.RegionInfo.RegionSizeY - 1) - y)/sizeRatio), hsvColor);
                     }
                     else
                     {
                         // We're under the water level with the terrain, so paint water instead of land
-                        unsafeBMP.SetPixel((int)(x / sizeRatio),
-                                           (int)(((m_scene.RegionInfo.RegionSizeY - 1) - y) / sizeRatio), WATER_COLOR);
+                        unsafeBMP.SetPixel((int) (x/sizeRatio),
+                                           (int) (((m_scene.RegionInfo.RegionSizeY - 1) - y)/sizeRatio), WATER_COLOR);
                     }
                 }
             }
@@ -331,7 +324,7 @@ namespace Universe.Modules.WorldMap
                 UUID key = UUID.Parse(kvp.Key);
                 if (!m_mapping.ContainsKey(key))
                     m_mapping.Add(key,
-                                  Color.FromArgb((int)(c.A * 255), (int)(c.R * 255), (int)(c.G * 255), (int)(c.B * 255)));
+                                  Color.FromArgb((int) (c.A*255), (int) (c.R*255), (int) (c.G*255), (int) (c.B*255)));
             }
 
             return true;
@@ -425,8 +418,8 @@ namespace Universe.Modules.WorldMap
 
             unsafeBMP.UnlockBitmap();
 
-            int pixels = ((x / 10) * (y / 10));
-            return Color.FromArgb(r / pixels, g / pixels, b / pixels);
+            int pixels = ((x/10)*(y/10));
+            return Color.FromArgb(r/pixels, g/pixels, b/pixels);
         }
 
         // return either the average color of the texture, or the defaultColor if the texturID is invalid
@@ -451,7 +444,7 @@ namespace Universe.Modules.WorldMap
 
         static float S(float v)
         {
-            return (v * v * (3f - 2f * v));
+            return (v*v*(3f - 2f*v));
         }
 
         // interpolate two colors in HSV space and return the resulting color
@@ -466,9 +459,9 @@ namespace Universe.Modules.WorldMap
             if (c1.h - c2.h > 180f) c1.h -= 360f;
             else if (c2.h - c1.h > 180f) c1.h += 360f;
 
-            return new HSV(c1.h * (1f - ratio) + c2.h * ratio,
-                           c1.s * (1f - ratio) + c2.s * ratio,
-                           c1.v * (1f - ratio) + c2.v * ratio);
+            return new HSV(c1.h*(1f - ratio) + c2.h*ratio,
+                           c1.s*(1f - ratio) + c2.s*ratio,
+                           c1.v*(1f - ratio) + c2.v*ratio);
         }
 
         // the heigthfield might have some jumps in values. Rendered land is smooth, though,
@@ -476,7 +469,7 @@ namespace Universe.Modules.WorldMap
         float getHeight(ITerrainChannel hm, int x, int y)
         {
             if (x < (m_scene.RegionInfo.RegionSizeX - 1) && y < (m_scene.RegionInfo.RegionSizeY - 1))
-                return (hm[x, y] * .444f + (hm[x + 1, y] + hm[x, y + 1]) * .222f + hm[x + 1, y + 1] * .112f);
+                return (hm[x, y]*.444f + (hm[x + 1, y] + hm[x, y + 1])*.222f + hm[x + 1, y + 1]*.112f);
 
             return 0;
         }

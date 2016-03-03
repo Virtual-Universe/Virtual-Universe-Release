@@ -1,15 +1,15 @@
 /*
- * Copyright (c) Contributors, http://opensimulator.org/, http://virtual-planets.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
+ *     * Redistributions in binary form must reproduce the above copyrightD
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the OpenSimulator Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -23,7 +23,6 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
  */
 
 using System;
@@ -93,9 +92,6 @@ namespace Universe.Physics.BulletSPlugin
     // The change from CurrentValue to TargetValue is linear over TimeScale seconds.
     public class BSVMotor : BSMotor
     {
-        // public Vector3 FrameOfReference { get; set; }
-        // public Vector3 Offset { get; set; }
-
         public virtual float TimeScale { get; set; }
         public virtual float TargetValueDecayTimeScale { get; set; }
         public virtual float Efficiency { get; set; }
@@ -122,7 +118,7 @@ namespace Universe.Physics.BulletSPlugin
             TimeScale = TargetValueDecayTimeScale = BSMotor.Infinite;
             Efficiency = 1f;
             CurrentValue = TargetValue = Vector3.Zero;
-            ErrorZeroThreshold = BSParam.AvatarStopZeroThreshold;   // was 0.001f;
+            ErrorZeroThreshold = BSParam.AvatarStopZeroThreshold;
         }
 
         public BSVMotor(string useName, float timeScale, float decayTimeScale, float efficiency)
@@ -258,7 +254,6 @@ namespace Universe.Physics.BulletSPlugin
     }
 
     // ============================================================================
-    // ============================================================================
     public class BSFMotor : BSMotor
     {
         public virtual float TimeScale { get; set; }
@@ -336,7 +331,6 @@ namespace Universe.Physics.BulletSPlugin
                 float frictionFactor = 0f;
                 if (FrictionTimescale != BSMotor.Infinite)
                 {
-                    // frictionFactor = (Vector3.One / FrictionTimescale) * timeStep;
                     // Individual friction components can be 'infinite' so compute each separately.
                     frictionFactor = 1f / FrictionTimescale;
                     frictionFactor *= timeStep;
@@ -399,7 +393,6 @@ namespace Universe.Physics.BulletSPlugin
     }
 
     // ============================================================================
-    // ============================================================================
     // Proportional, Integral, Derivitive Motor
     // Good description at http://www.answers.com/topic/pid-controller . Includes processes for choosing p, i and d factors.
     public class BSPIDVMotor : BSVMotor
@@ -452,7 +445,6 @@ namespace Universe.Physics.BulletSPlugin
                 // If efficiency is low (0f), use a factor value that overcorrects.
                 // TODO: might want to vary contribution of different factor depending on efficiency.
                 float factor = ((1f - this.Efficiency) * EfficiencyHigh + EfficiencyLow) / 3f;
-                // float factor = (1f - this.Efficiency) * EfficiencyHigh + EfficiencyLow;
 
                 proportionFactor = new Vector3(factor, factor, factor);
                 integralFactor = new Vector3(factor, factor, factor);

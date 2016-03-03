@@ -42,6 +42,7 @@ namespace Universe.Modules.WorldView
 {
     public class WorldViewModule : INonSharedRegionModule
     {
+
         bool m_Enabled = true;
         IMapImageGenerator m_Generator;
         string m_assetCacheDir = "";
@@ -52,25 +53,25 @@ namespace Universe.Modules.WorldView
 
         public void Initialize(IConfigSource config)
         {
-
-            IConfig moduleConfig = config.Configs["WorldViewModule"];
+         
+            IConfig moduleConfig = config.Configs ["WorldViewModule"];
             if (moduleConfig != null)
             {
                 // enabled by default but allow disabling
-                m_Enabled = moduleConfig.GetBoolean("Enabled", m_Enabled);
-                m_cacheEnabled = moduleConfig.GetBoolean("EnableCache", true);
+                m_Enabled = moduleConfig.GetBoolean ("Enabled", m_Enabled);
+                m_cacheEnabled = moduleConfig.GetBoolean ("EnableCache", true);
                 m_cacheExpires = moduleConfig.GetFloat("CacheExpires", m_cacheExpires);
             }
-
+             
             if (m_Enabled)
             {
-                MainConsole.Instance.Commands.AddCommand(
+                MainConsole.Instance.Commands.AddCommand (
                     "save worldview",
                     "save worldview [filename]< --fov degrees >",
                     "Save a view of the region to a file",
                     HandleSaveWorldview, true, true);
 
-                MainConsole.Instance.Commands.AddCommand(
+                MainConsole.Instance.Commands.AddCommand (
                     "save worldmaptile",
                     "save worldmaptile [filename] < --size pixels >",
                     "Save a maptile view of the region to a file",
@@ -79,21 +80,21 @@ namespace Universe.Modules.WorldView
 
                 if (m_cacheEnabled)
                 {
-                    m_assetCacheDir = config.Configs["AssetCache"].GetString("CacheDirectory", m_assetCacheDir);
+                    m_assetCacheDir = config.Configs ["AssetCache"].GetString ("CacheDirectory",m_assetCacheDir);
                 }
 
             }
         }
 
-        public void AddRegion(IScene scene)
+        public void AddRegion (IScene scene)
         {
         }
 
-        public void RegionLoaded(IScene scene)
+        public void RegionLoaded (IScene scene)
         {
             if (!m_Enabled)
                 return;
-
+            
             m_Generator = scene.RequestModuleInterface<IMapImageGenerator>();
             if (m_Generator == null)
             {
@@ -104,15 +105,15 @@ namespace Universe.Modules.WorldView
             simulationBase = scene.RequestModuleInterface<ISimulationBase>();
             if (simulationBase != null)
             {
-                // verify cache path
+               // verify cache path
                 if (m_cacheEnabled)
                 {
                     if (m_assetCacheDir == "")
                     {
                         var defpath = simulationBase.DefaultDataPath;
-                        m_assetCacheDir = Path.Combine(defpath, Constants.DEFAULT_ASSETCACHE_DIR);
+                        m_assetCacheDir = Path.Combine (defpath, Constants.DEFAULT_ASSETCACHE_DIR);
                     }
-                    CreateCacheDirectories(m_assetCacheDir);
+                    CreateCacheDirectories (m_assetCacheDir);
                 }
 
                 IHttpServer server = simulationBase.GetHttpServer(0);
@@ -123,7 +124,7 @@ namespace Universe.Modules.WorldView
             }
         }
 
-        public void RemoveRegion(IScene scene)
+        public void RemoveRegion (IScene scene)
         {
         }
 
@@ -162,8 +163,8 @@ namespace Universe.Modules.WorldView
                 Directory.CreateDirectory(cacheDir);
 
             m_worldviewCacheDir = cacheDir + "/Worldview";
-            if (!Directory.Exists(m_worldviewCacheDir))
-                Directory.CreateDirectory(m_worldviewCacheDir);
+            if (!Directory.Exists (m_worldviewCacheDir))
+                Directory.CreateDirectory (m_worldviewCacheDir);
         }
 
         public byte[] GenerateWorldView(Vector3 pos, Vector3 rot, float fov,
@@ -181,20 +182,20 @@ namespace Universe.Modules.WorldView
             return str.ToArray();
         }
 
-        public void SaveRegionWorldView(IScene scene, string fileName, float fieldOfView)
+        public void SaveRegionWorldView (IScene scene, string fileName, float fieldOfView)
         {
             m_Generator = scene.RequestModuleInterface<IMapImageGenerator>();
             if (m_Generator == null)
                 return;
 
             // set some basic defaults
-            Vector3 camPos = new Vector3();
+            Vector3 camPos = new Vector3 ();
 
             camPos.X = 1.25f;
             camPos.Y = 1.25f;
             camPos.Z = 61.0f;
 
-            Vector3 camDir = new Vector3();
+            Vector3 camDir = new Vector3 ();
             camDir.X = .687462f;                        // -1  -< y/x > 1
             camDir.Y = .687462f;
             camDir.Z = -0.23536f;                       // -1 (up) < Z > (down) 1
@@ -203,31 +204,32 @@ namespace Universe.Modules.WorldView
             if (fieldOfView > 0)
                 fov = fieldOfView;
 
-            int width = 1280;
-            int height = 720;
+            int width = 1280;           
+            int height = 720;  
 
             Bitmap bmp = m_Generator.CreateViewImage(camPos, camDir, fov, width, height, true);
             if (bmp == null)
                 return;
-
-            MemoryStream str = new MemoryStream();
-            bmp.Save(str, ImageFormat.Jpeg);
-            byte[] jpeg = str.ToArray();
-
+            
+            MemoryStream str = new MemoryStream ();
+            bmp.Save (str, ImageFormat.Jpeg);
+            byte[] jpeg = str.ToArray ();
+             
             // save image
             var savePath = fileName;
             if (string.IsNullOrEmpty(fileName))
             {
                 fileName = scene.RegionInfo.RegionName + ".jpg";
-                savePath = PathHelpers.VerifyWriteFile(fileName, ".jpg", simulationBase.DefaultDataPath + "/Worldview", true);
+                savePath = PathHelpers.VerifyWriteFile (fileName, ".jpg", simulationBase.DefaultDataPath + "/Worldview", true);
             }
             File.WriteAllBytes(savePath, jpeg);
 
-            bmp.Dispose();
+            bmp.Dispose ();
         }
 
-        public void SaveRegionWorldMapTile(IScene scene, string fileName, int size)
+        public void SaveRegionWorldMapTile (IScene scene, string fileName, int size)
         {
+            // if different formats etc are needed
             m_Generator = scene.RequestModuleInterface<IMapImageGenerator>();
             if (m_Generator == null)
                 return;
@@ -235,24 +237,24 @@ namespace Universe.Modules.WorldView
             Bitmap bmp = m_Generator.CreateViewTileImage(size);
             if (bmp == null)
                 return;
-
+            
             var regionName = scene.RegionInfo.RegionName;
             Bitmap outbmp = ResizeBitmap(bmp, size, size, regionName);
-            MemoryStream str = new MemoryStream();
-            outbmp.Save(str, ImageFormat.Jpeg);            // default quality is about 75
-            byte[] jpeg = str.ToArray();
+            MemoryStream str = new MemoryStream ();
+            outbmp.Save (str, ImageFormat.Jpeg);            // default quality is about 75
+            byte [] jpeg  =  str.ToArray ();
 
             // save image
             var savePath = fileName;
             if (string.IsNullOrEmpty(fileName))
             {
                 fileName = regionName + "_maptile.jpg";
-                savePath = PathHelpers.VerifyWriteFile(fileName, ".jpg", simulationBase.DefaultDataPath + "/Worldview", true);
+                savePath = PathHelpers.VerifyWriteFile (fileName, ".jpg", simulationBase.DefaultDataPath + "/Worldview", true);
             }
             File.WriteAllBytes(savePath, jpeg);
 
-            bmp.Dispose();
-            outbmp.Dispose();
+            bmp.Dispose ();
+            outbmp.Dispose ();
         }
 
         protected void HandleSaveWorldview(IScene scene, string[] cmdparams)
@@ -261,38 +263,37 @@ namespace Universe.Modules.WorldView
             float fieldOfView = 0f;
 
             // check for switch options
-            var cmds = new List<string>();
+            var cmds = new List <string>();
             for (int i = 2; i < cmdparams.Length;)
             {
-                if (cmdparams[i].StartsWith("--fov"))
+                if (cmdparams [i].StartsWith ("--fov"))
                 {
-                    fieldOfView = float.Parse(cmdparams[i + 1]);
-                    i += 2;
-                }
-                else
+                    fieldOfView = float.Parse(cmdparams [i + 1]);
+                    i +=2;
+                } else
                 {
-                    cmds.Add(cmdparams[i]);
+                    cmds.Add (cmdparams [i]);
                     i++;
                 }
             }
 
             if (cmds.Count > 0)
-                fileName = cmds[0];
+                fileName = cmds [0];
             else
             {
                 fileName = scene.RegionInfo.RegionName;
-                fileName = MainConsole.Instance.Prompt(" Worldview filename", fileName);
+                fileName = MainConsole.Instance.Prompt (" Worldview filename", fileName);
                 if (fileName == "")
                     return;
             }
 
             //some file sanity checks
-            var savePath = PathHelpers.VerifyWriteFile(fileName, ".jpg", simulationBase.DefaultDataPath + "/Worldview", true);
+            var savePath = PathHelpers.VerifyWriteFile (fileName, ".jpg", simulationBase.DefaultDataPath + "/Worldview", true);
 
-            MainConsole.Instance.InfoFormat(
+            MainConsole.Instance.InfoFormat (
                 "[World view]: Saving worldview for {0} to {1}", scene.RegionInfo.RegionName, savePath);
-
-            SaveRegionWorldView(scene, savePath, fieldOfView);
+        
+            SaveRegionWorldView (scene, savePath, fieldOfView);
         }
 
         protected void HandleSaveWorldTile(IScene scene, string[] cmdparams)
@@ -303,44 +304,43 @@ namespace Universe.Modules.WorldView
                 size = scene.RegionInfo.RegionSizeY;
 
             // check for switch options
-            var cmds = new List<string>();
+            var cmds = new List <string>();
             for (int i = 2; i < cmdparams.Length;)
             {
-                if (cmdparams[i].StartsWith("--size"))
+                if (cmdparams [i].StartsWith ("--size"))
                 {
-                    size = int.Parse(cmdparams[i + 1]);
+                    size = int.Parse(cmdparams [i + 1]);
                     if (size > 4096)
                     {
-                        MainConsole.Instance.Warn("[World view]: You may experience problems generating large images.");
-                        size = int.Parse(MainConsole.Instance.Prompt(" World maptile size", "4096"));
+                    	MainConsole.Instance.Warn("[World view]: You may experience problems generating large images.");
+                    	size = int.Parse(MainConsole.Instance.Prompt (" World maptile size", "4096"));
                     }
-                    i += 2;
-                }
+                    i +=2;
+                } 
                 else
                 {
-                    cmds.Add(cmdparams[i]);
+                    cmds.Add (cmdparams [i]);
                     i++;
                 }
             }
 
             if (cmds.Count > 0)
-                fileName = cmds[0];
+                fileName = cmds [0];
             else
             {
                 fileName = scene.RegionInfo.RegionName;
-                fileName = MainConsole.Instance.Prompt(" World maptile filename", fileName);
+                fileName = MainConsole.Instance.Prompt (" World maptile filename", fileName);
                 if (fileName == "")
                     return;
             }
 
             //some file sanity checks
-            var savePath = PathHelpers.VerifyWriteFile(fileName + "_maptile", ".jpg", simulationBase.DefaultDataPath + "/Worldview", true);
+            var savePath = PathHelpers.VerifyWriteFile (fileName+"_maptile", ".jpg", simulationBase.DefaultDataPath + "/Worldview", true);
 
-            MainConsole.Instance.InfoFormat(
+            MainConsole.Instance.InfoFormat (
                 "[World view]: Saving world maptile for {0} to {1}", scene.RegionInfo.RegionName, savePath);
 
-            SaveRegionWorldMapTile(scene, savePath, size);
-
+            SaveRegionWorldMapTile (scene, savePath, size);
         }
 
         Bitmap ResizeBitmap(Image b, int nWidth, int nHeight, string name)
@@ -355,7 +355,7 @@ namespace Universe.Modules.WorldView
             // overlay if needed
             if (name != "")
             {
-                int fontScale = (nHeight / Constants.RegionSize);
+                int fontScale =   (nHeight / Constants.RegionSize);
                 temp.DrawString(name, new Font("Arial", 8 * fontScale, FontStyle.Regular),
                     new SolidBrush(Color.FromArgb(200, 255, 255, 90)), new Point(5, nHeight - (15 * fontScale)));     // bottom left
             }
@@ -366,14 +366,14 @@ namespace Universe.Modules.WorldView
         // From MSDN
         private static ImageCodecInfo GetEncoderInfo(String mimeType)
         {
-            ImageCodecInfo[] encoders;
-            encoders = ImageCodecInfo.GetImageEncoders();
+           ImageCodecInfo[] encoders;
+           encoders = ImageCodecInfo.GetImageEncoders();
             for (int j = 0; j < encoders.Length; ++j)
             {
                 if (encoders[j].MimeType == mimeType)
                     return encoders[j];
             }
             return null;
-        }
+        }  
     }
 }

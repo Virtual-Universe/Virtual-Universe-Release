@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -98,9 +98,8 @@ namespace Universe.Modules.Archivers
                 MainConsole.Instance.DebugFormat("[Archiver]: Could not find asset {0}", uuid);
             }
 
-//            MainConsole.Instance.InfoFormat(
-//                "[Archiver]: Received {0} of {1} assets requested",
-//                assetsFoundUuids.Count, assetsFoundUuids.Count + assetsNotFoundUuids.Count);
+            //MainConsole.Instance.InfoFormat(
+            //    "[Archiver]: Received {0} of {1} assets requested", assetsFoundUuids.Count, assetsFoundUuids.Count + assetsNotFoundUuids.Count);
 
             MainConsole.Instance.InfoFormat("[Archiver]: Creating archive file.  This may take some time.");
 

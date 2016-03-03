@@ -25,17 +25,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System.Collections.Generic;
-using System.IO;
-using OpenMetaverse;
 using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Modules;
 using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
 using Universe.Framework.SceneInfo;
+using OpenMetaverse;
+using System.Collections.Generic;
+using System.IO;
 using GridRegion = Universe.Framework.Services.GridRegion;
 using RegionFlags = Universe.Framework.Services.RegionFlags;
+
 
 namespace Universe.Modules.Web
 {
@@ -72,8 +73,10 @@ namespace Universe.Modules.Web
             var vars = new Dictionary<string, object>();
             var gridService = webInterface.Registry.RequestModuleInterface<IGridService> ();
 
+
             if (requestParameters.ContainsKey("Submit"))
             {
+
                 string RegionServerURL = requestParameters["RegionServerURL"].ToString();
                 // required
                 if (RegionServerURL == "")  {
@@ -101,6 +104,7 @@ namespace Universe.Modules.Web
                // string UserType = requestParameters.ContainsKey("UserType")         // only admins can set membership
                //     ? requestParameters ["UserType"].ToString ()
                //     : "Resident";
+
 
                 // a bit of idiot proofing
                 if (RegionName == "")  {
@@ -142,23 +146,26 @@ namespace Universe.Modules.Web
 
                     string delayStartup = requestParameters["RegionDelayStartup"].ToString();
                     newRegion.Startup = delayStartup.StartsWith ("n") ? StartupType.Normal : StartupType.Medium;
+
                 }
 
                 if (regionPreset.StartsWith("u"))
                 {
                     // 'standard' setup
-                    newRegion.RegionType = newRegion.RegionType + "Universe";
+                    newRegion.RegionType = newRegion.RegionType + "Universe";                   
                     newRegion.RegionTerrain = "Flatland";
                     newRegion.Startup = StartupType.Normal;
                     newRegion.SeeIntoThisSimFromNeighbor = true;
                     newRegion.InfiniteRegion = true;
-                    newRegion.ObjectCapacity = 50000;
+                    newRegion.ObjectCapacity = 100000;
                     newRegion.RegionPort = RegionPort;
+ 
+
                 }
                 if (regionPreset.StartsWith("o"))       
                 {
                     // 'Openspace' setup
-                    newRegion.RegionType = newRegion.RegionType + "Openspace";
+                    newRegion.RegionType = newRegion.RegionType + "Openspace";                   
                     if (RegionTerrain.StartsWith("a"))
                         newRegion.RegionTerrain = "Aquatic";
                     else
@@ -166,7 +173,7 @@ namespace Universe.Modules.Web
                     newRegion.Startup = StartupType.Medium;
                     newRegion.SeeIntoThisSimFromNeighbor = true;
                     newRegion.InfiniteRegion = true;
-                    newRegion.ObjectCapacity = 750;
+                    newRegion.ObjectCapacity = 25000;
                     newRegion.RegionSettings.AgentLimit = 10;
                     newRegion.RegionSettings.AllowLandJoinDivide = false;
                     newRegion.RegionSettings.AllowLandResell = false;
@@ -174,12 +181,12 @@ namespace Universe.Modules.Web
                 if (regionPreset.StartsWith("h"))       
                 {
                     // 'Homestead' setup
-                    newRegion.RegionType = newRegion.RegionType + "Homestead";
+                    newRegion.RegionType = newRegion.RegionType + "Homestead";                   
                     newRegion.RegionTerrain = "Homestead";
                     newRegion.Startup = StartupType.Medium;
                     newRegion.SeeIntoThisSimFromNeighbor = true;
                     newRegion.InfiniteRegion = true;
-                    newRegion.ObjectCapacity = 3750;
+                    newRegion.ObjectCapacity = 500000;
                     newRegion.RegionSettings.AgentLimit = 20;
                     newRegion.RegionSettings.AllowLandJoinDivide = false;
                     newRegion.RegionSettings.AllowLandResell = false;
@@ -188,12 +195,12 @@ namespace Universe.Modules.Web
                 if (regionPreset.StartsWith("f"))       
                 {
                     // 'Full Region' setup
-                    newRegion.RegionType = newRegion.RegionType + "Full Region";
+                    newRegion.RegionType = newRegion.RegionType + "Full Region";                   
                     newRegion.RegionTerrain = RegionTerrain;
                     newRegion.Startup = StartupType.Normal;
                     newRegion.SeeIntoThisSimFromNeighbor = true;
                     newRegion.InfiniteRegion = true;
-                    newRegion.ObjectCapacity = 15000;
+                    newRegion.ObjectCapacity = 100000;
                     newRegion.RegionSettings.AgentLimit = 100;
                     if (newRegion.RegionType.StartsWith ("M"))                           // defaults are 'true'
                     {
@@ -216,13 +223,14 @@ namespace Universe.Modules.Web
                     IGridRegisterModule gridRegister = webInterface.Registry.RequestModuleInterface<IGridRegisterModule>();
                     if( gridRegister.RegisterRegionWithGrid(null, true, false, null)) 
                     {
+ 
                         response = "<h3>Successfully created region, redirecting to main page</h3>" +
                             "<script language=\"javascript\">" +
                             "setTimeout(function() {window.location.href = \"index.html\";}, 3000);" +
                             "</script>";
                     }
                     else
-                        //response = "<h3>" + error + "</h3>";
+//                        response = "<h3>" + error + "</h3>";
                             response = "<h3> Error registering region with grid</h3>";
                 }
                 else
@@ -291,7 +299,7 @@ namespace Universe.Modules.Web
                 // get some current details
                 //List<GridRegion> regions = gridService.GetRegionsByName(null, "", null,null);
 
-                //var currentInfo = scenemanager.FindCurrentRegionInfo ();
+//                var currentInfo = scenemanager.FindCurrentRegionInfo ();
                 Dictionary<string, int> currentInfo = null;
                 if (currentInfo != null)
                 {
@@ -303,13 +311,16 @@ namespace Universe.Modules.Web
                     vars.Add ("RegionLocX", settings.MapCenter.X);
                     vars.Add ("RegionLocY", settings.MapCenter.Y);
                     vars.Add("RegionPort", 9000);
+
                 }
 
+                   
                 vars.Add ("RegionSizeX", Constants.RegionSize);
                 vars.Add ("RegionSizeY", Constants.RegionSize);
                 vars.Add ("RegionType", webInterface.RegionTypeArgs(translator));
                 vars.Add ("RegionPresetType", webInterface.RegionPresetArgs(translator));
-                vars.Add ("RegionTerrain", webInterface.RegionTerrainArgs(translator));           
+                vars.Add ("RegionTerrain", webInterface.RegionTerrainArgs(translator));
+              
             }
 
                 // Labels
@@ -332,6 +343,7 @@ namespace Universe.Modules.Web
             vars.Add("Submit", translator.GetTranslatedString("Submit"));
             vars.Add("SubmitURL", "home.html");
             vars.Add("ErrorMessage", "");
+
             return vars;
         }
 

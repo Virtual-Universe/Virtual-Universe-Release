@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://opensimulator.org/, http://virtual-planets.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyrightD
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the OpenSimulator Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -43,7 +43,7 @@ namespace Universe.Physics.BulletSPlugin
 
     public abstract class BSLinkset
     {
-        // private static string LogHeader = "[Bulletsim Linkset]";
+        //private static string LogHeader = "[Bulletsim Link Set]";
 
         public enum LinksetImplementation
         {
@@ -66,7 +66,6 @@ namespace Universe.Physics.BulletSPlugin
                     ret = new BSLinksetCompound(physScene, parent);
                     break;
                 case LinksetImplementation.Manual:
-                    // ret = new BSLinksetManual(physScene, parent);
                     break;
                 default:
                     ret = new BSLinksetCompound(physScene, parent);
@@ -75,7 +74,7 @@ namespace Universe.Physics.BulletSPlugin
             if (ret == null)
             {
                 physScene.Logger.ErrorFormat(
-                    "[Bulletsim Linkset] Factory could not create linkset. Parent name={1}, ID={2}", parent.Name,
+                    "[Bulletsim Link Set] Factory could not create linkset. Parent name={1}, ID={2}", parent.Name,
                     parent.LocalID);
             }
             return ret;
@@ -104,7 +103,6 @@ namespace Universe.Physics.BulletSPlugin
         public int LinksetID { get; private set; }
 
         // The children under the root in this linkset.
-        //protected HashSet<BSPrimLinkable> m_children;
         protected Dictionary<BSPrimLinkable, BSLinkInfo> m_children;
 
         // We lock the diddling of linkset classes to prevent any badness.
@@ -146,7 +144,6 @@ namespace Universe.Physics.BulletSPlugin
                 m_nextLinksetID = 1;
             PhysicsScene = scene;
             LinksetRoot = parent;
-            //m_children = new HashSet<BSPrimLinkable>();
             m_children = new Dictionary<BSPrimLinkable, BSLinkInfo>();
             LinksetMass = parent.RawMass;
             Rebuilding = false;
@@ -514,7 +511,7 @@ namespace Universe.Physics.BulletSPlugin
             //if (PhysicsScene.PhysicsLogging.Enabled)
             //    PhysicsScene.DetailLog(msg, args);
             // commented out by fine (logspam at the console)
-            //MainConsole.Instance.InfoFormat("[BSLINKSET]: " + msg, args);
+            //MainConsole.Instance.InfoFormat("[Bulletsim Link Set]: " + msg, args);
         }
     }
 }

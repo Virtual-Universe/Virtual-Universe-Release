@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,7 +24,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 
 using System;
 using System.Collections.Generic;
@@ -226,7 +225,7 @@ namespace Universe.Simulation.Base
         {
             MainConsole.Instance.Info("====================================================================");
             MainConsole.Instance.Info(
-				        string.Format("================ Starting Virtual Universe ({0}) ===================",
+				        string.Format("==================== Starting Virtual Universe ({0}) ===============",
                               (IntPtr.Size == 4 ? "x86" : "x64")));
             MainConsole.Instance.Info("====================================================================");
             MainConsole.Instance.Info("[Virtual Universe Startup]: Version : " + Version + "\n");
@@ -519,7 +518,7 @@ namespace Universe.Simulation.Base
         public virtual void HandleForceGC(IScene scene, string[] cmd)
         {
             GC.Collect();
-            MainConsole.Instance.Warn("[Garbage Collection]: Garbage collection finished");
+            MainConsole.Instance.Warn("[Garbage Collection Service]: Garbage collection finished");
         }
 
         public virtual void runConfig(IScene scene, string[] cmd)
@@ -633,7 +632,7 @@ namespace Universe.Simulation.Base
                     MainConsole.Instance.Info("[Shut Down]: Terminating");
 
                 MainConsole.Instance.Info("[Shut Down]: Shutdown processing on main thread complete. " +
-                                          (close ? " Exiting..." : ""));
+                                          (close ? " Exiting Virtual Universe..." : ""));
 
                 if (close)
                     Environment.Exit(0);

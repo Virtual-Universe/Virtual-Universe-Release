@@ -392,7 +392,7 @@ namespace Universe.Services
                                        if (ourRegion == null)
                                        {
                                            MainConsole.Instance.Info(
-                                               "[Agent Processing]: Failed to inform neighbors about new agent, could not find our region.");
+                                               "[AgentProcessing]: Failed to inform neighbors about new agent, could not find our region.");
                                            return;
                                        }
                                        List<GridRegion> neighbors = GetNeighbors(clientCaps.AccountInfo.AllScopeIDs,
@@ -450,7 +450,7 @@ namespace Universe.Services
                 reason = "The region you are attempting to teleport to is offline";
                 return false;
             }*/
-            MainConsole.Instance.Info("[Agent Processing]: Starting to inform client about neighbor " +
+            MainConsole.Instance.Info("[AgentProcessing]: Starting to inform client about neighbor " +
                                       neighbor.RegionName);
 
             //Notes on this method
@@ -544,14 +544,14 @@ namespace Universe.Services
                                                           neighbor.RegionSizeY,
                                                           requestingRegion);
 
-                    MainConsole.Instance.Info("[Agent Processing]: Completed inform client about neighbor " +
+                    MainConsole.Instance.Info("[AgentProcessing]: Completed inform client about neighbor " +
                                               neighbor.RegionName);
                 }
                 else
                 {
                     clientCaps.RemoveCAPS(neighbor.RegionID);
                     reason = "Could not contact simulator";
-                    MainConsole.Instance.Error("[Agent Processing]: Failed to inform client about neighbor " +
+                    MainConsole.Instance.Error("[AgentProcessing]: Failed to inform client about neighbor " +
                                                neighbor.RegionName +
                                                ", reason: " + reason);
                     return false;
@@ -559,7 +559,7 @@ namespace Universe.Services
                 return true;
             }
             reason = "SimulationService does not exist";
-            MainConsole.Instance.Error("[Agent Processing]: Failed to inform client about neighbor " +
+            MainConsole.Instance.Error("[AgentProcessing]: Failed to inform client about neighbor " +
                                        neighbor.RegionName +
                                        ", reason: " + reason + "!");
             return false;
@@ -648,7 +648,7 @@ namespace Universe.Services
                         reason = !callWasCanceled ? "The teleport timed out" : "Cancelled";
                         if (!callWasCanceled)
                         {
-                            MainConsole.Instance.Warn("[Agent Processing]: Callback never came for teleporting agent " +
+                            MainConsole.Instance.Warn("[AgentProcessing]: Callback never came for teleporting agent " +
                                                       AgentID + ". Resetting.");
                             //Tell the region about it as well
                             SimulationService.FailedToTeleportAgent(regionCaps.Region, destination.RegionID,
@@ -687,7 +687,7 @@ namespace Universe.Services
             }
             catch (Exception ex)
             {
-                MainConsole.Instance.WarnFormat("[Agent Processing]: Exception occurred during agent teleport, {0}", ex);
+                MainConsole.Instance.WarnFormat("[AgentProcessing]: Exception occurred during agent teleport, {0}", ex);
                 reason = "Exception occurred.";
                 if (SimulationService != null)
                     SimulationService.FailedToTeleportAgent(regionCaps.Region, destination.RegionID,
@@ -751,7 +751,7 @@ namespace Universe.Services
 
                                            if (byebyeRegions.Count > 0)
                                            {
-                                               MainConsole.Instance.Info("[Agent Processing]: Closing " +
+                                               MainConsole.Instance.Info("[AgentProcessing]: Closing " +
                                                                          byebyeRegions.Count +
                                                                          " child agents around " + oldRegion.RegionName);
                                                SendCloseChildAgent(AgentID, byebyeRegions);
@@ -766,7 +766,7 @@ namespace Universe.Services
             //Close all agents that we've been given regions for
             foreach (GridRegion region in regionsToClose)
             {
-                MainConsole.Instance.Info("[Agent Processing]: Closing child agent in " + region.RegionName);
+                MainConsole.Instance.Info("[AgentProcessing]: Closing child agent in " + region.RegionName);
                 IRegionClientCapsService regionClientCaps = clientCaps.GetCapsService(region.RegionID);
                 if (regionClientCaps != null)
                 {
@@ -794,7 +794,7 @@ namespace Universe.Services
             if (clientCaps.InTeleport)
             {
                 MainConsole.Instance.Warn(
-                    "[Agent Processing]: Got a request to teleport during another teleport for agent " + AgentID + "!");
+                    "[AgentProcessing]: Got a request to teleport during another teleport for agent " + AgentID + "!");
                 return false; //What??? Stop here and don't go forward
             }
 
@@ -926,7 +926,7 @@ namespace Universe.Services
                     cAgent.IsCrossing = true;
                     if (!SimulationService.UpdateAgent(crossingRegion, cAgent))
                     {
-                        MainConsole.Instance.Warn("[Agent Processing]: Failed to cross agent " + AgentID +
+                        MainConsole.Instance.Warn("[AgentProcessing]: Failed to cross agent " + AgentID +
                                                   " because region did not accept it. Resetting.");
                         reason = "Failed to update an agent";
                         SimulationService.FailedToTeleportAgent(requestingRegionCaps.Region, crossingRegion.RegionID,
@@ -957,7 +957,7 @@ namespace Universe.Services
                         result = WaitForCallback(AgentID);
                         if (!result)
                         {
-                            MainConsole.Instance.Warn("[Agent Processing]: Callback never came in crossing agent " +
+                            MainConsole.Instance.Warn("[AgentProcessing]: Callback never came in crossing agent " +
                                                       circuit.AgentID +
                                                       ". Resetting.");
                             reason = "Crossing timed out";
@@ -990,7 +990,7 @@ namespace Universe.Services
             }
             catch (Exception ex)
             {
-                MainConsole.Instance.WarnFormat("[Agent Processing]: Failed to cross an agent into a new region. {0}", ex);
+                MainConsole.Instance.WarnFormat("[AgentProcessing]: Failed to cross an agent into a new region. {0}", ex);
                 if (SimulationService != null)
                     SimulationService.FailedToTeleportAgent(requestingRegionCaps.Region, crossingRegion.RegionID,
                         AgentID, "Exception occurred", true);
@@ -1044,7 +1044,7 @@ namespace Universe.Services
                             ourNeighbors.Where(
                                 region => region != null && region.RegionID != regionCaps.RegionID && !SimulationService.UpdateAgent(region, agentpos)))
                     {
-                        MainConsole.Instance.Info("[Agent Processing]: Failed to inform " + region.RegionName +
+                        MainConsole.Instance.Info("[AgentProcessing]: Failed to inform " + region.RegionName +
                                                   " about updating agent. ");
                     }
                 }
@@ -1138,7 +1138,7 @@ namespace Universe.Services
                 }
             }
             else
-                MainConsole.Instance.ErrorFormat("[Agent Processing]: No simulation service found! Could not log in user!");
+                MainConsole.Instance.ErrorFormat("[AgentProcessing]: No simulation service found! Could not log in user!");
             return new LoginAgentArgs {Success = success, CircuitData = aCircuit, Reason = reason, SeedCap = seedCap};
         }
 

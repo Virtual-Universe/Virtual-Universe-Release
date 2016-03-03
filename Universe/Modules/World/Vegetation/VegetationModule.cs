@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -106,14 +106,13 @@ namespace Universe.Modules.Vegetation
         {
             if (Array.IndexOf(creationCapabilities, (PCode) shape.PCode) < 0)
             {
-                MainConsole.Instance.DebugFormat("[VEGETATION]: PCode {0} not handled by {1}", shape.PCode, Name);
+                MainConsole.Instance.DebugFormat("[Vegetation]: PCode {0} not handled by {1}", shape.PCode, Name);
                 return null;
             }
 
             ISceneChildEntity rootPart = baseEntity.GetChildPart(baseEntity.UUID);
 
             // if grass or tree, make phantom
-            //rootPart.TrimPermissions();
             rootPart.AddFlag(PrimFlags.Phantom);
             if (rootPart.Shape.PCode != (byte) PCode.Grass)
                 AdaptTree(ref shape);
@@ -143,15 +142,9 @@ namespace Universe.Modules.Vegetation
                 case Tree.WinterPine2:
                     tree.Scale = new Vector3(4, 4, 20);
                     break;
-
                 case Tree.Dogwood:
                     tree.Scale = new Vector3(6.5f, 6.5f, 6.5f);
                     break;
-
-                    // case... other tree types
-                    // tree.Scale = new Vector3(?, ?, ?);
-                    // break;
-
                 default:
                     tree.Scale = new Vector3(4, 4, 4);
                     break;

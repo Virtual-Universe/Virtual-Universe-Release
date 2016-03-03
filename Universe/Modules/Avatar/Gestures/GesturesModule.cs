@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -109,7 +109,7 @@ namespace Universe.Modules.Gestures
             else {
 				if(invService.GetItem(libOwner, gestureId) == null) {
 					MainConsole.Instance.WarnFormat(
-						"[GESTURES]: Unable to find gesture {0} to activate for {1}", gestureId, client.Name);
+						"[Gestures]: Unable to find gesture {0} to activate for {1}", gestureId, client.Name);
 				}
 			}
         }
@@ -128,7 +128,7 @@ namespace Universe.Modules.Gestures
             else
 				if(invService.GetItem(libOwner, gestureId) == null) {
 					MainConsole.Instance.ErrorFormat(
-						"[GESTURES]: Unable to find gesture to deactivate {0} for {1}", gestureId, client.Name);
+						"[Gestures]: Unable to find gesture to deactivate {0} for {1}", gestureId, client.Name);
 				}
         }
     }

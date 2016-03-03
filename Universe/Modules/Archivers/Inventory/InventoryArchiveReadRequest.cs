@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -309,15 +309,14 @@ namespace Universe.Modules.Archivers
         {
             string iarPathExisting = iarPath;
 
-            //            MainConsole.Instance.DebugFormat(
-            //                "[Inventory Archiver]: Loading folder {0} {1}", rootDestFolder.Name, rootDestFolder.ID);
+            //MainConsole.Instance.DebugFormat(
+            //    "[Inventory Archiver]: Loading folder {0} {1}", rootDestFolder.Name, rootDestFolder.ID);
 
             InventoryFolderBase destFolder
                 = ResolveDestinationFolder(rootDestFolder, ref iarPathExisting, ref resolvedFolders);
 
-            //            MainConsole.Instance.DebugFormat(
-            //                "[Inventory Archiver]: originalArchivePath [{0}], section already loaded [{1}]", 
-            //                iarPath, iarPathExisting);
+            //MainConsole.Instance.DebugFormat(
+            //    "[Inventory Archiver]: originalArchivePath [{0}], section already loaded [{1}]",  iarPath, iarPathExisting);
 
             string iarPathToCreate = iarPath.Substring(iarPathExisting.Length);
             CreateFoldersForPath(destFolder, iarPathExisting, iarPathToCreate, ref resolvedFolders, ref loadedNodes);
@@ -349,16 +348,16 @@ namespace Universe.Modules.Archivers
             ref string archivePath,
             ref Dictionary<string, InventoryFolderBase> resolvedFolders)
         {
-            //            string originalArchivePath = archivePath;
+            //string originalArchivePath = archivePath;
 
             while (archivePath.Length > 0)
             {
-                //                MainConsole.Instance.DebugFormat("[Inventory Archiver]: Trying to resolve destination folder {0}", archivePath);
+                //MainConsole.Instance.DebugFormat("[Inventory Archiver]: Trying to resolve destination folder {0}", archivePath);
 
                 if (resolvedFolders.ContainsKey(archivePath))
                 {
-                    //                    MainConsole.Instance.DebugFormat(
-                    //                        "[Inventory Archiver]: Found previously created folder from archive path {0}", archivePath);
+                    //MainConsole.Instance.DebugFormat(
+                    //    "[Inventory Archiver]: Found previously created folder from archive path {0}", archivePath);
                     return resolvedFolders[archivePath];
                 }
                 if (m_merge)
@@ -387,9 +386,8 @@ namespace Universe.Modules.Archivers
                 }
                 else
                 {
-                    //                        MainConsole.Instance.DebugFormat(
-                    //                            "[Inventory Archiver]: Found no previously created folder for archive path {0}",
-                    //                            originalArchivePath);
+                    //MainConsole.Instance.DebugFormat(
+                    //    "[Inventory Archiver]: Found no previously created folder for archive path {0}", originalArchivePath);
                     archivePath = string.Empty;
                     return rootDestFolder;
                 }
@@ -427,7 +425,7 @@ namespace Universe.Modules.Archivers
 
             for (int i = 0; i < rawDirsToCreate.Length; i++)
             {
-                //                MainConsole.Instance.DebugFormat("[Inventory Archiver]: Creating folder {0} from IAR", rawDirsToCreate[i]);
+                //MainConsole.Instance.DebugFormat("[Inventory Archiver]: Creating folder {0} from IAR", rawDirsToCreate[i]);
 
                 if (!rawDirsToCreate[i].Contains(ArchiveConstants.INVENTORY_NODE_NAME_COMPONENT_SEPARATOR))
                     continue;
@@ -538,9 +536,8 @@ namespace Universe.Modules.Archivers
 
                 if (f != null)
                 {
-                    //                    MainConsole.Instance.DebugFormat(
-                    //                        "[LOCAL INVENTORY SERVICES CONNECTOR]: Found folder {0} type {1} for item {2}", 
-                    //                        f.Name, (AssetType)f.Type, item.Name);
+                    //MainConsole.Instance.DebugFormat(
+                    //    "[Local Inventory Services Connector]: Found folder {0} type {1} for item {2}", f.Name, (AssetType)f.Type, item.Name);
 
                     item.Folder = f.ID;
                 }
@@ -554,7 +551,7 @@ namespace Universe.Modules.Archivers
                     else
                     {
                         MainConsole.Instance.WarnFormat(
-                            "[AGENT INVENTORY]: Could not find root folder for {0} when trying to add item {1} with no parent folder specified",
+                            "[Agent Inventory]: Could not find root folder for {0} when trying to add item {1} with no parent folder specified",
                             item.Owner, item.Name);
                         return false;
                     }
@@ -573,7 +570,7 @@ namespace Universe.Modules.Archivers
                 if (!m_inventoryService.AddItem (item))
                 {
                     MainConsole.Instance.WarnFormat (
-                        "[AGENT INVENTORY]: Agent {0} could not add item {1} {2}",
+                        "[Agent Inventory]: Agent {0} could not add item {1} {2}",
                         item.Owner, item.Name, item.ID);
                     return false;
                 }
@@ -614,8 +611,7 @@ namespace Universe.Modules.Archivers
 
                 if (assetType == AssetType.Unknown)
                     MainConsole.Instance.WarnFormat(
-                        "[Inventory Archiver]: Importing {0} byte asset {1} with unknown type", data.Length,
-                        uuid);
+                        "[Inventory Archiver]: Importing {0} byte asset {1} with unknown type", data.Length, uuid);
                 else if (assetType == AssetType.Object)
                 {
                     string xmlData = Utils.BytesToString(data);
@@ -666,8 +662,7 @@ namespace Universe.Modules.Archivers
                 return true;
             }
             MainConsole.Instance.ErrorFormat(
-                "[Inventory Archiver]: Tried to dearchive data with path {0} with an unknown type extension {1}",
-                assetPath, extension);
+                "[Inventory Archiver]: Tried to dearchive data with path {0} with an unknown type extension {1}", assetPath, extension);
 
             return false;
         }

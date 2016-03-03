@@ -96,7 +96,7 @@ namespace Universe.Modules.Chat
             m_TransferModule = m_scene.RequestModuleInterface<IMessageTransferModule> ();
 
             if (m_TransferModule == null)
-                MainConsole.Instance.Error ("[INSTANT MESSAGE]: No message transfer module, lures will not work!");
+                MainConsole.Instance.Error ("[Inatant Message]: No message transfer module, lures will not work!");
         }
 
         public Type ReplaceableInterface
@@ -185,7 +185,7 @@ namespace Universe.Modules.Chat
             if (im.Dialog == (byte)InstantMessageDialog.RequestTeleport)
             {
                 MainConsole.Instance.DebugFormat (
-                    "[HG LURE MODULE]: RequestTeleport sessionID={0}, regionID={1}, message={2}",
+                    "[Space Gate Lure Module]: RequestTeleport sessionID={0}, regionID={1}, message={2}",
                     im.SessionID, im.RegionID, im.Message);
 
                 // Forward. We do this, because the IM module explicitly rejects

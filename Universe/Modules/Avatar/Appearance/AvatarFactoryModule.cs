@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -141,7 +141,7 @@ textures 1
                     m_savetime = sconfig.GetInt("DelayBeforeAppearanceSave", m_savetime);
                     m_sendtime = sconfig.GetInt("DelayBeforeAppearanceSend", m_sendtime);
                     m_initialsendtime = sconfig.GetInt("DelayBeforeInitialAppearanceSend", m_initialsendtime);
-                    // MainConsole.Instance.InfoFormat("[AVFACTORY] configured for {0} save and {1} send",m_savetime,m_sendtime);
+                    // MainConsole.Instance.InfoFormat("[Avatar Factory] configured for {0} save and {1} send",m_savetime,m_sendtime);
                 }
             }
         }
@@ -253,7 +253,7 @@ textures 1
             IAvatarAppearanceModule appearance = sp.RequestModuleInterface<IAvatarAppearanceModule>();
 
             appearance.Appearance.Serial = (int)serial;
-            //MainConsole.Instance.InfoFormat("[AVFACTORY]: start SetAppearance for {0}", client.AgentId);
+            //MainConsole.Instance.InfoFormat("[Avatar Factory]: start SetAppearance for {0}", client.AgentId);
 
             bool texturesChanged = false;
             bool visualParamsChanged = false;
@@ -333,14 +333,14 @@ textures 1
         /// </summary>
         public void QueueAppearanceSend(UUID agentid)
         {
-            MainConsole.Instance.DebugFormat("[AVFACTORY]: Queue appearance send for {0}", agentid);
+            MainConsole.Instance.DebugFormat("[Avatar Factory]: Queue appearance send for {0}", agentid);
 
             _sendQueue.Add(agentid);
         }
 
         public void QueueAppearanceSave(UUID agentid)
         {
-            MainConsole.Instance.DebugFormat("[AVFACTORY]: Queue appearance save for {0}", agentid);
+            MainConsole.Instance.DebugFormat("[Avatar Factory]: Queue appearance save for {0}", agentid);
 
             IScenePresence sp = m_scene.GetScenePresence(agentid);
             if (sp == null)
@@ -354,7 +354,7 @@ textures 1
 
         public void QueueInitialAppearanceSend(UUID agentid)
         {
-            MainConsole.Instance.DebugFormat("[AVFACTORY]: Queue initial appearance send for {0}", agentid);
+            MainConsole.Instance.DebugFormat("[Avatar Factory]: Queue initial appearance send for {0}", agentid);
 
             IScenePresence sp = m_scene.GetScenePresence(agentid);
             if (sp == null)
@@ -757,7 +757,7 @@ textures 1
                     Appearance = sp.Scene.AvatarService.GetAppearance(sp.UUID);
                 if (Appearance == null)
                 {
-                    MainConsole.Instance.Debug("[Scene]: NO AVATAR APPEARANCE FOUND FOR " + sp.Name);
+                    MainConsole.Instance.Debug("[Scene]: No avatar appearance found for " + sp.Name);
                     Appearance = new AvatarAppearance(sp.UUID);
                 }
                 _updateMonitor = m_sp.Scene.RequestModuleInterface<IMonitorModule>().GetMonitor<IAgentUpdateMonitor>(sp.Scene);
@@ -780,7 +780,7 @@ textures 1
                 // only send update from root agents to other clients; children are only "listening posts"
                 if (m_sp.IsChildAgent)
                 {
-                    MainConsole.Instance.Warn("[SCENEPRESENCE] attempt to send avatar data from a child agent");
+                    MainConsole.Instance.Warn("[Scene Presence] attempt to send avatar data from a child agent");
                     return;
                 }
 
@@ -805,7 +805,7 @@ textures 1
             /// <param name="sendAppearance"></param>
             public void SendAvatarDataToAgent(IScenePresence avatar, bool sendAppearance)
             {
-                //MainConsole.Instance.WarnFormat("[SP] Send avatar data from {0} to {1}",m_uuid,avatar.ControllingClient.AgentId);
+                //MainConsole.Instance.WarnFormat("[Scene Presence] Send avatar data from {0} to {1}",m_uuid,avatar.ControllingClient.AgentId);
                 if (!sendAppearance)
                     avatar.SceneViewer.SendPresenceFullUpdate(m_sp);
                 else
@@ -821,7 +821,7 @@ textures 1
                 // only send update from root agents to other clients; children are only "listening posts"
                 if (m_sp.IsChildAgent)
                 {
-                    MainConsole.Instance.Warn("[SCENEPRESENCE] attempt to send avatar data from a child agent");
+                    MainConsole.Instance.Warn("[Scene Presence] attempt to send avatar data from a child agent");
                     return;
                 }
 
@@ -948,7 +948,7 @@ textures 1
                 {
                     //Force send!
                     m_InitialHasWearablesBeenSent = true;
-                    MainConsole.Instance.Warn("[AvatarAppearanceModule]: Been 10 seconds since root agent " + m_sp.Name +
+                    MainConsole.Instance.Warn("[Avatar Appearance Module]: Been 10 seconds since root agent " + m_sp.Name +
                                               " was added and appearance was not sent, force sending now.");
 
                     m_sp.ControllingClient.SendWearables(Appearance.Wearables, Appearance.Serial);

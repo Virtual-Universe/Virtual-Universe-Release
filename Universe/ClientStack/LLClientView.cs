@@ -25,17 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading;
-using System.Xml;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.Messages.Linden;
-using OpenMetaverse.Packets;
-using OpenMetaverse.StructuredData;
+
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
@@ -46,6 +36,17 @@ using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Services.ClassHelpers.Inventory;
 using Universe.Framework.Utilities;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.Messages.Linden;
+using OpenMetaverse.Packets;
+using OpenMetaverse.StructuredData;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading;
+using System.Xml;
 using RegionFlags = OpenMetaverse.RegionFlags;
 
 namespace Universe.ClientStack
@@ -86,7 +87,6 @@ namespace Universe.ClientStack
         public event SetAppearance OnSetAppearance;
         public event AvatarNowWearing OnAvatarNowWearing;
         public event RezSingleAttachmentFromInv OnRezSingleAttachmentFromInv;
-        public event RezMultipleAttachmentsFromInv OnRezMultipleAttachmentsFromInv;
         public event UUIDNameRequest OnDetachAttachmentIntoInv;
         public event ObjectAttach OnObjectAttach;
         public event ObjectDeselect OnObjectDetach;
@@ -374,9 +374,9 @@ namespace Universe.ClientStack
         private uint m_agentFOVCounter;
 
         private readonly IAssetService m_assetService;
-        // ReSharper disable ConvertToConstant.Local
+// ReSharper disable ConvertToConstant.Local
         private bool m_checkPackets = true;
-        // ReSharper restore ConvertToConstant.Local
+// ReSharper restore ConvertToConstant.Local
 
         #endregion Class Members
 
@@ -481,6 +481,9 @@ namespace Universe.ClientStack
             if (advancedConfig != null)
                 m_allowUDPInv = advancedConfig.GetBoolean("AllowUDPInventory", m_allowUDPInv);
 
+            //m_killRecord = new HashSet<uint>();
+//            m_attachmentsSent = new HashSet<uint>();
+
             m_assetService = m_scene.RequestModuleInterface<IAssetService>();
             m_GroupsModule = scene.RequestModuleInterface<IGroupsModule>();
             m_imageManager = new LLImageManager(this, m_assetService, Scene.RequestModuleInterface<IJ2KDecoder>());
@@ -509,6 +512,8 @@ namespace Universe.ClientStack
         public void Reset()
         {
             lastarg = null;
+            //Reset the killObjectUpdate packet stats
+            //m_killRecord = new HashSet<uint>();
         }
 
         public void SetDebugPacketLevel(int newDebug)
@@ -791,6 +796,8 @@ namespace Universe.ClientStack
             OutPacket(handshake, ThrottleOutPacketType.Task);
         }
 
+        /// <summary>
+        /// </summary>
         public void MoveAgentIntoRegion(RegionInfo regInfo, Vector3 pos, Vector3 look)
         {
             AgentMovementCompletePacket mov =
@@ -970,6 +977,7 @@ namespace Universe.ClientStack
                                                                  }
                                                          };
 
+
             int i = 0;
             GVHIRP.VoteItem = new GroupVoteHistoryItemReplyPacket.VoteItemBlock[VoteItems.Length];
 
@@ -1119,12 +1127,13 @@ namespace Universe.ClientStack
                     for (int x = 0; x < m_scene.RegionInfo.RegionSizeX/Constants.TerrainPatchSize; x += 4)
                     {
                         SendLayerPacket(map, y, x);
+                        //Thread.Sleep(35);
                     }
                 }
             }
             catch (Exception e)
             {
-                MainConsole.Instance.Warn("[Client]: SendLayerData() - Failed with exception " + e);
+                MainConsole.Instance.Warn("[Client]: ClientView.API.cs: SendLayerData() - Failed with exception " + e);
             }
         }
 
@@ -1158,6 +1167,7 @@ namespace Universe.ClientStack
                     for (int xa = 0; xa < 4; xa++)
                     {
                         // Send oversize packet in individual patches
+                        //
                         SendLayerData(x + xa, y, map);
                     }
                 }
@@ -1171,6 +1181,7 @@ namespace Universe.ClientStack
                 for (int xa = 0; xa < 4; xa++)
                 {
                     // Send oversize packet in individual patches
+                    //
                     SendLayerData(x + xa, y, map);
                 }
             }
@@ -1179,6 +1190,7 @@ namespace Universe.ClientStack
                 for (int xa = 0; xa < 4; xa++)
                 {
                     // Bad terrain, send individual chunks
+                    //
                     SendLayerData(x + xa, y, map);
                 }
             }
@@ -1261,6 +1273,7 @@ namespace Universe.ClientStack
                         for (int xa = 0; xa < Size; xa++)
                         {
                             // Send oversize packet in individual patches
+                            //
                             SendLayerData(x[i + xa], y[i + xa], map);
                         }
                     }
@@ -1274,6 +1287,7 @@ namespace Universe.ClientStack
                     for (int xa = 0; xa < Size; xa++)
                     {
                         // Send oversize packet in individual patches
+                        //
                         SendLayerData(x[i + xa], y[i + xa], map);
                     }
                 }
@@ -1282,6 +1296,7 @@ namespace Universe.ClientStack
                     for (int xa = 0; xa < Size; xa++)
                     {
                         // Bad terrain, send individual chunks
+                        //
                         SendLayerData(x[i + xa], y[i + xa], map);
                     }
                 }
@@ -1317,12 +1332,15 @@ namespace Universe.ClientStack
             patches[0] = new TerrainPatch {Data = new float[16*16]};
             patches[1] = new TerrainPatch {Data = new float[16*16]};
 
+
+//            for (int y = 0; y < 16*16; y+=16)
+//            {
             for (int x = 0; x < 16*16; x++)
             {
                 patches[0].Data[x] = windSpeeds[x].X;
                 patches[1].Data[x] = windSpeeds[x].Y;
             }
-
+//            }
             byte type = (byte) TerrainPatch.LayerType.Wind;
             if (m_scene.RegionInfo.RegionSizeX > Constants.RegionSize ||
                 m_scene.RegionInfo.RegionSizeY > Constants.RegionSize)
@@ -1346,6 +1364,7 @@ namespace Universe.ClientStack
             TerrainPatch[] patches = new TerrainPatch[1];
             patches[0] = new TerrainPatch {Data = new float[16*16]};
 
+//            for (int y = 0; y < 16*16; y+=16)
             {
                 for (int x = 0; x < 16*16; x++)
                 {
@@ -1417,6 +1436,8 @@ namespace Universe.ClientStack
 
             const int maxsend = 10;
 
+            //int packets = Math.Ceiling(mapBlocks2.Length / maxsend);
+
             List<MapBlockData> sendingBlocks = new List<MapBlockData>();
 
             for (int i = 0; i < mapBlocks2.Length; i++)
@@ -1447,6 +1468,8 @@ namespace Universe.ClientStack
                                        uint locationID,
                                        uint flags, string capsURL)
         {
+            //TeleportFinishPacket teleport = (TeleportFinishPacket)PacketPool.Instance.GetPacket(PacketType.TeleportFinish);
+
             TeleportFinishPacket teleport = new TeleportFinishPacket
                                                 {
                                                     Info =
@@ -1457,6 +1480,7 @@ namespace Universe.ClientStack
                                                             SeedCapability = Util.StringToBytes256(capsURL)
                                                         }
                                                 };
+
 
             IPAddress oIP = newRegionEndPoint.Address;
             byte[] byteIP = oIP.GetAddressBytes();
@@ -1494,7 +1518,8 @@ namespace Universe.ClientStack
         public void SendTeleportStart(uint flags)
         {
             TeleportStartPacket tpStart = (TeleportStartPacket) PacketPool.Instance.GetPacket(PacketType.TeleportStart);
-            tpStart.Info.TeleportFlags = flags; // Teleport via location
+            //TeleportStartPacket tpStart = new TeleportStartPacket();
+            tpStart.Info.TeleportFlags = flags; //16; // Teleport via location
 
             // Hack to get this out immediately and skip throttles
             OutPacket(tpStart, ThrottleOutPacketType.OutBand);
@@ -1575,7 +1600,7 @@ namespace Universe.ClientStack
             };
             Query[0] = MembershipBlock;
             
-            //Note: Nothing is ever done with this?
+            //Note: Nothing is ever done with this?????
             int totalarea = 0;
             List<string> RegionTypes = new List<string>();
             for (int i = 0; i < LandData.Length; i++)
@@ -1641,7 +1666,7 @@ namespace Universe.ClientStack
         {
             if (entities.Length == 0)
                 return; // why!
-            
+
             //MainConsole.Instance.DebugFormat("[Client]: Sending KillObjectPacket to {0} for {1} in {2}", Name, localID, regionHandle);
 
             KillObjectPacket kill = (KillObjectPacket) PacketPool.Instance.GetPacket(PacketType.KillObject);
@@ -1757,11 +1782,13 @@ namespace Universe.ClientStack
             InventoryDescendentsPacket currentPacket = null;
 
             // Handle empty folders
+            //
             if (totalItems == 0 && totalFolders == 0)
                 currentPacket = CreateInventoryDescendentsPacket(ownerID, folderID, version, items.Count + folders.Count,
                                                                  0, 0);
 
             // To preserve SL compatibility, we will NOT combine folders and items in one packet
+            //
             while (itemsSent < totalItems || foldersSent < totalFolders)
             {
                 if (currentPacket == null) // Start a new packet
@@ -1839,6 +1866,7 @@ namespace Universe.ClientStack
                                                                         Flags = item.Flags
                                                                     };
 
+
             newBlock.CRC =
                 Helpers.InventoryCRC(newBlock.CreationDate, newBlock.SaleType,
                                      newBlock.InvType, newBlock.Type,
@@ -1886,6 +1914,7 @@ namespace Universe.ClientStack
                                          SaleType = 0,
                                          Flags = 0
                                      };
+
 
             // No need to add CRC
         }
@@ -1948,6 +1977,7 @@ namespace Universe.ClientStack
                                                       SaleType = item.SaleType
                                                   };
 
+
             inventoryReply.InventoryData[0].CRC =
                 Helpers.InventoryCRC(
                     1000, 0, inventoryReply.InventoryData[0].InvType,
@@ -2009,6 +2039,7 @@ namespace Universe.ClientStack
             // to be in its own bulk update packet.  Also, we can only fit 5 items in a packet (at least this was the limit
             // being used on the Linden grid at 20081203).
             InventoryCollection contents = invService.GetFolderContent(AgentId, folder.ID);
+            // folder.RequestListOfItems();
             List<InventoryItemBase> items = contents.Items;
             while (items.Count > 0)
             {
@@ -2063,6 +2094,7 @@ namespace Universe.ClientStack
                                                                             Name = Util.StringToBytes256(folder.Name)
                                                                         };
 
+
             return folderBlock;
         }
 
@@ -2098,6 +2130,7 @@ namespace Universe.ClientStack
                                                                         SaleType = item.SaleType,
                                                                         CreationDate = item.CreationDate
                                                                     };
+
 
             itemBlock.CRC =
                 Helpers.InventoryCRC(
@@ -2151,6 +2184,7 @@ namespace Universe.ClientStack
                                              SaleType = item.SaleType
                                          };
 
+
             bulkUpdate.ItemData[0].CRC =
                 Helpers.InventoryCRC(1000, 0, bulkUpdate.ItemData[0].InvType,
                                      bulkUpdate.ItemData[0].Type, bulkUpdate.ItemData[0].AssetID,
@@ -2200,6 +2234,7 @@ namespace Universe.ClientStack
                                                       SaleType = Item.SaleType,
                                                       CreationDate = Item.CreationDate
                                                   };
+
 
             InventoryReply.InventoryData[0].CRC =
                 Helpers.InventoryCRC(1000, 0, InventoryReply.InventoryData[0].InvType,
@@ -2308,6 +2343,7 @@ namespace Universe.ClientStack
                                                                                      }).ToArray()
                                                       };
 
+            //int i = 0;
             OutPacket(replyPacket, ThrottleOutPacketType.AvatarInfo);
         }
 
@@ -2538,6 +2574,8 @@ namespace Universe.ClientStack
                 Position = new Vector3(),
                 RegionID = Scene.RegionInfo.RegionID
             });
+
+            //SendInstantMessage(FromAvatarID, fromSessionID, Message, AgentId, SessionId, FromAvatarName, (byte)21,(uint) Util.UnixTimeSinceEpoch());
         }
 
         public void SendLogoutPacket()
@@ -2787,6 +2825,9 @@ namespace Universe.ClientStack
             else if (req.AssetRequestSource == 3)
             {
                 Transfer.TransferInfo.Params = req.Params;
+                // Transfer.TransferInfo.Params = new byte[100];
+                //Array.Copy(req.RequestUser.AgentId.GetBytes(), 0, Transfer.TransferInfo.Params, 0, 16);
+                //Array.Copy(req.RequestUser.SessionId.GetBytes(), 0, Transfer.TransferInfo.Params, 16, 16);
             }
             Transfer.TransferInfo.Size = req.AssetInf.Data.Length;
             Transfer.TransferInfo.TransferID = req.TransferRequestID;
@@ -3212,7 +3253,7 @@ namespace Universe.ClientStack
                                                           };
                 mirplk.Data[i] = mrdata;
             }
-
+            //MainConsole.Instance.Debug(mirplk.ToString());
             OutPacket(mirplk, ThrottleOutPacketType.Land);
         }
 
@@ -3588,6 +3629,7 @@ namespace Universe.ClientStack
                 }
             }
 
+            //OutPacket(aw, ThrottleOutPacketType.Texture);
             OutPacket(aw, ThrottleOutPacketType.AvatarInfo);
         }
 
@@ -3654,12 +3696,15 @@ namespace Universe.ClientStack
 
                 ani.AnimationSourceList[i] = new AvatarAnimationPacket.AnimationSourceListBlock
                                                  {ObjectID = animations.ObjectIDs[i]};
+                //if (objectIDs[i] == UUID.Zero)
+                //    ani.AnimationSourceList[i].ObjectID = sourceAgentId;
             }
             //We do this here to keep the numbers under control
             m_animationSequenceNumber += (animations.Animations.Length*2);
 
             ani.Header.Reliable = true;
             ani.HasVariableBlocks = false;
+            //            OutPacket(ani, ThrottleOutPacketType.Asset);
             OutPacket(ani, ThrottleOutPacketType.AvatarInfo, true, null,
                       delegate
                           { m_scene.GetScenePresence(AgentId).SceneViewer.FinishedAnimationPacketSend(animations); });
@@ -3720,6 +3765,7 @@ namespace Universe.ClientStack
                             Y = (byte) CoarseLocations[i].Y,
                             Z = CoarseLocations[i].Z > 1024 ? (byte) 0 : (byte) (CoarseLocations[i].Z*0.25f)
                         };
+
 
                 loc.Location[i] = lb;
                 loc.AgentData[i] = new CoarseLocationUpdatePacket.AgentDataBlock {AgentID = users[i]};
@@ -3833,7 +3879,7 @@ namespace Universe.ClientStack
                     /*if (m_killRecord.Contains(entity.LocalId))
                         {
                         MainConsole.Instance.ErrorFormat(
-                            "[Client]: Preventing update for prim with local id {0} after client for user {1} told it was deleted. Mantis this at http://mantis.Universe-sim.org/bug_report_page.php !",
+                            "[Client]: Preventing update for prim with local id {0} after client for user {1} told it was deleted. Mantis this at http://mantis.virtual-planets.org/bug_report_page.php !",
                             entity.LocalId, Name);
                         return;
                         }*/
@@ -4052,6 +4098,9 @@ namespace Universe.ClientStack
                 for (int i = 0; i < blocks.Count; i++)
                     packet.ObjectData[i] = blocks[i];
 
+
+                //ObjectUpdatePacket oo = new ObjectUpdatePacket(packet.ToBytes(), ref ii);
+
                 OutPacket(packet, ThrottleOutPacketType.Task, true,
                           p => ResendPrimUpdates(fullUpdates, p),
                           delegate
@@ -4200,6 +4249,7 @@ namespace Universe.ClientStack
         private void ProcessTextureRequests(int numPackets)
         {
             //note: tmp is never used
+            //int tmp = m_udpClient.GetCurTexPacksInQueue();
             if (m_imageManager != null)
                 m_imageManager.ProcessImageQueue(numPackets);
         }
@@ -4319,6 +4369,7 @@ namespace Universe.ClientStack
                                           Header = {Reliable = false}
                                       };
 
+
             OutPacket(pack, ThrottleOutPacketType.Task, true, null,
                       delegate { m_sendingSimStatsPacket = false; });
         }
@@ -4365,6 +4416,7 @@ namespace Universe.ClientStack
 
         public void SendObjectPropertiesReply(List<IEntity> parts)
         {
+            //ObjectPropertiesPacket proper = (ObjectPropertiesPacket)PacketPool.Instance.GetPacket(PacketType.ObjectProperties);
             // TODO: don't create new blocks if recycling an old packet
 
             //Theres automatic splitting, just let it go on through
@@ -4996,7 +5048,9 @@ namespace Universe.ClientStack
             data.CollisionPlane.ToBytes(objectData, 0);
             data.OffsetPosition.ToBytes(objectData, 16);
             data.Velocity.ToBytes(objectData, 28);
+            //data.Acceleration.ToBytes(objectData, 40);
             data.Rotation.ToBytes(objectData, 52);
+            //data.AngularVelocity.ToBytes(objectData, 64);
             string[] spl = data.Name.Split(' ');
             string first = spl[0], last = (spl.Length == 1 ? "" : Util.CombineParams(spl, 1));
 
@@ -5109,7 +5163,9 @@ namespace Universe.ClientStack
                                                                 Material = (byte) data.Material,
                                                                 MediaURL = Utils.StringToBytes(data.CurrentMediaVersion)
                                                             };
-
+            //update.JointAxisOrAnchor = Vector3.Zero; // These are deprecated
+            //update.JointPivot = Vector3.Zero;
+            //update.JointType = 0;
             if (data.IsAttachment)
             {
                 update.NameValue = Util.StringToBytes256("AttachItemID STRING RW SV " + data.FromUserInventoryItemID);
@@ -5168,8 +5224,9 @@ namespace Universe.ClientStack
                     data.CreateSelected = false;
                 }
             }
-            
-            //MainConsole.Instance.DebugFormat("[LLClient View]: Constructing client update for part {0} {1} with flags {2}, localId {3}", data.Name, update.FullID, flags, update.ID);
+
+            //MainConsole.Instance.DebugFormat("[LLClient View]: Constructing client update for part {0} {1} with flags {2}, localId {3}",
+            //    data.Name, update.FullID, flags, update.ID);
 
             update.UpdateFlags = (uint) flags;
 
@@ -5269,6 +5326,7 @@ namespace Universe.ClientStack
                         Primitive.ParticleSystem Sys = new Primitive.ParticleSystem();
                         byte[] pdata = Sys.GetBytes();
                         objectData.Write(pdata, 0, pdata.Length);
+                        //updateFlags = updateFlags & ~CompressedFlags.HasParticles;
                     }
                     else
                         objectData.Write(part.ParticleSystem, 0, part.ParticleSystem.Length);
@@ -5680,6 +5738,7 @@ namespace Universe.ClientStack
                 }
                 else
                 {
+                    //forcedUpdate = true;
                     update = true;
                 }
 
@@ -6021,10 +6080,11 @@ namespace Universe.ClientStack
 
             #endregion
 
-            string fromName = String.Empty;
+            string fromName = String.Empty; //ClientAvatar.firstname + " " + ClientAvatar.lastname;
             byte[] message = inchatpack.ChatData.Message;
             byte type = inchatpack.ChatData.Type;
-            Vector3 fromPos = new Vector3();
+            Vector3 fromPos = new Vector3(); // ClientAvatar.Pos;
+            // UUID fromAgentID = AgentId;
 
             int channel = inchatpack.ChatData.Channel;
 
@@ -6616,6 +6676,33 @@ namespace Universe.ClientStack
             return true;
         }
 
+     /* original - assumed all objects were attachments
+      private bool HandlerRezRestoreToWorld(IClientAPI sender, Packet Pack)
+        {
+            RezSingleAttachmentFromInv handlerRezSingleAttachment = OnRezSingleAttachmentFromInv;
+            if (handlerRezSingleAttachment != null)
+            {
+                RezRestoreToWorldPacket rez = (RezRestoreToWorldPacket) Pack;
+
+                #region Packet Session and User Check
+
+                if (m_checkPackets)
+                {
+                    if (rez.AgentData.SessionID != SessionId ||
+                        rez.AgentData.AgentID != AgentId)
+                        return true;
+                }
+
+                #endregion
+
+                handlerRezSingleAttachment(this, rez.InventoryData.ItemID,
+                                           0);
+            }
+
+            return true;
+        }
+       */
+
         // update 20160129 - greythane-
         bool HandlerRezRestoreToWorld(IClientAPI sender, Packet Pack)
         {
@@ -6638,6 +6725,8 @@ namespace Universe.ClientStack
             }
             return true;
         }
+
+
 
         private bool HandleRezMultipleAttachmentsFromInv(IClientAPI sender, Packet Pack)
         {
@@ -6675,13 +6764,15 @@ namespace Universe.ClientStack
                 DetachAttachmentIntoInvPacket detachtoInv = (DetachAttachmentIntoInvPacket) Pack;
 
                 #region Packet Session and User Check
-                
-                //TODO!
+
+//TODO!
                 // UNSUPPORTED ON THIS PACKET
 
                 #endregion
 
                 UUID itemID = detachtoInv.ObjectData.ItemID;
+                // UUID ATTACH_agentID = detachtoInv.ObjectData.AgentID;
+
                 handlerDetachAttachmentIntoInv(itemID, this);
             }
             return true;
@@ -6901,7 +6992,7 @@ namespace Universe.ClientStack
 
             if (m_checkPackets)
             {
-                //TODO!
+//TODO!
                 // UNSUPPORTED ON THIS PACKET
             }
 
@@ -7325,6 +7416,8 @@ namespace Universe.ClientStack
             }
 
             #endregion
+
+//            ObjectDuplicatePacket.AgentDataBlock AgentandGroupData = dupe.AgentData;
 
             foreach (ObjectDuplicatePacket.ObjectDataBlock t in dupe.ObjectData)
             {
@@ -8114,6 +8207,7 @@ namespace Universe.ClientStack
 
             #endregion
 
+            //handlerTextureRequest = null;
             foreach (RequestImagePacket.RequestImageBlock t in imageRequest.RequestImage)
             {
                 TextureRequestArgs args = new TextureRequestArgs();
@@ -8150,19 +8244,20 @@ namespace Universe.ClientStack
         /// <returns>This parameter may be ignored since we appear to return true whatever happens</returns>
         private bool HandleTransferRequest(IClientAPI sender, Packet Pack)
         {
-            //MainConsole.Instance.Debug("ClientView.ProcessPackets.cs:ProcessInPacket() - Got transfer request");
+            //MainConsole.Instance.Debug("[Client View]: ClientView.ProcessPackets.cs:ProcessInPacket() - Got transfer request");
 
             TransferRequestPacket transfer = (TransferRequestPacket) Pack;
             //MainConsole.Instance.Debug("Transfer Request: " + transfer.ToString());
             // Validate inventory transfers
             // Has to be done here, because AssetCache can't do it
+            //
             UUID taskID = UUID.Zero;
             if (transfer.TransferInfo.SourceType == (int) SourceType.SimInventoryItem)
             {
                 taskID = new UUID(transfer.TransferInfo.Params, 48);
                 UUID itemID = new UUID(transfer.TransferInfo.Params, 64);
                 UUID requestID = new UUID(transfer.TransferInfo.Params, 80);
-                
+
                 //MainConsole.Instance.DebugFormat("[Client]: Got request for asset {0} from item {1} in prim {2} by {3}", requestID, itemID, taskID, Name);
 
                 if (!m_scene.Permissions.BypassPermissions())
@@ -9151,6 +9246,8 @@ namespace Universe.ClientStack
                                                                   else
                                                                   {
                                                                       //no event handler so cancel request
+
+
                                                                       TeleportCancelPacket tpCancel =
                                                                           (TeleportCancelPacket)
                                                                           PacketPool.Instance.GetPacket(
@@ -9736,7 +9833,21 @@ namespace Universe.ClientStack
                                                 convertParamStringToBool(messagePacket.ParamList[8].Parameter));
                     }
                     return true;
-
+                    //                            case "texturebase":
+                    //                                if (((Scene)m_scene).Permissions.CanIssueEstateCommand(AgentId, false))
+                    //                                {
+                    //                                    foreach (EstateOwnerMessagePacket.ParamListBlock block in messagePacket.ParamList)
+                    //                                    {
+                    //                                        string s = Utils.BytesToString(block.Parameter);
+                    //                                        string[] splitField = s.Split(' ');
+                    //                                        if (splitField.Length == 2)
+                    //                                        {
+                    //                                            UUID tempUUID = new UUID(splitField[1]);
+                    //                                            OnSetEstateTerrainBaseTexture(this, Convert.ToInt16(splitField[0]), tempUUID);
+                    //                                        }
+                    //                                    }
+                    //                                }
+                    //                                break;
                 case "texturedetail":
                     if (m_scene.Permissions.CanIssueEstateCommand(AgentId, false))
                     {
@@ -9785,7 +9896,7 @@ namespace Universe.ClientStack
                         if (messagePacket.ParamList.Length != 9)
                         {
                             MainConsole.Instance.Error(
-                                "[Estate Owner Message]: SetRegionTerrain method has a ParamList of invalid length");
+                                "[LLCLient View]: EstateOwnerMessage: SetRegionTerrain method has a ParamList of invalid length");
                         }
                         else
                         {
@@ -9820,7 +9931,7 @@ namespace Universe.ClientStack
                             catch (Exception ex)
                             {
                                 MainConsole.Instance.Error(
-                                    "[Estate Owner Message]: Exception while setting terrain settings: \n" +
+                                    "[LLCLient View]: EstateOwnerMessage: Exception while setting terrain settings: \n" +
                                     messagePacket + "\n" + ex);
                             }
                         }
@@ -10099,6 +10210,9 @@ namespace Universe.ClientStack
 
         private bool HandleEstateCovenantRequest(IClientAPI sender, Packet Pack)
         {
+            //EstateCovenantRequestPacket.AgentDataBlock epack =
+            //     ((EstateCovenantRequestPacket)Pack).AgentData;
+
             EstateCovenantRequest handlerEstateCovenantRequest = OnEstateCovenantRequest;
             if (handlerEstateCovenantRequest != null)
             {
@@ -10601,6 +10715,7 @@ namespace Universe.ClientStack
 
             #endregion
 
+            //MainConsole.Instance.Debug(mirpk.ToString());
             MapItemRequest handlerMapItemRequest = OnMapItemRequest;
             if (handlerMapItemRequest != null)
             {
@@ -11209,6 +11324,7 @@ namespace Universe.ClientStack
                             RequestID = groupTitlesRequest.AgentData.RequestID
                         };
 
+
                 List<GroupTitlesData> titles =
                     m_GroupsModule.GroupTitlesRequest(this,
                                                       groupTitlesRequest.AgentData.GroupID);
@@ -11384,6 +11500,7 @@ namespace Universe.ClientStack
                             RequestID = groupRolesRequest.GroupData.RequestID
                         };
 
+
                 List<GroupRolesData> titles =
                     m_GroupsModule.GroupRoleDataRequest(this,
                                                         groupRolesRequest.GroupData.GroupID);
@@ -11407,6 +11524,7 @@ namespace Universe.ClientStack
                                 Powers = d.Powers,
                                 Members = (uint) d.Members
                             };
+
 
                     i++;
                 }
@@ -12400,6 +12518,8 @@ namespace Universe.ClientStack
                     }
                     else
                     {
+                        // UUID partId = part.UUID;
+
                         switch (block.Type)
                         {
                             case 1:
@@ -12491,8 +12611,8 @@ namespace Universe.ClientStack
                                 UpdatePrimGroupRotation handlerUpdatePrimGroupRotation = OnUpdatePrimGroupMouseRotation;
                                 if (handlerUpdatePrimGroupRotation != null)
                                 {
-                                    //MainConsole.Instance.Debug("new rotation position is " + pos.X + " , " + pos.Y + " , " + pos.Z);
-                                    //MainConsole.Instance.Debug("new group mouse rotation is " + rot4.X + " , " + rot4.Y + " , " + rot4.Z + " , " + rot4.W);
+                                    //  MainConsole.Instance.Debug("new rotation position is " + pos.X + " , " + pos.Y + " , " + pos.Z);
+                                    // MainConsole.Instance.Debug("new group mouse rotation is " + rot4.X + " , " + rot4.Y + " , " + rot4.Z + " , " + rot4.W);
                                     handlerUpdatePrimGroupRotation(localId, pos3, rot4, this);
                                 }
                                 break;
@@ -12503,7 +12623,7 @@ namespace Universe.ClientStack
                                 UpdateVector handlerUpdatePrimGroupScale = OnUpdatePrimGroupScale;
                                 if (handlerUpdatePrimGroupScale != null)
                                 {
-                                    //                                     MainConsole.Instance.Debug("new scale is " + scale7.X + " , " + scale7.Y + " , " + scale7.Z);
+                                    //MainConsole.Instance.Debug("new scale is " + scale7.X + " , " + scale7.Y + " , " + scale7.Z);
                                     handlerUpdatePrimGroupScale(localId, scale7, this);
                                 }
                                 break;
@@ -12550,7 +12670,7 @@ namespace Universe.ClientStack
                                 handlerUpdatePrimScale = OnUpdatePrimScale;
                                 if (handlerUpdatePrimScale != null)
                                 {
-                                    //MainConsole.Instance.Debug("new scale is " + scale.X + " , " + scale.Y + " , " + scale.Z);
+                                    // MainConsole.Instance.Debug("new scale is " + scale.X + " , " + scale.Y + " , " + scale.Z);
                                     handlerUpdatePrimScale(localId, scale6, this);
                                     handlerUpdatePrimSinglePosition = OnUpdatePrimSinglePosition;
                                     if (handlerUpdatePrimSinglePosition != null)
@@ -12686,7 +12806,7 @@ namespace Universe.ClientStack
                     outputPacket = true;
 
                 if (outputPacket && !m_debugRemovePackets.Contains(packet.Type.ToString()))
-                    MainConsole.Instance.DebugFormat("[CLIENT ({1})]: Packet OUT {0}", packet.Type, Name);
+                    MainConsole.Instance.DebugFormat("[Client ({1})]: Packet OUT {0}", packet.Type, Name);
             }
 
             m_udpServer.SendPacket(m_udpClient, packet, throttlePacketType, doAutomaticSplitting, resendMethod,
@@ -12771,7 +12891,7 @@ namespace Universe.ClientStack
                     outputPacket = true;
 
                 if (outputPacket && !m_debugRemovePackets.Contains(packet.Type.ToString()))
-                    MainConsole.Instance.DebugFormat("[CLIENT ({1})]: Packet IN {0}", packet.Type, Name);
+                    MainConsole.Instance.DebugFormat("[Client ({1})]: Packet IN {0}", packet.Type, Name);
             }
 
             if (!ProcessPacketMethod(packet))
@@ -12810,6 +12930,7 @@ namespace Universe.ClientStack
 
             Primitive.TextureEntry ntex = new Primitive.TextureEntry(new UUID("89556747-24cb-43ed-920b-47caed15465f"));
             shape.TextureEntry = ntex.GetBytes();
+            //shape.Textures = ntex;
             return shape;
         }
 
@@ -13007,6 +13128,7 @@ namespace Universe.ClientStack
                                                TransferRequestID = transferRequest.TransferInfo.TransferID
                                            };
 
+
             if (asset == null)
             {
                 SendFailedAsset(req, TransferPacketStatus.AssetUnknownSource);
@@ -13071,6 +13193,7 @@ namespace Universe.ClientStack
                 (RebakeAvatarTexturesPacket) PacketPool.Instance.GetPacket(PacketType.RebakeAvatarTextures);
 
             pack.TextureData = new RebakeAvatarTexturesPacket.TextureDataBlock {TextureID = textureID};
+            //            OutPacket(pack, ThrottleOutPacketType.Texture);
             OutPacket(pack, ThrottleOutPacketType.AvatarInfo);
         }
 
@@ -13212,6 +13335,9 @@ namespace Universe.ClientStack
 
                 OutPacket(packet, ThrottleOutPacketType.Task, true);
             }
+
+            //ControllingClient.SendAvatarTerseUpdate(new SendAvatarTerseData(m_rootRegionHandle, (ushort)(m_scene.TimeDilation * ushort.MaxValue), LocalId,
+            //        AbsolutePosition, Velocity, Vector3.Zero, m_bodyRot, new Vector4(0,0,1,AbsolutePosition.Z - 0.5f), m_uuid, null, GetUpdatePriority(ControllingClient)));
         }
 
         public void ForceSendOnAgentUpdate(IClientAPI client, AgentUpdateArgs args)

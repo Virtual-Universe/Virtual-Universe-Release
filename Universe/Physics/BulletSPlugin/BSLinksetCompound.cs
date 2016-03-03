@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://opensimulator.org/, http://virtual-planets.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyrightD
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the OpenSimulator Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -91,7 +91,7 @@ namespace Universe.Physics.BulletSPlugin
     public sealed class BSLinksetCompound : BSLinkset
     {
 #pragma warning disable 414
-        static string LogHeader = "[Bulletsim Linkset Compound]";
+        static string LogHeader = "[Bulletsim Link Set Compound]";
 #pragma warning restore 414
 
         public BSLinksetCompound(BSScene scene, BSPrimLinkable parent)
@@ -117,7 +117,7 @@ namespace Universe.Physics.BulletSPlugin
             {
                 ret = BSPhysicsShapeType.SHAPE_COMPOUND;
             }
-            // DetailLog("{0},BSLinksetCompound.PreferredPhysicalShape,call,shape={1}", LinksetRoot.LocalID, ret);
+
             return ret;
         }
 
@@ -256,7 +256,7 @@ namespace Universe.Physics.BulletSPlugin
                                     updated.LinksetChildIndex,
                                     updated.RawPosition - LinksetRoot.RawPosition,
                                     updated.RawOrientation*OMV.Quaternion.Inverse(LinksetRoot.RawOrientation),
-                                    true /* shouldRecalculateLocalAabb */);
+                                    true);
                                 updatedChild = true;
                                 DetailLog(
                                     "{0},BSLinksetCompound.UpdateProperties,changeChildPosRot,whichUpdated={1},pos={2},rot={3}",
@@ -329,37 +329,6 @@ namespace Universe.Physics.BulletSPlugin
             // The simulator keeps track of where children should be as the linkset moves. Setting
             //    the pos/rot here does not effect that knowledge as there is no good way for the
             //    physics engine to send the simulator an update for a child.
-
-            /*
-            BSLinksetCompoundInfo lci = child.LinksetInfo as BSLinksetCompoundInfo;
-            if (lci != null)
-            {
-                if (inTaintTime)
-                {
-                    OMV.Vector3 oldPos = child.RawPosition;
-                    child.ForcePosition = LinksetRoot.RawPosition + lci.OffsetFromRoot;
-                    child.ForceOrientation = LinksetRoot.RawOrientation * lci.OffsetRot;
-                    DetailLog("{0},BSLinksetCompound.RecomputeChildWorldPosition,oldPos={1},lci={2},newPos={3}",
-                                                child.LocalID, oldPos, lci, child.RawPosition);
-                }
-                else
-                {
-                    // TaintedObject is not used here so the raw position is set now and not at taint-time.
-                    child.Position = LinksetRoot.RawPosition + lci.OffsetFromRoot;
-                    child.Orientation = LinksetRoot.RawOrientation * lci.OffsetRot;
-                }
-            }
-            else
-            {
-                // This happens when children have been added to the linkset but the linkset
-                //     has not been constructed yet. So like, at taint time, adding children to a linkset
-                //     and then changing properties of the children (makePhysical, for instance)
-                //     but the post-print action of actually rebuilding the linkset has not yet happened.
-                // PhysicsScene.Logger.WarnFormat("{0} Restoring linkset child position failed because of no relative position computed. ID={1}",
-                //                                 LogHeader, child.LocalID);
-                DetailLog("{0},BSLinksetCompound.recomputeChildWorldPosition,noRelativePositonInfo", child.LocalID);
-            }
-            */
         }
 
         // ================================================================
@@ -376,7 +345,6 @@ namespace Universe.Physics.BulletSPlugin
 
                 // Rebuild the compound shape with the new child shape included
                 Refresh(child);
-
             }
             return;
         }

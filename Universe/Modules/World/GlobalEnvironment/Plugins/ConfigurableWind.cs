@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -207,11 +207,11 @@ namespace Universe.Modules.Wind.Plugins
 
         void LogSettings()
         {
-            MainConsole.Instance.InfoFormat("[ConfigurableWind] Average Strength   : {0}", m_avgStrength);
-            MainConsole.Instance.InfoFormat("[ConfigurableWind] Average Direction  : {0}", m_avgDirection);
-            MainConsole.Instance.InfoFormat("[ConfigurableWind] Variance Strength  : {0}", m_varStrength);
-            MainConsole.Instance.InfoFormat("[ConfigurableWind] Variance Direction : {0}", m_varDirection);
-            MainConsole.Instance.InfoFormat("[ConfigurableWind] Rate Change        : {0}", m_rateChange);
+            MainConsole.Instance.InfoFormat("[Configurable Wind] Average Strength   : {0}", m_avgStrength);
+            MainConsole.Instance.InfoFormat("[Configurable Wind] Average Direction  : {0}", m_avgDirection);
+            MainConsole.Instance.InfoFormat("[Configurable Wind] Variance Strength  : {0}", m_varStrength);
+            MainConsole.Instance.InfoFormat("[Configurable Wind] Variance Direction : {0}", m_varDirection);
+            MainConsole.Instance.InfoFormat("[Configurable Wind] Rate Change        : {0}", m_rateChange);
         }
     }
 }

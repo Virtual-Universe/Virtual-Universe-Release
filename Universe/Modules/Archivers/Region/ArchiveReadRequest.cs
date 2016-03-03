@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -696,8 +696,7 @@ namespace Universe.Modules.Archivers
                 return true;
             }
             MainConsole.Instance.ErrorFormat(
-                "[Archiver]: Tried to de-archive data with path {0} with an unknown type extension {1}",
-                assetPath, extension);
+                "[Archiver]: Tried to de-archive data with path {0} with an unknown type extension {1}", assetPath, extension);
             asset = null;
             return false;
         }
@@ -825,7 +824,6 @@ namespace Universe.Modules.Archivers
             parcel.ParcelAccessList = parcelAccess;
 
             return parcel;
-
         }
 
         /// <summary>

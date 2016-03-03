@@ -94,7 +94,7 @@ namespace Universe.Modules.SimConsole
                         m_userKeys.Add(Users[i], (Access) Enum.Parse(typeof (Access), Users[i + 1]));
                     }
                     else
-                        MainConsole.Instance.Warn("[SimConsole]: No second configuration option given for SimConsole Users, ignoring");
+                        MainConsole.Instance.Warn("[Sim Console]: No second configuration option given for SimConsole Users, ignoring");
                 }
             }
         }

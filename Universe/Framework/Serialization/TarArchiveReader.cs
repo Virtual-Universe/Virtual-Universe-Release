@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -124,14 +124,14 @@ namespace Universe.Framework.Serialization
             {
                 int longNameLength = ConvertOctalBytesToDecimal(header, 124, 11);
                 tarHeader.FilePath = m_asciiEncoding.GetString(ReadData(longNameLength));
-                //MainConsole.Instance.DebugFormat("[TAR ARCHIVE READER]: Got long file name {0}", tarHeader.FilePath);
+                //MainConsole.Instance.DebugFormat("[Tar Archive Reader]: Got long file name {0}", tarHeader.FilePath);
                 header = m_br.ReadBytes(512);
             }
             else
             {
                 tarHeader.FilePath = m_asciiEncoding.GetString(header, 0, 100);
                 tarHeader.FilePath = tarHeader.FilePath.Trim(m_nullCharArray);
-                //MainConsole.Instance.DebugFormat("[TAR ARCHIVE READER]: Got short file name {0}", tarHeader.FilePath);
+                //MainConsole.Instance.DebugFormat("[Tar Archive Reader]: Got short file name {0}", tarHeader.FilePath);
             }
 
             tarHeader.FileSize = ConvertOctalBytesToDecimal(header, 124, 11);
@@ -179,14 +179,14 @@ namespace Universe.Framework.Serialization
         {
             byte[] data = m_br.ReadBytes(fileSize);
 
-            //MainConsole.Instance.DebugFormat("[TAR ARCHIVE READER]: fileSize {0}", fileSize);
+            //MainConsole.Instance.DebugFormat("[Tar Archive Reader]: fileSize {0}", fileSize);
 
             // Read the rest of the empty padding in the 512 byte block
             if (fileSize%512 != 0)
             {
                 int paddingLeft = 512 - (fileSize%512);
 
-                //MainConsole.Instance.DebugFormat("[TAR ARCHIVE READER]: Reading {0} padding bytes", paddingLeft);
+                //MainConsole.Instance.DebugFormat("[Tar Archive Reader]: Reading {0} padding bytes", paddingLeft);
 
                 m_br.ReadBytes(paddingLeft);
             }

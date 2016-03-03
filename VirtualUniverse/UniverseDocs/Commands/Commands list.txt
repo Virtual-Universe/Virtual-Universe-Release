@@ -1,6 +1,6 @@
 [load users]
 
-This command will allow you to load a predefined CSV file into your Virtual Universe system. 
+This command will allow you to load a predefined CSV file into your Universe system. 
 
 The CSV file needs to be in the Data/Updates folder and can have any name but suggested name is users.csv
 
@@ -12,6 +12,6 @@ Make sure when there's no Emailaddress that you put none in that field
 
 [save users]
 
-This command will allow you to save ALL the users to a predefined CSV file from your Virtual Universe system. 
+This command will allow you to save ALL the users to a predefined CSV file from your Universe system. 
 
 The CSV file will be in the Data/Updates folder and passwords are not being saved with them (as of this moment)

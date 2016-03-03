@@ -1,39 +1,36 @@
---------------- Virtual-Universe Developers -----------------------
-
-See Second Galaxy Development Team.txt for team directory.
-
-
---------------- WhiteCore-Sim Developers -----------------------
+--------------- Universe Developers -----------------------
 
 Fly-Man-
 Greythane
 
 
---------------- WhiteCore-Sim contributors (Thanks for all the patches :)) -----------------------
-
+--------------- Universe contributors (Thanks for all the patches :)) -----------------------
+EnricoNirvana
 Emperorstarfinder
 Fine77
+H-H-H
 Nhede
+Stormsonweathers
 Any that we might have forgotten
 
 --------------- Aurora contributors (Thanks for all the patches :)) --------------------------
 
-djphil
-Enrico Nirvana
-Fly-Man-
-JAllard
-Kevin Whitman (@Keverw)
-Kristen Mynx
-Mahakala Dharmapala
-Major Rasputin
-Masterful
-Matto Destiny
-Quilz
 Revolution Smythe
-SignpostMarv
-Skidz Tweak
+Mahakala Dharmapala
 Ubit Umarov
+Kristen Mynx
 Whitestar Magic
+Major Rasputin
+Quilz
+Skidz Tweak
+Matto Destiny
+Enrico Nirvana
+djphil
+SignpostMarv
+JAllard
+Fly-Man-
+Kevin Whitman (@Keverw)
+Masterful
 
 ------------------ OpenSim ------------------
 

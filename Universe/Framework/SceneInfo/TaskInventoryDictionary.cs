@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -76,7 +76,7 @@ namespace Universe.Framework.SceneInfo
         // see IXmlSerializable
         public void ReadXml(XmlReader reader)
         {
-            // MainConsole.Instance.DebugFormat("[TASK INVENTORY]: ReadXml current node before actions, {0}", reader.Name);
+            // MainConsole.Instance.DebugFormat("[Task Inventory]: ReadXml current node before actions, {0}", reader.Name);
 
             if (!reader.IsEmptyElement)
             {
@@ -86,21 +86,21 @@ namespace Universe.Framework.SceneInfo
                     TaskInventoryItem item = (TaskInventoryItem) tiiSerializer.Deserialize(reader);
                     Add(item.ItemID, item);
 
-                    //MainConsole.Instance.DebugFormat("[TASK INVENTORY]: Instantiated prim item {0}, {1} from xml", item.Name, item.ItemID);
+                    //MainConsole.Instance.DebugFormat("[Task Inventory]: Instantiated prim item {0}, {1} from xml", item.Name, item.ItemID);
                 }
 
-                // MainConsole.Instance.DebugFormat("[TASK INVENTORY]: Instantiated {0} prim items in total from xml", Count);
+                // MainConsole.Instance.DebugFormat("[Task Inventory]: Instantiated {0} prim items in total from xml", Count);
             }
             // else
             // {
-            //     MainConsole.Instance.DebugFormat("[TASK INVENTORY]: Skipping empty element {0}", reader.Name);
+            //     MainConsole.Instance.DebugFormat("[Task Inventory]: Skipping empty element {0}", reader.Name);
             // }
 
             // For some .net implementations, this last read is necessary so that we advance beyond the end tag
             // of the element wrapping this object so that the rest of the serialization can complete normally.
             reader.Read();
 
-            // MainConsole.Instance.DebugFormat("[TASK INVENTORY]: ReadXml current node after actions, {0}", reader.Name);
+            // MainConsole.Instance.DebugFormat("[Task Inventory]: ReadXml current node after actions, {0}", reader.Name);
         }
 
         // see IXmlSerializable

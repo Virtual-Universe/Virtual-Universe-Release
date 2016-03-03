@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -78,7 +78,7 @@ namespace Universe.Modules.EntityTransfer
                 if (name == Name)
                 {
                     m_Enabled = true;
-                    //MainConsole.Instance.InfoFormat("[ENTITY TRANSFER MODULE]: {0} enabled.", Name);
+                    //MainConsole.Instance.InfoFormat("[Entity Transfer Module]: {0} enabled.", Name);
                 }
             }
         }
@@ -228,7 +228,7 @@ namespace Universe.Modules.EntityTransfer
                         return;
                     }
                     MainConsole.Instance.DebugFormat(
-                        "[ENTITY TRANSFER MODULE]: RequestTeleportToLocation {0} within {1}",
+                        "[Entity Transfer Module]: RequestTeleportToLocation {0} within {1}",
                         position, sp.Scene.RegionInfo.RegionName);
 
                     sp.ControllingClient.SendLocalTeleport(position, lookAt, teleportFlags);
@@ -250,7 +250,7 @@ namespace Universe.Modules.EntityTransfer
             }
             catch (Exception e)
             {
-                MainConsole.Instance.ErrorFormat("[ENTITY TRANSFER MODULE]: Exception on teleport: {0}\n{1}", e.Message,
+                MainConsole.Instance.ErrorFormat("[Entity Transfer Module]: Exception on teleport: {0}\n{1}", e.Message,
                                                  e.StackTrace);
                 sp.ControllingClient.SendTeleportFailed("Internal error");
             }
@@ -267,7 +267,7 @@ namespace Universe.Modules.EntityTransfer
             }
 
             MainConsole.Instance.DebugFormat(
-                "[ENTITY TRANSFER MODULE]: Request Teleport to {0}:{1}/{2}",
+                "[Entity Transfer Module]: Request Teleport to {0}:{1}/{2}",
                 finalDestination.ServerURI, finalDestination.RegionName, position);
 
             sp.ControllingClient.SendTeleportProgress(teleportFlags, "arriving");
@@ -323,10 +323,6 @@ namespace Universe.Modules.EntityTransfer
                 return;
 
             sp.SetAgentLeaving(finalDestination);
-
-            //Kill the groups here, otherwise they will become ghost attachments 
-            //  and stay in the sim, they'll get re-added below into the new sim
-            //KillAttachments(sp);
 
             // Well, this is it. The agent is over there.
             KillEntity(sp.Scene, sp);
@@ -459,7 +455,7 @@ namespace Universe.Modules.EntityTransfer
             }
             catch (Exception ex)
             {
-                MainConsole.Instance.Warn("[EntityTransferModule]: Error finding landmark's region for user " +
+                MainConsole.Instance.Warn("[Entity Transfer Module]: Error finding landmark's region for user " +
                                           remoteClient.Name + ", " + ex);
             }
             if (info == null)
@@ -484,7 +480,7 @@ namespace Universe.Modules.EntityTransfer
 
         public virtual bool TeleportHome(UUID id, IClientAPI client)
         {
-            //MainConsole.Instance.DebugFormat("[ENTITY TRANSFER MODULE]: Request to teleport {0} {1} home", client.FirstName, client.LastName);
+            //MainConsole.Instance.DebugFormat("[Entity Transfer Module]: Request to teleport {0} {1} home", client.FirstName, client.LastName);
 
             UserInfo uinfo =
                 client.Scene.RequestModuleInterface<IAgentInfoService>().GetUserInfo(client.AgentId.ToString());
@@ -498,7 +494,7 @@ namespace Universe.Modules.EntityTransfer
                     client.SendTeleportFailed("Your home region could not be found.");
                     return false;
                 }
-                MainConsole.Instance.DebugFormat("[ENTITY TRANSFER MODULE]: User's home region is {0} {1} ({2}-{3})",
+                MainConsole.Instance.DebugFormat("[Entity Transfer Module]: User's home region is {0} {1} ({2}-{3})",
                                                  regionInfo.RegionName, regionInfo.RegionID,
                                                  regionInfo.RegionLocX/Constants.RegionSize,
                                                  regionInfo.RegionLocY/Constants.RegionSize);
@@ -514,7 +510,7 @@ namespace Universe.Modules.EntityTransfer
                 if (Regions.Count != 0)
                 {
                     MainConsole.Instance.DebugFormat(
-                        "[ENTITY TRANSFER MODULE]: User's home region was not found, using {0} {1} ({2}-{3})",
+                        "[Entity Transfer Module]: User's home region was not found, using {0} {1} ({2}-{3})",
                         Regions[0].RegionName, Regions[0].RegionID, Regions[0].RegionLocX/Constants.RegionSize,
                         Regions[0].RegionLocY/Constants.RegionSize);
 
@@ -554,7 +550,7 @@ namespace Universe.Modules.EntityTransfer
         public virtual void InternalCross(IScenePresence agent, Vector3 attemptedPos, bool isFlying,
                                           GridRegion crossingRegion)
         {
-            MainConsole.Instance.DebugFormat("[EntityTransferModule]: Crossing agent {0} to region {1}", agent.Name,
+            MainConsole.Instance.DebugFormat("[Entity Transfer Module]: Crossing agent {0} to region {1}", agent.Name,
                                              crossingRegion.RegionName);
 
             try
@@ -583,7 +579,7 @@ namespace Universe.Modules.EntityTransfer
             }
             catch (Exception ex)
             {
-                MainConsole.Instance.Warn("[EntityTransferModule]: Exception in crossing: " + ex);
+                MainConsole.Instance.Warn("[Entity Transfer Module]: Exception in crossing: " + ex);
             }
         }
 
@@ -636,7 +632,7 @@ namespace Universe.Modules.EntityTransfer
                 catch (Exception)
                 {
                     MainConsole.Instance.Warn(
-                        "[DATABASE]: exception when trying to remove the prim that crossed the border.");
+                        "[Database]: exception when trying to remove the prim that crossed the border.");
                 }
                 return false;
             }
@@ -719,7 +715,7 @@ namespace Universe.Modules.EntityTransfer
                     catch (Exception e)
                     {
                         MainConsole.Instance.ErrorFormat(
-                            "[ENTITY TRANSFER MODULE]: Exception deleting the old object left behind on a border crossing for {0}, {1}",
+                            "[Entity Transfer Module]: Exception deleting the old object left behind on a border crossing for {0}, {1}",
                             grp, e);
                     }
                 }
@@ -733,13 +729,13 @@ namespace Universe.Modules.EntityTransfer
                         }
                     }
 
-                    MainConsole.Instance.ErrorFormat("[ENTITY TRANSFER MODULE]: Prim crossing failed for {0}", grp);
+                    MainConsole.Instance.ErrorFormat("[Entity Transfer Module]: Prim crossing failed for {0}", grp);
                 }
             }
             else
             {
                 MainConsole.Instance.Error(
-                    "[ENTITY TRANSFER MODULE]: destination was unexpectedly null in Scene.CrossPrimGroupIntoNewRegion()");
+                    "[Entity Transfer Module]: destination was unexpectedly null in Scene.CrossPrimGroupIntoNewRegion()");
             }
 
             return successYN;
@@ -775,7 +771,7 @@ namespace Universe.Modules.EntityTransfer
             //
             if (scene.RegionInfo.EstateSettings.IsBanned(sceneObject.OwnerID))
             {
-                MainConsole.Instance.Info("[EntityTransferModule]: Denied prim crossing for banned avatar");
+                MainConsole.Instance.Info("[Entity Transfer Module]: Denied prim crossing for banned avatar");
 
                 return false;
             }
@@ -786,9 +782,7 @@ namespace Universe.Modules.EntityTransfer
                                                       true, sceneObject.AbsolutePosition, sceneObject.OwnerID))
                 {
                     // Deny non attachments based on parcel settings
-                    //
-                    MainConsole.Instance.Info("[EntityTransferModule]: Denied prim crossing " +
-                                              "because of parcel settings");
+                    MainConsole.Instance.Info("[Entity Transfer Module]: Denied prim crossing " + "because of parcel settings");
 
                     IBackupModule backup = scene.RequestModuleInterface<IBackupModule>();
                     if (backup != null)
@@ -1020,8 +1014,6 @@ namespace Universe.Modules.EntityTransfer
                 sp.CopyTo(data);
                 agent = data;
                 circuitData = BuildCircuitDataForPresence(sp, sp.AbsolutePosition);
-                //if (agentIsLeaving)
-                //    sp.SetAgentLeaving(null);//We aren't sure where they are going
                 return true;
             }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -227,13 +227,13 @@ namespace Universe.Modules.Archivers
 
                     if (asset != null)
                     {
-//                        MainConsole.Instance.DebugFormat("[Archiver]: Writing asset {0}", id);
+                        //MainConsole.Instance.DebugFormat("[Archiver]: Writing asset {0}", id);
                         m_foundAssetUuids.Add(asset.ID);
                         m_assetsArchiver.WriteAsset(asset);
                     }
                     else
                     {
-//                        MainConsole.Instance.DebugFormat("[Archiver]: Recording asset {0} as not found", id);
+                        //MainConsole.Instance.DebugFormat("[Archiver]: Recording asset {0} as not found", id);
                         m_notFoundAssetUuids.Add(new UUID(assetID));
                     }
 

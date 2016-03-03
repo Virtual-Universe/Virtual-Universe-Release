@@ -55,7 +55,7 @@ namespace Universe.Modules
             if (stream == null)
                 return null;
 
-			MainConsole.Instance.Warn("[TarRegionDataLoader]: loading region data: " + file);
+			MainConsole.Instance.Warn("[Tar Region Data Loader]: loading region data: " + file);
  
 			GZipStream m_loadStream = new GZipStream(stream, CompressionMode.Decompress);
             TarArchiveReader reader = new TarArchiveReader(m_loadStream);
@@ -309,7 +309,7 @@ namespace Universe.Modules
             }
             catch (Exception ex)
             {
-				MainConsole.Instance.Warn("[TarRegionDataLoader]: Failed to save backup: " + ex.ToString());
+				MainConsole.Instance.Warn("[Tar Region Data Loader]: Failed to save backup: " + ex.ToString());
                 return false;
             }
             return true;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -50,8 +50,8 @@ namespace Universe.Framework.ConsoleFramework
 
         public string LogPath
         {
-            get{ return MainConsole.Instance.LogPath; }
-            set{ MainConsole.Instance.LogPath = value;}
+            get { return MainConsole.Instance.LogPath; }
+            set { MainConsole.Instance.LogPath = value; }
         }
 
         public virtual void Initialize(IConfigSource source, ISimulationBase simBase)
@@ -91,12 +91,12 @@ namespace Universe.Framework.ConsoleFramework
             /*string line = */
             ReadLine(m_defaultPrompt + "# ", true, true);
 
-//            result.AsyncWaitHandle.WaitOne(-1);
+            // result.AsyncWaitHandle.WaitOne(-1);
 
-//            if (line != String.Empty && line.Replace(" ", "") != String.Empty) //If there is a space, its fine
-//            {
-//                MainConsole.Instance.Info("[GUICONSOLE] Invalid command");
-//            }
+            //if (line != String.Empty && line.Replace(" ", "") != String.Empty) //If there is a space, its fine
+            //{
+            //   MainConsole.Instance.Info("[GUI COnsole] Invalid command");
+            //}
         }
 
         public void RunCommand(string cmd)
@@ -117,13 +117,8 @@ namespace Universe.Framework.ConsoleFramework
         {
             string oldDefaultPrompt = m_defaultPrompt;
             m_defaultPrompt = p;
-//            System.Console.Write("{0}", p);
+            //System.Console.Write("{0}", p);
             string cmdinput = Console.ReadLine();
-
-//            while (cmdinput.Equals(null))
-//            {
-//                ;
-//            }
 
             if (isCommand)
             {
@@ -312,7 +307,7 @@ namespace Universe.Framework.ConsoleFramework
         private void t_Elapsed(object sender, ElapsedEventArgs e)
         {
             //Tell the GUI that we are still here and it needs to keep checking
-            Console.Write((char) 0);
+            Console.Write((char)0);
         }
 
         public Level Threshold { get; set; }
@@ -417,7 +412,6 @@ namespace Universe.Framework.ConsoleFramework
         {
             Output(message.ToString(), level);
         }
-
         public void Trace(object message)
         {
             Output(message.ToString(), Level.Trace);

@@ -1,15 +1,15 @@
 /*
- * Copyright (c) Contributors, http://opensimulator.org/, http://virtual-planets.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
+ *     * Redistributions in binary form must reproduce the above copyrightD
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the OpenSimulator Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -23,12 +23,13 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * The quotations from http://wiki.secondlife.com/wiki/Linden_Vehicle_Tutorial
- * are Copyright (c) 2009 Linden Research, Inc and are used under their license
- * of Creative Commons Attribution-Share Alike 3.0
- * (http://creativecommons.org/licenses/by-sa/3.0/).
  */
+/*
+* The quotations from http://wiki.secondlife.com/wiki/Linden_Vehicle_Tutorial
+* are Copyright (c) 2009 Linden Research, Inc and are used under their license
+* of Creative Commons Attribution-Share Alike 3.0
+* (http://creativecommons.org/licenses/by-sa/3.0/).
+*/
 
 using System;
 using OpenMetaverse;
@@ -117,12 +118,11 @@ namespace Universe.Physics.BulletSPlugin
 
         // Just some recomputed constants:
 #pragma warning disable 414
-        static readonly float TwoPI = ((float)Math.PI) * 2f; 
-        static readonly float FourPI = ((float)Math.PI) * 4f; 
+        static readonly float TwoPI = ((float)Math.PI) * 2f;
+        static readonly float FourPI = ((float)Math.PI) * 4f;
         static readonly float PIOverFour = ((float)Math.PI) / 4f;
         static readonly float PIOverTwo = ((float)Math.PI) / 2f;
 #pragma warning restore 414
-
 
         public BSDynamics(BSScene myScene, BSPrim myPrim, string actorName)
             : base(myScene, myPrim, actorName)
@@ -133,26 +133,26 @@ namespace Universe.Physics.BulletSPlugin
             // SetupVehicleDebugging();
         }
 
-/*  using params fro BSParams now -gerythane-
-        // Stopgap debugging enablement. Allows source level debugging but still checking
-        //    in changes by making enablement of debugging flags from INI file.
-        // For debugging, flags to turn on and off individual corrections.
-        public bool enableAngularVerticalAttraction;
-        public bool enableAngularDeflection;
-        public bool enableAngularBanking;
-        public void SetupVehicleDebugging()
-        {
-            enableAngularVerticalAttraction = true;
-            enableAngularDeflection = false;
-            enableAngularBanking = true;
-            if (BSParam.VehicleDebuggingEnabled)
-            {
-                enableAngularVerticalAttraction = true;
-                enableAngularDeflection = false;
-                enableAngularBanking = false;
-            }
-        }
-*/
+        /*  using params fro BSParams now -gerythane-
+                // Stopgap debugging enablement. Allows source level debugging but still checking
+                //    in changes by making enablement of debugging flags from INI file.
+                // For debugging, flags to turn on and off individual corrections.
+                public bool enableAngularVerticalAttraction;
+                public bool enableAngularDeflection;
+                public bool enableAngularBanking;
+                public void SetupVehicleDebugging()
+                {
+                    enableAngularVerticalAttraction = true;
+                    enableAngularDeflection = false;
+                    enableAngularBanking = true;
+                    if (BSParam.VehicleDebuggingEnabled)
+                    {
+                        enableAngularVerticalAttraction = true;
+                        enableAngularDeflection = false;
+                        enableAngularBanking = false;
+                    }
+                }
+        */
 
         // Return 'true' if this vehicle is doing vehicle things
         public bool IsActive
@@ -276,13 +276,13 @@ namespace Universe.Physics.BulletSPlugin
                     m_angularFrictionTimescale = new Vector3(pValue.X, pValue.Y, pValue.Z);
                     break;
                 case Vehicle.ANGULAR_MOTOR_DIRECTION:
-                        // Limit requested angular speed to 2 rps= 4 pi rads/sec
-                    pValue.X = ClampInRange (-FourPI, pValue.X, FourPI);
-                    pValue.Y = ClampInRange (-FourPI, pValue.Y, FourPI);
-                    pValue.Z = ClampInRange (-FourPI, pValue.Z, FourPI);
-                    m_angularMotorDirection = new Vector3 (pValue.X, pValue.Y, pValue.Z);
-                    m_angularMotor.Zero ();
-                    m_angularMotor.SetTarget (m_angularMotorDirection);
+                    // Limit requested angular speed to 2 rps= 4 pi rads/sec
+                    pValue.X = ClampInRange(-FourPI, pValue.X, FourPI);
+                    pValue.Y = ClampInRange(-FourPI, pValue.Y, FourPI);
+                    pValue.Z = ClampInRange(-FourPI, pValue.Z, FourPI);
+                    m_angularMotorDirection = new Vector3(pValue.X, pValue.Y, pValue.Z);
+                    m_angularMotor.Zero();
+                    m_angularMotor.SetTarget(m_angularMotorDirection);
                     break;
                 case Vehicle.LINEAR_FRICTION_TIMESCALE:
                     pValue.X = ClampInRange(0.25f, pValue.X, 120);
@@ -621,7 +621,7 @@ namespace Universe.Physics.BulletSPlugin
         {
             // If asking for a refresh, reset the physical parameters before the next simulation step.
             m_physicsScene.PostTaintObject("BSDynamics.Refresh", ControllingPrim.LocalID,
-                delegate() { SetPhysicalParameters(); });
+                delegate () { SetPhysicalParameters(); });
         }
 
         // Some of the properties of this prim may have changed.
@@ -634,8 +634,8 @@ namespace Universe.Physics.BulletSPlugin
                 m_vehicleMass = ControllingPrim.TotalMass;
 
                 // Friction affects are handled by this vehicle code
-                 m_physicsScene.PE.SetFriction(ControllingPrim.PhysBody, BSParam.VehicleFriction);
-                 m_physicsScene.PE.SetRestitution(ControllingPrim.PhysBody, BSParam.VehicleRestitution);
+                m_physicsScene.PE.SetFriction(ControllingPrim.PhysBody, BSParam.VehicleFriction);
+                m_physicsScene.PE.SetRestitution(ControllingPrim.PhysBody, BSParam.VehicleRestitution);
                 //ControllingPrim.Linkset.SetPhysicalFriction(BSParam.VehicleFriction);
                 //ControllingPrim.Linkset.SetPhysicalRestitution(BSParam.VehicleRestitution);
 
@@ -647,7 +647,7 @@ namespace Universe.Physics.BulletSPlugin
                 m_physicsScene.PE.SetAngularFactorV(ControllingPrim.PhysBody, BSParam.VehicleAngularFactor);
 
                 // Vehicles report collision events so we know when it's on the ground
-                 m_physicsScene.PE.AddToCollisionFlags(ControllingPrim.PhysBody, CollisionFlags.BS_VEHICLE_COLLISIONS);
+                m_physicsScene.PE.AddToCollisionFlags(ControllingPrim.PhysBody, CollisionFlags.BS_VEHICLE_COLLISIONS);
                 //ControllingPrim.Linkset.AddToPhysicalCollisionFlags(CollisionFlags.BS_VEHICLE_COLLISIONS);
 
                 ControllingPrim.Inertia = m_physicsScene.PE.CalculateLocalInertia(ControllingPrim.PhysShape.physShapeInfo, m_vehicleMass);
@@ -674,7 +674,7 @@ namespace Universe.Physics.BulletSPlugin
                 if (ControllingPrim.PhysBody.HasPhysicalBody)
                     m_physicsScene.PE.RemoveFromCollisionFlags(ControllingPrim.PhysBody,
                         CollisionFlags.BS_VEHICLE_COLLISIONS);
-                    // ControllingPrim.Linkset.RemoveFromPhysicalCollisionFlags(CollisionFlags.BS_VEHICLE_COLLISIONS);
+                // ControllingPrim.Linkset.RemoveFromPhysicalCollisionFlags(CollisionFlags.BS_VEHICLE_COLLISIONS);
 
             }
         }
@@ -836,7 +836,7 @@ namespace Universe.Physics.BulletSPlugin
         Vector3 lastRememberedWaterHeightPos = new Vector3(-1, -1, -1);
         float GetWaterLevel(Vector3 pos)
         {
-            if ((m_knownHas & m_knownChangedWaterLevel) == 0  || pos != lastRememberedWaterHeightPos)
+            if ((m_knownHas & m_knownChangedWaterLevel) == 0 || pos != lastRememberedWaterHeightPos)
             {
                 lastRememberedWaterHeightPos = pos;
                 m_knownWaterLevel = ControllingPrim.PhysicsScene.TerrainManager.GetWaterLevelAtXYZ(pos);
@@ -992,7 +992,7 @@ namespace Universe.Physics.BulletSPlugin
                 return VehicleOrientation * m_referenceFrame;
             }
         }
-       #endregion // Known vehicle value functions
+        #endregion // Known vehicle value functions
 
         // One step of the vehicle properties for the next 'pTimestep' seconds.
         internal void Step(float pTimestep)
@@ -1512,37 +1512,37 @@ namespace Universe.Physics.BulletSPlugin
                         }
                     case 1:
                         {
-            
-                // Possible solution derived from a discussion at:
-                // http://stackoverflow.com/questions/14939657/computing-vector-from-quaternion-works-computing-quaternion-from-vector-does-no
 
-                // Create a rotation that is only the vehicle's rotation around Z
-                Vector3 currentEuler = Vector3.Zero;
-                VehicleFrameOrientation.GetEulerAngles(out currentEuler.X, out currentEuler.Y, out currentEuler.Z);
-                Quaternion justZOrientation = Quaternion.CreateFromAxisAngle(Vector3.UnitZ, currentEuler.Z);
+                            // Possible solution derived from a discussion at:
+                            // http://stackoverflow.com/questions/14939657/computing-vector-from-quaternion-works-computing-quaternion-from-vector-does-no
 
-                // Create the axis that is perpendicular to the up vector and the rotated up vector.
-                Vector3 differenceAxis = Vector3.Cross(Vector3.UnitZ * justZOrientation, Vector3.UnitZ * VehicleFrameOrientation);
-                // Compute the angle between those to vectors.
-                double differenceAngle =
-                    Math.Acos((double)Vector3.Dot(Vector3.UnitZ, Vector3.Normalize(Vector3.UnitZ * VehicleFrameOrientation)));
-                // 'differenceAngle' is the angle to rotate and 'differenceAxis' is the plane to rotate in to get the vehicle vertical
+                            // Create a rotation that is only the vehicle's rotation around Z
+                            Vector3 currentEuler = Vector3.Zero;
+                            VehicleFrameOrientation.GetEulerAngles(out currentEuler.X, out currentEuler.Y, out currentEuler.Z);
+                            Quaternion justZOrientation = Quaternion.CreateFromAxisAngle(Vector3.UnitZ, currentEuler.Z);
 
-                // Reduce the change by the time period it is to change in. Timestep is handled when velocity is applied.
-                // TODO: add 'efficiency'.
-                differenceAngle /= m_verticalAttractionTimescale;
+                            // Create the axis that is perpendicular to the up vector and the rotated up vector.
+                            Vector3 differenceAxis = Vector3.Cross(Vector3.UnitZ * justZOrientation, Vector3.UnitZ * VehicleFrameOrientation);
+                            // Compute the angle between those to vectors.
+                            double differenceAngle =
+                                Math.Acos((double)Vector3.Dot(Vector3.UnitZ, Vector3.Normalize(Vector3.UnitZ * VehicleFrameOrientation)));
+                            // 'differenceAngle' is the angle to rotate and 'differenceAxis' is the plane to rotate in to get the vehicle vertical
 
-                // Create the quaterian representing the correction angle
-                Quaternion correctionRotation = Quaternion.CreateFromAxisAngle(differenceAxis, (float)differenceAngle);
+                            // Reduce the change by the time period it is to change in. Timestep is handled when velocity is applied.
+                            // TODO: add 'efficiency'.
+                            differenceAngle /= m_verticalAttractionTimescale;
 
-                // Turn that quaternion into Euler values to make it into velocities to apply.
-                Vector3 vertContributionV = Vector3.Zero;
-                correctionRotation.GetEulerAngles(out vertContributionV.X, out vertContributionV.Y,
-                    out vertContributionV.Z);
-                vertContributionV *= -1f;
-                vertContributionV /= m_verticalAttractionTimescale;
+                            // Create the quaterian representing the correction angle
+                            Quaternion correctionRotation = Quaternion.CreateFromAxisAngle(differenceAxis, (float)differenceAngle);
 
-                VehicleRotationalVelocity += vertContributionV;
+                            // Turn that quaternion into Euler values to make it into velocities to apply.
+                            Vector3 vertContributionV = Vector3.Zero;
+                            correctionRotation.GetEulerAngles(out vertContributionV.X, out vertContributionV.Y,
+                                out vertContributionV.Z);
+                            vertContributionV *= -1f;
+                            vertContributionV /= m_verticalAttractionTimescale;
+
+                            VehicleRotationalVelocity += vertContributionV;
 
                             VDetailLog("{0},  MoveAngular,verticalAttraction,upAxis={1},diffAxis={2},diffAng={3},corrRot={4},contrib={5}",
                                             ControllingPrim.LocalID,
@@ -1555,44 +1555,44 @@ namespace Universe.Physics.BulletSPlugin
                         }
                     case 2:
                         {
-               // ===================================================================
-               // This was commented out ... maybe not good??
-                Vector3 vertContributionV = Vector3.Zero;
-                Vector3 origRotVelW = VehicleRotationalVelocity;        // DEBUG DEBUG
+                            // ===================================================================
+                            // This was commented out ... maybe not good??
+                            Vector3 vertContributionV = Vector3.Zero;
+                            Vector3 origRotVelW = VehicleRotationalVelocity;        // DEBUG DEBUG
 
-                // Take a vector pointing up and convert it from world to vehicle relative coords.
-                Vector3 verticalError = Vector3.Normalize(Vector3.UnitZ * VehicleFrameOrientation);
+                            // Take a vector pointing up and convert it from world to vehicle relative coords.
+                            Vector3 verticalError = Vector3.Normalize(Vector3.UnitZ * VehicleFrameOrientation);
 
-                // If vertical attraction correction is needed, the vector that was pointing up (UnitZ)
-                //    is now:
-                //    leaning to one side: rotated around the X axis with the Y value going
-                //        from zero (nearly straight up) to one (completely to the side)) or
-                //    leaning front-to-back: rotated around the Y axis with the value of X being between
-                //         zero and one.
-                // The value of Z is how far the rotation is off with 1 meaning none and 0 being 90 degrees.
+                            // If vertical attraction correction is needed, the vector that was pointing up (UnitZ)
+                            //    is now:
+                            //    leaning to one side: rotated around the X axis with the Y value going
+                            //        from zero (nearly straight up) to one (completely to the side)) or
+                            //    leaning front-to-back: rotated around the Y axis with the value of X being between
+                            //         zero and one.
+                            // The value of Z is how far the rotation is off with 1 meaning none and 0 being 90 degrees.
 
-                // Y error means needed rotation around X axis and visa versa.
-                // Since the error goes from zero to one, the asin is the corresponding angle.
-                vertContributionV.X = (float)Math.Asin(verticalError.Y);
-                // (Tilt forward (positive X) needs to tilt back (rotate negative) around Y axis.)
-                vertContributionV.Y = -(float)Math.Asin(verticalError.X);
+                            // Y error means needed rotation around X axis and visa versa.
+                            // Since the error goes from zero to one, the asin is the corresponding angle.
+                            vertContributionV.X = (float)Math.Asin(verticalError.Y);
+                            // (Tilt forward (positive X) needs to tilt back (rotate negative) around Y axis.)
+                            vertContributionV.Y = -(float)Math.Asin(verticalError.X);
 
-                // If verticalError.Z is negative, the vehicle is upside down. Add additional push.
-                if (verticalError.Z < 0f)
-                {
-                    vertContributionV.X += Math.Sign(vertContributionV.X) * PIOverFour;
-                    // vertContribution.Y -= PIOverFour;
-                }
+                            // If verticalError.Z is negative, the vehicle is upside down. Add additional push.
+                            if (verticalError.Z < 0f)
+                            {
+                                vertContributionV.X += Math.Sign(vertContributionV.X) * PIOverFour;
+                                // vertContribution.Y -= PIOverFour;
+                            }
 
-                // 'vertContrbution' is now the necessary angular correction to correct tilt in one second.
-                //     Correction happens over a number of seconds.
-                Vector3 unscaledContribVerticalErrorV = vertContributionV;     // DEBUG DEBUG
+                            // 'vertContrbution' is now the necessary angular correction to correct tilt in one second.
+                            //     Correction happens over a number of seconds.
+                            Vector3 unscaledContribVerticalErrorV = vertContributionV;     // DEBUG DEBUG
 
-                // The correction happens over the user's time period
-                vertContributionV /= m_verticalAttractionTimescale;
+                            // The correction happens over the user's time period
+                            vertContributionV /= m_verticalAttractionTimescale;
 
-                // Rotate the vehicle rotation to the world coordinates.
-                VehicleRotationalVelocity += (vertContributionV * VehicleFrameOrientation);
+                            // Rotate the vehicle rotation to the world coordinates.
+                            VehicleRotationalVelocity += (vertContributionV * VehicleFrameOrientation);
 
                             VDetailLog("{0},  MoveAngular,verticalAttraction,,upAxis={1},origRotVW={2},vertError={3},unscaledV={4},eff={5},ts={6},vertContribV={7}",
                                             ControllingPrim.LocalID,
@@ -1637,12 +1637,12 @@ namespace Universe.Physics.BulletSPlugin
                 movingDirection *= Math.Sign(VehicleForwardSpeed);
 
                 // The direction the vehicle is pointing
-/*                Vector3 pointingDirection = Vector3.UnitX * VehicleOrientation;
-                pointingDirection.Normalize();
+                /*                Vector3 pointingDirection = Vector3.UnitX * VehicleOrientation;
+                                pointingDirection.Normalize();
 
-                // The difference between what is and what should be.
-                Vector3 deflectionError = movingDirection - pointingDirection;
-*/
+                                // The difference between what is and what should be.
+                                Vector3 deflectionError = movingDirection - pointingDirection;
+                */
                 Vector3 pointingDirection = Vector3.UnitX * VehicleFrameOrientation;
                 //Predict where the Vehicle will be pointing after AngularVelocity change is applied. This will keep
                 //   from overshooting and allow this correction to merge with the Vertical Attraction peacefully.
@@ -1650,7 +1650,7 @@ namespace Universe.Physics.BulletSPlugin
                 predictedPointingDirection.Normalize();
 
                 // The difference between what is and what should be.
-               // Vector3 deflectionError = movingDirection - predictedPointingDirection;
+                // Vector3 deflectionError = movingDirection - predictedPointingDirection;
                 Vector3 deflectionError = Vector3.Cross(movingDirection, predictedPointingDirection);
                 // Don't try to correct very large errors (not our job)
                 // if (Math.Abs(deflectionError.X) > PIOverFour) deflectionError.X = PIOverTwo * Math.Sign(deflectionError.X);
@@ -1663,7 +1663,7 @@ namespace Universe.Physics.BulletSPlugin
                 // ret = m_angularDeflectionCorrectionMotor(1f, deflectionError);
 
                 // Scale the correction by recovery timescale and efficiency
-                deflectContributionV = (-deflectionError) * ClampInRange(0,m_angularDeflectionEfficiency/m_angularDeflectionTimescale,1);
+                deflectContributionV = (-deflectionError) * ClampInRange(0, m_angularDeflectionEfficiency / m_angularDeflectionTimescale, 1);
                 deflectContributionV /= m_angularDeflectionTimescale;
 
                 VehicleRotationalVelocity += deflectContributionV;   // * VehicleOrientation;
@@ -1807,7 +1807,7 @@ namespace Universe.Physics.BulletSPlugin
                 clampa = clampb;
                 clampb = temp;
             }
-           return ClampInRange(clampa, val, clampb);
+            return ClampInRange(clampa, val, clampb);
 
         }
 

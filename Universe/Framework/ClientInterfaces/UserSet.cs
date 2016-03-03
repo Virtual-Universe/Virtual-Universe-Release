@@ -70,7 +70,7 @@ namespace Universe.Framework.ClientInterfaces
             {
             }
 
-            //MainConsole.Instance.DebugFormat("[PERMISSIONS]: {0} {1}", settingName, userSet);
+            //MainConsole.Instance.DebugFormat("[Permissions]: {0} {1}", settingName, userSet);
 
             return userSet;
         }

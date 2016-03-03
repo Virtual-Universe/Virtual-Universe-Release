@@ -355,14 +355,14 @@ namespace Universe.Modules.Chat
 
             if (null == m_config)
             {
-                MainConsole.Instance.Info ("[CHAT]: no config found, plugin disabled");
+                MainConsole.Instance.Info ("[Chat]: no config found, plugin disabled");
                 m_enabled = false;
                 return;
             }
 
             if (!m_config.GetBoolean ("enabled", true))
             {
-                MainConsole.Instance.Info ("[CHAT]: plugin disabled by configuration");
+                MainConsole.Instance.Info ("[Chat]: plugin disabled by configuration");
                 m_enabled = false;
                 return;
             }
@@ -389,7 +389,7 @@ namespace Universe.Modules.Chat
             scene.RegisterModuleInterface<IMuteListModule> (this);
             scene.RegisterModuleInterface<IChatModule> (this);
             FindChatPlugins ();
-            MainConsole.Instance.DebugFormat("[CHAT]: Initialized for {0} w:{1} s:{2} S:{3}",
+            MainConsole.Instance.DebugFormat("[Chat]: Initialized for {0} w:{1} s:{2} S:{3}",
                 scene.RegionInfo.RegionName, m_whisperdistance, m_saydistance, m_shoutdistance);
         }
 
@@ -506,7 +506,7 @@ namespace Universe.Modules.Chat
             // sanity check:
             if (c.Sender == null)
             {
-                MainConsole.Instance.ErrorFormat ("[CHAT] OnChatFromClient from {0} has empty Sender field!", sender);
+                MainConsole.Instance.ErrorFormat ("[Chat] OnChatFromClient from {0} has empty Sender field!", sender);
                 return;
             }
 
@@ -573,7 +573,7 @@ namespace Universe.Modules.Chat
                 sourceType = ChatSourceType.Agent;
             }
 
-            // MainConsole.Instance.DebugFormat("[CHAT] Broadcast: fromID {0} fromName {1}, cType {2}, sType {3}", fromID, fromName, cType, sourceType);
+            // MainConsole.Instance.DebugFormat("[Chat] Broadcast: fromID {0} fromName {1}, cType {2}, sType {3}", fromID, fromName, cType, sourceType);
 
             c.Scene.ForEachScenePresence (
                 delegate(IScenePresence presence)

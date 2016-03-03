@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://opensimulator.org/, http://virtual-planets.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyrightD
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the OpenSimulator Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -189,16 +189,12 @@ namespace Universe.Physics.BulletSPlugin
             {
                 MainConsole.Instance.DebugFormat("{0}: Initialize: Setting debug callback for unmanaged code",
                     BSScene.LogHeader);
-                //if (PhysicsScene.PhysicsLogging.Enabled)
-                // The handle is saved in a variable to make sure it doesn't get freed after this call
-                //    m_DebugLogCallbackHandle = new BSAPICPP.DebugLogCallback(BulletLoggerPhysLog);
-                //else
+
                 m_DebugLogCallbackHandle = new BSAPICPP.DebugLogCallback(BulletLogger);
             }
 
             // Get the version of the DLL
             // TODO: this doesn't work yet. Something wrong with marshaling the returned string.
-            // BulletEngineVersion = BulletSimAPI.GetVersion2();
             BulletEngineVersion = "2.82";
 
             // Call the unmanaged code with the buffers and other information
@@ -770,7 +766,6 @@ namespace Universe.Physics.BulletSPlugin
             return BSAPICPP.RemoveObjectFromWorld2(worldu.ptr, bodyu.ptr);
         }
 
-
         public override bool ClearCollisionProxyCache(BulletWorld world, BulletBody obj)
         {
             BulletWorldUnman worldu = world as BulletWorldUnman;
@@ -954,20 +949,6 @@ namespace Universe.Physics.BulletSPlugin
             BSAPICPP.SetTranslation2(bodyu.ptr, position, rotation);
         }
 
-        /*
-public override IntPtr GetBroadphaseHandle(BulletBody obj)
-{
-    BulletBodyUnman bodyu = obj as BulletBodyUnman;
-    return BSAPICPP.GetBroadphaseHandle2(bodyu.ptr);
-}
-
-public override void SetBroadphaseHandle(BulletBody obj, IntPtr handle)
-{
-    BulletBodyUnman bodyu = obj as BulletBodyUnman;
-    BSAPICPP.SetUserPointer2(bodyu.ptr, handle);
-}
-     */
-
         public override void SetInterpolationLinearVelocity(BulletBody obj, Vector3 vel)
         {
             BulletBodyUnman bodyu = obj as BulletBodyUnman;
@@ -1027,7 +1008,6 @@ public override void SetBroadphaseHandle(BulletBody obj, IntPtr handle)
             BulletBodyUnman bodyu = obj as BulletBodyUnman;
             return BSAPICPP.GetCcdMotionThreshold2(bodyu.ptr);
         }
-
 
         public override void SetCcdMotionThreshold(BulletBody obj, float val)
         {
@@ -1506,10 +1486,6 @@ public override void SetBroadphaseHandle(BulletBody obj, IntPtr handle)
         }
 
         // =====================================================================================
-        // =====================================================================================
-        // =====================================================================================
-        // =====================================================================================
-        // =====================================================================================
         // The actual interface to the unmanaged code
         static class BSAPICPP
         {
@@ -1690,7 +1666,6 @@ public override void SetBroadphaseHandle(BulletBody obj, IntPtr handle)
                 Vector3 pivotInA, Vector3 pivotInB,
                 bool disableCollisionsBetweenLinkedBodies);
 
-
             [DllImport("BulletSim", CallingConvention = CallingConvention.Cdecl), SuppressUnmanagedCodeSecurity]
             public static extern void SetConstraintEnable2(IntPtr constrain, float numericTrueFalse);
 
@@ -1855,12 +1830,12 @@ public override void SetBroadphaseHandle(BulletBody obj, IntPtr handle)
             public static extern float GetFriction2(IntPtr obj);
 
             /* Haven't defined the type 'Transform'
-[DllImport("BulletSim", CallingConvention = CallingConvention.Cdecl), SuppressUnmanagedCodeSecurity]
-public static extern Transform GetWorldTransform2(IntPtr obj);
-
-[DllImport("BulletSim", CallingConvention = CallingConvention.Cdecl), SuppressUnmanagedCodeSecurity]
-public static extern void setWorldTransform2(IntPtr obj, Transform trans);
-     */
+            [DllImport("BulletSim", CallingConvention = CallingConvention.Cdecl), SuppressUnmanagedCodeSecurity]
+            public static extern Transform GetWorldTransform2(IntPtr obj);
+            
+            [DllImport("BulletSim", CallingConvention = CallingConvention.Cdecl), SuppressUnmanagedCodeSecurity]
+            public static extern void setWorldTransform2(IntPtr obj, Transform trans);
+            */
 
             [DllImport("BulletSim", CallingConvention = CallingConvention.Cdecl), SuppressUnmanagedCodeSecurity]
             public static extern Vector3 GetPosition2(IntPtr obj);
@@ -1878,12 +1853,12 @@ public static extern void setWorldTransform2(IntPtr obj, Transform trans);
             public static extern void SetBroadphaseHandle2(IntPtr obj, IntPtr handle);
 
             /*
-[DllImport("BulletSim", CallingConvention = CallingConvention.Cdecl), SuppressUnmanagedCodeSecurity]
-public static extern Transform GetInterpolationWorldTransform2(IntPtr obj);
-
-[DllImport("BulletSim", CallingConvention = CallingConvention.Cdecl), SuppressUnmanagedCodeSecurity]
-public static extern void SetInterpolationWorldTransform2(IntPtr obj, Transform trans);
-     */
+            [DllImport("BulletSim", CallingConvention = CallingConvention.Cdecl), SuppressUnmanagedCodeSecurity]
+            public static extern Transform GetInterpolationWorldTransform2(IntPtr obj);
+            
+            [DllImport("BulletSim", CallingConvention = CallingConvention.Cdecl), SuppressUnmanagedCodeSecurity]
+            public static extern void SetInterpolationWorldTransform2(IntPtr obj, Transform trans);
+            */
 
             [DllImport("BulletSim", CallingConvention = CallingConvention.Cdecl), SuppressUnmanagedCodeSecurity]
             public static extern void SetInterpolationLinearVelocity2(IntPtr obj, Vector3 vel);
@@ -1975,9 +1950,9 @@ public static extern void SetInterpolationWorldTransform2(IntPtr obj, Transform 
             public static extern void SetLinearFactor2(IntPtr obj, Vector3 factor);
 
             /*
-[DllImport("BulletSim", CallingConvention = CallingConvention.Cdecl), SuppressUnmanagedCodeSecurity]
-public static extern void SetCenterOfMassTransform2(IntPtr obj, Transform trans);
-     */
+            [DllImport("BulletSim", CallingConvention = CallingConvention.Cdecl), SuppressUnmanagedCodeSecurity]
+            public static extern void SetCenterOfMassTransform2(IntPtr obj, Transform trans);
+            */
 
             [DllImport("BulletSim", CallingConvention = CallingConvention.Cdecl), SuppressUnmanagedCodeSecurity]
             public static extern void SetCenterOfMassByPosRot2(IntPtr obj, Vector3 pos, Quaternion rot);
@@ -2037,9 +2012,9 @@ public static extern void SetCenterOfMassTransform2(IntPtr obj, Transform trans)
             public static extern Vector3 GetCenterOfMassPosition2(IntPtr obj);
 
             /*
-[DllImport("BulletSim", CallingConvention = CallingConvention.Cdecl), SuppressUnmanagedCodeSecurity]
-public static extern Transform GetCenterOfMassTransform2(IntPtr obj);
-     */
+            [DllImport("BulletSim", CallingConvention = CallingConvention.Cdecl), SuppressUnmanagedCodeSecurity]
+            public static extern Transform GetCenterOfMassTransform2(IntPtr obj);
+            */
 
             [DllImport("BulletSim", CallingConvention = CallingConvention.Cdecl), SuppressUnmanagedCodeSecurity]
             public static extern Vector3 GetLinearVelocity2(IntPtr obj);

@@ -150,8 +150,7 @@ namespace Universe.Modules.Startup
                                                                                Convert.ToSingle(cmdparams[4]),
                                                                                Convert.ToSingle(cmdparams[5])));
 
-                                                               MainConsole.Instance.InfoFormat(
-                                                                   "Edited scale of Primitive: {0}", child.Name);
+                                                               MainConsole.Instance.InfoFormat("Edited scale of Primitive: {0}", child.Name);
                                                            }
                                                        }
                                                    });
@@ -496,8 +495,7 @@ namespace Universe.Modules.Startup
                 {
                     if (grp == null)
                         continue;
-                    //if (group.IsAttachment)
-                    //    continue;
+
                     parts.AddRange(grp.ChildrenEntities());
                     DeleteSceneObject(grp, true, true);
                 }

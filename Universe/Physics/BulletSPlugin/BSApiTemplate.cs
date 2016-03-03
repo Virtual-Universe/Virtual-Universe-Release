@@ -1,15 +1,15 @@
 /*
- * Copyright (c) Contributors, http://opensimulator.org/, http://virtual-planets.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
+ *     * Redistributions in binary form must reproduce the above copyrightD
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the OpenSimulator Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -52,11 +52,6 @@ namespace Universe.Physics.BulletSPlugin
     [StructLayout(LayoutKind.Sequential)]
     public struct ConvexHull
     {
-        /* not currently used??
-	Vector3 Offset;
-	int VertexCount;
-	Vector3[] Vertices;
-	*/
     }
 
     public enum BSPhysicsShapeType
@@ -75,8 +70,8 @@ namespace Universe.Physics.BulletSPlugin
         SHAPE_COMPOUND = 22,
         SHAPE_HEIGHTMAP = 23,
         SHAPE_AVATAR = 24,
-    SHAPE_CONVEXHULL= 25,
-    SHAPE_GIMPACT   = 26,
+        SHAPE_CONVEXHULL = 25,
+        SHAPE_GIMPACT = 26,
     };
 
     // The native shapes have predefined shape hash keys
@@ -216,21 +211,21 @@ namespace Universe.Physics.BulletSPlugin
         public float addNeighboursDistPoints; // false
         public float addFacesPoints; // false
         public float shouldAdjustCollisionMargin; // false
-        // VHACD
-    	public float whichHACD;				    // zero if Bullet HACD, non-zero says VHACD
-    	// http://kmamou.blogspot.ca/2014/12/v-hacd-20-parameters-description.html
-    	public float vHACDresolution;			// 100,000 max number of voxels generated during voxelization stage
-    	public float vHACDdepth;				// 20 max number of clipping stages
-    	public float vHACDconcavity;			// 0.0025 maximum concavity
-    	public float vHACDplaneDownsampling;	// 4 granularity of search for best clipping plane
-    	public float vHACDconvexHullDownsampling;	// 4 precision of hull gen process
-    	public float vHACDalpha;				// 0.05 bias toward clipping along symmetry planes
-    	public float vHACDbeta;				    // 0.05 bias toward clipping along revolution axis
-    	public float vHACDgamma;				// 0.00125 max concavity when merging
-    	public float vHACDpca;					// 0 on/off normalizing mesh before decomp
-    	public float vHACDmode;				    // 0 0:voxel based, 1: tetrahedron based
-    	public float vHACDmaxNumVerticesPerCH;	// 64 max triangles per convex hull
-    	public float vHACDminVolumePerCH;		// 0.0001 sampling of generated convex hulls
+                                                  // VHACD
+        public float whichHACD;                 // zero if Bullet HACD, non-zero says VHACD
+                                                // http://kmamou.blogspot.ca/2014/12/v-hacd-20-parameters-description.html
+        public float vHACDresolution;           // 100,000 max number of voxels generated during voxelization stage
+        public float vHACDdepth;                // 20 max number of clipping stages
+        public float vHACDconcavity;            // 0.0025 maximum concavity
+        public float vHACDplaneDownsampling;    // 4 granularity of search for best clipping plane
+        public float vHACDconvexHullDownsampling;   // 4 precision of hull gen process
+        public float vHACDalpha;                // 0.05 bias toward clipping along symmetry planes
+        public float vHACDbeta;                 // 0.05 bias toward clipping along revolution axis
+        public float vHACDgamma;                // 0.00125 max concavity when merging
+        public float vHACDpca;                  // 0 on/off normalizing mesh before decomp
+        public float vHACDmode;                 // 0 0:voxel based, 1: tetrahedron based
+        public float vHACDmaxNumVerticesPerCH;  // 64 max triangles per convex hull
+        public float vHACDminVolumePerCH;		// 0.0001 sampling of generated convex hulls
     }
 
     // The states a bullet collision object can have
@@ -290,23 +285,14 @@ namespace Universe.Physics.BulletSPlugin
         BDebrisGroup = 1 << 3, // 0008
         BSensorTrigger = 1 << 4, // 0010
         BCharacterGroup = 1 << 5, // 0020
-/*        BAllGroup = 0x000FFFFF,
+        BAllGroup = 0x0007FFF,        // collision flags are a signed short
         // Filter groups defined by BulletSim
-        BGroundPlaneGroup = 1 << 10, // 0400
-        BTerrainGroup = 1 << 11, // 0800
-        BRaycastGroup = 1 << 12, // 1000
-        BSolidGroup = 1 << 13, // 2000
+        BGroundPlaneGroup = 1 << 8,  // 0400
+        BTerrainGroup = 1 << 9,  // 0800
+        BRaycastGroup = 1 << 10,  // 1000
+        BSolidGroup = 1 << 11,  // 2000
         // BLinksetGroup        = xx  // a linkset proper is either static or dynamic
-        BLinksetChildGroup = 1 << 14, // 4000
-*/
-        BAllGroup               = 0x0007FFF,        // collision flags are a signed short
-        // Filter groups defined by BulletSim
-        BGroundPlaneGroup       = 1 << 8,  // 0400
-        BTerrainGroup           = 1 << 9,  // 0800
-        BRaycastGroup           = 1 << 10,  // 1000
-        BSolidGroup             = 1 << 11,  // 2000
-        // BLinksetGroup        = xx  // a linkset proper is either static or dynamic
-        BLinksetChildGroup      = 1 << 12,  // 4000
+        BLinksetChildGroup = 1 << 12,  // 4000
     };
 
     // CFM controls the 'hardness' of the constraint. 0=fixed, 0..1=violatable. Default=0
@@ -361,7 +347,7 @@ namespace Universe.Physics.BulletSPlugin
 
         public abstract BulletShape CreateGImpactShape(BulletWorld world,
                 int indicesCount, int[] indices,
-                int verticesCount, float[] vertices );
+                int verticesCount, float[] vertices);
 
         public abstract BulletShape CreateHullShape(BulletWorld world,
             int hullCount, float[] hulls);
@@ -372,7 +358,7 @@ namespace Universe.Physics.BulletSPlugin
 
         public abstract BulletShape CreateConvexHullShape(BulletWorld world,
                 int indicesCount, int[] indices,
-                int verticesCount, float[] vertices );
+                int verticesCount, float[] vertices);
         public abstract BulletShape BuildNativeShape(BulletWorld world, ShapeData shapeData);
 
         public abstract bool IsNativeShape(BulletShape shape);

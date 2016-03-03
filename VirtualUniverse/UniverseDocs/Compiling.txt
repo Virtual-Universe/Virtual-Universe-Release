@@ -1,4 +1,4 @@
-=== Building Virtual Universe ===
+=== Building Universe ===
 
 === Building on Windows ===
 
@@ -21,7 +21,7 @@ Steps:
 === Building on Linux ===
 
 Prereqs:
- * Mono >= 4.0.x
+ * Mono >= 3.10
  * XBuild
  * On some Linux distributions you may need to install additional packages.  
     See http://opensimulator.org/wiki/Dependencies for more information.

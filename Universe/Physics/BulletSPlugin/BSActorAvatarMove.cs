@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://opensimulator.org/, http://virtual-planets.org, http://virtualnexus.eu
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/, http://virtualnexus.eu
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyrightD
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the OpenSimulator Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -68,7 +68,6 @@ namespace Universe.Physics.BulletSPlugin
             Enabled = false;
             Refresh();
             DeactivateAvatarMove();   //?? OS
-
         }
 
         // Called when physical parameters (properties set in Bullet) need to be re-applied.
@@ -253,7 +252,6 @@ namespace Universe.Physics.BulletSPlugin
                     }
                 }
             
-
                 m_physicsScene.DetailLog("{0},BSCharacter.MoveMotor,taint,stopping,target={1},colliding={2}",
                     m_controllingPrim.LocalID, m_velocityMotor.TargetValue, m_controllingPrim.IsColliding);
             }
@@ -301,8 +299,7 @@ namespace Universe.Physics.BulletSPlugin
                         stepVelocity.Z = m_jumpVelocity;
                     }
                     else
-                    {
-                        
+                    {                
                         // Since we're not affected by anything, the avatar must be falling and we do not want that to be too fast.
                         if (m_controllingPrim.RawVelocity.Z < BSParam.AvatarTerminalVelocity)
                         {
@@ -383,10 +380,7 @@ namespace Universe.Physics.BulletSPlugin
                 m_jumpStart = 0;
                 m_preJumpStart = 0;
             }
-
         }
-
-  
 
         // Called just as the property update is received from the physics engine.
         // Do any mode necessary for avatar movement.
@@ -399,7 +393,6 @@ namespace Universe.Physics.BulletSPlugin
                 entprop.Velocity = OMV.Vector3.Zero;
                 m_physicsScene.PE.SetTranslation(m_controllingPrim.PhysBody, entprop.Position, entprop.Rotation);
             }
-
         }
 
         // Decide if the character is colliding with a low object and compute a force to pop the
@@ -469,7 +462,6 @@ namespace Universe.Physics.BulletSPlugin
                     }
                 }
         
-
                 m_walkingUpStairs = 0;
                 // If there is a good step sensing, move the avatar over the step.
                 if (highestTouchPosition != OMV.Vector3.Zero)

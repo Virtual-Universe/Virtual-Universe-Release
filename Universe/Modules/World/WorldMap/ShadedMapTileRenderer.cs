@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,6 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
 using System;
 using System.Drawing;
 using Nini.Config;
@@ -39,14 +40,12 @@ namespace Universe.Modules.WorldMap
         static readonly Color WATER_COLOR = Color.FromArgb(29, 71, 95);
 
         IScene m_scene;
-        //private IConfigSource m_config; // not used currently
 
         #region IMapTileTerrainRenderer Members
 
         public void Initialize(IScene scene, IConfigSource config)
         {
             m_scene = scene;
-            // m_config = config; // not used currently
         }
 
         public Bitmap TerrainToBitmap(Bitmap mapbmp)
@@ -72,7 +71,7 @@ namespace Universe.Modules.WorldMap
                 }
             }
 
-            float waterHeight = (float)m_scene.RegionInfo.RegionSettings.WaterHeight;
+            float waterHeight = (float) m_scene.RegionInfo.RegionSettings.WaterHeight;
 
             for (int x = 0; x < m_scene.RegionInfo.RegionSizeX; x++)
             {
@@ -85,10 +84,7 @@ namespace Universe.Modules.WorldMap
 
                     if (heightvalue > waterHeight)
                     {
-                        // scale height value
-                        // No, that doesn't scale it:
-                        // heightvalue = low + mid * (heightvalue - low) / mid; => low + (heightvalue - low) * mid / mid = low + (heightvalue - low) * 1 = low + heightvalue - low = heightvalue
-
+                        // scale height value No, that doesn't scale it:
                         if (Single.IsInfinity(heightvalue) || Single.IsNaN(heightvalue))
                             heightvalue = 0;
                         else if (heightvalue > 255f)
@@ -96,7 +92,7 @@ namespace Universe.Modules.WorldMap
                         else if (heightvalue < 0f)
                             heightvalue = 0f;
 
-                        Color color = Color.FromArgb((int)heightvalue, 100, (int)heightvalue);
+                        Color color = Color.FromArgb((int) heightvalue, 100, (int) heightvalue);
 
                         mapbmp.SetPixel(x, yr, color);
 
@@ -129,22 +125,22 @@ namespace Universe.Modules.WorldMap
 
                                 try
                                 {
-                                    hfdiffi = Math.Abs((int)(hfdiff * 4.5f)) + 1;
-                                    if (hfdiff % 1f != 0)
+                                    hfdiffi = Math.Abs((int) (hfdiff*4.5f)) + 1;
+                                    if (hfdiff%1f != 0)
                                     {
-                                        hfdiffi = hfdiffi + Math.Abs((int)((hfdiff % 1f) * 5f) - 1);
+                                        hfdiffi = hfdiffi + Math.Abs((int) ((hfdiff%1f)*5f) - 1);
                                     }
 
-                                    hfdiffihighlight = Math.Abs((int)((hfdiff * highlightfactor) * 4.5f)) + 1;
-                                    if (hfdiff % 1f != 0)
+                                    hfdiffihighlight = Math.Abs((int) ((hfdiff*highlightfactor)*4.5f)) + 1;
+                                    if (hfdiff%1f != 0)
                                     {
                                         hfdiffihighlight = hfdiffihighlight +
-                                                           Math.Abs((int)(((hfdiff * highlightfactor) % 1f) * 5f) - 1);
+                                                           Math.Abs((int) (((hfdiff*highlightfactor)%1f)*5f) - 1);
                                     }
                                 }
                                 catch (OverflowException)
                                 {
-                                    MainConsole.Instance.Debug("[MAPTILE]: Shadow failed at value: " + hfdiff);
+                                    MainConsole.Instance.Debug("[Map Tile]: Shadow failed at value: " + hfdiff);
                                     ShadowDebugContinue = false;
                                 }
 
@@ -217,7 +213,7 @@ namespace Universe.Modules.WorldMap
                         else if (heightvalue < 0f)
                             heightvalue = 0f;
 
-                        heightvalue = 100f - (heightvalue * 100f) / 19f;
+                        heightvalue = 100f - (heightvalue*100f)/19f;
 
                         try
                         {

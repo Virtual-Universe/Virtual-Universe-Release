@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -74,11 +74,11 @@ namespace Universe.Services
             auth.PasswordSalt = passwordSalt;
             if (!m_Database.Store(auth))
             {
-                MainConsole.Instance.DebugFormat("[Authentication DB]: Failed to store authentication data");
+                MainConsole.Instance.DebugFormat("[AUTHENTICATION DB]: Failed to store authentication data");
                 return false;
             }
 
-            MainConsole.Instance.InfoFormat("[Authentication DB]: Set password for principalID {0}", principalID);
+            MainConsole.Instance.InfoFormat("[AUTHENTICATION DB]: Set password for principalID {0}", principalID);
             return true;
         }
 
@@ -111,11 +111,11 @@ namespace Universe.Services
             auth.PasswordSalt = passwordSalt;
             if (!m_Database.Store(auth))
             {
-                MainConsole.Instance.DebugFormat("[Authentication DB]: Failed to store authentication data");
+                MainConsole.Instance.DebugFormat("[AUTHENTICATION DB]: Failed to store authentication data");
                 return false;
             }
 
-            MainConsole.Instance.InfoFormat("[Authentication DB]: Set password for principalID {0}", principalID);
+            MainConsole.Instance.InfoFormat("[AUTHENTICATION DB]: Set password for principalID {0}", principalID);
             return true;
         }
 
@@ -130,11 +130,11 @@ namespace Universe.Services
             auth.PasswordSalt = "";
             if (!m_Database.Store(auth))
             {
-                MainConsole.Instance.DebugFormat("[Authentication DB]: Failed to store authentication data");
+                MainConsole.Instance.DebugFormat("[AUTHENTICATION DB]: Failed to store authentication data");
                 return false;
             }
 
-            MainConsole.Instance.InfoFormat("[Authentication DB]: Set password for principalID {0}", principalID);
+            MainConsole.Instance.InfoFormat("[AUTHENTICATION DB]: Set password for principalID {0}", principalID);
             return true;
         }
     }

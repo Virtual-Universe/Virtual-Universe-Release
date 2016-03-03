@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -119,14 +119,12 @@ namespace Universe.Framework.SceneInfo
         /// <param name="scene"></param>
         public void GatherAssetUuids(ISceneEntity sceneObject, IDictionary<UUID, AssetType> assetUuids)
         {
-//            MainConsole.Instance.DebugFormat(
-//                "[ASSET GATHERER]: Getting assets for object {0}, {1}", sceneObject.Name, sceneObject.UUID);
+            //MainConsole.Instance.DebugFormat("[Asset Gatherer]: Getting assets for object {0}, {1}", sceneObject.Name, sceneObject.UUID);
 
             ISceneChildEntity[] parts = sceneObject.ChildrenEntities().ToArray();
             foreach (ISceneChildEntity part in parts)
             {
-//                MainConsole.Instance.DebugFormat(
-//                    "[Archiver]: Getting part {0}, {1} for object {2}", part.Name, part.UUID, sceneObject.UUID);
+                //MainConsole.Instance.DebugFormat("[Archiver]: Getting part {0}, {1} for object {2}", part.Name, part.UUID, sceneObject.UUID);
 
                 try
                 {
@@ -167,15 +165,13 @@ namespace Universe.Framework.SceneInfo
                 }
                 catch (Exception e)
                 {
-                    MainConsole.Instance.ErrorFormat("[UUID GATHERER]: Failed to get part - {0}", e);
-                    MainConsole.Instance.DebugFormat(
-                        "[UUID GATHERER]: Texture entry length for prim was {0} (min is 46)",
+                    MainConsole.Instance.ErrorFormat("[UUID Gatherer]: Failed to get part - {0}", e);
+                    MainConsole.Instance.DebugFormat("[UUID Gatherer]: Texture entry length for prim was {0} (min is 46)",
                         part.Shape.TextureEntry.Length);
                 }
             }
         }
 
-        
         /// <summary>
         /// Gather all of the texture asset UUIDs used to reference "Materials" such as normal and specular maps
         /// </summary>
@@ -310,8 +306,7 @@ namespace Universe.Framework.SceneInfo
                 AssetWearable wearableAsset = new AssetBodypart(wearableAssetUuid, assetBase.Data);
                 wearableAsset.Decode();
 
-                //MainConsole.Instance.DebugFormat(
-                //    "[Archiver]: Wearable asset {0} references {1} assets", wearableAssetUuid, wearableAsset.Textures.Count);
+                //MainConsole.Instance.DebugFormat("[Archiver]: Wearable asset {0} references {1} assets", wearableAssetUuid, wearableAsset.Textures.Count);
 
                 foreach (UUID uuid in wearableAsset.Textures.Values)
                 {

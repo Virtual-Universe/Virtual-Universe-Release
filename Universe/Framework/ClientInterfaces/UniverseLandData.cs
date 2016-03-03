@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -45,12 +45,12 @@ namespace Universe.Framework.ClientInterfaces
 
         public override void FromOSD(OSDMap map)
         {
-            GlobalPosX = (float)Convert.ToDecimal(map["GlobalPosX"].AsString(), Culture.NumberFormatInfo);
-            GlobalPosY = (float)Convert.ToDecimal(map["GlobalPosY"].AsString(), Culture.NumberFormatInfo);
-            //GlobalPosX = map["GlobalPosX"];
-            //GlobalPosY = map["GlobalPosY"];
+            GlobalPosX = (float)Convert.ToDecimal (map ["GlobalPosX"].AsString (), Culture.NumberFormatInfo);
+            GlobalPosY = (float)Convert.ToDecimal (map ["GlobalPosY"].AsString (), Culture.NumberFormatInfo);
+//            GlobalPosX = map["GlobalPosX"];
+//            GlobalPosY = map["GlobalPosY"];
             LandData = new LandData();
-            LandData.FromOSD((OSDMap)map["LandData"]);
+            LandData.FromOSD((OSDMap) map["LandData"]);
             RegionName = map["RegionName"];
             RegionType = map["RegionType"];
             RegionTerrain = map["RegionTerrain"];
@@ -60,10 +60,10 @@ namespace Universe.Framework.ClientInterfaces
         public override OSDMap ToOSD()
         {
             OSDMap map = new OSDMap();
-            map["GlobalPosX"] = OSD.FromReal(GlobalPosX).ToString();
-            map["GlobalPosY"] = OSD.FromReal(GlobalPosY).ToString();
-            //map["GlobalPosX"] = GlobalPosX;
-            //map["GlobalPosY"] = GlobalPosY;
+            map["GlobalPosX"] = OSD.FromReal (GlobalPosX).ToString();
+            map["GlobalPosY"] = OSD.FromReal (GlobalPosY).ToString();
+//            map["GlobalPosX"] = GlobalPosX;
+//            map["GlobalPosY"] = GlobalPosY;
             map["LandData"] = LandData.ToOSD();
             map["RegionName"] = RegionName;
             map["RegionType"] = RegionType;

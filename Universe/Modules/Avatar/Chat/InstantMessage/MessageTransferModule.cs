@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -124,7 +124,7 @@ namespace Universe.Modules.Chat
                     return;
                 }
             }
-            //MainConsole.Instance.DebugFormat("[INSTANT MESSAGE]: Delivering IM to {0} via XMLRPC", im.toAgentID);
+            //MainConsole.Instance.DebugFormat("[Instant Message]: Delivering IM to {0} via XMLRPC", im.toAgentID);
             SendGridInstantMessageViaXMLRPC(im);
         }
 
@@ -149,7 +149,7 @@ namespace Universe.Modules.Chat
 
             if (!m_Enabled)
             {
-                MainConsole.Instance.Debug("[MESSAGE TRANSFER]: Disabled by configuration");
+                MainConsole.Instance.Debug("[Message Transfer]: Disabled by configuration");
                 return;
             }
 
@@ -161,7 +161,7 @@ namespace Universe.Modules.Chat
                 return;
 
             m_scenes.Add(scene);
-            //MainConsole.Instance.Debug("[MESSAGE TRANSFER]: Message transfer module active");
+            //MainConsole.Instance.Debug("[Message Transfer]: Message transfer module active");
             scene.RegisterModuleInterface<IMessageTransferModule>(this);
         }
 
@@ -200,14 +200,13 @@ namespace Universe.Modules.Chat
 
             // If this event has handlers, then an IM from an agent will be
             // considered delivered. This will suppress the error message.
-            //
             if (handlerUndeliveredMessage != null)
             {
                 handlerUndeliveredMessage(im, reason);
                 return;
             }
 
-            //MainConsole.Instance.DebugFormat("[INSTANT MESSAGE]: Undeliverable");
+            //MainConsole.Instance.DebugFormat("[Instant Message]: Undeliverable");
         }
 
         protected virtual byte[] processGridInstantMessage(string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse)
@@ -313,7 +312,7 @@ namespace Universe.Modules.Chat
                     if (AgentLocations[i] == "NotOnline")
                     {
                         IMUsersCache.Remove(users[i]);
-                        MainConsole.Instance.Debug("[GRID INSTANT MESSAGE]: Unable to deliver an instant message to " +
+                        MainConsole.Instance.Debug("[Grid Instant Message]: Unable to deliver an instant message to " +
                                                    users[i] +
                                                    ", user was not online");
                         im.ToAgentID = users[i];
@@ -323,7 +322,7 @@ namespace Universe.Modules.Chat
                     if (AgentLocations[i] == "NonExistant")
                     {
                         IMUsersCache.Remove(users[i]);
-                        MainConsole.Instance.Info("[GRID INSTANT MESSAGE]: Unable to deliver an instant message to " +
+                        MainConsole.Instance.Info("[Grid Instant Message]: Unable to deliver an instant message to " +
                                                   users[i] +
                                                   ", user does not exist");
                         im.ToAgentID = users[i];
@@ -336,7 +335,7 @@ namespace Universe.Modules.Chat
             else
             {
                 MainConsole.Instance.Info(
-                    "[GRID INSTANT MESSAGE]: Unable to deliver an instant message, no users found.");
+                    "[Grid Instant Message]: Unable to deliver an instant message, no users found.");
                 return;
             }
 
@@ -437,14 +436,14 @@ namespace Universe.Modules.Chat
                         //Remove them so we keep testing against the db
                         IMUsersCache.Remove(toAgentID);
                     }
-                    MainConsole.Instance.Debug("[GRID INSTANT MESSAGE]: Unable to deliver an instant message as user is not online");
+                    MainConsole.Instance.Debug("[Grid Instant Message]: Unable to deliver an instant message as user is not online");
                     HandleUndeliveredMessage(im, "User is not online.");
                     return;
                 }
                 if (AgentLocations[0] == "NonExistant")
                 {
                     IMUsersCache.Remove(toAgentID);
-                    MainConsole.Instance.Info("[GRID INSTANT MESSAGE]: Unable to deliver an instant message to " +
+                    MainConsole.Instance.Info("[Grid Instant Message]: Unable to deliver an instant message to " +
                                               toAgentID +
                                               ", user does not exist");
                     HandleUndeliveredMessage(im, "User does not exist.");
@@ -465,7 +464,7 @@ namespace Universe.Modules.Chat
                         IMUsersCache.Remove(toAgentID);
                     }
                     MainConsole.Instance.Info(
-                        "[GRID INSTANT MESSAGE]: Unable to deliver an instant message as the region could not be found");
+                        "[Grid Instant Message]: Unable to deliver an instant message as the region could not be found");
                     HandleUndeliveredMessage(im, "Failed to send IM to destination.");
                     return;
                 }
@@ -487,7 +486,7 @@ namespace Universe.Modules.Chat
                     IMUsersCache.Remove(toAgentID);
                 }
                 MainConsole.Instance.Info(
-                    "[GRID INSTANT MESSAGE]: Unable to deliver an instant message as the region could not be found");
+                    "[Grid Instant Message]: Unable to deliver an instant message as the region could not be found");
                 HandleUndeliveredMessage(im, "Agent Location was blank.");
             }
         }

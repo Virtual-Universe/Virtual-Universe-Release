@@ -476,7 +476,7 @@ namespace Universe.Framework.ModuleLoader
                         }
                         catch (Exception ex)
                         {
-                            MainConsole.Instance.Warn("[MODULELOADER]: Error loading module " + pluginType.Name +
+                            MainConsole.Instance.Warn("[Module Loader]: Error loading module " + pluginType.Name +
                                                       " in file " + dllName +
                                                       " : " + ex);
                         }
@@ -546,7 +546,7 @@ namespace Universe.Framework.ModuleLoader
                         }
                         catch (Exception ex)
                         {
-                            MainConsole.Instance.Warn("[MODULELOADER]: Error loading module " + pluginType.Name +
+                            MainConsole.Instance.Warn("[Module Loader]: Error loading module " + pluginType.Name +
                                                       " in file " + dllName +
                                                       " : " + ex);
                         }

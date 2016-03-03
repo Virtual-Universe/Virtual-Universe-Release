@@ -105,7 +105,7 @@ namespace Universe.Framework.Utilities
                             if (!CallAndWait(intHB.millisecondTimeOut, intHB.heartBeat, out isRunning))
                             {
                                 MainConsole.Instance.Warn(
-                                    "[ThreadTracker]: Could not run Heartbeat in specified limits!");
+                                    "[Thread Tracker]: Could not run Heartbeat in specified limits!");
                             }
                             else if (!isRunning)
                             {

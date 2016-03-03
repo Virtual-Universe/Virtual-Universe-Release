@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://opensimulator.org/, http://virtual-planets.org, http://virtualnexus.eu
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/, http://virtualnexus.eu
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyrightD
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the OpenSimulator Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -112,7 +112,6 @@ namespace Universe.Physics.BulletSPlugin
                 m_targetMotor.SetTarget(m_controllingPrim.MoveToTargetTarget);
                 m_targetMotor.SetCurrent(m_controllingPrim.RawPosition);
 
-                //m_physicsScene.BeforeStep += Mover;
                 m_physicsScene.BeforeStep += Mover2; 
             }
             else
@@ -121,14 +120,12 @@ namespace Universe.Physics.BulletSPlugin
                 m_targetMotor.SetTarget(m_controllingPrim.MoveToTargetTarget);
                 m_targetMotor.SetCurrent(m_controllingPrim.RawPosition);
             }
-
         }
 
         void DeactivateMoveToTarget()
         {
             if (m_targetMotor != null)
             {
-                //m_physicsScene.BeforeStep -= Mover;
                 m_physicsScene.BeforeStep -= Mover2;
                 m_targetMotor = null;
             }

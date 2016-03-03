@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -602,7 +602,7 @@ namespace Universe.Framework.ConsoleFramework
 
             if (line != String.Empty && line.Replace(" ", "") != String.Empty) //If there is a space, its fine
             {
-                MainConsole.Instance.Info("[CONSOLE] Invalid command");
+                MainConsole.Instance.Info("[Console] Invalid command");
             }
         }
 

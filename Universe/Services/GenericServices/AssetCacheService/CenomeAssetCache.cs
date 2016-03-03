@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,13 +26,13 @@
  */
 
 
+using System;
+using Nini.Config;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Utilities;
-using Nini.Config;
-using System;
 
 namespace Universe.Services
 {
@@ -122,12 +122,12 @@ namespace Universe.Services
         /// <summary>
         ///     Cache object.
         /// </summary>
-        private ICnmCache<string, AssetBase> m_cache;
+        ICnmCache<string, AssetBase> m_cache;
 
         /// <summary>
         ///     Count of cache commands
         /// </summary>
-        private int m_cachedCount;
+        int m_cachedCount;
 
         /// <summary>
         ///     How many gets before dumping statistics
@@ -135,17 +135,17 @@ namespace Universe.Services
         /// <remarks>
         ///     If 0 or less, then disabled.
         /// </remarks>
-        private int m_debugEpoch;
+        int m_debugEpoch;
 
         /// <summary>
         ///     Count of get requests
         /// </summary>
-        private int m_getCount;
+        int m_getCount;
 
         /// <summary>
         ///     How many hits
         /// </summary>
-        private int m_hitCount;
+        int m_hitCount;
 
         #endregion
 

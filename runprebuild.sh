@@ -1,8 +1,8 @@
 #!/bin/bash
-# Run prebuild to configure and create the appropriate Solution and Project files for building Universe-Sim
+# Run prebuild to configure and create the appropriate Solution and Project files for building Virtual Universe
 #
-# July 2015
-# Rowan Deppeler <greythane@gmail.com>
+# March 2 2016
+# Noah Starfinder <noah@secondgalaxy.com>
 
 ARCH="x64"
 CONFIG="Debug"
@@ -86,26 +86,26 @@ done
 
 fi
 
-# Configuring Universe-Sim
+# Configuring Virtual Universe
 if ! ${VERSIONONLY:=true}; then
-  echo "Configuring Universe-Sim $ARCH $CONFIG build"
+  echo "Configuring Virtual Universe $ARCH $CONFIG build"
   mono ./Prebuild.exe /target vs2010 /targetframework v4_5 /conditionals "LINUX;NET_4_5"
 fi
 
 # Update version info
 if [ -d ".git" ]; then 
-  git log --pretty=format:"Universe 0.9.3 (%cd.%h)" --date=short -n 1 > UniverseSim/bin/.version; 
+  git log --pretty=format:"Universe 1.0.2 (%cd.%h)" --date=short -n 1 > VirtualUniverse/bin/.version; 
   echo "Version info updated"
 fi
 
-# Build Universe-Sim
+# Build Virtual Universe
 if ${BUILD:=true} ; then
-  echo Building Universe-Sim
+  echo Building Virtual Universe
   xbuild /property:Configuration="$CONFIG" /property:Platform="$ARCH"
-  echo Finished Building Universe
-  echo Thank you for choosing Universe-Sim
-  echo Please report any errors to our Github Issue Tracker https://github.com/UniverseSim/Universe-Dev/issues
+  echo Finished Building Virtual Universe
+  echo Thank you for choosing Virtual Universe
+  echo Please report any errors to our Github Issue Tracker https://github.com/Virtual-Universe/Virtual-Universe/issues
 else
-  echo "Universe-Sim has been configured to compile with $ARCH $CONFIG options"
+  echo "Virtual Universe has been configured to compile with $ARCH $CONFIG options"
   echo "To manually build, enter 'xbuild Universe.sln' at the command prompt"
 fi

@@ -163,7 +163,7 @@ namespace Universe.Modules
             {
                 if (Path.GetFileName (regBak).StartsWith(regionName)) 
                 {
-                    //        MainConsole.Instance.Debug ("Found: " + Path.GetFileNameWithoutExtension (regBak));
+                    //MainConsole.Instance.Debug ("Found: " + Path.GetFileNameWithoutExtension (regBak));
                     regionBaks.Add ( regBak);
                 }
             }
@@ -333,7 +333,11 @@ namespace Universe.Modules
                 // * Mainland / Openspace
                 //
                 // * Estate / Full Region   (Private)
-                info.RegionType = MainConsole.Instance.Prompt ("Region Type (Mainland/Estate)",
+                // * Estate / Homestead
+                // * Estate / Openspace
+                //
+                // * Universe Home / Full Region (Private)
+                info.RegionType = MainConsole.Instance.Prompt ("Region Type (Mainland / Estate / Homes)",
                     (info.RegionType == "" ? "Estate" : info.RegionType));
 
                 // Region presets or advanced setup
@@ -347,9 +351,7 @@ namespace Universe.Modules
                     info.RegionType = "Mainland / ";                   
                     responses.Add("Full Region");
                     responses.Add("Homestead");
-                    responses.Add ("Openspace");
-                    responses.Add ("Universe");                            // TODO: remove?
-                    responses.Add ("Custom");                               
+                    responses.Add("Openspace");                          
                     setupMode = MainConsole.Instance.Prompt("Mainland region type?", "Full Region", responses).ToLower ();
 
                     // allow specifying terrain for Openspace
@@ -358,23 +360,29 @@ namespace Universe.Modules
                     else if (setupMode.StartsWith("o"))
                         terrainOpen = MainConsole.Instance.Prompt("Openspace terrain ( Grassland, Swamp, Aquatic)?", terrainOpen).ToLower();
 
-                } else
+                } 
+                else if (info.RegionType.ToLower().StartsWith("e"))
                 {
                     // Estate regions
                     info.RegionType = "Estate / ";                   
                     responses.Add("Full Region");
                     responses.Add("Homestead");
                     responses.Add("Openspace");
-                    responses.Add ("Universe");                            // TODO: Universe 'standard' setup, rename??
-                    responses.Add ("Custom");
                     setupMode = MainConsole.Instance.Prompt("Estate region type?","Full Region", responses).ToLower();
+                }
+                else
+                {
+                	info.RegionType = "Universe Homes / ";
+                	responses.Add("Full Region");
+                	setupMode = MainConsole.Instance.Prompt("Estate region type?","Full Region", responses).ToLower();
                 }
 
                 // terrain can be specified for Full or custom regions
                 if (bigRegion)
                     terrainFull = "Flatland";
-                else if (setupMode.StartsWith ("f") || setupMode.StartsWith ("c"))
+                if (setupMode.StartsWith ("f"))
                 {
+                	// 'Region land types' setup
                     var tresp = new List<string>();
                     tresp.Add ("Flatland");
                     tresp.Add ("Grassland");
@@ -388,30 +396,11 @@ namespace Universe.Modules
                     // TODO: This would be where we allow selection of preset terrain files
                 }
 
-                if (setupMode.StartsWith("c"))
-                {
-                    info.RegionType = info.RegionType + "Custom";                   
-                    info.RegionTerrain = terrainFull;
-
-                    GetRegionOptional (ref info);
-
-                } 
-
-                if (setupMode.StartsWith("u"))
-                {
-                    // 'standard' setup
-                    info.RegionType = info.RegionType + "Universe";                   
-                    info.RegionTerrain = "Flatland";
-                    info.Startup = StartupType.Normal;
-                    info.SeeIntoThisSimFromNeighbor = true;
-                    info.InfiniteRegion = true;
-                    info.ObjectCapacity = 50000;
-
-                }
                 if (setupMode.StartsWith("o"))       
                 {
                     // 'Openspace' setup
                     info.RegionType = info.RegionType + "Openspace";
+                    
                     if (terrainOpen.StartsWith("a"))
                         info.RegionTerrain = "Aquatic";
                     else if (terrainOpen.StartsWith("s"))
@@ -424,12 +413,13 @@ namespace Universe.Modules
                     info.Startup = StartupType.Medium;
                     info.SeeIntoThisSimFromNeighbor = true;
                     info.InfiniteRegion = true;
-                    info.ObjectCapacity = 750;
-                    info.RegionSettings.AgentLimit = 10;
+                    info.ObjectCapacity = 25000;
+                    info.RegionSettings.AgentLimit = 50;
                     info.RegionSettings.AllowLandJoinDivide = false;
                     info.RegionSettings.AllowLandResell = false;
-                                   }
-                if (setupMode.StartsWith("h"))       
+                }
+                
+                if (setupMode.StartsWith("h"))
                 {
                     // 'Homestead' setup
                     info.RegionType = info.RegionType + "Homestead";
@@ -441,8 +431,8 @@ namespace Universe.Modules
                     info.Startup = StartupType.Medium;
                     info.SeeIntoThisSimFromNeighbor = true;
                     info.InfiniteRegion = true;
-                    info.ObjectCapacity = 3750;
-                    info.RegionSettings.AgentLimit = 20;
+                    info.ObjectCapacity = 50000;
+                    info.RegionSettings.AgentLimit = 75;
                     info.RegionSettings.AllowLandJoinDivide = false;
                     info.RegionSettings.AllowLandResell = false;
                 }
@@ -455,12 +445,16 @@ namespace Universe.Modules
                     info.Startup = StartupType.Normal;
                     info.SeeIntoThisSimFromNeighbor = true;
                     info.InfiniteRegion = true;
-                    info.ObjectCapacity = 15000;
+                    info.ObjectCapacity = 100000;
                     info.RegionSettings.AgentLimit = 100;
                     if (info.RegionType.StartsWith ("M"))                           // defaults are 'true'
                     {
                         info.RegionSettings.AllowLandJoinDivide = false;
                         info.RegionSettings.AllowLandResell = false;
+                    }
+                    else if (info.RegionType.StartsWith ("H"))						// Homes always have 25000 prims
+                    {
+                    	info.ObjectCapacity = 25000;
                     }
                 }
 
@@ -587,15 +581,6 @@ namespace Universe.Modules
                         : regInfo.RegionLocY / Constants.RegionSize)).ToString ())) * Constants.RegionSize;
             if (regInfo.RegionLocY != loc)
                 updated = true;
-
-            //loc = regInfo.RegionLocZ;
-            //regInfo.RegionLocZ =
-            //        int.Parse (MainConsole.Instance.Prompt ("Region location Z",
-            //            ((regInfo.RegionLocZ == 0 
-            //            ? 0 
-            //            : regInfo.RegionLocZ / Constants.RegionSize)).ToString ())) * Constants.RegionSize;
-            //if (regInfo.RegionLocZ != loc)
-            //    updated = true;
 
             return updated;
         }
@@ -777,7 +762,6 @@ namespace Universe.Modules
             }
 
             DeleteUpOldArchives(daysOld);
-
         }
 
         /// <summary>
@@ -821,12 +805,11 @@ namespace Universe.Modules
                 File.Copy(fileName, regionFile);
 
                 return true; 
-
             }
 
             return false;
         }
-            
+         
         public virtual List<ISceneEntity> LoadObjects()
         {
             return _regionData.Groups.ConvertAll<ISceneEntity>(o => o);
@@ -947,7 +930,7 @@ namespace Universe.Modules
                 m_timeBetweenSaves = config.GetInt("TimeBetweenSaves", m_timeBetweenSaves);
                 m_keepOldSave = config.GetBoolean("SavePreviousBackup", m_keepOldSave);
 
-                // As of V0.9.2, data is saved in the '../Data' directory relative to the bin dir
+                // Data is saved in the '../Data' directory relative to the bin dir
                 // or as configured
 
                 // Get and save the default Data path
@@ -1203,7 +1186,6 @@ namespace Universe.Modules
                 return;
             }
 
-            //RegionData data = _regionLoader.LoadBackup(filename + ".tmp");
             if (!isOldSave)
             {
                 if (File.Exists(filename))
@@ -1241,10 +1223,7 @@ namespace Universe.Modules
 
         string BuildSaveFileName()
         {
-            //return (m_storeDirectory == "" || m_storeDirectory == "/")
             // the'/' directory is valid an someone might use it to store backups so don't
-            // fudge it to mean './' ... as it previously was...
-
             var name = BackupFile;
             return (m_storeDirectory == "")
                        ? name + ".sim"

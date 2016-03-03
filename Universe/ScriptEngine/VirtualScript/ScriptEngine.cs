@@ -477,7 +477,7 @@ namespace Universe.ScriptEngine.VirtualScript
 
         protected void UniverseDotNetStats(IScene scene, string[] cmdparams)
         {
-            MainConsole.Instance.Info ("Universe DotNet Script Engine Stats:");
+            MainConsole.Instance.Info ("[Virtual Script]: Script Engine Stats:");
             MainConsole.Instance.CleanInfo ("    Region: " + scene.RegionInfo.RegionName);
             MainConsole.Instance.CleanInfo ("    Number of scripts compiled: " + Compiler.ScriptCompileCounter);
             MainConsole.Instance.CleanInfo ("    Max allowed threat level: " + ScriptProtection.GetThreatLevel ());
@@ -498,14 +498,14 @@ namespace Universe.ScriptEngine.VirtualScript
         protected void UniverseDotNetDisable(IScene scene, string[] cmdparams)
         {
             ConsoleDisabled = true;
-            MainConsole.Instance.Warn("[Virtual Script]: Virtual Script has been disabled.");
+            MainConsole.Instance.Warn("[Virtual Script]: Virtual Script Engine has been disabled.");
         }
 
         protected void UniverseDotNetEnable(IScene scene, string[] cmdparams)
         {
             ConsoleDisabled = false;
             MaintenanceThread.Started = true;
-            MainConsole.Instance.Warn("[Virtual Script]: Virtual Script has been enabled.");
+            MainConsole.Instance.Warn("[Virtual Script]: Virtual Script Engine has been enabled.");
         }
 
         #endregion

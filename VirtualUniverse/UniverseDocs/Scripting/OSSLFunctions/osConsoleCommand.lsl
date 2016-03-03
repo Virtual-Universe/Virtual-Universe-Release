@@ -15,7 +15,7 @@
 //
 // This is ONLY EFFECTIVE if you are running Aurora-Sim yourself and have access to the console screen
 // This Fuction MUST BE RESTRICTED to using only Authorized UUID as can be defined in
-//    \bin\Configuration\Scripting\VirtualScript.ini
+//    \bin\Configuration\Scripting\AuroraVirtualScript.ini
 //
 default
 {

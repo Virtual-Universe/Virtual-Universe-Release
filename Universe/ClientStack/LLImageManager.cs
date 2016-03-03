@@ -25,15 +25,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using OpenMetaverse;
+
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Utilities;
+using OpenMetaverse;
+using System;
+using System.Collections.Generic;
 
 namespace Universe.ClientStack
 {
@@ -306,6 +307,24 @@ namespace Universe.ClientStack
 
             #endregion
         }
+
+        #endregion
+
+        #region Nested type: J2KImageComparer
+
+/*
+        private sealed class J2KImageComparer : IComparer<J2KImage>
+        {
+            #region IComparer<J2KImage> Members
+
+            public int Compare(J2KImage x, J2KImage y)
+            {
+                return x.Priority.CompareTo(y.Priority);
+            }
+
+            #endregion
+        }
+*/
 
         #endregion
     }

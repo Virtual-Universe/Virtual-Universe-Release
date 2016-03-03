@@ -1,4 +1,4 @@
 #!/bin/sh
 
-git log --pretty=format:"Universe 1.0.1 Dev (%cd.%h)" --date=short -n 1 > VirtualUniverse/bin/.version
+git log --pretty=format:"Universe 1.0.2 RC1 (%cd.%h)" --date=short -n 1 > VirtualUniverse/bin/.version
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -127,7 +127,7 @@ namespace Universe.Framework.ClientInterfaces
         public AvatarAppearance(UUID avatarID, AvatarWearable[] wearables, Primitive.TextureEntry textureEntry,
                                 byte[] visualParams)
         {
-            //            MainConsole.Instance.WarnFormat("[AVATAR APPEARANCE] create initialized appearance for {0}",avatarID);
+            //MainConsole.Instance.WarnFormat("[Avatar Appearance] create initialized appearance for {0}",avatarID);
 
             m_serial = 1;
             m_owner = avatarID;
@@ -159,7 +159,7 @@ namespace Universe.Framework.ClientInterfaces
 
         public AvatarAppearance(AvatarAppearance appearance, bool copyWearables)
         {
-            //            MainConsole.Instance.WarnFormat("[AVATAR APPEARANCE] create from an existing appearance");
+            //MainConsole.Instance.WarnFormat("[Avatar Appearance] create from an existing appearance");
 
             if (appearance == null)
             {
@@ -321,8 +321,8 @@ namespace Universe.Framework.ClientInterfaces
                         if (!ChangedTextures.Contains(oldface.TextureID))
                             ChangedTextures.Add(oldface.TextureID);
 
-                    //                if (newface != null)
-                    //                    MainConsole.Instance.WarnFormat("[AVATAR APPEARANCE]: index {0}, new texture id {1}",i,newface.TextureID);
+                    //if (newface != null)
+                    //    MainConsole.Instance.WarnFormat("[Avatar Appearance]: index {0}, new texture id {1}",i,newface.TextureID);
                 }
             }
 
@@ -692,7 +692,7 @@ namespace Universe.Framework.ClientInterfaces
                 }
                 else
                 {
-                    MainConsole.Instance.Warn("[AVATAR APPEARANCE]: failed to unpack wearables");
+                    MainConsole.Instance.Warn("[Avatar Appearance]: failed to unpack wearables");
                 }
 
                 // Avatar Textures
@@ -711,7 +711,7 @@ namespace Universe.Framework.ClientInterfaces
                 }
                 else
                 {
-                    MainConsole.Instance.Warn("[AVATAR APPEARANCE]: failed to unpack textures");
+                    MainConsole.Instance.Warn("[Avatar Appearance]: failed to unpack textures");
                 }
 
                 // Visual Parameters
@@ -723,7 +723,7 @@ namespace Universe.Framework.ClientInterfaces
                 }
                 else
                 {
-                    MainConsole.Instance.Warn("[AVATAR APPEARANCE]: failed to unpack visual parameters");
+                    MainConsole.Instance.Warn("[Avatar Appearance]: failed to unpack visual parameters");
                 }
 
                 // Attachments
@@ -740,7 +740,7 @@ namespace Universe.Framework.ClientInterfaces
             }
             catch (Exception e)
             {
-                MainConsole.Instance.ErrorFormat("[AVATAR APPEARANCE]: unpack failed badly: {0}, {1}", e.ToString(), OSDParser.SerializeJsonString(data));
+                MainConsole.Instance.ErrorFormat("[Avatar Appearance]: unpack failed badly: {0}, {1}", e.ToString(), OSDParser.SerializeJsonString(data));
             }
         }
 

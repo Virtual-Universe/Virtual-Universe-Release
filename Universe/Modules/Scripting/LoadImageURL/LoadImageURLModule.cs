@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -212,12 +212,12 @@ namespace Universe.Modules.Scripting
                         catch (Exception)
                         {
                             MainConsole.Instance.Error(
-                                "[LOADIMAGEURLMODULE]: OpenJpeg Encode Failed.  Empty byte data returned!");
+                                "[Load Image Url Module]: OpenJpeg Encode Failed.  Empty byte data returned!");
                         }
                     }
                     else
                     {
-                        MainConsole.Instance.WarnFormat("[LOADIMAGEURLMODULE] No data returned");
+                        MainConsole.Instance.WarnFormat("[Load Image Url Module] No data returned");
                     }
                 }
             }
@@ -234,7 +234,7 @@ namespace Universe.Modules.Scripting
                     stream.Close();
                 }
             }
-            MainConsole.Instance.DebugFormat("[LOADIMAGEURLMODULE] Returning {0} bytes of image data for request {1}",
+            MainConsole.Instance.DebugFormat("[Load Image Url Module] Returning {0} bytes of image data for request {1}",
                                              imageJ2000.Length, state.RequestID);
             m_textureManager.ReturnData(state.RequestID, imageJ2000);
         }

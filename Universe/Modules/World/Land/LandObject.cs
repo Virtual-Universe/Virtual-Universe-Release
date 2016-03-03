@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -362,13 +362,15 @@ namespace Universe.Modules.Land
                     if (LandData.AuthBuyerID != UUID.Zero)                                    
                         LandData.Status = ParcelStatus.LeasePending;
 
+                    /*
                     // 141031 Greythane, this is an example of where the check needs to go
-/*                    LandData.Status = LandData.OwnerID == m_parcelManagementModule.GodParcelOwner
+                    LandData.Status = LandData.OwnerID == m_parcelManagementModule.GodParcelOwner
                         ? ParcelStatus.Abandoned
                         : LandData.AuthBuyerID != UUID.Zero
                         ? ParcelStatus.LeasePending
                         : ParcelStatus.Leased;
-*/
+                    */
+
                     m_parcelManagementModule.UpdateLandObject (this);
                     SendLandUpdateToAvatarsOverMe (snap_selection);
 
@@ -379,7 +381,6 @@ namespace Universe.Modules.Land
                 }
             }
         }
-
 
         public void UpdateLandSold (UUID avatarID, UUID groupID, bool groupOwned, uint AuctionID, int claimprice,
                                    int area)
@@ -506,7 +507,6 @@ namespace Universe.Modules.Land
 
                             //They are not allowed in this parcel, but not banned, so lets send them a notice about this parcel
                             return true;
-
                         } 
 
                         //No group checking, not on the access list, restricted
@@ -521,7 +521,6 @@ namespace Universe.Modules.Land
                         return true;
                     }
                     return false;
-
                 }
 
                 if ((LandData.Flags & (uint)ParcelFlags.UseAccessGroup) > 0)
@@ -606,8 +605,7 @@ namespace Universe.Modules.Land
         public void SendAccessList (UUID agentID, UUID sessionID, uint flags, int sequenceID,
                                    IClientAPI remote_client)
         {
-            // this apparently causes problems in the newer viewers - thanks jimtarber via Halcyon
-            //if (flags == (uint)AccessList.Access || flags == (uint)AccessList.Both)       
+            // this apparently causes problems in the newer viewers - thanks jimtarber via Halcyon     
             if ((flags & (uint) AccessList.Access) == (uint)AccessList.Access)
             {
                 List<List<UUID>> avatars = CreateAccessListArrayByFlag (AccessList.Access);
@@ -618,7 +616,6 @@ namespace Universe.Modules.Land
             }
 
             // this apparently causes problems in the newer viewers - thanks jimtarber via Halcyon
-            //if (flags == (uint)AccessList.Ban || flags == (uint)AccessList.Both)
             if ((flags & (uint)AccessList.Ban) == (uint)AccessList.Ban)
             {
                 List<List<UUID>> avatars = CreateAccessListArrayByFlag (AccessList.Ban);
@@ -912,7 +909,6 @@ namespace Universe.Modules.Land
                 //The return system will take care of the returned objects
                 m_parcelManagementModule.AddReturns (ol [0].OwnerID, ol [0].Name, ol [0].AbsolutePosition,
                     "Parcel Owner Return", ol);
-                //m_scene.returnObjects(ol.ToArray(), remote_client.AgentId);
             }
         }
 

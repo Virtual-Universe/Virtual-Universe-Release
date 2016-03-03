@@ -1,8 +1,8 @@
-Understanding the Code Flow of Virtual Universe
+Understanding the Code Flow of Universe
 
-Due to the largely asyncronous nature of Virtual Universe, the code flow of Virtual Universe is quite complex and has many paths. 
+Due to the largely asyncronous nature of Universe, the code flow of Universe is quite complex and has many paths. 
 However, all start out from the same initial point, as at the base, they all load the same plugins and interfaces.
-This allows Virtual Universe to reuse the code between Standalone and Grid, Universe.exe and Universe.Server.exe rather than have different paths for each.
+This allows Universe to reuse the code between Standalone and Grid, Universe.exe and Universe.Server.exe rather than have different paths for each.
 The only difference between Universe.Server.exe and Universe.exe is what modules that each load (you can make Universe.Server start regions if you try).
 
 1): During Startup, the Application starts off with loading the configuration options from the commands passed into it by the application that started it.

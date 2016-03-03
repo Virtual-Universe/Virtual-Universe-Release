@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -49,7 +49,7 @@ namespace Universe.Framework.Utilities
         /// <param name="mod"></param>
         public void RegisterModuleInterface<T>(T mod)
         {
-            //            MainConsole.Instance.DebugFormat("[SCENE BASE]: Registering interface {0}", typeof(M));
+            //MainConsole.Instance.DebugFormat("[Scene Base]: Registering interface {0}", typeof(M));
 
             List<Object> l = null;
             if (!ModuleInterfaces.TryGetValue(typeof (T), out l))

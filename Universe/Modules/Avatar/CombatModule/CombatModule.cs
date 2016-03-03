@@ -599,7 +599,7 @@ namespace Universe.Modules.Combat
 
                     if (Health <= 0 && killingAvatar == null)
                         killingAvatar = otherAvatar;
-                    //MainConsole.Instance.Debug("[AVATAR]: Collision with localid: " + localid.ToString() + " at depth: " + coldata[localid].ToString());
+                    //MainConsole.Instance.Debug("[Avatar]: Collision with localid: " + localid.ToString() + " at depth: " + coldata[localid].ToString());
                 }
 
                 if (starthealth != Health)

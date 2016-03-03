@@ -25,13 +25,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using OpenMetaverse;
-using OpenMetaverse.Imaging;
+
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Assets;
+using OpenMetaverse;
+using OpenMetaverse.Imaging;
+using System;
 
 namespace Universe.ClientStack
 {
@@ -156,7 +157,7 @@ namespace Universe.ClientStack
                     if (m_asset == null)
                     {
                         MainConsole.Instance.Debug(
-                            "[J2K Image]: RunUpdate() called with missing asset data (no missing image texture?). Canceling texture transfer");
+                            "[J2KIMAGE]: RunUpdate() called with missing asset data (no missing image texture?). Canceling texture transfer");
                         m_currentPacket = m_stopPacket;
                         return;
                     }
@@ -167,7 +168,7 @@ namespace Universe.ClientStack
                         if (Layers == null)
                         {
                             MainConsole.Instance.Warn(
-                                "[J2K Image]: RunUpdate() called with missing Layers. Canceling texture transfer");
+                                "[J2KIMAGE]: RunUpdate() called with missing Layers. Canceling texture transfer");
                             m_currentPacket = m_stopPacket;
                             return;
                         }

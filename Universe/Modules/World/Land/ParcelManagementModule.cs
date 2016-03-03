@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -383,10 +383,10 @@ namespace Universe.Modules.Land
 
                         if (ret.Value.Groups.Count > 1)
                             MainConsole.Instance.InfoFormat(
-                                "[LandManagement]: Returning {0} objects due to parcel auto return.",
+                                "[Land Management]: Returning {0} objects due to parcel auto return.",
                                 ret.Value.Groups.Count);
                         else
-                            MainConsole.Instance.Info("[LandManagement]: Returning 1 object due to parcel auto return.");
+                            MainConsole.Instance.Info("[Land Management]: Returning 1 object due to parcel auto return.");
                     }
                     IAsyncSceneObjectGroupDeleter asyncDelete =
                         m_scene.RequestModuleInterface<IAsyncSceneObjectGroupDeleter>();
@@ -460,7 +460,7 @@ namespace Universe.Modules.Land
             catch (Exception e)
             {
                 MainConsole.Instance.ErrorFormat(
-                    "[LandManagement]: Failed to check for parcel returns: {0}", e);
+                    "[Land Management]: Failed to check for parcel returns: {0}", e);
             }
         }
 
@@ -531,7 +531,7 @@ namespace Universe.Modules.Land
             while (fullSimParcel.LandData.OwnerID == UUID.Zero || account == null)
             {
                 MainConsole.Instance.Warn (
-                    "[ParcelManagement]: Could not find user for parcel, please give a valid user to make the owner");
+                    "[Parcel Management]: Could not find user for parcel, please give a valid user to make the owner");
                 
                 string userName = MainConsole.Instance.Prompt ("User Name:", "");
                 if (userName == "")
@@ -550,9 +550,9 @@ namespace Universe.Modules.Land
             }
 
 
-            MainConsole.Instance.InfoFormat ("[ParcelManagement]: Setting land owner for region {0} to {1}",
+            MainConsole.Instance.InfoFormat ("[Parcel Management]: Setting land owner for region {0} to {1}",
                 m_scene.RegionInfo.RegionName,
-                ownerName);                 //  was >>   fullSimParcel.LandData.OwnerID);
+                ownerName);
 
             fullSimParcel.LandData.ClaimDate = Util.UnixTimeSinceEpoch();
             fullSimParcel.LandData.Bitmap =
@@ -655,8 +655,6 @@ namespace Universe.Modules.Land
                     return parcel;
 
             return null;
-
-//            return AllParcels().FirstOrDefault(land => land.LandData.GlobalID == GlobalID);
         }
 
         public ILandObject GetLandObject(float x, float y)
@@ -675,7 +673,6 @@ namespace Universe.Modules.Land
                 y = r.RegionSizeY - 1;
             if (y < 0)
                 y = 1;
-
 
             lock (m_landListLock)
             {
@@ -701,7 +698,6 @@ namespace Universe.Modules.Land
             else if (m_UpdateDirectoryOnTimer)
                 m_TaintedLandData = true;
         }
-
 
         /// <summary>
         ///     Adds a land object to the stored list and adds them to the landIDList to what they own
@@ -740,8 +736,7 @@ namespace Universe.Modules.Land
 
         public void SendYouAreBannedNotice(IScenePresence avatar)
         {
-            avatar.ControllingClient.SendAlertMessage(
-                "You are not allowed on this parcel because you are banned.");
+            avatar.ControllingClient.SendAlertMessage("You are not allowed on this parcel because you are banned.");
         }
 
         public void SendYouAreRestrictedNotice(IScenePresence avatar)
@@ -1714,9 +1709,7 @@ namespace Universe.Modules.Land
         }
 
         // After receiving a land buy packet, first the data needs to
-        // be validated. This method validates the right to buy the
-        // parcel
-
+        // be validated. This method validates the right to buy the parcel
         public bool EventManagerOnValidateLandBuy(EventManager.LandBuyArgs e)
         {
             if (!e.landValidated)
@@ -2101,8 +2094,8 @@ namespace Universe.Modules.Land
             }
             catch (Exception e)
             {
-                MainConsole.Instance.ErrorFormat("[Land] Fetch error: {0}", e.Message);
-                MainConsole.Instance.ErrorFormat("[Land] ... in request {0}", request);
+                MainConsole.Instance.ErrorFormat("[LAND] Fetch error: {0}", e.Message);
+                MainConsole.Instance.ErrorFormat("[LAND] ... in request {0}", request);
             }
 
             if (parcelID == UUID.Zero)
@@ -2369,16 +2362,6 @@ namespace Universe.Modules.Land
             IScenePresence presenceEntity;
             if (m_scene.TryGetScenePresence(client.AgentId, out presenceEntity) && !presenceEntity.IsChildAgent)
             {
-                /*if (presenceEntity.PhysicsActor != null)
-                {
-                    presenceEntity.PhysicsActor.OnPositionAndVelocityUpdate += delegate ()
-                    {
-                        if (m_lastResults.ContainsKey (presenceEntity.UUID) && m_lastResults[presenceEntity.UUID] != 0)
-                        {
-                            m_lastLandObject[presenceEntity.UUID].SendLandProperties (m_lastResults[presenceEntity.UUID], false, (int)m_lastDataResults[presenceEntity.UUID], presenceEntity.ControllingClient);
-                        }
-                    };
-                }*/
                 SendParcelOverlay(client);
             }
         }

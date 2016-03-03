@@ -77,7 +77,6 @@ namespace Universe.Modules.AbuseReports
             }
         }
 
-
         #endregion
 
         #region console commands
@@ -152,7 +151,6 @@ namespace Universe.Modules.AbuseReports
         {
             if (!m_enabled)
                 return;
-
 
             m_Scene = null;
 

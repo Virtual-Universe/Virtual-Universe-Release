@@ -148,13 +148,13 @@ namespace Universe.Framework.Utilities
                             System.Diagnostics.StackTrace stackTrace = new System.Diagnostics.StackTrace();
 
                             MainConsole.Instance.Debug(
-                                string.Format("[WebUtils]: request (URI:{0}, METHOD:{1}, UPSTACK(4):{3}) took {2}ms",
+                                string.Format("[Web Utils]: request (URI:{0}, METHOD:{1}, UPSTACK(4):{3}) took {2}ms",
                                 url, method, tickelapsed,
                                 stackTrace.GetFrame(3).GetMethod().Name));
                         }
                         if (tickelapsed > 5000)
                             MainConsole.Instance.Info(
-                                string.Format("[WebUtils]: request took too long (URI:{0}, METHOD:{1}) took {2}ms",
+                                string.Format("[Web Utils]: request took too long (URI:{0}, METHOD:{1}) took {2}ms",
                                 url, method, tickelapsed));
                     }
                 }
@@ -162,7 +162,7 @@ namespace Universe.Framework.Utilities
             catch (Exception ex)
             {
                 if (MainConsole.Instance != null)
-                    MainConsole.Instance.WarnFormat("[WebUtils] request failed: {0} to {1}", ex.ToString(), url);
+                    MainConsole.Instance.WarnFormat("[Web Utils] request failed: {0} to {1}", ex.ToString(), url);
             }
             return response;
         }
@@ -218,7 +218,7 @@ namespace Universe.Framework.Utilities
 
         public static byte[] ServiceOSDRequest(string url, byte[] buffer, string method, int timeout)
         {
-            // MainConsole.Instance.DebugFormat("[WEB UTIL]: <{0}> start osd request for {1}, method {2}",reqnum,url,method);
+            // MainConsole.Instance.DebugFormat("[Web Util]: <{0}> start osd request for {1}, method {2}",reqnum,url,method);
 
             string errorMessage = "unknown error";
             int tickstart = Util.EnvironmentTickCount();
@@ -266,10 +266,10 @@ namespace Universe.Framework.Utilities
                     HttpWebResponse webResponse = (HttpWebResponse)we.Response;
                     if (webResponse.StatusCode == HttpStatusCode.BadRequest)
                         //AR: Removed JSON Data filling console on connecting to down regions
-                        MainConsole.Instance.WarnFormat("[WebUtils]: WebException bad request to {0}", url);
+                        MainConsole.Instance.WarnFormat("[Web Utils]: WebException bad request to {0}", url);
                     else
                         //AR: Removed JSON Data filling console on connecting to down regions
-                        MainConsole.Instance.Warn(string.Format("[WebUtils]: WebException {0} to {1}",
+                        MainConsole.Instance.Warn(string.Format("[Web Utils]: WebException {0} to {1}",
                                                         webResponse.StatusCode, url));
                     return new byte[0];
                 }
@@ -298,17 +298,17 @@ namespace Universe.Framework.Utilities
                             System.Diagnostics.StackTrace stackTrace = new System.Diagnostics.StackTrace();
 
                             MainConsole.Instance.Trace(
-                                string.Format("[WebUtils]: osd request (URI:{0}, METHOD:{1}, UPSTACK(4):{5}) took {2}ms overall, {3}ms writing, {4}ms de-serializing",
+                                string.Format("[Web Utils]: osd request (URI:{0}, METHOD:{1}, UPSTACK(4):{5}) took {2}ms overall, {3}ms writing, {4}ms de-serializing",
                                 url, method, tickdiff, tickdata, tickserialize,
                                 (stackTrace.FrameCount > 4 ? stackTrace.GetFrame(4) : stackTrace.GetFrame(stackTrace.FrameCount - 1)).GetMethod().Name));
                         }
                         else if (MainConsole.Instance.IsDebugEnabled)
                             MainConsole.Instance.Debug(
-                                string.Format("[WebUtils]: request (URI:{0}, METHOD:{1}) took {2}ms overall, {3}ms writing, {4}ms de-serializing",
+                                string.Format("[Web Utils]: request (URI:{0}, METHOD:{1}) took {2}ms overall, {3}ms writing, {4}ms de-serializing",
                                 url, method, tickdiff, tickdata, tickserialize));
                         if (tickdiff > 5000)
                             MainConsole.Instance.Info(
-                                string.Format("[WebUtils]: request took too long (URI:{0}, METHOD:{1}) took {2}ms overall, {3}ms writing, {4}ms de-serializing",
+                                string.Format("[Web Utils]: request took too long (URI:{0}, METHOD:{1}) took {2}ms overall, {3}ms writing, {4}ms de-serializing",
                                 url, method, tickdiff, tickdata, tickserialize));
                     }
                 }
@@ -317,7 +317,7 @@ namespace Universe.Framework.Utilities
             if (MainConsole.Instance != null)
                 using (MemoryStream stream = new MemoryStream(buffer))
                     //AR: Removed JSON Data filling console on connecting to down regions
-                    MainConsole.Instance.WarnFormat("[WebUtils]: request failed: {0} to {1}", errorMessage, url);
+                    MainConsole.Instance.WarnFormat("[Web Utils]: request failed: {0} to {1}", errorMessage, url);
             return new byte[0];
         }
 
@@ -379,15 +379,15 @@ namespace Universe.Framework.Utilities
                 }
                 // uh?
                 if (doLogMessages)
-                    MainConsole.Instance.Warn(("[WebUtils]: Got OSD of unexpected type " + buffer.Type.ToString()));
+                    MainConsole.Instance.Warn(("[Web Utils]: Got OSD of unexpected type " + buffer.Type.ToString()));
                 return null;
             }
             catch (Exception ex)
             {
                 if (doLogMessages)
                 {
-                    MainConsole.Instance.Warn("[WebUtils]: exception on parse of REST message " + ex);
-                    MainConsole.Instance.Warn("[WebUtils]: bad data: " + data);
+                    MainConsole.Instance.Warn("[Web Utils]: exception on parse of REST message " + ex);
+                    MainConsole.Instance.Warn("[Web Utils]: bad data: " + data);
                 }
                 return null;
             }

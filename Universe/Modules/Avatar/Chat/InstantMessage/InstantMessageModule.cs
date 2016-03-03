@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -82,7 +82,7 @@ namespace Universe.Modules.Chat
 
                 if (m_TransferModule == null)
                 {
-                    MainConsole.Instance.Error("[INSTANT MESSAGE]: No message transfer module, IM will not work!");
+                    MainConsole.Instance.Error("[Instant Message]: No message transfer module, IM will not work!");
                     scene.EventManager.OnNewClient -= EventManager_OnNewClient;
                     scene.EventManager.OnClosingClient -= EventManager_OnClosingClient;
                     scene.EventManager.OnIncomingInstantMessage -= OnGridInstantMessage;

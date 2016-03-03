@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -207,8 +207,8 @@ namespace Universe.Modules.WorldMap.Warp3DMap
 
             #region Layer Map
 
-            float diffX = 1.0f;//(float) heightmap.Width/(float) Constants.RegionSize;
-            float diffY = 1.0f;//(float) heightmap.Height/(float) Constants.RegionSize;
+            float diffX = 1.0f;
+            float diffY = 1.0f;
             int newRsX = heightmap.Width / (int)diffX;
             int newRsY = heightmap.Height / (int)diffY;
 

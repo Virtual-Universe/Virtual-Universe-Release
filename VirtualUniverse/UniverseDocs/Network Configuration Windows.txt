@@ -3,21 +3,19 @@
 ##
 
 Some people will find it very easy to run Virtual Universe.  It is easy for the most part.
-While running Virtual Universe and configuring it is simple for some the network and port forwarding
+While running WHiteCore-Sim and configuring it is simple for some the network and port forwarding
 is harder.  This tutorial will help you learn how to make sure your network is forwarding the proper
 ports both in your firewall and your gateway (router/ modem).  The methods in this tutorial have been
-tested and fully work.  If you follow this guide you should be up and going in no time at all.
-  To setup Virtual Universe please see the Setting up Universe.txt 
-  If you are using development code and need to compile first please follow the instructions 
+tested and fully work.  If you follow this guide you should be up and going in no item at all.
+  To setup Virtual Universe please see the Setting up Universe.txt
+  If you are using development code and need to compile first please follow the instructions
 in Compiling.txt for your system before continuing on with configuring Virtual Universe.
 
-These instructions work for Windows XP, Vista, Windows 7, Windows 8, Windows 8.1, Windows 10,
-Windows Server 2003, Windows Server 2008, Windows Server 2008 R2, Windows Server 2012, Windows Server 2013.
 
 ##
 ## Opening Ports in Windows Firewall
 ##
-  In order to get your viewer and your consoles communicating you need to open ports in your 
+  In order to get your viewer and your consoles communicating you need to open ports in your
 Windows firewall first.  For most Windows users this will be pretty quick and simple.
   Follow these steps for your Windows firewall:
       1. Click Start -> Control Panel.
@@ -35,24 +33,24 @@ Windows firewall first.  For most Windows users this will be pretty quick and si
       13. Click Finish.
    Now repeat these steps for the region ports beginning at port 9000TCP.  Also repeat this step for
 the Inbound UDP ports.
-   To set the Outbound TCP and UDP ports its the same process as above.  Once this is done your firewall
+   TO set the Outbound TCP and UDP ports its the same process as above.  Once this is done your firewall
 is set for Windows Firewall.  On to the Gateway stuff.......
    NOTE for Windows Server 2008 and Windows Server 2008 R2 users.  You have to put the ports in as follows:
    8002, 8003, 8004, 8005, 8006, 8007, 8008, 8009, 8010, 8011, 8012, 8013
    This will make sure the firewall accepts the rule in Windows 2008 Server and Windows 2008 Server R2.
-	  
+
 ##
 ## Port forwarding in your Network Gateway (modem/ router)
 ##
-  For many people today the new internet modems given by your Internet Service Provider (ISP) also will act 
-  as a Network Gateway and firewall to block ports.  So you must also ensure the ports used for Virtual Universe are
-  unblocked here as well.  Because there are so many different routers and modems out there, I will encourage
-  you to consult your router/ modem user manual on how to forward the ports.  Remember even if your doing a 
+  For many people today the new internet modems given by your Internet Service Provider (ISP) also will act
+  as a Network Gateway and firewall to block ports.  So you must also ensure the ports used for Universe are
+  unblocked here as well.  Because there are so many different routers and modems out there here I will encourage
+  you to consult your router/ modem user manual on how to forward the ports.  Remember even if your doing a
   local grid only if you have followed the instructions in Opening ports in Windows Firewall and you still
-  cannot connect,, this most likely will be the culprit.  To bind the ports to your machine's interrnal IP address
+  cannot connect,, this most likely will be the culprit.  To bind the ports to your machine's internal IP address
   in your local network it is best to use a static IP.  Please see setting up static IP below to learn how to
   accomplish this.
-	  
+
 ##
 ## Changing your Internal IP to Static
 ##
@@ -84,52 +82,29 @@ is set for Windows Firewall.  On to the Gateway stuff.......
   connecting to Universe.Server.exe.  It is also recommended and encouraged that once you change your machine's IP address in your ethernet adapter you should reboot the machine to ensure everything works properly.
 
 ##
-## Flushing the Windows DNS Cache
-##
-   In some cases people have told me that they have trouble connecting their viewers to any grid whether it is a Virtual Universe related grid or even Secondlife.  If the grid is online and people are logging in then your viewer may just be having issues.
-
-   One way to fix this and in most cases this will work for most people on windows is to do as follows:
-       1. Click the Windows icon in the lower left hand corner of your desktop.
-       2. In the search bar you can type in "Command" and it will show you the Command Console.
-       3. Right click the Command Console in the menu and select "Run as Administrator" and click yes when the prompt asks for it.
-       4. In the Command Console type the following command four times and hit enter: ipconfig/flushdns
-       5. Once you complete step four close the Command prompt and reboot the machine.
-       6. After step 5 is complete you should now be able to login successfully in your viewer.
-
-   What does the ipconfig/flushdns command do?
- 
-   The ipconfig/flushdns command will flush the windows DNS cache on your computer.  Sometimes this cache can become corrupted and just needs to be cleared.  The most usual occurances of this
-   are when your ISP changes the IP address of your modem or something gets out of sync in the windows operating system causing your machine to have trouble connecting to the internet correctly.
-
-   Will this command hurt my computer?
-
-   No, this command has been fully tested and does not hurt your machine.  In most cases this will help speed up your internet connection by your pc as it forces Windows to repopulate the DNS cache
-   with updated DNS information.  
-	  
-##
 ## FAQ
 ##
   Q: I don't have a Network Gateway and my Modem does not do port forwarding, what do I do?
   A: If this is the case then if you follow the steps for giving your tower a static IP and opening the ports
      in Windows Firewall you should not have any issues.
 
-  Q: I followed these instructions and the instructions in my modem's user manual but it still doesnt connect, Why?
+  Q: I followed these instructions and the instructions in my modem's user manual but it still doesn't connect, Why?
   A: First double check you didn't mistype something or get the wrong setting.  If this does not work you can ask
-     for assistance.  I am happy to help.  Just email your issue to secondgalaxy2013@gmail.com or you can often 
-     find me in #galaxyfutures on Freenode.
+     for assistance.  I am happy to help.  Just email your issue to secondgalaxy2013@gmail.com or you can often
+     find me in #universe-support on Freenode.
 
 ##
 ## About this tutorial
 ##
   This tutorial was written by Emperor Starfinder for helping users of Virtual Universe.
-  You can find out more about Virtual Universe at 
+  I am not a member of the Virtual Universe development team.  You can find out more about Virtual Universe at
   http://www.virtual-planets.org
-	
+
 ##
 ## Legal Stuff
 ##
 
   The name Virtual Universe, virtual-planets.org, and the Virtual Universe logos and marks, are the property of their respective
-  creators. Namely the Second Galaxy Development Team, collaborating partners, and contributors.
+  creators. Namely the Second Galaxy Development Team.
   Third party software and code contributed to Virtual Universe is done so under an opensource license.  For more information
   please see LICENSE.txt in VirtualUniverse/UniverseDocs/LICENSE.txt.

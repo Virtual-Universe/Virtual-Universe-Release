@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -42,7 +42,7 @@ namespace Universe.Framework.Utilities
         public static string PathUsername(string Path) //supports using %username% in place of username
         {
             if (Path.IndexOf(usernameVar, StringComparison.CurrentCultureIgnoreCase) == -1)
-            //does not contain username var
+                //does not contain username var
             {
                 return Path;
             }
@@ -50,33 +50,34 @@ namespace Universe.Framework.Utilities
             {
                 string userName = Environment.UserName; //check system for current username
                 return Regex.Replace(Path, usernameVar, userName, RegexOptions.IgnoreCase);
-                //return Path with the system username
+                    //return Path with the system username
             }
         }
 
-        public static string PathHomeDrive(string fName)
+
+        public static string PathHomeDrive(string fName) 
         {
             // supports for %homedrive%, gives the drive letter on Windows
             // ~/ on *nix
-
-            if (fName.IndexOf(winHomedriveVar, StringComparison.CurrentCultureIgnoreCase) != -1)
+             
+            if ( fName.IndexOf (winHomedriveVar, StringComparison.CurrentCultureIgnoreCase) != -1)
             {
-                string DriveLetter = Environment.GetEnvironmentVariable("HOMEDRIVE");
-                fName = Regex.Replace(fName, winHomedriveVar, DriveLetter, RegexOptions.IgnoreCase);
+                string DriveLetter = Environment.GetEnvironmentVariable ("HOMEDRIVE");
+                fName =  Regex.Replace (fName, winHomedriveVar, DriveLetter, RegexOptions.IgnoreCase);
             }
-
+    
             // *nix then ?
-            if (fName.IndexOf(nixHomeVar, StringComparison.CurrentCultureIgnoreCase) != -1)
+            if ( fName.IndexOf (nixHomeVar, StringComparison.CurrentCultureIgnoreCase) != -1)
             {
                 string homePath = Environment.GetEnvironmentVariable("HOME") + "/";
-                fName = Regex.Replace(fName, nixHomeVar, homePath, RegexOptions.IgnoreCase);
+                fName = Regex.Replace (fName, nixHomeVar, homePath, RegexOptions.IgnoreCase);
             }
 
-            return fName;
+            return fName;        
         }
 
         public static string ComputeFullPath(string Path)
-        //single function that calls the functions that help compute a full url Path
+            //single function that calls the functions that help compute a full url Path
         {
             return PathHomeDrive(PathUsername(Path));
         }
@@ -88,7 +89,7 @@ namespace Universe.Framework.Utilities
         /// <param name="filename">Filename.</param>
         public static string VerifyOSPath(string filename)
         {
-            return Utilities.IsLinuxOs ? filename.Replace('\\', '/') : filename.Replace('/', '\\');
+            return Utilities.IsLinuxOs ? filename.Replace ('\\', '/') : filename.Replace ('/', '\\');
         }
 
         /// <summary>
@@ -104,9 +105,9 @@ namespace Universe.Framework.Utilities
             // some file sanity checks when saving 
             if (fileName == "")
                 return "";
-
-            string extension = Path.GetExtension(fileName);
-            if (!defaultExt.StartsWith("."))
+            
+            string extension = Path.GetExtension (fileName);
+            if (!defaultExt.StartsWith ("."))
                 defaultExt = "." + defaultExt;
 
             if (extension == string.Empty)
@@ -117,34 +118,35 @@ namespace Universe.Framework.Utilities
             // check for user directories
             fileName = ComputeFullPath(fileName);
 
-            string filePath = Path.GetDirectoryName(fileName);
+            string filePath = Path.GetDirectoryName (fileName);
             if (filePath == "")
             {
                 if (defaultDir == String.Empty)
                     defaultDir = "./";
 
-                fileName = VerifyOSPath(Path.Combine(defaultDir, fileName));
-            }
+                fileName = VerifyOSPath(Path.Combine (defaultDir, fileName));
 
+            }
+             
             // check if the directory exists
-            if (!Directory.Exists(defaultDir))
+            if (!Directory.Exists (defaultDir))
             {
                 if (createPath)
-                    Directory.CreateDirectory(defaultDir);
+                    Directory.CreateDirectory (defaultDir);
                 else
                 {
-                    MainConsole.Instance.Info("[Error]: The folder specified, '" + defaultDir + "' does not exist!");
+                    MainConsole.Instance.Info ("[Error]: The folder specified, '" + defaultDir + "' does not exist!");
                     return "";
                 }
             }
-
+ 
             // last check...
-            if (File.Exists(fileName))
+            if (File.Exists (fileName))
             {
-                if (MainConsole.Instance.Prompt("[Warning]: The file '" + fileName + "' exists. Overwrite?", "yes") != "yes")
+                if (MainConsole.Instance.Prompt ("[Warning]: The file '" + fileName + "' exists. Overwrite?", "yes") != "yes")
                     return "";
 
-                File.Delete(fileName);
+                File.Delete (fileName);
             }
 
             return fileName;
@@ -157,17 +159,17 @@ namespace Universe.Framework.Utilities
         /// <param name="fileName">File name.</param>
         /// <param name="extensions">Extensions.</param>
         /// <param name="defaultDir">Default dir.</param>
-        public static string VerifyReadFile(string fileName, List<string> extensions, string defaultDir)
+        public static string VerifyReadFile(string fileName, List <string> extensions, string defaultDir)
         {
             foreach (var ext in extensions)
             {
 
                 var fName = VerifyReadFile(fileName, ext, defaultDir, false);
-                if (fName != "")
+                if ( fName != "")
                     return fName;
             }
 
-            MainConsole.Instance.Info("[Error]: The file '" + fileName + "' cannot be found.");
+            MainConsole.Instance.Info("[Error]: The file '" + fileName + "' cannot be found." );
             return "";
         }
 
@@ -180,7 +182,7 @@ namespace Universe.Framework.Utilities
         /// <param name="defaultDir">Default dir.</param>
         public static string VerifyReadFile(string fileName, string defaultExt, string defaultDir)
         {
-            return VerifyReadFile(fileName, defaultExt, defaultDir, true);
+            return VerifyReadFile (fileName, defaultExt, defaultDir, true);
         }
 
         /// <summary>
@@ -196,22 +198,21 @@ namespace Universe.Framework.Utilities
             // some sanity checks...
             if (fileName == "")
                 return "";
-
+            
             string extension = Path.GetExtension(fileName).ToLower();
-            if (!defaultExt.StartsWith("."))
+            if (!defaultExt.StartsWith ("."))
                 defaultExt = "." + defaultExt;
             bool extOK = extension.Equals(defaultExt);
 
             if (!extOK)
             {
-                if (extension == string.Empty)
+                if ( extension == string.Empty)
                 {
                     fileName = fileName + defaultExt;
-                }
-                else
+                } else 
                 {
                     if (showErrors)
-                        MainConsole.Instance.Info("Usage: the filename should be a '" + defaultExt + "' file");
+                        MainConsole.Instance.Info("Usage: the filename should be a '" + defaultExt +"' file");
                     return "";
                 }
             }
@@ -219,31 +220,32 @@ namespace Universe.Framework.Utilities
             // check for user directories
             fileName = ComputeFullPath(fileName);
 
-            string filePath = Path.GetDirectoryName(fileName);
+            string filePath = Path.GetDirectoryName (fileName);
             if (filePath == "")
             {
                 if (defaultDir == String.Empty)
                     defaultDir = "./";
 
-                if (!Directory.Exists(defaultDir))
+                if (!Directory.Exists (defaultDir))
                 {
                     if (showErrors)
-                        MainConsole.Instance.Info("[Error]: The folder specified, '" + defaultDir + "' does not exist!");
+                        MainConsole.Instance.Info ("[Error]: The folder specified, '" + defaultDir + "' does not exist!");
                     return "";
                 }
 
-                fileName = VerifyOSPath(Path.Combine(defaultDir, fileName));
+                fileName = VerifyOSPath(Path.Combine (defaultDir, fileName));
             }
-
+             
             // last check...
-            if (!File.Exists(fileName))
+            if ( !File.Exists( fileName ) )
             {
                 if (showErrors)
-                    MainConsole.Instance.Info("[Error]: The file '" + fileName + "' cannot be found.");
+                    MainConsole.Instance.Info ( "[Error]: The file '" + fileName + "' cannot be found." );
                 return "";
             }
 
             return fileName;
+
         }
 
         public static List<string> GetFilenames(string defaultDir, string extension, bool showextension)
@@ -252,20 +254,20 @@ namespace Universe.Framework.Utilities
 
             if (string.IsNullOrEmpty(extension))
                 extension = ".*";
-            if (!extension.StartsWith("."))
+            if (!extension.StartsWith ("."))
                 extension = "." + extension;
-
+            
             if (defaultDir == String.Empty)
                 defaultDir = "./";
-
-            if (Directory.Exists(defaultDir))
+                       
+            if (Directory.Exists (defaultDir))
             {
-                var archives = new List<string>(Directory.GetFiles(defaultDir, "*" + extension));
+                var archives = new List<string> (Directory.GetFiles (defaultDir, "*" + extension));
                 foreach (string file in archives)
                     if (showextension)
-                        retVals.Add(Path.GetFileName(file));
+                        retVals.Add (Path.GetFileName (file));
                     else
-                        retVals.Add(Path.GetFileNameWithoutExtension(file));
+                        retVals.Add (Path.GetFileNameWithoutExtension (file));
             }
 
             return retVals;
@@ -279,7 +281,7 @@ namespace Universe.Framework.Utilities
         /// <param name="defaultDir">Default dir.</param>
         /// <param name="extensions">Extensions.</param>
         /// <param name="showextension">If set to <c>true</c> showextension.</param>
-        public static string GetReadFilename(string prompt, string defaultDir, List<string> extensions, bool showextension)
+        public static string GetReadFilename(string prompt, string defaultDir, List <string> extensions, bool showextension)
         {
             // get a file and verify that it exists etc
             string loadFileName = "";
@@ -295,28 +297,27 @@ namespace Universe.Framework.Utilities
                     foreach (var ext in extensions)
                     {
                         var fnames = GetFilenames(defaultDir, ext, showextension);
-                        if (fnames.Count > 0)
+                        if ( fnames.Count > 0)
                             availfiles.AddRange(fnames);
                     }
 
                     if (availfiles.Count > 0)
                     {
-                        MainConsole.Instance.CleanInfo(" Available files are : ");
+                        MainConsole.Instance.CleanInfo (" Available files are : ");
                         foreach (string file in availfiles)
-                            MainConsole.Instance.CleanInfo("   " + file);
-                    }
-                    else
-                        MainConsole.Instance.CleanInfo("Sorry, no files are available.");
+                            MainConsole.Instance.CleanInfo ("   " + file);
+                    } else
+                        MainConsole.Instance.CleanInfo ("Sorry, no files are available.");
 
-                    loadFileName = "";
+                    loadFileName = "";    
                 }
             } while (loadFileName == "");
 
             // check for full pathing
-            var fileName = VerifyOSPath(Path.Combine(defaultDir, loadFileName));
-            if (!File.Exists(fileName))
+            var fileName = VerifyOSPath(Path.Combine (defaultDir, loadFileName));
+            if ( !File.Exists( fileName ) )
             {
-                MainConsole.Instance.Info("[Error]: The file '" + loadFileName + "' cannot be found.");
+                MainConsole.Instance.Info ( "[Error]: The file '" + loadFileName + "' cannot be found." );
                 return "";
             }
 
@@ -345,26 +346,26 @@ namespace Universe.Framework.Utilities
                     var availfiles = GetFilenames(defaultDir, extension, showextension);
                     if (availfiles.Count > 0)
                     {
-                        MainConsole.Instance.CleanInfo(" Available files are : ");
+                        MainConsole.Instance.CleanInfo (" Available files are : ");
                         foreach (string file in availfiles)
-                            MainConsole.Instance.CleanInfo("   " + file);
-                    }
-                    else
-                        MainConsole.Instance.CleanInfo("Sorry, no files are available.");
+                            MainConsole.Instance.CleanInfo ("   " + file);
+                    } else
+                        MainConsole.Instance.CleanInfo ("Sorry, no files are available.");
 
-                    loadFileName = "";
+                    loadFileName = "";    
                 }
             } while (loadFileName == "");
 
             // check for full pathing
-            var fileName = VerifyOSPath(Path.Combine(defaultDir, loadFileName));
-            if (!File.Exists(fileName))
+            var fileName = VerifyOSPath(Path.Combine (defaultDir, loadFileName));
+            if ( !File.Exists( fileName ) )
             {
-                MainConsole.Instance.Info("[Error]: The file '" + loadFileName + "' cannot be found.");
+                MainConsole.Instance.Info ( "[Error]: The file '" + loadFileName + "' cannot be found." );
                 return "";
             }
 
             return fileName;
         }
+
     }
 }

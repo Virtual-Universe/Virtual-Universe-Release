@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -87,7 +87,7 @@ namespace Universe.Framework.Utilities
                 {
                     // Recycle old packages
 #if Debug
-                    MainConsole.Instance.Info("[PacketPool]: Using " + type);
+                    MainConsole.Instance.Info("[Packet Pool]: Using " + type);
 #endif
                     packet = (pool[t]).Pop();
                 }
@@ -150,7 +150,7 @@ namespace Universe.Framework.Utilities
             int i = 0;
             Packet packet = GetPacket(type);
             if (packet == null)
-                MainConsole.Instance.WarnFormat("[PACKETPOOL]: Failed to get packet of type {0}", type);
+                MainConsole.Instance.WarnFormat("[Packet Pool]: Failed to get packet of type {0}", type);
             else
                 packet.FromBytes(bytes, ref i, ref packetEnd, zeroBuffer);
             return packet;
@@ -200,7 +200,7 @@ namespace Universe.Framework.Utilities
                                 t = (int) PacketType.ObjectUpdateCompressed;
 
 #if Debug
-                            MainConsole.Instance.Info("[PacketPool]: Returning " + type);
+                            MainConsole.Instance.Info("[Packet Pool]: Returning " + type);
 #endif
 
                             if (!pool.ContainsKey(t))
@@ -239,7 +239,7 @@ namespace Universe.Framework.Utilities
                             int t = (int) packet.Type;
 
 #if Debug
-                            MainConsole.Instance.Info("[PacketPool]: Returning " + type);
+                            MainConsole.Instance.Info("[Packet Pool]: Returning " + type);
 #endif
 
                             if (!pool.ContainsKey(t))

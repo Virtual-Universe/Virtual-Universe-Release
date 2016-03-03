@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -211,7 +211,7 @@ namespace Universe.Modules.Caps
 
                                                 } catch (Exception e)
                                                 { 
-                                                    MainConsole.Instance.Warn ("[MaterialsDemoModule]: cannot decode \"Material\" from matsMap: " + e.Message); 
+                                                    MainConsole.Instance.Warn ("[Materials Demo Module]: cannot decode \"Material\" from matsMap: " + e.Message); 
                                                     continue;
                                                 }
                                             }
@@ -247,13 +247,7 @@ namespace Universe.Modules.Caps
                                                                 MainConsole.Instance.Debug ("[Materials]: te.DefaultTexture is null");
                                                             else
                                                             {
-//## FixMe ##
-// comparison always results in 'False'                                   if (te.DefaultTexture.MaterialID == null)
-//                                                                    MainConsole.Instance.Debug("[MaterialsDemoModule]: te.DefaultTexture.MaterialID is null");
-//                                                                else
-//                                                                {
                                                                 te.DefaultTexture.MaterialID = id;
-//                                                                }
                                                             }
                                                         } else
                                                         {
