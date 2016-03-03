@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,11 +25,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Simulation.Base;
-using System;
 
 namespace Universe.Server
 {
@@ -46,7 +45,7 @@ namespace Universe.Server
             if (MainConsole.Instance != null)
             {
                 MainConsole.Instance.DefaultPrompt = "Universe.WebServer ";
-                MainConsole.Instance.Info("[UniverseSTARTUP]: Startup completed in " +
+                MainConsole.Instance.Info("[Virtual Universe Startup]: Startup completed in " +
                                           (DateTime.Now - this.StartupTime).TotalSeconds);
             }
         }
