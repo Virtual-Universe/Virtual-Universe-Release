@@ -40,8 +40,9 @@ namespace Universe.DataManager.Migration
     public class Migrator : IMigrator, IRestorePoint
     {
         readonly Dictionary<string, string> renameSchema = new Dictionary<string, string>();
-        public Dictionary<string, string> renameColumns = new Dictionary<string, string>();
-        public List<SchemaDefinition> schema;
+
+        public Dictionary<string, string> RenameColumns = new Dictionary<string, string>();
+        public List<SchemaDefinition> Schema;
 
         public Version Version { get; protected set; }
 
@@ -62,9 +63,8 @@ namespace Universe.DataManager.Migration
 
         public bool Validate(IDataConnector genericData)
         {
-            if (genericData.GetUniverseVersion(MigrationName) != Version)
+            if (genericData.GetUniverseVersion (MigrationName) != Version)
                 return false;
-
             return DoValidate(genericData);
         }
 
@@ -290,9 +290,7 @@ namespace Universe.DataManager.Migration
             //Remove all of the tables that have this name
             Schema.RemoveAll(delegate(SchemaDefinition r)
                                  {
-                                     if (r.Name == table)
-                                         return true;
-                                     return false;
+                                     return r.Name == table;
                                  });
         }
 
@@ -341,19 +339,19 @@ namespace Universe.DataManager.Migration
             }
         }
 
-        void CopyTableToTempVersion(IDataConnector genericData, string tablename,
+        static void CopyTableToTempVersion(IDataConnector genericData, string tablename,
                                             ColumnDefinition[] columnDefinitions, IndexDefinition[] indexDefinitions)
         {
             genericData.CopyTableToTable(tablename, GetTempTableNameFromTableName(tablename), columnDefinitions,
                                          indexDefinitions);
         }
 
-        string GetTempTableNameFromTableName(string tablename)
+        static string GetTempTableNameFromTableName(string tablename)
         {
             return tablename + "_temp";
         }
 
-        void RestoreTempTableToReal(IDataConnector genericData, string tablename,
+        static void RestoreTempTableToReal(IDataConnector genericData, string tablename,
                                             ColumnDefinition[] columnDefinitions, IndexDefinition[] indexDefinitions)
         {
             genericData.CopyTableToTable(GetTempTableNameFromTableName(GetTempTableNameFromTableName(tablename)),
@@ -368,7 +366,7 @@ namespace Universe.DataManager.Migration
             }
         }
 
-        void DeleteTempVersion(IDataConnector genericData, string tableName)
+        static void DeleteTempVersion(IDataConnector genericData, string tableName)
         {
             string tempTableName = GetTempTableNameFromTableName(tableName);
             if (genericData.TableExists(tempTableName))
