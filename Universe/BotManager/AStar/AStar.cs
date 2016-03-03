@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -93,14 +93,14 @@ namespace Universe.BotManager.AStar
         /// <summary>
         ///     Constructor.
         /// </summary>
-        /// <param name="AParent">The node's parent</param>
-        /// <param name="AGoalNode">The goal node</param>
-        /// <param name="ACost">The accumulative cost until now</param>
-        public AStarNode(AStarNode AParent, AStarNode AGoalNode, double ACost)
+        /// <param name="aParent">The node's parent</param>
+        /// <param name="aGoalNode">The goal node</param>
+        /// <param name="aCost">The accumulative cost until now</param>
+        public AStarNode(AStarNode aParent, AStarNode aGoalNode, double aCost)
         {
-            Parent = AParent;
-            Cost = ACost;
-            GoalNode = AGoalNode;
+            Parent = aParent;
+            Cost = aCost;
+            GoalNode = aGoalNode;
         }
 
         #endregion
@@ -123,9 +123,9 @@ namespace Universe.BotManager.AStar
         /// <summary>
         ///     Determines whether the current node is the same state as the on passed.
         /// </summary>
-        /// <param name="ANode">AStarNode to compare the current node to</param>
+        /// <param name="aNode">AStarNode to compare the current node to</param>
         /// <returns>Returns true if they are the same state</returns>
-        public virtual bool IsSameState(AStarNode ANode)
+        public virtual bool IsSameState(AStarNode aNode)
         {
             return false;
         }
@@ -141,8 +141,8 @@ namespace Universe.BotManager.AStar
         /// <summary>
         ///     Gets all successors nodes from the current node and adds them to the successor list
         /// </summary>
-        /// <param name="ASuccessors">List in which the successors will be added</param>
-        public virtual void GetSuccessors(ArrayList ASuccessors)
+        /// <param name="aSuccessors">List in which the successors will be added</param>
+        public virtual void GetSuccessors(ArrayList aSuccessors)
         {
         }
 
@@ -201,7 +201,7 @@ namespace Universe.BotManager.AStar
             get { return FSolution; }
         }
 
-        public bool pathPossible
+        public bool PathPossible
         {
             get { return m_pathPossible; }
         }
@@ -225,11 +225,11 @@ namespace Universe.BotManager.AStar
         /// <summary>
         ///     Prints all the nodes in a list
         /// </summary>
-        /// <param name="ANodeList">List to print</param>
-        void PrintNodeList(object ANodeList)
+        /// <param name="aNodeList">List to print</param>
+        void PrintNodeList(object aNodeList)
         {
             Console.WriteLine("Node list:");
-            foreach (AStarNode n in (ANodeList as IEnumerable))
+            foreach (AStarNode n in (aNodeList as IEnumerable))
             {
                 //n.PrintNodeInfo();
             }
@@ -243,12 +243,12 @@ namespace Universe.BotManager.AStar
         /// <summary>
         ///     Finds the shortest path from the start node to the goal node
         /// </summary>
-        /// <param name="AStartNode">Start node</param>
-        /// <param name="AGoalNode">Goal node</param>
-        public void FindPath(AStarNode AStartNode, AStarNode AGoalNode)
+        /// <param name="aStartNode">Start node</param>
+        /// <param name="aGoalNode">Goal node</param>
+        public void FindPath(AStarNode aStartNode, AStarNode aGoalNode)
         {
-            FStartNode = AStartNode;
-            FGoalNode = AGoalNode;
+            FStartNode = aStartNode;
+            FGoalNode = aGoalNode;
 
             FOpenList.Add(FStartNode);
             int i = 0;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,17 +26,17 @@
  */
 
 
-using Universe.Framework.ClientInterfaces;
-using Universe.Framework.Modules;
-using Universe.Framework.PresenceInfo;
-using Universe.Framework.SceneInfo;
-using Universe.ScriptEngine.VirtualScript;
-using OpenMetaverse;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Runtime.Remoting.Lifetime;
+using OpenMetaverse;
+using Universe.Framework.ClientInterfaces;
+using Universe.Framework.Modules;
+using Universe.Framework.PresenceInfo;
+using Universe.Framework.SceneInfo;
+using Universe.ScriptEngine.VirtualScript;
 using LSL_Float = Universe.ScriptEngine.VirtualScript.LSL_Types.LSLFloat;
 using LSL_Integer = Universe.ScriptEngine.VirtualScript.LSL_Types.LSLInteger;
 using LSL_Key = Universe.ScriptEngine.VirtualScript.LSL_Types.LSLString;
@@ -76,7 +76,7 @@ namespace Universe.BotManager
 
         #region IBot_Api Members
 
-        public LSL_String botCreateBot(string FirstName, string LastName, string appearanceToClone, LSL_Vector startPos)
+        public LSL_String botCreateBot(string firstName, string lastName, string appearanceToClone, LSL_Vector startPos)
         {
             if (!ScriptProtection.CheckThreatLevel(ThreatLevel.Moderate, "botCreateBot", m_host, "bot", m_itemID))
                 return "";
@@ -84,7 +84,7 @@ namespace Universe.BotManager
             if (manager != null)
                 return
                     new LSL_String(
-                        manager.CreateAvatar(FirstName, LastName, m_host.ParentEntity.Scene,
+                        manager.CreateAvatar(firstName, lastName, m_host.ParentEntity.Scene,
                                              UUID.Parse(appearanceToClone), m_host.OwnerID,
                                              new Vector3((float) startPos.x, (float) startPos.y, (float) startPos.z)).
                                 ToString());
@@ -297,11 +297,11 @@ namespace Universe.BotManager
 
         #region IScriptApi Members
 
-        public void Initialize(IScriptModulePlugin ScriptEngine, ISceneChildEntity host, uint localID, UUID itemID,
+        public void Initialize(IScriptModulePlugin scriptEngine, ISceneChildEntity host, uint localID, UUID itemID,
                                ScriptProtectionModule module)
         {
             m_itemID = itemID;
-            m_ScriptEngine = ScriptEngine;
+            m_ScriptEngine = scriptEngine;
             m_host = host;
             ScriptProtection = module;
         }

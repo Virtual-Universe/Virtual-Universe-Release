@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,12 +25,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using OpenMetaverse;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.Modules;
 using Universe.Framework.Physics;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.SceneInfo.Entities;
-using OpenMetaverse;
 
 namespace Universe.BotManager
 {
@@ -116,7 +116,7 @@ namespace Universe.BotManager
             if (isMoving)
                 m_hasStoppedMoving = false;
 
-            m_object.AbsolutePosition += toward*(m_speed*(1f/45f));
+            m_object.AbsolutePosition += toward * (m_speed * (1f/45f));
             m_object.ScheduleGroupTerseUpdate();
         }
 
