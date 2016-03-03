@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -42,7 +42,7 @@ namespace Universe.DataManager.SQLite
 {
     public class SQLiteLoader : DataManagerBase
     {
-        string m_defaultDataPath = Constants.DEFAULT_DATA_DIR+"/SQLite";   //Util.BasePathCombine ("");
+        string m_defaultDataPath = Constants.DEFAULT_DATA_DIR+"/SQLite";
         protected Dictionary<string, FieldInfo> m_Fields = new Dictionary<string, FieldInfo>();
         protected string m_connectionString;
         protected static Dictionary<string, object> _locks = new Dictionary<string, object>();

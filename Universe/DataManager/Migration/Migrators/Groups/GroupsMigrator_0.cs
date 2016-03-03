@@ -38,7 +38,7 @@ namespace Universe.DataManager.Migration.Migrators.Groups
             Version = new Version(0, 0, 0);
             MigrationName = "Groups";
 
-            schema = new List<SchemaDefinition>();
+            Schema = new List<SchemaDefinition>();
 
             // Group Agent
             AddSchema("group_agent", ColDefs(

@@ -38,7 +38,7 @@ namespace Universe.DataManager.Migration.Migrators.Estate
             Version = new Version(0, 0, 0);
             MigrationName = "Estate";
 
-            schema = new List<SchemaDefinition>();
+            Schema = new List<SchemaDefinition>();
 
             AddSchema("estate_regions", ColDefs(
                 ColDef("RegionID", ColumnTypes.String36),

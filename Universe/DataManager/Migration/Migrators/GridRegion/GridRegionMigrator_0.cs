@@ -38,7 +38,7 @@ namespace Universe.DataManager.Migration.Migrators.GridRegion
             Version = new Version(0, 0, 0);
             MigrationName = "GridRegions";
 
-            schema = new List<SchemaDefinition>();
+            Schema = new List<SchemaDefinition>();
 
             AddSchema("gridregions", ColDefs(
                 ColDef("ScopeID", ColumnTypes.String45),

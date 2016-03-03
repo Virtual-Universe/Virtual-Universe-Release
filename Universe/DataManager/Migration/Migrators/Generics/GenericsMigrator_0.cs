@@ -38,7 +38,7 @@ namespace Universe.DataManager.Migration.Migrators.Generics
             Version = new Version(0, 0, 0);
             MigrationName = "Generics";
 
-            schema = new List<SchemaDefinition>();
+            Schema = new List<SchemaDefinition>();
 
             AddSchema("generics", ColDefs(
                 ColDef("OwnerID", ColumnTypes.String36),

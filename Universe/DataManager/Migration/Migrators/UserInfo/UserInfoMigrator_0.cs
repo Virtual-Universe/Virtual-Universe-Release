@@ -38,7 +38,7 @@ namespace Universe.DataManager.Migration.Migrators.UserInfo
             Version = new Version(0, 0, 0);
             MigrationName = "UserInfo";
 
-            schema = new List<SchemaDefinition>();
+            Schema = new List<SchemaDefinition>();
 
             AddSchema("user_info", ColDefs(
                 ColDef("UserID", ColumnTypes.String50),

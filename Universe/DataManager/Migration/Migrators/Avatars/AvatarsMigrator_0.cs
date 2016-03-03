@@ -38,7 +38,7 @@ namespace Universe.DataManager.Migration.Migrators.Avatars
             Version = new Version(0, 0, 0);
             MigrationName = "Avatars";
 
-            schema = new List<SchemaDefinition>();
+            Schema = new List<SchemaDefinition>();
 
             AddSchema("user_appearance", ColDefs(
                 ColDef("PrincipalID", ColumnTypes.Char36),

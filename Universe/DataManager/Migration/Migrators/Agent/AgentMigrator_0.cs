@@ -39,7 +39,7 @@ namespace Universe.DataManager.Migration.Migrators.Agent
             Version = new Version(0, 0, 0);
             MigrationName = "Agent";
 
-            schema = new List<SchemaDefinition>();
+            Schema = new List<SchemaDefinition>();
 
             AddSchema("user_profile", ColDefs(
                 ColDef("ID", ColumnTypes.String45),

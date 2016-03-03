@@ -39,7 +39,7 @@ namespace Base.Currency
             Version = new Version(0, 0, 0);
             MigrationName = "BaseCurrency";
 
-            schema = new List<SchemaDefinition>();
+            Schema = new List<SchemaDefinition>();
 
             // Currency table
             AddSchema("currency", ColDefs(

@@ -38,7 +38,7 @@ namespace Universe.DataManager.Migration.Migrators.UserAccounts
             Version = new Version(0, 0, 0);
             MigrationName = "UserAccounts";
 
-            schema = new List<SchemaDefinition>();
+            Schema = new List<SchemaDefinition>();
 
             AddSchema("user_accounts", ColDefs(
                 ColDef("PrincipalID", ColumnTypes.Char36),

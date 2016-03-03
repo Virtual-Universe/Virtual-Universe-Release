@@ -38,7 +38,7 @@ namespace Universe.DataManager.Migration.Migrators.Auth
             Version = new Version(0, 0, 0);
             MigrationName = "Auth";
 
-            schema = new List<SchemaDefinition>();
+            Schema = new List<SchemaDefinition>();
 
             AddSchema("auth", ColDefs(
                 ColDef("UUID", ColumnTypes.Char36),

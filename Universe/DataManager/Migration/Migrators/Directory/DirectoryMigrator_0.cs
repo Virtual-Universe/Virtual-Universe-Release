@@ -38,7 +38,7 @@ namespace Universe.DataManager.Migration.Migrators.Directory
             Version = new Version(0, 0, 0);
             MigrationName = "Directory";
 
-            schema = new List<SchemaDefinition>();
+            Schema = new List<SchemaDefinition>();
 
             AddSchema("search_parcel", ColDefs(
                 ColDef("RegionID", ColumnTypes.Char36),

@@ -38,7 +38,7 @@ namespace Universe.DataManager.Migration.Migrators.AbuseReports
             Version = new Version(0, 0, 0);
             MigrationName = "AbuseReports";
 
-            schema = new List<SchemaDefinition>();
+            Schema = new List<SchemaDefinition>();
 
             AddSchema("abusereports", ColDefs(
                 ColDef("Category", ColumnTypes.String100),

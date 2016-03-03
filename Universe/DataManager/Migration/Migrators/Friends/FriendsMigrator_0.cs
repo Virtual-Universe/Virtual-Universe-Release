@@ -38,7 +38,7 @@ namespace Universe.DataManager.Migration.Migrators.Friends
             Version = new Version(0, 0, 0);
             MigrationName = "Friends";
 
-            schema = new List<SchemaDefinition>();
+            Schema = new List<SchemaDefinition>();
 
             AddSchema("friends", ColDefs(
                 ColDef("PrincipalID", ColumnTypes.Char36),

@@ -38,7 +38,7 @@ namespace Universe.DataManager.Migration.Migrators.Inventory
             Version = new Version(0, 0, 0);
             MigrationName = "Inventory";
 
-            schema = new List<SchemaDefinition>();
+            Schema = new List<SchemaDefinition>();
 
             AddSchema("inventory_folders", ColDefs(
                 ColDef("folderID", ColumnTypes.Char36),
