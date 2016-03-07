@@ -386,7 +386,6 @@ namespace Universe.Modules.Permissions
                     HandleTransferLandOwnership, true, true);
             }
 
-
             string grant = PermissionsConfig.GetString("GrantLSL", "");
             if (grant.Length > 0)
             {
@@ -993,7 +992,7 @@ namespace Universe.Modules.Permissions
             // Outside of this method, they should never be added to objectflags!
             // -teravus
 
-            // this shouldn't ever happen..     return no permissions/objectflags.
+            // this shouldn't ever happen. return no permissions/objectflags.
             if (task == null)
                 return 0;
 
@@ -1017,7 +1016,6 @@ namespace Universe.Modules.Permissions
             PrimFlags.ObjectYouOfficer // Tells client that you've got group object editing permission. Used when ObjectGroupOwned is set
             );
 #pragma warning restore 0612
-
 
             // Creating the three ObjectFlags options for this method to choose from.
             // Customize the OwnerMask
@@ -1404,7 +1402,7 @@ namespace Universe.Modules.Permissions
                 m_scene.Entities.TryGetValue(objectID, out group);
                 if (group == null)
                 {
-                    MainConsole.Instance.Warn("[PERMISSIONS]: COULD NOT FIND PRIM FOR CanEditObjectInventory! " +
+                    MainConsole.Instance.Warn("[Permissions]: COULD NOT FIND PRIM FOR CanEditObjectInventory! " +
                     objectID);
                     return false;
                 }
@@ -1564,7 +1562,6 @@ namespace Universe.Modules.Permissions
                 }
 
                 ISceneEntity task = (ISceneEntity)ent;
-
 
                 // UUID taskOwner = null;
                 // Added this because at this point in time it wouldn't be wise for
@@ -2019,7 +2016,7 @@ namespace Universe.Modules.Permissions
 
                 if (part == null)
                 {
-                    MainConsole.Instance.Warn("[PERMISSIONS]: NULL PRIM IN canViewScript! " + objectID);
+                    MainConsole.Instance.Warn("[Permissions]: NULL PRIM IN canViewScript! " + objectID);
                     return false;
                 }
 
