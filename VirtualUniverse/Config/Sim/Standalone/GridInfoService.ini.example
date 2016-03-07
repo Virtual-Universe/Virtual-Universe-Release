@@ -10,7 +10,7 @@ GridInfoInHandlerPort = 0
 ;; to your grid or standalone setup.
 
 ;; long grid name: the long name of your grid
-gridname = "My Virtual Universe"
+gridname = "Virtual Universe"
 
 ;; short grid name: the short name of your grid
 gridnick = "Universe"

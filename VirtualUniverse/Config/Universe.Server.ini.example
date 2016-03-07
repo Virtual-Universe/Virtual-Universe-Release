@@ -49,8 +49,8 @@ DataDirectory = ""
 save_crashes = false
 
 ;; Directory to save crashes to if above is enabled
-;; (default is /bin/crashes/*.txt or C:\bin\crashes\*.txt)
-crash_dir = ./crashes
+;; (default is /Data/Crashes/*.txt or C:\Data\Crashes\*.txt)
+crash_dir = ./Data/rashes
 
 ;; Place to create a PID file
 ;PIDFile = /tmp/my.pid
@@ -66,7 +66,7 @@ crash_dir = ./crashes
 ;; Time between each timer to run (in minutes)
 ;timer_time = 20
 
-;; Should we restart Universe if the sim crashes?
+;; Should we restart Virtual Universe if the sim crashes?
 AutoRestartOnCrash = false
 
 [GridServerInfoService]
@@ -118,7 +118,7 @@ ParcelConnector = LocalConnector
 EmailConnector = LocalConnector
 
 ;; Maximum non-group chat messages that the server will store per user
-MaxOfflineMessages = 20
+MaxOfflineMessages = 50
 
 ;; Whether we should save any group chat messages for users
 SaveOfflineGroupChatMessages = true

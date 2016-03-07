@@ -60,11 +60,11 @@ SystemEstateName = "Universe Estate"
 ;; This sets the message when a user logs in.
 ;; <USERNAME> adds the user's name into the message.
 
-WelcomeMessage = "Welcome to my Virtual Universe, <USERNAME>!"
+WelcomeMessage = "Welcome to Virtual Universe, <USERNAME>!"
 
 ;; OPTIONAL
 ;;This sets the message when a user logs in with a customizable welcome message. You need to add a welcome.txt file somewhere in the web and put the URL here if you want to use this
-;;CustomizedMessageURL = http://world.4d-web.eu/welcome.txt
+;;CustomizedMessageURL = http://ServerHostName/welcome.txt
 
 ;; Should new users be shown the ToS when they log in if they have not seen it before?
 ;;  If this is enabled, the FileNameOfTOS will be used to set what the users see.
@@ -119,7 +119,6 @@ CloudTexture = "dc4b9f0b-d008-45c6-96a4-01dd947ac621"
 ;; new users. Names need to separated by commas and a mixture of first and second
 ;; Example: UserNameSeed = "Aaron,Bassett,Kellie,Bridgforth,Violeta,Anglin,Dora,Osborne,Noel,Tedja,Mark,Lampron,Lucas,Sumrall,Elnur,Murga,Samir,Vannorman,Adjin,Cozart,Lars,Christian"
 UserNameSeed = ""
-
 
 [AuthenticationService]
 ;; Should we check user passwords? If this is set to false, there will be NO password checking.
