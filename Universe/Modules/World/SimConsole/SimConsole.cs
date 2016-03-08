@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -94,7 +94,7 @@ namespace Universe.Modules.SimConsole
                         m_userKeys.Add(Users[i], (Access) Enum.Parse(typeof (Access), Users[i + 1]));
                     }
                     else
-                        MainConsole.Instance.Warn("[Sim Console]: No second configuration option given for SimConsole Users, ignoring");
+                        MainConsole.Instance.Warn("[SimConsole]: No second configuration option given for SimConsole Users, ignoring");
                 }
             }
         }

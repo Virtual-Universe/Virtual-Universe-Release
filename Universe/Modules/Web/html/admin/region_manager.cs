@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -149,15 +149,16 @@ namespace Universe.Modules.Web
 
                 }
 
-                if (regionPreset.StartsWith("u"))
+                if (regionPreset.StartsWith("w"))
                 {
                     // 'standard' setup
                     newRegion.RegionType = newRegion.RegionType + "Universe";                   
+                    //info.RegionPort;            // use auto assigned port
                     newRegion.RegionTerrain = "Flatland";
                     newRegion.Startup = StartupType.Normal;
                     newRegion.SeeIntoThisSimFromNeighbor = true;
-                    newRegion.InfiniteRegion = true;
-                    newRegion.ObjectCapacity = 100000;
+                    newRegion.InfiniteRegion = false;
+                    newRegion.ObjectCapacity = 50000;
                     newRegion.RegionPort = RegionPort;
  
 
@@ -166,14 +167,15 @@ namespace Universe.Modules.Web
                 {
                     // 'Openspace' setup
                     newRegion.RegionType = newRegion.RegionType + "Openspace";                   
+                    //newRegion.RegionPort;            // use auto assigned port
                     if (RegionTerrain.StartsWith("a"))
                         newRegion.RegionTerrain = "Aquatic";
                     else
                         newRegion.RegionTerrain = "Grassland";
                     newRegion.Startup = StartupType.Medium;
                     newRegion.SeeIntoThisSimFromNeighbor = true;
-                    newRegion.InfiniteRegion = true;
-                    newRegion.ObjectCapacity = 25000;
+                    newRegion.InfiniteRegion = false;
+                    newRegion.ObjectCapacity = 750;
                     newRegion.RegionSettings.AgentLimit = 10;
                     newRegion.RegionSettings.AllowLandJoinDivide = false;
                     newRegion.RegionSettings.AllowLandResell = false;
@@ -182,11 +184,12 @@ namespace Universe.Modules.Web
                 {
                     // 'Homestead' setup
                     newRegion.RegionType = newRegion.RegionType + "Homestead";                   
+                    //info.RegionPort;            // use auto assigned port
                     newRegion.RegionTerrain = "Homestead";
                     newRegion.Startup = StartupType.Medium;
                     newRegion.SeeIntoThisSimFromNeighbor = true;
-                    newRegion.InfiniteRegion = true;
-                    newRegion.ObjectCapacity = 500000;
+                    newRegion.InfiniteRegion = false;
+                    newRegion.ObjectCapacity = 3750;
                     newRegion.RegionSettings.AgentLimit = 20;
                     newRegion.RegionSettings.AllowLandJoinDivide = false;
                     newRegion.RegionSettings.AllowLandResell = false;
@@ -196,11 +199,12 @@ namespace Universe.Modules.Web
                 {
                     // 'Full Region' setup
                     newRegion.RegionType = newRegion.RegionType + "Full Region";                   
+                    //newRegion.RegionPort;            // use auto assigned port
                     newRegion.RegionTerrain = RegionTerrain;
                     newRegion.Startup = StartupType.Normal;
                     newRegion.SeeIntoThisSimFromNeighbor = true;
-                    newRegion.InfiniteRegion = true;
-                    newRegion.ObjectCapacity = 100000;
+                    newRegion.InfiniteRegion = false;
+                    newRegion.ObjectCapacity = 15000;
                     newRegion.RegionSettings.AgentLimit = 100;
                     if (newRegion.RegionType.StartsWith ("M"))                           // defaults are 'true'
                     {
@@ -215,7 +219,7 @@ namespace Universe.Modules.Web
                     newRegion.RegionTerrain = "Custom";
                 }
 
-                /* Disabled as this is a work in progress and will break with the current scenemanager (Dec 5 - greythane-
+                /* Disabled as this is a worl=k in progress and will break with the current scenemanager (Dec 5 - greythane-
                 // TODO: !!! Assumes everything is local for now !!!               
                 ISceneManager scenemanager = webInterface.Registry.RequestModuleInterface<ISceneManager> ();
                 if (scenemanager.CreateRegion(newRegion))
@@ -343,6 +347,9 @@ namespace Universe.Modules.Web
             vars.Add("Submit", translator.GetTranslatedString("Submit"));
             vars.Add("SubmitURL", "home.html");
             vars.Add("ErrorMessage", "");
+
+
+         
 
             return vars;
         }

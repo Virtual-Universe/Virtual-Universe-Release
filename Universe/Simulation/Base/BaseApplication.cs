@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -43,7 +43,7 @@ using Universe.Framework.Utilities;
 namespace Universe.Simulation.Base
 {
     /// <summary>
-    ///     Starting class for the Universe Server
+    ///     Starting class for the Virtual Universe Server
     /// </summary>
     public class BaseApplication
     {
@@ -61,11 +61,11 @@ namespace Universe.Simulation.Base
         /// <summary>
         ///     Directory to save crash reports to.  Relative to bin/
         /// </summary>
-        public static string m_crashDir = "../Data/Crashes";
+        public static string m_crashDir = Constants.DEFAULT_CRASH_DIR;
 
         static bool _IsHandlingException; // Make sure we don't go recursive on ourselves
 
-        //could move our main function into UniverseMain and kill this class
+        //could move our main function into OpenSimMain and kill this class
         public static void BaseMain(string[] args, string defaultIniFile, ISimulationBase simBase)
         {
             // First line, hook the appdomain to the crash reporter
@@ -85,7 +85,7 @@ namespace Universe.Simulation.Base
             // Increase the number of IOCP threads available. Mono defaults to a tragically low number
             int workerThreads, iocpThreads;
             ThreadPool.GetMaxThreads(out workerThreads, out iocpThreads);
-            //MainConsole.Instance.InfoFormat("[WHiteCore MAIN]: Runtime gave us {0} worker threads and {1} IOCP threads", workerThreads, iocpThreads);
+            //MainConsole.Instance.InfoFormat("[Virtual Universe Main]: Runtime gave us {0} worker threads and {1} IOCP threads", workerThreads, iocpThreads);
             if (workerThreads < 500 || iocpThreads < 1000)
             {
                 workerThreads = 500;
@@ -158,13 +158,13 @@ namespace Universe.Simulation.Base
                     Console.WriteLine (
                         "\n\n   This appears to be your first time running Virtual Universe.\n" +
                         "If you have already configured your *.ini files, please ignore this warning and press enter;\n" +
-                        "Otherwise type 'yes' and Universe will guide you through the configuration process.\n\n" +
+                        "Otherwise type 'yes' and Virtual Universe will guide you through the configuration process.\n\n" +
                         "Remember, these file names are Case Sensitive in Linux and Proper Cased.\n" +
                         "1. " + Universe_ConfigDir + "/Universe.ini\nand\n" +
                         "2. " + Universe_ConfigDir + "/Sim/Standalone/StandaloneCommon.ini \nor\n" +
                         "3. " + Universe_ConfigDir + "/Grid/GridCommon.ini\n" +
                         "\nAlso, you will want to examine these files in great detail because only the basic system will " +
-                        "load by default. Universe can do a LOT more if you spend a little time going through these files.\n\n");
+                        "load by default. Virtual Universe can do a LOT more if you spend a little time going through these files.\n\n");
                 } else
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
@@ -197,7 +197,7 @@ namespace Universe.Simulation.Base
                     string regionIPAddress = gridIPAddress;
                     bool isStandalone = true;
                     string dbType = "1";
-                    string gridName = "Virtual Universe Grid";
+                    string gridName = "Virtual Universe";
                     string welcomeMessage = "";
                     string allowAnonLogin = "true";
                     uint port = 9000;
@@ -205,7 +205,7 @@ namespace Universe.Simulation.Base
 
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("====================================================================");
-					Console.WriteLine("======================= Virtual Universe Configurator ==============");
+					Console.WriteLine("=================== Virtual Universe Configurator ==================");
                     Console.WriteLine("====================================================================");
                     Console.ResetColor();
 
@@ -377,6 +377,7 @@ namespace Universe.Simulation.Base
                             }
                         }
 
+
 						universe_ini.Save();
                         Console.ForegroundColor = ConsoleColor.Green;
                         Console.WriteLine("Your Universe.ini has been successfully configured");
@@ -455,6 +456,7 @@ namespace Universe.Simulation.Base
                             Console.WriteLine("Your Grid.ini has been successfully configured");
                             Console.ResetColor();
                             Console.WriteLine ("");
+
                         }
                     }
 
@@ -575,7 +577,8 @@ namespace Universe.Simulation.Base
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     Console.WriteLine(" >> Please restart to use your new configuration. <<");
                     Console.ResetColor ();
-                    Console.WriteLine ("");                 
+                    Console.WriteLine ("");
+                    
                 }
             }
         }
@@ -665,7 +668,7 @@ namespace Universe.Simulation.Base
             msg += "\r\n";
             msg += "Application is terminating: " + isTerminating.ToString(CultureInfo.InvariantCulture) + "\r\n";
 
-            MainConsole.Instance.ErrorFormat("[Application]: {0}", msg);
+            MainConsole.Instance.ErrorFormat("[APPLICATION]: {0}", msg);
 
             handleException(msg, ex);
         }

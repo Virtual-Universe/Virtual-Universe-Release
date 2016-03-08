@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -117,7 +117,7 @@ namespace Universe.Modules.SimProtection
             m_statsReporter = m_scene.RequestModuleInterface<IMonitorModule>().GetMonitor<ISimFrameMonitor>(m_scene);
             if (m_statsReporter == null)
             {
-                MainConsole.Instance.Warn("[Sim Protection]: Cannot be used as SimStatsReporter does not exist.");
+                MainConsole.Instance.Warn("[SimProtection]: Cannot be used as SimStatsReporter does not exist.");
                 return;
             }
             TimerToCheckHeartbeat = new Timer {Interval = TimeBetweenChecks*1000*60};
@@ -168,7 +168,7 @@ namespace Universe.Modules.SimProtection
                 SimZeroFPSStartTime = DateTime.MinValue;
 
             float[] stats = m_scene.RequestModuleInterface<IMonitorModule>().GetRegionStats(m_scene);
-            if (stats[2] < BaseRateFramesPerSecond*(PercentToBeginShutDownOfServices/100) &&
+            if (stats[2] /*PhysicsFPS*/< BaseRateFramesPerSecond*(PercentToBeginShutDownOfServices/100) &&
                 stats[2] != 0 &&
                 AllowDisablePhysics &&
                 !m_scene.RegionInfo.RegionSettings.DisablePhysics)

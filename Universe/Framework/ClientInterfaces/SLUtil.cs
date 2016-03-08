@@ -293,7 +293,7 @@ namespace Universe.Framework.ClientInterfaces
             string[] output = ParseNotecardToList(rawInput).ToArray();
 
 //            foreach (string line in output)
-//                MainConsole.Instance.DebugFormat("[Parse Notecard]: ParseNotecardToString got line {0}", line);
+//                MainConsole.Instance.DebugFormat("[PARSE NOTECARD]: ParseNotecardToString got line {0}", line);
 
             return string.Join("\n", output);
         }

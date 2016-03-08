@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -171,7 +171,7 @@ namespace Universe.BotManager
             m_bots.Add(m_character.AgentId, bot);
             AddTagToBot(m_character.AgentId, "AllBots", bot.AvatarCreatorID);
 
-            MainConsole.Instance.InfoFormat("[Bot Manager]: Added bot {0} to region {1}",
+            MainConsole.Instance.InfoFormat("[BotManager]: Added bot {0} to region {1}",
                 m_character.Name, scene.RegionInfo.RegionName);
 
             //Return their UUID
@@ -216,7 +216,7 @@ namespace Universe.BotManager
             if (rootFolder != null)
                 scene.InventoryService.ForcePurgeFolder (rootFolder);
 
-            MainConsole.Instance.InfoFormat("[Bot Manager]: Removed bot {0} from region {1}",
+            MainConsole.Instance.InfoFormat("[BotManager]: Removed bot {0} from region {1}",
                 sp.Name, scene.RegionInfo.RegionName);
 
         }

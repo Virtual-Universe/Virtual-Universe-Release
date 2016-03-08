@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
+ * Copyright (c) Contributors, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,9 +34,9 @@ namespace Universe.Physics.BulletSPlugin
 {
     public sealed class BSShapeCollection : IDisposable
     {
-        //#pragma warning disable 414
-        //        static string LogHeader = "[Bulletsim Shape Collection]";
-        //#pragma warning restore 414
+//#pragma warning disable 414
+//        static string LogHeader = "[BULLETSIM SHAPE COLLECTION]";
+//#pragma warning restore 414
 
         BSScene PhysicsScene { get; set; }
 
@@ -61,7 +61,7 @@ namespace Universe.Physics.BulletSPlugin
             public UInt64 shapeKey;
         }
 
-        // 20151109 - greythane - not used yet??
+        // 20151109 - greythane - not used yet?? 
         // The sharable set of meshes and hulls. Indexed by their shape hash.
         // Dictionary<UInt64, MeshDesc> Meshes = new Dictionary<UInt64, MeshDesc>();
         // Dictionary<UInt64, HullDesc> Hulls = new Dictionary<UInt64, HullDesc>();
@@ -391,7 +391,7 @@ namespace Universe.Physics.BulletSPlugin
             // If not a solid object, body is a GhostObject. Otherwise a RigidBody.
             if (!mustRebuild)
             {
-                CollisionObjectTypes bodyType = (CollisionObjectTypes)PhysicsScene.PE.GetBodyType(prim.PhysBody);
+                CollisionObjectTypes bodyType = (CollisionObjectTypes) PhysicsScene.PE.GetBodyType(prim.PhysBody);
                 if (prim.IsSolid && bodyType != CollisionObjectTypes.CO_RIGID_BODY ||
                     !prim.IsSolid && bodyType != CollisionObjectTypes.CO_GHOST_OBJECT)
                 {
@@ -433,6 +433,7 @@ namespace Universe.Physics.BulletSPlugin
 
         void DetailLog(string msg, params Object[] args)
         {
+            //if (PhysicsScene.PhysicsLogging.Enabled)
             PhysicsScene.DetailLog(msg, args);
         }
     }

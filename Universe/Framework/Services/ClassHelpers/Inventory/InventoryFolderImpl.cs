@@ -403,7 +403,7 @@ namespace Universe.Framework.Services.ClassHelpers.Inventory
                 itemList.AddRange(Items.Values);
             }
 
-            //MainConsole.Instance.DebugFormat("[Inventory Folder Impl]: Found {0} items", itemList.Count);
+            //MainConsole.Instance.DebugFormat("[INVENTORY FOLDER IMPL]: Found {0} items", itemList.Count);
 
             return itemList;
         }

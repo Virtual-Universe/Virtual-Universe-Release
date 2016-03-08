@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
+ * Copyright (c) Contributors, http://opensimulator.org/, http://whitecore-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,7 +31,7 @@ namespace Universe.Physics.BulletSPlugin
 {
     public sealed class BSLinksetConstraints : BSLinkset
     {
-        // private static string LogHeader = "[Bulletsim Link Set Constraints]";
+        // private static string LogHeader = "[BULLETSIM LINKSET CONSTRAINTS]";
 
         public class BSLinkInfoConstraint : BSLinkInfo
         {
@@ -165,6 +165,8 @@ namespace Universe.Physics.BulletSPlugin
             }
             else
             {
+                // Non-fatal occurance.
+                // PhysicsScene.Logger.ErrorFormat("{0}: Asked to remove child from linkset that was not in linkset", LogHeader);
             }
             return;
         }
@@ -208,12 +210,38 @@ namespace Universe.Physics.BulletSPlugin
 
                     constrain = new BSConstraint6Dof(PhysicsScene.World, rootPrim.PhysBody, linkInfo.member.PhysBody,
                         midPoint, true, true);
+                    /* NOTE: below is an attempt to build constraint with full frame computation, etc.
+                     *     Using the midpoint is easier since it lets the Bullet code manipulate the transforms
+                     *     of the objects.
+                     * Code left for future programmers.
+                    // ==================================================================================
+                    // relative position normalized to the root prim
+                    OMV.Quaternion invThisOrientation = OMV.Quaternion.Inverse(rootPrim.Orientation);
+                    OMV.Vector3 childRelativePosition = (liConstraint.member.Position - rootPrim.Position) * invThisOrientation;
+
+            
+                    // relative rotation of the child to the parent
+                    OMV.Quaternion childRelativeRotation = invThisOrientation * childPrim.Orientation;
+                    OMV.Quaternion inverseChildRelativeRotation = OMV.Quaternion.Inverse(childRelativeRotation);
+
+                    DetailLog("{0},BSLinksetConstraint.PhysicallyLinkAChildToRoot,taint,root={1},child={2}", rootPrim.LocalID, rootPrim.LocalID, childPrim.LocalID);
+                    BS6DofConstraint constrain = new BS6DofConstraint(
+                                    PhysicsScene.World, rootPrim.Body, childPrim.Body,
+                                    OMV.Vector3.Zero,
+                                    OMV.Quaternion.Inverse(rootPrim.Orientation),
+                                    OMV.Vector3.Zero,
+                                    OMV.Quaternion.Inverse(childPrim.Orientation),
+                                    true,
+                                    true
+                                    );
+                    // ==================================================================================
+                    */
                             break;
                 case ConstraintType.D6_SPRING_CONSTRAINT_TYPE:
                     constrain = new BSConstraintSpring(PhysicsScene.World, rootPrim.PhysBody, linkInfo.member.PhysBody,
                                     linkInfo.frameInAloc, linkInfo.frameInArot, linkInfo.frameInBloc, linkInfo.frameInBrot,
                                     linkInfo.useLinearReferenceFrameA,
-                                    true);
+                                    true /*disableCollisionsBetweenLinkedBodies*/);
                     DetailLog("{0},BSLinksetConstraint.BuildConstraint,spring,root={1},rBody={2},child={3},cBody={4},rLoc={5},cLoc={6}",
                                                     rootPrim.LocalID,
                                                     rootPrim.LocalID, rootPrim.PhysBody.AddrString,
@@ -308,6 +336,7 @@ namespace Universe.Physics.BulletSPlugin
                     li.SetLinkParameters(constrain);
                     constrain.RecomputeConstraintVariables(linksetMass);
 
+                    // PhysicScene.PE.DumpConstraint(PhysicsScene.World, constrain.Constraint);
                     return false; // 'false' says to keep processing other members
                 });
             }

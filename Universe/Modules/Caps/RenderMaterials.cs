@@ -211,7 +211,7 @@ namespace Universe.Modules.Caps
 
                                                 } catch (Exception e)
                                                 { 
-                                                    MainConsole.Instance.Warn ("[Materials Demo Module]: cannot decode \"Material\" from matsMap: " + e.Message); 
+                                                    MainConsole.Instance.Warn ("[MaterialsDemoModule]: cannot decode \"Material\" from matsMap: " + e.Message); 
                                                     continue;
                                                 }
                                             }
@@ -247,7 +247,13 @@ namespace Universe.Modules.Caps
                                                                 MainConsole.Instance.Debug ("[Materials]: te.DefaultTexture is null");
                                                             else
                                                             {
+//## FixMe ##
+// comparison always results in 'False'                                   if (te.DefaultTexture.MaterialID == null)
+//                                                                    MainConsole.Instance.Debug("[MaterialsDemoModule]: te.DefaultTexture.MaterialID is null");
+//                                                                else
+//                                                                {
                                                                 te.DefaultTexture.MaterialID = id;
+//                                                                }
                                                             }
                                                         } else
                                                         {

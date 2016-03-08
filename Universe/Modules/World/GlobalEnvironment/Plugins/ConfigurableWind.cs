@@ -34,7 +34,7 @@ using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 
-namespace Universe.Modules.Wind.Plugins
+namespace Universe.Modules.GlobalEnvironment.Plugins
 {
     public class ConfigurableWind : IWindModelPlugin
     {
@@ -207,11 +207,11 @@ namespace Universe.Modules.Wind.Plugins
 
         void LogSettings()
         {
-            MainConsole.Instance.InfoFormat("[Configurable Wind] Average Strength   : {0}", m_avgStrength);
-            MainConsole.Instance.InfoFormat("[Configurable Wind] Average Direction  : {0}", m_avgDirection);
-            MainConsole.Instance.InfoFormat("[Configurable Wind] Variance Strength  : {0}", m_varStrength);
-            MainConsole.Instance.InfoFormat("[Configurable Wind] Variance Direction : {0}", m_varDirection);
-            MainConsole.Instance.InfoFormat("[Configurable Wind] Rate Change        : {0}", m_rateChange);
+            MainConsole.Instance.InfoFormat("[ConfigurableWind] Average Strength   : {0}", m_avgStrength);
+            MainConsole.Instance.InfoFormat("[ConfigurableWind] Average Direction  : {0}", m_avgDirection);
+            MainConsole.Instance.InfoFormat("[ConfigurableWind] Variance Strength  : {0}", m_varStrength);
+            MainConsole.Instance.InfoFormat("[ConfigurableWind] Variance Direction : {0}", m_varDirection);
+            MainConsole.Instance.InfoFormat("[ConfigurableWind] Rate Change        : {0}", m_rateChange);
         }
     }
 }

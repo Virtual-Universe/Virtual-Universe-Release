@@ -202,7 +202,7 @@ namespace Universe.Framework.SceneInfo
                 if (!Enum.IsDefined(typeof (HollowShape), hollowShapeByte))
                 {
                     MainConsole.Instance.WarnFormat(
-                        "[Shape]: Attempt to set a ProfileCurve with a hollow shape value of {0}, which isn't a valid Enum.  Replacing with default shape.",
+                        "[SHAPE]: Attempt to set a ProfileCurve with a hollow shape value of {0}, which isn't a valid Enum.  Replacing with default shape.",
                         hollowShapeByte);
 
                     this._hollowShape = HollowShape.Same;
@@ -218,7 +218,7 @@ namespace Universe.Framework.SceneInfo
                 if (!Enum.IsDefined(typeof (ProfileShape), profileShapeByte))
                 {
                     MainConsole.Instance.WarnFormat(
-                        "[Shape]: Attempt to set a ProfileCurve with a profile shape value of {0}, which isn't a valid Enum.  Replacing with square.",
+                        "[SHAPE]: Attempt to set a ProfileCurve with a profile shape value of {0}, which isn't a valid Enum.  Replacing with square.",
                         profileShapeByte);
 
                     this._profileShape = ProfileShape.Square;
@@ -243,7 +243,7 @@ namespace Universe.Framework.SceneInfo
         {
             get
             {
-                //MainConsole.Instance.DebugFormat("[Shape]: get m_textureEntry length {0}", m_textureEntry.Length);
+                //MainConsole.Instance.DebugFormat("[SHAPE]: get m_textureEntry length {0}", m_textureEntry.Length);
                 try
                 {
                     return new Primitive.TextureEntry(m_textureEntry, 0, m_textureEntry.Length);
@@ -252,7 +252,7 @@ namespace Universe.Framework.SceneInfo
                 {
                 }
 
-                MainConsole.Instance.Warn("[Shape]: Failed to decode texture, length=" +
+                MainConsole.Instance.Warn("[SHAPE]: Failed to decode texture, length=" +
                                           ((m_textureEntry != null) ? m_textureEntry.Length : 0));
                 return new Primitive.TextureEntry(UUID.Zero);
             }
@@ -861,7 +861,7 @@ namespace Universe.Framework.SceneInfo
 
 
             return returnbytes;
-            //MainConsole.Instance.Info("[Extra Params]: Length = " + m_shape.ExtraParams.Length.ToString());
+            //MainConsole.Instance.Info("[EXTRAPARAMS]: Length = " + m_shape.ExtraParams.Length.ToString());
         }
 
         public void ReadInUpdateExtraParam(ushort type, bool inUse, byte[] data)
@@ -1006,7 +1006,7 @@ namespace Universe.Framework.SceneInfo
             }
             _sculptTexture = SculptUUID;
             _sculptType = SculptTypel;
-            //MainConsole.Instance.Info("[Sculpt]:" + SculptUUID.ToString());
+            //MainConsole.Instance.Info("[SCULPT]:" + SculptUUID.ToString());
         }
 
         public byte[] GetSculptBytes()
@@ -1356,7 +1356,7 @@ namespace Universe.Framework.SceneInfo
                         xtr.MoveToContent();
 
                         string type = xtr.GetAttribute("type");
-                        //MainConsole.Instance.DebugFormat("[Media On A Prim]: Loaded media texture entry with type {0}", type);
+                        //MainConsole.Instance.DebugFormat("[MOAP]: Loaded media texture entry with type {0}", type);
 
                         if (type != MEDIA_TEXTURE_TYPE)
                             return;

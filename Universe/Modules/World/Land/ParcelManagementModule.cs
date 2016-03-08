@@ -383,10 +383,10 @@ namespace Universe.Modules.Land
 
                         if (ret.Value.Groups.Count > 1)
                             MainConsole.Instance.InfoFormat(
-                                "[Land Management]: Returning {0} objects due to parcel auto return.",
+                                "[LandManagement]: Returning {0} objects due to parcel auto return.",
                                 ret.Value.Groups.Count);
                         else
-                            MainConsole.Instance.Info("[Land Management]: Returning 1 object due to parcel auto return.");
+                            MainConsole.Instance.Info("[LandManagement]: Returning 1 object due to parcel auto return.");
                     }
                     IAsyncSceneObjectGroupDeleter asyncDelete =
                         m_scene.RequestModuleInterface<IAsyncSceneObjectGroupDeleter>();
@@ -460,7 +460,7 @@ namespace Universe.Modules.Land
             catch (Exception e)
             {
                 MainConsole.Instance.ErrorFormat(
-                    "[Land Management]: Failed to check for parcel returns: {0}", e);
+                    "[LandManagement]: Failed to check for parcel returns: {0}", e);
             }
         }
 
@@ -531,7 +531,7 @@ namespace Universe.Modules.Land
             while (fullSimParcel.LandData.OwnerID == UUID.Zero || account == null)
             {
                 MainConsole.Instance.Warn (
-                    "[Parcel Management]: Could not find user for parcel, please give a valid user to make the owner");
+                    "[ParcelManagement]: Could not find user for parcel, please give a valid user to make the owner");
                 
                 string userName = MainConsole.Instance.Prompt ("User Name:", "");
                 if (userName == "")
@@ -550,9 +550,9 @@ namespace Universe.Modules.Land
             }
 
 
-            MainConsole.Instance.InfoFormat ("[Parcel Management]: Setting land owner for region {0} to {1}",
+            MainConsole.Instance.InfoFormat ("[ParcelManagement]: Setting land owner for region {0} to {1}",
                 m_scene.RegionInfo.RegionName,
-                ownerName);
+                ownerName);                 //  was >>   fullSimParcel.LandData.OwnerID);
 
             fullSimParcel.LandData.ClaimDate = Util.UnixTimeSinceEpoch();
             fullSimParcel.LandData.Bitmap =
@@ -655,6 +655,8 @@ namespace Universe.Modules.Land
                     return parcel;
 
             return null;
+
+//            return AllParcels().FirstOrDefault(land => land.LandData.GlobalID == GlobalID);
         }
 
         public ILandObject GetLandObject(float x, float y)
@@ -673,6 +675,7 @@ namespace Universe.Modules.Land
                 y = r.RegionSizeY - 1;
             if (y < 0)
                 y = 1;
+
 
             lock (m_landListLock)
             {
@@ -698,6 +701,7 @@ namespace Universe.Modules.Land
             else if (m_UpdateDirectoryOnTimer)
                 m_TaintedLandData = true;
         }
+
 
         /// <summary>
         ///     Adds a land object to the stored list and adds them to the landIDList to what they own
@@ -736,7 +740,8 @@ namespace Universe.Modules.Land
 
         public void SendYouAreBannedNotice(IScenePresence avatar)
         {
-            avatar.ControllingClient.SendAlertMessage("You are not allowed on this parcel because you are banned.");
+            avatar.ControllingClient.SendAlertMessage(
+                "You are not allowed on this parcel because you are banned.");
         }
 
         public void SendYouAreRestrictedNotice(IScenePresence avatar)
@@ -983,7 +988,7 @@ namespace Universe.Modules.Land
             }
             else
             {
-                MainConsole.Instance.WarnFormat("[Land]: Invalid local land ID {0}", landLocalID);
+                MainConsole.Instance.WarnFormat("[LAND]: Invalid local land ID {0}", landLocalID);
             }
         }
 
@@ -1002,7 +1007,7 @@ namespace Universe.Modules.Land
                         if (m_landIDList[x, y] == local_id)
                         {
                             MainConsole.Instance.WarnFormat(
-                                "[Land]: Not removing land object {0}; still being used at {1}, {2}",
+                                "[LAND]: Not removing land object {0}; still being used at {1}, {2}",
                                 local_id, x, y);
                             return;
                             //throw new Exception("Could not remove land object. Still being used at " + x + ", " + y);
@@ -1520,7 +1525,7 @@ namespace Universe.Modules.Land
             else
             {
                 MainConsole.Instance.WarnFormat(
-                    "[Parcel]: Invalid land object {0} passed for parcel object owner request", local_id);
+                    "[PARCEL]: Invalid land object {0} passed for parcel object owner request", local_id);
             }
         }
 
@@ -1709,7 +1714,9 @@ namespace Universe.Modules.Land
         }
 
         // After receiving a land buy packet, first the data needs to
-        // be validated. This method validates the right to buy the parcel
+        // be validated. This method validates the right to buy the
+        // parcel
+
         public bool EventManagerOnValidateLandBuy(EventManager.LandBuyArgs e)
         {
             if (!e.landValidated)
@@ -1964,7 +1971,7 @@ namespace Universe.Modules.Land
             IClientAPI client;
             if (!m_scene.ClientManager.TryGetValue(agentID, out client))
             {
-                MainConsole.Instance.WarnFormat("[Land] unable to retrieve IClientAPI for {0}", agentID);
+                MainConsole.Instance.WarnFormat("[LAND] unable to retrieve IClientAPI for {0}", agentID);
                 return OSDParser.SerializeLLSDXmlBytes(new OSDMap());
             }
             OSDMap args = (OSDMap) OSDParser.DeserializeLLSDXml(HttpServerHandlerHelpers.ReadFully(request));
@@ -1984,7 +1991,7 @@ namespace Universe.Modules.Land
             IClientAPI client;
             if (!m_scene.ClientManager.TryGetValue(agentID, out client))
             {
-                MainConsole.Instance.WarnFormat("[Land] unable to retrieve IClientAPI for {0}", agentID);
+                MainConsole.Instance.WarnFormat("[LAND] unable to retrieve IClientAPI for {0}", agentID);
                 return new byte[0];
             }
 
@@ -2025,7 +2032,7 @@ namespace Universe.Modules.Land
             if (land != null)
                 land.UpdateLandProperties(land_update, client);
             else
-                MainConsole.Instance.WarnFormat("[Land] unable to find parcelID {0}", parcelID);
+                MainConsole.Instance.WarnFormat("[LAND] unable to find parcelID {0}", parcelID);
 
             return OSDParser.SerializeLLSDXmlBytes(new OSDMap());
         }
@@ -2099,12 +2106,12 @@ namespace Universe.Modules.Land
             }
 
             if (parcelID == UUID.Zero)
-                MainConsole.Instance.Warn("[Remote Parcel Request]: Failed to find parcel, " + request);
+                MainConsole.Instance.Warn("[RemoteParcelRequest]: Failed to find parcel, " + request);
 
             OSDMap res = new OSDMap();
             res["parcel_id"] = parcelID;
             if (parcelID != UUID.Zero)
-                MainConsole.Instance.DebugFormat("[Remote Parcel Request]: Found parcelID {0}", parcelID);
+                MainConsole.Instance.DebugFormat("[RemoteParcelRequest]: Found parcelID {0}", parcelID);
 
             return OSDParser.SerializeLLSDXmlBytes(res);
         }
@@ -2362,6 +2369,16 @@ namespace Universe.Modules.Land
             IScenePresence presenceEntity;
             if (m_scene.TryGetScenePresence(client.AgentId, out presenceEntity) && !presenceEntity.IsChildAgent)
             {
+                /*if (presenceEntity.PhysicsActor != null)
+                {
+                    presenceEntity.PhysicsActor.OnPositionAndVelocityUpdate += delegate ()
+                    {
+                        if (m_lastResults.ContainsKey (presenceEntity.UUID) && m_lastResults[presenceEntity.UUID] != 0)
+                        {
+                            m_lastLandObject[presenceEntity.UUID].SendLandProperties (m_lastResults[presenceEntity.UUID], false, (int)m_lastDataResults[presenceEntity.UUID], presenceEntity.ControllingClient);
+                        }
+                    };
+                }*/
                 SendParcelOverlay(client);
             }
         }
@@ -2456,19 +2473,19 @@ namespace Universe.Modules.Land
                     }
                     if (info == null)
                     {
-                        MainConsole.Instance.WarnFormat("[Land]: Failed to find region having parcel {0}", parcelID);
+                        MainConsole.Instance.WarnFormat("[LAND]: Failed to find region having parcel {0}", parcelID);
                         return;
                     }
-                    MainConsole.Instance.DebugFormat("[Land] got parcelinfo for parcel {0} in region {1}; sending...",
+                    MainConsole.Instance.DebugFormat("[LAND] got parcelinfo for parcel {0} in region {1}; sending...",
                                                      data.Name, data.RegionHandle);
                     remoteClient.SendParcelInfo(data, parcelID, (uint) (info.RegionLocX + data.UserLocation.X),
                                                 (uint) (info.RegionLocY + data.UserLocation.Y), info.RegionName);
                 }
                 else
-                    MainConsole.Instance.WarnFormat("[Land]: Failed to find parcel {0}", parcelID);
+                    MainConsole.Instance.WarnFormat("[LAND]: Failed to find parcel {0}", parcelID);
             }
             else
-                MainConsole.Instance.Debug("[Land] got no directory service; not sending");
+                MainConsole.Instance.Debug("[LAND] got no directory service; not sending");
         }
 
         public void SetParcelOtherCleanTime(IClientAPI remoteClient, int localID, int otherCleanTime)

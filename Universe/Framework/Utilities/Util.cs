@@ -786,16 +786,18 @@ namespace Universe.Framework.Utilities
             else
                 nativeLibraryPath = "lib32/" + libraryName;
 
-            MainConsole.Instance.DebugFormat("[Util]: Loading native Windows library at {0}", nativeLibraryPath);
+            MainConsole.Instance.DebugFormat("[UTIL]: Loading native Windows library at {0}", nativeLibraryPath);
 
             if (Util.LoadLibrary(nativeLibraryPath) == IntPtr.Zero)
             {
-                MainConsole.Instance.ErrorFormat("[Util]: Couldn't find native Windows library at {0}", nativeLibraryPath);
+                MainConsole.Instance.ErrorFormat(
+                    "[UTIL]: Couldn't find native Windows library at {0}", nativeLibraryPath);
 
                 return false;
             }
 
             return true;
+
         }
 
         /// <summary>
@@ -1605,13 +1607,13 @@ namespace Universe.Framework.Utilities
                 else
                 {
                     // uh?
-                    MainConsole.Instance.Debug(("[Utils]: Got OSD of unexpected type " + buffer.Type.ToString()));
+                    MainConsole.Instance.Debug(("[UTILS]: Got OSD of unexpected type " + buffer.Type.ToString()));
                     return null;
                 }
             }
             catch (Exception ex)
             {
-                MainConsole.Instance.Debug("[Utils]: exception on GetOSDMap " + ex);
+                MainConsole.Instance.Debug("[UTILS]: exception on GetOSDMap " + ex);
                 return null;
             }
         }
@@ -1800,7 +1802,7 @@ namespace Universe.Framework.Utilities
                 }
                 catch (Exception ex)
                 {
-                    MainConsole.Instance.ErrorFormat("[Util]: Asynchronous method threw an exception: {0}", ex.ToString());
+                    MainConsole.Instance.ErrorFormat("[UTIL]: Asynchronous method threw an exception: {0}", ex.ToString());
                 }
 
                 ar.AsyncWaitHandle.Close();
@@ -1816,7 +1818,7 @@ namespace Universe.Framework.Utilities
         {
             if (m_ThreadPool != null)
             {
-                MainConsole.Instance.Warn ("[Smart Thread Pool]: SmartThreadPool is already initialized");
+                MainConsole.Instance.Warn ("SmartThreadPool is already initialized");
                 return;
             }
 
@@ -1824,15 +1826,16 @@ namespace Universe.Framework.Utilities
             if (maxThreads < 2)
             {
                 maxThreads = 2;
-                MainConsole.Instance.Warn("[Smart Thread Pool]: maxThreads must be greater than 2");
+                MainConsole.Instance.Warn("[STP]: maxThreads must be greater than 2");
             }
 
             if (minThreads > maxThreads || minThreads < 2)
             {
                 minThreads = 2;
-                MainConsole.Instance.Warn ("[Smart Thread Pool]: minThreads must be greater than 2 and <= maxThreads");
+                MainConsole.Instance.Warn ("[STP]: minThreads must be greater than 2 and <= maxThreads");
             }
             
+
             STPStartInfo startInfo = new STPStartInfo ();
             startInfo.ThreadPoolName = "Util";
             startInfo.IdleTimeout = 2000;
@@ -2586,7 +2589,7 @@ namespace Universe.Framework.Utilities
                 }
                 catch (Exception e)
                 {
-                    MainConsole.Instance.WarnFormat("[Util]: Exception parsing XFF header {0}: {1}", xff, e.Message);
+                    MainConsole.Instance.WarnFormat("[UTIL]: Exception parsing XFF header {0}: {1}", xff, e.Message);
                 }
             }
 
@@ -2607,7 +2610,7 @@ namespace Universe.Framework.Utilities
                 }
                 catch (Exception e)
                 {
-                    MainConsole.Instance.WarnFormat("[Util]: exception in GetCallerIP: {0}", e.Message);
+                    MainConsole.Instance.WarnFormat("[UTIL]: exception in GetCallerIP: {0}", e.Message);
                 }
             }
             return string.Empty;
@@ -2748,7 +2751,7 @@ namespace Universe.Framework.Utilities
             }
             catch (Exception e)
             {
-                MainConsole.Instance.WarnFormat("[Util]: An error occurred while resolving host name {0}, {1}",
+                MainConsole.Instance.WarnFormat("[UTIL]: An error occurred while resolving host name {0}, {1}",
                                                 dnsAddress, e.ToString());
 
                 InternetFailure();

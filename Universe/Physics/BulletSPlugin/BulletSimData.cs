@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
+ * Copyright (c) Contributors, http://opensimulator.org/, http://whitecore-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -193,7 +193,7 @@ namespace Universe.Physics.BulletSPlugin
     //      than making copies.
     public class BulletHMapInfo
     {
-        public BulletHMapInfo(uint id, float[] hm, float pSizeX, float pSizeY)
+    	public BulletHMapInfo(uint id, float[] hm, float pSizeX, float pSizeY)
         {
             ID = id;
             heightMap = hm;
@@ -307,6 +307,7 @@ namespace Universe.Physics.BulletSPlugin
                     new CollisionTypeFilterGroup(CollisionType.LinksetChild,
                         (uint) CollisionFilterGroups.BLinksetChildGroup,
                         (uint) (CollisionFilterGroups.BNoneGroup))
+                    // (uint)(CollisionFilterGroups.BCharacterGroup | CollisionFilterGroups.BSolidGroup))
                 },
             };
     }

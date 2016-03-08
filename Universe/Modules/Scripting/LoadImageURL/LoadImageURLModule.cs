@@ -212,12 +212,12 @@ namespace Universe.Modules.Scripting
                         catch (Exception)
                         {
                             MainConsole.Instance.Error(
-                                "[Load Image Url Module]: OpenJpeg Encode Failed.  Empty byte data returned!");
+                                "[LOADIMAGEURLMODULE]: OpenJpeg Encode Failed.  Empty byte data returned!");
                         }
                     }
                     else
                     {
-                        MainConsole.Instance.WarnFormat("[Load Image Url Module] No data returned");
+                        MainConsole.Instance.WarnFormat("[LOADIMAGEURLMODULE] No data returned");
                     }
                 }
             }
@@ -234,7 +234,7 @@ namespace Universe.Modules.Scripting
                     stream.Close();
                 }
             }
-            MainConsole.Instance.DebugFormat("[Load Image Url Module] Returning {0} bytes of image data for request {1}",
+            MainConsole.Instance.DebugFormat("[LOADIMAGEURLMODULE] Returning {0} bytes of image data for request {1}",
                                              imageJ2000.Length, state.RequestID);
             m_textureManager.ReturnData(state.RequestID, imageJ2000);
         }

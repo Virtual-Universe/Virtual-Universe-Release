@@ -116,7 +116,7 @@ namespace Universe.Modules.Archivers
                 catch (EntryPointNotFoundException e)
                 {
                     MainConsole.Instance.ErrorFormat(
-                        "[Archiver]: Mismatch between Mono and zlib1g library version when trying to create compression stream."
+                        "[ARCHIVER]: Mismatch between Mono and zlib1g library version when trying to create compression stream."
                         + "If you've manually installed Mono, have you appropriately updated zlib1g as well?");
                     MainConsole.Instance.Error(e);
 
@@ -191,8 +191,10 @@ namespace Universe.Modules.Archivers
                         + "--perm=<permissions> : If present, verify asset permissions before saving.\n"
                         + "   <permissions> can include 'C' (Copy), 'M' (Modify, 'T' (Transfer)",
                         HandleSaveIARConsoleCommand, false, true);
+
                 }
             }
+
         }
 
         #endregion
@@ -242,7 +244,7 @@ namespace Universe.Modules.Archivers
                 catch (EntryPointNotFoundException e)
                 {
                     MainConsole.Instance.ErrorFormat(
-                        "[Archiver]: Mismatch between Mono and zlib1g library version when trying to create compression stream.\n"
+                        "[ARCHIVER]: Mismatch between Mono and zlib1g library version when trying to create compression stream.\n"
                         + "If you've manually installed Mono, have you appropriately updated zlib1g as well?");
                     MainConsole.Instance.Error(e);
 
@@ -274,7 +276,7 @@ namespace Universe.Modules.Archivers
                 catch (EntryPointNotFoundException e)
                 {
                     MainConsole.Instance.ErrorFormat(
-                        "[Archiver]: Mismatch between Mono and zlib1g library version when trying to create compression stream.\n"
+                        "[ARCHIVER]: Mismatch between Mono and zlib1g library version when trying to create compression stream.\n"
                         + "If you've manually installed Mono, have you appropriately updated zlib1g as well?");
                     MainConsole.Instance.Error(e);
 
@@ -476,6 +478,7 @@ namespace Universe.Modules.Archivers
                     lastName = newParams[3];
                 }
 
+
                 // optional...
                 string iarPath = "/*";
                 if (newParams.Count > 5)
@@ -488,7 +491,8 @@ namespace Universe.Modules.Archivers
                     archiveFileName = firstName+"_"+lastName;
                     archiveFileName = MainConsole.Instance.Prompt("IAR file to save: ", archiveFileName);
                 } else
-                    archiveFileName = newParams[4];          
+                    archiveFileName = newParams[4];
+                
 
                 //some file sanity checks
                 string savePath;
@@ -513,6 +517,7 @@ namespace Universe.Modules.Archivers
         void SaveIARConsoleCommandCompleted(
             Guid id, bool succeeded, UserAccount userInfo, string invPath, Stream saveStream,
             Exception reportedException)
+
         {
             lock (m_pendingConsoleSaves)
             {

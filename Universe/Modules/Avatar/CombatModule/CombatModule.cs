@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -599,7 +599,7 @@ namespace Universe.Modules.Combat
 
                     if (Health <= 0 && killingAvatar == null)
                         killingAvatar = otherAvatar;
-                    //MainConsole.Instance.Debug("[Avatar]: Collision with localid: " + localid.ToString() + " at depth: " + coldata[localid].ToString());
+                    //MainConsole.Instance.Debug("[AVATAR]: Collision with localid: " + localid.ToString() + " at depth: " + coldata[localid].ToString());
                 }
 
                 if (starthealth != Health)

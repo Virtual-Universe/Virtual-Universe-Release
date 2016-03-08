@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -157,7 +157,7 @@ namespace Universe.Modules.Selection
                     IObjectCache cache = remoteClient.Scene.RequestModuleInterface<IObjectCache>();
                     if (cache != null)
                         cache.RemoveObject(remoteClient.AgentId, entity.LocalId, cacheMissType);
-                    MainConsole.Instance.WarnFormat("[Object Cache]: Avatar didn't have {0}, miss type {1}, CRC {2}",
+                    MainConsole.Instance.WarnFormat("[ObjectCache]: Avatar didn't have {0}, miss type {1}, CRC {2}",
                                                     primLocalID,
                                                     cacheMissType, ((ISceneEntity) entity).RootChild.CRC);
                 }
@@ -203,7 +203,7 @@ namespace Universe.Modules.Selection
                 else
                 {
                     MainConsole.Instance.ErrorFormat(
-                        "[Scene Packet Handler]: Could not find prim {0} in SelectPrim, killing prim.",
+                        "[SCENEPACKETHANDLER]: Could not find prim {0} in SelectPrim, killing prim.",
                         primLocalID);
                     //Send a kill packet to the viewer so it doesn't come up again
                     remoteClient.SendKillObject(scene.RegionInfo.RegionHandle, new uint[1] {primLocalID});

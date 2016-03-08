@@ -200,7 +200,7 @@ namespace Universe.Modules.Scripting
             }
             else
             {
-                MainConsole.Instance.Info("[Http Request Handler] There is no http-in request with id " +
+                MainConsole.Instance.Info("[HttpRequestHandler] There is no http-in request with id " +
                                           request.ToString());
             }
         }
@@ -216,7 +216,7 @@ namespace Universe.Modules.Scripting
             }
             else
             {
-                MainConsole.Instance.Warn("[Http Request Handler] There was no http-in request with id " + requestId);
+                MainConsole.Instance.Warn("[HttpRequestHandler] There was no http-in request with id " + requestId);
             }
             return String.Empty;
         }
@@ -270,6 +270,7 @@ namespace Universe.Modules.Scripting
             }
         }
 
+
         private void RemoveUrl(UrlData data)
         {
             MainServer.Instance.RemovePollServiceHTTPHandler("", "/lslhttp/" + data.urlcode.ToString() + "/");
@@ -299,6 +300,7 @@ namespace Universe.Modules.Scripting
 
                 return Encoding.UTF8.GetBytes("Script timeout");
             }
+
 
             return MainServer.BlankResponse;
         }
@@ -428,7 +430,7 @@ namespace Universe.Modules.Scripting
                 catch (Exception we)
                 {
                     //Hashtable response = new Hashtable();
-                    MainConsole.Instance.Warn("[Http Request Handler]: http-in request failed");
+                    MainConsole.Instance.Warn("[HttpRequestHandler]: http-in request failed");
                     MainConsole.Instance.Warn(we.Message);
                     MainConsole.Instance.Warn(we.StackTrace);
                 }

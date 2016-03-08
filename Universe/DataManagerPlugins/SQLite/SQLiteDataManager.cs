@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -42,7 +42,7 @@ namespace Universe.DataManager.SQLite
 {
     public class SQLiteLoader : DataManagerBase
     {
-        string m_defaultDataPath = Constants.DEFAULT_DATA_DIR+"/SQLite";
+        string m_defaultDataPath = Constants.DEFAULT_DATA_DIR+"/SQLite";  
         protected Dictionary<string, FieldInfo> m_Fields = new Dictionary<string, FieldInfo>();
         protected string m_connectionString;
         protected static Dictionary<string, object> _locks = new Dictionary<string, object>();
@@ -135,20 +135,20 @@ namespace Universe.DataManager.SQLite
             catch (SqliteBusyException ex)
             {
                 if (retries++ > 5)
-                    MainConsole.Instance.WarnFormat("[Sqlite Data Manager]: Exception processing command: {0}, Exception: {1}",
+                    MainConsole.Instance.WarnFormat("[SqliteDataManager]: Exception processing command: {0}, Exception: {1}",
                                             cmd.CommandText, ex);
                 else
                     goto restart;
             }
             catch (SqliteException ex)
             {
-                MainConsole.Instance.WarnFormat("[Sqlite Data Manager]: Exception processing command: {0}, Exception: {1}",
+                MainConsole.Instance.WarnFormat("[SqliteDataManager]: Exception processing command: {0}, Exception: {1}",
                                         cmd.CommandText, ex);
                 //throw ex;
             }
             catch (Exception ex)
             {
-                MainConsole.Instance.WarnFormat("[Sqlite Data Manager]: Exception processing command: {0}, Exception: {1}",
+                MainConsole.Instance.WarnFormat("[SqliteDataManager]: Exception processing command: {0}, Exception: {1}",
                                         cmd.CommandText, ex);
                 throw ex;
             }
@@ -193,7 +193,7 @@ namespace Universe.DataManager.SQLite
             catch (SqliteBusyException ex)
             {
                 if (retries++ > 5)
-                    MainConsole.Instance.WarnFormat("[Sqlite Data Manager]: Exception processing command: {0}, Exception: {1}",
+                    MainConsole.Instance.WarnFormat("[SqliteDataManager]: Exception processing command: {0}, Exception: {1}",
                                             cmd.CommandText, ex);
                 else
                     goto restart;
@@ -201,12 +201,12 @@ namespace Universe.DataManager.SQLite
             }
             catch (SqliteException ex)
             {
-                MainConsole.Instance.WarnFormat("[Sqlite Data Manager]: Exception processing command: {0}, Exception: {1}",
+                MainConsole.Instance.WarnFormat("[SqliteDataManager]: Exception processing command: {0}, Exception: {1}",
                                         cmd.CommandText, ex);
             }
             catch (Exception ex)
             {
-                MainConsole.Instance.WarnFormat("[Sqlite Data Manager]: Exception processing command: {0}, Exception: {1}",
+                MainConsole.Instance.WarnFormat("[SqliteDataManager]: Exception processing command: {0}, Exception: {1}",
                                         cmd.CommandText, ex);
                 throw ex;
             }
@@ -521,7 +521,7 @@ namespace Universe.DataManager.SQLite
             }
             catch (SqliteException e)
             {
-                MainConsole.Instance.Error("[Sqlite Loader] Update(" + query + "), " + e);
+                MainConsole.Instance.Error("[SqliteLoader] Update(" + query + "), " + e);
             }
             CloseReaderCommand(cmd);
             return true;
@@ -596,7 +596,7 @@ namespace Universe.DataManager.SQLite
             }
             catch (Exception e)
             {
-                MainConsole.Instance.Error("[Sqlite Loader] " + (insert ? "Insert" : "Replace") + "(" + query + "), " + e);
+                MainConsole.Instance.Error("[SqliteLoader] " + (insert ? "Insert" : "Replace") + "(" + query + "), " + e);
             }
             CloseReaderCommand(cmd);
             return true;
@@ -658,7 +658,7 @@ namespace Universe.DataManager.SQLite
             }
             catch (Exception e)
             {
-                MainConsole.Instance.Error("[Sqlite Loader] INSERT .. SELECT (" + cmd.CommandText + "), " + e);
+                MainConsole.Instance.Error("[SqliteLoader] INSERT .. SELECT (" + cmd.CommandText + "), " + e);
             }
             CloseReaderCommand(cmd);
             return true;
@@ -700,7 +700,7 @@ namespace Universe.DataManager.SQLite
             }
             catch (Exception e)
             {
-                MainConsole.Instance.Error("[Sqlite Data Manager] Delete(" + query + "), " + e);
+                MainConsole.Instance.Error("[SqliteDataManager] Delete(" + query + "), " + e);
                 return false;
             }
             CloseReaderCommand(cmd);
@@ -1290,7 +1290,7 @@ namespace Universe.DataManager.SQLite
                     }
                     if (isPrimary)
                     {
-                      //MainConsole.Instance.Warn("[" + Identifier + "]: Primary Key found (" + string.Join(", ", defs[index.Key].Fields) + ")");
+//                        MainConsole.Instance.Warn("[" + Identifier + "]: Primary Key found (" + string.Join(", ", defs[index.Key].Fields) + ")");
                         defs[index.Key].Type = IndexType.Primary;
                         checkForPrimary = false;
                     }

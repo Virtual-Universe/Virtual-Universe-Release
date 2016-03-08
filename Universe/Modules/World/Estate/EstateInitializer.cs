@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -67,7 +67,7 @@ namespace Universe.Modules.Estate
                 {
                     //Could not locate the estate service, wait until it can find it
                     MainConsole.Instance.Warn(
-                        "[Estate Initializer]: We could not find the estate service for this region. Please make sure that your URLs are correct in grid mode.");
+                        "We could not find the estate service for this region. Please make sure that your URLs are correct in grid mode.");
                     while (true)
                     {
                         MainConsole.Instance.Prompt("Press enter to try again.");
@@ -84,7 +84,7 @@ namespace Universe.Modules.Estate
                 else if (ES.EstateID == 0)
                 {
                     //This region does not belong to an estate, make a new one or join and existing one
-                    MainConsole.Instance.Warn("[Estate Initializer]: Your region '" + scene.RegionInfo.RegionName +
+                    MainConsole.Instance.Warn("[EstateInitializer]: Your region '" + scene.RegionInfo.RegionName +
                         "' is not part of an estate.");
 
                     ES = CreateEstateInfo(scene);

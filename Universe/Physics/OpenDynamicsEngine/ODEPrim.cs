@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -235,7 +235,7 @@ namespace Universe.Physics.OpenDynamicsEngine
             get { return m_localID; }
             set
             {
-                //MainConsole.Instance.Info("[Physics]: Setting TrackerID: " + value);
+                //MainConsole.Instance.Info("[PHYSICS]: Setting TrackerID: " + value);
                 m_localID = value;
             }
         }
@@ -332,7 +332,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                 if (value.IsFinite())
                     _parent_scene.AddSimulationChange(() => ChangeSize(value));
                 else
-                    MainConsole.Instance.Warn("[Physics]: Got NaN Size on object");
+                    MainConsole.Instance.Warn("[PHYSICS]: Got NaN Size on object");
             }
         }
 
@@ -354,7 +354,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                 }
                 else
                 {
-                    MainConsole.Instance.Warn("[Physics]: NaN in Force Applied to an Object");
+                    MainConsole.Instance.Warn("[PHYSICS]: NaN in Force Applied to an Object");
                 }
             }
         }
@@ -427,7 +427,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                     _parent_scene.AddSimulationChange(() => Changevelocity(value));
                 else
                 {
-                    MainConsole.Instance.Warn("[Physics]: Got NaN Velocity in Object");
+                    MainConsole.Instance.Warn("[PHYSICS]: Got NaN Velocity in Object");
                 }
             }
         }
@@ -447,7 +447,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                 if (value.IsFinite())
                     _parent_scene.AddSimulationChange(() => ChangeSetTorque(value));
                 else
-                    MainConsole.Instance.Warn("[Physics]: Got NaN Torque in Object");
+                    MainConsole.Instance.Warn("[PHYSICS]: Got NaN Torque in Object");
             }
         }
 
@@ -475,7 +475,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                     _parent_scene.AddSimulationChange(() => ChangeOrientation(value));
                 }
                 else
-                    MainConsole.Instance.Warn("[Physics]: Got NaN quaternion Orientation from Scene in Object");
+                    MainConsole.Instance.Warn("[PHYSICS]: Got NaN quaternion Orientation from Scene in Object");
             }
         }
 
@@ -501,7 +501,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                 if (value.IsFinite())
                     _parent_scene.AddSimulationChange(() => ChangeAngVelocity(value));
                 else
-                    MainConsole.Instance.Warn("[Physics]: Got NaN RotationalVelocity in Object");
+                    MainConsole.Instance.Warn("[PHYSICS]: Got NaN RotationalVelocity in Object");
             }
         }
 
@@ -609,7 +609,7 @@ namespace Universe.Physics.OpenDynamicsEngine
 
             if (prim_geom == IntPtr.Zero)
             {
-                MainConsole.Instance.Warn("[Physics]: Unable to link the linkset.  Root has no geom yet");
+                MainConsole.Instance.Warn("[PHYSICS]: Unable to link the linkset.  Root has no geom yet");
                 return;
             }
 
@@ -620,7 +620,7 @@ namespace Universe.Physics.OpenDynamicsEngine
             {
                 d.BodyDestroy(Body);
                 Body = IntPtr.Zero;
-                MainConsole.Instance.Warn("[Physics]: MakeBody called having a body");
+                MainConsole.Instance.Warn("[PHYSICS]: MakeBody called having a body");
             }
 
 
@@ -667,7 +667,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                         if (prm.prim_geom == IntPtr.Zero)
                         {
                             MainConsole.Instance.Warn(
-                                "[Physics]: Unable to link one of the linkset elements, skipping it.  No geom yet");
+                                "[PHYSICS]: Unable to link one of the linkset elements, skipping it.  No geom yet");
                             continue;
                         }
 
@@ -1207,7 +1207,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                         if (vertexCount == 0 || indexCount == 0)
                         {
                             MainConsole.Instance.WarnFormat(
-                                "[Physics]: Got invalid mesh on prim at <{0},{1},{2}>. It can be a sculpt with alpha channel in map. Replacing it by a small box.",
+                                "[PHYSICS]: Got invalid mesh on prim at <{0},{1},{2}>. It can be a sculpt with alpha channel in map. Replacing it by a small box.",
                                 _position.X, _position.Y, _position.Z);
                             _size.X = 0.01f;
                             _size.Y = 0.01f;
@@ -1244,7 +1244,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                     }
                     catch (AccessViolationException)
                     {
-                        MainConsole.Instance.Error("[Physics]: MESH LOCKED");
+                        MainConsole.Instance.Error("[PHYSICS]: MESH LOCKED");
                     }
                 }
             }
@@ -1261,7 +1261,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.WarnFormat("[Physics]: Create sphere failed: {0}", e.ToString());
+                        MainConsole.Instance.WarnFormat("[PHYSICS]: Create sphere failed: {0}", e.ToString());
                         return;
                     }
                 }
@@ -1273,7 +1273,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.WarnFormat("[Physics]: Create box failed: {0}", e.ToString());
+                        MainConsole.Instance.WarnFormat("[PHYSICS]: Create box failed: {0}", e.ToString());
                         return;
                     }
                 }
@@ -1299,14 +1299,14 @@ namespace Universe.Physics.OpenDynamicsEngine
 
                 catch (Exception e)
                 {
-                    MainConsole.Instance.ErrorFormat("[Physics]: PrimGeom destruction failed {1}", e);
+                    MainConsole.Instance.ErrorFormat("[PHYSICS]: PrimGeom destruction failed {1}", e);
                 }
 
                 prim_geom = IntPtr.Zero;
             }
             else
             {
-                MainConsole.Instance.Error("[Physics]: PrimGeom destruction BAD");
+                MainConsole.Instance.Error("[PHYSICS]: PrimGeom destruction BAD");
             }
             Body = IntPtr.Zero;
             hasOOBoffsetFromMesh = false;
@@ -1587,7 +1587,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                         _zeroFlag = false;
 
                         _acceleration = ((_velocity - m_lastVelocity) / timestep);
-                        //MainConsole.Instance.Info ("[Physics]: P1: " + _position + " V2: " + m_lastposition + " Acceleration: " + _acceleration.ToString ());
+                        //MainConsole.Instance.Info ("[PHYSICS]: P1: " + _position + " V2: " + m_lastposition + " Acceleration: " + _acceleration.ToString ());
                         d.GeomCopyQuaternion (prim_geom, out ori);
                         _orientation.X = ori.X;
                         _orientation.Y = ori.Y;
@@ -1845,7 +1845,7 @@ namespace Universe.Physics.OpenDynamicsEngine
 
                         _acceleration = ((_velocity - m_lastVelocity)/timestep);
 
-                        //MainConsole.Instance.Info("[Physics]: V1: " + _velocity + " V2: " + m_lastVelocity + " Acceleration: " + _acceleration.ToString());
+                        //MainConsole.Instance.Info("[PHYSICS]: V1: " + _velocity + " V2: " + m_lastVelocity + " Acceleration: " + _acceleration.ToString());
 
                         m_rotationalVelocity.X = rotvel.X;
                         m_rotationalVelocity.Y = rotvel.Y;
@@ -1988,7 +1988,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                 catch (AccessViolationException)
                 {
                     prim_geom = IntPtr.Zero;
-                    MainConsole.Instance.Error("[Physics]: PrimGeom dead");
+                    MainConsole.Instance.Error("[PHYSICS]: PrimGeom dead");
                 }
                 prim_geom = IntPtr.Zero;
             }
@@ -2203,9 +2203,9 @@ namespace Universe.Physics.OpenDynamicsEngine
             }
             else
             {
-                MainConsole.Instance.Warn("[Physics]: Got Invalid linear force vector from Scene in Object");
+                MainConsole.Instance.Warn("[PHYSICS]: Got Invalid linear force vector from Scene in Object");
             }
-            //MainConsole.Instance.Info("[Physics]: Added Force:" + force.ToString() +  " to prim at " + Position.ToString());
+            //MainConsole.Instance.Info("[PHYSICS]: Added Force:" + force.ToString() +  " to prim at " + Position.ToString());
         }
 
         public override void AddAngularForce(Vector3 force, bool pushforce)
@@ -2213,7 +2213,7 @@ namespace Universe.Physics.OpenDynamicsEngine
             if (force.IsFinite())
                 _parent_scene.AddSimulationChange(() => ChangeAddAngularForce(force));
             else
-                MainConsole.Instance.Warn("[Physics]: Got Invalid Angular force vector from Scene in Object");
+                MainConsole.Instance.Warn("[PHYSICS]: Got Invalid Angular force vector from Scene in Object");
         }
 
         public override void CrossingFailure()
@@ -2227,7 +2227,7 @@ namespace Universe.Physics.OpenDynamicsEngine
 
             if (m_crossingfailures == _parent_scene.geomCrossingFailuresBeforeOutofbounds)
             {
-                MainConsole.Instance.Warn("[Physics]: Too many crossing failures for: " + _name + " @ " +
+                MainConsole.Instance.Warn("[PHYSICS]: Too many crossing failures for: " + _name + " @ " +
                                           Position);
             }
         }
@@ -2261,7 +2261,7 @@ namespace Universe.Physics.OpenDynamicsEngine
             }
             else
             {
-                MainConsole.Instance.Warn("[Physics]: Got NaN locking axis from Scene on Object");
+                MainConsole.Instance.Warn("[PHYSICS]: Got NaN locking axis from Scene on Object");
             }
         }
 

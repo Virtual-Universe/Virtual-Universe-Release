@@ -207,8 +207,8 @@ namespace Universe.Modules.WorldMap.Warp3DMap
 
             #region Layer Map
 
-            float diffX = 1.0f;
-            float diffY = 1.0f;
+            float diffX = 1.0f;//(float) heightmap.Width/(float) Constants.RegionSize;
+            float diffY = 1.0f;//(float) heightmap.Height/(float) Constants.RegionSize;
             int newRsX = heightmap.Width / (int)diffX;
             int newRsY = heightmap.Height / (int)diffY;
 

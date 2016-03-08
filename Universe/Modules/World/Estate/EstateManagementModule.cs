@@ -336,8 +336,8 @@ namespace Universe.Modules.Estate
 
                 TriggerEstateSunUpdate ();
 
-                //MainConsole.Instance.Debug("[Estate]: UFS: " + UseFixedSun.ToString());
-                //MainConsole.Instance.Debug("[Estate]: SunHour: " + SunHour.ToString());
+                //MainConsole.Instance.Debug("[ESTATE]: UFS: " + UseFixedSun.ToString());
+                //MainConsole.Instance.Debug("[ESTATE]: SunHour: " + SunHour.ToString());
 
                 sendRegionInfoPacketToAll ();
                 TriggerRegionInfoChange ();
@@ -518,12 +518,12 @@ namespace Universe.Modules.Estate
             {
                 if (ScriptEngine)
                 {
-                    MainConsole.Instance.Info ("[Scene Debug]: Stopping all Scripts in Scene");
+                    MainConsole.Instance.Info ("[SCENEDEBUG]: Stopping all Scripts in Scene");
                     IScriptModule mod = m_scene.RequestModuleInterface<IScriptModule> ();
                     mod.StopAllScripts ();
                 } else
                 {
-                    MainConsole.Instance.Info ("[Scene Debug]: Starting all Scripts in Scene");
+                    MainConsole.Instance.Info ("[SCENEDEBUG]: Starting all Scripts in Scene");
 
                     ISceneEntity[] entities = m_scene.Entities.GetEntities ();
                     foreach (ISceneEntity ent in entities)
@@ -621,7 +621,7 @@ namespace Universe.Modules.Estate
 
             if (terr != null)
             {
-                MainConsole.Instance.Warn ("[Client]: Got Request to Send Terrain in region " +
+                MainConsole.Instance.Warn ("[CLIENT]: Got Request to Send Terrain in region " +
                 m_scene.RegionInfo.RegionName);
 
                 try
@@ -655,7 +655,7 @@ namespace Universe.Modules.Estate
                 } catch (IOException e)
                 {
                     MainConsole.Instance.ErrorFormat (
-                        "[Terrain]: Error Saving a terrain file uploaded via the estate tools.  It gave us the following error: {0}",
+                        "[TERRAIN]: Error Saving a terrain file uploaded via the estate tools.  It gave us the following error: {0}",
                         e);
                     remoteClient.SendAlertMessage (
                         "There was an IO Exception loading your terrain.  Please check free space.");
@@ -664,7 +664,7 @@ namespace Universe.Modules.Estate
                 } catch (SecurityException e)
                 {
                     MainConsole.Instance.ErrorFormat (
-                        "[Terrain]: Error Saving a terrain file uploaded via the estate tools.  It gave us the following error: {0}",
+                        "[TERRAIN]: Error Saving a terrain file uploaded via the estate tools.  It gave us the following error: {0}",
                         e);
                     remoteClient.SendAlertMessage (
                         "There was a security Exception loading your terrain.  Please check the security on the simulator drive");
@@ -673,7 +673,7 @@ namespace Universe.Modules.Estate
                 } catch (UnauthorizedAccessException e)
                 {
                     MainConsole.Instance.ErrorFormat (
-                        "[Terrain]: Error Saving a terrain file uploaded via the estate tools.  It gave us the following error: {0}",
+                        "[TERRAIN]: Error Saving a terrain file uploaded via the estate tools.  It gave us the following error: {0}",
                         e);
                     remoteClient.SendAlertMessage (
                         "There was a security Exception loading your terrain.  Please check the security on the simulator drive");
@@ -682,7 +682,7 @@ namespace Universe.Modules.Estate
                 } catch (Exception e)
                 {
                     MainConsole.Instance.ErrorFormat (
-                        "[Terrain]: Error loading a terrain file uploaded via the estate tools.  It gave us the following error: {0}",
+                        "[TERRAIN]: Error loading a terrain file uploaded via the estate tools.  It gave us the following error: {0}",
                         e);
                     remoteClient.SendAlertMessage (
                         "There was a general error loading your terrain.  Please fix the terrain file and try again");
@@ -719,7 +719,7 @@ namespace Universe.Modules.Estate
 
             if (terr != null)
             {
-                MainConsole.Instance.Warn ("[Client]: Got Request to Send Terrain in region " +
+                MainConsole.Instance.Warn ("[CLIENT]: Got Request to Send Terrain in region " +
                 m_scene.RegionInfo.RegionName);
                 if (File.Exists (Util.dataDir () + "/terrain.raw"))
                 {
@@ -735,7 +735,7 @@ namespace Universe.Modules.Estate
                 if (xfer != null)
                     xfer.AddNewFile ("terrain.raw", bdata);
                 // Tell client about it
-                MainConsole.Instance.Warn ("[Client]: Sending Terrain to " + remote_client.Name);
+                MainConsole.Instance.Warn ("[CLIENT]: Sending Terrain to " + remote_client.Name);
                 remote_client.SendInitiateDownload ("terrain.raw", clientFileName);
             }
         }
@@ -755,12 +755,16 @@ namespace Universe.Modules.Estate
                 regionFlags = GetRegionFlags (),
                 simAccess = m_scene.RegionInfo.AccessLevel,
                 sunHour = (float)m_scene.RegionInfo.RegionSettings.SunPosition,
-                terrainLowerLimit = (float)m_scene.RegionInfo.RegionSettings.TerrainLowerLimit,
-                terrainRaiseLimit = (float)m_scene.RegionInfo.RegionSettings.TerrainRaiseLimit,
+                terrainLowerLimit =
+                                                           (float)m_scene.RegionInfo.RegionSettings.TerrainLowerLimit,
+                terrainRaiseLimit =
+                                                           (float)m_scene.RegionInfo.RegionSettings.TerrainRaiseLimit,
                 useEstateSun = m_scene.RegionInfo.RegionSettings.UseEstateSun,
-                waterHeight = (float)m_scene.RegionInfo.RegionSettings.WaterHeight,
+                waterHeight =
+                                                           (float)m_scene.RegionInfo.RegionSettings.WaterHeight,
                 simName = m_scene.RegionInfo.RegionName,
-                regionType = m_scene.RegionInfo.RegionType
+                regionType = m_scene.RegionInfo.RegionType,
+                //regionTerrain = m_scene.RegionInfo.RegionTerrain
             };
 
             remote_client.SendRegionInfoToEstateMenu (args);
@@ -859,7 +863,7 @@ namespace Universe.Modules.Estate
             foreach (UUID t in uuidarr)
             {
                 m_scene.UserAccountService.GetUserAccount (m_scene.RegionInfo.AllScopeIDs, t);
-                // we drop it.  It gets cached though. so we're ready for the next request.
+                // we drop it.  It gets cached though...  so we're ready for the next request.
             }
         }
 
@@ -888,7 +892,11 @@ namespace Universe.Modules.Estate
                             if (selectedParcel.LandData.OwnerID != targetID) //Check to make sure it isn't their land
                                 prims.AddRange (selectedParcel.GetPrimsOverByOwner (targetID, containsScript));
                         }
+                            //Other estates flag doesn't seem to get sent by the viewer, so don't touch it
+                            //else if ((flags & (int)SimWideDeletesFlags.ReturnObjectsOtherEstate) == (int)SimWideDeletesFlags.ReturnObjectsOtherEstate)
+                            //    prims.AddRange (selectedParcel.GetPrimsOverByOwner (targetID, containsScript));
                         else
+                            // if ((flags & (int)SimWideDeletesFlags.ReturnObjects) == (int)SimWideDeletesFlags.ReturnObjects)//Return them all
                             prims.AddRange (selectedParcel.GetPrimsOverByOwner (targetID, containsScript));
                     }
                 }
@@ -947,6 +955,7 @@ namespace Universe.Modules.Estate
             args.terrainDetail2 = m_scene.RegionInfo.RegionSettings.TerrainTexture3;
             args.terrainDetail3 = m_scene.RegionInfo.RegionSettings.TerrainTexture4;
             args.RegionType = Utils.StringToBytes (m_scene.RegionInfo.RegionType);
+            //args.RegionTerrain = Utils.StringToBytes(m_scene.RegionInfo.RegionTerrain);
 
             remoteClient.SendRegionHandshake (m_scene.RegionInfo, args);
         }
@@ -1012,7 +1021,7 @@ namespace Universe.Modules.Estate
                     int corner = int.Parse (num);
                     UUID texture = UUID.Parse (uuid);
 
-                    MainConsole.Instance.Debug ("[Estate Module] Setting terrain textures for " +
+                    MainConsole.Instance.Debug ("[ESTATEMODULE] Setting terrain textures for " +
                     m_scene.RegionInfo.RegionName +
                     string.Format (" (C#{0} = {1})", corner, texture));
 
@@ -1053,7 +1062,7 @@ namespace Universe.Modules.Estate
                     float lowValue = float.Parse (min, Culture.NumberFormatInfo);
                     float highValue = float.Parse (max, Culture.NumberFormatInfo);
 
-                    MainConsole.Instance.Debug ("[Estate Module] Setting terrain heights " + m_scene.RegionInfo.RegionName +
+                    MainConsole.Instance.Debug ("[ESTATEMODULE] Setting terrain heights " + m_scene.RegionInfo.RegionName +
                     string.Format (" (C{0}, {1}-{2}", corner, lowValue, highValue));
 
                     switch (corner)
@@ -1167,6 +1176,7 @@ namespace Universe.Modules.Estate
         {
             client.OnDetailedEstateDataRequest += sendDetailedEstateData;
             client.OnSetEstateFlagsRequest += estateSetRegionInfoHandler;
+//            client.OnSetEstateTerrainBaseTexture += setEstateTerrainBaseTexture;
             client.OnSetEstateTerrainDetailTexture += setEstateTerrainBaseTexture;
             client.OnSetEstateTerrainTextureHeights += setEstateTerrainTextureHeights;
             client.OnCommitEstateTerrainTextureRequest += handleCommitEstateTerrainTextureRequest;
@@ -1193,6 +1203,7 @@ namespace Universe.Modules.Estate
         {
             client.OnDetailedEstateDataRequest -= sendDetailedEstateData;
             client.OnSetEstateFlagsRequest -= estateSetRegionInfoHandler;
+            //            client.OnSetEstateTerrainBaseTexture -= setEstateTerrainBaseTexture;
             client.OnSetEstateTerrainDetailTexture -= setEstateTerrainBaseTexture;
             client.OnSetEstateTerrainTextureHeights -= setEstateTerrainTextureHeights;
             client.OnCommitEstateTerrainTextureRequest -= handleCommitEstateTerrainTextureRequest;
@@ -1219,6 +1230,7 @@ namespace Universe.Modules.Estate
             RegionFlags flags = RegionFlags.None;
 
             // Fully implemented
+            //
             if (m_scene.RegionInfo.RegionSettings.AllowDamage)
                 flags |= RegionFlags.AllowDamage;
             if (m_scene.RegionInfo.RegionSettings.BlockTerraform)
@@ -1257,6 +1269,24 @@ namespace Universe.Modules.Estate
                 if (m_scene.RegionInfo.EstateSettings.AllowVoice)
                     flags |= RegionFlags.AllowVoice;
             }
+
+
+            // Omitted
+            // update - greythane -July 2014
+            //TaxFree = 32,
+            //ExternallyVisible = 32768,
+            //MainlandVisible = 65536,
+            //PublicAllowed = 131072,
+            //AllowDirectTeleport = 1048576,
+            //EstateSkipScripts = 2097152,
+            //DenyAnonymous = 8388608,
+            //DenyIdentified = 16777216,
+            //DenyTransacted = 33554432,
+            //AbuseEmailToEstateOwner = 134217728,
+            //DenyAgeUnverified = 1073741824
+            // Omitted: SkipUpdateInterestList  Region does not update agent prim interest lists. Internal debugging option.
+            // Omitted: NullLayer Unknown: Related to the availability of an overview world map tile.(Think mainland images when zoomed out.)
+            // Omitted: SkipAgentAction Unknown: Related to region debug flags. Possibly to skip processing of agent interaction with world.
 
             return (ulong)flags;
         }
@@ -1356,6 +1386,7 @@ namespace Universe.Modules.Estate
                         sun = sunModule.GetCurrentSunHour ();
                 }
 
+                // 
                 m_scene.EventManager.TriggerEstateToolsSunUpdate (
                     m_scene.RegionInfo.RegionHandle,
                     m_scene.RegionInfo.EstateSettings.FixedSun,

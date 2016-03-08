@@ -72,7 +72,7 @@ namespace Universe.Modules.InventoryAccess
                 if (name == Name)
                 {
                     m_Enabled = true;
-                    //MainConsole.Instance.InfoFormat("[Inventory Access Module]: {0} enabled.", Name);
+                    //MainConsole.Instance.InfoFormat("[INVENTORY ACCESS MODULE]: {0} enabled.", Name);
                 }
             }
         }
@@ -141,7 +141,7 @@ namespace Universe.Modules.InventoryAccess
                 }
             }
             //else
-            //    MainConsole.Instance,DebugFormat("[Agent Inventory]: User profile not found during restore object: {0}", RegionInfo.RegionName);
+            //    MainConsole.Instance,DebugFormat("[AGENT INVENTORY]: User profile not found during restore object: {0}", RegionInfo.RegionName);
         }
 
         /// <summary>
@@ -235,7 +235,7 @@ namespace Universe.Modules.InventoryAccess
                 return "";
             }
             MainConsole.Instance.ErrorFormat(
-                "[Agent Inventory]: Could not find item {0} for caps inventory update",
+                "[AGENT INVENTORY]: Could not find item {0} for caps inventory update",
                 itemID);
 
             return "";
@@ -313,6 +313,7 @@ namespace Universe.Modules.InventoryAccess
                 return UUID.Zero;
 
             // Get the user info of the item destination
+            //
             IScenePresence SP = m_scene.GetScenePresence(agentId);
             UUID userID = UUID.Zero;
 
@@ -321,6 +322,7 @@ namespace Universe.Modules.InventoryAccess
             {
                 // Take or take copy require a taker
                 // Saving changes requires a local user
+                //
                 if (SP == null || SP.ControllingClient == null)
                     return UUID.Zero;
 
@@ -329,6 +331,8 @@ namespace Universe.Modules.InventoryAccess
             else
             {
                 // All returns / deletes go to the object owner
+                //
+
                 userID = objectGroups[0].OwnerID;
             }
 
@@ -341,6 +345,8 @@ namespace Universe.Modules.InventoryAccess
             // owner's Lost And Found folder.
             // Delete is treated like return in this case
             // Deleting your own items makes them go to trash
+            //
+
             InventoryFolderBase folder = null;
             InventoryItemBase item = null;
 
@@ -348,10 +354,13 @@ namespace Universe.Modules.InventoryAccess
             {
                 item = m_scene.InventoryService.GetItem(userID, objectGroups[0].RootChild.FromUserInventoryItemID);
 
+                //item = userInfo.RootFolder.FindItem(
+                //        objectGroup.RootPart.FromUserInventoryItemID);
+
                 if (null == item)
                 {
                     MainConsole.Instance.DebugFormat(
-                        "[Agent Inventory]: Object {0} {1} scheduled for save to inventory has already been deleted.",
+                        "[AGENT INVENTORY]: Object {0} {1} scheduled for save to inventory has already been deleted.",
                         objectGroups[0].Name, objectGroups[0].UUID);
                     return UUID.Zero;
                 }
@@ -359,9 +368,12 @@ namespace Universe.Modules.InventoryAccess
             else
             {
                 // Folder magic
+                //
                 if (action == DeRezAction.Delete)
                 {
                     // Deleting someone else's item
+                    //
+
                     if (SP == null || SP.ControllingClient == null ||
                         objectGroups[0].OwnerID != agentId)
                     {
@@ -375,6 +387,7 @@ namespace Universe.Modules.InventoryAccess
                 else if (action == DeRezAction.Return)
                 {
                     // Dump to lost + found unconditionally
+                    //
                     folder = m_scene.InventoryService.GetFolderForType(userID, InventoryType.Unknown, FolderType.LostAndFound);
                 }
 
@@ -383,6 +396,7 @@ namespace Universe.Modules.InventoryAccess
                     if (action == DeRezAction.Delete)
                     {
                         // Deletes go to trash by default
+                        //
                         folder = m_scene.InventoryService.GetFolderForType(userID, InventoryType.Unknown, FolderType.Trash);
                     }
                     else
@@ -401,6 +415,7 @@ namespace Universe.Modules.InventoryAccess
 
                 // Override and put into where it came from, if it came
                 // from anywhere in inventory
+                //
                 if (action == DeRezAction.Attachment || action == DeRezAction.Take ||
                     action == DeRezAction.AcquireToUserInventory)
                 {
@@ -462,8 +477,10 @@ namespace Universe.Modules.InventoryAccess
                         if ((nextPerms & (uint) PermissionMask.Modify) == 0)
                             perms &= ~(uint) PermissionMask.Modify;
 
-                        // Make sure all bits but the ones we want are clear on take.
-                        // This will be applied to the current perms, so it will do what we want.
+                        // Make sure all bits but the ones we want are clear
+                        // on take.
+                        // This will be applied to the current perms, so
+                        // it will do what we want.
                         group.RootChild.NextOwnerMask &=
                             ((uint) PermissionMask.Copy |
                              (uint) PermissionMask.Transfer |
@@ -603,6 +620,7 @@ namespace Universe.Modules.InventoryAccess
             else
             {
                 // Brave new fullperm world
+                //
                 itemId = item.ID;
             }
             return CreateObjectFromInventory(remoteClient, itemId, item.AssetID, out doc, item);
@@ -631,6 +649,7 @@ namespace Universe.Modules.InventoryAccess
             else
             {
                 // Brave new fullperm world
+                //
                 itemId = item.ID;
             }
             return CreateObjectFromInventory(remoteClient, itemId, item.AssetID, out doc, item);
@@ -745,6 +764,7 @@ namespace Universe.Modules.InventoryAccess
                 }
             }
             return success;
+
         }
 
         /// <summary>
@@ -810,6 +830,7 @@ namespace Universe.Modules.InventoryAccess
                                    SaleType = taskItem.SaleType
                                };
 
+
                     if (m_scene.Permissions.PropagatePermissions())
                     {
                         item.BasePermissions = taskItem.BasePermissions &
@@ -874,6 +895,7 @@ namespace Universe.Modules.InventoryAccess
                 // have already removed the item from the folder
                 // if it's no copy.
                 // Put it back if it's not an attachment
+                //
                 if ((item.CurrentPermissions & (uint) PermissionMask.Copy) == 0)
                     remoteClient.SendBulkUpdateInventory(item);
                 remoteClient.SendAlertMessage("You do not have permission to rez objects here.");
@@ -902,7 +924,7 @@ namespace Universe.Modules.InventoryAccess
             ISceneChildEntity rootPart = group.GetChildPart(group.UUID);
             if (rootPart == null)
             {
-                MainConsole.Instance.Error("[Agent Inventory]: Error rezzing ItemID: " + itemID +
+                MainConsole.Instance.Error("[AGENT INVENTORY]: Error rezzing ItemID: " + itemID +
                                            " object has no rootpart.");
                 return null;
             }
@@ -1019,6 +1041,7 @@ namespace Universe.Modules.InventoryAccess
                     // have already removed the item from the folder
                     // if it's no copy.
                     // Put it back if it's not an attachment
+                    //
                     if (((item.CurrentPermissions & (uint) PermissionMask.Copy) == 0))
                         remoteClient.SendBulkUpdateInventory(item);
                     return null;
@@ -1039,6 +1062,7 @@ namespace Universe.Modules.InventoryAccess
                     RayStart, RayEnd, RayTargetID, Quaternion.Identity,
                     BypassRayCast, bRayEndIsIntersection, true, group.GetAxisAlignedBoundingBox(out offsetHeight), false);
                 pos.Z += offsetHeight;
+                //group.AbsolutePosition = pos;
                 //   MainConsole.Instance.InfoFormat("rezx point for inventory rezz is {0} {1} {2}  and offsetheight was {3}", pos.X, pos.Y, pos.Z, offsetHeight);
 
                 ISceneChildEntity rootPart = group.GetChildPart(group.UUID);
@@ -1110,6 +1134,7 @@ namespace Universe.Modules.InventoryAccess
                     {
                         // If this is done on attachments, no
                         // copy ones will be lost, so avoid it
+                        //
                         List<UUID> uuids = new List<UUID> {item.ID};
                         m_scene.InventoryService.DeleteItems(item.Owner, uuids);
                     }
@@ -1142,6 +1167,7 @@ namespace Universe.Modules.InventoryAccess
             // At this point, we need to apply perms
             // only to notecards and scripts. All
             // other asset types are always available
+            //
             if (assetRequestItem.AssetType == (int) AssetType.LSLText)
             {
                 if (!m_scene.Permissions.CanViewScript(itemID, UUID.Zero, remoteClient.AgentId))
@@ -1162,13 +1188,14 @@ namespace Universe.Modules.InventoryAccess
             if (assetRequestItem.AssetID != requestID)
             {
                 MainConsole.Instance.WarnFormat(
-                    "[Client]: {0} requested asset {1} from item {2} but this does not match item's asset {3}",
+                    "[CLIENT]: {0} requested asset {1} from item {2} but this does not match item's asset {3}",
                     Name, requestID, itemID, assetRequestItem.AssetID);
                 return false;
             }
 
             return true;
         }
+
 
         public virtual bool IsForeignUser(UUID userID, out string assetServerURL)
         {

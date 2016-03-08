@@ -131,6 +131,7 @@ namespace Universe.Modules.Restart
             MainConsole.Instance.Info (
                 "restart region abort <message>\n" +
                 "  Aborts a scheduled restart displaying the <message> to users");
+
         }
 
         /// <summary>
@@ -163,6 +164,7 @@ namespace Universe.Modules.Restart
                     "restart region help",
                     "Help about the region restart command.",
                     HandleHelp, false, true);
+
             }
         }
 
@@ -332,6 +334,7 @@ namespace Universe.Modules.Restart
             sceneManager.RestartRegion (scene, false);
 
             DeserializeUsers (scene);
+
         }
 
         void SerializeUsers (IScene scene)
@@ -365,6 +368,7 @@ namespace Universe.Modules.Restart
 
             File.WriteAllText (sceneFile, OSDParser.SerializeJsonString (userMap));
             MainConsole.Instance.InfoFormat ("[Restart]: {0} users saved for {1}", regionUsers, regionName);
+
         }
 
         void DeserializeUsers (IScene scene)
@@ -506,7 +510,8 @@ namespace Universe.Modules.Restart
                         offset++;
                     }
                 }
-            }       
+            }
+          
         }
 
         /// <summary>
@@ -532,6 +537,7 @@ namespace Universe.Modules.Restart
                 AbortRestart (msg);
             else
                 MainConsole.Instance.Info ("[Restart]: Abort ignored as no restart is in progress");
+
         }
 
         #endregion

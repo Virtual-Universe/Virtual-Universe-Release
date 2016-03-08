@@ -494,7 +494,7 @@ namespace Universe.ClientStack
             total = TotalRateMin; // let it grow slowly
 
 
-            //MainConsole.Instance.WarnFormat("[LLUDP Client]: {0} is setting throttles. Resend={1}, Land={2}, Wind={3}, Cloud={4}, Task={5}, Texture={6}, Asset={7}, State={8}, AvatarInfo={9}, Transfer={10}, TaskFull={11}, Total={12}",
+            //MainConsole.Instance.WarnFormat("[LLUDPCLIENT]: {0} is setting throttles. Resend={1}, Land={2}, Wind={3}, Cloud={4}, Task={5}, Texture={6}, Asset={7}, State={8}, AvatarInfo={9}, Transfer={10}, TaskFull={11}, Total={12}",
             //    AgentID, resend, land, wind, cloud, task, texture, asset, state, avatarinfo, transfer, task + state + avatarinfo, total);
 
             // Update the token buckets with new throttle values
@@ -682,7 +682,7 @@ namespace Universe.ClientStack
 
             RTO = rto;
 
-            //MainConsole.Instance.Debug("[LLUDP Client]: Setting agent " + this.Agent.FullName + "'s RTO to " + RTO + "ms with an RTTVAR of " +
+            //MainConsole.Instance.Debug("[LLUDPCLIENT]: Setting agent " + this.Agent.FullName + "'s RTO to " + RTO + "ms with an RTTVAR of " +
             //    RTTVAR + " based on new RTT of " + r + "ms");
         }
 
@@ -726,13 +726,13 @@ namespace Universe.ClientStack
                 }
                 catch (Exception e)
                 {
-                    MainConsole.Instance.ErrorFormat("[LLUDP Client]: OnQueueEmpty() threw an exception: {0}", e.ToString());
+                    MainConsole.Instance.ErrorFormat("[LLUDPCLIENT]: OnQueueEmpty() threw an exception: {0}", e.ToString());
                 }
             }
 
             m_nextOnQueueEmpty = start + MIN_CALLBACK_MS;
-            //if (m_nextOnQueueEmpty == 0)
-            //    m_nextOnQueueEmpty = 1;
+//            if (m_nextOnQueueEmpty == 0)
+//                m_nextOnQueueEmpty = 1;
         }
     }
 }

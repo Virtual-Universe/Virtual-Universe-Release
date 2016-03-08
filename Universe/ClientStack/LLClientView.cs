@@ -551,7 +551,8 @@ namespace Universe.ClientStack
         public void Close(bool forceClose)
         {
             //MainConsole.Instance.DebugFormat(
-            //    "[Client]: Close has been called for {0} attached to scene {1}", Name, m_scene.RegionInfo.RegionName);
+            //    "[CLIENT]: Close has been called for {0} attached to scene {1}",
+            //    Name, m_scene.RegionInfo.RegionName);
 
             if (forceClose && !IsLoggingOut) //Don't send it to clients that are logging out
             {
@@ -581,9 +582,9 @@ namespace Universe.ClientStack
             // Disable UDP handling for this client
             m_udpClient.Shutdown();
 
-            //MainConsole.Instance.InfoFormat("[Client View] Memory pre  GC {0}", System.GC.GetTotalMemory(false));
+            //MainConsole.Instance.InfoFormat("[CLIENTVIEW] Memory pre  GC {0}", System.GC.GetTotalMemory(false));
             //GC.Collect();
-            //MainConsole.Instance.InfoFormat("[Client View] Memory post GC {0}", System.GC.GetTotalMemory(true));
+            //MainConsole.Instance.InfoFormat("[CLIENTVIEW] Memory post GC {0}", System.GC.GetTotalMemory(true));
         }
 
         public void Kick(string message)
@@ -732,7 +733,7 @@ namespace Universe.ClientStack
             {
                 // Make sure that we see any exception caused by the asynchronous operation.
                 MainConsole.Instance.ErrorFormat(
-                    "[LLClient View]: Caught exception while processing {0} for {1}, {2} {3}",
+                    "[LLCLIENTVIEW]: Caught exception while processing {0} for {1}, {2} {3}",
                     packetObject.Pack, Name, e.Message, e.StackTrace);
             }
         }
@@ -1133,7 +1134,7 @@ namespace Universe.ClientStack
             }
             catch (Exception e)
             {
-                MainConsole.Instance.Warn("[Client]: ClientView.API.cs: SendLayerData() - Failed with exception " + e);
+                MainConsole.Instance.Warn("[CLIENT]: ClientView.API.cs: SendLayerData() - Failed with exception " + e);
             }
         }
 
@@ -1223,7 +1224,7 @@ namespace Universe.ClientStack
             }
             catch (Exception e)
             {
-                MainConsole.Instance.ErrorFormat("[Client]: SendLayerData() Failed with exception: " + e.ToString());
+                MainConsole.Instance.ErrorFormat("[CLIENT]: SendLayerData() Failed with exception: " + e.ToString());
             }
         }
 
@@ -1665,9 +1666,9 @@ namespace Universe.ClientStack
         public void SendKillObject(ulong regionHandle, IEntity[] entities)
         {
             if (entities.Length == 0)
-                return; // why!
+                return; //........... why!
 
-            //MainConsole.Instance.DebugFormat("[Client]: Sending KillObjectPacket to {0} for {1} in {2}", Name, localID, regionHandle);
+//            MainConsole.Instance.DebugFormat("[CLIENT]: Sending KillObjectPacket to {0} for {1} in {2}", Name, localID, regionHandle);
 
             KillObjectPacket kill = (KillObjectPacket) PacketPool.Instance.GetPacket(PacketType.KillObject);
             kill.ObjectData = new KillObjectPacket.ObjectDataBlock[entities.Length];
@@ -1719,9 +1720,9 @@ namespace Universe.ClientStack
         public void SendKillObject(ulong regionHandle, uint[] entities)
         {
             if (entities.Length == 0)
-                return; // why!
+                return; //........... why!
 
-            //MainConsole.Instance.DebugFormat("[Client]: Sending KillObjectPacket to {0} for {1} in {2}", Name, localID, regionHandle);
+            //            MainConsole.Instance.DebugFormat("[CLIENT]: Sending KillObjectPacket to {0} for {1} in {2}", Name, localID, regionHandle);
 
             KillObjectPacket kill = (KillObjectPacket) PacketPool.Instance.GetPacket(PacketType.KillObject);
             kill.ObjectData = new KillObjectPacket.ObjectDataBlock[entities.Length];
@@ -2800,7 +2801,7 @@ namespace Universe.ClientStack
         {
             if (req.AssetInf.Data == null)
             {
-                MainConsole.Instance.ErrorFormat("[LLClient View]: Cannot send asset {0} ({1}), asset data is null",
+                MainConsole.Instance.ErrorFormat("[LLClientView]: Cannot send asset {0} ({1}), asset data is null",
                                                  req.AssetInf.ID, req.AssetInf.TypeString);
                 return;
             }
@@ -3625,11 +3626,13 @@ namespace Universe.ClientStack
                     aw.WearableData[idx] = awb;
                     idx++;
 
-                    //MainConsole.Instance.DebugFormat("[Appearance]: Sending wearable item/asset {0} {1} (index {2}) for {3}", awb.ItemID, awb.AssetID, i, Name);
+                    //                                MainConsole.Instance.DebugFormat(
+                    //                                    "[APPEARANCE]: Sending wearable item/asset {0} {1} (index {2}) for {3}",
+                    //                                    awb.ItemID, awb.AssetID, i, Name);
                 }
             }
 
-            //OutPacket(aw, ThrottleOutPacketType.Texture);
+            //            OutPacket(aw, ThrottleOutPacketType.Texture);
             OutPacket(aw, ThrottleOutPacketType.AvatarInfo);
         }
 
@@ -3664,14 +3667,14 @@ namespace Universe.ClientStack
 
             avp.Sender.IsTrial = false;
             avp.Sender.ID = app.Owner;
-            //MainConsole.Instance.InfoFormat("[LLClient View]: Sending appearance for {0} to {1}", agentID.ToString(), AgentId.ToString());
+            //MainConsole.Instance.InfoFormat("[LLClientView]: Sending appearance for {0} to {1}", agentID.ToString(), AgentId.ToString());
             //            OutPacket(avp, ThrottleOutPacketType.Texture);
             OutPacket(avp, ThrottleOutPacketType.AvatarInfo);
         }
 
         public void SendAnimations(AnimationGroup animations)
         {
-            //MainConsole.Instance.DebugFormat("[Client]: Sending animations to {0}", Name);
+            //MainConsole.Instance.DebugFormat("[CLIENT]: Sending animations to {0}", Name);
 
             AvatarAnimationPacket ani =
                 (AvatarAnimationPacket) PacketPool.Instance.GetPacket(PacketType.AvatarAnimation);
@@ -3879,7 +3882,7 @@ namespace Universe.ClientStack
                     /*if (m_killRecord.Contains(entity.LocalId))
                         {
                         MainConsole.Instance.ErrorFormat(
-                            "[Client]: Preventing update for prim with local id {0} after client for user {1} told it was deleted. Mantis this at http://mantis.virtual-planets.org/bug_report_page.php !",
+                            "[CLIENT]: Preventing update for prim with local id {0} after client for user {1} told it was deleted. Mantis this at http://mantis.Universe-sim.org/bug_report_page.php !",
                             entity.LocalId, Name);
                         return;
                         }*/
@@ -4067,7 +4070,7 @@ namespace Universe.ClientStack
                 }
                 catch (Exception ex)
                 {
-                    MainConsole.Instance.Warn("[LLClient View]: Issue creating an update block " + ex);
+                    MainConsole.Instance.Warn("[LLCLIENTVIEW]: Issue creating an update block " + ex);
                     return;
                 }
             }
@@ -4680,7 +4683,7 @@ namespace Universe.ClientStack
 
             packet.ParamList = returnblock;
             packet.Header.Reliable = false;
-            //MainConsole.Instance.Debug("[Estate]: SIM--->" + packet.ToString());
+            //MainConsole.Instance.Debug("[ESTATE]: SIM--->" + packet.ToString());
             OutPacket(packet, ThrottleOutPacketType.AvatarInfo);
         }
 
@@ -4851,7 +4854,7 @@ namespace Universe.ClientStack
             CameraConstraintPacket cpack =
                 (CameraConstraintPacket) PacketPool.Instance.GetPacket(PacketType.CameraConstraint);
             cpack.CameraCollidePlane = new CameraConstraintPacket.CameraCollidePlaneBlock {Plane = ConstraintPlane};
-            //MainConsole.Instance.DebugFormat("[Client View]: Constraint {0}", ConstraintPlane);
+            //MainConsole.Instance.DebugFormat("[CLIENTVIEW]: Constraint {0}", ConstraintPlane);
             OutPacket(cpack, ThrottleOutPacketType.AvatarInfo);
         }
 
@@ -4862,7 +4865,7 @@ namespace Universe.ClientStack
             if (notifyCount > 32)
             {
                 MainConsole.Instance.InfoFormat(
-                    "[Land]: Mor e than {0} avatars own prims on this parcel.  Only sending back details of first {0}"
+                    "[LAND]: Mor e than {0} avatars own prims on this parcel.  Only sending back details of first {0}"
                     + " - a developer might want to investigate whether this is a hard limit", 32);
 
                 notifyCount = 32;
@@ -5147,7 +5150,7 @@ namespace Universe.ClientStack
             catch (Exception e)
             {
                 MainConsole.Instance.Warn(
-                    "[LLClient View]: exception converting quaternion to bytes, using Quaternion.Identity. Exception: " +
+                    "[LLClientView]: exception converting quaternion to bytes, using Quaternion.Identity. Exception: " +
                     e);
                 Quaternion.Identity.ToBytes(objectData, 36);
             }
@@ -5225,8 +5228,9 @@ namespace Universe.ClientStack
                 }
             }
 
-            //MainConsole.Instance.DebugFormat("[LLClient View]: Constructing client update for part {0} {1} with flags {2}, localId {3}",
-            //    data.Name, update.FullID, flags, update.ID);
+//            MainConsole.Instance.DebugFormat(
+//                "[LLCLIENTVIEW]: Constructing client update for part {0} {1} with flags {2}, localId {3}",
+//                data.Name, update.FullID, flags, update.ID);
 
             update.UpdateFlags = (uint) flags;
 
@@ -5986,12 +5990,12 @@ namespace Universe.ClientStack
                     catch (Exception e)
                     {
                         MainConsole.Instance.ErrorFormat(
-                            "[LLClient View]: Exception when handling generic message {0}{1}", e.Message, e.StackTrace);
+                            "[LLCLIENTVIEW]: Exception when handling generic message {0}{1}", e.Message, e.StackTrace);
                     }
                 }
             }
 
-            //MainConsole.Instance.Debug("[LLClient View]: Not handling GenericMessage with method-type of: " + method);
+            //MainConsole.Instance.Debug("[LLCLIENTVIEW]: Not handling GenericMessage with method-type of: " + method);
             return false;
         }
 
@@ -6150,7 +6154,7 @@ namespace Universe.ClientStack
         {
             ScriptDialogReplyPacket rdialog = (ScriptDialogReplyPacket) Pack;
 
-            //MainConsole.Instance.DebugFormat("[Client]: Received ScriptDialogReply from {0}", rdialog.Data.ObjectID);
+            //MainConsole.Instance.DebugFormat("[CLIENT]: Received ScriptDialogReply from {0}", rdialog.Data.ObjectID);
 
             #region Packet Session and User Check
 
@@ -6458,7 +6462,7 @@ namespace Universe.ClientStack
 
             #endregion
 
-            //MainConsole.Instance.Info("[Land]: LAND:" + modify.ToString());
+            //MainConsole.Instance.Info("[LAND]: LAND:" + modify.ToString());
             if (modify.ParcelData.Length > 0)
             {
                 if (OnModifyTerrain != null)
@@ -6559,7 +6563,7 @@ namespace Universe.ClientStack
                 catch (Exception e)
                 {
                     MainConsole.Instance.ErrorFormat(
-                        "[Client View]: AgentSetApperance packet handler threw an exception, {0}",
+                        "[CLIENT VIEW]: AgentSetApperance packet handler threw an exception, {0}",
                         e);
                 }
             }
@@ -7306,7 +7310,7 @@ namespace Universe.ClientStack
                 #endregion
 
                 PrimitiveBaseShape shape = GetShapeFromAddPacket(addPacket);
-                // MainConsole.Instance.Info("[Rez Data]: " + addPacket.ToString());
+                // MainConsole.Instance.Info("[REZData]: " + addPacket.ToString());
                 //BypassRaycast: 1
                 //RayStart: <69.79469, 158.2652, 98.40343>
                 //RayEnd: <61.97724, 141.995, 92.58341>
@@ -7753,7 +7757,7 @@ namespace Universe.ClientStack
 
         private bool HandleObjectSpinStart(IClientAPI sender, Packet Pack)
         {
-            //MainConsole.Instance.Warn("[Client]: unhandled ObjectSpinStart packet");
+            //MainConsole.Instance.Warn("[CLIENT]: unhandled ObjectSpinStart packet");
             ObjectSpinStartPacket spinStart = (ObjectSpinStartPacket) Pack;
 
             #region Packet Session and User Check
@@ -7777,7 +7781,7 @@ namespace Universe.ClientStack
 
         private bool HandleObjectSpinUpdate(IClientAPI sender, Packet Pack)
         {
-            //MainConsole.Instance.Warn("[Client]: unhandled ObjectSpinUpdate packet");
+            //MainConsole.Instance.Warn("[CLIENT]: unhandled ObjectSpinUpdate packet");
             ObjectSpinUpdatePacket spinUpdate = (ObjectSpinUpdatePacket) Pack;
 
             #region Packet Session and User Check
@@ -7794,7 +7798,7 @@ namespace Universe.ClientStack
             Vector3 axis;
             float angle;
             spinUpdate.ObjectData.Rotation.GetAxisAngle(out axis, out angle);
-            //MainConsole.Instance.Warn("[Client]: ObjectSpinUpdate packet rot axis:" + axis + " angle:" + angle);
+            //MainConsole.Instance.Warn("[CLIENT]: ObjectSpinUpdate packet rot axis:" + axis + " angle:" + angle);
 
             SpinObject handlerSpinUpdate = OnSpinUpdate;
             if (handlerSpinUpdate != null)
@@ -7806,7 +7810,7 @@ namespace Universe.ClientStack
 
         private bool HandleObjectSpinStop(IClientAPI sender, Packet Pack)
         {
-            //MainConsole.Instance.Warn("[Client]: unhandled ObjectSpinStop packet");
+            //MainConsole.Instance.Warn("[CLIENT]: unhandled ObjectSpinStop packet");
             ObjectSpinStopPacket spinStop = (ObjectSpinStopPacket) Pack;
 
             #region Packet Session and User Check
@@ -8244,7 +8248,7 @@ namespace Universe.ClientStack
         /// <returns>This parameter may be ignored since we appear to return true whatever happens</returns>
         private bool HandleTransferRequest(IClientAPI sender, Packet Pack)
         {
-            //MainConsole.Instance.Debug("[Client View]: ClientView.ProcessPackets.cs:ProcessInPacket() - Got transfer request");
+            //MainConsole.Instance.Debug("ClientView.ProcessPackets.cs:ProcessInPacket() - Got transfer request");
 
             TransferRequestPacket transfer = (TransferRequestPacket) Pack;
             //MainConsole.Instance.Debug("Transfer Request: " + transfer.ToString());
@@ -8258,7 +8262,9 @@ namespace Universe.ClientStack
                 UUID itemID = new UUID(transfer.TransferInfo.Params, 64);
                 UUID requestID = new UUID(transfer.TransferInfo.Params, 80);
 
-                //MainConsole.Instance.DebugFormat("[Client]: Got request for asset {0} from item {1} in prim {2} by {3}", requestID, itemID, taskID, Name);
+//                MainConsole.Instance.DebugFormat(
+//                    "[CLIENT]: Got request for asset {0} from item {1} in prim {2} by {3}",
+//                    requestID, itemID, taskID, Name);
 
                 if (!m_scene.Permissions.BypassPermissions())
                 {
@@ -8269,7 +8275,7 @@ namespace Universe.ClientStack
                         if (part == null)
                         {
                             MainConsole.Instance.WarnFormat(
-                                "[Client]: {0} requested asset {1} from item {2} in prim {3} but prim does not exist",
+                                "[CLIENT]: {0} requested asset {1} from item {2} in prim {3} but prim does not exist",
                                 Name, requestID, itemID, taskID);
                             return true;
                         }
@@ -8278,7 +8284,7 @@ namespace Universe.ClientStack
                         if (tii == null)
                         {
                             MainConsole.Instance.WarnFormat(
-                                "[Client]: {0} requested asset {1} from item {2} in prim {3} but item does not exist",
+                                "[CLIENT]: {0} requested asset {1} from item {2} in prim {3} but item does not exist",
                                 Name, requestID, itemID, taskID);
                             return true;
                         }
@@ -8298,12 +8304,12 @@ namespace Universe.ClientStack
                             if (!m_scene.Permissions.CanEditObjectInventory(part.UUID, AgentId))
                             {
                                 MainConsole.Instance.Warn(
-                                    "[LLClient View]: Permissions check for CanEditObjectInventory fell through to standard code!");
+                                    "[LLClientView]: Permissions check for CanEditObjectInventory fell through to standard code!");
 
                                 if (part.OwnerID != AgentId)
                                 {
                                     MainConsole.Instance.WarnFormat(
-                                        "[Client]: {0} requested asset {1} from item {2} in prim {3} but the prim is owned by {4}",
+                                        "[CLIENT]: {0} requested asset {1} from item {2} in prim {3} but the prim is owned by {4}",
                                         Name, requestID, itemID, taskID, part.OwnerID);
                                     return true;
                                 }
@@ -8311,7 +8317,7 @@ namespace Universe.ClientStack
                                 if ((part.OwnerMask & (uint) PermissionMask.Modify) == 0)
                                 {
                                     MainConsole.Instance.WarnFormat(
-                                        "[Client]: {0} requested asset {1} from item {2} in prim {3} but modify permissions are not set",
+                                        "[CLIENT]: {0} requested asset {1} from item {2} in prim {3} but modify permissions are not set",
                                         Name, requestID, itemID, taskID);
                                     return true;
                                 }
@@ -8319,7 +8325,7 @@ namespace Universe.ClientStack
                                 if (tii.OwnerID != AgentId)
                                 {
                                     MainConsole.Instance.WarnFormat(
-                                        "[Client]: {0} requested asset {1} from item {2} in prim {3} but the item is owned by {4}",
+                                        "[CLIENT]: {0} requested asset {1} from item {2} in prim {3} but the item is owned by {4}",
                                         Name, requestID, itemID, taskID, tii.OwnerID);
                                     return true;
                                 }
@@ -8333,7 +8339,7 @@ namespace Universe.ClientStack
                                      (uint) PermissionMask.Transfer))
                                 {
                                     MainConsole.Instance.WarnFormat(
-                                        "[Client]: {0} requested asset {1} from item {2} in prim {3} but item permissions are not modify/copy/transfer",
+                                        "[CLIENT]: {0} requested asset {1} from item {2} in prim {3} but item permissions are not modify/copy/transfer",
                                         Name, requestID, itemID, taskID);
                                     return true;
                                 }
@@ -8341,7 +8347,7 @@ namespace Universe.ClientStack
                                 if (tii.AssetID != requestID)
                                 {
                                     MainConsole.Instance.WarnFormat(
-                                        "[Client]: {0} requested asset {1} from item {2} in prim {3} but this does not match item's asset {4}",
+                                        "[CLIENT]: {0} requested asset {1} from item {2} in prim {3} but this does not match item's asset {4}",
                                         Name, requestID, itemID, taskID, tii.AssetID);
                                     return true;
                                 }
@@ -9896,7 +9902,7 @@ namespace Universe.ClientStack
                         if (messagePacket.ParamList.Length != 9)
                         {
                             MainConsole.Instance.Error(
-                                "[LLCLient View]: EstateOwnerMessage: SetRegionTerrain method has a ParamList of invalid length");
+                                "EstateOwnerMessage: SetRegionTerrain method has a ParamList of invalid length");
                         }
                         else
                         {
@@ -9931,7 +9937,7 @@ namespace Universe.ClientStack
                             catch (Exception ex)
                             {
                                 MainConsole.Instance.Error(
-                                    "[LLCLient View]: EstateOwnerMessage: Exception while setting terrain settings: \n" +
+                                    "EstateOwnerMessage: Exception while setting terrain settings: \n" +
                                     messagePacket + "\n" + ex);
                             }
                         }
@@ -10171,14 +10177,14 @@ namespace Universe.ClientStack
                     return true;
                 default:
                     MainConsole.Instance.WarnFormat(
-                        "[LLClient View]: EstateOwnerMessage: Unknown method {0} requested for {1}",
+                        "[LLCLIENTVIEW]: EstateOwnerMessage: Unknown method {0} requested for {1}",
                         method, Name);
 
                     for (int i = 0; i < messagePacket.ParamList.Length; i++)
                     {
                         EstateOwnerMessagePacket.ParamListBlock block = messagePacket.ParamList[i];
                         string data = (string) Utils.BytesToString(block.Parameter);
-                        MainConsole.Instance.DebugFormat("[LLClient View]: Param {0}={1}", i, data);
+                        MainConsole.Instance.DebugFormat("[LLCLIENTVIEW]: Param {0}={1}", i, data);
                     }
 
                     return true;
@@ -10684,7 +10690,7 @@ namespace Universe.ClientStack
 
         private bool HandleViewerStats(IClientAPI sender, Packet Pack)
         {
-            //MainConsole.Instance.Warn("[Client]: unhandled ViewerStats packet");
+            //MainConsole.Instance.Warn("[CLIENT]: unhandled ViewerStats packet");
             return true;
         }
 
@@ -12483,7 +12489,7 @@ namespace Universe.ClientStack
         /// <returns></returns>
         private bool Logout(IClientAPI client)
         {
-            //MainConsole.Instance.InfoFormat("[Client]: Got a logout request for {0} in {1}", Name, Scene.RegionInfo.RegionName);
+            //MainConsole.Instance.InfoFormat("[CLIENT]: Got a logout request for {0} in {1}", Name, Scene.RegionInfo.RegionName);
 
             Action<IClientAPI> handlerLogout = OnLogout;
 
@@ -12562,7 +12568,7 @@ namespace Universe.ClientStack
                                 UpdateVector handlerUpdatePrimScale = OnUpdatePrimScale;
                                 if (handlerUpdatePrimScale != null)
                                 {
-                                    //MainConsole.Instance.Debug("new scale is " + scale4.X + " , " + scale4.Y + " , " + scale4.Z);
+                                    //                                     MainConsole.Instance.Debug("new scale is " + scale4.X + " , " + scale4.Y + " , " + scale4.Z);
                                     handlerUpdatePrimScale(localId, scale4, this);
                                 }
                                 break;
@@ -12623,7 +12629,7 @@ namespace Universe.ClientStack
                                 UpdateVector handlerUpdatePrimGroupScale = OnUpdatePrimGroupScale;
                                 if (handlerUpdatePrimGroupScale != null)
                                 {
-                                    //MainConsole.Instance.Debug("new scale is " + scale7.X + " , " + scale7.Y + " , " + scale7.Z);
+                                    //                                     MainConsole.Instance.Debug("new scale is " + scale7.X + " , " + scale7.Y + " , " + scale7.Z);
                                     handlerUpdatePrimGroupScale(localId, scale7, this);
                                 }
                                 break;
@@ -12681,7 +12687,7 @@ namespace Universe.ClientStack
                                 break;
                             default:
                                 MainConsole.Instance.Debug(
-                                    "[Client] MultipleObjUpdate recieved an unknown packet type: " +
+                                    "[CLIENT] MultipleObjUpdate recieved an unknown packet type: " +
                                     (block.Type));
                                 break;
                         }
@@ -12806,7 +12812,7 @@ namespace Universe.ClientStack
                     outputPacket = true;
 
                 if (outputPacket && !m_debugRemovePackets.Contains(packet.Type.ToString()))
-                    MainConsole.Instance.DebugFormat("[Client ({1})]: Packet OUT {0}", packet.Type, Name);
+                    MainConsole.Instance.DebugFormat("[CLIENT ({1})]: Packet OUT {0}", packet.Type, Name);
             }
 
             m_udpServer.SendPacket(m_udpClient, packet, throttlePacketType, doAutomaticSplitting, resendMethod,
@@ -12840,7 +12846,7 @@ namespace Universe.ClientStack
                     }
                     catch (InvalidCastException)
                     {
-                        MainConsole.Instance.Error("[Client]: Invalid autopilot request");
+                        MainConsole.Instance.Error("[CLIENT]: Invalid autopilot request");
                         return;
                     }
 
@@ -12849,13 +12855,13 @@ namespace Universe.ClientStack
                     {
                         handlerAutoPilotGo(0, new Vector3(locx, locy, locz), this);
                     }
-                    MainConsole.Instance.InfoFormat("[Client]: Client Requests autopilot to position <{0},{1},{2}>",
+                    MainConsole.Instance.InfoFormat("[CLIENT]: Client Requests autopilot to position <{0},{1},{2}>",
                                                     locx, locy, locz);
 
 
                     break;
                 default:
-                    MainConsole.Instance.Debug("[Client]: Unknown Generic Message, Method: " + gmMethod + ". Invoice: " +
+                    MainConsole.Instance.Debug("[CLIENT]: Unknown Generic Message, Method: " + gmMethod + ". Invoice: " +
                                                gmInvoice +
                                                ".  Dumping Params:");
                     foreach (GenericMessagePacket.ParamListBlock t in gmParams)
@@ -12891,11 +12897,11 @@ namespace Universe.ClientStack
                     outputPacket = true;
 
                 if (outputPacket && !m_debugRemovePackets.Contains(packet.Type.ToString()))
-                    MainConsole.Instance.DebugFormat("[Client ({1})]: Packet IN {0}", packet.Type, Name);
+                    MainConsole.Instance.DebugFormat("[CLIENT ({1})]: Packet IN {0}", packet.Type, Name);
             }
 
             if (!ProcessPacketMethod(packet))
-                MainConsole.Instance.Warn("[Client]: unhandled packet " + packet.Type);
+                MainConsole.Instance.Warn("[CLIENT]: unhandled packet " + packet.Type);
 
             //Give the packet back to the pool now, we've processed it
             PacketPool.Instance.ReturnPacket(packet);
@@ -13084,7 +13090,7 @@ namespace Universe.ClientStack
                     break;
             }
 
-            //MainConsole.Instance.InfoFormat("[Client]: {0} requesting asset {1}", Name, requestID);
+            //MainConsole.Instance.InfoFormat("[CLIENT]: {0} requesting asset {1}", Name, requestID);
 
             m_assetService.Get(requestID.ToString(), transferRequest, AssetReceived);
         }
@@ -13097,7 +13103,7 @@ namespace Universe.ClientStack
         /// <param name="asset"></param>
         private void AssetReceived(string id, Object sender, AssetBase asset)
         {
-            //MainConsole.Instance.InfoFormat("[Client]: {0} found requested asset", Name);
+            //MainConsole.Instance.InfoFormat("[CLIENT]: {0} found requested asset", Name);
 
             TransferRequestPacket transferRequest = (TransferRequestPacket) sender;
 

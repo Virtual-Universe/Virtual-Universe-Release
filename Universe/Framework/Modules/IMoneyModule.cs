@@ -278,7 +278,7 @@ namespace Universe.Framework.Modules
 
     public interface IBaseCurrencyConnector : IUniverseDataPlugin
     {
-        /*SimpleCurrencyConfig GetConfig();
+        /*BaseCurrencyConfig GetConfig();
         UserCurrency GetUserCurrency(UUID agentId);
         bool UserCurrencyUpdate(UserCurrency agent);
         GroupBalance GetGroupBalance(UUID groupID);

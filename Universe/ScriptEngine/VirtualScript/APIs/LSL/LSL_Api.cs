@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -3516,7 +3516,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             LSL_Vector from = new LSL_Vector(obj.GetWorldPosition());
 			
 			// The following code bit was written by Dahlia 
-			// from the Opensimulator Core Team. Thank you for fixing this issue
+			// from the Virtual Universe Core Team. Thank you for fixing this issue
 			
 			// normalized direction to target
             LSL_Vector dir = llVecNorm(target - from);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -402,7 +402,7 @@ namespace Universe.Framework.Services
             }
             catch (Exception ex)
             {
-                MainConsole.Instance.Warn("[Server Handler]: Error occurred: " + ex.ToString());
+                MainConsole.Instance.Warn("[ServerHandler]: Error occurred: " + ex.ToString());
             }
             return MainServer.BadRequest;
         }
@@ -444,12 +444,12 @@ namespace Universe.Framework.Services
                 }
                 catch (Exception ex)
                 {
-                    MainConsole.Instance.WarnFormat("[Server Handler]: Error occurred for method {0}: {1}", method,
+                    MainConsole.Instance.WarnFormat("[ServerHandler]: Error occurred for method {0}: {1}", method,
                                                     ex.ToString());
                 }
             }
             else
-                MainConsole.Instance.Warn("[Server Handler]: Post did not have a method block");
+                MainConsole.Instance.Warn("[ServerHandler]: Post did not have a method block");
 
             return MainServer.BadRequest;
         }

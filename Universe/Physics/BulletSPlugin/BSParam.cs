@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
+ * Copyright (c) Contributors, http://opensimulator.org/, http://whitecore-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@ namespace Universe.Physics.BulletSPlugin
 {
     public static class BSParam
     {
-        static string LogHeader = "[Bulletsim Parameters]";
+        static string LogHeader = "[BULLETSIM PARAMETERS]";
 
         // Tuning notes:
         // From: http://bulletphysics.org/Bullet/phpBB3/viewtopic.php?t=6575
@@ -235,6 +235,8 @@ namespace Universe.Physics.BulletSPlugin
         public const float MaxRestitution = 1f;
 
         // =====================================================================================
+        // =====================================================================================
+
         // Base parameter definition that gets and sets parameter values via a string
         public abstract class ParameterDefnBase
         {
@@ -291,6 +293,17 @@ namespace Universe.Physics.BulletSPlugin
                 objectSet = pObjSetter;
             }
 
+            /* Wish I could simplify using this definition but CLR doesn't store references so closure around delegates of references won't work
+        public ParameterDefn(string pName, string pDesc, T pDefault, ref T loc)
+            : base(pName, pDesc)
+        {
+            defaultValue = pDefault;
+            setter = (s, v) => { loc = v; };
+            getter = (s) => { return loc; };
+            objectSet = null;
+        }
+         */
+
             public override void AssignDefault(BSScene s)
             {
                 setter(s, defaultValue);
@@ -324,6 +337,7 @@ namespace Universe.Physics.BulletSPlugin
                         T setValue = (T)parser.Invoke(genericType, new Object[] { valAsString });
                         // Store the parsed value
                         setter(s, setValue);
+                        // s.Logger.DebugFormat("{0} Parameter {1} = {2}", LogHeader, name, setValue);
                     }
                     catch
                     {
@@ -729,21 +743,21 @@ namespace Universe.Physics.BulletSPlugin
                 (s) => { return AvatarStepHeight; },
                 (s, v) => { AvatarStepHeight = v; }),
  	        new ParameterDefn<float>("AvatarStepAngle", "The angle (in radians) for a vertical surface to be considered a step",
-                0.3f,
+                0.3f,      //OS => 0.999f
                 (s) => { return AvatarStepAngle; },
                 (s, v) => { AvatarStepAngle = v; }),   
 	        new ParameterDefn<float>("AvatarStepGroundFudge", "Fudge factor subtracted from avatar base when comparing collision height",
-                0.05f,
+                0.05f,      // OS =>  0.1f,
                 (s) => { return AvatarStepGroundFudge; },
                 (s, v) => { AvatarStepGroundFudge = v; }),
            new ParameterDefn<float>("AvatarStepApproachFactor",
                 "Factor to control angle of approach to step (0=straight on)",
-                0.6f,
+                0.6f,   // OS =>2f
                 (s) => { return AvatarStepApproachFactor; },
                 (s, v) => { AvatarStepApproachFactor = v; }),
             new ParameterDefn<float>("AvatarStepForceFactor",
                 "Controls the amount of force up applied to step up onto a step",
-                2.0f,
+                2.0f,   //OS =>0f
                 (s) => { return AvatarStepForceFactor; },
                 (s, v) => { AvatarStepForceFactor = v; }),
 	        new ParameterDefn<float>("AvatarStepUpCorrectionFactor", "Multiplied by height of step collision to create up movement at step",
@@ -805,7 +819,7 @@ namespace Universe.Physics.BulletSPlugin
                 (s, v) => { VehicleRestitution = v; }),
             new ParameterDefn<float>("VehicleGroundGravityFudge",
                 "Factor to multiply gravity if a ground vehicle is probably on the ground (0.0 - 1.0)",
-                0.1f,
+                0.1f,  //OS => 0.2f
                 (s) => { return VehicleGroundGravityFudge; },
                 (s, v) => { VehicleGroundGravityFudge = v; }),
             new ParameterDefn<float>("VehicleAngularBankingTimescaleFudge",
@@ -1097,6 +1111,7 @@ namespace Universe.Physics.BulletSPlugin
                 "Setting this is any value resets the broadphase collision pool",
                 0f,
                 (s) => { return 0f; },
+//20150925//                (s, v) => { BSParam.ResetBroadphasePoolTainted(s, v); }),
                 (s, v) => { BSParam.ResetBroadphasePoolTainted(s, v, false); }),
             new ParameterDefn<float>("ResetConstraintSolver", "Setting this is any value resets the constraint solver",
                 0f,
@@ -1157,6 +1172,31 @@ namespace Universe.Physics.BulletSPlugin
             }
         }
 
+        /* not sure what/if this is yet
+        internal static PhysParameterEntry[] SettableParameters = new PhysParameterEntry[1];
+
+        // This creates an array in the correct format for returning the list of
+        //    parameters. This is used by the 'list' option of the 'physics' command.
+        internal static void BuildParameterTable()
+        {
+            if (SettableParameters.Length < ParameterDefinitions.Length)
+            {
+                List<PhysParameterEntry> entries = new List<PhysParameterEntry>();
+                for (int ii = 0; ii < ParameterDefinitions.Length; ii++)
+                {
+                    ParameterDefnBase pd = ParameterDefinitions[ii];
+                    entries.Add(new PhysParameterEntry(pd.name, pd.desc));
+                }
+
+                // make the list alphabetical for ease of finding anything
+                entries.Sort((ppe1, ppe2) => { return ppe1.name.CompareTo(ppe2.name); });
+
+                SettableParameters = entries.ToArray();
+            }
+        }
+        */
+
+        // =====================================================================
         // =====================================================================
         // There are parameters that, when set, cause things to happen in the physics engine.
         // This causes the broadphase collision cache to be cleared.

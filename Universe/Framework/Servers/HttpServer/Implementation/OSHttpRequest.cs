@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
+ * Copyright (c) Contributors, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -200,7 +200,7 @@ namespace Universe.Framework.Servers.HttpServer.Implementation
                     }
                     catch (InvalidCastException)
                     {
-                        MainConsole.Instance.DebugFormat("[OSHttp Request]: error parsing {0} query item, skipping it",
+                        MainConsole.Instance.DebugFormat("[OSHttpRequest]: error parsing {0} query item, skipping it",
                                                          item);
                         continue;
                     }
@@ -208,7 +208,7 @@ namespace Universe.Framework.Servers.HttpServer.Implementation
             }
             catch (Exception)
             {
-                MainConsole.Instance.Error("[OSHttp Request]: Error parsing query-string");
+                MainConsole.Instance.Error("[OSHttpRequest]: Error parsing query-string");
             }
 
             if (ContentType != null && ContentType.StartsWith("multipart/form-data"))

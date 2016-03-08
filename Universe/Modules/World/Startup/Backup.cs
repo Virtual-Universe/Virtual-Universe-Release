@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -150,7 +150,8 @@ namespace Universe.Modules.Startup
                                                                                Convert.ToSingle(cmdparams[4]),
                                                                                Convert.ToSingle(cmdparams[5])));
 
-                                                               MainConsole.Instance.InfoFormat("Edited scale of Primitive: {0}", child.Name);
+                                                               MainConsole.Instance.InfoFormat(
+                                                                   "Edited scale of Primitive: {0}", child.Name);
                                                            }
                                                        }
                                                    });
@@ -304,7 +305,7 @@ namespace Universe.Modules.Startup
             {
                 LoadingPrims = true;
 
-                MainConsole.Instance.InfoFormat("[Backup Module]: Loading objects for {0} from {1}",
+                MainConsole.Instance.InfoFormat("[BackupModule]: Loading objects for {0} from {1}",
                     m_scene.RegionInfo.RegionName, m_scene.SimulationDataService.Name);
                 List<ISceneEntity> PrimsFromDB = m_scene.SimulationDataService.LoadObjects();
                 foreach (ISceneEntity group in PrimsFromDB)
@@ -313,12 +314,12 @@ namespace Universe.Modules.Startup
                     {
                         if (group == null)
                         {
-                            MainConsole.Instance.Warn("[Backup Module]: Null object while loading objects, ignoring.");
+                            MainConsole.Instance.Warn("[BackupModule]: Null object while loading objects, ignoring.");
                             continue;
                         }
                         if (group.RootChild.Shape == null)
                         {
-                            MainConsole.Instance.Warn("[Backup Module]: Broken object (" + group.Name +
+                            MainConsole.Instance.Warn("[BackupModule]: Broken object (" + group.Name +
                                                       ") found while loading objects, removing it from the database.");
                             //WTF went wrong here? Remove by passing it by on loading
                             continue;
@@ -328,7 +329,7 @@ namespace Universe.Modules.Startup
                                                     group.RootChild.Shape.PCode == (byte) PCode.Prim ||
                                                     group.RootChild.Shape.PCode == (byte) PCode.Avatar)))
                         {
-                            MainConsole.Instance.Warn("[Backup Module]: Broken state for object " + group.Name +
+                            MainConsole.Instance.Warn("[BackupModule]: Broken state for object " + group.Name +
                                                       " while loading objects, removing it from the database.");
                             //WTF went wrong here? Remove by passing it by on loading
                             continue;
@@ -338,7 +339,7 @@ namespace Universe.Modules.Startup
                             group.AbsolutePosition.Y > m_scene.RegionInfo.RegionSizeY + 10 ||
                             group.AbsolutePosition.Y < -10)
                         {
-                            MainConsole.Instance.WarnFormat("[Backup Module]: Object outside the region "+
+                            MainConsole.Instance.WarnFormat("[BackupModule]: Object outside the region "+
                                 "(" + group.Name + ", " + group.AbsolutePosition + ")" +
                                 " found while loading objects, removing it from the database.");
                             //WTF went wrong here? Remove by passing it by on loading
@@ -351,7 +352,7 @@ namespace Universe.Modules.Startup
                         if (group.RootChild == null)
                         {
                             MainConsole.Instance.ErrorFormat(
-                                "[Backup Module] Found a SceneObjectGroup with m_rootPart == null and {0} children",
+                                "[BackupModule] Found a SceneObjectGroup with m_rootPart == null and {0} children",
                                 group.ChildrenEntities().Count);
                             continue;
                         }
@@ -360,11 +361,11 @@ namespace Universe.Modules.Startup
                     catch (Exception ex)
                     {
                         MainConsole.Instance.WarnFormat(
-                            "[Backup Module]: Exception attempting to load object from the database, {0}, continuing...", ex);
+                            "[BackupModule]: Exception attempting to load object from the database, {0}, continuing...", ex);
                     }
                 }
                 LoadingPrims = false;
-                MainConsole.Instance.Info("[Backup Module]: Loaded " + PrimsFromDB.Count + " object(s) in " +
+                MainConsole.Instance.Info("[BackupModule]: Loaded " + PrimsFromDB.Count + " object(s) in " +
                                           m_scene.RegionInfo.RegionName);
                 PrimsFromDB.Clear();
             }
@@ -374,7 +375,7 @@ namespace Universe.Modules.Startup
             /// </summary>
             public void LoadAllLandObjectsFromStorage()
             {
-                MainConsole.Instance.Debug("[Backup Module]: Loading Land Objects from database... ");
+                MainConsole.Instance.Debug("[BackupModule]: Loading Land Objects from database... ");
                 m_scene.EventManager.TriggerIncomingLandDataFromStorage(
                     m_scene.SimulationDataService.LoadLandObjects(), Vector2.Zero);
             }
@@ -396,7 +397,7 @@ namespace Universe.Modules.Startup
             /// </summary>
             public void CreateScriptInstances()
             {
-                MainConsole.Instance.Info("[Backup Module]: Starting scripts in " + m_scene.RegionInfo.RegionName);
+                MainConsole.Instance.Info("[BackupModule]: Starting scripts in " + m_scene.RegionInfo.RegionName);
                 //Set loading prims here to block backup
                 LoadingPrims = true;
                 ISceneEntity[] entities = m_scene.Entities.GetEntities();
@@ -495,7 +496,8 @@ namespace Universe.Modules.Startup
                 {
                     if (grp == null)
                         continue;
-
+                    //if (group.IsAttachment)
+                    //    continue;
                     parts.AddRange(grp.ChildrenEntities());
                     DeleteSceneObject(grp, true, true);
                 }
@@ -573,7 +575,7 @@ namespace Universe.Modules.Startup
                     return true;
                 }
 
-                //MainConsole.Instance.DebugFormat("[Scene]: Exit DeleteSceneObject() for {0} {1}", group.Name, group.UUID);
+                //MainConsole.Instance.DebugFormat("[SCENE]: Exit DeleteSceneObject() for {0} {1}", group.Name, group.UUID);
                 return false;
             }
 
@@ -775,9 +777,9 @@ namespace Universe.Modules.Startup
                     if (!m_merge)
                     {
                         DateTime before = DateTime.Now;
-                        MainConsole.Instance.Info("[Archiver]: Clearing all existing scene objects");
+                        MainConsole.Instance.Info("[ARCHIVER]: Clearing all existing scene objects");
                         backup.DeleteAllSceneObjects();
-                        MainConsole.Instance.Info("[Archiver]: Cleared all existing scene objects in " +
+                        MainConsole.Instance.Info("[ARCHIVER]: Cleared all existing scene objects in " +
                                                   (DateTime.Now - before).Minutes + ":" +
                                                   (DateTime.Now - before).Seconds);
                         if (parcelModule != null)

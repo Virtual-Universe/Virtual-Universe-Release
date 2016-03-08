@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -239,7 +239,7 @@ namespace Universe.Physics.OpenDynamicsEngine
         /// </summary>
         public ODEPhysicsScene()
         {
-            MainConsole.Instance.WarnFormat("[Physics]: Selected engine -> Open Dynamics");
+            MainConsole.Instance.WarnFormat("[PHYSICS]: Selected engine -> Open Dynamics");
 
             nearCallback = IsNearBody;
             // Create the world and the first space
@@ -476,7 +476,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                 }
                 catch (Exception e)
                 {
-                    MainConsole.Instance.WarnFormat("[Physics]: SpaceCollide2 failed: {0} ", e);
+                    MainConsole.Instance.WarnFormat("[PHYSICS]: SpaceCollide2 failed: {0} ", e);
                     return;
                 }
                 return;
@@ -502,7 +502,7 @@ namespace Universe.Physics.OpenDynamicsEngine
             }
             catch (Exception e)
             {
-                MainConsole.Instance.WarnFormat("[Physics]:  ode Collide failed: {0} ", e);
+                MainConsole.Instance.WarnFormat("[PHYSICS]:  ode Collide failed: {0} ", e);
 
                 PhysicsActor badObj;
                 if (actor_name_map.TryGetValue(g1, out badObj))
@@ -803,7 +803,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                         }
                         catch (AccessViolationException)
                         {
-                            MainConsole.Instance.Warn("[Physics]: Unable to space collide");
+                            MainConsole.Instance.Warn("[PHYSICS]: Unable to space collide");
                         }
                     }
 
@@ -819,7 +819,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                             removeprims = new List<ODEPrim>();
                         removeprims.Add(prm);
                         if (prm.prim_geom == IntPtr.Zero)
-                            MainConsole.Instance.Debug("[Physics]: unable to collide test active prim against space. The space was zero, the geom was zero or " +
+                            MainConsole.Instance.Debug("[PHYSICS]: unable to collide test active prim against space. The space was zero, the geom was zero or " +
                                 "it was in the process of being removed.  Removed it from the active prim list.  This needs to be fixed!");
                     }
                     if (removeprims != null)
@@ -964,7 +964,7 @@ namespace Universe.Physics.OpenDynamicsEngine
 
         public override void RemoveAvatar(PhysicsActor actor)
         {
-            //MainConsole.Instance.Debug("[Physics]:ODELOCK");
+            //MainConsole.Instance.Debug("[PHYSICS]:ODELOCK");
             ((ODECharacter) actor).Destroy();
         }
 
@@ -1058,13 +1058,13 @@ namespace Universe.Physics.OpenDynamicsEngine
                     }
                     else
                     {
-                        MainConsole.Instance.Warn("[Physics]: Unable to remove prim from physics scene");
+                        MainConsole.Instance.Warn("[PHYSICS]: Unable to remove prim from physics scene");
                     }
                 }
                 catch (AccessViolationException)
                 {
                     MainConsole.Instance.Info(
-                        "[Physics]: Couldn't remove prim from physics scene, it was already be removed.");
+                        "[PHYSICS]: Couldn't remove prim from physics scene, it was already be removed.");
                 }
             }
             if (!prim.childPrim)
@@ -1449,7 +1449,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                 }
                 catch (Exception e)
                 {
-                    MainConsole.Instance.ErrorFormat("[Physics]: {0}, {1}, {2}", e, e.TargetSite, e);
+                    MainConsole.Instance.ErrorFormat("[PHYSICS]: {0}, {1}, {2}", e, e.TargetSite, e);
                 }
 
                 step_time -= ODE_STEPSIZE;

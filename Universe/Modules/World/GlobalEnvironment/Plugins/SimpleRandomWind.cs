@@ -33,7 +33,7 @@ using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 
 
-namespace Universe.Modules.Wind.Plugins
+namespace Universe.Modules.GlobalEnvironment.Plugins
 {
     public class SimpleRandomWind : IWindModelPlugin
     {

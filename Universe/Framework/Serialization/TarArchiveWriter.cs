@@ -100,7 +100,7 @@ namespace Universe.Framework.Serialization
         /// <returns></returns>
         public void Close()
         {
-            //MainConsole.Instance.Debug("[Tar Archive Writer]: Writing final consecutive 0 blocks");
+            //MainConsole.Instance.Debug("[TAR ARCHIVE WRITER]: Writing final consecutive 0 blocks");
 
             // Write two consecutive 0 blocks to end the archive
             byte[] finalZeroPadding = new byte[1024];
@@ -146,7 +146,8 @@ namespace Universe.Framework.Serialization
         /// <param name="fileType"></param>
         protected void WriteEntry(string filePath, byte[] data, char fileType)
         {
-            //MainConsole.Instance.DebugFormat("[Tar Archive Writer]: Data for {0} is {1} bytes", filePath, (null == data ? "null" : data.Length.ToString()));
+//            MainConsole.Instance.DebugFormat(
+//                "[TAR ARCHIVE WRITER]: Data for {0} is {1} bytes", filePath, (null == data ? "null" : data.Length.ToString()));
 
             byte[] header = new byte[512];
 
@@ -169,7 +170,7 @@ namespace Universe.Framework.Serialization
 
             // file size in bytes (12)
             int fileSize = data.Length;
-            //MainConsole.Instance.DebugFormat("[Tar Archive Writer]: File size of {0} is {1}", filePath, fileSize);
+            //MainConsole.Instance.DebugFormat("[TAR ARCHIVE WRITER]: File size of {0} is {1}", filePath, fileSize);
 
             byte[] fileSizeBytes = ConvertDecimalToPaddedOctalBytes(fileSize, 11);
 
@@ -190,7 +191,7 @@ namespace Universe.Framework.Serialization
 
             int checksum = header.Aggregate(0, (current, b) => current + b);
 
-            //MainConsole.Instance.DebugFormat("[Tar Archive Writer]: Decimal header checksum is {0}", checksum);
+            //MainConsole.Instance.DebugFormat("[TAR ARCHIVE WRITER]: Decimal header checksum is {0}", checksum);
 
             byte[] checkSumBytes = ConvertDecimalToPaddedOctalBytes(checksum, 6);
 
@@ -212,7 +213,7 @@ namespace Universe.Framework.Serialization
                 {
                     int paddingRequired = 512 - (data.Length%512);
 
-                    //MainConsole.Instance.DebugFormat("[Tar Archive Writer]: Padding data with {0} bytes", paddingRequired);
+                    //MainConsole.Instance.DebugFormat("[TAR ARCHIVE WRITER]: Padding data with {0} bytes", paddingRequired);
 
                     byte[] padding = new byte[paddingRequired];
                     m_bw.Write(padding);

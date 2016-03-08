@@ -212,7 +212,7 @@ namespace Universe.ClientStack
 
             if (m_asset == null)
             {
-                MainConsole.Instance.Warn("[J2K Image]: Sending ImageNotInDatabase for texture " + TextureID);
+                MainConsole.Instance.Warn("[J2KIMAGE]: Sending ImageNotInDatabase for texture " + TextureID);
                 client.SendImageNotFound(TextureID);
                 return true;
             }
@@ -233,7 +233,7 @@ namespace Universe.ClientStack
             catch (Exception)
             {
                 MainConsole.Instance.ErrorFormat(
-                    "[J2K Image]: Texture block copy for the first packet failed. textureid={0}, assetlength={1}",
+                    "[J2KIMAGE]: Texture block copy for the first packet failed. textureid={0}, assetlength={1}",
                     TextureID, m_asset.Length);
                 return true;
             }
@@ -281,7 +281,7 @@ namespace Universe.ClientStack
                     catch (Exception e)
                     {
                         MainConsole.Instance.ErrorFormat(
-                            "[J2K Image]: Texture block copy for the first packet failed. textureid={0}, assetlength={1}, currentposition={2}, imagepacketsize={3}, exception={4}",
+                            "[J2KIMAGE]: Texture block copy for the first packet failed. textureid={0}, assetlength={1}, currentposition={2}, imagepacketsize={3}, exception={4}",
                             TextureID, m_asset.Length, currentPosition, imagePacketSize, e.Message);
                         return false;
                     }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -151,7 +151,7 @@ namespace Universe.DataManager
         {
             if (!TableExists(tableName))
             {
-                MainConsole.Instance.Warn("[Data Migrator]: Issue finding table " + tableName +
+                MainConsole.Instance.Warn("[DataMigrator]: Issue finding table " + tableName +
                     " when verifying tables exist!"); 
                 return false;
             }
@@ -179,12 +179,12 @@ namespace Universe.DataManager
                             continue; //They are the same type, let them go on through
                         }
 
-                        MainConsole.Instance.Warn("[Data Migrator]: Mismatched Column Type on " + tableName + "." + thisDef.Name +
+                        MainConsole.Instance.Warn("Mismatched Column Type on " + tableName + "." + thisDef.Name +
                                                   ": " + GetColumnTypeStringSymbol(thisDef.Type) + ", " +
                                                   GetColumnTypeStringSymbol(columnDefinition.Type));
                         
                     }
-                    MainConsole.Instance.Warn("[Data Migrator]: Issue verifying table " + tableName + " column " +
+                    MainConsole.Instance.Warn("[DataMigrator]: Issue verifying table " + tableName + " column " +
                                               columnDefinition.Name +
                                               " when verifying tables exist, problem with new column definitions");
                     return false;
@@ -206,7 +206,7 @@ namespace Universe.DataManager
                             continue; //They are the same type, let them go on through
                         }
                     }
-                    MainConsole.Instance.Warn("[Data Migrator]: Issue verifying table " + tableName + " column " +
+                    MainConsole.Instance.Warn("[DataMigrator]: Issue verifying table " + tableName + " column " +
                                               columnDefinition.Name +
                                               " when verifying tables exist, problem with old column definitions");
                     return false;
@@ -236,7 +236,7 @@ namespace Universe.DataManager
                     }
                     if (thisDef == null)
                     {
-                        MainConsole.Instance.Warn("[Data Migrator]: Issue verifying table " + tableName + " index " +
+                        MainConsole.Instance.Warn("[DataMigrator]: Issue verifying table " + tableName + " index " +
                                                   indexDefinition.Type + " (" +
                                                   string.Join(", ", indexDefinition.Fields) +
                                                   ") when verifying tables exist");
@@ -259,7 +259,7 @@ namespace Universe.DataManager
                     }
                     if (thisDef == null)
                     {
-                        MainConsole.Instance.Warn("[Data Migrator]: Issue verifying table " + tableName + " index " +
+                        MainConsole.Instance.Warn("[DataMigrator]: Issue verifying table " + tableName + " index " +
                                                   indexDefinition.Type + " (" +
                                                   string.Join(", ", indexDefinition.Fields) +
                                                   ") when verifying tables exist");

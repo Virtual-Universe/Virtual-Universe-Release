@@ -329,7 +329,7 @@ namespace Universe.Modules.Scripting
             catch (Exception)
             {
                 MainConsole.Instance.Error(
-                    "[Vector Render Module]: OpenJpeg Encode Failed.  Empty byte data returned!");
+                    "[VECTORRENDERMODULE]: OpenJpeg Encode Failed.  Empty byte data returned!");
             }
 
             m_textureManager.ReturnData(id, imageJ2000);
@@ -354,6 +354,44 @@ namespace Universe.Modules.Scripting
 
             return parsed;
         }
+
+/*
+        private void CairoDraw(string data, System.Drawing.Graphics graph)
+        {
+            using (Win32Surface draw = new Win32Surface(graph.GetHdc()))
+            {
+                Context contex = new Context(draw);
+
+                contex.Antialias = Antialias.None;    //fastest method but low quality
+                contex.LineWidth = 7;
+                char[] lineDelimiter = { ';' };
+                char[] partsDelimiter = { ',' };
+                string[] lines = data.Split(lineDelimiter);
+
+                foreach (string line in lines)
+                {
+                    string nextLine = line.Trim();
+
+                    if (nextLine.StartsWith("MoveTO"))
+                    {
+                        float x = 0;
+                        float y = 0;
+                        GetParams(partsDelimiter, ref nextLine, ref x, ref y);
+                        contex.MoveTo(x, y);
+                    }
+                    else if (nextLine.StartsWith("LineTo"))
+                    {
+                        float x = 0;
+                        float y = 0;
+                        GetParams(partsDelimiter, ref nextLine, ref x, ref y);
+                        contex.LineTo(x, y);
+                        contex.Stroke();
+                    }
+                }
+            }
+            graph.ReleaseHdc();
+        }
+*/
 
         private void GDIDraw(string data, Graphics graph, char dataDelim)
         {
@@ -638,9 +676,8 @@ namespace Universe.Modules.Scripting
             try
             {
                 WebRequest request = WebRequest.Create(url);
-                
-                //Ckrinke: Comment out for now as 'str' is unused. Bring it back into play later when it is used.
-                //Stream str = null;
+//Ckrinke: Comment out for now as 'str' is unused. Bring it back into play later when it is used.
+//Ckrinke            Stream str = null;
                 HttpWebResponse response = (HttpWebResponse) (request).GetResponse();
                 if (response.StatusCode == HttpStatusCode.OK)
                 {

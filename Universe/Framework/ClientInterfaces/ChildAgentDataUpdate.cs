@@ -317,7 +317,7 @@ namespace Universe.Framework.ClientInterfaces
         public override OSDMap ToOSD()
         {
             // DEBUG ON
-            //MainConsole.Instance.WarnFormat("[Child Agent Data Update] Pack data");
+            //MainConsole.Instance.WarnFormat("[CHILDAGENTDATAUPDATE] Pack data");
             // DEBUG OFF
 
             OSDMap args = new OSDMap();
@@ -497,7 +497,7 @@ namespace Universe.Framework.ClientInterfaces
                     Appearance = new AvatarAppearance(AgentID, (OSDMap) args["packed_appearance"]);
                     // DEBUG ON
                 else
-                    MainConsole.Instance.Warn("[Child Agent Data Update] No packed appearance");
+                    MainConsole.Instance.Warn("[CHILDAGENTDATAUPDATE] No packed appearance");
                 // DEBUG OFF
             }
             catch

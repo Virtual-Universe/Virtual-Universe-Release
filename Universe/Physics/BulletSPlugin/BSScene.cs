@@ -1,5 +1,5 @@
-﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
+﻿    /*
+ * Copyright (c) Contributors, http://opensimulator.org/, http://whitecore-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,8 +34,8 @@ using OpenMetaverse;
 using Universe.Framework.Physics;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
-using Universe.Framework.SceneInfo;
 using Universe.Framework.Utilities;
+using Universe.Framework.SceneInfo;
 
 namespace Universe.Physics.BulletSPlugin
 {
@@ -59,7 +59,7 @@ namespace Universe.Physics.BulletSPlugin
         public HashSet<BSPhysObject> ObjectsWithCollisions = new HashSet<BSPhysObject>();
         public HashSet<BSPhysObject> ObjectsWithNoMoreCollisions = new HashSet<BSPhysObject>();
         // Keep track of all the avatars so we can send them a collision event
-        //    every tick so Virtual Universe will update its animation.
+        //    every tick so Universe will update its animation.
         HashSet<BSPhysObject> m_avatars = new HashSet<BSPhysObject>();
 
         // let my minuions use my logger
@@ -124,7 +124,7 @@ namespace Universe.Physics.BulletSPlugin
         internal int m_maxUpdatesPerFrame;
         internal EntityProperties[] m_updateArray;
 
-        public const uint TERRAIN_ID = 0; // Virtual Universe senses terrain with a localID of zero
+        public const uint TERRAIN_ID = 0; // Universe senses terrain with a localID of zero
         public const uint GROUNDPLANE_ID = 1;
         public const uint CHILDTERRAIN_ID = 2; // Terrain allocated based on our mega-prim childre start here
 
@@ -248,7 +248,7 @@ namespace Universe.Physics.BulletSPlugin
             // Bullet actually doesn't care about the extents of the simulated
             //    area. It tracks active objects no matter where they are.
             Vector3 worldExtent = new Vector3(scene.RegionInfo.RegionSizeX, scene.RegionInfo.RegionSizeX, Constants.RegionHeight);
-            // Vector3 worldExtent = regionExtent;
+           // Vector3 worldExtent = regionExtent;
 
             World = PE.Initialize(worldExtent, Params, m_maxCollisionsPerFrame, ref m_collisionArray,
                 m_maxUpdatesPerFrame, ref m_updateArray);
@@ -426,7 +426,7 @@ namespace Universe.Physics.BulletSPlugin
 
             // TODO: Remove kludge someday.
             // We must generate a collision for avatars whether they collide or not.
-            // This is required by Virtual Universe to update avatar animations, etc.
+            // This is required by Universe to update avatar animations, etc.
             lock (m_avatars)
                 m_avatars.Add(actor);
 
@@ -589,11 +589,11 @@ namespace Universe.Physics.BulletSPlugin
 
                 //if (PhysicsLogging.Enabled)
                 //{
-                StatContactLoopTime = Util.EnvironmentTickCountSubtract(beforeTime);
-                DetailLog(
-                    "{0},Simulate,call, frame={1}, nTaints={2}, simTime={3}, substeps={4}, updates={5}, colliders={6}, objWColl={7}",
-                    DetailLogZero, m_simulationStep, numTaints, StatContactLoopTime, numSubSteps,
-                    updatedEntityCount, collidersCount, ObjectsWithCollisions.Count);
+                    StatContactLoopTime = Util.EnvironmentTickCountSubtract(beforeTime);
+                    DetailLog(
+                        "{0},Simulate,call, frame={1}, nTaints={2}, simTime={3}, substeps={4}, updates={5}, colliders={6}, objWColl={7}",
+                        DetailLogZero, m_simulationStep, numTaints, StatContactLoopTime, numSubSteps,
+                        updatedEntityCount, collidersCount, ObjectsWithCollisions.Count);
                 //}
             }
             catch (Exception e)
@@ -1018,3 +1018,4 @@ namespace Universe.Physics.BulletSPlugin
         public const string DetailLogZero = "0000000000";
     }
 }
+

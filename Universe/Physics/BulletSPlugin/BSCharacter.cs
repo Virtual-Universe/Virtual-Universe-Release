@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
+ * Copyright (c) Contributors, http://opensimulator.org/, http://whitecore-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,11 +36,12 @@ namespace Universe.Physics.BulletSPlugin
 {
     public sealed class BSCharacter : BSPhysObject
     {
-        static readonly string LogHeader = "[Bulletsim Char]";
+        static readonly string LogHeader = "[BULLETS CHAR]";
         int m_ZeroUpdateSent;
         OMV.Vector3 m_lastPosition;
         OMV.Vector3 m_lastVelocity;
 
+        // private bool _stopped;
         OMV.Vector3 _size;
         bool _grabbed;
         bool _selected;
@@ -58,7 +59,7 @@ namespace Universe.Physics.BulletSPlugin
         bool _floatOnWater;
         OMV.Vector3 _rotationalVelocity;
         bool _kinematic;  
-        //bool _isVolumeDetect; // Not used?
+        // not used?? //bool _isVolumeDetect;
         float _buoyancy;
         BSActorAvatarMove m_moveActor;
         const string AvatarMoveActorName = "BSCharacter.AvatarMove";
@@ -125,7 +126,7 @@ namespace Universe.Physics.BulletSPlugin
             DetailLog("{0},BSCharacter.Destroy", LocalID);
             PhysicsScene.TaintedObject(LocalID,"BSCharacter.destroy", delegate()
             {
-                PhysicsScene.Shapes.DereferenceBody(PhysBody, null);
+                PhysicsScene.Shapes.DereferenceBody(PhysBody, null /* bodyCallback */);
                 PhysBody.Clear();
                 PhysShape.Dereference(PhysicsScene);
                 PhysShape = new BSShapeNull();
@@ -171,6 +172,7 @@ namespace Universe.Physics.BulletSPlugin
 
             PhysicsScene.PE.AddObjectToWorld(PhysicsScene.World, PhysBody);
 
+            // PhysicsScene.PE.ForceActivationState(PhysBody, ActivationState.ACTIVE_TAG);
             PhysicsScene.PE.ForceActivationState(PhysBody, ActivationState.DISABLE_DEACTIVATION);
             PhysicsScene.PE.UpdateSingleAabb(PhysicsScene.World, PhysBody);
 
@@ -300,6 +302,7 @@ namespace Universe.Physics.BulletSPlugin
             });
         }
 
+
         public override void LockAngularMotion(OMV.Vector3 axis)
         {
             return;
@@ -316,6 +319,7 @@ namespace Universe.Physics.BulletSPlugin
             get
             {
                 // Don't refetch the position because this function is called a zillion times
+                // _position = PhysicsScene.PE.GetObjectPosition(Scene.World, LocalID);
                 return _position;
             }
             set
@@ -348,6 +352,7 @@ namespace Universe.Physics.BulletSPlugin
                 }
             }
         }
+
 
         // Check that the current position is sane and, if not, modify the position to make it so.
         // Check for being below terrain or on water.
@@ -424,6 +429,7 @@ namespace Universe.Physics.BulletSPlugin
 
         public override void UpdatePhysicalMassProperties(float physMass, bool inWorld)
         {
+			//OMV.Vector3 localInertia = PhysicsScene.PE.CalculateLocalInertia(PhysShape.physShapeInfo, physMass);  // new
             OMV.Vector3 localInertia = PhysicsScene.PE.CalculateLocalInertia(PhysShape.physShapeInfo, physMass);
             PhysicsScene.PE.SetMassProps(PhysBody, physMass, localInertia);
         }
@@ -574,7 +580,12 @@ namespace Universe.Physics.BulletSPlugin
 						_orientation.GetEulerAngles(out oRoll, out oPitch, out oYaw);
 						OMV.Quaternion trimmedOrientation = OMV.Quaternion.CreateFromEulers(0f, 0f, oYaw);
 						ForceOrientation = trimmedOrientation;
+						// DetailLog("{0},BSCharacter.setOrientation,taint,val={1},valDir={2},conv={3},convDir={4}",
+						//                 _orientation, OMV.Vector3.UnitX * _orientation,
+						//                 trimmedOrientation, OMV.Vector3.UnitX * trimmedOrientation);
 					});
+                   // PhysicsScene.TaintedObject("BSCharacter.setOrientation",
+                   //     delegate() { ForceOrientation = _orientation; });
                 }
             }
         }
@@ -592,6 +603,7 @@ namespace Universe.Physics.BulletSPlugin
                 _orientation = value;
                 if (PhysBody.HasPhysicalBody)
                 {
+                    // _position = PhysicsScene.PE.GetPosition(BSBody);
                     PhysicsScene.PE.SetTranslation(PhysBody, _position, _orientation);
                 }
             }
@@ -736,10 +748,12 @@ namespace Universe.Physics.BulletSPlugin
             if (force.IsFinite())
             {
                 OMV.Vector3 addForce = Util.ClampV(force, BSParam.MaxAddForceMagnitude);
+                // DetailLog("{0},BSCharacter.addForce,call,force={1}", LocalID, addForce);
 
                 PhysicsScene.TaintedObject(inTaintTime, "BSCharacter.AddForce", delegate()
                 {
                     // Bullet adds this central force to the total force for this tick
+                    // DetailLog("{0},BSCharacter.addForce,taint,force={1}", LocalID, addForce);
                     if (PhysBody.HasPhysicalBody)
                     {
                         PhysicsScene.PE.ApplyCentralForce(PhysBody, addForce);
@@ -793,6 +807,7 @@ namespace Universe.Physics.BulletSPlugin
             newScale.Y = size.Y / 2f;
 
             // The total scale height is the central cylindar plus the caps on the two ends.
+            //newScale.Z = (size.Z + (Math.Min(size.X, size.Y) * 2)) / 2f;
             newScale.Z = (size.Z + (Math.Min(size.X, size.Y) * 2) + heightAdjust) / 2f;
           // If smaller than the endcaps, just fake like we're almost that small
             if (newScale.Z < 0)
@@ -903,6 +918,7 @@ namespace Universe.Physics.BulletSPlugin
                 }
             }
 
+
             if (needSendUpdate)
             {
                 m_lastPosition = _position;
@@ -916,11 +932,15 @@ namespace Universe.Physics.BulletSPlugin
                 _rotationalVelocity = entprop.RotationalVelocity;
                 LastEntityProperties = CurrentEntityProperties;
                 CurrentEntityProperties = entprop;
+
             }
 
             // Tell the linkset about value changes
+            // Linkset.UpdateProperties(UpdatedProperties.EntPropUpdates, this);
 
             // Avatars don't report their changes the usual way. Changes are checked for in the heartbeat loop.
+            // base.RequestPhysicsterseUpdate();
+
             DetailLog("{0},BSCharacter.UpdateProperties,call,pos={1},orient={2},vel={3},accel={4},rotVel={5}",
                 LocalID, _position, _orientation, RawVelocity, _acceleration, _rotationalVelocity);
         }

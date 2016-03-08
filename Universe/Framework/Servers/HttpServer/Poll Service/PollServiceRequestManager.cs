@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
+ * Copyright (c) Contributors, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -115,7 +115,7 @@ namespace Universe.Framework.Servers.HttpServer
                 if (m_requests.Count == 0)
                     return false;
 
-                //MainConsole.Instance.DebugFormat("[Poll Service Request Manager]: Processing {0} requests", m_requests.Count);
+                //                MainConsole.Instance.DebugFormat("[POLL SERVICE REQUEST MANAGER]: Processing {0} requests", m_requests.Count);
 
                 int reqperthread = (int) (m_requests.Count/m_WorkerThreadCount) + 1;
 
@@ -162,7 +162,7 @@ namespace Universe.Framework.Servers.HttpServer
                 }
                 catch (Exception ex)
                 {
-                    MainConsole.Instance.WarnFormat("[Poll Service Worker Thread]: Error: {0}", ex.ToString());
+                    MainConsole.Instance.WarnFormat("[POLL SERVICE WORKER THREAD]: Error: {0}", ex.ToString());
                 }
             }
 

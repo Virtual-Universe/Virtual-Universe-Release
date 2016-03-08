@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
+ * Copyright (c) Contributors, http://opensimulator.org/, http://whitecore-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -60,7 +60,7 @@ namespace Universe.Physics.BulletSPlugin
     // ==========================================================================================
     public sealed class BSTerrainManager : IDisposable
     {
-        private static string LogHeader = "[Bulletsim Terrain Manager]";
+        private static string LogHeader = "[BULLETSIM TERRAIN MANAGER]";
 
         // These height values are fractional so the odd values will be
         //     noticable when debugging.
@@ -331,6 +331,7 @@ namespace Universe.Physics.BulletSPlugin
 
         void DetailLog(string msg, params Object[] args)
         {
+            //PhysicsScene.PhysicsLogging.TraceFormat(msg, args);
         }
     }
 }

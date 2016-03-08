@@ -368,7 +368,7 @@ namespace Universe.Modules.Scripting
             m_scriptModule.PokeThreads(UUID.Zero);
             if (BlockedChannels.Contains(channel))
                 return;
-            // MainConsole.Instance.DebugFormat("[World Comm] got[2] type {0}, channel {1}, name {2}, id {3}, msg {4}",
+            // MainConsole.Instance.DebugFormat("[WorldComm] got[2] type {0}, channel {1}, name {2}, id {3}, msg {4}",
             //                   type, channel, name, id, msg);
 
             // Determine which listen event filters match the given set of arguments, this results

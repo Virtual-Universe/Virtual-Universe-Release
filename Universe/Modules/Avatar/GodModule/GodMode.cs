@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -198,7 +198,7 @@ namespace Universe.Modules.Gods
             if (Utils.BytesToString (SimName) != oldRegionName)
             {
             	client.Scene.RegionInfo.RegionName = Utils.BytesToString (SimName);
-            	MainConsole.Instance.InfoFormat("[Region God] Region {0} has been renamed to {1}", oldRegionName, Utils.BytesToString (SimName));
+            	MainConsole.Instance.InfoFormat("[REGION GOD] Region {0} has been renamed to {1}", oldRegionName, Utils.BytesToString (SimName));
             	client.SendAgentAlertMessage("Region has been renamed to " + Utils.BytesToString(SimName), true);
             }
 
@@ -223,7 +223,7 @@ namespace Universe.Modules.Gods
             // Check if there's changes to display the new coords on the console and inworld
             if(newRegionLocX != oldRegionLocX || newRegionLocY != oldRegionLocY)
             {
-            	MainConsole.Instance.InfoFormat("[Region God] Region {0} has been moved from {1},{2} to {3},{4}",
+            	MainConsole.Instance.InfoFormat("[REGION GOD] Region {0} has been moved from {1},{2} to {3},{4}",
                                             client.Scene.RegionInfo.RegionName,(oldRegionLocX/Constants.RegionSize), (oldRegionLocY/Constants.RegionSize),
                                                  (client.Scene.RegionInfo.RegionLocX/Constants.RegionSize), (client.Scene.RegionInfo.RegionLocY/Constants.RegionSize));
             	client.SendAgentAlertMessage("Region has been moved from "+ (oldRegionLocX/Constants.RegionSize) +","+ (oldRegionLocY/Constants.RegionSize) 

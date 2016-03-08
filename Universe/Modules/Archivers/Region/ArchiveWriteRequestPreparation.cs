@@ -70,7 +70,7 @@ namespace Universe.Modules.Archivers
             catch (EntryPointNotFoundException e)
             {
                 MainConsole.Instance.ErrorFormat(
-                    "[Archiver]: Mismatch between Mono and zlib1g library version when trying to create compression stream."
+                    "[ARCHIVER]: Mismatch between Mono and zlib1g library version when trying to create compression stream."
                     + "If you've manually installed Mono, have you appropriately updated zlib1g as well?");
                 MainConsole.Instance.Error(e);
             }
@@ -124,13 +124,13 @@ namespace Universe.Modules.Archivers
             }
 
             MainConsole.Instance.InfoFormat(
-                "[Archiver]: {0} scene objects to serialize requiring save of {1} assets",
+                "[ARCHIVER]: {0} scene objects to serialize requiring save of {1} assets",
                 sceneObjects.Count, assetUuids.Count);
 
             if (numObjectsSkippedPermissions > 0)
             {
                 MainConsole.Instance.DebugFormat(
-                    "[Archiver]: {0} scene objects skipped due to lack of permissions",
+                    "[ARCHIVER]: {0} scene objects skipped due to lack of permissions",
                     numObjectsSkippedPermissions);
             }
 
@@ -227,7 +227,7 @@ namespace Universe.Modules.Archivers
                     partPermitted = false;
 
                 //string name = (objGroup.PrimCount == 1) ? objGroup.Name : string.Format("{0} ({1}/{2})", obj.Name, primNumber, objGroup.PrimCount);
-                //MainConsole.Instance.DebugFormat("[Archiver]: Object permissions: {0}: Base={1:X4}, Owner={2:X4}, Everyone={3:X4}, permissionClass={4}, checkPermissions={5}, canCopy={6}, canTransfer={7}, permitted={8}",
+                //MainConsole.Instance.DebugFormat("[ARCHIVER]: Object permissions: {0}: Base={1:X4}, Owner={2:X4}, Everyone={3:X4}, permissionClass={4}, checkPermissions={5}, canCopy={6}, canTransfer={7}, permitted={8}",
                 //    name, obj.BaseMask, obj.OwnerMask, obj.EveryoneMask,
                 //    permissionClass, checkPermissions, canCopy, canTransfer, permitted);
 

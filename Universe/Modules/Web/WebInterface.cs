@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -209,7 +209,7 @@ namespace Universe.Modules.Web
                 return MainServer.BlankResponse;
             if (httpRequest.HttpMethod == "POST")
                 httpResponse.KeepAlive = false;
-            MainConsole.Instance.Debug("[Web Interface]: Serving " + filename + ", keep-alive: " + httpResponse.KeepAlive);
+            MainConsole.Instance.Debug("[WebInterface]: Serving " + filename + ", keep-alive: " + httpResponse.KeepAlive);
             IWebInterfacePage page = GetPage(filename);
             if (page != null)
             {
@@ -587,7 +587,7 @@ namespace Universe.Modules.Web
                 }
                 if (!File.Exists(file))
                 {
-                    MainConsole.Instance.DebugFormat("Web Interface]: Unknown page request, {0}", file);
+                    MainConsole.Instance.DebugFormat("[Web Interface]: Unknown page request, {0}", file);
                     return "html/http_404.html";
                 }
 
@@ -721,6 +721,7 @@ namespace Universe.Modules.Web
                 return translator.GetTranslatedString("Guest");
             }
         }
+
 
         public List<Dictionary<string, object>> RegionTypeArgs(ITranslator translator)
         { 
@@ -878,6 +879,7 @@ namespace Universe.Modules.Web
         {
             Dictionary<string, object> dictionary = new Dictionary<string, object>();
 
+            //dictionary.Add("NewsDate", Time.ToShortDateString());
             dictionary.Add("NewsDate", Culture.LocaleDate(Time));
             dictionary.Add("NewsTitle", Title);
             dictionary.Add("NewsText", Text);
@@ -891,7 +893,8 @@ namespace Universe.Modules.Web
     {
         public static readonly GridWelcomeScreen Default = new GridWelcomeScreen
                                                                {
-                                                                   SpecialWindowMessageTitle = "Nothing to report at this time.",
+                                                                   SpecialWindowMessageTitle =
+                                                                       "Nothing to report at this time.",
                                                                    SpecialWindowMessageText = "Grid is up and running.",
                                                                    SpecialWindowMessageColor = "white",
                                                                    SpecialWindowActive = true,
@@ -1122,7 +1125,7 @@ namespace Universe.Modules.Web
 
     public class GridSettings : IDataTransferable
     {
-        public string Gridname = "Virtual Universe Grid";
+        public string Gridname = "Virtual Universe";
         public string Gridnick = "Universe";
         public string WelcomeMessage = "Welcome to Virtual Universe, <USERNAME>!";
         public string SystemEstateOwnerName = Constants.GovernorName;

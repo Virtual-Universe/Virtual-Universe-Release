@@ -109,7 +109,7 @@ namespace Universe.Modules.Gestures
             else {
 				if(invService.GetItem(libOwner, gestureId) == null) {
 					MainConsole.Instance.WarnFormat(
-						"[Gestures]: Unable to find gesture {0} to activate for {1}", gestureId, client.Name);
+						"[GESTURES]: Unable to find gesture {0} to activate for {1}", gestureId, client.Name);
 				}
 			}
         }
@@ -128,7 +128,7 @@ namespace Universe.Modules.Gestures
             else
 				if(invService.GetItem(libOwner, gestureId) == null) {
 					MainConsole.Instance.ErrorFormat(
-						"[Gestures]: Unable to find gesture to deactivate {0} for {1}", gestureId, client.Name);
+						"[GESTURES]: Unable to find gesture to deactivate {0} for {1}", gestureId, client.Name);
 				}
         }
     }

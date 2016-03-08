@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
+ * Copyright (c) Contributors, http://opensimulator.org/, http://whitecore-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -189,21 +189,21 @@ namespace Universe.Physics.BulletSPlugin
             return true;
         }
 
-        public override bool ClearCollisionProxyCache(BulletWorld pWorld, BulletBody pBody)
+     public override bool ClearCollisionProxyCache(BulletWorld pWorld, BulletBody pBody)
+    {
+        DiscreteDynamicsWorld world = (pWorld as BulletWorldXNA).world;
+        RigidBody body = ((BulletBodyXNA)pBody).rigidBody;
+        CollisionObject collisionObject = ((BulletBodyXNA)pBody).body;
+        if (body != null && collisionObject != null && collisionObject.GetBroadphaseHandle() != null)
         {
-            DiscreteDynamicsWorld world = (pWorld as BulletWorldXNA).world;
-            RigidBody body = ((BulletBodyXNA)pBody).rigidBody;
-            CollisionObject collisionObject = ((BulletBodyXNA)pBody).body;
-            if (body != null && collisionObject != null && collisionObject.GetBroadphaseHandle() != null)
-            {
-                world.RemoveCollisionObject(collisionObject);
-                world.AddCollisionObject(collisionObject);
-            }
-            return true;
+            world.RemoveCollisionObject(collisionObject);
+            world.AddCollisionObject(collisionObject);
         }
+        return true;
+    }
 
-        public override bool AddConstraintToWorld(BulletWorld pWorld, BulletConstraint pConstraint,
-             bool pDisableCollisionsBetweenLinkedObjects)
+       public override bool AddConstraintToWorld(BulletWorld pWorld, BulletConstraint pConstraint,
+            bool pDisableCollisionsBetweenLinkedObjects)
         {
             DiscreteDynamicsWorld world = (pWorld as BulletWorldXNA).world;
             TypedConstraint constraint = (pConstraint as BulletConstraintXNA).constrain;
@@ -308,6 +308,8 @@ namespace Universe.Physics.BulletSPlugin
 
             pBody.ApplyCollisionMask(pWorld.physicsScene);
 
+            //if (body.GetBroadphaseHandle() != null)
+            //    world.UpdateSingleAabb(body);
             return true;
         }
 
@@ -473,6 +475,7 @@ namespace Universe.Physics.BulletSPlugin
             }
         }
 
+
         public override void SetObjectForce(BulletBody pBody, Vector3 _force)
         {
             RigidBody body = (pBody as BulletBodyXNA).rigidBody;
@@ -597,6 +600,7 @@ namespace Universe.Physics.BulletSPlugin
             constraint.SetEnabled((p_2 == 0) ? false : true);
         }
 
+
         public override BulletConstraint Create6DofConstraint(BulletWorld pWorld, BulletBody pBody1, BulletBody pBody2,
             Vector3 pframe1, Quaternion pframe1rot, Vector3 pframe2, Quaternion pframe2rot,
             bool puseLinearReferenceFrameA, bool pdisableCollisionsBetweenLinkedBodies)
@@ -609,6 +613,7 @@ namespace Universe.Physics.BulletSPlugin
             IndexedMatrix frame1 = IndexedMatrix.CreateFromQuaternion(frame1rot);
             frame1._origin = frame1v;
 
+            // 20131224 not used        IndexedVector3 frame2v = new IndexedVector3(pframe2.X, pframe2.Y, pframe2.Z);
             IndexedQuaternion frame2rot = new IndexedQuaternion(pframe2rot.X, pframe2rot.Y, pframe2rot.Z, pframe2rot.W);
             IndexedMatrix frame2 = IndexedMatrix.CreateFromQuaternion(frame2rot);
             frame2._origin = frame1v;
@@ -673,6 +678,7 @@ namespace Universe.Physics.BulletSPlugin
             return new BulletConstraintXNA(consttr);
         }
 
+        //SetFrames(m_constraint.ptr, frameA, frameArot, frameB, frameBrot);
         public override bool SetFrames(BulletConstraint pConstraint, Vector3 pframe1, Quaternion pframe1rot,
             Vector3 pframe2, Quaternion pframe2rot)
         {
@@ -682,6 +688,7 @@ namespace Universe.Physics.BulletSPlugin
             IndexedMatrix frame1 = IndexedMatrix.CreateFromQuaternion(frame1rot);
             frame1._origin = frame1v;
 
+            // 20131224 not used        IndexedVector3 frame2v = new IndexedVector3(pframe2.X, pframe2.Y, pframe2.Z);
             IndexedQuaternion frame2rot = new IndexedQuaternion(pframe2rot.X, pframe2rot.Y, pframe2rot.Z, pframe2rot.W);
             IndexedMatrix frame2 = IndexedMatrix.CreateFromQuaternion(frame2rot);
             frame2._origin = frame1v;
@@ -789,13 +796,13 @@ namespace Universe.Physics.BulletSPlugin
             return true;
         }
 
+        //SetBreakingImpulseThreshold(m_constraint.ptr, threshold);
         public override bool SetBreakingImpulseThreshold(BulletConstraint pConstraint, float threshold)
         {
             Generic6DofConstraint constraint = (pConstraint as BulletConstraintXNA).constrain as Generic6DofConstraint;
             constraint.SetBreakingImpulseThreshold(threshold);
             return true;
         }
-
         public override bool HingeSetLimits(BulletConstraint pConstraint, float low, float high, float softness, float bias, float relaxation)
         {
             HingeConstraint constraint = (pConstraint as BulletConstraintXNA).constrain as HingeConstraint;
@@ -805,7 +812,6 @@ namespace Universe.Physics.BulletSPlugin
                 constraint.SetLimit(low, high, softness, bias, relaxation);
             return true;
         }
-
         public override bool SpringEnable(BulletConstraint pConstraint, int index, float numericTrueFalse)
         {
             Generic6DofSpringConstraint constraint = (pConstraint as BulletConstraintXNA).constrain as Generic6DofSpringConstraint;
@@ -847,167 +853,168 @@ namespace Universe.Physics.BulletSPlugin
         public override bool SliderSetLimits(BulletConstraint pConstraint, int lowerUpper, int linAng, float val)
         {
             SliderConstraint constraint = (pConstraint as BulletConstraintXNA).constrain as SliderConstraint;
-            switch (lowerUpper)
-            {
-                case SLIDER_LOWER_LIMIT:
-                    switch (linAng)
-                    {
-                        case SLIDER_LINEAR:
-                            constraint.SetLowerLinLimit(val);
-                            break;
-                        case SLIDER_ANGULAR:
-                            constraint.SetLowerAngLimit(val);
-                            break;
-                    }
-                    break;
-                case SLIDER_UPPER_LIMIT:
-                    switch (linAng)
-                    {
-                        case SLIDER_LINEAR:
-                            constraint.SetUpperLinLimit(val);
-                            break;
-                        case SLIDER_ANGULAR:
-                            constraint.SetUpperAngLimit(val);
-                            break;
-                    }
-                    break;
-            }
+    		switch (lowerUpper)
+    		{
+    			case SLIDER_LOWER_LIMIT:
+    				switch (linAng)
+    				{
+    					case SLIDER_LINEAR:
+    						constraint.SetLowerLinLimit(val);
+    						break;
+    					case SLIDER_ANGULAR:
+    						constraint.SetLowerAngLimit(val);
+    						break;
+    				}
+    				break;
+    			case SLIDER_UPPER_LIMIT:
+    				switch (linAng)
+    				{
+    					case SLIDER_LINEAR:
+    						constraint.SetUpperLinLimit(val);
+    						break;
+    					case SLIDER_ANGULAR:
+    						constraint.SetUpperAngLimit(val);
+    						break;
+    				}
+    				break;
+    		}
             return true;
         }
 
         public override bool SliderSet(BulletConstraint pConstraint, int softRestDamp, int dirLimOrtho, int linAng, float val)
         {
             SliderConstraint constraint = (pConstraint as BulletConstraintXNA).constrain as SliderConstraint;
-            switch (softRestDamp)
-            {
-                case SLIDER_SET_SOFTNESS:
-                    switch (dirLimOrtho)
-                    {
-                        case SLIDER_SET_DIRECTION:
-                            switch (linAng)
-                            {
-                                case SLIDER_LINEAR: constraint.SetSoftnessDirLin(val); break;
-                                case SLIDER_ANGULAR: constraint.SetSoftnessDirAng(val); break;
-                            }
-                            break;
-                        case SLIDER_SET_LIMIT:
-                            switch (linAng)
-                            {
-                                case SLIDER_LINEAR: constraint.SetSoftnessLimLin(val); break;
-                                case SLIDER_ANGULAR: constraint.SetSoftnessLimAng(val); break;
-                            }
-                            break;
-                        case SLIDER_SET_ORTHO:
-                            switch (linAng)
-                            {
-                                case SLIDER_LINEAR: constraint.SetSoftnessOrthoLin(val); break;
-                                case SLIDER_ANGULAR: constraint.SetSoftnessOrthoAng(val); break;
-                            }
-                            break;
-                    }
-                    break;
-                case SLIDER_SET_RESTITUTION:
-                    switch (dirLimOrtho)
-                    {
-                        case SLIDER_SET_DIRECTION:
-                            switch (linAng)
-                            {
-                                case SLIDER_LINEAR: constraint.SetRestitutionDirLin(val); break;
-                                case SLIDER_ANGULAR: constraint.SetRestitutionDirAng(val); break;
-                            }
-                            break;
-                        case SLIDER_SET_LIMIT:
-                            switch (linAng)
-                            {
-                                case SLIDER_LINEAR: constraint.SetRestitutionLimLin(val); break;
-                                case SLIDER_ANGULAR: constraint.SetRestitutionLimAng(val); break;
-                            }
-                            break;
-                        case SLIDER_SET_ORTHO:
-                            switch (linAng)
-                            {
-                                case SLIDER_LINEAR: constraint.SetRestitutionOrthoLin(val); break;
-                                case SLIDER_ANGULAR: constraint.SetRestitutionOrthoAng(val); break;
-                            }
-                            break;
-                    }
-                    break;
-                case SLIDER_SET_DAMPING:
-                    switch (dirLimOrtho)
-                    {
-                        case SLIDER_SET_DIRECTION:
-                            switch (linAng)
-                            {
-                                case SLIDER_LINEAR: constraint.SetDampingDirLin(val); break;
-                                case SLIDER_ANGULAR: constraint.SetDampingDirAng(val); break;
-                            }
-                            break;
-                        case SLIDER_SET_LIMIT:
-                            switch (linAng)
-                            {
-                                case SLIDER_LINEAR: constraint.SetDampingLimLin(val); break;
-                                case SLIDER_ANGULAR: constraint.SetDampingLimAng(val); break;
-                            }
-                            break;
-                        case SLIDER_SET_ORTHO:
-                            switch (linAng)
-                            {
-                                case SLIDER_LINEAR: constraint.SetDampingOrthoLin(val); break;
-                                case SLIDER_ANGULAR: constraint.SetDampingOrthoAng(val); break;
-                            }
-                            break;
-                    }
-                    break;
-            }
+    		switch (softRestDamp)
+    		{
+    			case SLIDER_SET_SOFTNESS:
+    				switch (dirLimOrtho)
+    				{
+    					case SLIDER_SET_DIRECTION:
+    						switch (linAng)
+    						{
+    							case SLIDER_LINEAR: constraint.SetSoftnessDirLin(val); break;
+    							case SLIDER_ANGULAR: constraint.SetSoftnessDirAng(val); break;
+    						}
+    						break;
+    					case SLIDER_SET_LIMIT:
+    						switch (linAng)
+    						{
+    							case SLIDER_LINEAR: constraint.SetSoftnessLimLin(val); break;
+    							case SLIDER_ANGULAR: constraint.SetSoftnessLimAng(val); break;
+    						}
+    						break;
+    					case SLIDER_SET_ORTHO:
+    						switch (linAng)
+    						{
+    							case SLIDER_LINEAR: constraint.SetSoftnessOrthoLin(val); break;
+    							case SLIDER_ANGULAR: constraint.SetSoftnessOrthoAng(val); break;
+    						}
+    						break;
+    				}
+    				break;
+    			case SLIDER_SET_RESTITUTION:
+    				switch (dirLimOrtho)
+    				{
+    					case SLIDER_SET_DIRECTION:
+    						switch (linAng)
+    						{
+    							case SLIDER_LINEAR: constraint.SetRestitutionDirLin(val); break;
+    							case SLIDER_ANGULAR: constraint.SetRestitutionDirAng(val); break;
+    						}
+    						break;
+    					case SLIDER_SET_LIMIT:
+    						switch (linAng)
+    						{
+    							case SLIDER_LINEAR: constraint.SetRestitutionLimLin(val); break;
+    							case SLIDER_ANGULAR: constraint.SetRestitutionLimAng(val); break;
+    						}
+    						break;
+    					case SLIDER_SET_ORTHO:
+    						switch (linAng)
+    						{
+    							case SLIDER_LINEAR: constraint.SetRestitutionOrthoLin(val); break;
+    							case SLIDER_ANGULAR: constraint.SetRestitutionOrthoAng(val); break;
+    						}
+    						break;
+    				}
+    				break;
+    			case SLIDER_SET_DAMPING:
+    				switch (dirLimOrtho)
+    				{
+    					case SLIDER_SET_DIRECTION:
+    						switch (linAng)
+    						{
+    							case SLIDER_LINEAR: constraint.SetDampingDirLin(val); break;
+    							case SLIDER_ANGULAR: constraint.SetDampingDirAng(val); break;
+    						}
+    						break;
+    					case SLIDER_SET_LIMIT:
+    						switch (linAng)
+    						{
+    							case SLIDER_LINEAR: constraint.SetDampingLimLin(val); break;
+    							case SLIDER_ANGULAR: constraint.SetDampingLimAng(val); break;
+    						}
+    						break;
+    					case SLIDER_SET_ORTHO:
+    						switch (linAng)
+    						{
+    							case SLIDER_LINEAR: constraint.SetDampingOrthoLin(val); break;
+    							case SLIDER_ANGULAR: constraint.SetDampingOrthoAng(val); break;
+    						}
+    						break;
+    				}
+    				break;
+    		}
             return true;
         }
 
         public override bool SliderMotorEnable(BulletConstraint pConstraint, int linAng, float numericTrueFalse)
         {
             SliderConstraint constraint = (pConstraint as BulletConstraintXNA).constrain as SliderConstraint;
-            switch (linAng)
-            {
-                case SLIDER_LINEAR:
-                    constraint.SetPoweredLinMotor(numericTrueFalse == 0.0 ? false : true);
-                    break;
-                case SLIDER_ANGULAR:
-                    constraint.SetPoweredAngMotor(numericTrueFalse == 0.0 ? false : true);
-                    break;
-            }
+    		switch (linAng)
+    		{
+    			case SLIDER_LINEAR:
+    				constraint.SetPoweredLinMotor(numericTrueFalse == 0.0 ? false : true);
+    				break;
+    			case SLIDER_ANGULAR:
+    				constraint.SetPoweredAngMotor(numericTrueFalse == 0.0 ? false : true);
+    				break;
+    		}
             return true;
         }
 
         public override bool SliderMotor(BulletConstraint pConstraint, int forceVel, int linAng, float val)
         {
             SliderConstraint constraint = (pConstraint as BulletConstraintXNA).constrain as SliderConstraint;
-            switch (forceVel)
-            {
-                case SLIDER_MOTOR_VELOCITY:
-                    switch (linAng)
-                    {
-                        case SLIDER_LINEAR:
-                            constraint.SetTargetLinMotorVelocity(val);
-                            break;
-                        case SLIDER_ANGULAR:
-                            constraint.SetTargetAngMotorVelocity(val);
-                            break;
-                    }
-                    break;
-                case SLIDER_MAX_MOTOR_FORCE:
-                    switch (linAng)
-                    {
-                        case SLIDER_LINEAR:
-                            constraint.SetMaxLinMotorForce(val);
-                            break;
-                        case SLIDER_ANGULAR:
-                            constraint.SetMaxAngMotorForce(val);
-                            break;
-                    }
-                    break;
-            }
+    		switch (forceVel)
+    		{
+    			case SLIDER_MOTOR_VELOCITY:
+    				switch (linAng)
+    				{
+    					case SLIDER_LINEAR:
+    						constraint.SetTargetLinMotorVelocity(val);
+    						break;
+    					case SLIDER_ANGULAR:
+    						constraint.SetTargetAngMotorVelocity(val);
+    						break;
+    				}
+    				break;
+    			case SLIDER_MAX_MOTOR_FORCE:
+    				switch (linAng)
+    				{
+    					case SLIDER_LINEAR:
+    						constraint.SetMaxLinMotorForce(val);
+    						break;
+    					case SLIDER_ANGULAR:
+    						constraint.SetMaxAngMotorForce(val);
+    						break;
+    				}
+    				break;
+    		}
             return true;
         }
 
+        //BulletSimAPI.SetAngularDamping(Prim.PhysBody.ptr, angularDamping);
         public override void SetAngularDamping(BulletBody pBody, float angularDamping)
         {
             RigidBody body = (pBody as BulletBodyXNA).rigidBody;
@@ -1028,6 +1035,7 @@ namespace Universe.Physics.BulletSPlugin
             shape.RecalculateLocalAabb();
         }
 
+        //BulletSimAPI.GetCollisionFlags(PhysBody.ptr)
         public override CollisionFlags GetCollisionFlags(BulletBody pCollisionObject)
         {
             CollisionObject collisionObject = (pCollisionObject as BulletBodyXNA).rigidBody;
@@ -1041,12 +1049,14 @@ namespace Universe.Physics.BulletSPlugin
             body.SetDamping(pLinear, pAngular);
         }
 
+        //PhysBody.ptr, PhysicsScene.Params.deactivationTime);
         public override void SetDeactivationTime(BulletBody pCollisionObject, float pDeactivationTime)
         {
             CollisionObject collisionObject = (pCollisionObject as BulletBodyXNA).rigidBody;
             collisionObject.SetDeactivationTime(pDeactivationTime);
         }
 
+        //SetSleepingThresholds(PhysBody.ptr, PhysicsScene.Params.linearSleepingThreshold, PhysicsScene.Params.angularSleepingThreshold);
         public override void SetSleepingThresholds(BulletBody pBody, float plinearSleepingThreshold,
             float pangularSleepingThreshold)
         {
@@ -1127,6 +1137,7 @@ namespace Universe.Physics.BulletSPlugin
             /* TODO: double check this */
         }
 
+        //BulletSimAPI.ApplyCentralForce(PhysBody.ptr, fSum);
         public override void ApplyCentralForce(BulletBody pBody, Vector3 pfSum)
         {
             RigidBody body = (pBody as BulletBodyXNA).rigidBody;
@@ -1210,21 +1221,48 @@ namespace Universe.Physics.BulletSPlugin
             return false;
         }
 
+        //(sim.ptr, shape.ptr, prim.LocalID, prim.RawPosition, prim.RawOrientation);
+
         public override BulletBody CreateBodyFromShape(BulletWorld pWorld, BulletShape pShape, uint pLocalID,
             Vector3 pRawPosition, Quaternion pRawOrientation)
         {
+            // 20131224 not used        CollisionWorld world = (pWorld as BulletWorldXNA).world;
             IndexedMatrix mat =
                 IndexedMatrix.CreateFromQuaternion(new IndexedQuaternion(pRawOrientation.X, pRawOrientation.Y,
                     pRawOrientation.Z, pRawOrientation.W));
             mat._origin = new IndexedVector3(pRawPosition.X, pRawPosition.Y, pRawPosition.Z);
             CollisionShape shape = (pShape as BulletShapeXNA).shape;
+            //UpdateSingleAabb(world, shape);
             // TODO: Feed Update array into null
             SimMotionState motionState = new SimMotionState(this, pLocalID, mat, null);
             RigidBody body = new RigidBody(0, motionState, shape, IndexedVector3.Zero);
+            // 20131224 not used        RigidBodyConstructionInfo constructionInfo = new RigidBodyConstructionInfo(0, motionState, shape, IndexedVector3.Zero)
+            // 20131224 not used                                                         {
+            // 20131224 not used                                                             m_mass = 0
+            // 20131224 not used                                                         };
+            /*
+            m_mass = mass;
+			m_motionState =motionState;
+			m_collisionShape = collisionShape;
+			m_localInertia = localInertia;
+			m_linearDamping = 0f;
+			m_angularDamping = 0f;
+			m_friction = 0.5f;
+			m_restitution = 0f;
+			m_linearSleepingThreshold = 0.8f;
+			m_angularSleepingThreshold = 1f;
+			m_additionalDamping = false;
+			m_additionalDampingFactor = 0.005f;
+			m_additionalLinearDampingThresholdSqr = 0.01f;
+			m_additionalAngularDampingThresholdSqr = 0.01f;
+			m_additionalAngularDampingFactor = 0.01f;
+            m_startWorldTransform = IndexedMatrix.Identity;
+        */
             body.SetUserPointer(pLocalID);
 
             return new BulletBodyXNA(pLocalID, body);
         }
+
 
         public override BulletBody CreateBodyWithDefaultMotionState(BulletShape pShape, uint pLocalID,
             Vector3 pRawPosition, Quaternion pRawOrientation)
@@ -1244,6 +1282,7 @@ namespace Universe.Physics.BulletSPlugin
             return new BulletBodyXNA(pLocalID, body);
         }
 
+        //(m_mapInfo.terrainBody.ptr, CollisionFlags.CF_STATIC_OBJECT);
         public override CollisionFlags SetCollisionFlags(BulletBody pCollisionObject, CollisionFlags collisionFlags)
         {
             CollisionObject collisionObject = (pCollisionObject as BulletBodyXNA).rigidBody;
@@ -1345,12 +1384,14 @@ namespace Universe.Physics.BulletSPlugin
             return 0f;
         }
 
+        //(m_mapInfo.terrainBody.ptr, PhysicsScene.Params.terrainHitFraction);
         public override void SetHitFraction(BulletBody pCollisionObject, float pHitFraction)
         {
             CollisionObject collisionObject = (pCollisionObject as BulletBodyXNA).rigidBody;
             collisionObject.SetHitFraction(pHitFraction);
         }
 
+        //BuildCapsuleShape(physicsScene.World.ptr, 1f, 1f, prim.Scale);
         public override BulletShape BuildCapsuleShape(BulletWorld pWorld, float pRadius, float pHeight, Vector3 pScale)
         {
             DiscreteDynamicsWorld world = (pWorld as BulletWorldXNA).world;
@@ -1373,6 +1414,7 @@ namespace Universe.Physics.BulletSPlugin
             /* TODO */
             ConfigurationParameters[] configparms = new ConfigurationParameters[1];
             configparms[0] = parms;
+//            Vector3 worldExtent = new Vector3(Constants.RegionSize, Constants.RegionSize, Constants.RegionHeight);
             Vector3 worldExtent = maxPosition;
             m_maxCollisions = maxCollisions;
             m_maxUpdatesPerFrame = maxUpdates;
@@ -1444,6 +1486,7 @@ namespace Universe.Physics.BulletSPlugin
             p.linkConstraintCFM = BSParam.LinkConstraintCFM;
             p.linkConstraintSolverIterations = BSParam.LinkConstraintSolverIterations;
             p.physicsLoggingFrames = o[0].physicsLoggingFrames;
+            // 20131224 not used        DefaultCollisionConstructionInfo ccci = new DefaultCollisionConstructionInfo();
 
             DefaultCollisionConfiguration cci = new DefaultCollisionConfiguration();
             CollisionDispatcher m_dispatcher = new CollisionDispatcher(cci);
@@ -1453,9 +1496,13 @@ namespace Universe.Physics.BulletSPlugin
                 cci.m_persistentManifoldPoolSize = (int)p.maxPersistantManifoldPoolSize;
             if (p.shouldDisableContactPoolDynamicAllocation != 0)
                 m_dispatcher.SetDispatcherFlags(DispatcherFlags.CD_DISABLE_CONTACTPOOL_DYNAMIC_ALLOCATION);
+            //if (p.maxCollisionAlgorithmPoolSize >0 )
 
             DbvtBroadphase m_broadphase = new DbvtBroadphase();
+            //IndexedVector3 aabbMin = new IndexedVector3(0, 0, 0);
+            //IndexedVector3 aabbMax = new IndexedVector3(256, 256, 256);
 
+            //AxisSweep3Internal m_broadphase2 = new AxisSweep3Internal(ref aabbMin, ref aabbMax, Convert.ToInt32(0xfffe), 0xffff, ushort.MaxValue/2, null, true);
             m_broadphase.GetOverlappingPairCache().SetInternalGhostPairCallback(new GhostPairCallback());
 
             SequentialImpulseConstraintSolver m_solver = new SequentialImpulseConstraintSolver();
@@ -1498,6 +1545,7 @@ namespace Universe.Physics.BulletSPlugin
             world.GetSolverInfo().m_restingContactRestitutionThreshold = 2;
             world.SetForceUpdateAllAabbs(true);
 
+            //BSParam.TerrainImplementation = 0;
             world.SetGravity(new IndexedVector3(0, 0, p.gravity));
 
 
@@ -1548,6 +1596,7 @@ namespace Universe.Physics.BulletSPlugin
             return world;
         }
 
+        //m_constraint.ptr, ConstraintParams.BT_CONSTRAINT_STOP_CFM, cfm, ConstraintParamAxis.AXIS_ALL
         public override bool SetConstraintParam(BulletConstraint pConstraint, ConstraintParams paramIndex,
             float paramvalue, ConstraintParamAxis axis)
         {
@@ -1675,9 +1724,11 @@ namespace Universe.Physics.BulletSPlugin
             shape.SetMargin(pMargin);
         }
 
+        //sim.ptr, shape.ptr,prim.LocalID, prim.RawPosition, prim.RawOrientation
         public override BulletBody CreateGhostFromShape(BulletWorld pWorld, BulletShape pShape, uint pLocalID,
             Vector3 pRawPosition, Quaternion pRawOrientation)
         {
+            // 20131224 not used        DiscreteDynamicsWorld world = (pWorld as BulletWorldXNA).world;
             IndexedMatrix bodyTransform = new IndexedMatrix();
             bodyTransform._origin = new IndexedVector3(pRawPosition.X, pRawPosition.Y, pRawPosition.Z);
             bodyTransform.SetRotation(new IndexedQuaternion(pRawOrientation.X, pRawOrientation.Y, pRawOrientation.Z,
@@ -1699,6 +1750,7 @@ namespace Universe.Physics.BulletSPlugin
 
         public override void SetCollisionShape(BulletWorld pWorld, BulletBody pCollisionObject, BulletShape pShape)
         {
+            // 20131224 not used        DiscreteDynamicsWorld world = (pWorld as BulletWorldXNA).world;
             CollisionObject collisionObject = (pCollisionObject as BulletBodyXNA).body;
             if (pShape == null)
             {
@@ -1718,6 +1770,7 @@ namespace Universe.Physics.BulletSPlugin
             return new BulletShapeXNA(shape, BSShapeTypeFromBroadPhaseNativeType(shape.GetShapeType()));
         }
 
+        //(PhysicsScene.World.ptr, nativeShapeData)
         public override BulletShape BuildNativeShape(BulletWorld pWorld, ShapeData pShapeData)
         {
             DiscreteDynamicsWorld world = (pWorld as BulletWorldXNA).world;
@@ -1746,6 +1799,7 @@ namespace Universe.Physics.BulletSPlugin
             return new BulletShapeXNA(shape, pShapeData.Type);
         }
 
+        //PhysicsScene.World.ptr, false
         public override BulletShape CreateCompoundShape(BulletWorld pWorld, bool enableDynamicAabbTree)
         {
             return new BulletShapeXNA(new CompoundShape(enableDynamicAabbTree), BSPhysicsShapeType.SHAPE_COMPOUND);
@@ -1757,6 +1811,7 @@ namespace Universe.Physics.BulletSPlugin
             return compoundshape.GetNumChildShapes();
         }
 
+        //LinksetRoot.PhysShape.ptr, newShape.ptr, displacementPos, displacementRot
         public override void AddChildShapeToCompoundShape(BulletShape pCShape, BulletShape paddShape,
             Vector3 displacementPos, Quaternion displacementRot)
         {
@@ -1786,6 +1841,7 @@ namespace Universe.Physics.BulletSPlugin
             CompoundShape compoundShape = (cShape as BulletShapeXNA).shape as CompoundShape;
             CollisionShape shape = compoundShape.GetChildShape(indx);
             BulletShape retShape = new BulletShapeXNA(shape, BSShapeTypeFromBroadPhaseNativeType(shape.GetShapeType()));
+
 
             return retShape;
         }
@@ -1954,6 +2010,7 @@ namespace Universe.Physics.BulletSPlugin
                 IndexedMatrix frame1 = IndexedMatrix.CreateFromQuaternion(frame1rot);
                 frame1._origin = frame1v;
 
+                // 20131224 not used            IndexedVector3 frame2v = new IndexedVector3(pframe2.X, pframe2.Y, pframe2.Z);
                 IndexedQuaternion frame2rot = new IndexedQuaternion(pframe2rot.X, pframe2rot.Y, pframe2rot.Z,
                     pframe2rot.W);
                 IndexedMatrix frame2 = IndexedMatrix.CreateFromQuaternion(frame2rot);
@@ -2007,6 +2064,7 @@ namespace Universe.Physics.BulletSPlugin
                 IndexedMatrix frame1 = IndexedMatrix.CreateFromQuaternion(frame1rot);
                 frame1._origin = frame1v;
 
+                // 20131224 not used            IndexedVector3 frame2v = new IndexedVector3(pframe2.X, pframe2.Y, pframe2.Z);
                 IndexedQuaternion frame2rot = new IndexedQuaternion(pframe2rot.X, pframe2rot.Y, pframe2rot.Z,
                     pframe2rot.W);
                 IndexedMatrix frame2 = IndexedMatrix.CreateFromQuaternion(frame2rot);
@@ -2036,6 +2094,7 @@ namespace Universe.Physics.BulletSPlugin
                 IndexedMatrix frame1 = IndexedMatrix.CreateFromQuaternion(frame1rot);
                 frame1._origin = frame1v;
 
+                // 20131224 not used            IndexedVector3 frame2v = new IndexedVector3(pframe2.X, pframe2.Y, pframe2.Z);
                 IndexedQuaternion frame2rot = new IndexedQuaternion(pframe2rot.X, pframe2rot.Y, pframe2rot.Z,
                     pframe2rot.W);
                 IndexedMatrix frame2 = IndexedMatrix.CreateFromQuaternion(frame2rot);
@@ -2052,7 +2111,19 @@ namespace Universe.Physics.BulletSPlugin
             float pratio, bool pdisableCollisionsBetweenLinkedBodies)
         {
             Generic6DofConstraint constrain = null;
-            
+            /*   BulletXNA does not have a gear constraint
+        GearConstraint constrain = null;
+        DiscreteDynamicsWorld world = (pWorld as BulletWorldXNA).world;
+        RigidBody rb1 = (pBody1 as BulletBodyXNA).rigidBody;
+        RigidBody rb2 = (pBody2 as BulletBodyXNA).rigidBody;
+        if (rb1 != null && rb2 != null)
+        {
+            IndexedVector3 axis1 = new IndexedVector3(paxisInA.X, paxisInA.Y, paxisInA.Z);
+            IndexedVector3 axis2 = new IndexedVector3(paxisInB.X, paxisInB.Y, paxisInB.Z);
+            constrain = new GearConstraint(rb1, rb2, ref axis1, ref axis2, pratio);
+            world.AddConstraint(constrain, pdisableCollisionsBetweenLinkedBodies);
+        }
+        */
             return new BulletConstraintXNA(constrain);
         }
 
@@ -2114,19 +2185,19 @@ namespace Universe.Physics.BulletSPlugin
 
         public override BulletShape BuildConvexHullShapeFromMesh(BulletWorld world, BulletShape meshShape)
         {
-            /* TODO */
-            return null;
+            /* TODO */ return null;
         }
 
         public override BulletShape CreateConvexHullShape(BulletWorld pWorld, int pIndicesCount, int[] indices, int pVerticesCount, float[] verticesAsFloats)
         {
-            /* TODO */
-            return null;
+            /* TODO */ return null;
         }
 
         public override BulletShape CreateMeshShape(BulletWorld pWorld, int pIndicesCount, int[] indices,
             int pVerticesCount, float[] verticesAsFloats)
         {
+            //DumpRaw(indices,verticesAsFloats,pIndicesCount,pVerticesCount);
+
             for (int iter = 0; iter < pVerticesCount; iter++)
             {
                 if (verticesAsFloats[iter] > 0 && verticesAsFloats[iter] < 0.0001) verticesAsFloats[iter] = 0;
@@ -2151,6 +2222,7 @@ namespace Universe.Physics.BulletSPlugin
             tribuilder.AddIndexedMesh(mesh, PHY_ScalarType.PHY_INTEGER);
             BvhTriangleMeshShape meshShape = new BvhTriangleMeshShape(tribuilder, true, true);
             meshShape.SetMargin(world.WorldSettings.Params.collisionMargin);
+            // world.UpdateSingleAabb(meshShape);
             return new BulletShapeXNA(meshShape, BSPhysicsShapeType.SHAPE_MESH);
         }
 
@@ -2179,6 +2251,7 @@ namespace Universe.Physics.BulletSPlugin
 
             TriangleIndexVertexArray tribuilder = new TriangleIndexVertexArray();
             tribuilder.AddIndexedMesh(mesh, PHY_ScalarType.PHY_INTEGER);
+
 
             for (int i = 0; i < pVerticesCount; i++)
             {
@@ -2211,6 +2284,7 @@ namespace Universe.Physics.BulletSPlugin
             TriangleIndexVertexArray tribuilder = new TriangleIndexVertexArray();
             tribuilder.AddIndexedMesh(mesh, PHY_ScalarType.PHY_INTEGER);
 
+
             sw.WriteLine("Indices");
             sw.WriteLine(string.Format("int[] indices = new int[{0}];", pIndicesCount));
             for (int iter = 0; iter < indices.Length; iter++)
@@ -2224,6 +2298,16 @@ namespace Universe.Physics.BulletSPlugin
                 sw.WriteLine(string.Format("Vertices[{0}]={1};", iter, vertices[iter].ToString("0.0000")));
             }
 
+            // for (int i = 0; i < pVerticesCount; i++)
+            // {
+            //
+            //     string s = vertices[indices[i * 3]].ToString("0.0000");
+            //     s += " " + vertices[indices[i * 3 + 1]].ToString("0.0000");
+            //    s += " " + vertices[indices[i * 3 + 2]].ToString("0.0000");
+            //
+            //     sw.Write(s + "\n");
+            //}
+
             sw.Close();
         }
 
@@ -2236,7 +2320,7 @@ namespace Universe.Physics.BulletSPlugin
                 heightMap, scaleFactor,
                 minHeight, maxHeight, upAxis,
                 false);
-
+  //          terrainShape.SetMargin(collisionMargin + 0.5f);
             terrainShape.SetMargin(collisionMargin);
             terrainShape.SetUseDiamondSubdivision(true);
             terrainShape.SetUserPointer(id);
@@ -2261,6 +2345,7 @@ namespace Universe.Physics.BulletSPlugin
                     break;
             }
 
+
             return ret;
         }
 
@@ -2270,6 +2355,7 @@ namespace Universe.Physics.BulletSPlugin
             /* TODO */
             updatedEntityCount = 0;
             collidersCount = 0;
+
 
             int ret = PhysicsStep2(world, timeStep, maxSubSteps, fixedTimeStep, out updatedEntityCount,
                 out world.physicsScene.m_updateArray, out collidersCount, out world.physicsScene.m_collisionArray);
@@ -2297,10 +2383,12 @@ namespace Universe.Physics.BulletSPlugin
             Array.Clear(UpdatedCollisions, 0, UpdatedCollisions.Length);
             LastEntityProperty = 0;
 
+
             LastCollisionDesc = 0;
 
             updatedEntityCount = 0;
             collidersCount = 0;
+
 
             if (pWorld is BulletWorldXNA)
             {
@@ -2329,6 +2417,8 @@ namespace Universe.Physics.BulletSPlugin
                     objB = contactManifold.GetBody1() as CollisionObject;
 
                     manifoldPoint = contactManifold.GetContactPoint(0);
+                    //IndexedVector3 contactPoint = manifoldPoint.GetPositionWorldOnB();
+                    // IndexedVector3 contactNormal = -manifoldPoint.m_normalWorldOnB; // make relative to A
 
                     RecordCollision(this, objA, objB, manifoldPoint.GetPositionWorldOnB(),
                         -manifoldPoint.m_normalWorldOnB, manifoldPoint.GetDistance());
@@ -2346,6 +2436,7 @@ namespace Universe.Physics.BulletSPlugin
                     }
                 }
 
+
                 updatedEntityCount = LastEntityProperty;
                 updatedEntities = UpdatedObjects;
 
@@ -2354,7 +2445,16 @@ namespace Universe.Physics.BulletSPlugin
             }
             else
             {
+                //if (updatedEntities is null)
+                //updatedEntities = new List<BulletXNA.EntityProperties>();
+                //updatedEntityCount = 0;
+
+
+                //collidersCount = 0;
+
                 updatedEntities = new EntityProperties[0];
+
+
                 colliders = new CollisionDesc[0];
             }
             return numSimSteps;
@@ -2426,6 +2526,8 @@ namespace Universe.Physics.BulletSPlugin
                 contactNormal = -contactNormal;
             }
 
+            //ulong collisionID = ((ulong) idA << 32) | idB;
+
             CollisionDesc cDesc = new CollisionDesc()
             {
                 aID = idA,
@@ -2442,6 +2544,7 @@ namespace Universe.Physics.BulletSPlugin
         static EntityProperties GetDebugProperties(BulletWorld pWorld, BulletBody pCollisionObject)
         {
             EntityProperties ent = new EntityProperties();
+            // 20131224 not used        DiscreteDynamicsWorld world = (pWorld as BulletWorldXNA).world;
             CollisionObject collisionObject = (pCollisionObject as BulletBodyXNA).rigidBody;
             IndexedMatrix transform = collisionObject.GetWorldTransform();
             IndexedVector3 LinearVelocity = collisionObject.GetInterpolationLinearVelocity();
@@ -2488,6 +2591,7 @@ namespace Universe.Physics.BulletSPlugin
                         world.RayTest(ref rOrigin, ref rEnd, rayCallback);
                         if (rayCallback.HasHit())
                         {
+                            // 20131224 not used                        IndexedVector3 hitLocation = rayCallback.m_hitPointWorld;
                         }
                         return rayCallback.HasHit();
                     }
@@ -2496,6 +2600,7 @@ namespace Universe.Physics.BulletSPlugin
             return false;
         }
     }
+
 
     public class SimMotionState : DefaultMotionState
     {
@@ -2591,6 +2696,8 @@ namespace Universe.Physics.BulletSPlugin
                 m_lastProperties = m_properties;
                 if (m_world.LastEntityProperty < m_world.UpdatedObjects.Length)
                     m_world.UpdatedObjects[m_world.LastEntityProperty++] = (m_properties);
+
+                //(*m_updatesThisFrame)[m_properties.ID] = &m_properties;
             }
         }
 

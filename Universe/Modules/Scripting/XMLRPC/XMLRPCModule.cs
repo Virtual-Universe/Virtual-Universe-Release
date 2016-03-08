@@ -114,7 +114,7 @@ namespace Universe.Modules.Scripting
                 m_httpServerStarted = true;
                 // Start http server
                 // Attach xmlrpc handlers
-                MainConsole.Instance.Info ("[Xml Rpc Module]: " +
+                MainConsole.Instance.Info ("[XMLRPC MODULE]: " +
                     "Starting up XMLRPC Server on port " + m_remoteDataPort +
                     " for llRemoteData commands.");
                 IHttpServer httpServer = new BaseHttpServer ((uint)m_remoteDataPort, MainServer.Instance.HostName,
@@ -217,7 +217,7 @@ namespace Universe.Modules.Scripting
             // This should no longer happen, but the check is reasonable anyway
             if (null == m_openChannels)
             {
-                MainConsole.Instance.Warn("[Xml Rpc Module]: Attempt to open channel before initialization is complete");
+                MainConsole.Instance.Warn("[XML RPC MODULE]: Attempt to open channel before initialization is complete");
                 return newChannel;
             }
 
@@ -301,7 +301,7 @@ namespace Universe.Modules.Scripting
             }
             else
             {
-                MainConsole.Instance.Warn("[Xml Rpc Module]: Channel or message_id not found");
+                MainConsole.Instance.Warn("[XML RPC MODULE]: Channel or message_id not found");
             }
         }
 
@@ -362,7 +362,7 @@ namespace Universe.Modules.Scripting
                 }
                 else
                 {
-                    MainConsole.Instance.Error("[Xml Rpc Module]: UNABLE TO REMOVE COMPLETED REQUEST");
+                    MainConsole.Instance.Error("[XML RPC MODULE]: UNABLE TO REMOVE COMPLETED REQUEST");
                 }
             }
         }
@@ -720,7 +720,7 @@ namespace Universe.Modules.Scripting
             catch (Exception we)
             {
                 Sdata = we.Message;
-                MainConsole.Instance.Warn("[Send Remote Data Request]: Request failed");
+                MainConsole.Instance.Warn("[SendRemoteDataRequest]: Request failed");
                 MainConsole.Instance.Warn(we.StackTrace);
             }
 

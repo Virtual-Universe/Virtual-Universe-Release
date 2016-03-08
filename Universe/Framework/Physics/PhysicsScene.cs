@@ -201,7 +201,7 @@ namespace Universe.Framework.Physics
 
         public virtual float[] GetGravityForce()
         {
-            return new float[3] { 0, 0, 0 };
+            return new float[3] {0, 0, 0};
         }
 
         public virtual void AddGravityPoint(bool isApplyingForces, Vector3 position, float forceX, float forceY,
@@ -243,7 +243,7 @@ namespace Universe.Framework.Physics
         public override PhysicsActor AddAvatar(string avName, Vector3 position, Quaternion rotation, Vector3 size,
                                                    bool isFlying, uint localID, UUID UUID)
         {
-            MainConsole.Instance.InfoFormat("[Physics]: NullPhysicsScene : AddAvatar({0})", position);
+            MainConsole.Instance.InfoFormat("[PHYSICS]: NullPhysicsScene : AddAvatar({0})", position);
             return new NullCharacterPhysicsActor();
         }
 
@@ -260,15 +260,15 @@ namespace Universe.Framework.Physics
         }
 
         /*
-        public override PhysicsActor AddPrim(Vector3 position, Vector3 size, Quaternion rotation)
-        {
-            MainConsole.Instance.InfoFormat("[Physics]: NullPhysicsScene : AddPrim({0},{1})", position, size);
-            return PhysicsActor.Null;
-        }
+                    public override PhysicsActor AddPrim(Vector3 position, Vector3 size, Quaternion rotation)
+                    {
+                        MainConsole.Instance.InfoFormat("NullPhysicsScene : AddPrim({0},{1})", position, size);
+                        return PhysicsActor.Null;
+                    }
         */
 
         public override PhysicsActor AddPrimShape(UUID primID, uint localID, string name, byte physicsType, PrimitiveBaseShape shape,
-            Vector3 position, Vector3 size, Quaternion rotation, bool isPhysical, int material, float friction, float restitution,
+            Vector3 position, Vector3 size, Quaternion rotation, bool isPhysical, int material, float friction, float restitution, 
             float gravityMultiplier, float density)
         {
             return new NullObjectPhysicsActor();
@@ -276,12 +276,12 @@ namespace Universe.Framework.Physics
 
         public override void Simulate(float timeStep)
         {
-            m_workIndicator = (m_workIndicator + 1) % 10;
+            m_workIndicator = (m_workIndicator + 1)%10;
         }
 
         public override void SetTerrain(ITerrainChannel channel, short[] heightMap)
         {
-            MainConsole.Instance.InfoFormat("[Physics]: NullPhysicsScene : SetTerrain({0} items)", heightMap.Length);
+            MainConsole.Instance.InfoFormat("[PHYSICS]: NullPhysicsScene : SetTerrain({0} items)", heightMap.Length);
         }
 
         public override void Dispose()

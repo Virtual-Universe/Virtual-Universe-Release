@@ -120,7 +120,7 @@ namespace Universe.Framework.Services.ClassHelpers.Assets
             {
                 StackTrace trace = new StackTrace(true);
                 MainConsole.Instance.ErrorFormat(
-                    "[Asset Base]: Creating asset '{0}' ({1}) with an unknown asset type\n{2}",
+                    "[ASSETBASE]: Creating asset '{0}' ({1}) with an unknown asset type\n{2}",
                     name, assetID, trace);
             }
 

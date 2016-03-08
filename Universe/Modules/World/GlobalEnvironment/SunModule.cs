@@ -36,11 +36,13 @@ using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 
-namespace Universe.Modules.Sun
+namespace Universe.Modules.GlobalEnvironment
 {
     public class SunModule : ISunModule
     {
+        //
         // Global Constants used to determine where in the sky the sun is
+        //
         const double m_SeasonalTilt = 0.03 * Math.PI;       // A daily shift of approximately 1.7188 degrees
         const double m_AverageTilt = -0.25 * Math.PI;       // A 45 degree tilt
         const double m_SunCycle = 2.0D * Math.PI;           // A perfect circle measured in radians
@@ -55,7 +57,10 @@ namespace Universe.Modules.Sun
         double SeasonSpeed;                                 // Rate of change for seasonal effects
         double SeasonalOffset;                              // Seasonal variation of tilt
 
+        //
         //    Per Region Values
+        //
+
         uint SecondsPerSunCycle;                            // Length of a virtual day in RW seconds
         uint SecondsPerYear;                                // Length of a virtual year in RW seconds
         double SunSpeed;                                    // Rate of passage in radians/second
@@ -158,6 +163,7 @@ namespace Universe.Modules.Sun
             m_config = config;
         }
 
+
         public void AddRegion (IScene scene)
         {
             m_scene = scene;
@@ -174,11 +180,13 @@ namespace Universe.Modules.Sun
                 }
             }
 
+
             TimeZone local = TimeZone.CurrentTimeZone;
             TicksUTCOffset = local.GetUtcOffset (local.ToLocalTime (DateTime.Now)).Ticks;
-            //MainConsole.Instance.Debug("[Sun]: localtime offset is " + TicksUTCOffset);
+            //MainConsole.Instance.Debug("[SUN]: localtime offset is " + TicksUTCOffset);
 
             // Align ticks with Second Life
+
             TicksToEpoch = new DateTime (1970, 1, 1).Ticks;
 
             // Just in case they don't have the stanzas
@@ -213,13 +221,16 @@ namespace Universe.Modules.Sun
                 }
             } catch (Exception e)
             {
-                MainConsole.Instance.Debug ("[Sun]: Configuration access failed, using defaults. Reason: " + e.Message);
+                MainConsole.Instance.Debug ("[SUN]: Configuration access failed, using defaults. Reason: " + e.Message);
                 m_RegionMode = d_mode;
                 m_YearLengthDays = d_year_length;
                 m_DayLengthHours = d_day_length;
                 m_HorizonShift = d_day_night;
                 m_UpdateInterval = d_frame_mod;
                 m_DayTimeSunHourScale = d_DayTimeSunHourScale;
+
+                // m_latitude    = d_latitude;
+                // m_longitude   = d_longitude;
             }
             switch (m_RegionMode)
             {
@@ -240,6 +251,8 @@ namespace Universe.Modules.Sun
 
                 // Horizon translation
                 HorizonShift = m_HorizonShift; // Z axis translation
+
+                // HoursToRadians    = (SunCycle/24)*VWTimeRatio;
 
                 //  Insert our event handling hooks
                 scene.EventManager.OnFrame += SunUpdate;
@@ -316,7 +329,7 @@ namespace Universe.Modules.Sun
 
         public void SunUpdate ()
         {
-            if (((m_frame++ % m_UpdateInterval) != 0) || !ready || m_SunFixed)
+            if (((m_frame++ % m_UpdateInterval) != 0) || !ready || m_SunFixed /* || !receivedEstateToolsSunUpdate*/)
             {
                 return;
             }
@@ -364,7 +377,7 @@ namespace Universe.Modules.Sun
                 SunUpdateToAllClients ();
 
 
-                //MainConsole.Instance.DebugFormat("[Sun]: PosTime : {0}", PosTime.ToString());
+                //MainConsole.Instance.DebugFormat("[SUN]: PosTime : {0}", PosTime.ToString());
             }
         }
 
@@ -427,37 +440,44 @@ namespace Universe.Modules.Sun
 
             OrbitalPosition = (float)(TotalDistanceTravelled % m_SunCycle); // position measured in radians
 
+            // TotalDistanceTravelled += HoursToRadians-(0.25*Math.PI)*Math.Cos(HoursToRadians)-OrbitalPosition;
+            // OrbitalPosition         = (float) (TotalDistanceTravelled%SunCycle);
+
             SeasonalOffset = SeasonSpeed * PosTime;
             // Present season determined as total radians travelled around season cycle
             Tilt.W = (float)(m_AverageTilt + (m_SeasonalTilt * Math.Sin (SeasonalOffset)));
             // Calculate seasonal orbital N/S tilt
 
-            // MainConsole.Instance.Debug("[Sun] Total distance travelled = "+TotalDistanceTravelled+", present position = "+OrbitalPosition+".");
-            // MainConsole.Instance.Debug("[Sun] Total seasonal progress = "+SeasonalOffset+", present tilt = "+Tilt.W+".");
+            // MainConsole.Instance.Debug("[SUN] Total distance travelled = "+TotalDistanceTravelled+", present position = "+OrbitalPosition+".");
+            // MainConsole.Instance.Debug("[SUN] Total seasonal progress = "+SeasonalOffset+", present tilt = "+Tilt.W+".");
 
             // The sun rotates about the Z axis
+
             Position.X = (float)Math.Cos (-TotalDistanceTravelled);
             Position.Y = (float)Math.Sin (-TotalDistanceTravelled);
             Position.Z = 0;
 
             // For interest we rotate it slightly about the X access.
             // Celestial tilt is a value that ranges .025
+
             Position *= Tilt;
 
             // Finally we shift the axis so that more of the
             // circle is above the horizon than below. This
             // makes the nights shorter than the days.
+
             Position = Vector3.Normalize (Position);
             Position.Z = Position.Z + (float)HorizonShift;
             Position = Vector3.Normalize (Position);
 
-            // MainConsole.Instance.Debug("[Sun] Position("+Position.X+","+Position.Y+","+Position.Z+")");
+            // MainConsole.Instance.Debug("[SUN] Position("+Position.X+","+Position.Y+","+Position.Z+")");
 
             Velocity.X = 0;
             Velocity.Y = 0;
             Velocity.Z = (float)SunSpeed;
 
             // Correct angular velocity to reflect the seasonal rotation
+
             Magnitude = Position.Length ();
             if (m_SunFixed)
             {
@@ -488,7 +508,7 @@ namespace Universe.Modules.Sun
 
             foreach (string output in ParseCmdParams(cmdparams))
             {
-                MainConsole.Instance.Info ("[Sun] " + output);
+                MainConsole.Instance.Info ("[SUN] " + output);
             }
         }
 

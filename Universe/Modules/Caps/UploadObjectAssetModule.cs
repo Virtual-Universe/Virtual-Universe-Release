@@ -124,7 +124,7 @@ namespace Universe.Modules.Caps
             }
             catch (Exception ex)
             {
-                MainConsole.Instance.Error("[Upload Object Asset Module]: Error de-serializing message " + ex);
+                MainConsole.Instance.Error("[UploadObjectAssetModule]: Error de-serializing message " + ex);
                 message = null;
             }
 
@@ -152,6 +152,26 @@ namespace Universe.Modules.Caps
                     rootpos = obj.Position;
                 }
 
+
+                // Combine the extraparams data into it's ugly blob again....
+                //int bytelength = 0;
+                //for (int extparams = 0; extparams < obj.ExtraParams.Length; extparams++)
+                //{
+                //    bytelength += obj.ExtraParams[extparams].ExtraParamData.Length;
+                //}
+                //byte[] extraparams = new byte[bytelength];
+                //int position = 0;
+
+
+                //for (int extparams = 0; extparams < obj.ExtraParams.Length; extparams++)
+                //{
+                //    Buffer.BlockCopy(obj.ExtraParams[extparams].ExtraParamData, 0, extraparams, position,
+                //                     obj.ExtraParams[extparams].ExtraParamData.Length);
+                //
+                //    position += obj.ExtraParams[extparams].ExtraParamData.Length;
+                // }
+
+                //pbs.ExtraParams = extraparams;
                 foreach (UploadObjectAssetMessage.Object.ExtraParam extraParam in obj.ExtraParams)
                 {
                     switch ((ushort) extraParam.Type)

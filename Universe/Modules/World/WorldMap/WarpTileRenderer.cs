@@ -55,6 +55,7 @@ namespace Universe.Modules.WorldMap
 
         static readonly Color4 WATER_COLOR = new Color4(29, 72, 96, 216);
         static readonly Color4 OPAQUE_WATER_COLOR = new Color4(34, 92, 114, 255);
+        //static readonly Color4 SKY_COLOR = new Color4(106, 178, 236, 216);
         static readonly Int32 SKYCOLOR = 0x8BC4EC;
 
         readonly Dictionary<UUID, Color4> m_colors = new Dictionary<UUID, Color4>();
@@ -88,11 +89,11 @@ namespace Universe.Modules.WorldMap
             if (renderers.Count > 0)
             {
                 m_primMesher = RenderingLoader.LoadRenderer(renderers[0]);
-                MainConsole.Instance.Debug("[Map Tile]: Loaded prim mesher " + m_primMesher);
+                MainConsole.Instance.Debug("[MAPTILE]: Loaded prim mesher " + m_primMesher);
             }
             else
             {
-                MainConsole.Instance.Info("[Map Tile]: No prim mesher loaded, prim rendering will be disabled");
+                MainConsole.Instance.Info("[MAPTILE]: No prim mesher loaded, prim rendering will be disabled");
             }
 
             var mapConfig = m_config.Configs ["MapModule"];
@@ -102,6 +103,7 @@ namespace Universe.Modules.WorldMap
                 m_renderMeshes = mapConfig.GetBoolean ("RenderMeshes", m_renderMeshes);
             }
 
+
             ReadCacheMap();
         }
 
@@ -110,7 +112,7 @@ namespace Universe.Modules.WorldMap
         {
             int scaledRemovalFactor = m_scene.RegionInfo.RegionSizeX/(Constants.RegionSize/2);
             Vector3 camPos = new Vector3 (m_scene.RegionInfo.RegionSizeX / 2 - 0.5f,
-                                 m_scene.RegionInfo.RegionSizeY / 2 - 0.5f, 221f);
+                                 m_scene.RegionInfo.RegionSizeY / 2 - 0.5f, 221f); //.7025033688163f);
             Viewport viewport = new Viewport(camPos, -Vector3.UnitZ, 256f, 0.1f,
                                              m_scene.RegionInfo.RegionSizeX - scaledRemovalFactor,
                                              m_scene.RegionInfo.RegionSizeY - scaledRemovalFactor,
@@ -130,8 +132,9 @@ namespace Universe.Modules.WorldMap
             int scaledRemovalFactor = m_scene.RegionInfo.RegionSizeX/(Constants.RegionSize/2);
 
             Vector3 camPos = new Vector3 (m_scene.RegionInfo.RegionSizeX / 2 - 0.5f,
-                                 m_scene.RegionInfo.RegionSizeY / 2 - 0.5f, 221f);
+                                 m_scene.RegionInfo.RegionSizeY / 2 - 0.5f, 221f);  //.7025033688163f);
             
+
             Viewport viewport = new Viewport(camPos, -Vector3.UnitZ, 256f, 0.1f,
                 m_scene.RegionInfo.RegionSizeX - scaledRemovalFactor,
                 m_scene.RegionInfo.RegionSizeY - scaledRemovalFactor,
@@ -140,8 +143,13 @@ namespace Universe.Modules.WorldMap
 
             viewport.FieldOfView = 150;
 
+            //testing
+            //viewport.Height = size;
+            //viewport.Width = size;
+
             mapBmp = TerrainBitmap (viewport, false);
             return mapBmp;
+
         }
 
         public Bitmap TerrainBitmap(Viewport viewport, bool threeD)
@@ -193,6 +201,7 @@ namespace Universe.Modules.WorldMap
             renderer.Scene.addLight("Light1", new warp_Light(new warp_Vector(1.0f, 0.5f, 1f), 0xffffff, 0, 320, 40));
             renderer.Scene.addLight("Light2", new warp_Light(new warp_Vector(-1f, -1f, 1f), 0xffffff, 0, 100, 40));
 
+
             try
             {
                 CreateWater(renderer, threeD);
@@ -203,6 +212,7 @@ namespace Universe.Modules.WorldMap
                     foreach (ISceneChildEntity part in m_scene.Entities.GetEntities().SelectMany(ent => ent.ChildrenEntities()))
                         CreatePrim(renderer, part);
                 }
+
             }
             catch (Exception ex)
             {
@@ -215,6 +225,7 @@ namespace Universe.Modules.WorldMap
             // AntiAliasing
             using (Bitmap origBitmap = bitmap)
                     bitmap = ImageUtils.ResizeImage(origBitmap, viewport.Width, viewport.Height);
+
 
             // Clean up
             SaveCache();
@@ -235,11 +246,14 @@ namespace Universe.Modules.WorldMap
             return bitmap;
         }
 
+
         public Bitmap CreateViewImage(Vector3 camPos, Vector3 camDir, float fov, int width, int height, bool useTextures)
         {
             Viewport viewport = new Viewport(camPos, camDir, fov, 1024f,  0.1f, width, height);
+//             Viewport viewport = new Viewport(camPos, camDir, fov, Constants.RegionSize,  0.1f, width, height);
             return TerrainBitmap(viewport, true);
         }
+
 
         #endregion
 
@@ -260,13 +274,32 @@ namespace Universe.Modules.WorldMap
                 // work-a-round until verified or otherwise in the Warp3D library
                 renderer.AddPlane ("Water", maxSize);
                 renderer.Scene.sceneobject ("Water").setPos (0, waterHeight,0);
-                                
+                
+/*                if(m_scene.RegionInfo.RegionSizeX >= m_scene.RegionInfo.RegionSizeY)
+                    renderer.AddPlane ("Water", m_scene.RegionInfo.RegionSizeX/2);
+                else
+                    renderer.AddPlane ("Water", m_scene.RegionInfo.RegionSizeY/2);
+
+                renderer.Scene.sceneobject ("Water").setPos (
+                    (m_scene.RegionInfo.RegionSizeX / 2) - 0.5f,
+                    waterHeight,
+                    (m_scene.RegionInfo.RegionSizeY / 2) - 0.5f);
+
+
+*/                
                 waterColormaterial = new warp_Material (ConvertColor (WATER_COLOR));
+//                waterColormaterial.setTransparency ((byte)((1f - WATER_COLOR.A) * 255f) * 2);
                 waterColormaterial.setTransparency ((byte)((1f - WATER_COLOR.A) * 255f));
             } else
             {
                 renderer.AddPlane ("Water", maxSize/2);
 
+/* for reference
+                if(m_scene.RegionInfo.RegionSizeX >= m_scene.RegionInfo.RegionSizeY)
+                    renderer.AddPlane ("Water", m_scene.RegionInfo.RegionSizeX/2);
+                else
+                    renderer.AddPlane ("Water", m_scene.RegionInfo.RegionSizeY/2);
+*/
                 renderer.Scene.sceneobject ("Water").setPos (
                     (m_scene.RegionInfo.RegionSizeX / 2) -0.5f,
                     - 0.5f,
@@ -275,6 +308,7 @@ namespace Universe.Modules.WorldMap
                
                 waterColormaterial = new warp_Material(ConvertColor(OPAQUE_WATER_COLOR));
                 waterColormaterial.setTransparency (48);
+                //waterColormaterial.opaque = true;
             }
 
             waterColormaterial.setReflectivity(0);
@@ -286,8 +320,8 @@ namespace Universe.Modules.WorldMap
         {
             ITerrainChannel terrain = m_scene.RequestModuleInterface<ITerrainChannel>();
 
-            float diffX = 1.0f;
-            float diffY = 1.0f;
+            float diffX = 1.0f; //(float) m_scene.RegionInfo.RegionSizeX/(float) Constants.RegionSize;
+            float diffY = 1.0f; //(float) m_scene.RegionInfo.RegionSizeY/(float) Constants.RegionSize;
             int newRsX = m_scene.RegionInfo.RegionSizeX / (int)diffX;
             int newRsY = m_scene.RegionInfo.RegionSizeY / (int)diffY;
 
@@ -724,6 +758,7 @@ namespace Universe.Modules.WorldMap
             Bitmap bitmap = null;
             try
             {
+
                 if (j2kData.Length == 0)
                     return new Color4(1.0f, 0.0f, 1.0f, 1.0f);
 
@@ -776,7 +811,7 @@ namespace Universe.Modules.WorldMap
             }
             catch (Exception ex)
             {
-                MainConsole.Instance.WarnFormat("[Map Tile]: Error decoding JPEG2000 texture {0} ({1} bytes): {2}",
+                MainConsole.Instance.WarnFormat("[MAPTILE]: Error decoding JPEG2000 texture {0} ({1} bytes): {2}",
                                                 textureID,
                                                 j2kData.Length, ex.Message);
                 return new Color4(0.5f, 0.5f, 0.5f, 1.0f);
@@ -825,6 +860,7 @@ namespace Universe.Modules.WorldMap
                 graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
                 graphics.SmoothingMode = SmoothingMode.HighQuality;
                 graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
                 graphics.DrawImage(image, 0, 0, result.Width, result.Height);
             }
             image.Dispose();

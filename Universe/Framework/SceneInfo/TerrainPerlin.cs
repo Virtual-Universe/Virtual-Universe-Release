@@ -523,6 +523,7 @@ namespace Universe.Framework.SceneInfo
 				}
 			}
 
+
 			return blend_map;
 		}
 
@@ -567,6 +568,7 @@ namespace Universe.Framework.SceneInfo
             return gradient_map;
         }
 
+
 		/// <summary>
 		/// Generates a height map for a 'Island' style area (Edges of the map under water)
 		/// </summary>
@@ -588,9 +590,11 @@ namespace Universe.Framework.SceneInfo
 				height = 256;
 			}
 
+
 			float[][] perlinNoiseMap = GeneratePerlinNoise(width, height, octaveCount);
 			perlinNoiseMap = AdjustLevels (perlinNoiseMap, 0.2f, 0.8f);
 			float [][] perlinMap = MapToGreyScale (perlinNoiseMap);
+
 
 			// mask the edges to an 'Island' shape
 			float[][] map_mask = GenerateIslandGradientMap(width, height);
@@ -613,6 +617,7 @@ namespace Universe.Framework.SceneInfo
 
 			return perlinMap;
 		}
+
 
 		/// <summary>
 		/// Generates a height map for a 'Mainland' style area (Terrain out to the edges of the map).

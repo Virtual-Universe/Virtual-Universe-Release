@@ -58,7 +58,7 @@ namespace Universe.ClientStack
 
             if (m_missingImage == null)
                 MainConsole.Instance.Error(
-                    "[Client View] - Couldn't set missing image asset, falling back to missing image packet. This is known to crash the client");
+                    "[ClientView] - Couldn't set missing image asset, falling back to missing image packet. This is known to crash the client");
 
             m_j2kDecodeModule = pJ2kDecodeModule;
         }
@@ -89,7 +89,7 @@ namespace Universe.ClientStack
                 {
                     if (newRequest.DiscardLevel == -1 && newRequest.Priority == 0f)
                     {
-                        //MainConsole.Instance.Debug("[Tex]: (CAN) ID=" + newRequest.RequestedAssetID);
+                        //MainConsole.Instance.Debug("[TEX]: (CAN) ID=" + newRequest.RequestedAssetID);
 
                         try
                         {
@@ -102,7 +102,7 @@ namespace Universe.ClientStack
                     }
                     else
                     {
-                        //MainConsole.Instance.DebugFormat("[Tex]: (UPD) ID={0}: D={1}, S={2}, P={3}",
+                        //MainConsole.Instance.DebugFormat("[TEX]: (UPD) ID={0}: D={1}, S={2}, P={3}",
                         //    newRequest.RequestedAssetID, newRequest.DiscardLevel, newRequest.PacketNumber, newRequest.Priority);
 
                         //Check the packet sequence to make sure this isn't older than 
@@ -133,13 +133,13 @@ namespace Universe.ClientStack
                 {
                     if (newRequest.DiscardLevel == -1 && newRequest.Priority == 0f)
                     {
-                        //MainConsole.Instance.Debug("[Tex]: (CAN) ID=" + newRequest.RequestedAssetID);
-                        //MainConsole.Instance.DebugFormat("[Tex]: (IGN) ID={0}: D={1}, S={2}, P={3}",
+                        //MainConsole.Instance.Debug("[TEX]: (CAN) ID=" + newRequest.RequestedAssetID);
+                        //MainConsole.Instance.DebugFormat("[TEX]: (IGN) ID={0}: D={1}, S={2}, P={3}",
                         //    newRequest.RequestedAssetID, newRequest.DiscardLevel, newRequest.PacketNumber, newRequest.Priority);
                     }
                     else
                     {
-                        //MainConsole.Instance.DebugFormat("[Tex]: (NEW) ID={0}: D={1}, S={2}, P={3}",
+                        //MainConsole.Instance.DebugFormat("[TEX]: (NEW) ID={0}: D={1}, S={2}, P={3}",
                         //    newRequest.RequestedAssetID, newRequest.DiscardLevel, newRequest.PacketNumber, newRequest.Priority);
 
                         imgrequest = new J2KImage()

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -105,7 +105,7 @@ namespace Universe.Framework.Utilities
                             if (!CallAndWait(intHB.millisecondTimeOut, intHB.heartBeat, out isRunning))
                             {
                                 MainConsole.Instance.Warn(
-                                    "[Thread Tracker]: Could not run Heartbeat in specified limits!");
+                                    "[ThreadTracker]: Could not run Heartbeat in specified limits!");
                             }
                             else if (!isRunning)
                             {
