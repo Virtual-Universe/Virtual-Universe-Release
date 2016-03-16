@@ -302,7 +302,7 @@ namespace Universe.Modules.Search
             while (i < packets.Count)
             {
 				// Lets check for remaining range
-				if(i + count) > packets.Count)
+				if ((i + count) > packets.Count)
 					count = packets.Count - i;
 				
                 T[] data = packets.GetRange (i, count).ToArray ();
