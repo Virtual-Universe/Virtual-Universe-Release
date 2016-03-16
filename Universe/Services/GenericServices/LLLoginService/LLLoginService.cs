@@ -709,6 +709,7 @@ namespace Universe.Services
                     destination.RegionName + ", tried to login to " + startLocation + " at " + position + ".");
                 return response;
             }
+
             catch (Exception e)
             {
                 MainConsole.Instance.WarnFormat("[LLOGIN SERVICE]: Exception processing login for {0} : {1}", Name, e);
