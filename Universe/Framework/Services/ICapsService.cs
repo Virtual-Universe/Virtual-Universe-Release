@@ -28,13 +28,13 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.Servers.HttpServer.Interfaces;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
 
-namespace Universe.Framework.Services
+namespace Univere.Framework.Services
 {
     /// <summary>
     ///     This controls what regions and users have Caps SEED requests and all of the Cap handlers associated with those requests
@@ -364,6 +364,12 @@ namespace Universe.Framework.Services
         /// <param name="appendedPath">The path (no http://) to the Caps Method</param>
         /// <returns></returns>
         string CreateCAPS(string method, string appendedPath);
+
+        /// <summary>
+        /// Gets the current region CAPS.
+        /// </summary>
+        /// <returns>The CAPs.</returns>
+        OSDMap GetCAPS();
 
         /// <summary>
         ///     Get all CapsService modules

@@ -26,14 +26,14 @@
  */
 
 
+using System;
+using System.IO;
+using System.Text;
+using OpenMetaverse.StructuredData;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Servers.HttpServer;
 using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Services;
-using OpenMetaverse.StructuredData;
-using System;
-using System.IO;
-using System.Text;
 
 namespace Universe.Services
 {
@@ -49,8 +49,7 @@ namespace Universe.Services
             if (m_imService != null)
             {
                 service.AddStreamHandler("ChatSessionRequest",
-                                         new GenericStreamHandler("POST", service.CreateCAPS("ChatSessionRequest", ""),
-                                                                  ChatSessionRequest));
+                                         new GenericStreamHandler("POST", service.CreateCAPS("ChatSessionRequest", ""), ChatSessionRequest));
             }
         }
 
@@ -76,7 +75,7 @@ namespace Universe.Services
             }
             catch (Exception e)
             {
-                MainConsole.Instance.Error("[IMCAPS]: " + e.ToString());
+                MainConsole.Instance.Error("[IMCAPS]: " + e);
             }
 
             return null;
