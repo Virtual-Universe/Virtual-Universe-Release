@@ -28,13 +28,13 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.Servers.HttpServer.Interfaces;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
 
-namespace Univere.Framework.Services
+namespace Universe.Framework.Services
 {
     /// <summary>
     ///     This controls what regions and users have Caps SEED requests and all of the Cap handlers associated with those requests

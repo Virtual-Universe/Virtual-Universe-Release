@@ -27,6 +27,7 @@
 
 using OpenMetaverse;
 using OpenMetaverse.StructuredData;
+using Universe.Framework.Services;
 
 namespace Universe.Framework.Services
 {
