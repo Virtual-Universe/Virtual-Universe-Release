@@ -1122,7 +1122,7 @@
       <Reference name="protobuf-net.dll" path="../../VirtualUniverse/bin/"/>
       <Reference name="Warp3Dw" path="../../VirtualUniverse/bin/"/>
       <Reference name="XMLRPC" path="../../VirtualUniverse/bin/"/>
-      <Reference name="ZLibnet" path="../../VirtualUniverse/bin/"/>
+      <Reference name="ZLibNet" path="../../VirtualUniverse/bin/"/>
 
       <Files>
         <Match pattern="*.cs" recurse="true">
