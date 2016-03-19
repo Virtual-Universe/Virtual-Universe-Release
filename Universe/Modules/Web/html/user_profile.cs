@@ -34,7 +34,6 @@ using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Profile;
 using Universe.Framework.Utilities;
-using Universe.Framework.Services.ClassHelpers.Profile;
 
 namespace Universe.Modules.Web
 {
