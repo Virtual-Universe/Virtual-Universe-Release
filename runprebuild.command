@@ -1,7 +1,7 @@
 #!/bin/bash
 # Run prebuild to configure and create the appropriate Solution and Project files for building Virtual Universe
 #
-# July 2015
+# March 18, 2016
 # Emperor Starfinder <emperor@secondgalaxy.com>
 
 # find and change to the current folder (bash does not start here by default)
@@ -100,14 +100,14 @@ fi
 
 # Update version info
 if [ -d ".git" ]; then 
-  git log --pretty=format:"Universe 1.0.1 (%cd.%h)" --date=short -n 1 > VirtualUniverse/bin/.version; 
+  git log --pretty=format:"Universe 1.0.2 (%cd.%h)" --date=short -n 1 > VirtualUniverse/bin/.version; 
   echo "Version info updated"
 fi
 
 # Build Virtual Universe
 if ${BUILD:=true} ; then
-  echo Building Virtual-Universe
-  xbuild /property:Configuration="$CONFIG" /property:Platform="$ARCH"
+  echo Building Virtual Universe
+  xbuild Universe.sln /property:Configuration="$CONFIG" /property:Platform="$ARCH"
   echo Finished Building Virtual Universe
   echo Thank you for choosing Virtual Universe
   echo Please report any errors to our Github Issue Tracker https://github.com/Virtual-Universe/Virtual-Universe/issues

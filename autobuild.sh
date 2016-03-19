@@ -101,7 +101,7 @@ fi
 # Build Virtual Universe
 if $BUILD ; then
   echo Building Virtual Universe
-  xbuild /property:Configuration="$CONFIG" /property:Platform="$ARCH"
+  xbuild Universe.sln /property:Configuration="$CONFIG" /property:Platform="$ARCH"
   echo Finished Building Universe
   echo Thank you for choosing Virtual Universe
   echo Please report any errors to our Github Issue Tracker https://github.com/Virtual-Universe/Virtual-Universe/issues
