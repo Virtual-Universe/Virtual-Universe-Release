@@ -25,7 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -43,7 +42,7 @@ using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Servers.HttpServer.Interfaces;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Utilities;
-using ZLib.Net;
+using ZLibNet;
 
 namespace Universe.Modules.Caps
 {

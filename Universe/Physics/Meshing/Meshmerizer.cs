@@ -39,7 +39,7 @@ using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.Physics;
 using Universe.Framework.SceneInfo;
-using ZLib.Net;
+using ZLibNet;
 
 #if DEBUGING
 using PrimMesher;
