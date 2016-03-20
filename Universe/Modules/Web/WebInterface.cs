@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/,  http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -587,7 +587,7 @@ namespace Universe.Modules.Web
                 }
                 if (!File.Exists(file))
                 {
-                    MainConsole.Instance.DebugFormat("[Web Interface]: Unknown page request, {0}", file);
+                    MainConsole.Instance.DebugFormat("WebInterface]: Unknown page request, {0}", file);
                     return "html/http_404.html";
                 }
 
@@ -1217,4 +1217,5 @@ namespace Universe.Modules.Web
             return map;
         }
     }
+
 }

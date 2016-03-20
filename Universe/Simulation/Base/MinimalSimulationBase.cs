@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/,  http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -58,7 +58,7 @@ namespace Universe.Simulation.Base
         protected ConfigurationLoader m_configurationLoader;
 
         /// <value>
-        ///     The config information passed into the Virtual Universe server.
+        ///     The config information passed into the Universe server.
         /// </value>
         protected IConfigSource m_config;
 
@@ -238,10 +238,10 @@ namespace Universe.Simulation.Base
             if (MainConsole.Instance != null)
             {
                 MainConsole.Instance.DefaultPrompt = m_consolePrompt;
-                MainConsole.Instance.Info(string.Format("[MIN Universe]: STARTING MIN Virtual Universe ({0})...",
+                MainConsole.Instance.Info(string.Format("[Minimal Virtual Universe]: Starting Minimal Virtual Universe ({0})...",
                                                         (IntPtr.Size == 4 ? "x86" : "x64")));
-                MainConsole.Instance.Info("[MIN Universe]: Version : " + Version + "\n");
-                MainConsole.Instance.Info("[MIN Universe]: Git Base: " + VersionInfo.GitVersion + "\n");
+                MainConsole.Instance.Info("[Minimal Virtual Universe]: Version : " + Version + "\n");
+                MainConsole.Instance.Info("[Minimal Virtual Universe]: Git Base: " + VersionInfo.GitVersion + "\n");
             }
         }
 
@@ -250,7 +250,7 @@ namespace Universe.Simulation.Base
         /// </summary>
         public virtual void Startup()
         {
-            MainConsole.Instance.Info("[MIN Universe]: Startup completed in " +
+            MainConsole.Instance.Info("[Minimal Virtual Universe]: Startup completed in " +
                                       (DateTime.Now - this.StartupTime).TotalSeconds);
         }
 
@@ -503,7 +503,7 @@ namespace Universe.Simulation.Base
         public virtual void HandleForceGC(IScene scene, string[] cmd)
         {
             GC.Collect();
-            MainConsole.Instance.Warn("Garbage collection finished");
+            MainConsole.Instance.Warn("[Garbage Collection Service]: Garbage collection finished");
         }
 
         public virtual void runConfig(IScene scene, string[] cmd)
@@ -542,7 +542,7 @@ namespace Universe.Simulation.Base
             {
                 server.HostName = hostName;
             }
-            MainConsole.Instance.Info("Finished reloading configuration.");
+            MainConsole.Instance.Info("[Virtual Universe Configuration]: Finished reloading configuration.");
         }
 
         public virtual void HandleShowInfo(IScene scene, string[] cmd)

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/,  http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -452,11 +452,11 @@ namespace Universe.ScriptEngine.VirtualScript
                 MaintenanceThread.StartScripts(
                     scripts.Select(ID => new LUStruct {Action = LUType.Load, ID = ID}).ToArray());
 
-                MainConsole.Instance.Warn("[VS]: All scripts have been restarted.");
+                MainConsole.Instance.Warn("[Virtual Script]: All scripts have been restarted.");
             }
             else
             {
-                MainConsole.Instance.Info("[VS]: Not restarting all scripts");
+                MainConsole.Instance.Info("[Virtual Script]: Not restarting all scripts");
             }
         }
 
@@ -467,11 +467,11 @@ namespace Universe.ScriptEngine.VirtualScript
             {
                 StopAllScripts();
                 MaintenanceThread.Stop();
-                MainConsole.Instance.Warn("[VS]: All scripts have been stopped.");
+                MainConsole.Instance.Warn("[Virtual Script]: All scripts have been stopped.");
             }
             else
             {
-                MainConsole.Instance.Info("[VS]: Not restarting all scripts");
+                MainConsole.Instance.Info("[Virtual Script]: Not restarting all scripts");
             }
         }
 
@@ -498,14 +498,14 @@ namespace Universe.ScriptEngine.VirtualScript
         protected void UniverseDotNetDisable(IScene scene, string[] cmdparams)
         {
             ConsoleDisabled = true;
-            MainConsole.Instance.Warn("[VS]: VS has been disabled.");
+            MainConsole.Instance.Warn("[Virtual Script]: The Virtual Script Engine has been disabled.");
         }
 
         protected void UniverseDotNetEnable(IScene scene, string[] cmdparams)
         {
             ConsoleDisabled = false;
             MaintenanceThread.Started = true;
-            MainConsole.Instance.Warn("[VS]: VS has been enabled.");
+            MainConsole.Instance.Warn("[Virtual Script]: The Virtual Script Engine has been enabled.");
         }
 
         #endregion

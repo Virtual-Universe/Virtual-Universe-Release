@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/,  http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -707,9 +707,9 @@ namespace Universe.Services
                 MainConsole.Instance.InfoFormat(
                     "[LLOGIN SERVICE]: All clear. Sending login response to client to login to region " +
                     destination.RegionName + ", tried to login to " + startLocation + " at " + position + ".");
+
                 return response;
             }
-
             catch (Exception e)
             {
                 MainConsole.Instance.WarnFormat("[LLOGIN SERVICE]: Exception processing login for {0} : {1}", Name, e);

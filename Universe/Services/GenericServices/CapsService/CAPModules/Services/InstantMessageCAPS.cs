@@ -1,5 +1,5 @@
-﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+/*
+ * Copyright (c) Contributors, http://virtual-planets.org/,  http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,42 +26,61 @@
  */
 
 
+using System;
 using System.IO;
+using System.Text;
 using OpenMetaverse.StructuredData;
+using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Servers.HttpServer;
 using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Services;
 
 namespace Universe.Services
 {
-    public class ProductInfoRequest : ICapsServiceConnector
+    public class InstantMessageCAPS : ICapsServiceConnector
     {
-        IRegionClientCapsService m_service;
+        protected IInstantMessagingService m_imService;
+        protected IRegionClientCapsService m_service;
 
-        #region ICapsServiceConnector Members
-
-        public void RegisterCaps (IRegionClientCapsService service)
+        public void RegisterCaps(IRegionClientCapsService service)
         {
             m_service = service;
-            m_service.AddStreamHandler ("ProductInfoRequest",
-                new GenericStreamHandler ("GET", m_service.CreateCAPS ("ProductInfoRequest", ""), ProductInfoRequestCAP));
+            m_imService = service.Registry.RequestModuleInterface<IInstantMessagingService>();
+            if (m_imService != null)
+            {
+                service.AddStreamHandler("ChatSessionRequest",
+                                         new GenericStreamHandler("POST", service.CreateCAPS("ChatSessionRequest", ""), ChatSessionRequest));
+            }
         }
 
-        public void DeregisterCaps ()
+        public void EnteringRegion()
         {
-            m_service.RemoveStreamHandler ("ProductInfoRequest", "GET");
         }
 
-        public void EnteringRegion ()
+        public void DeregisterCaps()
         {
+            m_service.RemoveStreamHandler("ChatSessionRequest", "POST");
+        }
+
+        #region Baked Textures
+
+        public byte[] ChatSessionRequest(string path, Stream request, OSHttpRequest httpRequest,
+                                         OSHttpResponse httpResponse)
+        {
+            try
+            {
+                OSDMap rm = (OSDMap)OSDParser.DeserializeLLSDXml(HttpServerHandlerHelpers.ReadFully(request));
+
+                return Encoding.UTF8.GetBytes(m_imService.ChatSessionRequest(m_service, rm));
+            }
+            catch (Exception e)
+            {
+                MainConsole.Instance.Error("[IMCAPS]: " + e);
+            }
+
+            return null;
         }
 
         #endregion
-
-        byte[] ProductInfoRequestCAP (string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse)
-        {
-            OSDMap data = m_service.GetCAPS ();
-            return OSDParser.SerializeLLSDXmlBytes (data);
-        }
     }
 }

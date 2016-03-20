@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://WHiteCore-sim.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/,  http://WHiteCore-sim.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without

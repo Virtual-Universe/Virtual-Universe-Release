@@ -1,5 +1,5 @@
-/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+﻿/*
+ * Copyright (c) Contributors, http://virtual-planets.org/,  http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,19 +27,15 @@
 
 
 using System.IO;
-using OpenMetaverse;
 using OpenMetaverse.StructuredData;
-using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Servers.HttpServer;
 using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Services;
-using Universe.Framework.Services.ClassHelpers.Profile;
 
 namespace Universe.Services
 {
-    public class MeshUploadFlag : ICapsServiceConnector
+    public class ProductInfoRequest : ICapsServiceConnector
     {
-        IProfileConnector m_profileConnector;
         IRegionClientCapsService m_service;
 
         #region ICapsServiceConnector Members
@@ -47,14 +43,13 @@ namespace Universe.Services
         public void RegisterCaps (IRegionClientCapsService service)
         {
             m_service = service;
-            m_profileConnector = Framework.Utilities.DataManager.RequestPlugin<IProfileConnector> ();
-            m_service.AddStreamHandler ("MeshUploadFlag",
-                new GenericStreamHandler ("GET", m_service.CreateCAPS ("MeshUploadFlag", ""), MeshUploadFlagCAP));
+            m_service.AddStreamHandler ("ProductInfoRequest",
+                new GenericStreamHandler ("GET", m_service.CreateCAPS ("ProductInfoRequest", ""), ProductInfoRequestCAP));
         }
 
         public void DeregisterCaps ()
         {
-            m_service.RemoveStreamHandler ("MeshUploadFlag", "GET");
+            m_service.RemoveStreamHandler ("ProductInfoRequest", "GET");
         }
 
         public void EnteringRegion ()
@@ -63,25 +58,9 @@ namespace Universe.Services
 
         #endregion
 
-        byte[] MeshUploadFlagCAP (string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse)
+        byte[] ProductInfoRequestCAP (string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse)
         {
-            OSDMap data = new OSDMap ();
-            IUserProfileInfo info = m_profileConnector.GetUserProfile (m_service.AgentID);
-
-            data ["id"] = m_service.AgentID;
-            data ["username"] = m_service.ClientCaps.AccountInfo.Name;
-            data ["display_name"] = info.DisplayName;
-            data ["display_name_next_update"] = Utils.UnixTimeToDateTime (0);
-            data ["legacy_first_name"] = m_service.ClientCaps.AccountInfo.FirstName;
-            data ["legacy_last_name"] = m_service.ClientCaps.AccountInfo.LastName;
-            data ["mesh_upload_status"] = "valid"; // add if account has ability to upload mesh?
-            bool isDisplayNameNDefault = (info.DisplayName == m_service.ClientCaps.AccountInfo.Name) ||
-                                         (info.DisplayName ==
-                                         m_service.ClientCaps.AccountInfo.FirstName + "." +
-                                         m_service.ClientCaps.AccountInfo.LastName);
-            data ["is_display_name_default"] = isDisplayNameNDefault;
-
-            //Send back data
+            OSDMap data = m_service.GetCAPS ();
             return OSDParser.SerializeLLSDXmlBytes (data);
         }
     }

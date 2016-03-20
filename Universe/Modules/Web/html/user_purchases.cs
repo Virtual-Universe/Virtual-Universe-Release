@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/,  http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,14 +25,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using Nini.Config;
-using OpenMetaverse;
-using Universe.Framework.Modules;
 using Universe.Framework.Servers.HttpServer.Implementation;
-using Universe.Framework.Services;
+using System.Collections.Generic;
+using Universe.Framework.Modules;
 using Universe.Framework.Utilities;
+using System;
+using Universe.Framework.Services;
+using OpenMetaverse;
+using Nini.Config;
 
 namespace Universe.Modules.Web
 {
@@ -109,6 +109,7 @@ namespace Universe.Modules.Web
                 vars.Add ("CurrentPage", 0);
                 vars.Add ("NextOne", 0);
                 vars.Add ("BackOne", 0);
+
             }
 
             UserAccount user = Authenticator.GetAuthentication(httpRequest);
@@ -139,12 +140,14 @@ namespace Universe.Modules.Web
                         { "RealAmount",((float) purchase.RealAmount/100).ToString("0.00") },
                         { "PurchaseDate", Culture.LocaleDate (purchase.PurchaseDate.ToLocalTime(), "MMM dd, hh:mm:ss tt") },
                         { "UpdateDate", Culture.LocaleDate (purchase.UpdateDate.ToLocalTime(), "MMM dd, hh:mm:ss tt") }
+
                     });
                 }
             }
 
             if (purchasesList.Count == 0)
             {
+ 
                 purchasesList.Add(new Dictionary<string, object> {
                     {"ID", ""},
                     {"AgentID", ""},
@@ -155,6 +158,7 @@ namespace Universe.Modules.Web
                     {"RealAmount",""},
                     {"PurchaseDate",""},
                     {"UpdateDate", ""},
+
                 });
             }
 
