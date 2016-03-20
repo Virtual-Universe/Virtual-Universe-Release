@@ -159,7 +159,7 @@ var SLURL = {
 				if(typeof result == 'string'){
 					mapWindow(result, x, y);
 				}else if((result == null || result.error) && SLURL.debugMode){
-					alert('The coordinates of the WCURL (' + x + ', ' + y + ') were not recognised as being in a Universe region.');
+					alert('The coordinates of the WCURL (' + x + ', ' + y + ') were not recognized as being in a region on this grid.');
 				}
 			}, SLURL.getRegionCoordsByNameVar());
 		}else{
@@ -803,7 +803,7 @@ SLURL.Map.prototype.CreateMapDiv = function(mainDiv){
 		formLabelSpan.appendChild(formLabel);
 
 		// Text field for the region name
-		formText.value = "Universe";
+		formText.value = "Region Name";
 		formText.size = 15;
 
 		// Button to activate 'go to region'
