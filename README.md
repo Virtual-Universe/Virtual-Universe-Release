@@ -1,7 +1,7 @@
 # Virtual Universe
 
 *NOTE:
- As of Version 1.0.1, it's advised to Linux users to use a Mono version higher then 4.0.1, following a report about  GC.Collect() not cleaning up memory correctly. The most current version of Mono is 4.0.1 (Released 28th April 2015)*
+ As of Version 1.0.2, it's advised to Linux users to use a Mono version higher then 4.0.1, following a report about  GC.Collect() not cleaning up memory correctly. The most current version of Mono is 4.2.3.4 (Released 1st March 2016)*
 
  More information can be found here: http://www.mono-project.com/docs/getting-started/install/linux/
 
