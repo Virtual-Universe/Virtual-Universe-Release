@@ -46,7 +46,6 @@ using Universe.Framework.Utilities;
 
 namespace Universe.BotManager
 {
-
     #region Enums
 
     public enum BotState
@@ -249,6 +248,8 @@ namespace Universe.BotManager
     public sealed class Bot : IDisposable
     {
         #region Declares
+
+        static readonly object _lock = new object();
 
         IBotController m_controller;
 
@@ -1297,7 +1298,7 @@ namespace Universe.BotManager
         void EventManager_OnClientMovement()
         {
             if (FollowSP != null)
-                lock (m_significantAvatarPositions)
+                lock (_lock)
                     m_significantAvatarPositions.Add(FollowSP.AbsolutePosition);
         }
 
@@ -1306,7 +1307,7 @@ namespace Universe.BotManager
             int closestPosition = 0;
             double closestDistance = 0;
             Vector3[] sigPos;
-            lock (m_significantAvatarPositions)
+            lock (_lock)
             {
                 sigPos = new Vector3[m_significantAvatarPositions.Count];
                 m_significantAvatarPositions.CopyTo(sigPos);
@@ -1522,6 +1523,7 @@ namespace Universe.BotManager
 
     public class BotClientAPI : IClientAPI
     {
+        static readonly object _lock = new object();
         public readonly AgentCircuitData m_circuitData;
         public readonly UUID m_myID = UUID.Random();
         public readonly IScene m_scene;
@@ -1611,7 +1613,7 @@ namespace Universe.BotManager
 
         void RegisterInterface<T>(T iface)
         {
-            lock (m_clientInterfaces)
+            lock (_lock)
             {
                 if (!m_clientInterfaces.ContainsKey(typeof (T)))
                 {
@@ -2004,6 +2006,7 @@ namespace Universe.BotManager
 
         public void SendInstantMessage(GridInstantMessage im)
         {
+            // TODO: This needs to be sorted out - EmperorStarfinder - April 06, 2016
             //This will cause a stack overflow, as it will loop back to trying to send the IM out again
             //m_controller.SendInstantMessage(im);
         }
