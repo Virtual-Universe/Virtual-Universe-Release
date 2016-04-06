@@ -1119,7 +1119,7 @@ namespace Universe.DataManager.SQLite
                     symbol = "TEXT";
                     break;
                 case ColumnType.UUID:
-                    symbol = "CHAR(36)";
+                    symbol = "VARCHAR(36)";
                     break;
                 case ColumnType.Binary:
                     symbol = "BINARY(" + coldef.Size + ")";
