@@ -163,7 +163,7 @@ namespace Universe.Modules
             {
                 if (Path.GetFileName (regBak).StartsWith(regionName)) 
                 {
-                    //        MainConsole.Instance.Debug ("Found: " + Path.GetFileNameWithoutExtension (regBak));
+                    //MainConsole.Instance.Debug ("Found: " + Path.GetFileNameWithoutExtension (regBak));
                     regionBaks.Add ( regBak);
                 }
             }
@@ -413,7 +413,7 @@ namespace Universe.Modules
 
                     info.Startup = StartupType.Medium;
                     info.SeeIntoThisSimFromNeighbor = true;
-                    info.InfiniteRegion = false;
+                    info.InfiniteRegion = true;
                     info.ObjectCapacity = 750;
                     info.RegionSettings.AgentLimit = 10;
                     info.RegionSettings.AllowLandJoinDivide = false;
@@ -431,7 +431,7 @@ namespace Universe.Modules
 
                     info.Startup = StartupType.Medium;
                     info.SeeIntoThisSimFromNeighbor = true;
-                    info.InfiniteRegion = false;
+                    info.InfiniteRegion = true;
                     info.ObjectCapacity = 3750;
                     info.RegionSettings.AgentLimit = 20;
                     info.RegionSettings.AllowLandJoinDivide = false;
@@ -445,7 +445,7 @@ namespace Universe.Modules
                     info.RegionTerrain = terrainFull;
                     info.Startup = StartupType.Normal;
                     info.SeeIntoThisSimFromNeighbor = true;
-                    info.InfiniteRegion = false;
+                    info.InfiniteRegion = true;
                     info.ObjectCapacity = 15000;
                     info.RegionSettings.AgentLimit = 100;
                     if (info.RegionType.StartsWith ("M"))                           // defaults are 'true'
