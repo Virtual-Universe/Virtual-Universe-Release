@@ -102,8 +102,11 @@ Member Of Team: Virtual Reality Development Team
 Member Responsibilities: Developer
 
 
+==== Independent Testers ====
 
-
+Independent Tester Name: LifeGold
+Member of Team: RealLife3D
+Independent Tester Since: February 2016
 
 
 
