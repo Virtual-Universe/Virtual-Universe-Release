@@ -45,6 +45,7 @@ namespace Universe.Framework.Utilities
         public const string DEFAULT_AVATARARCHIVE_DIR = "AvatarArchives";
         public const string DEFAULT_OARARCHIVE_DIR = "OarFiles";
         public const string DEFAULT_USERINVENTORY_DIR = "UserArchives";
+        public const string DEFAULT_OAR_BACKUP_FILENAME = "region.oar";
 
         public const string DEFAULT_USERHTML_DIR = "html";
         public const string DEFAULT_LOG_DIR = "logs";

@@ -25,14 +25,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Universe.Framework.ConsoleFramework;
-using Universe.Framework.Modules;
-using Universe.Framework.SceneInfo;
-using Nini.Config;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Nini.Config;
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.Modules;
+using Universe.Framework.SceneInfo;
+using Universe.Fraemwork.Utilities;
 
 namespace Universe.Modules.Archivers
 {
@@ -44,7 +45,7 @@ namespace Universe.Modules.Archivers
         /// <value>
         ///     The file used to load and save an opensimulator archive if no filename has been specified
         /// </value>
-        protected const string DEFAULT_OAR_BACKUP_FILENAME = "region.oar";
+        protected const string DEFAULT_OAR_BACKUP_FILENAME = Constants.DEFAULT_OAR_BACKUP_FILENAME;
 
         private IScene m_scene;
 
