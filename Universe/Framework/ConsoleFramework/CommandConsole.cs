@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/,  http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -531,8 +531,11 @@ namespace Universe.Framework.ConsoleFramework
         public bool m_isPrompting;
         public int m_lastSetPromptOption;
         protected TextWriter m_logFile;
-        protected string m_logPath = Constants.DEFAULT_DATA_DIR;
-
+        protected string m_logPath = "";
+        protected string m_logName = "";
+        protected DateTime m_logDate;
+        bool m_gridserver;
+        ISimulationBase m_simbase;
         public List<string> m_promptOptions = new List<string>();
 
         public string LogPath
@@ -552,7 +555,11 @@ namespace Universe.Framework.ConsoleFramework
             simBase.ApplicationRegistry.RegisterModuleInterface<ICommandConsole>(this);
             MainConsole.Instance = this;
 
-            m_Commands.AddCommand("help", "help", "Get a general command list", Help, false, true);
+            m_Commands.AddCommand(
+                "help",
+                "help",
+                "Get a general command list",
+                Help, false, true);
 
             // set the default path as preset or configured
             string logName = "";
@@ -560,21 +567,70 @@ namespace Universe.Framework.ConsoleFramework
             logName = source.Configs ["Console"].GetString ("LogAppendName", logName);
             logPath = source.Configs ["Console"].GetString ("LogPath", logPath);
             if (logPath == "")
-                logPath = simBase.DefaultDataPath;
+                logPath = Path.Combine(simBase.DefaultDataPath, Constants.DEFAULT_LOG_DIR);
 
-            InitializeLog(logPath, logName);
+            InitializeLog(LogPath, logName, simBase);
         }
 
-        protected void InitializeLog(string logPath, string appendName)
+        protected void InitializeLog(string logPath, string logName, ISimulationBase simbase )
         {
+            m_simbase = simbase;
+            m_gridserver = simbase.IsGridServer;
+
             // check the logPath to ensure correct format
-            if (!logPath.EndsWith ("/")) 
+            if (!logPath.EndsWith ("/"))
                 logPath = logPath + "/";
             m_logPath = logPath;
 
-            string runFilename = System.Diagnostics.Process.GetCurrentProcess ().MainModule.FileName;
-            string runProcess = Path.GetFileNameWithoutExtension(runFilename);
-            m_logFile = StreamWriter.Synchronized(new StreamWriter(logPath + runProcess + appendName + ".log", true));
+            if (logName == "")
+                logName = "Universe";
+
+             if (m_gridserver)
+                m_logName = logName + "_Grid_";
+            else
+                m_logName = logName + "_Sim_";
+
+            // make sure the directory exists
+            if (!Directory.Exists (m_logPath))
+                Directory.CreateDirectory (m_logPath);
+             
+            OpenLog ();
+        }
+
+        protected void OpenLog()
+        {
+            var logtime = DateTime.Now.AddMinutes (5);          // just a bit of leeway for rotation
+            string timestamp =  logtime.ToString("yyyyMMdd");
+
+            // opens the logfile using the system process names
+            //string runFilename = System.Diagnostics.Process.GetCurrentProcess ().MainModule.FileName;
+            //string runProcess = Path.GetFileNameWithoutExtension(runFilename);
+            //m_logFile = StreamWriter.Synchronized(new StreamWriter(m_logPath + runProcess + m_logName + "_" + timestamp + ".log", true));
+
+            m_logFile = StreamWriter.Synchronized(new StreamWriter(m_logPath + m_logName + timestamp + ".log", true));
+            m_logDate = logtime.Date;
+        }
+
+        protected void RotateLog()
+        {
+            m_logFile.Close();          // close the current log
+            OpenLog();                  // start a new one
+
+            var serv = "Universe ";
+            if (m_gridserver)
+                serv = serv + "Grid server";
+            else
+                serv = serv + "Simulator";
+                
+            var startup = String.Format(serv + " has been running since {0}, {1}", 
+                m_simbase.StartupTime.DayOfWeek, m_simbase.StartupTime);
+            var elapsed = String.Format("Current run time of {0}", DateTime.Now - m_simbase.StartupTime);
+
+            MainConsole.Instance.Info ("==============================================================================");
+            MainConsole.Instance.Info ("  " + startup);
+            MainConsole.Instance.Info ("  " + elapsed);
+            MainConsole.Instance.Info ("==============================================================================");
+
         }
 
         public void Dispose()
@@ -745,6 +801,9 @@ namespace Universe.Framework.ConsoleFramework
                 Console.WriteLine(text);
                 if (m_logFile != null)
                 {
+                    if (m_logDate != DateTime.Now.Date)
+                        RotateLog ();
+                    
                     m_logFile.WriteLine(text);
                     m_logFile.Flush();
                 }
@@ -759,6 +818,9 @@ namespace Universe.Framework.ConsoleFramework
                 Console.WriteLine(text);
                 if (m_logFile != null)
                 {
+                    if (m_logDate != DateTime.Now.Date)
+                        RotateLog ();
+                    
                     m_logFile.WriteLine(text);
                     m_logFile.Flush();
                 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/,  http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -224,7 +224,7 @@ namespace Universe.Services.DataService
         public uint RecentlyOnline(uint secondsAgo, bool stillOnline)
         {
              //Beware!! login times are UTC!
-            int now = Util.ToUnixTime(DateTime.Now.ToUniversalTime()) - (int) secondsAgo;
+            int now = Util.ToUnixTime (DateTime.Now.ToUniversalTime ()) - (int)secondsAgo;
 
             QueryFilter filter = new QueryFilter();
             filter.orGreaterThanEqFilters["LastLogin"] = now;
@@ -245,7 +245,7 @@ namespace Universe.Services.DataService
             if (secondsAgo > 0)
             {
                 //Beware!! login times are UTC!
-                int now = Util.ToUnixTime(DateTime.Now.ToUniversalTime()) - (int) secondsAgo;
+                int now = Util.ToUnixTime (DateTime.Now.ToUniversalTime ()) - (int)secondsAgo;
 
                 filter.orGreaterThanEqFilters ["LastLogin"] = now;
                 filter.orGreaterThanEqFilters ["LastSeen"] = now;
@@ -263,14 +263,14 @@ namespace Universe.Services.DataService
                                              uint start, uint count)
         {
             //Beware!! login times are UTC!
-            int now = Util.ToUnixTime(DateTime.Now.ToUniversalTime()) - (int) secondsAgo;
+            int now = Util.ToUnixTime (DateTime.Now.ToUniversalTime ()) - (int)secondsAgo;
 
             QueryFilter filter = new QueryFilter();
             filter.orGreaterThanEqFilters["LastLogin"] = now;
             filter.orGreaterThanEqFilters["LastSeen"] = now;
             if (stillOnline)
             {
-                //filter.andGreaterThanFilters["LastLogout"] = now;
+//                filter.andGreaterThanFilters["LastLogout"] = now;
                 filter.andFilters["IsOnline"] = "1";
             }
 
@@ -287,7 +287,7 @@ namespace Universe.Services.DataService
             if (secondsAgo > 0)
             {
                 //Beware!! login times are UTC!
-                int now = (int)Util.ToUnixTime (DateTime.Now.ToUniversalTime ());
+                int now = Util.ToUnixTime (DateTime.Now.ToUniversalTime ());
                 now -= (int) secondsAgo;
 
                 filter.orGreaterThanEqFilters["LastLogin"] = now;
@@ -296,6 +296,7 @@ namespace Universe.Services.DataService
 
             // online only please...
             filter.andFilters["IsOnline"] = "1";
+
 
             List<string> query = GD.Query(new string[] { "*" }, m_userInfoTable, filter, sort, start, count);
 

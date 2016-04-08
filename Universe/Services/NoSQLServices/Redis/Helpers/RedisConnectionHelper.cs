@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/,  http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,10 +32,10 @@ namespace Universe.RedisServices.ConnectionHelpers
 {
     public class Pool<T>
     {
-        private readonly List<T> items = new List<T>();
-        private readonly Queue<T> freeItems = new Queue<T>();
-        private volatile object _lock = new object();
-        private readonly Func<T> createItemAction;
+        readonly List<T> items = new List<T>();
+        readonly Queue<T> freeItems = new Queue<T>();
+        volatile object _lock = new object();
+        readonly Func<T> createItemAction;
 
         public Pool(Func<T> createItemAction)
         {
@@ -72,13 +72,18 @@ namespace Universe.RedisServices.ConnectionHelpers
 
         public List<T> Items
         {
-            get { return items; }
+            get {
+                lock (_lock)
+                    return items; }
         }
 
         public void Clear()
         {
-            items.Clear();
-            freeItems.Clear();
+            lock (_lock)
+            {
+                items.Clear ();
+                freeItems.Clear ();
+            }
         }
     }
 }

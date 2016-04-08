@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/,  http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -544,7 +544,7 @@ namespace Universe.ScriptEngine.VirtualScript
 
             if (InventoryItem == null)
             {
-                MainConsole.Instance.Warn("[Virtual Script]: Could not find inventory item for script " + ItemID + ", part" +
+                MainConsole.Instance.Warn("[Virtual Script Engine]: Could not find inventory item for script " + ItemID + ", part" +
                                           Part.Name + "@" +
                                           Part.AbsolutePosition);
                 return false;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/,  http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -64,6 +64,13 @@ namespace Universe.Framework.Modules
             IClientAPI remoteClient, string name, string charter, bool showInList, UUID insigniaID, int membershipFee,
             bool openEnrollment, bool allowPublish, bool maturePublish);
 
+        /// <summary>
+        /// Determines whether the specified groupID is actually a group.
+        /// </summary>
+        /// <returns><c>true</c> if the specified groupID is a group ; otherwise, <c>false</c>.</returns>
+        /// <param name="groupID">Group UUID.</param>
+        bool IsGroup (UUID groupID);
+          
         /// <summary>
         ///     Get a group
         /// </summary>

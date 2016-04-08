@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/,  http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -46,8 +46,8 @@ using Universe.Framework.Utilities;
 
 namespace Universe.BotManager
 {
-    #region Enums
 
+    #region Enums
     public enum BotState
     {
         Idle,
@@ -248,7 +248,6 @@ namespace Universe.BotManager
     public sealed class Bot : IDisposable
     {
         #region Declares
-
         static readonly object _lock = new object();
 
         IBotController m_controller;
@@ -1307,6 +1306,7 @@ namespace Universe.BotManager
             int closestPosition = 0;
             double closestDistance = 0;
             Vector3[] sigPos;
+
             lock (_lock)
             {
                 sigPos = new Vector3[m_significantAvatarPositions.Count];
@@ -1524,6 +1524,7 @@ namespace Universe.BotManager
     public class BotClientAPI : IClientAPI
     {
         static readonly object _lock = new object();
+
         public readonly AgentCircuitData m_circuitData;
         public readonly UUID m_myID = UUID.Random();
         public readonly IScene m_scene;
@@ -2006,7 +2007,7 @@ namespace Universe.BotManager
 
         public void SendInstantMessage(GridInstantMessage im)
         {
-            // TODO: This needs to be sorted out - EmperorStarfinder - April 06, 2016
+            // TODO:  Sort this out - greythane- 20160406
             //This will cause a stack overflow, as it will loop back to trying to send the IM out again
             //m_controller.SendInstantMessage(im);
         }

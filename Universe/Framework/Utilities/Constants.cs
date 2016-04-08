@@ -35,7 +35,7 @@ namespace Universe.Framework.Utilities
         // some predefined folders
         public const string DEFAULT_CONFIG_DIR = "../Config";
         public const string DEFAULT_DATA_DIR = "../Data";
-		public const string DEFAULT_CRASH_DIR = "../Data/Crashes";
+        public const string DEFAULT_CRASH_DIR = "../Data/Crashes";
 
         // all these are relative to the default data directory,
         // set either as above or via configuration
@@ -47,6 +47,7 @@ namespace Universe.Framework.Utilities
         public const string DEFAULT_USERINVENTORY_DIR = "UserArchives";
 
         public const string DEFAULT_USERHTML_DIR = "html";
+        public const string DEFAULT_LOG_DIR = "logs";
 
         public const int RegionSize = 256;
         public const int RegionHeight = 10000;
@@ -86,7 +87,6 @@ namespace Universe.Framework.Utilities
         // System Marketplace Avatar
         public const string MarketplaceOwnerUUID = "198e72a6-cef6-4bbb-ae08-c0a79e6b7d1e";
         public const string MarketplaceOwnerName = "Marketplace Concierge";
-
 
         // user levels
         public const int USER_DISABLED = -2;

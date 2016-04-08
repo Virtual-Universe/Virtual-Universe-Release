@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/,  http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -99,9 +99,10 @@ namespace Universe.DataManager.Migration
                 {
                     Migrator targetMigrator = GetLatestVersionMigrator();
                     MainConsole.Instance.InfoFormat("[Migrator]: New migration script for {0} found", migratorName);
-                    MainConsole.Instance.CleanInfoFormat("            Depending upon the amount of {0} data, this process may take quite a while", migratorName);
-                    MainConsole.Instance.CleanInfo("             You may also see warnings and possible timeout errors until this proccess is completed");
-                    MainConsole.Instance.CleanInfo("");
+                    MainConsole.Instance.CleanInfoFormat ("            Depending upon the amount of {0} data, this process may take quite a while", migratorName);
+                    MainConsole.Instance.CleanInfo ("             You may also see warnings and possible timeout errors until this proccess is completed");
+                    MainConsole.Instance.CleanInfo ("");
+
                     operationDescription = new MigrationOperationDescription(MigrationOperationTypes.UpgradeToTarget,
                                                                              currentVersion, startMigrator.Version,
                                                                              targetMigrator.Version);

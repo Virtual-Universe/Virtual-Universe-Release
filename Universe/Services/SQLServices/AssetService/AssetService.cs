@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/,  http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -96,7 +96,7 @@ namespace Universe.Services.SQLServices.AssetService
 
             }
 
-            MainConsole.Instance.Debug("[ASSET SERVICE]: Local asset service enabled");
+            MainConsole.Instance.Debug("[Asset service]: Local asset service enabled");
         }
 
         public virtual void Start(IConfigSource config, IRegistryCore registry)
@@ -188,9 +188,9 @@ namespace Universe.Services.SQLServices.AssetService
             AssetBase asset = m_database.GetAsset(UUID.Parse(id));
             if (doDatabaseCaching && cache != null)
                 cache.Cache(id, asset);
-            if (asset != null) return asset.Data;
-// An empty array is NOT null and a lot of tests depend on this//            return new byte[0];
-            return null;
+            
+            // An empty array byte [] is NOT null and a lot of tests depend on the null test still - greythane -
+            return asset == null ? null : asset.Data;
         }
 
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
@@ -212,6 +212,13 @@ namespace Universe.Services.SQLServices.AssetService
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
         public virtual UUID Store(AssetBase asset)
         {
+            // this should never happen but...
+            if (asset == null)
+            {
+                MainConsole.Instance.Error ("[Asset service]: Trying to store a null asset!");
+                return UUID.Zero;
+            }
+
             object remoteValue = DoRemoteByURL("AssetServerURI", asset);
             if (remoteValue != null || m_doRemoteOnly)
             {
@@ -221,14 +228,18 @@ namespace Universe.Services.SQLServices.AssetService
             }
             else
                 asset.ID = m_database.Store(asset);
-            IImprovedAssetCache cache = m_registry.RequestModuleInterface<IImprovedAssetCache>();
-            if (doDatabaseCaching && cache != null && asset != null && asset.Data != null && asset.Data.Length != 0)
+            
+            if (doDatabaseCaching)
             {
-                cache.Expire(asset.ID.ToString());
-                cache.Cache(asset.ID.ToString(), asset);
+                IImprovedAssetCache cache = m_registry.RequestModuleInterface<IImprovedAssetCache> ();
+                if (cache != null && asset.Data.Length != 0)
+                {
+                    cache.Expire (asset.ID.ToString ());
+                    cache.Cache (asset.ID.ToString (), asset);
+                }
             }
 
-            return asset != null ? asset.ID : UUID.Zero;
+            return asset.ID;
         }
 
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
@@ -275,9 +286,14 @@ namespace Universe.Services.SQLServices.AssetService
 
             AssetBase asset = Get(args[2]);
 
-            if (asset == null || asset.Data.Length == 0)
+            if (asset == null)
             {
-                MainConsole.Instance.Info("Asset not found");
+                MainConsole.Instance.Warn ("Asset not found");
+                return;
+            }
+            if (asset.Data.Length == 0)
+            {
+                MainConsole.Instance.Warn ("Asset has no data");
                 return;
             }
 

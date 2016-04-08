@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/,  http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -228,6 +228,7 @@ namespace Universe.Framework.Utilities
         Float,
         Binary32,
         Binary64,
+        UUID,
         Unknown        
     }
 
@@ -300,6 +301,7 @@ namespace Universe.Framework.Utilities
         public static readonly ColumnTypeDef UTinyInt4 = new ColumnTypeDef(ColumnType.TinyInt, 4, true);
         public static readonly ColumnTypeDef Binary32 = new ColumnTypeDef(ColumnType.Binary, 32);
         public static readonly ColumnTypeDef Binary64 = new ColumnTypeDef(ColumnType.Binary, 64);
+        public static readonly ColumnTypeDef UUID = new ColumnTypeDef(ColumnType.UUID, 36);
         public static readonly ColumnTypeDef Unknown = new ColumnTypeDef(ColumnType.Unknown);
 
 

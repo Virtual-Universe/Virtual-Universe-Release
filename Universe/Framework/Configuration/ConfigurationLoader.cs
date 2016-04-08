@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/,  http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -40,6 +40,8 @@ namespace Universe.Framework.Configuration
     /// </summary>
     public class ConfigurationLoader
     {
+        public bool IsGridServer = false;
+
         public string defaultIniFile = "Universe.ini";
 
         public string iniFilePath = "";
@@ -279,7 +281,8 @@ namespace Universe.Framework.Configuration
             }
 
             // add override parameters if they exist ONLY for standalone operation
-            if (! mainIniFileName.Contains("GridServer"))
+            IsGridServer = mainIniFileName.Contains("Server");
+            if (!IsGridServer)
             {
                 string  worldIniFilePath = Path.Combine(mainIniDirectory, worldIniFileName);
                 if (File.Exists(worldIniFilePath))

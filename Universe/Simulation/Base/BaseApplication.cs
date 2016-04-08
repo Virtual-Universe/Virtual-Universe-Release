@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/,  http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -43,13 +43,13 @@ using Universe.Framework.Utilities;
 namespace Universe.Simulation.Base
 {
     /// <summary>
-    ///     Starting class for the Universe Server
+    ///     Starting class for the Virtual Universe Server
     /// </summary>
     public class BaseApplication
     {
 
         /// <summary>
-        ///     Save Crashes in the Data/Crashes folder.  Configurable with m_crashDir
+        ///     Save Crashes in the bin/crashes folder.  Configurable with m_crashDir
         /// </summary>
         public static bool m_saveCrashDumps;
 
@@ -59,17 +59,17 @@ namespace Universe.Simulation.Base
         static readonly ConfigurationLoader m_configLoader = new ConfigurationLoader();
 
         /// <summary>
-        ///     Directory to save crash reports to.  Relative to Data/Crashes
+        ///     Directory to save crash reports to.  Relative to ../Data/Crashes
         /// </summary>
         public static string m_crashDir = Constants.DEFAULT_CRASH_DIR;
 
         static bool _IsHandlingException; // Make sure we don't go recursive on ourselves
 
-        //could move our main function into OpenSimMain and kill this class
         public static void BaseMain(string[] args, string defaultIniFile, ISimulationBase simBase)
         {
             // First line, hook the appdomain to the crash reporter
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            AppDomain.CurrentDomain.UnhandledException +=
+                CurrentDomain_UnhandledException;
 
             // Add the arguments supplied when running the application to the configuration
             ArgvConfigSource configSource = new ArgvConfigSource(args);
@@ -84,7 +84,7 @@ namespace Universe.Simulation.Base
             // Increase the number of IOCP threads available. Mono defaults to a tragically low number
             int workerThreads, iocpThreads;
             ThreadPool.GetMaxThreads(out workerThreads, out iocpThreads);
-            //MainConsole.Instance.InfoFormat("[Virtual Universe Main]: Runtime gave us {0} worker threads and {1} IOCP threads", workerThreads, iocpThreads);
+            //MainConsole.Instance.InfoFormat("[Virtual Universe Main: Runtime gave us {0} worker threads and {1} IOCP threads", workerThreads, iocpThreads);
             if (workerThreads < 500 || iocpThreads < 1000)
             {
                 workerThreads = 500;
@@ -163,7 +163,7 @@ namespace Universe.Simulation.Base
                         "2. " + Universe_ConfigDir + "/Sim/Standalone/StandaloneCommon.ini \nor\n" +
                         "3. " + Universe_ConfigDir + "/Grid/GridCommon.ini\n" +
                         "\nAlso, you will want to examine these files in great detail because only the basic system will " +
-                        "load by default. Virtual Universe can do a LOT more if you spend a little time going through these files.\n\n");
+                        "load by default. Universe can do a LOT more if you spend a little time going through these files.\n\n");
                 } else
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
@@ -179,6 +179,8 @@ namespace Universe.Simulation.Base
                 Console.WriteLine ("");
                 Console.WriteLine (" ##  WARNING  ##");
                 Console.WriteLine("This will overwrite any existing configuration files!");
+                Console.WriteLine("Please be sure you have saved a backup of your configuration files before");
+                Console.WriteLine("Proceeding with this configuration!");
                 Console.ResetColor();
                 Console.WriteLine ("");
                 resp = ReadLine("Do you want to configure Virtual Universe now?  (yes/no)", resp);
@@ -196,7 +198,7 @@ namespace Universe.Simulation.Base
                     string regionIPAddress = gridIPAddress;
                     bool isStandalone = true;
                     string dbType = "1";
-                    string gridName = "Virtual Universe";
+                    string gridName = "Virtual Universe Grid";
                     string welcomeMessage = "";
                     string allowAnonLogin = "true";
                     uint port = 9000;
@@ -669,7 +671,7 @@ namespace Universe.Simulation.Base
 
             MainConsole.Instance.ErrorFormat("[APPLICATION]: {0}", msg);
 
-            handleException(msg, ex);
+            HandleCrashException(msg, ex);
         }
 
         /// <summary>
@@ -677,10 +679,13 @@ namespace Universe.Simulation.Base
         /// </summary>
         /// <param name="msg"></param>
         /// <param name="ex"></param>
-        public static void handleException(string msg, Exception ex)
+        public static void HandleCrashException(string msg, Exception ex)
         {
-            if (m_saveCrashDumps && Environment.OSVersion.Platform == PlatformID.Win32NT)
-            {
+
+            //if (m_saveCrashDumps && Environment.OSVersion.Platform == PlatformID.Win32NT)
+            // 20160323 -greythane - not sure why this will not work on *nix as well?
+            if (m_saveCrashDumps)
+                           {
                 // Log exception to disk
                 try
                 {
@@ -701,7 +706,7 @@ namespace Universe.Simulation.Base
                 }
                 catch (Exception e2)
                 {
-                    MainConsole.Instance.ErrorFormat("[CRASH LOGGER CRASHED]: {0}", e2);
+                    MainConsole.Instance.ErrorFormat("[Crash Logger Crashed]: {0}", e2);
                 }
             }
         }
@@ -798,7 +803,7 @@ namespace Universe.Simulation.Base
             {
                 exp.ExceptionPointers = Marshal.GetExceptionPointers();
             }
-            bool bRet = false;
+            bool bRet;
             if (exp.ExceptionPointers == IntPtr.Zero)
             {
                 bRet = MiniDumpWriteDump(currentProcessHandle, currentProcessId, fileHandle, (uint) options, IntPtr.Zero,

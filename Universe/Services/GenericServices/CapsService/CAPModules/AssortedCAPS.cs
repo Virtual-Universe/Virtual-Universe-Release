@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/,  http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -92,6 +92,7 @@ namespace Universe.Services
             m_service.RemoveStreamHandler ("HomeLocation", "POST");
             m_service.RemoveStreamHandler ("TeleportLocation", "POST");
         }
+        #endregion
 
         #region Other CAPS
 
@@ -232,9 +233,6 @@ namespace Universe.Services
             _isInTeleportCurrently = false;
             return OSDParser.SerializeLLSDXmlBytes (retVal);
         }
-
-        #endregion
-
         #endregion
     }
 }

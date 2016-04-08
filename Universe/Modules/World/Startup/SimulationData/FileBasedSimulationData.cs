@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/,  http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -296,7 +296,6 @@ namespace Universe.Modules
         /// <param name="currentInfo">Current info.</param>
         RegionInfo CreateRegionFromConsole(RegionInfo info, Boolean prompt, Dictionary<string, int> currentInfo)
         {
-
             if (info == null || info.NewRegion)
             {
                 if (info == null)
@@ -337,7 +336,6 @@ namespace Universe.Modules
                 // * Estate / Openspace
                 //
                 // * Universe Home / Full Region (Private)
-                //
                 info.RegionType = MainConsole.Instance.Prompt ("Region Type (Mainland / Estate / Homes)",
                     (info.RegionType == "" ? "Estate" : info.RegionType));
 
