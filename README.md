@@ -11,11 +11,14 @@
  This is not a Virtual Universe specific bug.  The solution here is to cd to VirtualUniverse directory and run the command:
 
 Grid: sudo ./grid_console.sh 
+
 Sim: sudo ./sim_console.sh
 
  This will give the necessary permissions to override this bug and allow the consoles to work correctly.
 
+ 
  We are not aware of issues being reported relating to this bug from users of Ubuntu derivatives such as XUbuntu, KUbuntu, Linux Mint, etc.  
+ 
  Additionally we have not received any reports to indicate this is happening with Debian (8.0 Jessie), Fedora, Opensuse, Arch Linux, Redhat, etc.
  
 *NOTE: 
