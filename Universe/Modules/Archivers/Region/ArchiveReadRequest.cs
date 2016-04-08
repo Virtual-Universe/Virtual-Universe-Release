@@ -32,7 +32,7 @@ using System.IO.Compression;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
-using Openmetaverse;
+using OpenMetaverse;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
