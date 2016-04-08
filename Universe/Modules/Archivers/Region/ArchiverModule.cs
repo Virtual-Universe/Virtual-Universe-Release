@@ -33,7 +33,7 @@ using Nini.Config;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
-using Universe.Fraemwork.Utilities;
+using Universe.Framework.Utilities;
 
 namespace Universe.Modules.Archivers
 {
