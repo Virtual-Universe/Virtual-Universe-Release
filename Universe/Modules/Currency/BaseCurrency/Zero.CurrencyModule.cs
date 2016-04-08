@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/,  http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -249,7 +249,7 @@ namespace Universe.Modules.Currency
 
             quoteResponse.Add("success", false);
             quoteResponse.Add("errorMessage", "Invalid parameters passed to the quote box");
-			quoteResponse.Add("errorURI", "http://whitecore-sim.org/wiki");
+			quoteResponse.Add("errorURI", "http://universe-sim.org/wiki");
             returnval.Value = quoteResponse;
             return returnval;
         }
@@ -337,17 +337,6 @@ namespace Universe.Modules.Currency
 
         #endregion
 
-        public List<GroupAccountHistory> GetTransactions(UUID groupID, UUID agentID, int currentInterval,
-                                                         int intervalDays)
-        {
-            return new List<GroupAccountHistory>();
-        }
-
-        public GroupBalance GetGroupBalance(UUID groupID)
-        {
-            return new GroupBalance() {StartingDate = DateTime.Now.AddDays(-4)};
-        }
-
         public uint NumberOfTransactions(UUID toAgent, UUID fromAgent)
         {
             return 0;
@@ -403,5 +392,21 @@ namespace Universe.Modules.Currency
             return new List<AgentPurchase> ();
         }
 
+        public List<GroupAccountHistory> GetGroupTransactions(UUID groupID, UUID agentID, int currentInterval,
+            int intervalDays)
+        {
+            return new List<GroupAccountHistory>();
+        }
+
+        public GroupBalance GetGroupBalance(UUID groupID)
+        {
+            return new GroupBalance() {StartingDate = DateTime.Now.AddDays(-4)};
+        }
+
+        public bool GroupCurrencyTransfer(UUID groupID, UUID fromID, bool payUser, string toObjectName, UUID fromObjectID,
+            string fromObjectName, int amount, string description, TransactionType type, UUID transactionID)
+        {
+            return true;
+        }
     }
 }
