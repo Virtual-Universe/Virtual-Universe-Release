@@ -25,7 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -638,7 +637,7 @@ namespace Universe.Modules.Profiles
             
             if (Utilities.IsSystemUser (Profile.PrincipalID))
             {
-                charterMember = Utils.StringToBytes ("└");
+                charterMember = Utils.StringToBytes ("Virtual Universe System User");
             }
 
             uint membershipGroupINT = 0;
