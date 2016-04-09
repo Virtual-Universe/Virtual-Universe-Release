@@ -117,7 +117,6 @@ namespace Universe.Services.GenericServices.SystemAccountService
 
         public void Initialize(IConfigSource config, IRegistryCore registry)
         {
-
             IConfig estConfig = config.Configs["SystemUserService"];
             if (estConfig != null)
             {
@@ -178,8 +177,7 @@ namespace Universe.Services.GenericServices.SystemAccountService
                     "reset marketplace password",
                     "reset marketplace password",
                     "Resets the password of the system Marketplace Owner",
-                    HandleResetMarketplacePassword, false, true);
-                
+                    HandleResetMarketplacePassword, false, true);       
             }
         }
 
@@ -197,14 +195,12 @@ namespace Universe.Services.GenericServices.SystemAccountService
             VerifySystemUserInfo("RealEstate", SystemEstateOwnerUUID, SystemEstateOwnerName, 150);
             VerifySystemUserInfo("Banker", BankerUUID, BankerName, 100);
             VerifySystemUserInfo("Marketplace", MarketplaceOwnerUUID, MarketplaceOwnerName, 100);
-
         }
 
         void VerifySystemUserInfo(string usrType, UUID usrUUID, string usrName, int usrLevel)
         {
-
             var userAccount = m_accountService.GetUserAccount (null, usrUUID);
-            var userPassword = Utilities.RandomPassword.Generate (2, 1, 0);
+            var userPassword = Utilities.RandomPassword.Generate (4, 3, 0);
 
             if (userAccount == null)
             {
@@ -238,7 +234,6 @@ namespace Universe.Services.GenericServices.SystemAccountService
                     MainConsole.Instance.InfoFormat (" The {0} user has been elevated to '{1}' level", usrType, m_accountService.UserGodLevel(usrLevel));
 
                 return;
-
             }
 
             // we already have the account.. verify details in case of a configuration change
@@ -258,7 +253,6 @@ namespace Universe.Services.GenericServices.SystemAccountService
                 else
                     MainConsole.Instance.WarnFormat (" There was a problem updating the {0} user", usrType);
             }
-
         }
 
         // Save passwords for later
@@ -310,7 +304,7 @@ namespace Universe.Services.GenericServices.SystemAccountService
             if (question.StartsWith("y"))
             {
                 IAuthenticationService authService = m_registry.RequestModuleInterface<IAuthenticationService> ();
-                var newPassword = Utilities.RandomPassword.Generate(2, 1, 0);
+                var newPassword = Utilities.RandomPassword.Generate(4, 3, 0);
 
                 UserAccount account = m_accountService.GetUserAccount(null, systemUserName);
                 bool success = false;
@@ -319,15 +313,14 @@ namespace Universe.Services.GenericServices.SystemAccountService
                     success = authService.SetPassword(account.PrincipalID, "UserAccount", newPassword);
 
                 if (!success)
-                    MainConsole.Instance.ErrorFormat ("[SYSTEM ACCOUNT SERVICE]: Unable to reset password for the " + userType);
+                    MainConsole.Instance.ErrorFormat ("[System Account Service]: Unable to reset password for the " + userType);
                 else
                 {
                     SaveSystemUserPassword (userType, systemUserName, newPassword);
-                    MainConsole.Instance.Info ("[SYSTEM ACCOUNT SERVICE]: The new password for '" + account.Name + "' is : " + newPassword);
+                    MainConsole.Instance.Info ("[System Account Service]: The new password for '" + account.Name + "' is : " + newPassword);
                 }
             }
         }
-
 
         #endregion
     }
