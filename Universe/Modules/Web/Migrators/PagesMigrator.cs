@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/,  http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,19 +25,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Universe.Framework.DatabaseInterfaces;
-using OpenMetaverse;
 using System.Collections.Generic;
+using OpenMetaverse;
+using Universe.Framework.DatabaseInterfaces;
 
 namespace Universe.Modules.Web
 {
-    internal class PagesMigrator
+    class PagesMigrator
     {
+        static GridPage _rootPage;
         public static readonly string Schema = "WebPages";
-        private static GridPage _rootPage;
         public static readonly uint CurrentVersion = 11;
 
-        private static void InitializeDefaults()
+        static void InitializeDefaults()
         {
             _rootPage = new GridPage();
 

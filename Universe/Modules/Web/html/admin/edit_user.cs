@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/,  http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,14 +25,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
+using System.Collections.Generic;
+using OpenMetaverse;
 using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Profile;
 using Universe.Framework.Utilities;
-using OpenMetaverse;
-using System;
-using System.Collections.Generic;
 
 namespace Universe.Modules.Web
 {
@@ -73,8 +73,12 @@ namespace Universe.Modules.Web
                             : UUID.Parse(requestParameters["userid"].ToString());
 
             IUserAccountService userService = webInterface.Registry.RequestModuleInterface<IUserAccountService>();
+            UserAccount account = null;
+
+            if (userService != null)
+                account = userService.GetUserAccount(null, userID);
+            
             var agentService = Framework.Utilities.DataManager.RequestPlugin<IAgentConnector>();
-            UserAccount account = userService.GetUserAccount(null, userID);
             IAgentInfo agent = agentService.GetAgent(userID);
 
             if (agent == null)
@@ -89,14 +93,17 @@ namespace Universe.Modules.Web
                 int UserFlags = webInterface.UserTypeToUserFlags (UserType);
 
                 // set the user account type
-                account.UserFlags = UserFlags;
-                userService.StoreUserAccount (account);
+                if (account != null)
+                {
+                    account.UserFlags = UserFlags;
+                    userService.StoreUserAccount (account);
+                } else
+                    response = "Unable to update user account!'";
 
                 if (agent != null)
                 {
                     agent.OtherAgentInformation ["UserFlags"] = UserFlags;
                     agentService.UpdateAgent (agent);
-                    response = "User has been updated.";
                 } else
                     response = "Agent information is not available! Has the user logged in yet?";
 
@@ -115,7 +122,8 @@ namespace Universe.Modules.Web
                     profileData.UpdateUserProfile (profile);
                 }
 
-                response = "User has been updated.";
+                if (response == null)
+                    response = "User has been updated.";
                 return null;
             }
 
@@ -148,7 +156,7 @@ namespace Universe.Modules.Web
             {
                 string email = requestParameters["email"].ToString();
 
-                if (userService != null)
+                if (account != null)
                 {
                     account.Email = email;
                     userService.StoreUserAccount(account);

@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/,  http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,10 +25,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System.Collections.Generic;
+using OpenMetaverse;
 using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Services;
-using OpenMetaverse;
-using System.Collections.Generic;
 using Universe.Framework.Utilities;
 
 namespace Universe.Modules.Web
@@ -101,15 +101,18 @@ namespace Universe.Modules.Web
                     if (ourAccount != null)
                     {
                         IFriendsService friendsService = webInterface.Registry.RequestModuleInterface<IFriendsService> ();
-                        var friends = friendsService.GetFriends (ourAccount.PrincipalID);
-                        foreach (var friend in friends)
+                        if (friendsService != null)
                         {
-                            UUID friendID = UUID.Zero;
-                            UUID.TryParse (friend.Friend, out friendID);
+                            var friends = friendsService.GetFriends (ourAccount.PrincipalID);
+                            foreach (var friend in friends)
+                            {
+                                UUID friendID;
+                                UUID.TryParse (friend.Friend, out friendID);
 
-                            if (friendID != UUID.Zero) 
-//                            if ( (friendID != UUID.Zero) && (friendID == ourAccount.PrincipalID))
+                                if (friendID != UUID.Zero) 
+                                // if ( (friendID != UUID.Zero) && (friendID == ourAccount.PrincipalID)) 
                                 activeUsersList.Add (friendID);
+                            }
                         }
                     }
                 }

@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/,  http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -363,8 +363,14 @@ namespace Universe.Modules.Web
             {
                 System.IO.StreamReader reader =
                     new System.IO.StreamReader(System.IO.Path.Combine(Environment.CurrentDirectory, tosLocation));
-                ToS = reader.ReadToEnd();
-                reader.Close();
+                try
+                {
+                    ToS = reader.ReadToEnd();
+                }
+                finally
+                {
+                    reader.Close();
+                }
             }
 
             // check for user name seed

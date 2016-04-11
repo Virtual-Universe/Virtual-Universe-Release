@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/,  http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,15 +25,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System.Collections.Generic;
+using OpenMetaverse;
 using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Modules;
+using Universe.Framework.SceneInfo;
 using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
-using Universe.Framework.SceneInfo;
-using OpenMetaverse;
-using System.Collections.Generic;
-using System.IO;
 using GridRegion = Universe.Framework.Services.GridRegion;
 using RegionFlags = Universe.Framework.Services.RegionFlags;
 
@@ -219,7 +218,7 @@ namespace Universe.Modules.Web
                     newRegion.RegionTerrain = "Custom";
                 }
 
-                /* Disabled as this is a worl=k in progress and will break with the current scenemanager (Dec 5 - greythane-
+                /* Disabled as this is a work in progress and will break with the current scenemanager (Dec 5 - greythane-
                 // TODO: !!! Assumes everything is local for now !!!               
                 ISceneManager scenemanager = webInterface.Registry.RequestModuleInterface<ISceneManager> ();
                 if (scenemanager.CreateRegion(newRegion))

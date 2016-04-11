@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/,  http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,11 +26,10 @@
  */
 
 
-using Universe.Framework.DatabaseInterfaces;
-using Universe.Framework.Servers.HttpServer;
-using Universe.Framework.Servers.HttpServer.Implementation;
-using OpenMetaverse;
 using System.Collections.Generic;
+using OpenMetaverse;
+using Universe.Framework.DatabaseInterfaces;
+using Universe.Framework.Servers.HttpServer.Implementation;
 
 namespace Universe.Modules.Web
 {
@@ -70,6 +69,9 @@ namespace Universe.Modules.Web
 
             IGenericsConnector generics = Framework.Utilities.DataManager.RequestPlugin<IGenericsConnector>();
             GridPage rootPage = generics.GetGeneric<GridPage>(UUID.Zero, "WebPages", "Root");
+            if (rootPage == null)
+                return null;            // major bummer !!
+            
             rootPage.Children.Sort((a, b) => a.MenuPosition.CompareTo(b.MenuPosition));
             List<GridPage> allPages = new List<GridPage>(rootPage.Children);
             foreach (GridPage page in rootPage.Children)

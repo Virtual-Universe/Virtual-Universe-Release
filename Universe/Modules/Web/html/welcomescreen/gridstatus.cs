@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/,  http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,14 +25,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
+using System.Collections.Generic;
+using Nini.Config;
+using OpenMetaverse;
 using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Modules;
 using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Services;
-using Nini.Config;
-using OpenMetaverse;
-using System;
-using System.Collections.Generic;
 using RegionFlags = Universe.Framework.Services.RegionFlags;
 
 namespace Universe.Modules.Web
@@ -69,7 +69,9 @@ namespace Universe.Modules.Web
 
             IAgentInfoConnector recentUsers = Framework.Utilities.DataManager.RequestPlugin<IAgentInfoConnector>();
             IGenericsConnector connector = Framework.Utilities.DataManager.RequestPlugin<IGenericsConnector>();
-            GridWelcomeScreen welcomeInfo = connector.GetGeneric<GridWelcomeScreen>(UUID.Zero, "GridWelcomeScreen",
+            GridWelcomeScreen welcomeInfo = null;
+            if (connector != null)
+                welcomeInfo = connector.GetGeneric<GridWelcomeScreen>(UUID.Zero, "GridWelcomeScreen",
                                                                                     "GridWelcomeScreen");
 
             if (welcomeInfo == null)
@@ -77,35 +79,46 @@ namespace Universe.Modules.Web
 
             IConfigSource config = webInterface.Registry.RequestModuleInterface<ISimulationBase>().ConfigSource;
             vars.Add("GridStatus", translator.GetTranslatedString("GridStatus"));
+            vars.Add("TotalUserCount", translator.GetTranslatedString("TotalUserCount"));
+            vars.Add("TotalRegionCount", translator.GetTranslatedString("TotalRegionCount"));
+            vars.Add("UniqueVisitors", translator.GetTranslatedString("UniqueVisitors"));
+            vars.Add("OnlineNow", translator.GetTranslatedString("OnlineNow"));
+            vars.Add("RecentlyOnline", translator.GetTranslatedString("RecentlyOnline"));
+            vars.Add("HGActiveText", translator.GetTranslatedString("HyperGrid"));
+            vars.Add("VoiceActiveLabel", translator.GetTranslatedString("Voice"));
+            vars.Add("CurrencyActiveLabel", translator.GetTranslatedString("Currency"));
+
             vars.Add("GridOnline",
                      welcomeInfo.GridStatus
                          ? translator.GetTranslatedString("Online")
                          : translator.GetTranslatedString("Offline"));
-            vars.Add("TotalUserCount", translator.GetTranslatedString("TotalUserCount"));
             vars.Add("UserCount", webInterface.Registry.RequestModuleInterface<IUserAccountService>().
                                                NumberOfUserAccounts(null, "").ToString());
-            vars.Add("TotalRegionCount", translator.GetTranslatedString("TotalRegionCount"));
             vars.Add("RegionCount", Framework.Utilities.DataManager.RequestPlugin<IRegionData>().
                                                 Count((RegionFlags) 0, (RegionFlags) 0).ToString());
-            vars.Add("UniqueVisitors", translator.GetTranslatedString("UniqueVisitors"));
-            vars.Add("UniqueVisitorCount", recentUsers.RecentlyOnline((uint) TimeSpan.FromDays(30).TotalSeconds, false).ToString());
-            vars.Add("OnlineNow", translator.GetTranslatedString("OnlineNow"));
-            vars.Add ("OnlineNowCount", recentUsers.RecentlyOnline (5 * 60, true).ToString ());
-            vars.Add("RecentlyOnline", translator.GetTranslatedString("RecentlyOnline"));
-            vars.Add("RecentlyOnlineCount", recentUsers.RecentlyOnline(10*60, false).ToString());
-            vars.Add("HGActiveText", translator.GetTranslatedString("HyperGrid"));
             string disabled = translator.GetTranslatedString("Disabled"),
                    enabled = translator.GetTranslatedString("Enabled");
             vars.Add("HGActive", disabled + "(TODO: FIX)");
-            vars.Add("VoiceActiveLabel", translator.GetTranslatedString("Voice"));
             vars.Add("VoiceActive",
                      config.Configs["Voice"] != null &&
                      config.Configs["Voice"].GetString("Module", "GenericVoice") != "GenericVoice"
                          ? enabled
                          : disabled);
-            vars.Add("CurrencyActiveLabel", translator.GetTranslatedString("Currency"));
             vars.Add("CurrencyActive",
                      webInterface.Registry.RequestModuleInterface<IMoneyModule>() != null ? enabled : disabled);
+
+            if (recentUsers != null)
+            {
+                vars.Add("UniqueVisitorCount", recentUsers.RecentlyOnline((uint) TimeSpan.FromDays(30).TotalSeconds, false).ToString());
+                vars.Add ("OnlineNowCount", recentUsers.RecentlyOnline (5 * 60, true).ToString ());
+                vars.Add("RecentlyOnlineCount", recentUsers.RecentlyOnline(10*60, false).ToString());
+            }
+            else
+            {
+                vars.Add("UniqueVisitorCount", "");
+                vars.Add ("OnlineNowCount", "");
+                vars.Add("RecentlyOnlineCount", "");
+            }
 
             return vars;
         }

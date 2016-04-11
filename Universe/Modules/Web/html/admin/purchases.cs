@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/,  http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,14 +25,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Universe.Framework.Servers.HttpServer.Implementation;
-using System.Collections.Generic;
-using Universe.Framework.Modules;
-using Universe.Framework.Utilities;
 using System;
-using Universe.Framework.Services;
-using OpenMetaverse;
+using System.Collections.Generic;
 using Nini.Config;
+using OpenMetaverse;
+using Universe.Framework.Modules;
+using Universe.Framework.Servers.HttpServer.Implementation;
+using Universe.Framework.Services;
+using Universe.Framework.Utilities;
 
 namespace Universe.Modules.Web
 {
@@ -125,12 +125,14 @@ namespace Universe.Modules.Web
                 var timeNow = DateTime.Now.ToString ("HH:mm:ss");
                 var dateFrom = DateTime.Parse (DateStart + " " + timeNow);
                 var dateTo = DateTime.Parse (DateEnd + " " + timeNow);
-                List<AgentPurchase> purchases;
-                if (UserID != UUID.Zero)
-                    purchases = moneyModule.GetPurchaseHistory (UserID, dateFrom, dateTo, (uint)start, amountPerQuery);
-                else
-                    purchases = moneyModule.GetPurchaseHistory (dateFrom, dateTo, (uint)start, amountPerQuery);
-
+                var purchases = new List<AgentPurchase>();
+                if (moneyModule != null)
+                {
+                    if (UserID != UUID.Zero)
+                        purchases = moneyModule.GetPurchaseHistory (UserID, dateFrom, dateTo, (uint)start, amountPerQuery);
+                    else
+                        purchases = moneyModule.GetPurchaseHistory (dateFrom, dateTo, (uint)start, amountPerQuery);
+                }
 
 
                 // data

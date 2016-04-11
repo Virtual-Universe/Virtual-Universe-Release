@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/,  http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,11 +27,6 @@
 
 using System.Collections.Generic;
 using Universe.Framework.Servers.HttpServer.Implementation;
-using Universe.Framework.Services;
-using System;
-using Universe.Framework.Modules;
-using OpenMetaverse;
-using Universe.Framework.Utilities;
 
 namespace Universe.Modules.Web
 {

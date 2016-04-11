@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/,  http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,11 +26,10 @@
  */
 
 
-using Universe.Framework.DatabaseInterfaces;
-using Universe.Framework.Servers.HttpServer;
-using Universe.Framework.Servers.HttpServer.Implementation;
-using OpenMetaverse;
 using System.Collections.Generic;
+using OpenMetaverse;
+using Universe.Framework.DatabaseInterfaces;
+using Universe.Framework.Servers.HttpServer.Implementation;
 
 namespace Universe.Modules.Web
 {
@@ -65,7 +64,9 @@ namespace Universe.Modules.Web
             var vars = new Dictionary<string, object>();
 
             IGenericsConnector connector = Framework.Utilities.DataManager.RequestPlugin<IGenericsConnector>();
-            GridWelcomeScreen welcomeInfo = connector.GetGeneric<GridWelcomeScreen>(UUID.Zero, "GridWelcomeScreen",
+            GridWelcomeScreen welcomeInfo = null;
+            if (connector != null)
+                welcomeInfo = connector.GetGeneric<GridWelcomeScreen>(UUID.Zero, "GridWelcomeScreen",
                                                                                     "GridWelcomeScreen");
             if (welcomeInfo == null)
                 welcomeInfo = GridWelcomeScreen.Default;

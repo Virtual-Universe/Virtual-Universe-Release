@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/,  http://whitecore-sim.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,18 +25,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Universe.Framework.Servers.HttpServer.Implementation;
-using Universe.Framework.Services;
-using OpenMetaverse;
 using System.Collections.Generic;
 using System.Linq;
+using OpenMetaverse;
+using Universe.Framework.Servers.HttpServer.Implementation;
+using Universe.Framework.Services;
 
 namespace Universe.Modules.Web
 {
     public class Authenticator
     {
-        private static Dictionary<UUID, UserAccount> _authenticatedUsers = new Dictionary<UUID, UserAccount>();
-        private static Dictionary<UUID, UserAccount> _authenticatedAdminUsers = new Dictionary<UUID, UserAccount>();
+        static Dictionary<UUID, UserAccount> _authenticatedUsers = new Dictionary<UUID, UserAccount>();
+        static Dictionary<UUID, UserAccount> _authenticatedAdminUsers = new Dictionary<UUID, UserAccount>();
 
         public static bool CheckAuthentication(OSHttpRequest request)
         {
