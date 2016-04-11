@@ -52,7 +52,6 @@ namespace Universe.Framework.ConsoleFramework
     }
 
     // A console that uses REST interfaces
-    //
     public class RemoteConsole : CommandConsole
     {
         readonly Dictionary<UUID, ConsoleConnection> m_Connections =
@@ -78,9 +77,8 @@ namespace Universe.Framework.ConsoleFramework
 
             if (source.Configs["Console"] != null)
             {
-                //if (source.Configs["Console"].GetString("RemoteConsole", String.Empty) != "enable")
-                    if (source.Configs["Console"].GetString("Console", String.Empty) != Name)
-                        return;
+                if (source.Configs["Console"].GetString("Console", String.Empty) != Name)
+                    return;
 
                 m_consolePort = (uint) source.Configs["Console"].GetInt("remote_console_port", 0);
                 m_UserName = source.Configs["Console"].GetString("RemoteConsoleUser", String.Empty);
@@ -432,6 +430,7 @@ namespace Universe.Framework.ConsoleFramework
                     rootElement.AppendChild(res);
                 }
             }
+
             c.lastLineSeen = m_LineNumber;
 
             xmldoc.AppendChild(rootElement);

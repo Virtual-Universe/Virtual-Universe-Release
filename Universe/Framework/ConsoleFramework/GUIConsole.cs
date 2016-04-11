@@ -90,13 +90,13 @@ namespace Universe.Framework.ConsoleFramework
             Culture.SetCurrentCulture();
             /*string line = */
             ReadLine(m_defaultPrompt + "# ", true, true);
-
-//            result.AsyncWaitHandle.WaitOne(-1);
-
-//            if (line != String.Empty && line.Replace(" ", "") != String.Empty) //If there is a space, its fine
-//            {
-//                MainConsole.Instance.Info("[GUICONSOLE] Invalid command");
-//            }
+            
+            //result.AsyncWaitHandle.WaitOne(-1);
+            
+            //if (line != String.Empty && line.Replace(" ", "") != String.Empty) //If there is a space, its fine
+            //{
+            //   MainConsole.Instance.Info("[GUICONSOLE] Invalid command");
+            //}
         }
 
         public void RunCommand(string cmd)
@@ -117,13 +117,13 @@ namespace Universe.Framework.ConsoleFramework
         {
             string oldDefaultPrompt = m_defaultPrompt;
             m_defaultPrompt = p;
-//            System.Console.Write("{0}", p);
+            //System.Console.Write("{0}", p);
             string cmdinput = Console.ReadLine();
-
-//            while (cmdinput.Equals(null))
-//            {
-//                ;
-//            }
+            
+            //while (cmdinput.Equals(null))
+            //{
+            //    ;
+            //}
 
             if (isCommand)
             {

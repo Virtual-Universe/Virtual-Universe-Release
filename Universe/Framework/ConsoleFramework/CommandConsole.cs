@@ -803,9 +803,15 @@ namespace Universe.Framework.ConsoleFramework
                 {
                     if (m_logDate != DateTime.Now.Date)
                         RotateLog ();
-                    
-                    m_logFile.WriteLine(text);
-                    m_logFile.Flush();
+                    try
+                    {
+                        m_logFile.WriteLine(text);
+                        m_logFile.Flush();
+                    }
+                    catch
+                    {
+                        // encountered an error, writing...
+                    }
                 }
             }
         }
@@ -820,9 +826,15 @@ namespace Universe.Framework.ConsoleFramework
                 {
                     if (m_logDate != DateTime.Now.Date)
                         RotateLog ();
-                    
-                    m_logFile.WriteLine(text);
-                    m_logFile.Flush();
+                    try
+                    {
+                        m_logFile.WriteLine(text);
+                        m_logFile.Flush();
+                    }
+                    catch
+                    {
+                        // encountered an error, writing...
+                    }
                 }
             }
         }

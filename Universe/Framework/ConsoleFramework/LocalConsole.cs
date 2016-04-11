@@ -41,7 +41,6 @@ namespace Universe.Framework.ConsoleFramework
     /// </summary>
     public class LocalConsole : CommandConsole
     {
-
         static readonly ConsoleColor[] Colors =
             {
                 // the dark colors don't seem to be visible on some black background terminals like putty :(
@@ -421,7 +420,6 @@ namespace Universe.Framework.ConsoleFramework
             bool trailingSpace = cmdline.ToString().EndsWith(" ");
 
             // Allow ? through while typing a URI
-            //
             if (words.Length > 0 && words[words.Length - 1].StartsWith("http") && !trailingSpace)
                 return false;
 
