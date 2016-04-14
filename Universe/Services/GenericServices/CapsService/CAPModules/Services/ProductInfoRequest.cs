@@ -25,7 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 using System.IO;
 using OpenMetaverse.StructuredData;
 using Universe.Framework.Servers.HttpServer;
@@ -100,7 +99,7 @@ namespace Universe.Services
             data.Add(eo);
 
             var wh = new OSDMap ();
-            wh ["name"] = "universe_homes";
+            wh ["name"] = "whitecore_homes";
             wh ["description"] = "Universe Homes / Full Region";
             wh ["sku"] = "101";
             data.Add(wh);

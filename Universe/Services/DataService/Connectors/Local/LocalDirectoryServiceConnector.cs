@@ -1142,12 +1142,11 @@ namespace Universe.Services.DataService
                 var posY = (float)Convert.ToDecimal (RetVal[1 + 10], Culture.NumberFormatInfo);
                 var posZ = (float)Convert.ToDecimal (RetVal[i + 11], Culture.NumberFormatInfo);
                 data.regionPos = new Vector3 (posX, posY, posZ);
-
-//                data.regionPos = new Vector3(
-//                    float.Parse(RetVal[i + 9]),
-//                    float.Parse(RetVal[i + 10]),
-//                    float.Parse(RetVal[i + 11])
-//                    );
+				//data.regionPos = new Vector3(
+				//   float.Parse(RetVal[i + 9]),
+				//   float.Parse(RetVal[i + 10]),
+				//   float.Parse(RetVal[i + 11])
+				//);
 
                 data.globalPos = new Vector3(
                     region.RegionLocX + data.regionPos.X,
@@ -1310,7 +1309,10 @@ namespace Universe.Services.DataService
         {
             object remoteValue = DoRemote(user);
             if (remoteValue != null || m_doRemoteOnly)
-                return (List<EventData>) remoteValue;
+			if (remoteValue != null)
+				return (List<EventData>)remoteValue;
+			else
+				return new List<EventData> ();
 
             QueryFilter filter = new QueryFilter();
             filter.andFilters.Add("UserID", user.ToString());
