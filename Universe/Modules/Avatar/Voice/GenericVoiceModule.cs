@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,7 +24,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 
 using System;
 using System.Text;
@@ -61,7 +60,6 @@ namespace Universe.Modules.Voice
 
             // We are using generic voice calls to keep the viewer happy
             m_enabled = true;
-
         }
 
         public void AddRegion(IScene scene)
@@ -167,8 +165,6 @@ namespace Universe.Modules.Voice
             return OSDParser.SerializeLLSDXmlBytes(response);
         }
 
-
-
         #region Region-side message sending
 
         OSDMap syncRecievedService_OnMessageReceived(OSDMap message)
@@ -182,7 +178,6 @@ namespace Universe.Modules.Voice
 
                 if (m_scene.RegionInfo.RegionName != regionName)
                     return null;                                            // not for the required region!!
-
 
                 bool success = true;
                 bool noAgent = false;
@@ -214,9 +209,7 @@ namespace Universe.Modules.Voice
                     MainConsole.Instance.DebugFormat(
                         "[Voice]: region \"{0}\": voice enabled in estate settings, creating parcel voice",
                         m_scene.RegionInfo.RegionName);
-                    //success = true;
                 }
-
 
                 OSDMap map = new OSDMap();
                 map ["Method"] = method;
