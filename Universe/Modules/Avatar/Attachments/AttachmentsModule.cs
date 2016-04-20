@@ -585,10 +585,16 @@ namespace Universe.Modules.Attachments
 
         public void DetachSingleAttachmentToGround(UUID itemID, IClientAPI remoteClient)
         {
-            Vector3 pos = new Vector3(2.5f, 0f, 0f);
-            pos *= ((ScenePresence)sp).Rotation;
-            pos += sp.AbsolutePosition;
-            DetachSingleAttachmentToGround(sp, soLocalId, pos, Quaternion.Identity);
+            //20160419 - BriakallistaStarfinder - This is the current way we handle dropping attachments
+            // to ground.  We need to update this with the commented out portion below so the attachments
+            // drop on the ground a couple meters in front of the avatar and not at the avatar's side. 
+            DetachSingleAttachmentToGround(itemID, remoteClient, Vector3.Zero, Quaternion.Identity);
+            //20160419 - BriakallistaStarfinder - This below is the proper way to handle dropping an avatar's 
+            // attachment to ground.  We need to implement as we dont have soLocalID or sp references apparently
+            //Vector3 pos = new Vector3(2.5f, 0f, 0f);
+            //pos *= ((ScenePresence)sp).Rotation;
+            //pos += sp.AbsolutePosition;
+            //DetachSingleAttachmentToGround(sp, soLocalId, pos, Quaternion.Identity);
         }
 
         public void DetachSingleAttachmentToGround(UUID itemID, IClientAPI remoteClient, Vector3 forcedPos, Quaternion forcedRotation)
