@@ -249,7 +249,7 @@ namespace Universe.Modules.Currency
 
             quoteResponse.Add("success", false);
             quoteResponse.Add("errorMessage", "Invalid parameters passed to the quote box");
-			quoteResponse.Add("errorURI", "http://universe-sim.org/wiki");
+			quoteResponse.Add("errorURI", "http://virtual-planets.org/wiki");
             returnval.Value = quoteResponse;
             return returnval;
         }
