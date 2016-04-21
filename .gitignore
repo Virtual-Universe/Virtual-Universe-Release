@@ -65,7 +65,7 @@ VirtualUniverse/bin/Universe.*.exe
 VirtualUniverse/bin/Universe.exe
 
 # This is dependant upon x86/x64 and created at runtime
-+VirtualUniverse/bin/ode.dll
+VirtualUniverse/bin/ode.dll
 
 # Data files
 
