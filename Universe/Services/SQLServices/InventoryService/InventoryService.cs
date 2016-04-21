@@ -604,13 +604,13 @@ namespace Universe.Services.SQLServices.InventoryService
 
             if (folders.Count == 0)
             {
-                //                MainConsole.Instance.WarnFormat("[XINVENTORY SERVICE]: Found no folder for type {0} for user {1}", type, principalID);
+                // MainConsole.Instance.WarnFormat("[XINVENTORY SERVICE]: Found no folder for type {0} for user {1}", type, principalID);
                 return null;
             }
 
-            //            MainConsole.Instance.DebugFormat(
-            //                "[XINVENTORY SERVICE]: Found folder {0} {1} for type {2} for user {3}", 
-            //                folders[0].folderName, folders[0].folderID, type, principalID);
+            //MainConsole.Instance.DebugFormat(
+            //    "[XINVENTORY SERVICE]: Found folder {0} {1} for type {2} for user {3}", 
+            //     folders[0].folderName, folders[0].folderID, type, principalID);
 
             return folders[0];
         }
@@ -623,22 +623,13 @@ namespace Universe.Services.SQLServices.InventoryService
                 return (InventoryCollection) remoteValue;
 
             // This method doesn't receive a valid principal id from the
-            // connector. So we disregard the principal and look
-            // by ID.
-            //
-            MainConsole.Instance.DebugFormat("[XINVENTORY SERVICE]: Fetch contents for folder {0}", folderID);
-            InventoryCollection inventory = new InventoryCollection
-                                                {
-                                                    UserID = userID,
-                                                    FolderID = folderID,
-                                                    Folders = m_Database.GetFolders(
-                                                        new[] {"parentFolderID"},
-                                                        new[] {folderID.ToString()}),
-                                                    Items = m_Database.GetItems(userID,
-                                                                                new[] {"parentFolderID"},
-                                                                                new[] {folderID.ToString()})
-                                                };
-
+            // connector. So we disregard the principal and look by ID.
+            MainConsole.Instance.DebugFormat("[Inventory Service]: Fetch contents for folder {0}", folderID);
+            InventoryCollection inventory = new InventoryCollection();
+            inventory.UserID = userID;
+            inventory.FolderID = folderID;
+            inventory.Folders = m_Database.GetFolders(new[] { "parentFolderID" }, new[] { folderID.ToString() });
+            inventory.Items = m_Database.GetItems(userID, new[] { "parentFolderID" }, new[] { folderID.ToString() });
 
             return inventory;
         }
@@ -668,7 +659,6 @@ namespace Universe.Services.SQLServices.InventoryService
                 return (List<InventoryFolderBase>) remoteValue;
 
             // Since we probably don't get a valid principal here, either ...
-            //
             List<InventoryFolderBase> invItems = m_Database.GetFolders(
                 new[] {"parentFolderID"},
                 new[] {folderID.ToString()});
@@ -743,7 +733,6 @@ namespace Universe.Services.SQLServices.InventoryService
         }
 
         // We don't check the principal's ID here
-        //
         [CanBeReflected(ThreatLevel = ThreatLevel.High)]
         public virtual bool DeleteFolders(UUID principalID, List<UUID> folderIDs)
         {
@@ -765,7 +754,6 @@ namespace Universe.Services.SQLServices.InventoryService
             }
 
             // Ignore principal ID, it's bogus at connector level
-            //
             foreach (UUID id in folderIDs)
             {
                 if (!ParentIsTrash(id))
@@ -932,8 +920,7 @@ namespace Universe.Services.SQLServices.InventoryService
                 return true;
             }
 
-            // Just use the ID... *facepalms*
-            //
+            // Just use the ID
             foreach (UUID id in itemIDs)
             {
                 InventoryItemBase item = GetItem(UUID.Zero, id);

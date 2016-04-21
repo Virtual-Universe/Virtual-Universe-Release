@@ -107,7 +107,6 @@ namespace Universe.Region
                                                  };
 
                 // Transfer ownership
-
                 if (remoteClient != null &&
                     remoteClient.AgentId != part.OwnerID &&
                     m_scene.Permissions.PropagatePermissions())
@@ -150,8 +149,7 @@ namespace Universe.Region
                 return true;
             }
             MainConsole.Instance.ErrorFormat(
-                "[Prim inventory]: " +
-                "Couldn't find prim local ID {0} in group {1}, {2} to add inventory item ID {3}",
+                "[Prim inventory]: " + "Couldn't find prim local ID {0} in group {1}, {2} to add inventory item ID {3}",
                 localID, Name, UUID, newItemId);
 
             return false;
@@ -171,8 +169,7 @@ namespace Universe.Region
                 return part.Inventory.GetInventoryItem(itemID);
             }
             MainConsole.Instance.ErrorFormat(
-                "[Prim inventory]: " +
-                "Couldn't find prim local ID {0} in prim {1}, {2} to get inventory item ID {3}",
+                "[Prim inventory]: " + "Couldn't find prim local ID {0} in prim {1}, {2} to get inventory item ID {3}",
                 primID, "unknown", "unknown", itemID);
 
             return null;
@@ -196,8 +193,7 @@ namespace Universe.Region
                 return true;
             }
             MainConsole.Instance.ErrorFormat(
-                "[Prim inventory]: " +
-                "Couldn't find prim ID {0} to update item {1}, {2}",
+                "[Prim inventory]: " + "Couldn't find prim ID {0} to update item {1}, {2}",
                 item.ParentPartID, item.Name, item.ItemID);
 
             return false;
@@ -241,12 +237,12 @@ namespace Universe.Region
             // with in-inventory manipulation of the next owner perms
             // in a major way. So, let's move this to the give itself.
             // Yes. I know. Evil.
-//            if ((ownerMask & RootPart.NextOwnerMask & (uint)PermissionMask.Modify) == 0)
-//                perms &= ~((uint)PermissionMask.Modify >> 13);
-//            if ((ownerMask & RootPart.NextOwnerMask & (uint)PermissionMask.Copy) == 0)
-//                perms &= ~((uint)PermissionMask.Copy >> 13);
-//            if ((ownerMask & RootPart.NextOwnerMask & (uint)PermissionMask.Transfer) == 0)
-//                perms &= ~((uint)PermissionMask.Transfer >> 13);
+            //if ((ownerMask & RootPart.NextOwnerMask & (uint)PermissionMask.Modify) == 0)
+            //    perms &= ~((uint)PermissionMask.Modify >> 13);
+            //if ((ownerMask & RootPart.NextOwnerMask & (uint)PermissionMask.Copy) == 0)
+            //    perms &= ~((uint)PermissionMask.Copy >> 13);
+            //if ((ownerMask & RootPart.NextOwnerMask & (uint)PermissionMask.Transfer) == 0)
+            //    perms &= ~((uint)PermissionMask.Transfer >> 13);
 
             return perms;
         }
