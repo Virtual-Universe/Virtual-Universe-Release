@@ -7,7 +7,7 @@ Current Version: 1.0.2 RC1
 Version Release Date: March 15, 2016
 
 The following operating systems have been tested by the Second Galaxy Development Team's Grid Architecture Development Work Group
- and is known to work the best with Virtual Universe.  Those operating systems are as follows:
+ and are known to work the best with Virtual Universe.  Those operating systems are as follows:
  
  - Windows Operating Systems
    - Windows 10 x86
