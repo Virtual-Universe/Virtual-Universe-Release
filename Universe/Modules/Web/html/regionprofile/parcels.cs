@@ -83,14 +83,12 @@ namespace Universe.Modules.Web
                 IEstateConnector estateConnector = Framework.Utilities.DataManager.RequestPlugin<IEstateConnector>();
                 if (estateConnector != null)
                 {
-
                     EstateSettings estate = estateConnector.GetEstateSettings (region.RegionID);
                     vars.Add ("OwnerUUID", estate.EstateOwner);
                     var estateOwnerAccount = webInterface.Registry.RequestModuleInterface<IUserAccountService> ().
                         GetUserAccount (null, estate.EstateOwner);
                     vars.Add ("OwnerName", estateOwnerAccount == null ? "No account found" : estateOwnerAccount.Name);
-                } else
-                {
+                } else {
                     vars.Add ("OwnerUUID", "Unknown");
                     vars.Add ("OwnerName", "Unknown");
                 }
@@ -133,17 +131,20 @@ namespace Universe.Modules.Web
                             if (accountService != null)
                             {
                                 var account = accountService.GetUserAccount (null, p.OwnerID);
-                                if (account == null)
-                                    parcel.Add ("ParcelOwnerName", translator.GetTranslatedString ("NoAccountFound"));
+                                if (account != null)
+                                    parcel.Add("ParcelOwnerName", account.Name);
                                 else
-                                    parcel.Add ("ParcelOwnerName", account.Name);
+                                    parcel.Add("ParcelOwnerName", account.Name);
                             }
+
                             parcels.Add (parcel);
                         }
                     }
+
                     vars.Add("ParcelInRegion", parcels);
                     vars.Add("NumberOfParcelsInRegion", parcels.Count);
                 }
+
                 IWebHttpTextureService webTextureService = webInterface.Registry.
                     RequestModuleInterface<IWebHttpTextureService>();
                 if (webTextureService != null && region.TerrainMapImage != UUID.Zero)
@@ -171,11 +172,9 @@ namespace Universe.Modules.Web
                 vars.Add("NumberOfUsersInRegionText", translator.GetTranslatedString("NumberOfUsersInRegionText"));
                 vars.Add("ParcelsInRegionText", translator.GetTranslatedString("ParcelsInRegionText"));
                 vars.Add ("MainServerURL", webInterface.GridURL);
-
             }
 
             return vars;
-
         }
 
         public bool AttemptFindPage(string filename, ref OSHttpResponse httpResponse, out string text)

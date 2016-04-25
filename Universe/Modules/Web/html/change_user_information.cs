@@ -64,12 +64,14 @@ namespace Universe.Modules.Web
 
             string error = "";
             UserAccount user = Authenticator.GetAuthentication(httpRequest);
-            if (user != null)
+            if (user == null)
             {
-                response = "No authentication service was available to change your password";
+                response = "No authentication service was available to update user details";
                 return null;
             }
-            vars.Add ("UserName", user.Name);
+
+            // Who are we dealing with here?
+            vars.Add("UserName", user.Name);
 
             // password change
             if (requestParameters.ContainsKey("Submit") &&

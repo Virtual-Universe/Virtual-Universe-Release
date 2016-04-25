@@ -69,7 +69,7 @@ namespace Universe.Modules.Web
             var vars = new Dictionary<string, object>();
             if (httpRequest.Query.ContainsKey("regionid"))
             {
-                var regionService = webInterface.Registry.RequestModuleInterface<IGridService> ();
+                var regionService = webInterface.Registry.RequestModuleInterface<IGridService>();
                 var region = regionService.GetRegionByUUID(null, UUID.Parse(httpRequest.Query["regionid"].ToString()));
 
                 IEstateConnector estateConnector = Framework.Utilities.DataManager.RequestPlugin<IEstateConnector>();
@@ -80,15 +80,15 @@ namespace Universe.Modules.Web
                 var estateOwnerAccount = webInterface.Registry.RequestModuleInterface<IUserAccountService>().
                                                       GetUserAccount(null, estate.EstateOwner);
                 vars.Add("OwnerName", estateOwnerAccount == null ? "No account found" : estateOwnerAccount.Name);
-                vars.Add("RegionLocX", region.RegionLocX/Constants.RegionSize);
-                vars.Add("RegionLocY", region.RegionLocY/Constants.RegionSize);
+                vars.Add("RegionLocX", region.RegionLocX / Constants.RegionSize);
+                vars.Add("RegionLocY", region.RegionLocY / Constants.RegionSize);
                 vars.Add("RegionSizeX", region.RegionSizeX);
                 vars.Add("RegionSizeY", region.RegionSizeY);
                 vars.Add("RegionType", region.RegionType);
                 vars.Add("RegionTerrain", region.RegionTerrain);
                 vars.Add("RegionOnline",
-                         (region.Flags & (int) RegionFlags.RegionOnline) ==
-                         (int) RegionFlags.RegionOnline
+                         (region.Flags & (int)RegionFlags.RegionOnline) ==
+                         (int)RegionFlags.RegionOnline
                              ? translator.GetTranslatedString("Online")
                              : translator.GetTranslatedString("Offline"));
 
@@ -99,27 +99,31 @@ namespace Universe.Modules.Web
                     List<UserInfo> usersInRegion = agentInfoService.GetUserInfos(region.RegionID);
                     if (usersInRegion == null)
                     {
-                        vars.Add ("NumberOfUsersInRegion", 0);
-                        vars.Add ("UsersInRegion", new List<Dictionary<string, object>> ());
-                    } else
+                        vars.Add("NumberOfUsersInRegion", 0);
+                        vars.Add("UsersInRegion", new List<Dictionary<string, object>>());
+                    }
+                    else
                     {
-                        vars.Add ("NumberOfUsersInRegion", usersInRegion.Count);
-                        List<Dictionary<string, object>> users = new List<Dictionary<string, object>> ();
+                        vars.Add("NumberOfUsersInRegion", usersInRegion.Count);
+                        List<Dictionary<string, object>> users = new List<Dictionary<string, object>>();
                         foreach (var client in usersInRegion)
                         {
-                            if (userService == null)
-                                continue;
-                        
-                            UserAccount account = userService.GetUserAccount (null, client.UserID);
-                            if (account == null)
-                                continue;
-                            Dictionary<string, object> user = new Dictionary<string, object> ();
-                            user.Add ("UserNameText", translator.GetTranslatedString ("UserNameText"));
-                            user.Add ("UserUUID", client.UserID);
-                            user.Add ("UserName", account.Name);
-                            users.Add (user);
+                            if (userService != null)
+                            {
+                                UserAccount account = userService.GetUserAccount(null, client.UserID);
+                                if (account != null)
+                                {
+
+                                    Dictionary<string, object> user = new Dictionary<string, object>();
+                                    user.Add("UserNameText", translator.GetTranslatedString("UserNameText"));
+                                    user.Add("UserUUID", client.UserID);
+                                    user.Add("UserName", account.Name);
+                                    users.Add(user);
+                                }
+                            }
                         }
-                        vars.Add ("UsersInRegion", users);
+
+                        vars.Add("UsersInRegion", users);
                     }
                 }
                 else
@@ -127,11 +131,12 @@ namespace Universe.Modules.Web
                     vars.Add("NumberOfUsersInRegion", 0);
                     vars.Add("UsersInRegion", new List<Dictionary<string, object>>());
                 }
+
                 IDirectoryServiceConnector directoryConnector =
                     Framework.Utilities.DataManager.RequestPlugin<IDirectoryServiceConnector>();
                 IUserAccountService accountService =
-                    webInterface.Registry.RequestModuleInterface<IUserAccountService> ();
-                
+                    webInterface.Registry.RequestModuleInterface<IUserAccountService>();
+
                 if (directoryConnector != null)
                 {
                     List<LandData> data = directoryConnector.GetParcelsByRegion(0, 10, region.RegionID, UUID.Zero,
@@ -141,26 +146,28 @@ namespace Universe.Modules.Web
                     {
                         foreach (var p in data)
                         {
-                            Dictionary<string, object> parcel = new Dictionary<string, object> ();
-                            parcel.Add ("ParcelNameText", translator.GetTranslatedString ("ParcelNameText"));
-                            parcel.Add ("ParcelOwnerText", translator.GetTranslatedString ("ParcelOwnerText"));
-                            parcel.Add ("ParcelUUID", p.GlobalID);
-                            parcel.Add ("ParcelName", p.Name);
-                            parcel.Add ("ParcelOwnerUUID", p.OwnerID);
+                            Dictionary<string, object> parcel = new Dictionary<string, object>();
+                            parcel.Add("ParcelNameText", translator.GetTranslatedString("ParcelNameText"));
+                            parcel.Add("ParcelOwnerText", translator.GetTranslatedString("ParcelOwnerText"));
+                            parcel.Add("ParcelUUID", p.GlobalID);
+                            parcel.Add("ParcelName", p.Name);
+                            parcel.Add("ParcelOwnerUUID", p.OwnerID);
                             if (accountService != null)
                             {
-                                var account = accountService.GetUserAccount (null, p.OwnerID);
-                                if (account == null)
-                                    parcel.Add ("ParcelOwnerName", translator.GetTranslatedString ("NoAccountFound"));
+                                var account = accountService.GetUserAccount(null, p.OwnerID);
+                                if (account != null)
+                                    parcel.Add("ParcelOwnerName", account.Name);
                                 else
-                                    parcel.Add ("ParcelOwnerName", account.Name);
+                                    parcel.Add("ParcelOwnerName", translator.GetTranslatedString("NoAccountFound"));
                             }
-                            parcels.Add (parcel);
+                            parcels.Add(parcel);
                         }
                     }
+
                     vars.Add("ParcelInRegion", parcels);
                     vars.Add("NumberOfParcelsInRegion", parcels.Count);
                 }
+
                 IWebHttpTextureService webTextureService = webInterface.Registry.
                                                                         RequestModuleInterface<IWebHttpTextureService>();
                 if (webTextureService != null && region.TerrainMapImage != UUID.Zero)
@@ -207,7 +214,6 @@ namespace Universe.Modules.Web
                 var settings = webInterface.GetWebUISettings();
                 vars.Add("ShowLanguageTranslatorBar", !settings.HideLanguageTranslatorBar);
                 vars.Add("ShowStyleBar", !settings.HideStyleBar);
-
             }
 
             return vars;
