@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -88,7 +88,7 @@ namespace Universe.Modules.Archivers
             MainConsole.Instance.InfoFormat("[Archiver]: Finished writing out OAR for {0}",
                                             m_scene.RegionInfo.RegionName);
 
-            m_scene.EventManager.TriggerOarFileSaved(m_requestId, String.Empty);
+            m_scene.EventManager.TriggerOarFileSaved(m_requestId, string.Empty);
         }
 
         protected internal void Save(ICollection<UUID> assetsFoundUuids, ICollection<UUID> assetsNotFoundUuids)
@@ -97,6 +97,7 @@ namespace Universe.Modules.Archivers
             {
                 MainConsole.Instance.DebugFormat("[Archiver]: Could not find asset {0}", uuid);
             }
+            
             //MainConsole.Instance.InfoFormat(
             //    "[Archiver]: Received {0} of {1} assets requested", assetsFoundUuids.Count, assetsFoundUuids.Count + assetsNotFoundUuids.Count);
 
@@ -108,7 +109,7 @@ namespace Universe.Modules.Archivers
 
             // Write out region settings
             string settingsPath
-                = String.Format("{0}{1}.xml", ArchiveConstants.SETTINGS_PATH, m_scene.RegionInfo.RegionName);
+                = string.Format("{0}{1}.xml", ArchiveConstants.SETTINGS_PATH, m_scene.RegionInfo.RegionName);
             m_archiveWriter.WriteFile(settingsPath,
                                       RegionSettingsSerializer.Serialize(m_scene.RegionInfo.RegionSettings));
 
@@ -122,15 +123,16 @@ namespace Universe.Modules.Archivers
                 foreach (ILandObject lo in landObjects)
                 {
                     LandData landData = lo.LandData;
-                    string landDataPath = String.Format("{0}{1}.xml", ArchiveConstants.LANDDATA_PATH, landData.GlobalID);
+                    string landDataPath = string.Format("{0}{1}.xml", ArchiveConstants.LANDDATA_PATH, landData.GlobalID);
                     m_archiveWriter.WriteFile(landDataPath, LandDataSerializer.Serialize(landData));
                 }
             }
+
             MainConsole.Instance.InfoFormat("[Archiver]: Added parcel settings to archive.");
 
             // Write out terrain
             string terrainPath
-                = String.Format("{0}{1}.r32", ArchiveConstants.TERRAINS_PATH, m_scene.RegionInfo.RegionName);
+                = string.Format("{0}{1}.r32", ArchiveConstants.TERRAINS_PATH, m_scene.RegionInfo.RegionName);
 
             MemoryStream ms = new MemoryStream();
             m_terrainModule.SaveToStream(m_terrainModule.TerrainMap, terrainPath, ms);
@@ -145,7 +147,8 @@ namespace Universe.Modules.Archivers
                 //MainConsole.Instance.DebugFormat("[Archiver]: Saving {0} {1}, {2}", entity.Name, entity.UUID, entity.GetType());
 
                 string serializedObject = m_serialiser.SerializeGroupToXml2(sceneObject);
-                m_archiveWriter.WriteFile(ArchiveHelpers.CreateObjectPath(sceneObject), serializedObject);
+                if (serializedObject != null)
+                    m_archiveWriter.WriteFile(ArchiveHelpers.CreateObjectPath(sceneObject), serializedObject);
             }
 
             MainConsole.Instance.InfoFormat("[Archiver]: Added scene objects to archive.");
@@ -175,7 +178,7 @@ namespace Universe.Modules.Archivers
             xtw.Flush();
             xtw.Close();
 
-            String s = sw.ToString();
+            string s = sw.ToString();
             sw.Close();
 
             return s;

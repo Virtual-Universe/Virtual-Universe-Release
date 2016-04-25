@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -38,12 +38,12 @@ using Universe.Framework.Utilities;
 namespace Universe.Modules.Archivers
 {
     /// <summary>
-    ///     This module loads and saves Virtual Universe region archives
+    ///     This module loads and saves Universe-Sim region archives
     /// </summary>
     public class ArchiverModule : INonSharedRegionModule, IRegionArchiverModule
     {
         /// <value>
-        ///     The file used to load and save an Virtual Universe archive if no filename has been specified
+        ///     The file used to load and save an opensimulator archive if no filename has been specified
         /// </value>
         protected const string DEFAULT_OAR_BACKUP_FILENAME = Constants.DEFAULT_OAR_BACKUP_FILENAME;
 

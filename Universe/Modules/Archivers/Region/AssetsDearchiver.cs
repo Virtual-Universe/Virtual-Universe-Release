@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -103,7 +103,7 @@ namespace Universe.Modules.Archivers
                 AssetMetadata metadata = new AssetMetadata();
 
                 string filename = reader.ReadElementString("filename");
-                MainConsole.Instance.DebugFormat("[De-Archiver]: Reading node {0}", filename);
+                MainConsole.Instance.DebugFormat("[DEARCHIVER]: Reading node {0}", filename);
 
                 metadata.Name = reader.ReadElementString("name");
                 metadata.Description = reader.ReadElementString("description");
@@ -117,7 +117,7 @@ namespace Universe.Modules.Archivers
                 reader.Read();
             }
 
-            MainConsole.Instance.DebugFormat("[De-Archiver]: Resolved {0} items of asset metadata", m_metadata.Count);
+            MainConsole.Instance.DebugFormat("[DEARCHIVER]: Resolved {0} items of asset metadata", m_metadata.Count);
 
             ResolvePendingAssetData();
         }

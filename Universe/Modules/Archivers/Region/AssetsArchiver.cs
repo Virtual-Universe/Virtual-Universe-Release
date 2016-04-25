@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -63,7 +63,8 @@ namespace Universe.Modules.Archivers
             WriteData(asset);
         }
 
-        /*protected void WriteMetadata(TarArchiveWriter archive)
+        /*
+        protected void WriteMetadata(TarArchiveWriter archive)
         {
             StringWriter sw = new StringWriter();
             XmlTextWriter xtw = new XmlTextWriter(sw);
@@ -103,7 +104,7 @@ namespace Universe.Modules.Archivers
             xtw.WriteEndDocument();
 
             archive.WriteFile("assets.xml", sw.ToString());
-        }*/
+        } */
 
         /// <summary>
         ///     Write asset data files to the given archive

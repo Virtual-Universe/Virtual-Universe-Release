@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -151,6 +151,7 @@ namespace Universe.Modules.Archivers
 
             // lastly as it is dependant       
             m_assetGatherer = new UuidGatherer(m_assetService);
+
         }
 
         protected void ReceivedAllAssets(ICollection<UUID> assetsFoundUuids, ICollection<UUID> assetsNotFoundUuids)
@@ -182,6 +183,7 @@ namespace Universe.Modules.Archivers
 
         protected void SaveInvItem(InventoryItemBase inventoryItem, string path)
         {
+
             // Check For Permissions Filter Flags
             if (!CanUserArchiveObject(m_userInfo.PrincipalID, inventoryItem))
             {
@@ -205,13 +207,14 @@ namespace Universe.Modules.Archivers
 
             string serialization = UserInventoryItemSerializer.Serialize(saveItem);
             m_archiveWriter.WriteFile(filename, serialization);
-            
-            //m_assetGatherer.GatherAssetUuids(saveItem.AssetID, (AssetType) saveItem.AssetType, m_assetUuids);
+
+    //        m_assetGatherer.GatherAssetUuids(saveItem.AssetID, (AssetType) saveItem.AssetType, m_assetUuids);
             AssetType itemAssetType = (AssetType)inventoryItem.AssetType;
 
             // Don't chase down link asset items as they actually point to their target item IDs rather than an asset
             if (m_saveAssets && itemAssetType != AssetType.Link && itemAssetType != AssetType.LinkFolder)
                 m_assetGatherer.GatherAssetUuids(saveItem.AssetID, (AssetType) inventoryItem.AssetType, m_assetUuids);
+
         }
 
         /// <summary>
@@ -223,8 +226,9 @@ namespace Universe.Modules.Archivers
         protected void SaveInvFolder(InventoryFolderBase inventoryFolder, string path, bool saveThisFolderItself)
         {
             // ignore viewer folders (special folders?)
-            if (inventoryFolder.Name.StartsWith ("#"))
+            if (inventoryFolder.Name.StartsWith ("#", StringComparison.Ordinal))
                 return;
+
 
             if (saveThisFolderItself)
             {
@@ -256,7 +260,7 @@ namespace Universe.Modules.Archivers
         /// <returns>Whether the user is allowed to export the object to an IAR</returns>
         bool CanUserArchiveObject(UUID UserID, InventoryItemBase InvItem)
         {
-            if (FilterContent == null || FilterContent == "")
+            if (string.IsNullOrEmpty(FilterContent))
                 return true;// Default To Allow Export
 
             bool permitted = true;
@@ -277,6 +281,7 @@ namespace Universe.Modules.Archivers
             return permitted;
         }
 
+
         /// <summary>
         ///     Execute the inventory write request
         /// </summary>
@@ -287,6 +292,12 @@ namespace Universe.Modules.Archivers
                 InventoryFolderBase inventoryFolder = null;
                 InventoryItemBase inventoryItem = null;
                 InventoryFolderBase rootFolder = m_inventoryService.GetRootFolder(m_userInfo.PrincipalID);
+
+                if (rootFolder == null) {
+                    MainConsole.Instance.ErrorFormat ("[Inventory Archiver]: Unable to fine root folder for {0}",
+                                               m_userInfo.PrincipalID);
+                    return;
+                }
 
                 if (m_defaultFolderToSave != null)
                     rootFolder = m_defaultFolderToSave;
@@ -313,7 +324,7 @@ namespace Universe.Modules.Archivers
                    // 20141119-greythane- This breaks saving default inventory //  saveFolderContentsOnly = true;
                 }
 
-                m_invPath = String.Empty;
+                m_invPath = string.Empty;
                 for (int i = 0; i <= maxComponentIndex; i++)
                 {
                     m_invPath += components[i] + InventoryFolderImpl.PATH_DELIMITER;
@@ -327,7 +338,7 @@ namespace Universe.Modules.Archivers
                 }
                 else
                 {
-                    m_invPath = m_invPath.Remove(m_invPath.LastIndexOf(InventoryFolderImpl.PATH_DELIMITER));
+                    m_invPath = m_invPath.Remove(m_invPath.LastIndexOf (InventoryFolderImpl.PATH_DELIMITER, StringComparison.Ordinal));
                     List<InventoryFolderBase> candidateFolders
                         = InventoryArchiveUtils.FindFolderByPath(m_inventoryService, rootFolder, m_invPath);
                     if (candidateFolders.Count > 0)
@@ -360,7 +371,7 @@ namespace Universe.Modules.Archivers
                         "[Inventory Archiver]: Found folder {0} {1} at {2}",
                         inventoryFolder.Name,
                         inventoryFolder.ID,
-                        m_invPath == String.Empty ? InventoryFolderImpl.PATH_DELIMITER : m_invPath);
+                        m_invPath == string.Empty ? InventoryFolderImpl.PATH_DELIMITER : m_invPath);
 
                     //recurse through all dirs getting dirs and files
                     SaveInvFolder(inventoryFolder, ArchiveConstants.INVENTORY_PATH, !saveFolderContentsOnly);
@@ -389,7 +400,8 @@ namespace Universe.Modules.Archivers
                     m_assetUuids[asset.ID] = (AssetType) asset.Type;
                 }
                 new AssetsRequest(
-                    new AssetsArchiver(m_archiveWriter), m_assetUuids, m_assetService, ReceivedAllAssets).Execute();                 
+                    new AssetsArchiver(m_archiveWriter), m_assetUuids, m_assetService, ReceivedAllAssets).Execute();
+                    
             }
             else
             {
@@ -500,7 +512,7 @@ namespace Universe.Modules.Archivers
             xtw.Flush();
             xtw.Close();
 
-            String s = sw.ToString();
+            string s = sw.ToString();
             sw.Close();
 
             return s;

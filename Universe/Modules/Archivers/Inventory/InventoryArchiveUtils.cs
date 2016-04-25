@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,12 +25,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Universe.Framework.Services;
-using Universe.Framework.Services.ClassHelpers.Inventory;
-using OpenMetaverse;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using OpenMetaverse;
+using Universe.Framework.Services;
+using Universe.Framework.Services.ClassHelpers.Inventory;
 
 namespace Universe.Modules.Archivers
 {
@@ -78,6 +78,9 @@ namespace Universe.Modules.Archivers
 
                 // get the new root folder
                 rootFolder = inventoryService.GetRootFolder(userId);
+                if (rootFolder == null)
+                    return new List<InventoryFolderBase> ();            // unable to create the root folder??
+
             }
 
             return FindFolderByPath(inventoryService, rootFolder, path);
@@ -170,6 +173,9 @@ namespace Universe.Modules.Archivers
                 // we don't appear to have any inventory setup yet
                 if (!inventoryService.CreateUserInventory (userId, true))
                     return null;                                                // something really wrong
+                rootFolder = inventoryService.GetRootFolder (userId);
+                if (rootFolder == null)                                         // really wrong!!
+                    return null;
             }
             return FindItemByPath(inventoryService, rootFolder, path);
         }
@@ -249,15 +255,14 @@ namespace Universe.Modules.Archivers
                 }
                 else
                 {
-                    if (PATH_DELIMITER == path[i] && !singleEscapeChar)
-                        return new string[2] {path.Remove(i), path.Substring(i + 1)};
-                    else
-                        singleEscapeChar = false;
+                    if (PATH_DELIMITER == path [i] && !singleEscapeChar)
+                        return new string [2] { path.Remove (i), path.Substring (i + 1) };
+                    singleEscapeChar = false;
                 }
             }
 
             // We didn't find a delimiter
-            return new string[1] {path};
+            return new string[] {path};
         }
 
         /// <summary>

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -144,7 +144,8 @@ namespace Universe.Modules.Archivers
             // check if this is a local service
             IConfig connectorConfig = config.Configs ["UniverseConnectors"];
             if ((connectorConfig != null) && connectorConfig.Contains ("DoRemoteCalls"))
-                isLocal = ! connectorConfig.GetBoolean ("DoRemoteCalls", false);     
+                isLocal = ! connectorConfig.GetBoolean ("DoRemoteCalls", false);
+            
         }
 
         public void Start(IConfigSource config, IRegistryCore registry)
@@ -153,6 +154,7 @@ namespace Universe.Modules.Archivers
 
         public void FinishedStartup()
         {
+
             // Lock out if remote 
             if (isLocal)
             {
@@ -447,6 +449,7 @@ namespace Universe.Modules.Archivers
                     options["CheckPermissions"] = param.Substring(7);
                     newParams.Remove(param);
                 }
+
             }
 
             string firstName;
