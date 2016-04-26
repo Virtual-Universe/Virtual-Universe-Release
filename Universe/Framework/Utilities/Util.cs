@@ -1545,6 +1545,22 @@ namespace Universe.Framework.Utilities
                 case 2: // Adult
                     retVal = 42;
                     break;
+                    /*
+                case 3: // Teen
+                    retVal = 15;
+                    break;
+                case 4: // Educational
+                    retVal = 17;
+                    break;
+                case 5: // Business
+                    retVal = 43;
+                    break;
+                case 6: // Non Profit
+                    retVal = 45;
+                    break;
+                case 7: // Government
+                    retVal = 47;
+                    break; */
             }
 
             return retVal;
@@ -1564,6 +1580,22 @@ namespace Universe.Framework.Utilities
                 case 42: // Adult
                     retVal = 2;
                     break;
+                    /*
+                case 15: // Teen
+                    retVal = 3;
+                    break;
+                case 17: // Educational
+                    retVal = 4;
+                    break;
+                case 43: // Business
+                    retVal = 5;
+                    break;
+                case 45: // Non Profit
+                    retVal = 6;
+                    break;
+                case 47: // Government
+                    retVal = 7;
+                    break; */
             }
 
             return retVal;

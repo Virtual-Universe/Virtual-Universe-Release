@@ -84,7 +84,19 @@ namespace Universe.Framework.Utilities
         		return "Mature";
         	case 42:
         		return "Adult";
-        	default:
+        /*        
+            case 15: // Teen
+                return "Teen";
+            case 17: // Educational
+                return "Educational";
+            case 43: // Business
+                return "Business";
+            case 45: // Non Profit
+                return "Non Profit";
+            case 47: // Government
+                return "Government";
+                */
+                default:
         		return "Unknown";
         	}
         }
@@ -93,13 +105,23 @@ namespace Universe.Framework.Utilities
         {
         	switch(Maturity)
         	{
-        	case 0:
+        	case 0: // PG
         		return "PG";
-        	case 1:
+        	case 1: // Moderate (Mature)
         		return "M";
-        	case 2:
+        	case 2: // Adult
         		return "A";
-        	default:
+            case 3: // Teen
+                return "Teen";
+            case 4: // Educational
+                return "Educational";
+            case 5: // Business
+                return "Business";
+            case 6: // Non Profit
+                return "Non Profit";
+            case 7: // Government
+                return "Government";
+                default: // PG
         		return "PG";
         	}
         }
