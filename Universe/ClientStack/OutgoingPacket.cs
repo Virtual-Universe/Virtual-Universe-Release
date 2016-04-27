@@ -25,10 +25,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Universe.Framework.ClientInterfaces;
 using OpenMetaverse;
 using OpenMetaverse.Packets;
-
+using Universe.Framework.ClientInterfaces;
 
 namespace Universe.ClientStack
 {
@@ -122,13 +121,6 @@ namespace Universe.ClientStack
         public void Destroy(int whoDoneIt)
         {
             WhoDoneIt = whoDoneIt;
-            /*if(!PacketPool.Instance.ReturnPacket(Packet))
-                Packet = null;
-            Buffer = null;
-            FinishedMethod = null;
-            UnackedMethod = null;
-            Client = null;
-            SequenceNumber = 0;*/
         }
     }
 }
