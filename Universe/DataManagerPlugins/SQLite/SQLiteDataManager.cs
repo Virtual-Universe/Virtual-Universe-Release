@@ -233,7 +233,6 @@ namespace Universe.DataManager.SQLite
         {
             cmd.Connection.Close();
             cmd.Parameters.Clear();
-            //cmd.Dispose ();
         }
 
         void AddParams(ref SqliteCommand cmd, Dictionary<string, object> ps)
