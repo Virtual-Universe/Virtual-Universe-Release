@@ -1259,7 +1259,7 @@ namespace Universe.Modules
         {
             int tMapSize = tModule.Width*tModule.Height;
             byte[] sdata = new byte[tMapSize*2];
-            Buffer.BlockCopy(tModule.GetSerialised(), 0, sdata, 0, sdata.Length);
+            Buffer.BlockCopy(tModule.GetSerialized(), 0, sdata, 0, sdata.Length);
             return sdata;
         }
 

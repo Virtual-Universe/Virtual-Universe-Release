@@ -156,7 +156,7 @@ namespace Universe.Modules.Archivers
                 = new ArchiveWriteRequestExecution(
                     sceneObjects,
                     m_scene.RequestModuleInterface<ITerrainModule>(),
-                    m_scene.RequestModuleInterface<IRegionSerialiserModule>(),
+                    m_scene.RequestModuleInterface<IRegionSerializerModule>(),
                     m_scene,
                     archiveWriter,
                     m_requestId);

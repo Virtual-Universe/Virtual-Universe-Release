@@ -2695,7 +2695,7 @@ namespace Universe.Region
                     if (cAgent.SittingObjects != null && cAgent.SittingObjects.m_sittingObjectXML != "")
                     {
                         ISceneEntity sceneObject = null;
-                        IRegionSerialiserModule mod = Scene.RequestModuleInterface<IRegionSerialiserModule>();
+                        IRegionSerializerModule mod = Scene.RequestModuleInterface<IRegionSerializerModule>();
                         if (mod != null)
                             sceneObject = mod.DeserializeGroupFromXml2(cAgent.SittingObjects.m_sittingObjectXML, Scene);
 

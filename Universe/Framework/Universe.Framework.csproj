@@ -525,7 +525,7 @@
 	  <Compile Include="Modules\IRegionModulesController.cs">
 		<SubType>Code</SubType>
 	  </Compile>
-	  <Compile Include="Modules\IRegionSerialiserModule.cs">
+	  <Compile Include="Modules\IRegionSerializerModule.cs">
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="Modules\IRegistryCore.cs">

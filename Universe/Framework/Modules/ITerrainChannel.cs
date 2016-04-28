@@ -41,7 +41,7 @@ namespace Universe.Framework.Modules
         ///     Squash the entire heightmap into a single dimensioned array
         /// </summary>
         /// <returns></returns>
-        short[] GetSerialised();
+        short[] GetSerialized();
 
         bool Tainted(int x, int y);
         ITerrainChannel MakeCopy();

@@ -200,7 +200,7 @@ namespace Universe.Modules.Archivers
             if (backup != null)
                 backup.LoadingPrims = true;
 
-            IRegionSerialiserModule serialiser = m_scene.RequestModuleInterface<IRegionSerialiserModule>();
+            IRegionSerializerModule serialiser = m_scene.RequestModuleInterface<IRegionSerializerModule>();
             int sceneObjectsLoadedCount = 0;
 
             //We save the groups so that we can back them up later

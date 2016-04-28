@@ -153,7 +153,7 @@ namespace Universe.Framework.SceneInfo
             set { m_scene = value; }
         }
 
-        public short[] GetSerialised()
+        public short[] GetSerialized()
         {
             return m_map;
         }

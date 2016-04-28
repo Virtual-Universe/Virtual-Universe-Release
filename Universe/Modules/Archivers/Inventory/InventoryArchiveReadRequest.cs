@@ -594,7 +594,7 @@ namespace Universe.Modules.Archivers
         /// <returns>true if asset was successfully loaded, false otherwise</returns>
         bool LoadAsset(string assetPath, byte[] data)
         {
-            //IRegionSerialiser serialiser = scene.RequestModuleInterface<IRegionSerialiser>();
+            //IRegionSerializer serialiser = scene.RequestModuleInterface<IRegionSerializer>();
             // Right now we're nastily obtaining the UUID from the filename
             string filename = assetPath.Remove(0, ArchiveConstants.ASSETS_PATH.Length);
 
