@@ -6,8 +6,8 @@ Release packages at https://github.com/Virtual-Universe/Virtual-Universe/release
 
 Prerequisites
 =============
-Mono V3.x    : Checkout http://www.go-mono.com/mono-downloads/download.html for the latest update
-				Mono 2.8.10 available with Ubuntu variations will also work
+Mono V4.x    : Checkout http://www.go-mono.com/mono-downloads/download.html for the latest update
+				Mono 4.2.3.4 available with Ubuntu variations will also work
 (Optional)  Xamarin Studio for a nice IDE : Checkout http://http://monodevelop.com/Download
 
 Building
