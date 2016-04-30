@@ -1,33 +1,11 @@
 # Virtual Universe
 
-*NOTE:
- As of Version 1.0.2, it's advised to Linux users to use a Mono version higher then 4.2.3.4, following a report about  GC.Collect() not cleaning up memory correctly. The most current version of Mono is 4.2.3.4 (Released 1st March 2016)*
-
- More information can be found here: http://www.mono-project.com/docs/getting-started/install/linux/
-
-*NOTE:
- We are aware of cases where the grid_console.sh and sim_console.sh are not working properly on Ubuntu 14.04.4 LTS Trusty Tahr.
- This bug claims it cannot find files or permission or access denied.  This is due to an issue with the Version 4.2 of the Linux_Generics libraries distributed by Linux.
- This is not a Virtual Universe specific bug.  The solution here is to cd to VirtualUniverse directory and run the command:
-
-Grid: sudo ./grid_console.sh 
-
-Sim: sudo ./sim_console.sh
-
- This will give the necessary permissions to override this bug and allow the consoles to work correctly.
-
- 
- We are not aware of issues being reported relating to this bug from users of Ubuntu derivatives such as XUbuntu, KUbuntu, Linux Mint, etc.  
- 
- Additionally we have not received any reports to indicate this is happening with Debian (8.0 Jessie), Fedora, Opensuse, Arch Linux, Redhat, etc.
- 
-*NOTE: 
- We are aware of issues relating to Linux Kernal 3.16.0 and Mono 3.10.0 causing Linux systems to crash.  
- Currently there are no reported issues being caused by Kernal 3.16.0 and Mono 3.10.0 being reported with Virtual Universe.
+- Current Version: 1.0.2 RC2
+- Version Release Date: April 30, 2016
 
 The Virtual Universe Development Team is proud to present Virtual Universe as a rolling release software.
 
-The Universe server is an Universe/Aurora-Sim derived project with heavy emphasis on supporting all users, 
+The Universe server is an Aurora-Sim derived project with heavy emphasis on supporting all users, 
 
 ## About Virtual Universe
 
@@ -94,3 +72,27 @@ Support is available from various sources.
 IRC channel #galaxyfutures on freenode (http://webchat.freenode.net?channels=%23galaxyfutures)
 Check out http://virtual-planets.org for the latest developments, downloads and forum
 Second Galaxy and Virtual Universe Google + community is for both Second Galaxy and Virtual Universe with a friendly bunch that is happy to answer questions. Find it at https://plus.google.com/communities/106118101750197366605?cfem=1
+
+
+## NOTES
+
+*NOTE:
+ As of Version 1.0.2, it's advised to Linux users to use a Mono version higher then 4.2.3.4, following a report about  GC.Collect() not cleaning up memory correctly. The most current version of Mono is 4.2.3.4 (Released 1st March 2016)*
+
+ More information can be found here: http://www.mono-project.com/docs/getting-started/install/linux/
+
+*NOTE:
+ We are aware of cases where the grid_console.sh and sim_console.sh are not working properly on Ubuntu 14.04.4 LTS Trusty Tahr.
+ This bug claims it cannot find files or permission or access denied.  This is due to an issue with the Version 4.2 of the Linux_Generics libraries distributed by Linux.
+ This is not a Virtual Universe specific bug.  The solution here is to cd to VirtualUniverse directory and run the command:
+
+Grid: sudo ./grid_console.sh 
+
+Sim: sudo ./sim_console.sh
+
+ This will give the necessary permissions to override this bug and allow the consoles to work correctly.
+
+ 
+ We are not aware of issues being reported relating to this bug from users of Ubuntu derivatives such as XUbuntu, KUbuntu, Linux Mint, etc.  
+ 
+ Additionally we have not received any reports to indicate this is happening with Debian (8.0 Jessie), Fedora, Opensuse, Arch Linux, Redhat, etc.
