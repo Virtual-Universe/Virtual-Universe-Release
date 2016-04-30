@@ -1525,7 +1525,7 @@ namespace Universe.Modules.Land
             else
             {
                 MainConsole.Instance.WarnFormat(
-                    "[PARCEL]: Invalid land object {0} passed for parcel object owner request", local_id);
+                    "[Parcel]: Invalid land object {0} passed for parcel object owner request", local_id);
             }
         }
 

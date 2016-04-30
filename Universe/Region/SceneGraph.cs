@@ -25,7 +25,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.Packets;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
@@ -35,13 +41,6 @@ using Universe.Framework.SceneInfo;
 using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.Packets;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
 
 namespace Universe.Region
 {
@@ -58,7 +57,7 @@ namespace Universe.Region
         protected RegionInfo m_regInfo;
         protected IScene m_parentScene;
         protected bool EnableFakeRaycasting = false;
-        protected string m_DefaultObjectName = "Primitive";
+        protected string m_DefaultObjectName = "Object";
 
         /// <summary>
         ///     The last allocated local prim id.  When a new local id is requested, the next number in the sequence is

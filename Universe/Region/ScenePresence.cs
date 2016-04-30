@@ -1576,7 +1576,7 @@ namespace Universe.Region
                 }
                 catch (InvalidCastException)
                 {
-                    MainConsole.Instance.Error("[CLIENT]: Invalid autopilot request");
+                    MainConsole.Instance.Error("[Client]: Invalid autopilot request");
                     return;
                 }
                 m_moveToPositionInProgress = true;

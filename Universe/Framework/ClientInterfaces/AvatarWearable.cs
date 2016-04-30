@@ -138,7 +138,7 @@ namespace Universe.Framework.ClientInterfaces
                 }
 
                 // Body
-                defaultWearables[SHAPE].Add(DEFAULT_SHAPE_ITEM, DEFAULT_SHAPE_ASSET);
+                defaultWearables[Shape].Add(DEFAULT_SHAPE_ITEM, DEFAULT_SHAPE_ASSET);
 
                 // Hair
                 defaultWearables[HAIR].Add(DEFAULT_HAIR_ITEM, DEFAULT_HAIR_ASSET);

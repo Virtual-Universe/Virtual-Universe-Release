@@ -1188,7 +1188,7 @@ namespace Universe.Modules.InventoryAccess
             if (assetRequestItem.AssetID != requestID)
             {
                 MainConsole.Instance.WarnFormat(
-                    "[CLIENT]: {0} requested asset {1} from item {2} but this does not match item's asset {3}",
+                    "[Client]: {0} requested asset {1} from item {2} but this does not match item's asset {3}",
                     Name, requestID, itemID, assetRequestItem.AssetID);
                 return false;
             }

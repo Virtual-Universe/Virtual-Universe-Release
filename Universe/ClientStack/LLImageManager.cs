@@ -57,7 +57,7 @@ namespace Universe.ClientStack
 
             if (m_missingImage == null)
                 MainConsole.Instance.Error(
-                    "[ClientView] - Couldn't set missing image asset, falling back to missing image packet. This is known to crash the client");
+                    "[Client View] - Couldn't set missing image asset, falling back to missing image packet. This is known to crash the client");
 
             m_j2kDecodeModule = pJ2kDecodeModule;
         }
