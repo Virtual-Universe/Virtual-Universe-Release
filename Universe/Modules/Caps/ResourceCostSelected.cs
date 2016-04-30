@@ -38,7 +38,7 @@ using Universe.Framework.Servers;
 using Universe.Framework.Servers.HttpServer;
 using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Servers.HttpServer.Interfaces;
-using Universe.Framework.utilities;
+using Universe.Framework.Utilities;
 using Universe.Region;
 
 namespace Universe.Modules.Caps
