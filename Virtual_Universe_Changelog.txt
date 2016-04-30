@@ -14,7 +14,7 @@ Release Date: April 30, 2016
 - Updates to the BotManager
 - Updates for System User Profiles
 - Updates for password security hashing
-- Updates to Worl Map
+- Updates to World Map
 - Updates to various service connectors
 - Updates to WebUtils
 - Increase WebUtils timeout to 10000 ms to help older hardware
