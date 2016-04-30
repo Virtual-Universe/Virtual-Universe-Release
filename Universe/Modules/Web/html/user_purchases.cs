@@ -36,119 +36,105 @@ using Universe.Framework.Utilities;
 
 namespace Universe.Modules.Web
 {
-    public class UserPurchasesPage : IWebInterfacePage
-    {
-        public string[] FilePath
-        {
-            get
-            {
-                return new[]
-                           {
-                               "html/user_purchases.html"
-                           };
-            }
-        }
+	public class UserPurchasesPage : IWebInterfacePage
+	{
+		public string[] FilePath {
+			get {
+				return new[] {
+					"html/user_purchases.html"
+				};
+			}
+		}
 
-        public bool RequiresAuthentication
-        {
-            get { return true; }
-        }
+		public bool RequiresAuthentication {
+			get { return true; }
+		}
 
-        public bool RequiresAdminAuthentication
-        {
-            get { return false; }
-        }
+		public bool RequiresAdminAuthentication {
+			get { return false; }
+		}
 
-        public Dictionary<string, object> Fill(WebInterface webInterface, string filename, OSHttpRequest httpRequest,
-                                                OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
-                                                ITranslator translator, out string response)
-        {
-            response = null;
-            IConfig gridInfo = webInterface.Registry.RequestModuleInterface<ISimulationBase>().ConfigSource.Configs ["GridInfoService"];
-            var InWorldCurrency = gridInfo.GetString("CurrencySymbol", String.Empty) + " ";
-            var RealCurrency = gridInfo.GetString("RealCurrencySymbol", String.Empty) + " ";
+		public Dictionary<string, object> Fill (WebInterface webInterface, string filename, OSHttpRequest httpRequest,
+		                                             OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
+		                                             ITranslator translator, out string response)
+		{
+			response = null;
+			IConfig gridInfo = webInterface.Registry.RequestModuleInterface<ISimulationBase> ().ConfigSource.Configs ["GridInfoService"];
+			var InWorldCurrency = gridInfo.GetString ("CurrencySymbol", String.Empty) + " ";
+			var RealCurrency = gridInfo.GetString ("RealCurrencySymbol", String.Empty) + " ";
 
-            var vars = new Dictionary<string, object>();
-            var purchasesList = new List<Dictionary<string, object>>();
+			var vars = new Dictionary<string, object> ();
+			var purchasesList = new List<Dictionary<string, object>> ();
 
-            uint amountPerQuery = 25;
-            var today = DateTime.Now;
-            var thirtyDays = today.AddDays (-7);
-            string DateStart = thirtyDays.ToShortDateString();
-            string DateEnd = today.ToShortDateString();
-            UUID UserID = UUID.Zero;
-            int start = 0;
+			uint amountPerQuery = 25;
+			var today = DateTime.Now;
+			var thirtyDays = today.AddDays (-7);
+			string DateStart = thirtyDays.ToShortDateString ();
+			string DateEnd = today.ToShortDateString ();
+			UUID UserID = UUID.Zero;
+			int start = 0;
  
+			IMoneyModule moneyModule = webInterface.Registry.RequestModuleInterface<IMoneyModule> ();
+			string noDetails = translator.GetTranslatedString ("NoPurchasesText");
 
-            IMoneyModule moneyModule = webInterface.Registry.RequestModuleInterface<IMoneyModule>();
-            string noDetails = translator.GetTranslatedString ("NoPurchasesText");
+			// Check if we're looking at the standard page or the submitted one
+			if (requestParameters.ContainsKey ("Submit")) {
+				if (requestParameters.ContainsKey ("date_start"))
+					DateStart = requestParameters ["date_start"].ToString ();
+				if (requestParameters.ContainsKey ("date_end"))
+					DateEnd = requestParameters ["date_end"].ToString ();
 
-            // Check if we're looking at the standard page or the submitted one
-            if (requestParameters.ContainsKey ("Submit"))
-            {
-                if (requestParameters.ContainsKey ("date_start"))
-                    DateStart = requestParameters ["date_start"].ToString ();
-                if (requestParameters.ContainsKey ("date_end"))
-                    DateEnd = requestParameters ["date_end"].ToString ();
-
-                // pagination
-                start = httpRequest.Query.ContainsKey ("Start")
+				// pagination
+				start = httpRequest.Query.ContainsKey ("Start")
                     ? int.Parse (httpRequest.Query ["Start"].ToString ())
                     : 0;
-                int count = (int) moneyModule.NumberOfPurchases(UserID);
-                int maxPages = (int)(count / amountPerQuery) - 1;
+				int count = (int)moneyModule.NumberOfPurchases (UserID);
+				int maxPages = (int)(count / amountPerQuery) - 1;
 
-                if (start == -1)
-                    start = (int)(maxPages < 0 ? 0 : maxPages);
+				if (start == -1)
+					start = (int)(maxPages < 0 ? 0 : maxPages);
 
-                vars.Add ("CurrentPage", start);
-                vars.Add ("NextOne", start + 1 > maxPages ? start : start + 1);
-                vars.Add ("BackOne", start - 1 < 0 ? 0 : start - 1);
-            } else
-            {
-                vars.Add ("CurrentPage", 0);
-                vars.Add ("NextOne", 0);
-                vars.Add ("BackOne", 0);
+				vars.Add ("CurrentPage", start);
+				vars.Add ("NextOne", start + 1 > maxPages ? start : start + 1);
+				vars.Add ("BackOne", start - 1 < 0 ? 0 : start - 1);
+			} else {
+				vars.Add ("CurrentPage", 0);
+				vars.Add ("NextOne", 0);
+				vars.Add ("BackOne", 0);
+			}
 
-            }
+			UserAccount user = Authenticator.GetAuthentication (httpRequest);
 
-            UserAccount user = Authenticator.GetAuthentication(httpRequest);
+			// Purchases Logs
+			var timeNow = DateTime.Now.ToString ("HH:mm:ss");
+			var dateFrom = DateTime.Parse (DateStart + " " + timeNow);
+			var dateTo = DateTime.Parse (DateEnd + " " + timeNow);
+			TimeSpan period = dateTo.Subtract (dateFrom);
 
-            // Purchases Logs
-            var timeNow = DateTime.Now.ToString ("HH:mm:ss");
-            var dateFrom = DateTime.Parse (DateStart + " " + timeNow);
-            var dateTo = DateTime.Parse (DateEnd + " " + timeNow);
-            TimeSpan period = dateTo.Subtract (dateFrom);
+			var purchases = new List<AgentPurchase> ();
+			if (user != null && moneyModule != null)
+				purchases = moneyModule.GetPurchaseHistory (user.PrincipalID, dateFrom, dateTo, (uint)start, amountPerQuery);
 
-            var purchases = new List<AgentPurchase> ();
-            if (user != null && moneyModule != null)
-                purchases = moneyModule.GetPurchaseHistory (user.PrincipalID, dateFrom, dateTo, (uint)start, amountPerQuery);
+			// data
+			if (purchases.Count > 0) {
+				noDetails = "";
 
-            // data
-            if (purchases.Count > 0)
-            {
-                noDetails = "";
-
-                foreach (var purchase in purchases)
-                {
-                    purchasesList.Add (new Dictionary<string, object> {
-                        { "ID", purchase.ID },
-                        { "AgentID", purchase.AgentID },
-                        { "AgentName", user.Name },
-                        { "LoggedIP", purchase.IP },
-                        { "Description", "Purchase" },
-                        { "Amount",purchase.Amount },
-                        { "RealAmount",((float) purchase.RealAmount/100).ToString("0.00") },
-                        { "PurchaseDate", Culture.LocaleDate (purchase.PurchaseDate.ToLocalTime(), "MMM dd, hh:mm:ss tt") },
+				foreach (var purchase in purchases) {
+					purchasesList.Add (new Dictionary<string, object> {
+						{ "ID", purchase.ID },
+						{ "AgentID", purchase.AgentID },
+						{ "AgentName", user.Name },
+						{ "LoggedIP", purchase.IP },
+						{ "Description", "Purchase" },
+						{ "Amount",purchase.Amount },
+						{ "RealAmount",((float)purchase.RealAmount / 100).ToString ("0.00") }, { "PurchaseDate", Culture.LocaleDate (purchase.PurchaseDate.ToLocalTime(), "MMM dd, hh:mm:ss tt") },
                         { "UpdateDate", Culture.LocaleDate (purchase.UpdateDate.ToLocalTime(), "MMM dd, hh:mm:ss tt") }
-
                     });
                 }
             }
 
             if (purchasesList.Count == 0)
             {
- 
                 purchasesList.Add(new Dictionary<string, object> {
                     {"ID", ""},
                     {"AgentID", ""},
@@ -159,7 +145,6 @@ namespace Universe.Modules.Web
                     {"RealAmount",""},
                     {"PurchaseDate",""},
                     {"UpdateDate", ""},
-
                 });
             }
 

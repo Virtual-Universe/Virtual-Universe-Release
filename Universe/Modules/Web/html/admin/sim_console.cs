@@ -30,61 +30,51 @@ using Universe.Framework.Servers.HttpServer.Implementation;
 
 namespace Universe.Modules.Web
 {
-    public class SimConsolePage : IWebInterfacePage
-    {
-        public string[] FilePath
-        {
-            get
-            {
-                return new[]
-                           {
-                               "html/sim_console.html"
-                           };
-            }
-        }
+	public class SimConsolePage : IWebInterfacePage
+	{
+		public string[] FilePath {
+			get {
+				return new[] {
+					"html/sim_console.html"
+				};
+			}
+		}
 
-        public bool RequiresAuthentication
-        {
-            get { return true; }
-        }
+		public bool RequiresAuthentication {
+			get { return true; }
+		}
 
-        public bool RequiresAdminAuthentication
-        {
-            get { return true; }
-        }
+		public bool RequiresAdminAuthentication {
+			get { return true; }
+		}
 
-        public Dictionary<string, object> Fill(WebInterface webInterface, string filename, OSHttpRequest httpRequest,
-                                                OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
-                                                ITranslator translator, out string response)
-        {
-            response = null;
-            var vars = new Dictionary<string, object>();
-            //IGenericsConnector connector = Framework.Utilities.DataManager.RequestPlugin<IGenericsConnector>();
+		public Dictionary<string, object> Fill (WebInterface webInterface, string filename, OSHttpRequest httpRequest,
+		                                             OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
+		                                             ITranslator translator, out string response)
+		{
+			response = null;
+			var vars = new Dictionary<string, object> ();
+			//IGenericsConnector connector = Framework.Utilities.DataManager.RequestPlugin<IGenericsConnector>();
 
-            // Check if we're looking at the standard page or the submitted one
-            if (requestParameters.ContainsKey("Submit"))
-            {
-            }
-            else
-            {
-                //vars.Add("ErrorMessage", error);
+			// Check if we're looking at the standard page or the submitted one
+			if (requestParameters.ContainsKey ("Submit")) {
+			} else {
+				//vars.Add("ErrorMessage", error);
+				vars.Add ("SimConsoleText", translator.GetTranslatedString ("SimConsoleText"));
+				vars.Add ("SimAddressText", translator.GetTranslatedString ("SimAddressText"));
+				vars.Add ("UserNameText", translator.GetTranslatedString ("UserNameText"));
+				vars.Add ("PasswordText", translator.GetTranslatedString ("PasswordText"));
+				vars.Add ("SendCommandText", translator.GetTranslatedString ("SendCommandText"));
+				vars.Add ("Login", translator.GetTranslatedString ("Login"));
+			}
 
-                vars.Add("SimConsoleText", translator.GetTranslatedString("SimConsoleText"));
-                vars.Add("SimAddressText", translator.GetTranslatedString("SimAddressText"));
-                vars.Add("UserNameText", translator.GetTranslatedString("UserNameText"));
-                vars.Add("PasswordText", translator.GetTranslatedString("PasswordText"));
-                vars.Add("SendCommandText", translator.GetTranslatedString("SendCommandText"));
+			return vars;
+		}
 
-                vars.Add("Login", translator.GetTranslatedString("Login"));
-
-            }
-            return vars;
-        }
-
-        public bool AttemptFindPage(string filename, ref OSHttpResponse httpResponse, out string text)
-        {
-            text = "";
-            return false;
-        }
-    }
+		public bool AttemptFindPage (string filename, ref OSHttpResponse httpResponse, out string text)
+		{
+			text = "";
+			return false;
+		}
+	}
 }

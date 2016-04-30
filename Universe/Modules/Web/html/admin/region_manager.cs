@@ -39,186 +39,166 @@ using RegionFlags = Universe.Framework.Services.RegionFlags;
 
 namespace Universe.Modules.Web
 {
-    public class RegionManagerPage : IWebInterfacePage
-    {
-        public string[] FilePath
-        {
-            get
-            {
-                return new[]
-                {
-                    "html/admin/region_manager.html"
-                    //"html/regionprofile/base.html",
-                    //"html/regionprofile/"
-                };
-            }
-        }
+	public class RegionManagerPage : IWebInterfacePage
+	{
+		public string[] FilePath {
+			get {
+				return new[] {
+					"html/admin/region_manager.html"
+					//"html/regionprofile/base.html",
+					//"html/regionprofile/"
+				};
+			}
+		}
 
-        public bool RequiresAuthentication
-        {
-            get { return true; }
-        }
+		public bool RequiresAuthentication {
+			get { return true; }
+		}
 
-        public bool RequiresAdminAuthentication
-        {
-            get { return true; }
-        }
+		public bool RequiresAdminAuthentication {
+			get { return true; }
+		}
 
-        public Dictionary<string, object> Fill(WebInterface webInterface, string filename, OSHttpRequest httpRequest,
-                                               OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
-                                               ITranslator translator, out string response)
-        {
-            response = null;
-            var vars = new Dictionary<string, object>();
-            var gridService = webInterface.Registry.RequestModuleInterface<IGridService> ();
+		public Dictionary<string, object> Fill (WebInterface webInterface, string filename, OSHttpRequest httpRequest,
+		                                             OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
+		                                             ITranslator translator, out string response)
+		{
+			response = null;
+			var vars = new Dictionary<string, object> ();
+			var gridService = webInterface.Registry.RequestModuleInterface<IGridService> ();
 
+			if (requestParameters.ContainsKey ("Submit")) {
 
-            if (requestParameters.ContainsKey("Submit"))
-            {
+				string RegionServerURL = requestParameters ["RegionServerURL"].ToString ();
+				// required
+				if (RegionServerURL == "") {
+					response = "<h3>" + translator.GetTranslatedString ("RegionServerURLError") + "</h3>";   
+					return null;
+				}
 
-                string RegionServerURL = requestParameters["RegionServerURL"].ToString();
-                // required
-                if (RegionServerURL == "")  {
-                    response = "<h3>" + translator.GetTranslatedString ("RegionServerURLError") + "</h3>";   
-                    return null;
-                }
-
-                string RegionName = requestParameters["RegionName"].ToString();
-                //string OwnerUUID = requestParameters["OwnerUUID"].ToString();
-                string RegionLocX = requestParameters["RegionLocX"].ToString();
-                string RegionLocY = requestParameters["RegionLocY"].ToString();
-                string RegionSizeX = requestParameters["RegionSizeX"].ToString();
-                string RegionSizeY = requestParameters["RegionSizeY"].ToString();
-
-                string RegionType = requestParameters["RegionType"].ToString();
-                string RegionPresetType = requestParameters["RegionPresetType"].ToString();
-                string RegionTerrain = requestParameters["RegionTerrain"].ToString();
-
-                string RegionLoadTerrain = requestParameters.ContainsKey("RegionLoadTerrain")
-                    ? requestParameters["RegionLoadTerrain"].ToString()
+				string RegionName = requestParameters ["RegionName"].ToString ();
+				//string OwnerUUID = requestParameters["OwnerUUID"].ToString();
+				string RegionLocX = requestParameters ["RegionLocX"].ToString ();
+				string RegionLocY = requestParameters ["RegionLocY"].ToString ();
+				string RegionSizeX = requestParameters ["RegionSizeX"].ToString ();
+				string RegionSizeY = requestParameters ["RegionSizeY"].ToString ();
+				string RegionType = requestParameters ["RegionType"].ToString ();
+				string RegionPresetType = requestParameters ["RegionPresetType"].ToString ();
+				string RegionTerrain = requestParameters ["RegionTerrain"].ToString ();
+				string RegionLoadTerrain = requestParameters.ContainsKey ("RegionLoadTerrain")
+                    ? requestParameters ["RegionLoadTerrain"].ToString ()
                     : "";
-                //bool ToSAccept = requestParameters.ContainsKey("ToSAccept") &&
-                //    requestParameters["ToSAccept"].ToString() == "Accepted";
+				//bool ToSAccept = requestParameters.ContainsKey("ToSAccept") &&
+				//    requestParameters["ToSAccept"].ToString() == "Accepted";
 
-               // string UserType = requestParameters.ContainsKey("UserType")         // only admins can set membership
-               //     ? requestParameters ["UserType"].ToString ()
-               //     : "Resident";
+				// string UserType = requestParameters.ContainsKey("UserType")         // only admins can set membership
+				//     ? requestParameters ["UserType"].ToString ()
+				//     : "Resident";
 
+				// a bit of idiot proofing
+				if (RegionName == "") {
+					response = "<h3>" + translator.GetTranslatedString ("RegionNameError") + "</h3>";   
+					return null;
+				}
+				if ((RegionLocX == "") || (RegionLocY == "")) {
+					response = "<h3>" + translator.GetTranslatedString ("RegionLocationError") + "</h3>";   
+					return null;
+				} 
 
-                // a bit of idiot proofing
-                if (RegionName == "")  {
-                    response = "<h3>" + translator.GetTranslatedString ("RegionNameError") + "</h3>";   
-                    return null;
-                }
-                if ( (RegionLocX == "") || (RegionLocY == "") )
-                {
-                    response = "<h3>" + translator.GetTranslatedString ("RegionLocationError") + "</h3>";   
-                    return null;
-                } 
+				// so far so good...
+				// build the new region details
+				int RegionPort = int.Parse (requestParameters ["RegionPort"].ToString ());
 
-                // so far so good...
-                // build the new region details
-                int RegionPort = int.Parse (requestParameters ["RegionPort"].ToString ());
+				var newRegion = new RegionInfo ();
 
-                var newRegion = new RegionInfo();
+				newRegion.RegionName = RegionName;
+				newRegion.RegionType = RegionType;
+				newRegion.RegionLocX = int.Parse (RegionLocX);
+				newRegion.RegionLocY = int.Parse (RegionLocY);
+				newRegion.RegionSizeX = int.Parse (RegionSizeX);
+				newRegion.RegionSizeY = int.Parse (RegionSizeY);
+				newRegion.RegionPort = RegionPort;
+				newRegion.SeeIntoThisSimFromNeighbor = true;
+				newRegion.InfiniteRegion = false;
+				newRegion.ObjectCapacity = 50000;
+				newRegion.Startup = StartupType.Normal;
 
-                newRegion.RegionName = RegionName;
-                newRegion.RegionType = RegionType;
-                newRegion.RegionLocX = int.Parse (RegionLocX);
-                newRegion.RegionLocY = int.Parse (RegionLocY);
-                newRegion.RegionSizeX = int.Parse (RegionSizeX);
-                newRegion.RegionSizeY = int.Parse (RegionSizeY);
+				var regionPreset = RegionPresetType.ToLower ();
+				if (regionPreset.StartsWith ("c")) {
+					newRegion.RegionPort = int.Parse (requestParameters ["RegionPort"].ToString ());
+					newRegion.SeeIntoThisSimFromNeighbor = (requestParameters ["RegionVisibility"].ToString ().ToLower () == "yes");
+					newRegion.InfiniteRegion = (requestParameters ["RegionInfinite"].ToString ().ToLower () == "yes");
+					newRegion.ObjectCapacity = int.Parse (requestParameters ["RegionCapacity"].ToString ());
 
-                newRegion.RegionPort = RegionPort;
-                newRegion.SeeIntoThisSimFromNeighbor = true;
-                newRegion.InfiniteRegion = false;
-                newRegion.ObjectCapacity = 50000;
-                newRegion.Startup = StartupType.Normal;
+					string delayStartup = requestParameters ["RegionDelayStartup"].ToString ();
+					newRegion.Startup = delayStartup.StartsWith ("n") ? StartupType.Normal : StartupType.Medium;
+				}
 
-                var regionPreset = RegionPresetType.ToLower ();
-                if (regionPreset.StartsWith ("c"))
-                {
-                    newRegion.RegionPort = int.Parse( requestParameters["RegionPort"].ToString() );
-                    newRegion.SeeIntoThisSimFromNeighbor = (requestParameters["RegionVisibility"].ToString().ToLower() == "yes");
-                    newRegion.InfiniteRegion = (requestParameters["RegionInfinite"].ToString().ToLower() == "yes");
-                    newRegion.ObjectCapacity = int.Parse( requestParameters["RegionCapacity"].ToString() );
+				if (regionPreset.StartsWith ("w")) {
+					// 'standard' setup
+					newRegion.RegionType = newRegion.RegionType + "Whitecore";                   
+					//info.RegionPort;            // use auto assigned port
+					newRegion.RegionTerrain = "Flatland";
+					newRegion.Startup = StartupType.Normal;
+					newRegion.SeeIntoThisSimFromNeighbor = true;
+					newRegion.InfiniteRegion = false;
+					newRegion.ObjectCapacity = 50000;
+					newRegion.RegionPort = RegionPort;
+				}
 
-                    string delayStartup = requestParameters["RegionDelayStartup"].ToString();
-                    newRegion.Startup = delayStartup.StartsWith ("n") ? StartupType.Normal : StartupType.Medium;
+				if (regionPreset.StartsWith ("o")) {
+					// 'Openspace' setup
+					newRegion.RegionType = newRegion.RegionType + "Openspace";                   
+					//newRegion.RegionPort;            // use auto assigned port
+					if (RegionTerrain.StartsWith ("a"))
+						newRegion.RegionTerrain = "Aquatic";
+					else
+						newRegion.RegionTerrain = "Grassland";
+					newRegion.Startup = StartupType.Medium;
+					newRegion.SeeIntoThisSimFromNeighbor = true;
+					newRegion.InfiniteRegion = false;
+					newRegion.ObjectCapacity = 750;
+					newRegion.RegionSettings.AgentLimit = 10;
+					newRegion.RegionSettings.AllowLandJoinDivide = false;
+					newRegion.RegionSettings.AllowLandResell = false;
+				}
 
-                }
+				if (regionPreset.StartsWith ("h")) {
+					// 'Homestead' setup
+					newRegion.RegionType = newRegion.RegionType + "Homestead";                   
+					//info.RegionPort;            // use auto assigned port
+					newRegion.RegionTerrain = "Homestead";
+					newRegion.Startup = StartupType.Medium;
+					newRegion.SeeIntoThisSimFromNeighbor = true;
+					newRegion.InfiniteRegion = false;
+					newRegion.ObjectCapacity = 3750;
+					newRegion.RegionSettings.AgentLimit = 20;
+					newRegion.RegionSettings.AllowLandJoinDivide = false;
+					newRegion.RegionSettings.AllowLandResell = false;
+				}
 
-                if (regionPreset.StartsWith("w"))
-                {
-                    // 'standard' setup
-                    newRegion.RegionType = newRegion.RegionType + "Whitecore";                   
-                    //info.RegionPort;            // use auto assigned port
-                    newRegion.RegionTerrain = "Flatland";
-                    newRegion.Startup = StartupType.Normal;
-                    newRegion.SeeIntoThisSimFromNeighbor = true;
-                    newRegion.InfiniteRegion = false;
-                    newRegion.ObjectCapacity = 50000;
-                    newRegion.RegionPort = RegionPort;
- 
+				if (regionPreset.StartsWith ("f")) {
+					// 'Full Region' setup
+					newRegion.RegionType = newRegion.RegionType + "Full Region";                   
+					//newRegion.RegionPort;            // use auto assigned port
+					newRegion.RegionTerrain = RegionTerrain;
+					newRegion.Startup = StartupType.Normal;
+					newRegion.SeeIntoThisSimFromNeighbor = true;
+					newRegion.InfiniteRegion = false;
+					newRegion.ObjectCapacity = 15000;
+					newRegion.RegionSettings.AgentLimit = 100;
+					if (newRegion.RegionType.StartsWith ("M")) {                           // defaults are 'true'
+						newRegion.RegionSettings.AllowLandJoinDivide = false;
+						newRegion.RegionSettings.AllowLandResell = false;
+					}
+				}
 
-                }
-                if (regionPreset.StartsWith("o"))       
-                {
-                    // 'Openspace' setup
-                    newRegion.RegionType = newRegion.RegionType + "Openspace";                   
-                    //newRegion.RegionPort;            // use auto assigned port
-                    if (RegionTerrain.StartsWith("a"))
-                        newRegion.RegionTerrain = "Aquatic";
-                    else
-                        newRegion.RegionTerrain = "Grassland";
-                    newRegion.Startup = StartupType.Medium;
-                    newRegion.SeeIntoThisSimFromNeighbor = true;
-                    newRegion.InfiniteRegion = false;
-                    newRegion.ObjectCapacity = 750;
-                    newRegion.RegionSettings.AgentLimit = 10;
-                    newRegion.RegionSettings.AllowLandJoinDivide = false;
-                    newRegion.RegionSettings.AllowLandResell = false;
-                }
-                if (regionPreset.StartsWith("h"))       
-                {
-                    // 'Homestead' setup
-                    newRegion.RegionType = newRegion.RegionType + "Homestead";                   
-                    //info.RegionPort;            // use auto assigned port
-                    newRegion.RegionTerrain = "Homestead";
-                    newRegion.Startup = StartupType.Medium;
-                    newRegion.SeeIntoThisSimFromNeighbor = true;
-                    newRegion.InfiniteRegion = false;
-                    newRegion.ObjectCapacity = 3750;
-                    newRegion.RegionSettings.AgentLimit = 20;
-                    newRegion.RegionSettings.AllowLandJoinDivide = false;
-                    newRegion.RegionSettings.AllowLandResell = false;
-                }
+				if (RegionLoadTerrain.Length > 0) {
+					// we are loading terrain from a file... handled later
+					newRegion.RegionTerrain = "Custom";
+				}
 
-                if (regionPreset.StartsWith("f"))       
-                {
-                    // 'Full Region' setup
-                    newRegion.RegionType = newRegion.RegionType + "Full Region";                   
-                    //newRegion.RegionPort;            // use auto assigned port
-                    newRegion.RegionTerrain = RegionTerrain;
-                    newRegion.Startup = StartupType.Normal;
-                    newRegion.SeeIntoThisSimFromNeighbor = true;
-                    newRegion.InfiniteRegion = false;
-                    newRegion.ObjectCapacity = 15000;
-                    newRegion.RegionSettings.AgentLimit = 100;
-                    if (newRegion.RegionType.StartsWith ("M"))                           // defaults are 'true'
-                    {
-                        newRegion.RegionSettings.AllowLandJoinDivide = false;
-                        newRegion.RegionSettings.AllowLandResell = false;
-                    }
-                }
-
-                if (RegionLoadTerrain.Length > 0)
-                {
-                    // we are loading terrain from a file... handled later
-                    newRegion.RegionTerrain = "Custom";
-                }
-
-                /* Disabled as this is a work in progress and will break with the current scenemanager (Dec 5 - greythane-
+				/* Disabled as this is a work in progress and will break with the current scenemanager (Dec 5 - greythane-
                 // TODO: !!! Assumes everything is local for now !!!               
                 ISceneManager scenemanager = webInterface.Registry.RequestModuleInterface<ISceneManager> ();
                 if (scenemanager.CreateRegion(newRegion))
@@ -238,50 +218,47 @@ namespace Universe.Modules.Web
                 }
                 else
 */
-                response = "<h3>Error creating this region.</h3>";
-                return null;
-            }
+				response = "<h3>Error creating this region.</h3>";
+				return null;
+			}
 
-            // we have or need data
-            if (httpRequest.Query.ContainsKey ("regionid"))
-            {
-                var region = gridService.GetRegionByUUID (null, UUID.Parse (httpRequest.Query ["regionid"].ToString ()));
+			// we have or need data
+			if (httpRequest.Query.ContainsKey ("regionid")) {
+				var region = gridService.GetRegionByUUID (null, UUID.Parse (httpRequest.Query ["regionid"].ToString ()));
 
-                IEstateConnector estateConnector = Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ();
-                EstateSettings estate = estateConnector.GetEstateSettings (region.RegionID);
+				IEstateConnector estateConnector = Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ();
+				EstateSettings estate = estateConnector.GetEstateSettings (region.RegionID);
 
-                vars.Add ("RegionName", region.RegionName);
-                vars.Add ("OwnerUUID", estate.EstateOwner);
+				vars.Add ("RegionName", region.RegionName);
+				vars.Add ("OwnerUUID", estate.EstateOwner);
 
-                var estateOwnerAccount = webInterface.Registry.RequestModuleInterface<IUserAccountService> ().
+				var estateOwnerAccount = webInterface.Registry.RequestModuleInterface<IUserAccountService> ().
                     GetUserAccount (null, estate.EstateOwner);
-                vars.Add ("OwnerName", estateOwnerAccount == null ? "No account found" : estateOwnerAccount.Name);
-                vars.Add ("RegionLocX", region.RegionLocX / Constants.RegionSize);
-                vars.Add ("RegionLocY", region.RegionLocY / Constants.RegionSize);
-                vars.Add ("RegionSizeX", region.RegionSizeX);
-                vars.Add ("RegionSizeY", region.RegionSizeY);
-                vars.Add ("RegionType", region.RegionType);
-                vars.Add ("RegionTerrain", region.RegionTerrain);
-                vars.Add ("RegionOnline",
-                    (region.Flags & (int)RegionFlags.RegionOnline) ==
-                    (int)RegionFlags.RegionOnline
+				vars.Add ("OwnerName", estateOwnerAccount == null ? "No account found" : estateOwnerAccount.Name);
+				vars.Add ("RegionLocX", region.RegionLocX / Constants.RegionSize);
+				vars.Add ("RegionLocY", region.RegionLocY / Constants.RegionSize);
+				vars.Add ("RegionSizeX", region.RegionSizeX);
+				vars.Add ("RegionSizeY", region.RegionSizeY);
+				vars.Add ("RegionType", region.RegionType);
+				vars.Add ("RegionTerrain", region.RegionTerrain);
+				vars.Add ("RegionOnline",
+					(region.Flags & (int)RegionFlags.RegionOnline) ==
+					(int)RegionFlags.RegionOnline
                     ? translator.GetTranslatedString ("Online")
                     : translator.GetTranslatedString ("Offline"));
 
-                IWebHttpTextureService webTextureService = webInterface.Registry.
+				IWebHttpTextureService webTextureService = webInterface.Registry.
                     RequestModuleInterface<IWebHttpTextureService> ();
-                if (webTextureService != null && region.TerrainMapImage != UUID.Zero)
-                    vars.Add ("RegionImageURL", webTextureService.GetTextureURL (region.TerrainMapImage));
-                else
-                    vars.Add ("RegionImageURL", "images/icons/no_picture.jpg");
-            } 
-            else
-            {
-                // default values
+				if (webTextureService != null && region.TerrainMapImage != UUID.Zero)
+					vars.Add ("RegionImageURL", webTextureService.GetTextureURL (region.TerrainMapImage));
+				else
+					vars.Add ("RegionImageURL", "images/icons/no_picture.jpg");
+			} else {
+				// default values
 
-                // check for user name seed
-                string[] m_regionNameSeed = null;
-                /*IConfig regionConfig =
+				// check for user name seed
+				string[] m_regionNameSeed = null;
+				/*IConfig regionConfig =
                     webInterface.Registry.RequestModuleInterface<ISimulationBase>().ConfigSource.Configs["LoginService"];
 
                  if (loginServerConfig != null)
@@ -291,72 +268,64 @@ namespace Universe.Modules.Web
                         m_userNameSeed = userNameSeed.Split (',');
                 }
 */
-                Utilities.MarkovNameGenerator rNames = new Utilities.MarkovNameGenerator();
-                string regionName = rNames.FirstName (m_regionNameSeed == null ? Utilities.RegionNames: m_regionNameSeed, 3,7);
-                vars.Add ("RegionName", regionName);
+				Utilities.MarkovNameGenerator rNames = new Utilities.MarkovNameGenerator ();
+				string regionName = rNames.FirstName (m_regionNameSeed == null ? Utilities.RegionNames : m_regionNameSeed, 3, 7);
+				vars.Add ("RegionName", regionName);
 
-                //var scenemanager = webInterface.Registry.RequestModuleInterface<ISceneManager> ();
-                var gconnector = Framework.Utilities.DataManager.RequestPlugin<IGenericsConnector>();
-                var settings = gconnector.GetGeneric<WebUISettings>(UUID.Zero, "WebUISettings", "Settings");
+				//var scenemanager = webInterface.Registry.RequestModuleInterface<ISceneManager> ();
+				var gconnector = Framework.Utilities.DataManager.RequestPlugin<IGenericsConnector> ();
+				var settings = gconnector.GetGeneric<WebUISettings> (UUID.Zero, "WebUISettings", "Settings");
 
-                // get some current details
-                //List<GridRegion> regions = gridService.GetRegionsByName(null, "", null,null);
+				// get some current details
+				//List<GridRegion> regions = gridService.GetRegionsByName(null, "", null,null);
 
-//                var currentInfo = scenemanager.FindCurrentRegionInfo ();
-                Dictionary<string, int> currentInfo = null;
-                if (currentInfo != null)
-                {
-                    vars.Add ("RegionLocX", currentInfo ["minX"] > 0 ? currentInfo ["minX"] : settings.MapCenter.X);
-                    vars.Add ("RegionLocY", currentInfo ["minY"] > 0 ? currentInfo ["minY"] : settings.MapCenter.Y);
-                    vars.Add("RegionPort", currentInfo ["port"] > 0 ? currentInfo ["port"] + 1 : 9000);
-                } else
-                {
-                    vars.Add ("RegionLocX", settings.MapCenter.X);
-                    vars.Add ("RegionLocY", settings.MapCenter.Y);
-                    vars.Add("RegionPort", 9000);
-
-                }
-
+                //var currentInfo = scenemanager.FindCurrentRegionInfo ();
+				Dictionary<string, int> currentInfo = null;
+				if (currentInfo != null) {
+					vars.Add ("RegionLocX", currentInfo ["minX"] > 0 ? currentInfo ["minX"] : settings.MapCenter.X);
+					vars.Add ("RegionLocY", currentInfo ["minY"] > 0 ? currentInfo ["minY"] : settings.MapCenter.Y);
+					vars.Add ("RegionPort", currentInfo ["port"] > 0 ? currentInfo ["port"] + 1 : 9000);
+				} else {
+					vars.Add ("RegionLocX", settings.MapCenter.X);
+					vars.Add ("RegionLocY", settings.MapCenter.Y);
+					vars.Add ("RegionPort", 9000);
+				}
                    
-                vars.Add ("RegionSizeX", Constants.RegionSize);
-                vars.Add ("RegionSizeY", Constants.RegionSize);
-                vars.Add ("RegionType", webInterface.RegionTypeArgs(translator));
-                vars.Add ("RegionPresetType", webInterface.RegionPresetArgs(translator));
-                vars.Add ("RegionTerrain", webInterface.RegionTerrainArgs(translator));
-              
-            }
+				vars.Add ("RegionSizeX", Constants.RegionSize);
+				vars.Add ("RegionSizeY", Constants.RegionSize);
+				vars.Add ("RegionType", webInterface.RegionTypeArgs (translator));
+				vars.Add ("RegionPresetType", webInterface.RegionPresetArgs (translator));
+				vars.Add ("RegionTerrain", webInterface.RegionTerrainArgs (translator));
+			}
 
-                // Labels
-                //vars.Add ("RegionInformationText", translator.GetTranslatedString ("RegionInformationText"));
-            vars.Add ("RegionNameText", translator.GetTranslatedString ("RegionNameText"));
-            vars.Add ("RegionLocationText", translator.GetTranslatedString ("RegionLocationText"));
-            vars.Add ("RegionSizeText", translator.GetTranslatedString ("RegionSizeText"));
-            vars.Add ("RegionTypeText", translator.GetTranslatedString ("RegionTypeText"));
-            vars.Add ("RegionPresetText", translator.GetTranslatedString ("RegionPresetText"));
-            vars.Add ("RegionTerrainText", translator.GetTranslatedString ("RegionTerrainText"));
-            vars.Add ("OwnerNameText", translator.GetTranslatedString ("OwnerNameText"));
-            vars.Add ("RegionPortText", translator.GetTranslatedString ("RegionPortText"));
-            vars.Add ("RegionDelayStartupText", translator.GetTranslatedString ("RegionDelayStartupText"));
-            vars.Add ("RegionVisibilityText", translator.GetTranslatedString ("RegionVisibilityText"));
-            vars.Add ("RegionInfiniteText", translator.GetTranslatedString ("RegionInfiniteText"));
-            vars.Add ("RegionCapacityText", translator.GetTranslatedString ("RegionCapacityText"));
-            vars.Add ("Yes", translator.GetTranslatedString ("Yes"));
-            vars.Add ("No", translator.GetTranslatedString ("No"));
-            vars.Add("Accept", translator.GetTranslatedString("Accept"));
-            vars.Add("Submit", translator.GetTranslatedString("Submit"));
-            vars.Add("SubmitURL", "home.html");
-            vars.Add("ErrorMessage", "");
+			// Labels
+			//vars.Add ("RegionInformationText", translator.GetTranslatedString ("RegionInformationText"));
+			vars.Add ("RegionNameText", translator.GetTranslatedString ("RegionNameText"));
+			vars.Add ("RegionLocationText", translator.GetTranslatedString ("RegionLocationText"));
+			vars.Add ("RegionSizeText", translator.GetTranslatedString ("RegionSizeText"));
+			vars.Add ("RegionTypeText", translator.GetTranslatedString ("RegionTypeText"));
+			vars.Add ("RegionPresetText", translator.GetTranslatedString ("RegionPresetText"));
+			vars.Add ("RegionTerrainText", translator.GetTranslatedString ("RegionTerrainText"));
+			vars.Add ("OwnerNameText", translator.GetTranslatedString ("OwnerNameText"));
+			vars.Add ("RegionPortText", translator.GetTranslatedString ("RegionPortText"));
+			vars.Add ("RegionDelayStartupText", translator.GetTranslatedString ("RegionDelayStartupText"));
+			vars.Add ("RegionVisibilityText", translator.GetTranslatedString ("RegionVisibilityText"));
+			vars.Add ("RegionInfiniteText", translator.GetTranslatedString ("RegionInfiniteText"));
+			vars.Add ("RegionCapacityText", translator.GetTranslatedString ("RegionCapacityText"));
+			vars.Add ("Yes", translator.GetTranslatedString ("Yes"));
+			vars.Add ("No", translator.GetTranslatedString ("No"));
+			vars.Add ("Accept", translator.GetTranslatedString ("Accept"));
+			vars.Add ("Submit", translator.GetTranslatedString ("Submit"));
+			vars.Add ("SubmitURL", "home.html");
+			vars.Add ("ErrorMessage", "");
 
+			return vars;
+		}
 
-         
-
-            return vars;
-        }
-
-        public bool AttemptFindPage(string filename, ref OSHttpResponse httpResponse, out string text)
-        {
-            text = "";
-            return false;
-        }
-    }
+		public bool AttemptFindPage (string filename, ref OSHttpResponse httpResponse, out string text)
+		{
+			text = "";
+			return false;
+		}
+	}
 }

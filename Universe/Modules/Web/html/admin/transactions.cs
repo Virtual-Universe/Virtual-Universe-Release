@@ -35,116 +35,103 @@ using Universe.Framework.Utilities;
 
 namespace Universe.Modules.Web
 {
-    public class AdminUserTransactionsPage : IWebInterfacePage
-    {
-        public string[] FilePath
-        {
-            get
-            {
-                return new[]
-                           {
-                               "html/admin/transactions.html"
-                           };
-            }
-        }
+	public class AdminUserTransactionsPage : IWebInterfacePage
+	{
+		public string[] FilePath {
+			get {
+				return new[] {
+					"html/admin/transactions.html"
+				};
+			}
+		}
 
-        public bool RequiresAuthentication
-        {
-            get { return true; }
-        }
+		public bool RequiresAuthentication {
+			get { return true; }
+		}
 
-        public bool RequiresAdminAuthentication
-        {
-            get { return true; }
-        }
+		public bool RequiresAdminAuthentication {
+			get { return true; }
+		}
 
-        public Dictionary<string, object> Fill(WebInterface webInterface, string filename, OSHttpRequest httpRequest,
-                                                OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
-                                                ITranslator translator, out string response)
-        {
-            response = null;
-            var vars = new Dictionary<string, object>();
-            var transactionsList = new List<Dictionary<string, object>>();
+		public Dictionary<string, object> Fill (WebInterface webInterface, string filename, OSHttpRequest httpRequest,
+		                                             OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
+		                                             ITranslator translator, out string response)
+		{
+			response = null;
+			var vars = new Dictionary<string, object> ();
+			var transactionsList = new List<Dictionary<string, object>> ();
 
-            uint amountPerQuery = 25;
-            var today = DateTime.Now;
-            var thirtyDays = today.AddDays (-30);
-            string DateStart = thirtyDays.ToShortDateString();
-            string DateEnd = today.ToShortDateString();
-            string UserName = "";
-            UUID UserID = UUID.Zero;
+			uint amountPerQuery = 25;
+			var today = DateTime.Now;
+			var thirtyDays = today.AddDays (-30);
+			string DateStart = thirtyDays.ToShortDateString ();
+			string DateEnd = today.ToShortDateString ();
+			string UserName = "";
+			UUID UserID = UUID.Zero;
 
-            IMoneyModule moneyModule = webInterface.Registry.RequestModuleInterface<IMoneyModule>();
-            string noDetails = translator.GetTranslatedString ("NoTransactionsText");
+			IMoneyModule moneyModule = webInterface.Registry.RequestModuleInterface<IMoneyModule> ();
+			string noDetails = translator.GetTranslatedString ("NoTransactionsText");
 
-            // Check if we're looking at the standard page or the submitted one
-            if (requestParameters.ContainsKey ("Submit"))
-            {
-                if (requestParameters.ContainsKey ("date_start"))
-                    DateStart = requestParameters ["date_start"].ToString ();
-                if (requestParameters.ContainsKey ("date_end"))
-                    DateEnd = requestParameters ["date_end"].ToString ();
-                if (requestParameters.ContainsKey ("user_name"))
-                    UserName = requestParameters ["user_name"].ToString ();
+			// Check if we're looking at the standard page or the submitted one
+			if (requestParameters.ContainsKey ("Submit")) {
+				if (requestParameters.ContainsKey ("date_start"))
+					DateStart = requestParameters ["date_start"].ToString ();
+				if (requestParameters.ContainsKey ("date_end"))
+					DateEnd = requestParameters ["date_end"].ToString ();
+				if (requestParameters.ContainsKey ("user_name"))
+					UserName = requestParameters ["user_name"].ToString ();
 
-                if (UserName != "")
-                {
-                    // TODO: Work out a better way to catch this
-                    UserID = (UUID)Constants.LibraryOwner;         // This user should hopefully never have transactions
+				if (UserName != "") {
+					// TODO: Work out a better way to catch this
+					UserID = (UUID)Constants.LibraryOwner;         // This user should hopefully never have transactions
 
-                    if (UserName.Split (' ').Length == 2)
-                    {
-                        IUserAccountService accountService = webInterface.Registry.RequestModuleInterface<IUserAccountService> ();
-                        var userAccount = accountService.GetUserAccount (null, UserName);
-                        if (userAccount != null)
-                            UserID = userAccount.PrincipalID;
-                    }
-                }
+					if (UserName.Split (' ').Length == 2) {
+						IUserAccountService accountService = webInterface.Registry.RequestModuleInterface<IUserAccountService> ();
+						var userAccount = accountService.GetUserAccount (null, UserName);
+						if (userAccount != null)
+							UserID = userAccount.PrincipalID;
+					}
+				}
 
-                // paginations
-                int start = httpRequest.Query.ContainsKey ("Start")
+				// paginations
+				int start = httpRequest.Query.ContainsKey ("Start")
                     ? int.Parse (httpRequest.Query ["Start"].ToString ())
                     : 0;
-                int count = (int) moneyModule.NumberOfTransactions(UserID, UUID.Zero);
-                int maxPages = (int)(count / amountPerQuery) - 1;
+				int count = (int)moneyModule.NumberOfTransactions (UserID, UUID.Zero);
+				int maxPages = (int)(count / amountPerQuery) - 1;
 
-                if (start == -1)
-                    start = (int)(maxPages < 0 ? 0 : maxPages);
+				if (start == -1)
+					start = (int)(maxPages < 0 ? 0 : maxPages);
 
-                vars.Add ("CurrentPage", start);
-                vars.Add ("NextOne", start + 1 > maxPages ? start : start + 1);
-                vars.Add ("BackOne", start - 1 < 0 ? 0 : start - 1);
+				vars.Add ("CurrentPage", start);
+				vars.Add ("NextOne", start + 1 > maxPages ? start : start + 1);
+				vars.Add ("BackOne", start - 1 < 0 ? 0 : start - 1);
 
 
-                // Transaction Logs
-                var timeNow = DateTime.Now.ToString ("HH:mm:ss");
-                var dateFrom = DateTime.Parse (DateStart + " " + timeNow);
-                var dateTo = DateTime.Parse (DateEnd + " " + timeNow);
+				// Transaction Logs
+				var timeNow = DateTime.Now.ToString ("HH:mm:ss");
+				var dateFrom = DateTime.Parse (DateStart + " " + timeNow);
+				var dateTo = DateTime.Parse (DateEnd + " " + timeNow);
 
-                var transactions = new List<AgentTransfer>();
-                if (moneyModule != null)
-                {
-                    if (UserID != UUID.Zero)
-                        transactions = moneyModule.GetTransactionHistory (UserID, UUID.Zero, dateFrom, dateTo, (uint)start, amountPerQuery);
-                    else
-                        transactions = moneyModule.GetTransactionHistory (dateFrom, dateTo, (uint)start, amountPerQuery);
-                }
+				var transactions = new List<AgentTransfer> ();
+				if (moneyModule != null) {
+					if (UserID != UUID.Zero)
+						transactions = moneyModule.GetTransactionHistory (UserID, UUID.Zero, dateFrom, dateTo, (uint)start, amountPerQuery);
+					else
+						transactions = moneyModule.GetTransactionHistory (dateFrom, dateTo, (uint)start, amountPerQuery);
+				}
 
-                // data
-                if (transactions.Count > 0)
-                {
-                    noDetails = "";
+				// data
+				if (transactions.Count > 0) {
+					noDetails = "";
 
-                    foreach (var transaction in transactions)
-                    {
-                        transactionsList.Add (new Dictionary<string, object> {
-                            { "Date", Culture.LocaleDate (transaction.TransferDate.ToLocalTime(), "MMM dd, hh:mm:ss tt") },
+					foreach (var transaction in transactions) {
+						transactionsList.Add (new Dictionary<string, object> { { "Date", Culture.LocaleDate (transaction.TransferDate.ToLocalTime(), "MMM dd, hh:mm:ss tt") },
                             { "ToAgent", transaction.ToAgentName },
                             { "FromAgent", transaction.FromAgentName },
                             { "Description", transaction.Description },
                             { "Amount",transaction.Amount },
                             { "ToBalance",transaction.ToBalance }
-
                         });
                     }
                 }
@@ -164,7 +151,6 @@ namespace Universe.Modules.Web
                     {"Description", translator.GetTranslatedString ("NoTransactionsText")},
                     {"Amount",""},
                     {"ToBalance",""}
-
                 });
             }
 

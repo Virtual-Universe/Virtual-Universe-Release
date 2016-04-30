@@ -25,12 +25,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 namespace Universe.Modules.Web
 {
-    public interface ITranslator
-    {
-        string LanguageName { get; }
-        string GetTranslatedString(string key);
-    }
+	public interface ITranslator
+	{
+		string LanguageName { get; }
+
+		string GetTranslatedString (string key);
+	}
 }

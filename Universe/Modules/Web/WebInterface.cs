@@ -51,1182 +51,1121 @@ using Universe.Framework.Utilities;
 
 namespace Universe.Modules.Web
 {
-    public class WebInterface : IService, IWebInterfaceModule
-    {
-        #region Declares
+	public class WebInterface : IService, IWebInterfaceModule
+	{
+		#region Declares
 
-        protected const int CLIENT_CACHE_TIME = 86400;  // 1 day
-        protected uint _port = 8002;                    // assuming grid mode here
-        protected bool _enabled = true;
-        protected Dictionary<string, IWebInterfacePage> _pages = new Dictionary<string, IWebInterfacePage>();
-        protected List<ITranslator> _translators = new List<ITranslator>();
-        protected ITranslator _defaultTranslator;
-        protected string m_localHtmlPath = "";
+		protected const int CLIENT_CACHE_TIME = 86400;
+		// 1 day
+		protected uint _port = 8002;
+		// assuming grid mode here
+		protected bool _enabled = true;
+		protected Dictionary<string, IWebInterfacePage> _pages = new Dictionary<string, IWebInterfacePage> ();
+		protected List<ITranslator> _translators = new List<ITranslator> ();
+		protected ITranslator _defaultTranslator;
+		protected string m_localHtmlPath = "";
 
-        // webpages and settings cacheing
-        internal GridPage webPages;
-        internal WebUISettings webUISettings;
-        public GridSettings gridSettings;
+		// webpages and settings cacheing
+		internal GridPage webPages;
+		internal WebUISettings webUISettings;
+		public GridSettings gridSettings;
 
+		#endregion
 
-        #endregion
+		#region Public Properties
 
-        #region Public Properties
+		public IRegistryCore Registry { get; protected set; }
 
-        public IRegistryCore Registry { get; protected set; }
+		public string GridName { get; private set; }
 
-        public string GridName { get; private set; }
+		public string HomeScreenURL {
+			get { return MainServer.Instance.FullHostName + ":" + _port + "/"; }
+		}
 
-        public string HomeScreenURL
-        {
-            get { return MainServer.Instance.FullHostName + ":" + _port + "/"; }
-        }
+		public string LoginScreenURL {
+			get { return MainServer.Instance.FullHostName + ":" + _port + "/welcomescreen/"; }
+		}
 
-        public string LoginScreenURL
-        {
-            get { return MainServer.Instance.FullHostName + ":" + _port + "/welcomescreen/"; }
-        }
+		public string WebProfileURL {
+			get { return MainServer.Instance.FullHostName + ":" + _port + "/webprofile/"; }
+		}
 
-        public string WebProfileURL
-        {
-            get { return MainServer.Instance.FullHostName + ":" + _port + "/webprofile/"; }
-        }
+		public string RegistrationScreenURL {
+			get { return MainServer.Instance.FullHostName + ":" + _port + "/register.html"; }
+		}
 
-        public string RegistrationScreenURL
-        {
-            get { return MainServer.Instance.FullHostName + ":" + _port + "/register.html"; }
-        }
+		public string ForgotPasswordScreenURL {
+			get { return MainServer.Instance.FullHostName + ":" + _port + "/forgot_pass.html"; }
+		}
 
-        public string ForgotPasswordScreenURL
-        {
-            get { return MainServer.Instance.FullHostName + ":" + _port + "/forgot_pass.html"; }
-        }
+		public string HelpScreenURL {
+			get { return MainServer.Instance.FullHostName + ":" + _port + "/help.html"; }
+		}
 
-        public string HelpScreenURL
-        {
-            get { return MainServer.Instance.FullHostName + ":" + _port + "/help.html"; }
-        }
+		public string GridURL {
+			get { return MainServer.Instance.HostName + ":" + _port; }
+		}
 
-        public string GridURL
-        {
-            get { return MainServer.Instance.HostName + ":" + _port; }
-        }
+		public ITranslator EnglishTranslator {
+			get { return _translators.FirstOrDefault (t => t.LanguageName == "en"); }
+		}
 
-        public ITranslator EnglishTranslator
-        {
-            get { return _translators.FirstOrDefault (t => t.LanguageName == "en"); }
-        }
+		#endregion
 
-        #endregion
+		#region IService Members
 
-        #region IService Members
+		public void Initialize (IConfigSource config, IRegistryCore registry)
+		{
+			Registry = registry;
 
-        public void Initialize(IConfigSource config, IRegistryCore registry)
-        {
-            Registry = registry;
+			var wbPages = UniverseModuleLoader.PickupModules<IWebInterfacePage> ();
+			foreach (var pages in wbPages) {
+				foreach (var page in pages.FilePath) {
+					_pages.Add (page, pages);
+				}
+			}
 
-            var wbPages = UniverseModuleLoader.PickupModules<IWebInterfacePage>();
-            foreach (var pages in wbPages)
-            {
-                foreach (var page in pages.FilePath)
-                {
-                    _pages.Add(page, pages);
-                }
-            }
+			_translators = UniverseModuleLoader.PickupModules<ITranslator> ();
+			_defaultTranslator = _translators [0];
+		}
 
-            _translators = UniverseModuleLoader.PickupModules<ITranslator>();
-            _defaultTranslator = _translators[0];
-        }
+		public void Start (IConfigSource config, IRegistryCore registry)
+		{
+			IConfig con = config.Configs ["WebInterface"];
+			if (con != null) {
+				_enabled = con.GetString ("Module", "BuiltIn") == "BuiltIn";
 
-        public void Start(IConfigSource config, IRegistryCore registry)
-        {
-            IConfig con = config.Configs["WebInterface"];
-            if (con != null)
-            {
-                _enabled = con.GetString("Module", "BuiltIn") == "BuiltIn";
-
-                var webPort = con.GetUInt("Port", 0);
-                if (webPort == 0)                               // use default
+				var webPort = con.GetUInt ("Port", 0);
+				if (webPort == 0)                               // use default
                     _port = MainServer.Instance.Port;
-                else
-                    _port = webPort;                            // user defined
+				else
+					_port = webPort;                            // user defined
 
-                string defaultLanguage = con.GetString("DefaultLanguage", "en");
-                _defaultTranslator = _translators.FirstOrDefault(t => t.LanguageName == defaultLanguage);
-                if (_defaultTranslator == null)
-                    _defaultTranslator = _translators[0];
-            }
-            if (_enabled)
-            {
-                Registry.RegisterModuleInterface<IWebInterfaceModule>(this);
-                var server = registry.RequestModuleInterface<ISimulationBase>().GetHttpServer(_port);
-                server.AddStreamHandler(new GenericStreamHandler("GET", "/", FindAndSendPage));
-                server.AddStreamHandler(new GenericStreamHandler("POST", "/", FindAndSendPage));
+				string defaultLanguage = con.GetString ("DefaultLanguage", "en");
+				_defaultTranslator = _translators.FirstOrDefault (t => t.LanguageName == defaultLanguage);
+				if (_defaultTranslator == null)
+					_defaultTranslator = _translators [0];
+			}
 
-                // set local path in case..
-                if (m_localHtmlPath == "")
-                {
-                    var defpath = registry.RequestModuleInterface<ISimulationBase> ().DefaultDataPath;
-                    m_localHtmlPath = Path.Combine (defpath, Constants.DEFAULT_USERHTML_DIR);
-                }
-            }
-        }
+			if (_enabled) {
+				Registry.RegisterModuleInterface<IWebInterfaceModule> (this);
+				var server = registry.RequestModuleInterface<ISimulationBase> ().GetHttpServer (_port);
+				server.AddStreamHandler (new GenericStreamHandler ("GET", "/", FindAndSendPage));
+				server.AddStreamHandler (new GenericStreamHandler ("POST", "/", FindAndSendPage));
 
-        public void FinishedStartup()
-        {
-            if (_enabled)
-            {
-                IGridInfo gridInfo = Registry.RequestModuleInterface<IGridInfo>();
-                GridName = gridInfo.GridName;
+				// set local path in case..
+				if (m_localHtmlPath == "") {
+					var defpath = registry.RequestModuleInterface<ISimulationBase> ().DefaultDataPath;
+					m_localHtmlPath = Path.Combine (defpath, Constants.DEFAULT_USERHTML_DIR);
+				}
+			}
+		}
 
-                if (PagesMigrator.RequiresInitialUpdate())
-                    PagesMigrator.ResetToDefaults();
-                if (SettingsMigrator.RequiresInitialUpdate())
-                    SettingsMigrator.ResetToDefaults(this);
-            }
-        }
+		public void FinishedStartup ()
+		{
+			if (_enabled) {
+				IGridInfo gridInfo = Registry.RequestModuleInterface<IGridInfo> ();
+				GridName = gridInfo.GridName;
 
-        #endregion
+				if (PagesMigrator.RequiresInitialUpdate ())
+					PagesMigrator.ResetToDefaults ();
+				if (SettingsMigrator.RequiresInitialUpdate ())
+					SettingsMigrator.ResetToDefaults (this);
+			}
+		}
 
-        #region Page Sending
+		#endregion
 
-        public IWebInterfacePage GetPage(string path)
-        {
-            IWebInterfacePage page;
-            string directory = string.Join("/", path.Split('/'), 0, path.Split('/').Length - 1) + "/";
-            if (!_pages.TryGetValue(path, out page) &&
-                !_pages.TryGetValue(directory, out page))
-                page = null;
-            return page;
-        }
+		#region Page Sending
 
-        protected byte[] FindAndSendPage(string path, Stream request, OSHttpRequest httpRequest,
-                                         OSHttpResponse httpResponse)
-        {
-            byte[] response;
-            string filename = GetFileNameFromHTMLPath(path, httpRequest.Query);
-            if (filename == null)
-                return MainServer.BlankResponse;
+		public IWebInterfacePage GetPage (string path)
+		{
+			IWebInterfacePage page;
+			string directory = string.Join ("/", path.Split ('/'), 0, path.Split ('/').Length - 1) + "/";
+			if (!_pages.TryGetValue (path, out page) &&
+			             !_pages.TryGetValue (directory, out page))
+				page = null;
+			return page;
+		}
+
+		protected byte[] FindAndSendPage (string path, Stream request, OSHttpRequest httpRequest,
+		                                       OSHttpResponse httpResponse)
+		{
+			byte[] response;
+			string filename = GetFileNameFromHTMLPath (path, httpRequest.Query);
+			if (filename == null)
+				return MainServer.BlankResponse;
             
-            if (httpRequest.HttpMethod == "POST")
-                httpResponse.KeepAlive = false;
-            MainConsole.Instance.Debug("[WebInterface]: Serving " + filename + ", keep-alive: " + httpResponse.KeepAlive);
-            IWebInterfacePage page = GetPage(filename);
-            if (page != null)
-            {
-                httpResponse.ContentType = GetContentType(filename, httpResponse);
-                string text;
-                if (!File.Exists(filename))
-                {
-                    if (!page.AttemptFindPage(filename, ref httpResponse, out text))
-                        return MainServer.BadRequest;
-                }
-                else
-                    text = File.ReadAllText(filename);
+			if (httpRequest.HttpMethod == "POST")
+				httpResponse.KeepAlive = false;
+			MainConsole.Instance.Debug ("[WebInterface]: Serving " + filename + ", keep-alive: " + httpResponse.KeepAlive);
+			IWebInterfacePage page = GetPage (filename);
 
-                var requestParameters = request != null
-                                            ? ParseQueryString(HttpServerHandlerHelpers.ReadString(request))
-                                            : new Dictionary<string, object>();
-                if (filename.EndsWith(".xsl"))
-                {
-                    UniverseXmlDocument vars = GetXML(filename, httpRequest, httpResponse, requestParameters);
+			if (page != null) {
+				httpResponse.ContentType = GetContentType (filename, httpResponse);
+				string text;
+				if (!File.Exists (filename)) {
+					if (!page.AttemptFindPage (filename, ref httpResponse, out text))
+						return MainServer.BadRequest;
+				} else
+					text = File.ReadAllText (filename);
 
-                    var xslt = new XslCompiledTransform();
-                    if (File.Exists(path)) xslt.Load(GetFileNameFromHTMLPath(path, httpRequest.Query));
-                    else if (text != "")
-                    {
-                        xslt.Load(new XmlTextReader(new StringReader(text)));
-                    }
-                    var stm = new MemoryStream();
-                    xslt.Transform(vars, null, stm);
-                    stm.Position = 1;
-                    var sr = new StreamReader(stm);
-                    string results = sr.ReadToEnd().Trim();
-                    return Encoding.UTF8.GetBytes(Regex.Replace(results, @"[^\u0000-\u007F]", string.Empty));
-                }
-                else
-                {
-                    string respStr;
-                    var vars = AddVarsForPage(filename, filename, httpRequest, httpResponse, requestParameters, out respStr);
+				var requestParameters = request != null
+                                            ? ParseQueryString (HttpServerHandlerHelpers.ReadString (request))
+                                            : new Dictionary<string, object> ();
 
-                    AddDefaultVarsForPage(ref vars);
+				if (filename.EndsWith (".xsl")) {
+					UniverseXmlDocument vars = GetXML (filename, httpRequest, httpResponse, requestParameters);
 
-                    if (!string.IsNullOrEmpty(respStr))
-                        return Encoding.UTF8.GetBytes(respStr);
+					var xslt = new XslCompiledTransform ();
+					if (File.Exists (path))
+						xslt.Load (GetFileNameFromHTMLPath (path, httpRequest.Query));
+					else if (text != "") {
+						xslt.Load (new XmlTextReader (new StringReader (text)));
+					}
+
+					var stm = new MemoryStream ();
+					xslt.Transform (vars, null, stm);
+					stm.Position = 1;
+					var sr = new StreamReader (stm);
+					string results = sr.ReadToEnd ().Trim ();
+					return Encoding.UTF8.GetBytes (Regex.Replace (results, @"[^\u0000-\u007F]", string.Empty));
+				} else {
+					string respStr;
+					var vars = AddVarsForPage (filename, filename, httpRequest, httpResponse, requestParameters, out respStr);
+
+					AddDefaultVarsForPage (ref vars);
+
+					if (!string.IsNullOrEmpty (respStr))
+						return Encoding.UTF8.GetBytes (respStr);
                     
-                    if (httpResponse.StatusCode != 200)
-                        return MainServer.BlankResponse;
+					if (httpResponse.StatusCode != 200)
+						return MainServer.BlankResponse;
                     
-                    if (vars == null)
-                        return MainServer.BadRequest;
+					if (vars == null)
+						return MainServer.BadRequest;
                     
-                    response = Encoding.UTF8.GetBytes(
-                        ConvertHTML(filename, text, httpRequest, httpResponse, requestParameters, vars));
-                }
-            }
-            else
-            {
-                httpResponse.ContentType = GetContentType(filename, httpResponse);
-                if (httpResponse.ContentType == null || !File.Exists(filename))
-                    return MainServer.BadRequest;
-                response = File.ReadAllBytes(filename);
-            }
-            return response;
-        }
+					response = Encoding.UTF8.GetBytes (
+						ConvertHTML (filename, text, httpRequest, httpResponse, requestParameters, vars));
+				}
+			} else {
+				httpResponse.ContentType = GetContentType (filename, httpResponse);
+				if (httpResponse.ContentType == null || !File.Exists (filename))
+					return MainServer.BadRequest;
+				response = File.ReadAllBytes (filename);
+			}
+			return response;
+		}
 
-        #endregion
+		#endregion
 
-        #region Helpers
+		#region Helpers
 
-        protected void AddDefaultVarsForPage(ref Dictionary<string, object> vars)
-        {
-            if (vars != null)
-            {
-                vars.Add("LoginURL", MainServer.Instance.FullHostName + ":" + MainServer.Instance.Port);
-                vars.Add("SystemURL", MainServer.Instance.FullHostName + ":" + _port);
-                vars.Add("SystemName", GridName);
-            }
-        }
+		protected void AddDefaultVarsForPage (ref Dictionary<string, object> vars)
+		{
+			if (vars != null) {
+				vars.Add ("LoginURL", MainServer.Instance.FullHostName + ":" + MainServer.Instance.Port);
+				vars.Add ("SystemURL", MainServer.Instance.FullHostName + ":" + _port);
+				vars.Add ("SystemName", GridName);
+			}
+		}
 
-        protected Dictionary<string, object> AddVarsForPage(string filename, string parentFileName,
-                                                            OSHttpRequest httpRequest, OSHttpResponse httpResponse,
-                                                            Dictionary<string, object> requestParameters,
-                                                            out string response)
-        {
-            response = null;
-            Dictionary<string, object> vars;
-            IWebInterfacePage page = GetPage(filename);
-            if (page != null)
-            {
-                ITranslator translator = null;
-                if (httpRequest.Query.ContainsKey("language"))
-                {
-                    translator =
-                        _translators.FirstOrDefault(t => t.LanguageName == httpRequest.Query["language"].ToString());
-                    httpResponse.AddCookie(new HttpCookie("language", httpRequest.Query["language"].ToString()));
-                }
-                else if (httpRequest.Cookies.Get("language") != null)
-                {
-                    var cookie = httpRequest.Cookies.Get("language");
-                    translator = _translators.FirstOrDefault(t => t.LanguageName == cookie.Value);
-                }
-                if (translator == null)
-                    translator = _defaultTranslator;
+		protected Dictionary<string, object> AddVarsForPage (string filename, string parentFileName,
+		                                                          OSHttpRequest httpRequest, OSHttpResponse httpResponse,
+		                                                          Dictionary<string, object> requestParameters,
+		                                                          out string response)
+		{
+			response = null;
+			Dictionary<string, object> vars;
+			IWebInterfacePage page = GetPage (filename);
+			if (page != null) {
+				ITranslator translator = null;
+				if (httpRequest.Query.ContainsKey ("language")) {
+					translator =
+                        _translators.FirstOrDefault (t => t.LanguageName == httpRequest.Query ["language"].ToString ());
+					httpResponse.AddCookie (new HttpCookie ("language", httpRequest.Query ["language"].ToString ()));
+				} else if (httpRequest.Cookies.Get ("language") != null) {
+					var cookie = httpRequest.Cookies.Get ("language");
+					translator = _translators.FirstOrDefault (t => t.LanguageName == cookie.Value);
+				}
 
-                if (page.RequiresAuthentication)
-                {
-                    if (!Authenticator.CheckAuthentication(httpRequest))
-                        return null;
-                }
-                if (page.RequiresAdminAuthentication)
-                {
-                    if (!Authenticator.CheckAdminAuthentication(httpRequest))
-                        return null;
-                }
-                vars = page.Fill(this, parentFileName, httpRequest, httpResponse, requestParameters, translator,
-                                 out response);
-                return vars;
-            }
-            return null;
-        }
+				if (translator == null)
+					translator = _defaultTranslator;
 
-        UniverseXmlDocument GetXML(string filename, OSHttpRequest httpRequest, OSHttpResponse httpResponse,
-                                         Dictionary<string, object> requestParameters)
-        {
-            IWebInterfacePage page = GetPage(filename);
-            if (page != null)
-            {
-                ITranslator translator = null;
-                if (httpRequest.Query.ContainsKey("language"))
-                    translator =
-                        _translators.FirstOrDefault(t => t.LanguageName == httpRequest.Query["language"].ToString());
-                if (translator == null)
-                    translator = _defaultTranslator;
+				if (page.RequiresAuthentication) {
+					if (!Authenticator.CheckAuthentication (httpRequest))
+						return null;
+				}
 
-                if (page.RequiresAuthentication)
-                {
-                    if (!Authenticator.CheckAuthentication(httpRequest))
-                        return null;
-                    if (page.RequiresAdminAuthentication)
-                    {
-                        if (!Authenticator.CheckAdminAuthentication(httpRequest))
-                            return null;
-                    }
-                }
-                string response;
-                var pageVars = page.Fill(this, filename, httpRequest, httpResponse, requestParameters, translator,
-                    out response)["xml"];
-                if (pageVars != null)
-                    return (UniverseXmlDocument) pageVars;
-            }
-            return null;
-        }
+				if (page.RequiresAdminAuthentication) {
+					if (!Authenticator.CheckAdminAuthentication (httpRequest))
+						return null;
+				}
 
-        protected string ConvertHTML(string originalFileName, string file, OSHttpRequest request,
-                                     OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
-                                     Dictionary<string, object> vars)
-        {
-            string html = CSHTMLCreator.BuildHTML(file, vars);
+				vars = page.Fill (this, parentFileName, httpRequest, httpResponse, requestParameters, translator,
+					out response);
+				return vars;
+			}
 
-            string[] lines = html.Split('\n');
-            StringBuilder sb = new StringBuilder();
-            for (int pos = 0; pos < lines.Length; pos++)
-            {
-                string line = lines[pos];
-                string cleanLine = line.Trim();
-                if (cleanLine.StartsWith("<!--#include file="))
-                {
-                    string[] split = line.Split(new string[2] {"<!--#include file=\"", "\" -->"},
-                                                StringSplitOptions.RemoveEmptyEntries);
-                    for (int i = 0; i < split.Length; i += 2)
-                    {
-                        string filename = GetFileNameFromHTMLPath(split[i], request.Query);
-                        if (filename != null)
-                        {
-                            string response;
-                            Dictionary<string, object> newVars = AddVarsForPage (filename, originalFileName,
-                                                                     request, httpResponse, requestParameters,
-                                                                     out response);
-                            AddDefaultVarsForPage (ref newVars);
-                            sb.AppendLine (ConvertHTML (filename, File.ReadAllText (filename),
-                                request, httpResponse, requestParameters, newVars));
-                        }
-                    }
-                }
-                else if (cleanLine.StartsWith("<!--#include folder="))
-                {
-                    string[] split = line.Split(new string[2] {"<!--#include folder=\"", "\" -->"},
-                                                StringSplitOptions.RemoveEmptyEntries);
-                    for (int i = split.Length%2 == 0 ? 0 : 1; i < split.Length; i += 2)
-                    {
-                        string filename = GetFileNameFromHTMLPath(split[i], request.Query).Replace("index.html", "");
-                        if (filename != null)
-                        {
-                            if (Directory.Exists (filename))
-                            {
-                                string response;
-                                Dictionary<string, object> newVars = AddVarsForPage (filename, filename, request,
-                                                                     httpResponse,
-                                                                     requestParameters, out response);
-                                string[] files = Directory.GetFiles (filename);
-                                foreach (string f in files)
-                                {
-                                    if (!f.EndsWith (".html"))
-                                        continue;
+			return null;
+		}
+
+		UniverseXmlDocument GetXML (string filename, OSHttpRequest httpRequest, OSHttpResponse httpResponse,
+		                                 Dictionary<string, object> requestParameters)
+		{
+			IWebInterfacePage page = GetPage (filename);
+			if (page != null) {
+				ITranslator translator = null;
+				if (httpRequest.Query.ContainsKey ("language"))
+					translator =
+                        _translators.FirstOrDefault (t => t.LanguageName == httpRequest.Query ["language"].ToString ());
+				if (translator == null)
+					translator = _defaultTranslator;
+
+				if (page.RequiresAuthentication) {
+					if (!Authenticator.CheckAuthentication (httpRequest))
+						return null;
+					if (page.RequiresAdminAuthentication) {
+						if (!Authenticator.CheckAdminAuthentication (httpRequest))
+							return null;
+					}
+				}
+
+				string response;
+				var pageVars = page.Fill (this, filename, httpRequest, httpResponse, requestParameters, translator,
+					                           out response) ["xml"];
+
+				if (pageVars != null)
+					return (UniverseXmlDocument)pageVars;
+			}
+
+			return null;
+		}
+
+		protected string ConvertHTML (string originalFileName, string file, OSHttpRequest request,
+		                                   OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
+		                                   Dictionary<string, object> vars)
+		{
+			string html = CSHTMLCreator.BuildHTML (file, vars);
+
+			string[] lines = html.Split ('\n');
+			StringBuilder sb = new StringBuilder ();
+			for (int pos = 0; pos < lines.Length; pos++) {
+				string line = lines [pos];
+				string cleanLine = line.Trim ();
+				if (cleanLine.StartsWith ("<!--#include file=")) {
+					string[] split = line.Split (new string[2] { "<!--#include file=\"", "\" -->" },
+						                                StringSplitOptions.RemoveEmptyEntries);
+					for (int i = 0; i < split.Length; i += 2) {
+						string filename = GetFileNameFromHTMLPath (split [i], request.Query);
+						if (filename != null) {
+							string response;
+							Dictionary<string, object> newVars = AddVarsForPage (filename, originalFileName,
+								                                                          request, httpResponse, requestParameters,
+								                                                          out response);
+							AddDefaultVarsForPage (ref newVars);
+							sb.AppendLine (ConvertHTML (filename, File.ReadAllText (filename),
+								request, httpResponse, requestParameters, newVars));
+						}
+					}
+				} else if (cleanLine.StartsWith ("<!--#include folder=")) {
+					string[] split = line.Split (new string[2] { "<!--#include folder=\"", "\" -->" },
+						                                StringSplitOptions.RemoveEmptyEntries);
+					for (int i = split.Length % 2 == 0 ? 0 : 1; i < split.Length; i += 2) {
+						string filename = GetFileNameFromHTMLPath (split [i], request.Query).Replace ("index.html", "");
+						if (filename != null) {
+							if (Directory.Exists (filename)) {
+								string response;
+								Dictionary<string, object> newVars = AddVarsForPage (filename, filename, request,
+									                                                             httpResponse,
+									                                                             requestParameters, out response);
+								string[] files = Directory.GetFiles (filename);
+								foreach (string f in files) {
+									if (!f.EndsWith (".html"))
+										continue;
                                     
-                                    Dictionary<string, object> newVars2 =
-                                        AddVarsForPage (f, filename, request, httpResponse, requestParameters, out response) ??
-                                        new Dictionary<string, object> ();
-                                    foreach (
+									Dictionary<string, object> newVars2 =
+										AddVarsForPage (f, filename, request, httpResponse, requestParameters, out response) ??
+										new Dictionary<string, object> ();
+									foreach (
                                     KeyValuePair<string, object> pair in
                                         newVars.Where(pair => !newVars2.ContainsKey(pair.Key)))
-                                        newVars2.Add (pair.Key, pair.Value);
-                                    AddDefaultVarsForPage (ref newVars2);
-                                    sb.AppendLine (ConvertHTML (f, File.ReadAllText (f), request, httpResponse,
-                                        requestParameters, newVars2));
-                                }
-                            }
-                        }
-                    }
-                }
-                else if (cleanLine.StartsWith("{"))
-                {
-                    int indBegin, indEnd;
-                    if ((indEnd = cleanLine.IndexOf("ArrayBegin}")) != -1)
-                    {
-                        string keyToCheck = cleanLine.Substring(1, indEnd - 1);
-                        int posToCheckFrom;
-                        List<string> repeatedLines = ExtractLines(lines, pos, keyToCheck, "ArrayEnd", out posToCheckFrom);
-                        pos = posToCheckFrom;
-                        if (vars.ContainsKey(keyToCheck))
-                        {
-                            List<Dictionary<string, object>> dicts =
-                                vars[keyToCheck] as List<Dictionary<string, object>>;
-                            if (dicts != null)
-                                foreach (var dict in dicts)
-                                    sb.AppendLine(ConvertHTML(originalFileName,
-                                                              string.Join("\n", repeatedLines.ToArray()), request,
-                                                              httpResponse, requestParameters, dict));
-                        }
-                    }
-                    else if ((indEnd = cleanLine.IndexOf ("AuthenticatedBegin}", StringComparison.Ordinal)) != -1)
-                    {
-                        string key = cleanLine.Substring(1, indEnd - 1) + "AuthenticatedEnd";
-                        int posToCheckFrom = FindLines(lines, pos, "", key);
-                        if (!CheckAuth(cleanLine, request))
-                            pos = posToCheckFrom;
-                    }
-                    else if ((indBegin = cleanLine.IndexOf ("{If", StringComparison.Ordinal)) != -1 &&
-                             (indEnd = cleanLine.IndexOf ("Begin}", StringComparison.Ordinal)) != -1)
-                    {
-                        string key = cleanLine.Substring(indBegin + 3, indEnd - indBegin - 3);
-                        int posToCheckFrom = FindLines(lines, pos, "If" + key, "End");
-                        if (!vars.ContainsKey(key) || (!(bool) vars[key]))
-                            pos = posToCheckFrom;
-                    }
-                    else if ((cleanLine.IndexOf ("{If", StringComparison.Ordinal)) != -1 &&
-                             (cleanLine.IndexOf ("End}", StringComparison.Ordinal)) != -1)
-                    {
-                        //end of an if statement, just ignore it
-                    }
-                    else if ((cleanLine.IndexOf ("{Is", StringComparison.Ordinal)) != -1 &&
-                             (cleanLine.IndexOf ("End}", StringComparison.Ordinal)) != -1)
-                    {
-                        //end of an is statement, just ignore it
-                    }
-                    else
-                        sb.AppendLine(line);
-                }
-                else
-                    sb.AppendLine(line);
-            }
+										newVars2.Add (pair.Key, pair.Value);
+									AddDefaultVarsForPage (ref newVars2);
+									sb.AppendLine (ConvertHTML (f, File.ReadAllText (f), request, httpResponse,
+										requestParameters, newVars2));
+								}
+							}
+						}
+					}
+				} else if (cleanLine.StartsWith ("{")) {
+					int indBegin, indEnd;
+					if ((indEnd = cleanLine.IndexOf ("ArrayBegin}")) != -1) {
+						string keyToCheck = cleanLine.Substring (1, indEnd - 1);
+						int posToCheckFrom;
+						List<string> repeatedLines = ExtractLines (lines, pos, keyToCheck, "ArrayEnd", out posToCheckFrom);
+						pos = posToCheckFrom;
+						if (vars.ContainsKey (keyToCheck)) {
+							List<Dictionary<string, object>> dicts =
+								vars [keyToCheck] as List<Dictionary<string, object>>;
+							if (dicts != null)
+								foreach (var dict in dicts)
+									sb.AppendLine (ConvertHTML (originalFileName,
+										string.Join ("\n", repeatedLines.ToArray ()), request,
+										httpResponse, requestParameters, dict));
+						}
+					} else if ((indEnd = cleanLine.IndexOf ("AuthenticatedBegin}", StringComparison.Ordinal)) != -1) {
+						string key = cleanLine.Substring (1, indEnd - 1) + "AuthenticatedEnd";
+						int posToCheckFrom = FindLines (lines, pos, "", key);
+						if (!CheckAuth (cleanLine, request))
+							pos = posToCheckFrom;
+					} else if ((indBegin = cleanLine.IndexOf ("{If", StringComparison.Ordinal)) != -1 &&
+					                        (indEnd = cleanLine.IndexOf ("Begin}", StringComparison.Ordinal)) != -1) {
+						string key = cleanLine.Substring (indBegin + 3, indEnd - indBegin - 3);
+						int posToCheckFrom = FindLines (lines, pos, "If" + key, "End");
+						if (!vars.ContainsKey (key) || (!(bool)vars [key]))
+							pos = posToCheckFrom;
+					} else if ((cleanLine.IndexOf ("{If", StringComparison.Ordinal)) != -1 &&
+					                        (cleanLine.IndexOf ("End}", StringComparison.Ordinal)) != -1) {
+						//end of an if statement, just ignore it
+					} else if ((cleanLine.IndexOf ("{Is", StringComparison.Ordinal)) != -1 &&
+					                        (cleanLine.IndexOf ("End}", StringComparison.Ordinal)) != -1) {
+						//end of an is statement, just ignore it
+					} else
+						sb.AppendLine (line);
+				} else
+					sb.AppendLine (line);
+			}
 
-            return sb.ToString();
-        }
+			return sb.ToString ();
+		}
 
-        /// <summary>
-        ///     Returns false if the authentication was wrong
-        /// </summary>
-        /// <param name="p"></param>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        bool CheckAuth(string p, OSHttpRequest request)
-        {
-            if (p.StartsWith ("{IsAuthenticatedBegin}", StringComparison.Ordinal))
-                return Authenticator.CheckAuthentication (request);
+		/// <summary>
+		///     Returns false if the authentication was wrong
+		/// </summary>
+		/// <param name="p"></param>
+		/// <param name="request"></param>
+		/// <returns></returns>
+		bool CheckAuth (string p, OSHttpRequest request)
+		{
+			if (p.StartsWith ("{IsAuthenticatedBegin}", StringComparison.Ordinal))
+				return Authenticator.CheckAuthentication (request);
             
-            if (p.StartsWith ("{IsNotAuthenticatedBegin}", StringComparison.Ordinal))
-                return !Authenticator.CheckAuthentication (request);
+			if (p.StartsWith ("{IsNotAuthenticatedBegin}", StringComparison.Ordinal))
+				return !Authenticator.CheckAuthentication (request);
             
-            if (p.StartsWith ("{IsAdminAuthenticatedBegin}", StringComparison.Ordinal))
-                return Authenticator.CheckAdminAuthentication (request);
+			if (p.StartsWith ("{IsAdminAuthenticatedBegin}", StringComparison.Ordinal))
+				return Authenticator.CheckAdminAuthentication (request);
             
-            if (p.StartsWith ("{IsNotAdminAuthenticatedBegin}", StringComparison.Ordinal))
-                return !Authenticator.CheckAdminAuthentication (request);
+			if (p.StartsWith ("{IsNotAdminAuthenticatedBegin}", StringComparison.Ordinal))
+				return !Authenticator.CheckAdminAuthentication (request);
             
-            return false;
-        }
+			return false;
+		}
 
-        static int FindLines(string[] lines, int pos, string keyToCheck, string type)
-        {
-            int posToCheckFrom = pos + 1;
-            while (!lines[posToCheckFrom++].TrimStart().StartsWith("{" + keyToCheck + type + "}"))
-                continue;
+		static int FindLines (string[] lines, int pos, string keyToCheck, string type)
+		{
+			int posToCheckFrom = pos + 1;
+			while (!lines [posToCheckFrom++].TrimStart ().StartsWith ("{" + keyToCheck + type + "}"))
+				continue;
 
-            return posToCheckFrom - 1;
-        }
+			return posToCheckFrom - 1;
+		}
 
-        static List<string> ExtractLines(string[] lines, int pos,
-                                                 string keyToCheck, string type, out int posToCheckFrom)
-        {
-            posToCheckFrom = pos + 1;
-            List<string> repeatedLines = new List<string>();
-            while (!lines[posToCheckFrom].Trim().StartsWith("{" + keyToCheck + type + "}"))
-                repeatedLines.Add(lines[posToCheckFrom++]);
-            return repeatedLines;
-        }
+		static List<string> ExtractLines (string[] lines, int pos, string keyToCheck, string type, out int posToCheckFrom)
+		{
+			posToCheckFrom = pos + 1;
+			List<string> repeatedLines = new List<string> ();
+			while (!lines [posToCheckFrom].Trim ().StartsWith ("{" + keyToCheck + type + "}"))
+				repeatedLines.Add (lines [posToCheckFrom++]);
+			return repeatedLines;
+		}
 
-        protected string GetContentType(string filename, OSHttpResponse response)
-        {
-            switch (Path.GetExtension(filename))
-            {
-                case ".jpeg":
-                case ".jpg":
-                    response.AddHeader("Cache-Control", "Public;max-age=" + CLIENT_CACHE_TIME);
-                    return "image/jpeg";
-                case ".gif":
-                    response.AddHeader("Cache-Control", "Public;max-age=" + CLIENT_CACHE_TIME);
-                    return "image/gif";
-                case ".png":
-                    response.AddHeader("Cache-Control", "Public;max-age=" + CLIENT_CACHE_TIME);
-                    return "image/png";
-                case ".tiff":
-                    response.AddHeader("Cache-Control", "Public;max-age=" + CLIENT_CACHE_TIME);
-                    return "image/tiff";
-                case ".html":
-                case ".htm":
-                case ".xsl":
-                    response.AddHeader("Cache-Control", "no-cache");
-                    return "text/html";
-                case ".css":
+		protected string GetContentType (string filename, OSHttpResponse response)
+		{
+			switch (Path.GetExtension (filename)) {
+			case ".jpeg":
+			case ".jpg":
+				response.AddHeader ("Cache-Control", "Public;max-age=" + CLIENT_CACHE_TIME);
+				return "image/jpeg";
+			case ".gif":
+				response.AddHeader ("Cache-Control", "Public;max-age=" + CLIENT_CACHE_TIME);
+				return "image/gif";
+			case ".png":
+				response.AddHeader ("Cache-Control", "Public;max-age=" + CLIENT_CACHE_TIME);
+				return "image/png";
+			case ".tiff":
+				response.AddHeader ("Cache-Control", "Public;max-age=" + CLIENT_CACHE_TIME);
+				return "image/tiff";
+			case ".html":
+			case ".htm":
+			case ".xsl":
+				response.AddHeader ("Cache-Control", "no-cache");
+				return "text/html";
+			case ".css":
                     //response.AddHeader("Cache-Control", "max-age=" + CLIENT_CACHE_TIME + ", public");
-                    response.AddHeader("Cache-Control", "no-cache");
-                    return "text/css";
-                case ".js":
+				response.AddHeader ("Cache-Control", "no-cache");
+				return "text/css";
+			case ".js":
                     //response.AddHeader("Cache-Control", "max-age=" + CLIENT_CACHE_TIME + ", public");
-                    return "application/javascript";
-            }
-            return "text/plain";
-        }
+				return "application/javascript";
+			}
 
-        protected string GetFileNameFromHTMLPath(string path, Hashtable query)
-        {
-            try
-            {
-                string filePath = path.StartsWith("/") ? path.Remove(0, 1) : path;
-                filePath = filePath.IndexOf('?') >= 0 ? filePath.Substring(0, filePath.IndexOf('?')) : filePath;
+			return "text/plain";
+		}
 
-                if (filePath == "")
-                    filePath = "index.html";
-                if (filePath[filePath.Length - 1] == '/')
-                    filePath = filePath + "index.html";
+		protected string GetFileNameFromHTMLPath (string path, Hashtable query)
+		{
+			try {
+				string filePath = path.StartsWith ("/") ? path.Remove (0, 1) : path;
+				filePath = filePath.IndexOf ('?') >= 0 ? filePath.Substring (0, filePath.IndexOf ('?')) : filePath;
 
-                string file;
-                if (filePath.StartsWith("local/"))                      // local included files 
-                {
-                    file = Path.Combine (m_localHtmlPath, filePath.Remove(0,6));
-                }
-                else                                                    // 'normal' page processing
-                {
-                    file = Path.Combine("html/", filePath);
-                    if (!Path.GetFullPath(file).StartsWith(Path.GetFullPath("html/")))
-                    {
-                        return "html/index.html";
-                    }
-                    if (Path.GetFileName(file) == "")
-                        file = Path.Combine(file, "index.html");
+				if (filePath == "")
+					filePath = "index.html";
+				
+				if (filePath [filePath.Length - 1] == '/')
+					filePath = filePath + "index.html";
 
-                    if (query.ContainsKey("page") && _pages.ContainsKey("html/" + query["page"] + ".html"))
-                    {
-                        file = _pages["html/" + query["page"] + ".html"].FilePath[0];
-                    }
-                }
-                if (!File.Exists(file))
-                {
-                    MainConsole.Instance.DebugFormat("WebInterface]: Unknown page request, {0}", file);
-                    return "html/http_404.html";
-                }
+				string file;
+				if (filePath.StartsWith ("local/")) {                      // local included files 
+					file = Path.Combine (m_localHtmlPath, filePath.Remove (0, 6));
+				} else {                                                    // 'normal' page processing
+					file = Path.Combine ("html/", filePath);
+					if (!Path.GetFullPath (file).StartsWith (Path.GetFullPath ("html/"))) {
+						return "html/index.html";
+					}
 
-                return file;
-            }
-            catch
-            {
-                return "html/http_404.html";
-            }
-        }
+					if (Path.GetFileName (file) == "")
+						file = Path.Combine (file, "index.html");
 
+					if (query.ContainsKey ("page") && _pages.ContainsKey ("html/" + query ["page"] + ".html")) {
+						file = _pages ["html/" + query ["page"] + ".html"].FilePath [0];
+					}
+				}
 
-        public static Dictionary<string, object> ParseQueryString(string query)
-        {
-            Dictionary<string, object> result = new Dictionary<string, object>();
-            string[] terms = query.Split(new[] { '&' });
+				if (!File.Exists (file)) {
+					MainConsole.Instance.DebugFormat ("WebInterface]: Unknown page request, {0}", file);
+					return "html/http_404.html";
+				}
 
-            if (terms.Length == 0)
-                return result;
+				return file;
+			} catch {
+				return "html/http_404.html";
+			}
+		}
 
-            foreach (string t in terms)
-            {
-                string[] elems = t.Split(new[] { '=' });
-                if (elems.Length == 0)
-                    continue;
+		public static Dictionary<string, object> ParseQueryString (string query)
+		{
+			Dictionary<string, object> result = new Dictionary<string, object> ();
+			string[] terms = query.Split (new[] { '&' });
 
-                string name = HttpUtility.UrlDecode(elems[0]);
-                string value = String.Empty;
+			if (terms.Length == 0)
+				return result;
 
-                if (elems.Length > 1)
-                    value = HttpUtility.UrlDecode(elems[1]);
+			foreach (string t in terms) {
+				string[] elems = t.Split (new[] { '=' });
+				if (elems.Length == 0)
+					continue;
 
-                if (name.EndsWith("[]"))
-                {
-                    string cleanName = name.Substring(0, name.Length - 2);
-                    if (result.ContainsKey(cleanName))
-                    {
-                        if (!(result[cleanName] is List<string>))
-                            continue;
+				string name = HttpUtility.UrlDecode (elems [0]);
+				string value = String.Empty;
 
-                        List<string> l = (List<string>)result[cleanName];
+				if (elems.Length > 1)
+					value = HttpUtility.UrlDecode (elems [1]);
 
-                        l.Add(value);
-                    }
-                    else
-                    {
-                        List<string> newList = new List<string> { value };
+				if (name.EndsWith ("[]")) {
+					string cleanName = name.Substring (0, name.Length - 2);
+					if (result.ContainsKey (cleanName)) {
+						if (!(result [cleanName] is List<string>))
+							continue;
 
-                        result[cleanName] = newList;
-                    }
-                }
-                else
-                {
-                    if (!result.ContainsKey(name))
-                        result[name] = value;
-                }
-            }
+						List<string> l = (List<string>)result [cleanName];
 
-            return result;
-        }
+						l.Add (value);
+					} else {
+						List<string> newList = new List<string> { value };
 
-        /// <summary>
-        /// Webpage UL type arguments.
-        /// </summary>
-        /// <returns>The type arguments.</returns>
-        /// <param name="translator">Translator.</param>
-        public List<Dictionary<string, object>> UserTypeArgs(ITranslator translator)
-        { 
-            var args = new List<Dictionary<string, object>>();
-            args.Add(new Dictionary<string, object> {
-                {"Value", translator.GetTranslatedString("Guest")}, {"Index","0"} });
-            args.Add(new Dictionary<string, object> {
-                {"Value", translator.GetTranslatedString("Resident")}, {"Index","1"} });
-            args.Add(new Dictionary<string, object> {
-                {"Value", translator.GetTranslatedString("Member")}, {"Index","2"} });
-            args.Add(new Dictionary<string, object> {
-                {"Value", translator.GetTranslatedString("Contractor")}, {"Index","3"} });
-            args.Add(new Dictionary<string, object> {
-                {"Value", translator.GetTranslatedString("Charter_Member")}, {"Index","4"} });
-            return args;
-        }
+						result [cleanName] = newList;
+					}
+				} else {
+					if (!result.ContainsKey (name))
+						result [name] = value;
+				}
+			}
 
-        /// <summary>
-        /// Convert to to user flags.
-        /// </summary>
-        /// <returns>The type to user flags.</returns>
-        /// <param name="userType">User type Index.</param>
-        public int UserTypeToUserFlags(string userType)
-        {
-            switch (userType)
-            {
-            case "0":
-                return Constants.USER_FLAG_GUEST;
-            case "1":
-                return Constants.USER_FLAG_RESIDENT;
-            case "2":
-                return Constants.USER_FLAG_MEMBER;
-            case "3":
-                return Constants.USER_FLAG_CONTRACTOR;
-            case "4":
-                return Constants.USER_FLAG_CHARTERMEMBER;
-            default:
-                return Constants.USER_FLAG_GUEST;
-            }
-        }
+			return result;
+		}
 
-        /// <summary>
-        /// User flags to type string.
-        /// </summary>
-        /// <returns>The flag to type.</returns>
-        /// <param name="userFlags">User flags.</param>
-        /// <param name = "translator"></param>
-        public  string UserFlagToType(int userFlags, ITranslator translator)
-        {
-            if (translator == null)
-                translator = EnglishTranslator;
+		/// <summary>
+		/// Webpage UL type arguments.
+		/// </summary>
+		/// <returns>The type arguments.</returns>
+		/// <param name="translator">Translator.</param>
+		public List<Dictionary<string, object>> UserTypeArgs (ITranslator translator)
+		{ 
+			var args = new List<Dictionary<string, object>> ();
+			args.Add (new Dictionary<string, object> {
+				{ "Value", translator.GetTranslatedString ("Guest") }, { "Index","0" }
+			});
+			args.Add (new Dictionary<string, object> {
+				{ "Value", translator.GetTranslatedString ("Resident") }, { "Index","1" }
+			});
+			args.Add (new Dictionary<string, object> {
+				{ "Value", translator.GetTranslatedString ("Member") }, { "Index","2" }
+			});
+			args.Add (new Dictionary<string, object> {
+				{ "Value", translator.GetTranslatedString ("Contractor") }, { "Index","3" }
+			});
+			args.Add (new Dictionary<string, object> {
+				{ "Value", translator.GetTranslatedString ("Charter_Member") }, { "Index","4" }
+			});
 
-            switch (userFlags)
-            {
-            case Constants.USER_FLAG_GUEST:
-                return translator.GetTranslatedString("Guest");
-            case Constants.USER_FLAG_RESIDENT:
-                return translator.GetTranslatedString("Resident");
-            case Constants.USER_FLAG_MEMBER:
-                return translator.GetTranslatedString("Member");
-            case Constants.USER_FLAG_CONTRACTOR:
-                return translator.GetTranslatedString("Contractor");
-            case Constants.USER_FLAG_CHARTERMEMBER:
-                return translator.GetTranslatedString("Charter_Member");
-            default:
-                return translator.GetTranslatedString("Guest");
-            }
-        }
+			return args;
+		}
 
+		/// <summary>
+		/// Convert to to user flags.
+		/// </summary>
+		/// <returns>The type to user flags.</returns>
+		/// <param name="userType">User type Index.</param>
+		public int UserTypeToUserFlags (string userType)
+		{
+			switch (userType) {
+			case "0":
+				return Constants.USER_FLAG_GUEST;
+			case "1":
+				return Constants.USER_FLAG_RESIDENT;
+			case "2":
+				return Constants.USER_FLAG_MEMBER;
+			case "3":
+				return Constants.USER_FLAG_CONTRACTOR;
+			case "4":
+				return Constants.USER_FLAG_CHARTERMEMBER;
+			default:
+				return Constants.USER_FLAG_GUEST;
+			}
+		}
 
-        public List<Dictionary<string, object>> RegionTypeArgs(ITranslator translator)
-        { 
-            var args = new List<Dictionary<string, object>>();
-            args.Add(new Dictionary<string, object> {
-                {"Value", translator.GetTranslatedString("Mainland")}, {"Index","0"} });
-            args.Add(new Dictionary<string, object> {
-                {"Value", translator.GetTranslatedString("Estate")}, {"Index","1"} });
-            return args;
-        }
+		/// <summary>
+		/// User flags to type string.
+		/// </summary>
+		/// <returns>The flag to type.</returns>
+		/// <param name="userFlags">User flags.</param>
+		/// <param name = "translator"></param>
+		public  string UserFlagToType (int userFlags, ITranslator translator)
+		{
+			if (translator == null)
+				translator = EnglishTranslator;
 
-        public List<Dictionary<string, object>> RegionPresetArgs(ITranslator translator)
-        { 
-            var args = new List<Dictionary<string, object>>();
-            args.Add(new Dictionary<string, object> {
-                {"Value", translator.GetTranslatedString("FullRegion")}, {"Index","0"} });
-            args.Add(new Dictionary<string, object> {
-                {"Value", translator.GetTranslatedString("Homestead")}, {"Index","1"} });
-            args.Add(new Dictionary<string, object> {
-                {"Value", translator.GetTranslatedString("Openspace")}, {"Index","2"} });
-            args.Add(new Dictionary<string, object> {
-                {"Value", translator.GetTranslatedString("Universe")}, {"Index","3"} });
-            args.Add(new Dictionary<string, object> {
-                {"Value", translator.GetTranslatedString("Custom")}, {"Index","4"} });
-            return args;
-        }
+			switch (userFlags) {
+			case Constants.USER_FLAG_GUEST:
+				return translator.GetTranslatedString ("Guest");
+			case Constants.USER_FLAG_RESIDENT:
+				return translator.GetTranslatedString ("Resident");
+			case Constants.USER_FLAG_MEMBER:
+				return translator.GetTranslatedString ("Member");
+			case Constants.USER_FLAG_CONTRACTOR:
+				return translator.GetTranslatedString ("Contractor");
+			case Constants.USER_FLAG_CHARTERMEMBER:
+				return translator.GetTranslatedString ("Charter_Member");
+			default:
+				return translator.GetTranslatedString ("Guest");
+			}
+		}
 
-        public List<Dictionary<string, object>> RegionTerrainArgs(ITranslator translator)
-        { 
-            var args = new List<Dictionary<string, object>>();
-            args.Add(new Dictionary<string, object> {
-                {"Value", translator.GetTranslatedString("Flatland")}, {"Index","0"} });
-            args.Add(new Dictionary<string, object> {
-                {"Value", translator.GetTranslatedString("Grassland")}, {"Index","1"} });
-            args.Add(new Dictionary<string, object> {
-                {"Value", translator.GetTranslatedString("Island")}, {"Index","2"} });
-            args.Add(new Dictionary<string, object> {
-                {"Value", translator.GetTranslatedString("Aquatic")}, {"Index","3"} });
-            args.Add(new Dictionary<string, object> {
-                {"Value", translator.GetTranslatedString("Custom")}, {"Index","4"} });
-            return args;
-        }
+		public List<Dictionary<string, object>> RegionTypeArgs (ITranslator translator)
+		{ 
+			var args = new List<Dictionary<string, object>> ();
+			args.Add (new Dictionary<string, object> {
+				{ "Value", translator.GetTranslatedString ("Mainland") }, { "Index","0" }
+			});
+			args.Add (new Dictionary<string, object> {
+				{ "Value", translator.GetTranslatedString ("Estate") }, { "Index","1" }
+			});
 
-        internal GridPage GetGridPages()
-        {
-            if (webPages == null)
-            {
-                IGenericsConnector generics = Framework.Utilities.DataManager.RequestPlugin<IGenericsConnector> ();
-                GridPage rootPage = generics.GetGeneric<GridPage> (UUID.Zero, "WebPages", "Root");
-                if (rootPage == null)
-                    rootPage = new GridPage ();
+			return args;
+		}
+
+		public List<Dictionary<string, object>> RegionPresetArgs (ITranslator translator)
+		{ 
+			var args = new List<Dictionary<string, object>> ();
+			args.Add (new Dictionary<string, object> {
+				{ "Value", translator.GetTranslatedString ("FullRegion") }, { "Index","0" }
+			});
+			args.Add (new Dictionary<string, object> {
+				{ "Value", translator.GetTranslatedString ("Homestead") }, { "Index","1" }
+			});
+			args.Add (new Dictionary<string, object> {
+				{ "Value", translator.GetTranslatedString ("Openspace") }, { "Index","2" }
+			});
+			args.Add (new Dictionary<string, object> {
+				{ "Value", translator.GetTranslatedString ("Universe") }, { "Index","3" }
+			});
+			args.Add (new Dictionary<string, object> {
+				{ "Value", translator.GetTranslatedString ("Custom") }, { "Index","4" }
+			});
+
+			return args;
+		}
+
+		public List<Dictionary<string, object>> RegionTerrainArgs (ITranslator translator)
+		{ 
+			var args = new List<Dictionary<string, object>> ();
+			args.Add (new Dictionary<string, object> {
+				{ "Value", translator.GetTranslatedString ("Flatland") }, { "Index","0" }
+			});
+			args.Add (new Dictionary<string, object> {
+				{ "Value", translator.GetTranslatedString ("Grassland") }, { "Index","1" }
+			});
+			args.Add (new Dictionary<string, object> {
+				{ "Value", translator.GetTranslatedString ("Island") }, { "Index","2" }
+			});
+			args.Add (new Dictionary<string, object> {
+				{ "Value", translator.GetTranslatedString ("Aquatic") }, { "Index","3" }
+			});
+			args.Add (new Dictionary<string, object> {
+				{ "Value", translator.GetTranslatedString ("Custom") }, { "Index","4" }
+			});
+
+			return args;
+		}
+
+		internal GridPage GetGridPages ()
+		{
+			if (webPages == null) {
+				IGenericsConnector generics = Framework.Utilities.DataManager.RequestPlugin<IGenericsConnector> ();
+				GridPage rootPage = generics.GetGeneric<GridPage> (UUID.Zero, "WebPages", "Root");
+				if (rootPage == null)
+					rootPage = new GridPage ();
             
-                return rootPage;
-            } 
+				return rootPage;
+			} 
 
-            return webPages;
-        }
+			return webPages;
+		}
 
-        internal WebUISettings GetWebUISettings()
-        {
-            if (webUISettings == null)
-            {
-                IGenericsConnector generics = Framework.Utilities.DataManager.RequestPlugin<IGenericsConnector> ();
-                var settings = generics.GetGeneric<WebUISettings> (UUID.Zero, "WebUISettings", "Settings");
-                if (settings == null)
-                    settings = new WebUISettings ();
+		internal WebUISettings GetWebUISettings ()
+		{
+			if (webUISettings == null) {
+				IGenericsConnector generics = Framework.Utilities.DataManager.RequestPlugin<IGenericsConnector> ();
+				var settings = generics.GetGeneric<WebUISettings> (UUID.Zero, "WebUISettings", "Settings");
+				if (settings == null)
+					settings = new WebUISettings ();
 
-                return settings;
-            }
+				return settings;
+			}
 
-            return webUISettings;
-        }
+			return webUISettings;
+		}
 
-        internal void SaveWebUISettings(WebUISettings settings)
-        {
-            IGenericsConnector generics = Framework.Utilities.DataManager.RequestPlugin<IGenericsConnector> ();
-            generics.AddGeneric(UUID.Zero, "WebUISettings", "Settings", settings.ToOSD());
+		internal void SaveWebUISettings (WebUISettings settings)
+		{
+			IGenericsConnector generics = Framework.Utilities.DataManager.RequestPlugin<IGenericsConnector> ();
+			generics.AddGeneric (UUID.Zero, "WebUISettings", "Settings", settings.ToOSD ());
 
-            webUISettings = settings;
-        }
+			webUISettings = settings;
+		}
 
-        public GridSettings GetGridSettings()
-        {
-            if (gridSettings == null)
-            {
-                IGenericsConnector generics = Framework.Utilities.DataManager.RequestPlugin<IGenericsConnector> ();
-                var settings = generics.GetGeneric<GridSettings> (UUID.Zero, "GridSettings", "Settings");
-                if (settings == null)
-                    settings = new GridSettings ();
+		public GridSettings GetGridSettings ()
+		{
+			if (gridSettings == null) {
+				IGenericsConnector generics = Framework.Utilities.DataManager.RequestPlugin<IGenericsConnector> ();
+				var settings = generics.GetGeneric<GridSettings> (UUID.Zero, "GridSettings", "Settings");
+				if (settings == null)
+					settings = new GridSettings ();
 
-                return settings;
-            }
+				return settings;
+			}
 
-            return gridSettings;
-        }
+			return gridSettings;
+		}
 
-        public void SaveGridSettings(GridSettings settings)
-        {
-            IGenericsConnector generics = Framework.Utilities.DataManager.RequestPlugin<IGenericsConnector> ();
-            generics.AddGeneric(UUID.Zero, "GridSettings", "Settings", settings.ToOSD());
+		public void SaveGridSettings (GridSettings settings)
+		{
+			IGenericsConnector generics = Framework.Utilities.DataManager.RequestPlugin<IGenericsConnector> ();
+			generics.AddGeneric (UUID.Zero, "GridSettings", "Settings", settings.ToOSD ());
 
-            gridSettings = settings;
+			gridSettings = settings;
 
-            // change what's appropriate...
-            ILoginService loginService = Registry.RequestModuleInterface<ILoginService>();
-            loginService.WelcomeMessage = settings.WelcomeMessage;
+			// change what's appropriate...
+			ILoginService loginService = Registry.RequestModuleInterface<ILoginService> ();
+			loginService.WelcomeMessage = settings.WelcomeMessage;
+		}
 
-        }
+		#endregion
 
+		internal void Redirect (OSHttpResponse httpResponse, string url)
+		{
+			httpResponse.StatusCode = (int)HttpStatusCode.Redirect;
+			httpResponse.AddHeader ("Location", url);
+			httpResponse.KeepAlive = false;
+		}
+	}
 
-        #endregion
+	class GridNewsItem : IDataTransferable
+	{
+		public static readonly GridNewsItem NoNewsItem = new GridNewsItem () {
+			ID = -1,
+			Text = "No news to report",
+			Time = DateTime.Now,
+			Title = "No news to report"
+		};
 
-        internal void Redirect(OSHttpResponse httpResponse, string url)
-        {
-            httpResponse.StatusCode = (int) HttpStatusCode.Redirect;
-            httpResponse.AddHeader("Location", url);
-            httpResponse.KeepAlive = false;
-        }
-    }
+		public string Title;
+		public string Text;
+		public DateTime Time;
+		public int ID;
 
-    class GridNewsItem : IDataTransferable
-    {
-        public static readonly GridNewsItem NoNewsItem = new GridNewsItem()
-                                                             {
-                                                                 ID = -1,
-                                                                 Text = "No news to report",
-                                                                 Time = DateTime.Now,
-                                                                 Title = "No news to report"
-                                                             };
+		public override OSDMap ToOSD ()
+		{
+			OSDMap map = new OSDMap ();
+			map ["Title"] = Title;
+			map ["Text"] = Text;
+			map ["Time"] = Time;
+			map ["ID"] = ID;
+			return map;
+		}
 
-        public string Title;
-        public string Text;
-        public DateTime Time;
-        public int ID;
+		public override void FromOSD (OSDMap map)
+		{
+			Title = map ["Title"];
+			Text = map ["Text"];
+			Time = map ["Time"];
+			ID = map ["ID"];
+		}
 
-        public override OSDMap ToOSD()
-        {
-            OSDMap map = new OSDMap();
-            map["Title"] = Title;
-            map["Text"] = Text;
-            map["Time"] = Time;
-            map["ID"] = ID;
-            return map;
-        }
+		public Dictionary<string, object> ToDictionary ()
+		{
+			Dictionary<string, object> dictionary = new Dictionary<string, object> ();
 
-        public override void FromOSD(OSDMap map)
-        {
-            Title = map["Title"];
-            Text = map["Text"];
-            Time = map["Time"];
-            ID = map["ID"];
-        }
+			//dictionary.Add("NewsDate", Time.ToShortDateString());
+			dictionary.Add ("NewsDate", Culture.LocaleDate (Time));
+			dictionary.Add ("NewsTitle", Title);
+			dictionary.Add ("NewsText", Text);
+			dictionary.Add ("NewsID", ID);
 
-        public Dictionary<string, object> ToDictionary()
-        {
-            Dictionary<string, object> dictionary = new Dictionary<string, object>();
+			return dictionary;
+		}
+	}
 
-            //dictionary.Add("NewsDate", Time.ToShortDateString());
-            dictionary.Add("NewsDate", Culture.LocaleDate(Time));
-            dictionary.Add("NewsTitle", Title);
-            dictionary.Add("NewsText", Text);
-            dictionary.Add("NewsID", ID);
-
-            return dictionary;
-        }
-    }
-
-    class GridWelcomeScreen : IDataTransferable
-    {
-        public static readonly GridWelcomeScreen Default = new GridWelcomeScreen
-                                                               {
-                                                                   SpecialWindowMessageTitle =
+	class GridWelcomeScreen : IDataTransferable
+	{
+		public static readonly GridWelcomeScreen Default = new GridWelcomeScreen {
+			SpecialWindowMessageTitle =
                                                                        "Nothing to report at this time.",
-                                                                   SpecialWindowMessageText = "Grid is up and running.",
-                                                                   SpecialWindowMessageColor = "white",
-                                                                   SpecialWindowActive = true,
-                                                                   GridStatus = true
-                                                               };
+			SpecialWindowMessageText = "Grid is up and running.",
+			SpecialWindowMessageColor = "white",
+			SpecialWindowActive = true,
+			GridStatus = true
+		};
 
-        public string SpecialWindowMessageTitle;
-        public string SpecialWindowMessageText;
-        public string SpecialWindowMessageColor;
-        public bool SpecialWindowActive;
-        public bool GridStatus;
+		public string SpecialWindowMessageTitle;
+		public string SpecialWindowMessageText;
+		public string SpecialWindowMessageColor;
+		public bool SpecialWindowActive;
+		public bool GridStatus;
 
-        public override OSDMap ToOSD()
-        {
-            OSDMap map = new OSDMap();
-            map["SpecialWindowMessageTitle"] = SpecialWindowMessageTitle;
-            map["SpecialWindowMessageText"] = SpecialWindowMessageText;
-            map["SpecialWindowMessageColor"] = SpecialWindowMessageColor;
-            map["SpecialWindowActive"] = SpecialWindowActive;
-            map["GridStatus"] = GridStatus;
-            return map;
-        }
+		public override OSDMap ToOSD ()
+		{
+			OSDMap map = new OSDMap ();
+			map ["SpecialWindowMessageTitle"] = SpecialWindowMessageTitle;
+			map ["SpecialWindowMessageText"] = SpecialWindowMessageText;
+			map ["SpecialWindowMessageColor"] = SpecialWindowMessageColor;
+			map ["SpecialWindowActive"] = SpecialWindowActive;
+			map ["GridStatus"] = GridStatus;
+			return map;
+		}
 
-        public override void FromOSD(OSDMap map)
-        {
-            SpecialWindowMessageTitle = map["SpecialWindowMessageTitle"];
-            SpecialWindowMessageText = map["SpecialWindowMessageText"];
-            SpecialWindowMessageColor = map["SpecialWindowMessageColor"];
-            SpecialWindowActive = map["SpecialWindowActive"];
-            GridStatus = map["GridStatus"];
-        }
-    }
+		public override void FromOSD (OSDMap map)
+		{
+			SpecialWindowMessageTitle = map ["SpecialWindowMessageTitle"];
+			SpecialWindowMessageText = map ["SpecialWindowMessageText"];
+			SpecialWindowMessageColor = map ["SpecialWindowMessageColor"];
+			SpecialWindowActive = map ["SpecialWindowActive"];
+			GridStatus = map ["GridStatus"];
+		}
+	}
 
-    class GridPage : IDataTransferable
-    {
-        public List<GridPage> Children = new List<GridPage>();
-        public bool ShowInMenu = false;
-        public int MenuPosition = -1;
-        public string MenuID = "";
-        public string MenuTitle = "";
-        public string MenuToolTip = "";
-        public string Location = "";
-        public bool LoggedInRequired = false;
-        public bool LoggedOutRequired = false;
-        public bool AdminRequired = false;
-        public int AdminLevelRequired = 1;
+	class GridPage : IDataTransferable
+	{
+		public List<GridPage> Children = new List<GridPage> ();
+		public bool ShowInMenu = false;
+		public int MenuPosition = -1;
+		public string MenuID = "";
+		public string MenuTitle = "";
+		public string MenuToolTip = "";
+		public string Location = "";
+		public bool LoggedInRequired = false;
+		public bool LoggedOutRequired = false;
+		public bool AdminRequired = false;
+		public int AdminLevelRequired = 1;
 
-        public GridPage()
-        {
-        }
+		public GridPage ()
+		{
+		}
 
-        public GridPage(OSD map)
-        {
-            FromOSD(map as OSDMap);
-        }
+		public GridPage (OSD map)
+		{
+			FromOSD (map as OSDMap);
+		}
 
-        public override void FromOSD(OSDMap map)
-        {
-            ShowInMenu = map["ShowInMenu"];
-            MenuPosition = map["MenuPosition"];
-            MenuID = map["MenuID"];
-            MenuTitle = map["MenuTitle"];
-            MenuToolTip = map["MenuToolTip"];
-            Location = map["Location"];
-            LoggedInRequired = map["LoggedInRequired"];
-            LoggedOutRequired = map["LoggedOutRequired"];
-            AdminRequired = map["AdminRequired"];
-            AdminLevelRequired = map["AdminLevelRequired"];
-            Children = ((OSDArray) map["Children"]).ConvertAll<GridPage>(o => new GridPage(o));
-        }
+		public override void FromOSD (OSDMap map)
+		{
+			ShowInMenu = map ["ShowInMenu"];
+			MenuPosition = map ["MenuPosition"];
+			MenuID = map ["MenuID"];
+			MenuTitle = map ["MenuTitle"];
+			MenuToolTip = map ["MenuToolTip"];
+			Location = map ["Location"];
+			LoggedInRequired = map ["LoggedInRequired"];
+			LoggedOutRequired = map ["LoggedOutRequired"];
+			AdminRequired = map ["AdminRequired"];
+			AdminLevelRequired = map ["AdminLevelRequired"];
+			Children = ((OSDArray)map ["Children"]).ConvertAll<GridPage> (o => new GridPage (o));
+		}
 
-        public override OSDMap ToOSD()
-        {
-            OSDMap map = new OSDMap();
+		public override OSDMap ToOSD ()
+		{
+			OSDMap map = new OSDMap ();
 
-            map["ShowInMenu"] = ShowInMenu;
-            map["MenuPosition"] = MenuPosition;
-            map["MenuID"] = MenuID;
-            map["MenuTitle"] = MenuTitle;
-            map["MenuToolTip"] = MenuToolTip;
-            map["Location"] = Location;
-            map["LoggedInRequired"] = LoggedInRequired;
-            map["LoggedOutRequired"] = LoggedOutRequired;
-            map["AdminRequired"] = AdminRequired;
-            map["AdminLevelRequired"] = AdminLevelRequired;
-            map["Children"] = Children.ToOSDArray();
-            return map;
-        }
+			map ["ShowInMenu"] = ShowInMenu;
+			map ["MenuPosition"] = MenuPosition;
+			map ["MenuID"] = MenuID;
+			map ["MenuTitle"] = MenuTitle;
+			map ["MenuToolTip"] = MenuToolTip;
+			map ["Location"] = Location;
+			map ["LoggedInRequired"] = LoggedInRequired;
+			map ["LoggedOutRequired"] = LoggedOutRequired;
+			map ["AdminRequired"] = AdminRequired;
+			map ["AdminLevelRequired"] = AdminLevelRequired;
+			map ["Children"] = Children.ToOSDArray ();
+			return map;
+		}
 
-        public GridPage GetPage(string item)
-        {
-            return GetPage(item, null);
-        }
+		public GridPage GetPage (string item)
+		{
+			return GetPage (item, null);
+		}
 
-        public GridPage GetPage(string item, GridPage rootPage)
-        {
-            if (rootPage == null)
-                rootPage = this;
-            foreach (var page in rootPage.Children)
-            {
-                if (page.MenuID == item)
-                    return page;
+		public GridPage GetPage (string item, GridPage rootPage)
+		{
+			if (rootPage == null)
+				rootPage = this;
+			foreach (var page in rootPage.Children) {
+				if (page.MenuID == item)
+					return page;
 
-                if (page.Children.Count > 0)
-                {
-                    var p = GetPage (item, page);
-                    if (p != null)
-                        return p;
-                }
-            }
-            return null;
-        }
+				if (page.Children.Count > 0) {
+					var p = GetPage (item, page);
+					if (p != null)
+						return p;
+				}
+			}
 
-        public GridPage GetPageByLocation(string item)
-        {
-            return GetPageByLocation(item, null);
-        }
+			return null;
+		}
 
-        public GridPage GetPageByLocation(string item, GridPage rootPage)
-        {
-            if (rootPage == null)
-                rootPage = this;
-            foreach (var page in rootPage.Children)
-            {
-                if (page.Location == item)
-                    return page;
+		public GridPage GetPageByLocation (string item)
+		{
+			return GetPageByLocation (item, null);
+		}
+
+		public GridPage GetPageByLocation (string item, GridPage rootPage)
+		{
+			if (rootPage == null)
+				rootPage = this;
+			foreach (var page in rootPage.Children) {
+				if (page.Location == item)
+					return page;
                 
-                if (page.Children.Count > 0)
-                {
-                    var p = GetPageByLocation (item, page);
-                    if (p != null)
-                        return p;
-                }
-            }
-            return null;
-        }
+				if (page.Children.Count > 0) {
+					var p = GetPageByLocation (item, page);
+					if (p != null)
+						return p;
+				}
+			}
 
-        public void ReplacePage(string menuItem, GridPage replacePage)
-        {
-            foreach (var page in Children)
-            {
-                if (page.MenuID == menuItem)
-                {
-                    page.FromOSD (replacePage.ToOSD ());
-                    return;
-                }
+			return null;
+		}
 
-                if (page.Children.Count > 0)
-                {
-                    var p = GetPage (menuItem, page);
-                    if (p != null)
-                    {
-                        p.FromOSD (replacePage.ToOSD ());
-                        return;
-                    }
-                }
-            }
-        }
+		public void ReplacePage (string menuItem, GridPage replacePage)
+		{
+			foreach (var page in Children) {
+				if (page.MenuID == menuItem) {
+					page.FromOSD (replacePage.ToOSD ());
+					return;
+				}
 
-        public void RemovePage(string MenuID, GridPage replacePage)
-        {
-            GridPage foundPage = null;
-            foreach (var page in Children)
-            {
-                if (page.MenuID == MenuID)
-                {
-                    foundPage = page;
-                    break;
-                }
+				if (page.Children.Count > 0) {
+					var p = GetPage (menuItem, page);
+					if (p != null) {
+						p.FromOSD (replacePage.ToOSD ());
+						return;
+					}
+				}
+			}
+		}
 
-                if (page.Children.Count > 0)
-                {
-                    var p = GetPage(MenuID, page);
-                    if (p != null)
-                    {
-                        page.Children.Remove(p);
-                        return;
-                    }
-                }
-            }
-            if (foundPage != null)
-                Children.Remove(foundPage);
-        }
+		public void RemovePage (string MenuID, GridPage replacePage)
+		{
+			GridPage foundPage = null;
+			foreach (var page in Children) {
+				if (page.MenuID == MenuID) {
+					foundPage = page;
+					break;
+				}
 
-        public void RemovePageByLocation(string menuLocation, GridPage replacePage)
-        {
-            GridPage foundPage = null;
-            foreach (var page in Children)
-            {
-                if (page.Location == menuLocation)
-                {
-                    foundPage = page;
-                    break;
-                }
+				if (page.Children.Count > 0) {
+					var p = GetPage (MenuID, page);
+					if (p != null) {
+						page.Children.Remove (p);
+						return;
+					}
+				}
+			}
 
-                if (page.Children.Count > 0)
-                {
-                    var p = GetPageByLocation(menuLocation, page);
-                    if (p != null)
-                    {
-                        page.Children.Remove(p);
-                        return;
-                    }
-                }
-            }
-            if (foundPage != null)
-                Children.Remove(foundPage);
-        }
+			if (foundPage != null)
+				Children.Remove (foundPage);
+		}
 
-        public GridPage GetParent(GridPage page)
-        {
-            return GetParent(page, null);
-        }
+		public void RemovePageByLocation (string menuLocation, GridPage replacePage)
+		{
+			GridPage foundPage = null;
+			foreach (var page in Children) {
+				if (page.Location == menuLocation) {
+					foundPage = page;
+					break;
+				}
 
-        public GridPage GetParent(GridPage item, GridPage toCheck)
-        {
-            if (toCheck == null)
-                toCheck = this;
-            foreach (var p in toCheck.Children)
-            {
-                if (item.Location == p.Location)
-                    return toCheck;
+				if (page.Children.Count > 0) {
+					var p = GetPageByLocation (menuLocation, page);
+					if (p != null) {
+						page.Children.Remove (p);
+						return;
+					}
+				}
+			}
 
-                if (p.Children.Count > 0)
-                {
-                    var pp = GetParent(item, p);
-                    if (pp != null)
-                        return pp;
-                }
-            }
-            return null;
-        }
-    }
+			if (foundPage != null)
+				Children.Remove (foundPage);
+		}
 
-    public class GridSettings : IDataTransferable
-    {
-        public string Gridname = "Virtual Universe Grid";
-        public string Gridnick = "Universe";
-        public string WelcomeMessage = "Welcome to Virtual Universe, <USERNAME>!";
-        public string SystemEstateOwnerName = Constants.GovernorName;
-        public string SystemEstateName = Constants.SystemEstateName;
+		public GridPage GetParent (GridPage page)
+		{
+			return GetParent (page, null);
+		}
 
-        public GridSettings()
-        {
-        }
+		public GridPage GetParent (GridPage item, GridPage toCheck)
+		{
+			if (toCheck == null)
+				toCheck = this;
+			foreach (var p in toCheck.Children) {
+				if (item.Location == p.Location)
+					return toCheck;
 
-        public GridSettings(OSD map)
-        {
-            FromOSD(map as OSDMap);
-        }
+				if (p.Children.Count > 0) {
+					var pp = GetParent (item, p);
+					if (pp != null)
+						return pp;
+				}
+			}
 
-        public override void FromOSD(OSDMap map)
-        {
-            Gridname = map["Gridname"];
-            Gridnick = map["Gridnick"];
-            WelcomeMessage = map["WelcomeMessage"];
-            SystemEstateOwnerName = map["SystemEstateOwnerName"];
-            SystemEstateName = map["SystemEstateName"];
-        }
+			return null;
+		}
+	}
 
-        public override OSDMap ToOSD()
-        {
-            OSDMap map = new OSDMap();
+	public class GridSettings : IDataTransferable
+	{
+		public string Gridname = "Virtual Universe Grid";
+		public string Gridnick = "Universe";
+		public string WelcomeMessage = "Welcome to Virtual Universe, <USERNAME>!";
+		public string SystemEstateOwnerName = Constants.GovernorName;
+		public string SystemEstateName = Constants.SystemEstateName;
 
-            map["Gridname"] = Gridname;
-            map["Gridnick"] = Gridnick;
-            map["WelcomeMessage"] = WelcomeMessage;
-            map["SystemEstateOwnerName"] = SystemEstateOwnerName;
-            map["SystemEstateName"] = SystemEstateName;
+		public GridSettings ()
+		{
+		}
 
-            return map;
-        }
-    }
+		public GridSettings (OSD map)
+		{
+			FromOSD (map as OSDMap);
+		}
 
-    class WebUISettings : IDataTransferable
-    {
-        public Vector2 MapCenter = Vector2.Zero;
-        public uint LastPagesVersionUpdateIgnored = 0;
-        public uint LastSettingsVersionUpdateIgnored = 0;
-        public bool HideLanguageTranslatorBar = false;
-        public bool HideStyleBar = false;
-        public UUID DefaultScopeID = UUID.Zero;
-        public bool WebRegistration = false;
-        public bool HideSlideshowBar = false;
-        public string LocalFrontPage = "local/frontpage.html";
-        public string LocalCSS = "local/";
+		public override void FromOSD (OSDMap map)
+		{
+			Gridname = map ["Gridname"];
+			Gridnick = map ["Gridnick"];
+			WelcomeMessage = map ["WelcomeMessage"];
+			SystemEstateOwnerName = map ["SystemEstateOwnerName"];
+			SystemEstateName = map ["SystemEstateName"];
+		}
 
-        public WebUISettings()
-        {
-        }
+		public override OSDMap ToOSD ()
+		{
+			OSDMap map = new OSDMap ();
 
-        public WebUISettings(OSD map)
-        {
-            FromOSD(map as OSDMap);
-        }
+			map ["Gridname"] = Gridname;
+			map ["Gridnick"] = Gridnick;
+			map ["WelcomeMessage"] = WelcomeMessage;
+			map ["SystemEstateOwnerName"] = SystemEstateOwnerName;
+			map ["SystemEstateName"] = SystemEstateName;
 
-        public override void FromOSD(OSDMap map)
-        {
-            MapCenter = map["MapCenter"];
-            LastPagesVersionUpdateIgnored = map["LastPagesVersionUpdateIgnored"];
-            LastSettingsVersionUpdateIgnored = map["LastSettingsVersionUpdateIgnored"];
-            HideLanguageTranslatorBar = map["HideLanguageTranslatorBar"];
-            HideStyleBar = map["HideStyleBar"];
-            DefaultScopeID = map["DefaultScopeID"];
-            WebRegistration = map["WebRegistration"];
-            HideSlideshowBar = map["HideSlideshowBar"];
-            LocalFrontPage = map["LocalFrontPage"];
-            LocalCSS = map["LocalCSS"];
-        }
+			return map;
+		}
+	}
 
-        public override OSDMap ToOSD()
-        {
-            OSDMap map = new OSDMap();
+	class WebUISettings : IDataTransferable
+	{
+		public Vector2 MapCenter = Vector2.Zero;
+		public uint LastPagesVersionUpdateIgnored = 0;
+		public uint LastSettingsVersionUpdateIgnored = 0;
+		public bool HideLanguageTranslatorBar = false;
+		public bool HideStyleBar = false;
+		public UUID DefaultScopeID = UUID.Zero;
+		public bool WebRegistration = false;
+		public bool HideSlideshowBar = false;
+		public string LocalFrontPage = "local/frontpage.html";
+		public string LocalCSS = "local/";
 
-            map["MapCenter"] = MapCenter;
-            map["LastPagesVersionUpdateIgnored"] = LastPagesVersionUpdateIgnored;
-            map["LastSettingsVersionUpdateIgnored"] = LastSettingsVersionUpdateIgnored;
-            map["HideLanguageTranslatorBar"] = HideLanguageTranslatorBar;
-            map["HideStyleBar"] = HideStyleBar;
-            map["DefaultScopeID"] = DefaultScopeID;
-            map["WebRegistration"] = WebRegistration;
-            map["HideSlideshowBar"] = HideSlideshowBar;
-            map["LocalFrontPage"] = LocalFrontPage;
-            map["LocalCSS"] = LocalCSS;
+		public WebUISettings ()
+		{
+		}
 
-            return map;
-        }
-    }
+		public WebUISettings (OSD map)
+		{
+			FromOSD (map as OSDMap);
+		}
+
+		public override void FromOSD (OSDMap map)
+		{
+			MapCenter = map ["MapCenter"];
+			LastPagesVersionUpdateIgnored = map ["LastPagesVersionUpdateIgnored"];
+			LastSettingsVersionUpdateIgnored = map ["LastSettingsVersionUpdateIgnored"];
+			HideLanguageTranslatorBar = map ["HideLanguageTranslatorBar"];
+			HideStyleBar = map ["HideStyleBar"];
+			DefaultScopeID = map ["DefaultScopeID"];
+			WebRegistration = map ["WebRegistration"];
+			HideSlideshowBar = map ["HideSlideshowBar"];
+			LocalFrontPage = map ["LocalFrontPage"];
+			LocalCSS = map ["LocalCSS"];
+		}
+
+		public override OSDMap ToOSD ()
+		{
+			OSDMap map = new OSDMap ();
+
+			map ["MapCenter"] = MapCenter;
+			map ["LastPagesVersionUpdateIgnored"] = LastPagesVersionUpdateIgnored;
+			map ["LastSettingsVersionUpdateIgnored"] = LastSettingsVersionUpdateIgnored;
+			map ["HideLanguageTranslatorBar"] = HideLanguageTranslatorBar;
+			map ["HideStyleBar"] = HideStyleBar;
+			map ["DefaultScopeID"] = DefaultScopeID;
+			map ["WebRegistration"] = WebRegistration;
+			map ["HideSlideshowBar"] = HideSlideshowBar;
+			map ["LocalFrontPage"] = LocalFrontPage;
+			map ["LocalCSS"] = LocalCSS;
+
+			return map;
+		}
+	}
 }
