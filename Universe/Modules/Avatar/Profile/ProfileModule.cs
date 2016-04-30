@@ -78,13 +78,13 @@ namespace Universe.Modules.Profiles
             	if (profileConfig.GetString ("ProfileModule", Name) == Name)
             	{
             		m_ProfileEnabled = true;
-            		MainConsole.Instance.Info ("[Profile] Profile Services are enabled");
+            		MainConsole.Instance.Info ("[Profile]: Profile Services are enabled");
             	}
             }
             else
             {
             	m_ProfileEnabled = false;
-            	MainConsole.Instance.Info ("[Profile] Not configured, disabling");
+            	MainConsole.Instance.Info ("[Profile]: Not configured, disabling");
             }
         }
 
