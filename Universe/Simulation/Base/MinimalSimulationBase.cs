@@ -25,7 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -47,647 +46,593 @@ using Universe.Services.DataService;
 
 namespace Universe.Simulation.Base
 {
-    public class MinimalSimulationBase : ISimulationBase
-    {
-        protected string m_startupCommandsFile;
-        protected string m_shutdownCommandsFile;
-        protected string m_TimerScriptFileName = "disabled";
-        protected int m_TimerScriptTime = 20;
-        protected IHttpServer m_BaseHTTPServer;
-        protected Timer m_TimerScriptTimer;
-        protected ConfigurationLoader m_configurationLoader;
+	public class MinimalSimulationBase : ISimulationBase
+	{
+		protected string m_startupCommandsFile;
+		protected string m_shutdownCommandsFile;
+		protected string m_TimerScriptFileName = "disabled";
+		protected int m_TimerScriptTime = 20;
+		protected IHttpServer m_BaseHTTPServer;
+		protected Timer m_TimerScriptTimer;
+		protected ConfigurationLoader m_configurationLoader;
 
-        /// <value>
-        ///     The config information passed into the Virtual Universe server.
-        /// </value>
-        protected IConfigSource m_config;
+		/// <value>
+		///     The config information passed into the Virtual Universe server.
+		/// </value>
+		protected IConfigSource m_config;
 
-        protected IConfigSource m_original_config;
+		protected IConfigSource m_original_config;
 
-        public IConfigSource ConfigSource
-        {
-            get { return m_config; }
-            set { m_config = value; }
-        }
+		public IConfigSource ConfigSource {
+			get { return m_config; }
+			set { m_config = value; }
+		}
 
-        /// <summary>
-        ///     Server version information.  Usually VersionInfo + information about git commit, operating system, etc.
-        /// </summary>
-        protected string m_version;
+		/// <summary>
+		///     Server version information.  Usually VersionInfo + information about git commit, operating system, etc.
+		/// </summary>
+		protected string m_version;
 
-        public string Version
-        {
-            get { return m_version; }
-        }
+		public string Version {
+			get { return m_version; }
+		}
 
-        /// <summary>
-        /// Is this instance a grid server.
-        /// </summary>
-        /// <value>true</value>
-        /// <c>false</c>
-        public bool IsGridServer
-        {
-            get { return m_configurationLoader.IsGridServer; }
-        }
+		/// <summary>
+		/// Is this instance a grid server.
+		/// </summary>
+		/// <value>true</value>
+		/// <c>false</c>
+		public bool IsGridServer {
+			get { return m_configurationLoader.IsGridServer; }
+		}
 
-        protected string m_defaultDataPath = Constants.DEFAULT_DATA_DIR;
-        public string DefaultDataPath
-        { 
-            get { return m_defaultDataPath;}
-            set { m_defaultDataPath = value;}
-        }
+		protected string m_defaultDataPath = Constants.DEFAULT_DATA_DIR;
 
-        protected IRegistryCore m_applicationRegistry = new RegistryCore();
+		public string DefaultDataPath { 
+			get { return m_defaultDataPath; }
+			set { m_defaultDataPath = value; }
+		}
 
-        public IRegistryCore ApplicationRegistry
-        {
-            get { return m_applicationRegistry; }
-        }
+		protected IRegistryCore m_applicationRegistry = new RegistryCore ();
 
-        protected UniverseEventManager m_eventManager = new UniverseEventManager();
+		public IRegistryCore ApplicationRegistry {
+			get { return m_applicationRegistry; }
+		}
 
-        public UniverseEventManager EventManager
-        {
-            get { return m_eventManager; }
-        }
+		protected UniverseEventManager m_eventManager = new UniverseEventManager ();
 
-        /// <summary>
-        ///     Time at which this server was started
-        /// </summary>
-        protected DateTime m_StartupTime;
+		public UniverseEventManager EventManager {
+			get { return m_eventManager; }
+		}
 
-        public DateTime StartupTime
-        {
-            get { return m_StartupTime; }
-        }
+		/// <summary>
+		///     Time at which this server was started
+		/// </summary>
+		protected DateTime m_StartupTime;
 
-        public IHttpServer HttpServer
-        {
-            get { return m_BaseHTTPServer; }
-        }
+		public DateTime StartupTime {
+			get { return m_StartupTime; }
+		}
 
-        protected Dictionary<uint, IHttpServer> m_Servers =
-            new Dictionary<uint, IHttpServer>();
+		public IHttpServer HttpServer {
+			get { return m_BaseHTTPServer; }
+		}
 
-        protected uint m_Port;
+		protected Dictionary<uint, IHttpServer> m_Servers =
+			new Dictionary<uint, IHttpServer> ();
 
-        public uint DefaultPort
-        {
-            get { return m_Port; }
-        }
+		protected uint m_Port;
 
-        protected string[] m_commandLineParameters = null;
+		public uint DefaultPort {
+			get { return m_Port; }
+		}
 
-        public string[] CommandLineParameters
-        {
-            get { return m_commandLineParameters; }
-        }
+		protected string[] m_commandLineParameters = null;
 
-        protected string m_pidFile = String.Empty;
+		public string[] CommandLineParameters {
+			get { return m_commandLineParameters; }
+		}
 
-        protected string m_consolePrompt = "";
-        protected List<Type> m_dataPlugins;
-        protected List<Type> m_servicePlugins;
+		protected string m_pidFile = String.Empty;
 
-        public MinimalSimulationBase(string consolePrompt, List<Type> dataPlugins, List<Type> servicePlugins)
-        {
-            m_consolePrompt = consolePrompt;
-            m_dataPlugins = dataPlugins;
-            m_servicePlugins = servicePlugins;
-        }
+		protected string m_consolePrompt = "";
+		protected List<Type> m_dataPlugins;
+		protected List<Type> m_servicePlugins;
 
-        /// <summary>
-        ///     Do the initial setup for the application
-        /// </summary>
-        /// <param name="originalConfig"></param>
-        /// <param name="configSource"></param>
-        /// <param name="cmdParams"></param>
-        /// <param name="configLoader"></param>
-        public virtual void Initialize(IConfigSource originalConfig, IConfigSource configSource, string[] cmdParams,
-                                       ConfigurationLoader configLoader)
-        {
-            m_commandLineParameters = cmdParams;
-            m_StartupTime = DateTime.Now;
-            m_version = VersionInfo.Version;
-            m_original_config = originalConfig;
-            m_config = configSource;
-            m_configurationLoader = configLoader;
+		public MinimalSimulationBase (string consolePrompt, List<Type> dataPlugins, List<Type> servicePlugins)
+		{
+			m_consolePrompt = consolePrompt;
+			m_dataPlugins = dataPlugins;
+			m_servicePlugins = servicePlugins;
+		}
 
-            // This thread will go on to become the console listening thread
-            System.Threading.Thread.CurrentThread.Name = "ConsoleThread";
+		/// <summary>
+		///     Do the initial setup for the application
+		/// </summary>
+		/// <param name="originalConfig"></param>
+		/// <param name="configSource"></param>
+		/// <param name="cmdParams"></param>
+		/// <param name="configLoader"></param>
+		public virtual void Initialize (IConfigSource originalConfig, IConfigSource configSource, string[] cmdParams,
+		                                     ConfigurationLoader configLoader)
+		{
+			m_commandLineParameters = cmdParams;
+			m_StartupTime = DateTime.Now;
+			m_version = VersionInfo.Version;
+			m_original_config = originalConfig;
+			m_config = configSource;
+			m_configurationLoader = configLoader;
 
-            //Register the interface
-            ApplicationRegistry.RegisterModuleInterface<ISimulationBase>(this);
+			// This thread will go on to become the console listening thread
+			System.Threading.Thread.CurrentThread.Name = "ConsoleThread";
 
-            Configuration(configSource);
+			//Register the interface
+			ApplicationRegistry.RegisterModuleInterface<ISimulationBase> (this);
 
-            InitializeModules();
+			Configuration (configSource);
 
-            RegisterConsoleCommands();
-        }
+			InitializeModules ();
 
-        /// <summary>
-        ///     Read the configuration
-        /// </summary>
-        /// <param name="configSource"></param>
-        public virtual void Configuration(IConfigSource configSource)
-        {
-            IConfig startupConfig = m_config.Configs["Startup"];
+			RegisterConsoleCommands ();
+		}
 
-            int stpMinThreads = 15;
-            int stpMaxThreads = 300;
+		/// <summary>
+		///     Read the configuration
+		/// </summary>
+		/// <param name="configSource"></param>
+		public virtual void Configuration (IConfigSource configSource)
+		{
+			IConfig startupConfig = m_config.Configs ["Startup"];
 
-            if (startupConfig != null)
-            {
-                m_defaultDataPath = startupConfig.GetString("DataDirectory", Constants.DEFAULT_DATA_DIR);
-                if (m_defaultDataPath == "")
-                    m_defaultDataPath = Constants.DEFAULT_DATA_DIR;
+			int stpMinThreads = 15;
+			int stpMaxThreads = 300;
+
+			if (startupConfig != null) {
+				m_defaultDataPath = startupConfig.GetString ("DataDirectory", Constants.DEFAULT_DATA_DIR);
+				if (m_defaultDataPath == "")
+					m_defaultDataPath = Constants.DEFAULT_DATA_DIR;
                 
-                m_startupCommandsFile = startupConfig.GetString("startup_console_commands_file", "startup_commands.txt");
-                m_shutdownCommandsFile = startupConfig.GetString("shutdown_console_commands_file",
-                                                                 "shutdown_commands.txt");
+				m_startupCommandsFile = startupConfig.GetString ("startup_console_commands_file", "startup_commands.txt");
+				m_shutdownCommandsFile = startupConfig.GetString ("shutdown_console_commands_file",
+					"shutdown_commands.txt");
 
-                m_TimerScriptFileName = startupConfig.GetString("timer_Script", "disabled");
-                m_TimerScriptTime = startupConfig.GetInt("timer_time", m_TimerScriptTime);
+				m_TimerScriptFileName = startupConfig.GetString ("timer_Script", "disabled");
+				m_TimerScriptTime = startupConfig.GetInt ("timer_time", m_TimerScriptTime);
 
-                string pidFile = startupConfig.GetString("PIDFile", String.Empty);
-                if (pidFile != String.Empty)
-                    CreatePIDFile(pidFile);
-            }
+				string pidFile = startupConfig.GetString ("PIDFile", String.Empty);
+				if (pidFile != String.Empty)
+					CreatePIDFile (pidFile);
+			}
 
-            IConfig SystemConfig = m_config.Configs["System"];
-            if (SystemConfig != null)
-            {
-                string asyncCallMethodStr = SystemConfig.GetString("AsyncCallMethod", String.Empty);
-                FireAndForgetMethod asyncCallMethod;
-                if (!String.IsNullOrEmpty(asyncCallMethodStr) &&
-                    Utils.EnumTryParse(asyncCallMethodStr, out asyncCallMethod))
-                    Util.FireAndForgetMethod = asyncCallMethod;
+			IConfig SystemConfig = m_config.Configs ["System"];
+			if (SystemConfig != null) {
+				string asyncCallMethodStr = SystemConfig.GetString ("AsyncCallMethod", String.Empty);
+				FireAndForgetMethod asyncCallMethod;
+				if (!String.IsNullOrEmpty (asyncCallMethodStr) &&
+				                Utils.EnumTryParse (asyncCallMethodStr, out asyncCallMethod))
+					Util.FireAndForgetMethod = asyncCallMethod;
 
-                stpMinThreads = SystemConfig.GetInt("MinPoolThreads", stpMinThreads);
-                stpMaxThreads = SystemConfig.GetInt("MaxPoolThreads", stpMaxThreads);
+				stpMinThreads = SystemConfig.GetInt ("MinPoolThreads", stpMinThreads);
+				stpMaxThreads = SystemConfig.GetInt ("MaxPoolThreads", stpMaxThreads);
 
-                if (stpMinThreads < 2)
-                    stpMinThreads = 2;
-                if (stpMaxThreads < 2)
-                    stpMaxThreads = 2;
-                if (stpMinThreads > stpMaxThreads)
-                    stpMinThreads = stpMaxThreads;
+				if (stpMinThreads < 2)
+					stpMinThreads = 2;
+				if (stpMaxThreads < 2)
+					stpMaxThreads = 2;
+				if (stpMinThreads > stpMaxThreads)
+					stpMinThreads = stpMaxThreads;   
+			}
+
+			if (Util.FireAndForgetMethod == FireAndForgetMethod.SmartThreadPool)
+				Util.InitThreadPool (stpMinThreads, stpMaxThreads);
+
+			//Set up console forcefully
+			Universe.Services.BaseService consoleService = new Universe.Services.BaseService ();
+			consoleService.PreStartup (this);
+
+			//Fix the default prompt
+			if (MainConsole.Instance != null) {
+				MainConsole.Instance.DefaultPrompt = m_consolePrompt;
+				MainConsole.Instance.Info (string.Format ("[Mini Virtual Universe]: Starting Mini Virtual Universe ({0})...",
+					(IntPtr.Size == 4 ? "x86" : "x64")));
+				MainConsole.Instance.Info ("[Mini Virtual Universe]: Version : " + Version + "\n");
+				MainConsole.Instance.Info ("[Mini Virtual Universe]: Git Base: " + VersionInfo.GitVersion + "\n");
+			}
+		}
+
+		/// <summary>
+		///     Performs initialization of the application, such as loading the HTTP server and modules
+		/// </summary>
+		public virtual void Startup ()
+		{
+			MainConsole.Instance.Info ("[Mini Virtual Universe]: Startup completed in " +
+			(DateTime.Now - this.StartupTime).TotalSeconds);
+		}
+
+		public virtual ISimulationBase Copy ()
+		{
+			return new MinimalSimulationBase (m_consolePrompt, m_dataPlugins, m_servicePlugins);
+		}
+
+		/// <summary>
+		///     Run the console now that we are all done with startup
+		/// </summary>
+		public virtual void Run ()
+		{
+			//Start the prompt
+			if (MainConsole.Instance != null)
+				MainConsole.Instance.ReadConsole ();
+		}
+
+		/// <summary>
+		///     Get an HTTPServer on the given port. It will create one if one does not exist
+		/// </summary>
+		/// <param name="port"></param>
+		/// <returns></returns>
+		public IHttpServer GetHttpServer (uint port)
+		{
+			if ((port == m_Port || port == 0) && HttpServer != null)
+				return HttpServer;
+
+			bool useHTTPS = m_config.Configs ["Network"].GetBoolean ("use_https", false);
+			IHttpServer server;
+			if (m_Servers.TryGetValue (port, out server) && server.Secure == useHTTPS)
+				return server;
+
+			uint threadCount = m_config.Configs ["Network"].GetUInt ("HttpThreadCount", 5);
+
+			// find out where we live
+			string hostName;
+
+			// been here before?
+			if (Utilities.HostName == "") {
+				hostName = m_config.Configs ["Network"].GetString ("HostName", "0.0.0.0");
+
+				if ((hostName == "") || (hostName == "0.0.0.0")) {
+					MainConsole.Instance.Info ("[Network]: Retrieving the external IP address");
+					hostName = "http" + (useHTTPS ? "s" : "") + "://" + Utilities.GetExternalIp ();
+				}
+            
+				//Clean it up a bit
+				if (hostName.StartsWith ("http://") || hostName.StartsWith ("https://"))
+					hostName = hostName.Replace ("https://", "").Replace ("http://", "");
+				if (hostName.EndsWith ("/"))
+					hostName = hostName.Remove (hostName.Length - 1, 1);
                 
-            }
+				// save this for posterity in case it is needed
+				MainConsole.Instance.Info ("[Network]: Network IP address has been set to " + hostName);
+				Utilities.HostName = hostName;
+			} else
+				hostName = Utilities.HostName;
 
+			server = new BaseHttpServer (port, hostName, useHTTPS, threadCount);
 
-            if (Util.FireAndForgetMethod == FireAndForgetMethod.SmartThreadPool)
-                Util.InitThreadPool(stpMinThreads, stpMaxThreads);
+			try {
+				server.Start ();
+			} catch (Exception) {
+				//Remove the server from the list
+				m_Servers.Remove (port);
+				//Then pass the exception upwards
+				throw;
+			}
+			if (m_Servers.Count == 0)
+				MainServer.Instance = server;
+			return (m_Servers [port] = server);
+		}
 
-            //Set up console forcefully
-            Universe.Services.BaseService consoleService = new Universe.Services.BaseService();
-            consoleService.PreStartup(this);
+		public virtual void InitializeModules ()
+		{
+			LocalDataService lds = new LocalDataService ();
+			lds.Initialize (ConfigSource, ApplicationRegistry, m_dataPlugins);
 
-            //Fix the default prompt
-            if (MainConsole.Instance != null)
-            {
-                MainConsole.Instance.DefaultPrompt = m_consolePrompt;
-                MainConsole.Instance.Info(string.Format("[Mini Virtual Universe]: Starting Mini Virtual Universe ({0})...",
-                                                        (IntPtr.Size == 4 ? "x86" : "x64")));
-                MainConsole.Instance.Info("[Mini Virtual Universe]: Version : " + Version + "\n");
-                MainConsole.Instance.Info("[Mini Virtual Universe]: Git Base: " + VersionInfo.GitVersion + "\n");
-            }
-        }
+			List<dynamic> modules = new List<dynamic> ();
+			foreach (Type t in m_servicePlugins) {
+				var mods = UniverseModuleLoader.PickupModules (t);
+				modules.AddRange (mods);
+			}
 
-        /// <summary>
-        ///     Performs initialization of the application, such as loading the HTTP server and modules
-        /// </summary>
-        public virtual void Startup()
-        {
-            MainConsole.Instance.Info("[Mini Virtual Universe]: Startup completed in " +
-                                      (DateTime.Now - this.StartupTime).TotalSeconds);
-        }
+			foreach (dynamic service in modules) {
+				if (!(service is IService))
+					continue;
+				((IService)service).Initialize (ConfigSource, ApplicationRegistry);
+			}
+			foreach (dynamic service in modules) {
+				if (!(service is IService))
+					continue;
+				((IService)service).Start (ConfigSource, ApplicationRegistry);
+			}
+			foreach (dynamic service in modules) {
+				if (!(service is IService))
+					continue;
+				((IService)service).FinishedStartup ();
+			}
+		}
 
-        public virtual ISimulationBase Copy()
-        {
-            return new MinimalSimulationBase(m_consolePrompt, m_dataPlugins, m_servicePlugins);
-        }
+		/// <summary>
+		///     Close all the Application Plugins
+		/// </summary>
+		public virtual void CloseModules ()
+		{
+		}
 
-        /// <summary>
-        ///     Run the console now that we are all done with startup
-        /// </summary>
-        public virtual void Run()
-        {
-            //Start the prompt
-            if (MainConsole.Instance != null)
-                MainConsole.Instance.ReadConsole();
-        }
+		/// <summary>
+		///     Run the commands given now that startup is complete
+		/// </summary>
+		public void RunStartupCommands ()
+		{
+			//Draw the file on the console
+			PrintFileToConsole ("startuplogo.txt");
+			//Run Startup Commands
+			if (!String.IsNullOrEmpty (m_startupCommandsFile))
+				RunCommandScript (m_startupCommandsFile);
 
-        /// <summary>
-        ///     Get an HTTPServer on the given port. It will create one if one does not exist
-        /// </summary>
-        /// <param name="port"></param>
-        /// <returns></returns>
-        public IHttpServer GetHttpServer(uint port)
-        {
-            if ((port == m_Port || port == 0) && HttpServer != null)
-                return HttpServer;
+			// Start timer script (run a script every xx seconds)
+			if (m_TimerScriptFileName != "disabled") {
+				m_TimerScriptTimer = new Timer { Enabled = true, Interval = m_TimerScriptTime * 60 * 1000 };
+				m_TimerScriptTimer.Elapsed += RunAutoTimerScript;
+			}
+		}
 
-            bool useHTTPS = m_config.Configs["Network"].GetBoolean("use_https", false);
-            IHttpServer server;
-            if (m_Servers.TryGetValue(port, out server) && server.Secure == useHTTPS)
-                return server;
+		/// <summary>
+		///     Opens a file and uses it as input to the console command parser.
+		/// </summary>
+		/// <param name="fileName">name of file to use as input to the console</param>
+		void PrintFileToConsole (string fileName)
+		{
+			if (File.Exists (fileName)) {
+				StreamReader readFile = File.OpenText (fileName);
+				string currentLine;
+				while ((currentLine = readFile.ReadLine ()) != null) {
+					MainConsole.Instance.Info ("[!]" + currentLine);
+				}
+			}
+		}
 
-            uint threadCount = m_config.Configs["Network"].GetUInt("HttpThreadCount", 5);
+		/// <summary>
+		///     Timer to run a specific text file as console commands.
+		///     Configured in in the main .ini file
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		void RunAutoTimerScript (object sender, EventArgs e)
+		{
+			RunCommandScript (m_TimerScriptFileName);
+		}
 
-            // find out where we live
-            string hostName;
+		#region Console Commands
 
-            // been here before?
-            if (Utilities.HostName == "")
-            {
-                hostName = m_config.Configs ["Network"].GetString ("HostName", "0.0.0.0");
-
-                if ((hostName == "") || (hostName == "0.0.0.0"))
-                {
-                    MainConsole.Instance.Info ("[Network]: Retrieving the external IP address");
-                    hostName = "http" + (useHTTPS ? "s" : "") + "://" + Utilities.GetExternalIp ();
-                }
+		/// <summary>
+		///     Register standard set of region console commands
+		/// </summary>
+		public virtual void RegisterConsoleCommands ()
+		{
+			if (MainConsole.Instance == null)
+				return;
+			MainConsole.Instance.Commands.AddCommand (
+				"quit", 
+				"quit", 
+				"Quit the application", 
+				HandleQuit, false, true);
             
-                //Clean it up a bit
-                if (hostName.StartsWith ("http://") || hostName.StartsWith ("https://"))
-                    hostName = hostName.Replace ("https://", "").Replace ("http://", "");
-                if (hostName.EndsWith ("/"))
-                    hostName = hostName.Remove (hostName.Length - 1, 1);
+			MainConsole.Instance.Commands.AddCommand (
+				"shutdown",
+				"shutdown", 
+				"Quit the application", 
+				HandleQuit, false, true);
+            
+			MainConsole.Instance.Commands.AddCommand (
+				"show info",
+				"show info",
+				"Show server information (e.g. startup path)", 
+				HandleShowInfo, false, true);
+            
+			MainConsole.Instance.Commands.AddCommand (
+				"show version",
+				"show version", 
+				"Show server version",
+				HandleShowVersion, false, true);
+            
+			MainConsole.Instance.Commands.AddCommand (
+				"reload config",
+				"reload config", 
+				"Reloads .ini file configuration",
+				HandleConfigRefresh, false, true);
+            
+			MainConsole.Instance.Commands.AddCommand (
+				"set timer script interval",
+				"set timer script interval",
+				"Set the interval for the timer script (in minutes).",
+				HandleTimerScriptTime, false, true);
+            
+			MainConsole.Instance.Commands.AddCommand (
+				"force GC",
+				"force GC", 
+				"Forces garbage collection.", 
+				HandleForceGC, false, true);
+            
+			MainConsole.Instance.Commands.AddCommand (
+				"run configurator",
+				"run configurator", 
+				"Runs Universe.Configurator.",
+				runConfig, false, true);
+		}
+
+		void HandleQuit (IScene scene, string[] args)
+		{
+			var ok = MainConsole.Instance.Prompt ("[Console]: Shutdown the simulator. Are you sure? (yes/no)", "no").ToLower ();
+			if (ok.StartsWith ("y"))
+				Shutdown (true);
+		}
+
+		/// <summary>
+		///     Run an optional startup list of commands
+		/// </summary>
+		/// <param name="fileName"></param>
+		public virtual void RunCommandScript (string fileName)
+		{
+			if (File.Exists (fileName)) {
+				MainConsole.Instance.Info ("[Command file]: Running " + fileName);
+				List<string> commands = new List<string> ();
+				using (StreamReader readFile = File.OpenText (fileName)) {
+					string currentCommand;
+					while ((currentCommand = readFile.ReadLine ()) != null) {
+						if ((currentCommand != String.Empty) &&
+						                      (!currentCommand.StartsWith (";"))) {
+							commands.Add (currentCommand);
+						}
+					}
+				}
+
+				foreach (string currentCommand in commands) {
+					MainConsole.Instance.Info ("[Command File]: Running '" + currentCommand + "'");
+					MainConsole.Instance.RunCommand (currentCommand);
+				}
+			}
+		}
+
+		public virtual void HandleForceGC (IScene scene, string[] cmd)
+		{
+			GC.Collect ();
+			MainConsole.Instance.Warn ("[Garbage Collection Service]: Garbage collection finished");
+		}
+
+		public virtual void runConfig (IScene scene, string[] cmd)
+		{
+			BaseApplication.Configure (true);
+		}
+
+		public virtual void HandleTimerScriptTime (IScene scene, string[] cmd)
+		{
+			if (cmd.Length != 5) {
+				MainConsole.Instance.Warn ("[Console]: Timer Interval command did not have enough parameters.");
+				return;
+			}
+
+			if (int.TryParse (cmd [4], out m_TimerScriptTime)) {
+				m_TimerScriptTimer.Enabled = false;
+				m_TimerScriptTimer.Interval = m_TimerScriptTime * 60 * 1000;
+				m_TimerScriptTimer.Enabled = true;
+				MainConsole.Instance.Warn ("[Console]: Set Timer Interval to " + cmd [4]);
+			}
+		}
+
+		public virtual void HandleConfigRefresh (IScene scene, string[] cmd)
+		{
+			//Rebuild the configuration
+			m_config = m_configurationLoader.LoadConfigSettings (m_original_config);
+
+			if (m_config != null) {
+				string hostName = m_config.Configs ["Network"].GetString ("HostName", "127.0.0.1");
+				//Clean it up a bit
+				// these are doing nothing??
+				hostName = hostName.Replace ("http://", "").Replace ("https://", "");
+				if (hostName.EndsWith ("/"))
+					hostName = hostName.Remove (hostName.Length - 1, 1);
                 
-                // save this for posterity in case it is needed
-                MainConsole.Instance.Info ("[Network]: Network IP address has been set to " + hostName);
-                Utilities.HostName = hostName;
-            } else
-                hostName = Utilities.HostName;
+				foreach (IHttpServer server in m_Servers.Values) {
+					server.HostName = hostName;
+				}
 
-            server = new BaseHttpServer(port, hostName, useHTTPS, threadCount);
+				MainConsole.Instance.Info ("[Virtual Universe Configuration]: Finished reloading configuration.");
+			}
+		}
 
-            try
-            {
-                server.Start();
-            }
-            catch (Exception)
-            {
-                //Remove the server from the list
-                m_Servers.Remove(port);
-                //Then pass the exception upwards
-                throw;
-            }
-            if (m_Servers.Count == 0)
-                MainServer.Instance = server;
-            return (m_Servers[port] = server);
-        }
+		public virtual void HandleShowInfo (IScene scene, string[] cmd)
+		{
+			MainConsole.Instance.Info ("Version: " + m_version);
+			MainConsole.Instance.Info ("Startup directory: " + Environment.CurrentDirectory);
+		}
 
-        public virtual void InitializeModules()
-        {
-            LocalDataService lds = new LocalDataService();
-            lds.Initialize(ConfigSource, ApplicationRegistry, m_dataPlugins);
+		public virtual void HandleShowVersion (IScene scene, string[] cmd)
+		{
+			MainConsole.Instance.Info (
+				String.Format (
+					"Version: {0}", m_version));
+		}
 
-            List<dynamic> modules = new List<dynamic>();
-            foreach (Type t in m_servicePlugins)
-            {
-                var mods = UniverseModuleLoader.PickupModules(t);
-                modules.AddRange(mods);
-            }
+		#endregion
 
-            foreach (dynamic service in modules)
-            {
-                if (!(service is IService)) continue;
-                ((IService)service).Initialize(ConfigSource, ApplicationRegistry);
-            }
-            foreach (dynamic service in modules)
-            {
-                if (!(service is IService)) continue;
-                ((IService) service).Start(ConfigSource, ApplicationRegistry);
-            }
-            foreach (dynamic service in modules)
-            {
-                if (!(service is IService)) continue;
-                ((IService)service).FinishedStartup();
-            }
-        }
+		/// <summary>
+		///     Should be overridden and referenced by descendents if they need to perform extra shutdown processing
+		///     Performs any last-minute sanity checking and shuts down the region server
+		/// </summary>
+		public virtual void Shutdown (bool close)
+		{
+			try {
+				try {
+					RemovePIDFile ();
+					if (m_shutdownCommandsFile != String.Empty) {
+						RunCommandScript (m_shutdownCommandsFile);
+					}
+				} catch {
+					//It doesn't matter, just shut down
+				}
+				try {
+					//Close out all the modules
+					CloseModules ();
+				} catch {
+					//Just shut down already
+				}
+				try {
+					//Close the thread pool
+					Util.CloseThreadPool ();
+				} catch {
+					//Just shut down already
+				}
+				try {
+					//Stop the HTTP server(s)
+					foreach (IHttpServer server in m_Servers.Values) {
+						server.Stop ();
+					}
+				} catch {
+					//Again, just shut down
+				}
 
-        /// <summary>
-        ///     Close all the Application Plugins
-        /// </summary>
-        public virtual void CloseModules()
-        {
-        }
+				if (close)
+					MainConsole.Instance.Info ("[Shut Down]: Terminating");
 
-        /// <summary>
-        ///     Run the commands given now that startup is complete
-        /// </summary>
-        public void RunStartupCommands()
-        {
-            //Draw the file on the console
-            PrintFileToConsole("startuplogo.txt");
-            //Run Startup Commands
-            if (!String.IsNullOrEmpty(m_startupCommandsFile))
-                RunCommandScript(m_startupCommandsFile);
+				MainConsole.Instance.Info ("[Shut Down]: Shut down processing on main thread complete. " +
+				(close ? " Exiting..." : ""));
 
-            // Start timer script (run a script every xx seconds)
-            if (m_TimerScriptFileName != "disabled")
-            {
-                m_TimerScriptTimer = new Timer {Enabled = true, Interval = m_TimerScriptTime*60*1000};
-                m_TimerScriptTimer.Elapsed += RunAutoTimerScript;
-            }
-        }
+				if (close)
+					Environment.Exit (0);
+			} catch {
+			}
+		}
 
-        /// <summary>
-        ///     Opens a file and uses it as input to the console command parser.
-        /// </summary>
-        /// <param name="fileName">name of file to use as input to the console</param>
-        void PrintFileToConsole(string fileName)
-        {
-            if (File.Exists(fileName))
-            {
-                StreamReader readFile = File.OpenText(fileName);
-                string currentLine;
-                while ((currentLine = readFile.ReadLine()) != null)
-                {
-                    MainConsole.Instance.Info("[!]" + currentLine);
-                }
-            }
-        }
+		/// <summary>
+		///     Write the PID file to the hard drive
+		/// </summary>
+		/// <param name="path"></param>
+		protected void CreatePIDFile (string path)
+		{
+			FileStream fs = null;
+			try {
+				string pidstring = System.Diagnostics.Process.GetCurrentProcess ().Id.ToString ();
+				fs = File.Create (path);
+				System.Text.ASCIIEncoding enc = new System.Text.ASCIIEncoding ();
+				Byte[] buf = enc.GetBytes (pidstring);
+				fs.Write (buf, 0, buf.Length);
+				fs.Close ();
+				m_pidFile = path;
+			} catch (Exception) {
+				if (fs != null)
+					fs.Close ();
+			}
+		}
 
-        /// <summary>
-        ///     Timer to run a specific text file as console commands.
-        ///     Configured in in the main .ini file
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void RunAutoTimerScript(object sender, EventArgs e)
-        {
-            RunCommandScript(m_TimerScriptFileName);
-        }
-
-        #region Console Commands
-
-        /// <summary>
-        ///     Register standard set of region console commands
-        /// </summary>
-        public virtual void RegisterConsoleCommands()
-        {
-            if (MainConsole.Instance == null)
-                return;
-            MainConsole.Instance.Commands.AddCommand(
-                "quit", 
-                "quit", 
-                "Quit the application", 
-                HandleQuit, false, true);
-            
-            MainConsole.Instance.Commands.AddCommand(
-                "shutdown",
-                "shutdown", 
-                "Quit the application", 
-                HandleQuit, false, true);
-            
-            MainConsole.Instance.Commands.AddCommand(
-                "show info",
-                "show info",
-                "Show server information (e.g. startup path)", 
-                HandleShowInfo, false, true);
-            
-            MainConsole.Instance.Commands.AddCommand(
-                "show version",
-                "show version", 
-                "Show server version",
-                HandleShowVersion, false, true);
-            
-            MainConsole.Instance.Commands.AddCommand(
-                "reload config",
-                "reload config", 
-                "Reloads .ini file configuration",
-                HandleConfigRefresh, false, true);
-            
-            MainConsole.Instance.Commands.AddCommand(
-                "set timer script interval",
-                "set timer script interval",
-                "Set the interval for the timer script (in minutes).",
-                HandleTimerScriptTime, false, true);
-            
-            MainConsole.Instance.Commands.AddCommand(
-                "force GC",
-                "force GC", 
-                "Forces garbage collection.", 
-                HandleForceGC, false, true);
-            
-            MainConsole.Instance.Commands.AddCommand(
-                "run configurator",
-                "run configurator", 
-                "Runs Universe.Configurator.",
-                runConfig, false, true);
-        }
-
-        void HandleQuit(IScene scene, string[] args)
-        {
-            var ok = MainConsole.Instance.Prompt ("[Console]: Shutdown the simulator. Are you sure? (yes/no)", "no").ToLower();
-            if (ok.StartsWith("y"))
-                Shutdown(true);
-        }
-
-        /// <summary>
-        ///     Run an optional startup list of commands
-        /// </summary>
-        /// <param name="fileName"></param>
-        public virtual void RunCommandScript(string fileName)
-        {
-            if (File.Exists(fileName))
-            {
-                MainConsole.Instance.Info("[Command file]: Running " + fileName);
-                List<string> commands = new List<string>();
-                using (StreamReader readFile = File.OpenText(fileName))
-                {
-                    string currentCommand;
-                    while ((currentCommand = readFile.ReadLine()) != null)
-                    {
-                        if ( (currentCommand != String.Empty) &&
-                            (!currentCommand.StartsWith(";")) )
-                        {
-                            commands.Add(currentCommand);
-                        }
-                    }
-                }
-                foreach (string currentCommand in commands)
-                {
-                    MainConsole.Instance.Info("[Command File]: Running '" + currentCommand + "'");
-                    MainConsole.Instance.RunCommand(currentCommand);
-                }
-            }
-        }
-
-        public virtual void HandleForceGC(IScene scene, string[] cmd)
-        {
-            GC.Collect();
-            MainConsole.Instance.Warn("[Garbage Collection Service]: Garbage collection finished");
-        }
-
-        public virtual void runConfig(IScene scene, string[] cmd)
-        {
-            BaseApplication.Configure(true);
-        }
-
-        public virtual void HandleTimerScriptTime(IScene scene, string[] cmd)
-        {
-            if (cmd.Length != 5)
-            {
-                MainConsole.Instance.Warn("[Console]: Timer Interval command did not have enough parameters.");
-                return;
-            }
-
-            if (int.TryParse (cmd [4], out m_TimerScriptTime))
-            {
-                m_TimerScriptTimer.Enabled = false;
-                m_TimerScriptTimer.Interval = m_TimerScriptTime * 60 * 1000;
-                m_TimerScriptTimer.Enabled = true;
-                MainConsole.Instance.Warn ("[Console]: Set Timer Interval to " + cmd [4]);
-            }
-        }
-
-        public virtual void HandleConfigRefresh(IScene scene, string[] cmd)
-        {
-            //Rebuild the configuration
-            m_config = m_configurationLoader.LoadConfigSettings(m_original_config);
-
-            if (m_config != null)
-            {
-                string hostName = m_config.Configs ["Network"].GetString ("HostName", "127.0.0.1");
-                //Clean it up a bit
-                // these are doing nothing??
-                hostName = hostName.Replace ("http://", "").Replace ("https://", "");
-                if (hostName.EndsWith ("/"))
-                    hostName = hostName.Remove (hostName.Length - 1, 1);
-                
-                foreach (IHttpServer server in m_Servers.Values)
-                {
-                    server.HostName = hostName;
-                }
-                MainConsole.Instance.Info ("[Virtual Universe Configuration]: Finished reloading configuration.");
-            }
-        }
-
-        public virtual void HandleShowInfo(IScene scene, string[] cmd)
-        {
-            MainConsole.Instance.Info("Version: " + m_version);
-            MainConsole.Instance.Info("Startup directory: " + Environment.CurrentDirectory);
-        }
-
-        public virtual void HandleShowVersion(IScene scene, string[] cmd)
-        {
-            MainConsole.Instance.Info(
-                String.Format(
-                    "Version: {0}", m_version));
-        }
-
-        #endregion
-
-        /// <summary>
-        ///     Should be overridden and referenced by descendents if they need to perform extra shutdown processing
-        ///     Performs any last-minute sanity checking and shuts down the region server
-        /// </summary>
-        public virtual void Shutdown(bool close)
-        {
-            try
-            {
-                try
-                {
-                    RemovePIDFile();
-                    if (m_shutdownCommandsFile != String.Empty)
-                    {
-                        RunCommandScript(m_shutdownCommandsFile);
-                    }
-                }
-                catch
-                {
-                    //It doesn't matter, just shut down
-                }
-                try
-                {
-                    //Close out all the modules
-                    CloseModules();
-                }
-                catch
-                {
-                    //Just shut down already
-                }
-                try
-                {
-                    //Close the thread pool
-                    Util.CloseThreadPool();
-                }
-                catch
-                {
-                    //Just shut down already
-                }
-                try
-                {
-                    //Stop the HTTP server(s)
-                    foreach (IHttpServer server in m_Servers.Values)
-                    {
-                        server.Stop();
-                    }
-                }
-                catch
-                {
-                    //Again, just shut down
-                }
-
-                if (close)
-                    MainConsole.Instance.Info("[Shut Down]: Terminating");
-
-                MainConsole.Instance.Info("[Shut Down]: Shut down processing on main thread complete. " +
-                                          (close ? " Exiting..." : ""));
-
-                if (close)
-                    Environment.Exit(0);
-            }
-            catch
-            {
-            }
-        }
-
-        /// <summary>
-        ///     Write the PID file to the hard drive
-        /// </summary>
-        /// <param name="path"></param>
-        protected void CreatePIDFile(string path)
-        {
-            FileStream fs = null;
-            try
-            {
-                string pidstring = System.Diagnostics.Process.GetCurrentProcess().Id.ToString();
-                fs = File.Create(path);
-                System.Text.ASCIIEncoding enc = new System.Text.ASCIIEncoding();
-                Byte[] buf = enc.GetBytes(pidstring);
-                fs.Write(buf, 0, buf.Length);
-                fs.Close();
-                m_pidFile = path;
-            }
-            catch (Exception)
-            {
-                if (fs != null)
-                    fs.Close();
-            }
-        }
-
-        /// <summary>
-        ///     Delete the PID file now that we are done running
-        /// </summary>
-        protected void RemovePIDFile()
-        {
-            if (m_pidFile != String.Empty)
-            {
-                try
-                {
-                    File.Delete(m_pidFile);
-                    m_pidFile = String.Empty;
-                }
-                catch (Exception)
-                {
-                }
-            }
-        }
-    }
+		/// <summary>
+		///     Delete the PID file now that we are done running
+		/// </summary>
+		protected void RemovePIDFile ()
+		{
+			if (m_pidFile != String.Empty) {
+				try {
+					File.Delete (m_pidFile);
+					m_pidFile = String.Empty;
+				} catch (Exception) {
+				}
+			}
+		}
+	}
 }
