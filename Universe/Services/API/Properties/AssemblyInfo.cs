@@ -37,7 +37,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Universe.Services.API")]
-[assembly: AssemblyCopyright("Copyright © 2014-2016")]
+[assembly: AssemblyCopyright("Copyright © 2016-2026")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

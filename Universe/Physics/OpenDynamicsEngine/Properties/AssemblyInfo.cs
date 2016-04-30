@@ -38,7 +38,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("http://Universe-sim.org")]
-[assembly: AssemblyCopyright("Copyright © 2014-2016")]
+[assembly: AssemblyCopyright("Copyright © 2016-2026")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
