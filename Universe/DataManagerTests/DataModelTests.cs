@@ -26,18 +26,18 @@
  */
 
 using System.IO;
-using Universe.DataManager.Repositories;
 using NUnit.Framework;
 using OpenMetaverse;
+using Universe.DataManager.Repositories;
 
 namespace Universe.DataManager.Tests
 {
-    public class DataModelTests
-    {
-        [Test]
-        public void InventoryRepositoryTests()
-        {
+	public class DataModelTests
+	{
+		[Test]
+		public void InventoryRepositoryTests ()
+		{
             
-        }
-    }
+		}
+	}
 }
