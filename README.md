@@ -5,11 +5,11 @@
 
 The Virtual Universe Development Team is proud to present Virtual Universe as a rolling release software.
 
-The Universe server is an Aurora-Sim derived project with heavy emphasis on supporting all users, 
+The Virtual Universe server is an Aurora-Sim/ WhiteCore-Sim derived project with heavy emphasis on supporting all users, 
 
 ## About Virtual Universe
 
-The Virtual Universe Software is an Virtual Universe derived project with heavy emphasis on supporting all users, increased technology focus, heavy emphasis on working with other developers, whether it be viewer based developers or server based developers, and a set of features around stability and simplified usability for users.
+The Virtual Universe Software is a Virtual Universe derived project with heavy emphasis on supporting all users, increased technology focus, heavy emphasis on working with other developers, whether it be viewer based developers or server based developers, and a set of features around stability and simplified usability for users.
 
 We aren’t just releasing new features, but a new outlook on Virtual Universe Virtual World Technology Development for the average human.
 
