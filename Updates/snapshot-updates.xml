@@ -1,9 +1,9 @@
 <Updater>
-	<MinSupReleaseVersion>1.0.0</MinSupReleaseVersion>
-	<MinSupReleaseDate>Apr 18, 2015</MinSupReleaseDate>
-	<NewReleaseVersion>1.0.0.SNAPSHOT</NewReleaseVersion>
-	<NewReleaseDate>Apr 18, 2015</NewReleaseDate>
-	<ReleaseNotes>https://github.com/Virtual-Universe/Virtual-Universe/releases/tag/1.0.0</ReleaseNotes>
+	<MinSupReleaseVersion>1.0.2</MinSupReleaseVersion>
+	<MinSupReleaseDate>Apr 30, 2016</MinSupReleaseDate>
+	<NewReleaseVersion>1.0.2.SNAPSHOT</NewReleaseVersion>
+	<NewReleaseDate>Apr 30, 2016</NewReleaseDate>
+	<ReleaseNotes>https://github.com/Virtual-Universe/Virtual-Universe/releases/tag/1.0.2</ReleaseNotes>
 <!---	<DownloadWinLink>https://docs.google.com/uc?id=0B2u55gI751a8OVI5cWFQT1VSNEE&export=download</DownloadWinLink> -->
 <!--	<DownloadMono32Link>https://docs.google.com/uc?id=0B2u55gI751a8cTd4TjRvWHA3VU0&export=download</DownloadMono32Link> -->
 <!---	<DownloadMono64Link>https://docs.google.com/uc?id=0B2u55gI751a8d3N0OVAwREVoRUk&export=download</DownloadMono64Link> -->
