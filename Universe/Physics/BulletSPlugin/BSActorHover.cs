@@ -31,7 +31,7 @@ using System;
 using System.Linq;
 using OMV = OpenMetaverse;
 
-namespace Universe.Phyics.BulletSPlugin
+namespace Universe.Physics.BulletSPlugin
 {
     /*
      //This functionality appers to have been incorporated directly in SceneObjectPart.UpdateLookAt()
