@@ -237,7 +237,6 @@ namespace Universe.Modules.Web.Translators
 				return "Ваш пароль изменен";
 			case "NoChangePass":
 				return "Не удалось изменить пароль, попробуйте еще раз позже";
-				
 
 			// Region Information
 			case "RegionInformationText":
@@ -869,8 +868,6 @@ namespace Universe.Modules.Web.Translators
 				return "Reporter";
 			case "AssignedToText":
 				return "Assigned to";
- 
-
 
 			//Times
 			case "Sun":
@@ -968,7 +965,6 @@ namespace Universe.Modules.Web.Translators
 			case "Charter_Member":
 				return "Charter Member";
 
-
 			// ColorBox
 			case "ColorBoxImageText":
 				return "Image";
@@ -984,7 +980,6 @@ namespace Universe.Modules.Web.Translators
 				return "Start Slide Show";
 			case "ColorBoxStopSlideshowText":
 				return "Stop Slide Show";
-
 
 			// Maintenance
 			case "NoAccountFound":
