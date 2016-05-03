@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/,  http://whitecore-sim.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -444,6 +444,7 @@ namespace Universe.Modules.Web.Translators
 				return "Scegli il nome";
 			case "PickRegionText":
 				return "Posizione";
+
 			// Urls
 			case "WelcomeScreen":
 				return "Pagina di Benvenuto";
@@ -486,6 +487,8 @@ namespace Universe.Modules.Web.Translators
 				return "Spagnolo";
 			case "nl":
 				return "Olandese";
+			case "ru":
+				return "Russo";
 
 			// Index Page
 			case "HomeText":
@@ -931,7 +934,6 @@ namespace Universe.Modules.Web.Translators
 			case "LocalCSSText":
 				return "Foglio di stile CSS locale";
 			}
-
 			return "UNKNOWN CHARACTER";
 		}
 	}
