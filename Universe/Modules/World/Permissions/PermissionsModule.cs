@@ -1895,6 +1895,17 @@ namespace Universe.Modules.Permissions
             if (m_bypassPermissions)
                 return m_bypassPermissionsValue;
 
+			// 2016-05-03 - NoahStarfinder -
+			// This was committed to opensim by Melanie Thiekler of Avination
+			// THe Secondlife wiki indicates that Estate Managers (as well as region owners)
+			// can sell parcels on a region if they are an estate manager.  This actually is 
+			// true as I have done it as part of the normal course of business in the estate
+			// group both EmperorStarfinder and myself run in Secondlife.  I am commenting this
+			// addition out for now as it really seems to be a lazy way to implement this and
+			// I don't want to break the builds.  I will have to see if there is a better way.
+			// I also am skeptical this way would be the safest method.
+			//return GenericParcelPermission(user, parcel, (ulong)GroupPowers.LandSetSale, true);
+
             return GenericParcelPermission(user, parcel, (ulong)GroupPowers.LandSetSale);
         }
 
