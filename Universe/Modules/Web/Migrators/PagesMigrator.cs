@@ -156,6 +156,42 @@ namespace Universe.Modules.Web
 				}
 			});
 
+			// policy center
+			_rootPage.Children.Add (new GridPage {
+				ShowInMenu = true,
+				MenuID = "policy",
+				Location = "policy.html",
+				MenuPosition = 4,
+				MenuTitle = "MenuPolicy",
+				MenuToolTip = "TooltipsMenuPolicy",
+				Children = new List<GridPage> {
+					new GridPage {
+						ShowInMenu = true,
+						MenuID = "tos",
+						Location = "tos.html",
+						MenuPosition = 0,
+						MenuTitle = "MenuTOS",
+						MenuToolTip = "TooltipsMenuTOS"
+					},
+					new GridPage {
+						ShowInMenu = true,
+						MenuID = "community_standards",
+						Location = "community_standards.html",
+						MenuPosition = 1,
+						MenuTitle = "MenuCommunityStandards",
+						MenuToolTip = "TooltipsMenuCommunityStandards"
+					},
+					new GridPage {
+						ShowInMenu = true,
+						MenuID = "dmca",
+						Location = "dmca.html",
+						MenuPosition = 2,
+						MenuTitle = "MenuDMCA",
+						MenuToolTip = "TooltipsMenuDMCA"
+					}
+				}
+			});
+					
 			// help
 			_rootPage.Children.Add (new GridPage {
 				ShowInMenu = true,
