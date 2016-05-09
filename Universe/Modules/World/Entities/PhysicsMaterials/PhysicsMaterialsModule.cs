@@ -48,7 +48,7 @@ namespace Universe.Modules.Entities.PhysicsMaterials
 
         #region INonSharedRegionModule Members
 
-        public void Initialize(IConfigSource pSource)
+        public void Initialise(IConfigSource pSource)
         {
         }
 

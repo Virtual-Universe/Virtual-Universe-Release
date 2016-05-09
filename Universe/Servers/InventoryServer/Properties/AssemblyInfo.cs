@@ -38,7 +38,7 @@ using System.Resources;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Universe")]
-[assembly: AssemblyCopyright("Copyright © 2016-2026")]
+[assembly: AssemblyCopyright("Copyright © 2014-2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

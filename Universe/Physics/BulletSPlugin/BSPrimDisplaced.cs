@@ -6,7 +6,7 @@
  * modification, are permitted provided that the following conditions are met:
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyrightD
+ *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
  *     * Neither the name of the Virtual Universe Project nor the
@@ -25,12 +25,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/*
-* The quotations from http://wiki.secondlife.com/wiki/Linden_Vehicle_Tutorial
-* are Copyright (c) 2009 Linden Research, Inc and are used under their license
-* of Creative Commons Attribution-Share Alike 3.0
-* (http://creativecommons.org/licenses/by-sa/3.0/).
-*/
+/* The quotations from http://wiki.secondlife.com/wiki/Linden_Vehicle_Tutorial
+ * are Copyright (c) 2009 Linden Research, Inc and are used under their license
+ * of Creative Commons Attribution-Share Alike 3.0
+ * (http://creativecommons.org/licenses/by-sa/3.0/).
+ */
 
 using System;
 using OpenMetaverse;

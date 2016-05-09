@@ -56,7 +56,7 @@ namespace Universe.Framework.Modules
         /// </summary>
         /// <param name="configSource"></param>
         /// <param name="simBase"></param>
-        void Initialize(IConfigSource configSource, ISimulationBase simBase);
+        void Initialise(IConfigSource configSource, ISimulationBase simBase);
 
         /// <summary>
         ///     Loads the region from all enabled plugins

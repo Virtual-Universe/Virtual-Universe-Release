@@ -25,7 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -57,7 +56,7 @@ namespace Universe.Modules.Startup
 
         #region ISharedRegionStartupModule Members
 
-        public void Initialize(IScene scene, IConfigSource source, ISimulationBase simBase)
+        public void Initialise(IScene scene, IConfigSource source, ISimulationBase simBase)
         {
             if (MainConsole.Instance != null && m_backup.Count == 0) //Only add them once
             {
@@ -95,7 +94,7 @@ namespace Universe.Modules.Startup
             m_backup[scene] = new InternalSceneBackup(scene);
         }
 
-        public void PostInitialize(IScene scene, IConfigSource source, ISimulationBase simBase)
+        public void PostInitialise(IScene scene, IConfigSource source, ISimulationBase simBase)
         {
         }
 
@@ -305,7 +304,7 @@ namespace Universe.Modules.Startup
             {
                 LoadingPrims = true;
 
-                MainConsole.Instance.InfoFormat("[Backup Module]: Loading objects for {0} from {1}",
+                MainConsole.Instance.InfoFormat("[BackupModule]: Loading objects for {0} from {1}",
                     m_scene.RegionInfo.RegionName, m_scene.SimulationDataService.Name);
                 List<ISceneEntity> PrimsFromDB = m_scene.SimulationDataService.LoadObjects();
                 foreach (ISceneEntity group in PrimsFromDB)
@@ -545,7 +544,7 @@ namespace Universe.Modules.Startup
                     }
                 }
 
-                // Serialize calls to RemoveScriptInstances to avoid
+                // Serialise calls to RemoveScriptInstances to avoid
                 // deadlocking on m_parts inside SceneObjectGroup
                 if (DeleteScripts)
                 {
@@ -726,7 +725,7 @@ namespace Universe.Modules.Startup
             {
                 int tMapSize = tModule.Width*tModule.Height;
                 byte[] sdata = new byte[tMapSize*2];
-                Buffer.BlockCopy(tModule.GetSerialized(), 0, sdata, 0, sdata.Length);
+                Buffer.BlockCopy(tModule.GetSerialised(), 0, sdata, 0, sdata.Length);
 
                 return sdata;
             }

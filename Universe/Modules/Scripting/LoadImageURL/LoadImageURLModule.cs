@@ -96,7 +96,7 @@ namespace Universe.Modules.Scripting
 
         #region INonSharedRegionModule Members
 
-        public void Initialize(IConfigSource config)
+        public void Initialise(IConfigSource config)
         {
             m_proxyurl = config.Configs["Startup"].GetString("HttpProxy");
             m_proxyexcepts = config.Configs["Startup"].GetString("HttpProxyExceptions");

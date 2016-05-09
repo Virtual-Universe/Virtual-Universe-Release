@@ -227,27 +227,27 @@ namespace Universe.Services.SQLServices.UserAccountService
                     "save users [<CSV file>]",
                     "Saves all users from Universe into a CSV file",
                     HandleSaveUsers, false, true);
-
-                MainConsole.Instance.Commands.AddCommand(
-                    "load salted users",
-                    "load salted users [<CSV file>]",
-                    "Loads all users that have been exported with a salted password string",
-                    HandleLoadSaltedUsers, false, true);
                 
                 MainConsole.Instance.Commands.AddCommand(
-                    "save salted users",
-                    "save salted users [<CSV file>]",
-                    "Save all users with a salted password string",
-                    HandleSaveSaltedUsers, false, true);
-
-#if TEST_USERS
+                	"load salted users",
+                	"load salted users [<CSV file>]",
+                	"Loads all users that have been exported with a salted password string",
+                	HandleLoadSaltedUsers, false, true);
+                
+                MainConsole.Instance.Commands.AddCommand(
+                	"save salted users",
+                	"save salted users [<CSV file>]",
+                	"Save all users with a salted password string",
+                	HandleSaveSaltedUsers, false, true);
+                
+                #if TEST_USERS
                 MainConsole.Instance.Commands.AddCommand(
                     "create test users",
                     "create test users",
                     "Create multiple users for testing purposes",
                     HandleTestUsers, false, true);
-#endif
-
+                #endif
+            
             }
         }
 
@@ -1541,6 +1541,7 @@ namespace Universe.Services.SQLServices.UserAccountService
                 }
                 MainConsole.Instance.InfoFormat ("File: {0} loaded,  {1} users added", Path.GetFileName(fileName), userNo);
             }
+
         }
         
         /// <summary>
@@ -1551,7 +1552,7 @@ namespace Universe.Services.SQLServices.UserAccountService
         protected void HandleSaveUsers(IScene scene, string[] cmdParams)
         {
             string fileName = "users.csv";
-
+            
             if (cmdParams.Length < 3)
             {
                 fileName = MainConsole.Instance.Prompt ("Please enter the user CSV file to save", fileName);
@@ -1602,7 +1603,7 @@ namespace Universe.Services.SQLServices.UserAccountService
             }
         }
 
-        /// <summary>
+		/// <summary>
 		/// Handles the load salted users command.
 		/// </summary>
 		/// <param name="scene">Scene.</param>
@@ -1623,7 +1624,7 @@ namespace Universe.Services.SQLServices.UserAccountService
 			// and then update both the auth and user_accounts tables so the user can be recognized
             
 			string fileName = "users_salted.csv";
-			if (cmdParams.Length< 4) {
+			if (cmdParams.Length < 4) {
 				fileName = MainConsole.Instance.Prompt("Please enter the user CSV file to load", fileName);
 				if (fileName == "")
 					return;
@@ -1652,7 +1653,7 @@ namespace Universe.Services.SQLServices.UserAccountService
 			using (var rd = new StreamReader(fileName)) {
 				while (!rd.EndOfStream) {
 					var userInfo = rd.ReadLine().Split(',');
-					if (userInfo.Length< 7) {
+					if (userInfo.Length < 7) {
 						MainConsole.Instance.Error("[User Load]: Insufficient details; Skipping " + userInfo);
 						continue;
 					}
@@ -1661,7 +1662,7 @@ namespace Universe.Services.SQLServices.UserAccountService
 					FirstName = userInfo[1];
 					LastName = userInfo[2];
 					Password = userInfo[3];
-					Email = userInfo.Length< 6 ? userInfo[4] : "";
+					Email = userInfo.Length < 6 ? userInfo[4] : "";
 					Rezday = userInfo.Length == 6 ? userInfo[5] : "";
 					Salt = userInfo[6];
 					SaltedPassword = userInfo[7];
@@ -1711,7 +1712,7 @@ namespace Universe.Services.SQLServices.UserAccountService
             //
             //string fileName = "users_salted.csv";
         }
-
+        
         #if TEST_USERS
         protected void HandleTestUsers(IScene scene, string[] cmdParams)
         {

@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/,  http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -40,107 +40,110 @@ using Universe.Framework.Services;
 
 namespace Universe.Modules.Web
 {
-	public class WebHttpTextureService : IService, IWebHttpTextureService
-	{
-		protected IRegistryCore _registry;
-		protected string _gridNick;
-		protected IHttpServer _server;
+    public class WebHttpTextureService : IService, IWebHttpTextureService
+    {
+        protected IRegistryCore _registry;
+        protected string _gridNick;
+        protected IHttpServer _server;
 
-		public void Initialize (IConfigSource config, IRegistryCore registry)
-		{
-			_registry = registry;
-		}
+        public void Initialize(IConfigSource config, IRegistryCore registry)
+        {
+            _registry = registry;
+        }
 
-		public void Start (IConfigSource config, IRegistryCore registry)
-		{
-		}
+        public void Start(IConfigSource config, IRegistryCore registry)
+        {
+        }
 
-		public void FinishedStartup ()
-		{
-			_server = _registry.RequestModuleInterface<ISimulationBase> ().GetHttpServer (0);
-			if (_server != null) {
-				_server.AddStreamHandler (new GenericStreamHandler ("GET", "/index.php?method=GridTexture", OnHTTPGetTextureImage));
-				_registry.RegisterModuleInterface<IWebHttpTextureService> (this);
-			}
-			IGridInfo gridInfo = _registry.RequestModuleInterface<IGridInfo> ();
-			_gridNick = gridInfo != null
+        public void FinishedStartup()
+        {
+            _server = _registry.RequestModuleInterface<ISimulationBase>().GetHttpServer(0);
+            if (_server != null)
+            {
+                _server.AddStreamHandler(new GenericStreamHandler("GET", "/index.php?method=GridTexture", OnHTTPGetTextureImage));
+                _registry.RegisterModuleInterface<IWebHttpTextureService>(this);
+            }
+            IGridInfo gridInfo = _registry.RequestModuleInterface<IGridInfo>();
+            _gridNick = gridInfo != null
                             ? gridInfo.GridName
                             : "No Grid Name Available, please set this";
-		}
+        }
 
-		public string GetTextureURL (UUID textureID)
-		{
-			return _server.ServerURI + "/index.php?method=GridTexture&uuid=" + textureID;
-		}
+        public string GetTextureURL(UUID textureID)
+        {
+            return _server.ServerURI + "/index.php?method=GridTexture&uuid=" + textureID;
+        }
 
-		public string GetRegionWorldViewURL (UUID RegionID)
-		{
-			return _server.ServerURI + "/worldview/" + RegionID;
-		}
+        public string GetRegionWorldViewURL(UUID RegionID)
+        {
+            return _server.ServerURI + "/worldview/" + RegionID;
+        }
 
-		public byte[] OnHTTPGetTextureImage (string path, Stream request, OSHttpRequest httpRequest,
-		                                          OSHttpResponse httpResponse)
-		{
-			byte[] jpeg = new byte[0];
-			IAssetService m_AssetService = _registry.RequestModuleInterface<IAssetService> ();
+        public byte[] OnHTTPGetTextureImage(string path, Stream request, OSHttpRequest httpRequest,
+                                            OSHttpResponse httpResponse)
+        {
+            byte[] jpeg = new byte[0];
+            IAssetService m_AssetService = _registry.RequestModuleInterface<IAssetService>();
 
-			using (MemoryStream imgstream = new MemoryStream ()) {
-				// Taking our jpeg2000 data, decoding it, then saving it to a byte array with regular jpeg data
+            using (MemoryStream imgstream = new MemoryStream())
+            {
+                // Taking our jpeg2000 data, decoding it, then saving it to a byte array with regular jpeg data
 
-				// non-async because we know we have the asset immediately.
-				byte[] mapasset = m_AssetService.GetData (httpRequest.QueryString ["uuid"]);
+                // non-async because we know we have the asset immediately.
+                byte[] mapasset = m_AssetService.GetData(httpRequest.QueryString["uuid"]);
 
-				if (mapasset != null) {
-					// Decode image to System.Drawing.Image
-					Image image;
-					ManagedImage managedImage;
-					EncoderParameters myEncoderParameters = new EncoderParameters ();
-					myEncoderParameters.Param [0] = new EncoderParameter (Encoder.Quality, 75L);
-					if (OpenJPEG.DecodeToImage (mapasset, out managedImage, out image)) {
-						// Save to bitmap
-						var texture = ResizeBitmap (image, 256, 256);
-						var encInfo = GetEncoderInfo ("image/jpeg");
-						if (encInfo != null)
-							texture.Save (imgstream, GetEncoderInfo ("image/jpeg"), myEncoderParameters);
+                if (mapasset != null)
+                {
+                    // Decode image to System.Drawing.Image
+                    Image image;
+                    ManagedImage managedImage;
+                    EncoderParameters myEncoderParameters = new EncoderParameters();
+                    myEncoderParameters.Param[0] = new EncoderParameter(Encoder.Quality, 75L);
+                    if (OpenJPEG.DecodeToImage(mapasset, out managedImage, out image))
+                    {
+                        // Save to bitmap
+                        var texture = ResizeBitmap(image, 256, 256);
+                        var encInfo = GetEncoderInfo ("image/jpeg");
+                        if (encInfo != null)
+                            texture.Save(imgstream, GetEncoderInfo("image/jpeg"), myEncoderParameters);
 
-						// Write the stream to a byte array for output
-						jpeg = imgstream.ToArray ();
+                        // Write the stream to a byte array for output
+                        jpeg = imgstream.ToArray();
                         
-					}
+                    }
+                    image.Dispose();
+                }
+            }
 
-					image.Dispose ();
-				}
-			}
+            httpResponse.ContentType = "image/jpeg";
 
-			httpResponse.ContentType = "image/jpeg";
+            return jpeg;
+        }
 
-			return jpeg;
-		}
+        Bitmap ResizeBitmap(Image b, int nWidth, int nHeight)
+        {
+            Bitmap newsize = new Bitmap(nWidth, nHeight);
+            Graphics temp = Graphics.FromImage(newsize);
+            temp.DrawImage(b, 0, 0, nWidth, nHeight);
+            temp.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            temp.DrawString(_gridNick, new Font("Arial", 8, FontStyle.Regular),
+                            new SolidBrush(Color.FromArgb(90, 255, 255, 50)), new Point(2, nHeight - 13));
 
-		Bitmap ResizeBitmap (Image b, int nWidth, int nHeight)
-		{
-			Bitmap newsize = new Bitmap (nWidth, nHeight);
-			Graphics temp = Graphics.FromImage (newsize);
-			temp.DrawImage (b, 0, 0, nWidth, nHeight);
-			temp.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-			temp.DrawString (_gridNick, new Font ("Arial", 8, FontStyle.Regular),
-				new SolidBrush (Color.FromArgb (90, 255, 255, 50)), new Point (2, nHeight - 13));
+            temp.Dispose();
+            return newsize;
+        }
 
-			temp.Dispose ();
-			return newsize;
-		}
-
-		// From MSDN
-		static ImageCodecInfo GetEncoderInfo (String mimeType)
-		{
-			ImageCodecInfo[] encoders;
-			encoders = ImageCodecInfo.GetImageEncoders ();
-			for (int j = 0; j < encoders.Length; ++j) {
-				if (encoders [j].MimeType == mimeType)
-					return encoders [j];
-			}
-
-			return null;
-		}
-	}
+        // From MSDN
+        static ImageCodecInfo GetEncoderInfo(String mimeType)
+        {
+            ImageCodecInfo[] encoders;
+            encoders = ImageCodecInfo.GetImageEncoders();
+            for (int j = 0; j < encoders.Length; ++j)
+            {
+                if (encoders[j].MimeType == mimeType)
+                    return encoders[j];
+            }
+            return null;
+        }
+    }
 }

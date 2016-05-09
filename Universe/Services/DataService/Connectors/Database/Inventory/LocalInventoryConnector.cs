@@ -88,6 +88,7 @@ namespace Universe.Services.DataService
             QueryFilter filter = new QueryFilter();
             filter.andFilters["parentFolderID"] = folderID;
             filter.andFilters["assetID"] = itemID;
+
             return GD.Query(new string[] {"assetID"}, m_itemsrealm, filter, null, null, null).Count > 0;
         }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,20 +25,21 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.IO;
-using System.Xml;
-using Nini.Config;
+
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Serialization;
+using Nini.Config;
+using System;
+using System.IO;
+using System.Xml;
 
 namespace Universe.Modules.Archivers
 {
-    public class SerializerModule : INonSharedRegionModule, IRegionSerializerModule
+    public class SerializerModule : INonSharedRegionModule, IRegionSerialiserModule
     {
-        #region IRegionSerializerModule Members
+        #region IRegionSerialiserModule Members
 
         public ISceneEntity DeserializeGroupFromXml2(string xmlString, IScene scene)
         {
@@ -83,13 +84,13 @@ namespace Universe.Modules.Archivers
             get { return null; }
         }
 
-        public void Initialize(IConfigSource source)
+        public void Initialise(IConfigSource source)
         {
         }
 
         public void AddRegion(IScene scene)
         {
-            scene.RegisterModuleInterface<IRegionSerializerModule>(this);
+            scene.RegisterModuleInterface<IRegionSerialiserModule>(this);
         }
 
         public void RegionLoaded(IScene scene)
@@ -98,7 +99,7 @@ namespace Universe.Modules.Archivers
 
         public void RemoveRegion(IScene scene)
         {
-            scene.UnregisterModuleInterface<IRegionSerializerModule>(this);
+            scene.UnregisterModuleInterface<IRegionSerialiserModule>(this);
         }
 
         public void Close()

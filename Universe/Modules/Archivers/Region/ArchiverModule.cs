@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -38,7 +38,7 @@ using Universe.Framework.Utilities;
 namespace Universe.Modules.Archivers
 {
     /// <summary>
-    ///     This module loads and saves Universe-Sim region archives
+    ///     This module loads and saves Virtual Universe region archives
     /// </summary>
     public class ArchiverModule : INonSharedRegionModule, IRegionArchiverModule
     {
@@ -61,7 +61,7 @@ namespace Universe.Modules.Archivers
             get { return null; }
         }
 
-        public void Initialize(IConfigSource source)
+        public void Initialise(IConfigSource source)
         {
             //MainConsole.Instance.Debug("[Archiver] Initializing");
         }

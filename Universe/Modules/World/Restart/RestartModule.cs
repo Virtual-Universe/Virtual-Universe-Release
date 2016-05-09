@@ -56,7 +56,7 @@ namespace Universe.Modules.Restart
 
         #region INonSharedRegionModule Members
 
-        public void Initialize (IConfigSource config)
+        public void Initialise (IConfigSource config)
         {
             IConfig rs_config = config.Configs ["FileBasedSimulationData"];
             if (rs_config != null)

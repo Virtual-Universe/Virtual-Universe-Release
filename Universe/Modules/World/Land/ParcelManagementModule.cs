@@ -131,7 +131,7 @@ namespace Universe.Modules.Land
             get { return null; }
         }
 
-        public void Initialize(IConfigSource source)
+        public void Initialise(IConfigSource source)
         {
             IConfig config = source.Configs["LandManagement"];
             if (config != null)
@@ -1525,7 +1525,7 @@ namespace Universe.Modules.Land
             else
             {
                 MainConsole.Instance.WarnFormat(
-                    "[Parcel]: Invalid land object {0} passed for parcel object owner request", local_id);
+                    "[PARCEL]: Invalid land object {0} passed for parcel object owner request", local_id);
             }
         }
 

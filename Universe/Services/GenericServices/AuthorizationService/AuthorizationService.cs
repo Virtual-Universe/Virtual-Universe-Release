@@ -25,12 +25,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Nini.Config;
+
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Services;
+using Nini.Config;
 
 namespace Universe.Services
 {

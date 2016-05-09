@@ -150,7 +150,7 @@ namespace Universe.Modules.WorldMap
 
         #region IMapTileTerrainRenderer Members
 
-        public void Initialize(IScene scene, IConfigSource source)
+        public void Initialise(IScene scene, IConfigSource source)
         {
             m_scene = scene;
             // m_config = source; // not used currently

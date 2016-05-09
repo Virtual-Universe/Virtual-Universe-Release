@@ -25,6 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
 using System;
 using System.Collections.Generic;
 using OpenMetaverse;
@@ -57,7 +58,7 @@ namespace Universe.ClientStack
 
             if (m_missingImage == null)
                 MainConsole.Instance.Error(
-                    "[Client View] - Couldn't set missing image asset, falling back to missing image packet. This is known to crash the client");
+                    "[ClientView] - Couldn't set missing image asset, falling back to missing image packet. This is known to crash the client");
 
             m_j2kDecodeModule = pJ2kDecodeModule;
         }
@@ -308,7 +309,7 @@ namespace Universe.ClientStack
 
         #region Nested type: J2KImageComparer
 
-        /*
+/*
         sealed class J2KImageComparer : IComparer<J2KImage>
         {
             #region IComparer<J2KImage> Members
@@ -320,7 +321,7 @@ namespace Universe.ClientStack
 
             #endregion
         }
-        */
+*/
 
         #endregion
     }

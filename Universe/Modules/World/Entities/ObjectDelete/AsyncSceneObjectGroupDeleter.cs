@@ -81,7 +81,7 @@ namespace Universe.Modules.Entities.ObjectDelete
             get { return null; }
         }
 
-        public void Initialize(IConfigSource source)
+        public void Initialise(IConfigSource source)
         {
         }
 

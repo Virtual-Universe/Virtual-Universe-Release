@@ -25,6 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -348,7 +349,7 @@ namespace Universe.ClientStack
         ///     All manipulation of this set has to occur under an m_entityUpdates.SyncRoot lock
         /// </value>
         //protected HashSet<uint> m_killRecord = new HashSet<uint>();
-        //protected HashSet<uint> m_attachmentsSent;
+//        protected HashSet<uint> m_attachmentsSent;
         int m_animationSequenceNumber = 1;
 
         bool m_SendLogoutPacketWhenClosing = true;
@@ -373,9 +374,9 @@ namespace Universe.ClientStack
         uint m_agentFOVCounter;
 
         readonly IAssetService m_assetService;
-        // ReSharper disable ConvertToConstant.Local
+// ReSharper disable ConvertToConstant.Local
         bool m_checkPackets = true;
-        // ReSharper restore ConvertToConstant.Local
+// ReSharper restore ConvertToConstant.Local
 
         #endregion Class Members
 
@@ -481,7 +482,7 @@ namespace Universe.ClientStack
                 m_allowUDPInv = advancedConfig.GetBoolean("AllowUDPInventory", m_allowUDPInv);
 
             //m_killRecord = new HashSet<uint>();
-            //m_attachmentsSent = new HashSet<uint>();
+//            m_attachmentsSent = new HashSet<uint>();
 
             m_assetService = m_scene.RequestModuleInterface<IAssetService>();
             m_GroupsModule = scene.RequestModuleInterface<IGroupsModule>();
@@ -550,7 +551,7 @@ namespace Universe.ClientStack
         public void Close(bool forceClose)
         {
             //MainConsole.Instance.DebugFormat(
-            //    "[Client]: Close has been called for {0} attached to scene {1}",
+            //    "[CLIENT]: Close has been called for {0} attached to scene {1}",
             //    Name, m_scene.RegionInfo.RegionName);
 
             if (forceClose && !IsLoggingOut) //Don't send it to clients that are logging out
@@ -581,9 +582,9 @@ namespace Universe.ClientStack
             // Disable UDP handling for this client
             m_udpClient.Shutdown();
 
-            //MainConsole.Instance.InfoFormat("[Client View] Memory pre  GC {0}", System.GC.GetTotalMemory(false));
+            //MainConsole.Instance.InfoFormat("[CLIENTVIEW] Memory pre  GC {0}", System.GC.GetTotalMemory(false));
             //GC.Collect();
-            //MainConsole.Instance.InfoFormat("[Client View] Memory post GC {0}", System.GC.GetTotalMemory(true));
+            //MainConsole.Instance.InfoFormat("[CLIENTVIEW] Memory post GC {0}", System.GC.GetTotalMemory(true));
         }
 
         public void Kick(string message)
@@ -732,7 +733,7 @@ namespace Universe.ClientStack
             {
                 // Make sure that we see any exception caused by the asynchronous operation.
                 MainConsole.Instance.ErrorFormat(
-                    "[LLClient View]: Caught exception while processing {0} for {1}, {2} {3}",
+                    "[LLCLIENTVIEW]: Caught exception while processing {0} for {1}, {2} {3}",
                     packetObject.Pack, Name, e.Message, e.StackTrace);
             }
         }
@@ -977,6 +978,7 @@ namespace Universe.ClientStack
                                                                  }
                                                          };
 
+
             int i = 0;
             GVHIRP.VoteItem = new GroupVoteHistoryItemReplyPacket.VoteItemBlock[VoteItems.Length];
 
@@ -1132,7 +1134,7 @@ namespace Universe.ClientStack
             }
             catch (Exception e)
             {
-                MainConsole.Instance.Warn("[Client]: ClientView.API.cs: SendLayerData() - Failed with exception " + e);
+                MainConsole.Instance.Warn("[CLIENT]: ClientView.API.cs: SendLayerData() - Failed with exception " + e);
             }
         }
 
@@ -1222,7 +1224,7 @@ namespace Universe.ClientStack
             }
             catch (Exception e)
             {
-                MainConsole.Instance.ErrorFormat("[Client]: SendLayerData() Failed with exception: " + e);
+                MainConsole.Instance.ErrorFormat("[CLIENT]: SendLayerData() Failed with exception: " + e);
             }
         }
 
@@ -1272,6 +1274,7 @@ namespace Universe.ClientStack
                         for (int xa = 0; xa < Size; xa++)
                         {
                             // Send oversize packet in individual patches
+                            //
                             SendLayerData(x[i + xa], y[i + xa], map);
                         }
                     }
@@ -1285,6 +1288,7 @@ namespace Universe.ClientStack
                     for (int xa = 0; xa < Size; xa++)
                     {
                         // Send oversize packet in individual patches
+                        //
                         SendLayerData(x[i + xa], y[i + xa], map);
                     }
                 }
@@ -1293,6 +1297,7 @@ namespace Universe.ClientStack
                     for (int xa = 0; xa < Size; xa++)
                     {
                         // Bad terrain, send individual chunks
+                        //
                         SendLayerData(x[i + xa], y[i + xa], map);
                     }
                 }
@@ -1328,12 +1333,15 @@ namespace Universe.ClientStack
             patches[0] = new TerrainPatch {Data = new float[16*16]};
             patches[1] = new TerrainPatch {Data = new float[16*16]};
 
+
+//            for (int y = 0; y < 16*16; y+=16)
+//            {
             for (int x = 0; x < 16*16; x++)
             {
                 patches[0].Data[x] = windSpeeds[x].X;
                 patches[1].Data[x] = windSpeeds[x].Y;
             }
-
+//            }
             byte type = (byte) TerrainPatch.LayerType.Wind;
             if (m_scene.RegionInfo.RegionSizeX > Constants.RegionSize ||
                 m_scene.RegionInfo.RegionSizeY > Constants.RegionSize)
@@ -1357,9 +1365,12 @@ namespace Universe.ClientStack
             TerrainPatch[] patches = new TerrainPatch[1];
             patches[0] = new TerrainPatch {Data = new float[16*16]};
 
-            for (int x = 0; x < 16*16; x++)
+//            for (int y = 0; y < 16*16; y+=16)
             {
-                patches[0].Data[x] = cloudCover[x];
+                for (int x = 0; x < 16*16; x++)
+                {
+                    patches[0].Data[x] = cloudCover[x];
+                }
             }
 
             byte type = (byte) TerrainPatch.LayerType.Cloud;
@@ -1458,6 +1469,8 @@ namespace Universe.ClientStack
                                        uint locationID,
                                        uint flags, string capsURL)
         {
+            //TeleportFinishPacket teleport = (TeleportFinishPacket)PacketPool.Instance.GetPacket(PacketType.TeleportFinish);
+
             TeleportFinishPacket teleport = new TeleportFinishPacket
                                                 {
                                                     Info =
@@ -1506,6 +1519,7 @@ namespace Universe.ClientStack
         public void SendTeleportStart(uint flags)
         {
             TeleportStartPacket tpStart = (TeleportStartPacket) PacketPool.Instance.GetPacket(PacketType.TeleportStart);
+            //TeleportStartPacket tpStart = new TeleportStartPacket();
             tpStart.Info.TeleportFlags = flags; //16; // Teleport via location
 
             // Hack to get this out immediately and skip throttles
@@ -1587,7 +1601,7 @@ namespace Universe.ClientStack
             };
             Query[0] = MembershipBlock;
             
-            //Note: Nothing is ever done with this?
+            //Note: Nothing is ever done with this?????
             int totalarea = 0;
             List<string> RegionTypes = new List<string>();
             for (int i = 0; i < LandData.Length; i++)
@@ -1652,9 +1666,9 @@ namespace Universe.ClientStack
         public void SendKillObject(ulong regionHandle, IEntity[] entities)
         {
             if (entities.Length == 0)
-                return; // why!
-            
-            //MainConsole.Instance.DebugFormat("[Client]: Sending KillObjectPacket to {0} for {1} in {2}", Name, localID, regionHandle);
+                return; //........... why!
+
+//            MainConsole.Instance.DebugFormat("[CLIENT]: Sending KillObjectPacket to {0} for {1} in {2}", Name, localID, regionHandle);
 
             KillObjectPacket kill = (KillObjectPacket) PacketPool.Instance.GetPacket(PacketType.KillObject);
             kill.ObjectData = new KillObjectPacket.ObjectDataBlock[entities.Length];
@@ -1706,9 +1720,9 @@ namespace Universe.ClientStack
         public void SendKillObject(ulong regionHandle, uint[] entities)
         {
             if (entities.Length == 0)
-                return; // why!
+                return; //........... why!
 
-            //MainConsole.Instance.DebugFormat("[Client]: Sending KillObjectPacket to {0} for {1} in {2}", Name, localID, regionHandle);
+            //            MainConsole.Instance.DebugFormat("[CLIENT]: Sending KillObjectPacket to {0} for {1} in {2}", Name, localID, regionHandle);
 
             KillObjectPacket kill = (KillObjectPacket) PacketPool.Instance.GetPacket(PacketType.KillObject);
             kill.ObjectData = new KillObjectPacket.ObjectDataBlock[entities.Length];
@@ -1769,11 +1783,13 @@ namespace Universe.ClientStack
             InventoryDescendentsPacket currentPacket = null;
 
             // Handle empty folders
+            //
             if (totalItems == 0 && totalFolders == 0)
                 currentPacket = CreateInventoryDescendentsPacket(ownerID, folderID, version, items.Count + folders.Count,
                                                                  0, 0);
 
             // To preserve SL compatibility, we will NOT combine folders and items in one packet
+            //
             while (itemsSent < totalItems || foldersSent < totalFolders)
             {
                 if (currentPacket == null) // Start a new packet
@@ -1851,6 +1867,7 @@ namespace Universe.ClientStack
                                                                         Flags = item.Flags
                                                                     };
 
+
             newBlock.CRC =
                 Helpers.InventoryCRC(newBlock.CreationDate, newBlock.SaleType,
                                      newBlock.InvType, newBlock.Type,
@@ -1898,6 +1915,7 @@ namespace Universe.ClientStack
                                          SaleType = 0,
                                          Flags = 0
                                      };
+
 
             // No need to add CRC
         }
@@ -1960,6 +1978,7 @@ namespace Universe.ClientStack
                                                       SaleType = item.SaleType
                                                   };
 
+
             inventoryReply.InventoryData[0].CRC =
                 Helpers.InventoryCRC(
                     1000, 0, inventoryReply.InventoryData[0].InvType,
@@ -2021,6 +2040,7 @@ namespace Universe.ClientStack
             // to be in its own bulk update packet.  Also, we can only fit 5 items in a packet (at least this was the limit
             // being used on the Linden grid at 20081203).
             InventoryCollection contents = invService.GetFolderContent(AgentId, folder.ID);
+            // folder.RequestListOfItems();
             List<InventoryItemBase> items = contents.Items;
             while (items.Count > 0)
             {
@@ -2075,6 +2095,7 @@ namespace Universe.ClientStack
                                                                             Name = Util.StringToBytes256(folder.Name)
                                                                         };
 
+
             return folderBlock;
         }
 
@@ -2110,6 +2131,7 @@ namespace Universe.ClientStack
                                                                         SaleType = item.SaleType,
                                                                         CreationDate = item.CreationDate
                                                                     };
+
 
             itemBlock.CRC =
                 Helpers.InventoryCRC(
@@ -2163,6 +2185,7 @@ namespace Universe.ClientStack
                                              SaleType = item.SaleType
                                          };
 
+
             bulkUpdate.ItemData[0].CRC =
                 Helpers.InventoryCRC(1000, 0, bulkUpdate.ItemData[0].InvType,
                                      bulkUpdate.ItemData[0].Type, bulkUpdate.ItemData[0].AssetID,
@@ -2212,6 +2235,7 @@ namespace Universe.ClientStack
                                                       SaleType = Item.SaleType,
                                                       CreationDate = Item.CreationDate
                                                   };
+
 
             InventoryReply.InventoryData[0].CRC =
                 Helpers.InventoryCRC(1000, 0, InventoryReply.InventoryData[0].InvType,
@@ -2320,6 +2344,7 @@ namespace Universe.ClientStack
                                                                                      }).ToArray()
                                                       };
 
+            //int i = 0;
             OutPacket(replyPacket, ThrottleOutPacketType.AvatarInfo);
         }
 
@@ -2485,6 +2510,7 @@ namespace Universe.ClientStack
             // to prevent existing code from breaking if it assumed that 6 hours were included.
             // 21600 == 6 hours * 60 minutes * 60 Seconds
             viewertime.TimeInfo.UsecSinceStart = currentTime + 21600;
+
             viewertime.TimeInfo.SecPerDay = secondsPerSunCycle;
             viewertime.TimeInfo.SecPerYear = secondsPerYear;
             viewertime.TimeInfo.SunPhase = orbitalPosition;
@@ -2498,9 +2524,12 @@ namespace Universe.ClientStack
             ViewerEffectPacket packet = (ViewerEffectPacket) PacketPool.Instance.GetPacket(PacketType.ViewerEffect);
             packet.Header.Reliable = false;
             packet.Header.Zerocoded = true;
+
             packet.AgentData.AgentID = AgentId;
             packet.AgentData.SessionID = SessionId;
+
             packet.Effect = effectBlocks;
+
             OutPacket(packet, ThrottleOutPacketType.State);
         }
 
@@ -2546,6 +2575,8 @@ namespace Universe.ClientStack
                 Position = new Vector3(),
                 RegionID = Scene.RegionInfo.RegionID
             });
+
+            //SendInstantMessage(FromAvatarID, fromSessionID, Message, AgentId, SessionId, FromAvatarName, (byte)21,(uint) Util.UnixTimeSinceEpoch());
         }
 
         public void SendLogoutPacket()
@@ -2682,6 +2713,7 @@ namespace Universe.ClientStack
             }
         }
 
+
         public void SendGroupNameReply(UUID groupLLUID, string GroupName)
         {
             UUIDGroupNameReplyPacket pack = new UUIDGroupNameReplyPacket();
@@ -2709,8 +2741,8 @@ namespace Universe.ClientStack
                                                    ReportDataBlocks =
                                                        new LandStatReplyMessage.ReportDataBlock[lsrpia.Length]
                                                };
-            lock (_lock) {
                 for (int i = 0; i < lsrpia.Length; i++) {
+                lock (_lock) {
                     LandStatReplyMessage.ReportDataBlock block = new LandStatReplyMessage.ReportDataBlock {
                         Location = lsrpia [i].Location,
                         MonoScore = lsrpia [i].Score,
@@ -2726,9 +2758,8 @@ namespace Universe.ClientStack
             }
             IEventQueueService eventService = m_scene.RequestModuleInterface<IEventQueueService>();
             if (eventService != null)
-            {
                 eventService.LandStatReply(message, AgentId, m_scene.RegionInfo.RegionID);
-            }
+            
         }
 
         public void SendScriptRunningReply(UUID objectID, UUID itemID, bool running)
@@ -2748,7 +2779,7 @@ namespace Universe.ClientStack
 
         void SendFailedAsset(AssetRequestToClient req, TransferPacketStatus assetErrors)
         {
-            TransferInfoPacket Transfer = new TransferInfoPacket
+            TransferInfoPacket TransferPkt = new TransferInfoPacket
                                               {
                                                   TransferInfo =
                                                       {
@@ -2761,7 +2792,7 @@ namespace Universe.ClientStack
                                                       },
                                                   Header = {Zerocoded = true}
                                               };
-            OutPacket(Transfer, ThrottleOutPacketType.Transfer);
+            OutPacket(TransferPkt, ThrottleOutPacketType.Transfer);
         }
 
         public void SendAsset(AssetRequestToClient req)
@@ -2793,8 +2824,10 @@ namespace Universe.ClientStack
             else if (req.AssetRequestSource == 3)
             {
                 Transfer.TransferInfo.Params = req.Params;
+                // Transfer.TransferInfo.Params = new byte[100];
+                //Array.Copy(req.RequestUser.AgentId.GetBytes(), 0, Transfer.TransferInfo.Params, 0, 16);
+                //Array.Copy(req.RequestUser.SessionId.GetBytes(), 0, Transfer.TransferInfo.Params, 16, 16);
             }
-
             Transfer.TransferInfo.Size = req.AssetInf.Data.Length;
             Transfer.TransferInfo.TransferID = req.TransferRequestID;
             Transfer.Header.Zerocoded = true;
@@ -2814,7 +2847,6 @@ namespace Universe.ClientStack
                                                                   },
                                                               Header = {Zerocoded = true}
                                                           };
-
                 OutPacket(TransferPacket, ThrottleOutPacketType.Transfer);
             }
             else
@@ -3592,11 +3624,13 @@ namespace Universe.ClientStack
                     aw.WearableData[idx] = awb;
                     idx++;
 
-                    //MainConsole.Instance.DebugFormat(
-                    //    "[Appearance]: Sending wearable item/asset {0} {1} (index {2}) for {3}", awb.ItemID, awb.AssetID, i, Name);
+                    //                                MainConsole.Instance.DebugFormat(
+                    //                                    "[APPEARANCE]: Sending wearable item/asset {0} {1} (index {2}) for {3}",
+                    //                                    awb.ItemID, awb.AssetID, i, Name);
                 }
             }
 
+            //            OutPacket(aw, ThrottleOutPacketType.Texture);
             OutPacket(aw, ThrottleOutPacketType.AvatarInfo);
         }
 
@@ -3638,7 +3672,7 @@ namespace Universe.ClientStack
 
         public void SendAnimations(AnimationGroup animations)
         {
-            //MainConsole.Instance.DebugFormat("[Client]: Sending animations to {0}", Name);
+            //MainConsole.Instance.DebugFormat("[CLIENT]: Sending animations to {0}", Name);
 
             AvatarAnimationPacket ani =
                 (AvatarAnimationPacket) PacketPool.Instance.GetPacket(PacketType.AvatarAnimation);
@@ -3663,12 +3697,15 @@ namespace Universe.ClientStack
 
                 ani.AnimationSourceList[i] = new AvatarAnimationPacket.AnimationSourceListBlock
                                                  {ObjectID = animations.ObjectIDs[i]};
+                //if (objectIDs[i] == UUID.Zero)
+                //    ani.AnimationSourceList[i].ObjectID = sourceAgentId;
             }
             //We do this here to keep the numbers under control
             m_animationSequenceNumber += (animations.Animations.Length*2);
 
             ani.Header.Reliable = true;
             ani.HasVariableBlocks = false;
+            //            OutPacket(ani, ThrottleOutPacketType.Asset);
             OutPacket(ani, ThrottleOutPacketType.AvatarInfo, true, null,
                       delegate
                           { m_scene.GetScenePresence(AgentId).SceneViewer.FinishedAnimationPacketSend(animations); });
@@ -3729,6 +3766,7 @@ namespace Universe.ClientStack
                             Y = (byte) CoarseLocations[i].Y,
                             Z = CoarseLocations[i].Z > 1024 ? (byte) 0 : (byte) (CoarseLocations[i].Z*0.25f)
                         };
+
 
                 loc.Location[i] = lb;
                 loc.AgentData[i] = new CoarseLocationUpdatePacket.AgentDataBlock {AgentID = users[i]};
@@ -3842,7 +3880,7 @@ namespace Universe.ClientStack
                     /*if (m_killRecord.Contains(entity.LocalId))
                         {
                         MainConsole.Instance.ErrorFormat(
-                            "[Client]: Preventing update for prim with local id {0} after client for user {1} told it was deleted. Mantis this at http://mantis.Universe-sim.org/bug_report_page.php !",
+                            "[CLIENT]: Preventing update for prim with local id {0} after client for user {1} told it was deleted. Mantis this at http://mantis.Universe-sim.org/bug_report_page.php !",
                             entity.LocalId, Name);
                         return;
                         }*/
@@ -3884,7 +3922,7 @@ namespace Universe.ClientStack
                 else if (updateFlags.HasFlag(PrimUpdateFlags.ForcedFullUpdate))
                 {
                     //If a full update has been requested, DO THE FULL UPDATE.
-                    // Don't try to get out of this. the monster called RepeatObjectUpdateCachedFromTheServer will occur and eat all your prims!
+                    // Don't try to get out of this.... the monster called RepeatObjectUpdateCachedFromTheServer will occur and eat all your prims!
                     canUseCached = false;
                     canUseCompressed = false;
                     canUseImproved = false;
@@ -4030,7 +4068,7 @@ namespace Universe.ClientStack
                 }
                 catch (Exception ex)
                 {
-                    MainConsole.Instance.Warn("[LLClient View]: Issue creating an update block " + ex);
+                    MainConsole.Instance.Warn("[LLCLIENTVIEW]: Issue creating an update block " + ex);
                     return;
                 }
             }
@@ -4060,6 +4098,9 @@ namespace Universe.ClientStack
 
                 for (int i = 0; i < blocks.Count; i++)
                     packet.ObjectData[i] = blocks[i];
+
+
+                //ObjectUpdatePacket oo = new ObjectUpdatePacket(packet.ToBytes(), ref ii);
 
                 OutPacket(packet, ThrottleOutPacketType.Task, true,
                           p => ResendPrimUpdates(fullUpdates, p),
@@ -4208,6 +4249,8 @@ namespace Universe.ClientStack
 
         void ProcessTextureRequests(int numPackets)
         {
+            //note: tmp is never used
+            //int tmp = m_udpClient.GetCurTexPacksInQueue();
             if (m_imageManager != null)
                 m_imageManager.ProcessImageQueue(numPackets);
         }
@@ -4237,7 +4280,6 @@ namespace Universe.ClientStack
                                                     },
                                                 Header = {Zerocoded = true}
                                             };
-
             OutPacket(newPack, ThrottleOutPacketType.Transfer);
         }
 
@@ -4262,7 +4304,6 @@ namespace Universe.ClientStack
                                                              ViewerFilename = Utils.StringToBytes(clientFileName)
                                                          }
                                                  };
-
             OutPacket(newPack, ThrottleOutPacketType.Transfer);
         }
 
@@ -4640,7 +4681,7 @@ namespace Universe.ClientStack
 
             packet.ParamList = returnblock;
             packet.Header.Reliable = false;
-            //MainConsole.Instance.Debug("[Estate]: SIM--->" + packet.ToString());
+            //MainConsole.Instance.Debug("[ESTATE]: SIM--->" + packet.ToString());
             OutPacket(packet, ThrottleOutPacketType.AvatarInfo);
         }
 
@@ -4811,7 +4852,7 @@ namespace Universe.ClientStack
             CameraConstraintPacket cpack =
                 (CameraConstraintPacket) PacketPool.Instance.GetPacket(PacketType.CameraConstraint);
             cpack.CameraCollidePlane = new CameraConstraintPacket.CameraCollidePlaneBlock {Plane = ConstraintPlane};
-            //MainConsole.Instance.DebugFormat("[Client View]: Constraint {0}", ConstraintPlane);
+            //MainConsole.Instance.DebugFormat("[CLIENTVIEW]: Constraint {0}", ConstraintPlane);
             OutPacket(cpack, ThrottleOutPacketType.AvatarInfo);
         }
 
@@ -5123,7 +5164,9 @@ namespace Universe.ClientStack
                                                                 Material = (byte) data.Material,
                                                                 MediaURL = Utils.StringToBytes(data.CurrentMediaVersion)
                                                             };
-
+            //update.JointAxisOrAnchor = Vector3.Zero; // These are deprecated
+            //update.JointPivot = Vector3.Zero;
+            //update.JointType = 0;
             if (data.IsAttachment)
             {
                 update.NameValue = Util.StringToBytes256("AttachItemID STRING RW SV " + data.FromUserInventoryItemID);
@@ -5182,9 +5225,10 @@ namespace Universe.ClientStack
                     data.CreateSelected = false;
                 }
             }
-            
-            //MainConsole.Instance.DebugFormat(
-            //    "[LLClient View]: Constructing client update for part {0} {1} with flags {2}, localId {3}", data.Name, update.FullID, flags, update.ID);
+
+//            MainConsole.Instance.DebugFormat(
+//                "[LLCLIENTVIEW]: Constructing client update for part {0} {1} with flags {2}, localId {3}",
+//                data.Name, update.FullID, flags, update.ID);
 
             update.UpdateFlags = (uint) flags;
 
@@ -5284,6 +5328,7 @@ namespace Universe.ClientStack
                         Primitive.ParticleSystem Sys = new Primitive.ParticleSystem();
                         byte[] pdata = Sys.GetBytes();
                         objectData.Write(pdata, 0, pdata.Length);
+                        //updateFlags = updateFlags & ~CompressedFlags.HasParticles;
                     }
                     else
                         objectData.Write(part.ParticleSystem, 0, part.ParticleSystem.Length);
@@ -5301,7 +5346,6 @@ namespace Universe.ClientStack
                     Utils.FloatToBytes((float)part.SoundRadius, byteData, 0);
                     objectData.Write(byteData, 0, 4);
                 }
-
                 if ((updateFlags & CompressedFlags.HasNameValues) != 0)
                 {
                     if (part.IsAttachment)
@@ -5661,6 +5705,7 @@ namespace Universe.ClientStack
             if (OnAgentUpdate != null)
             {
                 bool update = false;
+                //bool forcedUpdate = false;
                 AgentUpdatePacket agenUpdate = (AgentUpdatePacket) Pack;
 
                 #region Packet Session and User Check
@@ -5672,7 +5717,8 @@ namespace Universe.ClientStack
 
                 AgentUpdatePacket.AgentDataBlock x = agenUpdate.AgentData;
 
-                // We can only check when we have something to check against.
+                // We can only check when we have something to check
+                // against.
 
                 if (lastarg != null)
                 {
@@ -5694,10 +5740,12 @@ namespace Universe.ClientStack
                 }
                 else
                 {
+                    //forcedUpdate = true;
                     update = true;
                 }
 
-                // These should be ordered from most-likely to least likely to change. I've made an initial
+                // These should be ordered from most-likely to
+                // least likely to change. I've made an initial
                 // guess at that.
 
                 if (update)
@@ -5940,12 +5988,12 @@ namespace Universe.ClientStack
                     catch (Exception e)
                     {
                         MainConsole.Instance.ErrorFormat(
-                            "[LLClient View]: Exception when handling generic message {0}{1}", e.Message, e.StackTrace);
+                            "[LLCLIENTVIEW]: Exception when handling generic message {0}{1}", e.Message, e.StackTrace);
                     }
                 }
             }
 
-            //MainConsole.Instance.Debug("[LLClient View]: Not handling GenericMessage with method-type of: " + method);
+            //MainConsole.Instance.Debug("[LLCLIENTVIEW]: Not handling GenericMessage with method-type of: " + method);
             return false;
         }
 
@@ -6034,10 +6082,11 @@ namespace Universe.ClientStack
 
             #endregion
 
-            string fromName = String.Empty;
+            string fromName = String.Empty; //ClientAvatar.firstname + " " + ClientAvatar.lastname;
             byte[] message = inchatpack.ChatData.Message;
             byte type = inchatpack.ChatData.Type;
-            Vector3 fromPos = new Vector3();
+            Vector3 fromPos = new Vector3(); // ClientAvatar.Pos;
+            // UUID fromAgentID = AgentId;
 
             int channel = inchatpack.ChatData.Channel;
 
@@ -6103,7 +6152,7 @@ namespace Universe.ClientStack
         {
             ScriptDialogReplyPacket rdialog = (ScriptDialogReplyPacket) Pack;
 
-            //MainConsole.Instance.DebugFormat("[Client]: Received ScriptDialogReply from {0}", rdialog.Data.ObjectID);
+            //MainConsole.Instance.DebugFormat("[CLIENT]: Received ScriptDialogReply from {0}", rdialog.Data.ObjectID);
 
             #region Packet Session and User Check
 
@@ -6629,6 +6678,34 @@ namespace Universe.ClientStack
             return true;
         }
 
+     /* original - assumed all objects were attachments
+      bool HandlerRezRestoreToWorld(IClientAPI sender, Packet Pack)
+        {
+            RezSingleAttachmentFromInv handlerRezSingleAttachment = OnRezSingleAttachmentFromInv;
+            if (handlerRezSingleAttachment != null)
+            {
+                RezRestoreToWorldPacket rez = (RezRestoreToWorldPacket) Pack;
+
+                #region Packet Session and User Check
+
+                if (m_checkPackets)
+                {
+                    if (rez.AgentData.SessionID != SessionId ||
+                        rez.AgentData.AgentID != AgentId)
+                        return true;
+                }
+
+                #endregion
+
+                handlerRezSingleAttachment(this, rez.InventoryData.ItemID,
+                                           0);
+            }
+
+            return true;
+        }
+       */
+
+        // update 20160129 - greythane-
         bool HandlerRezRestoreToWorld(IClientAPI sender, Packet Pack)
         {
             RezRestoreToWorld handlerRezRestoreToWorld = OnRezRestoreToWorld;
@@ -6650,6 +6727,8 @@ namespace Universe.ClientStack
             }
             return true;
         }
+
+
 
         bool HandleRezMultipleAttachmentsFromInv(IClientAPI sender, Packet Pack)
         {
@@ -6687,13 +6766,14 @@ namespace Universe.ClientStack
                 DetachAttachmentIntoInvPacket detachtoInv = (DetachAttachmentIntoInvPacket) Pack;
 
                 #region Packet Session and User Check
-                
-                //TODO!
+
+//TODO!
                 // UNSUPPORTED ON THIS PACKET
 
                 #endregion
 
                 UUID itemID = detachtoInv.ObjectData.ItemID;
+                // UUID ATTACH_agentID = detachtoInv.ObjectData.AgentID;
 
                 handlerDetachAttachmentIntoInv(itemID, this);
             }
@@ -6781,7 +6861,6 @@ namespace Universe.ClientStack
                     handlerObjectDrop(obj, this);
                 }
             }
-
             return true;
         }
 
@@ -6814,7 +6893,6 @@ namespace Universe.ClientStack
             {
                 handlerCompleteMovementToRegion(sender);
             }
-
             handlerCompleteMovementToRegion = null;
 
             return true;
@@ -6916,7 +6994,7 @@ namespace Universe.ClientStack
 
             if (m_checkPackets)
             {
-                //TODO!
+//TODO!
                 // UNSUPPORTED ON THIS PACKET
             }
 
@@ -7068,7 +7146,6 @@ namespace Universe.ClientStack
                         }
                     }
                 }
-
                 TeleportLocationRequest handlerSetStartLocationRequest = OnSetStartLocationRequest;
                 if (handlerSetStartLocationRequest != null)
                 {
@@ -7177,7 +7254,6 @@ namespace Universe.ClientStack
                     childrenprims.Add(link.ObjectData[i].ObjectLocalID);
                 }
             }
-
             LinkObjects handlerLinkObjects = OnLinkObjects;
             if (handlerLinkObjects != null)
             {
@@ -7233,6 +7309,10 @@ namespace Universe.ClientStack
 
                 PrimitiveBaseShape shape = GetShapeFromAddPacket(addPacket);
                 // MainConsole.Instance.Info("[REZData]: " + addPacket.ToString());
+                //BypassRaycast: 1
+                //RayStart: <69.79469, 158.2652, 98.40343>
+                //RayEnd: <61.97724, 141.995, 92.58341>
+                //RayTargetID: 00000000-0000-0000-0000-000000000000
 
                 //Check to see if adding the prim is allowed; useful for any module wanting to restrict the
                 //object from rezing initially
@@ -7338,6 +7418,8 @@ namespace Universe.ClientStack
             }
 
             #endregion
+
+//            ObjectDuplicatePacket.AgentDataBlock AgentandGroupData = dupe.AgentData;
 
             foreach (ObjectDuplicatePacket.ObjectDataBlock t in dupe.ObjectData)
             {
@@ -7673,7 +7755,7 @@ namespace Universe.ClientStack
 
         bool HandleObjectSpinStart(IClientAPI sender, Packet Pack)
         {
-            //MainConsole.Instance.Warn("[Client]: unhandled ObjectSpinStart packet");
+            //MainConsole.Instance.Warn("[CLIENT]: unhandled ObjectSpinStart packet");
             ObjectSpinStartPacket spinStart = (ObjectSpinStartPacket) Pack;
 
             #region Packet Session and User Check
@@ -7697,7 +7779,7 @@ namespace Universe.ClientStack
 
         bool HandleObjectSpinUpdate(IClientAPI sender, Packet Pack)
         {
-            //MainConsole.Instance.Warn("[Client]: unhandled ObjectSpinUpdate packet");
+            //MainConsole.Instance.Warn("[CLIENT]: unhandled ObjectSpinUpdate packet");
             ObjectSpinUpdatePacket spinUpdate = (ObjectSpinUpdatePacket) Pack;
 
             #region Packet Session and User Check
@@ -7714,7 +7796,7 @@ namespace Universe.ClientStack
             Vector3 axis;
             float angle;
             spinUpdate.ObjectData.Rotation.GetAxisAngle(out axis, out angle);
-            //MainConsole.Instance.Warn("[Client]: ObjectSpinUpdate packet rot axis:" + axis + " angle:" + angle);
+            //MainConsole.Instance.Warn("[CLIENT]: ObjectSpinUpdate packet rot axis:" + axis + " angle:" + angle);
 
             SpinObject handlerSpinUpdate = OnSpinUpdate;
             if (handlerSpinUpdate != null)
@@ -7726,7 +7808,7 @@ namespace Universe.ClientStack
 
         bool HandleObjectSpinStop(IClientAPI sender, Packet Pack)
         {
-            //MainConsole.Instance.Warn("[Client]: unhandled ObjectSpinStop packet");
+            //MainConsole.Instance.Warn("[CLIENT]: unhandled ObjectSpinStop packet");
             ObjectSpinStopPacket spinStop = (ObjectSpinStopPacket) Pack;
 
             #region Packet Session and User Check
@@ -8127,6 +8209,7 @@ namespace Universe.ClientStack
 
             #endregion
 
+            //handlerTextureRequest = null;
             foreach (RequestImagePacket.RequestImageBlock t in imageRequest.RequestImage)
             {
                 TextureRequestArgs args = new TextureRequestArgs();
@@ -8169,15 +8252,17 @@ namespace Universe.ClientStack
             //MainConsole.Instance.Debug("Transfer Request: " + transfer.ToString());
             // Validate inventory transfers
             // Has to be done here, because AssetCache can't do it
+            //
             UUID taskID = UUID.Zero;
             if (transfer.TransferInfo.SourceType == (int) SourceType.SimInventoryItem)
             {
                 taskID = new UUID(transfer.TransferInfo.Params, 48);
                 UUID itemID = new UUID(transfer.TransferInfo.Params, 64);
                 UUID requestID = new UUID(transfer.TransferInfo.Params, 80);
-                
-                //MainConsole.Instance.DebugFormat(
-                //    "[Client]: Got request for asset {0} from item {1} in prim {2} by {3}", requestID, itemID, taskID, Name);
+
+//                MainConsole.Instance.DebugFormat(
+//                    "[CLIENT]: Got request for asset {0} from item {1} in prim {2} by {3}",
+//                    requestID, itemID, taskID, Name);
 
                 if (!m_scene.Permissions.BypassPermissions())
                 {
@@ -8188,7 +8273,7 @@ namespace Universe.ClientStack
                         if (part == null)
                         {
                             MainConsole.Instance.WarnFormat(
-                                "[Client]: {0} requested asset {1} from item {2} in prim {3} but prim does not exist",
+                                "[CLIENT]: {0} requested asset {1} from item {2} in prim {3} but prim does not exist",
                                 Name, requestID, itemID, taskID);
                             return true;
                         }
@@ -8197,7 +8282,7 @@ namespace Universe.ClientStack
                         if (tii == null)
                         {
                             MainConsole.Instance.WarnFormat(
-                                "[Client]: {0} requested asset {1} from item {2} in prim {3} but item does not exist",
+                                "[CLIENT]: {0} requested asset {1} from item {2} in prim {3} but item does not exist",
                                 Name, requestID, itemID, taskID);
                             return true;
                         }
@@ -8222,7 +8307,7 @@ namespace Universe.ClientStack
                                 if (part.OwnerID != AgentId)
                                 {
                                     MainConsole.Instance.WarnFormat(
-                                        "[Client]: {0} requested asset {1} from item {2} in prim {3} but the prim is owned by {4}",
+                                        "[CLIENT]: {0} requested asset {1} from item {2} in prim {3} but the prim is owned by {4}",
                                         Name, requestID, itemID, taskID, part.OwnerID);
                                     return true;
                                 }
@@ -8230,7 +8315,7 @@ namespace Universe.ClientStack
                                 if ((part.OwnerMask & (uint) PermissionMask.Modify) == 0)
                                 {
                                     MainConsole.Instance.WarnFormat(
-                                        "[Client]: {0} requested asset {1} from item {2} in prim {3} but modify permissions are not set",
+                                        "[CLIENT]: {0} requested asset {1} from item {2} in prim {3} but modify permissions are not set",
                                         Name, requestID, itemID, taskID);
                                     return true;
                                 }
@@ -8238,7 +8323,7 @@ namespace Universe.ClientStack
                                 if (tii.OwnerID != AgentId)
                                 {
                                     MainConsole.Instance.WarnFormat(
-                                        "[Client]: {0} requested asset {1} from item {2} in prim {3} but the item is owned by {4}",
+                                        "[CLIENT]: {0} requested asset {1} from item {2} in prim {3} but the item is owned by {4}",
                                         Name, requestID, itemID, taskID, tii.OwnerID);
                                     return true;
                                 }
@@ -8252,7 +8337,7 @@ namespace Universe.ClientStack
                                      (uint) PermissionMask.Transfer))
                                 {
                                     MainConsole.Instance.WarnFormat(
-                                        "[Client]: {0} requested asset {1} from item {2} in prim {3} but item permissions are not modify/copy/transfer",
+                                        "[CLIENT]: {0} requested asset {1} from item {2} in prim {3} but item permissions are not modify/copy/transfer",
                                         Name, requestID, itemID, taskID);
                                     return true;
                                 }
@@ -8260,7 +8345,7 @@ namespace Universe.ClientStack
                                 if (tii.AssetID != requestID)
                                 {
                                     MainConsole.Instance.WarnFormat(
-                                        "[Client]: {0} requested asset {1} from item {2} in prim {3} but this does not match item's asset {4}",
+                                        "[CLIENT]: {0} requested asset {1} from item {2} in prim {3} but this does not match item's asset {4}",
                                         Name, requestID, itemID, taskID, tii.AssetID);
                                     return true;
                                 }
@@ -8547,7 +8632,6 @@ namespace Universe.ClientStack
                     }
                 }
             }
-
             return true;
         }
 
@@ -9166,6 +9250,8 @@ namespace Universe.ClientStack
                                                                   else
                                                                   {
                                                                       //no event handler so cancel request
+
+
                                                                       TeleportCancelPacket tpCancel =
                                                                           (TeleportCancelPacket)
                                                                           PacketPool.Instance.GetPacket(
@@ -9751,25 +9837,21 @@ namespace Universe.ClientStack
                                                 convertParamStringToBool(messagePacket.ParamList[8].Parameter));
                     }
                     return true;
-
-                    /*
-                case "texturebase":
-                    if (((Scene)m_scene).Permissions.CanIssueEstateCommand(AgentId, false))
-                    {
-                        foreach (EstateOwnerMessagePacket.ParamListBlock block in messagePacket.ParamList)
-                        {
-                            string s = Utils.BytesToString(block.Parameter);
-                            string[] splitField = s.Split(' ');
-                            if (splitField.Length == 2)
-                            {
-                                UUID tempUUID = new UUID(splitField[1]);
-                                OnSetEstateTerrainBaseTexture(this, Convert.ToInt16(splitField[0]), tempUUID);
-                            }
-                        }
-                    }
-                    break;
-                    */
-
+                    //                            case "texturebase":
+                    //                                if (((Scene)m_scene).Permissions.CanIssueEstateCommand(AgentId, false))
+                    //                                {
+                    //                                    foreach (EstateOwnerMessagePacket.ParamListBlock block in messagePacket.ParamList)
+                    //                                    {
+                    //                                        string s = Utils.BytesToString(block.Parameter);
+                    //                                        string[] splitField = s.Split(' ');
+                    //                                        if (splitField.Length == 2)
+                    //                                        {
+                    //                                            UUID tempUUID = new UUID(splitField[1]);
+                    //                                            OnSetEstateTerrainBaseTexture(this, Convert.ToInt16(splitField[0]), tempUUID);
+                    //                                        }
+                    //                                    }
+                    //                                }
+                    //                                break;
                 case "texturedetail":
                     if (m_scene.Permissions.CanIssueEstateCommand(AgentId, false))
                     {
@@ -10093,14 +10175,14 @@ namespace Universe.ClientStack
                     return true;
                 default:
                     MainConsole.Instance.WarnFormat(
-                        "[LLClient View]: EstateOwnerMessage: Unknown method {0} requested for {1}",
+                        "[LLCLIENTVIEW]: EstateOwnerMessage: Unknown method {0} requested for {1}",
                         method, Name);
 
                     for (int i = 0; i < messagePacket.ParamList.Length; i++)
                     {
                         EstateOwnerMessagePacket.ParamListBlock block = messagePacket.ParamList[i];
                         string data = (string) Utils.BytesToString(block.Parameter);
-                        MainConsole.Instance.DebugFormat("[LLClient View]: Param {0}={1}", i, data);
+                        MainConsole.Instance.DebugFormat("[LLCLIENTVIEW]: Param {0}={1}", i, data);
                     }
 
                     return true;
@@ -10132,6 +10214,9 @@ namespace Universe.ClientStack
 
         bool HandleEstateCovenantRequest(IClientAPI sender, Packet Pack)
         {
+            //EstateCovenantRequestPacket.AgentDataBlock epack =
+            //     ((EstateCovenantRequestPacket)Pack).AgentData;
+
             EstateCovenantRequest handlerEstateCovenantRequest = OnEstateCovenantRequest;
             if (handlerEstateCovenantRequest != null)
             {
@@ -10603,7 +10688,7 @@ namespace Universe.ClientStack
 
         bool HandleViewerStats(IClientAPI sender, Packet Pack)
         {
-            //MainConsole.Instance.Warn("[Client]: unhandled ViewerStats packet");
+            //MainConsole.Instance.Warn("[CLIENT]: unhandled ViewerStats packet");
             return true;
         }
 
@@ -11243,23 +11328,20 @@ namespace Universe.ClientStack
                             RequestID = groupTitlesRequest.AgentData.RequestID
                         };
 
-
                 List<GroupTitlesData> titles =
                     m_GroupsModule.GroupTitlesRequest(this, groupTitlesRequest.AgentData.GroupID);
+                if (titles != null) {
+                    groupTitlesReply.GroupData =
+                        new GroupTitlesReplyPacket.GroupDataBlock [titles.Count];
 
-                groupTitlesReply.GroupData =
-                    new GroupTitlesReplyPacket.GroupDataBlock[titles.Count];
+                    int i = 0;
+                    foreach (GroupTitlesData d in titles) {
+                        groupTitlesReply.GroupData [i] =
+                            new GroupTitlesReplyPacket.GroupDataBlock { Title = Util.StringToBytes256 (d.Name), RoleID = d.UUID, Selected = d.Selected };
 
-                int i = 0;
-                foreach (GroupTitlesData d in titles)
-                {
-                    groupTitlesReply.GroupData[i] =
-                        new GroupTitlesReplyPacket.GroupDataBlock
-                            {Title = Util.StringToBytes256(d.Name), RoleID = d.UUID, Selected = d.Selected};
-
-                    i++;
+                        i++;
+                    }
                 }
-
                 OutPacket(groupTitlesReply, ThrottleOutPacketType.Asset);
             }
             return true;
@@ -12407,7 +12489,7 @@ namespace Universe.ClientStack
         /// <returns></returns>
         bool Logout(IClientAPI client)
         {
-            //MainConsole.Instance.InfoFormat("[Client]: Got a logout request for {0} in {1}", Name, Scene.RegionInfo.RegionName);
+            //MainConsole.Instance.InfoFormat("[CLIENT]: Got a logout request for {0} in {1}", Name, Scene.RegionInfo.RegionName);
 
             Action<IClientAPI> handlerLogout = OnLogout;
 
@@ -12442,6 +12524,8 @@ namespace Universe.ClientStack
                     }
                     else
                     {
+                        // UUID partId = part.UUID;
+
                         switch (block.Type)
                         {
                             case 1:
@@ -12484,7 +12568,7 @@ namespace Universe.ClientStack
                                 UpdateVector handlerUpdatePrimScale = OnUpdatePrimScale;
                                 if (handlerUpdatePrimScale != null)
                                 {
-                                    //MainConsole.Instance.Debug("new scale is " + scale4.X + " , " + scale4.Y + " , " + scale4.Z);
+                                    //                                     MainConsole.Instance.Debug("new scale is " + scale4.X + " , " + scale4.Y + " , " + scale4.Z);
                                     handlerUpdatePrimScale(localId, scale4, this);
                                 }
                                 break;
@@ -12533,7 +12617,7 @@ namespace Universe.ClientStack
                                 UpdatePrimGroupRotation handlerUpdatePrimGroupRotation = OnUpdatePrimGroupMouseRotation;
                                 if (handlerUpdatePrimGroupRotation != null)
                                 {
-                                    // MainConsole.Instance.Debug("new rotation position is " + pos.X + " , " + pos.Y + " , " + pos.Z);
+                                    //  MainConsole.Instance.Debug("new rotation position is " + pos.X + " , " + pos.Y + " , " + pos.Z);
                                     // MainConsole.Instance.Debug("new group mouse rotation is " + rot4.X + " , " + rot4.Y + " , " + rot4.Z + " , " + rot4.W);
                                     handlerUpdatePrimGroupRotation(localId, pos3, rot4, this);
                                 }
@@ -12545,7 +12629,7 @@ namespace Universe.ClientStack
                                 UpdateVector handlerUpdatePrimGroupScale = OnUpdatePrimGroupScale;
                                 if (handlerUpdatePrimGroupScale != null)
                                 {
-                                    //MainConsole.Instance.Debug("new scale is " + scale7.X + " , " + scale7.Y + " , " + scale7.Z);
+                                    //                                     MainConsole.Instance.Debug("new scale is " + scale7.X + " , " + scale7.Y + " , " + scale7.Z);
                                     handlerUpdatePrimGroupScale(localId, scale7, this);
                                 }
                                 break;
@@ -12603,7 +12687,7 @@ namespace Universe.ClientStack
                                 break;
                             default:
                                 MainConsole.Instance.Debug(
-                                    "[Client] MultipleObjUpdate recieved an unknown packet type: " +
+                                    "[CLIENT] MultipleObjUpdate recieved an unknown packet type: " +
                                     (block.Type));
                                 break;
                         }
@@ -12762,7 +12846,7 @@ namespace Universe.ClientStack
                     }
                     catch (InvalidCastException)
                     {
-                        MainConsole.Instance.Error("[Client]: Invalid autopilot request");
+                        MainConsole.Instance.Error("[CLIENT]: Invalid autopilot request");
                         return;
                     }
 
@@ -12771,18 +12855,20 @@ namespace Universe.ClientStack
                     {
                         handlerAutoPilotGo(0, new Vector3(locx, locy, locz), this);
                     }
-                    MainConsole.Instance.InfoFormat("[Client]: Client Requests autopilot to position <{0},{1},{2}>",
+                    MainConsole.Instance.InfoFormat("[CLIENT]: Client Requests autopilot to position <{0},{1},{2}>",
                                                     locx, locy, locz);
+
 
                     break;
                 default:
-                    MainConsole.Instance.Debug("[Client]: Unknown Generic Message, Method: " + gmMethod + ". Invoice: " +
+                    MainConsole.Instance.Debug("[CLIENT]: Unknown Generic Message, Method: " + gmMethod + ". Invoice: " +
                                                gmInvoice +
                                                ".  Dumping Params:");
                     foreach (GenericMessagePacket.ParamListBlock t in gmParams)
                     {
                         MainConsole.Instance.Debug(t.ToString());
                     }
+                    //gmpack.MethodData.
                     break;
             }
         }
@@ -12815,7 +12901,7 @@ namespace Universe.ClientStack
             }
 
             if (!ProcessPacketMethod(packet))
-                MainConsole.Instance.Warn("[Client]: unhandled packet " + packet.Type);
+                MainConsole.Instance.Warn("[CLIENT]: unhandled packet " + packet.Type);
 
             //Give the packet back to the pool now, we've processed it
             PacketPool.Instance.ReturnPacket(packet);
@@ -12850,6 +12936,7 @@ namespace Universe.ClientStack
 
             Primitive.TextureEntry ntex = new Primitive.TextureEntry(new UUID("89556747-24cb-43ed-920b-47caed15465f"));
             shape.TextureEntry = ntex.GetBytes();
+            //shape.Textures = ntex;
             return shape;
         }
 
@@ -12897,6 +12984,7 @@ namespace Universe.ClientStack
                                                                    MediaLoop = mediaLoop
                                                                }
                                                        };
+
 
             OutPacket(updatePacket, ThrottleOutPacketType.Land);
         }
@@ -13002,7 +13090,7 @@ namespace Universe.ClientStack
                     break;
             }
 
-            //MainConsole.Instance.InfoFormat("[Client]: {0} requesting asset {1}", Name, requestID);
+            //MainConsole.Instance.InfoFormat("[CLIENT]: {0} requesting asset {1}", Name, requestID);
 
             m_assetService.Get(requestID.ToString(), transferRequest, AssetReceived);
         }
@@ -13015,7 +13103,7 @@ namespace Universe.ClientStack
         /// <param name="asset"></param>
         void AssetReceived(string id, Object sender, AssetBase asset)
         {
-            //MainConsole.Instance.InfoFormat("[Client]: {0} found requested asset", Name);
+            //MainConsole.Instance.InfoFormat("[CLIENT]: {0} found requested asset", Name);
 
             TransferRequestPacket transferRequest = (TransferRequestPacket) sender;
 
@@ -13111,6 +13199,7 @@ namespace Universe.ClientStack
                 (RebakeAvatarTexturesPacket) PacketPool.Instance.GetPacket(PacketType.RebakeAvatarTextures);
 
             pack.TextureData = new RebakeAvatarTexturesPacket.TextureDataBlock {TextureID = textureID};
+            //            OutPacket(pack, ThrottleOutPacketType.Texture);
             OutPacket(pack, ThrottleOutPacketType.AvatarInfo);
         }
 
@@ -13252,6 +13341,9 @@ namespace Universe.ClientStack
 
                 OutPacket(packet, ThrottleOutPacketType.Task, true);
             }
+
+            //ControllingClient.SendAvatarTerseUpdate(new SendAvatarTerseData(m_rootRegionHandle, (ushort)(m_scene.TimeDilation * ushort.MaxValue), LocalId,
+            //        AbsolutePosition, Velocity, Vector3.Zero, m_bodyRot, new Vector4(0,0,1,AbsolutePosition.Z - 0.5f), m_uuid, null, GetUpdatePriority(ControllingClient)));
         }
 
         public void ForceSendOnAgentUpdate(IClientAPI client, AgentUpdateArgs args)

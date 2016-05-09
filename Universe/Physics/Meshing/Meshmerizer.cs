@@ -337,7 +337,7 @@ namespace Universe.Physics.Meshing
                 // At the moment we can not log here since ODEPrim, for instance, ends up triggering this
                 // method twice - once before it has loaded sculpt data from the asset service and once afterwards.
                 // The first time will always call with unloaded SculptData if this needs to be uploaded.
-                //MainConsole.Instance.Error("[Mesh]: asset data is zero length");
+                //MainConsole.Instance.Error("[MESH]: asset data is zero length");
                 return null;
             }
 
@@ -350,7 +350,7 @@ namespace Universe.Physics.Meshing
                 }
                 catch (Exception e)
                 {
-                    MainConsole.Instance.Error("[Mesh]: Exception deserializing mesh asset header:" + e);
+                    MainConsole.Instance.Error("[MESH]: Exception deserializing mesh asset header:" + e);
                     return null;
                 }
                 start = data.Position;
@@ -363,22 +363,22 @@ namespace Universe.Physics.Meshing
                 if (map.ContainsKey("physics_shape"))
                 {
                     physicsParms = (OSDMap)map["physics_shape"]; // old asset format
-                    if (debugDetail) MainConsole.Instance.DebugFormat("[Mesh]: prim='{0}': using 'physics_shape' mesh data", primName);
+                    if (debugDetail) MainConsole.Instance.DebugFormat("[MESH]: prim='{0}': using 'physics_shape' mesh data", primName);
                 }
                 else if (map.ContainsKey("physics_mesh"))
                 {
                     physicsParms = (OSDMap)map["physics_mesh"]; // new asset format
-                    if (debugDetail) MainConsole.Instance.DebugFormat("[Mesh]: prim='{0}':using 'physics_mesh' mesh data", primName);
+                    if (debugDetail) MainConsole.Instance.DebugFormat("[MESH]: prim='{0}':using 'physics_mesh' mesh data", primName);
                 }
                 else if (map.ContainsKey("medium_lod"))
                 {
                     physicsParms = (OSDMap)map["medium_lod"]; // if no physics mesh, try to fall back to medium LOD display mesh
-                    if (debugDetail) MainConsole.Instance.DebugFormat("[Mesh]: prim='{0}':using 'medium_lod' mesh data", primName);
+                    if (debugDetail) MainConsole.Instance.DebugFormat("[MESH]: prim='{0}':using 'medium_lod' mesh data", primName);
                 }
                 else if (map.ContainsKey("high_lod"))
                 {
                     physicsParms = (OSDMap)map["high_lod"]; // if all else fails, use highest LOD display mesh and hope it works :)
-                    if (debugDetail) MainConsole.Instance.DebugFormat("[Mesh]: prim='{0}':using 'high_lod' mesh data", primName);
+                    if (debugDetail) MainConsole.Instance.DebugFormat("[MESH]: prim='{0}':using 'high_lod' mesh data", primName);
                 }
 
                 if (map.ContainsKey ("physics_convex"))
@@ -401,7 +401,7 @@ namespace Universe.Physics.Meshing
                                 convexBlockOsd = DecompressOsd (convexBytes);
                             } catch (Exception e)
                             {
-                                MainConsole.Instance.ErrorFormat ("[Mesh]: prim '{0}': exception decoding convex block: {1}", primName, e);
+                                MainConsole.Instance.ErrorFormat ("[MESH]: prim '{0}': exception decoding convex block: {1}", primName, e);
                                 //return false;
                             }
                         }
@@ -450,7 +450,7 @@ namespace Universe.Physics.Meshing
                                 }
 
                                 mBoundingHull = boundingHull;
-                                if (debugDetail) MainConsole.Instance.DebugFormat ("[Mesh]: prim '{0}': parsed bounding hull. nVerts={1}", primName, mBoundingHull.Count);
+                                if (debugDetail) MainConsole.Instance.DebugFormat ("[MESH]: prim '{0}': parsed bounding hull. nVerts={1}", primName, mBoundingHull.Count);
                             }
 
                             if (convexBlock.ContainsKey ("HullList"))
@@ -488,21 +488,21 @@ namespace Universe.Physics.Meshing
                                 }
 
                                 mConvexHulls = hulls;
-                                if (debugDetail) MainConsole.Instance.DebugFormat ("[Mesh]: prim '{0}': parsed hulls. nHulls '{1}'", primName, mConvexHulls.Count);
+                                if (debugDetail) MainConsole.Instance.DebugFormat ("[MESH]: prim '{0}': parsed hulls. nHulls '{1}'", primName, mConvexHulls.Count);
                             } else
                             {
-                                if (debugDetail) MainConsole.Instance.DebugFormat ("[Mesh]: prim '{0}' has physics_convex but no HullList", primName);
+                                if (debugDetail) MainConsole.Instance.DebugFormat ("[MESH]: prim '{0}' has physics_convex but no HullList", primName);
                             }
                         }
                     } catch (Exception e)
                     {
-                        MainConsole.Instance.WarnFormat ("[Mesh]: Exception decoding convex block: {0}", e);
+                        MainConsole.Instance.WarnFormat ("[MESH]: Exception decoding convex block: {0}", e);
                     }
                 }
 
                 if (physicsParms == null)
                 {
-                    MainConsole.Instance.WarnFormat ("[Mesh]: No recognised physics mesh found in mesh asset for {0}", primName);
+                    MainConsole.Instance.WarnFormat ("[MESH]: No recognised physics mesh found in mesh asset for {0}", primName);
                     return  null;
                 }
 
@@ -521,7 +521,7 @@ namespace Universe.Physics.Meshing
                     decodedMeshOsd = DecompressOsd (meshBytes);
                 } catch (Exception e)
                 {
-                    MainConsole.Instance.ErrorFormat ("[Mesh]: prim: '{0}', exception decoding physical mesh: {1}", primName, e);
+                    MainConsole.Instance.ErrorFormat ("[MESH]: prim: '{0}', exception decoding physical mesh: {1}", primName, e);
                     return null;
                 }
 
@@ -537,7 +537,7 @@ namespace Universe.Physics.Meshing
                             AddSubMesh (subMeshOsd as OSDMap, size, coords, faces);
                     }
 										if (debugDetail) 
-                        MainConsole.Instance.DebugFormat ("[Mesh]: {0}: mesh decoded. offset={1}, size={2}, nCoords={3}, nFaces={4}",
+                        MainConsole.Instance.DebugFormat ("[MESH]: {0}: mesh decoded. offset={1}, size={2}, nCoords={3}, nFaces={4}",
                             primName, physOffset, physSize, coords.Count, faces.Count);
                 }
             }
@@ -900,7 +900,7 @@ namespace Universe.Physics.Meshing
         public IMesh CreateMesh(String primName, PrimitiveBaseShape primShape, Vector3 size, float lod, bool isPhysical, bool shouldCache)
         {
 #if SPAM
-            MainConsole.Instance.DebugFormat("[Mesh]: Creating mesh for {0}", primName);
+            MainConsole.Instance.DebugFormat("[MESH]: Creating mesh for {0}", primName);
 #endif
             Mesh mesh;
             ulong key = primShape.GetMeshKey(size, lod);

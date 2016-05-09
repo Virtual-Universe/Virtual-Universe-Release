@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Universe.GenericServices")]
-[assembly: AssemblyCopyright("Copyright © 2016-2026")]
+[assembly: AssemblyCopyright("Copyright © 2014-2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -62,4 +62,4 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 
-[assembly: AssemblyVersion("0.9.4.*")]
+[assembly: AssemblyVersion("1.0.2.*")]

@@ -33,22 +33,22 @@ namespace Universe.Framework.Modules
     public interface ISharedRegionStartupModule
     {
         /// <summary>
-        ///     Initialize and load the configuration of the module
+        ///     Initialise and load the configuration of the module
         ///     This is used by IServices, DO NOT USE ANYTHING THAT REQUIRES IService here!
         /// </summary>
         /// <param name="scene"></param>
         /// <param name="source"></param>
         /// <param name="simBase"></param>
-        void Initialize(IScene scene, IConfigSource source, ISimulationBase simBase);
+        void Initialise(IScene scene, IConfigSource source, ISimulationBase simBase);
 
         /// <summary>
-        ///     PostInitialize the module
+        ///     PostInitialise the module
         ///     This is used by IServices, DO NOT USE ANYTHING THAT REQUIRES IService here!
         /// </summary>
         /// <param name="scene"></param>
         /// <param name="source"></param>
         /// <param name="simBase"></param>
-        void PostInitialize(IScene scene, IConfigSource source, ISimulationBase simBase);
+        void PostInitialise(IScene scene, IConfigSource source, ISimulationBase simBase);
 
         /// <summary>
         ///     Do the functions of the module and set up any necessary functions

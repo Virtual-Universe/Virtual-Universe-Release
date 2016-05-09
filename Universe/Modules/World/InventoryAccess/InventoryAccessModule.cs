@@ -63,7 +63,7 @@ namespace Universe.Modules.InventoryAccess
             get { return "BasicInventoryAccessModule"; }
         }
 
-        public virtual void Initialize(IConfigSource source)
+        public virtual void Initialise(IConfigSource source)
         {
             IConfig moduleConfig = source.Configs["Modules"];
             if (moduleConfig != null)
@@ -77,7 +77,7 @@ namespace Universe.Modules.InventoryAccess
             }
         }
 
-        public virtual void PostInitialize()
+        public virtual void PostInitialise()
         {
         }
 
@@ -1188,7 +1188,7 @@ namespace Universe.Modules.InventoryAccess
             if (assetRequestItem.AssetID != requestID)
             {
                 MainConsole.Instance.WarnFormat(
-                    "[Client]: {0} requested asset {1} from item {2} but this does not match item's asset {3}",
+                    "[CLIENT]: {0} requested asset {1} from item {2} but this does not match item's asset {3}",
                     Name, requestID, itemID, assetRequestItem.AssetID);
                 return false;
             }

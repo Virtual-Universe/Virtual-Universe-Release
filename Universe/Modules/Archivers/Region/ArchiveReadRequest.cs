@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -200,7 +200,7 @@ namespace Universe.Modules.Archivers
             if (backup != null)
                 backup.LoadingPrims = true;
 
-            IRegionSerializerModule serialiser = m_scene.RequestModuleInterface<IRegionSerializerModule>();
+            IRegionSerialiserModule serialiser = m_scene.RequestModuleInterface<IRegionSerialiserModule>();
             int sceneObjectsLoadedCount = 0;
 
             //We save the groups so that we can back them up later

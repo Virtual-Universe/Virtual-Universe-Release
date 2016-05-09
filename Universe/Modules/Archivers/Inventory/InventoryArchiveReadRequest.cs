@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -594,7 +594,7 @@ namespace Universe.Modules.Archivers
         /// <returns>true if asset was successfully loaded, false otherwise</returns>
         bool LoadAsset(string assetPath, byte[] data)
         {
-            //IRegionSerializer serialiser = scene.RequestModuleInterface<IRegionSerializer>();
+            //IRegionSerialiser serialiser = scene.RequestModuleInterface<IRegionSerialiser>();
             // Right now we're nastily obtaining the UUID from the filename
             string filename = assetPath.Remove(0, ArchiveConstants.ASSETS_PATH.Length);
 

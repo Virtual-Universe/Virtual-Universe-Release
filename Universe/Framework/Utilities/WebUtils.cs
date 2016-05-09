@@ -141,7 +141,7 @@ namespace Universe.Framework.Utilities
                 {
                     if (errorMessage == "")//No error
                     {
-                        // This just dumps a warning for any operation that takes more than 10000 ms
+                        // This just dumps a warning for any operation that takes more than 5000 ms
                         if (MainConsole.Instance.IsDebugEnabled)
                         {
                             System.Diagnostics.StackTrace stackTrace = new System.Diagnostics.StackTrace();
@@ -151,7 +151,7 @@ namespace Universe.Framework.Utilities
                                 url, method, tickelapsed,
                                 stackTrace.GetFrame(3).GetMethod().Name));
                         }
-                        if (tickelapsed > 10000)
+                        if (tickelapsed > 5000)
                         {
                             MainConsole.Instance.Info(
                                 string.Format("[WebUtils]: Slow request - (URI:{0}, METHOD:{1}) took {2}ms",

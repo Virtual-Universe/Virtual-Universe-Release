@@ -25,7 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +35,7 @@ using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 
-namespace Universe.Modules.Sun
+namespace Universe.Modules.GlobalEnvironment
 {
     public class SunModule : ISunModule
     {
@@ -157,7 +156,7 @@ namespace Universe.Modules.Sun
 
         #region IRegion Methods
 
-        public void Initialize (IConfigSource config)
+        public void Initialise (IConfigSource config)
         {
             m_frame = 0;
             m_config = config;
@@ -183,7 +182,7 @@ namespace Universe.Modules.Sun
 
             TimeZone local = TimeZone.CurrentTimeZone;
             TicksUTCOffset = local.GetUtcOffset (local.ToLocalTime (DateTime.Now)).Ticks;
-            //MainConsole.Instance.Debug("[Global Environment Sun]: localtime offset is " + TicksUTCOffset);
+            //MainConsole.Instance.Debug("[SUN]: localtime offset is " + TicksUTCOffset);
 
             // Align ticks with Second Life
 
@@ -221,7 +220,7 @@ namespace Universe.Modules.Sun
                 }
             } catch (Exception e)
             {
-                MainConsole.Instance.Debug ("[Global Environment Sun]: Configuration access failed, using defaults. Reason: " + e.Message);
+                MainConsole.Instance.Debug ("[SUN]: Configuration access failed, using defaults. Reason: " + e.Message);
                 m_RegionMode = d_mode;
                 m_YearLengthDays = d_year_length;
                 m_DayLengthHours = d_day_length;
@@ -377,7 +376,7 @@ namespace Universe.Modules.Sun
                 SunUpdateToAllClients ();
 
 
-                //MainConsole.Instance.DebugFormat("[Global Environment Sun]: PosTime : {0}", PosTime.ToString());
+                //MainConsole.Instance.DebugFormat("[SUN]: PosTime : {0}", PosTime.ToString());
             }
         }
 
@@ -448,8 +447,8 @@ namespace Universe.Modules.Sun
             Tilt.W = (float)(m_AverageTilt + (m_SeasonalTilt * Math.Sin (SeasonalOffset)));
             // Calculate seasonal orbital N/S tilt
 
-            // MainConsole.Instance.Debug("[Global Environment Sun] Total distance travelled = "+TotalDistanceTravelled+", present position = "+OrbitalPosition+".");
-            // MainConsole.Instance.Debug("[Global Environment Sun] Total seasonal progress = "+SeasonalOffset+", present tilt = "+Tilt.W+".");
+            // MainConsole.Instance.Debug("[SUN] Total distance travelled = "+TotalDistanceTravelled+", present position = "+OrbitalPosition+".");
+            // MainConsole.Instance.Debug("[SUN] Total seasonal progress = "+SeasonalOffset+", present tilt = "+Tilt.W+".");
 
             // The sun rotates about the Z axis
 
@@ -470,7 +469,7 @@ namespace Universe.Modules.Sun
             Position.Z = Position.Z + (float)HorizonShift;
             Position = Vector3.Normalize (Position);
 
-            // MainConsole.Instance.Debug("[Global Environment Sun] Position("+Position.X+","+Position.Y+","+Position.Z+")");
+            // MainConsole.Instance.Debug("[SUN] Position("+Position.X+","+Position.Y+","+Position.Z+")");
 
             Velocity.X = 0;
             Velocity.Y = 0;
@@ -504,11 +503,11 @@ namespace Universe.Modules.Sun
 
         public void HandleSunConsoleCommand (IScene scene, string[] cmdparams)
         {
-            MainConsole.Instance.InfoFormat ("[Global Environment Sun]: Processing command.");
+            MainConsole.Instance.InfoFormat ("[Sun]: Processing command.");
 
             foreach (string output in ParseCmdParams(cmdparams))
             {
-                MainConsole.Instance.Info ("[Global Environment Sun] " + output);
+                MainConsole.Instance.Info ("[SUN] " + output);
             }
         }
 

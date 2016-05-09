@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/,  http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,68 +30,84 @@ using Universe.Framework.Servers.HttpServer.Implementation;
 
 namespace Universe.Modules.Web
 {
-	public class GridSettingsManagerPage : IWebInterfacePage
-	{
-		public string[] FilePath {
-			get {
-				return new[] {
-					"html/admin/gridsettings_manager.html"
-				};
-			}
-		}
+    public class GridSettingsManagerPage : IWebInterfacePage
+    {
+        public string[] FilePath
+        {
+            get
+            {
+                return new[]
+                           {
+                               "html/admin/gridsettings_manager.html"
+                           };
+            }
+        }
 
-		public bool RequiresAuthentication {
-			get { return true; }
-		}
+        public bool RequiresAuthentication
+        {
+            get { return true; }
+        }
 
-		public bool RequiresAdminAuthentication {
-			get { return true; }
-		}
+        public bool RequiresAdminAuthentication
+        {
+            get { return true; }
+        }
 
-		public Dictionary<string, object> Fill (WebInterface webInterface, string filename, OSHttpRequest httpRequest,
-		                                             OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
-		                                             ITranslator translator, out string response)
-		{
-			response = null;
-			var vars = new Dictionary<string, object> ();
-			var settings = webInterface.GetGridSettings ();
+        public Dictionary<string, object> Fill(WebInterface webInterface, string filename, OSHttpRequest httpRequest,
+                                               OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
+                                               ITranslator translator, out string response)
+        {
+            response = null;
+            var vars = new Dictionary<string, object>();
+            var settings = webInterface.GetGridSettings();
 
-			if (requestParameters.ContainsKey ("Submit")) {
-				settings.Gridname = requestParameters ["Gridname"].ToString ();
-				settings.Gridnick = requestParameters ["Gridnick"].ToString ();
-				settings.WelcomeMessage = requestParameters ["WelcomeMessage"].ToString ();
-				settings.SystemEstateOwnerName = requestParameters ["SystemEstateOwnerName"].ToString ();
-				settings.SystemEstateName = requestParameters ["SystemEstateName"].ToString ();
+            if (requestParameters.ContainsKey("Submit"))
+            {
+                settings.Gridname = requestParameters["Gridname"].ToString();
+                settings.Gridnick = requestParameters["Gridnick"].ToString();
+                settings.WelcomeMessage = requestParameters["WelcomeMessage"].ToString();
+                settings.SystemEstateOwnerName = requestParameters["SystemEstateOwnerName"].ToString();
+                settings.SystemEstateName = requestParameters["SystemEstateName"].ToString();
 
-				// update main grid setup
-				webInterface.SaveGridSettings (settings);
-				response = "Successfully updated grid settings.";
 
-				return null;
-			}
 
-			vars.Add ("Gridname", settings.Gridname);
-			vars.Add ("Gridnick", settings.Gridnick);
-			vars.Add ("WelcomeMessage", settings.WelcomeMessage);
-			vars.Add ("SystemEstateOwnerName", settings.SystemEstateOwnerName);
-			vars.Add ("SystemEstateName", settings.SystemEstateName);
-			vars.Add ("GridSettingsManager", translator.GetTranslatedString ("GridSettingsManager"));
-			vars.Add ("GridnameText", translator.GetTranslatedString ("GridnameText"));
-			vars.Add ("GridnickText", translator.GetTranslatedString ("GridnickText"));
-			vars.Add ("WelcomeMessageText", translator.GetTranslatedString ("WelcomeMessageText"));
-			vars.Add ("SystemEstateNameText", translator.GetTranslatedString ("SystemEstateNameText"));
-			vars.Add ("SystemEstateOwnerText", translator.GetTranslatedString ("SystemEstateOwnerText"));
-			vars.Add ("Save", translator.GetTranslatedString ("Save"));
-			vars.Add ("No", translator.GetTranslatedString ("No"));
-			vars.Add ("Yes", translator.GetTranslatedString ("Yes"));
 
-			return vars;
-		}
+                // update main grid setup
+                webInterface.SaveGridSettings (settings);
+                response = "Successfully updated grid settings.";
 
-		public bool AttemptFindPage (string filename, ref OSHttpResponse httpResponse, out string text)
-		{
-			text = "";
-			return false;
-		}
-	}
+                return null;
+            }
+
+            vars.Add("Gridname", settings.Gridname);
+            vars.Add("Gridnick", settings.Gridnick);
+            vars.Add("WelcomeMessage", settings.WelcomeMessage);
+            vars.Add("SystemEstateOwnerName", settings.SystemEstateOwnerName);
+            vars.Add("SystemEstateName", settings.SystemEstateName);
+
+
+ 
+
+            vars.Add("GridSettingsManager", translator.GetTranslatedString("GridSettingsManager"));
+            vars.Add("GridnameText", translator.GetTranslatedString("GridnameText"));
+            vars.Add("GridnickText", translator.GetTranslatedString("GridnickText"));
+            vars.Add("WelcomeMessageText", translator.GetTranslatedString("WelcomeMessageText"));
+            vars.Add("SystemEstateNameText", translator.GetTranslatedString("SystemEstateNameText"));
+            vars.Add("SystemEstateOwnerText", translator.GetTranslatedString("SystemEstateOwnerText"));
+
+
+
+            vars.Add("Save", translator.GetTranslatedString("Save"));
+            vars.Add("No", translator.GetTranslatedString("No"));
+            vars.Add("Yes", translator.GetTranslatedString("Yes"));
+
+            return vars;
+        }
+
+        public bool AttemptFindPage(string filename, ref OSHttpResponse httpResponse, out string text)
+        {
+            text = "";
+            return false;
+        }
+    }
 }

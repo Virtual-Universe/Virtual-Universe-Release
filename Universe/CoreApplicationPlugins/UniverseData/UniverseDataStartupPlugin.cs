@@ -43,10 +43,10 @@ namespace Universe.CoreApplicationPlugins.UniverseData
         public void Initialize(ISimulationBase simBase)
         {
             LocalDataService service = new LocalDataService();
-            service.Initialize(simBase.ConfigSource, simBase.ApplicationRegistry);
+            service.Initialise(simBase.ConfigSource, simBase.ApplicationRegistry);
         }
 
-        public void PostInitialize()
+        public void PostInitialise()
         {
         }
 

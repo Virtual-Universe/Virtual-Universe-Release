@@ -40,7 +40,7 @@ namespace Universe.Framework.ClientInterfaces
         readonly List<Animation> m_animations = new List<Animation>();
         Animation m_implicitDefaultAnimation = new Animation();
         Animation m_defaultAnimation = new Animation();
-        readonly Dictionary<string, UUID> m_defaultAnimationOverrides = new Dictionary<string, UUID>();
+        readonly Dictionary<string, UUID> m_defaultAnimationOverrides = new Dictionary<string,UUID>();
         readonly Dictionary<string, string> m_defaultAnimationOverridesName = new Dictionary<string, string>();
 
         public AnimationSet(AvatarAnimations animations)
@@ -72,7 +72,6 @@ namespace Universe.Framework.ClientInterfaces
                     return true;
                 }
             }
-
             return false;
         }
 
@@ -96,16 +95,14 @@ namespace Universe.Framework.ClientInterfaces
                     }
                 }
             }
-
             return false;
         }
 
         public void Clear()
         {
             ResetDefaultAnimation();
-            lock (m_animations)
-            {
-                m_animations.Clear();
+            lock (m_animations) {
+                m_animations.Clear ();
             }
         }
 
@@ -219,18 +216,14 @@ namespace Universe.Framework.ClientInterfaces
 
         public Animation[] ToArray()
         {
-            lock (m_animations)
-            {
-                Animation[] theArray = new Animation[m_animations.Count];
+            lock (m_animations) {
+                Animation [] theArray = new Animation [m_animations.Count];
                 uint i = 0;
-                try
-                {
+                try {
                     foreach (Animation anim in m_animations)
-                        theArray[i++] = anim;
-                }
-                catch
-                {
-                    /* Stuff happens. Ignore. */
+                        theArray [i++] = anim;
+                } catch {
+                    /* S%^t happens. Ignore. */
                 }
 
                 return theArray;
@@ -241,11 +234,10 @@ namespace Universe.Framework.ClientInterfaces
         {
             if (theArray == null)
                 return;
-
-            lock (m_animations)
-            {
+   
+            lock (m_animations) {
                 foreach (Animation anim in theArray)
-                    m_animations.Add(anim);
+                    m_animations.Add (anim);
             }
         }
     }

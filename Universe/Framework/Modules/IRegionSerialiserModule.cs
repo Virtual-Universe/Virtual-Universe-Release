@@ -30,7 +30,7 @@ using Universe.Framework.SceneInfo.Entities;
 
 namespace Universe.Framework.Modules
 {
-    public interface IRegionSerializerModule
+    public interface IRegionSerialiserModule
     {
         /// <summary>
         ///     De-serializes a scene object from its xml2 representation.  This does not load the object into the scene.

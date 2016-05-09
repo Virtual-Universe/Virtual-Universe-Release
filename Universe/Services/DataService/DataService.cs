@@ -42,7 +42,7 @@ namespace Universe.Services.DataService
         string ConnectionString = "";
         string StorageProvider = "";
 
-        public void Initialize(IConfigSource config, IRegistryCore registry)
+        public void Initialise(IConfigSource config, IRegistryCore registry)
         {
             IConfig m_config = config.Configs["UniverseData"];
             if (m_config != null)
@@ -100,7 +100,7 @@ namespace Universe.Services.DataService
             }
         }
 
-        public void Initialize(IConfigSource config, IRegistryCore registry, List<Type> types)
+        public void Initialise(IConfigSource config, IRegistryCore registry, List<Type> types)
         {
             IConfig m_config = config.Configs["UniverseData"];
             if (m_config != null)

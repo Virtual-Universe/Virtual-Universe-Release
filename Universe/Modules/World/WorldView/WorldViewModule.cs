@@ -51,7 +51,7 @@ namespace Universe.Modules.WorldView
         float m_cacheExpires = 24;
         ISimulationBase simulationBase;
 
-        public void Initialize(IConfigSource config)
+        public void Initialise(IConfigSource config)
         {
          
             IConfig moduleConfig = config.Configs ["WorldViewModule"];

@@ -104,7 +104,7 @@ namespace Universe.CoreApplicationPlugins.RegionModulesController
                 //                  scene.RegionInfo.RegionName, module.Name);
 
                 // Initialize the module
-                module.Initialize(m_simBase.ConfigSource);
+                module.Initialise(m_simBase.ConfigSource);
 
                 IRegionModuleBaseModules.Add(module);
                 list.Add(module);
@@ -112,7 +112,7 @@ namespace Universe.CoreApplicationPlugins.RegionModulesController
 
             // Now add the modules that we found to the scene. If a module
             // wishes to override a replaceable interface, it needs to
-            // register it in Initialize, so that the deferred module
+            // register it in Initialise, so that the deferred module
             // won't load.
             foreach (INonSharedRegionModule module in list)
             {
@@ -152,7 +152,7 @@ namespace Universe.CoreApplicationPlugins.RegionModulesController
 
                 try
                 {
-                    module.Initialize(m_simBase.ConfigSource);
+                    module.Initialise(m_simBase.ConfigSource);
                 }
                 catch (Exception ex)
                 {
@@ -259,7 +259,7 @@ namespace Universe.CoreApplicationPlugins.RegionModulesController
             {
                 try
                 {
-                    module.Initialize(config);
+                    module.Initialise(config);
                 }
                 catch (Exception ex)
                 {
@@ -268,7 +268,7 @@ namespace Universe.CoreApplicationPlugins.RegionModulesController
             }
         }
 
-        public void PostInitialize()
+        public void PostInitialise()
         {
         }
 

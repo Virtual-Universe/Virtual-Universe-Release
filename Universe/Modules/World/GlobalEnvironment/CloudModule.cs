@@ -26,12 +26,12 @@
  */
 
 using System;
+using Nini.Config;
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
-using Nini.Config;
 
-namespace Universe.Modules.Cloud
+namespace Universe.Modules.GlobalEnvironment
 {
     public class CloudModule : ICloudModule
     {
@@ -48,7 +48,7 @@ namespace Universe.Modules.Cloud
 
         #region ICloudModule Members
 
-        public void Initialize(IConfigSource config)
+        public void Initialise(IConfigSource config)
         {
             IConfig cloudConfig = config.Configs["Cloud"];
 

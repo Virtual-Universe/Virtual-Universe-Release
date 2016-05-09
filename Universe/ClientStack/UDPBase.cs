@@ -83,7 +83,7 @@ namespace Universe.ClientStack
         /// </summary>
         /// <param name="bindAddress">Local IP address to bind the server to</param>
         /// <param name="port">Port to listening for incoming UDP packets on</param>
-        public virtual void Initialize(IPAddress bindAddress, int port)
+        public virtual void Initialise(IPAddress bindAddress, int port)
         {
             m_localBindAddress = bindAddress;
             m_udpPort = port;
@@ -132,11 +132,11 @@ namespace Universe.ClientStack
                     // so we'll catch the exception and continue
                     if(Util.IsWindows())
                         m_udpSocket.IOControl(SIO_UDP_CONNRESET, new byte[] {0}, null);
-                    //MainConsole.Instance.Debug("[UDP Base]: SIO_UDP_CONNRESET flag set");
+                    //MainConsole.Instance.Debug("[UDPBASE]: SIO_UDP_CONNRESET flag set");
                 }
                 catch (SocketException)
                 {
-                    //MainConsole.Instance.Debug("[UDP Base]: SIO_UDP_CONNRESET flag not supported on this platform, ignoring");
+                    //MainConsole.Instance.Debug("[UDPBASE]: SIO_UDP_CONNRESET flag not supported on this platform, ignoring");
                 }
 
                 if (recvBufferSize != 0)
@@ -173,6 +173,7 @@ namespace Universe.ClientStack
         void AsyncBeginReceive()
         {
             // allocate a packet buffer
+            //WrappedObject<UDPPacketBuffer> wrappedBuffer = Pool.CheckOut();
             UDPPacketBuffer buf = new UDPPacketBuffer();
 
             if (!m_shutdownFlag)
@@ -181,12 +182,14 @@ namespace Universe.ClientStack
                 {
                     // kick off an async read
                     m_udpSocket.BeginReceiveFrom(
+                        //wrappedBuffer.Instance.Data,
                         buf.Data,
                         0,
                         UDPPacketBuffer.BUFFER_SIZE,
                         SocketFlags.None,
                         ref buf.RemoteEndPoint,
                         AsyncEndReceive,
+                        //wrappedBuffer);
                         buf);
                 }
                 catch (SocketException e)
@@ -194,7 +197,7 @@ namespace Universe.ClientStack
                     if (e.SocketErrorCode == SocketError.ConnectionReset)
                     {
                         MainConsole.Instance.Warn(
-                            "[UDP Base]: SIO_UDP_CONNRESET was ignored, attempting to salvage the UDP listener on port " +
+                            "[UDPBASE]: SIO_UDP_CONNRESET was ignored, attempting to salvage the UDP listener on port " +
                             m_udpPort);
                         bool salvaged = false;
                         while (!salvaged)
@@ -202,12 +205,14 @@ namespace Universe.ClientStack
                             try
                             {
                                 m_udpSocket.BeginReceiveFrom(
+                                    //wrappedBuffer.Instance.Data,
                                     buf.Data,
                                     0,
                                     UDPPacketBuffer.BUFFER_SIZE,
                                     SocketFlags.None,
                                     ref buf.RemoteEndPoint,
                                     AsyncEndReceive,
+                                    //wrappedBuffer);
                                     buf);
                                 salvaged = true;
                             }
@@ -220,7 +225,7 @@ namespace Universe.ClientStack
                             }
                         }
 
-                        MainConsole.Instance.Warn("[UDP Base]: Salvaged the UDP listener on port " + m_udpPort);
+                        MainConsole.Instance.Warn("[UDPBASE]: Salvaged the UDP listener on port " + m_udpPort);
                     }
                 }
                 catch (ObjectDisposedException)
@@ -236,12 +241,14 @@ namespace Universe.ClientStack
             if (!m_shutdownFlag)
             {
                 // Asynchronous mode will start another receive before the
-                // callback for this packet is even fired. Very parallel
+                // callback for this packet is even fired. Very parallel :-)
                 if (m_asyncPacketHandling)
                     AsyncBeginReceive();
 
                 // get the buffer that was created in AsyncBeginReceive
                 // this is the received data
+                //WrappedObject<UDPPacketBuffer> wrappedBuffer = (WrappedObject<UDPPacketBuffer>)iar.AsyncState;
+                //UDPPacketBuffer buffer = wrappedBuffer.Instance;
                 UDPPacketBuffer buffer = (UDPPacketBuffer) iar.AsyncState;
 
                 try
@@ -262,10 +269,12 @@ namespace Universe.ClientStack
                 }
                 catch (Exception ex)
                 {
-                    MainConsole.Instance.Error("[UDP Base]: Hit error: " + ex);
+                    MainConsole.Instance.Error("[UDPBase]: Hit error: " + ex);
                 }
                 finally
                 {
+                    //wrappedBuffer.Dispose();
+
                     // Synchronous mode waits until the packet callback completes
                     // before starting the receive to fetch another packet
                     if (!m_asyncPacketHandling)

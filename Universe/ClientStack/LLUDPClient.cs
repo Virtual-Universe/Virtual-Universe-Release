@@ -27,6 +27,7 @@
 
 //#define Debug
 
+
 using System;
 using System.Collections.Concurrent;
 using System.Net;
@@ -184,6 +185,7 @@ namespace Universe.ClientStack
         /// <summary>
         ///     Outgoing queues for throttled packets
         /// </summary>
+//        readonly Universe.Framework.LocklessQueue<OutgoingPacket>[] m_packetOutboxes = new Universe.Framework.LocklessQueue<OutgoingPacket>[(int)ThrottleOutPacketType.Count];
         readonly int[] PacketsCounts = new int[(int) ThrottleOutPacketType.Count];
 
         /// <summary>
@@ -295,6 +297,7 @@ namespace Universe.ClientStack
         ///     Holds the Environment.TickCount value of when the next OnQueueEmpty can be fired
         /// </summary>
         int m_nextOnQueueEmpty = 1;
+
 
         OutgoingPacket m_nextOutPacket;
 
@@ -469,8 +472,12 @@ namespace Universe.ClientStack
             int avatarinfo = (int) (state*AVATAR_INFO_STATE_PERCENTAGE);
             state -= avatarinfo;
 
+//            int total = resend + land + wind + cloud + task + texture + asset + state + avatarinfo;
+
             // Make sure none of the throttles are set below our packet MTU,
             // otherwise a throttle could become permanently clogged
+
+
             Rates[(int) ThrottleOutPacketType.Resend] = resend;
             Rates[(int) ThrottleOutPacketType.Land] = land;
             Rates[(int) ThrottleOutPacketType.Wind] = wind;
@@ -485,6 +492,7 @@ namespace Universe.ClientStack
             if (TotalRateMin < MINPERCLIENTRATE)
                 TotalRateMin = MINPERCLIENTRATE;
             total = TotalRateMin; // let it grow slowly
+
 
             //MainConsole.Instance.WarnFormat("[LLUDPCLIENT]: {0} is setting throttles. Resend={1}, Land={2}, Wind={3}, Cloud={4}, Task={5}, Texture={6}, Asset={7}, State={8}, AvatarInfo={9}, Transfer={10}, TaskFull={11}, Total={12}",
             //    AgentID, resend, land, wind, cloud, task, texture, asset, state, avatarinfo, transfer, task + state + avatarinfo, total);
@@ -612,6 +620,7 @@ namespace Universe.ClientStack
                 }
             }
 
+
             if (m_nextOnQueueEmpty != 0 && Util.EnvironmentTickCountSubtract(m_nextOnQueueEmpty) >= 0)
             {
                 // Use a value of 0 to signal that FireQueueEmpty is running
@@ -722,6 +731,8 @@ namespace Universe.ClientStack
             }
 
             m_nextOnQueueEmpty = start + MIN_CALLBACK_MS;
+//            if (m_nextOnQueueEmpty == 0)
+//                m_nextOnQueueEmpty = 1;
         }
     }
 }

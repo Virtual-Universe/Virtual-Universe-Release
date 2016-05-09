@@ -129,7 +129,7 @@ namespace Universe.Modules.AbuseReports
 
         #region INonSharedRegionModule Members
 
-        public void Initialize(IConfigSource source)
+        public void Initialise(IConfigSource source)
         {
             IConfig cnf = source.Configs["AbuseReports"];
             if (cnf != null)

@@ -63,13 +63,10 @@ namespace Universe.Framework.ClientInterfaces
                 rawSetting = UserSet.Administrators.ToString();
 
             // Doing it this way so that we can do a case insensitive conversion
-            try
-            {
-                userSet = (UserSet)Enum.Parse(typeof(UserSet), rawSetting, true);
-            }
-            catch
-            {
-                MainConsole.Instance.DebugFormat("[Permissions]: {0} {1}", settingName, userSet);
+            try {
+                userSet = (UserSet)Enum.Parse (typeof (UserSet), rawSetting, true);
+            } catch {
+                MainConsole.Instance.DebugFormat ("[Permissions]: {0} {1}", settingName, userSet);
             }
 
             return userSet;

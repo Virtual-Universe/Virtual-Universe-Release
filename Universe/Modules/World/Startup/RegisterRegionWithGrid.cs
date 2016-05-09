@@ -102,7 +102,7 @@ namespace Universe.Modules.Startup
             if (returnResponseFirstTime && !continueTrying)
             {
                 MainConsole.Instance.Error (
-                    "[Register Region With Grid]: Registration of region with grid failed again - " + error.Error);
+                    "[RegisterRegionWithGrid]: Registration of region with grid failed again - " + error.Error);
                 return false;
             }
 
@@ -110,7 +110,7 @@ namespace Universe.Modules.Startup
             if (error.Error == "Region location is reserved")
             {
                 MainConsole.Instance.Error (
-                    "[Register Region With Grid]: Registration of region with grid failed - The region location you specified is reserved. You must move your region.");
+                    "[RegisterRegionWithGrid]: Registration of region with grid failed - The region location you specified is reserved. You must move your region.");
                 int X;
                 int Y;
                 int.TryParse (MainConsole.Instance.Prompt ("New Region Location X", "1000"), out X);
@@ -121,7 +121,7 @@ namespace Universe.Modules.Startup
 
             } else if (error.Error == "Region overlaps another region")
             {
-                MainConsole.Instance.Error ("[Register Region With Grid]: Registration of region " +
+                MainConsole.Instance.Error ("[RegisterRegionWithGrid]: Registration of region " +
                     scene.RegionInfo.RegionName +
                     " with the grid failed - The region location you specified is already in use. You must move your region.");
                 int X;
@@ -138,7 +138,7 @@ namespace Universe.Modules.Startup
 
             } else if (error.Error.Contains ("Can't move this region"))
             {
-                MainConsole.Instance.Error ("[Register Region With Grid]: Registration of region " +
+                MainConsole.Instance.Error ("[RegisterRegionWithGrid]: Registration of region " +
                     scene.RegionInfo.RegionName +
                     " with the grid failed - You can not move this region. Moving it back to its original position.");
                 //Opensim Grid Servers don't have this functionality.
@@ -156,14 +156,14 @@ namespace Universe.Modules.Startup
 
             } else if (error.Error == "Duplicate region name")
             {
-                MainConsole.Instance.Error ("[Register Region With Grid]: Registration of region " +
+                MainConsole.Instance.Error ("[RegisterRegionWithGrid]: Registration of region " +
                     scene.RegionInfo.RegionName +
                     " with the grid failed - The region name you specified is already in use. Please change the name.");
                 scene.RegionInfo.RegionName = MainConsole.Instance.Prompt ("New Region Name", "");
 
             } else if (error.Error == "Region locked out")
             {
-                MainConsole.Instance.Error ("[Register Region With Grid]: Registration of region " +
+                MainConsole.Instance.Error ("[RegisterRegionWithGrid]: Registration of region " +
                     scene.RegionInfo.RegionName +
                     " with the grid the failed - The region you are attempting to join has been blocked from connecting. Please connect another region.");
                 MainConsole.Instance.Prompt ("Press enter when you are ready to exit");
@@ -171,7 +171,7 @@ namespace Universe.Modules.Startup
 
             } else if (error.Error == "Could not reach grid service")
             {
-                MainConsole.Instance.Error ("[Register Region With Grid]: Registration of region " +
+                MainConsole.Instance.Error ("[RegisterRegionWithGrid]: Registration of region " +
                     scene.RegionInfo.RegionName +
                     " with the grid failed - The grid service can not be found! Please make sure that you can connect to the grid server and that the grid server is on.");
                 MainConsole.Instance.Error (
@@ -186,7 +186,7 @@ namespace Universe.Modules.Startup
 
             } else if (error.Error == "Wrong Session ID")
             {
-                MainConsole.Instance.Error ("[Register Region With Grid]: Registration of region " +
+                MainConsole.Instance.Error ("[RegisterRegionWithGrid]: Registration of region " +
                     scene.RegionInfo.RegionName +
                     " with the grid failed - Wrong Session ID for this region!");
                 MainConsole.Instance.Error (
@@ -204,13 +204,13 @@ namespace Universe.Modules.Startup
                 
             } else if (error.Error == "Grid is not fully ready yet, please try again shortly")
             {
-                MainConsole.Instance.Error ("[Register Region With Grid]: Registration of region " +
+                MainConsole.Instance.Error ("[RegisterRegionWithGrid]: Registration of region " +
                     scene.RegionInfo.RegionName +
                     " with the grid failed - " + error.Error + ", retrying... ");
                 System.Threading.Thread.Sleep (3000);   //Sleep for a bit and try again
             } else
             {
-                MainConsole.Instance.Error ("[Register Region With Grid]: Registration of region " +
+                MainConsole.Instance.Error ("[RegisterRegionWithGrid]: Registration of region " +
                     scene.RegionInfo.RegionName +
                     " with the grid failed - " + error.Error + "!");
                 string input =
@@ -234,7 +234,7 @@ namespace Universe.Modules.Startup
 
         #region ISharedRegionStartupModule Members
 
-        public void Initialize (IScene scene, IConfigSource source, ISimulationBase simBase)
+        public void Initialise (IScene scene, IConfigSource source, ISimulationBase simBase)
         {
             m_scene = scene;
             //Register the interface
@@ -253,7 +253,7 @@ namespace Universe.Modules.Startup
             RegisterRegionWithGrid (scene, false, true, m_RegisterRegionPassword);
         }
 
-        public void PostInitialize (IScene scene, IConfigSource source, ISimulationBase simBase)
+        public void PostInitialise (IScene scene, IConfigSource source, ISimulationBase simBase)
         {
         }
 
@@ -278,7 +278,7 @@ namespace Universe.Modules.Startup
             m_scene = null;
 
             MainConsole.Instance.InfoFormat (
-                "[Register Region With Grid]: Deregistering region {0} at {1}, {2} from the grid...",
+                "[RegisterRegionWithGrid]: Deregistering region {0} at {1}, {2} from the grid...",
                 scene.RegionInfo.RegionName,
                 scene.RegionInfo.RegionLocX / Constants.RegionSize,
                 scene.RegionInfo.RegionLocY / Constants.RegionSize
@@ -292,14 +292,14 @@ namespace Universe.Modules.Startup
                 scene.GridService.DeregisterRegion (r);
             else if ((error = scene.GridService.UpdateMap (r, false)) != "")
                 MainConsole.Instance.WarnFormat (
-                    "[Register Region With Grid]: Deregister from grid failed for region {0}, {1}",
+                    "[RegisterRegionWithGrid]: Deregister from grid failed for region {0}, {1}",
                     scene.RegionInfo.RegionName, error);
         }
 
         public void DeleteRegion (IScene scene)
         {
             if (!scene.GridService.DeregisterRegion (new GridRegion (scene.RegionInfo)))
-                MainConsole.Instance.WarnFormat ("[Register Region With Grid]: Deregister from grid failed for region {0}",
+                MainConsole.Instance.WarnFormat ("[RegisterRegionWithGrid]: Deregister from grid failed for region {0}",
                     scene.RegionInfo.RegionName);
         }
 

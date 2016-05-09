@@ -66,7 +66,7 @@ namespace Universe.Modules.SimProtection
 
         #region INonSharedRegionModule
 
-        public void Initialize(IConfigSource source)
+        public void Initialise(IConfigSource source)
         {
             if (!source.Configs.Contains("Protection"))
                 return;

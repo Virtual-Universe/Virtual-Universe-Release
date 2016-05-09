@@ -544,7 +544,7 @@ namespace Universe.ScriptEngine.VirtualScript
 
             if (InventoryItem == null)
             {
-                MainConsole.Instance.Warn("[Virtual Script Engine]: Could not find inventory item for script " + ItemID + ", part" +
+                MainConsole.Instance.Warn("[Virtual Script]: Could not find inventory item for script " + ItemID + ", part" +
                                           Part.Name + "@" +
                                           Part.AbsolutePosition);
                 return false;

@@ -25,6 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -70,7 +71,7 @@ namespace Universe.Modules.Profiles
 
         #region INonSharedRegionModule Members
 
-        public void Initialize (IConfigSource config)
+        public void Initialise (IConfigSource config)
         {
             IConfig profileConfig = config.Configs ["Profile"];
             if (profileConfig != null)
@@ -78,13 +79,13 @@ namespace Universe.Modules.Profiles
             	if (profileConfig.GetString ("ProfileModule", Name) == Name)
             	{
             		m_ProfileEnabled = true;
-            		MainConsole.Instance.Info ("[Profile]: Profile Services are enabled");
+            		MainConsole.Instance.Info ("[Profile] Profile Services are enabled");
             	}
             }
             else
             {
             	m_ProfileEnabled = false;
-            	MainConsole.Instance.Info ("[Profile]: Not configured, disabling");
+            	MainConsole.Instance.Info ("[Profile] Not configured, disabling");
             }
         }
 
@@ -637,7 +638,7 @@ namespace Universe.Modules.Profiles
             
             if (Utilities.IsSystemUser (Profile.PrincipalID))
             {
-                charterMember = Utils.StringToBytes ("Virtual Universe System User");
+                charterMember = Utils.StringToBytes ("Universe System User");
             }
 
             uint membershipGroupINT = 0;

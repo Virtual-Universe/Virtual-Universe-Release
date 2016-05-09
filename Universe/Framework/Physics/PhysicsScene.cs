@@ -104,8 +104,8 @@ namespace Universe.Framework.Physics
 
         public virtual int StatCollisionAccountingTime { get; protected set; }
 
-        public abstract void Initialize(IMesher meshmerizer, IScene scene);
-        public abstract void PostInitialize(IConfigSource config);
+        public abstract void Initialise(IMesher meshmerizer, IScene scene);
+        public abstract void PostInitialise(IConfigSource config);
 
         /// <summary>
         /// A unique identifying string for this instance of the physics engine.
@@ -231,12 +231,12 @@ namespace Universe.Framework.Physics
             get { return false; }
         }
 
-        public override void Initialize(IMesher meshmerizer, IScene scene)
+        public override void Initialise(IMesher meshmerizer, IScene scene)
         {
             // Does nothing right now
         }
 
-        public override void PostInitialize(IConfigSource config)
+        public override void PostInitialise(IConfigSource config)
         {
         }
 

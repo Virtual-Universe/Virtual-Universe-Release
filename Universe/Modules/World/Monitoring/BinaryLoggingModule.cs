@@ -58,7 +58,7 @@ namespace Universe.Modules.Monitoring
             get { return null; }
         }
 
-        public void Initialize(IConfigSource source)
+        public void Initialise(IConfigSource source)
         {
             try
             {

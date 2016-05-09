@@ -1,12 +1,12 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyrightD
+ *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
  *     * Neither the name of the Virtual Universe Project nor the
@@ -28,11 +28,11 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
+using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Utilities;
-using Universe.Framework.ConsoleFramework;
-using System.Net;
 
 namespace Universe.Framework.Servers.HttpServer
 {
@@ -42,9 +42,9 @@ namespace Universe.Framework.Servers.HttpServer
     {
         public event ReQueuePollServiceItem ReQueue;
 
-        private BlockingQueue<PollServiceHttpRequest> m_request;
-        private bool m_running = true;
-        private int m_timeout = 250;
+        readonly BlockingQueue<PollServiceHttpRequest> m_request;
+        bool m_running = true;
+        int m_timeout = 250;
 
         public PollServiceWorkerThread(int pTimeout)
         {
@@ -73,7 +73,7 @@ namespace Universe.Framework.Servers.HttpServer
                         {
                             str = new StreamReader(req.Context.Request.InputStream);
                         }
-                        catch (System.ArgumentException)
+                        catch (ArgumentException)
                         {
                             // Stream was not readable means a child agent
                             // was closed due to logout, leaving the
@@ -130,7 +130,7 @@ namespace Universe.Framework.Servers.HttpServer
                         {
                             if (!(ex is HttpListenerException) ||
                                 !HttpListenerManager.IGNORE_ERROR_CODES.Contains(((HttpListenerException)ex).ErrorCode))
-                                MainConsole.Instance.WarnFormat("[POLL SERVICE WORKER THREAD]: Failed to write all data to the stream: {0}", ex.ToString());
+                                MainConsole.Instance.WarnFormat("[Poll service worker thread]: Failed to write all data to the stream: {0}", ex.ToString());
                         }
                     }
                 }

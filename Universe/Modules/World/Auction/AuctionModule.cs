@@ -50,7 +50,7 @@ namespace Universe.Modules.Auction
 
         #region INonSharedRegionModule Members
 
-        public void Initialize(IConfigSource pSource)
+        public void Initialise(IConfigSource pSource)
         {
         }
 

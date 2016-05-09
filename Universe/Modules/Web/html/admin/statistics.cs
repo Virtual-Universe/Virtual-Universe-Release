@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/,  http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,105 +32,117 @@ using Universe.Framework.Servers.HttpServer.Implementation;
 
 namespace Universe.Modules.Web
 {
-	public class UserStatisticsPage : IWebInterfacePage
-	{
-		public string[] FilePath {
-			get {
-				return new[] {
-					"html/admin/statistics.html"
-				};
-			}
-		}
+    public class UserStatisticsPage : IWebInterfacePage
+    {
+        public string[] FilePath
+        {
+            get
+            {
+                return new[]
+                           {
+                               "html/admin/statistics.html"
+                           };
+            }
+        }
 
-		public bool RequiresAuthentication {
-			get { return true; }
-		}
+        public bool RequiresAuthentication
+        {
+            get { return true; }
+        }
 
-		public bool RequiresAdminAuthentication {
-			get { return true; }
-		}
+        public bool RequiresAdminAuthentication
+        {
+            get { return true; }
+        }
 
-		public Dictionary<string, object> Fill (WebInterface webInterface, string filename, OSHttpRequest httpRequest,
-		                                             OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
-		                                             ITranslator translator, out string response)
-		{
-			response = null;
-			IUserStatsDataConnector dc = Framework.Utilities.DataManager.RequestPlugin<IUserStatsDataConnector> ();
-			var vars = new Dictionary<string, object> ();
+        public Dictionary<string, object> Fill(WebInterface webInterface, string filename, OSHttpRequest httpRequest,
+                                                OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
+                                                ITranslator translator, out string response)
+        {
+            response = null;
+            IUserStatsDataConnector dc = Framework.Utilities.DataManager.RequestPlugin<IUserStatsDataConnector>();
+            var vars = new Dictionary<string, object>();
 
-			if (dc == null) {
-				response = "Sorry... Statistics information is not available";
-				return null;
-			}
+            if (dc == null)
+            {
+                response = "Sorry... Statistics information is not available";
+                return null;
 
-			// Clear statistics
-			if (requestParameters.ContainsKey ("Submit") &&
-			             requestParameters ["Submit"].ToString () == "SubmitClearStats") {
-				dc.RemoveAllSessions ();
-				response = "Statistics cleared";
-				return null;
-			}
+            }
 
-			// normal stats...
-			var viewerList = new List<Dictionary<string, object>> ();
-			var client_viewers = dc.ViewerUsage ();
-			foreach (var vclient in client_viewers)
-				viewerList.Add (new Dictionary<string, object> {
-					{ "ViewerName", vclient.Key },
-					{ "ViewerCount", vclient.Value }
-				});
+            // Clear statistics
+            if (requestParameters.ContainsKey("Submit") &&
+                requestParameters["Submit"].ToString() == "SubmitClearStats")
+            {
+                dc.RemoveAllSessions();
+                response = "Statistics cleared";
+                return null;
+            }
 
-			var gpuList = new List<Dictionary<string, object>> ();
-			gpuList.Add (new Dictionary<string, object> {
-				{ "GPUType","ATI" },
-				{ "GPUCount", dc.GetCount ("s_gpuvendor", new KeyValuePair<string, object> ("s_gpuvendor", "ATI")) } 
-			});
-			gpuList.Add (new Dictionary<string, object> {
-				{ "GPUType", "NVIDIA" },
-				{ "GPUCount", dc.GetCount ("s_gpuvendor", new KeyValuePair<string, object> ("s_gpuvendor", "NVIDIA")) }
-			});
-			gpuList.Add (new Dictionary<string, object> {
-				{ "GPUType", "Intel" },
-				{ "GPUCount", dc.GetCount ("s_gpuvendor", new KeyValuePair<string, object> ("s_gpuvendor", "Intel")) }
-			});
+            // normal stats...
+            var viewerList = new List<Dictionary<string, object>>();
+            var client_viewers = dc.ViewerUsage ();
+            foreach (var vclient in client_viewers)
+                viewerList.Add( new Dictionary<string, object> {
+                    { "ViewerName", vclient.Key },
+                    { "ViewerCount", vclient.Value }
+                });
 
-			var fps = dc.Get ("fps").ConvertAll<float> ((s) => float.Parse (s));
-			var runtime = dc.Get ("run_time").ConvertAll<float> ((s) => float.Parse (s));
-			var visited = dc.Get ("regions_visited").ConvertAll<int> ((s) => int.Parse (s));
-			var memoryUsage = dc.Get ("mem_use").ConvertAll<int> ((s) => int.Parse (s));
-			var pingTime = dc.Get ("ping").ConvertAll<float> ((s) => float.Parse (s));
-			var agentsInView = dc.Get ("agents_in_view").ConvertAll<int> ((s) => int.Parse (s));
+            var gpuList = new List<Dictionary<string, object>>();
+            gpuList.Add( new Dictionary<string, object> {
+                {"GPUType","ATI"},
+                {"GPUCount", dc.GetCount ("s_gpuvendor", new KeyValuePair<string, object> ("s_gpuvendor", "ATI"))} 
+            });
+            gpuList.Add( new Dictionary<string, object> {
+                {"GPUType", "NVIDIA"},
+                {"GPUCount", dc.GetCount ("s_gpuvendor", new KeyValuePair<string, object> ("s_gpuvendor", "NVIDIA"))}
+            });
+            gpuList.Add( new Dictionary<string, object> {
+                {"GPUType", "Intel"},
+                {"GPUCount", dc.GetCount ("s_gpuvendor", new KeyValuePair<string, object> ("s_gpuvendor", "Intel"))}
+            });
 
-			// data
-			vars.Add ("ViewersList", viewerList);
-			vars.Add ("GPUList", gpuList);
-			vars.Add ("FPS", fps.Average ());
-			vars.Add ("RunTime", runtime.Average ());
-			vars.Add ("RegionsVisited", visited.Average ());
-			vars.Add ("MemoryUseage", memoryUsage.Average () / 1000);
-			vars.Add ("PingTime", pingTime.Average ());
-			vars.Add ("AgentsInView", agentsInView.Average ());
+            var fps = dc.Get ("fps").ConvertAll<float> ((s) => float.Parse (s));
+            var runtime = dc.Get ("run_time").ConvertAll<float> ((s) => float.Parse (s));
+            var visited = dc.Get ("regions_visited").ConvertAll<int> ((s) => int.Parse (s));
+            var memoryUsage = dc.Get ("mem_use").ConvertAll<int> ((s) => int.Parse (s));
+            var pingTime = dc.Get ("ping").ConvertAll<float> ((s) => float.Parse (s));
+            var agentsInView = dc.Get ("agents_in_view").ConvertAll<int> ((s) => int.Parse (s));
 
-			// labels
-			vars.Add ("StatisticsText", translator.GetTranslatedString ("StatisticsText"));
-			vars.Add ("ViewersText", translator.GetTranslatedString ("ViewersText"));
-			vars.Add ("GPUText", translator.GetTranslatedString ("GPUText"));
-			vars.Add ("PerformanceText", translator.GetTranslatedString ("PerformanceText"));
-			vars.Add ("FPSText", translator.GetTranslatedString ("FPSText"));
-			vars.Add ("RunTimeText", translator.GetTranslatedString ("RunTimeText"));
-			vars.Add ("RegionsVisitedText", translator.GetTranslatedString ("RegionsVisitedText"));
-			vars.Add ("MemoryUseageText", translator.GetTranslatedString ("MemoryUseageText"));
-			vars.Add ("PingTimeText", translator.GetTranslatedString ("PingTimeText"));
-			vars.Add ("AgentsInViewText", translator.GetTranslatedString ("AgentsInViewText"));
-			vars.Add ("ClearStatsText", translator.GetTranslatedString ("ClearStatsText"));
+
+
+            // data
+            vars.Add("ViewersList",viewerList);
+            vars.Add("GPUList",gpuList);
+            vars.Add("FPS", fps.Average());
+            vars.Add("RunTime", runtime.Average());
+            vars.Add("RegionsVisited", visited.Average());
+            vars.Add("MemoryUseage", memoryUsage.Average()/1000);
+            vars.Add("PingTime", pingTime.Average());
+            vars.Add("AgentsInView", agentsInView.Average());
+
+            // labels
+            vars.Add("StatisticsText", translator.GetTranslatedString("StatisticsText"));
+            vars.Add("ViewersText", translator.GetTranslatedString("ViewersText"));
+            vars.Add("GPUText", translator.GetTranslatedString("GPUText"));
+            vars.Add("PerformanceText", translator.GetTranslatedString("PerformanceText"));
+            vars.Add("FPSText",translator.GetTranslatedString("FPSText"));
+            vars.Add("RunTimeText", translator.GetTranslatedString("RunTimeText"));
+            vars.Add("RegionsVisitedText", translator.GetTranslatedString("RegionsVisitedText"));
+            vars.Add("MemoryUseageText", translator.GetTranslatedString("MemoryUseageText"));
+            vars.Add("PingTimeText", translator.GetTranslatedString("PingTimeText"));
+            vars.Add("AgentsInViewText", translator.GetTranslatedString("AgentsInViewText"));
+
+            vars.Add("ClearStatsText", translator.GetTranslatedString("ClearStatsText"));
+
                     
-			return vars;
-		}
+            return vars;
+        }
 
-		public bool AttemptFindPage (string filename, ref OSHttpResponse httpResponse, out string text)
-		{
-			text = "";
-			return false;
-		}
-	}
+        public bool AttemptFindPage(string filename, ref OSHttpResponse httpResponse, out string text)
+        {
+            text = "";
+            return false;
+        }
+    }
 }

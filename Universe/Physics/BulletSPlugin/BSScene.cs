@@ -1,4 +1,4 @@
-﻿/*
+﻿    /*
  * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
@@ -203,7 +203,7 @@ namespace Universe.Physics.BulletSPlugin
 
         #region Construction and Initialization
 
-        public override void Initialize(IMesher meshmerizer, IScene scene)
+        public override void Initialise(IMesher meshmerizer, IScene scene)
         {
             Scene = scene;
             mesher = meshmerizer;
@@ -265,7 +265,7 @@ namespace Universe.Physics.BulletSPlugin
             m_initialized = true;
         }
 
-        public override void PostInitialize(IConfigSource config)
+        public override void PostInitialise(IConfigSource config)
         {
         }
 
