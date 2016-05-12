@@ -1,5 +1,0 @@
-C:\Users\universe\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.ClientStack.dll
-C:\Users\universe\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.ClientStack.pdb
-C:\Users\universe\Desktop\Virtual-Dev\Universe\ClientStack\obj\Debug\Universe.ClientStack.csprojResolveAssemblyReference.cache
-C:\Users\universe\Desktop\Virtual-Dev\Universe\ClientStack\obj\Debug\Universe.ClientStack.dll
-C:\Users\universe\Desktop\Virtual-Dev\Universe\ClientStack\obj\Debug\Universe.ClientStack.pdb
