@@ -1,0 +1,4 @@
+C:\Users\virtu\Desktop\Universe-Dev\VirtualUniverse\bin\Universe.Server.GridServer.exe
+C:\Users\virtu\Desktop\Universe-Dev\VirtualUniverse\bin\Universe.Server.GridServer.pdb
+C:\Users\virtu\Desktop\Universe-Dev\Universe\Servers\GridServer\obj\x64\Debug\Universe.Server.GridServer.exe
+C:\Users\virtu\Desktop\Universe-Dev\Universe\Servers\GridServer\obj\x64\Debug\Universe.Server.GridServer.pdb

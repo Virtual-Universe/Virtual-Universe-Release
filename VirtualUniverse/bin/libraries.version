@@ -1,0 +1,57 @@
+## Version details of libraries
+# For: Virtual Universe
+# Last updated:  May 11th 2016
+# Emperor Starfinder
+
+Library                                                         Version                 Last updated            Origin
+===============================================================================================================================
+
+Autofac.dll                                                     2.6.1841                10 Dec 2012
+BulletXNA.dll                                                   1.0.0.0                 24 Jun 2013
+CSJ2K.dll                                                       1.0.5940          		06 Apr 2016             LibOMV/WhiteCore/Virtual Universe
+Community.CsharpSqlite.SQLiteClient.dll                         3.7.7.1                 30 Apr 2014             WhiteCore/ Virtual Universe
+Community.CsharpSqlite.dll                                      1.0.0.0                 30 Apr 2014             WhiteCore/ Virtual Universe
+CookComputing.XmlRpcV2.dll                                      0.0.0.0                 08 Apr 2013
+GlynnTucker.Cache.dll                                           1.0.0.0                 10 Dec 2012
+Google.ProtocolBuffers.dll                                      1.0.0.0                 10 Dec 2012
+MySql.Data.dll                                                  6.9.3.0                 29 Sep 2014
+Nini.dll                                                        1.1.0.0                 10 Dec 2012
+OpenMetaverse.Rendering.Meshmerizer.dll                         0.9.4.4                 06 Apr 2016             LibOMV/WhiteCore/Virtual Universe
+OpenMetaverse.StructuredData.dll                                0.9.4.4                 06 Apr 2016             LibOMV/WhiteCore/Virtual Universe
+OpenMetaverse.dll                                               0.9.4.4                 06 Apr 2016             LibOMV/WhiteCore/Virtual Universe
+OpenMetaverseTypes.dll                                          0.9.4.4                 06 Apr 2016             LibOMV/WhiteCore/Virtual Universe
+PrimMesher.dll                                                  1.0.1.72                01 May 2015             WhiteCore/ Virtual Universe
+ScriptEngineParser.dll                                          1.0.1.23085             21 Apr 2015             WhiteCore/ Virtual Universe
+Sider.dll                                                       0.9.2.0                 08 Apr 2013
+SmartThreadPool.dll                                             2.2.3.0                 08 Apr 2014             OpenSim
+Tools.dll                                                       0.0.0.0                 16 Dec 2013
+Warp3Dw.dll                                                     0.0.0.0                 21 Apr 2015             WhiteCore/ Virtual Universe
+XMLRPC.dll                                                      0.0.0.0                 10 Dec 2102
+libbulletnet.dll                                                ???                     10 Dec 2012
+libbulletnet.so                                                 ???                     10 Dec 2012
+libopenjpeg-dotnet-2-1.5.0-dotnet-1-i686.so                     2.1.5.0                 08 Apr 2013
+libopenjpeg-dotnet-2-1.5.0-dotnet-1-x86_64.so                   2.1.5.0                 08 Apr 2013
+libopenjpeg-dotnet-2-1.5.0-dotnet-1.dylib                       2.1.5.0                 08 Apr 2013
+libopenjpeg-dotnet-2-1.5.0-dotnet-1-x86-64.dylib                2.1.5.0                 19 Apr 2016
+log4net.dll                                                     1.2.10.0                14 Jun 2015             LibOMV
+ode.dll                                                         ???                     12 Dec 2013             Dynamic copy of x86/x64
+odex64.dll                                                      ???                     11 Apr 2013
+odex86.dll                                                      ???                     11 Apr 2013
+openjpeg-dotnet-x86_64.dll                                      1.1.0.0                 08 Apr 2013
+openjpeg-dotnet.dll                                             1.1.0.0                 08 Apr 2013
+protobuf-net.dll                                                2.0.0.622               08 Apr 2013
+ZLibNet.dll                                                     1.0.4.2                 18 Mar 2016             WhiteCore/ Virtual Universe
+
+lib32/BulletSim.dll                                             ???                     24 Jun 2013             OpenSim
+lib32/libBulletSim.dylib                                        ???                     20 Dec 2013             OpenSim
+lib32/libBulletSim.so                                           ???                     20 Dec 2013             OpenSim
+lib64/BulletSim.dll                                             ???                     24 Jun 2013             OpenSim
+lib64/libBulletSim.so                                           ??                      20 Dec 2013             OpenSim
+
+Physics/libode-x86_64.so                                        ???                     10 Dec 2012
+Physics/libode.dylib                                            ???                     10 Dec 2012
+Physics/libode.so                                               ???                     10 Dec 2012
+Physics/ODEPlugins/ode10.dll                                    ???                     10 Dec 2012
+Physics/ODEPlugins/odeNoSSE.dll                                 ???                     10 Dec 2012
+Physics/ODEPlugins/odex64.dll                                   ???                     10 Dec 2012
+Physics/ODEPlugins/odexSSE1.dll                                 ???                     10 Dec 2012

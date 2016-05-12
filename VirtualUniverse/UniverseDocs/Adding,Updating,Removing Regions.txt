@@ -1,0 +1,46 @@
+Adding, Updating, and Removing Regions
+
+Additional regions may be configured on the region server console (Universe.exe)
+using the "create region" command.
+  This command interactively determines the configuration of your new region and
+  will then create and add it to the simulator. The data for this region will be
+  saved along with data from existing regions in the 'Data' folder.
+
+If you wish to keep region resources separate, you can add another simulator
+ 'instance' for your new region.
+
+How to add another region in grid mode:
+
+  Copy the entire 'VirtualUniverse' folder to another location.
+  Ensure a clean start by removing all exiting data files from the following folders
+    'AssetCache'    : All files and folders
+    'Region'        : Any *.sim files
+    'RegionBak'     : All files
+    'ScriptEngines' : Except for 'Default.lsl' and 'Test.lsl', All files and folders
+    'SQLite'        : All files
+
+	Manually edit the new instance configuration as per normal setup.
+  Alternatively, run the simulator server (Universe.exe) manually specifying '-configuration' to reconfigure
+  the simulator to your requirements.
+    Universe.exe -configure
+
+  Note:
+  Ensure that the main (base) port is different than any existing simulator instances
+      This is normally port 9000
+  Edit Config/Sim/Grid/GridInfo.ini and enter the address of your grid server.
+
+How to remove a region in grid mode:
+
+	To remove a region, simply don't start that region's Universe.exe file, and to remove it from the map, switch to
+	Universe.Server.exe and type 'grid clear region <name>'.
+
+How to update a region:
+
+  To update region information such as Name, Position, etc, type 'update region info' on the region console.
+	To update estate information, such as the estate you are in, type 'change estate' on the region console.
+
+Emperor Starfinder
+<emperor@secondgalaxy.com>
+May 11, 2016
+
+This was originally written for WhiteCore-Sim by: Rowan Deppeler <greythane@gmail.com>

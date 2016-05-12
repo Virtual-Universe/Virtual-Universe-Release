@@ -1,0 +1,5 @@
+C:\Users\virtu\Desktop\Universe-Dev\VirtualUniverse\bin\Universe.ScriptEngine.VirtualScript.dll
+C:\Users\virtu\Desktop\Universe-Dev\VirtualUniverse\bin\Universe.ScriptEngine.VirtualScript.pdb
+C:\Users\virtu\Desktop\Universe-Dev\Universe\ScriptEngine\VirtualScript\obj\x64\Debug\Universe.ScriptEngine.VirtualScript.csprojResolveAssemblyReference.cache
+C:\Users\virtu\Desktop\Universe-Dev\Universe\ScriptEngine\VirtualScript\obj\x64\Debug\Universe.ScriptEngine.VirtualScript.dll
+C:\Users\virtu\Desktop\Universe-Dev\Universe\ScriptEngine\VirtualScript\obj\x64\Debug\Universe.ScriptEngine.VirtualScript.pdb

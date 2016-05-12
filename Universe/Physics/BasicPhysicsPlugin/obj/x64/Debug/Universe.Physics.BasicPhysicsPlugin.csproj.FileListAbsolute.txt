@@ -1,0 +1,4 @@
+C:\Users\virtu\Desktop\Universe-Dev\VirtualUniverse\bin\Physics\Universe.Physics.BasicPhysicsPlugin.dll
+C:\Users\virtu\Desktop\Universe-Dev\VirtualUniverse\bin\Physics\Universe.Physics.BasicPhysicsPlugin.pdb
+C:\Users\virtu\Desktop\Universe-Dev\Universe\Physics\BasicPhysicsPlugin\obj\x64\Debug\Universe.Physics.BasicPhysicsPlugin.dll
+C:\Users\virtu\Desktop\Universe-Dev\Universe\Physics\BasicPhysicsPlugin\obj\x64\Debug\Universe.Physics.BasicPhysicsPlugin.pdb

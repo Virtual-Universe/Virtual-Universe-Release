@@ -1,0 +1,1316 @@
+<?xml version="1.0" ?>
+<Prebuild version="1.10" xmlns="http://dnpb.sourceforge.net/schemas/prebuild-1.10.xsd">
+  <Solution activeConfig="Debug" name="Universe" path="./" version="1.0.2 $Rev$">
+    <Configuration name="Debug" platform="x86">
+      <Options>
+        <CompilerDefines>TRACE;DEBUG</CompilerDefines>
+        <OptimizeCode>false</OptimizeCode>
+        <CheckUnderflowOverflow>false</CheckUnderflowOverflow>
+        <AllowUnsafe>true</AllowUnsafe>
+        <WarningLevel>4</WarningLevel>
+        <WarningsAsErrors>false</WarningsAsErrors>
+        <OutputPath>bin</OutputPath>
+        <DebugInformation>true</DebugInformation>
+        <IncrementalBuild>true</IncrementalBuild>
+        <NoStdLib>false</NoStdLib>
+      </Options>
+    </Configuration>
+    <Configuration name="Debug" platform="x86">
+      <Options>
+        <CompilerDefines>TRACE;DEBUG</CompilerDefines>
+        <OptimizeCode>false</OptimizeCode>
+        <CheckUnderflowOverflow>false</CheckUnderflowOverflow>
+        <AllowUnsafe>true</AllowUnsafe>
+        <WarningLevel>4</WarningLevel>
+        <WarningsAsErrors>false</WarningsAsErrors>
+        <OutputPath>bin</OutputPath>
+        <DebugInformation>true</DebugInformation>
+        <IncrementalBuild>true</IncrementalBuild>
+        <NoStdLib>false</NoStdLib>
+      </Options>
+    </Configuration>
+    <Configuration name="Debug" platform="x64">
+      <Options>
+        <CompilerDefines>TRACE;DEBUG</CompilerDefines>
+        <OptimizeCode>false</OptimizeCode>
+        <CheckUnderflowOverflow>false</CheckUnderflowOverflow>
+        <AllowUnsafe>true</AllowUnsafe>
+        <WarningLevel>4</WarningLevel>
+        <WarningsAsErrors>false</WarningsAsErrors>
+        <OutputPath>bin</OutputPath>
+        <DebugInformation>true</DebugInformation>
+        <IncrementalBuild>true</IncrementalBuild>
+        <NoStdLib>false</NoStdLib>
+      </Options>
+    </Configuration>	
+    <Configuration name="Release" platform="x86">
+      <Options>
+        <CompilerDefines></CompilerDefines>
+        <OptimizeCode>true</OptimizeCode>
+        <CheckUnderflowOverflow>false</CheckUnderflowOverflow>
+        <AllowUnsafe>true</AllowUnsafe>
+        <WarningLevel>4</WarningLevel>
+        <WarningsAsErrors>false</WarningsAsErrors>
+        <SuppressWarnings/>
+        <OutputPath>bin</OutputPath>
+        <DebugInformation>false</DebugInformation>
+        <IncrementalBuild>true</IncrementalBuild>
+        <NoStdLib>false</NoStdLib>
+      </Options>
+    </Configuration>
+    <Configuration name="Release" platform="x64">
+      <Options>
+        <CompilerDefines></CompilerDefines>
+        <OptimizeCode>true</OptimizeCode>
+        <CheckUnderflowOverflow>false</CheckUnderflowOverflow>
+        <AllowUnsafe>true</AllowUnsafe>
+        <WarningLevel>4</WarningLevel>
+        <WarningsAsErrors>false</WarningsAsErrors>
+        <SuppressWarnings/>
+        <OutputPath>bin</OutputPath>
+        <DebugInformation>false</DebugInformation>
+        <IncrementalBuild>true</IncrementalBuild>
+        <NoStdLib>false</NoStdLib>
+      </Options>
+    </Configuration>
+
+    <Project frameworkVersion="v4_5" name="Universe.Framework" path="Universe/Framework" type="Library">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../../VirtualUniverse/bin/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Core"/>
+      <Reference name="System.Data"/>
+      <Reference name="System.Drawing"/>
+	  <Reference name="System.Net.Http"/>
+	  <Reference name="System.Windows.Forms"/>
+      <Reference name="System.Web"/>
+ 	  <Reference name="System.Xml"/>
+
+      <Reference name="Nini" path="../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse" path="../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverseTypes" path="../../VirtualUniverse/bin/"/>
+      <Reference name="protobuf-net.dll" path="../../VirtualUniverse/bin/"/>
+      <Reference name="SmartThreadPool.dll" path="../../VirtualUniverse/bin/"/>
+      <Reference name="XMLRPC" path="../../VirtualUniverse/bin/"/>
+      
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+
+    <!-- Physics Plug-ins -->
+    <Project frameworkVersion="v4_5" name="Universe.Physics.BasicPhysicsPlugin" path="Universe/Physics/BasicPhysicsPlugin" type="Library">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/Physics/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/Physics/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/Physics/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/Physics/</OutputPath>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../../../VirtualUniverse/bin/</ReferencePath>
+      <Reference name="System"/>
+      
+      <Reference name="Universe.Framework"/>
+      
+      <Reference name="Nini" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverseTypes" path="../../../VirtualUniverse/bin/"/>
+      
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+
+    <Project frameworkVersion="v4_5" name="Universe.Physics.Meshing" path="Universe/Physics/Meshing" type="Library">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/Physics/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/Physics/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/Physics/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/Physics/</OutputPath>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../../../VirtualUniverse/bin/</ReferencePath>
+      <Reference name="System"/>
+	  <Reference name="System.Core"/>
+      <Reference name="System.Drawing"/>
+      
+      <Reference name="Universe.Framework"/>
+
+      <Reference name="CSJ2K" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="Nini" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverseTypes" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="ZLibNet" path="../../../VirtualUniverse/bin/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+
+    <Project frameworkVersion="v4_5" name="Universe.Physics.BulletSPlugin" path="Universe/Physics/BulletSPlugin" type="Library">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/Physics/</OutputPath>
+          <AllowUnsafe>true</AllowUnsafe>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/Physics/</OutputPath>
+          <AllowUnsafe>true</AllowUnsafe>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/Physics/</OutputPath>
+          <AllowUnsafe>true</AllowUnsafe>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/Physics/</OutputPath>
+          <AllowUnsafe>true</AllowUnsafe>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../../../VirtualUniverse/bin/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Core"/>
+      <Reference name="System.Xml"/>
+      <Reference name="OpenMetaverseTypes" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="Nini.dll"  path="../../../VirtualUniverse/bin/"/>
+      <Reference name="Universe.Framework"/>
+      <Reference name="Universe.Region"/>
+      <Reference name="Universe.Physics.Meshing"/>
+      <Reference name="Universe.Physics.ConvexDecompositionDotNet"/>
+      <Reference name="BulletXNA.dll" path="../../../VirtualUniverse/bin/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+
+    <Project frameworkVersion="v4_5" name="Universe.Physics.ConvexDecompositionDotNet" path="Universe/Physics/ConvexDecompositionDotNet" type="Library">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/Physics/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/Physics/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/Physics/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/Physics/</OutputPath>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../../../VirtualUniverse/bin/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Core"/>
+      <Reference name="System.Data"/>
+      <Reference name="System.Xml"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+
+    <Project frameworkVersion="v4_5" name="Universe.Region" path="Universe/Region" type="Library">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../../VirtualUniverse/bin/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Core"/>
+      <Reference name="System.Drawing"/>
+      <Reference name="System.Web"/>
+      <Reference name="System.Xml"/>
+
+      <Reference name="Universe.DataManager"/>
+      <Reference name="Universe.Framework"/>
+      
+      <Reference name="Nini" path="../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse" path="../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverseTypes" path="../../VirtualUniverse/bin/"/>
+      <Reference name="protobuf-net.dll" path="../../VirtualUniverse/bin/"/>
+      <Reference name="SmartThreadPool.dll" path="../../VirtualUniverse/bin/"/>
+      <Reference name="XMLRPC" path="../../VirtualUniverse/bin/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+
+    <Project frameworkVersion="v4_5" name="Universe.Services.NoSQLServices" path="Universe/Services/NoSQLServices" type="Library">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../../../VirtualUniverse/bin/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Core"/>
+      <Reference name="System.Data"/>
+      <Reference name="System.Drawing"/>
+      <Reference name="System.Xml"/>
+      <Reference name="System.Web"/>
+
+      <Reference name="Universe.DataManager"/>
+      <Reference name="Universe.Services.DataService"/>
+      
+      <Reference name="Universe.Framework"/>
+
+      <Reference name="Nini" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverseTypes" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="protobuf-net.dll" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="Sider" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="XMLRPC" path="../../../VirtualUniverse/bin/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+
+    <Project frameworkVersion="v4_5" name="Universe.Services.SQLServices" path="Universe/Services/SQLServices" type="Library">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../../../VirtualUniverse/bin/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Core"/>
+      <Reference name="System.Data"/>
+      <Reference name="System.Drawing"/>
+      <Reference name="System.Xml"/>
+      <Reference name="System.Web"/>
+
+      <Reference name="Universe.DataManager"/>
+      <Reference name="Universe.Framework"/>
+      <Reference name="Universe.Services.DataService"/>
+
+      <Reference name="Nini" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverseTypes" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="protobuf-net.dll" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="Sider" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="XMLRPC" path="../../../VirtualUniverse/bin/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+	
+    <Project frameworkVersion="v4_5" name="Universe.Services.GenericServices" path="Universe/Services/GenericServices" type="Library">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../../../VirtualUniverse/bin/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Core"/>
+      <Reference name="System.Data"/>
+      <Reference name="System.Drawing"/>
+      <Reference name="System.Xml"/>
+      <Reference name="System.Web"/>
+
+      <Reference name="Universe.DataManager"/>
+      <Reference name="Universe.Framework"/>
+      <Reference name="Universe.Region"/>
+      <Reference name="Universe.Modules"/>
+      <Reference name="Universe.Services.DataService"/>
+
+      <Reference name="GlynnTucker.Cache" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="Nini" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverseTypes" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="protobuf-net.dll" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="XMLRPC" path="../../../VirtualUniverse/bin/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+
+    <Project frameworkVersion="v4_5" name="Universe.DataManager" path="Universe/DataManager" type="Library">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../../VirtualUniverse/bin/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Core"/>
+      <Reference name="System.Data"/>
+      <Reference name="System.Xml"/>
+      
+      <Reference name="Universe.Framework"/>
+
+      <Reference name="Nini" path="../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse" path="../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverseTypes" path="../../VirtualUniverse/bin/"/>
+      
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+
+    <Project frameworkVersion="v4_5" name="Universe.DataManager.MySQL" path="Universe/DataManagerPlugins/MySQL" type="Library">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../../../VirtualUniverse/bin/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Core"/>
+	  <Reference name="System.Data"/>
+	  <Reference name="System.Drawing"/>
+      <Reference name="System.Xml"/>
+
+      <Reference name="Universe.DataManager"/>
+	  <Reference name="Universe.Framework"/>
+		
+      <Reference name="MySql.Data" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="Nini" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverseTypes" path="../../../VirtualUniverse/bin/"/>
+	  <Reference name="OpenMetaverse.StructuredData" path="../../../VirtualUniverse/bin/"/>
+      
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+
+    <Project frameworkVersion="v4_5" name="Universe.DataManager.SQLite" path="Universe/DataManagerPlugins/SQLite" type="Library">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../../../VirtualUniverse/bin/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Core"/>
+      <Reference name="System.Data"/>
+      <Reference name="System.Drawing"/>
+      <Reference name="System.Xml"/>
+      
+      <Reference name="Universe.DataManager"/>
+      <Reference name="Universe.Framework"/>
+
+      <Reference name="Community.CsharpSqlite.SQLiteClient" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="Nini" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverseTypes" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="XMLRPC" path="../../../VirtualUniverse/bin/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+
+    <Project frameworkVersion="v4_5" name="Universe.Services.DataService" path="Universe/Services/DataService" type="Library">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../../../VirtualUniverse/bin/</ReferencePath>
+      <Reference name="Microsoft.CSharp"/>
+      <Reference name="System"/>
+      <Reference name="System.Core"/>
+      <Reference name="System.Data"/>
+      <Reference name="System.Drawing"/>
+      <Reference name="System.Xml"/>
+      <Reference name="System.Web"/>
+
+      <Reference name="Universe.DataManager"/>
+      <Reference name="Universe.DataManager.MySQL"/>
+      <Reference name="Universe.DataManager.SQLite"/>
+      <Reference name="Universe.Framework"/>
+
+      <Reference name="Nini" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverseTypes" path="../../../VirtualUniverse/bin/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+  
+    <Project frameworkVersion="v4_5" name="Universe.ClientStack" path="Universe/ClientStack" type="Library">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../../VirtualUniverse/bin/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Core"/>
+      <Reference name="System.Xml"/>
+
+      <Reference name="Universe.Framework"/>
+      
+      <Reference name="Nini"  path="../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse" path="../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverseTypes" path="../../VirtualUniverse/bin/"/>
+      <Reference name="SmartThreadPool.dll" path="../../VirtualUniverse/bin/"/>
+      <Reference name="XMLRPC" path="../../VirtualUniverse/bin/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+	  
+    <!-- Universe app -->
+    <Project frameworkVersion="v4_5" name="Universe" path="Universe/Application" type="Exe" appmanifest="app.manifest">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../../VirtualUniverse/bin/</ReferencePath>
+      <Reference name="System"/>
+
+      <Reference name="Universe.Framework"/>
+	  <Reference name="Universe.Simulation.Base"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+        <Match pattern="*.manifest" buildAction="None"  recurse="false"/>
+      </Files>
+    </Project>
+	
+    <Project frameworkVersion="v4_5" name="Universe.Server" path="Universe/Server" type="Exe" appmanifest="app.manifest">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../../VirtualUniverse/bin/</ReferencePath>
+      <Reference name="System"/>
+
+      <Reference name="Universe.Framework"/>
+	  <Reference name="Universe.Simulation.Base"/>
+
+      <Reference name="Nini" path="../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse" path="../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverseTypes" path="../../VirtualUniverse/bin/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+        <Match pattern="*.manifest" buildAction="None"  recurse="true"/>
+      </Files>
+    </Project>
+
+    <Project frameworkVersion="v4_5" name="Universe.Server.AssetServer" path="Universe/Servers/AssetServer" type="Exe" appmanifest="app.manifest">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../../../VirtualUniverse/bin/</ReferencePath>
+      <Reference name="System"/>
+
+      <Reference name="Universe.Framework"/>
+	  <Reference name="Universe.Simulation.Base"/>
+
+      <Reference name="Nini" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverseTypes" path="../../../VirtualUniverse/bin/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+        <Match pattern="*.manifest" buildAction="None"  recurse="true"/>
+      </Files>
+    </Project>
+	
+    <Project frameworkVersion="v4_5" name="Universe.Server.AvatarServer" path="Universe/Servers/AvatarServer" type="Exe" appmanifest="app.manifest">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../../../VirtualUniverse/bin/</ReferencePath>
+      <Reference name="System"/>
+
+      <Reference name="Universe.Framework"/>
+	  <Reference name="Universe.Simulation.Base"/>
+
+      <Reference name="Nini" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverseTypes" path="../../../VirtualUniverse/bin/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+        <Match pattern="*.manifest" buildAction="None"  recurse="true"/>
+      </Files>
+    </Project>
+	
+    <Project frameworkVersion="v4_5" name="Universe.Server.GridServer" path="Universe/Servers/GridServer" type="Exe" appmanifest="app.manifest">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../../../VirtualUniverse/bin/</ReferencePath>
+      <Reference name="System"/>
+
+      <Reference name="Universe.Framework"/>
+	  <Reference name="Universe.Simulation.Base"/>
+
+      <Reference name="Nini" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverseTypes" path="../../../VirtualUniverse/bin/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+        <Match pattern="*.manifest" buildAction="None"  recurse="true"/>
+      </Files>
+    </Project>
+
+    <Project frameworkVersion="v4_5" name="Universe.Server.InventoryServer" path="Universe/Servers/InventoryServer" type="Exe" appmanifest="app.manifest">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../../../VirtualUniverse/bin/</ReferencePath>
+      <Reference name="System"/>
+
+      <Reference name="Universe.Framework"/>
+	  <Reference name="Universe.Simulation.Base"/>
+
+      <Reference name="Nini" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverseTypes" path="../../../VirtualUniverse/bin/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+        <Match pattern="*.manifest" buildAction="None"  recurse="true"/>
+      </Files>
+    </Project>
+	
+    <Project frameworkVersion="v4_5" name="Universe.Server.WebServer" path="Universe/Servers/WebServer" type="Exe" appmanifest="app.manifest">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../../../VirtualUniverse/bin/</ReferencePath>
+      <Reference name="System"/>
+
+      <Reference name="Universe.Framework"/>
+	  <Reference name="Universe.Simulation.Base"/>
+
+      <Reference name="Nini" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverseTypes" path="../../../VirtualUniverse/bin/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+        <Match pattern="*.manifest" buildAction="None"  recurse="true"/>
+      </Files>
+    </Project>
+
+    <Project frameworkVersion="v4_5" name="Universe.Simulation.Base" path="Universe/Simulation/Base" type="Library">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../../../VirtualUniverse/bin/</ReferencePath>
+      <Reference name="Microsoft.CSharp"/>
+      <Reference name="System"/>
+	  <Reference name="System.Core"/>
+      <Reference name="System.Web"/>
+      <Reference name="System.Xml"/>
+
+      <Reference name="Universe.Framework"/>
+      <Reference name="Universe.Services.DataService"/>
+      <Reference name="Universe.Services.GenericServices"/>
+      
+      <Reference name="Nini" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverseTypes" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="XMLRPC" path="../../../VirtualUniverse/bin/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+
+    <Project frameworkVersion="v4_5" name="Universe.CoreApplicationPlugins" path="Universe/CoreApplicationPlugins" type="Library">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../../VirtualUniverse/bin/</ReferencePath>
+      <Reference name="System"/>
+	  <Reference name="System.Core"/>
+      <Reference name="System.Drawing"/>
+      <Reference name="System.Windows.Forms"/>
+      <Reference name="System.Xml"/>
+      <Reference name="System.Web"/>
+
+      <Reference name="Universe.DataManager"/>
+      <Reference name="Universe.Framework"/>
+      <Reference name="Universe.Services.DataService"/>
+
+      <Reference name="Nini" path="../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse" path="../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverseTypes" path="../../VirtualUniverse/bin/"/>
+      <Reference name="XMLRPC" path="../../VirtualUniverse/bin/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+    
+    <Project frameworkVersion="v4_5" name="Universe.Modules" path="Universe/Modules" type="Library">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../../VirtualUniverse/bin/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Core"/>
+      <Reference name="System.Data"/>
+      <Reference name="System.Drawing"/>
+      <Reference name="System.Windows.Forms"/>
+      <Reference name="System.Xml"/>
+      <Reference name="System.Web"/>
+      <Reference name="Universe.DataManager"/>
+      <Reference name="Universe.Framework"/>
+      <Reference name="Universe.Region"/>
+
+      <Reference name="CSJ2K" path="../../VirtualUniverse/bin/"/>
+      <Reference name="GlynnTucker.Cache" path="../../VirtualUniverse/bin/"/>
+      <Reference name="Nini" path="../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse" path="../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverseTypes" path="../../VirtualUniverse/bin/"/>
+      <Reference name="protobuf-net.dll" path="../../VirtualUniverse/bin/"/>
+      <Reference name="Warp3Dw" path="../../VirtualUniverse/bin/"/>
+      <Reference name="XMLRPC" path="../../VirtualUniverse/bin/"/>
+      <Reference name="ZLibNet" path="../../VirtualUniverse/bin/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+
+    <Project frameworkVersion="v4_5" name="Universe.Physics.OpenDynamicsEngine" path="Universe/Physics/OpenDynamicsEngine" type="Library">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/Physics/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/Physics/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/Physics/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/Physics/</OutputPath>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../../../VirtualUniverse/bin/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Core"/>
+
+      <Reference name="Universe.Framework"/>
+      
+      <Reference name="Nini" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverseTypes" path="../../../VirtualUniverse/bin/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+
+    <Project frameworkVersion="v4_5" name="Universe.ScriptEngine.VirtualScript" path="Universe/ScriptEngine/VirtualScript" type="Library">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../../../VirtualUniverse/bin/</ReferencePath>
+      <Reference name="Microsoft.CSharp"/>
+      <Reference name="System"/>
+      <Reference name="System.Core"/>
+      <Reference name="System.Data"/>
+      <Reference name="System.Drawing"/>
+      <Reference name="System.Runtime.Remoting"/>
+      <Reference name="System.Xml"/>
+
+      <Reference name="Universe.DataManager"/>
+      <Reference name="Universe.Framework"/>
+      
+      <Reference name="Nini" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="ScriptEngineParser" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverseTypes" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="SmartThreadPool.dll" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="Tools" path="../../../VirtualUniverse/bin/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+
+    <Project frameworkVersion="v4_5" name="Universe.BotManager" path="Universe/BotManager" type="Library">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../../VirtualUniverse/bin/</ReferencePath>
+      <Reference name="System"/>
+      <Reference name="System.Core"/>
+      <Reference name="System.Data"/>
+      <Reference name="System.Runtime.Remoting"/>
+      <Reference name="System.Xml"/>
+
+      <Reference name="Universe.DataManager"/>
+      <Reference name="Universe.Framework"/>
+      <Reference name="Universe.ScriptEngine.VirtualScript"/>
+      
+      <Reference name="Nini" path="../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse" path="../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverseTypes" path="../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../../VirtualUniverse/bin/"/>
+      <Reference name="Tools" path="../../VirtualUniverse/bin/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+    </Project>
+
+    <Project frameworkVersion="v4_5" name="Universe.Services.API" path="Universe/Services/API" type="Library">
+      <Configuration name="Debug" platform="x86">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x86">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Debug" platform="x64">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+      <Configuration name="Release" platform="x64">
+        <Options>
+          <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
+        </Options>
+      </Configuration>
+
+      <ReferencePath>../../../VirtualUniverse/bin/</ReferencePath>
+      <Reference name="Microsoft.CSharp"/>
+      <Reference name="System"/>
+      <Reference name="System.Core"/>
+      <Reference name="System.Data"/>
+      <Reference name="System.Drawing"/>
+      <Reference name="System.Xml"/>
+      <Reference name="System.Web"/>
+
+      <Reference name="Universe.Framework"/>
+
+      <Reference name="Nini" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverse.StructuredData" path="../../../VirtualUniverse/bin/"/>
+      <Reference name="OpenMetaverseTypes" path="../../../VirtualUniverse/bin/"/>
+
+      <Files>
+        <Match pattern="*.cs" recurse="true">
+          <Exclude name="obj" pattern="obj"/>
+        </Match>
+      </Files>
+	</Project>
+	
+	<?include file="addon-modules/*/prebuild*.xml" ?>
+
+  </Solution>
+
+</Prebuild>

@@ -1,0 +1,4 @@
+C:\Users\virtu\Desktop\Universe-Dev\VirtualUniverse\bin\Universe.Server.WebServer.exe
+C:\Users\virtu\Desktop\Universe-Dev\VirtualUniverse\bin\Universe.Server.WebServer.pdb
+C:\Users\virtu\Desktop\Universe-Dev\Universe\Servers\WebServer\obj\x64\Debug\Universe.Server.WebServer.exe
+C:\Users\virtu\Desktop\Universe-Dev\Universe\Servers\WebServer\obj\x64\Debug\Universe.Server.WebServer.pdb

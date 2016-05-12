@@ -1,0 +1,3 @@
+#!/bin/sh
+
+git log --pretty=format:"Virtual Universe 1.0.2 RC2 (%cd.%h)" --date=short -n 1 > VirtualUniverse/bin/.version

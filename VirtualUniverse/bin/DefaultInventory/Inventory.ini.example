@@ -1,0 +1,28 @@
+[InventoryIARLoader]
+    ;; Has all of the IAR files in the /DefaultInventory/ folder previously been loaded?
+    ;; (The IAR files only need to be loaded once)
+    ;; Default is false
+    PreviouslyLoaded = false
+
+    WipeLibrariesOnNextLoad = True
+
+    ;;
+    ;;
+    ;; The rest of this config is for optional modules in the Optional-Modules repository
+    ;;
+    ;;
+
+[InventoryXMLLoader]
+    DefaultLibrary = inventory\Libraries.xml
+    PreviouslyLoaded = true
+
+[DefaultXMLAssetLoader]
+    AssetLoaderArgs = assets\AssetSets.xml
+    PreviouslyLoaded = true
+
+[DefaultAssetsIARCreator]
+    ;; Enable saving of the current default inventory
+    Enabled = false
+    
+    ;;Name of the IAR file that will be created
+    NameOfIAR = "DefaultInventory.iar"
