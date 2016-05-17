@@ -25,7 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -202,8 +201,8 @@ namespace Universe.Modules.Chat
 
 
             // from below it appears that if the source is an agent then do not send messge??
-            if (sourceType == ChatSourceType.Agent)
-                return;
+            //if (sourceType == ChatSourceType.Agent)
+            //    return;
 
             if (message.Length >= 1000) // libomv limit
                 message = message.Substring (0, 1000);
@@ -232,13 +231,32 @@ namespace Universe.Modules.Chat
                 if (c.Type == ChatTypeEnum.Whisper && dis > m_whisperdistance)      // too far out for whisper
                     continue;
 
-                if (avatar != null) {
-                    if (avatar.CurrentParcelUUID != presence.CurrentParcelUUID)     // not in the same parcel
-                        continue;
+                // This appears to be incorrect and potentially breaks local chat - Emperor Starfinder - May 16, 2016
+                //if (avatar != null) {
+                //    if (avatar.CurrentParcelUUID != presence.CurrentParcelUUID)     // not in the same parcel
+                //        continue;
 
+                // This appears to be the way that is necessary for local chat to work
+                if (sourceType == ChatSourceType.Agent)
+                {
+                    if (avatar != null)
+                    {
+                        if (avatar.CurrentParcel != null)
+                        {
+                            if (avatar.CurrentParcelUUID != presence.CurrentParcelUUID)     // not in the same parcel
+                                continue;
+                            
+                           //If both are not in the same private parcel, don't send the chat message
+                           //if (!(avatar.CurrentParcel.LandData.Private && presence.CurrentParcel.LandData.Private))
+                           if (avatar.CurrentParcel.LandData.Private && !presence.CurrentParcel.LandData.Private)
+                                continue;
+                        }
+                    }
+
+                    // This appears to be incorrect and potentially breaks local chat - Emperor Starfinder - May 16, 2016
                     // If both are not in the same proviate parcel, don't send the chat message
-                    if (!(avatar.CurrentParcel.LandData.Private && presence.CurrentParcel.LandData.Private))
-                        continue;
+                    //if (!(avatar.CurrentParcel.LandData.Private && presence.CurrentParcel.LandData.Private))
+                    //    continue;
                 }
 
                 // this one is good to go....
