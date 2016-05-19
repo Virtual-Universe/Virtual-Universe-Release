@@ -25,7 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 using System;
 using System.IO;
 using System.IO.Compression;
@@ -45,11 +44,11 @@ using Universe.Framework.Utilities;
 
 namespace Universe.Modules.Archivers
 {
-    public class UniverseArchiver : IService, IUniverseBackupArchiver
+    public class Archiver : IService, IBackupArchiver
     {
         Int64 m_AllowPrompting;
 
-        #region IUniverseBackupArchiver Members
+        #region IBackupArchiver Members
 
         public bool AllowPrompting
         {
@@ -145,7 +144,7 @@ namespace Universe.Modules.Archivers
             #endif
 
             //Register the interface
-            registry.RegisterModuleInterface<IUniverseBackupArchiver> (this);
+            registry.RegisterModuleInterface<IBackupArchiver> (this);
 
         }
 
