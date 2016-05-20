@@ -34,6 +34,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Universe.Framework.ConsoleFramework;
 
 namespace Universe.Framework.Utilities
 {
@@ -45,12 +46,12 @@ namespace Universe.Framework.Utilities
     public struct PriorityQueueItem<TValue, TPriority>
     {
         public TPriority _priority;
-        private TValue _value;
+        TValue _value;
 
         public PriorityQueueItem(TValue val, TPriority pri)
         {
-            this._value = val;
-            this._priority = pri;
+            _value = val;
+            _priority = pri;
         }
 
         public TValue Value
@@ -71,12 +72,12 @@ namespace Universe.Framework.Utilities
     public class PriorityQueue<TValue, TPriority> : ICollection,
                                                     IEnumerable<PriorityQueueItem<TValue, TPriority>>
     {
-        private const Int32 DefaultCapacity = 16;
-        private Int32 capacity;
+        const int DefaultCapacity = 16;
+        int capacity;
 
-        private Comparison<TPriority> compareFunc;
-        private PriorityQueueItem<TValue, TPriority>[] items;
-        private Int32 numItems;
+        Comparison<TPriority> compareFunc;
+        PriorityQueueItem<TValue, TPriority>[] items;
+        int numItems;
 
         /// <summary>
         ///     Initializes a new instance of the PriorityQueue class that is empty,
@@ -87,7 +88,7 @@ namespace Universe.Framework.Utilities
         {
         }
 
-        public PriorityQueue(Int32 initialCapacity)
+        public PriorityQueue(int initialCapacity)
             : this(initialCapacity, Comparer<TPriority>.Default)
         {
         }
@@ -132,7 +133,7 @@ namespace Universe.Framework.Utilities
 
         public void CopyTo(Array array, int index)
         {
-            this.CopyTo((PriorityQueueItem<TValue, TPriority>[]) array, index);
+            CopyTo((PriorityQueueItem<TValue, TPriority>[])array, index);
         }
 
         public bool IsSynchronized
@@ -164,14 +165,14 @@ namespace Universe.Framework.Utilities
 
         #endregion
 
-        private void Init(int initialCapacity, Comparison<TPriority> comparison)
+        void Init(int initialCapacity, Comparison<TPriority> comparison)
         {
             numItems = 0;
             compareFunc = comparison;
             SetCapacity(initialCapacity);
         }
 
-        private void SetCapacity(int newCapacity)
+        void SetCapacity(int newCapacity)
         {
             int newCap = newCapacity;
             if (newCap < DefaultCapacity)
@@ -179,9 +180,12 @@ namespace Universe.Framework.Utilities
 
             // throw exception if newCapacity < NumItems
             if (newCap < numItems)
-                throw new ArgumentOutOfRangeException("newCapacity", "New capacity is less than Count");
+            {
+                MainConsole.Instance.Warn("[Priority Queue]: New capacity is less than Count");
+                return;
+            }
 
-            this.capacity = newCap;
+            capacity = newCap;
             if (items == null)
             {
                 items = new PriorityQueueItem<TValue, TPriority>[newCap];
@@ -198,21 +202,18 @@ namespace Universe.Framework.Utilities
             {
                 // need to increase capacity
                 // grow by 50 percent
-                SetCapacity((3*Capacity)/2);
+                SetCapacity((3 * Capacity) / 2);
             }
 
             int i = numItems;
             ++numItems;
-            while ((i > 0) && (compareFunc(items[(i - 1)/2].Priority, newItem.Priority) < 0))
+            while ((i > 0) && (compareFunc(items[(i - 1) / 2].Priority, newItem.Priority) < 0))
             {
-                items[i] = items[(i - 1)/2];
-                i = (i - 1)/2;
+                items[i] = items[(i - 1) / 2];
+                i = (i - 1) / 2;
             }
+
             items[i] = newItem;
-            //if (!VerifyQueue())
-            //{
-            //    Console.WriteLine("ERROR: Queue out of order!");
-            //}
         }
 
         public void Enqueue(TValue value, TPriority priority)
@@ -220,7 +221,7 @@ namespace Universe.Framework.Utilities
             Enqueue(new PriorityQueueItem<TValue, TPriority>(value, priority));
         }
 
-        private PriorityQueueItem<TValue, TPriority> RemoveAt(Int32 index)
+        PriorityQueueItem<TValue, TPriority> RemoveAt(int index)
         {
             PriorityQueueItem<TValue, TPriority> o = items[index];
             --numItems;
@@ -232,29 +233,31 @@ namespace Universe.Framework.Utilities
             {
                 // If the new item is greater than its parent, bubble up.
                 int i = index;
-                int parent = (i - 1)/2;
+                int parent = (i - 1) / 2;
                 while (compareFunc(tmp.Priority, items[parent].Priority) > 0)
                 {
                     items[i] = items[parent];
                     i = parent;
-                    parent = (i - 1)/2;
+                    parent = (i - 1) / 2;
                 }
 
                 // if i == index, then we didn't move the item up
                 if (i == index)
                 {
                     // bubble down ...
-                    while (i < (numItems)/2)
+                    while (i < (numItems) / 2)
                     {
-                        int j = (2*i) + 1;
+                        int j = (2 * i) + 1;
                         if ((j < numItems - 1) && (compareFunc(items[j].Priority, items[j + 1].Priority) < 0))
                         {
                             ++j;
                         }
+
                         if (compareFunc(items[j].Priority, tmp.Priority) <= 0)
                         {
                             break;
                         }
+
                         items[i] = items[j];
                         i = j;
                     }
@@ -262,10 +265,7 @@ namespace Universe.Framework.Utilities
                 // Be sure to store the item in its place.
                 items[i] = tmp;
             }
-            //if (!VerifyQueue())
-            //{
-            //    Console.WriteLine("ERROR: Queue out of order!");
-            //}
+
             return o;
         }
 
@@ -273,27 +273,31 @@ namespace Universe.Framework.Utilities
         public bool VerifyQueue()
         {
             int i = 0;
-            while (i < numItems/2)
+            while (i < numItems / 2)
             {
-                int leftChild = (2*i) + 1;
+                int leftChild = (2 * i) + 1;
                 int rightChild = leftChild + 1;
                 if (compareFunc(items[i].Priority, items[leftChild].Priority) < 0)
                 {
                     return false;
                 }
+
                 if (rightChild < numItems && compareFunc(items[i].Priority, items[rightChild].Priority) < 0)
                 {
                     return false;
                 }
+
                 ++i;
             }
+
             return true;
         }
 
         public PriorityQueueItem<TValue, TPriority> Dequeue()
         {
             if (Count == 0)
-                throw new InvalidOperationException("The queue is empty");
+                MainConsole.Instance.Warn("[Priority Queue]: The queue is empty");
+
             return RemoveAt(0);
         }
 
@@ -326,7 +330,8 @@ namespace Universe.Framework.Utilities
                     return;
                 }
             }
-            throw new ApplicationException("The specified itemm is not in the queue.");
+
+            MainConsole.Instance.Warn("[Priority Queue]: The specified item is not in the queue.");
         }
 
         /// <summary>
@@ -348,6 +353,7 @@ namespace Universe.Framework.Utilities
                     return items[index].Value;
                 }
             }
+
             return default(TValue);
         }
 
@@ -364,7 +370,7 @@ namespace Universe.Framework.Utilities
         public PriorityQueueItem<TValue, TPriority> Peek()
         {
             if (Count == 0)
-                throw new InvalidOperationException("The queue is empty");
+                MainConsole.Instance.Warn("[Priority Queue]: The queue is empty");
             return items[0];
         }
 
@@ -375,6 +381,7 @@ namespace Universe.Framework.Utilities
             {
                 items[i] = default(PriorityQueueItem<TValue, TPriority>);
             }
+
             numItems = 0;
             TrimExcess();
         }
@@ -385,7 +392,7 @@ namespace Universe.Framework.Utilities
         /// </summary>
         public void TrimExcess()
         {
-            if (numItems < (float) 0.9*capacity)
+            if (numItems < (float)0.9 * capacity)
             {
                 SetCapacity(numItems);
             }
@@ -400,18 +407,34 @@ namespace Universe.Framework.Utilities
         public void CopyTo(PriorityQueueItem<TValue, TPriority>[] array, int arrayIndex)
         {
             if (array == null)
-                throw new ArgumentNullException("array");
+            {
+                MainConsole.Instance.Error("[Priority Queue]: Array is null");
+                return;
+            }
             if (arrayIndex < 0)
-                throw new ArgumentOutOfRangeException("arrayIndex", "arrayIndex is less than 0.");
+            {
+                MainConsole.Instance.Error("[Priority Queue]: arrayIndex is less than 0.");
+                return;
+            }
             if (array.Rank > 1)
-                throw new ArgumentException("array is multidimensional.");
+            {
+                MainConsole.Instance.Error("[Priority Queue]: array is multidimensional.");
+                return;
+            }
             if (numItems == 0)
                 return;
             if (arrayIndex >= array.Length)
-                throw new ArgumentException("arrayIndex is equal to or greater than the length of the array.");
+            {
+                MainConsole.Instance.Error("[Priority Queue]: ArrayIndex is equal to or greater than the length of the array.");
+                return;
+            }
             if (numItems > (array.Length - arrayIndex))
-                throw new ArgumentException(
-                    "The number of elements in the source ICollection is greater than the available space from arrayIndex to the end of the destination array.");
+            {
+                MainConsole.Instance.Error("[Priority Queue]: " +
+                                            " The number of elements in the source ICollection is greater than the available space" +
+                                            " from arrayIndex to the end of the destination array.");
+                return;
+            }
 
             for (int i = 0; i < numItems; i++)
             {
@@ -462,26 +485,26 @@ namespace Universe.Framework.Utilities
         #region Fields
 
         // The maximum level of the skip list.
-        private const int LevelMaxValue = 16;
+        const int LevelMaxValue = 16;
 
         // The probability value used to randomly select the next level value.
-        private const double Probability = 0.5;
-        private readonly IComparer comparer;
+        const double Probability = 0.5;
+        readonly IComparer comparer;
 
         // The current level of the skip list.
 
         // Used to generate node levels.
-        private readonly Random rand = new Random();
+        readonly Random rand = new Random();
 
         // The number of elements in the PriorityQueue.
-        private int count;
-        private int currentLevel = 1;
+        int count;
+        int currentLevel = 1;
 
         // The header node of the skip list.
-        private Node header = new Node(null, LevelMaxValue);
+        Node header = new Node(null, LevelMaxValue);
 
         // The version of this PriorityQueue.
-        private long version;
+        long version;
 
         // Used for comparing and sorting elements.
 
@@ -520,7 +543,7 @@ namespace Universe.Framework.Utilities
                 // Use the DefaultComparer.
                 this.comparer = new DefaultComparer();
             }
-                // Else a comparer was provided.
+            // Else a comparer was provided.
             else
             {
                 // Use the provided comparer.
@@ -610,8 +633,7 @@ namespace Universe.Framework.Utilities
 
             if (Count == 0)
             {
-                throw new InvalidOperationException(
-                    "Cannot dequeue into an empty PriorityQueue.");
+                throw new InvalidOperationException("Cannot dequeue into an empty PriorityQueue.");
             }
 
             #endregion
@@ -659,7 +681,8 @@ namespace Universe.Framework.Utilities
 
             if (element == null)
             {
-                throw new ArgumentNullException("element");
+                MainConsole.Instance.Error("[Priority Queue]: Element is null");
+                return;
             }
 
             #endregion
@@ -743,7 +766,7 @@ namespace Universe.Framework.Utilities
             {
                 found = true;
             }
-                // Else the element is not in the PriorityQueue.
+            // Else the element is not in the PriorityQueue.
             else
             {
                 found = false;
@@ -765,8 +788,8 @@ namespace Universe.Framework.Utilities
 
             if (Count == 0)
             {
-                throw new InvalidOperationException(
-                    "Cannot peek into an empty PriorityQueue.");
+                MainConsole.Instance.Warn("[Priority Queue]: Cannot peek into an empty PriorityQueue.");
+                return new object();
             }
 
             #endregion
@@ -806,7 +829,8 @@ namespace Universe.Framework.Utilities
 
             if (queue == null)
             {
-                throw new ArgumentNullException("queue");
+                MainConsole.Instance.Warn("[Priority Queue]: Queue is null");
+                return null;
             }
 
             #endregion
@@ -815,7 +839,7 @@ namespace Universe.Framework.Utilities
         }
 
         // Generates a random level for the next node.
-        private int NextLevel()
+        int NextLevel()
         {
             int nextLevel = 1;
 
@@ -836,11 +860,11 @@ namespace Universe.Framework.Utilities
         #region SynchronizedPriorityQueue Class
 
         // A synchronized wrapper for the PriorityQueue class.
-        private class SynchronizedPriorityQueue : LPriorityQueue
+        class SynchronizedPriorityQueue : LPriorityQueue
         {
-            private readonly LPriorityQueue queue;
+            readonly LPriorityQueue queue;
 
-            private readonly object root;
+            readonly object root;
 
             public SynchronizedPriorityQueue(LPriorityQueue queue)
             {
@@ -848,7 +872,8 @@ namespace Universe.Framework.Utilities
 
                 if (queue == null)
                 {
-                    throw new ArgumentNullException("queue");
+                    MainConsole.Instance.Error("[Priority Queue]: Queue is null");
+                    return;
                 }
 
                 #endregion
@@ -949,7 +974,7 @@ namespace Universe.Framework.Utilities
         #region DefaultComparer Class
 
         // The IComparer to use of no comparer was provided.
-        private class DefaultComparer : IComparer
+        class DefaultComparer : IComparer
         {
             #region IComparer Members
 
@@ -959,8 +984,7 @@ namespace Universe.Framework.Utilities
 
                 if (!(y is IComparable))
                 {
-                    throw new ArgumentException(
-                        "Item does not implement IComparable.");
+                    throw new ArgumentException("Item does not implement IComparable.");
                 }
 
                 #endregion
@@ -978,15 +1002,15 @@ namespace Universe.Framework.Utilities
         #region Node Class
 
         // Represents a node in the list of nodes.
-        private class Node
+        class Node
         {
-            private readonly object element;
-            private readonly Node[] forward;
+            readonly object element;
+            readonly Node[] forward;
 
-            public Node(object element, int level)
+            public Node(object nodeEelement, int level)
             {
-                this.forward = new Node[level];
-                this.element = element;
+                forward = new Node[level];
+                element = nodeEelement;
             }
 
             public Node this[int index]
@@ -1006,21 +1030,21 @@ namespace Universe.Framework.Utilities
         #region PriorityQueueEnumerator Class
 
         // Implements the IEnumerator interface for the PriorityQueue class.
-        private class PriorityQueueEnumerator : IEnumerator
+        class PriorityQueueEnumerator : IEnumerator
         {
-            private readonly Node head;
-            private readonly LPriorityQueue owner;
-            private readonly long version;
+            readonly Node head;
+            readonly LPriorityQueue owner;
+            readonly long version;
 
-            private Node currentNode;
+            Node currentNode;
 
-            private bool moveResult;
+            bool moveResult;
 
-            public PriorityQueueEnumerator(LPriorityQueue owner)
+            public PriorityQueueEnumerator(LPriorityQueue pqOwner)
             {
-                this.owner = owner;
-                this.version = owner.version;
-                head = owner.header;
+                owner = pqOwner;
+                version = pqOwner.version;
+                head = pqOwner.header;
 
                 Reset();
             }
@@ -1033,8 +1057,10 @@ namespace Universe.Framework.Utilities
 
                 if (version != owner.version)
                 {
-                    throw new InvalidOperationException(
-                        "The PriorityQueue was modified after the enumerator was created.");
+                    MainConsole.Instance.Error("[Priority Queue]: " + "The PriorityQueue was modified after the enumerator was created.");
+
+                    moveResult = false;
+                    return;
                 }
 
                 #endregion
@@ -1052,8 +1078,7 @@ namespace Universe.Framework.Utilities
                     if (currentNode == head || currentNode == null)
                     {
                         throw new InvalidOperationException(
-                            "The enumerator is positioned before the first " +
-                            "element of the collection or after the last element.");
+                            "The enumerator is positioned before the first " + "element of the collection or after the last element.");
                     }
 
                     #endregion
@@ -1068,8 +1093,8 @@ namespace Universe.Framework.Utilities
 
                 if (version != owner.version)
                 {
-                    throw new InvalidOperationException(
-                        "The PriorityQueue was modified after the enumerator was created.");
+                    MainConsole.Instance.Warn("[Priority Queue]: The PriorityQueue was modified after the enumerator was created.");
+                    return false;
                 }
 
                 #endregion
@@ -1112,29 +1137,34 @@ namespace Universe.Framework.Utilities
 
             if (array == null)
             {
-                throw new ArgumentNullException("array");
+                MainConsole.Instance.Warn("[Priority Queue]: Array is null");
+                return;
             }
-            else if (index < 0)
+
+            if (index < 0)
             {
-                throw new ArgumentOutOfRangeException("index", index,
-                                                      "Array index out of range.");
+                MainConsole.Instance.WarnFormat("[Priority Queue]: Array index '{0}' is out of range.", index);
+                return;
             }
-            else if (array.Rank > 1)
+
+            if (array.Rank > 1)
             {
-                throw new ArgumentException(
-                    "Array has more than one dimension.", "array");
+                MainConsole.Instance.WarnFormat("[Priority Queue]: Array '{0}' has more than one dimension.", array);
+                return;
             }
-            else if (index >= array.Length)
+
+            if (index >= array.Length)
             {
-                throw new ArgumentException(
-                    "index is equal to or greater than the length of array.", "index");
+                MainConsole.Instance.WarnFormat("[Priority Queue]: index '{0}' is equal to or greater than the length of array.", index);
+                return;
             }
-            else if (Count > array.Length - index)
+
+            if (Count > array.Length - index)
             {
-                throw new ArgumentException(
-                    "The number of elements in the PriorityQueue is greater " +
-                    "than the available space from index to the end of the " +
-                    "destination array.", "index");
+                MainConsole.Instance.WarnFormat("[Priority Queue]:  The number of elements in the PriorityQueue is greater " +
+                                                 "than the available space from index '{0}' to the end of the " +
+                                                 "destination array.", "index");
+                return;
             }
 
             #endregion
