@@ -433,7 +433,7 @@ namespace Universe.Framework.ClientInterfaces
         /// </summary>
         public List<AvatarAttachment> GetAttachments()
         {
-            lock (m_attachmentslock)
+            lock (_attachmentslock)
                 return (from kvp in m_attachments from attach in kvp.Value select new AvatarAttachment(attach)).ToList();
         }
 
@@ -443,13 +443,13 @@ namespace Universe.Framework.ClientInterfaces
         /// </summary>
         public Dictionary<int, List<AvatarAttachment>> GetAttachmentsDictionary()
         {
-            lock (m_attachmentslock)
+            lock (_attachmentslock)
                 return new Dictionary<int, List<AvatarAttachment>>(m_attachments);
         }
 
         internal void AppendAttachment(AvatarAttachment attach)
         {
-            lock (m_attachmentslock)
+            lock (_attachmentslock)
             {
                 if (!m_attachments.ContainsKey(attach.AttachPoint))
                     m_attachments[attach.AttachPoint] = new List<AvatarAttachment>();
@@ -472,7 +472,7 @@ namespace Universe.Framework.ClientInterfaces
         /// <returns>Whether attachments changed</returns>
         internal bool ReplaceAttachment(AvatarAttachment attach)
         {
-            lock (m_attachmentslock)
+            lock (_attachmentslock)
             {
                 bool result = true;
                 if (m_attachments.ContainsKey(attach.AttachPoint))
@@ -500,7 +500,7 @@ namespace Universe.Framework.ClientInterfaces
 
             if (item == UUID.Zero)
             {
-                lock (m_attachmentslock)
+                lock (_attachmentslock)
                 {
                     if (m_attachments.ContainsKey(attachpoint))
                         m_attachments.Remove(attachpoint);
@@ -536,7 +536,7 @@ namespace Universe.Framework.ClientInterfaces
         {
             if ((attPnt & 0x80) > 0)
                 return true;
-            lock (m_attachmentslock)
+            lock (_attachmentslock)
             {
                 if (m_attachments.ContainsKey(attPnt))
                 {
@@ -559,7 +559,7 @@ namespace Universe.Framework.ClientInterfaces
                     continue;
                 AvatarAttachment a = new AvatarAttachment(e.GetAttachmentPoint(), e.RootChild.FromUserInventoryItemID,
                                                           e.RootChild.FromUserInventoryAssetID);
-                lock (m_attachmentslock)
+                lock (_attachmentslock)
                 {
                     if (!m_attachments.ContainsKey(e.GetAttachmentPoint()))
                         m_attachments.Add(e.GetAttachmentPoint(), new List<AvatarAttachment>());
@@ -570,7 +570,7 @@ namespace Universe.Framework.ClientInterfaces
 
         public int GetAttachpoint(UUID itemID)
         {
-            lock (m_attachmentslock)
+            lock (_attachmentslock)
             {
                 return (m_attachments.Select(
                     kvp =>
@@ -582,7 +582,7 @@ namespace Universe.Framework.ClientInterfaces
 
         public bool DetachAttachment(UUID itemID)
         {
-            lock (m_attachmentslock)
+            lock (_attachmentslock)
             {
                 foreach (KeyValuePair<int, List<AvatarAttachment>> kvp in m_attachments)
                 {
@@ -606,7 +606,7 @@ namespace Universe.Framework.ClientInterfaces
 
         public void ClearAttachments()
         {
-            lock (m_attachmentslock)
+            lock (_attachmentslock)
                 m_attachments.Clear();
         }
 

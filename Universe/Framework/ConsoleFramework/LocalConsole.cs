@@ -212,7 +212,7 @@ namespace Universe.Framework.ConsoleFramework
 
         void Show()
         {
-            lock (cmdlock)
+            lock (_cmdlock)
             {
                 if (y == -1 || Console.BufferWidth == 0)
                     return;
@@ -388,7 +388,7 @@ namespace Universe.Framework.ConsoleFramework
                     m_logFile.Flush();
                 }
 
-                lock (cmdlock)
+                lock (_cmdlock)
                 {
                     if (y == -1)
                     {
@@ -457,7 +457,7 @@ namespace Universe.Framework.ConsoleFramework
             SetCursorLeft(0); // Needed for mono
             Console.Write(" "); // Needed for mono
 
-            lock (cmdlock)
+            lock (_cmdlock)
             {
                 y = Console.CursorTop;
                 cmdline.Remove(0, cmdline.Length);
@@ -666,7 +666,7 @@ namespace Universe.Framework.ConsoleFramework
                             else
                                 Console.WriteLine("{0}", prompt);
 
-                            lock (cmdlock)
+                            lock (_cmdlock)
                             {
                                 y = -1;
                             }
