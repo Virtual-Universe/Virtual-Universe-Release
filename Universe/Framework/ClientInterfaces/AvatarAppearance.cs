@@ -660,7 +660,7 @@ namespace Universe.Framework.ClientInterfaces
 
             // Attachments
             int attachCount;
-            lock (m_attachmentslock)
+            lock (_attachmentslock)
             {
                 attachCount = m_attachments.Count;
             }
