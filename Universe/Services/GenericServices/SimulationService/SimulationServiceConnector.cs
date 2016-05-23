@@ -25,7 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 using System.Collections.Generic;
 using System.Threading;
 using Nini.Config;
@@ -48,7 +47,6 @@ namespace Universe.Services
         ///     These are regions that have timed out and we are not sending updates to until the (int) time passes
         /// </summary>
         protected Dictionary<string, int> m_blackListedRegions = new Dictionary<string, int>();
-
         protected ISyncMessagePosterService m_syncMessagePoster;
         protected IRegistryCore m_registry;
 
@@ -86,6 +84,7 @@ namespace Universe.Services
                 response.Success = false;
                 return false;
             }
+
             CreateAgentRequest request = new CreateAgentRequest();
             request.CircuitData = aCircuit;
             request.Destination = destination;
@@ -93,12 +92,15 @@ namespace Universe.Services
 
             AutoResetEvent resetEvent = new AutoResetEvent(false);
             OSDMap result = null;
-            MainConsole.Instance.DebugFormat("[SimulationServiceConnector]: Sending Create Agent to " + destination.ServerURI);
-            m_syncMessagePoster.Get(destination.ServerURI, request.ToOSD(), osdresp => {
+            MainConsole.Instance.DebugFormat("[Simulation Service Connector]: Sending Create Agent to " + destination.ServerURI);
+            m_syncMessagePoster.Get(destination.ServerURI, request.ToOSD(), osdresp =>
+            {
                 result = osdresp;
-                resetEvent.Set ();
+                resetEvent.Set();
             });
+
             bool success = resetEvent.WaitOne(10000);
+
             if (!success || result == null)
             {
                 response = new CreateAgentResponse();
@@ -121,8 +123,7 @@ namespace Universe.Services
                 if (m_blackListedRegions[destination.ServerURI] > 3 &&
                     Util.EnvironmentTickCountSubtract(m_blackListedRegions[destination.ServerURI]) > 0)
                 {
-                    MainConsole.Instance.Warn("[SimServiceConnector]: Blacklisted region " + destination.RegionName +
-                                              " requested");
+                    MainConsole.Instance.Warn("[Sim Service Connector]: Blacklisted region " + destination.RegionName + " requested");
                     //Still blacklisted
                     return false;
                 }
@@ -134,11 +135,14 @@ namespace Universe.Services
 
             AutoResetEvent resetEvent = new AutoResetEvent(false);
             OSDMap result = null;
-            m_syncMessagePoster.Get(destination.ServerURI, request.ToOSD(), response => {
+            m_syncMessagePoster.Get(destination.ServerURI, request.ToOSD(), response =>
+            {
                 result = response;
-                resetEvent.Set ();
+                resetEvent.Set();
             });
+
             bool success = resetEvent.WaitOne(10000) && result != null;
+
             if (!success)
             {
                 if (m_blackListedRegions.ContainsKey(destination.ServerURI))
@@ -153,6 +157,7 @@ namespace Universe.Services
                 }
                 else
                     m_blackListedRegions[destination.ServerURI] = 0;
+
                 return false;
             }
 
@@ -170,8 +175,7 @@ namespace Universe.Services
                 if (m_blackListedRegions[destination.ServerURI] > 3 &&
                     Util.EnvironmentTickCountSubtract(m_blackListedRegions[destination.ServerURI]) > 0)
                 {
-                    MainConsole.Instance.Warn("[SimServiceConnector]: Blacklisted region " + destination.RegionName +
-                                              " requested");
+                    MainConsole.Instance.Warn("[Sim Service Connector]: Blacklisted region " + destination.RegionName + " requested");
                     //Still blacklisted
                     return false;
                 }
@@ -183,12 +187,14 @@ namespace Universe.Services
 
             AutoResetEvent resetEvent = new AutoResetEvent(false);
             OSDMap result = null;
-            m_syncMessagePoster.Get(destination.ServerURI, request.ToOSD(), response => {
+            m_syncMessagePoster.Get(destination.ServerURI, request.ToOSD(), response =>
+            {
                 result = response;
-                resetEvent.Set ();
+                resetEvent.Set();
             });
-            
+
             bool success = resetEvent.WaitOne(10000) && result != null;
+
             if (!success)
             {
                 if (m_blackListedRegions.ContainsKey(destination.ServerURI))
@@ -203,6 +209,7 @@ namespace Universe.Services
                 }
                 else
                     m_blackListedRegions[destination.ServerURI] = 0;
+
                 return false;
             }
 
@@ -217,7 +224,6 @@ namespace Universe.Services
             FailedToMoveAgentIntoNewRegionRequest request = new FailedToMoveAgentIntoNewRegionRequest();
             request.AgentID = agentID;
             request.RegionID = destination.RegionID;
-
             m_syncMessagePoster.Post(destination.ServerURI, request.ToOSD());
             return true;
         }
@@ -229,7 +235,6 @@ namespace Universe.Services
             request.OldRegion = oldRegion;
             request.Destination = destination;
             request.IsCrossing = isCrossing;
-
             m_syncMessagePoster.Post(oldRegion.ServerURI, request.ToOSD());
             return true;
         }
@@ -261,16 +266,18 @@ namespace Universe.Services
 
             AutoResetEvent resetEvent = new AutoResetEvent(false);
             OSDMap result = null;
-            m_syncMessagePoster.Get(destination.ServerURI, request.ToOSD(), osdresp => {
+            m_syncMessagePoster.Get(destination.ServerURI, request.ToOSD(), osdresp =>
+            {
                 result = osdresp;
-                resetEvent.Set ();
+                resetEvent.Set();
             });
+
             bool success = resetEvent.WaitOne(10000) && result != null;
+
             if (!success) return false;
 
             RetrieveAgentResponse response = new RetrieveAgentResponse();
             response.FromOSD(result);
-
             circuitData = response.CircuitData;
             agentData = response.AgentData;
             return response.Success;
@@ -292,16 +299,17 @@ namespace Universe.Services
             request.Destination = destination;
             AutoResetEvent resetEvent = new AutoResetEvent(false);
             OSDMap result = null;
-            m_syncMessagePoster.Get(destination.ServerURI, request.ToOSD(), osdresp => {
+            m_syncMessagePoster.Get(destination.ServerURI, request.ToOSD(), osdresp =>
+            {
                 result = osdresp;
-                resetEvent.Set ();
+                resetEvent.Set();
             });
-            
+
             bool success = resetEvent.WaitOne(10000) && result != null;
             if (!success)
                 return false;
-            
-            return result ["Success"].AsBoolean ();
+
+            return result["Success"].AsBoolean();
         }
 
         #endregion

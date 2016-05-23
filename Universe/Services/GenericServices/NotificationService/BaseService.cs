@@ -25,7 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 using System;
 using System.Collections.Generic;
 using Nini.Config;
@@ -55,12 +54,12 @@ namespace Universe.Services
         {
         }
 
-        void SetUpConsole (IConfigSource config, ISimulationBase simbase)
+        void SetUpConsole(IConfigSource config, ISimulationBase simbase)
         {
             List<ICommandConsole> Plugins = UniverseModuleLoader.PickupModules<ICommandConsole>();
             foreach (ICommandConsole plugin in Plugins)
             {
-                plugin.Initialize(config, simbase );
+                plugin.Initialize(config, simbase);
             }
 
             if (MainConsole.Instance == null)
@@ -70,19 +69,19 @@ namespace Universe.Services
             }
 
             MainConsole.Instance.Threshold = Level.Info;
-            
-            MainConsole.Instance.Fatal(String.Format("[Console]: Console log level is {0}", MainConsole.Instance.Threshold));
+
+            MainConsole.Instance.Fatal(string.Format("[Console]: Console log level is {0}", MainConsole.Instance.Threshold));
 
             MainConsole.Instance.Commands.AddCommand(
-                "set log level", 
+                "set log level",
                 "set log level [level]",
-                "Set the console logging level", 
+                "Set the console logging level",
                 HandleLogLevel, false, true);
 
             MainConsole.Instance.Commands.AddCommand(
-                "get log level", 
                 "get log level",
-                "Returns the current console logging level", 
+                "get log level",
+                "Returns the current console logging level",
                 HandleGetLogLevel, false, true);
         }
 
@@ -112,7 +111,7 @@ namespace Universe.Services
 
         static void HandleGetLogLevel(IScene scene, string[] cmd)
         {
-            MainConsole.Instance.Fatal(String.Format("Console log level is {0}", MainConsole.Instance.Threshold));
+            MainConsole.Instance.Fatal(string.Format("Console log level is {0}", MainConsole.Instance.Threshold));
         }
 
         static void HandleLogLevel(IScene scene, string[] cmd)
@@ -123,7 +122,7 @@ namespace Universe.Services
             {
                 MainConsole.Instance.Threshold = (Level)Enum.Parse(typeof(Level), rawLevel, true);
             }
-            catch { } 
+            catch { }
             MainConsole.Instance.Format(Level.Off, "Console log level is {0}", MainConsole.Instance.Threshold);
         }
 

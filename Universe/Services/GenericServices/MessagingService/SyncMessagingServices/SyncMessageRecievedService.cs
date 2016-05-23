@@ -25,12 +25,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
-using Universe.Framework.Modules;
-using Universe.Framework.Services;
+using System.Linq;
 using Nini.Config;
 using OpenMetaverse.StructuredData;
-using System.Linq;
+using Universe.Framework.Modules;
+using Universe.Framework.Services;
 
 namespace Universe.Services
 {
@@ -48,16 +47,17 @@ namespace Universe.Services
         public OSDMap FireMessageReceived(OSDMap message)
         {
             OSDMap result = null;
+
             if (OnMessageReceived != null)
             {
                 MessageReceived eventCopy = OnMessageReceived;
                 foreach (OSDMap r in from MessageReceived messagedelegate in eventCopy.GetInvocationList()
                                      select messagedelegate(message)
-                                     into r where r != null select r)
-                {
-                    result = r;
-                }
+                                     into r
+                                     where r != null
+                                     select r) { result = r; }
             }
+
             return result;
         }
 
