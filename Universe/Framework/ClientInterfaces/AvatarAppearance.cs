@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-support/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -44,16 +44,16 @@ namespace Universe.Framework.ClientInterfaces
     {
         public static readonly int VISUALPARAM_COUNT = 218;
         public static readonly int TEXTURE_COUNT = 21;
-        public static readonly byte[] BAKE_INDICES = new byte[] {8, 9, 10, 11, 19, 20};
-        
-        private int m_serial = 1;
-        private byte[] m_visualparams;
-        private Primitive.TextureEntry m_texture;
-        private AvatarWearable[] m_wearables;
-        private Dictionary<int, List<AvatarAttachment>> m_attachments;        
-        private float m_avatarHeight = 0;
-        private UUID m_owner;
-        private Dictionary<string, UUID> m_wearableCache = new Dictionary<string, UUID>();
+        public static readonly byte[] BAKE_INDICES = new byte[] { 8, 9, 10, 11, 19, 20 };
+
+        int m_serial = 1;
+        byte[] m_visualparams;
+        Primitive.TextureEntry m_texture;
+        AvatarWearable[] m_wearables;
+        Dictionary<int, List<AvatarAttachment>> m_attachments;
+        float m_avatarHeight = 0;
+        UUID m_owner;
+        Dictionary<string, UUID> m_wearableCache = new Dictionary<string, UUID>();
 
         public int Serial
         {
@@ -96,10 +96,11 @@ namespace Universe.Framework.ClientInterfaces
             set { m_owner = value; }
         }
 
+        static readonly object _attachmentslock = new object();
         public Dictionary<int, List<AvatarAttachment>> Attachments
         {
-            get { return m_attachments; }
-            set { m_attachments = value; }
+            get { lock (_attachmentslock) { return m_attachments; } }
+            set { lock (_attachmentslock) { m_attachments = value; } }
         }
 
         public AvatarAppearance() : this(UUID.Zero)
@@ -127,7 +128,7 @@ namespace Universe.Framework.ClientInterfaces
         public AvatarAppearance(UUID avatarID, AvatarWearable[] wearables, Primitive.TextureEntry textureEntry,
                                 byte[] visualParams)
         {
-            //MainConsole.Instance.WarnFormat("[AVATAR APPEARANCE] create initialized appearance for {0}",avatarID);
+            //MainConsole.Instance.WarnFormat("[Avatar Appearance] create initialized appearance for {0}",avatarID);
 
             m_serial = 1;
             m_owner = avatarID;
@@ -159,7 +160,7 @@ namespace Universe.Framework.ClientInterfaces
 
         public AvatarAppearance(AvatarAppearance appearance, bool copyWearables)
         {
-            //MainConsole.Instance.WarnFormat("[AVATAR APPEARANCE] create from an existing appearance");
+            //MainConsole.Instance.WarnFormat("[Avatar Appearance] create from an existing appearance");
 
             if (appearance == null)
             {
@@ -197,10 +198,12 @@ namespace Universe.Framework.ClientInterfaces
 
             m_visualparams = null;
             if (appearance.VisualParams != null)
-                m_visualparams = (byte[]) appearance.VisualParams.Clone();
-            
+                m_visualparams = (byte[])appearance.VisualParams.Clone();
+            else
+                SetDefaultParams();    // we need something to work with
+
             SetHeight();
-            
+
             // Copy the attachment, force append mode since that ensures consistency
             m_attachments = new Dictionary<int, List<AvatarAttachment>>();
             foreach (AvatarAttachment attachment in appearance.GetAttachments())
@@ -232,40 +235,52 @@ namespace Universe.Framework.ClientInterfaces
         {
             m_wearables = AvatarWearable.DefaultWearables;
         }
-        
+
         public void ResetAppearance()
         {
-        	m_serial = 1;
+            m_serial = 1;
             SetDefaultTexture();
         }
 
-        private void SetDefaultParams()
+        void SetDefaultParams()
         {
-            m_visualparams = new byte[]
-                                 {
-                                     33, 61, 85, 23, 58, 127, 63, 85, 63, 42, 0, 85, 63, 36, 85, 95, 153, 63, 34, 0, 63,
-                                     109, 88, 132, 63, 136, 81, 85, 103, 136, 127, 0, 150, 150, 150, 127, 0, 0, 0, 0, 0,
-                                     127, 0, 0, 255, 127, 114, 127, 99, 63, 127, 140, 127, 127, 0, 0, 0, 191, 0, 104, 0,
-                                     0,
-                                     0, 0, 0, 0, 0, 0, 0, 145, 216, 133, 0, 127, 0, 127, 170, 0, 0, 127, 127, 109, 85,
-                                     127,
-                                     127, 63, 85, 42, 150, 150, 150, 150, 150, 150, 150, 25, 150, 150, 150, 0, 127, 0, 0
-                                     ,
-                                     144, 85, 127, 132, 127, 85, 0, 127, 127, 127, 127, 127, 127, 59, 127, 85, 127, 127,
-                                     106, 47, 79, 127, 127, 204, 2, 141, 66, 0, 0, 127, 127, 0, 0, 0, 0, 127, 0, 159, 0,
-                                     0,
-                                     178, 127, 36, 85, 131, 127, 127, 127, 153, 95, 0, 140, 75, 27, 127, 127, 0, 150,
-                                     150,
-                                     198, 0, 0, 63, 30, 127, 165, 209, 198, 127, 127, 153, 204, 51, 51, 255, 255, 255,
-                                     204,
-                                     0, 255, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 0, 150, 150, 150, 150,
-                                     150,
-                                     0, 127, 127, 150, 150, 150, 150, 150, 150, 150, 150, 0, 0, 150, 51, 132, 150, 150,
-                                     150
-                                 };
+            // Initial parameters for Ruth
+            // Superseded by the new Avatar details
+            /*
+            m_visualparams = new byte[] {
+        		33, 61, 85, 23, 58, 127, 63, 85, 63, 42, 0, 85, 63, 36, 85, 95, 153, 63, 34, 0, 63,
+        		109, 88, 132, 63, 136, 81, 85, 103, 136, 127, 0, 150, 150, 150, 127, 0, 0, 0, 0, 0,
+        		127, 0, 0, 255, 127, 114, 127, 99, 63, 127, 140, 127, 127, 0, 0, 0, 191, 0, 104, 0,
+        		0, 0, 0, 0, 0, 0, 0, 0, 145, 216, 133, 0, 127, 0, 127, 170, 0, 0, 127, 127, 109, 85,
+        		127, 127, 63, 85, 42, 150, 150, 150, 150, 150, 150, 150, 25, 150, 150, 150, 0, 127, 0, 
+        		0, 144, 85, 127, 132, 127, 85, 0, 127, 127, 127, 127, 127, 127, 59, 127, 85, 127, 127,
+        		106, 47, 79, 127, 127, 204, 2, 141, 66, 0, 0, 127, 127, 0, 0, 0, 0, 127, 0, 159, 0,
+        		0, 178, 127, 36, 85, 131, 127, 127, 127, 153, 95, 0, 140, 75, 27, 127, 127, 0, 150,
+        		150, 198, 0, 0, 63, 30, 127, 165, 209, 198, 127, 127, 153, 204, 51, 51, 255, 255, 255,
+        		204, 0, 255, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 0, 150, 150, 150, 150,
+        		150, 0, 127, 127, 150, 150, 150, 150, 150, 150, 150, 150, 0, 0, 150, 51, 132, 150, 150,
+        		150
+        	};
+        	 */
+            // female params
+            m_visualparams = new byte[] {
+                33, 37, 56, 62, 25, 204, 12, 114, 66, 25, 37, 178, 102, 53, 139, 38, 114, 30, 0, 127,
+                102, 122, 76, 66, 63, 76, 38, 63, 122, 102, 158, 0, 203, 255, 0, 127, 0, 0, 255, 0, 28,
+                255, 255, 0, 0, 0, 132, 0, 96, 0, 226, 181, 35, 127, 153, 0, 0, 206, 0, 23, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 145, 204, 178, 0, 43, 0, 165, 91, 0, 0, 102, 76, 76, 85,
+                127, 127, 25, 90, 152, 100, 216, 214, 255, 255, 135, 255, 25, 89, 76, 204, 0, 127,
+                73, 0, 147, 139, 142, 125, 114, 117, 0, 127, 193, 132, 127, 132, 122, 59, 63, 81, 127,
+                147, 183, 76, 79, 81, 127, 249, 63, 0, 0, 0, 0, 127, 127, 0, 0, 0, 0, 127, 0, 159, 0, 0,
+                0, 127, 83, 68, 131, 107, 158, 112, 193, 183, 0, 107, 142, 0, 130, 147, 0, 214, 255,
+                198, 0, 0, 96, 30, 122, 165, 209, 198, 127, 127, 153, 255, 255, 255, 255, 255, 255, 255,
+                0, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 0, 255, 255, 255, 255, 255,
+                0, 132, 153, 255, 25, 100, 255, 255, 255, 255, 84, 0, 0, 0, 51, 91, 255, 255, 255, 0,
+                0, 25, 0, 25, 23, 51, 0, 25, 23, 51, 0, 0, 25, 0, 25, 23, 51, 0, 0, 25, 0, 25, 23, 51,
+                0, 25, 23, 51, 0, 25, 23, 51, 0, 127
+            };
         }
 
-        private void SetDefaultTexture()
+        void SetDefaultTexture()
         {
             m_texture = new Primitive.TextureEntry(new UUID("C228D1CF-4B5D-4BA8-84F4-899A0796AA97"));
             for (uint i = 0; i < TEXTURE_COUNT; i++)
@@ -310,7 +325,7 @@ namespace Universe.Framework.ClientInterfaces
                             ChangedTextures.Add(oldface.TextureID);
 
                     //if (newface != null)
-                    //   MainConsole.Instance.WarnFormat("[AVATAR APPEARANCE]: index {0}, new texture id {1}",i,newface.TextureID);
+                    //    MainConsole.Instance.WarnFormat("[Avatar Appearance]: index {0}, new texture id {1}",i,newface.TextureID);
                 }
             }
 
@@ -332,9 +347,9 @@ namespace Universe.Framework.ClientInterfaces
             // made. We determine if any of the visual parameters actually
             // changed to know if the appearance should be saved later
             bool changed = false;
-            
+
             int newsize = visualParams.Length;
-            
+
             if (newsize != m_visualparams.Length)
             {
                 changed = true;
@@ -342,7 +357,7 @@ namespace Universe.Framework.ClientInterfaces
             }
             else
             {
-            	for (int i = 0; i < newsize; i++)
+                for (int i = 0; i < newsize; i++)
                 {
                     if (visualParams[i] != m_visualparams[i])
                     {
@@ -369,13 +384,13 @@ namespace Universe.Framework.ClientInterfaces
         public void SetHeight()
         {
             m_avatarHeight = 1.26077f // Shortest possible avatar height
-                             + 0.506945f*m_visualparams[(int) VPElement.SHAPE_HEIGHT]/255.0f // Body height
-                             + 0.072514f*m_visualparams[(int) VPElement.SHAPE_HEAD_SIZE]/255.0f // Head size
-                             + 0.3836f*m_visualparams[(int) VPElement.SHAPE_LEG_LENGTH]/255.0f // Leg length
-                             + 0.08f*m_visualparams[(int) VPElement.SHOES_PLATFORM_HEIGHT]/255.0f
+                             + 0.506945f * m_visualparams[(int)VPElement.SHAPE_HEIGHT] / 255.0f // Body height
+                             + 0.072514f * m_visualparams[(int)VPElement.SHAPE_HEAD_SIZE] / 255.0f // Head size
+                             + 0.3836f * m_visualparams[(int)VPElement.SHAPE_LEG_LENGTH] / 255.0f // Leg length
+                             + 0.08f * m_visualparams[(int)VPElement.SHOES_PLATFORM_HEIGHT] / 255.0f
                              // Shoe platform height
-                             + 0.07f*m_visualparams[(int) VPElement.SHOES_HEEL_HEIGHT]/255.0f // Shoe heel height
-                             + 0.076f*m_visualparams[(int) VPElement.SHAPE_NECK_LENGTH]/255.0f; // Neck length
+                             + 0.07f * m_visualparams[(int)VPElement.SHOES_HEEL_HEIGHT] / 255.0f // Shoe heel height
+                             + 0.076f * m_visualparams[(int)VPElement.SHAPE_NECK_LENGTH] / 255.0f; // Neck length
         }
 
         public void SetWearable(int wearableId, AvatarWearable wearable)
@@ -386,25 +401,25 @@ namespace Universe.Framework.ClientInterfaces
         }
 
         // DEBUG ON
-        public override String ToString()
+        public override string ToString()
         {
-            String s = "";
+            string s = "";
 
-            s += String.Format("Serial: {0}\n", m_serial);
+            s += string.Format("Serial: {0}\n", m_serial);
 
             for (uint i = 0; i < TEXTURE_COUNT; i++)
                 if (m_texture.FaceTextures[i] != null)
-                    s += String.Format("Texture: {0} --> {1}\n", i, m_texture.FaceTextures[i].TextureID);
+                    s += string.Format("Texture: {0} --> {1}\n", i, m_texture.FaceTextures[i].TextureID);
 
             foreach (AvatarWearable awear in m_wearables)
             {
                 for (int i = 0; i < awear.Count; i++)
-                    s += String.Format("Wearable: item={0}, asset={1}\n", awear[i].ItemID, awear[i].AssetID);
+                    s += string.Format("Wearable: item={0}, asset={1}\n", awear[i].ItemID, awear[i].AssetID);
             }
 
             s += "Visual Params: ";
             for (uint j = 0; j < m_visualparams.Length; j++)
-                s += String.Format("{0},", m_visualparams[j]);
+                s += string.Format("{0},", m_visualparams[j]);
             s += "\n";
 
             return s;
@@ -418,7 +433,7 @@ namespace Universe.Framework.ClientInterfaces
         /// </summary>
         public List<AvatarAttachment> GetAttachments()
         {
-            lock (m_attachments)
+            lock (_attachmentslock)
                 return (from kvp in m_attachments from attach in kvp.Value select new AvatarAttachment(attach)).ToList();
         }
 
@@ -428,18 +443,18 @@ namespace Universe.Framework.ClientInterfaces
         /// </summary>
         public Dictionary<int, List<AvatarAttachment>> GetAttachmentsDictionary()
         {
-            lock (m_attachments)
+            lock (_attachmentslock)
                 return new Dictionary<int, List<AvatarAttachment>>(m_attachments);
         }
 
         internal void AppendAttachment(AvatarAttachment attach)
         {
-            lock (m_attachments)
+            lock (_attachmentslock)
             {
                 if (!m_attachments.ContainsKey(attach.AttachPoint))
                     m_attachments[attach.AttachPoint] = new List<AvatarAttachment>();
 
-                // 21/07/2014 Added to prevent Attachments to be added more then once
+                //Added to prevent Attachments to be added more then once
                 foreach (AvatarAttachment prev in m_attachments[attach.AttachPoint])
                 {
                     if (prev.ItemID == attach.ItemID)
@@ -457,7 +472,7 @@ namespace Universe.Framework.ClientInterfaces
         /// <returns>Whether attachments changed</returns>
         internal bool ReplaceAttachment(AvatarAttachment attach)
         {
-            lock (m_attachments)
+            lock (_attachmentslock)
             {
                 bool result = true;
                 if (m_attachments.ContainsKey(attach.AttachPoint))
@@ -465,7 +480,8 @@ namespace Universe.Framework.ClientInterfaces
                     if (m_attachments[attach.AttachPoint].Contains(attach))
                         result = false;
                 }
-                m_attachments[attach.AttachPoint] = new List<AvatarAttachment> {attach};
+
+                m_attachments[attach.AttachPoint] = new List<AvatarAttachment> { attach };
                 return result;
             }
         }
@@ -484,11 +500,12 @@ namespace Universe.Framework.ClientInterfaces
 
             if (item == UUID.Zero)
             {
-                lock (m_attachments)
+                lock (_attachmentslock)
                 {
                     if (m_attachments.ContainsKey(attachpoint))
                         m_attachments.Remove(attachpoint);
                 }
+
                 return true;
             }
 
@@ -519,7 +536,7 @@ namespace Universe.Framework.ClientInterfaces
         {
             if ((attPnt & 0x80) > 0)
                 return true;
-            lock (m_attachments)
+            lock (_attachmentslock)
             {
                 if (m_attachments.ContainsKey(attPnt))
                 {
@@ -529,6 +546,7 @@ namespace Universe.Framework.ClientInterfaces
                     }
                 }
             }
+
             return true;
         }
 
@@ -541,7 +559,7 @@ namespace Universe.Framework.ClientInterfaces
                     continue;
                 AvatarAttachment a = new AvatarAttachment(e.GetAttachmentPoint(), e.RootChild.FromUserInventoryItemID,
                                                           e.RootChild.FromUserInventoryAssetID);
-                lock (m_attachments)
+                lock (_attachmentslock)
                 {
                     if (!m_attachments.ContainsKey(e.GetAttachmentPoint()))
                         m_attachments.Add(e.GetAttachmentPoint(), new List<AvatarAttachment>());
@@ -552,11 +570,11 @@ namespace Universe.Framework.ClientInterfaces
 
         public int GetAttachpoint(UUID itemID)
         {
-            lock (m_attachments)
+            lock (_attachmentslock)
             {
                 return (m_attachments.Select(
                     kvp =>
-                    new {kvp, index = kvp.Value.FindIndex(delegate(AvatarAttachment a) { return a.ItemID == itemID; })})
+                    new { kvp, index = kvp.Value.FindIndex(delegate (AvatarAttachment a) { return a.ItemID == itemID; }) })
                                      .
                                       Where(@t => @t.index >= 0).Select(@t => @t.kvp.Key)).FirstOrDefault();
             }
@@ -564,7 +582,7 @@ namespace Universe.Framework.ClientInterfaces
 
         public bool DetachAttachment(UUID itemID)
         {
-            lock (m_attachments)
+            lock (_attachmentslock)
             {
                 foreach (KeyValuePair<int, List<AvatarAttachment>> kvp in m_attachments)
                 {
@@ -581,13 +599,14 @@ namespace Universe.Framework.ClientInterfaces
                         return true;
                     }
                 }
+
                 return false;
             }
         }
 
         public void ClearAttachments()
         {
-            lock (m_attachments)
+            lock (_attachmentslock)
                 m_attachments.Clear();
         }
 
@@ -632,6 +651,7 @@ namespace Universe.Framework.ClientInterfaces
                                  ? OSD.FromUUID(m_texture.FaceTextures[i].TextureID)
                                  : OSD.FromUUID(AppearanceManager.DEFAULT_AVATAR_TEXTURE));
             }
+
             data["textures"] = textures;
 
             // Visual Parameters
@@ -639,7 +659,13 @@ namespace Universe.Framework.ClientInterfaces
             data["visualparams"] = visualparams;
 
             // Attachments
-            OSDArray attachs = new OSDArray(m_attachments.Count);
+            int attachCount;
+            lock (_attachmentslock)
+            {
+                attachCount = m_attachments.Count;
+            }
+
+            OSDArray attachs = new OSDArray(attachCount);
             foreach (AvatarAttachment attach in GetAttachments())
                 attachs.Add(attach.Pack());
             data["attachments"] = attachs;
@@ -663,7 +689,7 @@ namespace Universe.Framework.ClientInterfaces
             if ((data != null) && (data["serial"] != null))
                 m_serial = data["serial"].AsInteger();
             if ((data != null) && (data["height"] != null))
-                m_avatarHeight = (float) data["height"].AsReal();
+                m_avatarHeight = (float)data["height"].AsReal();
 
             if ((data != null) && (data["owner"] != null))
                 m_owner = data["owner"].AsUUID();
@@ -673,33 +699,33 @@ namespace Universe.Framework.ClientInterfaces
                 SetDefaultWearables();
                 if ((data != null) && (data["wearables"] != null) && (data["wearables"]).Type == OSDType.Array)
                 {
-                    OSDArray wears = (OSDArray) (data["wearables"]);
+                    OSDArray wears = (OSDArray)(data["wearables"]);
                     for (int i = 0; i < wears.Count; i++)
-                        if(wears[i] is OSDArray)
-                            m_wearables[i] = new AvatarWearable((OSDArray) wears[i]);
+                        if (wears[i] is OSDArray)
+                            m_wearables[i] = new AvatarWearable((OSDArray)wears[i]);
                 }
                 else
                 {
-                    MainConsole.Instance.Warn("[AVATAR APPEARANCE]: failed to unpack wearables");
+                    MainConsole.Instance.Warn("[Avatar Appearance]: failed to unpack wearables");
                 }
 
                 // Avatar Textures
                 SetDefaultTexture();
                 if ((data != null) && (data["textures"] != null) && (data["textures"]).Type == OSDType.Array)
                 {
-                    OSDArray textures = (OSDArray) (data["textures"]);
+                    OSDArray textures = (OSDArray)(data["textures"]);
                     for (int i = 0; i < TEXTURE_COUNT && i < textures.Count; i++)
                     {
                         UUID textureID = AppearanceManager.DEFAULT_AVATAR_TEXTURE;
                         if (textures[i] != null)
                             textureID = textures[i].AsUUID();
                         if (textureID != AppearanceManager.DEFAULT_AVATAR_TEXTURE)
-                            m_texture.CreateFace((uint) i).TextureID = new UUID(textureID);
+                            m_texture.CreateFace((uint)i).TextureID = new UUID(textureID);
                     }
                 }
                 else
                 {
-                    MainConsole.Instance.Warn("[AVATAR APPEARANCE]: failed to unpack textures");
+                    MainConsole.Instance.Warn("[Avatar Appearance]: failed to unpack textures");
                 }
 
                 // Visual Parameters
@@ -711,16 +737,16 @@ namespace Universe.Framework.ClientInterfaces
                 }
                 else
                 {
-                    MainConsole.Instance.Warn("[AVATAR APPEARANCE]: failed to unpack visual parameters");
+                    MainConsole.Instance.Warn("[Avatar Appearance]: failed to unpack visual parameters");
                 }
 
                 // Attachments
                 m_attachments = new Dictionary<int, List<AvatarAttachment>>();
                 if ((data != null) && (data["attachments"] != null) && (data["attachments"]).Type == OSDType.Array)
                 {
-                    OSDArray attachs = (OSDArray) (data["attachments"]);
+                    OSDArray attachs = (OSDArray)(data["attachments"]);
                     foreach (OSD t in attachs)
-                        AppendAttachment(new AvatarAttachment((OSDMap) t));
+                        AppendAttachment(new AvatarAttachment((OSDMap)t));
                 }
                 if (data != null && data["wearableCache"] != null && data["wearableCache"] is OSDMap)
                     m_wearableCache = ((OSDMap)data["wearableCache"]).ConvertMap<UUID>((o) => o);
@@ -728,7 +754,7 @@ namespace Universe.Framework.ClientInterfaces
             }
             catch (Exception e)
             {
-                MainConsole.Instance.ErrorFormat("[AVATAR APPEARANCE]: unpack failed badly: {0}, {1}", e.ToString(), OSDParser.SerializeJsonString(data));
+                MainConsole.Instance.ErrorFormat("[Avatar Appearance]: unpack failed badly: {0}, {1}", e.ToString(), OSDParser.SerializeJsonString(data));
             }
         }
 
@@ -1694,7 +1720,7 @@ namespace Universe.Framework.ClientInterfaces
             BREAST_PHYSICS_INOUT_SPRING = 226,
             BREAST_PHYSICS_INOUT_GAIN = 227,
             BREAST_PHYSICS_INOUT_DAMPING = 228,
-            
+
             /// <summary>
             /// Belly
             /// </summary>
@@ -1720,12 +1746,12 @@ namespace Universe.Framework.ClientInterfaces
             BUTT_PHYSICS_LEFTRIGHT_SPRING = 244,
             BUTT_PHYSICS_LEFTRIGHT_GAIN = 245,
             BUTT_PHYSICS_LEFTRIGHT_DAMPING = 246,
-            
+
             /// <summary>
             /// Breast Part 2
             /// </summary>
             BREAST_PHYSICS_LEFTRIGHT_MAX_EFFECT = 247,
-            BREAST_PHYSICS_LEFTRIGHT_SPRING= 248,
+            BREAST_PHYSICS_LEFTRIGHT_SPRING = 248,
             BREAST_PHYSICS_LEFTRIGHT_GAIN = 249,
             BREAST_PHYSICS_LEFTRIGHT_DAMPING = 250
         }

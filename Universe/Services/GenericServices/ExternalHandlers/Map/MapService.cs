@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,6 +25,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Linq;
+using Nini.Config;
+using ProtoBuf;
 using Universe.Framework.Modules;
 using Universe.Framework.Servers;
 using Universe.Framework.Servers.HttpServer;
@@ -32,14 +40,6 @@ using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Servers.HttpServer.Interfaces;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
-using Nini.Config;
-using ProtoBuf;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
 using GridRegion = Universe.Framework.Services.GridRegion;
 
 namespace Universe.Services
@@ -53,7 +53,7 @@ namespace Universe.Services
         bool m_cacheEnabled = true;
         float m_cacheExpires = 24;
         IAssetService m_assetService;
-        string m_assetCacheDir = Constants.DEFAULT_ASSETCACHE_DIR;
+        string m_assetCacheDir = "";
         string m_assetMapCacheDir;
         IGridService m_gridService;
         IJ2KDecoder m_j2kDecoder;
@@ -78,6 +78,11 @@ namespace Universe.Services
             if (m_cacheEnabled)
             {
                 m_assetCacheDir = config.Configs ["AssetCache"].GetString ("CacheDirectory",m_assetCacheDir);
+                if (m_assetCacheDir == "")
+                {
+                    var defpath = registry.RequestModuleInterface<ISimulationBase> ().DefaultDataPath;
+                    m_assetCacheDir = Path.Combine (defpath, Constants.DEFAULT_ASSETCACHE_DIR);
+                }
                 CreateCacheDirectories (m_assetCacheDir);
             }
 
@@ -214,18 +219,14 @@ namespace Universe.Services
                                   "<Marker/>" +
                                   "<MaxKeys>1000</MaxKeys>" +
                                   "<IsTruncated>true</IsTruncated>";
-                    List<GridRegion> regions = m_gridService.GetRegionRange(null,
-                                                                            (1000*Constants.RegionSize) -
-                                                                            (8*Constants.RegionSize),
-                                                                            (1000*Constants.RegionSize) +
-                                                                            (8*Constants.RegionSize),
-                                                                            (1000*Constants.RegionSize) -
-                                                                            (8*Constants.RegionSize),
-                                                                            (1000*Constants.RegionSize) +
-                                                                            (8*Constants.RegionSize));
+                    
+                    var thSize = 1000 * Constants.RegionSize;       // TODO:  Why 1000?  Should this be relative to the view??
+                    var etSize = 8 * Constants.RegionSize;
+                    List<GridRegion> regions = m_gridService.GetRegionRange (
+                                                   null, (thSize - etSize), (thSize + etSize), (thSize - etSize), (thSize + etSize));
                     foreach (var region in regions)
                     {
-                        resp += "<Contents><Key>map-1-" + region.RegionLocX/256 + "-" + region.RegionLocY/256 +
+                        resp += "<Contents><Key>map-1-" + region.RegionLocX / Constants.RegionSize + "-" + region.RegionLocY / Constants.RegionSize +
                                 "-objects.jpg</Key>" +
                                 "<LastModified>2012-07-09T21:26:32.000Z</LastModified></Contents>";
                     }
@@ -240,7 +241,9 @@ namespace Universe.Services
                         region = m_gridService.GetRegionByUUID(null, OpenMetaverse.UUID.Parse(uri.Remove(uri.Length - 4)));
 
                     // non-async because we know we have the asset immediately.
-                    byte[] mapasset = m_assetService.GetData(region.TerrainMapImage.ToString());
+                    byte[] mapasset = null;
+                    if ( m_assetService.GetExists(region.TerrainMapImage.ToString()))
+                        mapasset = m_assetService.GetData(region.TerrainMapImage.ToString());
                     if (mapasset != null)
                     {
                         try
@@ -282,11 +285,13 @@ namespace Universe.Services
                 int distance = (int)Math.Pow(2, mapLayer);
                 int maxRegionSize = m_gridService.GetMaxRegionSize();
                 if (maxRegionSize == 0) maxRegionSize = Constants.MaxRegionSize;
-                List<GridRegion> regions = m_gridService.GetRegionRange(null,
-                                                                    ((regionX) * Constants.RegionSize) - maxRegionSize,
-                                                                    ((regionX + distance) * Constants.RegionSize) + maxRegionSize,
-                                                                    ((regionY) * Constants.RegionSize) - maxRegionSize,
-                                                                    ((regionY + distance) * Constants.RegionSize) + maxRegionSize);
+                List<GridRegion> regions = m_gridService.GetRegionRange(
+                    null,
+                    ((regionX) * Constants.RegionSize) - maxRegionSize,
+                    ((regionX + distance) * Constants.RegionSize) + maxRegionSize,
+                    ((regionY) * Constants.RegionSize) - maxRegionSize,
+                    ((regionY + distance) * Constants.RegionSize) + maxRegionSize);
+                
                 Bitmap mapTexture = BuildMapTile(mapLayer, regionX, regionY, regions);
                 jpeg = CacheMapTexture(mapLayer, regionX, regionY, mapTexture);
                 DisposeTexture(mapTexture);
@@ -374,7 +379,10 @@ namespace Universe.Services
 
         bool IsStaticBlank(Bitmap bitmap)
         {
-            return bitmap.Tag != null && (bitmap.Tag is string) && ((string)bitmap.Tag) == "StaticBlank";
+            bool isStatic = false;
+            if ((bitmap != null) && (bitmap.Tag is string))
+                isStatic = ((string)bitmap.Tag == "StaticBlank");
+            return isStatic;
         }
 
         Bitmap ResizeBitmap(Bitmap b, int nWidth, int nHeight)
@@ -395,11 +403,12 @@ namespace Universe.Services
             {
                 int maxRegionSize = m_gridService.GetMaxRegionSize();
                 if (maxRegionSize == 0) maxRegionSize = Constants.MaxRegionSize;
-                regions = m_gridService.GetRegionRange(null,
-                                                                    (regionX * Constants.RegionSize) - maxRegionSize,
-                                                                    (regionX * Constants.RegionSize) + maxRegionSize,
-                                                                    (regionY * Constants.RegionSize) - maxRegionSize,
-                                                                    (regionY * Constants.RegionSize) + maxRegionSize);
+                regions = m_gridService.GetRegionRange(
+                    null,
+                    (regionX * Constants.RegionSize) - maxRegionSize,
+                    (regionX * Constants.RegionSize) + maxRegionSize,
+                    (regionY * Constants.RegionSize) - maxRegionSize,
+                    (regionY * Constants.RegionSize) + maxRegionSize);
             }
 
             List<Image> bitImages = new List<Image>();
@@ -417,7 +426,9 @@ namespace Universe.Services
             IJ2KDecoder decoder = m_registry.RequestModuleInterface<IJ2KDecoder>();
             foreach (GridRegion r in regions)
             {
-                byte[] texAsset = m_assetService.GetData(r.TerrainMapImage.ToString());
+                byte[] texAsset = null;
+                if (m_assetService.GetExists(r.TerrainMapImage.ToString()))
+                    texAsset = m_assetService.GetData(r.TerrainMapImage.ToString());
 
                 if (texAsset != null)
                 {
@@ -456,15 +467,11 @@ namespace Universe.Services
                     float y = (regions[i].RegionLocY - (regionY * (float)Constants.RegionSize)) /
                                 Constants.RegionSize;
                     y += (regions[i].RegionSizeY - Constants.RegionSize) / Constants.RegionSize;
-                    float xx = (float)(x * (SizeOfImage));
+                    float xx = (x * (SizeOfImage));
                     float yy = SizeOfImage - (y * (SizeOfImage) + (SizeOfImage));
                     g.DrawImage(bitImages[i], xx, yy,
-                                (int)
-                                (SizeOfImage *
-                                    ((float)regions[i].RegionSizeX / Constants.RegionSize)),
-                                (int)
-                                (SizeOfImage *
-                                    (regions[i].RegionSizeY / (float)Constants.RegionSize))); // y origin is top
+                        (int) (SizeOfImage * ((float)regions[i].RegionSizeX / Constants.RegionSize)),
+                        (int) (SizeOfImage * (regions[i].RegionSizeY / (float)Constants.RegionSize))); // y origin is top
                 }
             }
 
@@ -476,7 +483,7 @@ namespace Universe.Services
             return mapTexture;
         }
 
-        // From msdn
+        // From MSDN
         static ImageCodecInfo GetEncoderInfo(String mimeType)
         {
             ImageCodecInfo[] encoders = ImageCodecInfo.GetImageEncoders();
@@ -488,7 +495,6 @@ namespace Universe.Services
             if (!m_cacheEnabled)
                 return new byte[0];
 
-            //string fullPath = Path.Combine(m_assetCacheDir, Path.Combine("mapzoomlevels", name));
             string fullPath = Path.Combine(m_assetMapCacheDir, name);
             if (File.Exists(fullPath))
             {
@@ -518,7 +524,6 @@ namespace Universe.Services
             }
 
             string name = string.Format("map-{0}-{1}-{2}-objects.jpg", maplayer, regionX, regionY);
-            //string fullPath = Path.Combine(m_assetCacheDir, Path.Combine("mapzoomlevels", name));
             string fullPath = Path.Combine(m_assetMapCacheDir, name);
             if (File.Exists(fullPath))
             {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-support/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,6 +41,8 @@ namespace Universe.Framework.ClientInterfaces
         public ushort SizeX;
         public ushort SizeY;
         public byte WaterHeight;
+
+        //NOTE:  These are uint16 values so the current max location limitation is 63466, 63466 !!ß
         public ushort X;
         public ushort Y;
 

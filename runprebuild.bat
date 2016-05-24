@@ -1,7 +1,7 @@
 @ECHO OFF
 
 echo ========================================
-echo ==== Universe Configuration ===========
+echo ==== Virtual Universe Configuration ====
 echo ========================================
 echo.
 echo If you wish to customize the configuration, re-run with the switch '-p'
@@ -63,7 +63,6 @@ if %version% == 5.1 (
 	set framework=3_5
 	echo hmmm... Windows XP
 )
-
 
 rem ## If not requested, skip the prompting
 if "%1" =="" goto final

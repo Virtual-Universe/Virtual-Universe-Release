@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,13 +32,13 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
 using Universe.Framework.Modules;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Inventory;
 using Universe.Framework.Utilities;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
 
 namespace Universe.Services.DataService
 {
@@ -76,18 +76,19 @@ namespace Universe.Services.DataService
             get { return "IInventoryData"; }
         }
 
-        public bool FolderExists(UUID FolderID)
+        public bool FolderExists(UUID folderID)
         {
             QueryFilter filter = new QueryFilter();
-            filter.andFilters["folderID"] = FolderID;
+            filter.andFilters["folderID"] = folderID;
             return GD.Query(new string[] {"folderID"}, m_foldersrealm, filter, null, null, null).Count > 0;
         }
 
-        public bool FolderItemExists(UUID itemID, UUID FolderID)
+        public bool FolderItemExists(UUID folderID, UUID itemID)
         {
             QueryFilter filter = new QueryFilter();
+            filter.andFilters["parentFolderID"] = folderID;
             filter.andFilters["assetID"] = itemID;
-            filter.andFilters["parentFolderID"] = FolderID;
+
             return GD.Query(new string[] {"assetID"}, m_itemsrealm, filter, null, null, null).Count > 0;
         }
 
@@ -102,7 +103,7 @@ namespace Universe.Services.DataService
         /// Gets a user inventory folder ID.
         /// </summary>
         /// <returns>The user folder ID or null.</returns>
-        /// <param name="avatarID">Avatar ID</param>
+        /// <param name="principalID">Avatar ID</param>
         /// <param name="folderName">Folder name.</param>
         public List<string> GetUserFolderID (UUID principalID, string folderName)
         {
@@ -149,9 +150,7 @@ namespace Universe.Services.DataService
                 filter.andFilters.Add(fields[i], vals[i]);
 
             List<string> data = GD.Query(new string[1] {"assetID"}, m_itemsrealm, filter, null, null, null);
-            if (data == null)
-                return null;
-            return data.ConvertAll<UUID>((s) => UUID.Parse(s));
+            return data == null ? null : data.ConvertAll<UUID> (s => UUID.Parse (s));
         }
 
         public virtual OSDArray GetLLSDItems(string[] fields, string[] vals)
@@ -201,7 +200,7 @@ namespace Universe.Services.DataService
             return (q != null && q.Count > 0) ? q[0] : "";
         }
 
-        public virtual byte[] FetchInventoryReply(OSDArray fetchRequest, UUID AgentID, UUID forceOwnerID,
+        public virtual byte[] FetchInventoryReply(OSDArray fetchRequest, UUID agentID, UUID forceOwnerID,
                                                   UUID libraryOwnerID)
         {
             LLSDSerializationDictionary contents = new LLSDSerializationDictionary();
@@ -223,7 +222,7 @@ namespace Universe.Services.DataService
                 //int sort_order = invFetch["sort_order"].AsInteger();
 
                 //Set the normal stuff
-                contents["agent_id"] = AgentID;
+                contents["agent_id"] = agentID;
                 contents["owner_id"] = owner_id;
                 contents["folder_id"] = folder_id;
 
@@ -321,7 +320,7 @@ namespace Universe.Services.DataService
                                 if ((int) invType == -1)
                                 {
                                     //Asset problem, fix it, it's supposed to be 0
-                                    List<InventoryItemBase> itms = GetItems(AgentID,
+                                    List<InventoryItemBase> itms = GetItems(agentID,
                                                                             new string[2] {"inventoryID", "avatarID"},
                                                                             new string[2]
                                                                                 {
@@ -377,13 +376,13 @@ namespace Universe.Services.DataService
 
                     if (fetch_folders)
                     {
-                        if (int.Parse(versionRetVal[1]) == (int) AssetType.TrashFolder ||
-                            int.Parse(versionRetVal[1]) == (int) AssetType.CurrentOutfitFolder ||
+                        if (int.Parse(versionRetVal[1]) == (int) FolderType.Trash ||
+                            int.Parse(versionRetVal[1]) == (int) FolderType.CurrentOutfit ||
                             int.Parse(versionRetVal[1]) == (int) AssetType.LinkFolder)
                         {
                             //If it is the trash folder, we need to send its descendents, because the viewer wants it
                             query = String.Format("where {0} = '{1}' and {2} = '{3}'", "parentFolderID", folder_id,
-                                                  "agentID", AgentID);
+                                                  "agentID", agentID);
                             using (DataReaderConnection retVal = GD.QueryData(query, m_foldersrealm, "*"))
                             {
                                 try
@@ -572,7 +571,7 @@ namespace Universe.Services.DataService
         {
         }
 
-        private OSDArray ParseLLSDInventoryItems(IDataReader retVal)
+        OSDArray ParseLLSDInventoryItems(IDataReader retVal)
         {
             OSDArray array = new OSDArray();
 
@@ -633,15 +632,14 @@ namespace Universe.Services.DataService
             return array;
         }
 
-        private List<InventoryFolderBase> ParseInventoryFolders(ref Dictionary<string, List<string>> retVal)
+         List<InventoryFolderBase> ParseInventoryFolders(ref Dictionary<string, List<string>> retVal)
         {
             List<InventoryFolderBase> folders = new List<InventoryFolderBase>();
             if (retVal.Count == 0)
                 return folders;
             for (int i = 0; i < retVal.ElementAt(0).Value.Count; i++)
             {
-                InventoryFolderBase folder = new InventoryFolderBase
-                                                 {
+                InventoryFolderBase folder = new InventoryFolderBase {
                                                      Name = retVal["folderName"][i],
                                                      Type = short.Parse(retVal["type"][i]),
                                                      Version = (ushort) int.Parse(retVal["version"][i]),
@@ -655,39 +653,33 @@ namespace Universe.Services.DataService
             return folders;
         }
 
-        private List<InventoryItemBase> ParseInventoryItems(IDataReader retVal)
+        List<InventoryItemBase> ParseInventoryItems(IDataReader retVal)
         {
             List<InventoryItemBase> items = new List<InventoryItemBase>();
             while (retVal.Read())
             {
-                InventoryItemBase item = new InventoryItemBase
-                                             {
-                                                 AssetID = UUID.Parse(retVal["assetID"].ToString()),
-                                                 AssetType = int.Parse(retVal["assetType"].ToString()),
-                                                 Name = retVal["inventoryName"].ToString(),
-                                                 Description = retVal["inventoryDescription"].ToString(),
-                                                 NextPermissions =
-                                                     uint.Parse(retVal["inventoryNextPermissions"].ToString()),
-                                                 CurrentPermissions =
-                                                     uint.Parse(retVal["inventoryCurrentPermissions"].ToString()),
-                                                 InvType = int.Parse(retVal["invType"].ToString()),
-                                                 CreatorIdentification = retVal["creatorID"].ToString(),
-                                                 BasePermissions =
-                                                     uint.Parse(retVal["inventoryBasePermissions"].ToString()),
-                                                 EveryOnePermissions =
-                                                     uint.Parse(retVal["inventoryEveryOnePermissions"].ToString()),
-                                                 SalePrice = int.Parse(retVal["salePrice"].ToString()),
-                                                 SaleType = byte.Parse(retVal["saleType"].ToString()),
-                                                 CreationDate = int.Parse(retVal["creationDate"].ToString()),
-                                                 GroupID = UUID.Parse(retVal["groupID"].ToString()),
-                                                 GroupOwned = int.Parse(retVal["groupOwned"].ToString()) == 1,
-                                                 Flags = uint.Parse(retVal["flags"].ToString()),
-                                                 ID = UUID.Parse(retVal["inventoryID"].ToString()),
-                                                 Owner = UUID.Parse(retVal["avatarID"].ToString()),
-                                                 Folder = UUID.Parse(retVal["parentFolderID"].ToString()),
-                                                 GroupPermissions =
-                                                     uint.Parse(retVal["inventoryGroupPermissions"].ToString())
-                                             };
+                InventoryItemBase item = new InventoryItemBase {
+                    AssetID = UUID.Parse (retVal ["assetID"].ToString ()),
+                    AssetType = int.Parse (retVal ["assetType"].ToString ()),
+                    Name = retVal ["inventoryName"].ToString (),
+                    Description = retVal ["inventoryDescription"].ToString (),
+                    NextPermissions = uint.Parse (retVal ["inventoryNextPermissions"].ToString ()),
+                    CurrentPermissions = uint.Parse (retVal ["inventoryCurrentPermissions"].ToString ()),
+                    InvType = int.Parse (retVal ["invType"].ToString ()),
+                    CreatorIdentification = retVal ["creatorID"].ToString (),
+                    BasePermissions = uint.Parse (retVal ["inventoryBasePermissions"].ToString ()),
+                    EveryOnePermissions = uint.Parse (retVal ["inventoryEveryOnePermissions"].ToString ()),
+                    SalePrice = int.Parse (retVal ["salePrice"].ToString ()),
+                    SaleType = byte.Parse (retVal ["saleType"].ToString ()),
+                    CreationDate = int.Parse (retVal ["creationDate"].ToString ()),
+                    GroupID = UUID.Parse (retVal ["groupID"].ToString ()),
+                    GroupOwned = int.Parse (retVal ["groupOwned"].ToString ()) == 1,
+                    Flags = uint.Parse (retVal ["flags"].ToString ()),
+                    ID = UUID.Parse (retVal ["inventoryID"].ToString ()),
+                    Owner = UUID.Parse (retVal ["avatarID"].ToString ()),
+                    Folder = UUID.Parse (retVal ["parentFolderID"].ToString ()),
+                    GroupPermissions = uint.Parse (retVal ["inventoryGroupPermissions"].ToString ())
+                };
                 if (item.InvType == -1)
                 {
                     //Fix the bad invType
@@ -703,8 +695,8 @@ namespace Universe.Services.DataService
 
         public class LLSDSerializationDictionary
         {
-            private readonly MemoryStream sw = new MemoryStream();
-            private readonly XmlTextWriter writer;
+            readonly MemoryStream sw = new MemoryStream();
+            readonly XmlTextWriter writer;
 
             public LLSDSerializationDictionary()
             {
@@ -783,7 +775,6 @@ namespace Universe.Services.DataService
                         writer.WriteValue(Convert.ToBase64String((byte[]) value)); //Has to be base64
                         writer.WriteEndElement();
                     }
-                    t = null;
                 }
             }
 
@@ -880,7 +871,6 @@ namespace Universe.Services.DataService
                     writer.WriteValue(Convert.ToBase64String((byte[]) value)); //Has to be base64
                     writer.WriteEndElement();
                 }
-                t = null;
             }
 
             public byte[] GetSerializer()
@@ -897,7 +887,7 @@ namespace Universe.Services.DataService
                 return array;
             }
 
-            private string AsString(DateTime value)
+            static string AsString(DateTime value)
             {
                 string format = value.Millisecond > 0 ? "yyyy-MM-ddTHH:mm:ss.ffZ" : "yyyy-MM-ddTHH:mm:ssZ";
                 return value.ToUniversalTime().ToString(format);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,7 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Universe.Framework.DatabaseInterfaces;
@@ -109,6 +108,8 @@ namespace Universe.Modules.Web
             var memoryUsage = dc.Get ("mem_use").ConvertAll<int> ((s) => int.Parse (s));
             var pingTime = dc.Get ("ping").ConvertAll<float> ((s) => float.Parse (s));
             var agentsInView = dc.Get ("agents_in_view").ConvertAll<int> ((s) => int.Parse (s));
+
+
 
             // data
             vars.Add("ViewersList",viewerList);

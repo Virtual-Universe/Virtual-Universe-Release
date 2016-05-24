@@ -26,18 +26,18 @@
  */
 
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using Nini.Config;
+using Nini.Ini;
+using OpenMetaverse;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.ModuleLoader;
 using Universe.Framework.Modules;
+using Universe.Framework.SceneInfo;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Inventory;
-using Nini.Ini;
-using Nini.Config;
-using OpenMetaverse;
-using System;
-using System.IO;
-using System.Collections.Generic;
-using Universe.Framework.SceneInfo;
 using Universe.Framework.Utilities;
 
 namespace Universe.Services.SQLServices.InventoryService
@@ -48,7 +48,7 @@ namespace Universe.Services.SQLServices.InventoryService
     /// </summary>
     public class LibraryService : ILibraryService, IService
     {
-        // moved to Constants to allow for easier comparision from the WebUI
+        // moved to Constants to allow for easier comparison from the WebUI
         // readonly UUID libOwner = new UUID("11111111-1111-0000-0000-000100bba000");
         readonly UUID libOwner = new UUID (Constants.LibraryOwner);
 
@@ -131,13 +131,15 @@ namespace Universe.Services.SQLServices.InventoryService
             {
                 return;
             }
-            else if (!File.Exists("DefaultInventory/Inventory.ini") &&
-                     !File.Exists("DefaultInventory/Inventory.ini.example"))
+
+            if (!File.Exists("DefaultInventory/Inventory.ini") &&
+                !File.Exists("DefaultInventory/Inventory.ini.example"))
             {
                 MainConsole.Instance.Error(
                     "Could not find DefaultInventory/Inventory.ini or DefaultInventory/Inventory.ini.example");
                 return;
             }
+
             List<IDefaultLibraryLoader> Loaders = UniverseModuleLoader.PickupModules<IDefaultLibraryLoader>();
             try
             {

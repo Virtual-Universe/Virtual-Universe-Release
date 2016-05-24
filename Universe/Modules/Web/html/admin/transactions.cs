@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http;//opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -121,11 +121,14 @@ namespace Universe.Modules.Web
                 var dateFrom = DateTime.Parse (DateStart + " " + timeNow);
                 var dateTo = DateTime.Parse (DateEnd + " " + timeNow);
 
-                List<AgentTransfer> transactions;
-                if (UserID != UUID.Zero)
-                    transactions = moneyModule.GetTransactionHistory (UserID, UUID.Zero, dateFrom, dateTo, (uint)start, amountPerQuery);
-                else
-                    transactions = moneyModule.GetTransactionHistory (dateFrom, dateTo, (uint)start, amountPerQuery);
+                var transactions = new List<AgentTransfer>();
+                if (moneyModule != null)
+                {
+                    if (UserID != UUID.Zero)
+                        transactions = moneyModule.GetTransactionHistory (UserID, UUID.Zero, dateFrom, dateTo, (uint)start, amountPerQuery);
+                    else
+                        transactions = moneyModule.GetTransactionHistory (dateFrom, dateTo, (uint)start, amountPerQuery);
+                }
 
                 // data
                 if (transactions.Count > 0)

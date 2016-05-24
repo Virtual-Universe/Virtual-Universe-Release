@@ -64,12 +64,15 @@ namespace Universe.Framework.Utilities
             FireFunction = sName;
             FireParams = sParams;
             RunOnce = runOnce;
+            //RunEvery = runEvery;
+            //RunEveryType = runEveryType;
             StartTime = DateTime.Now;                   // was UtcNow; but this is all relative to the server time not UTC
             TimeToRun = runSchedule;                    // dateTime to run this schedule
             CreateTime = DateTime.Now;                  // was UtcNow;
             ScheduleFor = agentID;
             Enabled = true;
         }
+
 
         void SimpleInitialize()
         {

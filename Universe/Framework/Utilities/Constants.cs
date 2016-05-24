@@ -30,18 +30,25 @@ namespace Universe.Framework.Utilities
     public static class Constants
     {
         public const double FloatDifference = .0000005;
+        public const string MISSING_TEXTURE_ID = "41fcdbb9-0896-495d-8889-1eb6fad88da3";       // texture to use when all else fails...
 
         // some predefined folders
         public const string DEFAULT_CONFIG_DIR = "../Config";
         public const string DEFAULT_DATA_DIR = "../Data";
-        public const string DEFAULT_ASSETCACHE_DIR = DEFAULT_DATA_DIR+"/AssetCache";
-        public const string DEFAULT_SCRIPTENGINE_DIR = DEFAULT_DATA_DIR+"/ScriptEngines";
-        public const string DEFAULT_FILEASSETS_DIR = DEFAULT_DATA_DIR+"/FileAssets";
-        public const string DEFAULT_AVATARARCHIVE_DIR = DEFAULT_DATA_DIR+"/AvatarArchives";
-        public const string DEFAULT_OARARCHIVE_DIR = DEFAULT_DATA_DIR + "/OarFiles";
-        public const string DEFAULT_USERINVENTORY_DIR = DEFAULT_DATA_DIR+"/UserArchives";
+        public const string DEFAULT_CRASH_DIR = "..Data/Crashes";
 
-        public const string DEFAULT_USERHTML_DIR = DEFAULT_DATA_DIR+"/html/";
+        // all these are relative to the default data directory,
+        // set either as above or via configuration
+        public const string DEFAULT_ASSETCACHE_DIR = "AssetCache";
+        public const string DEFAULT_SCRIPTENGINE_DIR = "ScriptEngines";
+        public const string DEFAULT_FILEASSETS_DIR = "FileAssets";
+        public const string DEFAULT_AVATARARCHIVE_DIR = "AvatarArchives";
+        public const string DEFAULT_OARARCHIVE_DIR = "OarFiles";
+        public const string DEFAULT_USERINVENTORY_DIR = "UserArchives";
+        public const string DEFAULT_OAR_BACKUP_FILENAME = "region.oar";
+
+        public const string DEFAULT_USERHTML_DIR = "html";
+        public const string DEFAULT_LOG_DIR = "logs";
 
         public const int RegionSize = 256;
         public const int RegionHeight = 10000;
@@ -62,17 +69,17 @@ namespace Universe.Framework.Utilities
 
         // System Governor Avatar Account
         public const string GovernorUUID = "3d6181b0-6a4b-97ef-18d8-722652995cf1";
-        public const string GovernorName = "Governor White";
-        
+        public const string GovernorName = "Governor Universe";
+
         // System Estate
         public const string MainlandEstateName = "Universe Mainland";
         public const int MainlandEstateID = 1;
-		public const string SystemEstateName = "Universe Estate";
-		public const int SystemEstateID = 10;
+        public const string SystemEstateName = "Universe Estate";
+        public const int SystemEstateID = 10;
 
         // System Real Estate Maintenance Group
 		public const string RealEstateGroupUUID = "dc7b21cd-3c89-fcaa-31c8-25f9ffd224cd";
-		public const string RealEstateGroupName = "Maintenance";
+		public const string RealEstateGroupName = "Universe Maintenance";
 
         // System Banker Avatar
         public const string BankerUUID = "f4261829-2796-4688-bfe2-085190cb639b";
@@ -81,7 +88,6 @@ namespace Universe.Framework.Utilities
         // System Marketplace Avatar
         public const string MarketplaceOwnerUUID = "198e72a6-cef6-4bbb-ae08-c0a79e6b7d1e";
         public const string MarketplaceOwnerName = "Marketplace Concierge";
-
 
         // user levels
         public const int USER_DISABLED = -2;
@@ -112,6 +118,7 @@ namespace Universe.Framework.Utilities
 
         public const int SCHEDULED_PAYMENTS_DELAY = 15;     // minutes to wait after stipend payments before processing scheduled payments
         public const int GROUP_PAYMENTS_DELAY = 30;         // minutes to wait after stipend payments before processing group payments
+        public const int GROUP_DISBURSMENTS_DELAY = 5;      // offset disbursments by 5 minutes
         public const int DIRECTORYFEE_GRACE_PERIOD = 2;     // hours grace period before a fee will be charged at least once
     }
 }

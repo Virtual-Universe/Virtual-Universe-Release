@@ -25,17 +25,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
-using Universe.Framework.ConsoleFramework;
-using Universe.Framework.Serialization;
-using Universe.Framework.Services;
-using Universe.Framework.Services.ClassHelpers.Assets;
-using OpenMetaverse;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Xml;
+using OpenMetaverse;
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.Serialization;
+using Universe.Framework.Services;
+using Universe.Framework.Services.ClassHelpers.Assets;
 
 namespace Universe.Modules.Archivers
 {
@@ -154,7 +153,7 @@ namespace Universe.Modules.Archivers
                     filename = filename.Remove(filename.Length - extension.Length);
                 }
 
-                MainConsole.Instance.DebugFormat("[ARCHIVER]: Importing asset {0}", filename);
+                MainConsole.Instance.DebugFormat("[Archiver]: Importing asset {0}", filename);
 
                 AssetBase asset = new AssetBase(filename, metadata.Name, (AssetType) metadata.AssetType, UUID.Zero)
                                       {Description = metadata.Description, Data = data, MetaOnly = false};
@@ -163,7 +162,7 @@ namespace Universe.Modules.Archivers
             else
             {
                 MainConsole.Instance.ErrorFormat(
-                    "[DEARCHIVER]: Tried to de-archive data with filename {0} without any corresponding metadata",
+                    "[De-Archiver]: Tried to de-archive data with filename {0} without any corresponding metadata",
                     assetPath);
             }
         }

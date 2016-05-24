@@ -25,7 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using OpenMetaverse;
@@ -47,7 +46,7 @@ namespace Universe.Framework.SceneInfo.Entities
         /// <summary>
         ///     Force the task inventory of this prim to persist at the next update sweep
         /// </summary>
-        void ForceInventoryPersistence();
+        void ForceInventoryPersistence ();
 
         /// <summary>
         ///     Reset UUIDs for all the items in the prim's inventory.
@@ -57,34 +56,34 @@ namespace Universe.Framework.SceneInfo.Entities
         /// 
         /// If this method is called and there are inventory items, then we regard the inventory as having changed.
         /// <param name="ChangeScripts">Link number for the part</param>
-        void ResetInventoryIDs(bool ChangeScripts);
+        void ResetInventoryIDs (bool ChangeScripts);
 
         /// <summary>
         ///     Reset parent object UUID for all the items in the prim's inventory.
         /// </summary>
         /// If this method is called and there are inventory items, then we regard the inventory as having changed.
-        void ResetObjectID();
+        void ResetObjectID ();
 
         /// <summary>
         ///     Change every item in this inventory to a new owner.
         /// </summary>
         /// <param name="ownerId"></param>
-        void ChangeInventoryOwner(UUID ownerId);
+        void ChangeInventoryOwner (UUID ownerId);
 
         /// <summary>
         ///     Change every item in this inventory to a new group.
         /// </summary>
         /// <param name="groupID"></param>
-        void ChangeInventoryGroup(UUID groupID);
+        void ChangeInventoryGroup (UUID groupID);
 
         /// <summary>
         ///     Start all the scripts contained in this entity's inventory
         /// </summary>
-        void CreateScriptInstances(int startParam, bool postOnRez, StateSource stateSource, UUID RezzedFrom,
+        void CreateScriptInstances (int startParam, bool postOnRez, StateSource stateSource, UUID RezzedFrom,
                                    bool clearStateSaves);
 
-        ArrayList GetScriptErrors(UUID itemID);
-        void ResumeScripts();
+        ArrayList GetScriptErrors (UUID itemID);
+        void ResumeScripts ();
 
         /// <summary>
         ///     Stop all the scripts in this entity.
@@ -93,7 +92,7 @@ namespace Universe.Framework.SceneInfo.Entities
         ///     Should be true if these scripts are being removed because the scene
         ///     object is being deleted.  This will prevent spurious updates to the client.
         /// </param>
-        void RemoveScriptInstances(bool sceneObjectBeingDeleted);
+        void RemoveScriptInstances (bool sceneObjectBeingDeleted);
 
         /// <summary>
         ///     Start a script which is in this entity's inventory.
@@ -102,7 +101,7 @@ namespace Universe.Framework.SceneInfo.Entities
         /// <param name="startParam"></param>
         /// <param name="postOnRez"></param>
         /// <param name="stateSource"></param>
-        void CreateScriptInstance(
+        void CreateScriptInstance (
             TaskInventoryItem item, int startParam, bool postOnRez, StateSource stateSource);
 
         /// <summary>
@@ -112,7 +111,7 @@ namespace Universe.Framework.SceneInfo.Entities
         /// <param name="startParam"></param>
         /// <param name="postOnRez"></param>
         /// <param name="stateSource"></param>
-        void CreateScriptInstance(UUID itemId, int startParam, bool postOnRez, StateSource stateSource);
+        void CreateScriptInstance (UUID itemId, int startParam, bool postOnRez, StateSource stateSource);
 
         /// <summary>
         ///     Updates a script instance in this prim's inventory.
@@ -122,7 +121,7 @@ namespace Universe.Framework.SceneInfo.Entities
         /// <param name="startParam"></param>
         /// <param name="postOnRez"></param>
         /// <param name="stateSource"></param>
-        void UpdateScriptInstance(UUID itemId, byte[] assetData, int startParam, bool postOnRez, StateSource stateSource);
+        void UpdateScriptInstance (UUID itemId, byte [] assetData, int startParam, bool postOnRez, StateSource stateSource);
 
         /// <summary>
         ///     Stop a script which is in this prim's inventory.
@@ -132,7 +131,7 @@ namespace Universe.Framework.SceneInfo.Entities
         ///     Should be true if these scripts are being removed because the scene
         ///     object is being deleted.  This will prevent spurious updates to the client.
         /// </param>
-        void RemoveScriptInstance(UUID itemId, bool sceneObjectBeingDeleted);
+        void RemoveScriptInstance (UUID itemId, bool sceneObjectBeingDeleted);
 
         /// <summary>
         ///     Add an item to this entity's inventory.  If an item with the same name already exists, then an alternative
@@ -140,14 +139,14 @@ namespace Universe.Framework.SceneInfo.Entities
         /// </summary>
         /// <param name="item"></param>
         /// <param name="allowedDrop"></param>
-        void AddInventoryItem(TaskInventoryItem item, bool allowedDrop);
+        void AddInventoryItem (TaskInventoryItem item, bool allowedDrop);
 
         /// <summary>
         ///     Add an item to this entity's inventory.  If an item with the same name already exists, it is replaced.
         /// </summary>
         /// <param name="item"></param>
         /// <param name="allowedDrop"></param>
-        void AddInventoryItemExclusive(TaskInventoryItem item, bool allowedDrop);
+        void AddInventoryItemExclusive (TaskInventoryItem item, bool allowedDrop);
 
         /// <summary>
         ///     Restore a whole collection of items to the entity's inventory at once.
@@ -156,14 +155,14 @@ namespace Universe.Framework.SceneInfo.Entities
         ///     from persistence rather than being newly added.
         /// </summary>
         /// <param name="items"></param>
-        void RestoreInventoryItems(ICollection<TaskInventoryItem> items);
+        void RestoreInventoryItems (ICollection<TaskInventoryItem> items);
 
         /// <summary>
         ///     Returns an existing inventory item.  Returns the original, so any changes will be live.
         /// </summary>
         /// <param name="itemID"></param>
         /// <returns>null if the item does not exist</returns>
-        TaskInventoryItem GetInventoryItem(UUID itemID);
+        TaskInventoryItem GetInventoryItem (UUID itemID);
 
         /// <summary>
         ///     Get inventory items by name.
@@ -173,7 +172,7 @@ namespace Universe.Framework.SceneInfo.Entities
         ///     A list of inventory items with that name.
         ///     If no inventory item has that name then an empty list is returned.
         /// </returns>
-        IList<TaskInventoryItem> GetInventoryItems(string name);
+        IList<TaskInventoryItem> GetInventoryItems (string name);
 
         /// <summary>
         ///     Get all inventory items
@@ -181,7 +180,7 @@ namespace Universe.Framework.SceneInfo.Entities
         /// <returns>
         ///     A list of inventory items in this object
         /// </returns>
-        List<TaskInventoryItem> GetInventoryItems();
+        List<TaskInventoryItem> GetInventoryItems ();
 
         /// <summary>
         ///     Get the scene object referenced by an inventory item.
@@ -190,7 +189,7 @@ namespace Universe.Framework.SceneInfo.Entities
         /// been adjusted to reflect the part and item from which it originates.
         /// <param name="item"></param>
         /// <returns>The scene object.  Null if the scene object asset couldn't be found</returns>
-        ISceneEntity GetRezReadySceneObject(TaskInventoryItem item);
+        ISceneEntity GetRezReadySceneObject (TaskInventoryItem item);
 
         /// <summary>
         ///     Update an existing inventory item.
@@ -200,9 +199,9 @@ namespace Universe.Framework.SceneInfo.Entities
         ///     in this prim's inventory.
         /// </param>
         /// <returns>false if the item did not exist, true if the update occurred successfully</returns>
-        bool UpdateInventoryItem(TaskInventoryItem item);
+        bool UpdateInventoryItem (TaskInventoryItem item);
 
-        bool UpdateInventoryItem(TaskInventoryItem item, bool fireScriptEvents);
+        bool UpdateInventoryItem (TaskInventoryItem item, bool fireScriptEvents);
 
         /// <summary>
         ///     Remove an item from this entity's inventory
@@ -212,42 +211,42 @@ namespace Universe.Framework.SceneInfo.Entities
         ///     Numeric asset type of the item removed.  Returns -1 if the item did not exist
         ///     in this prim's inventory.
         /// </returns>
-        int RemoveInventoryItem(UUID itemID);
+        int RemoveInventoryItem (UUID itemID);
 
         /// <summary>
         ///     Serialize all the metadata for the items in this prim's inventory ready for sending to the client
         /// </summary>
         /// <param name="client"></param>
-        void RequestInventoryFile(IClientAPI client);
+        void RequestInventoryFile (IClientAPI client);
 
-        uint MaskEffectivePermissions();
+        uint MaskEffectivePermissions ();
 
         /// <summary>
         ///     Applies the next owner permissions
         /// </summary>
-        void ApplyNextOwnerPermissions();
+        void ApplyNextOwnerPermissions ();
 
         /// <summary>
         ///     Applies the given permissions (forced)
         /// </summary>
         /// <param name="perms"></param>
-        void ApplyGodPermissions(uint perms);
+        void ApplyGodPermissions (uint perms);
 
         /// <summary>
         ///     Returns true if this inventory contains any scripts
         /// </summary>
         /// <returns></returns>
-        bool ContainsScripts();
+        bool ContainsScripts ();
 
         /// <summary>
         ///     Get the uuids of all items in this inventory
         /// </summary>
         /// <returns></returns>
-        List<UUID> GetInventoryList();
+        List<UUID> GetInventoryList ();
 
         /// <summary>
         ///     Save all script state saves for this object
         /// </summary>
-        void SaveScriptStateSaves();
+        void SaveScriptStateSaves ();
     }
 }

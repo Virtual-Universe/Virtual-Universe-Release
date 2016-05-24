@@ -1,0 +1,4 @@
+C:\Users\virtu\Desktop\Universe-Dev\VirtualUniverse\bin\Universe.Services.API.dll
+C:\Users\virtu\Desktop\Universe-Dev\VirtualUniverse\bin\Universe.Services.API.pdb
+C:\Users\virtu\Desktop\Universe-Dev\Universe\Services\API\obj\x64\Debug\Universe.Services.API.dll
+C:\Users\virtu\Desktop\Universe-Dev\Universe\Services\API\obj\x64\Debug\Universe.Services.API.pdb

@@ -25,6 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
 using System;
 using System.Collections.Generic;
 using OpenMetaverse;
@@ -39,13 +40,13 @@ namespace Universe.ClientStack
 {
     public class LLImageManager
     {
-        private readonly IAssetService m_assetCache; //Asset Cache
-        private readonly LLClientView m_client; //Client we're assigned to
-        private readonly IJ2KDecoder m_j2kDecodeModule; //Our J2K module
-        private static AssetBase m_missingImage;
-        private readonly PriorityQueue<J2KImage, float> m_queue = new PriorityQueue<J2KImage, float>();
-        private readonly object m_syncRoot = new object();
-        private bool m_shuttingdown;
+        readonly IAssetService m_assetCache; //Asset Cache
+        readonly LLClientView m_client; //Client we're assigned to
+        readonly IJ2KDecoder m_j2kDecodeModule; //Our J2K module
+        readonly PriorityQueue<J2KImage, float> m_queue = new PriorityQueue<J2KImage, float>();
+        readonly object m_syncRoot = new object();
+        static AssetBase m_missingImage;
+        bool m_shuttingdown;
 
         public LLImageManager(LLClientView client, IAssetService pAssetCache, IJ2KDecoder pJ2kDecodeModule)
         {
@@ -141,18 +142,16 @@ namespace Universe.ClientStack
                         //MainConsole.Instance.DebugFormat("[TEX]: (NEW) ID={0}: D={1}, S={2}, P={3}",
                         //    newRequest.RequestedAssetID, newRequest.DiscardLevel, newRequest.PacketNumber, newRequest.Priority);
 
-                        imgrequest = new J2KImage()
-                                         {
-                                             J2KDecoder = m_j2kDecodeModule,
-                                             AssetService = m_assetCache,
-                                             AgentID = m_client.AgentId,
-                                             InventoryAccessModule =
-                                                 m_client.Scene.RequestModuleInterface<IInventoryAccessModule>(),
-                                             DiscardLevel = newRequest.DiscardLevel,
-                                             StartPacket = Math.Max(1, newRequest.PacketNumber),
-                                             Priority = newRequest.Priority,
-                                             TextureID = newRequest.RequestedAssetID
-                                         };
+                        imgrequest = new J2KImage() {
+                            J2KDecoder = m_j2kDecodeModule,
+                            AssetService = m_assetCache,
+                            AgentID = m_client.AgentId,
+                            InventoryAccessModule = m_client.Scene.RequestModuleInterface<IInventoryAccessModule>(),
+                            DiscardLevel = newRequest.DiscardLevel,
+                            StartPacket = Math.Max(1, newRequest.PacketNumber),
+                            Priority = newRequest.Priority,
+                            TextureID = newRequest.RequestedAssetID
+                        };
                         imgrequest.Priority = newRequest.Priority;
 
                         //Add this download to the priority queue
@@ -165,14 +164,13 @@ namespace Universe.ClientStack
             }
         }
 
-        private J2KImage FindImage(TextureRequestArgs newRequest)
+        J2KImage FindImage(TextureRequestArgs newRequest)
         {
             if (newRequest == null)
                 return null;
 
             lock (m_syncRoot)
-                return m_queue.Find(new J2KImage() {TextureID = newRequest.RequestedAssetID},
-                                    new Comparer());
+                return m_queue.Find(new J2KImage() {TextureID = newRequest.RequestedAssetID}, new Comparer());
         }
 
         public bool ProcessImageQueue(int packetsToSend)
@@ -253,7 +251,7 @@ namespace Universe.ClientStack
 
         #region Priority Queue Helpers
 
-        private J2KImage GetHighestPriorityImage()
+        J2KImage GetHighestPriorityImage()
         {
             J2KImage image = null;
 
@@ -275,7 +273,7 @@ namespace Universe.ClientStack
             return image;
         }
 
-        private void AddImageToQueue(J2KImage image)
+        void AddImageToQueue(J2KImage image)
         {
             lock (m_syncRoot)
                 try
@@ -291,7 +289,7 @@ namespace Universe.ClientStack
 
         #region Nested type: Comparer
 
-        private class Comparer : IComparer<J2KImage>
+        class Comparer : IComparer<J2KImage>
         {
             #region IComparer<J2KImage> Members
 
@@ -312,7 +310,7 @@ namespace Universe.ClientStack
         #region Nested type: J2KImageComparer
 
 /*
-        private sealed class J2KImageComparer : IComparer<J2KImage>
+        sealed class J2KImageComparer : IComparer<J2KImage>
         {
             #region IComparer<J2KImage> Members
 

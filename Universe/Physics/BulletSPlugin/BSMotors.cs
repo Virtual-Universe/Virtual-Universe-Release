@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@ using System;
 using OpenMetaverse;
 using Universe.Framework.Utilities;
 
-namespace Universe.Region.Physics.BulletSPlugin
+namespace Universe.Physics.BulletSPlugin
 {
     public abstract class BSMotor
     {
@@ -122,7 +122,7 @@ namespace Universe.Region.Physics.BulletSPlugin
             TimeScale = TargetValueDecayTimeScale = BSMotor.Infinite;
             Efficiency = 1f;
             CurrentValue = TargetValue = Vector3.Zero;
-            ErrorZeroThreshold = 0.001f;
+            ErrorZeroThreshold = BSParam.AvatarStopZeroThreshold;   // was 0.001f;
         }
 
         public BSVMotor(string useName, float timeScale, float decayTimeScale, float efficiency)
@@ -177,7 +177,7 @@ namespace Universe.Region.Physics.BulletSPlugin
                     TargetValue *= (1f - decayFactor);
                 }
 
-                MDetailLog("{0}, BSVMotor.Step,nonZerom{1},origCurr={2},origTarget={3},timeStep={4},err={5},corr={6}",
+                MDetailLog("{0}, BSVMotor.Step,nonZero,{1},origCurr={2},origTarget={3},timeStep={4},err={5},corr={6}",
                     BSScene.DetailLogZero, UseName, origCurrVal, origTarget, timeStep, error, correction);
                 MDetailLog("{0}, BSVMotor.Step,nonZero,{1},tgtDecayTS={2},decayFact={3},tgt={4},curr={5}",
                     BSScene.DetailLogZero, UseName, TargetValueDecayTimeScale, decayFactor, TargetValue, CurrentValue);
@@ -317,7 +317,6 @@ namespace Universe.Region.Physics.BulletSPlugin
 
             float correction = 0f;
             float error = TargetValue - CurrentValue;
-            LastError = error;
             if (!ErrorIsZero(error))
             {
                 correction = StepError(timeStep, error);
@@ -366,6 +365,7 @@ namespace Universe.Region.Physics.BulletSPlugin
                 MDetailLog("{0},  BSFMotor.Step,zero,{1},origTgt={2},origCurr={3},ret={4}",
                     BSScene.DetailLogZero, UseName, origCurrVal, origTarget, CurrentValue);
             }
+            LastError = error;
 
             return CurrentValue;
         }
@@ -421,7 +421,7 @@ namespace Universe.Region.Physics.BulletSPlugin
         public float EfficiencyLow = 4.0f;
 
         // Running integration of the error
-        private Vector3 RunningIntegration { get; set; }
+        Vector3 RunningIntegration { get; set; }
 
         public BSPIDVMotor(string useName)
             : base(useName)
@@ -434,6 +434,7 @@ namespace Universe.Region.Physics.BulletSPlugin
             LastError = Vector3.Zero;
         }
 
+        //redundant??
         public override void Zero()
         {
             base.Zero();
@@ -474,9 +475,9 @@ namespace Universe.Region.Physics.BulletSPlugin
             LastError = error;
 
             // Correction = (proportionOfPresentError + accumulationOfPastError + rateOfChangeOfError)
-            Vector3 ret = error * timeStep * proportionFactor * FactorMix.X
-                          + RunningIntegration * integralFactor * FactorMix.Y
-                          + derivitive * derivFactor * FactorMix.Z
+            Vector3 ret = error/TimeScale * timeStep * proportionFactor * FactorMix.X
+                          + RunningIntegration/TimeScale * integralFactor * FactorMix.Y
+                          + derivitive/TimeScale * derivFactor * FactorMix.Z
                 ;
 
             MDetailLog("{0},BSPIDVMotor.step,ts={1},err={2},runnInt={3},deriv={4},ret={5}",

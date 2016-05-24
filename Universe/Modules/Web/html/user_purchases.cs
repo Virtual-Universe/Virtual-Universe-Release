@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -79,6 +79,7 @@ namespace Universe.Modules.Web
             UUID UserID = UUID.Zero;
             int start = 0;
  
+
             IMoneyModule moneyModule = webInterface.Registry.RequestModuleInterface<IMoneyModule>();
             string noDetails = translator.GetTranslatedString ("NoPurchasesText");
 
@@ -108,6 +109,7 @@ namespace Universe.Modules.Web
                 vars.Add ("CurrentPage", 0);
                 vars.Add ("NextOne", 0);
                 vars.Add ("BackOne", 0);
+
             }
 
             UserAccount user = Authenticator.GetAuthentication(httpRequest);
@@ -118,8 +120,9 @@ namespace Universe.Modules.Web
             var dateTo = DateTime.Parse (DateEnd + " " + timeNow);
             TimeSpan period = dateTo.Subtract (dateFrom);
 
-            List<AgentPurchase> purchases;
-            purchases = moneyModule.GetPurchaseHistory (user.PrincipalID, dateFrom, dateTo, (uint)start, amountPerQuery);
+            var purchases = new List<AgentPurchase> ();
+            if (user != null && moneyModule != null)
+                purchases = moneyModule.GetPurchaseHistory (user.PrincipalID, dateFrom, dateTo, (uint)start, amountPerQuery);
 
             // data
             if (purchases.Count > 0)
@@ -145,6 +148,7 @@ namespace Universe.Modules.Web
 
             if (purchasesList.Count == 0)
             {
+ 
                 purchasesList.Add(new Dictionary<string, object> {
                     {"ID", ""},
                     {"AgentID", ""},
@@ -155,6 +159,7 @@ namespace Universe.Modules.Web
                     {"RealAmount",""},
                     {"PurchaseDate",""},
                     {"UpdateDate", ""},
+
                 });
             }
 

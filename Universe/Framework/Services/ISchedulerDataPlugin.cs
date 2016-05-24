@@ -132,5 +132,6 @@ namespace Universe.Framework.Services
         SchedulerItem Get(string scheduleFor, string fireFunction);
 
         SchedulerItem GetFunctionItem (string fireFunction);
+
     }
 }

@@ -95,10 +95,12 @@ namespace Universe.Framework.Utilities
             }
         }
 
+
         public bool CompletedSynchronously
         {
             get { return Thread.VolatileRead(ref m_completedSynchronously) == 1; }
         }
+
 
         public bool IsCompleted
         {

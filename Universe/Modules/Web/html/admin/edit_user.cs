@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -73,8 +73,12 @@ namespace Universe.Modules.Web
                             : UUID.Parse(requestParameters["userid"].ToString());
 
             IUserAccountService userService = webInterface.Registry.RequestModuleInterface<IUserAccountService>();
+            UserAccount account = null;
+
+            if (userService != null)
+                account = userService.GetUserAccount(null, userID);
+            
             var agentService = Framework.Utilities.DataManager.RequestPlugin<IAgentConnector>();
-            UserAccount account = userService.GetUserAccount(null, userID);
             IAgentInfo agent = agentService.GetAgent(userID);
 
             if (agent == null)
@@ -89,16 +93,21 @@ namespace Universe.Modules.Web
                 int UserFlags = webInterface.UserTypeToUserFlags (UserType);
 
                 // set the user account type
-                account.UserFlags = UserFlags;
-                userService.StoreUserAccount (account);
+                if (account != null) {
+                    account.UserFlags = UserFlags;
+                    userService.StoreUserAccount (account);
+                } else {
+                    response = "Unable to update user account!'";
+                    return null;
+                }
 
-                if (agent != null)
-                {
+                if (agent != null) {
                     agent.OtherAgentInformation ["UserFlags"] = UserFlags;
                     agentService.UpdateAgent (agent);
-                    response = "User has been updated.";
-                } else
+                } else {
                     response = "Agent information is not available! Has the user logged in yet?";
+                    return null;
+                }
 
                 IProfileConnector profileData =
                     Framework.Utilities.DataManager.RequestPlugin<IProfileConnector>();
@@ -148,7 +157,7 @@ namespace Universe.Modules.Web
             {
                 string email = requestParameters["email"].ToString();
 
-                if (userService != null)
+                if (account != null)
                 {
                     account.Email = email;
                     userService.StoreUserAccount(account);

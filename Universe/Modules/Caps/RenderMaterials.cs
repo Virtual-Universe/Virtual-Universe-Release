@@ -43,7 +43,7 @@ using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Servers.HttpServer.Interfaces;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Utilities;
-using ZLib.Net;
+using ZLibNet;
 
 namespace Universe.Modules.Caps
 {

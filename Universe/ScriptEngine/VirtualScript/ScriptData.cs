@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,6 +25,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using Universe.Framework.ClientInterfaces;
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.Modules;
+using Universe.Framework.PresenceInfo;
+using Universe.Framework.SceneInfo;
+using Universe.Framework.SceneInfo.Entities;
+using Universe.Framework.Utilities;
+using Universe.ScriptEngine.VirtualScript.Runtime;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -34,16 +44,6 @@ using System.Linq;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Lifetime;
 using System.Threading;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
-using Universe.Framework.ClientInterfaces;
-using Universe.Framework.ConsoleFramework;
-using Universe.Framework.Modules;
-using Universe.Framework.PresenceInfo;
-using Universe.Framework.SceneInfo;
-using Universe.Framework.SceneInfo.Entities;
-using Universe.Framework.Utilities;
-using Universe.ScriptEngine.VirtualScript.Runtime;
 
 namespace Universe.ScriptEngine.VirtualScript
 {
@@ -56,9 +56,9 @@ namespace Universe.ScriptEngine.VirtualScript
             m_ScriptEngine = engine;
 
             NextEventDelay = new Dictionary<string, long>();
+            NextEventDelay.Add("attach", 0);
             NextEventDelay.Add("at_rot_target", 0);
             NextEventDelay.Add("at_target", 0);
-            NextEventDelay.Add("attach", 0);
             NextEventDelay.Add("changed", 0);
             NextEventDelay.Add("collision", 0);
             NextEventDelay.Add("collision_end", 0);
@@ -544,7 +544,7 @@ namespace Universe.ScriptEngine.VirtualScript
 
             if (InventoryItem == null)
             {
-                MainConsole.Instance.Warn("[DNE]: Could not find inventory item for script " + ItemID + ", part" +
+                MainConsole.Instance.Warn("[Virtual Script Engine]: Could not find inventory item for script " + ItemID + ", part" +
                                           Part.Name + "@" +
                                           Part.AbsolutePosition);
                 return false;

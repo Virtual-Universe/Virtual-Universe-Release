@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -49,11 +49,12 @@ namespace Universe.Modules
     public class FileBasedSimulationData : ISimulationDataStore, IDisposable
     {
         protected Timer m_backupSaveTimer;
+        protected Timer m_saveTimer;
 
         protected string m_fileName = "";
-        protected string m_storeDirectory = Constants.DEFAULT_DATA_DIR + "/Region";
+        protected string m_storeDirectory = "";
         protected bool m_keepOldSave = true;
-        protected string m_oldSaveDirectory = Constants.DEFAULT_DATA_DIR + "/RegionBak";
+        protected string m_oldSaveDirectory = "";
         protected bool m_oldSaveHasBeenSaved;
         protected bool m_requiresSave = true;
         protected bool m_displayNotSavingNotice = true;
@@ -61,7 +62,6 @@ namespace Universe.Modules
         protected bool m_saveBackups;
         protected int m_removeArchiveDays = 30;
         protected bool m_saveChanges = true;
-        protected Timer m_saveTimer;
         protected IScene m_scene;
         protected int m_timeBetweenBackupSaves = 1440; //One day
         protected int m_timeBetweenSaves = 5;
@@ -125,20 +125,27 @@ namespace Universe.Modules
                 "Removes old region backup files older than [days] (default: " + m_removeArchiveDays + " days)",
                 CleanupRegionBackups,
                 false, true);
+
         }
 
         public virtual List<string> FindRegionInfos(out bool newRegion, ISimulationBase simBase)
         {
 			ReadConfig(simBase);
-			MainConsole.Instance.Info("Looking for previous regions in: "+ m_storeDirectory);
+			MainConsole.Instance.Info("Retrieving region data from: "+ m_storeDirectory);
+            if (m_keepOldSave)
+                MainConsole.Instance.Info("Region archives saved to:    "+ m_oldSaveDirectory);
+            
 			List<string> regions = new List<string>(Directory.GetFiles(m_storeDirectory, "*.sim", SearchOption.TopDirectoryOnly));
             newRegion = regions.Count == 0;
             List<string> retVals = new List<string>();
+
 			foreach (string r in regions)
-				if (Path.GetExtension (r) == ".sim") {
-				MainConsole.Instance.Info ("Found: " + Path.GetFileNameWithoutExtension (r));
+				if (Path.GetExtension (r) == ".sim") 
+                {
+				    MainConsole.Instance.Info ("Found: " + Path.GetFileNameWithoutExtension (r));
 					retVals.Add (Path.GetFileNameWithoutExtension (r));
 				}
+            
             return retVals;
         }
 
@@ -151,6 +158,7 @@ namespace Universe.Modules
 
             List<string> regionBaks = new List<string>();
             regionName += "--";                                 // name & timestamp delimiter
+
             foreach (string regBak in allBackups)
             {
                 if (Path.GetFileName (regBak).StartsWith(regionName)) 
@@ -167,10 +175,7 @@ namespace Universe.Modules
             if (m_oldSaveDirectory == "")
                 return null;
 
-            MainConsole.Instance.Info("Looking for sim backups in: "+ m_oldSaveDirectory);
             List<string> archives = new List<string>(Directory.GetFiles(m_oldSaveDirectory, "*.sim", SearchOption.TopDirectoryOnly));
-            MainConsole.Instance.InfoFormat ("Found {0} archive files", archives.Count);
-
             return archives;
         }
 
@@ -261,6 +266,7 @@ namespace Universe.Modules
             ReadConfig(simBase);
             ReadBackup(fileName);
             BackupFile = fileName;
+
             return _regionData.RegionInfo;
         }
 
@@ -290,6 +296,7 @@ namespace Universe.Modules
         /// <param name="currentInfo">Current info.</param>
         RegionInfo CreateRegionFromConsole(RegionInfo info, Boolean prompt, Dictionary<string, int> currentInfo)
         {
+
             if (info == null || info.NewRegion)
             {
                 if (info == null)
@@ -315,62 +322,9 @@ namespace Universe.Modules
             // prompt for user input
             if (prompt)
             {
-                Utilities.MarkovNameGenerator rNames = new Utilities.MarkovNameGenerator();
-                string regionName = rNames.FirstName (m_regionNameSeed == null ? Utilities.RegionNames: m_regionNameSeed, 3,7);
-                if (info.RegionName != "")
-                    regionName = info.RegionName;
-
-                do
-                {
-                    info.RegionName = MainConsole.Instance.Prompt ("Region Name (? for suggestion)", regionName);
-                    if (info.RegionName == "" || info.RegionName == "?")
-                    {
-                        regionName = rNames.NextName;
-                        info.RegionName = "";
-                        continue;
-                    }
-                }
-                while (info.RegionName == "");
-                rNames.Reset();
-
-                info.RegionLocX =
-                    int.Parse (MainConsole.Instance.Prompt ("Region Location X",
-                    ((info.RegionLocX == 0 
-                            ? 1000 
-                            : info.RegionLocX / Constants.RegionSize)).ToString ())) * Constants.RegionSize;
-
-                info.RegionLocY =
-                    int.Parse (MainConsole.Instance.Prompt ("Region location Y",
-                    ((info.RegionLocY == 0 
-                            ? 1000 
-                            : info.RegionLocY / Constants.RegionSize)).ToString ())) * Constants.RegionSize;
-
-                var haveSize = true;
-                var sizeCheck = "";
-                do
-                {
-                    info.RegionSizeX = int.Parse (MainConsole.Instance.Prompt ("Region size X", info.RegionSizeX.ToString ()));
-                    if (info.RegionSizeX > Constants.MaxRegionSize)
-                    {
-                        MainConsole.Instance.CleanInfo ("    The currently recommended maximum size is " + Constants.MaxRegionSize);
-                        sizeCheck =  MainConsole.Instance.Prompt ("Continue with the X size of " + info.RegionSizeX + "? (yes/no)", "no");
-                        haveSize = sizeCheck.ToLower().StartsWith("y");
-                    }
-                } while (! haveSize);
-
-                // assume square regions
-                info.RegionSizeY = info.RegionSizeX;
-
-                do
-                {
-                    info.RegionSizeY = int.Parse (MainConsole.Instance.Prompt ("Region size Y", info.RegionSizeY.ToString ()));
-                    if ( (info.RegionSizeY > info.RegionSizeX) && (info.RegionSizeY > Constants.MaxRegionSize) )
-                    {
-                        MainConsole.Instance.CleanInfo ("    The currently recommended maximum size is " + Constants.MaxRegionSize);
-                        sizeCheck =  MainConsole.Instance.Prompt ("Continue with the Y size of " + info.RegionSizeY + "? (yes/no)", "no");
-                        haveSize = sizeCheck.ToLower().StartsWith("y");
-                    }
-                } while (! haveSize);
+                GetRegionName (ref info);
+                GetRegionLocation (ref info);
+                GetRegionSize (ref info);
 
                 bool bigRegion = ((info.RegionSizeX > Constants.MaxRegionSize) || (info.RegionSizeY > Constants.MaxRegionSize));
 
@@ -379,7 +333,12 @@ namespace Universe.Modules
                 // * Mainland / Openspace
                 //
                 // * Estate / Full Region   (Private)
-                info.RegionType = MainConsole.Instance.Prompt ("Region Type (Mainland/Estate)",
+                // * Estate / Homestead
+                // * Estate / Openspace
+                //
+                // * Universe Home / Full Region (Private)
+                //
+                info.RegionType = MainConsole.Instance.Prompt ("Region Type (Mainland / Estate / Homes)",
                     (info.RegionType == "" ? "Estate" : info.RegionType));
 
                 // Region presets or advanced setup
@@ -393,9 +352,7 @@ namespace Universe.Modules
                     info.RegionType = "Mainland / ";                   
                     responses.Add("Full Region");
                     responses.Add("Homestead");
-                    responses.Add ("Openspace");
-                    responses.Add ("Universe");                            // TODO: remove?
-                    responses.Add ("Custom");                               
+                    responses.Add("Openspace");                          
                     setupMode = MainConsole.Instance.Prompt("Mainland region type?", "Full Region", responses).ToLower ();
 
                     // allow specifying terrain for Openspace
@@ -404,23 +361,29 @@ namespace Universe.Modules
                     else if (setupMode.StartsWith("o"))
                         terrainOpen = MainConsole.Instance.Prompt("Openspace terrain ( Grassland, Swamp, Aquatic)?", terrainOpen).ToLower();
 
-                } else
+                } 
+                else if (info.RegionType.ToLower().StartsWith("e"))
                 {
                     // Estate regions
                     info.RegionType = "Estate / ";                   
                     responses.Add("Full Region");
                     responses.Add("Homestead");
-					responses.Add ("Openspace");
-                    responses.Add ("Universe");                            // TODO: Universe 'standard' setup, rename?
-                    responses.Add ("Custom");
+                    responses.Add("Openspace");
                     setupMode = MainConsole.Instance.Prompt("Estate region type?","Full Region", responses).ToLower();
+                }
+                else
+                {
+                	info.RegionType = "Universe Homes / ";
+                	responses.Add("Full Region");
+                	setupMode = MainConsole.Instance.Prompt("Estate region type?","Full Region", responses).ToLower();
                 }
 
                 // terrain can be specified for Full or custom regions
                 if (bigRegion)
                     terrainFull = "Flatland";
-                else if (setupMode.StartsWith ("f") || setupMode.StartsWith ("c"))
+                if (setupMode.StartsWith ("f"))
                 {
+                	// 'Region land types' setup
                     var tresp = new List<string>();
                     tresp.Add ("Flatland");
                     tresp.Add ("Grassland");
@@ -434,52 +397,11 @@ namespace Universe.Modules
                     // TODO: This would be where we allow selection of preset terrain files
                 }
 
-                if (setupMode.StartsWith("c"))
-                {
-                    info.RegionType = info.RegionType + "Custom";                   
-                    info.RegionTerrain = terrainFull;
-
-                    // allow port selection
-                    info.RegionPort = int.Parse (MainConsole.Instance.Prompt ("Region Port", info.RegionPort.ToString ()));
-
-                    // Startup mode
-                    string scriptStart = MainConsole.Instance.Prompt (
-                        "Region Startup - Normal or Delayed startup (normal/delay) : ","normal").ToLower();
-                    info.Startup = scriptStart.StartsWith ("n") ? StartupType.Normal : StartupType.Medium;
-                              
-                    info.SeeIntoThisSimFromNeighbor =  MainConsole.Instance.Prompt (
-                        "See into this sim from neighbors (yes/no)",
-                        info.SeeIntoThisSimFromNeighbor ? "yes" : "no").ToLower() == "yes";
-
-                    info.InfiniteRegion = MainConsole.Instance.Prompt (
-                        "Make an infinite region (yes/no)",
-                        info.InfiniteRegion ? "yes" : "no").ToLower () == "yes";
-                
-                    info.ObjectCapacity =
-                        int.Parse (MainConsole.Instance.Prompt ("Object capacity",
-                        info.ObjectCapacity == 0
-                                               ? "100000"
-                                               : info.ObjectCapacity.ToString ()));
-                } 
-
-                if (setupMode.StartsWith("u"))
-                {
-                    // 'standard' setup
-                    info.RegionType = info.RegionType + "Universe";                   
-                    //info.RegionPort;            // use auto assigned port
-                    info.RegionTerrain = "Flatland";
-                    info.Startup = StartupType.Normal;
-                    info.SeeIntoThisSimFromNeighbor = true;
-                    info.InfiniteRegion = true;
-                    info.ObjectCapacity = 100000;
-
-                }
                 if (setupMode.StartsWith("o"))       
                 {
                     // 'Openspace' setup
-                    info.RegionType = info.RegionType + "Openspace";                   
-                    //info.RegionPort;            // use auto assigned port
-
+                    info.RegionType = info.RegionType + "Openspace";
+                    
                     if (terrainOpen.StartsWith("a"))
                         info.RegionTerrain = "Aquatic";
                     else if (terrainOpen.StartsWith("s"))
@@ -496,12 +418,12 @@ namespace Universe.Modules
                     info.RegionSettings.AgentLimit = 10;
                     info.RegionSettings.AllowLandJoinDivide = false;
                     info.RegionSettings.AllowLandResell = false;
-                                   }
-                if (setupMode.StartsWith("h"))       
+                }
+                
+                if (setupMode.StartsWith("h"))
                 {
                     // 'Homestead' setup
-                    info.RegionType = info.RegionType + "Homestead";                   
-                    //info.RegionPort;            // use auto assigned port
+                    info.RegionType = info.RegionType + "Homestead";
                     if (bigRegion)
                         info.RegionTerrain = "Flatland";
                     else
@@ -519,8 +441,7 @@ namespace Universe.Modules
                 if (setupMode.StartsWith("f"))       
                 {
                     // 'Full Region' setup
-                    info.RegionType = info.RegionType + "Full Region";                   
-                    //info.RegionPort;            // use auto assigned port
+                    info.RegionType = info.RegionType + "Full Region";
                     info.RegionTerrain = terrainFull;
                     info.Startup = StartupType.Normal;
                     info.SeeIntoThisSimFromNeighbor = true;
@@ -532,7 +453,16 @@ namespace Universe.Modules
                         info.RegionSettings.AllowLandJoinDivide = false;
                         info.RegionSettings.AllowLandResell = false;
                     }
+                    else if (info.RegionType.StartsWith ("H"))						// Homes always have 25000 prims
+                    {
+                    	info.ObjectCapacity = 25000;
+                    }
                 }
+
+                // re-proportion allocations based on actual region area <> std area
+                var regFactor = ( info.RegionSizeX * info.RegionSizeY) / (Constants.RegionSize * Constants.RegionSize);
+                info.ObjectCapacity = (int)Math.Round ((float)(info.ObjectCapacity * regFactor));
+                info.RegionSettings.AgentLimit = (int) Math.Round ((float)(info.RegionSettings.AgentLimit * regFactor));
             }
 
             // are we updating or adding??
@@ -564,6 +494,200 @@ namespace Universe.Modules
             return info;
         }
 
+
+        /// <summary>
+        /// Modifies the region settings.
+        /// </summary>
+        /// <returns>The region settings.</returns>
+        /// <param name="regInfo">Reg info.</param>
+        /// <param name="advanced">If set to <c>true</c> advanced.</param>
+        bool ModifyRegionSettings(ref RegionInfo regInfo, bool advanced)
+        {
+            bool updated = false;
+            if (regInfo == null || regInfo.NewRegion)
+                return updated;
+            
+            updated |= GetRegionName (ref regInfo);
+            updated |= GetRegionLocation (ref regInfo);
+            updated |= GetRegionSize (ref regInfo);
+
+            if (advanced)
+            {
+                // region type
+                var oldType = regInfo.RegionType;
+                regInfo.RegionType = MainConsole.Instance.Prompt ("Region Type (Mainland/Estate)",
+                    (regInfo.RegionType == "" ? "Estate" : regInfo.RegionType));
+                if (regInfo.RegionType != oldType)
+                    updated = true;
+
+                updated |= GetRegionOptional (ref regInfo);
+             }
+   
+             return updated;
+        }
+
+        /// <summary>
+        /// Gets the name of the region.
+        /// </summary>
+        /// <returns><c>true</c>, if region name was gotten, <c>false</c> otherwise.</returns>
+        /// <param name="regInfo">Reg info.</param>
+        bool GetRegionName(ref RegionInfo regInfo)
+        {
+            var updated = false;
+
+            Utilities.MarkovNameGenerator rNames = new Utilities.MarkovNameGenerator ();
+            string regionName = rNames.FirstName (m_regionNameSeed == null ? Utilities.RegionNames : m_regionNameSeed, 3, 7);
+
+            regionName = regInfo.RegionName;
+            var oldName = regionName;
+
+            do
+            {
+                regInfo.RegionName = MainConsole.Instance.Prompt ("Region Name (? for suggestion)", regionName);
+                if (regInfo.RegionName == "" || regInfo.RegionName == "?")
+                {
+                    regionName = rNames.NextName;
+                    regInfo.RegionName = "";
+                    continue;
+                }
+            } while (regInfo.RegionName == "");
+            rNames.Reset ();
+            if (regInfo.RegionName != oldName)
+                updated = true;
+            
+            return updated;
+        }
+
+        /// <summary>
+        /// Gets the region location.
+        /// </summary>
+        /// <returns><c>true</c>, if region location was gotten, <c>false</c> otherwise.</returns>
+        /// <param name="regInfo">Reg info.</param>
+        bool GetRegionLocation(ref RegionInfo regInfo)
+        {
+            var updated = false;
+            var loc = regInfo.RegionLocX;
+            regInfo.RegionLocX =
+                int.Parse (MainConsole.Instance.Prompt ("Region Location X",
+                    ((regInfo.RegionLocX == 0 
+                        ? 1000 
+                        : regInfo.RegionLocX / Constants.RegionSize)).ToString ())) * Constants.RegionSize;
+            if (regInfo.RegionLocX != loc)
+                updated = true;
+
+            loc = regInfo.RegionLocY;
+            regInfo.RegionLocY =
+                int.Parse (MainConsole.Instance.Prompt ("Region location Y",
+                    ((regInfo.RegionLocY == 0 
+                        ? 1000 
+                        : regInfo.RegionLocY / Constants.RegionSize)).ToString ())) * Constants.RegionSize;
+            if (regInfo.RegionLocY != loc)
+                updated = true;
+
+            //loc = regInfo.RegionLocZ;
+            //regInfo.RegionLocZ =
+            //        int.Parse (MainConsole.Instance.Prompt ("Region location Z",
+            //            ((regInfo.RegionLocZ == 0 
+            //            ? 0 
+            //            : regInfo.RegionLocZ / Constants.RegionSize)).ToString ())) * Constants.RegionSize;
+            //if (regInfo.RegionLocZ != loc)
+            //    updated = true;
+
+            return updated;
+        }
+
+        /// <summary>
+        /// Gets the size of the region.
+        /// </summary>
+        /// <returns><c>true</c>, if region size was gotten, <c>false</c> otherwise.</returns>
+        /// <param name="RegionInfo">Region info.</param>
+        bool GetRegionSize(ref RegionInfo regInfo)
+        {
+            var updated = false;
+            var haveSize = true;
+            var sizeCheck = "";
+            var oldSize = regInfo.RegionSizeX;
+            do
+            {
+                regInfo.RegionSizeX = int.Parse (MainConsole.Instance.Prompt ("Region size X", regInfo.RegionSizeX.ToString ()));
+                if (regInfo.RegionSizeX > Constants.MaxRegionSize)
+                {
+                    MainConsole.Instance.CleanInfo ("    The currently recommended maximum size is " + Constants.MaxRegionSize);
+                    sizeCheck = MainConsole.Instance.Prompt ("Continue with the X size of " + regInfo.RegionSizeX + "? (yes/no)", "no");
+                    haveSize = sizeCheck.ToLower ().StartsWith ("y");
+                }
+            } while (!haveSize);
+            if (regInfo.RegionSizeX != oldSize)
+                updated = true;
+
+            // assume square regions
+            regInfo.RegionSizeY = regInfo.RegionSizeX;
+            oldSize = regInfo.RegionSizeY;
+            do
+            {
+                regInfo.RegionSizeY = int.Parse (MainConsole.Instance.Prompt ("Region size Y", regInfo.RegionSizeY.ToString ()));
+                if ((regInfo.RegionSizeY > regInfo.RegionSizeX) && (regInfo.RegionSizeY > Constants.MaxRegionSize))
+                {
+                    MainConsole.Instance.CleanInfo ("    The currently recommended maximum size is " + Constants.MaxRegionSize);
+                    sizeCheck = MainConsole.Instance.Prompt ("Continue with the Y size of " + regInfo.RegionSizeY + "? (yes/no)", "no");
+                    haveSize = sizeCheck.ToLower ().StartsWith ("y");
+                }
+            } while (!haveSize);
+            if (regInfo.RegionSizeY != oldSize)
+                updated = true;
+
+            return updated;
+        }
+
+        /// <summary>
+        /// Gets the region optional settings.
+        /// </summary>
+        /// <returns><c>true</c>, if region optional was gotten, <c>false</c> otherwise.</returns>
+        /// <param name="regInfo">Reg info.</param>
+        bool GetRegionOptional(ref RegionInfo regInfo)
+        {
+            var updated = false;
+
+            // allow port selection
+            var oldPort = regInfo.RegionPort;
+            regInfo.RegionPort = int.Parse (MainConsole.Instance.Prompt ("Region Port (Only change if necessary)", regInfo.RegionPort.ToString ()));
+            if (regInfo.RegionPort != oldPort)
+                updated = true;
+
+            var oldStart = regInfo.Startup;
+            // Startup mode
+            string scriptStart = MainConsole.Instance.Prompt (
+                "Region Startup - Normal or Delayed startup (normal/delay) : ", "normal").ToLower ();
+            regInfo.Startup = scriptStart.StartsWith ("n") ? StartupType.Normal : StartupType.Medium;
+            if (regInfo.Startup != oldStart)
+                updated = true;
+
+            var oldSwitch = regInfo.SeeIntoThisSimFromNeighbor;
+            regInfo.SeeIntoThisSimFromNeighbor = MainConsole.Instance.Prompt (
+                "See into this sim from neighbors (yes/no)",
+                regInfo.SeeIntoThisSimFromNeighbor ? "yes" : "no").ToLower () == "yes";
+            if (regInfo.SeeIntoThisSimFromNeighbor != oldSwitch)
+                updated = true;
+
+            oldSwitch = regInfo.InfiniteRegion;
+            regInfo.InfiniteRegion = MainConsole.Instance.Prompt (
+                "Make an infinite region (yes/no)",
+                regInfo.InfiniteRegion ? "yes" : "no").ToLower () == "yes";
+            if (regInfo.InfiniteRegion != oldSwitch)
+                updated = true;
+
+            var oldCap = regInfo.ObjectCapacity;
+            regInfo.ObjectCapacity =
+                int.Parse (MainConsole.Instance.Prompt ("Object capacity",
+                    regInfo.ObjectCapacity == 0
+                    ? "50000"
+                    : regInfo.ObjectCapacity.ToString ()));
+            if (regInfo.ObjectCapacity != oldCap)
+                updated = true;
+
+            return updated;
+        }
+
         public virtual void SetRegion(IScene scene)
         {
             scene.UniverseEventManager.RegisterEventHandler("Backup", UniverseEventManager_OnGenericEvent);
@@ -580,11 +704,36 @@ namespace Universe.Modules
             if (MainConsole.Instance.ConsoleScene != null)
             {
                 m_scene = scene;
-                var currentInfo = scene.RegionInfo;
-                MainConsole.Instance.ConsoleScene.RegionInfo = CreateRegionFromConsole(currentInfo, true, null);
-                MainConsole.Instance.DefaultPrompt = MainConsole.Instance.ConsoleScene.RegionInfo.RegionName+": ";
+                var regInfo = scene.RegionInfo;
+                string oldFile = BuildSaveFileName (scene.SimulationDataService.BackupFile);
+
+                if (ModifyRegionSettings(ref regInfo, true))
+                {
+                    scene.RegionInfo = regInfo;
+
+                    // save a new backup
+                    if (File.Exists (oldFile))
+                        File.Delete (oldFile);
+                    scene.SimulationDataService.BackupFile = regInfo.RegionName;       
+                    scene.SimulationDataService.ForceBackup();
+
+                    MainConsole.Instance.InfoFormat("[File Based Simulation Data]: Save of {0} completed.",regInfo.RegionName);
+
+                    // bail out
+                    MainConsole.Instance.ConsoleScene = null;
+                    MainConsole.Instance.DefaultPrompt = "root: ";
+
+                    // save current region serialized
+                    var restart = scene.RequestModuleInterface<IRestartModule>();
+                    restart.SerializeScene ();
+
+                    // shutdown and restart
+                    restart.RestartScene();
+
+                }
             }
         }
+
 
         /// <summary>
         /// Sets the region prim capacity.
@@ -626,6 +775,7 @@ namespace Universe.Modules
             }
 
             DeleteUpOldArchives(daysOld);
+
         }
 
         /// <summary>
@@ -669,10 +819,12 @@ namespace Universe.Modules
                 File.Copy(fileName, regionFile);
 
                 return true; 
+
             }
 
             return false;
         }
+
             
         public virtual List<ISceneEntity> LoadObjects()
         {
@@ -794,17 +946,24 @@ namespace Universe.Modules
                 m_timeBetweenSaves = config.GetInt("TimeBetweenSaves", m_timeBetweenSaves);
                 m_keepOldSave = config.GetBoolean("SavePreviousBackup", m_keepOldSave);
 
-                // directories are references from the bin directory
-                m_oldSaveDirectory =
-                    PathHelpers.ComputeFullPath(config.GetString("PreviousBackupDirectory", m_oldSaveDirectory));
+                // As of V0.9.2, data is saved in the '../Data' directory relative to the bin dir
+                // or as configured
+
+                // Get and save the default Data path
+                string defaultDataPath = simBase.DefaultDataPath;
+
                 m_storeDirectory =
                     PathHelpers.ComputeFullPath(config.GetString("StoreBackupDirectory", m_storeDirectory));
                 if (m_storeDirectory == "")
-                    m_storeDirectory = Constants.DEFAULT_DATA_DIR + "/Region";
+                    m_storeDirectory = Path.Combine(defaultDataPath, "Region");
+       
+                m_oldSaveDirectory =
+                    PathHelpers.ComputeFullPath(config.GetString("PreviousBackupDirectory", m_oldSaveDirectory));
                 if (m_oldSaveDirectory == "")
-                    m_oldSaveDirectory = Constants.DEFAULT_DATA_DIR + "/RegionBak";
-
-                m_removeArchiveDays = config.GetInt("ArchiveDays", m_removeArchiveDays);                          
+                    m_oldSaveDirectory = Path.Combine(defaultDataPath, "RegionBak");
+                        
+                m_removeArchiveDays = config.GetInt("ArchiveDays", m_removeArchiveDays);
+                               
 
                 // verify the necessary paths exist
                 if (!Directory.Exists(m_storeDirectory))
@@ -812,6 +971,7 @@ namespace Universe.Modules
                 if (!Directory.Exists(m_oldSaveDirectory))
                     Directory.CreateDirectory(m_oldSaveDirectory);
 
+       
                 string regionNameSeed = config.GetString("RegionNameSeed", "");
                 if (regionNameSeed != "")
                     m_regionNameSeed = regionNameSeed.Split (',');
@@ -822,14 +982,14 @@ namespace Universe.Modules
 
             if (m_saveChanges && m_timeBetweenSaves != 0)
             {
-                m_saveTimer = new Timer(m_timeBetweenSaves*60*1000);
+                m_saveTimer = new Timer(m_timeBetweenSaves * 60 * 1000);
                 m_saveTimer.Elapsed += m_saveTimer_Elapsed;
                 m_saveTimer.Start();
             }
 
             if (m_saveChanges && m_timeBetweenBackupSaves != 0)
             {
-                m_backupSaveTimer = new Timer(m_timeBetweenBackupSaves*60*1000);
+                m_backupSaveTimer = new Timer(m_timeBetweenBackupSaves*60*1000 + 5000);
                 m_backupSaveTimer.Elapsed += m_backupSaveTimer_Elapsed;
                 m_backupSaveTimer.Start();
             }
@@ -906,19 +1066,28 @@ namespace Universe.Modules
             }
             catch (Exception ex)
             {
-                MainConsole.Instance.Error("[File Based Simulation Data]: Failed to save backup, exception occurred " + ex);
+                MainConsole.Instance.Error("[File Based Simulation Data]: Failed to save archive, exception occurred " + ex);
             }
         }
 
         public void DeleteUpOldArchives(int daysOld)
         {
+            if (m_scene == null)
+                return;
+            
             if (daysOld < 0)
                 return;
 
-            var regionArchives = FindBackupRegionFiles();
+            var simRegion = m_scene.RegionInfo.RegionName;
+            if (String.IsNullOrEmpty (simRegion))
+                return;
+
+            var regionArchives = FindRegionBackupFiles(simRegion);
             if (regionArchives.Count == 0)
                 return;
 
+            MainConsole.Instance.InfoFormat ("Found {0} archive files", regionArchives.Count);
+            
             int removed = 0;
             DateTime archiveDate = DateTime.Today.AddDays(-daysOld);
 
@@ -969,7 +1138,7 @@ namespace Universe.Modules
                 MainConsole.Instance.WarnFormat("[Backup]: Exception caught: {0}", ex);
             }
 
-            MainConsole.Instance.Info("[FileBasedSimulationData]: Backing up " +
+            MainConsole.Instance.Info("[File Based Simulation Data]: Backing up " +
                                       m_scene.RegionInfo.RegionName);
 
             RegionData regiondata = new RegionData();
@@ -1028,11 +1197,12 @@ namespace Universe.Modules
             {
                 if (File.Exists(filename + (isOldSave ? "" : ".tmp")))
                     File.Delete(filename + (isOldSave ? "" : ".tmp")); //Remove old tmp files
-                MainConsole.Instance.Error("[FileBasedSimulationData]: Failed to save backup for region " +
+                MainConsole.Instance.Error("[File Based Simulation Data]: Failed to save backup for region " +
                                            m_scene.RegionInfo.RegionName + "!");
                 return;
             }
 
+            //RegionData data = _regionLoader.LoadBackup(filename + ".tmp");
             if (!isOldSave)
             {
                 if (File.Exists(filename))
@@ -1051,14 +1221,14 @@ namespace Universe.Modules
                     if (File.Exists(oldfileName))
                         File.Delete(oldfileName);
                      
-                    // now we can copy it over.
+                    // now we can copy it over...
                     File.Copy(filename, oldfileName );
                 }
             }
             regiondata.Dispose();
             //Now make it the full file again
             MapTileNeedsGenerated = true;
-            MainConsole.Instance.Info("[FileBasedSimulationData]: Saved Backup for region " +
+            MainConsole.Instance.Info("[File Based Simulation Data]: Saved Backup for region " +
                                       m_scene.RegionInfo.RegionName);
         }
 
@@ -1070,6 +1240,10 @@ namespace Universe.Modules
 
         string BuildSaveFileName()
         {
+            //return (m_storeDirectory == "" || m_storeDirectory == "/")
+            // the'/' directory is valid an someone might use it to store backups so don't
+            // fudge it to mean './' ... as it previously was...
+
             var name = BackupFile;
             return (m_storeDirectory == "")
                        ? name + ".sim"
@@ -1087,7 +1261,7 @@ namespace Universe.Modules
         {
             int tMapSize = tModule.Width*tModule.Height;
             byte[] sdata = new byte[tMapSize*2];
-            Buffer.BlockCopy(tModule.GetSerialised(), 0, sdata, 0, sdata.Length);
+            Buffer.BlockCopy(tModule.GetSerialized(), 0, sdata, 0, sdata.Length);
             return sdata;
         }
 
@@ -1100,7 +1274,7 @@ namespace Universe.Modules
         {
             BackupFile = fileName;
             string simName = Path.GetFileName(fileName); 
-            MainConsole.Instance.Info("[FileBasedSimulationData]: Restoring sim backup for region " + simName + "...");
+            MainConsole.Instance.Info("[File Based Simulation Data]: Restoring sim backup for region " + simName + "...");
 
             _regionData = _regionLoader.LoadBackup(BuildSaveFileName());
             if (_regionData == null)

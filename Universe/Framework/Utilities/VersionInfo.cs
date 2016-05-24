@@ -25,7 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
 using System.IO;
 
 namespace Universe.Framework.Utilities
@@ -36,7 +35,7 @@ namespace Universe.Framework.Utilities
 
         public enum Flavour
         {
-            Dev,
+            Development,
             Prerelease,
             RC1,
             RC2,
@@ -46,25 +45,35 @@ namespace Universe.Framework.Utilities
 
         #endregion
 
-        // This is the current version information
-		public const string VERSION_NUMBER = "1.0.1";                             // Version Number includes Major, Minor, Build
-        public const Flavour VERSION_FLAVOUR = Flavour.Dev;                       // Version Flavor is whether it is Debug, Release, RC, or other
-        public const string VERSION_NAME = "Universe";                            // Software name
+        public const string VERSION_NUMBER = "1.0.2";
+        public const Flavour VERSION_FLAVOUR = Flavour.RC2;
+        public const string VERSION_NAME = "Universe";
 
         public static string Version
         {
             get { return GetVersionString(VERSION_NUMBER, VERSION_FLAVOUR); }
         }
 
-        public static string GetVersionString(string versionNumber, Flavour flavour)
+        public static string GitVersion
+        {
+            get { return GetGitVersionString(); }
+        }
+
+        static string GetVersionString(string versionNumber, Flavour flavour)
         {
             string versionString = VERSION_NAME + " " + versionNumber + " " + flavour;
-            
+            return versionString;
+        }
+
+        static string GetGitVersionString()
+        {
+            string versionString = "Unknown";
+
             // Check if there's a custom .version file with the commit hash in it
             // Else return the standard versionString.
-            
+
             string gitCommitFileName = ".version";
-            
+
             if (File.Exists(gitCommitFileName))
             {
                 StreamReader CommitFile = File.OpenText(gitCommitFileName);

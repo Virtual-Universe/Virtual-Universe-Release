@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
@@ -31,42 +31,54 @@ using Universe.Framework.Utilities;
 
 namespace Universe.DataManager.Migration.Migrators.Estate
 {
-    public class EstateMigrator_0 : Migrator
-    {
-        public EstateMigrator_0()
-        {
-            Version = new Version(0, 0, 0);
-            MigrationName = "Estate";
+	public class EstateMigrator_0 : Migrator
+	{
+		public EstateMigrator_0 ()
+		{
+			Version = new Version (0, 0, 0);
+			MigrationName = "Estate";
 
-            schema = new List<SchemaDefinition>();
+			Schema = new List<SchemaDefinition> ();
 
-            AddSchema("estates", ColDefs(
-                ColDef("ID", ColumnTypes.String45),
-                ColDef("Key", ColumnTypes.String50),
-                ColDef("Value", ColumnTypes.Text)
-                                     ), IndexDefs(
-                                         IndexDef(new string[2] {"ID", "Key"}, IndexType.Primary)
-                                            ));
-        }
+			AddSchema ("estate_regions", ColDefs (
+				ColDef ("RegionID", ColumnTypes.String36),
+				ColDef ("EstateID", ColumnTypes.Integer11)
+			), IndexDefs (
+				IndexDef (new string[1] { "RegionID" }, IndexType.Primary),
+				IndexDef (new string[1] { "EstateID" }, IndexType.Index)
+			));
 
-        protected override void DoCreateDefaults(IDataConnector genericData)
-        {
-            EnsureAllTablesInSchemaExist(genericData);
-        }
+			AddSchema ("estate_settings", ColDefs (
+				ColDef ("EstateID", ColumnTypes.Integer11),
+				ColDef ("EstateName", ColumnTypes.String100),
+				ColDef ("EstateOwner", ColumnTypes.String36),
+				ColDef ("ParentEstateID", ColumnTypes.Integer11),
+				ColDef ("Settings", ColumnTypes.Text)
+			), IndexDefs (
+				IndexDef (new string[1] { "EstateID" }, IndexType.Primary),
+				IndexDef (new string[1] { "EstateOwner" }, IndexType.Index),
+				IndexDef (new string[2] { "EstateName", "EstateOwner" }, IndexType.Index)
+			));
+		}
 
-        protected override bool DoValidate(IDataConnector genericData)
-        {
-            return TestThatAllTablesValidate(genericData);
-        }
+		protected override void DoCreateDefaults (IDataConnector genericData)
+		{
+			EnsureAllTablesInSchemaExist (genericData);
+		}
 
-        protected override void DoMigrate(IDataConnector genericData)
-        {
-            DoCreateDefaults(genericData);
-        }
+		protected override bool DoValidate (IDataConnector genericData)
+		{
+			return TestThatAllTablesValidate (genericData);
+		}
 
-        protected override void DoPrepareRestorePoint(IDataConnector genericData)
-        {
-            CopyAllTablesToTempVersions(genericData);
-        }
-    }
+		protected override void DoMigrate (IDataConnector genericData)
+		{
+			DoCreateDefaults (genericData);
+		}
+
+		protected override void DoPrepareRestorePoint (IDataConnector genericData)
+		{
+			CopyAllTablesToTempVersions (genericData);
+		}
+	}
 }

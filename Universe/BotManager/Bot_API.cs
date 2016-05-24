@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,6 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 
 using System;
 using System.Collections.Generic;
@@ -75,7 +76,7 @@ namespace Universe.BotManager
 
         #region IBot_Api Members
 
-        public LSL_String botCreateBot(string FirstName, string LastName, string appearanceToClone, LSL_Vector startPos)
+        public LSL_String botCreateBot(string firstName, string lastName, string appearanceToClone, LSL_Vector startPos)
         {
             if (!ScriptProtection.CheckThreatLevel(ThreatLevel.Moderate, "botCreateBot", m_host, "bot", m_itemID))
                 return "";
@@ -83,7 +84,7 @@ namespace Universe.BotManager
             if (manager != null)
                 return
                     new LSL_String(
-                        manager.CreateAvatar(FirstName, LastName, m_host.ParentEntity.Scene,
+                        manager.CreateAvatar(firstName, lastName, m_host.ParentEntity.Scene,
                                              UUID.Parse(appearanceToClone), m_host.OwnerID,
                                              new Vector3((float) startPos.x, (float) startPos.y, (float) startPos.z)).
                                 ToString());
@@ -296,11 +297,11 @@ namespace Universe.BotManager
 
         #region IScriptApi Members
 
-        public void Initialize(IScriptModulePlugin ScriptEngine, ISceneChildEntity host, uint localID, UUID itemID,
+        public void Initialize(IScriptModulePlugin scriptEngine, ISceneChildEntity host, uint localID, UUID itemID,
                                ScriptProtectionModule module)
         {
             m_itemID = itemID;
-            m_ScriptEngine = ScriptEngine;
+            m_ScriptEngine = scriptEngine;
             m_host = host;
             ScriptProtection = module;
         }
@@ -356,8 +357,8 @@ namespace Universe.BotManager
             if (lease.CurrentState == LeaseState.Initial)
             {
                 lease.InitialLeaseTime = TimeSpan.FromMinutes(0);
-                //lease.RenewOnCallTime = TimeSpan.FromSeconds(10.0);
-                //lease.SponsorshipTimeout = TimeSpan.FromMinutes(1.0);
+                //                lease.RenewOnCallTime = TimeSpan.FromSeconds(10.0);
+                //                lease.SponsorshipTimeout = TimeSpan.FromMinutes(1.0);
             }
             return lease;
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-support.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -61,6 +61,12 @@ namespace Universe.Framework.Modules
         string Version { get; }
 
         /// <summary>
+        /// Is this instance a grid server.
+        /// </summary>
+        /// <value><c>true</c> if this instance is a grid server; otherwise, <c>false</c>.</value>
+        bool IsGridServer { get; }
+
+        /// <summary>
         ///     All parameters that were passed by the command line when Universe started
         /// </summary>
         string[] CommandLineParameters { get; }
@@ -114,5 +120,8 @@ namespace Universe.Framework.Modules
         ///     Start console processing
         /// </summary>
         void Run();
+
+        // where all volatile data is kept
+        string DefaultDataPath { get; set; }
     }
 }

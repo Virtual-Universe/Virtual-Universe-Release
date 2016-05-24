@@ -1,18 +1,17 @@
 #!/bin/bash
-# Start the Universe-Sim Grid server
-# Version 0.9.2+
+# Start the Virtual Universe Grid server
+# Version 1.0.2+
 #
-# May 2014
-# greythane @ gmail.com
+# Emperor Starfinder<emperor@secondgalaxy.com>: For Virtual Universe - May 11, 2016
+# Greythane<greythane@gmail.com>: For WhiteCore-Sim - May 2015
 
-WOASDIR="${0%/*}"
-cd $WOASDIR
-echo $WOASDIR
+VUOASDIR="${0%/*}"
+cd $VUOASDIR
+echo $VUOASDIR
 
 cd ./bin
-echo Starting Universe Grid server...
+echo Starting Virtual Universe Grid server...
 mono Universe.Server.exe -skipconfig
 wait
 
 exit
-

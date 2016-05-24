@@ -25,6 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -61,11 +62,11 @@ namespace Universe.ClientStack
         /// <value>
         ///     Debug packet level.  See OpenSim.RegisterConsoleCommands() for more details.
         /// </value>
-        private int m_debugPacketLevel;
-        private List<string> m_debugPackets = new List<string>();
-        private List<string> m_debugRemovePackets = new List<string>();
+        int m_debugPacketLevel;
+        List<string> m_debugPackets = new List<string>();
+        List<string> m_debugRemovePackets = new List<string>();
 
-        private readonly bool m_allowUDPInv;
+        readonly bool m_allowUDPInv;
 
         #region Events
 
@@ -77,6 +78,7 @@ namespace Universe.ClientStack
         public event ImprovedInstantMessage OnInstantMessage;
         public event PreSendImprovedInstantMessage OnPreSendInstantMessage;
         public event ChatMessage OnChatFromClient;
+        public event RezRestoreToWorld OnRezRestoreToWorld;
         public event RezObject OnRezObject;
         public event DeRezObject OnDeRezObject;
         public event ModifyTerrain OnModifyTerrain;
@@ -323,22 +325,22 @@ namespace Universe.ClientStack
         /// <summary>
         ///     Used to adjust Sun Orbit values so Linden based viewers properly position sun
         /// </summary>
-        private const float m_sunPainDaHalfOrbitalCutoff = 4.712388980384689858f;
+        const float m_sunPainDaHalfOrbitalCutoff = 4.712388980384689858f;
 
-        private static readonly Dictionary<PacketType, PacketMethod> PacketHandlers =
+        static readonly Dictionary<PacketType, PacketMethod> PacketHandlers =
             new Dictionary<PacketType, PacketMethod>(); //Global/static handlers for all clients
 
-        private readonly LLUDPServer m_udpServer;
-        private readonly LLUDPClient m_udpClient;
-        private readonly UUID m_sessionId;
-        private readonly UUID m_secureSessionId;
-        private readonly UUID m_agentId;
-        private readonly uint m_circuitCode;
-        private readonly byte[] m_channelVersion = Utils.EmptyBytes;
-        private readonly Dictionary<string, UUID> m_defaultAnimations = new Dictionary<string, UUID>();
-        private readonly IGroupsModule m_GroupsModule;
+        readonly LLUDPServer m_udpServer;
+        readonly LLUDPClient m_udpClient;
+        readonly UUID m_sessionId;
+        readonly UUID m_secureSessionId;
+        readonly UUID m_agentId;
+        readonly uint m_circuitCode;
+        readonly byte[] m_channelVersion = Utils.EmptyBytes;
+        readonly Dictionary<string, UUID> m_defaultAnimations = new Dictionary<string, UUID>();
+        readonly IGroupsModule m_GroupsModule;
 
-        private int m_cachedTextureSerial;
+        int m_cachedTextureSerial;
 
         /// <value>
         ///     Maintain a record of all the objects killed.  This allows us to stop an update being sent from the
@@ -348,32 +350,32 @@ namespace Universe.ClientStack
         /// </value>
         //protected HashSet<uint> m_killRecord = new HashSet<uint>();
 //        protected HashSet<uint> m_attachmentsSent;
-        private int m_animationSequenceNumber = 1;
+        int m_animationSequenceNumber = 1;
 
-        private bool m_SendLogoutPacketWhenClosing = true;
-        private AgentUpdateArgs lastarg;
-        private bool m_IsActive = true;
+        bool m_SendLogoutPacketWhenClosing = true;
+        AgentUpdateArgs lastarg;
+        bool m_IsActive = true;
 
-        private readonly Dictionary<PacketType, PacketProcessor> m_packetHandlers =
+        readonly Dictionary<PacketType, PacketProcessor> m_packetHandlers =
             new Dictionary<PacketType, PacketProcessor>();
 
-        private readonly Dictionary<string, GenericMessage> m_genericPacketHandlers =
+        readonly Dictionary<string, GenericMessage> m_genericPacketHandlers =
             new Dictionary<string, GenericMessage>();
 
         //PauPaw:Local Generic Message handlers
 
-        private readonly IScene m_scene;
-        private readonly LLImageManager m_imageManager;
-        private readonly string m_Name;
-        private readonly EndPoint m_userEndPoint;
-        private UUID m_activeGroupID;
-        private string m_activeGroupName = String.Empty;
-        private ulong m_activeGroupPowers;
-        private uint m_agentFOVCounter;
+        readonly IScene m_scene;
+        readonly LLImageManager m_imageManager;
+        readonly string m_Name;
+        readonly EndPoint m_userEndPoint;
+        UUID m_activeGroupID;
+        string m_activeGroupName = String.Empty;
+        ulong m_activeGroupPowers;
+        uint m_agentFOVCounter;
 
-        private readonly IAssetService m_assetService;
+        readonly IAssetService m_assetService;
 // ReSharper disable ConvertToConstant.Local
-        private bool m_checkPackets = true;
+        bool m_checkPackets = true;
 // ReSharper restore ConvertToConstant.Local
 
         #endregion Class Members
@@ -480,7 +482,7 @@ namespace Universe.ClientStack
                 m_allowUDPInv = advancedConfig.GetBoolean("AllowUDPInventory", m_allowUDPInv);
 
             //m_killRecord = new HashSet<uint>();
-            //m_attachmentsSent = new HashSet<uint>();
+//            m_attachmentsSent = new HashSet<uint>();
 
             m_assetService = m_scene.RequestModuleInterface<IAssetService>();
             m_GroupsModule = scene.RequestModuleInterface<IGroupsModule>();
@@ -684,37 +686,37 @@ namespace Universe.ClientStack
         /// </summary>
         /// <param name="packet"></param>
         /// <returns>True if a handler was found which successfully processed the packet.</returns>
-        private bool ProcessPacketMethod(Packet packet)
+        bool ProcessPacketMethod(Packet packet)
         {
             bool result = false;
             PacketProcessor pprocessor;
-            if (m_packetHandlers.TryGetValue(packet.Type, out pprocessor))
-            {
-                //there is a local handler for this packet type
-                if (pprocessor.Async)
-                {
-                    object obj = new AsyncPacketProcess(this, pprocessor.method, packet);
-                    m_udpServer.FireAndForget(ProcessSpecificPacketAsync, obj);
-                    result = true;
-                }
-                else
-                {
-                    result = pprocessor.method(this, packet);
-                }
+
+            bool localHandler;
+            lock (m_packetHandlers) {
+                localHandler = m_packetHandlers.TryGetValue (packet.Type, out pprocessor);
             }
-            else
+            if (localHandler) {
+                //there is a local handler for this packet type
+                if (pprocessor.Async) {
+                    object obj = new AsyncPacketProcess (this, pprocessor.method, packet);
+                    m_udpServer.FireAndForget (ProcessSpecificPacketAsync, obj);
+                    result = true;
+                } else {
+                    result = pprocessor.method (this, packet);
+                }
+                return result;
+            }
+
+            //there is not a local handler so see if there is a Global handler
+            PacketMethod method = null;
+            bool found;
+            lock (PacketHandlers)
             {
-                //there is not a local handler so see if there is a Global handler
-                PacketMethod method = null;
-                bool found;
-                lock (PacketHandlers)
-                {
-                    found = PacketHandlers.TryGetValue(packet.Type, out method);
-                }
-                if (found)
-                {
-                    result = method(this, packet);
-                }
+                found = PacketHandlers.TryGetValue(packet.Type, out method);
+            }
+            if (found)
+            {
+                result = method(this, packet);
             }
             return result;
         }
@@ -1116,7 +1118,7 @@ namespace Universe.ClientStack
         ///     Send terrain layer information to the client.
         /// </summary>
         /// <param name="o"></param>
-        private void DoSendLayerData(object o)
+        void DoSendLayerData(object o)
         {
             short[] map = (short[]) o;
             try
@@ -1222,7 +1224,7 @@ namespace Universe.ClientStack
             }
             catch (Exception e)
             {
-                MainConsole.Instance.ErrorFormat("[CLIENT]: SendLayerData() Failed with exception: " + e.ToString());
+                MainConsole.Instance.ErrorFormat("[CLIENT]: SendLayerData() Failed with exception: " + e);
             }
         }
 
@@ -1324,7 +1326,7 @@ namespace Universe.ClientStack
         ///     Send wind layer information to the client.
         /// </summary>
         /// <param name="o"></param>
-        private void DoSendWindData(object o)
+        void DoSendWindData(object o)
         {
             Vector2[] windSpeeds = (Vector2[]) o;
             TerrainPatch[] patches = new TerrainPatch[2];
@@ -1357,7 +1359,7 @@ namespace Universe.ClientStack
         ///     Send cloud layer information to the client.
         /// </summary>
         /// <param name="o"></param>
-        private void DoSendCloudData(object o)
+        void DoSendCloudData(object o)
         {
             float[] cloudCover = (float[]) o;
             TerrainPatch[] patches = new TerrainPatch[1];
@@ -1576,10 +1578,29 @@ namespace Universe.ClientStack
         {
             PlacesReplyPacket PlacesReply = new PlacesReplyPacket();
             
+            PlacesReplyPacket.QueryDataBlock[] Query = new PlacesReplyPacket.QueryDataBlock[LandData.Length + 1];
+            
             // Since we don't have Membership we should send an empty QueryData block 
             // here to keep the viewer happy
             
-            PlacesReplyPacket.QueryDataBlock[] Query = new PlacesReplyPacket.QueryDataBlock[LandData.Length];
+            PlacesReplyPacket.QueryDataBlock MembershipBlock = new PlacesReplyPacket.QueryDataBlock
+            {
+                ActualArea = 0,
+                BillableArea = 0,
+                Desc = Utils.StringToBytes(""),
+                Dwell = 0,
+                Flags = 0,
+                GlobalX= 0,
+                GlobalY = 0,
+                GlobalZ = 0,
+                Name = Utils.StringToBytes(""),
+                OwnerID = UUID.Zero,
+                Price = 0,
+                SimName = Utils.StringToBytes(""),
+                SnapshotID = UUID.Zero 
+            };
+            Query[0] = MembershipBlock;
+            
             //Note: Nothing is ever done with this?????
             int totalarea = 0;
             List<string> RegionTypes = new List<string>();
@@ -1605,7 +1626,7 @@ namespace Universe.ClientStack
                                                                           Utils.StringToBytes(LandData[i].RegionName),
                                                                       SnapshotID = LandData[i].LandData.SnapshotID
                                                                   };
-                Query[i] = QueryBlock;
+                Query[i+1] = QueryBlock;
                 totalarea += LandData[i].LandData.Area;
                 RegionTypes.Add(LandData[i].RegionType);
             }
@@ -1805,7 +1826,7 @@ namespace Universe.ClientStack
                 OutPacket(currentPacket, ThrottleOutPacketType.Asset, false, null);
         }
 
-        private InventoryDescendentsPacket.FolderDataBlock CreateFolderDataBlock(InventoryFolderBase folder)
+        InventoryDescendentsPacket.FolderDataBlock CreateFolderDataBlock(InventoryFolderBase folder)
         {
             InventoryDescendentsPacket.FolderDataBlock newBlock = new InventoryDescendentsPacket.FolderDataBlock
                                                                       {
@@ -1818,7 +1839,7 @@ namespace Universe.ClientStack
             return newBlock;
         }
 
-        private InventoryDescendentsPacket.ItemDataBlock CreateItemDataBlock(InventoryItemBase item)
+        InventoryDescendentsPacket.ItemDataBlock CreateItemDataBlock(InventoryItemBase item)
         {
             InventoryDescendentsPacket.ItemDataBlock newBlock = new InventoryDescendentsPacket.ItemDataBlock
                                                                     {
@@ -1861,14 +1882,14 @@ namespace Universe.ClientStack
             return newBlock;
         }
 
-        private void AddNullFolderBlockToDecendentsPacket(ref InventoryDescendentsPacket packet)
+        void AddNullFolderBlockToDecendentsPacket(ref InventoryDescendentsPacket packet)
         {
             packet.FolderData = new InventoryDescendentsPacket.FolderDataBlock[1];
             packet.FolderData[0] = new InventoryDescendentsPacket.FolderDataBlock
                                        {FolderID = UUID.Zero, ParentID = UUID.Zero, Type = -1, Name = new byte[0]};
         }
 
-        private void AddNullItemBlockToDescendentsPacket(ref InventoryDescendentsPacket packet)
+        void AddNullItemBlockToDescendentsPacket(ref InventoryDescendentsPacket packet)
         {
             packet.ItemData = new InventoryDescendentsPacket.ItemDataBlock[1];
             packet.ItemData[0] = new InventoryDescendentsPacket.ItemDataBlock
@@ -1899,7 +1920,7 @@ namespace Universe.ClientStack
             // No need to add CRC
         }
 
-        private InventoryDescendentsPacket CreateInventoryDescendentsPacket(UUID ownerID, UUID folderID, int version,
+        InventoryDescendentsPacket CreateInventoryDescendentsPacket(UUID ownerID, UUID folderID, int version,
                                                                             int descendents, int folders, int items)
         {
             InventoryDescendentsPacket descend =
@@ -2006,7 +2027,7 @@ namespace Universe.ClientStack
         /// <param name="folder"></param>
         /// <param name="folderDataBlocks"></param>
         /// <param name="transactionId"></param>
-        private void SendBulkUpdateInventoryFolderRecursive(
+        void SendBulkUpdateInventoryFolderRecursive(
             InventoryFolderBase folder, ref List<BulkUpdateInventoryPacket.FolderDataBlock> folderDataBlocks,
             UUID transactionId)
         {
@@ -2064,7 +2085,7 @@ namespace Universe.ClientStack
         /// </summary>
         /// <param name="folder"></param>
         /// <returns></returns>
-        private BulkUpdateInventoryPacket.FolderDataBlock GenerateBulkUpdateFolderDataBlock(InventoryFolderBase folder)
+        BulkUpdateInventoryPacket.FolderDataBlock GenerateBulkUpdateFolderDataBlock(InventoryFolderBase folder)
         {
             BulkUpdateInventoryPacket.FolderDataBlock folderBlock = new BulkUpdateInventoryPacket.FolderDataBlock
                                                                         {
@@ -2083,7 +2104,7 @@ namespace Universe.ClientStack
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        private BulkUpdateInventoryPacket.ItemDataBlock GenerateBulkUpdateItemDataBlock(InventoryItemBase item)
+        BulkUpdateInventoryPacket.ItemDataBlock GenerateBulkUpdateItemDataBlock(InventoryItemBase item)
         {
             BulkUpdateInventoryPacket.ItemDataBlock itemBlock = new BulkUpdateInventoryPacket.ItemDataBlock
                                                                     {
@@ -2709,6 +2730,7 @@ namespace Universe.ClientStack
             OutPacket(pack, ThrottleOutPacketType.AvatarInfo);
         }
 
+        static readonly object _lock = new object ();
         public void SendLandStatReply(uint reportType, uint requestFlags, uint resultCount, LandStatReportItem[] lsrpia)
         {
             LandStatReplyMessage message = new LandStatReplyMessage
@@ -2719,28 +2741,25 @@ namespace Universe.ClientStack
                                                    ReportDataBlocks =
                                                        new LandStatReplyMessage.ReportDataBlock[lsrpia.Length]
                                                };
-
-            for (int i = 0; i < lsrpia.Length; i++)
-            {
-                LandStatReplyMessage.ReportDataBlock block = new LandStatReplyMessage.ReportDataBlock
-                                                                 {
-                                                                     Location = lsrpia[i].Location,
-                                                                     MonoScore = lsrpia[i].Score,
-                                                                     OwnerName = lsrpia[i].OwnerName,
-                                                                     Score = lsrpia[i].Score,
-                                                                     TaskID = lsrpia[i].TaskID,
-                                                                     TaskLocalID = lsrpia[i].TaskLocalID,
-                                                                     TaskName = lsrpia[i].TaskName,
-                                                                     TimeStamp = lsrpia[i].TimeModified
-                                                                 };
-                message.ReportDataBlocks[i] = block;
+                for (int i = 0; i < lsrpia.Length; i++) {
+                lock (_lock) {
+                    LandStatReplyMessage.ReportDataBlock block = new LandStatReplyMessage.ReportDataBlock {
+                        Location = lsrpia [i].Location,
+                        MonoScore = lsrpia [i].Score,
+                        OwnerName = lsrpia [i].OwnerName,
+                        Score = lsrpia [i].Score,
+                        TaskID = lsrpia [i].TaskID,
+                        TaskLocalID = lsrpia [i].TaskLocalID,
+                        TaskName = lsrpia [i].TaskName,
+                        TimeStamp = lsrpia [i].TimeModified
+                    };
+                    message.ReportDataBlocks [i] = block;
+                }
             }
-
             IEventQueueService eventService = m_scene.RequestModuleInterface<IEventQueueService>();
             if (eventService != null)
-            {
                 eventService.LandStatReply(message, AgentId, m_scene.RegionInfo.RegionID);
-            }
+            
         }
 
         public void SendScriptRunningReply(UUID objectID, UUID itemID, bool running)
@@ -2758,9 +2777,9 @@ namespace Universe.ClientStack
             OutPacket(scriptRunningReply, ThrottleOutPacketType.AvatarInfo);
         }
 
-        private void SendFailedAsset(AssetRequestToClient req, TransferPacketStatus assetErrors)
+        void SendFailedAsset(AssetRequestToClient req, TransferPacketStatus assetErrors)
         {
-            TransferInfoPacket Transfer = new TransferInfoPacket
+            TransferInfoPacket TransferPkt = new TransferInfoPacket
                                               {
                                                   TransferInfo =
                                                       {
@@ -2773,7 +2792,7 @@ namespace Universe.ClientStack
                                                       },
                                                   Header = {Zerocoded = true}
                                               };
-            OutPacket(Transfer, ThrottleOutPacketType.Transfer);
+            OutPacket(TransferPkt, ThrottleOutPacketType.Transfer);
         }
 
         public void SendAsset(AssetRequestToClient req)
@@ -4170,7 +4189,7 @@ namespace Universe.ClientStack
             }
         }
 
-        private void ResendPrimUpdates(IEnumerable<EntityUpdate> updates, OutgoingPacket oPacket)
+        void ResendPrimUpdates(IEnumerable<EntityUpdate> updates, OutgoingPacket oPacket)
         {
             // Remove the update packet from the list of packets waiting for acknowledgement
             // because we are requeuing the list of updates. They will be resent in new packets
@@ -4206,7 +4225,7 @@ namespace Universe.ClientStack
 
         #endregion Primitive Packet/Data Sending Methods
 
-        private void HandleQueueEmpty(object o)
+        void HandleQueueEmpty(object o)
         {
             // arraytmp  0 contains current number of packets in task
             // arraytmp  1 contains current number of packets in avatarinfo
@@ -4228,7 +4247,7 @@ namespace Universe.ClientStack
                 ProcessTextureRequests(m_udpServer.TextureSendLimit);
         }
 
-        private void ProcessTextureRequests(int numPackets)
+        void ProcessTextureRequests(int numPackets)
         {
             //note: tmp is never used
             //int tmp = m_udpClient.GetCurTexPacksInQueue();
@@ -4325,7 +4344,7 @@ namespace Universe.ClientStack
             OutPacket(notFoundPacket, ThrottleOutPacketType.Texture);
         }
 
-        private volatile bool m_sendingSimStatsPacket;
+        volatile bool m_sendingSimStatsPacket;
 
         public void SendSimStats(SimStats stats)
         {
@@ -4449,7 +4468,7 @@ namespace Universe.ClientStack
 
         #region Estate Data Sending Methods
 
-        private static bool convertParamStringToBool(byte[] field)
+        static bool convertParamStringToBool(byte[] field)
         {
             string s = Utils.BytesToString(field);
             if (s == "1" || s.ToLower() == "y" || s.ToLower() == "yes" || s.ToLower() == "t" || s.ToLower() == "true")
@@ -4886,7 +4905,7 @@ namespace Universe.ClientStack
 
         #region Helper Methods
 
-        private ImprovedTerseObjectUpdatePacket.ObjectDataBlock CreateImprovedTerseBlock(IEntity entity,
+        ImprovedTerseObjectUpdatePacket.ObjectDataBlock CreateImprovedTerseBlock(IEntity entity,
                                                                                          bool sendTexture)
         {
             #region ScenePresence/SOP Handling
@@ -5019,7 +5038,7 @@ namespace Universe.ClientStack
             return block;
         }
 
-        private ObjectUpdatePacket.ObjectDataBlock CreateAvatarUpdateBlock(IScenePresence data)
+        ObjectUpdatePacket.ObjectDataBlock CreateAvatarUpdateBlock(IScenePresence data)
         {
             byte[] objectData = new byte[76];
 
@@ -5087,7 +5106,7 @@ namespace Universe.ClientStack
             return update;
         }
 
-        private ObjectUpdateCachedPacket.ObjectDataBlock CreatePrimCachedUpdateBlock(ISceneChildEntity data,
+        ObjectUpdateCachedPacket.ObjectDataBlock CreatePrimCachedUpdateBlock(ISceneChildEntity data,
                                                                                      UUID recipientID)
         {
             ObjectUpdateCachedPacket.ObjectDataBlock odb = new ObjectUpdateCachedPacket.ObjectDataBlock
@@ -5116,7 +5135,7 @@ namespace Universe.ClientStack
             return odb;
         }
 
-        private ObjectUpdatePacket.ObjectDataBlock CreatePrimUpdateBlock(ISceneChildEntity data, UUID recipientID)
+        ObjectUpdatePacket.ObjectDataBlock CreatePrimUpdateBlock(ISceneChildEntity data, UUID recipientID)
         {
             byte[] objectData = new byte[60];
             data.RelativePosition.ToBytes(objectData, 0);
@@ -5239,7 +5258,7 @@ namespace Universe.ClientStack
             return update;
         }
 
-        private ObjectUpdateCompressedPacket.ObjectDataBlock CreateCompressedUpdateBlock(ISceneChildEntity part,
+        ObjectUpdateCompressedPacket.ObjectDataBlock CreateCompressedUpdateBlock(ISceneChildEntity part,
                                                                                          CompressedFlags updateFlags,
                                                                                          PrimUpdateFlags flags)
         {
@@ -5443,7 +5462,7 @@ namespace Universe.ClientStack
         /// <summary>
         ///     This is a different way of processing packets then ProcessInPacket
         /// </summary>
-        private void RegisterLocalPacketHandlers()
+        void RegisterLocalPacketHandlers()
         {
             AddLocalPacketHandler(PacketType.LogoutRequest, HandleLogout);
             AddLocalPacketHandler(PacketType.AgentUpdate, HandleAgentUpdate, false);
@@ -5681,7 +5700,7 @@ namespace Universe.ClientStack
 
         #region Scene/Avatar
 
-        private bool HandleAgentUpdate(IClientAPI sener, Packet Pack)
+        bool HandleAgentUpdate(IClientAPI sener, Packet Pack)
         {
             if (OnAgentUpdate != null)
             {
@@ -5758,7 +5777,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleMoneyTransferRequest(IClientAPI sender, Packet Pack)
+        bool HandleMoneyTransferRequest(IClientAPI sender, Packet Pack)
         {
             MoneyTransferRequestPacket money = (MoneyTransferRequestPacket) Pack;
             // validate the agent owns the agentID and sessionID
@@ -5779,7 +5798,7 @@ namespace Universe.ClientStack
             return false;
         }
 
-        private bool HandleParcelGodMarkAsContent(IClientAPI client, Packet Packet)
+        bool HandleParcelGodMarkAsContent(IClientAPI client, Packet Packet)
         {
             ParcelGodMarkAsContentPacket ParcelGodMarkAsContent =
                 (ParcelGodMarkAsContentPacket) Packet;
@@ -5806,7 +5825,7 @@ namespace Universe.ClientStack
             return false;
         }
 
-        private bool HandleFreezeUser(IClientAPI client, Packet Packet)
+        bool HandleFreezeUser(IClientAPI client, Packet Packet)
         {
             FreezeUserPacket FreezeUser = (FreezeUserPacket) Packet;
 
@@ -5833,7 +5852,7 @@ namespace Universe.ClientStack
             return false;
         }
 
-        private bool HandleEjectUser(IClientAPI client, Packet Packet)
+        bool HandleEjectUser(IClientAPI client, Packet Packet)
         {
             EjectUserPacket EjectUser =
                 (EjectUserPacket) Packet;
@@ -5861,7 +5880,7 @@ namespace Universe.ClientStack
             return false;
         }
 
-        private bool HandleParcelBuyPass(IClientAPI client, Packet Packet)
+        bool HandleParcelBuyPass(IClientAPI client, Packet Packet)
         {
             ParcelBuyPassPacket ParcelBuyPass =
                 (ParcelBuyPassPacket) Packet;
@@ -5888,7 +5907,7 @@ namespace Universe.ClientStack
             return false;
         }
 
-        private bool HandleParcelBuyRequest(IClientAPI sender, Packet Pack)
+        bool HandleParcelBuyRequest(IClientAPI sender, Packet Pack)
         {
             ParcelBuyPacket parcel = (ParcelBuyPacket) Pack;
 
@@ -5919,7 +5938,7 @@ namespace Universe.ClientStack
             return false;
         }
 
-        private bool HandleUUIDGroupNameRequest(IClientAPI sender, Packet Pack)
+        bool HandleUUIDGroupNameRequest(IClientAPI sender, Packet Pack)
         {
             UUIDGroupNameRequestPacket upack = (UUIDGroupNameRequestPacket) Pack;
 
@@ -5995,7 +6014,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleViewerEffect(IClientAPI sender, Packet Pack)
+        bool HandleViewerEffect(IClientAPI sender, Packet Pack)
         {
             ViewerEffectPacket viewer = (ViewerEffectPacket) Pack;
             if (viewer.AgentData.SessionID != SessionId) return false;
@@ -6025,7 +6044,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleAvatarPropertiesRequest(IClientAPI sender, Packet Pack)
+        bool HandleAvatarPropertiesRequest(IClientAPI sender, Packet Pack)
         {
             AvatarPropertiesRequestPacket avatarProperties = (AvatarPropertiesRequestPacket) Pack;
 
@@ -6048,7 +6067,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleChatFromViewer(IClientAPI sender, Packet Pack)
+        bool HandleChatFromViewer(IClientAPI sender, Packet Pack)
         {
             ChatFromViewerPacket inchatpack = (ChatFromViewerPacket) Pack;
 
@@ -6097,7 +6116,7 @@ namespace Universe.ClientStack
                 handlerChatFromClient(this, args);
         }
 
-        private bool HandlerAvatarPropertiesUpdate(IClientAPI sender, Packet Pack)
+        bool HandlerAvatarPropertiesUpdate(IClientAPI sender, Packet Pack)
         {
             AvatarPropertiesUpdatePacket avatarProps = (AvatarPropertiesUpdatePacket) Pack;
 
@@ -6129,7 +6148,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandlerScriptDialogReply(IClientAPI sender, Packet Pack)
+        bool HandlerScriptDialogReply(IClientAPI sender, Packet Pack)
         {
             ScriptDialogReplyPacket rdialog = (ScriptDialogReplyPacket) Pack;
 
@@ -6168,7 +6187,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandlerImprovedInstantMessage(IClientAPI sender, Packet Pack)
+        bool HandlerImprovedInstantMessage(IClientAPI sender, Packet Pack)
         {
             ImprovedInstantMessagePacket msgpack = (ImprovedInstantMessagePacket) Pack;
 
@@ -6220,7 +6239,7 @@ namespace Universe.ClientStack
                 handlerInstantMessage(this, im);
         }
 
-        private bool HandlerAcceptFriendship(IClientAPI sender, Packet Pack)
+        bool HandlerAcceptFriendship(IClientAPI sender, Packet Pack)
         {
             AcceptFriendshipPacket afriendpack = (AcceptFriendshipPacket) Pack;
 
@@ -6250,7 +6269,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandlerDeclineFriendship(IClientAPI sender, Packet Pack)
+        bool HandlerDeclineFriendship(IClientAPI sender, Packet Pack)
         {
             DeclineFriendshipPacket dfriendpack = (DeclineFriendshipPacket) Pack;
 
@@ -6275,7 +6294,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandlerTerminateFrendship(IClientAPI sender, Packet Pack)
+        bool HandlerTerminateFrendship(IClientAPI sender, Packet Pack)
         {
             TerminateFriendshipPacket tfriendpack = (TerminateFriendshipPacket) Pack;
 
@@ -6301,7 +6320,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleFindAgent(IClientAPI client, Packet Packet)
+        bool HandleFindAgent(IClientAPI client, Packet Packet)
         {
             FindAgentPacket FindAgent =
                 (FindAgentPacket) Packet;
@@ -6315,7 +6334,7 @@ namespace Universe.ClientStack
             return false;
         }
 
-        private bool HandleTrackAgent(IClientAPI client, Packet Packet)
+        bool HandleTrackAgent(IClientAPI client, Packet Packet)
         {
             TrackAgentPacket TrackAgent =
                 (TrackAgentPacket) Packet;
@@ -6342,7 +6361,7 @@ namespace Universe.ClientStack
             return false;
         }
 
-        private bool HandlerRezObject(IClientAPI sender, Packet Pack)
+        bool HandlerRezObject(IClientAPI sender, Packet Pack)
         {
             RezObjectPacket rezPacket = (RezObjectPacket) Pack;
 
@@ -6369,7 +6388,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandlerRezObjectFromNotecard(IClientAPI sender, Packet Pack)
+        bool HandlerRezObjectFromNotecard(IClientAPI sender, Packet Pack)
         {
             RezObjectFromNotecardPacket rezPacket = (RezObjectFromNotecardPacket) Pack;
 
@@ -6396,7 +6415,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandlerDeRezObject(IClientAPI sender, Packet Pack)
+        bool HandlerDeRezObject(IClientAPI sender, Packet Pack)
         {
             DeRezObjectPacket DeRezPacket = (DeRezObjectPacket) Pack;
 
@@ -6426,7 +6445,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandlerModifyLand(IClientAPI sender, Packet Pack)
+        bool HandlerModifyLand(IClientAPI sender, Packet Pack)
         {
             ModifyLandPacket modify = (ModifyLandPacket) Pack;
 
@@ -6465,7 +6484,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandlerRegionHandshakeReply(IClientAPI sender, Packet Pack)
+        bool HandlerRegionHandshakeReply(IClientAPI sender, Packet Pack)
         {
             Action<IClientAPI> handlerRegionHandShakeReply = OnRegionHandShakeReply;
             if (handlerRegionHandShakeReply != null)
@@ -6476,7 +6495,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandlerAgentWearablesRequest(IClientAPI sender, Packet Pack)
+        bool HandlerAgentWearablesRequest(IClientAPI sender, Packet Pack)
         {
             GenericCall1 handlerRequestWearables = OnRequestWearables;
 
@@ -6495,7 +6514,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandlerAgentSetAppearance(IClientAPI sender, Packet Pack)
+        bool HandlerAgentSetAppearance(IClientAPI sender, Packet Pack)
         {
             AgentSetAppearancePacket appear = (AgentSetAppearancePacket) Pack;
 
@@ -6557,7 +6576,7 @@ namespace Universe.ClientStack
         /// <param name="simclient"></param>
         /// <param name="packet"></param>
         /// <returns></returns>
-        private bool HandleAgentTextureCached(IClientAPI simclient, Packet packet)
+        bool HandleAgentTextureCached(IClientAPI simclient, Packet packet)
         {
             AgentCachedTexturePacket cachedtex = (AgentCachedTexturePacket) packet;
 
@@ -6598,7 +6617,7 @@ namespace Universe.ClientStack
             OutPacket(cachedresp, ThrottleOutPacketType.Texture);
         }
 
-        private bool HandlerAgentIsNowWearing(IClientAPI sender, Packet Pack)
+        bool HandlerAgentIsNowWearing(IClientAPI sender, Packet Pack)
         {
             if (OnAvatarNowWearing != null)
             {
@@ -6634,7 +6653,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandlerRezSingleAttachmentFromInv(IClientAPI sender, Packet Pack)
+        bool HandlerRezSingleAttachmentFromInv(IClientAPI sender, Packet Pack)
         {
             RezSingleAttachmentFromInv handlerRezSingleAttachment = OnRezSingleAttachmentFromInv;
             if (handlerRezSingleAttachment != null)
@@ -6659,7 +6678,8 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandlerRezRestoreToWorld(IClientAPI sender, Packet Pack)
+     /* original - assumed all objects were attachments
+      bool HandlerRezRestoreToWorld(IClientAPI sender, Packet Pack)
         {
             RezSingleAttachmentFromInv handlerRezSingleAttachment = OnRezSingleAttachmentFromInv;
             if (handlerRezSingleAttachment != null)
@@ -6683,8 +6703,34 @@ namespace Universe.ClientStack
 
             return true;
         }
+       */
 
-        private bool HandleRezMultipleAttachmentsFromInv(IClientAPI sender, Packet Pack)
+        // update 20160129 - greythane-
+        bool HandlerRezRestoreToWorld(IClientAPI sender, Packet Pack)
+        {
+            RezRestoreToWorld handlerRezRestoreToWorld = OnRezRestoreToWorld;
+            if (handlerRezRestoreToWorld != null)
+            {
+                RezRestoreToWorldPacket rezPacket = (RezRestoreToWorldPacket)Pack;
+
+                #region Packet Session and User Check
+                if (m_checkPackets)
+                {
+                    if (rezPacket.AgentData.SessionID != SessionId ||
+                        rezPacket.AgentData.AgentID != AgentId)
+                        return true;
+                }
+                #endregion
+
+                handlerRezRestoreToWorld(this, rezPacket.InventoryData.ItemID, rezPacket.InventoryData.GroupID);
+
+            }
+            return true;
+        }
+
+
+
+        bool HandleRezMultipleAttachmentsFromInv(IClientAPI sender, Packet Pack)
         {
             RezSingleAttachmentFromInv handlerRezMultipleAttachments = OnRezSingleAttachmentFromInv;
 
@@ -6712,7 +6758,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleDetachAttachmentIntoInv(IClientAPI sender, Packet Pack)
+        bool HandleDetachAttachmentIntoInv(IClientAPI sender, Packet Pack)
         {
             UUIDNameRequest handlerDetachAttachmentIntoInv = OnDetachAttachmentIntoInv;
             if (handlerDetachAttachmentIntoInv != null)
@@ -6734,7 +6780,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleObjectAttach(IClientAPI sender, Packet Pack)
+        bool HandleObjectAttach(IClientAPI sender, Packet Pack)
         {
             if (OnObjectAttach != null)
             {
@@ -6764,7 +6810,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleObjectDetach(IClientAPI sender, Packet Pack)
+        bool HandleObjectDetach(IClientAPI sender, Packet Pack)
         {
             ObjectDetachPacket dett = (ObjectDetachPacket) Pack;
 
@@ -6791,7 +6837,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleObjectDrop(IClientAPI sender, Packet Pack)
+        bool HandleObjectDrop(IClientAPI sender, Packet Pack)
         {
             ObjectDropPacket dropp = (ObjectDropPacket) Pack;
 
@@ -6818,7 +6864,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleSetAlwaysRun(IClientAPI sender, Packet Pack)
+        bool HandleSetAlwaysRun(IClientAPI sender, Packet Pack)
         {
             SetAlwaysRunPacket run = (SetAlwaysRunPacket) Pack;
 
@@ -6840,7 +6886,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleCompleteAgentMovement(IClientAPI sender, Packet Pack)
+        bool HandleCompleteAgentMovement(IClientAPI sender, Packet Pack)
         {
             GenericCall1 handlerCompleteMovementToRegion = OnCompleteMovementToRegion;
             if (handlerCompleteMovementToRegion != null)
@@ -6852,7 +6898,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleAgentAnimation(IClientAPI sender, Packet Pack)
+        bool HandleAgentAnimation(IClientAPI sender, Packet Pack)
         {
             AgentAnimationPacket AgentAni = (AgentAnimationPacket) Pack;
 
@@ -6889,7 +6935,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleAgentRequestSit(IClientAPI sender, Packet Pack)
+        bool HandleAgentRequestSit(IClientAPI sender, Packet Pack)
         {
             if (OnAgentRequestSit != null)
             {
@@ -6914,7 +6960,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleAgentSit(IClientAPI sender, Packet Pack)
+        bool HandleAgentSit(IClientAPI sender, Packet Pack)
         {
             if (OnAgentSit != null)
             {
@@ -6940,7 +6986,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleSoundTrigger(IClientAPI sender, Packet Pack)
+        bool HandleSoundTrigger(IClientAPI sender, Packet Pack)
         {
             SoundTriggerPacket soundTriggerPacket = (SoundTriggerPacket) Pack;
 
@@ -6966,7 +7012,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleAvatarPickerRequest(IClientAPI sender, Packet Pack)
+        bool HandleAvatarPickerRequest(IClientAPI sender, Packet Pack)
         {
             AvatarPickerRequestPacket avRequestQuery = (AvatarPickerRequestPacket) Pack;
 
@@ -6994,7 +7040,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleAgentDataUpdateRequest(IClientAPI sender, Packet Pack)
+        bool HandleAgentDataUpdateRequest(IClientAPI sender, Packet Pack)
         {
             AgentDataUpdateRequestPacket avRequestDataUpdatePacket = (AgentDataUpdateRequestPacket) Pack;
 
@@ -7020,7 +7066,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleUserInfoRequest(IClientAPI sender, Packet Pack)
+        bool HandleUserInfoRequest(IClientAPI sender, Packet Pack)
         {
             UserInfoRequest handlerUserInfoRequest = OnUserInfoRequest;
             if (handlerUserInfoRequest != null)
@@ -7034,7 +7080,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleUpdateUserInfo(IClientAPI sender, Packet Pack)
+        bool HandleUpdateUserInfo(IClientAPI sender, Packet Pack)
         {
             UpdateUserInfoPacket updateUserInfo = (UpdateUserInfoPacket) Pack;
 
@@ -7065,7 +7111,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleSetStartLocationRequest(IClientAPI sender, Packet Pack)
+        bool HandleSetStartLocationRequest(IClientAPI sender, Packet Pack)
         {
             SetStartLocationRequestPacket avSetStartLocationRequestPacket = (SetStartLocationRequestPacket) Pack;
 
@@ -7112,7 +7158,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleAgentThrottle(IClientAPI sender, Packet Pack)
+        bool HandleAgentThrottle(IClientAPI sender, Packet Pack)
         {
             AgentThrottlePacket atpack = (AgentThrottlePacket) Pack;
 
@@ -7131,7 +7177,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleAgentPause(IClientAPI sender, Packet Pack)
+        bool HandleAgentPause(IClientAPI sender, Packet Pack)
         {
             #region Packet Session and User Check
 
@@ -7149,7 +7195,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleAgentResume(IClientAPI sender, Packet Pack)
+        bool HandleAgentResume(IClientAPI sender, Packet Pack)
         {
             #region Packet Session and User Check
 
@@ -7168,7 +7214,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleForceScriptControlRelease(IClientAPI sender, Packet Pack)
+        bool HandleForceScriptControlRelease(IClientAPI sender, Packet Pack)
         {
             ForceReleaseControls handlerForceReleaseControls = OnForceReleaseControls;
             if (handlerForceReleaseControls != null)
@@ -7182,7 +7228,7 @@ namespace Universe.ClientStack
 
         #region Objects/m_sceneObjects
 
-        private bool HandleObjectLink(IClientAPI sender, Packet Pack)
+        bool HandleObjectLink(IClientAPI sender, Packet Pack)
         {
             ObjectLinkPacket link = (ObjectLinkPacket) Pack;
 
@@ -7216,7 +7262,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleObjectDelink(IClientAPI sender, Packet Pack)
+        bool HandleObjectDelink(IClientAPI sender, Packet Pack)
         {
             ObjectDelinkPacket delink = (ObjectDelinkPacket) Pack;
 
@@ -7244,7 +7290,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleObjectAdd(IClientAPI sender, Packet Pack)
+        bool HandleObjectAdd(IClientAPI sender, Packet Pack)
         {
             if (OnAddPrim != null)
             {
@@ -7280,7 +7326,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleObjectShape(IClientAPI sender, Packet Pack)
+        bool HandleObjectShape(IClientAPI sender, Packet Pack)
         {
             ObjectShapePacket shapePacket = (ObjectShapePacket) Pack;
 
@@ -7330,7 +7376,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleObjectExtraParams(IClientAPI sender, Packet Pack)
+        bool HandleObjectExtraParams(IClientAPI sender, Packet Pack)
         {
             ObjectExtraParamsPacket extraPar = (ObjectExtraParamsPacket) Pack;
 
@@ -7358,7 +7404,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleObjectDuplicate(IClientAPI sender, Packet Pack)
+        bool HandleObjectDuplicate(IClientAPI sender, Packet Pack)
         {
             ObjectDuplicatePacket dupe = (ObjectDuplicatePacket) Pack;
 
@@ -7389,7 +7435,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleRequestMultipleObjects(IClientAPI sender, Packet Pack)
+        bool HandleRequestMultipleObjects(IClientAPI sender, Packet Pack)
         {
             RequestMultipleObjectsPacket incomingRequest = (RequestMultipleObjectsPacket) Pack;
 
@@ -7416,7 +7462,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleObjectSelect(IClientAPI sender, Packet Pack)
+        bool HandleObjectSelect(IClientAPI sender, Packet Pack)
         {
             ObjectSelectPacket incomingselect = (ObjectSelectPacket) Pack;
 
@@ -7433,9 +7479,9 @@ namespace Universe.ClientStack
 
             ObjectSelect handlerObjectSelect = null;
             
-			List<uint> LocalIDs = incomingselect.ObjectData.Select(t => t.ObjectLocalID).ToList();
+            List<uint> LocalIDs = incomingselect.ObjectData.Select(t => t.ObjectLocalID).ToList();
 
-			handlerObjectSelect = OnObjectSelect;
+            handlerObjectSelect = OnObjectSelect;
             if (handlerObjectSelect != null)
             {
                 handlerObjectSelect(LocalIDs, this);
@@ -7443,7 +7489,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleObjectDeselect(IClientAPI sender, Packet Pack)
+        bool HandleObjectDeselect(IClientAPI sender, Packet Pack)
         {
             ObjectDeselectPacket incomingdeselect = (ObjectDeselectPacket) Pack;
 
@@ -7469,7 +7515,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleObjectPosition(IClientAPI sender, Packet Pack)
+        bool HandleObjectPosition(IClientAPI sender, Packet Pack)
         {
             // DEPRECATED: but till libsecondlife removes it, people will use it
             ObjectPositionPacket position = (ObjectPositionPacket) Pack;
@@ -7496,7 +7542,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleObjectScale(IClientAPI sender, Packet Pack)
+        bool HandleObjectScale(IClientAPI sender, Packet Pack)
         {
             // DEPRECATED: but till libsecondlife removes it, people will use it
             ObjectScalePacket scale = (ObjectScalePacket) Pack;
@@ -7522,7 +7568,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleObjectRotation(IClientAPI sender, Packet Pack)
+        bool HandleObjectRotation(IClientAPI sender, Packet Pack)
         {
             // DEPRECATED: but till libsecondlife removes it, people will use it
             ObjectRotationPacket rotation = (ObjectRotationPacket) Pack;
@@ -7549,7 +7595,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleObjectFlagUpdate(IClientAPI sender, Packet Pack)
+        bool HandleObjectFlagUpdate(IClientAPI sender, Packet Pack)
         {
             ObjectFlagUpdatePacket flags = (ObjectFlagUpdatePacket) Pack;
 
@@ -7574,7 +7620,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleObjectImage(IClientAPI sender, Packet Pack)
+        bool HandleObjectImage(IClientAPI sender, Packet Pack)
         {
             ObjectImagePacket imagePack = (ObjectImagePacket) Pack;
 
@@ -7590,7 +7636,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleObjectGrab(IClientAPI sender, Packet Pack)
+        bool HandleObjectGrab(IClientAPI sender, Packet Pack)
         {
             ObjectGrabPacket grab = (ObjectGrabPacket) Pack;
 
@@ -7627,7 +7673,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleObjectGrabUpdate(IClientAPI sender, Packet Pack)
+        bool HandleObjectGrabUpdate(IClientAPI sender, Packet Pack)
         {
             ObjectGrabUpdatePacket grabUpdate = (ObjectGrabUpdatePacket) Pack;
 
@@ -7670,7 +7716,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleObjectDeGrab(IClientAPI sender, Packet Pack)
+        bool HandleObjectDeGrab(IClientAPI sender, Packet Pack)
         {
             ObjectDeGrabPacket deGrab = (ObjectDeGrabPacket) Pack;
 
@@ -7707,7 +7753,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleObjectSpinStart(IClientAPI sender, Packet Pack)
+        bool HandleObjectSpinStart(IClientAPI sender, Packet Pack)
         {
             //MainConsole.Instance.Warn("[CLIENT]: unhandled ObjectSpinStart packet");
             ObjectSpinStartPacket spinStart = (ObjectSpinStartPacket) Pack;
@@ -7731,7 +7777,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleObjectSpinUpdate(IClientAPI sender, Packet Pack)
+        bool HandleObjectSpinUpdate(IClientAPI sender, Packet Pack)
         {
             //MainConsole.Instance.Warn("[CLIENT]: unhandled ObjectSpinUpdate packet");
             ObjectSpinUpdatePacket spinUpdate = (ObjectSpinUpdatePacket) Pack;
@@ -7760,7 +7806,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleObjectSpinStop(IClientAPI sender, Packet Pack)
+        bool HandleObjectSpinStop(IClientAPI sender, Packet Pack)
         {
             //MainConsole.Instance.Warn("[CLIENT]: unhandled ObjectSpinStop packet");
             ObjectSpinStopPacket spinStop = (ObjectSpinStopPacket) Pack;
@@ -7784,7 +7830,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleObjectDescription(IClientAPI sender, Packet Pack)
+        bool HandleObjectDescription(IClientAPI sender, Packet Pack)
         {
             ObjectDescriptionPacket objDes = (ObjectDescriptionPacket) Pack;
 
@@ -7811,7 +7857,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleObjectName(IClientAPI sender, Packet Pack)
+        bool HandleObjectName(IClientAPI sender, Packet Pack)
         {
             ObjectNamePacket objName = (ObjectNamePacket) Pack;
 
@@ -7838,7 +7884,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleObjectPermissions(IClientAPI sender, Packet Pack)
+        bool HandleObjectPermissions(IClientAPI sender, Packet Pack)
         {
             if (OnObjectPermissions != null)
             {
@@ -7887,7 +7933,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleUndo(IClientAPI sender, Packet Pack)
+        bool HandleUndo(IClientAPI sender, Packet Pack)
         {
             UndoPacket undoitem = (UndoPacket) Pack;
 
@@ -7917,7 +7963,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleLandUndo(IClientAPI sender, Packet Pack)
+        bool HandleLandUndo(IClientAPI sender, Packet Pack)
         {
             UndoLandPacket undolanditem = (UndoLandPacket) Pack;
 
@@ -7940,7 +7986,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleRedo(IClientAPI sender, Packet Pack)
+        bool HandleRedo(IClientAPI sender, Packet Pack)
         {
             RedoPacket redoitem = (RedoPacket) Pack;
 
@@ -7970,7 +8016,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleObjectDuplicateOnRay(IClientAPI sender, Packet Pack)
+        bool HandleObjectDuplicateOnRay(IClientAPI sender, Packet Pack)
         {
             ObjectDuplicateOnRayPacket dupeOnRay = (ObjectDuplicateOnRayPacket) Pack;
 
@@ -8003,7 +8049,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleRequestObjectPropertiesFamily(IClientAPI sender, Packet Pack)
+        bool HandleRequestObjectPropertiesFamily(IClientAPI sender, Packet Pack)
         {
             //This powers the little tooltip that appears when you move your mouse over an object
             RequestObjectPropertiesFamilyPacket packToolTip = (RequestObjectPropertiesFamilyPacket) Pack;
@@ -8032,7 +8078,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleObjectIncludeInSearch(IClientAPI sender, Packet Pack)
+        bool HandleObjectIncludeInSearch(IClientAPI sender, Packet Pack)
         {
             //This lets us set objects to appear in search (stuff like DataSnapshot, etc)
             ObjectIncludeInSearchPacket packInSearch = (ObjectIncludeInSearchPacket) Pack;
@@ -8063,7 +8109,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleScriptAnswerYes(IClientAPI sender, Packet Pack)
+        bool HandleScriptAnswerYes(IClientAPI sender, Packet Pack)
         {
             ScriptAnswerYesPacket scriptAnswer = (ScriptAnswerYesPacket) Pack;
 
@@ -8087,7 +8133,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleObjectClickAction(IClientAPI sender, Packet Pack)
+        bool HandleObjectClickAction(IClientAPI sender, Packet Pack)
         {
             ObjectClickActionPacket ocpacket = (ObjectClickActionPacket) Pack;
 
@@ -8115,7 +8161,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleObjectMaterial(IClientAPI sender, Packet Pack)
+        bool HandleObjectMaterial(IClientAPI sender, Packet Pack)
         {
             ObjectMaterialPacket ompacket = (ObjectMaterialPacket) Pack;
 
@@ -8147,7 +8193,7 @@ namespace Universe.ClientStack
 
         #region Inventory/Asset/Other related packets
 
-        private bool HandleRequestImage(IClientAPI sender, Packet Pack)
+        bool HandleRequestImage(IClientAPI sender, Packet Pack)
         {
             RequestImagePacket imageRequest = (RequestImagePacket) Pack;
             //MainConsole.Instance.Debug("image request: " + Pack.ToString());
@@ -8198,7 +8244,7 @@ namespace Universe.ClientStack
         /// <param name="sender"></param>
         /// <param name="Pack"></param>
         /// <returns>This parameter may be ignored since we appear to return true whatever happens</returns>
-        private bool HandleTransferRequest(IClientAPI sender, Packet Pack)
+        bool HandleTransferRequest(IClientAPI sender, Packet Pack)
         {
             //MainConsole.Instance.Debug("ClientView.ProcessPackets.cs:ProcessInPacket() - Got transfer request");
 
@@ -8325,7 +8371,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleAssetUploadRequest(IClientAPI sender, Packet Pack)
+        bool HandleAssetUploadRequest(IClientAPI sender, Packet Pack)
         {
             AssetUploadRequestPacket request = (AssetUploadRequestPacket) Pack;
 
@@ -8346,7 +8392,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleRequestXfer(IClientAPI sender, Packet Pack)
+        bool HandleRequestXfer(IClientAPI sender, Packet Pack)
         {
             RequestXferPacket xferReq = (RequestXferPacket) Pack;
 
@@ -8359,7 +8405,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleSendXferPacket(IClientAPI sender, Packet Pack)
+        bool HandleSendXferPacket(IClientAPI sender, Packet Pack)
         {
             SendXferPacketPacket xferRec = (SendXferPacketPacket) Pack;
 
@@ -8371,7 +8417,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleConfirmXferPacket(IClientAPI sender, Packet Pack)
+        bool HandleConfirmXferPacket(IClientAPI sender, Packet Pack)
         {
             ConfirmXferPacketPacket confirmXfer = (ConfirmXferPacketPacket) Pack;
 
@@ -8383,7 +8429,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleAbortXfer(IClientAPI sender, Packet Pack)
+        bool HandleAbortXfer(IClientAPI sender, Packet Pack)
         {
             AbortXferPacket abortXfer = (AbortXferPacket) Pack;
             AbortXfer handlerAbortXfer = OnAbortXfer;
@@ -8402,7 +8448,7 @@ namespace Universe.ClientStack
             OutPacket(xferItem, ThrottleOutPacketType.Transfer);
         }
 
-        private bool HandleCreateInventoryFolder(IClientAPI sender, Packet Pack)
+        bool HandleCreateInventoryFolder(IClientAPI sender, Packet Pack)
         {
             CreateInventoryFolderPacket invFolder = (CreateInventoryFolderPacket) Pack;
 
@@ -8429,7 +8475,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleUpdateInventoryFolder(IClientAPI sender, Packet Pack)
+        bool HandleUpdateInventoryFolder(IClientAPI sender, Packet Pack)
         {
             if (OnUpdateInventoryFolder != null)
             {
@@ -8461,7 +8507,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleMoveInventoryFolder(IClientAPI sender, Packet Pack)
+        bool HandleMoveInventoryFolder(IClientAPI sender, Packet Pack)
         {
             if (OnMoveInventoryFolder != null)
             {
@@ -8491,7 +8537,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleCreateInventoryItem(IClientAPI sender, Packet Pack)
+        bool HandleCreateInventoryItem(IClientAPI sender, Packet Pack)
         {
             CreateInventoryItemPacket createItem = (CreateInventoryItemPacket) Pack;
 
@@ -8524,7 +8570,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleLinkInventoryItem(IClientAPI sender, Packet Pack)
+        bool HandleLinkInventoryItem(IClientAPI sender, Packet Pack)
         {
             LinkInventoryItemPacket createLink = (LinkInventoryItemPacket) Pack;
 
@@ -8558,7 +8604,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleFetchInventory(IClientAPI sender, Packet Pack)
+        bool HandleFetchInventory(IClientAPI sender, Packet Pack)
         {
             if (OnFetchInventory != null)
             {
@@ -8589,7 +8635,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleFetchInventoryDescendents(IClientAPI sender, Packet Pack)
+        bool HandleFetchInventoryDescendents(IClientAPI sender, Packet Pack)
         {
             FetchInventoryDescendentsPacket Fetch = (FetchInventoryDescendentsPacket) Pack;
 
@@ -8614,7 +8660,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandlePurgeInventoryDescendents(IClientAPI sender, Packet Pack)
+        bool HandlePurgeInventoryDescendents(IClientAPI sender, Packet Pack)
         {
             PurgeInventoryDescendentsPacket Purge = (PurgeInventoryDescendentsPacket) Pack;
 
@@ -8638,7 +8684,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleUpdateInventoryItem(IClientAPI sender, Packet Pack)
+        bool HandleUpdateInventoryItem(IClientAPI sender, Packet Pack)
         {
             UpdateInventoryItemPacket inventoryItemUpdate = (UpdateInventoryItemPacket) Pack;
 
@@ -8695,7 +8741,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleCopyInventoryItem(IClientAPI sender, Packet Pack)
+        bool HandleCopyInventoryItem(IClientAPI sender, Packet Pack)
         {
             CopyInventoryItemPacket copyitem = (CopyInventoryItemPacket) Pack;
 
@@ -8727,7 +8773,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleMoveInventoryItem(IClientAPI sender, Packet Pack)
+        bool HandleMoveInventoryItem(IClientAPI sender, Packet Pack)
         {
             MoveInventoryItemPacket moveitem = (MoveInventoryItemPacket) Pack;
 
@@ -8764,7 +8810,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleChangeInventoryItemFlags(IClientAPI sender, Packet Pack)
+        bool HandleChangeInventoryItemFlags(IClientAPI sender, Packet Pack)
         {
             ChangeInventoryItemFlagsPacket inventoryItemUpdate = (ChangeInventoryItemFlagsPacket) Pack;
 
@@ -8797,7 +8843,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleRemoveInventoryItem(IClientAPI sender, Packet Pack)
+        bool HandleRemoveInventoryItem(IClientAPI sender, Packet Pack)
         {
             RemoveInventoryItemPacket removeItem = (RemoveInventoryItemPacket) Pack;
 
@@ -8825,7 +8871,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleRemoveInventoryFolder(IClientAPI sender, Packet Pack)
+        bool HandleRemoveInventoryFolder(IClientAPI sender, Packet Pack)
         {
             RemoveInventoryFolderPacket removeFolder = (RemoveInventoryFolderPacket) Pack;
 
@@ -8854,7 +8900,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleRemoveInventoryObjects(IClientAPI sender, Packet Pack)
+        bool HandleRemoveInventoryObjects(IClientAPI sender, Packet Pack)
         {
             RemoveInventoryObjectsPacket removeObject = (RemoveInventoryObjectsPacket) Pack;
 
@@ -8894,7 +8940,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleRequestTaskInventory(IClientAPI sender, Packet Pack)
+        bool HandleRequestTaskInventory(IClientAPI sender, Packet Pack)
         {
             RequestTaskInventoryPacket requesttask = (RequestTaskInventoryPacket) Pack;
 
@@ -8917,7 +8963,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleUpdateTaskInventory(IClientAPI sender, Packet Pack)
+        bool HandleUpdateTaskInventory(IClientAPI sender, Packet Pack)
         {
             UpdateTaskInventoryPacket updatetask = (UpdateTaskInventoryPacket) Pack;
 
@@ -8977,7 +9023,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleRemoveTaskInventory(IClientAPI sender, Packet Pack)
+        bool HandleRemoveTaskInventory(IClientAPI sender, Packet Pack)
         {
             RemoveTaskInventoryPacket removeTask = (RemoveTaskInventoryPacket) Pack;
 
@@ -9002,7 +9048,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleMoveTaskInventory(IClientAPI sender, Packet Pack)
+        bool HandleMoveTaskInventory(IClientAPI sender, Packet Pack)
         {
             MoveTaskInventoryPacket moveTaskInventoryPacket = (MoveTaskInventoryPacket) Pack;
 
@@ -9030,7 +9076,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleRezScript(IClientAPI sender, Packet Pack)
+        bool HandleRezScript(IClientAPI sender, Packet Pack)
         {
             //MainConsole.Instance.Debug(Pack.ToString());
             RezScriptPacket rezScriptx = (RezScriptPacket) Pack;
@@ -9078,7 +9124,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleMapLayerRequest(IClientAPI sender, Packet Pack)
+        bool HandleMapLayerRequest(IClientAPI sender, Packet Pack)
         {
             #region Packet Session and User Check
 
@@ -9095,7 +9141,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleMapBlockRequest(IClientAPI sender, Packet Pack)
+        bool HandleMapBlockRequest(IClientAPI sender, Packet Pack)
         {
             MapBlockRequestPacket MapRequest = (MapBlockRequestPacket) Pack;
 
@@ -9120,7 +9166,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleMapNameRequest(IClientAPI sender, Packet Pack)
+        bool HandleMapNameRequest(IClientAPI sender, Packet Pack)
         {
             MapNameRequestPacket map = (MapNameRequestPacket) Pack;
 
@@ -9145,7 +9191,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleTeleportLandmarkRequest(IClientAPI sender, Packet Pack)
+        bool HandleTeleportLandmarkRequest(IClientAPI sender, Packet Pack)
         {
             TeleportLandmarkRequestPacket tpReq = (TeleportLandmarkRequestPacket) Pack;
 
@@ -9230,7 +9276,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleTeleportLocationRequest(IClientAPI sender, Packet Pack)
+        bool HandleTeleportLocationRequest(IClientAPI sender, Packet Pack)
         {
             TeleportLocationRequestPacket tpLocReq = (TeleportLocationRequestPacket) Pack;
             // MainConsole.Instance.Debug(tpLocReq.ToString());
@@ -9266,7 +9312,7 @@ namespace Universe.ClientStack
 
         #endregion Inventory/Asset/Other related packets
 
-        private bool HandleUUIDNameRequest(IClientAPI sender, Packet Pack)
+        bool HandleUUIDNameRequest(IClientAPI sender, Packet Pack)
         {
             UUIDNameRequestPacket incoming = (UUIDNameRequestPacket) Pack;
 
@@ -9283,7 +9329,7 @@ namespace Universe.ClientStack
 
         #region Parcel related packets
 
-        private bool HandleRegionHandleRequest(IClientAPI sender, Packet Pack)
+        bool HandleRegionHandleRequest(IClientAPI sender, Packet Pack)
         {
             RegionHandleRequestPacket rhrPack = (RegionHandleRequestPacket) Pack;
 
@@ -9295,7 +9341,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleParcelInfoRequest(IClientAPI sender, Packet Pack)
+        bool HandleParcelInfoRequest(IClientAPI sender, Packet Pack)
         {
             ParcelInfoRequestPacket pirPack = (ParcelInfoRequestPacket) Pack;
 
@@ -9318,7 +9364,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleParcelAccessListRequest(IClientAPI sender, Packet Pack)
+        bool HandleParcelAccessListRequest(IClientAPI sender, Packet Pack)
         {
             ParcelAccessListRequestPacket requestPacket = (ParcelAccessListRequestPacket) Pack;
 
@@ -9344,7 +9390,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleParcelAccessListUpdate(IClientAPI sender, Packet Pack)
+        bool HandleParcelAccessListUpdate(IClientAPI sender, Packet Pack)
         {
             ParcelAccessListUpdatePacket updatePacket = (ParcelAccessListUpdatePacket) Pack;
 
@@ -9377,7 +9423,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleParcelPropertiesRequest(IClientAPI sender, Packet Pack)
+        bool HandleParcelPropertiesRequest(IClientAPI sender, Packet Pack)
         {
             ParcelPropertiesRequestPacket propertiesRequest = (ParcelPropertiesRequestPacket) Pack;
 
@@ -9405,7 +9451,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleParcelDivide(IClientAPI sender, Packet Pack)
+        bool HandleParcelDivide(IClientAPI sender, Packet Pack)
         {
             ParcelDividePacket landDivide = (ParcelDividePacket) Pack;
 
@@ -9431,7 +9477,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleParcelJoin(IClientAPI sender, Packet Pack)
+        bool HandleParcelJoin(IClientAPI sender, Packet Pack)
         {
             ParcelJoinPacket landJoin = (ParcelJoinPacket) Pack;
 
@@ -9458,7 +9504,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleParcelPropertiesUpdate(IClientAPI sender, Packet Pack)
+        bool HandleParcelPropertiesUpdate(IClientAPI sender, Packet Pack)
         {
             ParcelPropertiesUpdatePacket parcelPropertiesPacket = (ParcelPropertiesUpdatePacket) Pack;
 
@@ -9513,7 +9559,7 @@ namespace Universe.ClientStack
             }
         }
 
-        private bool HandleParcelSelectObjects(IClientAPI sender, Packet Pack)
+        bool HandleParcelSelectObjects(IClientAPI sender, Packet Pack)
         {
             ParcelSelectObjectsPacket selectPacket = (ParcelSelectObjectsPacket) Pack;
 
@@ -9540,7 +9586,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleParcelObjectOwnersRequest(IClientAPI sender, Packet Pack)
+        bool HandleParcelObjectOwnersRequest(IClientAPI sender, Packet Pack)
         {
             ParcelObjectOwnersRequestPacket reqPacket = (ParcelObjectOwnersRequestPacket) Pack;
 
@@ -9564,7 +9610,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleParcelGodForceOwner(IClientAPI sender, Packet Pack)
+        bool HandleParcelGodForceOwner(IClientAPI sender, Packet Pack)
         {
             ParcelGodForceOwnerPacket godForceOwnerPacket = (ParcelGodForceOwnerPacket) Pack;
 
@@ -9587,7 +9633,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleParcelRelease(IClientAPI sender, Packet Pack)
+        bool HandleParcelRelease(IClientAPI sender, Packet Pack)
         {
             ParcelReleasePacket releasePacket = (ParcelReleasePacket) Pack;
 
@@ -9610,7 +9656,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleParcelReclaim(IClientAPI sender, Packet Pack)
+        bool HandleParcelReclaim(IClientAPI sender, Packet Pack)
         {
             ParcelReclaimPacket reclaimPacket = (ParcelReclaimPacket) Pack;
 
@@ -9633,7 +9679,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleParcelReturnObjects(IClientAPI sender, Packet Pack)
+        bool HandleParcelReturnObjects(IClientAPI sender, Packet Pack)
         {
             ParcelReturnObjectsPacket parcelReturnObjects = (ParcelReturnObjectsPacket) Pack;
 
@@ -9667,7 +9713,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleParcelSetOtherCleanTime(IClientAPI sender, Packet Pack)
+        bool HandleParcelSetOtherCleanTime(IClientAPI sender, Packet Pack)
         {
             ParcelSetOtherCleanTimePacket parcelSetOtherCleanTimePacket = (ParcelSetOtherCleanTimePacket) Pack;
 
@@ -9692,7 +9738,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleLandStatRequest(IClientAPI sender, Packet Pack)
+        bool HandleLandStatRequest(IClientAPI sender, Packet Pack)
         {
             LandStatRequestPacket lsrp = (LandStatRequestPacket) Pack;
 
@@ -9716,7 +9762,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleParcelDwellRequest(IClientAPI sender, Packet Pack)
+        bool HandleParcelDwellRequest(IClientAPI sender, Packet Pack)
         {
             ParcelDwellRequestPacket dwellrq =
                 (ParcelDwellRequestPacket) Pack;
@@ -9744,7 +9790,7 @@ namespace Universe.ClientStack
 
         #region Estate Packets
 
-        private bool HandleEstateOwnerMessage(IClientAPI sender, Packet Pack)
+        bool HandleEstateOwnerMessage(IClientAPI sender, Packet Pack)
         {
             EstateOwnerMessagePacket messagePacket = (EstateOwnerMessagePacket) Pack;
             //MainConsole.Instance.Debug(messagePacket.ToString());
@@ -10143,7 +10189,7 @@ namespace Universe.ClientStack
             }
         }
 
-        private bool HandleRequestRegionInfo(IClientAPI sender, Packet Pack)
+        bool HandleRequestRegionInfo(IClientAPI sender, Packet Pack)
         {
             RequestRegionInfoPacket.AgentDataBlock mPacket = ((RequestRegionInfoPacket) Pack).AgentData;
 
@@ -10166,7 +10212,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleEstateCovenantRequest(IClientAPI sender, Packet Pack)
+        bool HandleEstateCovenantRequest(IClientAPI sender, Packet Pack)
         {
             //EstateCovenantRequestPacket.AgentDataBlock epack =
             //     ((EstateCovenantRequestPacket)Pack).AgentData;
@@ -10183,7 +10229,7 @@ namespace Universe.ClientStack
 
         #region GodPackets
 
-        private bool HandleRequestGodlikePowers(IClientAPI sender, Packet Pack)
+        bool HandleRequestGodlikePowers(IClientAPI sender, Packet Pack)
         {
             RequestGodlikePowersPacket rglpPack = (RequestGodlikePowersPacket) Pack;
             RequestGodlikePowersPacket.RequestBlockBlock rblock = rglpPack.RequestBlock;
@@ -10212,7 +10258,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleGodUpdateRegionInfoUpdate(IClientAPI client, Packet Packet)
+        bool HandleGodUpdateRegionInfoUpdate(IClientAPI client, Packet Packet)
         {
             GodUpdateRegionInfoPacket GodUpdateRegionInfo =
                 (GodUpdateRegionInfoPacket) Packet;
@@ -10245,7 +10291,7 @@ namespace Universe.ClientStack
             return false;
         }
 
-        private bool HandleSimWideDeletes(IClientAPI client, Packet Packet)
+        bool HandleSimWideDeletes(IClientAPI client, Packet Packet)
         {
             SimWideDeletesPacket SimWideDeletesRequest =
                 (SimWideDeletesPacket) Packet;
@@ -10271,7 +10317,7 @@ namespace Universe.ClientStack
             return false;
         }
 
-        private bool HandleGodlikeMessage(IClientAPI client, Packet Packet)
+        bool HandleGodlikeMessage(IClientAPI client, Packet Packet)
         {
             GodlikeMessagePacket GodlikeMessage =
                 (GodlikeMessagePacket) Packet;
@@ -10303,7 +10349,7 @@ namespace Universe.ClientStack
             return false;
         }
 
-        private bool HandleSaveStatePacket(IClientAPI client, Packet Packet)
+        bool HandleSaveStatePacket(IClientAPI client, Packet Packet)
         {
             StateSavePacket SaveStateMessage =
                 (StateSavePacket) Packet;
@@ -10328,7 +10374,7 @@ namespace Universe.ClientStack
             return false;
         }
 
-        private bool HandleGodKickUser(IClientAPI sender, Packet Pack)
+        bool HandleGodKickUser(IClientAPI sender, Packet Pack)
         {
             GodKickUserPacket gkupack = (GodKickUserPacket) Pack;
 
@@ -10352,7 +10398,7 @@ namespace Universe.ClientStack
 
         #region Economy/Transaction Packets
 
-        private bool HandleMoneyBalanceRequest(IClientAPI sender, Packet Pack)
+        bool HandleMoneyBalanceRequest(IClientAPI sender, Packet Pack)
         {
             MoneyBalanceRequestPacket moneybalancerequestpacket = (MoneyBalanceRequestPacket) Pack;
 
@@ -10379,7 +10425,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleEconomyDataRequest(IClientAPI sender, Packet Pack)
+        bool HandleEconomyDataRequest(IClientAPI sender, Packet Pack)
         {
             EconomyDataRequest handlerEconomoyDataRequest = OnEconomyDataRequest;
             if (handlerEconomoyDataRequest != null)
@@ -10389,7 +10435,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleRequestPayPrice(IClientAPI sender, Packet Pack)
+        bool HandleRequestPayPrice(IClientAPI sender, Packet Pack)
         {
             RequestPayPricePacket requestPayPricePacket = (RequestPayPricePacket) Pack;
 
@@ -10401,7 +10447,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleObjectSaleInfo(IClientAPI sender, Packet Pack)
+        bool HandleObjectSaleInfo(IClientAPI sender, Packet Pack)
         {
             ObjectSaleInfoPacket objectSaleInfoPacket = (ObjectSaleInfoPacket) Pack;
 
@@ -10432,7 +10478,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleObjectBuy(IClientAPI sender, Packet Pack)
+        bool HandleObjectBuy(IClientAPI sender, Packet Pack)
         {
             ObjectBuyPacket objectBuyPacket = (ObjectBuyPacket) Pack;
 
@@ -10470,7 +10516,7 @@ namespace Universe.ClientStack
 
         #region Script Packets
 
-        private bool HandleGetScriptRunning(IClientAPI sender, Packet Pack)
+        bool HandleGetScriptRunning(IClientAPI sender, Packet Pack)
         {
             GetScriptRunningPacket scriptRunning = (GetScriptRunningPacket) Pack;
 
@@ -10482,7 +10528,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleSetScriptRunning(IClientAPI sender, Packet Pack)
+        bool HandleSetScriptRunning(IClientAPI sender, Packet Pack)
         {
             SetScriptRunningPacket setScriptRunning = (SetScriptRunningPacket) Pack;
 
@@ -10506,7 +10552,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleScriptReset(IClientAPI sender, Packet Pack)
+        bool HandleScriptReset(IClientAPI sender, Packet Pack)
         {
             ScriptResetPacket scriptResetPacket = (ScriptResetPacket) Pack;
 
@@ -10533,7 +10579,7 @@ namespace Universe.ClientStack
 
         #region Gesture Managment
 
-        private bool HandleActivateGestures(IClientAPI sender, Packet Pack)
+        bool HandleActivateGestures(IClientAPI sender, Packet Pack)
         {
             ActivateGesturesPacket activateGesturePacket = (ActivateGesturesPacket) Pack;
 
@@ -10560,7 +10606,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleDeactivateGestures(IClientAPI sender, Packet Pack)
+        bool HandleDeactivateGestures(IClientAPI sender, Packet Pack)
         {
             DeactivateGesturesPacket deactivateGesturePacket = (DeactivateGesturesPacket) Pack;
 
@@ -10583,7 +10629,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleObjectOwner(IClientAPI sender, Packet Pack)
+        bool HandleObjectOwner(IClientAPI sender, Packet Pack)
         {
             ObjectOwnerPacket objectOwnerPacket = (ObjectOwnerPacket) Pack;
 
@@ -10611,7 +10657,7 @@ namespace Universe.ClientStack
 
         #endregion Gesture Managment
 
-        private bool HandleAgentFOV(IClientAPI sender, Packet Pack)
+        bool HandleAgentFOV(IClientAPI sender, Packet Pack)
         {
             AgentFOVPacket fovPacket = (AgentFOVPacket) Pack;
 
@@ -10640,25 +10686,25 @@ namespace Universe.ClientStack
 
         #region unimplemented handlers
 
-        private bool HandleViewerStats(IClientAPI sender, Packet Pack)
+        bool HandleViewerStats(IClientAPI sender, Packet Pack)
         {
             //MainConsole.Instance.Warn("[CLIENT]: unhandled ViewerStats packet");
             return true;
         }
 
-        private bool HandleUseCircuitCode(IClientAPI sender, Packet Pack)
+        bool HandleUseCircuitCode(IClientAPI sender, Packet Pack)
         {
             return true;
         }
 
-        private bool HandleAgentHeightWidth(IClientAPI sender, Packet Pack)
+        bool HandleAgentHeightWidth(IClientAPI sender, Packet Pack)
         {
             return true;
         }
 
         #endregion unimplemented handlers
 
-        private bool HandleMapItemRequest(IClientAPI sender, Packet Pack)
+        bool HandleMapItemRequest(IClientAPI sender, Packet Pack)
         {
             MapItemRequestPacket mirpk = (MapItemRequestPacket) Pack;
 
@@ -10684,7 +10730,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleMuteListRequest(IClientAPI sender, Packet Pack)
+        bool HandleMuteListRequest(IClientAPI sender, Packet Pack)
         {
             MuteListRequestPacket muteListRequest =
                 (MuteListRequestPacket) Pack;
@@ -10712,7 +10758,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleUpdateMuteListEntry(IClientAPI client, Packet Packet)
+        bool HandleUpdateMuteListEntry(IClientAPI client, Packet Packet)
         {
             UpdateMuteListEntryPacket UpdateMuteListEntry =
                 (UpdateMuteListEntryPacket) Packet;
@@ -10740,7 +10786,7 @@ namespace Universe.ClientStack
             return false;
         }
 
-        private bool HandleRemoveMuteListEntry(IClientAPI client, Packet Packet)
+        bool HandleRemoveMuteListEntry(IClientAPI client, Packet Packet)
         {
             RemoveMuteListEntryPacket RemoveMuteListEntry =
                 (RemoveMuteListEntryPacket) Packet;
@@ -10768,7 +10814,7 @@ namespace Universe.ClientStack
             return false;
         }
 
-        private bool HandleUserReport(IClientAPI client, Packet Packet)
+        bool HandleUserReport(IClientAPI client, Packet Packet)
         {
             UserReportPacket UserReport =
                 (UserReportPacket) Packet;
@@ -10804,7 +10850,7 @@ namespace Universe.ClientStack
             return false;
         }
 
-        private bool HandleSendPostcard(IClientAPI client, Packet packet)
+        bool HandleSendPostcard(IClientAPI client, Packet packet)
         {
             SendPostcardPacket SendPostcard =
                 (SendPostcardPacket) packet;
@@ -10829,7 +10875,7 @@ namespace Universe.ClientStack
             return false;
         }
 
-        private bool HandleViewerStartAuction(IClientAPI client, Packet packet)
+        bool HandleViewerStartAuction(IClientAPI client, Packet packet)
         {
             ViewerStartAuctionPacket aPacket = (ViewerStartAuctionPacket) packet;
             ViewerStartAuction handlerStartAuction = OnViewerStartAuction;
@@ -10842,7 +10888,7 @@ namespace Universe.ClientStack
             return false;
         }
 
-        private bool HandleParcelDisableObjects(IClientAPI client, Packet packet)
+        bool HandleParcelDisableObjects(IClientAPI client, Packet packet)
         {
             ParcelDisableObjectsPacket aPacket = (ParcelDisableObjectsPacket) packet;
             ParcelReturnObjectsRequest handlerParcelDisableObjectsRequest = OnParcelDisableObjectsRequest;
@@ -10857,7 +10903,7 @@ namespace Universe.ClientStack
             return false;
         }
 
-        private bool HandleVelocityInterpolate(IClientAPI client, Packet packet)
+        bool HandleVelocityInterpolate(IClientAPI client, Packet packet)
         {
             VelocityInterpolateChangeRequest handlerVelocityInterpolateChangeRequest = OnVelocityInterpolateChangeRequest;
 
@@ -10869,7 +10915,7 @@ namespace Universe.ClientStack
             return false;
         }
 
-        private bool HandleTeleportCancel(IClientAPI client, Packet packet)
+        bool HandleTeleportCancel(IClientAPI client, Packet packet)
         {
             TeleportCancel handlerTeleportCancel = OnTeleportCancel;
 
@@ -10883,7 +10929,7 @@ namespace Universe.ClientStack
 
         #region Dir handlers
 
-        private bool HandleDirPlacesQuery(IClientAPI sender, Packet Pack)
+        bool HandleDirPlacesQuery(IClientAPI sender, Packet Pack)
         {
             DirPlacesQueryPacket dirPlacesQueryPacket = (DirPlacesQueryPacket) Pack;
             //MainConsole.Instance.Debug(dirPlacesQueryPacket.ToString());
@@ -10915,7 +10961,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleDirFindQuery(IClientAPI sender, Packet Pack)
+        bool HandleDirFindQuery(IClientAPI sender, Packet Pack)
         {
             DirFindQueryPacket dirFindQueryPacket = (DirFindQueryPacket) Pack;
 
@@ -10943,7 +10989,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleDirLandQuery(IClientAPI sender, Packet Pack)
+        bool HandleDirLandQuery(IClientAPI sender, Packet Pack)
         {
             DirLandQueryPacket dirLandQueryPacket = (DirLandQueryPacket) Pack;
 
@@ -10972,7 +11018,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleDirPopularQuery(IClientAPI sender, Packet Pack)
+        bool HandleDirPopularQuery(IClientAPI sender, Packet Pack)
         {
             DirPopularQueryPacket dirPopularQueryPacket = (DirPopularQueryPacket) Pack;
 
@@ -10997,7 +11043,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleDirClassifiedQuery(IClientAPI sender, Packet Pack)
+        bool HandleDirClassifiedQuery(IClientAPI sender, Packet Pack)
         {
             DirClassifiedQueryPacket dirClassifiedQueryPacket = (DirClassifiedQueryPacket) Pack;
 
@@ -11026,7 +11072,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleEventInfoRequest(IClientAPI sender, Packet Pack)
+        bool HandleEventInfoRequest(IClientAPI sender, Packet Pack)
         {
             EventInfoRequestPacket eventInfoRequestPacket = (EventInfoRequestPacket) Pack;
 
@@ -11052,7 +11098,7 @@ namespace Universe.ClientStack
 
         #region Calling Card
 
-        private bool HandleOfferCallingCard(IClientAPI sender, Packet Pack)
+        bool HandleOfferCallingCard(IClientAPI sender, Packet Pack)
         {
             OfferCallingCardPacket offerCallingCardPacket = (OfferCallingCardPacket) Pack;
 
@@ -11076,7 +11122,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleAcceptCallingCard(IClientAPI sender, Packet Pack)
+        bool HandleAcceptCallingCard(IClientAPI sender, Packet Pack)
         {
             AcceptCallingCardPacket acceptCallingCardPacket = (AcceptCallingCardPacket) Pack;
 
@@ -11102,7 +11148,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleDeclineCallingCard(IClientAPI sender, Packet Pack)
+        bool HandleDeclineCallingCard(IClientAPI sender, Packet Pack)
         {
             DeclineCallingCardPacket declineCallingCardPacket = (DeclineCallingCardPacket) Pack;
 
@@ -11129,7 +11175,7 @@ namespace Universe.ClientStack
 
         #region Groups
 
-        private bool HandleActivateGroup(IClientAPI sender, Packet Pack)
+        bool HandleActivateGroup(IClientAPI sender, Packet Pack)
         {
             ActivateGroupPacket activateGroupPacket = (ActivateGroupPacket) Pack;
 
@@ -11151,7 +11197,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleGroupVoteHistoryRequest(IClientAPI client, Packet Packet)
+        bool HandleGroupVoteHistoryRequest(IClientAPI client, Packet Packet)
         {
             GroupVoteHistoryRequestPacket GroupVoteHistoryRequest =
                 (GroupVoteHistoryRequestPacket) Packet;
@@ -11167,7 +11213,7 @@ namespace Universe.ClientStack
             return false;
         }
 
-        private bool HandleGroupProposalBallot(IClientAPI client, Packet Packet)
+        bool HandleGroupProposalBallot(IClientAPI client, Packet Packet)
         {
             GroupProposalBallotPacket GroupProposalBallotRequest =
                 (GroupProposalBallotPacket) Packet;
@@ -11184,7 +11230,7 @@ namespace Universe.ClientStack
             return false;
         }
 
-        private bool HandleGroupActiveProposalsRequest(IClientAPI client, Packet Packet)
+        bool HandleGroupActiveProposalsRequest(IClientAPI client, Packet Packet)
         {
             GroupActiveProposalsRequestPacket GroupActiveProposalsRequest =
                 (GroupActiveProposalsRequestPacket) Packet;
@@ -11200,7 +11246,7 @@ namespace Universe.ClientStack
             return false;
         }
 
-        private bool HandleGroupAccountDetailsRequest(IClientAPI client, Packet Packet)
+        bool HandleGroupAccountDetailsRequest(IClientAPI client, Packet Packet)
         {
             GroupAccountDetailsRequestPacket GroupAccountDetailsRequest =
                 (GroupAccountDetailsRequestPacket) Packet;
@@ -11218,7 +11264,7 @@ namespace Universe.ClientStack
             return false;
         }
 
-        private bool HandleGroupAccountSummaryRequest(IClientAPI client, Packet Packet)
+        bool HandleGroupAccountSummaryRequest(IClientAPI client, Packet Packet)
         {
             GroupAccountSummaryRequestPacket GroupAccountSummaryRequest =
                 (GroupAccountSummaryRequestPacket) Packet;
@@ -11235,7 +11281,7 @@ namespace Universe.ClientStack
             return false;
         }
 
-        private bool HandleGroupTransactionsDetailsRequest(IClientAPI client, Packet Packet)
+        bool HandleGroupTransactionsDetailsRequest(IClientAPI client, Packet Packet)
         {
             GroupAccountTransactionsRequestPacket GroupAccountTransactionsRequest =
                 (GroupAccountTransactionsRequestPacket) Packet;
@@ -11253,7 +11299,7 @@ namespace Universe.ClientStack
             return false;
         }
 
-        private bool HandleGroupTitlesRequest(IClientAPI sender, Packet Pack)
+        bool HandleGroupTitlesRequest(IClientAPI sender, Packet Pack)
         {
             GroupTitlesRequestPacket groupTitlesRequest =
                 (GroupTitlesRequestPacket) Pack;
@@ -11282,30 +11328,26 @@ namespace Universe.ClientStack
                             RequestID = groupTitlesRequest.AgentData.RequestID
                         };
 
-
                 List<GroupTitlesData> titles =
-                    m_GroupsModule.GroupTitlesRequest(this,
-                                                      groupTitlesRequest.AgentData.GroupID);
+                    m_GroupsModule.GroupTitlesRequest(this, groupTitlesRequest.AgentData.GroupID);
+                if (titles != null) {
+                    groupTitlesReply.GroupData =
+                        new GroupTitlesReplyPacket.GroupDataBlock [titles.Count];
 
-                groupTitlesReply.GroupData =
-                    new GroupTitlesReplyPacket.GroupDataBlock[titles.Count];
+                    int i = 0;
+                    foreach (GroupTitlesData d in titles) {
+                        groupTitlesReply.GroupData [i] =
+                            new GroupTitlesReplyPacket.GroupDataBlock { Title = Util.StringToBytes256 (d.Name), RoleID = d.UUID, Selected = d.Selected };
 
-                int i = 0;
-                foreach (GroupTitlesData d in titles)
-                {
-                    groupTitlesReply.GroupData[i] =
-                        new GroupTitlesReplyPacket.GroupDataBlock
-                            {Title = Util.StringToBytes256(d.Name), RoleID = d.UUID, Selected = d.Selected};
-
-                    i++;
+                        i++;
+                    }
                 }
-
                 OutPacket(groupTitlesReply, ThrottleOutPacketType.Asset);
             }
             return true;
         }
 
-        private bool HandleGroupProfileRequest(IClientAPI sender, Packet Pack)
+        bool HandleGroupProfileRequest(IClientAPI sender, Packet Pack)
         {
             GroupProfileRequestPacket groupProfileRequest =
                 (GroupProfileRequestPacket) Pack;
@@ -11355,7 +11397,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleGroupMembersRequest(IClientAPI sender, Packet Pack)
+        bool HandleGroupMembersRequest(IClientAPI sender, Packet Pack)
         {
             GroupMembersRequestPacket groupMembersRequestPacket =
                 (GroupMembersRequestPacket) Pack;
@@ -11426,7 +11468,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleGroupRoleDataRequest(IClientAPI sender, Packet Pack)
+        bool HandleGroupRoleDataRequest(IClientAPI sender, Packet Pack)
         {
             GroupRoleDataRequestPacket groupRolesRequest =
                 (GroupRoleDataRequestPacket) Pack;
@@ -11492,7 +11534,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleGroupRoleMembersRequest(IClientAPI sender, Packet Pack)
+        bool HandleGroupRoleMembersRequest(IClientAPI sender, Packet Pack)
         {
             GroupRoleMembersRequestPacket groupRoleMembersRequest =
                 (GroupRoleMembersRequestPacket) Pack;
@@ -11552,7 +11594,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleCreateGroupRequest(IClientAPI sender, Packet Pack)
+        bool HandleCreateGroupRequest(IClientAPI sender, Packet Pack)
         {
             CreateGroupRequestPacket createGroupRequest =
                 (CreateGroupRequestPacket) Pack;
@@ -11570,6 +11612,12 @@ namespace Universe.ClientStack
 
             if (m_GroupsModule != null)
             {
+                if (Utilities.IsSystemUser (AgentId))
+                {
+                    SendAgentAlertMessage ("System users are for mainteneace tasks only!", false);
+                    return false;
+                }
+               
                 m_GroupsModule.CreateGroup(this,
                                            Utils.BytesToString(createGroupRequest.GroupData.Name),
                                            Utils.BytesToString(createGroupRequest.GroupData.Charter),
@@ -11583,7 +11631,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleUpdateGroupInfo(IClientAPI sender, Packet Pack)
+        bool HandleUpdateGroupInfo(IClientAPI sender, Packet Pack)
         {
             UpdateGroupInfoPacket updateGroupInfo =
                 (UpdateGroupInfoPacket) Pack;
@@ -11615,7 +11663,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleSetGroupAcceptNotices(IClientAPI sender, Packet Pack)
+        bool HandleSetGroupAcceptNotices(IClientAPI sender, Packet Pack)
         {
             SetGroupAcceptNoticesPacket setGroupAcceptNotices =
                 (SetGroupAcceptNoticesPacket) Pack;
@@ -11642,7 +11690,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleGroupTitleUpdate(IClientAPI sender, Packet Pack)
+        bool HandleGroupTitleUpdate(IClientAPI sender, Packet Pack)
         {
             GroupTitleUpdatePacket groupTitleUpdate =
                 (GroupTitleUpdatePacket) Pack;
@@ -11668,7 +11716,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleParcelDeedToGroup(IClientAPI sender, Packet Pack)
+        bool HandleParcelDeedToGroup(IClientAPI sender, Packet Pack)
         {
             ParcelDeedToGroupPacket parcelDeedToGroup = (ParcelDeedToGroupPacket) Pack;
 
@@ -11695,7 +11743,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleGroupNoticesListRequest(IClientAPI sender, Packet Pack)
+        bool HandleGroupNoticesListRequest(IClientAPI sender, Packet Pack)
         {
             GroupNoticesListRequestPacket groupNoticesListRequest =
                 (GroupNoticesListRequestPacket) Pack;
@@ -11746,7 +11794,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleGroupNoticeRequest(IClientAPI sender, Packet Pack)
+        bool HandleGroupNoticeRequest(IClientAPI sender, Packet Pack)
         {
             GroupNoticeRequestPacket groupNoticeRequest =
                 (GroupNoticeRequestPacket) Pack;
@@ -11770,7 +11818,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleGroupRoleUpdate(IClientAPI sender, Packet Pack)
+        bool HandleGroupRoleUpdate(IClientAPI sender, Packet Pack)
         {
             GroupRoleUpdatePacket groupRoleUpdate =
                 (GroupRoleUpdatePacket) Pack;
@@ -11805,7 +11853,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleGroupRoleChanges(IClientAPI sender, Packet Pack)
+        bool HandleGroupRoleChanges(IClientAPI sender, Packet Pack)
         {
             GroupRoleChangesPacket groupRoleChanges =
                 (GroupRoleChangesPacket) Pack;
@@ -11837,7 +11885,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleJoinGroupRequest(IClientAPI sender, Packet Pack)
+        bool HandleJoinGroupRequest(IClientAPI sender, Packet Pack)
         {
             JoinGroupRequestPacket joinGroupRequest =
                 (JoinGroupRequestPacket) Pack;
@@ -11861,7 +11909,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleLeaveGroupRequest(IClientAPI sender, Packet Pack)
+        bool HandleLeaveGroupRequest(IClientAPI sender, Packet Pack)
         {
             LeaveGroupRequestPacket leaveGroupRequest =
                 (LeaveGroupRequestPacket) Pack;
@@ -11885,7 +11933,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleEjectGroupMemberRequest(IClientAPI sender, Packet Pack)
+        bool HandleEjectGroupMemberRequest(IClientAPI sender, Packet Pack)
         {
             EjectGroupMemberRequestPacket ejectGroupMemberRequest =
                 (EjectGroupMemberRequestPacket) Pack;
@@ -11914,7 +11962,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleInviteGroupRequest(IClientAPI sender, Packet Pack)
+        bool HandleInviteGroupRequest(IClientAPI sender, Packet Pack)
         {
             InviteGroupRequestPacket inviteGroupRequest =
                 (InviteGroupRequestPacket) Pack;
@@ -11946,7 +11994,7 @@ namespace Universe.ClientStack
 
         #endregion Groups
 
-        private bool HandleStartLure(IClientAPI sender, Packet Pack)
+        bool HandleStartLure(IClientAPI sender, Packet Pack)
         {
             StartLurePacket startLureRequest = (StartLurePacket) Pack;
 
@@ -11971,7 +12019,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleTeleportLureRequest(IClientAPI sender, Packet Pack)
+        bool HandleTeleportLureRequest(IClientAPI sender, Packet Pack)
         {
             TeleportLureRequestPacket teleportLureRequest =
                 (TeleportLureRequestPacket) Pack;
@@ -11996,7 +12044,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleClassifiedInfoRequest(IClientAPI sender, Packet Pack)
+        bool HandleClassifiedInfoRequest(IClientAPI sender, Packet Pack)
         {
             ClassifiedInfoRequestPacket classifiedInfoRequest =
                 (ClassifiedInfoRequestPacket) Pack;
@@ -12020,7 +12068,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleClassifiedInfoUpdate(IClientAPI sender, Packet Pack)
+        bool HandleClassifiedInfoUpdate(IClientAPI sender, Packet Pack)
         {
             ClassifiedInfoUpdatePacket classifiedInfoUpdate =
                 (ClassifiedInfoUpdatePacket) Pack;
@@ -12056,7 +12104,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleClassifiedDelete(IClientAPI sender, Packet Pack)
+        bool HandleClassifiedDelete(IClientAPI sender, Packet Pack)
         {
             ClassifiedDeletePacket classifiedDelete =
                 (ClassifiedDeletePacket) Pack;
@@ -12080,7 +12128,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleClassifiedGodDelete(IClientAPI sender, Packet Pack)
+        bool HandleClassifiedGodDelete(IClientAPI sender, Packet Pack)
         {
             ClassifiedGodDeletePacket classifiedGodDelete =
                 (ClassifiedGodDeletePacket) Pack;
@@ -12104,7 +12152,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleEventGodDelete(IClientAPI sender, Packet Pack)
+        bool HandleEventGodDelete(IClientAPI sender, Packet Pack)
         {
             EventGodDeletePacket eventGodDelete =
                 (EventGodDeletePacket) Pack;
@@ -12133,7 +12181,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleEventNotificationAddRequest(IClientAPI sender, Packet Pack)
+        bool HandleEventNotificationAddRequest(IClientAPI sender, Packet Pack)
         {
             EventNotificationAddRequestPacket eventNotificationAdd =
                 (EventNotificationAddRequestPacket) Pack;
@@ -12156,7 +12204,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleEventNotificationRemoveRequest(IClientAPI sender, Packet Pack)
+        bool HandleEventNotificationRemoveRequest(IClientAPI sender, Packet Pack)
         {
             EventNotificationRemoveRequestPacket eventNotificationRemove =
                 (EventNotificationRemoveRequestPacket) Pack;
@@ -12179,7 +12227,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleRetrieveInstantMessages(IClientAPI sender, Packet Pack)
+        bool HandleRetrieveInstantMessages(IClientAPI sender, Packet Pack)
         {
             RetrieveInstantMessagesPacket rimpInstantMessagePack = (RetrieveInstantMessagesPacket) Pack;
 
@@ -12200,7 +12248,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandlePickDelete(IClientAPI sender, Packet Pack)
+        bool HandlePickDelete(IClientAPI sender, Packet Pack)
         {
             PickDeletePacket pickDelete =
                 (PickDeletePacket) Pack;
@@ -12222,7 +12270,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandlePickGodDelete(IClientAPI sender, Packet Pack)
+        bool HandlePickGodDelete(IClientAPI sender, Packet Pack)
         {
             PickGodDeletePacket pickGodDelete =
                 (PickGodDeletePacket) Pack;
@@ -12247,7 +12295,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandlePickInfoUpdate(IClientAPI sender, Packet Pack)
+        bool HandlePickInfoUpdate(IClientAPI sender, Packet Pack)
         {
             PickInfoUpdatePacket pickInfoUpdate =
                 (PickInfoUpdatePacket) Pack;
@@ -12278,7 +12326,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleAvatarNotesUpdate(IClientAPI sender, Packet Pack)
+        bool HandleAvatarNotesUpdate(IClientAPI sender, Packet Pack)
         {
             AvatarNotesUpdatePacket avatarNotesUpdate =
                 (AvatarNotesUpdatePacket) Pack;
@@ -12302,7 +12350,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleAvatarInterestsUpdate(IClientAPI sender, Packet Pack)
+        bool HandleAvatarInterestsUpdate(IClientAPI sender, Packet Pack)
         {
             AvatarInterestsUpdatePacket avatarInterestUpdate =
                 (AvatarInterestsUpdatePacket) Pack;
@@ -12329,7 +12377,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleGrantUserRights(IClientAPI sender, Packet Pack)
+        bool HandleGrantUserRights(IClientAPI sender, Packet Pack)
         {
             GrantUserRightsPacket GrantUserRights =
                 (GrantUserRightsPacket) Pack;
@@ -12354,7 +12402,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandlePlacesQuery(IClientAPI sender, Packet Pack)
+        bool HandlePlacesQuery(IClientAPI sender, Packet Pack)
         {
             PlacesQueryPacket placesQueryPacket =
                 (PlacesQueryPacket) Pack;
@@ -12393,7 +12441,7 @@ namespace Universe.ClientStack
             OutPacket(scriptQuestion, ThrottleOutPacketType.AvatarInfo);
         }
 
-        private void InitDefaultAnimations()
+        void InitDefaultAnimations()
         {
             using (XmlTextReader reader = new XmlTextReader("data/avataranimations.xml"))
             {
@@ -12425,7 +12473,7 @@ namespace Universe.ClientStack
         /// <param name="client"></param>
         /// <param name="packet"></param>
         /// <returns></returns>
-        private bool HandleLogout(IClientAPI client, Packet packet)
+        bool HandleLogout(IClientAPI client, Packet packet)
         {
             if (packet.Type == PacketType.LogoutRequest)
             {
@@ -12439,7 +12487,7 @@ namespace Universe.ClientStack
         /// </summary>
         /// <param name="client"></param>
         /// <returns></returns>
-        private bool Logout(IClientAPI client)
+        bool Logout(IClientAPI client)
         {
             //MainConsole.Instance.InfoFormat("[CLIENT]: Got a logout request for {0} in {1}", Name, Scene.RegionInfo.RegionName);
 
@@ -12453,7 +12501,7 @@ namespace Universe.ClientStack
             return true;
         }
 
-        private bool HandleMultipleObjUpdate(IClientAPI simClient, Packet packet)
+        bool HandleMultipleObjUpdate(IClientAPI simClient, Packet packet)
         {
             MultipleObjectUpdatePacket multipleupdate = (MultipleObjectUpdatePacket) packet;
             if (multipleupdate.AgentData.SessionID != SessionId) return false;
@@ -12673,7 +12721,7 @@ namespace Universe.ClientStack
         /// </summary>
         /// <param name="packet">Packet to send</param>
         /// <param name="throttlePacketType">Throttling category for the packet</param>
-        private void OutPacket(Packet packet, ThrottleOutPacketType throttlePacketType)
+        void OutPacket(Packet packet, ThrottleOutPacketType throttlePacketType)
         {
             #region BinaryStats
 
@@ -12694,7 +12742,7 @@ namespace Universe.ClientStack
         ///     packets (the default), or false to disable splitting if the calling code
         ///     handles splitting manually
         /// </param>
-        private void OutPacket(Packet packet, ThrottleOutPacketType throttlePacketType, bool doAutomaticSplitting)
+        void OutPacket(Packet packet, ThrottleOutPacketType throttlePacketType, bool doAutomaticSplitting)
         {
             OutPacket(packet, throttlePacketType, doAutomaticSplitting, null);
         }
@@ -12710,7 +12758,7 @@ namespace Universe.ClientStack
         ///     handles splitting manually
         /// </param>
         /// <param name="resendMethod">Method that will be called if the packet needs resent</param>
-        private void OutPacket(Packet packet, ThrottleOutPacketType throttlePacketType, bool doAutomaticSplitting,
+        void OutPacket(Packet packet, ThrottleOutPacketType throttlePacketType, bool doAutomaticSplitting,
                                UnackedPacketMethod resendMethod)
         {
             OutPacket(packet, throttlePacketType, doAutomaticSplitting, resendMethod, null);
@@ -12728,7 +12776,7 @@ namespace Universe.ClientStack
         /// </param>
         /// <param name="resendMethod">Method that will be called if the packet needs resent</param>
         /// <param name="finishedMethod">Method that will be called when the packet is sent</param>
-        private void OutPacket(Packet packet, ThrottleOutPacketType throttlePacketType, bool doAutomaticSplitting,
+        void OutPacket(Packet packet, ThrottleOutPacketType throttlePacketType, bool doAutomaticSplitting,
                                UnackedPacketMethod resendMethod, UnackedPacketMethod finishedMethod)
         {
             if (m_debugPacketLevel > 0 || m_debugPackets.Contains(packet.Type.ToString()))
@@ -12859,7 +12907,7 @@ namespace Universe.ClientStack
             PacketPool.Instance.ReturnPacket(packet);
         }
 
-        private static PrimitiveBaseShape GetShapeFromAddPacket(ObjectAddPacket addPacket)
+        static PrimitiveBaseShape GetShapeFromAddPacket(ObjectAddPacket addPacket)
         {
             PrimitiveBaseShape shape = new PrimitiveBaseShape
                                            {
@@ -12979,14 +13027,14 @@ namespace Universe.ClientStack
 
         #region IClientCore
 
-        private readonly Dictionary<Type, object> m_clientInterfaces = new Dictionary<Type, object>();
+        readonly Dictionary<Type, object> m_clientInterfaces = new Dictionary<Type, object>();
 
         /// <summary>
         ///     Register an interface on this client, should only be called in the constructor.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="iface"></param>
-        private void RegisterInterface<T>(T iface)
+        void RegisterInterface<T>(T iface)
         {
             lock (m_clientInterfaces)
             {
@@ -13015,9 +13063,9 @@ namespace Universe.ClientStack
 
         #endregion
 
-        private readonly List<UUID> m_transfersToAbort = new List<UUID>();
+        readonly List<UUID> m_transfersToAbort = new List<UUID>();
 
-        private bool HandleTransferAbort(IClientAPI sender, Packet Pack)
+        bool HandleTransferAbort(IClientAPI sender, Packet Pack)
         {
             TransferAbortPacket transferAbort = (TransferAbortPacket) Pack;
             m_transfersToAbort.Add(transferAbort.TransferInfo.TransferID);
@@ -13029,7 +13077,7 @@ namespace Universe.ClientStack
         /// </summary>
         /// <param name="transferRequest"></param>
         /// <param name="taskID"></param>
-        private void MakeAssetRequest(TransferRequestPacket transferRequest, UUID taskID)
+        void MakeAssetRequest(TransferRequestPacket transferRequest, UUID taskID)
         {
             UUID requestID = UUID.Zero;
             switch (transferRequest.TransferInfo.SourceType)
@@ -13053,7 +13101,7 @@ namespace Universe.ClientStack
         /// <param name="id"></param>
         /// <param name="sender"></param>
         /// <param name="asset"></param>
-        private void AssetReceived(string id, Object sender, AssetBase asset)
+        void AssetReceived(string id, Object sender, AssetBase asset)
         {
             //MainConsole.Instance.InfoFormat("[CLIENT]: {0} found requested asset", Name);
 
@@ -13107,7 +13155,7 @@ namespace Universe.ClientStack
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        private static int CalculateNumPackets(byte[] data)
+        static int CalculateNumPackets(byte[] data)
         {
             const uint m_maxPacketSize = 1024;
 

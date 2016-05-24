@@ -1,0 +1,4 @@
+C:\Users\virtu\Desktop\Universe-Dev\VirtualUniverse\bin\Universe.Server.AssetServer.exe
+C:\Users\virtu\Desktop\Universe-Dev\VirtualUniverse\bin\Universe.Server.AssetServer.pdb
+C:\Users\virtu\Desktop\Universe-Dev\Universe\Servers\AssetServer\obj\x64\Debug\Universe.Server.AssetServer.exe
+C:\Users\virtu\Desktop\Universe-Dev\Universe\Servers\AssetServer\obj\x64\Debug\Universe.Server.AssetServer.pdb

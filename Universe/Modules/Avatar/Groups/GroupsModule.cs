@@ -71,9 +71,14 @@ namespace Universe.Modules.Groups
 
         public event NewGroupNotice OnNewGroupNotice;
 
-        public GroupRecord GetGroupRecord(UUID GroupID)
+        public bool IsGroup (UUID groupID)
         {
-            return m_groupData.GetGroupRecord(UUID.Zero, GroupID, null);
+            return m_groupData.IsGroup (groupID);
+        }
+
+        public GroupRecord GetGroupRecord(UUID groupID)
+        {
+            return m_groupData.GetGroupRecord(UUID.Zero, groupID, null);
         }
 
         public GroupRecord GetGroupRecord(string name)
@@ -291,7 +296,7 @@ namespace Universe.Modules.Groups
                 MainConsole.Instance.DebugFormat("[GROUPS]: {0} called", MethodBase.GetCurrentMethod().Name);
 
             //Check the cache first
-            GroupMembershipData membership = null;
+            GroupMembershipData membership;
             if (m_cachedGroupTitles.ContainsKey(avatarID))
                 membership = m_cachedGroupTitles[avatarID];
             else
@@ -363,8 +368,8 @@ namespace Universe.Modules.Groups
                     if (m_debugEnabled)
                     {
                         GroupPowers gp = (GroupPowers) powers;
-                        MainConsole.Instance.DebugFormat("[GROUPS]: Role ({0}) updated with Powers ({1}) ({2})", name,
-                                                         powers.ToString(), gp.ToString());
+                        MainConsole.Instance.DebugFormat("[GROUPS]: Role ({0}) updated with Powers ({1}) ({2})",
+                                                            name, powers, gp);
                     }
                     m_groupData.UpdateRole(GetRequestingAgentID(remoteClient), groupID, roleID, name, description,
                                                 title, powers);
@@ -491,23 +496,54 @@ namespace Universe.Modules.Groups
             if (m_debugEnabled)
                 MainConsole.Instance.DebugFormat("[GROUPS]: {0} called", MethodBase.GetCurrentMethod().Name);
 
-            GroupRecord record = m_groupData.GetGroupRecord(GetRequestingAgentID(remoteClient), groupID, "");
-            if (record != null && record.OpenEnrollment)
+            var requestingAgentID = GetRequestingAgentID (remoteClient);
+
+            GroupRecord record = m_groupData.GetGroupRecord(requestingAgentID, groupID, "");
+            if (record != null)
             {
-                // Should check to see if OpenEnrollment, or if there's an outstanding invitation
-                m_groupData.AddAgentToGroup(GetRequestingAgentID(remoteClient), GetRequestingAgentID(remoteClient),
-                                            groupID,
-                                            UUID.Zero);
+                // check if this user is banned
+                var isBanned = m_groupData.IsGroupBannedUser (groupID, requestingAgentID);
+                if (isBanned)
+                {
+                    remoteClient.SendJoinGroupReply (groupID, false);
+                    return;
+                }
 
-                m_cachedGroupMemberships.Remove(remoteClient.AgentId);
-                RemoveFromGroupPowersCache(remoteClient.AgentId, groupID);
-                remoteClient.SendJoinGroupReply(groupID, true);
+                // invited users (not sure if this is needed really)
+                var invites = m_groupData.GetGroupInvites (requestingAgentID);
+                var invitedAgent = false; 
+                if (invites.Count > 0)
+                {
+                    foreach (var invite in invites)
+                    {
+                        if (invite.GroupID == groupID)
+                            invitedAgent = true;
+                    }
+                }
 
-                ActivateGroup(remoteClient, groupID);
+                // open enrolment or invited
+                if (record.OpenEnrollment || invitedAgent)
+                {
+                    m_groupData.AddAgentToGroup (requestingAgentID, requestingAgentID,
+                        groupID,
+                        UUID.Zero);
 
-                // Should this send updates to everyone in the group?
-                SendAgentGroupDataUpdate(remoteClient, GetRequestingAgentID(remoteClient));
+                    m_cachedGroupMemberships.Remove (remoteClient.AgentId);
+                    RemoveFromGroupPowersCache (remoteClient.AgentId, groupID);
+                    remoteClient.SendJoinGroupReply (groupID, true);
+
+                    ActivateGroup (remoteClient, groupID);
+
+                    // Should this send updates to everyone in the group?
+                    SendAgentGroupDataUpdate (remoteClient, requestingAgentID);
+
+                    return;
+                }
+
             }
+            // unable to join the group
+            remoteClient.SendJoinGroupReply (groupID, false);
+
         }
 
         public void LeaveGroupRequest(IClientAPI remoteClient, UUID groupID)
@@ -687,7 +723,7 @@ namespace Universe.Modules.Groups
             if (remoteClient != null)
             {
                 agentName = remoteClient.Name;
-                regionInfo = remoteClient.Scene.RegionInfo;
+                regionInfo = remoteClient.Scene.RegionInfo; // not required?
             }
             else
             {
@@ -695,7 +731,7 @@ namespace Universe.Modules.Groups
                 if (client != null)
                 {
                     agentName = client.Name;
-                    regionInfo = client.Scene.RegionInfo;
+                    regionInfo = client.Scene.RegionInfo;   // not required?
                 }
 
                 else
@@ -738,7 +774,7 @@ namespace Universe.Modules.Groups
                     string MemberShipCost = ". There is no cost to join this group.";
                     if (groupInfo.MembershipFee != 0)
                     {
-                        MemberShipCost = ". To join, you must pay " + groupInfo.MembershipFee.ToString() + ".";
+                        MemberShipCost = ". To join, you must pay " + groupInfo.MembershipFee + ".";
                     }
                     msg.Message = string.Format("{0} has invited you to join " + groupInfo.GroupName + MemberShipCost,
                                                 remoteClient.Name);
@@ -854,24 +890,24 @@ namespace Universe.Modules.Groups
             IEventQueueService queue = remoteClient.Scene.RequestModuleInterface<IEventQueueService>();
 
             if (queue != null)
-                queue.Enqueue(buildEvent("AgentGroupDataUpdate", llDataStruct), GetRequestingAgentID(remoteClient),
+                queue.Enqueue(BuildEvent("AgentGroupDataUpdate", llDataStruct), GetRequestingAgentID(remoteClient),
                               remoteClient.Scene.RegionInfo.RegionID);
         }
 
-        public OSD buildEvent(string eventName, OSD eventBody)
+        public OSD BuildEvent(string eventName, OSD eventBody)
         {
             OSDMap llsdEvent = new OSDMap(2) {{"body", eventBody}, {"message", new OSDString(eventName)}};
 
             return llsdEvent;
         }
 
-        void SendScenePresenceUpdate(UUID AgentID, string Title)
+        void SendScenePresenceUpdate(UUID agentID, string title)
         {
             if (m_debugEnabled)
-                MainConsole.Instance.DebugFormat("[GROUPS]: Updating scene title for {0} with title: {1}", AgentID,
-                                                 Title);
+                MainConsole.Instance.DebugFormat("[GROUPS]: Updating scene title for {0} with title: {1}", agentID,
+                                                 title);
 
-            IScenePresence presence = m_scene.GetScenePresence(AgentID);
+            IScenePresence presence = m_scene.GetScenePresence(agentID);
             if (presence != null && !presence.IsChildAgent)
             {
                 //Force send a full update
@@ -1366,7 +1402,7 @@ namespace Universe.Modules.Groups
                         GroupRecord groupInfo = GetGroupRecord(Invite.GroupID);
                         string MemberShipCost = ". There is no cost to join this group.";
                         if (groupInfo.MembershipFee != 0)
-                            MemberShipCost = ". To join, you must pay " + groupInfo.MembershipFee.ToString() + ".";
+                            MemberShipCost = ". To join, you must pay " + groupInfo.MembershipFee + ".";
 
                         msg.Message =
                             string.Format("{0} has invited you to join " + groupInfo.GroupName + MemberShipCost,
@@ -1475,17 +1511,17 @@ namespace Universe.Modules.Groups
                 SendScenePresenceUpdate(dataForAgentID, activeGroupTitle);
         }
 
-        void HandleUUIDGroupNameRequest(UUID GroupID, IClientAPI remoteClient)
+        void HandleUUIDGroupNameRequest(UUID groupID, IClientAPI remoteClient)
         {
             if (m_debugEnabled)
                 MainConsole.Instance.DebugFormat("[GROUPS]: {0} called", MethodBase.GetCurrentMethod().Name);
 
             string GroupName;
 
-            GroupRecord group = m_groupData.GetGroupRecord(GetRequestingAgentID(remoteClient), GroupID, null);
+            GroupRecord group = m_groupData.GetGroupRecord(GetRequestingAgentID(remoteClient), groupID, null);
             GroupName = group != null ? group.GroupName : "Unknown";
 
-            remoteClient.SendGroupNameReply(GroupID, GroupName);
+            remoteClient.SendGroupNameReply(groupID, GroupName);
         }
 
         void OnInstantMessage(IClientAPI remoteClient, GridInstantMessage im)
@@ -1606,7 +1642,7 @@ namespace Universe.Modules.Groups
                             }
                             else
                             {
-                                bucket = im.BinaryBucket;
+                                //bucket = im.BinaryBucket;
                                 string binBucket = Utils.BytesToString(im.BinaryBucket);
                                 binBucket = binBucket.Remove(0, 14).Trim();
 
@@ -1911,16 +1947,16 @@ namespace Universe.Modules.Groups
         /// <summary>
         ///     WARNING: This is not the only place permissions are checked! They are checked in each of the connectors as well!
         /// </summary>
-        /// <param name="AgentID"></param>
-        /// <param name="GroupID"></param>
+        /// <param name="agentID"></param>
+        /// <param name="groupID"></param>
         /// <param name="permissions"></param>
         /// <returns></returns>
-        public bool GroupPermissionCheck(UUID AgentID, UUID GroupID, GroupPowers permissions)
+        public bool GroupPermissionCheck(UUID agentID, UUID groupID, GroupPowers permissions)
         {
-            if (GroupID == UUID.Zero)
+            if (groupID == UUID.Zero)
                 return false;
 
-            if (AgentID == UUID.Zero)
+            if (agentID == UUID.Zero)
                 return false;
 
             ulong ourPowers = 0;
@@ -1928,29 +1964,30 @@ namespace Universe.Modules.Groups
             Dictionary<UUID, ulong> groupsCache;
             lock (AgentGroupPowersCache)
             {
-                if (AgentGroupPowersCache.TryGetValue(AgentID, out groupsCache))
+                if (AgentGroupPowersCache.TryGetValue(agentID, out groupsCache))
                 {
-                    if (groupsCache.ContainsKey(GroupID))
+                    if (groupsCache.ContainsKey(groupID))
                     {
-                        ourPowers = groupsCache[GroupID];
+                        ourPowers = groupsCache[groupID];
                         if (ourPowers == 1)
                             return false;
-                        //1 means not in the group or not found in the cache, so stop it here so that we don't check every time, and it can't be a permission, as its 0 then 2 in GroupPermissions
+                        // 1 means not in the group or not found in the cache, so stop it here so that we don't check every time,
+                        // and it can't be a permission, as its 0 then 2 in GroupPermissions
                     }
                 }
             }
             //Ask the server as we don't know about this user
             if (ourPowers == 0)
             {
-                GroupMembershipData GMD = AttemptFindGroupMembershipData(AgentID, AgentID, GroupID);
+                GroupMembershipData GMD = AttemptFindGroupMembershipData(agentID, agentID, groupID);
                 if (GMD == null)
                 {
-                    AddToGroupPowersCache(AgentID, GroupID, 1);
+                    AddToGroupPowersCache(agentID, groupID, 1);
                     return false;
                 }
                 ourPowers = GMD.GroupPowers;
                 //Add to the cache
-                AddToGroupPowersCache(AgentID, GroupID, ourPowers);
+                AddToGroupPowersCache(agentID, groupID, ourPowers);
             }
 
             //The user is the group, or it would have been weeded out earlier, so check whether we just need to know whether they are in the group
@@ -1963,44 +2000,44 @@ namespace Universe.Modules.Groups
             return true;
         }
 
-        void AddToGroupPowersCache(UUID AgentID, UUID GroupID, ulong powers)
+        void AddToGroupPowersCache(UUID agentID, UUID groupID, ulong powers)
         {
             lock (AgentGroupPowersCache)
             {
-                Dictionary<UUID, ulong> Groups = new Dictionary<UUID, ulong>();
-                if (!AgentGroupPowersCache.TryGetValue(AgentID, out Groups))
+                Dictionary<UUID, ulong> Groups;
+                if (!AgentGroupPowersCache.TryGetValue(agentID, out Groups))
                     Groups = new Dictionary<UUID, ulong>();
-                Groups[GroupID] = powers;
-                AgentGroupPowersCache[AgentID] = Groups;
+                Groups[groupID] = powers;
+                AgentGroupPowersCache[agentID] = Groups;
             }
         }
 
-        void RemoveFromGroupPowersCache(UUID GroupID)
+        void RemoveFromGroupPowersCache(UUID groupID)
         {
             lock (AgentGroupPowersCache)
             {
                 foreach (Dictionary<UUID, ulong> grp in AgentGroupPowersCache.Values)
                 {
-                    grp.Remove(GroupID);
+                    grp.Remove(groupID);
                 }
             }
         }
 
-        void RemoveFromGroupPowersCache(UUID AgentID, UUID GroupID)
+        void RemoveFromGroupPowersCache(UUID agentID, UUID groupID)
         {
             lock (AgentGroupPowersCache)
             {
-                if (GroupID == UUID.Zero)
+                if (groupID == UUID.Zero)
                 {
-                    AgentGroupPowersCache.Remove(AgentID);
+                    AgentGroupPowersCache.Remove(agentID);
                 }
                 else
                 {
-                    Dictionary<UUID, ulong> Groups = new Dictionary<UUID, ulong>();
-                    if (AgentGroupPowersCache.TryGetValue(AgentID, out Groups))
+                    Dictionary<UUID, ulong> Groups;
+                    if (AgentGroupPowersCache.TryGetValue(agentID, out Groups))
                     {
-                        Groups.Remove(GroupID);
-                        AgentGroupPowersCache[AgentID] = Groups;
+                        Groups.Remove(groupID);
+                        AgentGroupPowersCache[agentID] = Groups;
                     }
                 }
             }

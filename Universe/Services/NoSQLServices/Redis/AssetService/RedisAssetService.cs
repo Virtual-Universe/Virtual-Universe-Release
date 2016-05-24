@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,6 +25,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
+using System.IO;
+using Nini.Config;
+using OpenMetaverse;
+using Sider;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
@@ -32,11 +37,6 @@ using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Utilities;
 using Universe.RedisServices.ConnectionHelpers;
-using Nini.Config;
-using OpenMetaverse;
-using Sider;
-using System;
-using System.IO;
 
 namespace Universe.RedisServices.AssetService
 {
@@ -45,13 +45,14 @@ namespace Universe.RedisServices.AssetService
         #region Declares
 
         protected const string DATA_PREFIX = "DATA";
-        protected bool doDatabaseCaching = false;
-        protected string m_connectionDNS = "localhost", m_connectionPassword = null;
+        protected bool doDatabaseCaching;
+        protected string m_connectionDNS = "localhost";
+        protected string m_connectionPassword;
         protected Pool<RedisClient<byte[]>> m_connectionPool;
         protected int m_connectionPort = 6379;
-        protected bool m_enabled = false;
+        protected bool m_enabled;
 
-        protected bool m_doConversion = false;
+        protected bool m_migrateSQL;
         protected IAssetDataPlugin m_assetService;
 
         #endregion
@@ -68,6 +69,7 @@ namespace Universe.RedisServices.AssetService
             IConfig handlerConfig = config.Configs["Handlers"];
             if (handlerConfig.GetString("AssetHandler", "") != "Redis" + Name)
                 return;
+            
             m_enabled = true;
             Configure(config, registry);
             Init(registry, Name, serverPath: "/asset/", serverHandlerName: "AssetServerURI");
@@ -77,6 +79,7 @@ namespace Universe.RedisServices.AssetService
         {
             if (!m_enabled)
                 return;
+            
             m_registry = registry;
 
             registry.RegisterModuleInterface<IAssetService>(this);
@@ -92,16 +95,16 @@ namespace Universe.RedisServices.AssetService
                 m_connectionDNS = connString.Split(':')[0];
                 m_connectionPort = int.Parse(connString.Split(':')[1]);
                 m_connectionPassword = redisConnection.Get("ConnectionPassword", null);
-            }
 
-            IConfig assetConfig = config.Configs["AssetService"];
-            if (assetConfig != null)
-                m_doConversion = assetConfig.GetBoolean("DoConversion", true);
+                // try and migrate sql assets if they are missing?
+                m_migrateSQL = redisConnection.GetBoolean("MigrateSQLAssets", true);
+
+            }
 
             m_connectionPool =
                 new Pool<RedisClient<byte[]>>(() => new RedisClient<byte[]>(m_connectionDNS, m_connectionPort));
 
-            if (MainConsole.Instance != null && !DoRemoteCalls)
+            if (IsLocalConnector && (MainConsole.Instance != null))
             {
                 MainConsole.Instance.Commands.AddCommand(
                     "show digest",
@@ -118,16 +121,15 @@ namespace Universe.RedisServices.AssetService
                     "get asset <ID>",
                     "Gets info about asset from database", 
                     HandleGetAsset, false, true);
-
-                MainConsole.Instance.Info("[REDIS ASSET SERVICE]: Redis asset service enabled");
             }
+            MainConsole.Instance.Info("[Redis asset service]: Redis asset service enabled");
         }
 
         public virtual void Start(IConfigSource config, IRegistryCore registry)
         {
             if (!m_enabled)
                 return;
-            if (m_doConversion)
+            if (m_migrateSQL)
                 m_assetService = Framework.Utilities.DataManager.RequestPlugin<IAssetDataPlugin>();
         }
 
@@ -215,9 +217,9 @@ namespace Universe.RedisServices.AssetService
             AssetBase asset = RedisGetAsset(id);
             if (doDatabaseCaching && cache != null)
                 cache.Cache(id, asset);
-            if (asset != null) return asset.Data;
-// see assetservice.GetData            return new byte[0];
-            return null;
+            
+            return asset == null ? null : asset.Data;
+
         }
 
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
@@ -258,7 +260,7 @@ namespace Universe.RedisServices.AssetService
                 cache.Cache(asset.ID.ToString(), asset);
             }
 
-            return asset != null ? asset.ID : UUID.Zero;
+            return asset.ID;
         }
 
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
@@ -292,7 +294,7 @@ namespace Universe.RedisServices.AssetService
 
         #endregion
 
-        private byte[] RedisEnsureConnection(Func<RedisClient<byte[]>, byte[]> func)
+        byte[] RedisEnsureConnection(Func<RedisClient<byte[]>, byte[]> func)
         {
             RedisClient<byte[]> client = null;
             try
@@ -322,7 +324,7 @@ namespace Universe.RedisServices.AssetService
             return null;
         }
 
-        private bool RedisEnsureConnection(Func<RedisClient<byte[]>, bool> func)
+        bool RedisEnsureConnection(Func<RedisClient<byte[]>, bool> func)
         {
             RedisClient<byte[]> client = null;
             try
@@ -387,16 +389,16 @@ namespace Universe.RedisServices.AssetService
 #if DEBUG
                 long endTime = System.Diagnostics.Stopwatch.GetTimestamp();
                 if (MainConsole.Instance != null && asset != null)
-                    MainConsole.Instance.Warn("[REDIS ASSET SERVICE]: Took " + (endTime - startTime)/10000 +
+                    MainConsole.Instance.Warn("[Redis asset service]: Took " + (endTime - startTime)/10000 +
                                               " to get asset " + id + " sized " + asset.Data.Length/(1024) + "kbs");
 #endif
             }
             return asset;
         }
 
-        private AssetBase CheckForConversion(string id)
+        AssetBase CheckForConversion(string id)
         {
-            if (!m_doConversion)
+            if (!m_migrateSQL)
                 return null;
 
             AssetBase asset;
@@ -441,23 +443,24 @@ namespace Universe.RedisServices.AssetService
                 if (duplicate)
                 {
                     if (MainConsole.Instance != null)
-                        MainConsole.Instance.Debug("[REDIS ASSET SERVICE]: Found duplicate asset " + asset.IDString +
+                        MainConsole.Instance.Debug("[Redis asset service]: Found duplicate asset " + asset.IDString +
                                                    " for " + asset.IDString);
 
-                    //Only set id --> asset, and not the hashcode --> data to deduplicate
+                    //Only set id --> asset, and not the hashcode --> data to de-duplicate
                     RedisEnsureConnection((conn) => conn.Set(asset.IDString, memStream.ToArray()));
                     return true;
                 }
 
-                RedisEnsureConnection((conn) =>
-                                          {
-                                              conn.Pipeline((c) =>
-                                                                {
-                                                                    c.Set(asset.IDString, memStream.ToArray());
-                                                                    c.Set(DATA_PREFIX + hash, data);
-                                                                });
-                                              return true;
-                                          });
+                RedisEnsureConnection(
+                    (conn) =>
+                    {
+                        conn.Pipeline((c) =>
+                            {
+                                c.Set(asset.IDString, memStream.ToArray());
+                                c.Set(DATA_PREFIX + hash, data);
+                            });
+                        return true;
+                    });
                 return true;
             }
             catch
@@ -475,6 +478,7 @@ namespace Universe.RedisServices.AssetService
             AssetBase asset = RedisGetAsset(id);
             if (asset == null)
                 return;
+            
             RedisEnsureConnection((conn) => conn.Del(id) == 1);
             //DON'T DO THIS, there might be other references to this hash
             //RedisEnsureConnection((conn) => conn.Del(DATA_PREFIX + asset.HashCode) == 1);
@@ -508,7 +512,7 @@ namespace Universe.RedisServices.AssetService
             MainConsole.Instance.InfoFormat("Name: {0}", asset.Name);
             MainConsole.Instance.InfoFormat("Description: {0}", asset.Description);
             MainConsole.Instance.InfoFormat("Type: {0}", asset.TypeAsset);
-            MainConsole.Instance.InfoFormat("Content-type: {0}", asset.TypeAsset.ToString());
+            MainConsole.Instance.InfoFormat("Content-type: {0}", asset.TypeAsset);
             MainConsole.Instance.InfoFormat("Flags: {0}", asset.Flags);
 
             for (i = 0; i < 5; i++)
@@ -516,6 +520,7 @@ namespace Universe.RedisServices.AssetService
                 int off = i*16;
                 if (asset.Data.Length <= off)
                     break;
+                
                 int len = 16;
                 if (asset.Data.Length < off + len)
                     len = asset.Data.Length - off;

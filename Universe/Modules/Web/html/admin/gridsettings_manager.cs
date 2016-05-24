@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,10 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
 using System.Collections.Generic;
-using OpenMetaverse;
-using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Servers.HttpServer.Implementation;
 
 namespace Universe.Modules.Web
@@ -72,6 +69,9 @@ namespace Universe.Modules.Web
                 settings.SystemEstateOwnerName = requestParameters["SystemEstateOwnerName"].ToString();
                 settings.SystemEstateName = requestParameters["SystemEstateName"].ToString();
 
+
+
+
                 // update main grid setup
                 webInterface.SaveGridSettings (settings);
                 response = "Successfully updated grid settings.";
@@ -85,12 +85,17 @@ namespace Universe.Modules.Web
             vars.Add("SystemEstateOwnerName", settings.SystemEstateOwnerName);
             vars.Add("SystemEstateName", settings.SystemEstateName);
 
+
+ 
+
             vars.Add("GridSettingsManager", translator.GetTranslatedString("GridSettingsManager"));
             vars.Add("GridnameText", translator.GetTranslatedString("GridnameText"));
             vars.Add("GridnickText", translator.GetTranslatedString("GridnickText"));
             vars.Add("WelcomeMessageText", translator.GetTranslatedString("WelcomeMessageText"));
             vars.Add("SystemEstateNameText", translator.GetTranslatedString("SystemEstateNameText"));
             vars.Add("SystemEstateOwnerText", translator.GetTranslatedString("SystemEstateOwnerText"));
+
+
 
             vars.Add("Save", translator.GetTranslatedString("Save"));
             vars.Add("No", translator.GetTranslatedString("No"));

@@ -1,5 +1,0 @@
-C:\Users\universe\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.Services.GenericServices.dll
-C:\Users\universe\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.Services.GenericServices.pdb
-C:\Users\universe\Desktop\Virtual-Dev\Universe\Services\GenericServices\obj\Debug\Universe.Services.GenericServices.csprojResolveAssemblyReference.cache
-C:\Users\universe\Desktop\Virtual-Dev\Universe\Services\GenericServices\obj\Debug\Universe.Services.GenericServices.dll
-C:\Users\universe\Desktop\Virtual-Dev\Universe\Services\GenericServices\obj\Debug\Universe.Services.GenericServices.pdb

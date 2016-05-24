@@ -25,12 +25,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
 using System.Collections.Generic;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
 using Universe.Framework.Modules;
 using Universe.Framework.Utilities;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
 
 namespace Universe.Framework.Services.ClassHelpers.Inventory
 {

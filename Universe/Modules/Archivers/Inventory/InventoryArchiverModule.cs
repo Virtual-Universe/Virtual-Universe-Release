@@ -40,26 +40,22 @@ using Universe.Framework.Utilities;
 namespace Universe.Modules.Archivers
 {
     /// <summary>
-    ///     This module loads and saves OpenSimulator inventory archives
+    ///     This module loads and saves Universe inventory archives
     /// </summary>
     public class InventoryArchiverModule : IService, IInventoryArchiverModule
     {
         /// <summary>
         /// The default save/load archive directory.
         /// </summary>
-        string m_archiveDirectory = Constants.DEFAULT_USERINVENTORY_DIR;
-
-        /// <value>
-        ///     All scenes that this module knows about
-        /// </value>
-        readonly Dictionary<UUID, IScene> m_scenes = new Dictionary<UUID, IScene>();
+        string m_archiveDirectory = "";
+        bool isLocal = true;
+        IRegistryCore m_registry;
 
         /// <value>
         ///     Pending save completions initiated from the console
         /// </value>
         protected List<Guid> m_pendingConsoleSaves = new List<Guid>();
 
-        private IRegistryCore m_registry;
 
         public string Name
         {
@@ -90,12 +86,12 @@ namespace Universe.Modules.Archivers
                     bool UseAssets = true;
                     if (options.ContainsKey("assets"))
                     {
-                        object Assets = null;
+                        object Assets;
                         options.TryGetValue("assets", out Assets);
                         bool.TryParse(Assets.ToString(), out UseAssets);
                     }
 
-                    string checkPermissions = "";;
+                    string checkPermissions = "";
                     if (options.ContainsKey("checkPermissions"))
                     {
                         Object temp;
@@ -120,7 +116,7 @@ namespace Universe.Modules.Archivers
                 catch (EntryPointNotFoundException e)
                 {
                     MainConsole.Instance.ErrorFormat(
-                        "[ARCHIVER]: Mismatch between Mono and zlib1g library version when trying to create compression stream."
+                        "[Archiver]: Mismatch between Mono and zlib1g library version when trying to create compression stream."
                         + "If you've manually installed Mono, have you appropriately updated zlib1g as well?");
                     MainConsole.Instance.Error(e);
 
@@ -140,9 +136,30 @@ namespace Universe.Modules.Archivers
         public void Initialize(IConfigSource config, IRegistryCore registry)
         {
             m_registry = registry;
-            m_registry.RegisterModuleInterface<IInventoryArchiverModule>(this);
-            if (m_scenes.Count == 0)
+
+            // set default path to user archives
+            var defpath = m_registry.RequestModuleInterface<ISimulationBase>().DefaultDataPath;
+            m_archiveDirectory = Path.Combine (defpath, Constants.DEFAULT_USERINVENTORY_DIR);
+
+            // check if this is a local service
+            IConfig connectorConfig = config.Configs ["UniverseConnectors"];
+            if ((connectorConfig != null) && connectorConfig.Contains ("DoRemoteCalls"))
+                isLocal = ! connectorConfig.GetBoolean ("DoRemoteCalls", false);
+            
+        }
+
+        public void Start(IConfigSource config, IRegistryCore registry)
+        {
+        }
+
+        public void FinishedStartup()
+        {
+
+            // Lock out if remote 
+            if (isLocal)
             {
+                m_registry.RegisterModuleInterface<IInventoryArchiverModule>(this);
+
                 OnInventoryArchiveSaved += SaveIARConsoleCommandCompleted;
 
                 if (MainConsole.Instance != null)
@@ -174,17 +191,8 @@ namespace Universe.Modules.Archivers
                         + "--perm=<permissions> : If present, verify asset permissions before saving.\n"
                         + "   <permissions> can include 'C' (Copy), 'M' (Modify, 'T' (Transfer)",
                         HandleSaveIARConsoleCommand, false, true);
-
                 }
             }
-        }
-
-        public void Start(IConfigSource config, IRegistryCore registry)
-        {
-        }
-
-        public void FinishedStartup()
-        {
         }
 
         #endregion
@@ -215,7 +223,7 @@ namespace Universe.Modules.Archivers
                     bool UseAssets = true;
                     if (options.ContainsKey("assets"))
                     {
-                        object Assets = null;
+                        object Assets;
                         options.TryGetValue("assets", out Assets);
                         bool.TryParse(Assets.ToString(), out UseAssets);
                     }
@@ -234,7 +242,7 @@ namespace Universe.Modules.Archivers
                 catch (EntryPointNotFoundException e)
                 {
                     MainConsole.Instance.ErrorFormat(
-                        "[ARCHIVER]: Mismatch between Mono and zlib1g library version when trying to create compression stream.\n"
+                        "[Archiver]: Mismatch between Mono and zlib1g library version when trying to create compression stream.\n"
                         + "If you've manually installed Mono, have you appropriately updated zlib1g as well?");
                     MainConsole.Instance.Error(e);
 
@@ -266,7 +274,7 @@ namespace Universe.Modules.Archivers
                 catch (EntryPointNotFoundException e)
                 {
                     MainConsole.Instance.ErrorFormat(
-                        "[ARCHIVER]: Mismatch between Mono and zlib1g library version when trying to create compression stream.\n"
+                        "[Archiver]: Mismatch between Mono and zlib1g library version when trying to create compression stream.\n"
                         + "If you've manually installed Mono, have you appropriately updated zlib1g as well?");
                     MainConsole.Instance.Error(e);
 
@@ -301,6 +309,7 @@ namespace Universe.Modules.Archivers
         /// <summary>
         ///     Load inventory from an inventory file archive
         /// </summary>
+        /// <param name="scene"></param>
         /// <param name="cmdparams"></param>
         protected void HandleLoadIARConsoleCommand(IScene scene, string[] cmdparams)
         {
@@ -379,15 +388,25 @@ namespace Universe.Modules.Archivers
                 }
 
                 // sanity checks...
-                var loadPath = PathHelpers.VerifyReadFile(archiveFileName, new List<string>() {".iar",".tgz"}, m_archiveDirectory);
+                var loadPath = PathHelpers.VerifyReadFile(archiveFileName, new List<string>{".iar",".tgz"}, m_archiveDirectory);
                 if (loadPath == "")
                 {
                     MainConsole.Instance.InfoFormat("   Sorry, IAR file '{0}' not found!", archiveFileName);
                     return;
                 }
 
+                // inventory path...
                 if (cmdparams.Length > 5)
                     iarPath = newParams[5];
+                else
+                {
+                    // not provided. Check for merge
+                    string mergeIar = MainConsole.Instance.Prompt(
+                        "Do you want to 'merge' this archive or 'create' a new folder 'IAR Import'? (merge/create)", "create");
+                    if (mergeIar.ToLower().StartsWith("m"))
+                        iarPath = "/";
+                }
+
                 if (iarPath == "/")
                     options["merge"] = true;                // always merge if using the root folder
 
@@ -457,7 +476,6 @@ namespace Universe.Modules.Archivers
                     lastName = newParams[3];
                 }
 
-
                 // optional...
                 string iarPath = "/*";
                 if (newParams.Count > 5)
@@ -472,7 +490,6 @@ namespace Universe.Modules.Archivers
                 } else
                     archiveFileName = newParams[4];
                 
-
                 //some file sanity checks
                 string savePath;
                 savePath = PathHelpers.VerifyWriteFile (archiveFileName, ".iar", m_archiveDirectory, true);

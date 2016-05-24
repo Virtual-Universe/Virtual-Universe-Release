@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
@@ -31,71 +31,58 @@ using Universe.Framework.Utilities;
 
 namespace Universe.DataManager.Migration.Migrators.Asset
 {
-    public class AssetMigrator_0 : Migrator
-    {
-        public AssetMigrator_0()
-        {
-            Version = new Version(0, 0, 0);
-            MigrationName = "Asset";
+	public class AssetMigrator_0 : Migrator
+	{
+		public AssetMigrator_0 ()
+		{
+			Version = new Version (0, 0, 0);
+			MigrationName = "Asset";
 
-            schema = new List<SchemaDefinition>();
+			Schema = new List<SchemaDefinition> ();
 
-            AddSchema("lslgenericdata", ColDefs(
-                ColDef("Token", ColumnTypes.String50),
-                ColDef("KeySetting", ColumnTypes.String50),
-                ColDef("ValueSetting", ColumnTypes.String50)
-                                            ), IndexDefs(
-                                                IndexDef(new string[2] {"Token", "KeySetting"}, IndexType.Primary)
-                                                   ));
+			AddSchema ("lslgenericdata", ColDefs (
+				ColDef ("Token", ColumnTypes.String50),
+				ColDef ("KeySetting", ColumnTypes.String50),
+				ColDef ("ValueSetting", ColumnTypes.String50)
+			), IndexDefs (
+				IndexDef (new string[2] { "Token", "KeySetting" }, IndexType.Primary)
+			));
 
-            AddSchema("assetblob", ColDefs(
-                ColDef("AssetID", ColumnTypes.Char36),
-                ColDef("AssetType", ColumnTypes.Integer11),
-                ColDef("OwnerID", ColumnTypes.Char36),
-                ColDef("Data", ColumnTypes.LongBlob),
-                ColDef("Info", ColumnTypes.String512)
-                                       ), IndexDefs(
-                                           IndexDef(new string[2] {"AssetID", "OwnerID"}, IndexType.Primary)
-                                              ));
+			AddSchema ("assets", ColDefs (
+				ColDef ("id", ColumnTypes.Char36),
+				ColDef ("name", ColumnTypes.String64),
+				ColDef ("description", ColumnTypes.String128),
+				ColDef ("assetType", ColumnTypes.TinyInt4),
+				ColDef ("local", ColumnTypes.TinyInt1),
+				ColDef ("temporary", ColumnTypes.TinyInt1),
+				ColDef ("asset_flags", ColumnTypes.String45),
+				ColDef ("creatorID", ColumnTypes.String36),
+				ColDef ("data", ColumnTypes.LongBlob),
+				ColDef ("create_time", ColumnTypes.Integer11),
+				ColDef ("access_time", ColumnTypes.Integer11)
+			), IndexDefs (
+				IndexDef (new string[1] { "id" }, IndexType.Primary)
+			));
+		}
 
-            AddSchema("assettext", ColDefs(
-                ColDef("AssetID", ColumnTypes.Char36),
-                ColDef("AssetType", ColumnTypes.Integer11),
-                ColDef("OwnerID", ColumnTypes.Char36),
-                ColDef("Data", ColumnTypes.Text),
-                ColDef("Info", ColumnTypes.String512)
-                                       ), IndexDefs(
-                                           IndexDef(new string[2] {"AssetID", "OwnerID"}, IndexType.Primary)
-                                              ));
+		protected override void DoCreateDefaults (IDataConnector genericData)
+		{
+			EnsureAllTablesInSchemaExist (genericData);
+		}
 
-            AddSchema("assetmesh", ColDefs(
-                ColDef("AssetID", ColumnTypes.Char36),
-                ColDef("OwnerID", ColumnTypes.Char36),
-                ColDef("Data", ColumnTypes.LongBlob),
-                ColDef("Info", ColumnTypes.String512)
-                                       ), IndexDefs(
-                                           IndexDef(new string[2] {"AssetID", "OwnerID"}, IndexType.Primary)
-                                              ));
-        }
+		protected override bool DoValidate (IDataConnector genericData)
+		{
+			return TestThatAllTablesValidate (genericData);
+		}
 
-        protected override void DoCreateDefaults(IDataConnector genericData)
-        {
-            EnsureAllTablesInSchemaExist(genericData);
-        }
+		protected override void DoMigrate (IDataConnector genericData)
+		{
+			DoCreateDefaults (genericData);
+		}
 
-        protected override bool DoValidate(IDataConnector genericData)
-        {
-            return TestThatAllTablesValidate(genericData);
-        }
-
-        protected override void DoMigrate(IDataConnector genericData)
-        {
-            DoCreateDefaults(genericData);
-        }
-
-        protected override void DoPrepareRestorePoint(IDataConnector genericData)
-        {
-            CopyAllTablesToTempVersions(genericData);
-        }
-    }
+		protected override void DoPrepareRestorePoint (IDataConnector genericData)
+		{
+			CopyAllTablesToTempVersions (genericData);
+		}
+	}
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-support.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,7 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
 using System.Collections.Generic;
 using OpenMetaverse;
 using Universe.Framework.PresenceInfo;
@@ -99,6 +98,13 @@ namespace Universe.Framework.Modules
         ///     Delete all parcels and create one default parcel that spreads over the entire sim
         /// </summary>
         ILandObject ResetSimLandObjects();
+
+        /// <summary>
+        /// Reclaims (resets) parcel ownership.
+        /// </summary>
+        /// <param name="oldOwnerID">Old owner</param>
+        /// <param name="newOwnerID">New owner.</param>
+        void ReclaimParcels (UUID oldOwnerID, UUID newOwnerID);
 
         /// <summary>
         ///     Join all parcels within the given range into one large parcel

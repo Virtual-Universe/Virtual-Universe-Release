@@ -162,6 +162,29 @@ namespace Universe.Framework.Utilities
         /// <param name="packet"></param>
         public bool ReturnPacket(Packet packet)
         {
+            /*if (dataBlockPoolEnabled)
+            {
+                switch (packet.Type)
+                {
+                    case PacketType.ObjectUpdate:
+                        ObjectUpdatePacket oup = (ObjectUpdatePacket)packet;
+
+                        foreach (ObjectUpdatePacket.ObjectDataBlock oupod in oup.ObjectData)
+                            ReturnDataBlock<ObjectUpdatePacket.ObjectDataBlock>(oupod);
+                        oup.ObjectData = null;
+                        break;
+
+                    case PacketType.ImprovedTerseObjectUpdate:
+                        ImprovedTerseObjectUpdatePacket itoup =
+                                (ImprovedTerseObjectUpdatePacket)packet;
+
+                        foreach(ImprovedTerseObjectUpdatePacket.ObjectDataBlock itoupod in itoup.ObjectData)
+                            ReturnDataBlock<ImprovedTerseObjectUpdatePacket.ObjectDataBlock>(itoupod);
+                        itoup.ObjectData = null;
+                        break;
+                }
+            }*/
+
             if (packetPoolEnabled)
             {
                 switch (packet.Type)

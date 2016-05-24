@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,7 @@ namespace Universe.Framework.Utilities
         /// <summary>
         ///     The current minor protocol version of this version of Universe
         /// </summary>
-        public const int MINOR_PROTOCOL_VERSION = 3;
+        public const int MINOR_PROTOCOL_VERSION = 4;
 
         /// <summary>
         ///     The minimum major protocol version allowed to connect to this version of Universe
@@ -47,10 +47,11 @@ namespace Universe.Framework.Utilities
         /// <summary>
         ///     The minimum minor protocol version allowed to connect to this version of Universe
         /// </summary>
-        public const int MINIMUM_MINOR_PROTOCOL_VERSION = 3;
+        public const int MINIMUM_MINOR_PROTOCOL_VERSION = 4;
     }
     /// Changes:
     /// Major 1
     ///   Minor 1 - Initial bump
     ///   Minor 2 - Added sending of URIs back to the region on registration
+    ///   Minor 3 - Logical change that will lead up to IWC / HG
 }

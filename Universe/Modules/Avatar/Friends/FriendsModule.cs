@@ -351,8 +351,7 @@ namespace Universe.Modules.Friends
             {
                 UserAccount account = client.Scene.UserAccountService.GetUserAccount (client.AllScopeIDs, friendID);
                 UUID folderID =
-                    client.Scene.InventoryService.GetFolderForType (agentID, InventoryType.Unknown, AssetType.CallingCard)
-                          .ID;
+                    client.Scene.InventoryService.GetFolderForType (agentID, InventoryType.Unknown, FolderType.CallingCard).ID;
                 if (account != null)
                     ccmodule.CreateCallingCard (client, friendID, folderID, account.Name);
             }
@@ -369,7 +368,11 @@ namespace Universe.Modules.Friends
             MainConsole.Instance.DebugFormat ("[FRIENDS]: {0} denied friendship to {1}", agentID, friendID);
 
 
-            FriendInfo[] friends = FriendsService.GetFriendsRequest (agentID).ToArray ();
+            var friendRequests = FriendsService.GetFriendsRequest (agentID);
+            if (friendRequests == null)
+                return;
+
+            FriendInfo [] friends = friendRequests.ToArray ();
             foreach (FriendInfo fi in friends)
             {
                 if (fi.MyFlags == 0)
@@ -461,21 +464,23 @@ namespace Universe.Modules.Friends
 
         public void OfflineFriendRequest (IClientAPI client)
         {
-            // Borrowed a few lines from SendFriendsOnlineIfNeeded() above.
             UUID agentID = client.AgentId;
-            FriendInfo[] friends = FriendsService.GetFriendsRequest (agentID).ToArray ();
+            var friendRequests = FriendsService.GetFriendsRequest (agentID);
+            if (friendRequests == null)
+                return;
+
+            FriendInfo [] friends = friendRequests.ToArray ();
+
             GridInstantMessage im = new GridInstantMessage () {
                 ToAgentID = agentID,
                 Dialog = (byte)InstantMessageDialog.FriendshipOffered,
-                Message = "Will you be my friend?", 
+                Message = "Will you be my friend?",
                 Offline = 1,
                 RegionID = client.Scene.RegionInfo.RegionID
             };
 
-            foreach (FriendInfo fi in friends)
-            {
-                if (fi.MyFlags == 0)
-                {
+            foreach (FriendInfo fi in friends) {
+                if (fi.MyFlags == 0) {
                     UUID fromAgentID;
                     if (!UUID.TryParse (fi.Friend, out fromAgentID))
                         continue;
@@ -491,6 +496,7 @@ namespace Universe.Modules.Friends
                     LocalFriendshipOffered (agentID, im);
                 }
             }
+
         }
 
         void UpdateFriendsCache (UUID agentID)
@@ -520,21 +526,21 @@ namespace Universe.Modules.Friends
             if (friendClient != null)
             {
                 //They are online, send the online message
-                if (us != null)
-                    us.SendAgentOnline (new[] { friendID });
+                if (us != null) {
+                    us.SendAgentOnline (new [] { friendID });
 
-                // the prospective friend in this sim as root agent
-                GridInstantMessage im = new GridInstantMessage () {
-                    FromAgentID = userID,
-                    FromAgentName = name,
-                    ToAgentID = friendID,
-                    Dialog = (byte)InstantMessageDialog.FriendshipAccepted,
-                    Message = userID.ToString (),
-                    Offline = 0,
-                    RegionID = us.Scene.RegionInfo.RegionID
-                };
-                friendClient.SendInstantMessage (im);
-
+                    // the prospective friend in this sim as root agent
+                    GridInstantMessage im = new GridInstantMessage () {
+                        FromAgentID = userID,
+                        FromAgentName = name,
+                        ToAgentID = friendID,
+                        Dialog = (byte)InstantMessageDialog.FriendshipAccepted,
+                        Message = userID.ToString (),
+                        Offline = 0,
+                        RegionID = us.Scene.RegionInfo.RegionID
+                    };
+                    friendClient.SendInstantMessage (im);
+                }
                 // Update the local cache
                 UpdateFriendsCache (friendID);
 
@@ -548,8 +554,7 @@ namespace Universe.Modules.Friends
                     UserAccount account = friendClient.Scene.UserAccountService.GetUserAccount (friendClient.AllScopeIDs,
                                               userID);
                     UUID folderID =
-                        friendClient.Scene.InventoryService.GetFolderForType (friendID, InventoryType.Unknown,
-                            AssetType.CallingCard).ID;
+                        friendClient.Scene.InventoryService.GetFolderForType (friendID, InventoryType.Unknown, FolderType.CallingCard).ID;
                     ccmodule.CreateCallingCard (friendClient, userID, folderID, account.Name);
                 }
                 // we're done

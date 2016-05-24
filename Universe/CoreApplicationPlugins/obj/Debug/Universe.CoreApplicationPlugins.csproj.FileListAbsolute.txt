@@ -1,5 +1,0 @@
-C:\Users\universe\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.CoreApplicationPlugins.dll
-C:\Users\universe\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.CoreApplicationPlugins.pdb
-C:\Users\universe\Desktop\Virtual-Dev\Universe\CoreApplicationPlugins\obj\Debug\Universe.CoreApplicationPlugins.csprojResolveAssemblyReference.cache
-C:\Users\universe\Desktop\Virtual-Dev\Universe\CoreApplicationPlugins\obj\Debug\Universe.CoreApplicationPlugins.dll
-C:\Users\universe\Desktop\Virtual-Dev\Universe\CoreApplicationPlugins\obj\Debug\Universe.CoreApplicationPlugins.pdb

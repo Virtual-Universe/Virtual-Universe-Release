@@ -1,0 +1,67 @@
+Building your own from source
+=============================
+
+The main development repository is at https://github.com/Virtual-Universe/Virtual-Universe.git
+Release packages at https://github.com/Virtual-Universe/Virtual-Universe/releases
+
+Prerequisites
+=============
+Mono V4.x    : Checkout http://www.go-mono.com/mono-downloads/download.html for the latest update
+				Mono 4.2.3.4 available with Ubuntu variations will also work
+(Optional)  Xamarin Studio for a nice IDE : Checkout http://http://monodevelop.com/Download
+
+Building
+========
+Cd the the downloaded directory.
+
+*nix (inc Mac)
+--------------
+Run(Execute) the  ./runprebuild.sh file to create the required c# solution files.
+
+Compile Universe :
+#:  xbuild Universe.sln
+
+Windows
+-------
+Run(Execute) the  'runprebuild.bat' batch file.  This will ask several questions 
+with the option to build at the end.
+
+
+A large amount of compile information will be shown but when completed, 
+no errors should be indicated.
+NOTE:  Some warnings may be shown (37 at last count) but these do not present 
+any problem or prevent operation of the servers. 
+(These will be corrected and removed as time permits)
+
+When completed the 'VirtualUniverse/bin' subdirectory will contain the newly compiled Virtual Universe files.
+
+Running for the first time
+--------------------------
+If you are not running this for the first time and already have a configured Virtual Universe installation, skip
+ to the next section.
+ 
+Copy the entire VirtualUniverse directory to a location of your choice, for example..
+
+.. for Un*x systems (inc. Mac OS X): (terminal)  to copy to your user home directory..
+
+  >>  cp VirtualUniverse ~/ 
+
+.. or in your GUI, copy the VirtualUniverse directory and paste where desired.
+
+Start Virtual Universe (Standalone) using the appropriate script file for your system.
+If you need to tailor your configuration, answer yes when asked if you want to auto-configure.
+
+
+For an existing installation
+----------------------------
+Copy the 'VirtualUniverse/bin' subdirectory to your existing Virtual Universe installation, replacing the 'bin' directory there.
+
+
+Restart as per normal using the appropriate script file.
+Answer 'No' if asked to re-configure at startup.
+
+Checkout the ReadMe.txt file for the rest
+
+Emperor Starfinder
+<emperor@secondgalaxy.com>
+July 2015

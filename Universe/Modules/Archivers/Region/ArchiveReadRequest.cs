@@ -25,6 +25,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Xml;
+using OpenMetaverse;
+using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
@@ -35,15 +44,6 @@ using Universe.Framework.Serialization.External;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Utilities;
-using OpenMetaverse;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.IO.Compression;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Xml;
-using Universe.Framework.ClientInterfaces;
 
 namespace Universe.Modules.Archivers
 {
@@ -108,7 +108,7 @@ namespace Universe.Modules.Archivers
                 if (stream == null)
                 {
                     MainConsole.Instance.Error(
-                        "[ARCHIVER]: We could not find the file specified, or the file was invalid: " + loadPath);
+                        "[Archiver]: We could not find the file specified, or the file was invalid: " + loadPath);
                     return;
                 }
                 m_loadStream = new GZipStream(stream, CompressionMode.Decompress);
@@ -116,7 +116,7 @@ namespace Universe.Modules.Archivers
             catch (EntryPointNotFoundException e)
             {
                 MainConsole.Instance.ErrorFormat(
-                    "[ARCHIVER]: Mismatch between Mono and zlib1g library version when trying to create compression stream."
+                    "[Archiver]: Mismatch between Mono and zlib1g library version when trying to create compression stream."
                     + "If you've manually installed Mono, have you appropriately updated zlib1g as well?");
                 MainConsole.Instance.Error(e);
             }
@@ -137,7 +137,7 @@ namespace Universe.Modules.Archivers
             m_useParcelOwnership = useParcelOwnership;
             m_checkOwnership = checkOwnership;
             m_scene = scene;
-            m_errorMessage = String.Empty;
+            m_errorMessage = string.Empty;
             m_merge = merge;
             m_skipAssets = skipAssets;
             m_skipTerrain = skipTerrain;
@@ -173,22 +173,20 @@ namespace Universe.Modules.Archivers
             TarArchiveReader archive = new TarArchiveReader(m_loadStream);
 
             if (!m_skipAssets)
-                m_threadpool = new UniverseThreadPool(new UniverseThreadPoolStartInfo()
-                                                                         {
-                                                                             Threads = 1,
-                                                                             priority =
-                                                                                 System.Threading.ThreadPriority
-                                                                                       .BelowNormal
-                                                                         });
+                m_threadpool = new UniverseThreadPool(
+                    new UniverseThreadPoolStartInfo() {
+                        Threads = 1,
+                        priority =System.Threading.ThreadPriority.BelowNormal
+                    });
 
             IBackupModule backup = m_scene.RequestModuleInterface<IBackupModule>();
             if (!m_merge)
             {
                 DateTime before = DateTime.Now;
-                MainConsole.Instance.Info("[ARCHIVER]: Clearing all existing scene objects");
+                MainConsole.Instance.Info("[Archiver]: Clearing all existing scene objects");
                 if (backup != null)
                     backup.DeleteAllSceneObjects();
-                MainConsole.Instance.Info("[ARCHIVER]: Cleared all existing scene objects in " +
+                MainConsole.Instance.Info("[Archiver]: Cleared all existing scene objects in " +
                                           (DateTime.Now - before).Minutes + ":" + (DateTime.Now - before).Seconds);
             }
 
@@ -202,7 +200,7 @@ namespace Universe.Modules.Archivers
             if (backup != null)
                 backup.LoadingPrims = true;
 
-            IRegionSerialiserModule serialiser = m_scene.RequestModuleInterface<IRegionSerialiserModule>();
+            IRegionSerializerModule serialiser = m_scene.RequestModuleInterface<IRegionSerializerModule>();
             int sceneObjectsLoadedCount = 0;
 
             //We save the groups so that we can back them up later
@@ -215,7 +213,7 @@ namespace Universe.Modules.Archivers
             Dictionary<UUID, UUID> assetBinaryChangeRecord = new Dictionary<UUID, UUID>();
             Queue<UUID> assets2Save = new Queue<UUID>();
 
-            MainConsole.Instance.Info("[ARCHIVER]: Commencing load from archive");
+            MainConsole.Instance.Info("[Archiver]: Commencing load from archive");
             int ticker = 0;
             try
             {
@@ -228,23 +226,28 @@ namespace Universe.Modules.Archivers
 
                     if (TarArchiveReader.TarEntryType.TYPE_NORMAL_FILE == entryType)
                     {
-                        var fName = Path.GetFileName (filePath);
-                        if (fName.StartsWith ("."))                 // ignore hidden files
+                        string fName;
+                        try {
+                            fName = Path.GetFileName (filePath);
+                            if (fName.StartsWith (".", StringComparison.Ordinal))                 // ignore hidden files
+                                continue;
+                        } catch {
+                            MainConsole.Instance.ErrorFormat ("[Archiver]: Invalid file name in archive: {0}", filePath);
                             continue;
+                        }
                     }
 
                     ticker ++;
                     if (ticker % 10 == 0)
                         MainConsole.Instance.Ticker();
 
-                    if (filePath.StartsWith(ArchiveConstants.OBJECTS_PATH))
+                    if (filePath.StartsWith (ArchiveConstants.OBJECTS_PATH, StringComparison.Ordinal))
                     {
                         seneObjectGroups.Add(data);
                         if (seneObjectGroups.Count % 100 == 0)
-                            MainConsole.Instance.InfoFormat("[ARCHIVER]: Found {0} scene object groups...",seneObjectGroups.Count);
-
+                            MainConsole.Instance.InfoFormat("[Archiver]: Found {0} scene object groups...",seneObjectGroups.Count);
                     }
-                    else if (!m_skipAssets && filePath.StartsWith(ArchiveConstants.ASSETS_PATH))
+                    else if (!m_skipAssets && filePath.StartsWith (ArchiveConstants.ASSETS_PATH, StringComparison.Ordinal))
                     {
                         AssetBase asset;
                         if (LoadAsset(filePath, data, out asset))
@@ -271,23 +274,24 @@ namespace Universe.Modules.Archivers
                                     }
                                 }
                             }
+                            asset = null;
                         }
                         else
                             failedAssetRestores++;
 
                         if ((successfulAssetRestores + failedAssetRestores)%100 == 0)
-                            MainConsole.Instance.Info("[ARCHIVER]: Loaded " + successfulAssetRestores +
+                            MainConsole.Instance.Info("[Archiver]: Loaded " + successfulAssetRestores +
                                                       " assets and failed to load " + failedAssetRestores + " assets...");
                     }
-                    else if (!m_skipTerrain && filePath.StartsWith(ArchiveConstants.TERRAINS_PATH))
+                    else if (!m_skipTerrain && filePath.StartsWith (ArchiveConstants.TERRAINS_PATH, StringComparison.Ordinal))
                     {
                         LoadTerrain(filePath, data);
                     }
-                    else if (!m_merge && filePath.StartsWith(ArchiveConstants.SETTINGS_PATH))
+                    else if (!m_merge && filePath.StartsWith (ArchiveConstants.SETTINGS_PATH, StringComparison.Ordinal))
                     {
                         LoadRegionSettings(filePath, data);
                     }
-                    else if (!m_skipTerrain && filePath.StartsWith(ArchiveConstants.LANDDATA_PATH))
+                    else if (!m_skipTerrain && filePath.StartsWith (ArchiveConstants.LANDDATA_PATH, StringComparison.Ordinal))
                     {
                         var parcel = LoadLandData(data);
                         landData.Add(parcel);
@@ -299,7 +303,7 @@ namespace Universe.Modules.Archivers
                 }
 
                 MainConsole.Instance.CleanInfo("");
-                MainConsole.Instance.Info("[ARCHIVER]: Saving loaded assets");
+                MainConsole.Instance.Info("[Archiver]: Saving loaded assets");
                 ticker = 0;
 
                 // Save Assets
@@ -316,16 +320,16 @@ namespace Universe.Modules.Archivers
                         SaveNonBinaryAssets(assetid, assetNonBinaryCollection[assetid], assetBinaryChangeRecord);
                         savingAssetsCount++;
                         if ((savingAssetsCount)%100 == 0)
-                            MainConsole.Instance.Info("[ARCHIVER]: Saving " + savingAssetsCount + " assets...");
+                            MainConsole.Instance.Info("[Archiver]: Saving " + savingAssetsCount + " assets...");
                     }
                     catch (Exception ex)
                     {
-                        MainConsole.Instance.Info("[ARCHIVER]: Exception in saving an asset: " + ex.ToString());
+                        MainConsole.Instance.Info("[Archiver]: Exception in saving an asset: " + ex);
                     }
                 }
 
                 MainConsole.Instance.CleanInfo("");
-                MainConsole.Instance.Info("[ARCHIVER]: Saving loaded objects");
+                MainConsole.Instance.Info("[Archiver]: Saving loaded objects");
                 ticker = 0;
                 foreach (byte[] data2 in seneObjectGroups)
                 {
@@ -412,7 +416,6 @@ namespace Universe.Modules.Archivers
 
                                 // ..and possible group ID's
                                 kvp.Value.GroupID = ResolveGroupUuid(kvp.Value.GroupID);
-
                             }
                         }
                     }
@@ -435,7 +438,7 @@ namespace Universe.Modules.Archivers
                     }
                     sceneObjectsLoadedCount++;
                     if (sceneObjectsLoadedCount%100 == 0)
-                        MainConsole.Instance.Info("[ARCHIVER]: Loaded " + sceneObjectsLoadedCount + " objects...");
+                        MainConsole.Instance.Info("[Archiver]: Loaded " + sceneObjectsLoadedCount + " objects...");
                 }
                 assetNonBinaryCollection.Clear();
                 assetBinaryChangeRecord.Clear();
@@ -444,7 +447,7 @@ namespace Universe.Modules.Archivers
             catch (Exception e)
             {
                 MainConsole.Instance.ErrorFormat(
-                    "[ARCHIVER]: Aborting load with error in archive file {0}.  {1}", filePath, e);
+                    "[Archiver]: Aborting load with error in archive file {0}.  {1}", filePath, e);
                 m_errorMessage += e.ToString();
                 m_scene.EventManager.TriggerOarFileLoaded(UUID.Zero.Guid, m_errorMessage);
                 return false;
@@ -480,31 +483,30 @@ namespace Universe.Modules.Archivers
 
             if (!m_skipAssets)
             {
-                MainConsole.Instance.InfoFormat("[ARCHIVER]: Restored {0} assets", successfulAssetRestores);
+                MainConsole.Instance.InfoFormat("[Archiver]: Restored {0} assets", successfulAssetRestores);
 
                 if (failedAssetRestores > 0)
                 {
-                    MainConsole.Instance.ErrorFormat("[ARCHIVER]: Failed to load {0} assets", failedAssetRestores);
-                    m_errorMessage += String.Format("Failed to load {0} assets", failedAssetRestores);
+                    MainConsole.Instance.ErrorFormat("[Archiver]: Failed to load {0} assets", failedAssetRestores);
+                    m_errorMessage += string.Format("Failed to load {0} assets", failedAssetRestores);
                 }
             }
-
 
             // Reload serialized parcels
             if (!m_skipTerrain)
             {
-                MainConsole.Instance.InfoFormat ("[ARCHIVER]: Loading {0} parcels.  Please wait.", landData.Count);
+                MainConsole.Instance.InfoFormat ("[Archiver]: Loading {0} parcels.  Please wait.", landData.Count);
 
                 IParcelManagementModule parcelManagementModule = m_scene.RequestModuleInterface<IParcelManagementModule> ();
                 if (parcelManagementModule != null)
                     parcelManagementModule.IncomingLandDataFromOAR (landData, m_merge, new Vector2 (m_offsetX, m_offsetY));
 
-                MainConsole.Instance.InfoFormat ("[ARCHIVER]: Restored {0} parcels.", landData.Count);
+                MainConsole.Instance.InfoFormat ("[Archiver]: Restored {0} parcels.", landData.Count);
             }
             //Clean it out
             landData.Clear();
 
-            MainConsole.Instance.InfoFormat("[ARCHIVER]: Successfully loaded archive in " +
+            MainConsole.Instance.InfoFormat("[Archiver]: Successfully loaded archive in " +
                                             (DateTime.Now - start).Minutes + ":" + (DateTime.Now - start).Seconds);
 
             m_validUserUuids.Clear();
@@ -671,12 +673,12 @@ namespace Universe.Modules.Archivers
         bool LoadAsset(string assetPath, byte[] data, out AssetBase asset)
         {
             string filename = assetPath.Remove(0, ArchiveConstants.ASSETS_PATH.Length);
-            int i = filename.LastIndexOf(ArchiveConstants.ASSET_EXTENSION_SEPARATOR);
+            int i = filename.LastIndexOf (ArchiveConstants.ASSET_EXTENSION_SEPARATOR, StringComparison.Ordinal);
 
             if (i == -1)
             {
                 MainConsole.Instance.ErrorFormat(
-                    "[ARCHIVER]: Could not find extension information in asset path {0} since it's missing the separator {1}.  Skipping",
+                    "[Archiver]: Could not find extension information in asset path {0} since it's missing the separator {1}.  Skipping",
                     assetPath, ArchiveConstants.ASSET_EXTENSION_SEPARATOR);
                 asset = null;
                 return false;
@@ -690,13 +692,13 @@ namespace Universe.Modules.Archivers
                 AssetType assetType = ArchiveConstants.EXTENSION_TO_ASSET_TYPE[extension];
 
                 if (assetType == AssetType.Unknown)
-                    MainConsole.Instance.WarnFormat("[ARCHIVER]: Importing {0} byte asset {1} with unknown type",
+                    MainConsole.Instance.WarnFormat("[Archiver]: Importing {0} byte asset {1} with unknown type",
                                                     data.Length, uuid);
-                asset = new AssetBase(UUID.Parse(uuid), String.Empty, assetType, UUID.Zero) {Data = data};
+                asset = new AssetBase(UUID.Parse(uuid), string.Empty, assetType, UUID.Zero) {Data = data};
                 return true;
             }
             MainConsole.Instance.ErrorFormat(
-                "[ARCHIVER]: Tried to de-archive data with path {0} with an unknown type extension {1}",
+                "[Archiver]: Tried to de-archive data with path {0} with an unknown type extension {1}",
                 assetPath, extension);
             asset = null;
             return false;
@@ -743,7 +745,7 @@ namespace Universe.Modules.Archivers
             catch (Exception e)
             {
                 MainConsole.Instance.ErrorFormat(
-                    "[ARCHIVER]: Could not parse region settings file {0}.  Ignoring.  Exception was {1}",
+                    "[Archiver]: Could not parse region settings file {0}.  Ignoring.  Exception was {1}",
                     settingsPath, e);
                 return;
             }
@@ -775,9 +777,8 @@ namespace Universe.Modules.Archivers
             terrainModule.LoadFromStream(terrainPath, ms, m_offsetX, m_offsetY);
             ms.Close();
 
-            MainConsole.Instance.DebugFormat("[ARCHIVER]: Restored terrain {0}", terrainPath);
+            MainConsole.Instance.DebugFormat("[Archiver]: Restored terrain {0}", terrainPath);
         }
-
 
         LandData LoadLandData(byte[] data)
         {
@@ -825,7 +826,6 @@ namespace Universe.Modules.Archivers
             parcel.ParcelAccessList = parcelAccess;
 
             return parcel;
-
         }
 
         /// <summary>
@@ -856,7 +856,7 @@ namespace Universe.Modules.Archivers
                     if (xtr.Name == "datetime")
                     {
                         int value;
-                        if (Int32.TryParse(xtr.ReadElementContentAsString(), out value))
+                        if (int.TryParse(xtr.ReadElementContentAsString(), out value))
                             currentRegionSettings.LoadedCreationDateTime = value;
                     }
                     else if (xtr.Name == "id")
@@ -865,6 +865,7 @@ namespace Universe.Modules.Archivers
                     }
                 }
             }
+            xtr.Close ();
         }
     }
 }

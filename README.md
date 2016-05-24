@@ -1,21 +1,15 @@
 # Virtual Universe
 
-*NOTE:
- As of Version 1.0.1, it's advised to Linux users to use a Mono version higher then 4.0.1, following a report about  GC.Collect() not cleaning up memory correctly. The most current version of Mono is 4.0.1 (Released 28th April 2015)*
-
- More information can be found here: http://www.mono-project.com/docs/getting-started/install/linux/
-
-*NOTE: 
- We are aware of issues relating to Linux Kernal 3.16.0 and Mono 3.10.0 causing Linux systems to crash.  
- Currently there are no reported issues being caused by Kernal 3.16.0 and Mono 3.10.0 being reported with Virtual Universe.
+- Current Version: 1.0.2 RC2
+- Version Release Date: April 30, 2016
 
 The Virtual Universe Development Team is proud to present Virtual Universe as a rolling release software.
 
-The Universe server is an Universe/Aurora-Sim derived project with heavy emphasis on supporting all users, 
+The Virtual Universe server is an Aurora-Sim/ WhiteCore-Sim derived project with heavy emphasis on supporting all users, 
 
 ## About Virtual Universe
 
-The Virtual Universe Software is an Virtual Universe derived project with heavy emphasis on supporting all users, increased technology focus, heavy emphasis on working with other developers, whether it be viewer based developers or server based developers, and a set of features around stability and simplified usability for users.
+The Virtual Universe Software is a Virtual Universe derived project with heavy emphasis on supporting all users, increased technology focus, heavy emphasis on working with other developers, whether it be viewer based developers or server based developers, and a set of features around stability and simplified usability for users.
 
 We aren’t just releasing new features, but a new outlook on Virtual Universe Virtual World Technology Development for the average human.
 
@@ -60,14 +54,14 @@ OSX:
 
 *To compile Virtual Universe, look at the Compiling.txt in the Docs folder for more information*
 
-*NOTE: For Windows 7 and 8, when compiling, you may see some warnings indicating that the core library does not match what is specified. This is an issue with how Microsoft provides the Net 4.5 packages and can be safely ignored as Windows will actually use the correct library when WhiteCore is run *
+*NOTE: For Windows 7 and 8, when compiling, you may see some warnings indicating that the core library does not match what is specified. This is an issue with how Microsoft provides the Net 4.5 packages and can be safely ignored as Windows will actually use the correct library when Virtual Universe is run *
 
 ## Virtual Universe Configuration
 
 *To see how to configure Virtual Universe, look at "Setting up Virtual Universe.txt" in the UniverseDocs folder for more information*
 
-+## Contribute to Virtual Universe
-+If you would like to contribute code to Virtual Universe please see Documentation/How to contribute Code.txt for more information.
+## Contribute to Virtual Universe
+If you would like to contribute code to Virtual Universe please see BuildTools/How to contribute Code.txt for more information.
 
 ## Router issues
 If you are having issues logging into your simulator, take a look at http://forums.osgrid.org/viewtopic.php?f=14&t=2082 in the Router Configuration section for more information on ways to resolve this issue.
@@ -77,4 +71,28 @@ Support is available from various sources.
 
 IRC channel #galaxyfutures on freenode (http://webchat.freenode.net?channels=%23galaxyfutures)
 Check out http://virtual-planets.org for the latest developments, downloads and forum
-Second Galaxy and Virtual Universe Google + community is for aih Second Galaxy and Virtual Universe with a friendly bunch that is happy to answer questions. Find it at https://plus.google.com/communities/106118101750197366605?cfem=1
+Second Galaxy and Virtual Universe Google + community is for both Second Galaxy and Virtual Universe with a friendly bunch that is happy to answer questions. Find it at https://plus.google.com/communities/106118101750197366605?cfem=1
+
+
+## NOTES
+
+*NOTE:
+ As of Version 1.0.2, it's advised to Linux users to use a Mono version higher then 4.2.3.4, following a report about  GC.Collect() not cleaning up memory correctly. The most current version of Mono is 4.2.3.4 (Released 1st March 2016)*
+
+ More information can be found here: http://www.mono-project.com/docs/getting-started/install/linux/
+
+*NOTE:
+ We are aware of cases where the grid_console.sh and sim_console.sh are not working properly on Ubuntu 14.04.4 LTS Trusty Tahr.
+ This bug claims it cannot find files or permission or access denied.  This is due to an issue with the Version 4.2 of the Linux_Generics libraries distributed by Linux.
+ This is not a Virtual Universe specific bug.  The solution here is to cd to VirtualUniverse directory and run the command:
+
+Grid: sudo ./grid_console.sh 
+
+Sim: sudo ./sim_console.sh
+
+ This will give the necessary permissions to override this bug and allow the consoles to work correctly.
+
+ 
+ We are not aware of issues being reported relating to this bug from users of Ubuntu derivatives such as XUbuntu, KUbuntu, Linux Mint, etc.  
+ 
+ Additionally we have not received any reports to indicate this is happening with Debian (8.0 Jessie), Fedora, Opensuse, Arch Linux, Redhat, etc.

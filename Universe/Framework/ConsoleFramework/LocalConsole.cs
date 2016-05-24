@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-support/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,6 +27,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Threading;
 using Nini.Config;
@@ -40,10 +41,10 @@ namespace Universe.Framework.ConsoleFramework
     /// </summary>
     public class LocalConsole : CommandConsole
     {
-
-        private static readonly ConsoleColor[] Colors =
+        static readonly object _cmdlock = new object();
+        static readonly ConsoleColor[] Colors =
             {
-                // the dark colors don't seem to be visible on some black background terminals like putty
+                // the dark colors don't seem to be visible on some black background terminals like putty :(
                 //ConsoleColor.DarkBlue,
                 //ConsoleColor.DarkGreen,
                 //ConsoleColor.Gray, 
@@ -60,12 +61,12 @@ namespace Universe.Framework.ConsoleFramework
             };
 
         readonly List<string> history = new List<string>();
+        protected string prompt = "# ";
 
         StringBuilder cmdline = new StringBuilder();
         int cp;
         bool echo = true;
         int h = 1;
-        protected string prompt = "# ";
         int y = -1;
 
         public override string Name
@@ -75,34 +76,35 @@ namespace Universe.Framework.ConsoleFramework
 
         public override void Initialize(IConfigSource source, ISimulationBase simBase)
         {
-            if (source.Configs["Console"] != null)
+            if (source.Configs["Console"] == null ||
+                source.Configs["Console"].GetString("Console", Name) != Name)
             {
-                if (source.Configs["Console"].GetString("Console", Name) != Name)
-                    return;
-            }
-            else
                 return;
+            }
 
             simBase.ApplicationRegistry.RegisterModuleInterface<ICommandConsole>(this);
             MainConsole.Instance = this;
 
-            m_Commands.AddCommand("help", "help",
-                                  "Get a general command list", base.Help, false, true);
+            m_Commands.AddCommand(
+                "help",
+                "help",
+                "Get a general command list",
+                Help, false, true);
 
             string logName = "";
-            string logPath = Constants.DEFAULT_DATA_DIR;
-            if (source.Configs ["Console"] != null) {
-                logName = source.Configs ["Console"].GetString ("LogAppendName", logName);
-                logPath = source.Configs ["Console"].GetString ("LogPath", logPath);
-            }
+            string logPath = "";
+            logName = source.Configs["Console"].GetString("LogAppendName", logName);
+            logPath = source.Configs["Console"].GetString("LogPath", logPath);
+            if (logPath == "")
+                logPath = Path.Combine(simBase.DefaultDataPath, Constants.DEFAULT_LOG_DIR);
 
-            InitializeLog(logPath, logName);
+            InitializeLog(logPath, logName, simBase);
         }
 
         static ConsoleColor DeriveColor(string input)
         {
             // it is important to do Abs, hash values can be negative
-            return Colors[(Math.Abs(input.ToUpper().Length)%Colors.Length)];
+            return Colors[(Math.Abs(input.ToUpper().Length) % Colors.Length)];
         }
 
         void AddToHistory(string text)
@@ -151,7 +153,7 @@ namespace Universe.Framework.ConsoleFramework
             {
                 int bh = Console.BufferHeight;
 
-                // On Mono 2.4.2.3 (and possibly above), the buffer value is sometimes erroneously zero
+                // On Mono 2.4.2.3 (and possibly above), the buffer value is sometimes erroneously zero (Mantis 4657)
                 if (bh > 0 && top >= bh)
                     top = bh - 1;
             }
@@ -210,16 +212,16 @@ namespace Universe.Framework.ConsoleFramework
 
         void Show()
         {
-            lock (cmdline)
+            lock (_cmdlock)
             {
                 if (y == -1 || Console.BufferWidth == 0)
                     return;
 
                 int xc = prompt.Length + cp;
-                int new_x = xc%Console.BufferWidth;
-                int new_y = y + xc/Console.BufferWidth;
-                int end_y = y + (cmdline.Length + prompt.Length)/Console.BufferWidth;
-                if (end_y/Console.BufferWidth >= h)
+                int new_x = xc % Console.BufferWidth;
+                int new_y = y + xc / Console.BufferWidth;
+                int end_y = y + (cmdline.Length + prompt.Length) / Console.BufferWidth;
+                if (end_y / Console.BufferWidth >= h)
                     h++;
                 if (end_y >= Console.BufferHeight) // wrap
                 {
@@ -243,9 +245,10 @@ namespace Universe.Framework.ConsoleFramework
             }
         }
 
+        static readonly object _lock = new object();
         public override void LockOutput()
         {
-            Monitor.Enter(cmdline);
+            Monitor.Enter(_lock);
             try
             {
                 if (y != -1)
@@ -262,6 +265,7 @@ namespace Universe.Framework.ConsoleFramework
                     SetCursorLeft(0);
                 }
             }
+
             catch (Exception)
             {
             }
@@ -274,7 +278,7 @@ namespace Universe.Framework.ConsoleFramework
                 y = Console.CursorTop;
                 Show();
             }
-            Monitor.Exit(cmdline);
+            Monitor.Exit(_lock);
         }
 
         void WriteColorText(ConsoleColor color, string sender)
@@ -296,6 +300,7 @@ namespace Universe.Framework.ConsoleFramework
                     }
                 }
             }
+
             catch (ObjectDisposedException)
             {
             }
@@ -307,11 +312,11 @@ namespace Universe.Framework.ConsoleFramework
             if (text != "")
             {
                 int CurrentLine = 0;
-                string[] Lines = text.Split(new char[2] {'\n', '\r'}, StringSplitOptions.RemoveEmptyEntries);
+                string[] Lines = text.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
                 //This exists so that we don't have issues with multiline stuff, since something is messed up with the Regex
                 foreach (string line in Lines)
                 {
-                    string[] split = line.Split(new string[2] {"[", "]"}, StringSplitOptions.None);
+                    string[] split = line.Split(new string[] { "[", "]" }, StringSplitOptions.None);
                     int currentPos = 0;
                     int boxNum = 0;
                     foreach (string s in split)
@@ -340,6 +345,7 @@ namespace Universe.Framework.ConsoleFramework
                             boxNum--;
                             currentPos++;
                         }
+
                         if (boxNum == 0)
                         {
                             if (level == Level.Error)
@@ -370,15 +376,19 @@ namespace Universe.Framework.ConsoleFramework
             if (Threshold <= level)
             {
                 MainConsole.TriggerLog(level.ToString(), text);
-                string ts = Culture.LocaleLogStamp () + " - ";
-                string fullText = string.Format ("{0} {1}", ts, text);
+                string ts = Culture.LocaleLogStamp() + " - ";
+                string fullText = string.Format("{0} {1}", ts, text);
                 MainConsole.TriggerLog(level.ToString(), fullText);
                 if (m_logFile != null)
                 {
+                    if (m_logDate != DateTime.Now.Date)
+                        RotateLog();
+
                     m_logFile.WriteLine(fullText);
                     m_logFile.Flush();
                 }
-                lock (cmdline)
+
+                lock (_cmdlock)
                 {
                     if (y == -1)
                     {
@@ -413,28 +423,32 @@ namespace Universe.Framework.ConsoleFramework
         {
             string[] words = Parser.Parse(cmdline.ToString());
 
-            bool trailingSpace = cmdline.ToString().EndsWith(" ");
+            bool trailingSpace = cmdline.ToString().EndsWith(" ", StringComparison.Ordinal);
 
-            // Allow through while typing a URI?
-            if (words.Length > 0 && words[words.Length - 1].StartsWith("http") && !trailingSpace)
+            // Allow ? through while typing a URI
+            if (words.Length > 0 && words[words.Length - 1].StartsWith("http", StringComparison.Ordinal) && !trailingSpace)
                 return false;
 
             string[] opts = Commands.FindNextOption(words);
 
             if (opts.Length == 0)
                 OutputNoTime("\n  No options.", Threshold);
-            else if (opts[0].StartsWith("Command help:"))
+            else if (opts[0].StartsWith("Command help:", StringComparison.Ordinal))
                 OutputNoTime("\n  " + opts[0], Threshold);
             else
-                OutputNoTime(String.Format("\n  Options: {0}", String.Join("\n           ", opts)), Threshold);
+                OutputNoTime(string.Format("\n  Options: {0}", string.Join("\n           ", opts)), Threshold);
 
             return true;
         }
 
         public override string ReadLine(string p, bool isCommand, bool e)
         {
-            h = 1;
-            cp = 0;
+            lock (_cmdlock)
+            {
+                h = 1;
+                cp = 0;
+            }
+
             prompt = p;
             echo = e;
             int historyLine = history.Count;
@@ -443,7 +457,7 @@ namespace Universe.Framework.ConsoleFramework
             SetCursorLeft(0); // Needed for mono
             Console.Write(" "); // Needed for mono
 
-            lock (cmdline)
+            lock (_cmdlock)
             {
                 y = Console.CursorTop;
                 cmdline.Remove(0, cmdline.Length);
@@ -457,7 +471,7 @@ namespace Universe.Framework.ConsoleFramework
                 char c = key.KeyChar;
                 bool changed = false;
 
-                if (!Char.IsControl(c))
+                if (!char.IsControl(c))
                 {
                     if (cp >= 318)
                         continue;
@@ -572,6 +586,7 @@ namespace Universe.Framework.ConsoleFramework
                                 cmdline.Remove(0, cmdline.Length);
                                 cmdline.Append(history[historyLine]);
                             }
+
                             cp = cmdline.Length;
                             UnlockOutput();
                             break;
@@ -581,6 +596,7 @@ namespace Universe.Framework.ConsoleFramework
                                 changed = true;
                                 cp--;
                             }
+
                             if (m_isPrompting && m_promptOptions.Count > 0)
                             {
                                 int last = m_lastSetPromptOption;
@@ -610,6 +626,7 @@ namespace Universe.Framework.ConsoleFramework
                                 changed = true;
                                 cp++;
                             }
+
                             if (m_isPrompting && m_promptOptions.Count > 0)
                             {
                                 int last = m_lastSetPromptOption;
@@ -626,11 +643,13 @@ namespace Universe.Framework.ConsoleFramework
                                     for (int i = 0; i < charDiff; i++)
                                         pr += " ";
                                 }
+
                                 LockOutput();
                                 Console.CursorLeft = 0;
                                 Console.Write("{0}{1}", prompt, pr);
                                 UnlockOutput();
                             }
+
                             allSelected = false;
                             break;
                         case ConsoleKey.Tab:
@@ -647,7 +666,7 @@ namespace Universe.Framework.ConsoleFramework
                             else
                                 Console.WriteLine("{0}", prompt);
 
-                            lock (cmdline)
+                            lock (_cmdlock)
                             {
                                 y = -1;
                             }
@@ -659,7 +678,7 @@ namespace Universe.Framework.ConsoleFramework
                                 {
                                     history.Clear();
                                     Console.Clear();
-                                    return String.Empty;
+                                    return string.Empty;
                                 }
                                 string[] cmd = Commands.Resolve(Parser.Parse(commandLine));
 
@@ -673,6 +692,7 @@ namespace Universe.Framework.ConsoleFramework
                                             cmd[i] = "\"" + cmd[i] + "\"";
                                     }
                                 }
+
                                 AddToHistory(commandLine);
                                 return string.Empty;
                             }

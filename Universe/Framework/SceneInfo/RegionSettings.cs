@@ -457,6 +457,7 @@ namespace Universe.Framework.SceneInfo
                 TeleHub = new Telehub ();
                 TeleHub.FromOSD ((OSDMap)map ["Telehub"]);
             }
+
         }
     }
 }

@@ -1,14 +1,13 @@
 #!/bin/bash
-# Start the Universe-Sim server only
-# Versions 0.9.2+
+# Start the Virtual Universe server only
+# Versions 1.0.2+
 #
-# May 2014
-# greythane @ gmail.com
+# Emperor Starfinder<emperor@secondgalaxy.com>: For Virtual Universe - May 11, 2016
+# Greythane<greythane@gmail.com>: For WhiteCore-Sim - May 2015
 
 cd ./bin
 sleep 1
-echo Starting Standalone Region Simulator...
+echo Starting Virtual Universe Standalone Region Simulator...
 mono Universe.exe -skipconfig
 wait
 exit
-

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,6 +26,12 @@
  */
 
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Net;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.ModuleLoader;
 using Universe.Framework.Modules;
@@ -34,12 +40,6 @@ using Universe.Framework.Servers.HttpServer;
 using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Servers.HttpServer.Interfaces;
 using Universe.Framework.Services;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net;
 using GridRegion = Universe.Framework.Services.GridRegion;
 
 namespace Universe.Services
@@ -53,10 +53,10 @@ namespace Universe.Services
     {
         #region Declares
 
-        private List<ICapsServiceConnector> m_connectors = new List<ICapsServiceConnector>();
-        private bool m_disabled = true;
-        private AgentCircuitData m_circuitData;
-        private IHttpServer m_server;
+        List<ICapsServiceConnector> m_connectors = new List<ICapsServiceConnector>();
+        bool m_disabled = true;
+        AgentCircuitData m_circuitData;
+        IHttpServer m_server;
 
         public AgentCircuitData CircuitData
         {
@@ -150,7 +150,7 @@ namespace Universe.Services
             set { m_server = value; }
         }
 
-        private string m_overrideCapsURL; // ONLY FOR OPENSIM
+        string m_overrideCapsURL; // ONLY FOR OPENSIM
 
         /// <summary>
         ///     This is the full URL to the Caps SEED request
@@ -191,7 +191,7 @@ namespace Universe.Services
         #region Add/Remove Caps from the known caps OSDMap
 
         //X cap name to path
-        protected OSDMap registeredCAPS = new OSDMap();
+        protected OSDMap RegisteredCAPS = new OSDMap();
 
         public string CreateCAPS(string method, string appendedPath)
         {
@@ -203,21 +203,26 @@ namespace Universe.Services
             if (method == null || caps == null)
                 return;
             string CAPSPath = HostUri + caps;
-            registeredCAPS[method] = CAPSPath;
+            RegisteredCAPS[method] = CAPSPath;
         }
 
         public void AddCAPS(OSDMap caps)
         {
             foreach (KeyValuePair<string, OSD> kvp in caps)
             {
-                if (!registeredCAPS.ContainsKey(kvp.Key))
-                    registeredCAPS[kvp.Key] = kvp.Value;
+                if (!RegisteredCAPS.ContainsKey(kvp.Key))
+                    RegisteredCAPS[kvp.Key] = kvp.Value;
             }
         }
 
         protected void RemoveCaps(string method)
         {
-            registeredCAPS.Remove(method);
+            RegisteredCAPS.Remove(method);
+        }
+
+        public OSDMap GetCAPS()
+        {
+            return RegisteredCAPS;
         }
 
         #endregion
@@ -238,7 +243,7 @@ namespace Universe.Services
 
         public void RemoveStreamHandler(string method, string httpMethod)
         {
-            string path = registeredCAPS[method].AsString();
+            string path = RegisteredCAPS[method].AsString();
             if (path != "") //If it doesn't exist...
             {
                 if (path.StartsWith(HostUri)) //Only try to remove local ones
@@ -254,10 +259,10 @@ namespace Universe.Services
 
         #region SEED cap handling
 
-        public void AddSEEDCap(string CapsUrl2)
+        public void AddSEEDCap(string capsUrl2)
         {
-            if (CapsUrl2 != "")
-                m_capsUrlBase = CapsUrl2;
+            if (capsUrl2 != "")
+                m_capsUrlBase = capsUrl2;
             Disabled = false;
             //Add our SEED cap
             AddStreamHandler("SEED", new GenericStreamHandler("POST", m_capsUrlBase, CapsRequest));
@@ -274,7 +279,7 @@ namespace Universe.Services
                                           OSHttpResponse httpResponse)
         {
             MainConsole.Instance.Info("[CapsHandlers]: Handling Seed Cap request at " + CapsUrl);
-            return OSDParser.SerializeLLSDXmlBytes(registeredCAPS);
+            return OSDParser.SerializeLLSDXmlBytes(RegisteredCAPS);
         }
 
         #endregion
@@ -293,8 +298,8 @@ namespace Universe.Services
             if (externalService != null)
             {
                 foreach (KeyValuePair<string, OSD> kvp in externalService.GetExternalCaps(AgentID, Region))
-                    if (kvp.Key != null && kvp.Value != null && !registeredCAPS.ContainsKey(kvp.Key))
-                        registeredCAPS.Add(kvp.Key, kvp.Value);
+                    if (kvp.Key != null && kvp.Value != null && !RegisteredCAPS.ContainsKey(kvp.Key))
+                        RegisteredCAPS.Add(kvp.Key, kvp.Value);
             }
         }
 

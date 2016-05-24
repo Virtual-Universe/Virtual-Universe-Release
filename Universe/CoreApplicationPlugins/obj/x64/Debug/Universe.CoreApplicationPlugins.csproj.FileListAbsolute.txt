@@ -1,0 +1,4 @@
+C:\Users\virtu\Desktop\Universe-Dev\VirtualUniverse\bin\Universe.CoreApplicationPlugins.dll
+C:\Users\virtu\Desktop\Universe-Dev\VirtualUniverse\bin\Universe.CoreApplicationPlugins.pdb
+C:\Users\virtu\Desktop\Universe-Dev\Universe\CoreApplicationPlugins\obj\x64\Debug\Universe.CoreApplicationPlugins.dll
+C:\Users\virtu\Desktop\Universe-Dev\Universe\CoreApplicationPlugins\obj\x64\Debug\Universe.CoreApplicationPlugins.pdb

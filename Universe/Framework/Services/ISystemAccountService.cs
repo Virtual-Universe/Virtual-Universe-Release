@@ -29,65 +29,66 @@ using OpenMetaverse;
 
 namespace Universe.Framework.Services
 {
-	public interface ISystemAccountService
+    public interface ISystemAccountService
 
-	{
-		/// <summary>
-		/// The governor UUID.
-		/// </summary>
-		/// <value>The governor UUID.</value>
-		UUID GovernorUUID { get;}
+    {
+        /// <summary>
+        /// The governor UUID.
+        /// </summary>
+        /// <value>The governor UUID.</value>
+        UUID GovernorUUID { get;}
 
-		/// <summary>
-		///     The Governor's configured name.
-		/// </summary>
-		/// <value>The Governor's name.</value>
-		string GovernorName { get; }
+        /// <summary>
+        ///     The Governor's configured name.
+        /// </summary>
+        /// <value>The Governor's name.</value>
+        string GovernorName { get; }
 
-		/// <summary>
-		///     The System Real Estate owner's UUID
-		/// </summary>
-		UUID SystemEstateOwnerUUID { get; }
+        /// <summary>
+        ///     The System Real Estate owner's UUID
+        /// </summary>
+        UUID SystemEstateOwnerUUID { get; }
 
-		/// <summary>
-		///     The system Real Estate owner's name
-		/// </summary>
-		string SystemEstateOwnerName { get; }
+        /// <summary>
+        ///     The system Real Estate owner's name
+        /// </summary>
+        string SystemEstateOwnerName { get; }
 
-		/// <summary>
-		///     The Banker UUID.
-		/// </summary>
-		/// <value>The Banker UUID.</value>
-		UUID BankerUUID { get;}
+        /// <summary>
+        ///     The Banker UUID.
+        /// </summary>
+        /// <value>The Banker UUID.</value>
+        UUID BankerUUID { get;}
 
-		/// <summary>
-		///     The Banker's configured name.
-		/// </summary>
-		/// <value>The Bankers's name.</value>
-		string BankerName { get; }
+        /// <summary>
+        ///     The Banker's configured name.
+        /// </summary>
+        /// <value>The Bankers's name.</value>
+        string BankerName { get; }
 
-		/// <summary>
-		///     The System Marketplace Owner's UUID
-		/// </summary>
-		UUID MarketplaceOwnerUUID { get; }
+        /// <summary>
+        ///     The System Marketplace Owner's UUID
+        /// </summary>
+        UUID MarketplaceOwnerUUID { get; }
 
-		/// <summary>
-		///     The System Marketplace owner's name
-		/// </summary>
-		string MarketplaceOwnerName { get; }
+        /// <summary>
+        ///     The System Marketplace owner's name
+        /// </summary>
+        string MarketplaceOwnerName { get; }
 
-		/// <summary>
-		/// Get name of a system estate.
-		/// </summary>
-		/// <returns>The estate owner name.</returns>
-		/// <param name="estateID">Estate ID.</param>
-		string GetSystemEstateOwnerName(int estateID);
+        /// <summary>
+        /// Get name of a system estate.
+        /// </summary>
+        /// <returns>The estate owner name.</returns>
+        /// <param name="estateID">Estate ID.</param>
+        string GetSystemEstateOwnerName(int estateID);
 
-		/// <summary>
-		/// Gets a system estate owner UUID.
-		/// </summary>
-		/// <returns>The estate owner's UUID.</returns>
-		/// <param name="estateID">Estate I.</param>
-		UUID GetSystemEstateOwner (int estateID);
-	}
+        /// <summary>
+        /// Gets a system estate owner UUID.
+        /// </summary>
+        /// <returns>The estate owner's UUID.</returns>
+        /// <param name="estateID">Estate I.</param>
+        UUID GetSystemEstateOwner (int estateID);
+
+    }
 }

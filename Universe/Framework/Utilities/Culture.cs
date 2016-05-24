@@ -112,5 +112,6 @@ namespace Universe.Framework.Utilities
             string ts = DateTime.Now.ToString ("MMM dd hh:mm:ss",Culture.SystemCultureInfo);
             return ts;
         }
+
     }
 }

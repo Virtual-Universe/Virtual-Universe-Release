@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-support.org/, http://aurora-sim.org/, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -108,7 +108,7 @@ namespace Universe.Framework.Servers.HttpServer.Implementation
             get { return _contentType; }
         }
 
-        private string _contentType;
+        string _contentType;
 
         public HttpCookieCollection Cookies
         {
@@ -147,14 +147,14 @@ namespace Universe.Framework.Servers.HttpServer.Implementation
             get { return _queryString; }
         }
 
-        private NameValueCollection _queryString;
+        NameValueCollection _queryString;
 
         public Hashtable Query
         {
             get { return _query; }
         }
 
-        private Hashtable _query;
+        Hashtable _query;
 
         /// <value>
         ///     POST request values, if applicable
@@ -193,6 +193,9 @@ namespace Universe.Framework.Servers.HttpServer.Implementation
             {
                 foreach (string item in _request.QueryString.Keys)
                 {
+                    if (item == null)
+                        continue;
+
                     try
                     {
                         _queryString.Add(item, _request.QueryString[item]);
@@ -262,6 +265,14 @@ namespace Universe.Framework.Servers.HttpServer.Implementation
                                        };
                         Files.Add(element.Name, file);
                     }
+                    /*else
+                    {
+                        var buffer = new byte[element.Length];
+                        message.Body.Seek(element.Start, SeekOrigin.Begin);
+                        message.Body.Read(buffer, 0, (int)element.Length);
+
+                        form.Add(Uri.UnescapeDataString(element.Name), message.ContentEncoding.GetString(buffer));
+                    }*/
                 }
             }
         }

@@ -37,9 +37,9 @@ using System.Xml;
 
 namespace Universe.Modules.Archivers
 {
-    public class SerializerModule : INonSharedRegionModule, IRegionSerialiserModule
+    public class SerializerModule : INonSharedRegionModule, IRegionSerializerModule
     {
-        #region IRegionSerialiserModule Members
+        #region IRegionSerializerModule Members
 
         public ISceneEntity DeserializeGroupFromXml2(string xmlString, IScene scene)
         {
@@ -90,7 +90,7 @@ namespace Universe.Modules.Archivers
 
         public void AddRegion(IScene scene)
         {
-            scene.RegisterModuleInterface<IRegionSerialiserModule>(this);
+            scene.RegisterModuleInterface<IRegionSerializerModule>(this);
         }
 
         public void RegionLoaded(IScene scene)
@@ -99,7 +99,7 @@ namespace Universe.Modules.Archivers
 
         public void RemoveRegion(IScene scene)
         {
-            scene.UnregisterModuleInterface<IRegionSerialiserModule>(this);
+            scene.UnregisterModuleInterface<IRegionSerializerModule>(this);
         }
 
         public void Close()

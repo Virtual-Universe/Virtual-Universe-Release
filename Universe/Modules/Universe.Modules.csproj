@@ -1,7 +1,7 @@
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
 	<PropertyGroup>
 	  <ProjectType>Local</ProjectType>
-	  <ProductVersion>9.0.30729</ProductVersion>
+	  <ProductVersion>12.0.31101</ProductVersion>
 	  <SchemaVersion>2.0</SchemaVersion>
 	  <ProjectGuid>{21AB8EAA-0000-0000-0000-000000000000}</ProjectGuid>
 	  <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -13,7 +13,7 @@
 	  <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
 	  <DefaultTargetSchema>IE50</DefaultTargetSchema>
 	  <DelaySign>false</DelaySign>
-	  <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+	  <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
 	  <OutputType>Library</OutputType>
 	  <AppDesignerFolder></AppDesignerFolder>
 	  <RootNamespace>Universe.Modules</RootNamespace>
@@ -28,7 +28,7 @@
 	  <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
 	  <ConfigurationOverrideFile>
 	  </ConfigurationOverrideFile>
-	  <DefineConstants>TRACE;DEBUG;ISWIN;NET_4_0</DefineConstants>
+	  <DefineConstants>TRACE;DEBUG;ISWIN;NET_4_5</DefineConstants>
 	  <DocumentationFile></DocumentationFile>
 	  <DebugSymbols>True</DebugSymbols>
 	  <FileAlignment>4096</FileAlignment>
@@ -42,33 +42,13 @@
 	  <NoWarn></NoWarn>
 	  <PlatformTarget>x64</PlatformTarget>
 	</PropertyGroup>
-	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-	  <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-	  <BaseAddress>285212672</BaseAddress>
-	  <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
-	  <ConfigurationOverrideFile>
-	  </ConfigurationOverrideFile>
-	  <DefineConstants>TRACE;DEBUG;ISWIN;NET_4_0</DefineConstants>
-	  <DocumentationFile></DocumentationFile>
-	  <DebugSymbols>True</DebugSymbols>
-	  <FileAlignment>4096</FileAlignment>
-	  <Optimize>False</Optimize>
-	  <OutputPath>..\..\VirtualUniverse\bin\</OutputPath>
-	  <RegisterForComInterop>False</RegisterForComInterop>
-	  <RemoveIntegerChecks>False</RemoveIntegerChecks>
-	  <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-	  <WarningLevel>4</WarningLevel>
-	  <NoStdLib>False</NoStdLib>
-	  <NoWarn></NoWarn>
-	  <PlatformTarget>AnyCPU</PlatformTarget>
-	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
 	  <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 	  <BaseAddress>285212672</BaseAddress>
 	  <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
 	  <ConfigurationOverrideFile>
 	  </ConfigurationOverrideFile>
-	  <DefineConstants>TRACE;DEBUG;ISWIN;NET_4_0</DefineConstants>
+	  <DefineConstants>TRACE;DEBUG;ISWIN;NET_4_5</DefineConstants>
 	  <DocumentationFile></DocumentationFile>
 	  <DebugSymbols>True</DebugSymbols>
 	  <FileAlignment>4096</FileAlignment>
@@ -88,7 +68,7 @@
 	  <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
 	  <ConfigurationOverrideFile>
 	  </ConfigurationOverrideFile>
-	  <DefineConstants>ISWIN;NET_4_0</DefineConstants>
+	  <DefineConstants>ISWIN;NET_4_5</DefineConstants>
 	  <DocumentationFile></DocumentationFile>
 	  <DebugSymbols>False</DebugSymbols>
 	  <FileAlignment>4096</FileAlignment>
@@ -102,33 +82,13 @@
 	  <NoWarn></NoWarn>
 	  <PlatformTarget>x64</PlatformTarget>
 	</PropertyGroup>
-	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-	  <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-	  <BaseAddress>285212672</BaseAddress>
-	  <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
-	  <ConfigurationOverrideFile>
-	  </ConfigurationOverrideFile>
-	  <DefineConstants>ISWIN;NET_4_0</DefineConstants>
-	  <DocumentationFile></DocumentationFile>
-	  <DebugSymbols>False</DebugSymbols>
-	  <FileAlignment>4096</FileAlignment>
-	  <Optimize>True</Optimize>
-	  <OutputPath>..\..\VirtualUniverse\bin\</OutputPath>
-	  <RegisterForComInterop>False</RegisterForComInterop>
-	  <RemoveIntegerChecks>False</RemoveIntegerChecks>
-	  <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-	  <WarningLevel>4</WarningLevel>
-	  <NoStdLib>False</NoStdLib>
-	  <NoWarn></NoWarn>
-	  <PlatformTarget>AnyCPU</PlatformTarget>
-	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
 	  <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 	  <BaseAddress>285212672</BaseAddress>
 	  <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
 	  <ConfigurationOverrideFile>
 	  </ConfigurationOverrideFile>
-	  <DefineConstants>ISWIN;NET_4_0</DefineConstants>
+	  <DefineConstants>ISWIN;NET_4_5</DefineConstants>
 	  <DocumentationFile></DocumentationFile>
 	  <DebugSymbols>False</DebugSymbols>
 	  <FileAlignment>4096</FileAlignment>
@@ -216,9 +176,9 @@
 		<HintPath>..\..\VirtualUniverse\bin\XMLRPC.dll</HintPath>
 		<Private>False</Private>
 	  </Reference>
-	  <Reference Include="zlib.net" >
-		  <Name>zlib.net</Name>
-		<HintPath>..\..\VirtualUniverse\bin\zlib.net.dll</HintPath>
+	  <Reference Include="ZLibNet" >
+		  <Name>ZLibNet</Name>
+		<HintPath>..\..\VirtualUniverse\bin\ZLibNet.dll</HintPath>
 		<Private>False</Private>
 	  </Reference>
 	</ItemGroup>
@@ -390,9 +350,6 @@
 	  <Compile Include="Avatar\Voice\VivoxVoiceCaps.cs">
 		<SubType>Code</SubType>
 	  </Compile>
-	  <Compile Include="Caps\GroupAPIv1.cs">
-		<SubType>Code</SubType>
-	  </Compile>
 	  <Compile Include="Caps\LSLSyntax.cs">
 		<SubType>Code</SubType>
 	  </Compile>
@@ -411,25 +368,25 @@
 	  <Compile Include="Caps\UploadObjectAssetModule.cs">
 		<SubType>Code</SubType>
 	  </Compile>
-	  <Compile Include="Currency\Base.CurrencyConnector.cs">
+	  <Compile Include="Currency\BaseCurrency\Base.CurrencyConnector.cs">
 		<SubType>Code</SubType>
 	  </Compile>
-	  <Compile Include="Currency\Base.CurrencyServices.cs">
+	  <Compile Include="Currency\BaseCurrency\Base.CurrencyServices.cs">
 		<SubType>Code</SubType>
 	  </Compile>
-	  <Compile Include="Currency\Config.cs">
+	  <Compile Include="Currency\BaseCurrency\Config.cs">
 		<SubType>Code</SubType>
 	  </Compile>
-	  <Compile Include="Currency\GroupPayments.cs">
+	  <Compile Include="Currency\BaseCurrency\GroupPayments.cs">
 		<SubType>Code</SubType>
 	  </Compile>
-	  <Compile Include="Currency\RPCHandler.cs">
+	  <Compile Include="Currency\BaseCurrency\RPCHandler.cs">
 		<SubType>Code</SubType>
 	  </Compile>
-	  <Compile Include="Currency\ScheduledPayments.cs">
+	  <Compile Include="Currency\BaseCurrency\ScheduledPayments.cs">
 		<SubType>Code</SubType>
 	  </Compile>
-	  <Compile Include="Currency\Zero.CurrencyModule.cs">
+	  <Compile Include="Currency\BaseCurrency\Zero.CurrencyModule.cs">
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="Installer\ModuleInstaller.cs">
@@ -694,6 +651,9 @@
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="Web\Translators\ItalianTranslation.cs">
+		<SubType>Code</SubType>
+	  </Compile>
+	  <Compile Include="Web\Translators\RussianTranslation.cs">
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="Web\Translators\SpanishTranslation.cs">

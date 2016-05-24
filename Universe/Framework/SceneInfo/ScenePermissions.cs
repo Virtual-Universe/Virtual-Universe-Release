@@ -28,12 +28,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using OpenMetaverse;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo.Entities;
+using OpenMetaverse;
 
 namespace Universe.Framework.SceneInfo
 {
+
     #region Delegates
 
     public delegate uint GenerateClientFlagsHandler(UUID userID, ISceneChildEntity part);
@@ -234,7 +235,8 @@ namespace Universe.Framework.SceneInfo
 
         public uint GenerateClientFlags(UUID userID, ISceneChildEntity part)
         {
-            // libomv will moan about PrimFlags.ObjectYouOfficer being obsolete.
+            // libomv will moan about PrimFlags.ObjectYouOfficer being
+            // obsolete...
 #pragma warning disable 0612
             const PrimFlags DEFAULT_FLAGS =
                 PrimFlags.ObjectModify |

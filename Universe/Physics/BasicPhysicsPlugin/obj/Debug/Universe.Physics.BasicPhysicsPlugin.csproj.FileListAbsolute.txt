@@ -1,5 +1,0 @@
-C:\Users\universe\Desktop\Virtual-Dev\VirtualUniverse\bin\Physics\Universe.Physics.BasicPhysicsPlugin.dll
-C:\Users\universe\Desktop\Virtual-Dev\VirtualUniverse\bin\Physics\Universe.Physics.BasicPhysicsPlugin.pdb
-C:\Users\universe\Desktop\Virtual-Dev\Universe\Physics\BasicPhysicsPlugin\obj\Debug\Universe.Physics.BasicPhysicsPlugin.csprojResolveAssemblyReference.cache
-C:\Users\universe\Desktop\Virtual-Dev\Universe\Physics\BasicPhysicsPlugin\obj\Debug\Universe.Physics.BasicPhysicsPlugin.dll
-C:\Users\universe\Desktop\Virtual-Dev\Universe\Physics\BasicPhysicsPlugin\obj\Debug\Universe.Physics.BasicPhysicsPlugin.pdb

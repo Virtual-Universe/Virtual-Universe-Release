@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,9 +31,12 @@ using System;
 using System.Linq;
 using OMV = OpenMetaverse;
 
-namespace Universe.Region.Physics.BulletSPlugin
+namespace Universe.Physics.BulletSPlugin
 {
-    /*public class BSActorHover : BSActor
+    /*
+     //This functionality appers to have been incorporated directly in SceneObjectPart.UpdateLookAt()
+     
+    public class BSActorHover : BSActor
     {
         private BSFMotor m_hoverMotor;
 
@@ -55,6 +58,7 @@ namespace Universe.Region.Physics.BulletSPlugin
         public override void Dispose()
         {
             Enabled = false;
+            DeactivateHover();
         }
 
         // Called when physical parameters (properties set in Bullet) need to be re-applied.

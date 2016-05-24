@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
@@ -31,44 +31,41 @@ using Universe.Framework.Utilities;
 
 namespace Universe.DataManager.Migration.Migrators.Avatars
 {
-    public class AvatarsMigrator_0 : Migrator
-    {
-        public AvatarsMigrator_0()
-        {
-            Version = new Version(0, 0, 0);
-            MigrationName = "Avatars";
+	public class AvatarsMigrator_0 : Migrator
+	{
+		public AvatarsMigrator_0 ()
+		{
+			Version = new Version (0, 0, 0);
+			MigrationName = "Avatars";
 
-            schema = new List<SchemaDefinition>();
-            this.RenameSchema("Avatars", "avatars");
-            this.RemoveSchema("avatars");
+			Schema = new List<SchemaDefinition> ();
 
-            AddSchema("avatars", ColDefs(
-                ColDef("PrincipalID", ColumnTypes.Char36),
-                ColDef("Name", ColumnTypes.String32),
-                ColDef("Value", ColumnTypes.Text)
-                                     ), IndexDefs(
-                                         IndexDef(new string[2] {"PrincipalID", "Name"}, IndexType.Primary)
-                                            ));
-        }
+			AddSchema ("user_appearance", ColDefs (
+				ColDef ("PrincipalID", ColumnTypes.Char36),
+				ColDef ("Appearance", ColumnTypes.Text)
+			), IndexDefs (
+				IndexDef (new string[1] { "PrincipalID" }, IndexType.Primary)
+			));
+		}
 
-        protected override void DoCreateDefaults(IDataConnector genericData)
-        {
-            EnsureAllTablesInSchemaExist(genericData);
-        }
+		protected override void DoCreateDefaults (IDataConnector genericData)
+		{
+			EnsureAllTablesInSchemaExist (genericData);
+		}
 
-        protected override bool DoValidate(IDataConnector genericData)
-        {
-            return TestThatAllTablesValidate(genericData);
-        }
+		protected override bool DoValidate (IDataConnector genericData)
+		{
+			return TestThatAllTablesValidate (genericData);
+		}
 
-        protected override void DoMigrate(IDataConnector genericData)
-        {
-            DoCreateDefaults(genericData);
-        }
+		protected override void DoMigrate (IDataConnector genericData)
+		{
+			DoCreateDefaults (genericData);
+		}
 
-        protected override void DoPrepareRestorePoint(IDataConnector genericData)
-        {
-            CopyAllTablesToTempVersions(genericData);
-        }
-    }
+		protected override void DoPrepareRestorePoint (IDataConnector genericData)
+		{
+			CopyAllTablesToTempVersions (genericData);
+		}
+	}
 }

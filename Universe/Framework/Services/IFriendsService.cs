@@ -25,10 +25,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using OpenMetaverse;
 using Universe.Framework.Modules;
+using OpenMetaverse;
+using System.Collections.Generic;
 
 namespace Universe.Framework.Services
 {

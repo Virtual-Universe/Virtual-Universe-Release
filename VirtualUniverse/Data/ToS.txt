@@ -1,8 +1,8 @@
 
-Terms of Service for YourSim
+Terms of Service for Your Sim
 Introduction 
 
-This simulator is based on Universe. 
+This simulator is based on Virtual Universe. 
 By visiting this simulator and accessing the information, resources, services, 
  products, and tools we provide, you understand and agree to accept and adhere 
  to the following terms and conditions as stated in this policy 
@@ -13,4 +13,3 @@ We reserve the right to change this User Agreement from time to time without not
  User Agreement periodically to familiarise yourself with any modifications. 
  Your continued use of this site after such modifications will constitute 
  acknowledgment and agreement of the modified terms and conditions. 
-

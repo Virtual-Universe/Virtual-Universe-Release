@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-support/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,6 +27,7 @@
 
 using System;
 using Nini.Config;
+using Universe.Framework.ConsoleFramework;
 
 namespace Universe.Framework.ClientInterfaces
 {
@@ -41,7 +42,7 @@ namespace Universe.Framework.ClientInterfaces
         None
     };
 
-    public class UserSetHelpers
+    public static class UserSetHelpers
     {
         /// <summary>
         ///     Parse a user set configuration setting
@@ -61,16 +62,12 @@ namespace Universe.Framework.ClientInterfaces
             if ("gods" == rawSetting.ToLower())
                 rawSetting = UserSet.Administrators.ToString();
 
-            // Doing it this was so that we can do a case insensitive conversion
-            try
-            {
-                userSet = (UserSet) Enum.Parse(typeof (UserSet), rawSetting, true);
+            // Doing it this way so that we can do a case insensitive conversion
+            try {
+                userSet = (UserSet)Enum.Parse (typeof (UserSet), rawSetting, true);
+            } catch {
+                MainConsole.Instance.DebugFormat ("[Permissions]: {0} {1}", settingName, userSet);
             }
-            catch
-            {
-            }
-
-            //MainConsole.Instance.DebugFormat("[PERMISSIONS]: {0} {1}", settingName, userSet);
 
             return userSet;
         }

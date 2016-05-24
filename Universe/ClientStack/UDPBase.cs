@@ -42,7 +42,7 @@ namespace Universe.ClientStack
         /// <summary>
         ///     Flag to process packets asynchronously or synchronously
         /// </summary>
-        private bool m_asyncPacketHandling;
+        bool m_asyncPacketHandling;
 
         /// <summary>
         ///     Local IP address to bind to in server mode
@@ -52,7 +52,7 @@ namespace Universe.ClientStack
         /// <summary>
         ///     The all important shutdown flag
         /// </summary>
-        private volatile bool m_shutdownFlag = true;
+        volatile bool m_shutdownFlag = true;
 
         /// <summary>
         ///     UDP port to bind to in server mode
@@ -62,7 +62,7 @@ namespace Universe.ClientStack
         /// <summary>
         ///     UDP socket, used in either client or server mode
         /// </summary>
-        private Socket m_udpSocket;
+        Socket m_udpSocket;
 
         /// <summary>
         ///     Returns true if the server is currently listening, otherwise false
@@ -170,7 +170,7 @@ namespace Universe.ClientStack
             }
         }
 
-        private void AsyncBeginReceive()
+        void AsyncBeginReceive()
         {
             // allocate a packet buffer
             //WrappedObject<UDPPacketBuffer> wrappedBuffer = Pool.CheckOut();
@@ -234,7 +234,7 @@ namespace Universe.ClientStack
             }
         }
 
-        private void AsyncEndReceive(IAsyncResult iar)
+        void AsyncEndReceive(IAsyncResult iar)
         {
             // Asynchronous receive operations will complete here through the call
             // to AsyncBeginReceive
@@ -269,7 +269,7 @@ namespace Universe.ClientStack
                 }
                 catch (Exception ex)
                 {
-                    MainConsole.Instance.Error("[UDPBase]: Hit error: " + ex.ToString());
+                    MainConsole.Instance.Error("[UDPBase]: Hit error: " + ex);
                 }
                 finally
                 {
@@ -287,21 +287,17 @@ namespace Universe.ClientStack
         {
             if (!m_shutdownFlag)
             {
-                try
-                {
+                try {
                     // well not async but blocking 
-                    m_udpSocket.SendTo(
+                    m_udpSocket.SendTo (
                         buf.Data,
                         0,
                         buf.DataLength,
                         SocketFlags.None,
                         buf.RemoteEndPoint);
-                }
-                catch (SocketException)
-                {
-                }
-                catch (ObjectDisposedException)
-                {
+                } catch (SocketException) {
+                } catch (ObjectDisposedException) {
+                } catch (Exception) {
                 }
             }
         }

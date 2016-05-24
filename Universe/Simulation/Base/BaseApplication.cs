@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -47,6 +47,7 @@ namespace Universe.Simulation.Base
     /// </summary>
     public class BaseApplication
     {
+
         /// <summary>
         ///     Save Crashes in the bin/crashes folder.  Configurable with m_crashDir
         /// </summary>
@@ -60,11 +61,10 @@ namespace Universe.Simulation.Base
         /// <summary>
         ///     Directory to save crash reports to.  Relative to bin/
         /// </summary>
-        public static string m_crashDir = "crashes";
+        public static string m_crashDir = Constants.DEFAULT_CRASH_DIR;
 
-        static bool _IsHandlingException; // Make sure we don't go recursive on ourself
+        static bool _IsHandlingException; // Make sure we don't go recursive on ourselves
 
-        //could move our main function into OpenSimMain and kill this class
         public static void BaseMain(string[] args, string defaultIniFile, ISimulationBase simBase)
         {
             // First line, hook the appdomain to the crash reporter
@@ -77,21 +77,25 @@ namespace Universe.Simulation.Base
             if (!args.Contains("-skipconfig"))
                 Configure(false);
 
+            // provide a startup configuration generation option
+            if (args.Contains("-config"))
+                Configure(true);
+
             // Increase the number of IOCP threads available. Mono defaults to a tragically low number
             int workerThreads, iocpThreads;
             ThreadPool.GetMaxThreads(out workerThreads, out iocpThreads);
-            //MainConsole.Instance.InfoFormat("[WHiteCore MAIN]: Runtime gave us {0} worker threads and {1} IOCP threads", workerThreads, iocpThreads);
+            //MainConsole.Instance.InfoFormat("[Virtual Universe Main]: Runtime gave us {0} worker threads and {1} IOCP threads", workerThreads, iocpThreads);
             if (workerThreads < 500 || iocpThreads < 1000)
             {
                 workerThreads = 500;
                 iocpThreads = 1000;
-                //MainConsole.Instance.Info("[WHiteCore MAIN]: Bumping up to 500 worker threads and 1000 IOCP threads");
+                //MainConsole.Instance.Info("[Virtual Universe Main]: Bumping up to 500 worker threads and 1000 IOCP threads");
                 ThreadPool.SetMaxThreads(workerThreads, iocpThreads);
             }
 
             BinMigratorService service = new BinMigratorService();
             service.MigrateBin();
-            // Configure nini aliases and localles
+            // Configure nIni aliases and localles
             Culture.SystemCultureInfo = CultureInfo.CurrentCulture;
             Culture.SetCurrentCulture();
             configSource.Alias.AddAlias("On", true);
@@ -117,7 +121,9 @@ namespace Universe.Simulation.Base
             configSource.AddSwitch("Network", "http_listener_port");
 
             IConfigSource m_configSource = Configuration(configSource, defaultIniFile);
-
+            if (m_configSource == null)
+                Environment.Exit(0);            // No configuration.. exit
+                        
             // Check if we're saving crashes
             m_saveCrashDumps = m_configSource.Configs["Startup"].GetBoolean("save_crashes", m_saveCrashDumps);
 
@@ -146,18 +152,26 @@ namespace Universe.Simulation.Base
                 if (!requested)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-					Console.WriteLine("\n\n************* Virtual Universe initial run. *************");
+                    Console.WriteLine ("\n\n************* Virtual Universe initial run. *************");
                     Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine(
-                        "\n\n   This appears to be your first time running Virtual Universe.\n"+
+                    Console.WriteLine (
+                        "\n\n   This appears to be your first time running Virtual Universe.\n" +
                         "If you have already configured your *.ini files, please ignore this warning and press enter;\n" +
-                        "Otherwise type 'yes' and Virtual Universe will guide you through the configuration process.\n\n"+
-                        "Remember, these file names are Case Sensitive in Linux and Proper Cased.\n"+
+                        "Otherwise type 'yes' and Virtual Universe will guide you through the configuration process.\n\n" +
+                        "Remember, these file names are Case Sensitive in Linux and Proper Cased.\n" +
                         "1. " + Universe_ConfigDir + "/Universe.ini\nand\n" +
                         "2. " + Universe_ConfigDir + "/Sim/Standalone/StandaloneCommon.ini \nor\n" +
                         "3. " + Universe_ConfigDir + "/Grid/GridCommon.ini\n" +
                         "\nAlso, you will want to examine these files in great detail because only the basic system will " +
                         "load by default. Virtual Universe can do a LOT more if you spend a little time going through these files.\n\n");
+                } else
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine ("\n\n************* Virtual Universe Configuration *************");
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine (
+                        "\n     Universe interactive configuration.\n" +
+                        "Enter 'yes' and Virtual Universe will guide you through the configuration process.");
                 }
 
                 // Make sure...
@@ -165,9 +179,11 @@ namespace Universe.Simulation.Base
                 Console.WriteLine ("");
                 Console.WriteLine (" ##  WARNING  ##");
                 Console.WriteLine("This will overwrite any existing configuration files!");
+                Console.WriteLine("It is strongly recommended that you save a backup copy");
+                Console.WriteLine("of your configuration files before proceeding!");
                 Console.ResetColor();
                 Console.WriteLine ("");
-                resp = ReadLine("Do you want to configure Universe now?  (yes/no)", resp);
+                resp = ReadLine("Do you want to configure Virtual Universe now?  (yes/no)", resp);
 
                 if (resp == "yes")
                 {
@@ -190,7 +206,7 @@ namespace Universe.Simulation.Base
 
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("====================================================================");
-					Console.WriteLine("======================= Virtual Universe Configurator ==============");
+					Console.WriteLine("======================= Virtual Universe Configurator =================");
                     Console.WriteLine("====================================================================");
                     Console.ResetColor();
 
@@ -226,7 +242,7 @@ namespace Universe.Simulation.Base
                             Console.ForegroundColor = ConsoleColor.White;
                             Console.WriteLine(
                                 "\nNote: this setup does not automatically create a MySQL installation for you.\n" +
-                                " This will configure the Virtual Universe setting but you must install MySQL as well");
+                                " This will configure the Universe setting but you must install MySQL as well");
                             Console.ResetColor();
 
                             dbSource = ReadLine("MySQL database IP", dbSource);
@@ -319,6 +335,7 @@ namespace Universe.Simulation.Base
                                         newConfig.Set(key, config.Get(key));
                                 }
                             }
+
                             mysql_ini.Save();
                             Console.ForegroundColor = ConsoleColor.Green;
                             Console.WriteLine("Your MySQL.ini has been successfully configured");
@@ -361,7 +378,6 @@ namespace Universe.Simulation.Base
                                 newConfig.Set ("HostName", regionIPAddress);
                             }
                         }
-
 
 						universe_ini.Save();
                         Console.ForegroundColor = ConsoleColor.Green;
@@ -441,7 +457,6 @@ namespace Universe.Simulation.Base
                             Console.WriteLine("Your Grid.ini has been successfully configured");
                             Console.ResetColor();
                             Console.WriteLine ("");
-
                         }
                     }
 
@@ -513,6 +528,7 @@ namespace Universe.Simulation.Base
                                     newConfig.Set(key, config.Get(key));
                             }
                         }
+
                         login_ini.Save();
                         Console.ForegroundColor = ConsoleColor.Green;
                         Console.WriteLine("Your Login.ini has been successfully configured");
@@ -560,13 +576,12 @@ namespace Universe.Simulation.Base
                     Console.WriteLine(
                         "To re-run this configurator, enter \"run configurator\" into the console.");
                     Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine(" >> Please restart to use your new configuration. <<");
+                    Console.WriteLine(" >> Please restart Virtual Universe to use your new configuration. <<");
                     Console.ResetColor ();
-                    Console.WriteLine ("");                  
+                    Console.WriteLine ("");           
                 }
             }
         }
-
         static void MakeSureExists(string file)
         {
             if (File.Exists(file))
@@ -635,7 +650,6 @@ namespace Universe.Simulation.Base
 
             _IsHandlingException = false;
         }
-
         static void UnhandledException(bool isTerminating, Exception ex)
         {
             string msg = String.Empty;
@@ -654,18 +668,23 @@ namespace Universe.Simulation.Base
 
             MainConsole.Instance.ErrorFormat("[APPLICATION]: {0}", msg);
 
-            handleException(msg, ex);
+            HandleCrashException(msg, ex);
         }
 
         /// <summary>
-        ///     Deal with sending the error to the error reporting service and saving the dump to the harddrive if needed
+        ///     Deal with sending the error to the error reporting service and saving the dump to the hard-drive if needed
         /// </summary>
         /// <param name="msg"></param>
         /// <param name="ex"></param>
-        public static void handleException(string msg, Exception ex)
+        public static void HandleCrashException(string msg, Exception ex)
         {
-            if (m_saveCrashDumps && Environment.OSVersion.Platform == PlatformID.Win32NT)
-            {
+            //if (m_saveCrashDumps && Environment.OSVersion.Platform == PlatformID.Win32NT)
+            // 20160323 -greythane - not sure why this will not work on *nix as well?
+            // 20160408 -EmperorStarfinder - This appears to not work on either Windows or Nix.
+            // Maybe consider removing the saveCrashDumps as it appears it is writing it to the
+            // logs for Universe.Server and Universe consoles already?
+            if (m_saveCrashDumps)
+                           {
                 // Log exception to disk
                 try
                 {
@@ -783,7 +802,8 @@ namespace Universe.Simulation.Base
             {
                 exp.ExceptionPointers = Marshal.GetExceptionPointers();
             }
-            bool bRet = false;
+
+            bool bRet;
             if (exp.ExceptionPointers == IntPtr.Zero)
             {
                 bRet = MiniDumpWriteDump(currentProcessHandle, currentProcessId, fileHandle, (uint) options, IntPtr.Zero,

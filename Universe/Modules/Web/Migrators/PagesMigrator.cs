@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,20 +25,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
 using System.Collections.Generic;
 using OpenMetaverse;
 using Universe.Framework.DatabaseInterfaces;
 
 namespace Universe.Modules.Web
 {
-    internal class PagesMigrator
+    class PagesMigrator
     {
+        static GridPage _rootPage;
         public static readonly string Schema = "WebPages";
-        private static GridPage _rootPage;
-        public static readonly uint CurrentVersion = 10;
+        public static readonly uint CurrentVersion = 11;
 
-        private static void InitializeDefaults()
+        static void InitializeDefaults()
         {
             _rootPage = new GridPage();
 
@@ -297,9 +296,18 @@ namespace Universe.Modules.Web
                     new GridPage {
                         ShowInMenu = true,
                         AdminRequired = true,
+                        MenuID = "Abuse_admin",
+                        Location = "admin/abuse_list.html",
+                        MenuPosition = 6,
+                        MenuTitle = "MenuAbuse",
+                        MenuToolTip = "TooltipsMenuAbuse"
+                    },
+                    new GridPage {
+                        ShowInMenu = true,
+                        AdminRequired = true,
                         MenuID = "Transactions_admin",
                         Location = "admin/transactions.html",
-                        MenuPosition = 6,
+                        MenuPosition = 7,
                         MenuTitle = "MenuTransactions",
                         MenuToolTip = "TooltipsMenuTransactions"
                     },
@@ -308,7 +316,7 @@ namespace Universe.Modules.Web
                         AdminRequired = true,
                         MenuID = "Statistics",
                         Location = "admin/statistics.html",
-                        MenuPosition = 6,
+                        MenuPosition = 8,
                         MenuTitle = "MenuStatistics",
                         MenuToolTip = "TooltipsMenuStatistics"
                     }
@@ -374,7 +382,7 @@ namespace Universe.Modules.Web
                 }
             });
 
-
+            // these are indivual paages that can be called
             _rootPage.Children.Add(new GridPage
                                        {
                                            MenuID = "add_news",
@@ -383,8 +391,6 @@ namespace Universe.Modules.Web
                                            MenuPosition = 8,
                                            Location = "admin/add_news.html"
                                        });
-			
-			// These are individual pages that can be called
             _rootPage.Children.Add(new GridPage
                                        {
                                            MenuID = "edit_news",
@@ -408,6 +414,14 @@ namespace Universe.Modules.Web
                                            MenuID = "news_info",
                                            Location = "news.html"
                                        });
+            _rootPage.Children.Add(new GridPage
+            {
+                MenuID = "abuse_report",
+                ShowInMenu = false,
+                AdminRequired = true,
+                MenuPosition = 8,
+                Location = "admin/abuse_report.html"
+            });
 
             //Things added, but not used
             /*pages.Add(new Dictionary<string, object> { { "MenuItemID", "tweets" }, 

@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,17 +25,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Universe.Framework.ConsoleFramework;
-using Universe.Framework.DatabaseInterfaces;
-using Universe.Framework.Modules;
-using Universe.Framework.Services;
-using Universe.Framework.Services.ClassHelpers.Profile;
-using Nini.Config;
 using System;
 using System.Collections;
 using System.IO;
-using Universe.Framework.Utilities;
+using Nini.Config;
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.DatabaseInterfaces;
+using Universe.Framework.Modules;
 using Universe.Framework.Servers;
+using Universe.Framework.Services;
+using Universe.Framework.Services.ClassHelpers.Profile;
+using Universe.Framework.Utilities;
 
 namespace Universe.Services
 {
@@ -66,7 +66,8 @@ namespace Universe.Services
                         m_TOSLocation = m_TOSLocation.Replace("ServersHostname", MainServer.Instance.HostName);
                     else
                     {
-                        var TOSFileName = PathHelpers.VerifyReadFile (m_TOSLocation,  ".txt", Constants.DEFAULT_DATA_DIR);
+                        var simBase = registry.RequestModuleInterface<ISimulationBase> ();
+                        var TOSFileName = PathHelpers.VerifyReadFile (m_TOSLocation,  ".txt", simBase.DefaultDataPath);
                         if (TOSFileName == "")
                         {
                             m_UseTOS = false;
@@ -180,6 +181,7 @@ namespace Universe.Services
                                                     data.ToString(), false);
                 }
             }
+
             return null;
         }
     }

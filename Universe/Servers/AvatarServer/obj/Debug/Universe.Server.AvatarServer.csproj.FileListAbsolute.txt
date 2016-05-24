@@ -1,5 +1,0 @@
-C:\Users\universe\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.Server.AvatarServer.exe
-C:\Users\universe\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.Server.AvatarServer.pdb
-C:\Users\universe\Desktop\Virtual-Dev\Universe\Servers\AvatarServer\obj\Debug\Universe.Server.AvatarServer.csprojResolveAssemblyReference.cache
-C:\Users\universe\Desktop\Virtual-Dev\Universe\Servers\AvatarServer\obj\Debug\Universe.Server.AvatarServer.exe
-C:\Users\universe\Desktop\Virtual-Dev\Universe\Servers\AvatarServer\obj\Debug\Universe.Server.AvatarServer.pdb

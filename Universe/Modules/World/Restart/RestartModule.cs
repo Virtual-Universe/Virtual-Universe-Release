@@ -69,6 +69,12 @@ namespace Universe.Modules.Restart
 
         public void AddRegion (IScene scene)
         {
+            if (m_storeDirectory == "")
+            {
+                var simBase = scene.RequestModuleInterface<ISimulationBase> ();
+                m_storeDirectory = Path.Combine(simBase.DefaultDataPath, "Region");
+            }
+            
             m_scene = scene;
             scene.RegisterModuleInterface<IRestartModule> (this);
         }
@@ -227,6 +233,15 @@ namespace Universe.Modules.Restart
 
             MainConsole.Instance.Error ("[Restart]: Restarting " + m_scene.RegionInfo.RegionName);
             restartRegionSerialized (m_scene);
+        }
+
+        /// <summary>
+        /// Serializes the scene.
+        /// </summary>
+        public void SerializeScene()
+        {
+            MainConsole.Instance.InfoFormat ("[Restart]: Saving current users on {0} ready for restart", m_scene.RegionInfo.RegionName);
+            SerializeUsers (m_scene);
         }
 
         #endregion

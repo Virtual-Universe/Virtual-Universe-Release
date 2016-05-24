@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,7 +25,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.DatabaseInterfaces;
@@ -33,14 +40,6 @@ using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading;
 using GridRegion = Universe.Framework.Services.GridRegion;
 
 namespace Universe.Services
@@ -65,13 +64,14 @@ namespace Universe.Services
             _config = config;
             m_registry = registry;
             IConfig agentConfig = config.Configs["AgentProcessing"];
+
             if (agentConfig != null)
             {
                 m_enabled = agentConfig.GetString("Module", "AgentProcessing") == "AgentProcessing";
                 VariableRegionSight = agentConfig.GetBoolean("UseVariableRegionSightDistance", VariableRegionSight);
-                MaxVariableRegionSight = agentConfig.GetInt("MaxDistanceVariableRegionSightDistance",
-                                                            MaxVariableRegionSight);
+                MaxVariableRegionSight = agentConfig.GetInt("MaxDistanceVariableRegionSightDistance", MaxVariableRegionSight);
             }
+
             if (m_enabled)
                 m_registry.RegisterModuleInterface<IAgentProcessing>(this);
         }
@@ -101,12 +101,15 @@ namespace Universe.Services
                 return null;
 
             string method = message["Method"].AsString();
-            if (method != "RegionIsOnline" && method != "LogoutRegionAgents" &&
-                method != "ArrivedAtDestination" && method != "CancelTeleport" &&
-                method != "AgentLoggedOut" && method != "SendChildAgentUpdate" &&
-                method != "TeleportAgent" && method != "CrossAgent")
+            if (method != "RegionIsOnline" &&
+                method != "LogoutRegionAgents" &&
+                method != "ArrivedAtDestination" &&
+                method != "CancelTeleport" &&
+                method != "AgentLoggedOut" &&
+                method != "SendChildAgentUpdate" &&
+                method != "TeleportAgent" &&
+                method != "CrossAgent")
                 return null;
-
 
             UUID AgentID = message["AgentID"].AsUUID();
             UUID requestingRegion = message["RequestingRegion"].AsUUID();
@@ -116,29 +119,30 @@ namespace Universe.Services
             IRegionClientCapsService regionCaps = null;
             if (clientCaps != null)
                 regionCaps = clientCaps.GetCapsService(requestingRegion);
-            if (message["Method"] == "LogoutRegionAgents")
+
+            if (method == "LogoutRegionAgents")
             {
                 LogOutAllAgentsForRegion(requestingRegion);
             }
-            else if (message["Method"] == "RegionIsOnline")
-                //This gets fired when the scene is fully finished starting up
+            else if (method == "RegionIsOnline")
+            //This gets fired when the scene is fully finished starting up
             {
                 //Log out all the agents first, then add any child agents that should be in this region
                 //Don't do this, we don't need to kill all the clients right now
-                //LogOutAllAgentsForRegion(requestingRegion);
                 IGridService GridService = m_registry.RequestModuleInterface<IGridService>();
+
                 if (GridService != null)
                 {
                     GridRegion requestingGridRegion = GridService.GetRegionByUUID(null, requestingRegion);
                     if (requestingGridRegion != null)
-                        Util.FireAndForget((o) => EnableChildAgentsForRegion(requestingGridRegion));
+                        Util.FireAndForget(o => EnableChildAgentsForRegion(requestingGridRegion));
                 }
             }
-            else if (message["Method"] == "ArrivedAtDestination")
+            else if (method == "ArrivedAtDestination")
             {
                 if (regionCaps == null || clientCaps == null)
                     return null;
-                //Recieved a callback
+                //Received a callback
                 if (clientCaps.InTeleport) //Only set this if we are in a teleport, 
                     //  otherwise (such as on login), this won't check after the first tp!
                     clientCaps.CallbackHasCome = true;
@@ -146,7 +150,7 @@ namespace Universe.Services
                 regionCaps.Disabled = false;
 
                 //The agent is getting here for the first time (eg. login)
-                OSDMap body = ((OSDMap) message["Message"]);
+                OSDMap body = ((OSDMap)message["Message"]);
 
                 //Parse the OSDMap
                 int DrawDistance = body["DrawDistance"].AsInteger();
@@ -157,7 +161,7 @@ namespace Universe.Services
                 //Now do the creation
                 EnableChildAgents(AgentID, requestingRegion, DrawDistance, circuitData);
             }
-            else if (message["Method"] == "CancelTeleport")
+            else if (method == "CancelTeleport")
             {
                 if (regionCaps == null || clientCaps == null)
                     return null;
@@ -170,52 +174,53 @@ namespace Universe.Services
                     regionCaps.Disabled = false;
                 }
             }
-            else if (message["Method"] == "AgentLoggedOut")
+            else if (method == "AgentLoggedOut")
             {
                 //ONLY if the agent is root do we even consider it
                 if (regionCaps != null && regionCaps.RootAgent)
                 {
-                    OSDMap body = ((OSDMap) message["Message"]);
+                    OSDMap body = ((OSDMap)message["Message"]);
 
                     AgentPosition pos = new AgentPosition();
                     pos.FromOSD((OSDMap)body["AgentPos"]);
 
                     regionCaps.Disabled = true;
 
-                    Util.FireAndForget((o) =>
-                                           {
-                                               LogoutAgent(regionCaps, false); //The root is killing itself
-                                               SendChildAgentUpdate(pos, regionCaps);
-                                           });
+                    Util.FireAndForget(o =>
+                    {
+                        LogoutAgent(regionCaps, false); //The root is killing itself
+                        SendChildAgentUpdate(pos, regionCaps);
+                    });
                 }
             }
-            else if (message["Method"] == "SendChildAgentUpdate")
+            else if (method == "SendChildAgentUpdate")
             {
                 if (regionCaps == null || clientCaps == null)
                     return null;
                 IRegionClientCapsService rootCaps = clientCaps.GetRootCapsService();
+
                 if (rootCaps != null && rootCaps.RegionHandle == regionCaps.RegionHandle) //Has to be root
                 {
-                    OSDMap body = ((OSDMap) message["Message"]);
+                    OSDMap body = ((OSDMap)message["Message"]);
 
                     AgentPosition pos = new AgentPosition();
-                    pos.FromOSD((OSDMap) body["AgentPos"]);
+                    pos.FromOSD((OSDMap)body["AgentPos"]);
 
                     SendChildAgentUpdate(pos, regionCaps);
                     regionCaps.Disabled = false;
                 }
             }
-            else if (message["Method"] == "TeleportAgent")
+            else if (method == "TeleportAgent")
             {
                 if (regionCaps == null || clientCaps == null)
                     return null;
                 IRegionClientCapsService rootCaps = clientCaps.GetRootCapsService();
                 if (rootCaps != null && rootCaps.RegionHandle == regionCaps.RegionHandle)
                 {
-                    OSDMap body = ((OSDMap) message["Message"]);
+                    OSDMap body = ((OSDMap)message["Message"]);
 
                     GridRegion destination = new GridRegion();
-                    destination.FromOSD((OSDMap) body["Region"]);
+                    destination.FromOSD((OSDMap)body["Region"]);
 
                     uint TeleportFlags = body["TeleportFlags"].AsUInteger();
 
@@ -227,16 +232,16 @@ namespace Universe.Services
                     regionCaps.Disabled = false;
 
                     //Don't need to wait for this to finish on the main http thread
-                    Util.FireAndForget((o) =>
-                                           {
-                                               string reason = "";
-                                               TeleportAgent(ref destination, TeleportFlags,
-                                                             Circuit, AgentData, AgentID, requestingRegion, out reason);
-                                           });
+                    Util.FireAndForget(o =>
+                    {
+                        string reason;
+                        TeleportAgent(ref destination, TeleportFlags,
+                            Circuit, AgentData, AgentID, requestingRegion, out reason);
+                    });
                     return null;
                 }
             }
-            else if (message["Method"] == "CrossAgent")
+            else if (method == "CrossAgent")
             {
                 if (regionCaps == null || clientCaps == null)
                     return null;
@@ -244,41 +249,34 @@ namespace Universe.Services
                 if (rootCaps == null || rootCaps.RegionHandle == regionCaps.RegionHandle)
                 {
                     //This is a simulator message that tells us to cross the agent
-                    OSDMap body = ((OSDMap) message["Message"]);
+                    OSDMap body = ((OSDMap)message["Message"]);
 
                     Vector3 pos = body["Pos"].AsVector3();
                     Vector3 Vel = body["Vel"].AsVector3();
                     GridRegion Region = new GridRegion();
-                    Region.FromOSD((OSDMap) body["Region"]);
+                    Region.FromOSD((OSDMap)body["Region"]);
                     AgentCircuitData Circuit = new AgentCircuitData();
                     Circuit.FromOSD((OSDMap)body["Circuit"]);
                     AgentData AgentData = new AgentData();
                     AgentData.FromOSD((OSDMap)body["AgentData"]);
                     regionCaps.Disabled = false;
 
-                    Util.FireAndForget((o) =>
-                                           {
-                                               string reason = "";
-                                               CrossAgent(Region, pos, Vel, Circuit, AgentData,
-                                                          AgentID, requestingRegion, out reason);
-                                           });
+                    Util.FireAndForget(o =>
+                    {
+                        string reason;
+                        CrossAgent(Region, pos, Vel, Circuit, AgentData,
+                            AgentID, requestingRegion, out reason);
+                    });
+
                     return null;
                 }
-                else if (clientCaps.InTeleport)
-                {
-                    OSDMap result = new OSDMap();
-                    result["success"] = false;
-                    result["Note"] = false;
-                    return result;
-                }
-                else
-                {
-                    OSDMap result = new OSDMap();
-                    result["success"] = false;
-                    result["Note"] = false;
-                    return result;
-                }
+
+                OSDMap result = new OSDMap();
+                result["success"] = false;
+                result["Note"] = false;
+                return result;
             }
+
             return null;
         }
 
@@ -304,7 +302,8 @@ namespace Universe.Services
                     SimulationService.CloseAgent(regionClient.Region, regionCaps.AgentID);
                 }
             }
-            if (kickRootAgent && regionCaps.Region != null) //Kick the root agent then
+
+            if (kickRootAgent && SimulationService != null && regionCaps.Region != null) //Kick the root agent then
                 SimulationService.CloseAgent(regionCaps.Region, regionCaps.AgentID);
             //Close all caps
             regionCaps.ClientCaps.Close();
@@ -314,10 +313,12 @@ namespace Universe.Services
                 agentInfoService.SetLoggedIn(regionCaps.AgentID.ToString(), false, UUID.Zero, "");
                 agentInfoService.FireUserStatusChangeEvent(regionCaps.AgentID.ToString(), false, UUID.Zero);
             }
+
             if (friendsService != null)
                 friendsService.SendFriendOnlineStatuses(regionCaps.AgentID, false);
 
-            m_capsService.RemoveCAPS(regionCaps.AgentID);
+            if (m_capsService != null)
+                m_capsService.RemoveCAPS(regionCaps.AgentID);
         }
 
         public virtual void LogOutAllAgentsForRegion(UUID requestingRegion)
@@ -328,11 +329,12 @@ namespace Universe.Services
             {
                 foreach (IRegionClientCapsService regionClientCaps in fullregionCaps.GetClients())
                 {
-                    //We can send this here, because we ONLY send this when the region is going down for a loong time
+                    //We can send this here, because we ONLY send this when the region is going down for a long time
                     eqs.DisableSimulator(regionClientCaps.AgentID, regionClientCaps.RegionHandle,
                                          regionClientCaps.Region.RegionID);
                 }
-                //Now kill the region in the caps Service, DO THIS FIRST, otherwise you get an infinite loop later in the IClientCapsService when it tries to remove itself from the IRegionCapsService
+                //Now kill the region in the caps Service, DO THIS FIRST, otherwise you get an infinite loop later in 
+                //the IClientCapsService when it tries to remove itself from the IRegionCapsService
                 m_capsService.RemoveCapsForRegion(requestingRegion);
                 //Close all regions and remove them from the region
                 fullregionCaps.Close();
@@ -349,73 +351,76 @@ namespace Universe.Services
             bool informed = true;
             List<GridRegion> neighbors = GetNeighbors(null, requestingRegion, 0);
 
-            foreach (GridRegion neighbor in neighbors)
+            if (neighbors != null)
             {
-                //MainConsole.Instance.WarnFormat("--> Going to send child agent to {0}, new agent {1}", neighbour.RegionName, newAgent);
-
-                IRegionCapsService regionCaps = m_capsService.GetCapsForRegion(neighbor.RegionID);
-                if (regionCaps == null) //If there isn't a region caps, there isn't an agent in this sim
-                    continue;
-                List<UUID> usersInformed = new List<UUID>();
-                foreach (IRegionClientCapsService regionClientCaps in regionCaps.GetClients())
+                foreach (GridRegion neighbor in neighbors)
                 {
-                    if (usersInformed.Contains(regionClientCaps.AgentID) || !regionClientCaps.RootAgent ||
-                        AllScopeIDImpl.CheckScopeIDs(regionClientCaps.ClientCaps.AccountInfo.AllScopeIDs, neighbor) ==
-                        null)
-                        //Only inform agents once
+                    IRegionCapsService regionCaps = m_capsService.GetCapsForRegion(neighbor.RegionID);
+                    if (regionCaps == null) //If there isn't a region caps, there isn't an agent in this sim
                         continue;
+                    List<UUID> usersInformed = new List<UUID>();
+                    foreach (IRegionClientCapsService regionClientCaps in regionCaps.GetClients())
+                    {
+                        if (usersInformed.Contains(regionClientCaps.AgentID) || !regionClientCaps.RootAgent ||
+                        AllScopeIDImpl.CheckScopeIDs(regionClientCaps.ClientCaps.AccountInfo.AllScopeIDs, neighbor) == null)
+                            //Only inform agents once
+                            continue;
 
-                    AgentCircuitData regionCircuitData = regionClientCaps.CircuitData.Copy();
-                    regionCircuitData.IsChildAgent = true;
-                    string reason; //Tell the region about it
-                    if (!InformClientOfNeighbor(regionClientCaps.AgentID, regionClientCaps.Region.RegionID,
-                                                regionCircuitData, ref requestingRegion, (uint) TeleportFlags.Default,
-                                                null, out reason))
-                        informed = false;
-                    else
-                        usersInformed.Add(regionClientCaps.AgentID);
+                        AgentCircuitData regionCircuitData = regionClientCaps.CircuitData.Copy();
+                        regionCircuitData.IsChildAgent = true;
+                        string reason; //Tell the region about it
+                        if (!InformClientOfNeighbor(regionClientCaps.AgentID, regionClientCaps.Region.RegionID,
+                            regionCircuitData, ref requestingRegion, (uint)TeleportFlags.Default,
+                            null, out reason))
+                            informed = false;
+                        else
+                            usersInformed.Add(regionClientCaps.AgentID);
+                    }
+                    count++;
                 }
-                count++;
             }
+
             return informed;
         }
 
-        public virtual void EnableChildAgents(UUID AgentID, UUID requestingRegion, int DrawDistance, AgentCircuitData circuit)
+        public virtual void EnableChildAgents(UUID agentID, UUID requestingRegion, int drawDistance, AgentCircuitData circuit)
         {
-            Util.FireAndForget((o) =>
-                                   {
-                                       int count = 0;
-                                       IClientCapsService clientCaps = m_capsService.GetClientCapsService(AgentID);
-                                       GridRegion ourRegion =
-                                           m_registry.RequestModuleInterface<IGridService>().GetRegionByUUID(
-                                               clientCaps.AccountInfo.AllScopeIDs, requestingRegion);
-                                       if (ourRegion == null)
-                                       {
-                                           MainConsole.Instance.Info(
-                                               "[AgentProcessing]: Failed to inform neighbors about new agent, could not find our region.");
-                                           return;
-                                       }
-                                       List<GridRegion> neighbors = GetNeighbors(clientCaps.AccountInfo.AllScopeIDs,
-                                                                                 ourRegion, DrawDistance);
+            Util.FireAndForget(o =>
+            {
+                int count = 0;
+                IClientCapsService clientCaps = m_capsService.GetClientCapsService(agentID);
+                GridRegion ourRegion =
+                    m_registry.RequestModuleInterface<IGridService>().GetRegionByUUID(
+                        clientCaps.AccountInfo.AllScopeIDs, requestingRegion);
 
-                                       //Fix the root agents dd
-                                       foreach (GridRegion neighbor in neighbors)
-                                       {
-                                           if (neighbor.RegionID != requestingRegion &&
-                                               clientCaps.GetCapsService(neighbor.RegionID) == null)
-                                           {
-                                               string reason;
-                                               AgentCircuitData regionCircuitData =
-                                                   clientCaps.GetRootCapsService().CircuitData.Copy();
-                                               GridRegion nCopy = neighbor;
-                                               regionCircuitData.IsChildAgent = true;
-                                               InformClientOfNeighbor(AgentID, requestingRegion, regionCircuitData,
-                                                                      ref nCopy,
-                                                                      (uint) TeleportFlags.Default, null, out reason);
-                                           }
-                                           count++;
-                                       }
-                                   });
+                if (ourRegion == null)
+                {
+                    MainConsole.Instance.Info(
+                        "[Agent Processing]: Failed to inform neighbors about new agent, could not find our region.");
+                    return;
+                }
+
+                List<GridRegion> neighbors = GetNeighbors(clientCaps.AccountInfo.AllScopeIDs, ourRegion, drawDistance);
+                if (neighbors != null)
+                {
+                    //Fix the root agents dd
+                    foreach (GridRegion neighbor in neighbors)
+                    {
+                        if (neighbor.RegionID != requestingRegion && clientCaps.GetCapsService(neighbor.RegionID) == null)
+                        {
+                            string reason;
+                            AgentCircuitData regionCircuitData = clientCaps.GetRootCapsService().CircuitData.Copy();
+                            GridRegion nCopy = neighbor;
+                            regionCircuitData.IsChildAgent = true;
+                            InformClientOfNeighbor(agentID, requestingRegion, regionCircuitData,
+                                ref nCopy,
+                                (uint)TeleportFlags.Default, null, out reason);
+                        }
+
+                        count++;
+                    }
+                }
+            });
         }
 
         #endregion
@@ -428,30 +433,24 @@ namespace Universe.Services
         /// <remarks>
         ///     This needs to run asynchronously, as a network timeout may block the thread for a long while
         /// </remarks>
-        /// <param name="AgentID"></param>
+        /// <param name="agentID"></param>
         /// <param name="requestingRegion"></param>
         /// <param name="circuitData"></param>
         /// <param name="neighbor"></param>
-        /// <param name="TeleportFlags"></param>
+        /// <param name="teleportFlags"></param>
         /// <param name="agentData"></param>
         /// <param name="reason"></param>
-        public virtual bool InformClientOfNeighbor(UUID AgentID, UUID requestingRegion, AgentCircuitData circuitData,
+        public virtual bool InformClientOfNeighbor(UUID agentID, UUID requestingRegion, AgentCircuitData circuitData,
                                                    ref GridRegion neighbor,
-                                                   uint TeleportFlags, AgentData agentData, out string reason)
+                                                   uint teleportFlags, AgentData agentData, out string reason)
         {
             if (neighbor == null || neighbor.RegionHandle == 0)
             {
                 reason = "Could not find neighbor to inform";
                 return false;
             }
-            /*if ((neighbor.Flags & (int)Universe.Framework.RegionFlags.RegionOnline) == 0 &&
-                (neighbor.Flags & (int)(Universe.Framework.RegionFlags.Foreign | Universe.Framework.RegionFlags.Hyperlink)) == 0)
-            {
-                reason = "The region you are attempting to teleport to is offline";
-                return false;
-            }*/
-            MainConsole.Instance.Info("[AgentProcessing]: Starting to inform client about neighbor " +
-                                      neighbor.RegionName);
+
+            MainConsole.Instance.Info("[Agent Processing]: Starting to inform client about neighbor " + neighbor.RegionName);
 
             //Notes on this method
             // 1) the SimulationService.CreateAgent MUST have a fixed CapsUrl for the region, so we have to create (if needed)
@@ -463,7 +462,7 @@ namespace Universe.Services
             ISimulationService SimulationService = m_registry.RequestModuleInterface<ISimulationService>();
             if (SimulationService != null)
             {
-                IClientCapsService clientCaps = m_capsService.GetClientCapsService(AgentID);
+                IClientCapsService clientCaps = m_capsService.GetClientCapsService(agentID);
 
                 IRegionClientCapsService oldRegionService = clientCaps.GetCapsService(neighbor.RegionID);
 
@@ -475,12 +474,11 @@ namespace Universe.Services
                 }
 
                 bool newAgent = oldRegionService == null;
-                IRegionClientCapsService otherRegionService = clientCaps.GetOrCreateCapsService(neighbor.RegionID,
-                                                                                                CapsUtil.GetCapsSeedPath
-                                                                                                    (CapsUtil.
-                                                                                                         GetRandomCapsObjectPath
-                                                                                                         ()),
-                                                                                                circuitData, 0);
+                IRegionClientCapsService otherRegionService =
+                    clientCaps.GetOrCreateCapsService(neighbor.RegionID,
+                                                      CapsUtil.GetCapsSeedPath
+                                                      (CapsUtil.GetRandomCapsObjectPath()),
+                                                      circuitData, 0);
 
                 if (!newAgent)
                 {
@@ -491,25 +489,31 @@ namespace Universe.Services
                         agentData.IsCrossing = false;
                         result = SimulationService.UpdateAgent(neighbor, agentData);
                     }
+
                     if (result)
                         oldRegionService.Disabled = false;
                     else
                     {
                         clientCaps.RemoveCAPS(neighbor.RegionID);//Kill the bad client!
                     }
+
                     reason = "";
                     return result;
                 }
 
                 int requestedPort = 0;
                 CreateAgentResponse createAgentResponse;
-                bool regionAccepted = CreateAgent(neighbor, otherRegionService, ref circuitData, SimulationService, new List<UUID>(),
+                bool regionAccepted = CreateAgent(neighbor,
+                                                  otherRegionService,
+                                                  ref circuitData,
+                                                  SimulationService,
+                                                  new List<UUID>(),
                                                   out createAgentResponse);
                 reason = createAgentResponse.Reason;
                 if (regionAccepted)
                 {
                     IPAddress ipAddress = neighbor.ExternalEndPoint.Address;
-                    //If the region accepted us, we should get a CAPS url back as the reason, if not, its not updated or not an Universe region, so don't touch it.
+                    //If the region accepted us, we should get a CAPS url back as the reason, if not, its not updated or not a Virtual Universe region, so don't touch it.
                     string ip = createAgentResponse.OurIPForClient;
                     if (!IPAddress.TryParse(ip, out ipAddress))
 #pragma warning disable 618
@@ -530,28 +534,28 @@ namespace Universe.Services
 
                     EQService.EnableSimulator(neighbor.RegionHandle,
                                               ipAddress.GetAddressBytes(),
-                                              requestedPort, AgentID,
+                                              requestedPort, agentID,
                                               neighbor.RegionSizeX, neighbor.RegionSizeY, requestingRegion);
 
                     // EnableSimulator makes the client send a UseCircuitCode message to the destination, 
                     // which triggers a bunch of things there.
                     // So let's wait
                     Thread.Sleep(300);
-                    EQService.EstablishAgentCommunication(AgentID, neighbor.RegionHandle,
+                    EQService.EstablishAgentCommunication(agentID, neighbor.RegionHandle,
                                                           ipAddress.GetAddressBytes(),
                                                           requestedPort, otherRegionService.CapsUrl,
                                                           neighbor.RegionSizeX,
                                                           neighbor.RegionSizeY,
                                                           requestingRegion);
 
-                    MainConsole.Instance.Info("[AgentProcessing]: Completed inform client about neighbor " +
+                    MainConsole.Instance.Info("[Agent Processing]: Completed inform client about neighbor " +
                                               neighbor.RegionName);
                 }
                 else
                 {
                     clientCaps.RemoveCAPS(neighbor.RegionID);
                     reason = "Could not contact simulator";
-                    MainConsole.Instance.Error("[AgentProcessing]: Failed to inform client about neighbor " +
+                    MainConsole.Instance.Error("[Agent Processing]: Failed to inform client about neighbor " +
                                                neighbor.RegionName +
                                                ", reason: " + reason);
                     return false;
@@ -559,7 +563,7 @@ namespace Universe.Services
                 return true;
             }
             reason = "SimulationService does not exist";
-            MainConsole.Instance.Error("[AgentProcessing]: Failed to inform client about neighbor " +
+            MainConsole.Instance.Error("[Agent Processing]: Failed to inform client about neighbor " +
                                        neighbor.RegionName +
                                        ", reason: " + reason + "!");
             return false;
@@ -569,21 +573,21 @@ namespace Universe.Services
 
         #region Teleporting
 
-        private int CloseNeighborCall;
+        int CloseNeighborCall;
 
-        public virtual bool TeleportAgent(ref GridRegion destination, uint TeleportFlags,
-                                          AgentCircuitData circuit, AgentData agentData, UUID AgentID,
+        public virtual bool TeleportAgent(ref GridRegion destination, uint teleportFlags,
+                                          AgentCircuitData circuit, AgentData agentData, UUID agentID,
                                           UUID requestingRegion,
                                           out string reason)
         {
-            IClientCapsService clientCaps = m_capsService.GetClientCapsService(AgentID);
+            IClientCapsService clientCaps = m_capsService.GetClientCapsService(agentID);
             IRegionClientCapsService regionCaps = clientCaps.GetCapsService(requestingRegion);
             ISimulationService SimulationService = m_registry.RequestModuleInterface<ISimulationService>();
 
             if (regionCaps == null || !regionCaps.RootAgent)
             {
                 reason = "";
-                ResetFromTransit(AgentID);
+                ResetFromTransit(agentID);
                 return false;
             }
 
@@ -595,11 +599,11 @@ namespace Universe.Services
                 if (SimulationService != null)
                 {
                     //Set the user in transit so that we block duplicate tps and reset any cancelations
-                    if (!SetUserInTransit(AgentID))
+                    if (!SetUserInTransit(agentID))
                     {
                         reason = "Already in a teleport";
                         SimulationService.FailedToTeleportAgent(regionCaps.Region, destination.RegionID,
-                                                                AgentID, reason, false);
+                                                                agentID, reason, false);
                         return false;
                     }
 
@@ -608,21 +612,21 @@ namespace Universe.Services
                     {
                         //Inform the client of the neighbor if needed
                         circuit.IsChildAgent = false; //Force child status to the correct type
-                        if (!InformClientOfNeighbor(AgentID, requestingRegion, circuit, ref destination, TeleportFlags,
+                        if (!InformClientOfNeighbor(agentID, requestingRegion, circuit, ref destination, teleportFlags,
                                                     agentData, out reason))
                         {
-                            ResetFromTransit(AgentID);
+                            ResetFromTransit(agentID);
                             SimulationService.FailedToTeleportAgent(regionCaps.Region, destination.RegionID,
-                                                                    AgentID, reason, false);
+                                                                    agentID, reason, false);
                             return false;
                         }
                     }
                     else
                     {
                         reason = "Could not find the grid service";
-                        ResetFromTransit(AgentID);
+                        ResetFromTransit(agentID);
                         SimulationService.FailedToTeleportAgent(regionCaps.Region, destination.RegionID,
-                                                                AgentID, reason, false);
+                                                                agentID, reason, false);
                         return false;
                     }
 
@@ -634,32 +638,28 @@ namespace Universe.Services
                                                   otherRegion.LoopbackRegionIP,
                                                   otherRegion.CircuitData.RegionUDPPort,
                                                   otherRegion.CapsUrl,
-                                                  4, AgentID, TeleportFlags,
+                                                  4, agentID, teleportFlags,
                                                   destination.RegionSizeX, destination.RegionSizeY,
                                                   otherRegion.Region.RegionID);
 
                     // TeleportFinish makes the client send CompleteMovementIntoRegion (at the destination), which
-                    // trigers a whole shebang of things there, including MakeRoot. So let's wait for confirmation
+                    // triggers a whole shebang of things there, including MakeRoot. So let's wait for confirmation
                     // that the client contacted the destination before we send the attachments and close things here.
 
-                    result = WaitForCallback(AgentID, out callWasCanceled);
+                    result = WaitForCallback(agentID, out callWasCanceled);
                     if (!result)
                     {
                         reason = !callWasCanceled ? "The teleport timed out" : "Cancelled";
                         if (!callWasCanceled)
                         {
-                            MainConsole.Instance.Warn("[AgentProcessing]: Callback never came for teleporting agent " +
-                                                      AgentID + ". Resetting.");
+                            MainConsole.Instance.Warn("[Agent Processing]: Callback never came for teleporting agent " +
+                                                      agentID + ". Resetting.");
                             //Tell the region about it as well
-                            SimulationService.FailedToTeleportAgent(regionCaps.Region, destination.RegionID,
-                                                                    AgentID, reason, false);
+                            SimulationService.FailedToTeleportAgent(regionCaps.Region, destination.RegionID, agentID, reason, false);
                         }
                         //Close the agent at the place we just created if it isn't a neighbor
-                        // 7/22 -- Kill the agent no matter what, it obviously is having issues getting there
-                        //if (IsOutsideView (regionCaps.RegionX, destination.RegionLocX, regionCaps.Region.RegionSizeX, destination.RegionSizeX,
-                        //    regionCaps.RegionY, destination.RegionLocY, regionCaps.Region.RegionSizeY, destination.RegionSizeY))
                         {
-                            SimulationService.CloseAgent(destination, AgentID);
+                            SimulationService.CloseAgent(destination, agentID);
                             clientCaps.RemoveCAPS(destination.RegionID);
                         }
                     }
@@ -669,16 +669,15 @@ namespace Universe.Services
                         otherRegion.RootAgent = true;
                         regionCaps.RootAgent = false;
 
-                        // Next, let's close the child agent connections that are too far away.
-                        //if (useCallbacks || oldRegion != destination)//Only close it if we are using callbacks (Universe region)
-                        //Why? OpenSim regions need closed too, even if the protocol is kinda stupid
-                        CloseNeighborAgents(regionCaps.Region, destination, AgentID);
+                        // Next, let's close the child agent connections that are too far away
+                        //Why? OpenSim regions need closed too, even if the protocol is kind of stupid
+                        CloseNeighborAgents(regionCaps.Region, destination, agentID);
                         IAgentInfoService agentInfoService = m_registry.RequestModuleInterface<IAgentInfoService>();
                         if (agentInfoService != null)
-                            agentInfoService.SetLastPosition(AgentID.ToString(), destination.RegionID,
+                            agentInfoService.SetLastPosition(agentID.ToString(), destination.RegionID,
                                                              agentData.Position, Vector3.Zero, destination.ServerURI);
 
-                        SimulationService.MakeChildAgent(AgentID, regionCaps.Region, destination, false);
+                        SimulationService.MakeChildAgent(agentID, regionCaps.Region, destination, false);
                         reason = "";
                     }
                 }
@@ -687,77 +686,75 @@ namespace Universe.Services
             }
             catch (Exception ex)
             {
-                MainConsole.Instance.WarnFormat("[AgentProcessing]: Exception occurred during agent teleport, {0}", ex);
+                MainConsole.Instance.WarnFormat("[Agent Processing]: Exception occurred during agent teleport, {0}", ex);
                 reason = "Exception occurred.";
+
                 if (SimulationService != null)
-                    SimulationService.FailedToTeleportAgent(regionCaps.Region, destination.RegionID,
-                                                            AgentID, reason, false);
+                    SimulationService.FailedToTeleportAgent(regionCaps.Region, destination.RegionID, agentID, reason, false);
             }
             //All done
-            ResetFromTransit(AgentID);
+            ResetFromTransit(agentID);
             return result;
         }
 
-        public virtual void CloseNeighborAgents(GridRegion oldRegion, GridRegion destination, UUID AgentID)
+        public virtual void CloseNeighborAgents(GridRegion oldRegion, GridRegion destination, UUID agentID)
         {
             CloseNeighborCall++;
             int CloseNeighborCallNum = CloseNeighborCall;
             Util.FireAndForget(delegate
-                                   {
-                                       //Sleep for 10 seconds to give the agents a chance to cross and get everything right
-                                       Thread.Sleep(10000);
-                                       if (CloseNeighborCall != CloseNeighborCallNum)
-                                           return; //Another was enqueued, kill this one
+            {
+                //Sleep for 10 seconds to give the agents a chance to cross and get everything right
+                Thread.Sleep(10000);
+                if (CloseNeighborCall != CloseNeighborCallNum)
+                    return; //Another was enqueued, kill this one
 
-                                       //Now do a sanity check on the avatar
-                                       IClientCapsService clientCaps = m_capsService.GetClientCapsService(
-                                           AgentID);
-                                       if (clientCaps == null)
-                                           return;
-                                       IRegionClientCapsService rootRegionCaps = clientCaps.GetRootCapsService();
-                                       if (rootRegionCaps == null)
-                                           return;
-                                       IRegionClientCapsService ourRegionCaps =
-                                           clientCaps.GetCapsService(destination.RegionID);
-                                       if (ourRegionCaps == null)
-                                           return;
-                                       //If they handles arn't the same, the agent moved, and we can't be sure that we should close these agents
-                                       if (rootRegionCaps.RegionHandle != ourRegionCaps.RegionHandle &&
-                                           !clientCaps.InTeleport)
-                                           return;
+                //Now do a sanity check on the avatar
+                IClientCapsService clientCaps = m_capsService.GetClientCapsService(agentID);
 
-                                       IGridService service = m_registry.RequestModuleInterface<IGridService>();
-                                       if (service != null)
-                                       {
-                                           List<GridRegion> NeighborsOfOldRegion =
-                                               service.GetNeighbors(clientCaps.AccountInfo.AllScopeIDs, oldRegion);
-                                           List<GridRegion> NeighborsOfDestinationRegion =
-                                               service.GetNeighbors(clientCaps.AccountInfo.AllScopeIDs, destination);
+                if (clientCaps == null)
+                    return;
+                IRegionClientCapsService rootRegionCaps = clientCaps.GetRootCapsService();
 
-                                           List<GridRegion> byebyeRegions = new List<GridRegion>(NeighborsOfOldRegion)
+                if (rootRegionCaps == null)
+                    return;
+                IRegionClientCapsService ourRegionCaps = clientCaps.GetCapsService(destination.RegionID);
+
+                if (ourRegionCaps == null)
+                    return;
+                //If they handles aren't the same, the agent moved, and we can't be sure that we should close these agents
+                if (rootRegionCaps.RegionHandle != ourRegionCaps.RegionHandle && !clientCaps.InTeleport)
+                    return;
+
+                IGridService service = m_registry.RequestModuleInterface<IGridService>();
+                if (service != null)
+                {
+                    List<GridRegion> NeighborsOfOldRegion =
+                        service.GetNeighbors(clientCaps.AccountInfo.AllScopeIDs, oldRegion);
+                    List<GridRegion> NeighborsOfDestinationRegion =
+                        service.GetNeighbors(clientCaps.AccountInfo.AllScopeIDs, destination);
+
+                    List<GridRegion> byebyeRegions = new List<GridRegion>(NeighborsOfOldRegion)
                                                                                 {oldRegion};
-                                           //Add the old region, because it might need closed too
+                    //Add the old region, because it might need closed too
 
-                                           byebyeRegions.RemoveAll(delegate(GridRegion r)
-                                                                       {
-                                                                           if (r.RegionID == destination.RegionID)
-                                                                               return true;
-                                                                           else if (
-                                                                               NeighborsOfDestinationRegion.Contains
-                                                                                   (r))
-                                                                               return true;
-                                                                           return false;
-                                                                       });
+                    byebyeRegions.RemoveAll(delegate (GridRegion r)
+                    {
+                        if (r.RegionID == destination.RegionID)
+                            return true;
 
-                                           if (byebyeRegions.Count > 0)
-                                           {
-                                               MainConsole.Instance.Info("[AgentProcessing]: Closing " +
-                                                                         byebyeRegions.Count +
-                                                                         " child agents around " + oldRegion.RegionName);
-                                               SendCloseChildAgent(AgentID, byebyeRegions);
-                                           }
-                                       }
-                                   });
+                        if (NeighborsOfDestinationRegion.Contains(r))
+                            return true;
+                        return false;
+                    });
+
+                    if (byebyeRegions.Count > 0)
+                    {
+                        MainConsole.Instance.Info("[Agent Processing]: Closing " + byebyeRegions.Count +
+                                                  " child agents around " + oldRegion.RegionName);
+                        SendCloseChildAgent(agentID, byebyeRegions);
+                    }
+                }
+            });
         }
 
         public virtual void SendCloseChildAgent(UUID agentID, IEnumerable<GridRegion> regionsToClose)
@@ -766,8 +763,9 @@ namespace Universe.Services
             //Close all agents that we've been given regions for
             foreach (GridRegion region in regionsToClose)
             {
-                MainConsole.Instance.Info("[AgentProcessing]: Closing child agent in " + region.RegionName);
+                MainConsole.Instance.Info("[Agent Processing]: Closing child agent in " + region.RegionName);
                 IRegionClientCapsService regionClientCaps = clientCaps.GetCapsService(region.RegionID);
+
                 if (regionClientCaps != null)
                 {
                     m_registry.RequestModuleInterface<ISimulationService>().CloseAgent(region, agentID);
@@ -776,9 +774,9 @@ namespace Universe.Services
             }
         }
 
-        protected void ResetFromTransit(UUID AgentID)
+        protected void ResetFromTransit(UUID agentID)
         {
-            IClientCapsService clientCaps = m_capsService.GetClientCapsService(AgentID);
+            IClientCapsService clientCaps = m_capsService.GetClientCapsService(agentID);
             if (clientCaps != null)
             {
                 clientCaps.InTeleport = false;
@@ -787,15 +785,15 @@ namespace Universe.Services
             }
         }
 
-        protected bool SetUserInTransit(UUID AgentID)
+        protected bool SetUserInTransit(UUID agentID)
         {
-            IClientCapsService clientCaps = m_capsService.GetClientCapsService(AgentID);
+            IClientCapsService clientCaps = m_capsService.GetClientCapsService(agentID);
 
             if (clientCaps.InTeleport)
             {
                 MainConsole.Instance.Warn(
-                    "[AgentProcessing]: Got a request to teleport during another teleport for agent " + AgentID + "!");
-                return false; //What??? Stop here and don't go forward
+                    "[Agent Processing]: Got a request to teleport during another teleport for agent " + agentID + "!");
+                return false; // Stop here and don't go forward
             }
 
             clientCaps.InTeleport = true;
@@ -806,9 +804,9 @@ namespace Universe.Services
 
         #region Callbacks
 
-        protected bool WaitForCallback(UUID AgentID, out bool callWasCanceled)
+        protected bool WaitForCallback(UUID agentID, out bool callWasCanceled)
         {
-            IClientCapsService clientCaps = m_capsService.GetClientCapsService(AgentID);
+            IClientCapsService clientCaps = m_capsService.GetClientCapsService(agentID);
 
             int count = 1000;
             while (!clientCaps.CallbackHasCome && count > 0)
@@ -820,26 +818,27 @@ namespace Universe.Services
                     callWasCanceled = true;
                     return true;
                 }
+
                 Thread.Sleep(10);
                 count--;
             }
-            //If we made it through the whole loop, we havn't been canceled,
+            //If we made it through the whole loop, we haven't been canceled,
             //    as we either have timed out or made it, so no checks are needed
             callWasCanceled = false;
             return clientCaps.CallbackHasCome;
         }
 
-        protected bool WaitForCallback(UUID AgentID)
+        protected bool WaitForCallback(UUID agentID)
         {
-            IClientCapsService clientCaps = m_capsService.GetClientCapsService(AgentID);
+            IClientCapsService clientCaps = m_capsService.GetClientCapsService(agentID);
 
             int count = 100;
             while (!clientCaps.CallbackHasCome && count > 0)
             {
-                //MainConsole.Instance.Debug("  >>> Waiting... " + count);
                 Thread.Sleep(100);
                 count--;
             }
+
             return clientCaps.CallbackHasCome;
         }
 
@@ -851,7 +850,11 @@ namespace Universe.Services
 
         public virtual List<GridRegion> GetNeighbors(List<UUID> scopeIDs, GridRegion region, int userDrawDistance)
         {
-            List<GridRegion> neighbors = new List<GridRegion>();
+            var neighbors = new List<GridRegion>();
+            var gridService = m_registry.RequestModuleInterface<IGridService>();
+            if (gridService == null)
+                return neighbors;       // no grid service??
+
             if (VariableRegionSight && userDrawDistance != 0)
             {
                 //Enforce the max draw distance
@@ -865,11 +868,10 @@ namespace Universe.Services
                 int yMax = (region.RegionLocY) + (userDrawDistance);
 
                 //Ask the grid service about the range
-                neighbors = m_registry.RequestModuleInterface<IGridService>().GetRegionRange(scopeIDs,
-                                                                                             xMin, xMax, yMin, yMax);
+                neighbors = gridService.GetRegionRange(scopeIDs, xMin, xMax, yMin, yMax);
             }
             else
-                neighbors = m_registry.RequestModuleInterface<IGridService>().GetNeighbors(scopeIDs, region);
+                neighbors = gridService.GetNeighbors(scopeIDs, region);
 
             return neighbors;
         }
@@ -879,23 +881,23 @@ namespace Universe.Services
         #region Crossing
 
         public virtual bool CrossAgent(GridRegion crossingRegion, Vector3 pos,
-                                       Vector3 velocity, AgentCircuitData circuit, AgentData cAgent, UUID AgentID,
+                                       Vector3 velocity, AgentCircuitData circuit, AgentData cAgent, UUID agentID,
                                        UUID requestingRegion, out string reason)
         {
-            IClientCapsService clientCaps = m_capsService.GetClientCapsService(AgentID);
+            IClientCapsService clientCaps = m_capsService.GetClientCapsService(agentID);
             IRegionClientCapsService requestingRegionCaps = clientCaps.GetCapsService(requestingRegion);
             ISimulationService SimulationService = m_registry.RequestModuleInterface<ISimulationService>();
             IGridService GridService = m_registry.RequestModuleInterface<IGridService>();
             try
             {
-                if (SimulationService != null || GridService != null)
+                if (SimulationService != null && GridService != null)
                 {
                     //Set the user in transit so that we block duplicate tps and reset any cancelations
-                    if (!SetUserInTransit(AgentID))
+                    if (!SetUserInTransit(agentID))
                     {
                         reason = "Already in a teleport";
                         SimulationService.FailedToTeleportAgent(requestingRegionCaps.Region, crossingRegion.RegionID,
-                                                                AgentID, reason, true);
+                            agentID, reason, true);
                         return false;
                     }
 
@@ -906,31 +908,32 @@ namespace Universe.Services
                     if (otherRegion == null)
                     {
                         //If we failed before, attempt again
-                        if (!InformClientOfNeighbor(AgentID, requestingRegion, circuit, ref crossingRegion, 0,
-                                                    cAgent, out reason))
+                        if (!InformClientOfNeighbor(agentID, requestingRegion, circuit, ref crossingRegion, 0,
+                                cAgent, out reason))
                         {
-                            ResetFromTransit(AgentID);
+                            ResetFromTransit(agentID);
                             SimulationService.FailedToTeleportAgent(requestingRegionCaps.Region,
-                                                                    crossingRegion.RegionID,
-                                                                    AgentID, reason, true);
+                                crossingRegion.RegionID,
+                                agentID, reason, true);
                             return false;
                         }
-                        else
-                            otherRegion = clientCaps.GetCapsService(crossingRegion.RegionID);
+
+                        otherRegion = clientCaps.GetCapsService(crossingRegion.RegionID);
                     }
 
                     //We need to get it from the grid service again so that we can get the simulation service urls correctly
                     // as regions don't get that info
                     crossingRegion = GridService.GetRegionByUUID(clientCaps.AccountInfo.AllScopeIDs,
-                                                                 crossingRegion.RegionID);
+                        crossingRegion.RegionID);
                     cAgent.IsCrossing = true;
+
                     if (!SimulationService.UpdateAgent(crossingRegion, cAgent))
                     {
-                        MainConsole.Instance.Warn("[AgentProcessing]: Failed to cross agent " + AgentID +
-                                                  " because region did not accept it. Resetting.");
+                        MainConsole.Instance.Warn("[Agent Processing]: Failed to cross agent " + agentID +
+                        " because region did not accept it. Resetting.");
                         reason = "Failed to update an agent";
                         SimulationService.FailedToTeleportAgent(requestingRegionCaps.Region, crossingRegion.RegionID,
-                                                                AgentID, reason, true);
+                            agentID, reason, true);
                     }
                     else
                     {
@@ -945,24 +948,25 @@ namespace Universe.Services
 
                         //Tell the client about the transfer
                         EQService.CrossRegion(crossingRegion.RegionHandle, pos, velocity,
-                                              otherRegion.LoopbackRegionIP,
-                                              otherRegion.CircuitData.RegionUDPPort,
-                                              otherRegion.CapsUrl,
-                                              AgentID,
-                                              circuit.SessionID,
-                                              crossingRegion.RegionSizeX,
-                                              crossingRegion.RegionSizeY,
-                                              requestingRegionCaps.Region.RegionID);
+                            otherRegion.LoopbackRegionIP,
+                            otherRegion.CircuitData.RegionUDPPort,
+                            otherRegion.CapsUrl,
+                            agentID,
+                            circuit.SessionID,
+                            crossingRegion.RegionSizeX,
+                            crossingRegion.RegionSizeY,
+                            requestingRegionCaps.Region.RegionID);
 
-                        result = WaitForCallback(AgentID);
+                        result = WaitForCallback(agentID);
+
                         if (!result)
                         {
                             MainConsole.Instance.Warn("[AgentProcessing]: Callback never came in crossing agent " +
-                                                      circuit.AgentID +
-                                                      ". Resetting.");
+                            circuit.AgentID +
+                            ". Resetting.");
                             reason = "Crossing timed out";
                             SimulationService.FailedToTeleportAgent(requestingRegionCaps.Region, crossingRegion.RegionID,
-                                                                    AgentID, reason, true);
+                                agentID, reason, true);
                         }
                         else
                         {
@@ -971,31 +975,34 @@ namespace Universe.Services
                             otherRegion.RootAgent = true;
                             requestingRegionCaps.RootAgent = false;
 
-                            CloseNeighborAgents(requestingRegionCaps.Region, crossingRegion, AgentID);
+                            CloseNeighborAgents(requestingRegionCaps.Region, crossingRegion, agentID);
                             reason = "";
                             IAgentInfoService agentInfoService = m_registry.RequestModuleInterface<IAgentInfoService>();
+
                             if (agentInfoService != null)
-                                agentInfoService.SetLastPosition(AgentID.ToString(), crossingRegion.RegionID,
-                                                                 pos, Vector3.Zero, crossingRegion.ServerURI);
-                            SimulationService.MakeChildAgent(AgentID, requestingRegionCaps.Region, crossingRegion, true);
+                                agentInfoService.SetLastPosition(agentID.ToString(), crossingRegion.RegionID,
+                                    pos, Vector3.Zero, crossingRegion.ServerURI);
+                            SimulationService.MakeChildAgent(agentID, requestingRegionCaps.Region, crossingRegion, true);
                         }
                     }
 
                     //All done
-                    ResetFromTransit(AgentID);
+                    ResetFromTransit(agentID);
                     return result;
                 }
-                else
-                    reason = "Could not find the SimulationService";
+
+                reason = "Could not find the SimulationService";
             }
+
             catch (Exception ex)
             {
-                MainConsole.Instance.WarnFormat("[AgentProcessing]: Failed to cross an agent into a new region. {0}", ex);
+                MainConsole.Instance.WarnFormat("[Agent Processing]: Failed to cross an agent into a new region. {0}", ex);
                 if (SimulationService != null)
                     SimulationService.FailedToTeleportAgent(requestingRegionCaps.Region, crossingRegion.RegionID,
-                        AgentID, "Exception occurred", true);
+                        agentID, "Exception occurred", true);
             }
-            ResetFromTransit(AgentID);
+
+            ResetFromTransit(agentID);
             reason = "Exception occurred";
             return false;
         }
@@ -1013,13 +1020,16 @@ namespace Universe.Services
         {
             //We need to send this update out to all the child agents this region has
             IGridService service = m_registry.RequestModuleInterface<IGridService>();
+
             if (service != null)
             {
                 ISimulationService SimulationService = m_registry.RequestModuleInterface<ISimulationService>();
+
                 if (SimulationService != null)
                 {
                     //Set the last location in the database
                     IAgentInfoService agentInfoService = m_registry.RequestModuleInterface<IAgentInfoService>();
+
                     if (agentInfoService != null)
                     {
                         //Find the lookAt vector
@@ -1044,14 +1054,14 @@ namespace Universe.Services
                             ourNeighbors.Where(
                                 region => region != null && region.RegionID != regionCaps.RegionID && !SimulationService.UpdateAgent(region, agentpos)))
                     {
-                        MainConsole.Instance.Info("[AgentProcessing]: Failed to inform " + region.RegionName +
+                        MainConsole.Instance.Info("[Agent Processing]: Failed to inform " + region.RegionName +
                                                   " about updating agent. ");
                     }
                 }
             }
         }
 
-        private List<GridRegion> GetRegions(IClientCapsService iClientCapsService)
+        List<GridRegion> GetRegions(IClientCapsService iClientCapsService)
         {
             return iClientCapsService.GetCapsServices().Select(rccs => rccs.Region).ToList();
         }
@@ -1066,13 +1076,17 @@ namespace Universe.Services
             string seedCap = "";
             string reason = "Could not find the simulation service";
             ISimulationService SimulationService = m_registry.RequestModuleInterface<ISimulationService>();
+
             if (SimulationService != null)
             {
                 // The client is in the region, we need to make sure it gets the right Caps
-                // If CreateAgent is successful, it passes back a OSDMap of params that the client 
+                // If CreateAgent is successful, it passes back a OSDMap of parameters that the client 
                 //    wants to inform us about, and it includes the Caps SEED url for the region
                 IRegionClientCapsService regionClientCaps = null;
                 IClientCapsService clientCaps = null;
+
+                //?? if we do not have a capservice then probably we should not allow logins??
+                // - greythane - 20160411
                 if (m_capsService != null)
                 {
                     //Remove any previous users
@@ -1083,6 +1097,7 @@ namespace Universe.Services
                     clientCaps = m_capsService.GetClientCapsService(aCircuit.AgentID);
                     regionClientCaps = clientCaps.GetCapsService(region.RegionID);
                 }
+
                 int requestedUDPPort = 0;
                 CreateAgentResponse createAgentResponse;
                 // As we are creating the agent, we must also initialize the CapsService for the agent
@@ -1090,31 +1105,36 @@ namespace Universe.Services
                                       out createAgentResponse);
 
                 reason = createAgentResponse.Reason;
+
                 if (!success) // If it failed, do not set up any CapsService for the client
                 {
                     //Delete the Caps!
                     IAgentProcessing agentProcessor = m_registry.RequestModuleInterface<IAgentProcessing>();
+
                     if (agentProcessor != null && m_capsService != null)
                         agentProcessor.LogoutAgent(regionClientCaps, true);
                     else if (m_capsService != null)
                         m_capsService.RemoveCAPS(aCircuit.AgentID);
                     return new LoginAgentArgs
-                               {
-                                   Success = success,
-                                   CircuitData = aCircuit,
-                                   Reason = reason,
-                                   SeedCap = seedCap
-                               };
+                    {
+                        Success = success,
+                        CircuitData = aCircuit,
+                        Reason = reason,
+                        SeedCap = seedCap
+                    };
                 }
+
                 requestedUDPPort = createAgentResponse.RequestedUDPPort;
+
                 if (requestedUDPPort == 0)
                     requestedUDPPort = region.ExternalEndPoint.Port;
                 aCircuit.RegionUDPPort = requestedUDPPort;
 
                 IPAddress ipAddress = regionClientCaps.Region.ExternalEndPoint.Address;
+
                 if (m_capsService != null)
                 {
-                    //If the region accepted us, we should get a CAPS url back as the reason, if not, its not updated or not an Universe region, so don't touch it.
+                    //If the region accepted us, we should get a CAPS url back as the reason, if not, its not updated or not an Virtual Universe region, so don't touch it.
                     string ip = createAgentResponse.OurIPForClient;
                     if (!IPAddress.TryParse(ip, out ipAddress))
 #pragma warning disable 618
@@ -1124,6 +1144,7 @@ namespace Universe.Services
                     //Fix this so that it gets sent to the client that way
                     regionClientCaps.AddCAPS(createAgentResponse.CapsURIs);
                     regionClientCaps = clientCaps.GetCapsService(region.RegionID);
+
                     if (regionClientCaps != null)
                     {
                         regionClientCaps.LoopbackRegionIP = ipAddress;
@@ -1138,20 +1159,25 @@ namespace Universe.Services
                 }
             }
             else
-                MainConsole.Instance.ErrorFormat("[AgentProcessing]: No simulation service found! Could not log in user!");
-            return new LoginAgentArgs {Success = success, CircuitData = aCircuit, Reason = reason, SeedCap = seedCap};
+                MainConsole.Instance.ErrorFormat("[Agent Processing]: No simulation service found! Could not log in user!");
+
+            return new LoginAgentArgs { Success = success, CircuitData = aCircuit, Reason = reason, SeedCap = seedCap };
         }
 
-        private bool CreateAgent(GridRegion region, IRegionClientCapsService regionCaps, ref AgentCircuitData aCircuit,
+        bool CreateAgent(GridRegion region, IRegionClientCapsService regionCaps, ref AgentCircuitData aCircuit,
                                  ISimulationService SimulationService, List<UUID> friendsToInform, out CreateAgentResponse response)
         {
             CachedUserInfo info = new CachedUserInfo();
             IAgentConnector con = Framework.Utilities.DataManager.RequestPlugin<IAgentConnector>();
+
             if (con != null)
                 info.AgentInfo = con.GetAgent(aCircuit.AgentID);
-            info.UserAccount = regionCaps.ClientCaps.AccountInfo;
+
+            if (regionCaps != null)
+                info.UserAccount = regionCaps.ClientCaps.AccountInfo;
 
             IGroupsServiceConnector groupsConn = Framework.Utilities.DataManager.RequestPlugin<IGroupsServiceConnector>();
+
             if (groupsConn != null)
             {
                 info.ActiveGroup = groupsConn.GetGroupMembershipData(aCircuit.AgentID, UUID.Zero, aCircuit.AgentID);
@@ -1160,25 +1186,28 @@ namespace Universe.Services
 
             IOfflineMessagesConnector offlineMessConn =
                 Framework.Utilities.DataManager.RequestPlugin<IOfflineMessagesConnector>();
+
             if (offlineMessConn != null)
                 info.OfflineMessages = offlineMessConn.GetOfflineMessages(aCircuit.AgentID);
 
             IMuteListConnector muteConn = Framework.Utilities.DataManager.RequestPlugin<IMuteListConnector>();
+
             if (muteConn != null)
                 info.MuteList = muteConn.GetMuteList(aCircuit.AgentID);
 
             IAvatarService avatarService = m_registry.RequestModuleInterface<IAvatarService>();
+
             if (avatarService != null)
                 info.Appearance = avatarService.GetAppearance(aCircuit.AgentID);
 
             info.FriendOnlineStatuses = friendsToInform;
             IFriendsService friendsService = m_registry.RequestModuleInterface<IFriendsService>();
+
             if (friendsService != null)
                 info.Friends = friendsService.GetFriends(aCircuit.AgentID);
 
             aCircuit.CachedUserInfo = info;
-            return SimulationService.CreateAgent(region, aCircuit, aCircuit.TeleportFlags,
-                                                 out response);
+            return SimulationService.CreateAgent(region, aCircuit, aCircuit.TeleportFlags, out response);
         }
 
         #endregion

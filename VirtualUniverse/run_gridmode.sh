@@ -1,17 +1,16 @@
 #!/bin/bash
-# Startup script for Universe-Sim in full Grid mode
-# Versions 0.9.2+
+# Startup script for Virtual Universe in full Grid mode
+# Versions 1.0.2+
 #
-# June 2014
-# greythane @ gmail.com
-#
+# Emperor Starfinder<emperor@secondgalaxy.com>: For Virtual Universe - May 11, 2016
+# Greythane<greythane@gmail.com>: For WhiteCore-Sim - May 2015
 
 cd ./bin
 wait
-echo Starting Universe GridServer...
+echo Starting Virtual Universe GridServer...
 screen -S Grid -d -m mono Universe.Server.exe -skipconfig
 sleep 3
-echo Starting Universe Region Simulator...
+echo Starting Virtual Universe Region Simulator...
 screen -S Sim -d -m mono Universe.exe -skipconfig
 sleep 3
 screen -list

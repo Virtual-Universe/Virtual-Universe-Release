@@ -29,6 +29,7 @@ using System;
 using Nini.Config;
 using Universe.Framework.ClientInterfaces;
 
+
 namespace Universe.ClientStack
 {
     /// <summary>
@@ -198,7 +199,7 @@ namespace Universe.ClientStack
                     return State;
                 case ThrottleOutPacketType.AvatarInfo:
                     return AvatarInfo;
-                //case ThrottleOutPacketType.Unknown:
+//                case ThrottleOutPacketType.Unknown:
                 default:
                     return 0;
             }
@@ -226,7 +227,7 @@ namespace Universe.ClientStack
                     return StateLimit;
                 case ThrottleOutPacketType.AvatarInfo:
                     return AvatarInfoLimit;
-                //case ThrottleOutPacketType.Unknown:
+//                case ThrottleOutPacketType.Unknown:
                 default:
                     return 0;
             }

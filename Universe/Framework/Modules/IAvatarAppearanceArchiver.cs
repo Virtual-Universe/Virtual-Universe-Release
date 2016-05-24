@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-support.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,7 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
 using System.Collections.Generic;
 using OpenMetaverse;
 using Universe.Framework.ClientInterfaces;
@@ -36,7 +35,8 @@ namespace Universe.Framework.Modules
     {
         AvatarArchive LoadAvatarArchive(string FileName, UUID principalID);
 
-        bool SaveAvatarArchive(string fileName, UUID principalID, string folderName, UUID snapshotUUID, bool isPublic);
+        bool SaveAvatarArchive(string fileName, UUID principalID, string folderName,
+            UUID snapshotUUID, bool isPublic, bool isPortable);
 
         /// <summary>
         /// Gets all public avatar archives
@@ -55,5 +55,6 @@ namespace Universe.Framework.Modules
         /// </summary>
         /// <returns>The avatar archive filenames.</returns>
         List<string> GetAvatarArchiveFilenames (bool fullName);
+
     }
 }

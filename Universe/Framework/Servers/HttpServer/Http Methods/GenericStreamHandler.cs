@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-support.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,7 @@ namespace Universe.Framework.Servers.HttpServer
 
     public class GenericStreamHandler : BaseRequestHandler
     {
-        private HttpServerHandle _method;
+        HttpServerHandle _method;
 
         public GenericStreamHandler(string httpMethod, string path, HttpServerHandle method)
             : base(httpMethod, path)
@@ -126,7 +126,7 @@ namespace Universe.Framework.Servers.HttpServer
 
     public static class MyExtensions
     {
-        public static string ReadUntilEnd(this System.IO.Stream stream)
+        public static string ReadUntilEnd(this Stream stream)
         {
             StreamReader rdr = new StreamReader(stream);
             string str = rdr.ReadToEnd();

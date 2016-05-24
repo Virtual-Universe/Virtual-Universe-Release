@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,21 +25,21 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System.Collections.Generic;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.Messages.Linden;
 using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Modules;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.Messages.Linden;
-using System.Collections.Generic;
 
 namespace Universe.Services.DataService
 {
     public class LocalUserStatsDataConnector : IUserStatsDataConnector
     {
-        private IGenericData GD = null;
-        private const string m_realm = "statsdata";
+        IGenericData GD;
+        const string m_realm = "statsdata";
 
         public void Initialize(IGenericData GenericData, IConfigSource source, IRegistryCore simBase,
                                string defaultConnectionString)
@@ -53,10 +53,12 @@ namespace Universe.Services.DataService
                     defaultConnectionString = source.Configs[Name].GetString("ConnectionString", defaultConnectionString);
 
                 if (GD != null)
-                    GD.ConnectToDatabase(defaultConnectionString, "Stats",
-                                         source.Configs["UniverseConnectors"].GetBoolean("ValidateTables", true));
+                {
+                    GD.ConnectToDatabase (defaultConnectionString, "Stats",
+                        source.Configs ["UniverseConnectors"].GetBoolean ("ValidateTables", true));
 
-                Framework.Utilities.DataManager.RegisterPlugin(Name, this);
+                    Framework.Utilities.DataManager.RegisterPlugin (Name, this);
+                }
             }
         }
 
@@ -160,7 +162,7 @@ namespace Universe.Services.DataService
             return viewers;
         }
 
-        private ViewerStatsMessage BuildSession(List<string> results, int start)
+        ViewerStatsMessage BuildSession(List<string> results, int start)
         {
             ViewerStatsMessage message = new ViewerStatsMessage();
             for (int i = start; i < start + 33; i += 33)

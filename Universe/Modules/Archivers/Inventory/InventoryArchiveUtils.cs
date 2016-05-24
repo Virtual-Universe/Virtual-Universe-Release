@@ -75,6 +75,12 @@ namespace Universe.Modules.Archivers
                 // we don't appear to have any inventory setup yet
                 if (!inventoryService.CreateUserInventory (userId, true))
                     return new List<InventoryFolderBase> ();
+
+                // get the new root folder
+                rootFolder = inventoryService.GetRootFolder(userId);
+                if (rootFolder == null)
+                    return new List<InventoryFolderBase> ();            // unable to create the root folder??
+
             }
 
             return FindFolderByPath(inventoryService, rootFolder, path);
@@ -167,6 +173,9 @@ namespace Universe.Modules.Archivers
                 // we don't appear to have any inventory setup yet
                 if (!inventoryService.CreateUserInventory (userId, true))
                     return null;                                                // something really wrong
+                rootFolder = inventoryService.GetRootFolder (userId);
+                if (rootFolder == null)                                         // really wrong!!
+                    return null;
             }
             return FindItemByPath(inventoryService, rootFolder, path);
         }
@@ -246,15 +255,14 @@ namespace Universe.Modules.Archivers
                 }
                 else
                 {
-                    if (PATH_DELIMITER == path[i] && !singleEscapeChar)
-                        return new string[2] {path.Remove(i), path.Substring(i + 1)};
-                    else
-                        singleEscapeChar = false;
+                    if (PATH_DELIMITER == path [i] && !singleEscapeChar)
+                        return new string [2] { path.Remove (i), path.Substring (i + 1) };
+                    singleEscapeChar = false;
                 }
             }
 
             // We didn't find a delimiter
-            return new string[1] {path};
+            return new string[] {path};
         }
 
         /// <summary>

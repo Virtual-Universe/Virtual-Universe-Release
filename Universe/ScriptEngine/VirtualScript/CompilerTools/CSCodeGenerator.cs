@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -317,12 +317,12 @@ namespace Universe.ScriptEngine.VirtualScript.CompilerTools
                 foreach (string nameSpace in api.NamespaceAdditions)
                     sb.AppendFormat("using {0};\n", nameSpace);
             sb.AppendLine(
-@"using LSL_Types = Universe.ScriptEngine.DotNetEngine.LSL_Types;
+@"using LSL_Types = Universe.ScriptEngine.VirtualScript.LSL_Types;
 using System;
 namespace Script
 {
 [Serializable]
-public class ScriptClass : Universe.ScriptEngine.DotNetEngine.Runtime.ScriptBaseClass
+public class ScriptClass : Universe.ScriptEngine.VirtualScript.Runtime.ScriptBaseClass
 {");
 
             sb.AppendLine(ScriptClass);

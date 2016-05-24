@@ -29,6 +29,7 @@ using OpenMetaverse;
 using OpenMetaverse.Packets;
 using Universe.Framework.ClientInterfaces;
 
+
 namespace Universe.ClientStack
 {
     public delegate void UnackedPacketMethod(OutgoingPacket packet);

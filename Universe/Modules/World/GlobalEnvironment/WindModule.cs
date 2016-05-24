@@ -25,7 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 using System;
 using System.Collections.Generic;
 using Nini.Config;
@@ -36,7 +35,7 @@ using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 
-namespace Vision.Modules.Wind
+namespace Universe.Modules.GlobalEnvironment
 {
     public class WindModule : IWindModule, INonSharedRegionModule
     {
@@ -276,7 +275,7 @@ namespace Vision.Modules.Wind
 
             string plugin = cmdparams [1];
             string param = cmdparams [2];
-            float value = 0f;
+            float value;
             if (cmdparams.Length == 4)
             {
                 if (!float.TryParse (cmdparams [3], out value))
@@ -345,10 +344,8 @@ namespace Vision.Modules.Wind
             {
                 IWindModelPlugin windPlugin = m_availableWindPlugins [plugin];
                 return windPlugin.WindParamGet (param);
-            } else
-            {
-                throw new Exception (String.Format ("Could not find plugin {0}", plugin));
             }
+            throw new Exception (String.Format ("Could not find plugin {0}", plugin));
         }
 
         public string WindActiveModelPluginName
@@ -356,12 +353,9 @@ namespace Vision.Modules.Wind
             get
             {
                 if (m_activeWindPlugin != null)
-                {
                     return m_activeWindPlugin.Name;
-                } else
-                {
-                    return String.Empty;
-                }
+
+                return String.Empty;
             }
         }
 

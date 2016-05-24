@@ -25,9 +25,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections;
 using Universe.Framework.Servers.HttpServer.Implementation;
+using System.Collections;
 
 namespace Universe.Framework.Services
 {

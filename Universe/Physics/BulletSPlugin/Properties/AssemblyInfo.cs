@@ -1,15 +1,15 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://virtualnexus.eu/, http://aurora-sim.org/, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
+ *     * Redistributions in binary form must reproduce the above copyrightD
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual-Universe Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,48 +25,33 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Resources;
 
-/// <summary>
-/// General Information about an assembly is controlled through the following 
-/// set of attributes. Change these attribute values to modify the information
-/// associated with an assembly.
-/// </summary>
+// General Information about an assembly is controlled through the following 
+// set of attributes. Change these attribute values to modify the information
+// associated with an assembly.
 [assembly: AssemblyTitle("Universe.Physics.BulletSPlugin")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Universe.Physics.BulletSPlugin")]
-[assembly: AssemblyCopyright("Copyright © 2015-2025")]
+[assembly: AssemblyCompany("http://Universe-sim.org")]
+[assembly: AssemblyCopyright("Copyright © 2014-2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
-/// <summary>
-/// Setting ComVisible to false makes the types in this assembly not visible 
-/// to COM components.  If you need to access a type in this assembly from 
-/// COM, set the ComVisible attribute to true on that type.
-/// </summary>
+// Setting ComVisible to false makes the types in this assembly not visible 
+// to COM components.  If you need to access a type in this assembly from 
+// COM, set the ComVisible attribute to true on that type.
 [assembly: ComVisible(false)]
 
-/// <summary>
-/// The following GUID is for the ID of the typelib if this project is exposed to COM
-/// </summary>
-[assembly: Guid("269c99ff-0740-4886-8593-7527903090bf")]
+// The following GUID is for the ID of the typelib if this project is exposed to COM
+[assembly: Guid("520ea11b-20cb-449d-ba05-c01015fed841")]
 
-/// <summary>
-/// Version information for an assembly consists of the following four values:
-/// 
-///     Major Version
-///     Minor Version 
-///     Build Number
-///     Revision
-/// 
-/// You can specify all the values or you can default the Build and Revision Numbers 
-/// by using the '*' as shown below:
-/// [assembly: AssemblyVersion("1.0.*")]
-/// </summary>
-[assembly: AssemblyVersion("1.0.1.*")]
-[assembly: NeutralResourcesLanguageAttribute("en")]
+// Version information for an assembly consists of the following four values:
+//
+//      Major Version
+//      Minor Version 
+//      Build Number
+//      Revision
+//
+[assembly: AssemblyVersion("1.0.2.*")]

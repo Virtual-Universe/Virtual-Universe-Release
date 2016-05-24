@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,14 +25,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using Nini.Config;
+using OpenMetaverse.StructuredData;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Services;
-using Nini.Config;
-using OpenMetaverse.StructuredData;
 using GridRegion = Universe.Framework.Services.GridRegion;
 
 namespace Universe.Services
@@ -74,8 +73,9 @@ namespace Universe.Services
             //We need to check and see if this is an AgentStatusChange
             if (message.ContainsKey("Method") && message["Method"] == "UpdateAvatarAppearance")
             {
-                AvatarAppearance appearance = new AvatarAppearance(message["AgentID"], (OSDMap)message["Appearance"]);
+                var appearance = new AvatarAppearance(message["AgentID"], (OSDMap)message["Appearance"]);
                 ISceneManager manager = m_registry.RequestModuleInterface<ISceneManager>();
+
                 if (manager != null)
                 {
                     foreach (IScene scene in manager.Scenes)
@@ -83,14 +83,18 @@ namespace Universe.Services
                         IScenePresence sp = scene.GetScenePresence(appearance.Owner);
                         if (sp != null && !sp.IsChildAgent)
                         {
-// 20131224 not used                            IAvatarFactory factory = scene.RequestModuleInterface<IAvatarFactory>();
-                            sp.RequestModuleInterface<IAvatarAppearanceModule>().Appearance = appearance;
-                            sp.RequestModuleInterface<IAvatarAppearanceModule>().SendAppearanceToAgent(sp);
-                            sp.RequestModuleInterface<IAvatarAppearanceModule>().SendAppearanceToAllOtherAgents();
+                            var avappmodule = sp.RequestModuleInterface<IAvatarAppearanceModule>();
+                            if (avappmodule != null)
+                            {
+                                avappmodule.Appearance = appearance;
+                                avappmodule.SendAppearanceToAgent(sp);
+                                avappmodule.SendAppearanceToAllOtherAgents();
+                            }
                         }
                     }
                 }
             }
+
             return null;
         }
     }

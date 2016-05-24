@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,6 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -39,6 +40,7 @@ using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Services.ClassHelpers.Inventory;
 using Universe.Framework.Utilities;
 using Universe.ScriptEngine.VirtualScript.Runtime;
+
 
 namespace Universe.BotManager
 {
@@ -154,7 +156,11 @@ namespace Universe.BotManager
             appearance.InitialHasWearablesBeenSent = true;
             Bot bot = new Bot();
             bot.Initialize(SP, creatorID);
-            SP.MakeRootAgent(startPos, false, true);
+            try {
+                SP.MakeRootAgent (startPos, false, true);
+            } catch {
+                MainConsole.Instance.ErrorFormat ("[BotManager]: Error creating bot {0} as root agent!",m_character.AgentId);
+            }
             //Move them
             SP.Teleport(startPos);
 
@@ -176,10 +182,10 @@ namespace Universe.BotManager
             return m_character.AgentId;
         }
             
-        static void AddAndWaitUntilAgentIsAdded(IScene scene, BotClientAPI m_character)
+        static void AddAndWaitUntilAgentIsAdded(IScene scene, BotClientAPI mCharacter)
         {
             bool done = false;
-            scene.AddNewClient(m_character, delegate { done = true; });
+            scene.AddNewClient(mCharacter, delegate { done = true; });
             while (!done)
                 Thread.Sleep(3);
         }
@@ -337,17 +343,17 @@ namespace Universe.BotManager
 
         readonly Dictionary<string, List<UUID>> m_botTags = new Dictionary<string, List<UUID>>();
 
-        public void AddTagToBot(UUID Bot, string tag, UUID userAttempting)
+        public void AddTagToBot(UUID botID, string tag, UUID userAttempting)
         {
             Bot bot;
-            if (m_bots.TryGetValue(Bot, out bot))
+            if (m_bots.TryGetValue(botID, out bot))
             {
                 if (!CheckPermission(bot, userAttempting))
                     return;
             }
             if (!m_botTags.ContainsKey(tag))
                 m_botTags.Add(tag, new List<UUID>());
-            m_botTags[tag].Add(Bot);
+            m_botTags[tag].Add(botID);
         }
 
         public List<UUID> GetBotsWithTag(string tag)
@@ -373,22 +379,22 @@ namespace Universe.BotManager
             }
         }
 
-        public void RemoveTagFromBot(UUID Bot, string tag, UUID userAttempting)
+        public void RemoveTagFromBot(UUID botID, string tag, UUID userAttempting)
         {
             Bot bot;
-            if (m_bots.TryGetValue(Bot, out bot))
+            if (m_bots.TryGetValue(botID, out bot))
             {
                 if (!CheckPermission(bot, userAttempting))
                     return;
             }
             if (m_botTags.ContainsKey(tag))
-                m_botTags[tag].Remove(Bot);
+                m_botTags[tag].Remove(botID);
         }
 
-        public void RemoveAllTagsFromBot(UUID Bot, UUID userAttempting)
+        public void RemoveAllTagsFromBot(UUID botID, UUID userAttempting)
         {
             Bot bot;
-            if (m_bots.TryGetValue(Bot, out bot))
+            if (m_bots.TryGetValue(botID, out bot))
             {
                 if (!CheckPermission(bot, userAttempting))
                     return;
@@ -396,11 +402,11 @@ namespace Universe.BotManager
             List<string> tagsToRemove = new List<string>();
             foreach (KeyValuePair<string, List<UUID>> kvp in m_botTags)
             {
-                if (kvp.Value.Contains(Bot))
+                if (kvp.Value.Contains(botID))
                     tagsToRemove.Add(kvp.Key);
             }
             foreach (string tag in tagsToRemove)
-                m_botTags[tag].Remove(Bot);
+                m_botTags[tag].Remove(botID);
         }
 
         #endregion
@@ -408,19 +414,19 @@ namespace Universe.BotManager
         /// <summary>
         ///     Finds the given users appearance
         /// </summary>
-        /// <param name="target"></param>
+        /// <param name="targetID"></param>
         /// <param name="scene"></param>
         /// <returns></returns>
-        AvatarAppearance GetAppearance(UUID target, IScene scene)
+        AvatarAppearance GetAppearance(UUID targetID, IScene scene)
         {
-            IScenePresence sp = scene.GetScenePresence(target);
+            IScenePresence sp = scene.GetScenePresence(targetID);
             if (sp != null)
             {
                 IAvatarAppearanceModule aa = sp.RequestModuleInterface<IAvatarAppearanceModule>();
                 if (aa != null)
                     return new AvatarAppearance(aa.Appearance);
             }
-            return scene.AvatarService.GetAppearance(target);
+            return scene.AvatarService.GetAppearance(targetID);
         }
 
         bool CheckPermission(IEntity sp, UUID userAttempting)

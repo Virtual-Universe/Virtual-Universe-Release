@@ -119,6 +119,7 @@ namespace Universe.Framework.SceneInfo
         }
 
         // Used by the sim
+        //
 
         [ProtoMember(9)]
         public bool UseGlobalTime
@@ -195,7 +196,8 @@ namespace Universe.Framework.SceneInfo
         [ProtoMember(25)]
         public bool DenyMinors { get; set; }
 
-        // All those lists.
+        // All those lists...
+        //
 
         [ProtoMember(26)]
         public List<UUID> EstateManagers

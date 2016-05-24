@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://Universe-sim.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://Universe-sim.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without

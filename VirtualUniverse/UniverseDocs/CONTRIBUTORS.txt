@@ -1,19 +1,16 @@
---------------- Virtual-Universe Developers -----------------------
-
-See Second Galaxy Development Team.txt for team directory.
-
-
---------------- WhiteCore-Sim Developers -----------------------
+--------------- WhiteCore Developers -----------------------
 
 Fly-Man-
 Greythane
 
 
---------------- WhiteCore-Sim contributors (Thanks for all the patches :)) -----------------------
-
-Nhede
+--------------- WhiteCore contributors (Thanks for all the patches :)) -----------------------
+EnricoNirvana
 Emperorstarfinder
 Fine77
+H-H-H
+Nhede
+Stormsonweathers
 Any that we might have forgotten
 
 --------------- Aurora contributors (Thanks for all the patches :)) --------------------------

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,11 +28,11 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.Servers.HttpServer.Interfaces;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
 
 namespace Universe.Framework.Services
 {
@@ -364,6 +364,12 @@ namespace Universe.Framework.Services
         /// <param name="appendedPath">The path (no http://) to the Caps Method</param>
         /// <returns></returns>
         string CreateCAPS(string method, string appendedPath);
+
+        /// <summary>
+        /// Gets the current region CAPS.
+        /// </summary>
+        /// <returns>The CAPs.</returns>
+        OSDMap GetCAPS();
 
         /// <summary>
         ///     Get all CapsService modules

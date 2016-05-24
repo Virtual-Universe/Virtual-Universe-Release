@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,14 +25,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System;
+using Nini.Config;
+using OpenMetaverse.StructuredData;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
-using Nini.Config;
-using OpenMetaverse.StructuredData;
-using System;
 
 namespace Universe.Services
 {
@@ -87,12 +86,17 @@ namespace Universe.Services
             try
             {
                 LogMessage(remote, url, request);
+
                 if (remote)
                     DoRemoteCallPost(true, url + "/syncmessage/", false, url + "/syncmessage/", request);
                 else
                     m_registry.RequestModuleInterface<ISyncMessageRecievedService>().FireMessageReceived(request);
             }
-            catch (Exception ex) { MainConsole.Instance.WarnFormat("[SyncMessagePoster]: Caught exception when attempting to post to {0}: {1}", url, ex.ToString()); }
+            catch (Exception ex)
+            {
+                MainConsole.Instance.WarnFormat("[Sync Message Poster Service]: Caught exception when attempting to post to {0}: {1}",
+                                                 url, ex.ToString());
+            }
         }
 
         public void PostToServer(OSDMap request)
@@ -111,12 +115,17 @@ namespace Universe.Services
             try
             {
                 LogMessage(remote, "", request);
+
                 if (remote)
                     DoRemoteCallPost(true, "SyncMessageServerURI", false, request);
                 else
                     m_registry.RequestModuleInterface<ISyncMessageRecievedService>().FireMessageReceived(request);
             }
-            catch (Exception ex) { MainConsole.Instance.WarnFormat("[SyncMessagePoster]: Caught exception when attempting to post to grid server: {0}", ex.ToString()); }
+            catch (Exception ex)
+            {
+                MainConsole.Instance.WarnFormat("[Sync Message Poster Service]: Caught exception when attempting to post to grid server: {0}",
+                                                 ex.ToString());
+            }
         }
 
         public void Get(string url, OSDMap request, GetResponse response)
@@ -135,25 +144,32 @@ namespace Universe.Services
             try
             {
                 LogMessage(remote, url, request);
+
                 if (remote)
                 {
                     if (url != "")
                     {
-                        url = (url.EndsWith("/syncmessage/") ? url : (url + "/syncmessage/"));
+                        url = (url.EndsWith("/syncmessage/", StringComparison.Ordinal) ? url : (url + "/syncmessage/"));
                         return DoRemoteCallGet(true, url, false, url, request) as OSDMap;
                     }
                     else
                         return DoRemoteCallGet(true, "SyncMessageServerURI", false, url, request) as OSDMap;
                 }
+
                 return m_registry.RequestModuleInterface<ISyncMessageRecievedService>().FireMessageReceived(request);
             }
-            catch (Exception ex) { MainConsole.Instance.WarnFormat("[SyncMessagePoster]: Caught exception when attempting to post to {0}: {1}", url, ex.ToString()); }
+            catch (Exception ex)
+            {
+                MainConsole.Instance.WarnFormat("[Sync Message Poster Service]: Caught exception when attempting to post to {0}: {1}",
+                                                                      url, ex.ToString());
+            }
+
             return null;
         }
 
-        private void LogMessage(bool remote, string url, OSDMap request)
+        void LogMessage(bool remote, string url, OSDMap request)
         {
-            MainConsole.Instance.DebugFormat("[SyncMessagePosterService]: Sending message ({0}) to {1}, method {2}",
+            MainConsole.Instance.DebugFormat("[Sync Message Poster Service]: Sending message ({0}) to {1}, method {2}",
                 remote ? "remotely" : "locally",
                 url == "" ? "grid server" : url,
                 (request != null && request.ContainsKey("Method")) ? request["Method"].AsString() : "no method set");

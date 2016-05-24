@@ -28,6 +28,7 @@
 using System;
 using System.IO;
 using System.Net;
+using Universe.Framework.ConsoleFramework;
 using Universe.Framework.SceneInfo.Entities;
 
 namespace Universe.Framework.Serialization
@@ -39,7 +40,7 @@ namespace Universe.Framework.Serialization
     public static class ArchiveHelpers
     {
         /// <summary>
-        ///     Create the filename used for objects in OpenSim Archives.
+        ///     Create the filename used for objects in OpenSim/Universe Archives.
         /// </summary>
         /// <param name="sog"></param>
         /// <returns></returns>
@@ -69,36 +70,30 @@ namespace Universe.Framework.Serialization
             {
                 return new FileStream(path, FileMode.Open, FileAccess.Read);
             }
-            else
+            try
             {
-                try
+                Uri uri = new Uri(path);
+                if (uri.Scheme == "file")
                 {
-                    Uri uri = new Uri(path);
-                    if (uri.Scheme == "file")
-                    {
-                        return new FileStream(uri.AbsolutePath, FileMode.Open, FileAccess.Read);
-                    }
-                    else
-                    {
-                        if (uri.Scheme != "http" && uri.Scheme != "https")
-                            throw new Exception(String.Format("Unsupported URI scheme ({0})", path));
+                    return new FileStream(uri.AbsolutePath, FileMode.Open, FileAccess.Read);
+                }
+                if (uri.Scheme != "http" && uri.Scheme != "https")
+                    MainConsole.Instance.Error(string.Format("Unsupported URI scheme ({0})", path));
 
-                        // OK, now we know we have an HTTP URI to work with
-                        return URIFetch(uri);
-                    }
-                }
-                catch (UriFormatException)
-                {
-                    // In many cases the user will put in a plain old filename that cannot be found so assume that
-                    // this is the problem rather than confusing the issue with a UriFormatException
-                    return null;
-                }
+                // OK, now we know we have an HTTP URI to work with
+                return URIFetch(uri);
+            }
+            catch (UriFormatException)
+            {
+                // In many cases the user will put in a plain old filename that cannot be found so assume that
+                // this is the problem rather than confusing the issue with a UriFormatException
+                return null;
             }
         }
 
         public static Stream URIFetch(Uri uri)
         {
-            HttpWebRequest request = (HttpWebRequest) WebRequest.Create(uri);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
 
             request.ContentLength = 0;
             request.KeepAlive = false;
@@ -107,7 +102,8 @@ namespace Universe.Framework.Serialization
             Stream file = response.GetResponseStream();
 
             if (response.ContentLength == 0)
-                throw new Exception(String.Format("{0} returned an empty file", uri));
+                MainConsole.Instance.Error(string.Format("{0} returned an empty file", uri));
+            response.Dispose();
 
             return new BufferedStream(file, 1000000);
         }

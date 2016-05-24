@@ -53,6 +53,7 @@ namespace Universe.Framework.ClientInterfaces
         [ProtoMember(3)]
         public UUID ObjectID { get; set; }
 
+
         public Animation()
         {
         }

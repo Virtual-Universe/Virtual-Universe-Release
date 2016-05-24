@@ -27,10 +27,10 @@
 
 using System;
 using System.Collections.Generic;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Services.ClassHelpers.Inventory;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
 
 namespace Universe.Framework.Services
 {
@@ -130,7 +130,7 @@ namespace Universe.Framework.Services
         /// <param name="invType"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        InventoryFolderBase GetFolderForType(UUID userID, InventoryType invType, AssetType type);
+        InventoryFolderBase GetFolderForType(UUID userID, InventoryType invType, FolderType type);
 
         /// <summary>
         ///     Gets everything (folders and items) inside a folder

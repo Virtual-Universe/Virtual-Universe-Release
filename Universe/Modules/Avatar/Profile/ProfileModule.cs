@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -74,14 +74,18 @@ namespace Universe.Modules.Profiles
         public void Initialize (IConfigSource config)
         {
             IConfig profileConfig = config.Configs ["Profile"];
-            if (profileConfig == null)
+            if (profileConfig != null)
             {
-                MainConsole.Instance.Info ("[Profile] Not configured, disabling");
-                return;
+            	if (profileConfig.GetString ("ProfileModule", Name) == Name)
+            	{
+            		m_ProfileEnabled = true;
+            		MainConsole.Instance.Info ("[Profile] Profile Services are enabled");
+            	}
             }
-            if (profileConfig.GetString ("ProfileModule", Name) != Name)
+            else
             {
-                m_ProfileEnabled = false;
+            	m_ProfileEnabled = false;
+            	MainConsole.Instance.Info ("[Profile] Not configured, disabling");
             }
         }
 
@@ -424,8 +428,7 @@ namespace Universe.Modules.Profiles
                 {
                     UserAccount parcelOwner =
                         remoteClient.Scene.UserAccountService.GetUserAccount (remoteClient.AllScopeIDs,
-                            targetlandObj.LandData
-                                                                                          .OwnerID);
+                            targetlandObj.LandData.OwnerID);
                     if (parcelOwner != null)
                         user = parcelOwner.Name;
 
@@ -635,7 +638,7 @@ namespace Universe.Modules.Profiles
             
             if (Utilities.IsSystemUser (Profile.PrincipalID))
             {
-                charterMember = Utils.StringToBytes ("└");
+                charterMember = Utils.StringToBytes ("Universe System User");
             }
 
             uint membershipGroupINT = 0;
@@ -678,8 +681,7 @@ namespace Universe.Modules.Profiles
             if (UPI == null)
                 return;
             UserAccount account = remoteClient.Scene.UserAccountService.GetUserAccount (remoteClient.AllScopeIDs,
-                                      remoteClient
-                                                                                           .AgentId);
+                                      remoteClient.AgentId);
             remoteClient.SendUserInfoReply (UPI.Visible, UPI.IMViaEmail, account.Email);
         }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,29 +27,28 @@
 
 using System;
 using System.Collections.Generic;
-
-using Universe.Framework.Modules;
-using Universe.Framework.Services;
 using Nini.Config;
 using OpenMetaverse;
+using Universe.Framework.Modules;
+using Universe.Framework.Services;
 
 namespace Universe.Services.DataService
 {
     public class LocalAuthConnector : IAuthenticationData
     {
-        private IGenericData GD;
-        private int m_LastExpire;
-        private string m_realm = "auth";
-        private string m_tokensrealm = "tokens";
+        IGenericData GD;
+        int m_LastExpire;
+        string m_realm = "auth";
+        string m_tokensrealm = "tokens";
 
         #region IAuthenticationData Members
 
-        public void Initialize(IGenericData GenericData, IConfigSource source, IRegistryCore simBase,
+        public void Initialize(IGenericData genericData, IConfigSource source, IRegistryCore simBase,
                                string defaultConnectionString)
         {
             if (source.Configs["UniverseConnectors"].GetString("AuthConnector", "LocalConnector") == "LocalConnector")
             {
-                GD = GenericData;
+                GD = genericData;
 
                 string connectionString = defaultConnectionString;
                 if (source.Configs[Name] != null)
@@ -162,7 +161,7 @@ namespace Universe.Services.DataService
         {
         }
 
-        private void DoExpire()
+        void DoExpire()
         {
             GD.DeleteByTime(m_tokensrealm, "validity");
 

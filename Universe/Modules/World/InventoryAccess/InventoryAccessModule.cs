@@ -26,6 +26,12 @@
  */
 
 
+using System;
+using System.Collections.Generic;
+using System.Xml;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
@@ -36,18 +42,12 @@ using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Services.ClassHelpers.Inventory;
 using Universe.Framework.Utilities;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
-using System;
-using System.Collections.Generic;
-using System.Xml;
 
 namespace Universe.Modules.InventoryAccess
 {
     public class BasicInventoryAccessModule : INonSharedRegionModule, IInventoryAccessModule
     {
-        protected bool m_Enabled = false;
+        protected bool m_Enabled;
         protected IScene m_scene;
         protected ILLClientInventory m_LLCLientInventoryModule;
 
@@ -95,11 +95,13 @@ namespace Universe.Modules.InventoryAccess
 
         public virtual void OnNewClient(IClientAPI client)
         {
+            client.OnRezRestoreToWorld += ClientRezRestoreToWorld;
             client.OnRezObject += ClientRezObject;
         }
 
         public virtual void OnClosingClient(IClientAPI client)
         {
+            client.OnRezRestoreToWorld -= ClientRezRestoreToWorld;
             client.OnRezObject -= ClientRezObject;
         }
 
@@ -125,16 +127,33 @@ namespace Universe.Modules.InventoryAccess
 
         #region Client methods
 
+        void ClientRezRestoreToWorld(IClientAPI remoteClient, UUID itemID, UUID groupID)
+        {
+            // Restore object to previous location
+            var userInfo = m_scene.UserAccountService.GetUserAccount(null,remoteClient.AgentId);
+            if (userInfo != null)
+            {
+                InventoryItemBase item = m_scene.InventoryService.GetItem(remoteClient.AgentId, itemID);
+
+                if (item != null)
+                {
+                    RezRestoreToWorld(remoteClient, itemID, item, groupID);
+                }
+            }
+            //else
+            //    MainConsole.Instance,DebugFormat("[Agent inventory]: User profile not found during restore object: {0}", RegionInfo.RegionName);
+        }
+
         /// <summary>
         ///     The only difference between this and the other RezObject method is the return value...
         ///     The client needs this method
         /// </summary>
-        private void ClientRezObject(IClientAPI remoteClient, UUID itemID, Vector3 RayEnd, Vector3 RayStart,
-                                     UUID RayTargetID, byte BypassRayCast, bool RayEndIsIntersection,
-                                     bool RezSelected, bool RemoveItem, UUID fromTaskID)
+        void ClientRezObject(IClientAPI remoteClient, UUID itemID, Vector3 rayEnd, Vector3 rayStart,
+                                     UUID rayTargetID, byte bypassRayCast, bool rayEndIsIntersection,
+                                     bool rezSelected, bool removeItem, UUID fromTaskID)
         {
-            RezObject(remoteClient, itemID, RayEnd, RayStart, RayTargetID, BypassRayCast,
-                      RayEndIsIntersection, RezSelected, RemoveItem, fromTaskID);
+            RezObject(remoteClient, itemID, rayEnd, rayStart, rayTargetID, bypassRayCast,
+                      rayEndIsIntersection, rezSelected, removeItem, fromTaskID);
         }
 
         #endregion
@@ -216,13 +235,13 @@ namespace Universe.Modules.InventoryAccess
                 return "";
             }
             MainConsole.Instance.ErrorFormat(
-                "[AGENT INVENTORY]: Could not find item {0} for caps inventory update",
+                "[Agent inventory]: Could not find item {0} for caps inventory update",
                 itemID);
 
             return "";
         }
 
-        private string FailedCompileScriptCAPSUpdate(UUID assetID, UUID inv, string error)
+        string FailedCompileScriptCAPSUpdate(UUID assetID, UUID inv, string error)
         {
             OSDMap map = new OSDMap();
             map["new_asset"] = assetID.ToString();
@@ -234,7 +253,7 @@ namespace Universe.Modules.InventoryAccess
             return OSDParser.SerializeLLSDXmlString(map);
         }
 
-        private string FailedPermissionsScriptCAPSUpdate(UUID assetID, UUID inv)
+        string FailedPermissionsScriptCAPSUpdate(UUID assetID, UUID inv)
         {
             OSDMap map = new OSDMap();
             map["new_asset"] = assetID.ToString();
@@ -246,7 +265,7 @@ namespace Universe.Modules.InventoryAccess
             return OSDParser.SerializeLLSDXmlString(map);
         }
 
-        private string SuccessScriptCAPSUpdate(UUID assetID, UUID inv)
+        string SuccessScriptCAPSUpdate(UUID assetID, UUID inv)
         {
             OSDMap map = new OSDMap();
             map["new_asset"] = assetID.ToString();
@@ -257,7 +276,7 @@ namespace Universe.Modules.InventoryAccess
             return OSDParser.SerializeLLSDXmlString(map);
         }
 
-        private string FailedPermissionsNotecardCAPSUpdate(UUID assetID, UUID inv)
+        string FailedPermissionsNotecardCAPSUpdate(UUID assetID, UUID inv)
         {
             OSDMap map = new OSDMap();
             map["new_asset"] = assetID.ToString();
@@ -266,7 +285,7 @@ namespace Universe.Modules.InventoryAccess
             return OSDParser.SerializeLLSDXmlString(map);
         }
 
-        private string SuccessNotecardCAPSUpdate(UUID assetID, UUID inv)
+        string SuccessNotecardCAPSUpdate(UUID assetID, UUID inv)
         {
             OSDMap map = new OSDMap();
             map["new_asset"] = assetID.ToString();
@@ -329,7 +348,7 @@ namespace Universe.Modules.InventoryAccess
             //
 
             InventoryFolderBase folder = null;
-            InventoryItemBase item = null;
+            InventoryItemBase item;
 
             if (DeRezAction.SaveToExistingUserInventoryItem == action)
             {
@@ -338,10 +357,10 @@ namespace Universe.Modules.InventoryAccess
                 //item = userInfo.RootFolder.FindItem(
                 //        objectGroup.RootPart.FromUserInventoryItemID);
 
-                if (null == item)
+                if (item == null)
                 {
                     MainConsole.Instance.DebugFormat(
-                        "[AGENT INVENTORY]: Object {0} {1} scheduled for save to inventory has already been deleted.",
+                        "[Agent inventory]: Object {0} {1} scheduled for save to inventory has already been deleted.",
                         objectGroups[0].Name, objectGroups[0].UUID);
                     return UUID.Zero;
                 }
@@ -358,21 +377,18 @@ namespace Universe.Modules.InventoryAccess
                     if (SP == null || SP.ControllingClient == null ||
                         objectGroups[0].OwnerID != agentId)
                     {
-                        folder = m_scene.InventoryService.GetFolderForType(userID, InventoryType.Unknown,
-                                                                           AssetType.LostAndFoundFolder);
+                        folder = m_scene.InventoryService.GetFolderForType(userID, InventoryType.Unknown, FolderType.LostAndFound);
                     }
                     else
                     {
-                        folder = m_scene.InventoryService.GetFolderForType(userID, InventoryType.Unknown,
-                                                                           AssetType.TrashFolder);
+                        folder = m_scene.InventoryService.GetFolderForType(userID, InventoryType.Unknown, FolderType.Trash);
                     }
                 }
                 else if (action == DeRezAction.Return)
                 {
                     // Dump to lost + found unconditionally
                     //
-                    folder = m_scene.InventoryService.GetFolderForType(userID, InventoryType.Unknown,
-                                                                       AssetType.LostAndFoundFolder);
+                    folder = m_scene.InventoryService.GetFolderForType(userID, InventoryType.Unknown, FolderType.LostAndFound);
                 }
 
                 if (folderID == UUID.Zero && folder == null)
@@ -381,21 +397,18 @@ namespace Universe.Modules.InventoryAccess
                     {
                         // Deletes go to trash by default
                         //
-                        folder = m_scene.InventoryService.GetFolderForType(userID, InventoryType.Unknown,
-                                                                           AssetType.TrashFolder);
+                        folder = m_scene.InventoryService.GetFolderForType(userID, InventoryType.Unknown, FolderType.Trash);
                     }
                     else
                     {
                         if (SP == null || SP.ControllingClient == null ||
                             objectGroups[0].OwnerID != agentId)
                         {
-                            folder = m_scene.InventoryService.GetFolderForType(userID, InventoryType.Unknown,
-                                                                               AssetType.LostAndFoundFolder);
+                            folder = m_scene.InventoryService.GetFolderForType(userID, InventoryType.Unknown, FolderType.LostAndFound);
                         }
                         else
                         {
-                            folder = m_scene.InventoryService.GetFolderForType(userID, InventoryType.Unknown,
-                                                                               AssetType.TrashFolder);
+                            folder = m_scene.InventoryService.GetFolderForType(userID, InventoryType.Unknown, FolderType.Trash);
                         }
                     }
                 }
@@ -414,8 +427,7 @@ namespace Universe.Modules.InventoryAccess
                     }
                     else
                     {
-                        folder = m_scene.InventoryService.GetFolderForType(userID, InventoryType.Object,
-                                                                           AssetType.Object);
+                        folder = m_scene.InventoryService.GetFolderForType(userID, InventoryType.Object, FolderType.Object);
                     }
                 }
 
@@ -585,7 +597,7 @@ namespace Universe.Modules.InventoryAccess
                 Utils.StringToBytes(AssetXML),
                 objectGroups[0].OwnerID.ToString());
             asset.ID = m_scene.AssetService.Store(asset);
-            AssetXML = null;
+
             return asset.ID;
         }
 
@@ -699,6 +711,61 @@ namespace Universe.Modules.InventoryAccess
             return null;
         }
 
+        /// <summary>
+        /// Restores an object in world.
+        /// </summary>
+        /// <returns>true</returns>
+        /// <c>false</c>
+        /// <param name="remoteClient">Remote client.</param>
+        /// <param name="itemID">Item I.</param>
+        /// <param name="item">Item.</param>
+        /// <param name="groupID">Group I.</param>
+        public virtual bool RezRestoreToWorld(IClientAPI remoteClient, UUID itemID, InventoryItemBase item, UUID groupID)
+        {
+            AssetBase rezAsset = m_scene.AssetService.Get(item.AssetID.ToString());
+            if (rezAsset == null)
+            {
+                remoteClient.SendAlertMessage ("Failed to find the item you requested.");
+                return false;
+            }
+
+            UUID itemId = UUID.Zero;
+            bool success = false;
+            XmlDocument doc;
+
+            ISceneEntity group = CreateObjectFromInventory(item, remoteClient, itemID, out doc);
+            bool attachment = (group.IsAttachment || (group.RootChild.Shape.PCode == 9 && group.RootChild.Shape.State != 0));
+
+            if (attachment)
+            {
+                remoteClient.SendAlertMessage("Inventory item is an attachment, use Wear or Add instead.");
+                return false;                                    
+            }
+
+            Vector3 pos = group.AbsolutePosition;                                       // maybe .RootPart.GroupPositionNoUpdate;
+            var rezGroup = RezObject (remoteClient, itemID,
+                pos, Vector3.Zero, UUID.Zero, 1, true, false, false, UUID.Zero);        // NOTE May need taskID from calling llclientview
+
+            if (rezGroup != null)
+                success = true;
+      
+
+            if (success && !m_scene.Permissions.BypassPermissions ())
+            {
+                //we check the inventory item permissions here instead of the prim permissions
+                //if the group or item is no copy, it should be removed
+                if ((item.CurrentPermissions & (uint)PermissionMask.Copy) == 0)
+                {
+                    // Not an attachment and no-copy, so remove inventory copy.
+                    m_scene.AssetService.Delete (itemID);
+
+                    List<UUID> itemIDs = new List<UUID> { itemId };
+                    m_scene.InventoryService.DeleteItems (remoteClient.AgentId, itemIDs);
+                }
+            }
+            return success;
+
+        }
 
         /// <summary>
         ///     Rez an object into the scene from the user's inventory
@@ -707,23 +774,23 @@ namespace Universe.Modules.InventoryAccess
         /// things to the scene.  The caller should be doing that, I think.
         /// <param name="remoteClient"></param>
         /// <param name="itemID"></param>
-        /// <param name="RayEnd"></param>
-        /// <param name="RayStart"></param>
-        /// <param name="RayTargetID"></param>
-        /// <param name="BypassRayCast"></param>
-        /// <param name="RayEndIsIntersection"></param>
-        /// <param name="RezSelected"></param>
-        /// <param name="RemoveItem"></param>
+        /// <param name="rayEnd"></param>
+        /// <param name="rayStart"></param>
+        /// <param name="rayTargetID"></param>
+        /// <param name="bypassRayCast"></param>
+        /// <param name="rayEndIsIntersection"></param>
+        /// <param name="rezSelected"></param>
+        /// <param name="removeItem"></param>
         /// <param name="fromTaskID"></param>
         /// <returns>The SceneObjectGroup rezzed or null if rez was unsuccessful.</returns>
-        public virtual ISceneEntity RezObject(IClientAPI remoteClient, UUID itemID, Vector3 RayEnd, Vector3 RayStart,
-                                              UUID RayTargetID, byte BypassRayCast, bool RayEndIsIntersection,
-                                              bool RezSelected, bool RemoveItem, UUID fromTaskID)
+        public virtual ISceneEntity RezObject(IClientAPI remoteClient, UUID itemID, Vector3 rayEnd, Vector3 rayStart,
+                                              UUID rayTargetID, byte bypassRayCast, bool rayEndIsIntersection,
+                                              bool rezSelected, bool removeItem, UUID fromTaskID)
         {
             // Work out position details
-            byte bRayEndIsIntersection = (byte) 0;
+            byte bRayEndIsIntersection;
 
-            bRayEndIsIntersection = (byte) (RayEndIsIntersection ? 1 : 0);
+            bRayEndIsIntersection = (byte) (rayEndIsIntersection ? 1 : 0);
 
             XmlDocument doc;
             //It might be a library item, send UUID.Zero
@@ -736,8 +803,8 @@ namespace Universe.Modules.InventoryAccess
             ISceneEntity group = CreateObjectFromInventory(item, remoteClient, itemID, out doc);
 
             Vector3 pos = m_scene.SceneGraph.GetNewRezLocation(
-                RayStart, RayEnd, RayTargetID, Quaternion.Identity,
-                BypassRayCast, bRayEndIsIntersection, true, new Vector3(0.5f, 0.5f, 0.5f), false);
+                rayStart, rayEnd, rayTargetID, Quaternion.Identity,
+                bypassRayCast, bRayEndIsIntersection, true, new Vector3(0.5f, 0.5f, 0.5f), false);
 
             if (doc == null)
             {
@@ -806,9 +873,9 @@ namespace Universe.Modules.InventoryAccess
                     return null;
                 }
                 List<ISceneEntity> Groups = RezMultipleObjectsFromInventory(nodes, itemID, remoteClient, pos,
-                                                                            RezSelected, item, RayTargetID,
-                                                                            BypassRayCast, RayEndIsIntersection, RayEnd,
-                                                                            RayStart, bRayEndIsIntersection);
+                                                                            rezSelected, item, rayTargetID,
+                                                                            bypassRayCast, rayEndIsIntersection, rayEnd,
+                                                                            rayStart, bRayEndIsIntersection);
                 if (Groups.Count != 0)
                     return Groups[0];
                 remoteClient.SendAlertMessage("Failed to rez the item you requested.");
@@ -835,7 +902,7 @@ namespace Universe.Modules.InventoryAccess
                 return null;
             }
 
-            if (RezSelected)
+            if (rezSelected)
                 group.RootChild.AddFlag(PrimFlags.CreateSelected);
             // If we're rezzing an attachment then don't ask AddNewSceneObject() to update the client since
             // we'll be doing that later on.  Scheduling more than one full update during the attachment
@@ -848,8 +915,8 @@ namespace Universe.Modules.InventoryAccess
             //The OOBsize is only half the size, x2
             Vector3 newSize = (group.OOBsize*2)*Quaternion.Inverse(group.GroupRotation);
             pos = m_scene.SceneGraph.GetNewRezLocation(
-                RayStart, RayEnd, RayTargetID, Quaternion.Identity,
-                BypassRayCast, bRayEndIsIntersection, true, newSize, false);
+                rayStart, rayEnd, rayTargetID, Quaternion.Identity,
+                bypassRayCast, bRayEndIsIntersection, true, newSize, false);
             pos.Z += offsetHeight;
             group.AbsolutePosition = pos;
             //   MainConsole.Instance.InfoFormat("rezx point for inventory rezz is {0} {1} {2}  and offsetheight was {3}", pos.X, pos.Y, pos.Z, offsetHeight);
@@ -857,7 +924,7 @@ namespace Universe.Modules.InventoryAccess
             ISceneChildEntity rootPart = group.GetChildPart(group.UUID);
             if (rootPart == null)
             {
-                MainConsole.Instance.Error("[AGENT INVENTORY]: Error rezzing ItemID: " + itemID +
+                MainConsole.Instance.Error("[Agent inventory]: Error rezzing ItemID: " + itemID +
                                            " object has no rootpart.");
                 return null;
             }
@@ -933,12 +1000,12 @@ namespace Universe.Modules.InventoryAccess
             return group;
         }
 
-        private List<ISceneEntity> RezMultipleObjectsFromInventory(XmlNodeList nodes, UUID itemId,
+        List<ISceneEntity> RezMultipleObjectsFromInventory(XmlNodeList nodes, UUID itemId,
                                                                    IClientAPI remoteClient, Vector3 pos,
-                                                                   bool RezSelected,
-                                                                   InventoryItemBase item, UUID RayTargetID,
-                                                                   byte BypassRayCast, bool RayEndIsIntersection,
-                                                                   Vector3 RayEnd, Vector3 RayStart,
+                                                                   bool rezSelected,
+                                                                   InventoryItemBase item, UUID rayTargetID,
+                                                                   byte BypassRayCast, bool rayEndIsIntersection,
+                                                                   Vector3 rayEnd, Vector3 rayStart,
                                                                    byte bRayEndIsIntersection)
         {
             Vector3 OldMiddlePos = Vector3.Zero;
@@ -980,7 +1047,7 @@ namespace Universe.Modules.InventoryAccess
                     return null;
                 }
 
-                if (RezSelected)
+                if (rezSelected)
                     group.RootChild.AddFlag(PrimFlags.CreateSelected);
                 // If we're rezzing an attachment then don't ask AddNewSceneObject() to update the client since
                 // we'll be doing that later on.  Scheduling more than one full update during the attachment
@@ -992,7 +1059,7 @@ namespace Universe.Modules.InventoryAccess
                 // if not, we set it's position in world.
                 float offsetHeight = 0;
                 pos = m_scene.SceneGraph.GetNewRezLocation(
-                    RayStart, RayEnd, RayTargetID, Quaternion.Identity,
+                    rayStart, rayEnd, rayTargetID, Quaternion.Identity,
                     BypassRayCast, bRayEndIsIntersection, true, group.GetAxisAlignedBoundingBox(out offsetHeight), false);
                 pos.Z += offsetHeight;
                 //group.AbsolutePosition = pos;
@@ -1149,7 +1216,7 @@ namespace Universe.Modules.InventoryAccess
         /// <param name="data"></param>
         /// <param name="creatorID"></param>
         /// <returns></returns>
-        private AssetBase CreateAsset(string name, string description, sbyte assetType, byte[] data, string creatorID)
+        AssetBase CreateAsset(string name, string description, sbyte assetType, byte[] data, string creatorID)
         {
             AssetBase asset = new AssetBase(UUID.Random(), name, (AssetType) assetType, UUID.Parse(creatorID))
                                   {Description = description, Data = data ?? new byte[1]};

@@ -25,7 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
 using System.Collections.Generic;
 using OpenMetaverse;
 using OpenMetaverse.StructuredData;
@@ -128,9 +127,10 @@ namespace Universe.Framework.Services
     public interface IUserAccountService
     {
         /// <summary>
-        /// Returns true if the service is remote.
+        /// Returns true if service is local.
+        /// This exposes the ConnectorBase field so it can be used by inherited classes
         /// </summary>
-        bool RemoteCalls ();
+        bool IsLocalConnector { get; }
 
         IUserAccountService InnerService { get; }
 
@@ -249,6 +249,7 @@ namespace Universe.Framework.Services
         /// <returns>The god level description.</returns>
         /// <param name="level">Level.</param>
         string UserGodLevel (int level);
+
     }
 
     /// <summary>

@@ -1,7 +1,6 @@
 ConsoleCombiner.exe allows you to run multiple regions or grid servers in one
    single console. To set this up, follow the steps below.
    
-   
 1. Run ConsoleCombiner.exe once, and press enter when it says that you need to
    set up the config.
    

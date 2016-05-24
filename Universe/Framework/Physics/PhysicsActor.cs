@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-support.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,7 +54,7 @@ namespace Universe.Framework.Physics
         // Raising the event on the object, so don't need to provide location..  further up the tree knows that info.
 
         public bool Cleared;
-        private Dictionary<uint, ContactPoint> m_objCollisionList = new Dictionary<uint, ContactPoint>();
+        Dictionary<uint, ContactPoint> m_objCollisionList = new Dictionary<uint, ContactPoint>();
 
         public CollisionEventUpdate()
         {
@@ -64,9 +64,19 @@ namespace Universe.Framework.Physics
         public void AddCollider(uint localID, ContactPoint contact)
         {
             Cleared = false;
-            
+            /*ContactPoint oldCol;
+            if(!m_objCollisionList.TryGetValue(localID, out oldCol))
+            {
+                */
             lock (m_objCollisionList)
                 m_objCollisionList[localID] = contact;
+            /*}
+            else
+            {
+                if(oldCol.PenetrationDepth < contact.PenetrationDepth)
+                    lock(m_objCollisionList)
+                        m_objCollisionList[localID] = contact;
+            }*/
         }
 
         public int Count
@@ -141,6 +151,7 @@ namespace Universe.Framework.Physics
 
         public abstract Vector3 Size { get; set; }
         public virtual uint LocalID { get; set; }
+        public abstract bool Grabbed { set; }
         public virtual string Name { get; set; }
         public virtual UUID UUID { get; set; }
 
@@ -205,7 +216,7 @@ namespace Universe.Framework.Physics
         public abstract float Mass { get; }
         public abstract float CollisionScore { get; set; }
         public abstract Quaternion Orientation { get; set; }
-        public abstract int PhysicsActorType { get; }
+        public abstract int PhysicsActorType { get; set;}
         public abstract bool IsPhysical { get; set; }
         public abstract bool ThrottleUpdates { get; set; }
         public abstract bool IsColliding { get; set; }
@@ -221,7 +232,7 @@ namespace Universe.Framework.Physics
         public abstract bool SubscribedEvents();
 
         public abstract bool SendCollisions();
-        public abstract void AddCollisionEvent(uint localID, ContactPoint contact);
+        public abstract void AddCollisionEvent(uint collidedWith, ContactPoint contact);
 
         public virtual void ForceSetVelocity(Vector3 velocity) { }
         public virtual void ForceSetRotVelocity(Vector3 velocity) { }
@@ -231,9 +242,9 @@ namespace Universe.Framework.Physics
 
         #region Object Declares
 
-        public virtual void link(PhysicsActor obj) { }
-        public virtual void linkGroupToThis(PhysicsActor[] objs) { }
-        public virtual void delink() { }
+        public virtual void Link(PhysicsActor obj) { }
+        public virtual void LinkGroupToThis(PhysicsActor[] objs) { }
+        public virtual void Delink() { }
         public virtual bool LinkSetIsColliding { get; set; }
         public virtual void LockAngularMotion(Vector3 axis) { }
         public virtual void CrossingFailure() { }
@@ -257,6 +268,7 @@ namespace Universe.Framework.Physics
         public virtual void SubscribeEvents(int ms) { }
         public virtual void UnSubscribeEvents() { }
         public virtual bool VolumeDetect { get; set; }
+        public abstract bool Kinematic { get; set; }
 
         public event BlankHandler OnPhysicalRepresentationChanged;
 
@@ -264,6 +276,13 @@ namespace Universe.Framework.Physics
         {
             if (OnPhysicalRepresentationChanged != null)
                 OnPhysicalRepresentationChanged();
+        }
+
+        // Extendable interface for new, physics engine specific operations
+        public virtual object Extension(string pFunct, params object[] pParams)
+        {
+            // A NOP of the physics engine does not implement this feature
+            return null;
         }
 
         #endregion
@@ -323,6 +342,11 @@ namespace Universe.Framework.Physics
         public override uint LocalID
         {
             get { return 0; }
+            set { return; }
+        }
+
+        public override bool Grabbed
+        {
             set { return; }
         }
 
@@ -411,6 +435,7 @@ namespace Universe.Framework.Physics
         public override int PhysicsActorType
         {
             get { return (int) ActorTypes.Ground; }
+            set { return; }
         }
 
         public override Vector3 RotationalVelocity
@@ -419,6 +444,11 @@ namespace Universe.Framework.Physics
             set { return; }
         }
 
+        public override bool Kinematic {
+            get { return false; }
+            set { return; }
+        }
+           
         public override void CrossingFailure()
         {
         }
@@ -449,7 +479,7 @@ namespace Universe.Framework.Physics
             return false;
         }
 
-        public override void AddCollisionEvent(uint CollidedWith, ContactPoint contact)
+        public override void AddCollisionEvent(uint collidedWith, ContactPoint contact)
         {
         }
     }
@@ -487,6 +517,11 @@ namespace Universe.Framework.Physics
         public override uint LocalID
         {
             get { return 0; }
+            set { return; }
+        }
+
+        public override bool Grabbed
+        {
             set { return; }
         }
 
@@ -554,11 +589,18 @@ namespace Universe.Framework.Physics
         public override int PhysicsActorType
         {
             get { return (int) ActorTypes.Unknown; }
+            set { return; }
+
         }
 
         public override Vector3 RotationalVelocity
         {
             get { return Vector3.Zero; }
+            set { return; }
+        }
+
+        public override bool Kinematic {
+            get { return false; }
             set { return; }
         }
 
@@ -576,7 +618,7 @@ namespace Universe.Framework.Physics
             return false;
         }
 
-        public override void AddCollisionEvent(uint CollidedWith, ContactPoint contact)
+        public override void AddCollisionEvent(uint collidedWith, ContactPoint contact)
         {
         }
     }

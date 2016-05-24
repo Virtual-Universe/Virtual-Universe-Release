@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,11 +25,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
+
 using System.Collections.Generic;
 using OpenMetaverse;
 using Universe.Framework.DatabaseInterfaces;
-using Universe.Framework.Servers.HttpServer;
 using Universe.Framework.Servers.HttpServer.Implementation;
 
 namespace Universe.Modules.Web
@@ -71,26 +70,32 @@ namespace Universe.Modules.Web
                 string text = requestParameters["NewsText"].ToString();
                 string id = requestParameters["NewsID"].ToString();
                 news = connector.GetGeneric<GridNewsItem>(UUID.Zero, "WebGridNews", id);
-                connector.RemoveGeneric(UUID.Zero, "WebGridNews", id);
-                GridNewsItem item = new GridNewsItem {Text = text, Time = news.Time, Title = title, ID = int.Parse(id)};
-                connector.AddGeneric(UUID.Zero, "WebGridNews", id, item.ToOSD());
-                response = "<h3>News item editted successfully, redirecting to main page</h3>" +
-                           "<script language=\"javascript\">" +
-                           "setTimeout(function() {window.location.href = \"index.html?page=news_manager\";}, 0);" +
-                           "</script>";
+                if (news != null)
+                {
+                    connector.RemoveGeneric (UUID.Zero, "WebGridNews", id);
+                    GridNewsItem item = new GridNewsItem { Text = text, Time = news.Time, Title = title, ID = int.Parse (id) };
+                    connector.AddGeneric (UUID.Zero, "WebGridNews", id, item.ToOSD ());
+                    response = "<h3>News item editted successfully, redirecting to main page</h3>" +
+                    "<script language=\"javascript\">" +
+                    "setTimeout(function() {window.location.href = \"index.html?page=news_manager\";}, 0);" +
+                    "</script>";
+                }
                 return null;
             }
 
 
             news = connector.GetGeneric<GridNewsItem>(UUID.Zero, "WebGridNews", httpRequest.Query["newsid"].ToString());
-            vars.Add("NewsTitle", news.Title);
-            vars.Add("NewsText", news.Text);
-            vars.Add("NewsID", news.ID.ToString());
+            if (news != null)
+            {
+                vars.Add ("NewsTitle", news.Title);
+                vars.Add ("NewsText", news.Text);
+                vars.Add ("NewsID", news.ID.ToString ());
 
-            vars.Add("NewsItemTitle", translator.GetTranslatedString("NewsItemTitle"));
-            vars.Add("NewsItemText", translator.GetTranslatedString("NewsItemText"));
-            vars.Add("EditNewsText", translator.GetTranslatedString("EditNewsText"));
-            vars.Add("Submit", translator.GetTranslatedString("Submit"));
+                vars.Add ("NewsItemTitle", translator.GetTranslatedString ("NewsItemTitle"));
+                vars.Add ("NewsItemText", translator.GetTranslatedString ("NewsItemText"));
+                vars.Add ("EditNewsText", translator.GetTranslatedString ("EditNewsText"));
+                vars.Add ("Submit", translator.GetTranslatedString ("Submit"));
+            }
             return vars;
         }
 

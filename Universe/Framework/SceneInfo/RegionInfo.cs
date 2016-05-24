@@ -27,8 +27,8 @@
 
 using System;
 using System.IO;
-using System.Xml.Serialization;
 using System.Xml;
+using System.Xml.Serialization;
 using OpenMetaverse;
 using OpenMetaverse.StructuredData;
 using ProtoBuf;
@@ -46,7 +46,9 @@ namespace Universe.Framework.SceneInfo
     [Serializable, ProtoContract(UseProtoMembersOnly = false)]
     public class RegionInfo : AllScopeIDImpl
     {
-        private RegionSettings m_regionSettings;
+        RegionSettings m_regionSettings;
+        UUID m_GridSecureSessionID = UUID.Zero;
+        bool m_seeIntoThisSimFromNeighbor = true;
 
         protected int m_objectCapacity = 0;
         protected string m_regionType = String.Empty;
@@ -58,8 +60,7 @@ namespace Universe.Framework.SceneInfo
         protected int m_regionPort;
         protected string m_regionTerrain = "Flatland";
         protected uint m_regionArea;
-        private UUID m_GridSecureSessionID = UUID.Zero;
-        private bool m_seeIntoThisSimFromNeighbor = true;
+
 
         [XmlIgnore]
         public bool NewRegion = false;
@@ -120,7 +121,7 @@ namespace Universe.Framework.SceneInfo
         }
 
         [ProtoMember(11)]
-        public bool InfiniteRegion = false;
+        public bool InfiniteRegion = true;
 
         [ProtoMember(13)]
         public bool SeeIntoThisSimFromNeighbor
@@ -309,6 +310,7 @@ namespace Universe.Framework.SceneInfo
                 m_regionTerrain = args["region_terrain"].AsString();
             if (args.ContainsKey("region_area"))
                 RegionArea = (uint) args["region_area"].AsInteger();
+
         }
 
         public override void FromOSD(OSDMap map)
@@ -322,6 +324,7 @@ namespace Universe.Framework.SceneInfo
         }
 
         // File based loading
+        //
 
         /// <summary>
         /// Initializes a new instance of a regions when loaded from a definition file"/> class.
@@ -330,6 +333,7 @@ namespace Universe.Framework.SceneInfo
         public void LoadRegionConfig(string fileName) 
         {
             RegionInfo ri = (RegionInfo)DeserializeObject(fileName);
+
 
             RegionID = ri.RegionID;
             RegionName = ri.RegionName;
@@ -344,8 +348,13 @@ namespace Universe.Framework.SceneInfo
             SeeIntoThisSimFromNeighbor = ri.SeeIntoThisSimFromNeighbor;
             InfiniteRegion = ri.InfiniteRegion;
             EstateSettings = ri.EstateSettings;
+            //RegionSettings = ri.RegionSettings;
+            //GridSecureSessionID = ri.GridSecureSessionID;
+            //OpenRegionSettings = ri.OpenRegionSettings;
+            //EnvironmentSettings =  ri.EnvironmentSettings;
             RegionTerrain = ri.RegionTerrain;
             RegionArea = ri.RegionArea;
+
         }
 
         public void SaveRegionConfig(string fileName) 

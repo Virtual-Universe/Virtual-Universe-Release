@@ -1,0 +1,5 @@
+C:\Users\virtu\Desktop\Universe-Dev\VirtualUniverse\bin\Universe.Framework.dll
+C:\Users\virtu\Desktop\Universe-Dev\VirtualUniverse\bin\Universe.Framework.pdb
+C:\Users\virtu\Desktop\Universe-Dev\Universe\Framework\obj\x64\Debug\Universe.Framework.csprojResolveAssemblyReference.cache
+C:\Users\virtu\Desktop\Universe-Dev\Universe\Framework\obj\x64\Debug\Universe.Framework.dll
+C:\Users\virtu\Desktop\Universe-Dev\Universe\Framework\obj\x64\Debug\Universe.Framework.pdb

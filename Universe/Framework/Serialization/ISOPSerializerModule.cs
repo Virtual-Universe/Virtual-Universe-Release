@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-support.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,7 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
 using System.Xml;
 using Universe.Framework.SceneInfo;
 
@@ -41,13 +40,13 @@ namespace Universe.Framework.Serialization
         /// </summary>
         /// <param name="sop">The object being changed</param>
         /// <param name="reader">Contains the values that the .xml file has found</param>
-        void Deserialization(ISceneChildEntity sop, XmlTextReader reader);
+        void Deserialization (ISceneChildEntity sop, XmlTextReader reader);
 
         /// <summary>
         ///     This is called when the object is being changed into .xml
         /// </summary>
         /// <param name="part">Object being worked on</param>
         /// <returns>The serialized part that will be added to the .xml file</returns>
-        string Serialization(ISceneChildEntity part);
+        string Serialization (ISceneChildEntity part);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,6 +26,11 @@
  */
 
 
+using System;
+using System.IO;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Modules;
@@ -36,17 +41,12 @@ using Universe.Framework.Servers.HttpServer;
 using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Servers.HttpServer.Interfaces;
 using Universe.Framework.Utilities;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
-using System;
-using System.IO;
 
 namespace Universe.Modules.Auction
 {
     public class AuctionModule : IAuctionModule, INonSharedRegionModule
     {
-        private IScene m_scene;
+        IScene m_scene;
 
         #region INonSharedRegionModule Members
 
@@ -96,7 +96,7 @@ namespace Universe.Modules.Auction
             client.OnViewerStartAuction += StartAuction;
         }
 
-        private void OnClosingClient(IClientAPI client)
+        void OnClosingClient(IClientAPI client)
         {
             client.OnViewerStartAuction -= StartAuction;
         }
@@ -122,7 +122,7 @@ namespace Universe.Modules.Auction
             return retVal;
         }
 
-        private byte[] ViewerStartAuction(string path, Stream request,
+        byte[] ViewerStartAuction(string path, Stream request,
                                           OSHttpRequest httpRequest, OSHttpResponse httpResponse)
         {
             //OSDMap rm = (OSDMap)OSDParser.DeserializeLLSDXml(HttpServerHandlerHelpers.ReadFully(request));
@@ -144,7 +144,10 @@ namespace Universe.Modules.Auction
                     return;
                 landObject.LandData.SnapshotID = SnapshotID;
                 landObject.LandData.AuctionID = (uint) Util.RandomClass.Next(0, int.MaxValue);
-                landObject.LandData.Status = ParcelStatus.Abandoned;
+ 
+                // During an Auction, the Status of an parcel stays "Leased"
+                // 20160204 -greythane- maybe this could be set to 'pending'?
+                landObject.LandData.Status = ParcelStatus.Leased;
                 landObject.SendLandUpdateToAvatarsOverMe();
             }
         }
@@ -203,7 +206,7 @@ namespace Universe.Modules.Auction
             }
         }
 
-        private void SaveAuctionInfo(int LocalID, AuctionInfo info)
+        void SaveAuctionInfo(int LocalID, AuctionInfo info)
         {
             IParcelManagementModule parcelManagement = m_scene.RequestModuleInterface<IParcelManagementModule>();
             if (parcelManagement != null)
@@ -215,7 +218,7 @@ namespace Universe.Modules.Auction
             }
         }
 
-        private AuctionInfo GetAuctionInfo(int LocalID)
+        AuctionInfo GetAuctionInfo(int LocalID)
         {
             IParcelManagementModule parcelManagement = m_scene.RequestModuleInterface<IParcelManagementModule>();
             if (parcelManagement != null)

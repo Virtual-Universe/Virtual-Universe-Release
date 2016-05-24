@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,6 +25,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.ModuleLoader;
+using OpenMetaverse;
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -32,9 +35,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using OpenMetaverse;
-using Universe.Framework.ConsoleFramework;
-using Universe.Framework.ModuleLoader;
 
 namespace Universe.ScriptEngine.VirtualScript.CompilerTools
 {
@@ -103,7 +103,7 @@ namespace Universe.ScriptEngine.VirtualScript.CompilerTools
             //Find the default compiler
             FindDefaultCompiler();
 
-#if DNE_DEBUG
+#if VS_DEBUG
             TestScripts();
         }
         
@@ -491,7 +491,7 @@ namespace Universe.ScriptEngine.VirtualScript.CompilerTools
 
             if (rootPath != null)
                 parameters.ReferencedAssemblies.Add(Path.Combine(rootPath,
-                                                                 "Universe.ScriptEngine.DotNetEngine.dll"));
+                                                                 "Universe.ScriptEngine.VirtualScript.dll"));
             parameters.ReferencedAssemblies.Add("System.dll");
             parameters.ReferencedAssemblies.Add("Microsoft.CSharp.dll");
             parameters.ReferencedAssemblies.Add("System.Core.dll");

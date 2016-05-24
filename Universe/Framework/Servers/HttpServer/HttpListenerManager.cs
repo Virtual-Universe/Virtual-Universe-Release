@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,15 +39,16 @@ namespace Universe.Framework.Servers.HttpServer
         // 1229 - An operation was attempted on a nonexistent network connection
         // 995  - The I/O operation has been aborted because of either a thread exit or an application request.
         public static readonly int[] IGNORE_ERROR_CODES = new int[3] { 64, 1229, 995 };
-        private readonly HttpListener _listener;
-        private readonly Thread _listenerThread;
-        private readonly Thread[] _workers;
-        private ConcurrentQueue<HttpListenerContext> _queue;
         public event Action<HttpListenerContext> ProcessRequest;
-        private ManualResetEvent _newQueueItem = new ManualResetEvent(false), _listenForNextRequest = new ManualResetEvent(false);
-        private bool _isSecure = false;
-        private bool _isRunning = false;
-        private int _lockedQueue = 0;
+
+        ConcurrentQueue<HttpListenerContext> _queue;
+        ManualResetEvent _newQueueItem = new ManualResetEvent(false), _listenForNextRequest = new ManualResetEvent(false);
+        readonly HttpListener _listener;
+        readonly Thread _listenerThread;
+        readonly Thread[] _workers;
+        bool _isSecure;
+        bool _isRunning;
+        int _lockedQueue;
 
         public HttpListenerManager(uint maxThreads, bool isSecure)
         {
@@ -96,7 +97,7 @@ namespace Universe.Framework.Servers.HttpServer
 
 #if true //LINUX
 
-        private void HandleRequests()
+        void HandleRequests()
         {
             while (_listener.IsListening)
             {
@@ -106,7 +107,7 @@ namespace Universe.Framework.Servers.HttpServer
             }
         }
 
-        private void ListenerCallback(IAsyncResult result)
+        void ListenerCallback(IAsyncResult result)
         {
             HttpListenerContext context = null;
 
@@ -159,7 +160,7 @@ namespace Universe.Framework.Servers.HttpServer
 
 #endif
 
-        private void Worker()
+        void Worker()
         {
             while ((_queue.Count > 0 || _newQueueItem.WaitOne()) && _listener.IsListening)
             {

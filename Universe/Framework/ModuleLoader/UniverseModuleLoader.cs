@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-support/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,11 +37,11 @@ namespace Universe.Framework.ModuleLoader
 {
     public static class UniverseModuleLoader
     {
-        private static bool ALLOW_CACHE = true;
-        private static List<string> dllBlackList;
-        private static readonly List<string> firstLoad = new List<string>();
-        private static readonly Dictionary<string, List<Type>> LoadedDlls = new Dictionary<string, List<Type>>();
-        private static readonly Dictionary<string, Assembly> LoadedAssemblys = new Dictionary<string, Assembly>();
+        static bool ALLOW_CACHE = true;
+        static List<string> dllBlackList;
+        static readonly List<string> firstLoad = new List<string>();
+        static readonly Dictionary<string, List<Type>> LoadedDlls = new Dictionary<string, List<Type>>();
+        static readonly Dictionary<string, Assembly> LoadedAssemblys = new Dictionary<string, Assembly>();
 
         #region Module Loaders
 

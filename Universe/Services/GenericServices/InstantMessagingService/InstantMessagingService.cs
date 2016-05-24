@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -138,7 +138,7 @@ namespace Universe.Services
 
                 if (!isOnline)
                 {
-                    //If they are going offline, actually remove from from all group chats so that the next time they log in, they will be readded
+                    //If they are going offline, actually remove from from all group chats so that the next time they log in, they will be re-added
                     foreach (GroupMembershipData gmd in m_groupData.GetAgentGroupMemberships(us, us))
                     {
                         ChatSessionMember member = FindMember(gmd.GroupID, us);

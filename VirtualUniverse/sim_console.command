@@ -1,18 +1,17 @@
 #!/bin/bash
-# Start the Universe-Sim Standalone server
-# Version 0.9.2+
+# Start the Virtual Universe Standalone server
+# Version 1.0.2+
 #
-# May 2014
-# greythane @ gmail.com
+# Emperor Starfinder<emperor@secondgalaxy.com>: For Virtual Universe - May 11, 2016
+# Greythane<greythane@gmail.com>: For WhiteCore-Sim - May 2015
 
-WOASDIR="${0%/*}"
-cd $WOASDIR
-echo $WOASDIR
+VUOASDIR="${0%/*}"
+cd $VUOASDIR
+echo $VUOASDIR
 
 cd ./bin
-echo Starting Universe Standalone Simulator...
+echo Starting Virtual Universe Standalone Simulator...
 mono Universe.exe -skipconfig
 wait
 
 exit
-

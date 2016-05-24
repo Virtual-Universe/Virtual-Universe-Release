@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,7 +29,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Nini.Config;
 
-namespace Universe.Region.Physics.BulletSPlugin
+namespace Universe.Physics.BulletSPlugin
 {
     public struct MaterialAttributes
     {
@@ -179,7 +179,7 @@ namespace Universe.Region.Physics.BulletSPlugin
         }
 
         // Use reflection to set the value in the attribute structure.
-        private static void SetAttributeValue(int matType, string attribName, float val)
+        static void SetAttributeValue(int matType, string attribName, float val)
         {
             // Get the current attribute values for this material
             MaterialAttributes thisAttrib = Attributes[matType];

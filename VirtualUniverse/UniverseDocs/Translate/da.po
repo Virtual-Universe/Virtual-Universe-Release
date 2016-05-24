@@ -1,11 +1,11 @@
-# Danish translation for universe
+# Danish translation for whitecore
 # Copyright (c) 2014 Rosetta Contributors and Canonical Ltd 2014
-# This file is distributed under the same license as the universe package.
+# This file is distributed under the same license as the whitecore package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2014.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: universe\n"
+"Project-Id-Version: whitecore\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2014-05-06 20:22+0200\n"
 "PO-Revision-Date: 2014-05-06 18:42+0000\n"

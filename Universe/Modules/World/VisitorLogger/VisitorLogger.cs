@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,12 +28,12 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Universe.Framework.Modules;
-using Universe.Framework.PresenceInfo;
-using Universe.Framework.SceneInfo;
 using Nini.Config;
 using OpenMetaverse;
 using Universe.Framework.ConsoleFramework;
+using Universe.Framework.Modules;
+using Universe.Framework.PresenceInfo;
+using Universe.Framework.SceneInfo;
 using Universe.Framework.Utilities;
 
 namespace Universe.Modules.VisitorLogger
@@ -45,8 +45,8 @@ namespace Universe.Modules.VisitorLogger
     {
         #region Declares
 
-        protected bool m_enabled;
-        protected string m_fileName = "Vistors.log";
+        protected bool m_enabled = true;
+        protected string m_fileName = "Visitors.log";
         protected Dictionary<UUID, DateTime> m_timesOfUsers = new Dictionary<UUID, DateTime>();
 
         #endregion
@@ -61,10 +61,8 @@ namespace Universe.Modules.VisitorLogger
                 m_enabled = config.GetBoolean("Enabled", m_enabled);
                 m_fileName = config.GetString("FileName", m_fileName);
 
-                // verify path details
-                string filePath = Path.GetDirectoryName (m_fileName);
-                if (filePath == "")
-                    m_fileName = Path.Combine (Constants.DEFAULT_DATA_DIR, m_fileName);
+                if (m_enabled && (m_fileName == ""))        // in case of default config
+                    m_fileName = "Visitors.log";
             }
         }
 
@@ -120,7 +118,6 @@ namespace Universe.Modules.VisitorLogger
                     m_timesOfUsers.Remove(presence.UUID);
 
                     m_streamWriter.WriteLine(LineToWrite);
-                    m_streamWriter.WriteLine();
                     m_streamWriter.Close();
                 }
                 catch
@@ -131,20 +128,32 @@ namespace Universe.Modules.VisitorLogger
 
         void OnMakeRootAgent(IScenePresence presence)
         {
+            string logPath = MainConsole.Instance.LogPath;
             try
             {
-                //Add the user
-                FileStream stream = new FileStream(m_fileName, FileMode.OpenOrCreate);
+                FileStream stream = new FileStream(logPath + m_fileName, FileMode.OpenOrCreate);
                 StreamWriter m_streamWriter = new StreamWriter(stream);
                 m_streamWriter.BaseStream.Position += m_streamWriter.BaseStream.Length;
+                string lineToWrite;
 
-                string LineToWrite = DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToLongTimeString() + " - " +
-                                     presence.Name + " entered " +
-                                     presence.Scene.RegionInfo.RegionName + ".";
-                m_timesOfUsers[presence.UUID] = DateTime.Now;
+                // are we just moving around...
+                if (m_timesOfUsers.ContainsKey(presence.UUID))
+                {
+                    lineToWrite = DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToLongTimeString() +
+                        " - " + presence.Name + " online for " +
+                        (DateTime.Now - m_timesOfUsers[presence.UUID]).Minutes + " minutes.";
+                    
+                    m_streamWriter.WriteLine(lineToWrite);
+                } else {
+                    // ..or first login
+                    m_timesOfUsers[presence.UUID] = DateTime.Now;
+                }
 
-                m_streamWriter.WriteLine(LineToWrite);
-                m_streamWriter.WriteLine();
+                lineToWrite = DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToLongTimeString() + " - " +
+                    presence.Name + " entered " +
+                    presence.Scene.RegionInfo.RegionName + ".";
+
+                m_streamWriter.WriteLine(lineToWrite);
                 m_streamWriter.Close();
             }
             catch

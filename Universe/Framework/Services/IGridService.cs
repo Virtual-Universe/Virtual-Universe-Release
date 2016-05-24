@@ -438,7 +438,8 @@ namespace Universe.Framework.Services
             ScopeID = ConvertFrom.ScopeID;
             AllScopeIDs = ConvertFrom.AllScopeIDs;
             SessionID = ConvertFrom.GridSecureSessionID;
-            Flags |= ConvertFrom.RegionFlags;                           // not sure why we don't pass all the flags
+//            Flags |= (int) RegionFlags.RegionOnline;
+            Flags |= ConvertFrom.RegionFlags;                           // not sure why we don't pass all the flags??
             RegionTerrain = ConvertFrom.RegionTerrain;
             RegionArea = ConvertFrom.RegionArea;
         }
@@ -488,7 +489,10 @@ namespace Universe.Framework.Services
 
         public ulong RegionHandle
         {
-            get { return Util.IntsToUlong (RegionLocX, RegionLocY); }
+            get {
+                var regHdl = Util.IntsToUlong (RegionLocX, RegionLocY);
+                return regHdl;
+            }
         }
 
         /// <summary>

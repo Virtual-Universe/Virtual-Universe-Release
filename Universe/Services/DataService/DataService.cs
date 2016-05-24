@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,27 +25,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
+using System.Collections.Generic;
+using Nini.Config;
 using Universe.DataManager.MySQL;
 using Universe.DataManager.SQLite;
-
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.ModuleLoader;
 using Universe.Framework.Modules;
 using Universe.Framework.Services;
-using Nini.Config;
-using System;
-using System.Collections.Generic;
 
 namespace Universe.Services.DataService
 {
     public class LocalDataService
     {
-        private string ConnectionString = "";
-        private string StorageProvider = "";
+        string ConnectionString = "";
+        string StorageProvider = "";
 
-        public void Initialize(IConfigSource source, IRegistryCore simBase)
+        public void Initialize(IConfigSource config, IRegistryCore registry)
         {
-            IConfig m_config = source.Configs["UniverseData"];
+            IConfig m_config = config.Configs["UniverseData"];
             if (m_config != null)
             {
                 StorageProvider = m_config.GetString("StorageProvider", StorageProvider);
@@ -76,6 +75,10 @@ namespace Universe.Services.DataService
                 //Allow for fallback when UniverseData isn't set
             {
                 SQLiteLoader GenericData = new SQLiteLoader();
+
+                // set default data directory in case it is needed
+                var simBase = registry.RequestModuleInterface<ISimulationBase> ();
+                GenericData.DefaultDataPath = simBase.DefaultDataPath;
 
                 DataConnector = GenericData;
             }
@@ -85,21 +88,21 @@ namespace Universe.Services.DataService
             {
                 try
                 {
-                    plugin.Initialize(DataConnector == null ? null : DataConnector.Copy(), source, simBase,
+                    plugin.Initialize(DataConnector == null ? null : DataConnector.Copy(), config, registry,
                                       ConnectionString);
                 }
                 catch (Exception ex)
                 {
                     if (MainConsole.Instance != null)
                         MainConsole.Instance.Warn("[DataService]: Exception occurred starting data plugin " +
-                                                  plugin.Name + ", " + ex.ToString());
+                                                  plugin.Name + ", " + ex);
                 }
             }
         }
 
-        public void Initialize(IConfigSource source, IRegistryCore simBase, List<Type> types)
+        public void Initialize(IConfigSource config, IRegistryCore registry, List<Type> types)
         {
-            IConfig m_config = source.Configs["UniverseData"];
+            IConfig m_config = config.Configs["UniverseData"];
             if (m_config != null)
             {
                 StorageProvider = m_config.GetString("StorageProvider", StorageProvider);
@@ -131,23 +134,29 @@ namespace Universe.Services.DataService
             {
                 SQLiteLoader GenericData = new SQLiteLoader();
 
+                // set default data directory in case it is needed
+                var simBase = registry.RequestModuleInterface<ISimulationBase> ();
+                GenericData.DefaultDataPath = simBase.DefaultDataPath;
+
                 DataConnector = GenericData;
             }
 
-            foreach (Type t in types)
+            if (DataConnector != null)      // we have a problem if so...
             {
-                List<dynamic> Plugins = UniverseModuleLoader.PickupModules(t);
-                foreach (dynamic plugin in Plugins)
+                foreach (Type t in types)
                 {
-                    try
+                    List<dynamic> Plugins = UniverseModuleLoader.PickupModules (t);
+                    foreach (dynamic plugin in Plugins)
                     {
-                        plugin.Initialize(DataConnector.Copy(), source, simBase, ConnectionString);
-                    }
-                    catch (Exception ex)
-                    {
-                        if (MainConsole.Instance != null)
-                            MainConsole.Instance.Warn("[DataService]: Exception occurred starting data plugin " +
-                                                      plugin.Name + ", " + ex.ToString());
+                        try
+                        {
+                            plugin.Initialize (DataConnector.Copy (), config, registry, ConnectionString);
+                        } catch (Exception ex)
+                        {
+                            if (MainConsole.Instance != null)
+                                MainConsole.Instance.Warn ("[DataService]: Exception occurred starting data plugin " +
+                                plugin.Name + ", " + ex);
+                        }
                     }
                 }
             }

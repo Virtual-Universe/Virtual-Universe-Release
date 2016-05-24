@@ -25,11 +25,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
 using System.Collections.Generic;
+using Universe.Framework.Modules;
 using OpenMetaverse;
 using OpenMetaverse.StructuredData;
-using Universe.Framework.Modules;
 
 namespace Universe.Framework.Services
 {
@@ -54,6 +53,22 @@ namespace Universe.Framework.Services
 
         public AbuseReport()
         {
+            AbuseDetails = "";
+            AbuseLocation = "";
+            AbuseSummary = "";
+            AbuserName = "";
+            Active = false;;
+            AssignedTo = "";
+            Category = null;
+            Checked = false;
+            Notes = "";
+            Number = 0;
+            ObjectName = "";
+            ObjectPosition = "";
+            ObjectUUID = UUID.Zero;
+            RegionName = "";
+            ReporterName = "";
+            ScreenshotID = UUID.Zero;
         }
 
         public override void FromOSD(OSDMap DicCol)

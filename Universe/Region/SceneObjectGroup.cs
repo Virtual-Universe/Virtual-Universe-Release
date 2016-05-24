@@ -2711,10 +2711,10 @@ namespace Universe.Region
                 actors[i] = part.PhysActor;
                 
                 if(!m_scene.PhysicsScene.AllowGroupLink)
-                    part.PhysActor.link(RootPart.PhysActor);
+                    part.PhysActor.Link(RootPart.PhysActor);
             }
             if (m_scene.PhysicsScene.AllowGroupLink)
-                RootPart.PhysActor.linkGroupToThis(actors);
+                RootPart.PhysActor.LinkGroupToThis(actors);
 
             Scene.UniverseEventManager.FireGenericEventHandler("ObjectChangedPhysicalStatus", this);
 
@@ -3201,7 +3201,7 @@ namespace Universe.Region
                 if (linkPart.PhysActor != null && m_rootPart.PhysActor != null)
                 {
                     if (linkPart.PhysicsType != (byte) PhysicsShapeType.None)
-                        linkPart.PhysActor.link(m_rootPart.PhysActor);
+                        linkPart.PhysActor.Link(m_rootPart.PhysActor);
                 }
                 //rest of parts
                 foreach (
@@ -3210,7 +3210,7 @@ namespace Universe.Region
                     LinkNonRootPart(part, oldGroupPosition, oldRootRotation, linkNum++);
                     part.FixOffsetPosition(part.OffsetPosition, true);
                     if (part.PhysActor != null && m_rootPart.PhysActor != null)
-                        part.PhysActor.link(m_rootPart.PhysActor);
+                        part.PhysActor.Link(m_rootPart.PhysActor);
                 }
             }
             // Here's the deal, this is ABSOLUTELY CRITICAL so the physics scene gets the update about the 

@@ -282,6 +282,22 @@ table#transactions_search_result th {}
 .transactions_description {width: 250px; text-align: left;}
 .transactions_value {width: 100px; text-align: right;}
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* user_agent_profile */
 div#user_agent_profile_container {
     margin-bottom: 15px;
@@ -600,6 +616,21 @@ div.picks_profile_picture {
     -moz-border-radius: 5px;
     behavior: url(../../css/pie.htc);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* Navigation buttons */
 .nav {

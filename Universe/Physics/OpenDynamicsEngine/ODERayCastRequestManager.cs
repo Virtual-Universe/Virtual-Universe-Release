@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,11 +29,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using OpenMetaverse;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Physics;
-using OpenMetaverse;
-
-//using Ode.NET;
 
 namespace Universe.Physics.OpenDynamicsEngine
 {
@@ -42,7 +40,7 @@ namespace Universe.Physics.OpenDynamicsEngine
     ///     This ensures that it's thread safe and there will be no conflicts.
     ///     Requests get returned by a different thread then they were requested by.
     /// </summary>
-    public class UniverseODERayCastRequestManager
+    public class ODERayCastRequestManager
     {
         /// <summary>
         ///     ODE contact array to be filled by the collision testing
@@ -50,12 +48,12 @@ namespace Universe.Physics.OpenDynamicsEngine
         protected int contactsPerCollision = 16;
         protected IntPtr ContactgeomsArray = IntPtr.Zero;
 
-        private readonly List<ContactResult> m_contactResults = new List<ContactResult>();
+        readonly List<ContactResult> m_contactResults = new List<ContactResult>();
 
         /// <summary>
         ///     ODE near callback delegate
         /// </summary>
-        private readonly d.NearCallback nearCallback;
+        readonly d.NearCallback nearCallback;
 
         /// <summary>
         ///     Pending Raycast Requests
@@ -70,13 +68,13 @@ namespace Universe.Physics.OpenDynamicsEngine
         /// <summary>
         ///     Scene that created this object.
         /// </summary>
-        private UniverseODEPhysicsScene m_scene;
+        ODEPhysicsScene m_scene;
 
 
-        public UniverseODERayCastRequestManager(UniverseODEPhysicsScene pScene)
+        public ODERayCastRequestManager(ODEPhysicsScene pScene)
         {
             m_scene = pScene;
-            nearCallback = near;
+            nearCallback = NearSpace;
 
             ContactgeomsArray = Marshal.AllocHGlobal(contactsPerCollision * d.ContactGeom.unmanagedSizeOf);
         }
@@ -94,8 +92,8 @@ namespace Universe.Physics.OpenDynamicsEngine
             {
                 ODERayCastRequest req = new ODERayCastRequest
                                             {
-                                                callbackMethod = retMethod,
-                                                length = length,
+                                                CallbackMethod = retMethod,
+                                                Length = length,
                                                 Normal = direction,
                                                 Origin = position
                                             };
@@ -118,8 +116,8 @@ namespace Universe.Physics.OpenDynamicsEngine
             {
                 ODERayRequest req = new ODERayRequest
                                         {
-                                            callbackMethod = retMethod,
-                                            length = length,
+                                            CallbackMethod = retMethod,
+                                            Length = length,
                                             Normal = direction,
                                             Origin = position,
                                             Count = count
@@ -147,7 +145,7 @@ namespace Universe.Physics.OpenDynamicsEngine
             }
             for (int i = 0; i < reqs.Length; i++)
             {
-                if (reqs[i].callbackMethod != null) // quick optimization here, don't raycast 
+                if (reqs[i].CallbackMethod != null) // quick optimization here, don't raycast 
                     RayCast(reqs[i]); // if there isn't anyone to send results
             }
 
@@ -162,7 +160,7 @@ namespace Universe.Physics.OpenDynamicsEngine
             }
             for (int i = 0; i < rayReqs.Length; i++)
             {
-                if (rayReqs[i].callbackMethod != null) // quick optimization here, don't raycast 
+                if (rayReqs[i].CallbackMethod != null) // quick optimization here, don't raycast 
                     RayCast(rayReqs[i]); // if there isn't anyone to send results
             }
 
@@ -176,10 +174,10 @@ namespace Universe.Physics.OpenDynamicsEngine
         ///     Method that actually initiates the raycast
         /// </summary>
         /// <param name="req"></param>
-        private void RayCast(ODERayCastRequest req)
+        void RayCast(ODERayCastRequest req)
         {
             // Create the ray
-            IntPtr ray = d.CreateRay(m_scene.space, req.length);
+            IntPtr ray = d.CreateRay(m_scene.space, req.Length);
             d.GeomRaySet(ray, req.Origin.X, req.Origin.Y, req.Origin.Z, req.Normal.X, req.Normal.Y, req.Normal.Z);
 
             // Collide test
@@ -217,18 +215,18 @@ namespace Universe.Physics.OpenDynamicsEngine
             }
 
             // Return results
-            if (req.callbackMethod != null)
-                req.callbackMethod(hitYN, closestcontact[0], hitConsumerID, distance, snormal);
+            if (req.CallbackMethod != null)
+                req.CallbackMethod(hitYN, closestcontact[0], hitConsumerID, distance, snormal);
         }
 
         /// <summary>
         ///     Method that actually initiates the raycast
         /// </summary>
         /// <param name="req"></param>
-        private void RayCast(ODERayRequest req)
+        void RayCast(ODERayRequest req)
         {
             // Create the ray
-            IntPtr ray = d.CreateRay(m_scene.space, req.length);
+            IntPtr ray = d.CreateRay(m_scene.space, req.Length);
             d.GeomRaySet(ray, req.Origin.X, req.Origin.Y, req.Origin.Z, req.Normal.X, req.Normal.Y, req.Normal.Z);
 
             // Collide test
@@ -246,13 +244,13 @@ namespace Universe.Physics.OpenDynamicsEngine
                 });
                 
                 // Return results
-                if (req.callbackMethod != null)
-                    req.callbackMethod(m_contactResults.Take(req.Count).ToList());
+                if (req.CallbackMethod != null)
+                    req.CallbackMethod(m_contactResults.Take(req.Count).ToList());
             }
         }
 
         // This is the standard Near.   Uses space AABBs to speed up detection.
-        private void near(IntPtr space, IntPtr g1, IntPtr g2)
+        void NearSpace(IntPtr space, IntPtr g1, IntPtr g2)
         {
             //Don't test against heightfield Geom, or you'll be sorry!
 
@@ -385,11 +383,11 @@ namespace Universe.Physics.OpenDynamicsEngine
 
                 if (p1 != null)
                 {
-                    if (p1 is UniverseODEPrim)
+                    if (p1 is ODEPrim)
                     {
                         ContactResult collisionresult = new ContactResult
                                                             {
-                                                                ConsumerID = ((UniverseODEPrim) p1).LocalID,
+                                                                ConsumerID = ((ODEPrim) p1).LocalID,
                                                                 Pos =
                                                                     new Vector3(curContact.pos.X, curContact.pos.Y,
                                                                                 curContact.pos.Z),
@@ -407,7 +405,7 @@ namespace Universe.Physics.OpenDynamicsEngine
             }
         }
 
-        private bool GetCurContactGeom(int index, ref d.ContactGeom newcontactgeom)
+        bool GetCurContactGeom(int index, ref d.ContactGeom newcontactgeom)
         {
             if (ContactgeomsArray == IntPtr.Zero || index >= contactsPerCollision)
                 return false;
@@ -432,8 +430,8 @@ namespace Universe.Physics.OpenDynamicsEngine
     {
         public Vector3 Normal;
         public Vector3 Origin;
-        public RaycastCallback callbackMethod;
-        public float length;
+        public RaycastCallback CallbackMethod;
+        public float Length;
     }
 
     public struct ODERayRequest
@@ -441,7 +439,7 @@ namespace Universe.Physics.OpenDynamicsEngine
         public int Count;
         public Vector3 Normal;
         public Vector3 Origin;
-        public RayCallback callbackMethod;
-        public float length;
+        public RayCallback CallbackMethod;
+        public float Length;
     }
 }

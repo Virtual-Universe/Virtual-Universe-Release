@@ -79,7 +79,7 @@ namespace Universe.Framework.SceneInfo
         string _mediaURL = String.Empty;
         int _mediaWidth;
         string _musicURL = String.Empty;
-        string _name = "Your Parcel";
+        string _name = "My Parcel";
         bool _obscureMedia;
         bool _obscureMusic;
         int _otherCleanTime;
@@ -693,9 +693,11 @@ namespace Universe.Framework.SceneInfo
             map ["AuctionInfo"] = AuctionInfo.ToOSD ();
 
             // OSD.FromVector3 is broken for non en_US locales
+            // map["UserLocation"] = OSD.FromVector3(UserLocation);
             map["ULocX"] = OSD.FromReal(UserLocation.X).ToString();
             map["ULocY"] = OSD.FromReal(UserLocation.Y).ToString();
             map["ULocZ"] = OSD.FromReal(UserLocation.Z).ToString ();
+            // map["UserLookAt"] = OSD.FromVector3(UserLookAt);
             map["ULookX"] = OSD.FromReal(UserLookAt.X).ToString();
             map["ULookY"] = OSD.FromReal(UserLookAt.Y).ToString ();
             map["ULookZ"] = OSD.FromReal(UserLookAt.Z).ToString ();
@@ -754,6 +756,7 @@ namespace Universe.Framework.SceneInfo
 
             if ((IsGroupOwned) && (GroupID != OwnerID)) OwnerID = GroupID;
 
+            //UserLocation = map["UserLocation"].AsVector3();
             if (map.ContainsKey("UserLocation")) {
                 UserLocation = map ["UserLocation"].AsVector3 ();
             } else {
@@ -763,6 +766,7 @@ namespace Universe.Framework.SceneInfo
                 UserLocation = uloc;
             }
 
+            //UserLookAt = map["UserLookAt"].AsVector3();
             if (map.ContainsKey("UserLookAt")) {
                 UserLookAt = map ["UserLookAt"].AsVector3 ();
             } else {

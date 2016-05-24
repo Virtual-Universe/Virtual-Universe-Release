@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,6 @@ using Universe.Framework.Physics;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.SceneInfo.Entities;
-
 
 namespace Universe.Modules.Combat
 {
@@ -189,7 +188,7 @@ namespace Universe.Modules.Combat
 
         void EventManager_OnRemovePresence(IScenePresence presence)
         {
-            CombatPresence m = (CombatPresence) presence.RequestModuleInterface<ICombatPresence>();
+            CombatPresence m = (CombatPresence)presence.RequestModuleInterface<ICombatPresence>();
             if (m != null)
             {
                 presence.UnregisterModuleInterface<ICombatPresence>(m);
@@ -244,12 +243,13 @@ namespace Universe.Modules.Combat
             {
                 obj = parcelManagement.GetLandObject(avatar.AbsolutePosition.X, avatar.AbsolutePosition.Y);
             }
+
             if (obj == null)
                 return;
 
             try
             {
-                if ((obj.LandData.Flags & (uint) ParcelFlags.AllowDamage) != 0)
+                if ((obj.LandData.Flags & (uint)ParcelFlags.AllowDamage) != 0)
                 {
                     ICombatPresence CP = avatar.RequestModuleInterface<ICombatPresence>();
                     CP.Health = MaximumHealth;
@@ -283,7 +283,6 @@ namespace Universe.Modules.Combat
 
                 MaximumHealth = m_config.GetFloat("MaximumHealth", 100);
                 MaximumDamageToInflict = m_config.GetFloat("MaximumDamageToInflict", 100);
-
 
                 m_Team = "No Team";
 
@@ -328,12 +327,14 @@ namespace Universe.Modules.Combat
 
             public void PhysicsActor_OnCollisionUpdate(EventArgs e)
             {
+                // TODO: See if this is the correct way - Briakallista Starfinder - May 19, 2016
                 /*if (HasLeftCombat)
                     return;
                 */
                 if (e == null)
                     return;
 
+                // TODO: See if this is necessary or if it can be deleted - Briakallista Starfinder - May 19, 2016
                 /*CollisionEventUpdate collisionData = (CollisionEventUpdate) e;
                 Dictionary<uint, ContactPoint> coldata = collisionData.m_objCollisionList;
 
@@ -364,6 +365,7 @@ namespace Universe.Modules.Combat
                     if (Health > m_combatModule.MaximumHealth)
                         Health = m_combatModule.MaximumHealth;
                 }
+
                 if (Health <= 0)
                 {
                     Die(killerObj);
@@ -393,7 +395,7 @@ namespace Universe.Modules.Combat
                 if (damage > MaximumDamageToInflict)
                     damage = MaximumDamageToInflict;
                 float health = Health;
-                health -= (float) damage;
+                health -= (float)damage;
                 if (health <= 0)
                     Die(OwnerID);
             }
@@ -407,7 +409,7 @@ namespace Universe.Modules.Combat
                 if (damage > MaximumDamageToInflict)
                     damage = MaximumDamageToInflict;
                 float health = Health;
-                health -= (float) damage;
+                health -= (float)damage;
                 if (health <= 0)
                     Die(OwnerID);
             }
@@ -418,7 +420,7 @@ namespace Universe.Modules.Combat
                     return;
 
                 float health = Health;
-                health += (float) healing;
+                health += (float)healing;
                 if (health >= MaximumHealth)
                     health = MaximumHealth;
             }
@@ -427,7 +429,7 @@ namespace Universe.Modules.Combat
             {
                 foreach (IScriptModule m in m_part.Scene.RequestModuleInterfaces<IScriptModule>())
                 {
-                    m.PostObjectEvent(m_part.UUID, "dead_object", new object[] {OwnerID});
+                    m.PostObjectEvent(m_part.UUID, "dead_object", new object[] { OwnerID });
                 }
             }
 
@@ -450,7 +452,6 @@ namespace Universe.Modules.Combat
             string m_Team = "No Team";
             CombatModule m_combatModule;
             float m_health = 100f;
-            //Dictionary<string, float> GenericStats = new Dictionary<string, float>();
 
             public float Health
             {
@@ -534,7 +535,7 @@ namespace Universe.Modules.Combat
                 if (m_SP == null || m_SP.Scene == null || m_SP.Invulnerable || HasLeftCombat || e == null)
                     return;
 
-                CollisionEventUpdate collisionData = (CollisionEventUpdate) e;
+                CollisionEventUpdate collisionData = (CollisionEventUpdate)e;
                 Dictionary<uint, ContactPoint> coldata = collisionData.GetCollisionEvents();
 
                 float starthealth = Health;
@@ -563,9 +564,11 @@ namespace Universe.Modules.Combat
                             OtherAvatarCP.Team == Team)
                         {
                             float Hits = 0;
+
                             if (!TeamHits.TryGetValue(otherAvatar.UUID, out Hits))
                                 Hits = 0;
                             Hits++;
+
                             if (m_combatModule.SendTeamKillerInfo && Hits == m_combatModule.TeamHitsBeforeSend)
                             {
                                 otherAvatar.ControllingClient.SendAlertMessage("You have shot too many teammates and " +
@@ -574,6 +577,7 @@ namespace Universe.Modules.Combat
                                 OtherAvatarCP.IncurDamage(null, m_combatModule.DamageToTeamKillers);
                                 Hits = 0;
                             }
+
                             TeamHits[otherAvatar.UUID] = Hits;
 
                             if (m_combatModule.AllowTeamKilling) //Green light on team killing
@@ -590,7 +594,7 @@ namespace Universe.Modules.Combat
                         {
                             Z = Math.Max(Z, 1.5f) * 10;
                             float damage = Math.Min(coldata[localid].PenetrationDepth, 15f);
-                            Health -= damage*Z;
+                            Health -= damage * Z;
                         }
                     }
 
@@ -599,7 +603,7 @@ namespace Universe.Modules.Combat
 
                     if (Health <= 0 && killingAvatar == null)
                         killingAvatar = otherAvatar;
-                    //MainConsole.Instance.Debug("[AVATAR]: Collision with localid: " + localid.ToString() + " at depth: " + coldata[localid].ToString());
+                    //MainConsole.Instance.Debug("[Avatar]: Collision with localid: " + localid.ToString() + " at depth: " + coldata[localid].ToString());
                 }
 
                 if (starthealth != Health)
@@ -612,7 +616,7 @@ namespace Universe.Modules.Combat
             #endregion
 
             #region Kill Avatar
-
+            Timer respawnTimer;
             public void KillAvatar(IScenePresence killingAvatar, string killingAvatarMessage, string deadAvatarMessage,
                                    bool TeleportAgent, bool showAgentMessages)
             {
@@ -632,6 +636,7 @@ namespace Universe.Modules.Combat
                 }
 
                 Health = m_combatModule.MaximumHealth;
+
                 if (TeleportAgent)
                 {
                     if (m_combatModule.m_shouldRespawn)
@@ -640,26 +645,26 @@ namespace Universe.Modules.Combat
                         {
                             m_SP.AllowMovement = false;
                             HasLeftCombat = true;
-                            Timer t = new Timer
-                                          {Interval = m_combatModule.m_SecondsBeforeRespawn*1000, AutoReset = false};
-                            //Use this to re-enable movement and combat
-                            //Only once
-                            t.Elapsed += respawn_Elapsed;
-                            t.Start();
+                            respawnTimer = new Timer { Interval = m_combatModule.m_SecondsBeforeRespawn * 1000, AutoReset = false };
+                            //Use this to re-enable movement and combat only once
+                            respawnTimer.Elapsed += respawn_Elapsed;
+                            respawnTimer.Start();
                         }
+
                         m_SP.Teleport(m_combatModule.m_RespawnPosition);
                     }
                     else
                     {
                         IEntityTransferModule transferModule =
                             m_SP.Scene.RequestModuleInterface<IEntityTransferModule>();
+
                         if (transferModule != null)
                             if (!transferModule.TeleportHome(m_SP.UUID, m_SP.ControllingClient))
                             {
                                 if (m_SP.PhysicsActor != null)
                                     m_SP.PhysicsActor.Flying = true;
-                                m_SP.Teleport(new Vector3(m_SP.Scene.RegionInfo.RegionSizeX/2,
-                                                          m_SP.Scene.RegionInfo.RegionSizeY/2, 128));
+                                m_SP.Teleport(new Vector3(m_SP.Scene.RegionInfo.RegionSizeX / 2,
+                                                          m_SP.Scene.RegionInfo.RegionSizeY / 2, 128));
                             }
                     }
                 }
@@ -681,7 +686,7 @@ namespace Universe.Modules.Combat
                         m_health += m_combatModule.RegenerateHealthSpeed;
                         m_SP.ControllingClient.SendHealth(Health);
                     }
-                    else if (Health != m_combatModule.MaximumHealth)
+                    else if (Health > m_combatModule.MaximumHealth)
                     {
                         m_health = m_combatModule.MaximumHealth;
                         m_SP.ControllingClient.SendHealth(Health);
@@ -693,6 +698,7 @@ namespace Universe.Modules.Combat
             {
                 m_SP.AllowMovement = true;
                 HasLeftCombat = false;
+                respawnTimer.Close();   // not needed anymore... until next time
             }
 
             #endregion
@@ -730,13 +736,14 @@ namespace Universe.Modules.Combat
             {
                 if (damage < 0)
                     return;
+
                 if (InnerIncurDamage(killingAvatar, damage, false))
                 {
                     //They died, teleport them
                     IEntityTransferModule entityTransfer = m_SP.Scene.RequestModuleInterface<IEntityTransferModule>();
                     if (entityTransfer != null)
                         entityTransfer.RequestTeleportLocation(m_SP.ControllingClient, RegionName, pos, lookat,
-                                                               (uint) TeleportFlags.ViaHome);
+                                                               (uint)TeleportFlags.ViaHome);
                 }
             }
 
@@ -744,9 +751,10 @@ namespace Universe.Modules.Combat
             {
                 if (healing < 0)
                     return;
+
                 if (!HasLeftCombat || !m_combatModule.ForceRequireCombatPermission)
                 {
-                    m_health += (float) healing;
+                    m_health += (float)healing;
                     if (m_health >= m_combatModule.MaximumHealth)
                         m_health = m_combatModule.MaximumHealth;
 
@@ -763,14 +771,16 @@ namespace Universe.Modules.Combat
                 {
                     if (damage > m_combatModule.MaximumDamageToInflict)
                         damage = m_combatModule.MaximumDamageToInflict;
-                    m_health -= (float) damage;
+                    m_health -= (float)damage;
                     m_SP.ControllingClient.SendHealth(Health);
+
                     if (Health <= 0)
                     {
                         KillAvatar(killingAvatar, "You killed " + m_SP.Name, "You died!", teleport, true);
                         return true;
                     }
                 }
+
                 return false;
             }
 

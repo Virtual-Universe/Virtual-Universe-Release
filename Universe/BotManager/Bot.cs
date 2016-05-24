@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -46,9 +46,8 @@ using Universe.Framework.Utilities;
 
 namespace Universe.BotManager
 {
-
+    
     #region Enums
-
     public enum BotState
     {
         Idle,
@@ -249,6 +248,8 @@ namespace Universe.BotManager
     public sealed class Bot : IDisposable
     {
         #region Declares
+        static readonly object _lock = new object();
+        readonly float EPSILON = (float) Constants.FloatDifference;
 
         IBotController m_controller;
 
@@ -343,9 +344,9 @@ namespace Universe.BotManager
 
         #region Initialize/Close
 
-        public void Initialize(IScenePresence SP, UUID creatorID)
+        public void Initialize(IScenePresence presence, UUID creatorID)
         {
-            m_controller = new BotAvatarController(SP, this);
+            m_controller = new BotAvatarController(presence, this);
             m_controller.SetDrawDistance(1024f);
             m_avatarCreatorID = creatorID;
             m_frames = new Timer(10);
@@ -375,7 +376,7 @@ namespace Universe.BotManager
 
         #region SetPath
 
-        public void SetPath(List<Vector3> Positions, List<TravelMode> modes, int flags)
+        public void SetPath(List<Vector3> positions, List<TravelMode> modes, int flags)
         {
             m_nodeGraph.Clear();
             const int BOT_FOLLOW_FLAG_INDEFINITELY = 1;
@@ -383,7 +384,7 @@ namespace Universe.BotManager
 
             m_nodeGraph.FollowIndefinitely = (flags & BOT_FOLLOW_FLAG_INDEFINITELY) == BOT_FOLLOW_FLAG_INDEFINITELY;
             m_forceDirectFollowing = (flags & BOT_FOLLOW_FLAG_FORCEDIRECTPATH) == BOT_FOLLOW_FLAG_FORCEDIRECTPATH;
-            m_nodeGraph.AddRange(Positions, modes);
+            m_nodeGraph.AddRange(positions, modes);
             GetNextDestination();
         }
 
@@ -732,8 +733,8 @@ namespace Universe.BotManager
         public List<Vector3> InnerFindPath(int[,] map, int startX, int startY, int finishX, int finishY)
         {
             StartPath.Map = map;
-            StartPath.xLimit = (int) Math.Sqrt(map.Length);
-            StartPath.yLimit = (int) Math.Sqrt(map.Length);
+            StartPath.XLimit = (int) Math.Sqrt(map.Length);
+            StartPath.YLimit = (int) Math.Sqrt(map.Length);
             //ShowMap ("", null);
             List<string> points = StartPath.Path(startX, startY, finishX, finishY, 0, 0, 0);
 
@@ -1192,7 +1193,7 @@ namespace Universe.BotManager
             start:
             if (i == path.Count)
                 return Vector3.Zero;
-            if (path[i].X == (11*resolution) && path[i].Y == (11*resolution))
+            if (Math.Abs (path [i].X - (11 * resolution)) < EPSILON && Math.Abs (path [i].Y - (11 * resolution)) < EPSILON)
             {
                 i++;
                 goto start;
@@ -1277,11 +1278,11 @@ namespace Universe.BotManager
             }
         }
 
-        void FindTargets(Vector3 currentPos, Vector3 targetPos, ref int targetX, ref int targetY)
+        void FindTargets(Vector3 currentPosition, Vector3 targetPos, ref int targetX, ref int targetY)
         {
             //we're at pos 11, 11, so we have to add/subtract from there
-            float xDiff = (targetPos.X - currentPos.X);
-            float yDiff = (targetPos.Y - currentPos.Y);
+            float xDiff = (targetPos.X - currentPosition.X);
+            float yDiff = (targetPos.Y - currentPosition.Y);
 
             targetX += (int) (xDiff*resolution);
             targetY += (int) (yDiff*resolution);
@@ -1297,7 +1298,7 @@ namespace Universe.BotManager
         void EventManager_OnClientMovement()
         {
             if (FollowSP != null)
-                lock (m_significantAvatarPositions)
+                lock (_lock)
                     m_significantAvatarPositions.Add(FollowSP.AbsolutePosition);
         }
 
@@ -1306,7 +1307,8 @@ namespace Universe.BotManager
             int closestPosition = 0;
             double closestDistance = 0;
             Vector3[] sigPos;
-            lock (m_significantAvatarPositions)
+
+            lock (_lock)
             {
                 sigPos = new Vector3[m_significantAvatarPositions.Count];
                 m_significantAvatarPositions.CopyTo(sigPos);
@@ -1315,7 +1317,7 @@ namespace Universe.BotManager
             for (int i = 0; i < sigPos.Length; i++)
             {
                 double val = Util.GetDistanceTo(m_controller.AbsolutePosition, sigPos[i]);
-                if (closestDistance == 0 || closestDistance > val)
+                if (Math.Abs (closestDistance) < EPSILON || closestDistance > val)
                 {
                     closestDistance = val;
                     closestPosition = i;
@@ -1522,10 +1524,12 @@ namespace Universe.BotManager
 
     public class BotClientAPI : IClientAPI
     {
+        static readonly object _lock = new object();
+
         public readonly AgentCircuitData m_circuitData;
         public readonly UUID m_myID = UUID.Random();
         public readonly IScene m_scene;
-        static UInt32 UniqueId = 1;
+        static uint UniqueId = 1;
         BotAvatarController m_controller;
 
         public UUID ScopeID { get; set; }
@@ -1611,7 +1615,7 @@ namespace Universe.BotManager
 
         void RegisterInterface<T>(T iface)
         {
-            lock (m_clientInterfaces)
+            lock (_lock)
             {
                 if (!m_clientInterfaces.ContainsKey(typeof (T)))
                 {
@@ -1634,6 +1638,7 @@ namespace Universe.BotManager
         public event PreSendImprovedInstantMessage OnPreSendInstantMessage;
         public event ChatMessage OnChatFromClient;
         public event RezObject OnRezObject;
+        public event RezRestoreToWorld OnRezRestoreToWorld;
         public event ModifyTerrain OnModifyTerrain;
         public event BakeTerrain OnBakeTerrain;
         public event SetAppearance OnSetAppearance;
@@ -1957,7 +1962,7 @@ namespace Universe.BotManager
         {
         }
 
-        public void ProcessInPacket(Packet NewPack)
+        public void ProcessInPacket(Packet newPack)
         {
         }
 
@@ -2003,6 +2008,7 @@ namespace Universe.BotManager
 
         public void SendInstantMessage(GridInstantMessage im)
         {
+            // TODO:  Sort this out - greythane- 20160406
             //This will cause a stack overflow, as it will loop back to trying to send the IM out again
             //m_controller.SendInstantMessage(im);
         }
@@ -2115,7 +2121,7 @@ namespace Universe.BotManager
         {
         }
 
-        public void SendCoarseLocationUpdate(List<UUID> users, List<Vector3> CoarseLocations)
+        public void SendCoarseLocationUpdate(List<UUID> users, List<Vector3> coarseLocations)
         {
         }
 
@@ -2145,7 +2151,7 @@ namespace Universe.BotManager
         {
         }
 
-        public void SendInventoryItemCreateUpdate(InventoryItemBase Item, uint callbackId)
+        public void SendInventoryItemCreateUpdate(InventoryItemBase item, uint callbackId)
         {
         }
 
@@ -2153,7 +2159,7 @@ namespace Universe.BotManager
         {
         }
 
-        public void SendTakeControls(int controls, bool passToAgent, bool TakeControls)
+        public void SendTakeControls(int controls, bool passToAgent, bool takeControls)
         {
         }
 
@@ -2177,16 +2183,16 @@ namespace Universe.BotManager
         {
         }
 
-        public void SendEconomyData(float EnergyEfficiency, int ObjectCapacity, int ObjectCount, int PriceEnergyUnit,
-                                    int PriceGroupCreate, int PriceObjectClaim, float PriceObjectRent,
-                                    float PriceObjectScaleFactor, int PriceParcelClaim, float PriceParcelClaimFactor,
-                                    int PriceParcelRent, int PricePublicObjectDecay, int PricePublicObjectDelete,
-                                    int PriceRentLight, int PriceUpload, int TeleportMinPrice,
-                                    float TeleportPriceExponent)
+        public void SendEconomyData(float energyEfficiency, int objectCapacity, int objectCount, int priceEnergyUnit,
+                                    int priceGroupCreate, int priceObjectClaim, float priceObjectRent,
+                                    float priceObjectScaleFactor, int priceParcelClaim, float priceParcelClaimFactor,
+                                    int priceParcelRent, int pricePublicObjectDecay, int pricePublicObjectDelete,
+                                    int priceRentLight, int priceUpload, int teleportMinPrice,
+                                    float teleportPriceExponent)
         {
         }
 
-        public void SendAvatarPickerReply(AvatarPickerReplyAgentDataArgs AgentData, List<AvatarPickerReplyDataArgs> Data)
+        public void SendAvatarPickerReply(AvatarPickerReplyAgentDataArgs agentData, List<AvatarPickerReplyDataArgs> data)
         {
         }
 
@@ -2262,7 +2268,7 @@ namespace Universe.BotManager
         {
         }
 
-        public void SendEstateList(UUID invoice, int code, List<UUID> Data, uint estateID)
+        public void SendEstateList(UUID invoice, int code, List<UUID> data, uint estateID)
         {
         }
 
@@ -2284,7 +2290,7 @@ namespace Universe.BotManager
         {
         }
 
-        public void SendLandProperties(int sequence_id, bool snap_selection, int request_result, LandData landData,
+        public void SendLandProperties(int sequenceId, bool snapSelection, int requestResult, LandData landData,
                                        float simObjectBonusFactor, int parcelObjectCapacity, int simObjectCapacity,
                                        uint regionFlags)
         {
@@ -2298,7 +2304,7 @@ namespace Universe.BotManager
         {
         }
 
-        public void SendCameraConstraint(Vector4 ConstraintPlane)
+        public void SendCameraConstraint(Vector4 constraintPlane)
         {
         }
 
@@ -2306,7 +2312,7 @@ namespace Universe.BotManager
         {
         }
 
-        public void SendLandParcelOverlay(byte[] data, int sequence_id)
+        public void SendLandParcelOverlay(byte[] data, int sequenceId)
         {
         }
 
@@ -2319,15 +2325,15 @@ namespace Universe.BotManager
         {
         }
 
-        public void SendAssetUploadCompleteMessage(sbyte AssetType, bool Success, UUID AssetFullID)
+        public void SendAssetUploadCompleteMessage(sbyte assetType, bool success, UUID assetFullID)
         {
         }
 
-        public void SendConfirmXfer(ulong xferID, uint PacketID)
+        public void SendConfirmXfer(ulong xferID, uint packetID)
         {
         }
 
-        public void SendXferRequest(ulong XferID, short AssetType, UUID vFileID, byte FilePath, byte[] FileName)
+        public void SendXferRequest(ulong xferID, short assetType, UUID vFileID, byte filePath, byte[] fileName)
         {
         }
 
@@ -2335,7 +2341,7 @@ namespace Universe.BotManager
         {
         }
 
-        public void SendImageFirstPart(ushort numParts, UUID ImageUUID, uint ImageSize, byte[] ImageData,
+        public void SendImageFirstPart(ushort numParts, UUID imageUUID, uint imageSize, byte[] imageData,
                                        byte imageCodec)
         {
         }
@@ -2352,11 +2358,11 @@ namespace Universe.BotManager
         {
         }
 
-        public void SendObjectPropertiesFamilyData(uint RequestFlags, UUID ObjectUUID, UUID OwnerID, UUID GroupID,
-                                                   uint BaseMask, uint OwnerMask, uint GroupMask, uint EveryoneMask,
-                                                   uint NextOwnerMask, int OwnershipCost, byte SaleType, int SalePrice,
-                                                   uint Category, UUID LastOwnerID, string ObjectName,
-                                                   string Description)
+        public void SendObjectPropertiesFamilyData(uint requestFlags, UUID objectUUID, UUID ownerID, UUID groupID,
+                                                   uint baseMask, uint ownerMask, uint groupMask, uint everyoneMask,
+                                                   uint nextOwnerMask, int ownershipCost, byte saleType, int salePrice,
+                                                   uint category, UUID lastOwnerID, string objectName,
+                                                   string description)
         {
         }
 
@@ -2372,20 +2378,20 @@ namespace Universe.BotManager
         {
         }
 
-        public void SendSitResponse(UUID TargetID, Vector3 OffsetPos, Quaternion SitOrientation, bool autopilot,
-                                    Vector3 CameraAtOffset, Vector3 CameraEyeOffset, bool ForceMouseLook)
+        public void SendSitResponse(UUID targetID, Vector3 offsetPos, Quaternion sitOrientation, bool autopilot,
+                                    Vector3 cameraAtOffset, Vector3 cameraEyeOffset, bool forceMouseLook)
         {
         }
 
-        public void SendAdminResponse(UUID Token, uint AdminLevel)
+        public void SendAdminResponse(UUID token, uint adminLevel)
         {
         }
 
-        public void SendGroupMembership(GroupMembershipData[] GroupMembership)
+        public void SendGroupMembership(GroupMembershipData[] groupMembership)
         {
         }
 
-        public void SendGroupNameReply(UUID groupLLUID, string GroupName)
+        public void SendGroupNameReply(UUID groupLLUID, string groupName)
         {
         }
 
@@ -2422,7 +2428,7 @@ namespace Universe.BotManager
             return new byte[0];
         }
 
-        public void SendBlueBoxMessage(UUID FromAvatarID, string FromAvatarName, string Message)
+        public void SendBlueBoxMessage(UUID fromAvatarID, string fromAvatarName, string message)
         {
         }
 
@@ -2447,7 +2453,7 @@ namespace Universe.BotManager
         {
         }
 
-        public void SendParcelInfo(LandData land, UUID parcelID, uint x, uint y, string SimName)
+        public void SendParcelInfo(LandData land, UUID parcelID, uint x, uint y, string simName)
         {
         }
 
@@ -2560,21 +2566,21 @@ namespace Universe.BotManager
         {
         }
 
-        public void SendGroupActiveProposals(UUID groupID, UUID transactionID, GroupActiveProposals[] Proposals)
+        public void SendGroupActiveProposals(UUID groupID, UUID transactionID, GroupActiveProposals[] proposals)
         {
         }
 
-        public void SendGroupVoteHistory(UUID groupID, UUID transactionID, GroupVoteHistory Vote,
-                                         GroupVoteHistoryItem[] Items)
+        public void SendGroupVoteHistory(UUID groupID, UUID transactionID, GroupVoteHistory vote,
+                                         GroupVoteHistoryItem[] items)
         {
         }
 
-        public bool AddGenericPacketHandler(string MethodName, GenericMessage handler)
+        public bool AddGenericPacketHandler(string methodName, GenericMessage handler)
         {
             return true;
         }
 
-        public bool RemoveGenericPacketHandler(string MethodName)
+        public bool RemoveGenericPacketHandler(string methodName)
         {
             return true;
         }
@@ -2617,15 +2623,15 @@ namespace Universe.BotManager
         {
         }
 
-        public void SendPlacesQuery(ExtendedLandData[] LandData, UUID queryID, UUID transactionID)
+        public void SendPlacesQuery(ExtendedLandData[] landData, UUID queryID, UUID transactionID)
         {
         }
 
-        public void FireUpdateParcel(LandUpdateArgs args, int LocalID)
+        public void FireUpdateParcel(LandUpdateArgs args, int localID)
         {
         }
 
-        public void SendTelehubInfo(Vector3 TelehubPos, Quaternion TelehubRot, List<Vector3> SpawnPoint, UUID ObjectID,
+        public void SendTelehubInfo(Vector3 telehubPos, Quaternion telehubRot, List<Vector3> spawnPoint, UUID objectID,
                                     string nameT)
         {
         }

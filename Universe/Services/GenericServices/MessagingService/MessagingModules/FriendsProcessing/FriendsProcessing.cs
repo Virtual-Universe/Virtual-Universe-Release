@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,15 +25,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System.Collections.Generic;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
-using System.Collections.Generic;
 using FriendInfo = Universe.Framework.Services.FriendInfo;
 
 namespace Universe.Services
@@ -67,17 +66,23 @@ namespace Universe.Services
 
         protected OSDMap OnMessageReceived(OSDMap message)
         {
+
+            if (!message.ContainsKey("Method"))
+                return null;                        // nothing to do here
+
+            var method = message["Method"].AsString();
+
             ISyncMessagePosterService asyncPost = m_registry.RequestModuleInterface<ISyncMessagePosterService>();
             //We need to check and see if this is an AgentStatusChange
-            if (message.ContainsKey("Method") && message["Method"] == "AgentStatusChange")
+            if (method == "AgentStatusChange")
             {
-                OSDMap innerMessage = (OSDMap) message["Message"];
+                OSDMap innerMessage = (OSDMap)message["Message"];
                 //We got a message, now pass it on to the clients that need it
                 UUID AgentID = innerMessage["AgentID"].AsUUID();
                 UUID FriendToInformID = innerMessage["FriendToInformID"].AsUUID();
                 bool NewStatus = innerMessage["NewStatus"].AsBoolean();
 
-                //Do this since IFriendsModule is a scene module, not a ISimulationBase module (not interchangable)
+                //Do this since IFriendsModule is a scene module, not a ISimulationBase module (not interchangeable)
                 ISceneManager manager = m_registry.RequestModuleInterface<ISceneManager>();
                 if (manager != null)
                 {
@@ -96,15 +101,15 @@ namespace Universe.Services
                     }
                 }
             }
-            else if (message.ContainsKey("Method") && message["Method"] == "AgentStatusChanges")
+            else if (method == "AgentStatusChanges")
             {
-                OSDMap innerMessage = (OSDMap) message["Message"];
+                OSDMap innerMessage = (OSDMap)message["Message"];
                 //We got a message, now pass it on to the clients that need it
-                List<UUID> AgentIDs = ((OSDArray) innerMessage["AgentIDs"]).ConvertAll<UUID>((o) => o);
+                List<UUID> AgentIDs = ((OSDArray)innerMessage["AgentIDs"]).ConvertAll<UUID>((o) => o);
                 UUID FriendToInformID = innerMessage["FriendToInformID"].AsUUID();
                 bool NewStatus = innerMessage["NewStatus"].AsBoolean();
 
-                //Do this since IFriendsModule is a scene module, not a ISimulationBase module (not interchangable)
+                //Do this since IFriendsModule is a scene module, not a ISimulationBase module (not interchangeable)
                 ISceneManager manager = m_registry.RequestModuleInterface<ISceneManager>();
                 if (manager != null)
                 {
@@ -114,6 +119,7 @@ namespace Universe.Services
                             !scene.GetScenePresence(FriendToInformID).IsChildAgent)
                         {
                             IFriendsModule friendsModule = scene.RequestModuleInterface<IFriendsModule>();
+
                             if (friendsModule != null)
                             {
                                 //Send the message
@@ -123,12 +129,13 @@ namespace Universe.Services
                     }
                 }
             }
-            else if (message.ContainsKey("Method") && message["Method"] == "FriendGrantRights")
+            else if (method == "FriendGrantRights")
             {
-                OSDMap body = (OSDMap) message["Message"];
+                OSDMap body = (OSDMap)message["Message"];
                 UUID targetID = body["Target"].AsUUID();
                 IAgentInfoService agentInfoService = m_registry.RequestModuleInterface<IAgentInfoService>();
                 UserInfo info;
+
                 if (agentInfoService != null && (info = agentInfoService.GetUserInfo(targetID.ToString())) != null &&
                     info.IsOnline)
                 {
@@ -136,58 +143,67 @@ namespace Universe.Services
                     asyncPost.Post(info.CurrentRegionURI, message);
                 }
             }
-            else if (message.ContainsKey("Method") && message["Method"] == "FriendshipOffered")
+            else if (method == "FriendshipOffered")
             {
-                OSDMap body = (OSDMap) message["Message"];
+                OSDMap body = (OSDMap)message["Message"];
                 UUID targetID = body["Friend"].AsUUID();
                 IAgentInfoService agentInfoService = m_registry.RequestModuleInterface<IAgentInfoService>();
                 UserInfo info;
-                if (agentInfoService != null && (info = agentInfoService.GetUserInfo(targetID.ToString())) != null &&
+
+                if (agentInfoService != null &&
+                    (info = agentInfoService.GetUserInfo(targetID.ToString())) != null &&
                     info.IsOnline)
                 {
                     //Forward the message
                     asyncPost.Post(info.CurrentRegionURI, message);
                 }
             }
-            else if (message.ContainsKey("Method") && message["Method"] == "FriendTerminated")
+            else if (method == "FriendTerminated")
             {
-                OSDMap body = (OSDMap) message["Message"];
+                OSDMap body = (OSDMap)message["Message"];
                 UUID targetID = body["ExFriend"].AsUUID();
                 IAgentInfoService agentInfoService = m_registry.RequestModuleInterface<IAgentInfoService>();
                 UserInfo info;
-                if (agentInfoService != null && (info = agentInfoService.GetUserInfo(targetID.ToString())) != null &&
+
+                if (agentInfoService != null &&
+                    (info = agentInfoService.GetUserInfo(targetID.ToString())) != null &&
                     info.IsOnline)
                 {
                     //Forward the message
                     asyncPost.Post(info.CurrentRegionURI, message);
                 }
             }
-            else if (message.ContainsKey("Method") && message["Method"] == "FriendshipDenied")
+            else if (method == "FriendshipDenied")
             {
-                OSDMap body = (OSDMap) message["Message"];
+                OSDMap body = (OSDMap)message["Message"];
                 UUID targetID = body["FriendID"].AsUUID();
                 IAgentInfoService agentInfoService = m_registry.RequestModuleInterface<IAgentInfoService>();
                 UserInfo info;
-                if (agentInfoService != null && (info = agentInfoService.GetUserInfo(targetID.ToString())) != null &&
+
+                if (agentInfoService != null &&
+                    (info = agentInfoService.GetUserInfo(targetID.ToString())) != null &&
                     info.IsOnline)
                 {
                     //Forward the message
                     asyncPost.Post(info.CurrentRegionURI, message);
                 }
             }
-            else if (message.ContainsKey("Method") && message["Method"] == "FriendshipApproved")
+            else if (method == "FriendshipApproved")
             {
-                OSDMap body = (OSDMap) message["Message"];
+                OSDMap body = (OSDMap)message["Message"];
                 UUID targetID = body["FriendID"].AsUUID();
                 IAgentInfoService agentInfoService = m_registry.RequestModuleInterface<IAgentInfoService>();
                 UserInfo info;
-                if (agentInfoService != null && (info = agentInfoService.GetUserInfo(targetID.ToString())) != null &&
+
+                if (agentInfoService != null &&
+                    (info = agentInfoService.GetUserInfo(targetID.ToString())) != null &&
                     info.IsOnline)
                 {
                     //Forward the message
                     asyncPost.Post(info.CurrentRegionURI, message);
                 }
             }
+
             return null;
         }
     }

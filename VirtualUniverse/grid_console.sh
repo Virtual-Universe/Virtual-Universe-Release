@@ -1,12 +1,11 @@
 #!/bin/bash
-# Start Universe-Sim grid server only
-# Versions 0.9.2+
+# Start Virtual Universe grid server only
+# Versions 1.0.2+
 #
-# May 2014
-# greythane @ gmail.com
+# Emperor Starfinder<emperor@secondgalaxy.com>: For Virtual Universe - May 11, 2016
+# Greythane<greythane@gmail.com>: For WhiteCore-Sim - May 2015
 
 cd ./bin
 wait
-echo Starting Universe Grid Server...
+echo Starting Virtual Universe Grid Server...
 mono Universe.Server.exe -skipconfig
-
