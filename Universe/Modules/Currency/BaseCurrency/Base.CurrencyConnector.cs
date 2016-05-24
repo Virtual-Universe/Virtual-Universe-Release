@@ -38,8 +38,9 @@ using Universe.Framework.Utilities;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.DatabaseInterfaces;
 
-namespace Universe.Modules.Currency.BaseCurrency
+namespace Universe.Modules.Currency
 {
+    
     public class BaseCurrencyConnector : ConnectorBase, IBaseCurrencyConnector
     {
         #region Declares

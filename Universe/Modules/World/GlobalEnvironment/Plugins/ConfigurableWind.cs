@@ -25,6 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
 using System;
 using System.Collections.Generic;
 using Nini.Config;
@@ -33,7 +34,7 @@ using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 
-namespace Universe.Modules.GlobalEnvironment.Plugins
+namespace Universe.Modules.Wind.Plugins
 {
     public class ConfigurableWind : IWindModelPlugin
     {

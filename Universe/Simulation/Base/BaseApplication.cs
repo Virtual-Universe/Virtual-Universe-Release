@@ -43,7 +43,7 @@ using Universe.Framework.Utilities;
 namespace Universe.Simulation.Base
 {
     /// <summary>
-    ///     Starting class for the Virtual Universe Server
+    ///     Starting class for the Universe Server
     /// </summary>
     public class BaseApplication
     {
@@ -61,7 +61,7 @@ namespace Universe.Simulation.Base
         /// <summary>
         ///     Directory to save crash reports to.  Relative to bin/
         /// </summary>
-        public static string m_crashDir = Constants.DEFAULT_CRASH_DIR;
+        public static string m_crashDir = "crashes";
 
         static bool _IsHandlingException; // Make sure we don't go recursive on ourselves
 
@@ -84,12 +84,12 @@ namespace Universe.Simulation.Base
             // Increase the number of IOCP threads available. Mono defaults to a tragically low number
             int workerThreads, iocpThreads;
             ThreadPool.GetMaxThreads(out workerThreads, out iocpThreads);
-            //MainConsole.Instance.InfoFormat("[Virtual Universe Main]: Runtime gave us {0} worker threads and {1} IOCP threads", workerThreads, iocpThreads);
+            //MainConsole.Instance.InfoFormat("[Universe Main]: Runtime gave us {0} worker threads and {1} IOCP threads", workerThreads, iocpThreads);
             if (workerThreads < 500 || iocpThreads < 1000)
             {
                 workerThreads = 500;
                 iocpThreads = 1000;
-                //MainConsole.Instance.Info("[Virtual Universe Main]: Bumping up to 500 worker threads and 1000 IOCP threads");
+                //MainConsole.Instance.Info("[Universe Main]: Bumping up to 500 worker threads and 1000 IOCP threads");
                 ThreadPool.SetMaxThreads(workerThreads, iocpThreads);
             }
 
@@ -582,6 +582,7 @@ namespace Universe.Simulation.Base
                 }
             }
         }
+
         static void MakeSureExists(string file)
         {
             if (File.Exists(file))
@@ -650,6 +651,7 @@ namespace Universe.Simulation.Base
 
             _IsHandlingException = false;
         }
+
         static void UnhandledException(bool isTerminating, Exception ex)
         {
             string msg = String.Empty;

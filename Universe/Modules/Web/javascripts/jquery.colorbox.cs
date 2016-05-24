@@ -26,7 +26,6 @@
  */
 
 using System.Collections.Generic;
-using Universe.Framework.Servers.HttpServer;
 using Universe.Framework.Servers.HttpServer.Implementation;
 
 namespace Universe.Modules.Web
@@ -39,7 +38,7 @@ namespace Universe.Modules.Web
             {
                 return new[]
                            {
-                               "html/javascripts/jquery.colorbox.js"
+                               "html/js/jquery.colorbox.js"
                            };
             }
         }

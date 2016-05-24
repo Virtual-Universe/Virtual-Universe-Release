@@ -26,12 +26,12 @@
  */
 
 using System;
-using Nini.Config;
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
+using Nini.Config;
 
-namespace Universe.Modules.GlobalEnvironment
+namespace Universe.Modules.Cloud
 {
     public class CloudModule : ICloudModule
     {

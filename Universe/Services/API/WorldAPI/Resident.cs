@@ -24,3 +24,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+ 
+using Universe.Framework.Services;
+namespace Universe.Services.API.WorldAPI
+{
+	public class ResidentWorldAPI : IService
+	{
+		#region IService implementation
+
+		public void Initialize(Nini.Config.IConfigSource config, Universe.Framework.Modules.IRegistryCore registry)
+		{
+			throw new System.NotImplementedException();
+		}
+		
+		public void Start(Nini.Config.IConfigSource config, Universe.Framework.Modules.IRegistryCore registry)
+		{
+			throw new System.NotImplementedException();
+		}
+		
+		public void FinishedStartup()
+		{
+			throw new System.NotImplementedException();
+		}
+		
+		#endregion
+	}
+}

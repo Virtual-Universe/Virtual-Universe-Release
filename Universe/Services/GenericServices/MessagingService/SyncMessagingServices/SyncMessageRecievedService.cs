@@ -25,6 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
 using System.Linq;
 using Nini.Config;
 using OpenMetaverse.StructuredData;
@@ -35,29 +36,23 @@ namespace Universe.Services
 {
     public class SyncMessageRecievedService : IService, ISyncMessageRecievedService
     {
-        public string Name
-        {
-            get { return GetType().Name; }
+        public string Name {
+            get { return GetType ().Name; }
         }
 
         #region ISyncMessageRecievedService Members
 
         public event MessageReceived OnMessageReceived;
 
-        public OSDMap FireMessageReceived(OSDMap message)
+        public OSDMap FireMessageReceived (OSDMap message)
         {
             OSDMap result = null;
-
-            if (OnMessageReceived != null)
-            {
+            if (OnMessageReceived != null) {
                 MessageReceived eventCopy = OnMessageReceived;
-                foreach (OSDMap r in from MessageReceived messagedelegate in eventCopy.GetInvocationList()
-                                     select messagedelegate(message)
-                                     into r
-                                     where r != null
-                                     select r) { result = r; }
+                foreach (OSDMap r in from MessageReceived messagedelegate in eventCopy.GetInvocationList ()
+                                     select messagedelegate (message)
+                                     into r where r != null select r) {result = r;}
             }
-
             return result;
         }
 
@@ -65,16 +60,16 @@ namespace Universe.Services
 
         #region IService Members
 
-        public void Initialize(IConfigSource config, IRegistryCore registry)
+        public void Initialize (IConfigSource config, IRegistryCore registry)
         {
-            registry.RegisterModuleInterface<ISyncMessageRecievedService>(this);
+            registry.RegisterModuleInterface<ISyncMessageRecievedService> (this);
         }
 
-        public void Start(IConfigSource config, IRegistryCore registry)
+        public void Start (IConfigSource config, IRegistryCore registry)
         {
         }
 
-        public void FinishedStartup()
+        public void FinishedStartup ()
         {
         }
 

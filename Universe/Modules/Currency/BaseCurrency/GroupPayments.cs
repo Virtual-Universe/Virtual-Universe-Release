@@ -25,6 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
 using System;
 using Nini.Config;
 using OpenMetaverse;
@@ -34,7 +35,7 @@ using Universe.Framework.Modules;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
 
-namespace Universe.Modules.Currency.BaseCurrency
+namespace Universe.Modules.Currency
 {
     public class GroupPayments : IService
     {

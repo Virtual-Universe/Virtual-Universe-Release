@@ -25,6 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,11 +36,13 @@ using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 
-namespace Universe.Modules.GlobalEnvironment
+namespace Universe.Modules.Sun
 {
     public class SunModule : ISunModule
     {
+        //
         // Global Constants used to determine where in the sky the sun is
+        //
         const double m_SeasonalTilt = 0.03 * Math.PI;       // A daily shift of approximately 1.7188 degrees
         const double m_AverageTilt = -0.25 * Math.PI;       // A 45 degree tilt
         const double m_SunCycle = 2.0D * Math.PI;           // A perfect circle measured in radians

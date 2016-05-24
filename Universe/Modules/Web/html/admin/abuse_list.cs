@@ -25,7 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
 using System.Collections.Generic;
 using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Servers.HttpServer.Implementation;

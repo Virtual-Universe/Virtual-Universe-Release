@@ -37,7 +37,7 @@ using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Servers;
 
-namespace Universe.Modules.Currency.BaseCurrency
+namespace Universe.Modules.Currency
 {
     /* This module provides the necessary economy functionality for the viewer
        but with all values being $0
@@ -282,7 +282,6 @@ namespace Universe.Modules.Currency.BaseCurrency
                     }
                 }
             }*/
-
             XmlRpcResponse returnval = new XmlRpcResponse();
             Hashtable returnresp = new Hashtable {{"success", true}};
             returnval.Value = returnresp;

@@ -505,7 +505,7 @@ namespace Universe.ScriptEngine.VirtualScript
         {
             ConsoleDisabled = false;
             MaintenanceThread.Started = true;
-            MainConsole.Instance.Warn("[Virtual Script Engine]: The Virtual Script Engine has been enabled.");
+            MainConsole.Instance.Warn("[Virtual Script Engine]: The Virtual Script has been enabled.");
         }
 
         #endregion

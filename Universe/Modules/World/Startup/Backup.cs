@@ -662,7 +662,7 @@ namespace Universe.Modules.Startup
 
                 IDictionary<UUID, AssetType> assets = new Dictionary<UUID, AssetType>();
                 UuidGatherer assetGatherer = new UuidGatherer(m_scene.AssetService);
-                IBackupArchiver archiver = m_scene.RequestModuleInterface<IBackupArchiver>();
+                IUniverseBackupArchiver archiver = m_scene.RequestModuleInterface<IUniverseBackupArchiver>();
                 bool saveAssets = false;
                 if (archiver.AllowPrompting)
                     saveAssets =
