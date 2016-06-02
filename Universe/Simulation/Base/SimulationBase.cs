@@ -25,7 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -168,11 +167,8 @@ namespace Universe.Simulation.Base
 
             //Register the interface
             ApplicationRegistry.RegisterModuleInterface<ISimulationBase>(this);
-
             Configuration(configSource);
-
             InitializeModules();
-
             RegisterConsoleCommands();
         }
 
@@ -223,8 +219,7 @@ namespace Universe.Simulation.Base
                 if (stpMinThreads > stpMaxThreads)
                     stpMinThreads = stpMaxThreads;
             }
-
-                
+            
             if (Util.FireAndForgetMethod == FireAndForgetMethod.SmartThreadPool)
                 Util.InitThreadPool(stpMinThreads, stpMaxThreads);
         }
@@ -236,7 +231,7 @@ namespace Universe.Simulation.Base
         {
             MainConsole.Instance.Info("====================================================================");
             MainConsole.Instance.Info(
-				        string.Format("==================== Starting Virtual Universe ({0}) ======================",
+				        string.Format("==================== Starting Virtual Universe ({0}) ===============",
                               (IntPtr.Size == 4 ? "x86" : "x64")));
             MainConsole.Instance.Info("====================================================================");
             MainConsole.Instance.Info("[Virtual Universe Startup]: Version : " + Version + "\n");
@@ -477,7 +472,6 @@ namespace Universe.Simulation.Base
                 "reload config", 
                 "Reloads .ini file configuration",
                 HandleConfigRefresh, false, true);
-
             
             MainConsole.Instance.Commands.AddCommand(
                 "set timer script interval",

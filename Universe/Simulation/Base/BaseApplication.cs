@@ -49,7 +49,7 @@ namespace Universe.Simulation.Base
     {
 
         /// <summary>
-        ///     Save Crashes in the bin/crashes folder.  Configurable with m_crashDir
+        ///     Save Crashes in the Data/Crashes folder.  Configurable with m_crashDir
         /// </summary>
         public static bool m_saveCrashDumps;
 
@@ -59,17 +59,16 @@ namespace Universe.Simulation.Base
         static readonly ConfigurationLoader m_configLoader = new ConfigurationLoader();
 
         /// <summary>
-        ///     Directory to save crash reports to.  Relative to bin/
+        ///     Directory to save crash reports to.  Relative to Data/Crashes
         /// </summary>
-        public static string m_crashDir = "crashes";
+        public static string m_crashDir = Constants.DEFAULT_CRASH_DIR;
 
         static bool _IsHandlingException; // Make sure we don't go recursive on ourselves
 
         public static void BaseMain(string[] args, string defaultIniFile, ISimulationBase simBase)
         {
             // First line, hook the appdomain to the crash reporter
-            AppDomain.CurrentDomain.UnhandledException +=
-                CurrentDomain_UnhandledException;
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
             // Add the arguments supplied when running the application to the configuration
             ArgvConfigSource configSource = new ArgvConfigSource(args);
@@ -84,12 +83,12 @@ namespace Universe.Simulation.Base
             // Increase the number of IOCP threads available. Mono defaults to a tragically low number
             int workerThreads, iocpThreads;
             ThreadPool.GetMaxThreads(out workerThreads, out iocpThreads);
-            //MainConsole.Instance.InfoFormat("[Universe Main]: Runtime gave us {0} worker threads and {1} IOCP threads", workerThreads, iocpThreads);
+            //MainConsole.Instance.InfoFormat("[Virtual Universe Main]: Runtime gave us {0} worker threads and {1} IOCP threads", workerThreads, iocpThreads);
             if (workerThreads < 500 || iocpThreads < 1000)
             {
                 workerThreads = 500;
                 iocpThreads = 1000;
-                //MainConsole.Instance.Info("[Universe Main]: Bumping up to 500 worker threads and 1000 IOCP threads");
+                //MainConsole.Instance.Info("[Virtual Universe Main]: Bumping up to 500 worker threads and 1000 IOCP threads");
                 ThreadPool.SetMaxThreads(workerThreads, iocpThreads);
             }
 
@@ -206,7 +205,7 @@ namespace Universe.Simulation.Base
 
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("====================================================================");
-					Console.WriteLine("======================= Virtual Universe Configurator =================");
+					Console.WriteLine("======================= Virtual Universe Configurator ==============");
                     Console.WriteLine("====================================================================");
                     Console.ResetColor();
 
@@ -668,7 +667,7 @@ namespace Universe.Simulation.Base
             msg += "\r\n";
             msg += "Application is terminating: " + isTerminating.ToString(CultureInfo.InvariantCulture) + "\r\n";
 
-            MainConsole.Instance.ErrorFormat("[APPLICATION]: {0}", msg);
+            MainConsole.Instance.ErrorFormat("[Application]: {0}", msg);
 
             HandleCrashException(msg, ex);
         }

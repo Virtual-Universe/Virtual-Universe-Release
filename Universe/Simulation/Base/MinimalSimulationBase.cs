@@ -257,8 +257,7 @@ namespace Universe.Simulation.Base
         /// </summary>
         public virtual void Startup()
         {
-            MainConsole.Instance.Info("[Mini Virtual Universe]: Startup completed in " +
-                                      (DateTime.Now - this.StartupTime).TotalSeconds);
+            MainConsole.Instance.Info("[Mini Virtual Universe]: Startup completed in " + (DateTime.Now - this.StartupTime).TotalSeconds);
         }
 
         public virtual ISimulationBase Copy()
@@ -552,7 +551,7 @@ namespace Universe.Simulation.Base
             {
                 string hostName = m_config.Configs ["Network"].GetString ("HostName", "127.0.0.1");
                 //Clean it up a bit
-                // these are doing nothing??
+                // these are doing nothing?
                 hostName = hostName.Replace ("http://", "").Replace ("https://", "");
                 if (hostName.EndsWith ("/"))
                     hostName = hostName.Remove (hostName.Length - 1, 1);
