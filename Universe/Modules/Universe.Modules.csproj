@@ -263,7 +263,7 @@
 	  <Compile Include="Archivers\Region\SerializerModule.cs">
 		<SubType>Code</SubType>
 	  </Compile>
-	  <Compile Include="Archivers\Region\UniverseArchiver.cs">
+	  <Compile Include="Archivers\Region\Archiver.cs">
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="Avatar\AbuseReports\AbuseReportsModule.cs">
