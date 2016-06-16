@@ -26,7 +26,10 @@
  */
 
 using System.Collections.Generic;
+using OpenMetaverse;
+using Universe.Framework.DatabaseInterfaces;
 using Universe.Framework.Servers.HttpServer.Implementation;
+using Universe.Framework.Services.ClassHelpers.Profile;
 
 namespace Universe.Modules.Web
 {
@@ -38,7 +41,7 @@ namespace Universe.Modules.Web
             {
                 return new[]
                            {
-                               "html/classifieds/classifieds_main.html"
+                               "html/classifieds.html"
                            };
             }
         }
@@ -58,7 +61,72 @@ namespace Universe.Modules.Web
                                                ITranslator translator, out string response)
         {
             response = null;
-            var vars = new Dictionary<string, object>();
+            var vars = new Dictionary<string, object> ();
+            var directoryService = Framework.Utilities.DataManager.RequestPlugin<IDirectoryServiceConnector> ();
+            List<Dictionary<string, object>> classifiedListVars = new List<Dictionary<string, object>> ();
+
+
+            vars.Add ("Classifieds", "Classifieds"); //translator.GetTranslatedString ("Classifieds"));
+            vars.Add ("ClassifiedTitle", "ClassifiedTitle"); //translator.GetTranslatedString ("ClassifiedTitle"));
+            vars.Add ("ClassifiedText", "ClassifiedText"); //translator.GetTranslatedString ("ClassifiedText"));
+
+            vars.Add ("Classified", "Classified"); //translator.GetTranslatedString ("Classified"));
+            vars.Add ("ClassifiedDateText", "Date"); // translator.GetTranslatedString ("DateText"));
+            vars.Add ("ClassifiedTitleText", "Title"); //translator.GetTranslatedString ("TitleText"));
+
+            if (directoryService != null) {
+
+                var classifieds = new List<Classified> ();
+                classifieds = directoryService.GetAllClassifieds ((int)DirectoryManager.ClassifiedCategories.Any,
+                                                               (uint)DirectoryManager.ClassifiedFlags.None);
+
+                if (classifieds.Count == 0) {       // not sure if this is needed actually... return empty list?
+                    classifiedListVars.Add (new Dictionary<string, object> {
+                        { "ClassifiedUUID", "" },
+                        //{ "CreatorUUID", classified.CreatorUUID) },
+                        { "CreationDate", "" },
+                        { "ExpirationDate", "" },
+                        { "Category", "" },
+                        { "Name", "" },
+                        { "Description", "" },
+                        //{ "ParcelUUID", OSD.FromUUID (ParcelUUID) },
+                        //{ "ParentEstate", OSD.FromUInteger (ParentEstate) },
+                        //{ "SnapshotUUID", OSD.FromUUID (SnapshotUUID) },
+                        //{ "ScopeID", OSD.FromUUID (ScopeID) },
+                        //{ "SimName", OSD.FromString (SimName) },
+                        //{ "GPosX", OSD.FromReal (GlobalPos.X).ToString () },
+                        //{ "GPosY", OSD.FromReal (GlobalPos.Y).ToString () },
+                        //{ "GPosZ", OSD.FromReal (GlobalPos.Z).ToString () },
+                        // "ParcelName", OSD.FromString (ParcelName) },
+                        { "ClassifiedFlags", "" },
+                        { "PriceForListing", "" }
+                    });
+                } else {
+                    foreach (var classified in classifieds) {
+                        classifiedListVars.Add (new Dictionary<string, object> {
+                                { "ClassifiedUUID", classified.ClassifiedUUID },
+                                //{ "CreatorUUID", classified.CreatorUUID) },
+                                { "CreationDate", classified.CreationDate },
+                                { "ExpirationDate", classified.ExpirationDate },
+                                { "Category", classified.Category },
+                                { "Name", classified.Name },
+                                { "Description", classified.Description },
+                                //{ "ParcelUUID", OSD.FromUUID (ParcelUUID) },
+                                //{ "ParentEstate", OSD.FromUInteger (ParentEstate) },
+                                //{ "SnapshotUUID", OSD.FromUUID (SnapshotUUID) },
+                                //{ "ScopeID", OSD.FromUUID (ScopeID) },
+                                //{ "SimName", OSD.FromString (SimName) },
+                                //{ "GPosX", OSD.FromReal (GlobalPos.X).ToString () },
+                                //{ "GPosY", OSD.FromReal (GlobalPos.Y).ToString () },
+                                //{ "GPosZ", OSD.FromReal (GlobalPos.Z).ToString () },
+                                // "ParcelName", OSD.FromString (ParcelName) },
+                                { "ClassifiedFlags", classified.ClassifiedFlags },
+                                { "PriceForListing", classified.PriceForListing }
+                        });
+                    }
+                }
+                vars.Add ("ClassifiedList", classifiedListVars);
+            }
 
             return vars;
         }
