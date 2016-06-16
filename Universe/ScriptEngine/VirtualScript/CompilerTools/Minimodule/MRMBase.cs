@@ -29,16 +29,16 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Remoting.Lifetime;
-using Universe.Framework.SceneInfo;
 using OpenMetaverse;
+using Universe.Framework.SceneInfo;
 
 namespace Universe.ScriptEngine.VirtualScript.MiniModule
 {
     public abstract class MRMBase : IScript
     {
-        private IHost m_host;
-        private UUID m_id;
-        private IWorld m_world;
+        IHost m_host;
+        UUID m_id;
+        IWorld m_world;
 
         protected IWorld World
         {

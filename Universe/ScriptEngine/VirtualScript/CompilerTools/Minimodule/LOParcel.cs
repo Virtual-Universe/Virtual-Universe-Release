@@ -31,10 +31,10 @@ using Universe.Framework.SceneInfo;
 
 namespace Universe.ScriptEngine.VirtualScript.MiniModule
 {
-    internal class LOParcel : MarshalByRefObject, IParcel
+    class LOParcel : MarshalByRefObject, IParcel
     {
-        private readonly int m_parcelID;
-        private readonly IScene m_scene;
+        readonly int m_parcelID;
+        readonly IScene m_scene;
 
         public LOParcel(IScene m_scene, int m_parcelID)
         {
@@ -64,7 +64,7 @@ namespace Universe.ScriptEngine.VirtualScript.MiniModule
 
         #endregion
 
-        private ILandObject GetLO()
+        ILandObject GetLO()
         {
             IParcelManagementModule parcelManagement = m_scene.RequestModuleInterface<IParcelManagementModule>();
             if (parcelManagement != null)

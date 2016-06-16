@@ -25,10 +25,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Universe.Framework.Services;
-using OpenMetaverse;
 using System;
 using System.Collections.Generic;
+using OpenMetaverse;
+using Universe.Framework.Services;
 
 namespace Universe.Modules.Ban
 {
@@ -51,7 +51,7 @@ namespace Universe.Modules.Ban
         public PresenceInfoFlags Flags;
 
         [Flags]
-        public enum PresenceInfoFlags : int
+        public enum PresenceInfoFlags
         {
             Clean = 1 << 1,
             Suspected = 1 << 2,

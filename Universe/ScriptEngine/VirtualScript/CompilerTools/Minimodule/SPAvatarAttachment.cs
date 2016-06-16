@@ -25,19 +25,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Universe.Framework.SceneInfo;
 using OpenMetaverse;
+using Universe.Framework.SceneInfo;
 
 namespace Universe.ScriptEngine.VirtualScript.MiniModule
 {
     public class SPAvatarAttachment : IAvatarAttachment
     {
-        //private readonly UUID m_itemId;
-        private readonly UUID m_assetId;
-        private readonly int m_location;
-        private readonly IScene m_rootScene;
+        // readonly UUID m_itemId;
+        readonly UUID m_assetId;
+        readonly int m_location;
+        readonly IScene m_rootScene;
 
-        private readonly ISecurityCredential m_security;
+        readonly ISecurityCredential m_security;
 
         public SPAvatarAttachment(IScene rootScene, IAvatar self, int location, UUID itemId, UUID assetId,
                                   ISecurityCredential security)

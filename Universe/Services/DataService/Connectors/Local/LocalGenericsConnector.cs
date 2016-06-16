@@ -26,13 +26,12 @@
  */
 
 using System.Collections.Generic;
-
-using Universe.Framework.DatabaseInterfaces;
-using Universe.Framework.Modules;
-using Universe.Framework.Services;
 using Nini.Config;
 using OpenMetaverse;
 using OpenMetaverse.StructuredData;
+using Universe.Framework.DatabaseInterfaces;
+using Universe.Framework.Modules;
+using Universe.Framework.Services;
 
 namespace Universe.Services.DataService
 {
@@ -49,7 +48,7 @@ namespace Universe.Services.DataService
     /// </summary>
     public class LocalGenericsConnector : IGenericsConnector
     {
-        private IGenericData GD;
+        IGenericData GD;
 
         #region IGenericsConnector Members
 

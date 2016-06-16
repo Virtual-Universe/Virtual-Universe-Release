@@ -88,8 +88,8 @@ namespace Universe.Modules.Currency
             return true;
         }
 
-        public bool Transfer(UUID toID, UUID fromID, UUID toObjectID, string toObjectName, UUID fromObjectID, string fromObjectName, int amount, string description,
-                             TransactionType type)
+        public bool Transfer(UUID toID, UUID fromID, UUID toObjectID, string toObjectName, UUID fromObjectID,
+                             string fromObjectName, int amount, string description, TransactionType type)
         {
             if ((type == TransactionType.PayObject) && (OnObjectPaid != null))
                 OnObjectPaid((fromObjectID == UUID.Zero) ? toObjectID : fromObjectID, fromID, amount);
@@ -178,8 +178,7 @@ namespace Universe.Modules.Currency
             return true;
         }
 
-        public void ProcessMoneyTransferRequest(UUID source, UUID destination, int amount,
-                                                int transactiontype, string description)
+        public void ProcessMoneyTransferRequest(UUID source, UUID destination, int amount, int transactiontype, string description)
         {
         }
 
@@ -211,10 +210,10 @@ namespace Universe.Modules.Currency
         /// <param name="client"></param>
         /// <param name="agentID"></param>
         /// <param name="SessionID"></param>
-        /// <param name="TransactionID"></param>
-        protected void SendMoneyBalance(IClientAPI client, UUID agentID, UUID SessionID, UUID TransactionID)
+        /// <param name="transactionID"></param>
+        protected void SendMoneyBalance(IClientAPI client, UUID agentID, UUID SessionID, UUID transactionID)
         {
-            client.SendMoneyBalance(TransactionID, true, new byte[0], 0);
+            client.SendMoneyBalance(transactionID, true, new byte[0], 0);
         }
 
         #region Buy Currency and Land
@@ -232,17 +231,17 @@ namespace Universe.Modules.Currency
                 UUID.TryParse((string) requestData["agentId"], out agentId);
                 try
                 {
-                    amount = (Int32) requestData["currencyBuy"];
+                    amount = (int) requestData["currencyBuy"];
                 }
                 catch (InvalidCastException)
                 {
                 }
+
                 Hashtable currencyResponse = new Hashtable {{"estimatedCost", 0}, {"currencyBuy", amount}};
 
                 quoteResponse.Add("success", true);
                 quoteResponse.Add("currency", currencyResponse);
                 quoteResponse.Add("confirm", "asdfad9fj39ma9fj");
-
                 returnval.Value = quoteResponse;
                 return returnval;
             }
@@ -256,32 +255,6 @@ namespace Universe.Modules.Currency
 
         protected XmlRpcResponse buy_func(XmlRpcRequest request, IPEndPoint ep)
         {
-            /*Hashtable requestData = (Hashtable)request.Params[0];
-            UUID agentId = UUID.Zero;
-            int amount = 0;
-            if (requestData.ContainsKey("agentId") && requestData.ContainsKey("currencyBuy"))
-            {
-                UUID.TryParse((string)requestData["agentId"], out agentId);
-                try
-                {
-                    amount = (Int32)requestData["currencyBuy"];
-                }
-                catch (InvalidCastException)
-                {
-                }
-                if (agentId != UUID.Zero)
-                {
-                    uint buyer = CheckExistAndRefreshFunds(agentId);
-                    buyer += (uint)amount;
-                    UpdateBalance(agentId,buyer);
-					
-                    IClientAPI client = LocateClientObject(agentId);
-                    if (client != null)
-                    {
-                        SendMoneyBalance(client, agentId, client.SessionId, UUID.Zero);
-                    }
-                }
-            }*/
             XmlRpcResponse returnval = new XmlRpcResponse();
             Hashtable returnresp = new Hashtable {{"success", true}};
             returnval.Value = returnresp;
@@ -392,15 +365,14 @@ namespace Universe.Modules.Currency
             return new List<AgentPurchase> ();
         }
 
-        public List<GroupAccountHistory> GetGroupTransactions(UUID groupID, UUID agentID, int currentInterval,
-            int intervalDays)
+        public List<GroupAccountHistory> GetGroupTransactions(UUID groupID, UUID agentID, int currentInterval, int intervalDays)
         {
             return new List<GroupAccountHistory>();
         }
 
         public GroupBalance GetGroupBalance(UUID groupID)
         {
-            return new GroupBalance() {StartingDate = DateTime.Now.AddDays(-4)};
+            return new GroupBalance {StartingDate = DateTime.Now.AddDays(-4)};
         }
 
         public bool GroupCurrencyTransfer(UUID groupID, UUID fromID, bool payUser, string toObjectName, UUID fromObjectID,

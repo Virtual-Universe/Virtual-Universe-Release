@@ -62,8 +62,8 @@ namespace Universe.Services
             }
 
             if (MainConsole.Instance == null) {
-                Console.WriteLine ("[Console]: No Console located");
-                return;
+                Console.WriteLine ("[Console]: No Console configured, falling back to 'LocalConsole'");
+                new LocalConsole ().LocalInitialize (config, simbase);
             }
 
             MainConsole.Instance.Threshold = Level.Info;

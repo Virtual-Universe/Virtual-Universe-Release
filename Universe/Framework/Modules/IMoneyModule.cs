@@ -146,7 +146,6 @@ namespace Universe.Framework.Modules
             FromObjectName = map ["FromObjectName"];
             ToObjectName = map ["ToObjectName"];
             RegionName = map ["RegionName"];
-
         }
 
         public override OpenMetaverse.StructuredData.OSDMap ToOSD()
@@ -230,8 +229,6 @@ namespace Universe.Framework.Modules
         bool Transfer(UUID toID, UUID fromID, UUID toObjectID, string toObjectName, UUID fromObjectID, string fromObjectName, int amount, string description,
                       TransactionType type);
 
-                   
-
         uint NumberOfTransactions(UUID toAgent, UUID fromAgent);
 
         List<AgentTransfer> GetTransactionHistory (UUID toAgentID, UUID fromAgentID, DateTime dateStart, DateTime dateEnd, uint? start, uint? count);
@@ -279,7 +276,6 @@ namespace Universe.Framework.Modules
         /// <param name="transactionID">Transaction ID.</param>
         bool GroupCurrencyTransfer (UUID groupID, UUID userID, bool payUser, string toObjectName, UUID fromObjectID,
             string fromObjectName, int amount, string description, TransactionType type, UUID transactionID);
-
     }
 
     public delegate void UserDidNotPay(UUID agentID, string identifier, string paymentTextThatFailed);
@@ -299,18 +295,9 @@ namespace Universe.Framework.Modules
         void RemoveFromScheduledCharge(string identifier);
         void RemoveDirFeeScheduledCharge(string identifier);
         DateTime GetStipendPaytime (int minsOffset);
-
     }
 
     public interface IBaseCurrencyConnector : IUniverseDataPlugin
-    {
-        /*BaseCurrencyConfig GetConfig();
-        UserCurrency GetUserCurrency(UUID agentId);
-        bool UserCurrencyUpdate(UserCurrency agent);
-        GroupBalance GetGroupBalance(UUID groupID);
-
-        bool UserCurrencyTransfer(UUID toID, UUID fromID, UUID toObjectID, UUID fromObjectID, uint amount,
-                                  string description, TransactionType type, UUID transactionID);
-        */                          
+    {                         
     }
 }

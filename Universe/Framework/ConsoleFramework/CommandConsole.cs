@@ -543,7 +543,7 @@ namespace Universe.Framework.ConsoleFramework
             //string runProcess = Path.GetFileNameWithoutExtension(runFilename);
             //m_logFile = StreamWriter.Synchronized(new StreamWriter(m_logPath + runProcess + m_logName + "_" + timestamp + ".log", true));
 
-            m_logFile = StreamWriter.Synchronized (new StreamWriter (m_logPath + m_logName + timestamp + ".log", true));
+            m_logFile = TextWriter.Synchronized (new StreamWriter (m_logPath + m_logName + timestamp + ".log", true));
             m_logDate = logtime.Date;
         }
 

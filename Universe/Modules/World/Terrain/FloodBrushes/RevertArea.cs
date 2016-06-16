@@ -25,17 +25,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Universe.Framework.Modules;
 using OpenMetaverse;
+using Universe.Framework.Modules;
 
 
 namespace Universe.Modules.Terrain.FloodBrushes
 {
     public class RevertArea : ITerrainFloodEffect
     {
-        private readonly ITerrainModule m_module;
+        readonly ITerrainModule m_module;
 
-        public RevertArea(ITerrainModule module)
+        public RevertArea (ITerrainModule module)
         {
             m_module = module;
         }
@@ -52,16 +52,14 @@ namespace Universe.Modules.Terrain.FloodBrushes
         /// <param name="south"></param>
         /// <param name="east"></param>
         /// <param name="strength">unused</param>
-        public void FloodEffect(ITerrainChannel map, UUID userID, float north,
+        public void FloodEffect (ITerrainChannel map, UUID userID, float north,
                                 float west, float south, float east, float strength)
         {
-            for (int x = (int) west; x < (int) east; x++)
-            {
-                for (int y = (int) south; y < (int) north; y++)
-                {
-                    if (!map.Scene.Permissions.CanTerraformLand(userID, new Vector3(x, y, 0)))
+            for (int x = (int)west; x < (int)east; x++) {
+                for (int y = (int)south; y < (int)north; y++) {
+                    if (!map.Scene.Permissions.CanTerraformLand (userID, new Vector3 (x, y, 0)))
                         continue;
-                    map[x, y] = m_module.TerrainRevertMap[x, y];
+                    map [x, y] = m_module.TerrainRevertMap [x, y];
                 }
             }
         }

@@ -255,11 +255,13 @@ namespace Universe.Services
 
                             EncoderParameters myEncoderParameters = new EncoderParameters();
                             myEncoderParameters.Param[0] = new EncoderParameter(Encoder.Quality, 95L);
-
-                            // Save bitmap to stream
-                            image.Save(imgstream, GetEncoderInfo("image/jpeg"), myEncoderParameters);
-
+                            var encInfo = GetEncoderInfo ("image/jpeg");
+                            if (encInfo != null) {
+                                // Save bitmap to stream
+                                image.Save (imgstream, encInfo, myEncoderParameters);
+                            }
                             image.Dispose();
+                            myEncoderParameters.Dispose ();
 
                             // Write the stream to a byte array for output
                             return imgstream.ToArray();
@@ -486,7 +488,13 @@ namespace Universe.Services
         // From MSDN
         static ImageCodecInfo GetEncoderInfo(String mimeType)
         {
-            ImageCodecInfo[] encoders = ImageCodecInfo.GetImageEncoders();
+            ImageCodecInfo [] encoders;
+            try {
+                encoders = ImageCodecInfo.GetImageEncoders ();
+            } catch {
+                return null;
+            }
+
             return encoders.FirstOrDefault(t => t.MimeType == mimeType);
         }
 
@@ -550,13 +558,18 @@ namespace Universe.Services
 
             using (MemoryStream imgstream = new MemoryStream())
             {
-                // Save bitmap to stream
-                lock(mapTexture)
-                    mapTexture.Save(imgstream, GetEncoderInfo("image/jpeg"), myEncoderParameters);
-
+                var encInfo = GetEncoderInfo ("image/jpeg");
+                if (encInfo != null) {
+                    // Save bitmap to stream
+                    lock (mapTexture)
+                        mapTexture.Save (imgstream, encInfo, myEncoderParameters);
+                }
                 // Write the stream to a byte array for output
-                jpeg = imgstream.ToArray();
+                jpeg = imgstream.ToArray ();
+
             }
+
+            myEncoderParameters.Dispose ();
             SaveCachedImage(maplayer, regionX, regionY, jpeg);
             return jpeg;
         }

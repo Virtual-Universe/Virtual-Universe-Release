@@ -452,11 +452,11 @@ namespace Universe.ScriptEngine.VirtualScript
                 MaintenanceThread.StartScripts(
                     scripts.Select(ID => new LUStruct {Action = LUType.Load, ID = ID}).ToArray());
 
-                MainConsole.Instance.Warn("[Virtual Script Engine]: All scripts have been restarted.");
+                MainConsole.Instance.Warn("[Virtual Script]: All scripts have been restarted.");
             }
             else
             {
-                MainConsole.Instance.Info("[Virtual Script Engine]: Not restarting all scripts");
+                MainConsole.Instance.Info("[Virtual Script]: Not restarting all scripts");
             }
         }
 
@@ -467,17 +467,17 @@ namespace Universe.ScriptEngine.VirtualScript
             {
                 StopAllScripts();
                 MaintenanceThread.Stop();
-                MainConsole.Instance.Warn("[Virtual Script Engine]: All scripts have been stopped.");
+                MainConsole.Instance.Warn("[Virtual Script]: All scripts have been stopped.");
             }
             else
             {
-                MainConsole.Instance.Info("[Virtual Script Engine]: Not restarting all scripts");
+                MainConsole.Instance.Info("[Virtual Script]: Not restarting all scripts");
             }
         }
 
         protected void UniverseDotNetStats(IScene scene, string[] cmdparams)
         {
-            MainConsole.Instance.Info ("Virtual Script Engine Script Engine Stats:");
+            MainConsole.Instance.Info ("Universe DotNet Script Engine Stats:");
             MainConsole.Instance.CleanInfo ("    Region: " + scene.RegionInfo.RegionName);
             MainConsole.Instance.CleanInfo ("    Number of scripts compiled: " + Compiler.ScriptCompileCounter);
             MainConsole.Instance.CleanInfo ("    Max allowed threat level: " + ScriptProtection.GetThreatLevel ());
@@ -498,14 +498,14 @@ namespace Universe.ScriptEngine.VirtualScript
         protected void UniverseDotNetDisable(IScene scene, string[] cmdparams)
         {
             ConsoleDisabled = true;
-            MainConsole.Instance.Warn("[Virtual Script Engine]: The Virtual Script Engine has been disabled.");
+            MainConsole.Instance.Warn("[Virtual Script]: The Virtual Script has been disabled.");
         }
 
         protected void UniverseDotNetEnable(IScene scene, string[] cmdparams)
         {
             ConsoleDisabled = false;
             MaintenanceThread.Started = true;
-            MainConsole.Instance.Warn("[Virtual Script Engine]: The Virtual Script has been enabled.");
+            MainConsole.Instance.Warn("[Virtual Script]: The Virtual Script has been enabled.");
         }
 
         #endregion
@@ -521,9 +521,9 @@ namespace Universe.ScriptEngine.VirtualScript
                                     p.EventName, p.DetectParams, priority, p.Params);
         }
 
-        public bool PostScriptEvent(UUID itemID, UUID primID, string name, Object[] p)
+        public bool PostScriptEvent(UUID itemID, UUID primID, string name, object[] p)
         {
-            Object[] lsl_p = new Object[p.Length];
+            object[] lsl_p = new object[p.Length];
             for (int i = 0; i < p.Length; i++)
             {
                 if (p[i] is int)
@@ -547,9 +547,9 @@ namespace Universe.ScriptEngine.VirtualScript
                                    EventPriority.FirstStart);
         }
 
-        public bool PostObjectEvent(UUID primID, string name, Object[] p)
+        public bool PostObjectEvent(UUID primID, string name, object[] p)
         {
-            Object[] lsl_p = new Object[p.Length];
+            object[] lsl_p = new object[p.Length];
             for (int i = 0; i < p.Length; i++)
             {
                 if (p[i] is int)
@@ -733,9 +733,10 @@ namespace Universe.ScriptEngine.VirtualScript
             else //Ask the protection module how many Scripts there are
             {
                 ScriptData[] scripts = ScriptProtection.GetScripts(obj.UUID);
-                foreach (ScriptData script in scripts)
-                {
-                    if (script.Running) activeScripts++;
+                if (scripts != null) {
+                    foreach (ScriptData script in scripts) {
+                        if (script.Running) activeScripts++;
+                    }
                 }
             }
             return activeScripts;
@@ -749,27 +750,31 @@ namespace Universe.ScriptEngine.VirtualScript
         public int GetTotalScripts(IEntity obj)
         {
             int totalScripts = 0;
-            if (obj is IScenePresence)
-            {
+            if (obj is IScenePresence) {
                 //Get all the scripts in the attachments
-                IAttachmentsModule attModule = ((IScenePresence) obj).Scene.RequestModuleInterface<IAttachmentsModule>();
-                if (attModule != null)
-                {
-                    ISceneEntity[] attachments = attModule.GetAttachmentsForAvatar(obj.UUID);
-                    foreach (ISceneEntity grp in attachments)
-                    {
-                        totalScripts += GetTotalScripts(grp);
+                IAttachmentsModule attModule = ((IScenePresence)obj).Scene.RequestModuleInterface<IAttachmentsModule> ();
+                if (attModule != null) {
+                    ISceneEntity [] attachments = attModule.GetAttachmentsForAvatar (obj.UUID);
+                    foreach (ISceneEntity grp in attachments) {
+                        totalScripts += GetTotalScripts (grp);
                     }
                 }
+            } else {
+                //Ask the protection module how many Scripts there are
+                var scriptObjs = ScriptProtection.GetScripts (obj.UUID);
+                if (scriptObjs != null)
+                    totalScripts += scriptObjs.Length;
             }
-            else //Ask the protection module how many Scripts there are
-                totalScripts += ScriptProtection.GetScripts(obj.UUID).Length;
             return totalScripts;
         }
 
         public int GetScriptTime(UUID itemID)
         {
-            return ScriptProtection.GetScript(itemID).ScriptScore;
+            var scriptObj = ScriptProtection.GetScript (itemID);
+            if (scriptObj != null)
+                return scriptObj.ScriptScore;
+
+            return 0;
         }
 
         public void SetScriptRunning(IClientAPI controllingClient, UUID objectID, UUID itemID, bool running)
@@ -984,7 +989,7 @@ namespace Universe.ScriptEngine.VirtualScript
                             }
                         }
                     }
-                    OSDMap Plugins = GetSerializationData(SD.ItemID, SD.Part.UUID);
+                    OSDMap mapPlugins = GetSerializationData(SD.ItemID, SD.Part.UUID);
                     RemoveScriptFromPlugins(SD.Part.UUID, SD.ItemID);
 
                     MaintenanceThread.SetEventSchSetIgnoreNew(SD, true);
@@ -998,7 +1003,7 @@ namespace Universe.ScriptEngine.VirtualScript
                     //Try to see if this was rezzed from someone's inventory
                     SD.UserInventoryItemID = SD.Part.FromUserInventoryItemID;
 
-                    CreateFromData(SD.Part.UUID, SD.ItemID, SD.Part.UUID, Plugins);
+                    CreateFromData(SD.Part.UUID, SD.ItemID, SD.Part.UUID, mapPlugins);
 
                     SD.World = newPart.ParentEntity.Scene;
                     SD.SetApis();
@@ -1006,13 +1011,14 @@ namespace Universe.ScriptEngine.VirtualScript
                     MaintenanceThread.SetEventSchSetIgnoreNew(SD, false);
 
 
-                    if (presence != null && (newItem.PermsMask & ScriptBaseClass.PERMISSION_TAKE_CONTROLS) != 0)
-                    {
-                        SC.itemID = newItem.ItemID;
-                        SC.part = SD.Part;
-                        IScriptControllerModule m = presence.RequestModuleInterface<IScriptControllerModule>();
-                        if (m != null)
-                            m.RegisterScriptController(SC);
+                    if (presence != null) {
+                        if ((newItem.PermsMask & ScriptBaseClass.PERMISSION_TAKE_CONTROLS) != 0) {
+                            SC.itemID = newItem.ItemID;
+                            SC.part = SD.Part;
+                            IScriptControllerModule m = presence.RequestModuleInterface<IScriptControllerModule> ();
+                            if (m != null)
+                                m.RegisterScriptController (SC);
+                        }
                     }
 
                     ScriptProtection.AddNewScript(SD);
@@ -1049,7 +1055,7 @@ namespace Universe.ScriptEngine.VirtualScript
                 {
                     //Post the changed event though
                     AddToScriptQueue (id, "changed", new DetectParams[0], EventPriority.FirstStart,
-                        new Object[] { new LSL_Types.LSLInteger (512) });
+                        new object[] { new LSL_Types.LSLInteger (512) });
                     return new LUStruct { Action = LUType.Unknown };
                 }
                 //Restart other scripts

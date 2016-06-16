@@ -26,9 +26,9 @@
  */
 
 using System;
+using OpenMetaverse;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
-using OpenMetaverse;
 
 
 namespace Universe.Modules.Terrain.PaintBrushes

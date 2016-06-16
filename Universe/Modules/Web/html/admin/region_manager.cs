@@ -157,7 +157,7 @@ namespace Universe.Modules.Web
                     newRegion.RegionTerrain = "Flatland";
                     newRegion.Startup = StartupType.Normal;
                     newRegion.SeeIntoThisSimFromNeighbor = true;
-                    newRegion.InfiniteRegion = false;
+                    newRegion.InfiniteRegion = true;
                     newRegion.ObjectCapacity = 50000;
                     newRegion.RegionPort = RegionPort;
  
@@ -174,7 +174,7 @@ namespace Universe.Modules.Web
                         newRegion.RegionTerrain = "Grassland";
                     newRegion.Startup = StartupType.Medium;
                     newRegion.SeeIntoThisSimFromNeighbor = true;
-                    newRegion.InfiniteRegion = false;
+                    newRegion.InfiniteRegion = true;
                     newRegion.ObjectCapacity = 750;
                     newRegion.RegionSettings.AgentLimit = 10;
                     newRegion.RegionSettings.AllowLandJoinDivide = false;
@@ -188,7 +188,7 @@ namespace Universe.Modules.Web
                     newRegion.RegionTerrain = "Homestead";
                     newRegion.Startup = StartupType.Medium;
                     newRegion.SeeIntoThisSimFromNeighbor = true;
-                    newRegion.InfiniteRegion = false;
+                    newRegion.InfiniteRegion = true;
                     newRegion.ObjectCapacity = 3750;
                     newRegion.RegionSettings.AgentLimit = 20;
                     newRegion.RegionSettings.AllowLandJoinDivide = false;
@@ -203,7 +203,7 @@ namespace Universe.Modules.Web
                     newRegion.RegionTerrain = RegionTerrain;
                     newRegion.Startup = StartupType.Normal;
                     newRegion.SeeIntoThisSimFromNeighbor = true;
-                    newRegion.InfiniteRegion = false;
+                    newRegion.InfiniteRegion = true;
                     newRegion.ObjectCapacity = 15000;
                     newRegion.RegionSettings.AgentLimit = 100;
                     if (newRegion.RegionType.StartsWith ("M", System.StringComparison.Ordinal))                           // defaults are 'true'
@@ -225,21 +225,19 @@ namespace Universe.Modules.Web
                 if (scenemanager.CreateRegion(newRegion))
                 {   
                     IGridRegisterModule gridRegister = webInterface.Registry.RequestModuleInterface<IGridRegisterModule>();
-                    if( gridRegister.RegisterRegionWithGrid(null, true, false, null)) 
-                    {
- 
-                        response = "<h3>Successfully created region, redirecting to main page</h3>" +
-                            "<script language=\"javascript\">" +
-                            "setTimeout(function() {window.location.href = \"index.html\";}, 3000);" +
-                            "</script>";
-                    }
-                    else
-//                        response = "<h3>" + error + "</h3>";
-                            response = "<h3> Error registering region with grid</h3>";
-                }
-                else
-//
-                response = "<h3>Error creating this region.</h3>";
+                    if (gridRegister != null) {
+                        if (gridRegister.RegisterRegionWithGrid (null, true, false, null)) {
+
+                            response = "<h3>Successfully created region, redirecting to main page</h3>" +
+                                "<script language=\"javascript\">" +
+                                "setTimeout(function() {window.location.href = \"index.html\";}, 3000);" +
+                                "</script>";
+                        }
+                    } 
+
+                    response = "<h3> Error registering region with grid</h3>";
+                } else
+                    response = "<h3>Error creating this region.</h3>";
                 return null;
             }
 
@@ -307,12 +305,11 @@ namespace Universe.Modules.Web
                 var scenemanager = webInterface.Registry.RequestModuleInterface<ISceneManager> ();
                 var gconnector = Framework.Utilities.DataManager.RequestPlugin<IGenericsConnector>();
                 var settings = gconnector.GetGeneric<WebUISettings>(UUID.Zero, "WebUISettings", "Settings");
-
-                // get some current details
-                //List<GridRegion> regions = gridService.GetRegionsByName(null, "", null,null);
+                if (settings == null)
+                    settings = new WebUISettings ();
 
                 var currentInfo = scenemanager.FindCurrentRegionInfo ();
-                //Dictionary<string, int> currentInfo = null;
+
                 if (currentInfo != null)
                 {
                     vars.Add ("RegionLocX", currentInfo ["minX"] > 0 ? currentInfo ["minX"] : settings.MapCenter.X);
@@ -323,20 +320,16 @@ namespace Universe.Modules.Web
                     vars.Add ("RegionLocX", settings.MapCenter.X);
                     vars.Add ("RegionLocY", settings.MapCenter.Y);
                     vars.Add("RegionPort", 9000);
-
                 }
 
-                   
                 vars.Add ("RegionSizeX", Constants.RegionSize);
                 vars.Add ("RegionSizeY", Constants.RegionSize);
                 vars.Add ("RegionType", webInterface.RegionTypeArgs(translator));
                 vars.Add ("RegionPresetType", webInterface.RegionPresetArgs(translator));
                 vars.Add ("RegionTerrain", webInterface.RegionTerrainArgs(translator));
-              
             }
 
-                // Labels
-                //vars.Add ("RegionInformationText", translator.GetTranslatedString ("RegionInformationText"));
+            // Labels
             vars.Add ("RegionNameText", translator.GetTranslatedString ("RegionNameText"));
             vars.Add ("RegionLocationText", translator.GetTranslatedString ("RegionLocationText"));
             vars.Add ("RegionSizeText", translator.GetTranslatedString ("RegionSizeText"));
@@ -355,10 +348,6 @@ namespace Universe.Modules.Web
             vars.Add("Submit", translator.GetTranslatedString("Submit"));
             vars.Add("SubmitURL", "home.html");
             vars.Add("ErrorMessage", "");
-
-
-         
-
             return vars;
         }
 

@@ -25,6 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
 using System;
 using System.IO;
 using System.IO.Compression;
@@ -44,11 +45,11 @@ using Universe.Framework.Utilities;
 
 namespace Universe.Modules.Archivers
 {
-    public class Archiver : IService, IUniverseBackupArchiver
+    public class Archiver : IService, IBackupArchiver
     {
         Int64 m_AllowPrompting;
 
-        #region IUniverseBackupArchiver Members
+        #region IBackupArchiver Members
 
         public bool AllowPrompting
         {
@@ -117,13 +118,13 @@ namespace Universe.Modules.Archivers
                 MainConsole.Instance.Commands.AddCommand (
                     "save archive",
                     "save archive",
-                    "Saves a Universe '.abackup' archive (deprecated)",
+                    "Saves a Virtual Universe '.abackup' archive (deprecated)",
                     SaveUniverseArchive, true, false);
 
                 MainConsole.Instance.Commands.AddCommand (
                     "load archive",
                     "load archive",
-                    "Loads a Universe '.abackup' archive",
+                    "Loads a Virtual Universe '.abackup' archive",
                     LoadUniverseArchive, true, false);
             }
 
@@ -144,8 +145,7 @@ namespace Universe.Modules.Archivers
             #endif
 
             //Register the interface
-            registry.RegisterModuleInterface<IUniverseBackupArchiver> (this);
-
+            registry.RegisterModuleInterface<IBackupArchiver> (this);
         }
 
         public void Start (IConfigSource config, IRegistryCore registry)
@@ -160,8 +160,7 @@ namespace Universe.Modules.Archivers
 
         void LoadUniverseArchive (IScene scene, string[] cmd)
         {
-            string fileName = MainConsole.Instance.Prompt ("What file name should we load?",
-                                  scene.RegionInfo.RegionName + ".abackup");
+            string fileName = MainConsole.Instance.Prompt ("What file name should we load?", scene.RegionInfo.RegionName + ".abackup");
 
             // a couple of sanity checks
             string extension = Path.GetExtension (fileName);
@@ -192,8 +191,7 @@ namespace Universe.Modules.Archivers
 
         void SaveUniverseArchive (IScene scene, string[] cmd)
         {
-            string fileName = MainConsole.Instance.Prompt ("What file name will this be saved as?",
-                                  scene.RegionInfo.RegionName + ".abackup");
+            string fileName = MainConsole.Instance.Prompt ("What file name will this be saved as?", scene.RegionInfo.RegionName + ".abackup");
 
             //some file sanity checks
             string extension = Path.GetExtension (fileName);
@@ -208,6 +206,7 @@ namespace Universe.Modules.Archivers
             {
                 fileDir = "./";
             }
+
             if (!Directory.Exists (fileDir))
             {
                 MainConsole.Instance.Info ("[Archiver]: The file path specified, '" + fileDir + "' does not exist!");

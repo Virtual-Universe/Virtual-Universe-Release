@@ -75,7 +75,7 @@ namespace Universe.Framework.ConsoleFramework
         /// </summary>
         public int matchLength (string cmdWithParams)
         {
-            // QUESTION: have a case insensitive flag?
+            // case insensitive matching
             cmdWithParams = cmdWithParams.ToLower ().Trim ();
             string matchText = string.Join (" ", m_cmdText).ToLower ().Trim ();
             if (cmdWithParams.StartsWith (matchText, StringComparison.Ordinal)) {
@@ -107,7 +107,7 @@ namespace Universe.Framework.ConsoleFramework
                     sendCmdParams [i] = cmdParams [skipParams++];
                 }
             }
-            m_commandDelegate (sendCmdParams); //.Trim().Split(new char[] { ' ' }));
+            m_commandDelegate (sendCmdParams);
         }
 
         /// <summary>

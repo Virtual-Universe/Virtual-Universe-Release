@@ -27,10 +27,10 @@
 
 using System;
 using System.Collections.Generic;
-using Universe.Framework.Modules;
-using Universe.Framework.SceneInfo;
 using Nini.Config;
 using OpenMetaverse;
+using Universe.Framework.Modules;
+using Universe.Framework.SceneInfo;
 
 namespace Universe.ScriptEngine.VirtualScript
 {

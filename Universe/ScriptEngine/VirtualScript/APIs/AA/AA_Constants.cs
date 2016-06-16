@@ -25,8 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using vector = Universe.ScriptEngine.VirtualScript.LSL_Types.Vector3;
-using rotation = Universe.ScriptEngine.VirtualScript.LSL_Types.Quaternion;
 
 namespace Universe.ScriptEngine.VirtualScript.Runtime
 {

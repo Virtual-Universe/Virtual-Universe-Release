@@ -29,7 +29,7 @@ using System;
 
 namespace Universe.ScriptEngine.VirtualScript.MiniModule
 {
-    internal interface IPersistence
+    interface IPersistence
     {
         T Get<T>(Guid storageID);
         T Get<T>();

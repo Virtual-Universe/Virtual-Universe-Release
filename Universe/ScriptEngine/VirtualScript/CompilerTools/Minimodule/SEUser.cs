@@ -30,10 +30,10 @@ using OpenMetaverse;
 
 namespace Universe.ScriptEngine.VirtualScript.MiniModule
 {
-    internal class SEUser : MarshalByRefObject, ISocialEntity
+    class SEUser : MarshalByRefObject, ISocialEntity
     {
-        private readonly string m_name;
-        private readonly UUID m_uuid;
+        readonly string m_name;
+        readonly UUID m_uuid;
 
         public SEUser(UUID uuid, string name)
         {

@@ -667,11 +667,14 @@ namespace Universe.Modules.Inventory
                     return;
                 }
                 AssetBase asset = new AssetBase {ID = olditemID, Type = type, Name = name, Description = description};
-
-                CreateNewInventoryItem(
-                    remoteClient, remoteClient.AgentId.ToString(), "", folderID, name, 0, callbackID, asset, invType,
-                    (uint) PermissionMask.All, (uint) PermissionMask.All, (uint) PermissionMask.All,
-                    (uint) PermissionMask.All, (uint) PermissionMask.All, Util.UnixTimeSinceEpoch());
+                try {
+                    CreateNewInventoryItem (
+                        remoteClient, remoteClient.AgentId.ToString (), "", folderID, name, 0, callbackID, asset, invType,
+                        (uint)PermissionMask.All, (uint)PermissionMask.All, (uint)PermissionMask.All,
+                        (uint)PermissionMask.All, (uint)PermissionMask.All, Util.UnixTimeSinceEpoch ());
+                } catch {
+                }
+                asset.Dispose ();
             }
             else
             {
@@ -1699,25 +1702,26 @@ namespace Universe.Modules.Inventory
 
             Util.FireAndForget ((o) => {
                 InventoryFolderBase rootFolder = m_scene.InventoryService.GetRootFolder (destID);
-                InventoryFolderBase newFolder = new InventoryFolderBase (newFolderID, name, destID,
-                                                                        (short)FolderType.None, rootFolder.ID,
-                                                                        rootFolder.Version);
-                m_scene.InventoryService.AddFolder (newFolder);
+                if (rootFolder != null) {
+                    InventoryFolderBase newFolder = new InventoryFolderBase (newFolderID, name, destID,
+                                                                    (short)FolderType.None, rootFolder.ID,
+                                                                    rootFolder.Version);
+                    m_scene.InventoryService.AddFolder (newFolder);
 
-                foreach (UUID itemID in items) {
-                    InventoryItemBase agentItem = CreateAgentInventoryItemFromTask (destID, host,
-                                                                                   itemID);
+                    foreach (UUID itemID in items) {
+                        InventoryItemBase agentItem = CreateAgentInventoryItemFromTask (destID, host, itemID);
 
-                    if (agentItem != null) {
-                        agentItem.Folder = newFolderID;
-                        m_scene.InventoryService.AddItem (agentItem);
+                        if (agentItem != null) {
+                            agentItem.Folder = newFolderID;
+                            m_scene.InventoryService.AddItem (agentItem);
+                        }
                     }
-                }
 
-                IScenePresence avatar;
-                if (m_scene.TryGetScenePresence (destID, out avatar)) {
-                    SendInventoryUpdate (avatar.ControllingClient, rootFolder, true, false);
-                    SendInventoryUpdate (avatar.ControllingClient, newFolder, false, true);
+                    IScenePresence avatar;
+                    if (m_scene.TryGetScenePresence (destID, out avatar)) {
+                        SendInventoryUpdate (avatar.ControllingClient, rootFolder, true, false);
+                        SendInventoryUpdate (avatar.ControllingClient, newFolder, false, true);
+                    }
                 }
             });
 

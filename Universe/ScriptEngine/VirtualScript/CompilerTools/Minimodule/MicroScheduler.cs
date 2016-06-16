@@ -33,7 +33,7 @@ namespace Universe.ScriptEngine.VirtualScript.MiniModule
 {
     public class MicroScheduler : MarshalByRefObject, IMicrothreader
     {
-        private readonly List<IEnumerator> m_threads = new List<IEnumerator>();
+        readonly List<IEnumerator> m_threads = new List<IEnumerator>();
 
         #region IMicrothreader Members
 
