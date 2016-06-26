@@ -30,7 +30,7 @@ using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Utilities;
 
-namespace Universe.Modules.Monitoring.Monitors
+namespace Universe.Modules.World.Monitoring.Monitors
 {
     public class LastFrameTimeMonitor : IMonitor, ILastFrameTimeMonitor
     {

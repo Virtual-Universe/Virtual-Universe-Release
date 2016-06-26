@@ -34,7 +34,7 @@ using Universe.Framework.ModuleLoader;
 using Universe.Framework.Physics;
 using Universe.Framework.SceneInfo;
 
-namespace Universe.Modules.Startup
+namespace Universe.Modules.World.Startup
 {
     /// <summary>
     ///     Description of MyClass.

@@ -33,7 +33,7 @@ using Universe.Framework.Utilities;
 using Nini.Config;
 
 
-namespace Universe.Modules.Startup
+namespace Universe.Modules.World.Startup
 {
     public class PhysicsInitializer : ISharedRegionStartupModule
     {

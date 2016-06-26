@@ -35,7 +35,7 @@ using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 
-namespace Universe.Modules.GLobalEnvironment
+namespace Universe.Modules.World.GLobalEnvironment
 {
     public class SunModule : ISunModule
     {

@@ -39,7 +39,7 @@ using Universe.Framework.SceneInfo;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Other;
 
-namespace Universe.Modules.ActivityDetectors
+namespace Universe.Modules.World.ActivityDetectors
 {
     public class ActivityDetector : INonSharedRegionModule
     {

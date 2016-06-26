@@ -31,7 +31,7 @@ using System.IO;
 
 using Universe.Framework.Modules;
 
-namespace Universe.Modules.Terrain.FileLoaders
+namespace Universe.Modules.World.Terrain.FileLoaders
 {
     /// <summary>
     ///     A generic windows bitmap loader.

@@ -34,7 +34,7 @@ using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 
 
-namespace Universe.Modules.OnDemand
+namespace Universe.Modules.World.OnDemand
 {
     /// <summary>
     ///     Some notes on this module, this module just modifies when/where the startup code is executed

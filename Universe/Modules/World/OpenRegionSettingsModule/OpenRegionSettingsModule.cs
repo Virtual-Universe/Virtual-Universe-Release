@@ -41,7 +41,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Universe.Modules.OpenRegionSettingsModule
+namespace Universe.Modules.World.OpenRegionSettingsModule
 {
     public class OpenRegionSettingsModule : INonSharedRegionModule, IOpenRegionSettingsModule
     {

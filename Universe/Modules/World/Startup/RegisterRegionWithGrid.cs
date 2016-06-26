@@ -38,7 +38,7 @@ using Universe.Framework.Services;
 using Universe.Framework.Utilities;
 using GridRegion = Universe.Framework.Services.GridRegion;
 
-namespace Universe.Modules.Startup
+namespace Universe.Modules.World.Startup
 {
     public class RegisterRegionWithGridModule : ISharedRegionStartupModule, IGridRegisterModule
     {

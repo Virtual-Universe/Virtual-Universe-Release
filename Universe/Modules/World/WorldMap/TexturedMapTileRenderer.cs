@@ -37,7 +37,7 @@ using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Utilities;
 
-namespace Universe.Modules.WorldMap
+namespace Universe.Modules.World.WorldMap
 {
     // Hue, Saturation, Value; used for color-interpolation
     public struct HSV

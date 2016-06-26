@@ -37,7 +37,7 @@ using Universe.Framework.Modules;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Assets;
 
-namespace Universe.Modules.WorldMap.Warp3DMap
+namespace Universe.Modules.World.WorldMap.Warp3DMap
 {
     public static class TerrainSplat
     {

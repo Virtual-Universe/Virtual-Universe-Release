@@ -29,7 +29,7 @@
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 
-namespace Universe.Modules.Monitoring.Monitors
+namespace Universe.Modules.World.Monitoring.Monitors
 {
     public class PhysicsFrameMonitor : IPhysicsFrameMonitor
     {

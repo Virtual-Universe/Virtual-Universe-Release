@@ -34,7 +34,7 @@ using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 
-namespace Universe.Modules.Terrain.FileLoaders
+namespace Universe.Modules.World.Terrain.FileLoaders
 {
     /// <summary>
     ///     A virtual class designed to have methods overloaded,

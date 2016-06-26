@@ -31,7 +31,7 @@ using Universe.Framework.Modules;
 using Universe.Framework.Services.ClassHelpers.Assets;
 
 
-namespace Universe.Modules.Monitoring.Monitors
+namespace Universe.Modules.World.Monitoring.Monitors
 {
     public class AssetMonitor : IAssetMonitor
     {

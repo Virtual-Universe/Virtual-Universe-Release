@@ -44,7 +44,7 @@ using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Utilities;
 
-namespace Universe.Modules.Startup
+namespace Universe.Modules.World.Startup
 {
     public class Backup : ISharedRegionStartupModule
     {

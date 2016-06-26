@@ -27,7 +27,7 @@
 
 using System;
 
-namespace Universe.Modules.Terrain
+namespace Universe.Modules.World.Terrain
 {
     [Serializable]
     public class TerrainException : Exception

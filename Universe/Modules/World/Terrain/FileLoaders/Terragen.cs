@@ -32,7 +32,7 @@ using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Utilities;
 
-namespace Universe.Modules.Terrain.FileLoaders
+namespace Universe.Modules.World.Terrain.FileLoaders
 {
     /// <summary>
     ///     Terragen File Format Loader

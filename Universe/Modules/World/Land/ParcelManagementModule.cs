@@ -49,7 +49,7 @@ using Universe.Framework.Utilities;
 
 using GridRegion = Universe.Framework.Services.GridRegion;
 
-namespace Universe.Modules.Land
+namespace Universe.Modules.World.Land
 {
     public class ParcelManagementModule : INonSharedRegionModule, IParcelManagementModule
     {

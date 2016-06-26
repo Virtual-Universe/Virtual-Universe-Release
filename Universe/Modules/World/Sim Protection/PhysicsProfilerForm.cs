@@ -37,7 +37,7 @@ using Universe.Framework.Utilities;
 using Universe.Modules.SimProtection;
 using Timer = System.Timers.Timer;
 
-namespace Universe.Modules
+namespace Universe.Modules.World
 {
     public partial class PhysicsProfilerForm : Form
     {

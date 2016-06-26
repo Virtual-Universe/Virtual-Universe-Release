@@ -30,7 +30,7 @@ using Universe.Framework.SceneInfo;
 using Nini.Config;
 using System;
 
-namespace Universe.Modules.World.ServerSettingsModule
+namespace Universe.Modules.World.World.ServerSettingsModule
 {
     public class PhysicsServerSettingsModule : INonSharedRegionModule
     {

@@ -39,7 +39,7 @@ using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
 
-namespace Universe.Modules.Land
+namespace Universe.Modules.World.Land
 {
     /// <summary>
     ///     Keeps track of a specific piece of land's information

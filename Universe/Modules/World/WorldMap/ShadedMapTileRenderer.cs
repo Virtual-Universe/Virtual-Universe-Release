@@ -33,7 +33,7 @@ using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 
-namespace Universe.Modules.WorldMap
+namespace Universe.Modules.World.WorldMap
 {
     public class ShadedMapTileRenderer : IMapTileTerrainRenderer
     {

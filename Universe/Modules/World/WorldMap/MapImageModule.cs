@@ -42,7 +42,7 @@ using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Utilities;
 
-namespace Universe.Modules.WorldMap
+namespace Universe.Modules.World.WorldMap
 {
     public enum DrawRoutine
     {

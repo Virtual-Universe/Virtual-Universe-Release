@@ -43,7 +43,7 @@ using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Services.ClassHelpers.Inventory;
 using Universe.Framework.Utilities;
 
-namespace Universe.Modules.InventoryAccess
+namespace Universe.Modules.World.InventoryAccess
 {
     public class BasicInventoryAccessModule : INonSharedRegionModule, IInventoryAccessModule
     {

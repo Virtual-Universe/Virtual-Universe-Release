@@ -39,7 +39,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace Universe.Modules
+namespace Universe.Modules.World
 {
     public class ServerSettingsModule : INonSharedRegionModule, IServerSettings
     {

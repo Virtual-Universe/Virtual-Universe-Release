@@ -29,7 +29,7 @@ using System.IO;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 
-namespace Universe.Modules.Terrain
+namespace Universe.Modules.World.Terrain
 {
     public interface ITerrainLoader
     {

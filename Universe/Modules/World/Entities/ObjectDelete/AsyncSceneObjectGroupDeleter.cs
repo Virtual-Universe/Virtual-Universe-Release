@@ -39,7 +39,7 @@ using Universe.Framework.SceneInfo;
 using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Utilities;
 
-namespace Universe.Modules.Entities.ObjectDelete
+namespace Universe.Modules.World.Entities.ObjectDelete
 {
     public class DeleteToInventoryHolder
     {

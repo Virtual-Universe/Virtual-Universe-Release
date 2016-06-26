@@ -29,7 +29,7 @@ using OpenMetaverse;
 using Universe.Framework.Modules;
 
 
-namespace Universe.Modules.Terrain
+namespace Universe.Modules.World.Terrain
 {
     public interface ITerrainPaintableEffect
     {

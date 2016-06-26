@@ -35,7 +35,7 @@ using Universe.Framework.SceneInfo;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
 
-namespace Universe.Modules.Estate
+namespace Universe.Modules.World.Estate
 {
     /// <summary>
     ///     Basically a provision to allow user configuration of the system Estate Owner 'name and Estate' details

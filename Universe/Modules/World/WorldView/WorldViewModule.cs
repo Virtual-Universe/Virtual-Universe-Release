@@ -38,7 +38,7 @@ using Universe.Framework.SceneInfo;
 using Universe.Framework.Servers.HttpServer.Interfaces;
 using Universe.Framework.Utilities;
 
-namespace Universe.Modules.WorldView
+namespace Universe.Modules.World.WorldView
 {
     public class WorldViewModule : INonSharedRegionModule
     {

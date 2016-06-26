@@ -43,7 +43,7 @@ using Universe.Modules.Terrain.FileLoaders;
 using Universe.Modules.Terrain.FloodBrushes;
 using Universe.Modules.Terrain.PaintBrushes;
 
-namespace Universe.Modules.Terrain
+namespace Universe.Modules.World.Terrain
 {
     public class TerrainModule : INonSharedRegionModule, ITerrainModule
     {

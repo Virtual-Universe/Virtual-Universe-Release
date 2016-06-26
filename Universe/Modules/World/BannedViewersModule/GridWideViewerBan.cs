@@ -34,7 +34,7 @@ using Universe.Framework.Modules;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
 
-namespace Universe.Modules.Ban
+namespace Universe.Modules.World.Ban
 {
     public class GridWideViewerBan : IService
     {

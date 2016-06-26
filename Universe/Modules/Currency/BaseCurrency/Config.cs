@@ -25,7 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -36,7 +35,7 @@ using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.Servers;
 
-namespace Universe.Modules.Currency
+namespace Universe.Modules.Currency.BaseCurrency
 {
     public class BaseCurrencyConfig : IDataTransferable
     {

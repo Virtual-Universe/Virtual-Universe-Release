@@ -39,7 +39,7 @@ using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Utilities;
 
-namespace Universe.Modules.Restart
+namespace Universe.Modules.World.Restart
 {
     public class RestartModule : INonSharedRegionModule, IRestartModule
     {

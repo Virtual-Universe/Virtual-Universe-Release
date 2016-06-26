@@ -35,7 +35,7 @@ using Nini.Config;
 using OpenMetaverse;
 using System;
 
-namespace Universe.Modules.Vegetation
+namespace Universe.Modules.World.Vegetation
 {
     public class VegetationModule : INonSharedRegionModule, IVegetationModule
     {

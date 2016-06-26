@@ -43,7 +43,7 @@ using Universe.Framework.Services.ClassHelpers.Other;
 using Universe.Framework.Utilities;
 using GridRegion = Universe.Framework.Services.GridRegion;
 
-namespace Universe.Modules.EntityTransfer
+namespace Universe.Modules.World.EntityTransfer
 {
     public class EntityTransferModule : INonSharedRegionModule, IEntityTransferModule
     {

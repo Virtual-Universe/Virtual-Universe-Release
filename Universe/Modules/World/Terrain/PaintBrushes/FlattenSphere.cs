@@ -31,7 +31,7 @@ using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 
 
-namespace Universe.Modules.Terrain.PaintBrushes
+namespace Universe.Modules.World.Terrain.PaintBrushes
 {
     public class FlattenSphere : ITerrainPaintableEffect
     {

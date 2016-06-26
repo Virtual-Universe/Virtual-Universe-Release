@@ -47,7 +47,7 @@ using Universe.Modules.WorldMap.Warp3DMap;
 using RegionSettings = Universe.Framework.SceneInfo.RegionSettings;
 using WarpRenderer = Warp3Dw.Warp3D;
 
-namespace Universe.Modules.WorldMap
+namespace Universe.Modules.World.WorldMap
 {
     public class WarpTileRenderer : IMapTileTerrainRenderer
     {

@@ -37,7 +37,7 @@ using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 
 
-namespace Universe.Modules.PhysicsState
+namespace Universe.Modules.World.PhysicsState
 {
     public class PhysicsStateModule : INonSharedRegionModule, IPhysicsStateModule
     {

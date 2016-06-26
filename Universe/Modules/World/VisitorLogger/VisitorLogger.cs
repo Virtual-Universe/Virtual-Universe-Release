@@ -36,7 +36,7 @@ using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 
 
-namespace Universe.Modules.VisitorLogger
+namespace Universe.Modules.World.VisitorLogger
 {
     /// <summary>
     ///     This module logs all visitors to the sim to a specified file

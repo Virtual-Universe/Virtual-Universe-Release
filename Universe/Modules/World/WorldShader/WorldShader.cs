@@ -40,7 +40,7 @@ using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Utilities;
 
 
-namespace Universe.Modules.WorldShader
+namespace Universe.Modules.World.WorldShader
 {
     public class WorldShader : INonSharedRegionModule
     {

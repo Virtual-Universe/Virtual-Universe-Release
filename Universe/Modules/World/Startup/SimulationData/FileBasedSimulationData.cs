@@ -41,7 +41,7 @@ using Universe.Framework.Utilities;
 using Universe.Region;
 using Timer = System.Timers.Timer;
 
-namespace Universe.Modules
+namespace Universe.Modules.World
 {
     /// <summary>
     ///     FileBased DataStore, do not store anything in any databases, instead save .sim files for it

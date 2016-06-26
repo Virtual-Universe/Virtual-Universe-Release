@@ -31,7 +31,7 @@ using System.Collections.Generic;
 using Universe.DataManager.Migration;
 using Universe.Framework.Utilities;
 
-namespace Universe.Modules.Ban
+namespace Universe.Modules.World.Ban
 {
     public class PresenceInfoMigrator_2 : Migrator
     {

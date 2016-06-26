@@ -41,7 +41,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Universe.Modules
+namespace Universe.Modules.World
 {
     public class EnvironmentSettingsModule : IEnvironmentSettingsModule, INonSharedRegionModule
     {

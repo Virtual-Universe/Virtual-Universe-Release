@@ -37,7 +37,7 @@ using Universe.Framework.SceneInfo;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
 
-namespace Universe.Modules.Currency
+namespace Universe.Modules.Currency.BaseCurrency
 {
     public class BaseCurrencyServiceModule : IMoneyModule, IService
     {
@@ -180,7 +180,6 @@ namespace Universe.Modules.Currency
                     "show user purchases",
                     "Display user purchases for a period.",
                     HandleShowPurchases, false, true);
-
             }
         }
 

@@ -52,7 +52,7 @@ using Universe.Modules.Monitoring.Monitors;
 using ThreadState = System.Diagnostics.ThreadState;
 using Timer = System.Timers.Timer;
 
-namespace Universe.Modules.Monitoring
+namespace Universe.Modules.World.Monitoring
 {
     public class MonitorModule : IApplicationPlugin, IMonitorModule
     {

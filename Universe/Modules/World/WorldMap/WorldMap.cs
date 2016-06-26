@@ -48,7 +48,7 @@ using Universe.Framework.Utilities;
 using GridRegion = Universe.Framework.Services.GridRegion;
 using RegionFlags = Universe.Framework.Services.RegionFlags;
 
-namespace Universe.Modules.WorldMap
+namespace Universe.Modules.World.WorldMap
 {
     public class WorldMapModule : INonSharedRegionModule, IWorldMapModule
     {

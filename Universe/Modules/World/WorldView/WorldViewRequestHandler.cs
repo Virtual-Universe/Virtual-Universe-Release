@@ -33,7 +33,7 @@ using Universe.Framework.Servers.HttpServer;
 using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.ConsoleFramework;
 
-namespace Universe.Modules.WorldView
+namespace Universe.Modules.World.WorldView
 {
     public class WorldViewRequestHandler : BaseRequestHandler
     {

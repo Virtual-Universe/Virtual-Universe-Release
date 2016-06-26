@@ -33,7 +33,7 @@ using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 
-namespace Universe.Modules.SimProtection
+namespace Universe.Modules.World.SimProtection
 {
     /// <summary>
     ///     This module helps keep the sim running when it begins to slow down, or if it freezes, restarts it

@@ -42,7 +42,7 @@ using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Servers.HttpServer.Interfaces;
 using Universe.Framework.Utilities;
 
-namespace Universe.Modules.Auction
+namespace Universe.Modules.World.Auction
 {
     public class AuctionModule : IAuctionModule, INonSharedRegionModule
     {

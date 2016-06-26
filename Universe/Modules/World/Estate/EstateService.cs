@@ -44,7 +44,7 @@ using Universe.Framework.Services.ClassHelpers.Profile;
 using Universe.Framework.Utilities;
 using RegionFlags = Universe.Framework.Services.RegionFlags;
 
-namespace Universe.Modules.Estate
+namespace Universe.Modules.World.Estate
 {
     public class EstateSettingsModule : ISharedRegionStartupModule
     {

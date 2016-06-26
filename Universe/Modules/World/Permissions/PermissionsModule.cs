@@ -41,7 +41,7 @@ using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Inventory;
 
-namespace Universe.Modules.Permissions
+namespace Universe.Modules.World.Permissions
 {
     public class PermissionsModule : INonSharedRegionModule, IPermissionsModule
     {

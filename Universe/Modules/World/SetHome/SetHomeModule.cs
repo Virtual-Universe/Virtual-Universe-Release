@@ -42,7 +42,7 @@ using System;
 using System.IO;
 using System.Linq;
 
-namespace Universe.Modules.SetHome
+namespace Universe.Modules.World.SetHome
 {
     public class SetHomeModule : INonSharedRegionModule
     {

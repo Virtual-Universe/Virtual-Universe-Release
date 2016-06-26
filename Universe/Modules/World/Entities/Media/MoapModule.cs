@@ -44,7 +44,7 @@ using Universe.Framework.Servers.HttpServer.Interfaces;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
 
-namespace Universe.Modules.Entities.Media
+namespace Universe.Modules.World.Entities.Media
 {
     public class MoapModule : INonSharedRegionModule, IMoapModule
     {

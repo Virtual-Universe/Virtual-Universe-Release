@@ -34,7 +34,7 @@ using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 
-namespace Universe.Modules.Monitoring
+namespace Universe.Modules.World.Monitoring
 {
     public class BinaryLoggingModule : INonSharedRegionModule
     {

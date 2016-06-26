@@ -38,7 +38,7 @@ using Universe.Framework.Serialization;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
 
-namespace Universe.Modules.Estate
+namespace Universe.Modules.World.Estate
 {
     public class EstateInitializer : ISharedRegionStartupModule, IUniverseBackupModule
     {

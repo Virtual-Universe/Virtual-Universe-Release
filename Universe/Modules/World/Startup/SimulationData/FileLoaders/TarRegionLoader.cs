@@ -37,7 +37,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 
-namespace Universe.Modules
+namespace Universe.Modules.World
 {
     public class TarRegionDataLoader : IRegionDataLoader
     {

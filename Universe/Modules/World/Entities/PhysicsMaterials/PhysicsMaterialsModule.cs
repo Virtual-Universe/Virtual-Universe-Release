@@ -40,7 +40,7 @@ using Universe.Framework.Servers.HttpServer.Interfaces;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
 
-namespace Universe.Modules.Entities.PhysicsMaterials
+namespace Universe.Modules.World.Entities.PhysicsMaterials
 {
     public class PhysicsMaterialsModule : INonSharedRegionModule
     {

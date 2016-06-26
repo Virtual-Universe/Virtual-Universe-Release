@@ -40,7 +40,7 @@ using Universe.Framework.SceneInfo;
 using Universe.Framework.Utilities;
 using Timer = System.Timers.Timer;
 
-namespace Universe.Modules.SimProtection
+namespace Universe.Modules.World.SimProtection
 {
     public class PhysicsMonitor : INonSharedRegionModule, IPhysicsMonitor
     {

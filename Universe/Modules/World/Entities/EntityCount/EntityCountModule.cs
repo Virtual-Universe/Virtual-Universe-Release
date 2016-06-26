@@ -35,7 +35,7 @@ using Universe.Framework.SceneInfo;
 using Universe.Framework.SceneInfo.Entities;
 using GridRegion = Universe.Framework.Services.GridRegion;
 
-namespace Universe.Modules.Entities.EntityCount
+namespace Universe.Modules.World.Entities.EntityCount
 {
     public class EntityCountModule : INonSharedRegionModule, IEntityCountModule
     {

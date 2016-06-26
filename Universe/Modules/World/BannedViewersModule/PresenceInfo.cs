@@ -30,7 +30,7 @@ using System.Collections.Generic;
 using OpenMetaverse;
 using Universe.Framework.Services;
 
-namespace Universe.Modules.Ban
+namespace Universe.Modules.World.Ban
 {
     public class PresenceInfo
     {

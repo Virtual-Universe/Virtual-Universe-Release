@@ -29,7 +29,7 @@ using System;
 
 using Universe.Framework.Modules;
 
-namespace Universe.Modules.Monitoring.Monitors
+namespace Universe.Modules.World.Monitoring.Monitors
 {
     public class LoginMonitor : ILoginMonitor
     {
