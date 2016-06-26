@@ -1839,6 +1839,11 @@ namespace Universe.Modules.Land
             land_update.MediaLoop = properties.MediaLoop;
             land_update.ObscureMusic = properties.ObscureMusic;
             land_update.ObscureMedia = properties.ObscureMedia;
+            // June 26, 2016 Added for LibOMV update 1.0.2.2
+            land_update.SeeAVs = properties.SeeAVs;
+            land_update.AnyAVSounds = properties.AnyAVSounds;
+            land_update.GroupAVSounds = properties.GroupAVSounds;
+            // End
             ILandObject land = GetLandObject (parcelID);
 
             if (land != null)
@@ -1889,11 +1894,13 @@ namespace Universe.Modules.Land
                         if (info != null)
                             regionID = info.RegionID;
                     }
+
                     if (regionID == m_scene.RegionInfo.RegionID) {
                         ILandObject parcel = GetLandObject (x, y);
                         if (parcel != null)
                             parcelID = parcel.LandData.GlobalID;
                     }
+
                     if (parcelID == UUID.Zero) {
                         IDirectoryServiceConnector DSC = Framework.Utilities.DataManager.RequestPlugin<IDirectoryServiceConnector> ();
                         if (DSC != null) {

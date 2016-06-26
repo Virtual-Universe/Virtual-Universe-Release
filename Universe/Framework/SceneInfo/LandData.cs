@@ -97,6 +97,11 @@ namespace Universe.Framework.SceneInfo
         Vector3 _userLocation;
         Vector3 _userLookAt;
         AuctionInfo m_AuctionInfo = new AuctionInfo ();
+        // June 26, 2016 Added for LibOMV update 1.0.2.2
+        bool _seeAVs;
+        bool _anyAVSounds;
+        bool _groupAVSounds;
+        // End
 
         #region constructor
 
@@ -573,6 +578,27 @@ namespace Universe.Framework.SceneInfo
             set { _private = value; }
         }
 
+        [ProtoMember(50)]
+        public bool SeeAVS
+        {
+        	get { return _seeAVs; }
+        	set { _seeAVs = value; }
+        }
+
+        [ProtoMember(51)]
+        public bool AnyAVSounds
+        {
+        	get { return _anyAVSounds; }
+        	set { _anyAVSounds = value; }
+        }
+
+        [ProtoMember(52)]
+        public bool GroupAVSounds
+        {
+        	get { return _groupAVSounds; }
+        	set { _groupAVSounds = value; }
+        }
+
         #endregion
 
         /// <summary>
@@ -621,6 +647,11 @@ namespace Universe.Framework.SceneInfo
                 _MediaLoopSet = _MediaLoopSet,
                 _obscureMusic = _obscureMusic,
                 _obscureMedia = _obscureMedia,
+                // June 26, 2016 LibOMV update 1.0.2.2
+                _seeAVs = _seeAVs,
+                _anyAVSounds = _anyAVSounds,
+                _groupAVSounds = _groupAVSounds,
+                // End
                 _regionID = _regionID,
                 _regionHandle = _regionHandle,
                 _Maturity = _Maturity,
@@ -672,6 +703,11 @@ namespace Universe.Framework.SceneInfo
             map ["MediaType"] = OSD.FromString (MediaType);
             map ["ObscureMedia"] = OSD.FromBoolean (ObscureMedia);
             map ["ObscureMusic"] = OSD.FromBoolean (ObscureMusic);
+            // June 26, 2016 LibOMV update 1.0.2.2
+            map["SeeAVs"] = OSD.FromBoolean(SeeAVS);
+            map["AnyAVSounds"] = OSD.FromBoolean(AnyAVSounds);
+            map["GroupAVSounds"] = OSD.FromBoolean(GroupAVSounds);
+            // End
             map ["SnapshotID"] = OSD.FromUUID (SnapshotID);
             map ["MediaAutoScale"] = OSD.FromInteger (MediaAutoScale);
             map ["MediaLoopSet"] = OSD.FromReal (MediaLoopSet);
@@ -733,6 +769,11 @@ namespace Universe.Framework.SceneInfo
             MediaType = map["MediaType"].AsString();
             ObscureMedia = map["ObscureMedia"].AsBoolean();
             ObscureMusic = map["ObscureMusic"].AsBoolean();
+            // June 26, 2016 LibOMV update 1.0.2.2
+            SeeAVS = map["SeeAVs"].AsBoolean();
+            AnyAVSounds = map["AnyAVSounds"].AsBoolean();
+            GroupAVSounds = map["GroupAVSounds"].AsBoolean();
+            // End
             MediaLoopSet = (float) map["MediaLoopSet"].AsReal();
             MediaAutoScale = (byte) map["MediaAutoScale"].AsInteger();
             MediaURL = map["MediaURL"].AsString();
