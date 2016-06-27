@@ -53,13 +53,11 @@ namespace Universe.DataManager.MySQL
             MySqlConnection c = new MySqlConnection (connectionString);
             int subStrA = connectionString.IndexOf ("Database=", StringComparison.Ordinal);
             int subStrB = connectionString.IndexOf (";", subStrA, StringComparison.Ordinal);
-            string noDatabaseConnector = m_connectionString.Substring (0, subStrA) +
-                                         m_connectionString.Substring (subStrB + 1);
+            string noDatabaseConnector = m_connectionString.Substring (0, subStrA) + m_connectionString.Substring (subStrB + 1);
 
         retry:
             try {
-                ExecuteNonQuery (noDatabaseConnector, "create schema IF NOT EXISTS " + c.Database,
-                                new Dictionary<string, object> (), false);
+                ExecuteNonQuery (noDatabaseConnector, "create schema IF NOT EXISTS " + c.Database, new Dictionary<string, object> (), false);
             } catch {
                 MainConsole.Instance.Error (
                     "[MySQL]: We cannot connect to the MySQL instance you have provided. Please make sure it is online, and then press enter to try again.");
@@ -77,29 +75,19 @@ namespace Universe.DataManager.MySQL
                 migrationManager.ExecuteOperation ();
             } catch {
                 MainConsole.Instance.Error ("[MySQL]: Unable to determine migration requirements.");
-
             }
         }
 
         public void CloseDatabase(MySqlConnection connection)
         {
-            //Interlocked.Decrement (ref m_locked);
-            //connection.Close();
-            //connection.Dispose();
         }
 
         public override void CloseDatabase(DataReaderConnection connection)
         {
-            if (connection != null) {
-                //if (connection.DataReader != null)
-                //    connection.DataReader.Close ();
-                    
+            if (connection != null)
+            {   
                 connection.Dispose ();
             }
-
-            //Interlocked.Decrement (ref m_locked);
-            //m_connection.Close();
-            //m_connection.Dispose();
         }
 
         #endregion
@@ -117,6 +105,7 @@ namespace Universe.DataManager.MySQL
                     param[i] = new MySqlParameter(p.Key, p.Value);
                     i++;
                 }
+
                 return MySqlHelper.ExecuteReader(m_connectionString, sql, param);
             }
             catch (Exception e)
@@ -147,6 +136,7 @@ namespace Universe.DataManager.MySQL
                     param[i] = new MySqlParameter(p.Key, p.Value);
                     i++;
                 }
+
                 MySqlHelper.ExecuteNonQuery(connStr, sql, param);
             }
             catch (Exception e)
@@ -185,6 +175,7 @@ namespace Universe.DataManager.MySQL
                             retVal.Add(reader.GetString(i));
                         }
                     }
+
                     return retVal;
                 }
             }
@@ -212,22 +203,19 @@ namespace Universe.DataManager.MySQL
             return Query(query, new Dictionary<string, object>());
         }
 
-        public override List<string> Query(string[] wantedValue, string table, QueryFilter queryFilter,
-                                           Dictionary<string, bool> sort, uint? start, uint? count)
+        public override List<string> Query(string[] wantedValue, string table, QueryFilter queryFilter, Dictionary<string, bool> sort, uint? start, uint? count)
         {
             string query = string.Format("SELECT {0} FROM {1}", string.Join(", ", wantedValue), table);
             return Query2(query, queryFilter, sort, start, count);
         }
 
-        public override List<string> Query(string[] wantedValue, QueryTables tables, QueryFilter queryFilter,
-                                           Dictionary<string, bool> sort, uint? start, uint? count)
+        public override List<string> Query(string[] wantedValue, QueryTables tables, QueryFilter queryFilter, Dictionary<string, bool> sort, uint? start, uint? count)
         {
             string query = string.Format("SELECT {0} FROM {1}", string.Join(", ", wantedValue), tables.ToSQL());
             return Query2(query, queryFilter, sort, start, count);
         }
 
-        List<string> Query2(string sqll, QueryFilter queryFilter, Dictionary<string, bool> sort, uint? start,
-                                    uint? count)
+        List<string> Query2(string sqll, QueryFilter queryFilter, Dictionary<string, bool> sort, uint? start, uint? count)
         {
             string query = sqll;
             Dictionary<string, object> ps = new Dictionary<string, object>();
@@ -246,6 +234,7 @@ namespace Universe.DataManager.MySQL
                 {
                     parts.Add(string.Format("`{0}` {1}", sortOrder.Key, sortOrder.Value ? "ASC" : "DESC"));
                 }
+
                 query += " ORDER BY " + string.Join(", ", parts.ToArray());
             }
 
@@ -272,6 +261,7 @@ namespace Universe.DataManager.MySQL
                             retVal.Add(r == typeof (DBNull) ? null : reader.GetString(i));
                         }
                     }
+
                     return retVal;
                 }
             }
@@ -282,19 +272,13 @@ namespace Universe.DataManager.MySQL
             }
         }
 
-        /*public override Dictionary<string, List<string>> QueryNames(string[] wantedValue, string table, QueryFilter queryFilter, Dictionary<string, bool> sort, uint? start, uint? count)
-        {
-        }*/
-
-        public override Dictionary<string, List<string>> QueryNames(string[] keyRow, object[] keyValue, string table,
-                                                                    string wantedValue)
+        public override Dictionary<string, List<string>> QueryNames(string[] keyRow, object[] keyValue, string table, string wantedValue)
         {
             string query = string.Format("select {0} from {1} where ", wantedValue, table);
             return QueryNames2(keyRow, keyValue, query);
         }
 
-        public override Dictionary<string, List<string>> QueryNames(string[] keyRow, object[] keyValue,
-                                                                    QueryTables tables, string wantedValue)
+        public override Dictionary<string, List<string>> QueryNames(string[] keyRow, object[] keyValue, QueryTables tables, string wantedValue)
         {
             string query = string.Format("SELECT {0} FROM {1} where ", wantedValue, tables.ToSQL());
             return QueryNames2(keyRow, keyValue, query);
@@ -312,6 +296,7 @@ namespace Universe.DataManager.MySQL
                 ps["?" + keyRow[i]] = value;
                 i++;
             }
+
             query = query.Remove(query.Length - 5);
 
             try
@@ -323,10 +308,10 @@ namespace Universe.DataManager.MySQL
                         for (i = 0; i < reader.FieldCount; i++)
                         {
                             Type r = reader[i].GetType();
-                            AddValueToList(ref retVal, reader.GetName(i),
-                                           r == typeof (DBNull) ? null : reader[i].ToString());
+                            AddValueToList(ref retVal, reader.GetName(i), r == typeof (DBNull) ? null : reader[i].ToString());
                         }
                     }
+
                     return retVal;
                 }
             }
@@ -351,9 +336,7 @@ namespace Universe.DataManager.MySQL
 
         #region Update
 
-        public override bool Update(string table, Dictionary<string, object> values,
-                                    Dictionary<string, int> incrementValue, QueryFilter queryFilter, uint? start,
-                                    uint? count)
+        public override bool Update(string table, Dictionary<string, object> values, Dictionary<string, int> incrementValue, QueryFilter queryFilter, uint? start, uint? count)
         {
             if ((values == null || values.Count < 1) && (incrementValue == null || incrementValue.Count < 1))
             {
@@ -409,6 +392,7 @@ namespace Universe.DataManager.MySQL
             {
                 MainConsole.Instance.Error("[MySQL]: Update(" + query + "), " + e);
             }
+
             return true;
         }
 
@@ -428,9 +412,11 @@ namespace Universe.DataManager.MySQL
                     parameters[Util.ConvertDecString(i)] = v;
                     query += "?" + Util.ConvertDecString(i++) + ",";
                 }
+
                 query = query.Remove(query.Length - 1);
                 query += " union all select ";
             }
+
             query = query.Remove(query.Length - (" union all select ").Length);
 
             try
@@ -441,6 +427,7 @@ namespace Universe.DataManager.MySQL
             {
                 MainConsole.Instance.Error("[MySQL]: Insert(" + query + "), " + e);
             }
+
             return true;
         }
 
@@ -454,6 +441,7 @@ namespace Universe.DataManager.MySQL
                 parameters[Util.ConvertDecString(i)] = o;
                 query += "?" + Util.ConvertDecString(i++) + ",";
             }
+
             query = query.Remove(query.Length - 1);
             query += ")";
 
@@ -465,13 +453,13 @@ namespace Universe.DataManager.MySQL
             {
                 MainConsole.Instance.Error("[MySQL]: Insert(" + query + "), " + e);
             }
+
             return true;
         }
 
         bool InsertOrReplace(string table, Dictionary<string, object> row, bool insert)
         {
-            string query = (insert ? "INSERT" : "REPLACE") + " INTO " + table + " (" +
-                           string.Join(", ", row.Keys.ToArray()) + ")";
+            string query = (insert ? "INSERT" : "REPLACE") + " INTO " + table + " (" + string.Join(", ", row.Keys.ToArray()) + ")";
             Dictionary<string, object> ps = new Dictionary<string, object>();
             foreach (KeyValuePair<string, object> field in row)
             {
@@ -486,6 +474,7 @@ namespace Universe.DataManager.MySQL
                                   .Replace("*", "multiply");
                 ps[key] = field.Value;
             }
+
             query += " VALUES( " + string.Join(", ", ps.Keys.ToArray()) + " )";
 
             try
@@ -494,9 +483,9 @@ namespace Universe.DataManager.MySQL
             }
             catch (Exception e)
             {
-                MainConsole.Instance.Error("[MySQL]: " + (insert ? "Insert" : "Replace") + "(" + query + "), " +
-                                           e);
+                MainConsole.Instance.Error("[MySQL]: " + (insert ? "Insert" : "Replace") + "(" + query + "), " + e);
             }
+
             return true;
         }
 
@@ -515,6 +504,7 @@ namespace Universe.DataManager.MySQL
                 param["?" + Util.ConvertDecString(i)] = o;
                 query += "?" + Util.ConvertDecString(i++) + ",";
             }
+
             param["?update"] = updateValue;
             query = query.Remove(query.Length - 1);
             query += string.Format(") ON DUPLICATE KEY UPDATE {0} = ?update", updateKey);
@@ -527,6 +517,7 @@ namespace Universe.DataManager.MySQL
                 MainConsole.Instance.Error("[MySQL]: Insert(" + query + "), " + e);
                 return false;
             }
+
             return true;
         }
 
@@ -547,6 +538,7 @@ namespace Universe.DataManager.MySQL
             {
                 MainConsole.Instance.Error("[MySQL]: INSERT .. SELECT (" + query + "), " + e);
             }
+
             return true;
         }
 
@@ -574,8 +566,7 @@ namespace Universe.DataManager.MySQL
         public override bool Delete(string table, QueryFilter queryFilter)
         {
             Dictionary<string, object> ps = new Dictionary<string, object>();
-            string query = "DELETE FROM " + table +
-                           (queryFilter != null ? (" WHERE " + queryFilter.ToSQL('?', out ps)) : "");
+            string query = "DELETE FROM " + table + (queryFilter != null ? (" WHERE " + queryFilter.ToSQL('?', out ps)) : "");
 
             try
             {
@@ -586,6 +577,7 @@ namespace Universe.DataManager.MySQL
                 MainConsole.Instance.Error("[MySQL]: Delete(" + query + "), " + e);
                 return false;
             }
+
             return true;
         }
 
@@ -623,6 +615,7 @@ namespace Universe.DataManager.MySQL
             {
                 columnDefinition.Add("`" + column.Name + "` " + GetColumnTypeStringSymbol(column.Type));
             }
+
             if (primary != null && primary.Fields.Length > 0)
             {
                 columnDefinition.Add("PRIMARY KEY (`" + string.Join("`, `", primary.Fields) + "`)");
@@ -649,7 +642,6 @@ namespace Universe.DataManager.MySQL
                     indicesQuery.Add(string.Format("{0}( {1} )", type, "`" + string.Join("`, `", index.Fields) + "`"));
                 else
                     indicesQuery.Add(string.Format("{0}( {1} )", type, "`" + string.Join("`, `", index.Fields) + "`"+"("+index.IndexSize+")"));
-
             }
 
             string query = string.Format("create table " + table + " ( {0} {1}) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci",
@@ -668,8 +660,7 @@ namespace Universe.DataManager.MySQL
             }
         }
 
-        public override void UpdateTable(string table, ColumnDefinition[] columns, IndexDefinition[] indexDefinitions,
-                                         Dictionary<string, string> renameColumns)
+        public override void UpdateTable(string table, ColumnDefinition[] columns, IndexDefinition[] indexDefinitions, Dictionary<string, string> renameColumns)
         {
             table = table.ToLower();
             if (!TableExists(table))
@@ -682,8 +673,7 @@ namespace Universe.DataManager.MySQL
             Dictionary<string, ColumnDefinition> removedColumns = new Dictionary<string, ColumnDefinition>();
             Dictionary<string, ColumnDefinition> modifiedColumns = new Dictionary<string, ColumnDefinition>();
 
-            Dictionary<string, ColumnDefinition> addedColumns =
-                columns.Where(column => !oldColumns.Contains(column)).ToDictionary(column => column.Name.ToLower());
+            Dictionary<string, ColumnDefinition> addedColumns = columns.Where(column => !oldColumns.Contains(column)).ToDictionary(column => column.Name.ToLower());
             foreach (ColumnDefinition column in oldColumns.Where(column => !columns.Contains(column)))
             {
                 if (addedColumns.ContainsKey(column.Name.ToLower()))
@@ -715,8 +705,7 @@ namespace Universe.DataManager.MySQL
                     ExecuteNonQuery(query, new Dictionary<string, object>());
                 }
                 foreach (
-                    string query in modifiedColumns.Values.Select(column => "modify column `" + column.Name + "` " +
-                                                                            GetColumnTypeStringSymbol(column.Type) + " ")
+                    string query in modifiedColumns.Values.Select(column => "modify column `" + column.Name + "` " + GetColumnTypeStringSymbol(column.Type) + " ")
                                                    .Select(
                                                        modifiedColumnsQuery =>
                                                        string.Format("alter table " + table + " " + modifiedColumnsQuery))
@@ -751,6 +740,7 @@ namespace Universe.DataManager.MySQL
                 oldIndexNames.Add(oldIndex.Key);
                 oldIndices.Add(oldIndex.Value);
             }
+
             int i = 0;
             foreach (IndexDefinition oldIndex in oldIndices)
             {
@@ -763,10 +753,12 @@ namespace Universe.DataManager.MySQL
                         break;
                     }
                 }
+
                 if (!found)
                 {
                     removeIndices.Add(oldIndexNames[i]);
                 }
+
                 ++i;
             }
 
@@ -781,6 +773,7 @@ namespace Universe.DataManager.MySQL
                         break;
                     }
                 }
+
                 if (!found)
                 {
                     newIndices.Add(newIndex);
@@ -789,9 +782,9 @@ namespace Universe.DataManager.MySQL
 
             foreach (string oldIndex in removeIndices)
             {
-                ExecuteNonQuery(string.Format("ALTER TABLE `{0}` DROP INDEX `{1}`", table, oldIndex),
-                                new Dictionary<string, object>());
+                ExecuteNonQuery(string.Format("ALTER TABLE `{0}` DROP INDEX `{1}`", table, oldIndex), new Dictionary<string, object>());
             }
+
             foreach (IndexDefinition newIndex in newIndices)
             {
                 ExecuteNonQuery(
@@ -988,8 +981,7 @@ namespace Universe.DataManager.MySQL
             newTableName = newTableName.ToLower();
             try
             {
-                ExecuteNonQuery(string.Format("RENAME TABLE {0} TO {1}", oldTableName, newTableName),
-                                new Dictionary<string, object>());
+                ExecuteNonQuery(string.Format("RENAME TABLE {0} TO {1}", oldTableName, newTableName), new Dictionary<string, object>());
             }
             catch (Exception e)
             {
@@ -998,8 +990,7 @@ namespace Universe.DataManager.MySQL
         }
 
         protected override void CopyAllDataBetweenMatchingTables(string sourceTableName, string destinationTableName,
-                                                                 ColumnDefinition[] columnDefinitions,
-                                                                 IndexDefinition[] indexDefinitions)
+                                                                 ColumnDefinition[] columnDefinitions, IndexDefinition[] indexDefinitions)
         {
             sourceTableName = sourceTableName.ToLower();
             destinationTableName = destinationTableName.ToLower();
@@ -1036,6 +1027,7 @@ namespace Universe.DataManager.MySQL
             {
                 MainConsole.Instance.ErrorFormat("[MySQL]: TableExists: {0}", e);
             }
+
             return retVal.Contains(table.ToLower());
         }
 
@@ -1068,6 +1060,7 @@ namespace Universe.DataManager.MySQL
                                  });
                 }
             }
+
             catch (Exception e)
             {
                 MainConsole.Instance.ErrorFormat("[MySQL]: ExtractColumnsFromTable: {0}", e);
@@ -1079,7 +1072,6 @@ namespace Universe.DataManager.MySQL
                     if (rdr != null)
                     {
                         rdr.Close();
-                        //rdr.Dispose ();
                     }
                 }
                 catch (Exception e)
@@ -1087,6 +1079,7 @@ namespace Universe.DataManager.MySQL
                     MainConsole.Instance.DebugFormat("[MySQL]: ExtractColumnsFromTable: {0}", e);
                 }
             }
+
             return defs;
         }
 
@@ -1112,6 +1105,7 @@ namespace Universe.DataManager.MySQL
                     {
                         indexLookup[index] = new Dictionary<uint, string>();
                     }
+
                     indexIsUnique[index] = unique;
                     indexLookup[index][sequence - 1] = name;
                 }
@@ -1137,7 +1131,6 @@ namespace Universe.DataManager.MySQL
 
             foreach (KeyValuePair<string, Dictionary<uint, string>> index in indexLookup)
             {
-                //index.Value.OrderBy(x => x.Key);
                 defs[index.Key] = new IndexDefinition
                                       {
                                           Fields = index.Value.Values.ToArray (),
