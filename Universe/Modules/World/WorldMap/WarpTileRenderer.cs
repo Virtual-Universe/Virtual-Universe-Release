@@ -43,7 +43,7 @@ using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Utilities;
-using Universe.Modules.WorldMap.Warp3DMap;
+using Universe.Modules.World.WorldMap.Warp3DMap;
 using RegionSettings = Universe.Framework.SceneInfo.RegionSettings;
 using WarpRenderer = Warp3Dw.Warp3D;
 

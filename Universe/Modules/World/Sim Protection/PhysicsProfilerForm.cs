@@ -34,10 +34,10 @@ using System.Windows.Forms;
 using OpenMetaverse;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Utilities;
-using Universe.Modules.SimProtection;
+using Universe.Modules.World.SimProtection;
 using Timer = System.Timers.Timer;
 
-namespace Universe.Modules.World
+namespace Universe.Modules.World.SimProtection
 {
     public partial class PhysicsProfilerForm : Form
     {

@@ -39,9 +39,9 @@ using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Utilities;
-using Universe.Modules.Terrain.FileLoaders;
-using Universe.Modules.Terrain.FloodBrushes;
-using Universe.Modules.Terrain.PaintBrushes;
+using Universe.Modules.World.Terrain.FileLoaders;
+using Universe.Modules.World.Terrain.FloodBrushes;
+using Universe.Modules.World.Terrain.PaintBrushes;
 
 namespace Universe.Modules.World.Terrain
 {

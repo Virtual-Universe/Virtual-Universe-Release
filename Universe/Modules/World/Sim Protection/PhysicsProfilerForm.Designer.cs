@@ -25,7 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace Universe.Modules.World
+namespace Universe.Modules.World.SimProtection
 {
     partial class PhysicsProfilerForm
     {

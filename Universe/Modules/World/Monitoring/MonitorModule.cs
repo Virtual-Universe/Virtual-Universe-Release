@@ -47,8 +47,8 @@ using Universe.Framework.Servers.HttpServer;
 using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
-using Universe.Modules.Monitoring.Alerts;
-using Universe.Modules.Monitoring.Monitors;
+using Universe.Modules.World.Monitoring.Alerts;
+using Universe.Modules.World.Monitoring.Monitors;
 using ThreadState = System.Diagnostics.ThreadState;
 using Timer = System.Timers.Timer;
 
