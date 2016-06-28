@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the Aurora-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -30,7 +30,7 @@ using System.Collections.Generic;
 using Universe.DataManager.Migration;
 using Universe.Framework.Utilities;
 
-namespace Base.Currency
+namespace Universe.DataManager.Migration.Migrators.Currency
 {
 	public class CurrencyMigrator_0 : Migrator
 	{
@@ -41,13 +41,12 @@ namespace Base.Currency
 
 			Schema = new List<SchemaDefinition> ();
 
-			// Currency table
-			AddSchema ("currency", ColDefs (
-				ColDef ("PrincipalID", ColumnTypes.String50),
+			AddSchema ("user_currency", ColDefs (
+				ColDef ("PrincipalID", ColumnTypes.UUID),
 				ColDef ("Amount", ColumnTypes.Integer30),
 				ColDef ("LandInUse", ColumnTypes.Integer30),
 				ColDef ("Tier", ColumnTypes.Integer30),
-				ColDef ("IsGroup", ColumnTypes.TinyInt1),
+				ColDef ("IsGroup", ColumnTypes.TinyInt1),            // this will be deprecated
 				new ColumnDefinition {
 					Name = "StipendsBalance",
 					Type = new ColumnTypeDef {
@@ -62,12 +61,12 @@ namespace Base.Currency
 				));
 
 			// Currency Transaction Logs
-			AddSchema ("currency_history", ColDefs (
-				ColDef ("TransactionID", ColumnTypes.String36),
+			AddSchema ("user_currency_history", ColDefs (
+				ColDef ("TransactionID", ColumnTypes.UUID),
 				ColDef ("Description", ColumnTypes.String128),
-				ColDef ("FromPrincipalID", ColumnTypes.String36),
+				ColDef ("FromPrincipalID", ColumnTypes.UUID),
 				ColDef ("FromName", ColumnTypes.String128),
-				ColDef ("ToPrincipalID", ColumnTypes.String36),
+				ColDef ("ToPrincipalID", ColumnTypes.UUID),
 				ColDef ("ToName", ColumnTypes.String128),
 				ColDef ("Amount", ColumnTypes.Integer30),
 				ColDef ("TransType", ColumnTypes.Integer11),
@@ -76,15 +75,15 @@ namespace Base.Currency
 				ColDef ("FromBalance", ColumnTypes.Integer30),
 				ColDef ("FromObjectName", ColumnTypes.String50),
 				ColDef ("ToObjectName", ColumnTypes.String50),
-				ColDef ("RegionID", ColumnTypes.Char36)),
+				ColDef ("RegionID", ColumnTypes.UUID)),
 				IndexDefs (
 					IndexDef (new string[1] { "TransactionID" }, IndexType.Primary)
 				));
 
-			// This is used for all purchases
-			AddSchema ("currency_purchased", ColDefs (
-				ColDef ("PurchaseID", ColumnTypes.String36),
-				ColDef ("PrincipalID", ColumnTypes.String36),
+			// user purchases
+			AddSchema ("user_purchased", ColDefs (
+				ColDef ("PurchaseID", ColumnTypes.UUID),
+				ColDef ("PrincipalID", ColumnTypes.UUID),
 				ColDef ("IP", ColumnTypes.String64),
 				ColDef ("Amount", ColumnTypes.Integer30),
 				ColDef ("RealAmount", ColumnTypes.Integer30),
@@ -92,6 +91,41 @@ namespace Base.Currency
 				ColDef ("Updated", ColumnTypes.Integer30)),
 				IndexDefs (
 					IndexDef (new string[1] { "PurchaseID" }, IndexType.Primary)
+				));
+
+			// Group currency
+			AddSchema ("group_currency", ColDefs (
+				ColDef ("GroupID", ColumnTypes.UUID),
+				ColDef ("Balance", ColumnTypes.Integer30),
+				ColDef ("GroupFee", ColumnTypes.Integer30),
+				ColDef ("LandFee", ColumnTypes.Integer30),
+				ColDef ("ObjectFee", ColumnTypes.Integer30),
+				ColDef ("ParcelDirectoryFee", ColumnTypes.Integer30),
+				ColDef ("TierCredits", ColumnTypes.Integer30),
+				ColDef ("TierDebits", ColumnTypes.Integer30)),
+
+				IndexDefs (
+					IndexDef (new string[1] { "GroupID" }, IndexType.Primary)
+				));
+
+			// Currency Transaction Logs
+			AddSchema ("group_currency_history", ColDefs (
+				ColDef ("TransactionID", ColumnTypes.UUID),
+				ColDef ("Description", ColumnTypes.String128),
+				ColDef ("GroupID", ColumnTypes.UUID),
+				ColDef ("GroupName", ColumnTypes.String128),
+				ColDef ("AgentID", ColumnTypes.UUID),
+				ColDef ("AgentName", ColumnTypes.String128),
+				ColDef ("Amount", ColumnTypes.Integer30),
+				ColDef ("TransType", ColumnTypes.Integer11),
+				ColDef ("Created", ColumnTypes.Integer30),
+				ColDef ("GroupBalance", ColumnTypes.Integer30),
+				ColDef ("AgentBalance", ColumnTypes.Integer30),
+				ColDef ("FromObjectName", ColumnTypes.String50),
+				ColDef ("ToObjectName", ColumnTypes.String50),
+				ColDef ("RegionID", ColumnTypes.UUID)),
+				IndexDefs (
+					IndexDef (new string[1] { "TransactionID" }, IndexType.Primary)
 				));
 		}
 
