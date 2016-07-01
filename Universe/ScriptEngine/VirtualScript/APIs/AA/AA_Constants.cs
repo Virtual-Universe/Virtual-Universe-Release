@@ -25,7 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 namespace Universe.ScriptEngine.VirtualScript.Runtime
 {
     public partial class ScriptBaseClass

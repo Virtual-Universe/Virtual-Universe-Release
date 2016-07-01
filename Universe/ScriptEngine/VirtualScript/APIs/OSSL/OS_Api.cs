@@ -2935,8 +2935,8 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             if (lease.CurrentState == LeaseState.Initial)
             {
                 lease.InitialLeaseTime = TimeSpan.FromMinutes(0);
-                //                lease.RenewOnCallTime = TimeSpan.FromSeconds(10.0);
-                //                lease.SponsorshipTimeout = TimeSpan.FromMinutes(1.0);
+                // lease.RenewOnCallTime = TimeSpan.FromSeconds(10.0);
+                // lease.SponsorshipTimeout = TimeSpan.FromMinutes(1.0);
             }
             return lease;
         }
@@ -3756,8 +3756,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                     touchArgs);
                 World.EventManager.TriggerObjectGrabbing(child.ParentEntity.RootChild, child, Vector3.Zero,
                     sp.ControllingClient, touchArgs);
-                World.EventManager.TriggerObjectDeGrab(child.ParentEntity.RootChild, child, sp.ControllingClient, touchArgs);
-                              
+                World.EventManager.TriggerObjectDeGrab(child.ParentEntity.RootChild, child, sp.ControllingClient, touchArgs);                             
             }
         }
     }

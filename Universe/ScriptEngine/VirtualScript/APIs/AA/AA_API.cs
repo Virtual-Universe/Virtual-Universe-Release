@@ -25,7 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -654,6 +653,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                     if (gr != null)
                         return gr.GroupName;
                 }
+
                 return string.Empty;
             }
 
@@ -716,6 +716,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                 // lease.RenewOnCallTime = TimeSpan.FromSeconds(10.0);
                 // lease.SponsorshipTimeout = TimeSpan.FromMinutes(1.0);
             }
+
             return lease;
         }
 

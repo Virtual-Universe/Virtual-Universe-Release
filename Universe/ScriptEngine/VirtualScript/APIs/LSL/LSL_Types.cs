@@ -551,6 +551,7 @@ namespace Universe.ScriptEngine.VirtualScript
                         else
                             throw new Exception("Unknown type in List.Size: " + o.GetType());
                     }
+
                     return size;
                 }
             }
@@ -1026,6 +1027,7 @@ namespace Universe.ScriptEngine.VirtualScript
                         {
                             Array.Reverse(ret);
                         }
+
                         return new list(ret);
                     }
                 }
