@@ -39,6 +39,7 @@ namespace Universe.Services.API.WebAPI
 	public class RegionAPI : IService
 	{
 		#region IService implementation
+
 		public void Initialize(IConfigSource config, IRegistryCore registry)
 		{
 		}
@@ -51,6 +52,7 @@ namespace Universe.Services.API.WebAPI
 		public void FinishedStartup()
 		{
 		}
+
 		#endregion
         
 		public byte[] HandleRegion(string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse)
