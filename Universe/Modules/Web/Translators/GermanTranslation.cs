@@ -25,7 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace WhiteCore.Modules.Web.Translators
+namespace Universe.Modules.Web.Translators
 {
     public class GermanTranslation : ITranslator
     {
