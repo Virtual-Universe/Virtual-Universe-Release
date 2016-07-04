@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the WhiteCore-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,7 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace Universe.Modules.Web.Translators
+namespace WhiteCore.Modules.Web.Translators
 {
     public class EnglishTranslation : ITranslator
     {
@@ -52,17 +52,19 @@ namespace Universe.Modules.Web.Translators
                 case "CurrentPageText": return "Current Page";
                 case "MoreInfoText": return "More Info";
                 case "NoDetailsText": return "No details found...";
-            case "ObjectNameText": return "Object";
-            case "LocationText": return "Location";
-            case "UUIDText": return "UUID";
-            case "DetailsText": return "Description";
-            case "NotesText": return "Notes";
-            case "SaveUpdates": return "Save updates";
-            case "ActiveText": return "Active";
-            case "CheckedText": return "Checked";
-            case "CategoryText": return "Category";
-            case "SummaryText": return "Summary";
-                
+                case "MoreInfo": return "More Information";
+
+                case "ObjectNameText": return "Object";
+                case "LocationText": return "Location";
+                case "UUIDText": return "UUID";
+                case "DetailsText": return "Description";
+                case "NotesText": return "Notes";
+                case "SaveUpdates": return "Save updates";
+                case "ActiveText": return "Active";
+                case "CheckedText": return "Checked";
+                case "CategoryText": return "Category";
+                case "SummaryText": return "Summary";
+
 
                 // Status information
                 case "GridStatus": return "Grid Status";
@@ -224,6 +226,7 @@ namespace Universe.Modules.Web.Translators
                 case "MenuMyPurchases": return "My Purchases";
                 case "MenuTransactions": return "User Transactions";
                 case "MenuMyTransactions": return "My Transactions";
+                case "MenuMyClassifieds": return "My Classifieds";
                 case "MenuStatistics": return "Viewer Statistics";
                 case "MenuGridSettings": return "Grid Settings";
 
@@ -307,8 +310,8 @@ namespace Universe.Modules.Web.Translators
                 case "nl": return "Nederlands";
                 case "ru": return "Русский";
 
-            // Index Page
-            case "HomeText": return "Home";
+                // Index Page
+                case "HomeText": return "Home";
                 case "HomeTextWelcome": return "This is our New Virtual World! Join us now, and make a difference!";
                 case "HomeTextTips": return "New presentations";
                 case "WelcomeToText": return "Welcome to";
@@ -323,6 +326,7 @@ namespace Universe.Modules.Web.Translators
                 // Help Page
                 case "HelpText": return "Help";
                 case "HelpViewersConfigText": return "Viewer Configuration";
+
                 case "AngstromViewer": return "Angstrom Viewer";
                 case "AstraViewer": return "Astra Viewer";
                 case "FirestormViewer": return "Firestorm Viewer";
@@ -346,8 +350,9 @@ namespace Universe.Modules.Web.Translators
                 case "NewEmailText": return "New Email Address";
                 case "DeleteUserText": return "Delete My Account";
                 case "DeleteText": return "Delete";
-                case "DeleteUserInfoText": return
-               "This will remove all information about you in the grid and remove your access to this service. If you wish to continue, enter your name and password and click Delete.";
+                case "DeleteUserInfoText":
+                    return
+"This will remove all information about you in the grid and remove your access to this service. If you wish to continue, enter your name and password and click Delete.";
                 case "EditText": return "Edit";
                 case "EditUserAccountText": return "Edit User Account";
 
@@ -389,8 +394,9 @@ namespace Universe.Modules.Web.Translators
                 case "AdminUnbanUserText": return "Unban User";
                 case "AdminUnbanUserInfoText": return "Removes temporary and permanent bans on the user.";
                 case "AdminLoginInAsUserText": return "Login as User";
-                case "AdminLoginInAsUserInfoText": return
-                       "You will be logged out of your admin account, and logged in as this user, and will see everything as they see it.";
+                case "AdminLoginInAsUserInfoText":
+                    return
+"You will be logged out of your admin account, and logged in as this user, and will see everything as they see it.";
                 case "TimeUntilUnbannedText": return "Time until user is unbanned";
                 case "DaysText": return "Days";
                 case "HoursText": return "Hours";
@@ -422,6 +428,9 @@ namespace Universe.Modules.Web.Translators
                 case "LoggedIPText": return "Logged IP address";
                 case "NoPurchasesText": return "No purchases found...";
                 case "PurchaseCostText": return "Cost";
+
+                // Classifieds
+                case "ClassifiedsText": return "Classifieds";
 
                 // Sim Console
                 case "SimConsoleText": return "Sim Command Console";
@@ -457,8 +466,12 @@ namespace Universe.Modules.Web.Translators
                 case "GridnameText": return "Grid name";
                 case "GridnickText": return "Grid nickname";
                 case "WelcomeMessageText": return "Login welcome message";
-                case "SystemEstateNameText": return "System estate name";
-                case "SystemEstateOwnerText": return "System estate owner name";
+                case "GovernorNameText": return "System Governor";
+                case "MainlandEstateNameText": return "Mainland estate";
+                case "RealEstateOwnerNameText": return "System estate owner";
+                case "SystemEstateNameText": return "System estate";
+                case "BankerNameText": return "System banker";
+                case "MarketPlaceOwnerNameText": return "System marketplace owner";
 
                 //settings manager page
                 case "WebRegistrationText": return "Web registrations allowed";
@@ -487,13 +500,13 @@ namespace Universe.Modules.Web.Translators
                 case "ClearStatsText": return "Clear statistics data";
 
                 // abuse reports
-            case "MenuAbuse": return "Abuse Reports";
-            case "TooltipsMenuAbuse": return "User abuse reports";
-            case "AbuseReportText": return "Abuse Report";
-            case "AbuserNameText": return "Abuser";
-            case "AbuseReporterNameText": return "Reporter";
-            case "AssignedToText": return "Assigned to";
- 
+                case "MenuAbuse": return "Abuse Reports";
+                case "TooltipsMenuAbuse": return "User abuse reports";
+                case "AbuseReportText": return "Abuse Report";
+                case "AbuserNameText": return "Abuser";
+                case "AbuseReporterNameText": return "Reporter";
+                case "AssignedToText": return "Assigned to";
+
 
 
                 //Times

@@ -66,14 +66,15 @@ namespace Universe.Modules.Web
                 settings.Gridname = requestParameters["Gridname"].ToString();
                 settings.Gridnick = requestParameters["Gridnick"].ToString();
                 settings.WelcomeMessage = requestParameters["WelcomeMessage"].ToString();
-                settings.SystemEstateOwnerName = requestParameters["SystemEstateOwnerName"].ToString();
+                settings.GovernorName = requestParameters["GovernorName"].ToString();
+                settings.RealEstateOwnerName = requestParameters["RealEstateOwnerName"].ToString();
+                settings.BankerName = requestParameters["BankerName"].ToString();
+                settings.MarketplaceOwnerName = requestParameters["MarketplaceOwnerName"].ToString();
+                settings.MainlandEstateName = requestParameters["MainlandEstateName"].ToString();
                 settings.SystemEstateName = requestParameters["SystemEstateName"].ToString();
 
-
-
-
                 // update main grid setup
-                webInterface.SaveGridSettings (settings);
+                webInterface.SaveGridSettings(settings);
                 response = "Successfully updated grid settings.";
 
                 return null;
@@ -82,20 +83,23 @@ namespace Universe.Modules.Web
             vars.Add("Gridname", settings.Gridname);
             vars.Add("Gridnick", settings.Gridnick);
             vars.Add("WelcomeMessage", settings.WelcomeMessage);
-            vars.Add("SystemEstateOwnerName", settings.SystemEstateOwnerName);
+            vars.Add("GovernorName", settings.GovernorName);
+            vars.Add("RealEstateOwnerName", settings.RealEstateOwnerName);
+            vars.Add("BankerName", settings.BankerName);
+            vars.Add("MarketplaceOwnerName", settings.MarketplaceOwnerName);
+            vars.Add("MainlandEstateName", settings.MainlandEstateName);
             vars.Add("SystemEstateName", settings.SystemEstateName);
-
-
- 
 
             vars.Add("GridSettingsManager", translator.GetTranslatedString("GridSettingsManager"));
             vars.Add("GridnameText", translator.GetTranslatedString("GridnameText"));
             vars.Add("GridnickText", translator.GetTranslatedString("GridnickText"));
             vars.Add("WelcomeMessageText", translator.GetTranslatedString("WelcomeMessageText"));
+            vars.Add("GovernorNameText", translator.GetTranslatedString("GovernorNameText"));
+            vars.Add("RealEstateOwnerNameText", translator.GetTranslatedString("RealEstateOwnerNameText"));
+            vars.Add("BankerNameText", translator.GetTranslatedString("BankerNameText"));
+            vars.Add("MarketPlaceOwnerNameText", translator.GetTranslatedString("MarketPlaceOwnerNameText"));
+            vars.Add("MainlandEstateNameText", translator.GetTranslatedString("MainlandEstateNameText"));
             vars.Add("SystemEstateNameText", translator.GetTranslatedString("SystemEstateNameText"));
-            vars.Add("SystemEstateOwnerText", translator.GetTranslatedString("SystemEstateOwnerText"));
-
-
 
             vars.Add("Save", translator.GetTranslatedString("Save"));
             vars.Add("No", translator.GetTranslatedString("No"));

@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the WhiteCore-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,7 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace Universe.Modules.Web.Translators
+namespace WhiteCore.Modules.Web.Translators
 {
     public class DutchTranslation : ITranslator
     {
@@ -51,17 +51,18 @@ namespace Universe.Modules.Web.Translators
                 case "CurrentPageText": return "Current Page";
                 case "MoreInfoText": return "Meer Info";
                 case "NoDetailsText": return "Geen gegevens gevonden...";
-            case "ObjectNameText": return "Object";
-            case "LocationText": return "Plaats";
-            case "UUIDText": return "UUID";
-            case "DetailsText": return "Beschrijving";
-            case "NotesText": return "Notes";
-            case "SaveUpdates": return "Sia updates";
-            case "ActiveText": return "Actief";
-            case "CheckedText": return "Gecontroleerd";
-            case "CategoryText": return "Categorie";
-            case "SummaryText": return "Overzicht";
-                
+                case "MoreInfo": return "More Informatie";
+                case "ObjectNameText": return "Object";
+                case "LocationText": return "Plaats";
+                case "UUIDText": return "UUID";
+                case "DetailsText": return "Beschrijving";
+                case "NotesText": return "Notes";
+                case "SaveUpdates": return "Sia updates";
+                case "ActiveText": return "Actief";
+                case "CheckedText": return "Gecontroleerd";
+                case "CategoryText": return "Categorie";
+                case "SummaryText": return "Overzicht";
+
                 // Status information
                 case "GridStatus": return "Grid Status";
                 case "Online": return "Online";
@@ -220,9 +221,10 @@ namespace Universe.Modules.Web.Translators
                 case "MenuMyPurchases": return "Mijn aankopen ";
                 case "MenuTransactions": return "Gebruiker Transacties";
                 case "MenuMyTransactions": return "Mijn Transacties";
+                case "MenuMyClassifieds": return "Mijn Advertenties";
                 case "MenuStatistics": return "Viewer statistieken";
                 case "MenuGridSettings": return "Grid instellingen";
-                
+
                 // Tooltips Menu Buttons
                 case "TooltipsMenuHome": return "Home";
                 case "TooltipsMenuLogin": return "Login";
@@ -254,7 +256,7 @@ namespace Universe.Modules.Web.Translators
                 case "TooltipsMenuTransactions": return "Transactie-informatie";
                 case "TooltipsMenuStatistics": return "Viewer statistieken";
                 case "TooltipsMenuGridSettings": return "Grid instellingen";
-                
+
                 // Menu Region
                 case "MenuRegionTitle": return "Region";
                 case "MenuParcelTitle": return "Parcel";
@@ -321,8 +323,8 @@ namespace Universe.Modules.Web.Translators
                 case "ru":
                     return "§²§å§ã§ã§Ü§Ú§Û";
 
-            // Index Page
-            case "HomeText":
+                // Index Page
+                case "HomeText":
                     return "Home";
                 case "HomeTextWelcome":
                     return "This is our New Virtual World! Join us now, and make a difference!";
@@ -543,8 +545,12 @@ namespace Universe.Modules.Web.Translators
                 case "GridnameText": return "Grid naam";
                 case "GridnickText": return "Grid bijnaam";
                 case "WelcomeMessageText": return "Login welkomstbericht ";
-                case "SystemEstateNameText": return "Naam Estate systeem ";
-                case "SystemEstateOwnerText": return "Systeem goed ownername";
+                case "GovernorNameText": return "Systeem gouverneur";
+                case "MainlandEstateNameText": return "Vasteland landgoed";
+                case "RealEstateOwnerNameText": return "Systeem goed ownername";
+                case "SystemEstateNameText": return "Naam Estate systeem";
+                case "BankerNameText": return "Systeem bankierr";
+                case "MarketPlaceOwnerNameText": return "Systeem marketplace eigenaar";
 
                 //settings manager page
                 case "WebRegistrationText":
@@ -576,6 +582,9 @@ namespace Universe.Modules.Web.Translators
                 case "NoPurchasesText": return "Geen aankopen gevonden...";
                 case "PurchaseCostText": return "Kosten";
 
+                // Classifieds
+                case "ClassifiedsText": return "Advertenties";
+
                 // Sim Console
                 case "SimConsoleText": return "Sim Command Console";
                 case "SimCommandText": return "Command";
@@ -594,13 +603,13 @@ namespace Universe.Modules.Web.Translators
                 case "ClearStatsText": return "Duidelijke statistieken over";
 
                 // abuse reports
-            case "MenuAbuse": return "Misbruik Rapporten";
-            case "TooltipsMenuAbuse": return "Gebruiker misbruil rapporten";
-            case "AbuseReportText": return "Meld misbruikt";
-            case "AbuserNameText": return "Abuser";
-            case "AbuseReporterNameText": return "Verslaggever";
-            case "AssignedToText": return "Toegewezen aan";
-                
+                case "MenuAbuse": return "Misbruik Rapporten";
+                case "TooltipsMenuAbuse": return "Gebruiker misbruil rapporten";
+                case "AbuseReportText": return "Meld misbruikt";
+                case "AbuserNameText": return "Abuser";
+                case "AbuseReporterNameText": return "Verslaggever";
+                case "AssignedToText": return "Toegewezen aan";
+
                 //Times
                 case "Sun":
                     return "Sun";

@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the WhiteCore-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,7 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace Universe.Modules.Web.Translators
+namespace WhiteCore.Modules.Web.Translators
 {
     public class FrenchTranslation : ITranslator
     {
@@ -51,17 +51,20 @@ namespace Universe.Modules.Web.Translators
                 case "CurrentPageText": return "Page actuelle";
                 case "MoreInfoText": return "Plus d'informations";
                 case "NoDetailsText": return "Pas de détails trouvés...";
-            case "ObjectNameText": return "Objet";
-            case "LocationText": return "Emplacement";
-            case "UUIDText": return "UUID";
-            case "DetailsText": return "Description";
-            case "NotesText": return "Remarques";
-            case "SaveUpdates": return "Enregistrer les mises à jour";
-            case "ActiveText": return "Actif";
-            case "CheckedText": return "Vérifié";
-            case "CategoryText": return "Catégorie";
-            case "SummaryText": return "Résumé";
-                
+                case "MoreInfo":
+                    return "Plus d'informations";
+
+                case "ObjectNameText": return "Objet";
+                case "LocationText": return "Emplacement";
+                case "UUIDText": return "UUID";
+                case "DetailsText": return "Description";
+                case "NotesText": return "Remarques";
+                case "SaveUpdates": return "Enregistrer les mises à jour";
+                case "ActiveText": return "Actif";
+                case "CheckedText": return "Vérifié";
+                case "CategoryText": return "Catégorie";
+                case "SummaryText": return "Résumé";
+
                 //Status information
                 case "GridStatus": return "Etat de la Grille";
                 case "Online": return "En Ligne";
@@ -230,9 +233,10 @@ namespace Universe.Modules.Web.Translators
                 case "MenuMyPurchases": return "Mes Achats";
                 case "MenuTransactions": return "Transactions de l'utilisateur";
                 case "MenuMyTransactions": return "Mes Transactions";
+                case "MenuMyClassifieds": return "Mes Classifieds <NT>";
                 case "MenuStatistics": return "Statistiques Viewer";
                 case "MenuGridSettings": return "Les paramètres de grille";
-                
+
                 // Tooltips Menu Buttons
                 case "TooltipsMenuHome": return "Accueil";
                 case "TooltipsMenuLogin": return "Connection";
@@ -263,7 +267,7 @@ namespace Universe.Modules.Web.Translators
                 case "TooltipsMenuTransactions": return "Informations sur la transaction";
                 case "TooltipsMenuStatistics": return "Statistiques Viewer";
                 case "TooltipsMenuGridSettings": return "Les paramètres de grille";
-                
+
                 // Menu Region
                 case "MenuRegionTitle": return "Région";
                 case "MenuParcelTitle": return "Colis";
@@ -327,11 +331,11 @@ namespace Universe.Modules.Web.Translators
                     return "Español";
                 case "nl":
                     return "Nederlands";
-            case "ru":
-                return "Русский";
+                case "ru":
+                    return "Русский";
 
-            // Index Page
-            case "HomeText":
+                // Index Page
+                case "HomeText":
                     return "Accueil";
                 case "HomeTextWelcome":
                     return
@@ -543,8 +547,12 @@ namespace Universe.Modules.Web.Translators
                 case "GridnameText": return "Nom de Grille ";
                 case "GridnickText": return "Grille surnom ";
                 case "WelcomeMessageText": return "Connectez message de bienvenue ";
-                case "SystemEstateNameText": return "Le nom du système de succession ";
-                case "SystemEstateOwnerText": return "Ownername immobilier du système";
+                case "GovernorNameText": return "Gouverneur du système";
+                case "MainlandEstateNameText": return "Succession continentale";
+                case "RealEstateOwnerNameText": return "Ownername immobilier du système";
+                case "SystemEstateNameText": return "Le nom du système de succession";
+                case "BankerNameText": return "Banquier du système";
+                case "MarketPlaceOwnerNameText": return "Propriétaire du marché du système";
 
                 //settings manager page
                 case "WebRegistrationText":
@@ -580,6 +588,9 @@ namespace Universe.Modules.Web.Translators
                 case "NoPurchasesText": return "Aucun achat trouvés...";
                 case "PurchaseCostText": return "Coût";
 
+                // Classifieds
+                case "ClassifiedsText": return "Annonce Catégorisée";
+
                 // Sim Console
                 case "SimConsoleText": return "Sim Command Console";
                 case "SimCommandText": return "Command";
@@ -598,12 +609,12 @@ namespace Universe.Modules.Web.Translators
                 case "ClearStatsText": return "Effacer les statistiques sur";
 
                 // abuse reports
-            case "MenuAbuse": return "Abus Rapports";
-            case "TooltipsMenuAbuse": return "Utilisateur abuse journaliste";
-            case "AbuseReportText": return "Signaler un abus";
-            case "AbuserNameText": return "Abuser";
-            case "AbuseReporterNameText": return "Journaliste";
-            case "AssignedToText": return "Assigné à";
+                case "MenuAbuse": return "Abus Rapports";
+                case "TooltipsMenuAbuse": return "Utilisateur abuse journaliste";
+                case "AbuseReportText": return "Signaler un abus";
+                case "AbuserNameText": return "Abuser";
+                case "AbuseReporterNameText": return "Journaliste";
+                case "AssignedToText": return "Assigné à";
 
                 //Times
                 case "Sun":

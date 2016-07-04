@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Virtual Universe Project nor the
+ *     * Neither the name of the WhiteCore-Sim Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -25,7 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace Universe.Modules.Web.Translators
+namespace WhiteCore.Modules.Web.Translators
 {
     public class GermanTranslation : ITranslator
     {
@@ -51,17 +51,20 @@ namespace Universe.Modules.Web.Translators
                 case "CurrentPageText": return "Aktuelle Seite";
                 case "MoreInfoText": return "Mehr Informationen";
                 case "NoDetailsText": return "Keine Angaben gefunden...";
-            case "ObjectNameText": return "Objekt";
-            case "LocationText": return "Ort";
-            case "UUIDText": return "UUID";
-            case "DetailsText": return "Beschreibung";
-            case "NotesText": return "Aufzeichnungen";
-            case "SaveUpdates": return "Sparen Sie Aktuelles";
-            case "ActiveText": return "Activ";
-            case "CheckedText": return "Geprüft";
-            case "CategoryText": return "Kategorie";
-            case "SummaryText": return "Zusammenfassung";
-                
+                case "MoreInfo":
+                    return "Mehr Informationen";
+
+                case "ObjectNameText": return "Objekt";
+                case "LocationText": return "Ort";
+                case "UUIDText": return "UUID";
+                case "DetailsText": return "Beschreibung";
+                case "NotesText": return "Aufzeichnungen";
+                case "SaveUpdates": return "Sparen Sie Aktuelles";
+                case "ActiveText": return "Activ";
+                case "CheckedText": return "Geprüft";
+                case "CategoryText": return "Kategorie";
+                case "SummaryText": return "Zusammenfassung";
+
                 // Status information
                 case "GridStatus": return "Grid Status";
                 case "Online": return "Online";
@@ -243,6 +246,7 @@ namespace Universe.Modules.Web.Translators
                 case "MenuMyPurchases": return "Meine Käufe";
                 case "MenuTransactions": return "Benutzertransaktionen";
                 case "MenuMyTransactions": return "Meine Vorgänge";
+                case "MenuMyClassifieds": return "Meine Classifieds <NT>";
                 case "MenuStatistics": return "Viewer-Statistiken";
                 case "MenuGridSettings": return "Grid-Einstellungen";
 
@@ -340,8 +344,8 @@ namespace Universe.Modules.Web.Translators
                     return "Español";
                 case "nl":
                     return "Nederlands";
-            case "ru":
-                return "Русский";
+                case "ru":
+                    return "Русский";
 
                 // Index Page
                 case "HomeText":
@@ -555,8 +559,12 @@ namespace Universe.Modules.Web.Translators
                 case "GridnameText": return "Grid Namen ";
                 case "GridnickText": return "Grid Spitznamen ";
                 case "WelcomeMessageText": return "Login Willkommen Nachrichten ";
-                case "SystemEstateNameText": return "System Immobilienname ";
-                case "SystemEstateOwnerText": return "System Gutsbesitzer Namen";
+                case "GovernorNameText": return "System Gouverneur";
+                case "MainlandEstateNameText": return "Festland Immobilien";
+                case "RealEstateOwnerNameText": return "System Gutsbesitzer Namen";
+                case "SystemEstateNameText": return "System Immobilienname";
+                case "BankerNameText": return "System banker";
+                case "MarketPlaceOwnerNameText": return "System Marktplatz Besitzer";
 
                 //settings manager page
                 case "WebRegistrationText":
@@ -592,6 +600,9 @@ namespace Universe.Modules.Web.Translators
                 case "NoPurchasesText": return "Keine Einkäufe gefunden...";
                 case "PurchaseCostText": return "Kosten";
 
+                // Classifieds
+                case "ClassifiedsText": return "Rubriksanzeige";
+
                 // Sim Console
                 case "SimConsoleText": return "Sim Command Console";
                 case "SimCommandText": return "Command";
@@ -610,12 +621,12 @@ namespace Universe.Modules.Web.Translators
                 case "ClearStatsText": return "Klare Statistiken über";
 
                 // abuse reports
-            case "MenuAbuse": return "Missbrauch Berichte";
-            case "TooltipsMenuAbuse": return "Benutzer abuser berichte";
-            case "AbuseReportText": return "Missbrauch";
-            case "AbuserNameText": return "Abuser";
-            case "AbuseReporterNameText": return "Reporter";
-            case "AssignedToText": return "Zugewiesen";
+                case "MenuAbuse": return "Missbrauch Berichte";
+                case "TooltipsMenuAbuse": return "Benutzer abuser berichte";
+                case "AbuseReportText": return "Missbrauch";
+                case "AbuserNameText": return "Abuser";
+                case "AbuseReporterNameText": return "Reporter";
+                case "AssignedToText": return "Zugewiesen";
 
                 //Times
                 case "Sun":
