@@ -160,7 +160,15 @@ namespace Universe.Modules.World.WorldShader
                                 }
 
                                 asset.ID = UUID.Random ();
-                                texture = Shade (texture, shader, percent, greyScale);
+                                try
+                                {
+                                    texture = Shade(texture, shader, percent, greyScale);
+                                } catch
+                                {
+                                    asset.Dispose();
+                                    continue; // we cannot convert this one...
+                                }
+
                                 asset.Data = OpenJPEG.EncodeFromImage (texture, false);
                                 asset.Description = t.ToString ();
                                 texture.Dispose ();
