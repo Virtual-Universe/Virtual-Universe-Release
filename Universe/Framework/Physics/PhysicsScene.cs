@@ -117,6 +117,11 @@ namespace Universe.Framework.Physics
         /// public abstract string EngineType { get; protected set; }
         public abstract string EngineType { get; }
 
+        // TODO!!!!!
+        // Implement the EngineName information for the physics engines
+        // public abstract string EngineName { get; protected set; }
+        //public abstract string EngineName { get; }
+
 
         public abstract PhysicsActor AddAvatar (string avName, Vector3 position, Quaternion rotation, Vector3 size,
                                                bool isFlying, uint localID, UUID uuid);

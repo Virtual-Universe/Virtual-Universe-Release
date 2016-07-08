@@ -1534,6 +1534,27 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             }
         }
 
+        /*
+         TODO!!!!
+         Fully implement osGetPhysicsEngineName()
+        public string osGetPhysicsEngineName()
+        {
+            // not doing security checks
+            // this whould limit the use of this
+
+            m_host.AddScriptLPS(1);
+            string ret = "NoEngine";
+            if (m_ScriptEngine.World.PhysicsScene != null)
+            {
+                ret = m_ScriptEngine.World.PhysicsScene.EngineName;
+                // An old physics engine might have an uninitialized engine type
+                if (ret == null)
+                    ret = "UnknownEngine";
+                }
+            return ret;
+        }
+        */
+
         public string osGetSimulatorVersion()
         {
             // High because it can be used to target attacks to known weaknesses
