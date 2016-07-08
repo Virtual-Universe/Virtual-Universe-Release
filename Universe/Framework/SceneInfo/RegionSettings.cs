@@ -51,8 +51,8 @@ namespace Universe.Framework.SceneInfo
         public static readonly UUID DEFAULT_TERRAIN_TEXTURE_4 = new UUID("beb169c7-11ea-fff2-efe5-0f24dc881df2");
 
         int m_AgentLimit = 40;
-        bool m_AllowLandJoinDivide = true;
-        bool m_AllowLandResell = true;
+        bool m_AllowLandJoinDivide;
+        bool m_AllowLandResell;
         UUID m_Covenant = UUID.Zero;
         double m_Elevation1NE = 10;
         double m_Elevation1NW = 10;
@@ -63,7 +63,7 @@ namespace Universe.Framework.SceneInfo
         double m_Elevation2SE = 60;
         double m_Elevation2SW = 60;
         OSDMap m_Generic = new OSDMap();
-        String m_LoadedCreationID = String.Empty;
+        string m_LoadedCreationID = string.Empty;
         double m_ObjectBonus = 1.0;
 
         UUID m_RegionUUID = UUID.Zero;
@@ -75,7 +75,8 @@ namespace Universe.Framework.SceneInfo
         UUID m_TerrainTexture4 = UUID.Zero;
         bool m_UseEstateSun = true;
         double m_WaterHeight = 20;
-        Telehub m_telehub = new Telehub ();
+        Telehub m_telehub = new Telehub();
+
 
         [ProtoMember(1)]
         public UUID RegionUUID
@@ -303,7 +304,7 @@ namespace Universe.Framework.SceneInfo
         [ProtoMember(42)]
         public int LoadedCreationDateTime { get; set; }
 
-        public String LoadedCreationDate
+        public string LoadedCreationDate
         {
             get
             {
@@ -313,7 +314,7 @@ namespace Universe.Framework.SceneInfo
             }
         }
 
-        public String LoadedCreationTime
+        public string LoadedCreationTime
         {
             get
             {
@@ -324,13 +325,13 @@ namespace Universe.Framework.SceneInfo
         }
 
         [ProtoMember(44)]
-        public String LoadedCreationID
+        public string LoadedCreationID
         {
             get { return m_LoadedCreationID; }
             set { m_LoadedCreationID = value; }
         }
 
-//       [ProtoMember(45)]
+        [ProtoMember(45)]
         public Telehub TeleHub
         {
             get { return m_telehub ?? (m_telehub = new Telehub()); }
@@ -452,12 +453,12 @@ namespace Universe.Framework.SceneInfo
             TerrainTexture4 = map["TerrainTexture4"];
             UseEstateSun = map["UseEstateSun"];
             WaterHeight = map["WaterHeight"];
-            if (map.ContainsKey ("TeleHub"))
-            {
-                TeleHub = new Telehub ();
-                TeleHub.FromOSD ((OSDMap)map ["Telehub"]);
-            }
 
+            if (map.ContainsKey("TeleHub"))
+            {
+                TeleHub = new Telehub();
+                TeleHub.FromOSD((OSDMap)map["Telehub"]);
+            }
         }
     }
 }

@@ -26,63 +26,74 @@
  */
 
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using Universe.Framework.Modules;
+using System.Xml;
 using OpenMetaverse;
 using OpenMetaverse.StructuredData;
-using System.Xml;
-using System.IO;
+using Universe.Framework.Modules;
 
 namespace Universe.Framework.ClientInterfaces
 {
+    [Serializable, ProtoContract(UseProtoMembersOnly = false)]
     public class Telehub : IDataTransferable
     {
         /// <summary>
         ///     Name of the teleHUB object
         /// </summary>
+        [ProtoMember(1)]
         public string Name = "";
 
         /// <summary>
         ///     UUID of the teleHUB object
         /// </summary>
+        [ProtoMember(2)]
         public UUID ObjectUUID = UUID.Zero;
 
         /// <summary>
         ///     Region UUID
         /// </summary>
+        [ProtoMember(3)]
         public UUID RegionID = UUID.Zero;
 
         /// <summary>
         ///     Global region coordinates (in meters)
         /// </summary>
+        [ProtoMember(4)]
         public float RegionLocX;
 
+        [ProtoMember(5)]
         public float RegionLocY;
 
         /// <summary>
         ///     Positions users will spawn at in order of creation
         /// </summary>
+        [ProtoMember(6)]
         public List<Vector3> SpawnPos = new List<Vector3>();
 
         /// <summary>
         ///     Position of the telehub in the region
         /// </summary>
+        [ProtoMember(7)]
         public float TelehubLocX;
-
+        [ProtoMember(8)]
         public float TelehubLocY;
+        [ProtoMember(9)]
         public float TelehubLocZ;
 
         /// <summary>
         ///     Rotation of the av
         /// </summary>
+        [ProtoMember(10)]
         public float TelehubRotX;
-
+        [ProtoMember(11)]
         public float TelehubRotY;
+        [ProtoMember(12)]
         public float TelehubRotZ;
 
         public string BuildFromList(List<Vector3> SpawnPos)
         {
-            return SpawnPos.Aggregate("", (current, Pos) => current + (Pos.ToString() + "\n"));
+            return SpawnPos.Aggregate("", (current, Pos) => current + (Pos + "\n"));
         }
 
         public static List<Vector3> BuildToList(string SpawnPos)
@@ -95,14 +106,14 @@ namespace Universe.Framework.ClientInterfaces
         public override void FromOSD(OSDMap map)
         {
             RegionID = map["RegionID"].AsUUID();
-            RegionLocX = (float) map["RegionLocX"].AsReal();
-            RegionLocY = (float) map["RegionLocY"].AsReal();
-            TelehubRotX = (float) map["TelehubRotX"].AsReal();
-            TelehubRotY = (float) map["TelehubRotY"].AsReal();
-            TelehubRotZ = (float) map["TelehubRotZ"].AsReal();
-            TelehubLocX = (float) map["TelehubLocX"].AsReal();
-            TelehubLocY = (float) map["TelehubLocY"].AsReal();
-            TelehubLocZ = (float) map["TelehubLocZ"].AsReal();
+            RegionLocX = (float)map["RegionLocX"].AsReal();
+            RegionLocY = (float)map["RegionLocY"].AsReal();
+            TelehubRotX = (float)map["TelehubRotX"].AsReal();
+            TelehubRotY = (float)map["TelehubRotY"].AsReal();
+            TelehubRotZ = (float)map["TelehubRotZ"].AsReal();
+            TelehubLocX = (float)map["TelehubLocX"].AsReal();
+            TelehubLocY = (float)map["TelehubLocY"].AsReal();
+            TelehubLocZ = (float)map["TelehubLocZ"].AsReal();
             SpawnPos = BuildToList(map["Spawns"].AsString());
             Name = map["Name"].AsString();
             ObjectUUID = map["ObjectUUID"].AsUUID();
@@ -111,20 +122,21 @@ namespace Universe.Framework.ClientInterfaces
         public override OSDMap ToOSD()
         {
             OSDMap map = new OSDMap
-                             {
-                                 {"RegionID", OSD.FromUUID(RegionID)},
-                                 {"RegionLocX", OSD.FromReal(RegionLocX)},
-                                 {"RegionLocY", OSD.FromReal(RegionLocY)},
-                                 {"TelehubRotX", OSD.FromReal(TelehubRotX)},
-                                 {"TelehubRotY", OSD.FromReal(TelehubRotY)},
-                                 {"TelehubRotZ", OSD.FromReal(TelehubRotZ)},
-                                 {"TelehubLocX", OSD.FromReal(TelehubLocX)},
-                                 {"TelehubLocY", OSD.FromReal(TelehubLocY)},
-                                 {"TelehubLocZ", OSD.FromReal(TelehubLocZ)},
-                                 {"Spawns", OSD.FromString(BuildFromList(SpawnPos))},
-                                 {"ObjectUUID", OSD.FromUUID(ObjectUUID)},
-                                 {"Name", OSD.FromString(Name)}
-                             };
+            {
+                {"RegionID", OSD.FromUUID(RegionID)},
+                {"RegionLocX", OSD.FromReal(RegionLocX)},
+                {"RegionLocY", OSD.FromReal(RegionLocY)},
+                {"TelehubRotX", OSD.FromReal(TelehubRotX)},
+                {"TelehubRotY", OSD.FromReal(TelehubRotY)},
+                {"TelehubRotZ", OSD.FromReal(TelehubRotZ)},
+                {"TelehubLocX", OSD.FromReal(TelehubLocX)},
+                {"TelehubLocY", OSD.FromReal(TelehubLocY)},
+                {"TelehubLocZ", OSD.FromReal(TelehubLocZ)},
+                {"Spawns", OSD.FromString(BuildFromList(SpawnPos))},
+                {"ObjectUUID", OSD.FromUUID(ObjectUUID)},
+                {"Name", OSD.FromString(Name)}
+            };
+
             return map;
         }
 
@@ -132,7 +144,7 @@ namespace Universe.Framework.ClientInterfaces
         public static string Serialize(Telehub settings)
         {
             StringWriter sw = new StringWriter();
-            XmlTextWriter xtw = new XmlTextWriter(sw) {Formatting = Formatting.Indented};
+            XmlTextWriter xtw = new XmlTextWriter(sw) { Formatting = Formatting.Indented };
             xtw.WriteStartDocument();
 
             xtw.WriteStartElement("Telehub");
@@ -140,16 +152,16 @@ namespace Universe.Framework.ClientInterfaces
             {
                 xtw.WriteElementString("TelehubObject", settings.ObjectUUID.ToString());
                 xtw.WriteElementString("TelehubName", settings.Name);
-                foreach( var point in settings.SpawnPos) 
+                foreach (var point in settings.SpawnPos)
                     xtw.WriteElementString("SpawnPoint", point.ToString());
             }
+
             xtw.WriteEndElement();
 
             xtw.Close();
 
             return sw.ToString();
-        } 
-
+        }
 
         public static Telehub Deserialize(string serializedSettings, UUID RegionID)
         {
@@ -157,7 +169,6 @@ namespace Universe.Framework.ClientInterfaces
 
             StringReader sr = new StringReader(serializedSettings);
             XmlTextReader xtr = new XmlTextReader(sr);
-
 
             xtr.ReadEndElement();
             xtr.ReadStartElement("Telehub");
@@ -167,26 +178,19 @@ namespace Universe.Framework.ClientInterfaces
             {
                 switch (xtr.Name)
                 {
-                case "TelehubObject":
-                    {
-                        settings.RegionID = RegionID;
-                        settings.ObjectUUID = UUID.Parse (xtr.ReadElementContentAsString ());
+                    case "TelehubObject":
+                        {
+                            settings.RegionID = RegionID;
+                            settings.ObjectUUID = UUID.Parse(xtr.ReadElementContentAsString());
+                            break;
+                        }
+                    case "SpawnPoint":
+                        settings.SpawnPos.Add(Vector3.Parse(xtr.ReadElementContentAsString()));
                         break;
-                    }
-                case "SpawnPoint":
-                    settings.SpawnPos.Add( Vector3.Parse(xtr.ReadElementContentAsString()) );
-                    break;
 
-                    //case "SpawnPoint":
-                    //    string str = xtr.ReadElementContentAsString();
-                    //    SpawnPoint sp = SpawnPoint.Parse(str);
-                    //    settings.AddSpawnPoint(sp);
-                    //    break;
-
-
-                case "TelehubName":
-                    settings.Name = xtr.ReadElementContentAsString();
-                    break;
+                    case "TelehubName":
+                        settings.Name = xtr.ReadElementContentAsString();
+                        break;
                 }
             }
 
@@ -196,7 +200,6 @@ namespace Universe.Framework.ClientInterfaces
             return settings;
         }
 
-  
         #endregion
     }
 }

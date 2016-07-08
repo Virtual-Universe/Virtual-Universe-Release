@@ -158,7 +158,7 @@ namespace Universe.Modules.World
 
                 foreach (string regBak in allBackups) {
                     if (Path.GetFileName (regBak).StartsWith (regionName, StringComparison.Ordinal)) {
-                        //        MainConsole.Instance.Debug ("Found: " + Path.GetFileNameWithoutExtension (regBak));
+                        //MainConsole.Instance.Debug ("Found: " + Path.GetFileNameWithoutExtension (regBak));
                         regionBaks.Add (regBak);
                     }
                 }
@@ -434,6 +434,8 @@ namespace Universe.Modules.World
                         info.RegionSettings.AllowLandResell = false;
                     } else if (info.RegionType.StartsWith ("H", StringComparison.Ordinal))                    // Homes always have 25000 prims
                       {
+                        info.RegionSettings.AllowLandJoinDivide = true;
+                        info.RegionSettings.AllowLandResell = true;
                         info.ObjectCapacity = 25000;
                     }
                 }
