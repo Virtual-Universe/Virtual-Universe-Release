@@ -31,6 +31,7 @@ using System.Linq;
 using System.Xml;
 using OpenMetaverse;
 using OpenMetaverse.StructuredData;
+using ProtoBuf;
 using Universe.Framework.Modules;
 
 namespace Universe.Framework.ClientInterfaces
