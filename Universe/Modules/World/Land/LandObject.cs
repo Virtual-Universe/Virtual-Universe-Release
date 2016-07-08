@@ -258,6 +258,9 @@ namespace Universe.Modules.World.Land
                         LandData.MediaLoop = args.MediaLoop;
                         LandData.ObscureMusic = args.ObscureMusic;
                         LandData.ObscureMedia = args.ObscureMedia;
+                        // June 26, 2016 Added for LibOMV update 1.0.2.2
+                        LandData.AnyAVSounds = args.AnyAVSounds;
+                        LandData.GroupAVSounds = args.GroupAVSounds;
                     }
 
                     if (m_scene.Permissions.CanEditParcelProperties (remote_client.AgentId, this, GroupPowers.LandOptions)) {
@@ -308,7 +311,10 @@ namespace Universe.Modules.World.Land
                                 }
                             }
                         }
+
                         LandData.Flags = args.ParcelFlags;
+                        // June 26, 2016 Added for LibOMV update 1.0.2.2
+                        LandData.SeeAVS = args.SeeAVs;
                     }
 
                     if (m_scene.Permissions.CanEditParcelProperties (remote_client.AgentId, this,
