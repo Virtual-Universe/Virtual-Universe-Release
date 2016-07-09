@@ -29,8 +29,6 @@ sudo apt-get install git-core
 sudo apt-get update
 # Setting up Virtual Universe
 cd /
-mkdir VirtualUniverse
-cd VirtualUniverse/
 git clone https://github.com/Virtual-Universe/Virtual-Universe.git
 cd Virtual-Universe/
 ./runprebuild.sh
