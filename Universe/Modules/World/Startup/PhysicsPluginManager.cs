@@ -34,7 +34,7 @@ using Universe.Framework.ModuleLoader;
 using Universe.Framework.Physics;
 using Universe.Framework.SceneInfo;
 
-namespace Universe.Modules.World.Startup
+namespace Universe.Modules.Startup
 {
     /// <summary>
     ///     Description of MyClass.
@@ -80,8 +80,8 @@ namespace Universe.Modules.World.Startup
             {
                 MainConsole.Instance.Debug("[Physics]: Loading physics engine: " + physEngineName);
                 PhysicsScene result = _PhysPlugins[physEngineName].GetScene();
-                result.Initialize(meshEngine, scene);
-                result.PostInitialize(config);
+                result.Initialise(meshEngine, scene);
+                result.PostInitialise(config);
                 return result;
             }
             else

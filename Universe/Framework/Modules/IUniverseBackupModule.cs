@@ -30,7 +30,7 @@ using Universe.Framework.Serialization;
 
 namespace Universe.Framework.Modules
 {
-    public interface IBackupArchiver
+    public interface IUniverseBackupArchiver
     {
         bool AllowPrompting { get; set; }
         void SaveRegionBackup(TarArchiveWriter writer, IScene scene);
@@ -41,8 +41,11 @@ namespace Universe.Framework.Modules
     {
         bool IsArchiving { get; }
         void SaveModuleToArchive(TarArchiveWriter writer, IScene scene);
+
         void BeginLoadModuleFromArchive(IScene scene);
+
         void LoadModuleFromArchive(byte[] data, string filePath, TarArchiveReader.TarEntryType type, IScene scene);
+
         void EndLoadModuleFromArchive(IScene scene);
     }
 }

@@ -38,8 +38,9 @@ using Universe.Framework.Utilities;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.DatabaseInterfaces;
 
-namespace Universe.Modules.Currency.BaseCurrency
+namespace Universe.Modules.Currency
 {
+    
     public class BaseCurrencyConnector : ConnectorBase, IBaseCurrencyConnector
     {
         #region Declares
@@ -67,7 +68,8 @@ namespace Universe.Modules.Currency.BaseCurrency
             get { return "IBaseCurrencyConnector"; }
         }
 
-        public void Initialize(IGenericData GenericData, IConfigSource source, IRegistryCore registry, string defaultConnectionString)
+        public void Initialize(IGenericData GenericData, IConfigSource source, IRegistryCore registry,
+                               string defaultConnectionString)
         {
             GD = GenericData;
             m_registry = registry;
@@ -93,6 +95,7 @@ namespace Universe.Modules.Currency.BaseCurrency
             m_config = new BaseCurrencyConfig(config);
 
             Init(m_registry, Name, "", "/currency/", "CurrencyServerURI");
+
         }
 
         #endregion
@@ -147,6 +150,7 @@ namespace Universe.Modules.Currency.BaseCurrency
         public List<GroupAccountHistory> GetGroupTransactions(UUID groupID, UUID fromAgentID,
             int currentInterval, int intervalDays)
         {
+            //return new List<GroupAccountHistory>();
             object remoteValue = DoRemoteByURL("CurrencyServerURI", groupID, fromAgentID, currentInterval, intervalDays);
             if (remoteValue != null || m_doRemoteOnly)
                 return (List<GroupAccountHistory>) remoteValue;
@@ -162,7 +166,7 @@ namespace Universe.Modules.Currency.BaseCurrency
             var dStart = DateTime.Now.AddDays(-currentInterval*intervalDays);
             var dEnd = dStart.AddDays (intervalDays);
 
-            // back to UTC please
+            // back to UTC please...
             var dateStart = dStart.ToUniversalTime ();
             var dateEnd = dEnd.ToUniversalTime ();
 
@@ -239,7 +243,6 @@ namespace Universe.Modules.Currency.BaseCurrency
                 m_userInfoService = m_registry.RequestModuleInterface<IAgentInfoService>();
                 m_userAccountService = m_registry.RequestModuleInterface<IUserAccountService> ();
             }
-
             if (m_userInfoService != null)
             {
                 UserInfo agentInfo = userId == UUID.Zero ? null : m_userInfoService.GetUserInfo(userId.ToString());
@@ -274,7 +277,6 @@ namespace Universe.Modules.Currency.BaseCurrency
                     "You paid " + groupName + " " +InWorldCurrency + amount);
                 }
             }
-
             return true;
         }
 
@@ -305,6 +307,7 @@ namespace Universe.Modules.Currency.BaseCurrency
             
             return new UserCurrency(query);
         }
+
 
         public int CalculateEstimatedCost(uint amount)
         {
@@ -347,10 +350,10 @@ namespace Universe.Modules.Currency.BaseCurrency
                 UUID.Random (),                         // TransactionID
                 agentID.ToString (),                    // PrincipalID
                 ep.ToString (),                         // IP
-                amount,                                 // Amount
-                CalculateEstimatedCost(amount),         // Actual cost
-                Utils.GetUnixTime(),                    // Created
-                Utils.GetUnixTime()                     // Updated
+                amount,                                // Amount
+                CalculateEstimatedCost(amount),        // Actual cost
+                Utils.GetUnixTime(),                   // Created
+                Utils.GetUnixTime()                    // Updated
             };
 
             GD.Insert(_REALMPURCHASE, values.ToArray());
@@ -402,10 +405,10 @@ namespace Universe.Modules.Currency.BaseCurrency
             QueryFilter filter = new QueryFilter();
             if (toAgentID != UUID.Zero)
                 filter.andFilters["ToPrincipalID"] = toAgentID;
-
             if (fromAgentID != UUID.Zero)
                 filter.andFilters["FromPrincipalID"] = fromAgentID;
 
+   
             var transactions = GD.Query (new string[] {"count(*)"}, _REALMHISTORY, filter, null, null, null);
             if ((transactions == null) || (transactions.Count == 0))
                 return 0;
@@ -428,7 +431,7 @@ namespace Universe.Modules.Currency.BaseCurrency
             if (fromAgentID != UUID.Zero)
                 filter.andFilters["FromPrincipalID"] = fromAgentID;
 
-            // back to UTC please
+            // back to UTC please...
             dateStart = dateStart.ToUniversalTime ();
             dateEnd = dateEnd.ToUniversalTime ();
 
@@ -437,6 +440,7 @@ namespace Universe.Modules.Currency.BaseCurrency
 
             Dictionary<string, bool> sort = new Dictionary<string, bool>(1);
             sort["Created"] = false;        // descending order
+            //sort["FromName"] = true;
 
             List<string> query = GD.Query (new string[] { "*" }, _REALMHISTORY, filter, sort, start, count);
 
@@ -473,7 +477,7 @@ namespace Universe.Modules.Currency.BaseCurrency
             return GetTransactionHistory (dateStart, dateEnd, start, count);
         }
 
-        // Purchases
+        // Purchases...
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
         public uint NumberOfPurchases(UUID UserID)
         {
@@ -501,14 +505,16 @@ namespace Universe.Modules.Currency.BaseCurrency
             if (UserID != UUID.Zero)
                 filter.andFilters["PrincipalID"] = UserID;
 
-            // back to UTC please
+            // back to UTC please...
             dateStart = dateStart.ToUniversalTime ();
             dateEnd = dateEnd.ToUniversalTime ();
 
             filter.andGreaterThanEqFilters["Created"] = Utils.DateTimeToUnixTime(dateStart);    // from...
             filter.andLessThanEqFilters["Created"] = Utils.DateTimeToUnixTime(dateEnd);         //...to
 
+
             Dictionary<string, bool> sort = new Dictionary<string, bool>(1);
+            //sort["PrincipalID"] = true;
             sort["Created"] = false;        // descending order
 
             List<string> query = GD.Query (new string[] { "*" }, _REALMPURCHASE, filter, sort, start, count);
@@ -539,8 +545,11 @@ namespace Universe.Modules.Currency.BaseCurrency
 
             return GetPurchaseHistory (UUID.Zero, dateStart, dateEnd, start, count);
         }
-         
-        public bool UserCurrencyTransfer(UUID toID, UUID fromID, uint amount, string description, TransactionType type, UUID transactionID)
+
+
+            
+        public bool UserCurrencyTransfer(UUID toID, UUID fromID, uint amount,
+                                         string description, TransactionType type, UUID transactionID)
         {
             return UserCurrencyTransfer(toID, fromID, UUID.Zero, "", UUID.Zero, "", amount, description, type, transactionID);
         }
@@ -648,7 +657,6 @@ namespace Universe.Modules.Currency.BaseCurrency
                     }
                 }
             }
-
             return true;
         }
 
@@ -805,13 +813,13 @@ namespace Universe.Modules.Currency.BaseCurrency
         static List<GroupAccountHistory> ParseGroupTransferQuery(List<string> query)
         {
             var transferList = new List<GroupAccountHistory>();
-            /*
+/*
         int Amount;
         string Description;
         string TimeString;
         string UserCausingCharge;
         bool Payment
-        */
+*/
             for (int i = 0; i < query.Count; i += 14)
             {
                 GroupAccountHistory transfer = new GroupAccountHistory ();
@@ -883,6 +891,7 @@ namespace Universe.Modules.Currency.BaseCurrency
                     null);
         }
 
+
         DateTime StartTransactionPeriod (int period, string periodType)
         {
             DateTime then = DateTime.Now;
@@ -942,6 +951,7 @@ namespace Universe.Modules.Currency.BaseCurrency
 
             return transferList;
         }
+
 
         static List<AgentPurchase> ParsePurchaseQuery(List<string> query)
         {

@@ -38,7 +38,7 @@ using Universe.Framework.Services;
 using Universe.Framework.Utilities;
 using GridRegion = Universe.Framework.Services.GridRegion;
 
-namespace Universe.Modules.World.Startup
+namespace Universe.Modules.Startup
 {
     public class RegisterRegionWithGridModule : ISharedRegionStartupModule, IGridRegisterModule
     {
@@ -234,7 +234,7 @@ namespace Universe.Modules.World.Startup
 
         #region ISharedRegionStartupModule Members
 
-        public void Initialize (IScene scene, IConfigSource source, ISimulationBase simBase)
+        public void Initialise (IScene scene, IConfigSource source, ISimulationBase simBase)
         {
             m_scene = scene;
             //Register the interface
@@ -253,7 +253,7 @@ namespace Universe.Modules.World.Startup
             RegisterRegionWithGrid (scene, false, true, m_RegisterRegionPassword);
         }
 
-        public void PostInitialize (IScene scene, IConfigSource source, ISimulationBase simBase)
+        public void PostInitialise (IScene scene, IConfigSource source, ISimulationBase simBase)
         {
         }
 

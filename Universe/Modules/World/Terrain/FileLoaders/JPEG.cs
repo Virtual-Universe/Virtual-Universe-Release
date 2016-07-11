@@ -33,7 +33,7 @@ using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.ConsoleFramework;
 
-namespace Universe.Modules.World.Terrain.FileLoaders
+namespace Universe.Modules.Terrain.FileLoaders
 {
     public class JPEG : ITerrainLoader
     {

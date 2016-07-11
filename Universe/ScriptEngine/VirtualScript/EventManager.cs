@@ -755,7 +755,7 @@ namespace Universe.ScriptEngine.VirtualScript
                 //This will happen if the script doesn't compile correctly
                 if (ID.Script == null)
                 {
-                    MainConsole.Instance.Info("[Virtual Script]: Could not load script from item '" +
+                    MainConsole.Instance.Info("[Virtual Script Engine]: Could not load script from item '" +
                                               ID.InventoryItem.Name +
                                               "' to fire event " + FunctionName);
                     return false;

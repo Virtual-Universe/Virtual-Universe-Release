@@ -39,13 +39,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace Universe.Modules.World
+namespace Universe.Modules
 {
     public class ServerSettingsModule : INonSharedRegionModule, IServerSettings
     {
         private List<ServerSetting> m_settings = new List<ServerSetting>();
 
-        public void Initialize(IConfigSource source)
+        public void Initialise(IConfigSource source)
         {
         }
 

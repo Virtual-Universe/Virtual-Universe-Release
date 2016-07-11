@@ -36,7 +36,7 @@ using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 
 
-namespace Universe.Modules.World.VisitorLogger
+namespace Universe.Modules.VisitorLogger
 {
     /// <summary>
     ///     This module logs all visitors to the sim to a specified file
@@ -53,7 +53,7 @@ namespace Universe.Modules.World.VisitorLogger
 
         #region INonSharedRegionModule
 
-        public void Initialize (IConfigSource source)
+        public void Initialise (IConfigSource source)
         {
             IConfig config = source.Configs ["VisitorLogModule"];
             if (config != null) {

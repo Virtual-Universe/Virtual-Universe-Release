@@ -40,7 +40,7 @@ using Universe.Framework.SceneInfo;
 using Universe.Framework.Utilities;
 using Timer = System.Timers.Timer;
 
-namespace Universe.Modules.World.SimProtection
+namespace Universe.Modules.SimProtection
 {
     public class PhysicsMonitor : INonSharedRegionModule, IPhysicsMonitor
     {
@@ -162,7 +162,7 @@ namespace Universe.Modules.World.SimProtection
             get { return null; }
         }
 
-        public void Initialize (IConfigSource source)
+        public void Initialise (IConfigSource source)
         {
             if (m_physicsStatTimer == null) {
                 m_physicsStatTimer = new Timer { Interval = 10000 };

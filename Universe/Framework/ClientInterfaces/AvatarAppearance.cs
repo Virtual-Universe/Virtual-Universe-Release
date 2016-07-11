@@ -1497,7 +1497,7 @@ namespace Universe.Framework.ClientInterfaces
             SHAPE_LOWER_BRIDGE_NOSE = 150,
 
             /// <summary>
-            ///     Nostril Division - High 0--+255 Low
+            ///     Nostril Diuniverse - High 0--+255 Low
             /// </summary>
             SHAPE_LOW_SEPTUM_NOSE = 151,
 

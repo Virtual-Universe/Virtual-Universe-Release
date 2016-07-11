@@ -29,7 +29,7 @@
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 
-namespace Universe.Modules.World.Monitoring.Monitors
+namespace Universe.Modules.Monitoring.Monitors
 {
     public class SleepFrameMonitor : ISleepFrameMonitor
     {

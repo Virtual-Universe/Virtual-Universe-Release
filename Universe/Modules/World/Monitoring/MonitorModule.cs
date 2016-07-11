@@ -47,12 +47,12 @@ using Universe.Framework.Servers.HttpServer;
 using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
-using Universe.Modules.World.Monitoring.Alerts;
-using Universe.Modules.World.Monitoring.Monitors;
+using Universe.Modules.Monitoring.Alerts;
+using Universe.Modules.Monitoring.Monitors;
 using ThreadState = System.Diagnostics.ThreadState;
 using Timer = System.Timers.Timer;
 
-namespace Universe.Modules.World.Monitoring
+namespace Universe.Modules.Monitoring
 {
     public class MonitorModule : IApplicationPlugin, IMonitorModule
     {
@@ -934,7 +934,7 @@ namespace Universe.Modules.World.Monitoring
         {
         }
 
-        public void PostInitialize ()
+        public void PostInitialise ()
         {
             ISceneManager manager = m_simulationBase.ApplicationRegistry.RequestModuleInterface<ISceneManager> ();
             if (manager != null) {

@@ -33,7 +33,7 @@ using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 
-namespace Universe.Modules.World.SimProtection
+namespace Universe.Modules.SimProtection
 {
     /// <summary>
     ///     This module helps keep the sim running when it begins to slow down, or if it freezes, restarts it
@@ -66,7 +66,7 @@ namespace Universe.Modules.World.SimProtection
 
         #region INonSharedRegionModule
 
-        public void Initialize (IConfigSource source)
+        public void Initialise (IConfigSource source)
         {
             if (!source.Configs.Contains ("Protection"))
                 return;

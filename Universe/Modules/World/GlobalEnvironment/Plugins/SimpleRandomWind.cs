@@ -32,7 +32,8 @@ using OpenMetaverse;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 
-namespace Universe.Modules.World.GlobalEnvironment.Plugins
+
+namespace Universe.Modules.GlobalEnvironment.Plugins
 {
     public class SimpleRandomWind : IWindModelPlugin
     {
@@ -52,7 +53,7 @@ namespace Universe.Modules.World.GlobalEnvironment.Plugins
             get { return "SimpleRandomWind"; }
         }
 
-        public void Initialize ()
+        public void Initialise ()
         {
         }
 

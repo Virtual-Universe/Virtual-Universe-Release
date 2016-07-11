@@ -43,7 +43,7 @@ using Universe.Framework.Services.ClassHelpers.Other;
 using Universe.Framework.Utilities;
 using GridRegion = Universe.Framework.Services.GridRegion;
 
-namespace Universe.Modules.World.EntityTransfer
+namespace Universe.Modules.EntityTransfer
 {
     public class EntityTransferModule : INonSharedRegionModule, IEntityTransferModule
     {
@@ -67,7 +67,7 @@ namespace Universe.Modules.World.EntityTransfer
             get { return "BasicEntityTransferModule"; }
         }
 
-        public virtual void Initialize (IConfigSource source)
+        public virtual void Initialise (IConfigSource source)
         {
             IConfig moduleConfig = source.Configs ["Modules"];
             if (moduleConfig != null) {

@@ -54,7 +54,7 @@ namespace Universe.Framework.ClientInterfaces
         public int PassPrice;
         public bool Privacy;
         public int SalePrice;
-        // June 26, 2016 Added for LibOMV update 1.0.2.2
+        // 25062016 Added for LibOMV update 1.0.2.5
         public bool SeeAVs;
         public bool AnyAVSounds;
         public bool GroupAVSounds;

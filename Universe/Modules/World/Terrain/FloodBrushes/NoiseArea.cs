@@ -30,7 +30,7 @@ using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 
 
-namespace Universe.Modules.World.Terrain.FloodBrushes
+namespace Universe.Modules.Terrain.FloodBrushes
 {
     public class NoiseArea : ITerrainFloodEffect
     {

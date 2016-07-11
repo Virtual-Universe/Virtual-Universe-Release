@@ -52,7 +52,7 @@ namespace Universe.CoreApplicationPlugins.ServicesLoader
         {
         }
 
-        public void PostInitialize()
+        public void PostInitialise()
         {
         }
 

@@ -39,7 +39,7 @@ using Universe.Framework.SceneInfo;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Other;
 
-namespace Universe.Modules.World.ActivityDetectors
+namespace Universe.Modules.ActivityDetectors
 {
     public class ActivityDetector : INonSharedRegionModule
     {
@@ -49,7 +49,7 @@ namespace Universe.Modules.World.ActivityDetectors
 
         #region INonSharedRegionModule Members
 
-        public void Initialize (IConfigSource source)
+        public void Initialise (IConfigSource source)
         {
         }
 

@@ -33,13 +33,13 @@ using Universe.Framework.Utilities;
 using Nini.Config;
 
 
-namespace Universe.Modules.World.Startup
+namespace Universe.Modules.Startup
 {
     public class PhysicsInitializer : ISharedRegionStartupModule
     {
         #region ISharedRegionStartupModule Members
 
-        public void Initialize(IScene scene, IConfigSource source, ISimulationBase simBase)
+        public void Initialise(IScene scene, IConfigSource source, ISimulationBase simBase)
         {
             IConfig PhysConfig = source.Configs["Physics"];
             IConfig MeshingConfig = source.Configs["Meshing"];
@@ -74,7 +74,7 @@ namespace Universe.Modules.World.Startup
             scene.PhysicsScene = pScene;
         }
 
-        public void PostInitialize(IScene scene, IConfigSource source, ISimulationBase simBase)
+        public void PostInitialise(IScene scene, IConfigSource source, ISimulationBase simBase)
         {
         }
 

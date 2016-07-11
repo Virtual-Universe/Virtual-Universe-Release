@@ -31,7 +31,7 @@ using System.IO;
 
 using Universe.Framework.Modules;
 
-namespace Universe.Modules.World.Terrain.FileLoaders
+namespace Universe.Modules.Terrain.FileLoaders
 {
     class PNG : GenericSystemDrawing
     {

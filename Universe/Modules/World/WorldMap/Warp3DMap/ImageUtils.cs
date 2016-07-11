@@ -29,7 +29,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using OpenMetaverse;
 
-namespace Universe.Modules.World.WorldMap.Warp3DMap
+namespace Universe.Modules.WorldMap.Warp3DMap
 {
     public static class ImageUtils
     {

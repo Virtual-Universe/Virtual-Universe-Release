@@ -40,7 +40,7 @@ using Universe.Framework.Servers.HttpServer.Interfaces;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
 
-namespace Universe.Modules.World.Entities.PhysicsMaterials
+namespace Universe.Modules.Entities.PhysicsMaterials
 {
     public class PhysicsMaterialsModule : INonSharedRegionModule
     {
@@ -48,7 +48,7 @@ namespace Universe.Modules.World.Entities.PhysicsMaterials
 
         #region INonSharedRegionModule Members
 
-        public void Initialize(IConfigSource pSource)
+        public void Initialise(IConfigSource pSource)
         {
         }
 

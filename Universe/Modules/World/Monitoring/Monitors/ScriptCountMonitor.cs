@@ -30,7 +30,7 @@ using System.Linq;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 
-namespace Universe.Modules.World.Monitoring.Monitors
+namespace Universe.Modules.Monitoring.Monitors
 {
     class ScriptCountMonitor : IScriptCountMonitor
     {

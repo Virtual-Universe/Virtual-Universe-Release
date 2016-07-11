@@ -29,7 +29,7 @@ using System;
 using System.Drawing;
 using OpenMetaverse;
 
-namespace Universe.Modules.World.WorldMap.Warp3DMap
+namespace Universe.Modules.WorldMap.Warp3DMap
 {
     public class Viewport
     {

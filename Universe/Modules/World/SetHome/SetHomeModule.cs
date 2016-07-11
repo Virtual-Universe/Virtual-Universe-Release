@@ -42,7 +42,7 @@ using System;
 using System.IO;
 using System.Linq;
 
-namespace Universe.Modules.World.SetHome
+namespace Universe.Modules.SetHome
 {
     public class SetHomeModule : INonSharedRegionModule
     {
@@ -50,7 +50,7 @@ namespace Universe.Modules.World.SetHome
 
         #region INonSharedRegionModule Members
 
-        public void Initialize(IConfigSource pSource)
+        public void Initialise(IConfigSource pSource)
         {
         }
 

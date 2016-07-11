@@ -35,7 +35,7 @@ using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 
-namespace Universe.Modules.World.GLobalEnvironment
+namespace Universe.Modules.GlobalEnvironment
 {
     public class SunModule : ISunModule
     {
@@ -156,7 +156,7 @@ namespace Universe.Modules.World.GLobalEnvironment
 
         #region IRegion Methods
 
-        public void Initialize (IConfigSource config)
+        public void Initialise (IConfigSource config)
         {
             m_frame = 0;
             m_config = config;

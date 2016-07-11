@@ -42,7 +42,7 @@ using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Servers.HttpServer.Interfaces;
 using Universe.Framework.Utilities;
 
-namespace Universe.Modules.World.Auction
+namespace Universe.Modules.Auction
 {
     public class AuctionModule : IAuctionModule, INonSharedRegionModule
     {
@@ -50,7 +50,7 @@ namespace Universe.Modules.World.Auction
 
         #region INonSharedRegionModule Members
 
-        public void Initialize(IConfigSource pSource)
+        public void Initialise(IConfigSource pSource)
         {
         }
 

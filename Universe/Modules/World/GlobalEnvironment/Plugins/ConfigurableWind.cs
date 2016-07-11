@@ -33,7 +33,7 @@ using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 
-namespace Universe.Modules.World.GlobalEnvironment.Plugins
+namespace Universe.Modules.GlobalEnvironment.Plugins
 {
     public class ConfigurableWind : IWindModelPlugin
     {
@@ -63,7 +63,7 @@ namespace Universe.Modules.World.GlobalEnvironment.Plugins
             get { return "ConfigurableWind"; }
         }
 
-        public void Initialize ()
+        public void Initialise ()
         {
         }
 

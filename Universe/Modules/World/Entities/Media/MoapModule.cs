@@ -44,7 +44,7 @@ using Universe.Framework.Servers.HttpServer.Interfaces;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
 
-namespace Universe.Modules.World.Entities.Media
+namespace Universe.Modules.Entities.Media
 {
     public class MoapModule : INonSharedRegionModule, IMoapModule
     {
@@ -148,7 +148,7 @@ namespace Universe.Modules.World.Entities.Media
             get { return null; }
         }
 
-        public void Initialize (IConfigSource configSource)
+        public void Initialise (IConfigSource configSource)
         {
             IConfig config = configSource.Configs ["MediaOnAPrim"];
 

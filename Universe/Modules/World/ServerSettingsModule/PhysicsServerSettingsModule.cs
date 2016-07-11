@@ -30,11 +30,11 @@ using Universe.Framework.SceneInfo;
 using Nini.Config;
 using System;
 
-namespace Universe.Modules.World.World.ServerSettingsModule
+namespace Universe.Modules.World.ServerSettingsModule
 {
     public class PhysicsServerSettingsModule : INonSharedRegionModule
     {
-        public void Initialize(IConfigSource source)
+        public void Initialise(IConfigSource source)
         {
         }
 

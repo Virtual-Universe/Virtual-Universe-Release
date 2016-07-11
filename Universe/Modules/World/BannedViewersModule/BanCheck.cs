@@ -39,7 +39,7 @@ using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Profile;
 using Universe.Framework.Utilities;
 
-namespace Universe.Modules.World.Ban
+namespace Universe.Modules.Ban
 {
     #region Grid BanCheck
 

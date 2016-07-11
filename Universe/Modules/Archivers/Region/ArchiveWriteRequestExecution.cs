@@ -54,13 +54,13 @@ namespace Universe.Modules.Archivers
         protected Guid m_requestId;
         protected IScene m_scene;
         protected List<ISceneEntity> m_sceneObjects;
-        protected IRegionSerializerModule m_serialiser;
+        protected IRegionSerialiserModule m_serialiser;
         protected ITerrainModule m_terrainModule;
 
         public ArchiveWriteRequestExecution(
             List<ISceneEntity> sceneObjects,
             ITerrainModule terrainModule,
-            IRegionSerializerModule serialiser,
+            IRegionSerialiserModule serialiser,
             IScene scene,
             TarArchiveWriter archiveWriter,
             Guid requestId)

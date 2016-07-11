@@ -39,11 +39,11 @@ using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Utilities;
-using Universe.Modules.World.Terrain.FileLoaders;
-using Universe.Modules.World.Terrain.FloodBrushes;
-using Universe.Modules.World.Terrain.PaintBrushes;
+using Universe.Modules.Terrain.FileLoaders;
+using Universe.Modules.Terrain.FloodBrushes;
+using Universe.Modules.Terrain.PaintBrushes;
 
-namespace Universe.Modules.World.Terrain
+namespace Universe.Modules.Terrain
 {
     public class TerrainModule : INonSharedRegionModule, ITerrainModule
     {
@@ -105,7 +105,7 @@ namespace Universe.Modules.World.Terrain
         ///     Creates and initializes a terrain module for a region
         /// </summary>
         /// <param name="config">Config for the region</param>
-        public void Initialize (IConfigSource config)
+        public void Initialise (IConfigSource config)
         {
             if (config.Configs ["TerrainModule"] != null) {
                 m_sendTerrainUpdatesByViewDistance =
@@ -130,7 +130,7 @@ namespace Universe.Modules.World.Terrain
             if (!m_noTerrain) {
                 LoadWorldHeightmap ();
                 LoadWorldWaterMap ();
-                scene.PhysicsScene.SetTerrain (m_channel, m_channel.GetSerialized ());
+                scene.PhysicsScene.SetTerrain (m_channel, m_channel.GetSerialised ());
                 UpdateWaterHeight (scene.RegionInfo.RegionSettings.WaterHeight);
             }
 
@@ -205,7 +205,7 @@ namespace Universe.Modules.World.Terrain
         {
             short [] waterMap = null;
             if (m_waterChannel != null)
-                waterMap = m_waterChannel.GetSerialized ();
+                waterMap = m_waterChannel.GetSerialised ();
             m_scene.PhysicsScene.SetWaterLevel (height, waterMap);
         }
 
@@ -623,7 +623,7 @@ namespace Universe.Modules.World.Terrain
 
             if (m_queueNextSave > 0 && m_queueNextSave < now) {
                 m_queueNextSave = 0;
-                m_scene.PhysicsScene.SetTerrain (m_channel, m_channel.GetSerialized ());
+                m_scene.PhysicsScene.SetTerrain (m_channel, m_channel.GetSerialised ());
 
                 if (m_queueNextSave == 0)
                     m_queueTimer.Stop ();
@@ -682,7 +682,7 @@ namespace Universe.Modules.World.Terrain
         {
             if (!m_sendTerrainUpdatesByViewDistance && !m_noTerrain) {
                 //Default way, send the full terrain at once
-                RemoteClient.SendLayerData (m_channel.GetSerialized ());
+                RemoteClient.SendLayerData (m_channel.GetSerialised ());
             } else {
                 //Send only what the client can see,
                 //  but the client isn't loaded yet, wait until they get set up
@@ -783,12 +783,12 @@ namespace Universe.Modules.World.Terrain
             }
             if (xs.Count != 0) {
                 //Send all the terrain patches at once
-                presence.ControllingClient.SendLayerData (xs.ToArray (), ys.ToArray (), m_channel.GetSerialized (),
+                presence.ControllingClient.SendLayerData (xs.ToArray (), ys.ToArray (), m_channel.GetSerialised (),
                                                          TerrainPatch.LayerType.Land);
                 if (m_use3DWater) {
                     //Send all the water patches at once
                     presence.ControllingClient.SendLayerData (xs.ToArray (), ys.ToArray (),
-                                                             m_waterChannel.GetSerialized (),
+                                                             m_waterChannel.GetSerialised (),
                                                              TerrainPatch.LayerType.Water);
                 }
             }
@@ -1208,7 +1208,7 @@ namespace Universe.Modules.World.Terrain
                 if (!m_sendTerrainUpdatesByViewDistance) {
                     presence.ControllingClient.SendLayerData (xs.ToArray (),
                                                               ys.ToArray (),
-                                                              channel.GetSerialized (),
+                                                              channel.GetSerialised (),
                                                               isWater
                                                                  ? TerrainPatch.LayerType.Land
                                                                  : TerrainPatch.LayerType.Water);
@@ -1541,7 +1541,7 @@ namespace Universe.Modules.World.Terrain
 
             foreach (TerrainModule tmodule in m) {
                 MainConsole.Instance.Info ("[Terrain]: Saving scene " + tmodule.m_scene.RegionInfo.RegionName + " physics");
-                tmodule.m_scene.PhysicsScene.SetTerrain (tmodule.m_channel, tmodule.m_channel.GetSerialized ());
+                tmodule.m_scene.PhysicsScene.SetTerrain (tmodule.m_channel, tmodule.m_channel.GetSerialised ());
             }
         }
 

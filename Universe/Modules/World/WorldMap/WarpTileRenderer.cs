@@ -43,11 +43,11 @@ using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Utilities;
-using Universe.Modules.World.WorldMap.Warp3DMap;
+using Universe.Modules.WorldMap.Warp3DMap;
 using RegionSettings = Universe.Framework.SceneInfo.RegionSettings;
 using WarpRenderer = Warp3Dw.Warp3D;
 
-namespace Universe.Modules.World.WorldMap
+namespace Universe.Modules.WorldMap
 {
     public class WarpTileRenderer : IMapTileTerrainRenderer
     {
@@ -73,7 +73,7 @@ namespace Universe.Modules.World.WorldMap
 
         #region IMapTileTerrainRenderer Members
 
-        public void Initialize (IScene scene, IConfigSource config)
+        public void Initialise (IScene scene, IConfigSource config)
         {
             m_scene = scene;
             m_imgDecoder = m_scene.RequestModuleInterface<IJ2KDecoder> ();

@@ -34,7 +34,7 @@ using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 
 
-namespace Universe.Modules.World.OnDemand
+namespace Universe.Modules.OnDemand
 {
     /// <summary>
     ///     Some notes on this module, this module just modifies when/where the startup code is executed
@@ -62,7 +62,7 @@ namespace Universe.Modules.World.OnDemand
 
         #region INonSharedRegionModule Members
 
-        public void Initialize(IConfigSource source)
+        public void Initialise(IConfigSource source)
         {
         }
 

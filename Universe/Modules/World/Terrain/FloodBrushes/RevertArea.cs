@@ -29,7 +29,7 @@ using OpenMetaverse;
 using Universe.Framework.Modules;
 
 
-namespace Universe.Modules.World.Terrain.FloodBrushes
+namespace Universe.Modules.Terrain.FloodBrushes
 {
     public class RevertArea : ITerrainFloodEffect
     {

@@ -35,7 +35,7 @@ using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 
-namespace Universe.Modules.World.GlobalEnvironment
+namespace Universe.Modules.GlobalEnvironment
 {
     public class WindModule : IWindModule, INonSharedRegionModule
     {
@@ -60,7 +60,7 @@ namespace Universe.Modules.World.GlobalEnvironment
 
         #region IRegion Methods
 
-        public void Initialize (IConfigSource config)
+        public void Initialise (IConfigSource config)
         {
             windConfig = config.Configs ["Wind"];
             desiredWindPlugin = m_dWindPluginName;
@@ -104,7 +104,7 @@ namespace Universe.Modules.World.GlobalEnvironment
 
                     if (windConfig != null)
                     {
-                        m_activeWindPlugin.Initialize ();
+                        m_activeWindPlugin.Initialise ();
                         m_activeWindPlugin.WindConfig (m_scene, windConfig);
                     }
                 }

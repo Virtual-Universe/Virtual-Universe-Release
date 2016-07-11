@@ -131,7 +131,7 @@ textures 1
 
         #region INonSharedRegionModule Members
 
-        public void Initialize (IConfigSource config)
+        public void Initialise (IConfigSource config)
         {
             if (config != null) {
                 IConfig sconfig = config.Configs ["Startup"];

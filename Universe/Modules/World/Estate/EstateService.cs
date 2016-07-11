@@ -44,7 +44,7 @@ using Universe.Framework.Services.ClassHelpers.Profile;
 using Universe.Framework.Utilities;
 using RegionFlags = Universe.Framework.Services.RegionFlags;
 
-namespace Universe.Modules.World.Estate
+namespace Universe.Modules.Estate
 {
     public class EstateSettingsModule : ISharedRegionStartupModule
     {
@@ -67,7 +67,7 @@ namespace Universe.Modules.World.Estate
 
         #region ISharedRegionStartupModule Members
 
-        public void Initialize (IScene scene, IConfigSource source, ISimulationBase simBase)
+        public void Initialise (IScene scene, IConfigSource source, ISimulationBase simBase)
         {
             IConfig config = source.Configs ["EstateSettingsModule"];
             if (config != null) {
@@ -168,7 +168,7 @@ namespace Universe.Modules.World.Estate
             }
         }
 
-        public void PostInitialize (IScene scene, IConfigSource source, ISimulationBase simBase)
+        public void PostInitialise (IScene scene, IConfigSource source, ISimulationBase simBase)
         {
         }
 

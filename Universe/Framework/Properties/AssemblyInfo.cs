@@ -55,7 +55,7 @@ using System.Runtime.InteropServices;
 //      Major Version
 //      Minor Version
 //      Build Number
-//      Revision
+//      Reuniverse
 //
 
 [assembly: AssemblyVersion("1.0.2.*")]

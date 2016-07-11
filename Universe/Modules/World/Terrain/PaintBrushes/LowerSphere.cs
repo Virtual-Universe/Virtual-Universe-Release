@@ -30,7 +30,7 @@ using OpenMetaverse;
 using Universe.Framework.Modules;
 
 
-namespace Universe.Modules.World.Terrain.PaintBrushes
+namespace Universe.Modules.Terrain.PaintBrushes
 {
     public class LowerSphere : ITerrainPaintableEffect
     {

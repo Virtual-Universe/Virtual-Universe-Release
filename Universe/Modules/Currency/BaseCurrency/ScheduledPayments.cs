@@ -25,6 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,7 +41,7 @@ using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Other;
 using Universe.Framework.Utilities;
 
-namespace Universe.Modules.Currency.BaseCurrency
+namespace Universe.Modules.Currency
 {
     public class ScheduledPayments : IService, IScheduledMoneyModule
     {
@@ -991,7 +992,7 @@ namespace Universe.Modules.Currency.BaseCurrency
                     if (payMembers.Count == 0)      // no one to pay??
                         continue;
 
-                    int memberShare = grpBalance.ParcelDirectoryFee / payMembers.Count;         // this should be integer division so truncated (5 /4 = 1)
+                    int memberShare = grpBalance.ParcelDirectoryFee / payMembers.Count;         // this should be integer diuniverse so truncated (5 /4 = 1)
                     if (memberShare == 0)                                                       // share of fee < 1 per user
                         memberShare = 1;
 
@@ -1090,7 +1091,7 @@ namespace Universe.Modules.Currency.BaseCurrency
                     if (payMembers.Count == 0)      // no one to pay??
                         continue;
 
-                    int dividend = grpBalance.ParcelDirectoryFee / payMembers.Count;    // this should be integer division so truncated (5 /4 = 1)
+                    int dividend = grpBalance.ParcelDirectoryFee / payMembers.Count;    // this should be integer diuniverse so truncated (5 /4 = 1)
                     if (dividend == 0)                                                  // insufficient funds < 1 per user
                         continue;
 

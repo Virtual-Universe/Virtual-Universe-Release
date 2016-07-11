@@ -32,7 +32,7 @@ using Universe.Framework.PresenceInfo;
 using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Utilities;
 
-namespace Universe.Modules.World.Estate
+namespace Universe.Modules.Estate
 {
     public class EstateTerrainXferHandler
     {

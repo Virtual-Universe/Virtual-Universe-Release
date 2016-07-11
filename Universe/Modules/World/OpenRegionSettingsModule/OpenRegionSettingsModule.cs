@@ -41,7 +41,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Universe.Modules.World.OpenRegionSettingsModule
+namespace Universe.Modules.OpenRegionSettingsModule
 {
     public class OpenRegionSettingsModule : INonSharedRegionModule, IOpenRegionSettingsModule
     {
@@ -226,7 +226,7 @@ namespace Universe.Modules.World.OpenRegionSettingsModule
 
         #region INonSharedRegionModule
 
-        public void Initialize(IConfigSource source)
+        public void Initialise(IConfigSource source)
         {
         }
 

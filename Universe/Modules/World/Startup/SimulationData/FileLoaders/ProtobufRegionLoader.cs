@@ -31,7 +31,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Universe.Modules.World
+namespace Universe.Modules
 {
     public class ProtobufRegionDataLoader : IRegionDataLoader
     {

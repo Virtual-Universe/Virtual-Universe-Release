@@ -41,7 +41,7 @@ using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Inventory;
 
-namespace Universe.Modules.World.Permissions
+namespace Universe.Modules.Permissions
 {
     public class PermissionsModule : INonSharedRegionModule, IPermissionsModule
     {
@@ -229,7 +229,7 @@ namespace Universe.Modules.World.Permissions
 
         #region INonSharedRegionModule Members
 
-        public void Initialize (IConfigSource config)
+        public void Initialise (IConfigSource config)
         {
             PermissionsConfig = config.Configs ["Permissions"];
 

@@ -29,7 +29,7 @@ using OpenMetaverse;
 using Universe.Framework.Modules;
 
 
-namespace Universe.Modules.World.Terrain
+namespace Universe.Modules.Terrain
 {
     public interface ITerrainFloodEffect
     {

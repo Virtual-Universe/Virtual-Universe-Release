@@ -376,7 +376,7 @@ namespace Universe.Simulation.Base
                 plugin.Initialize(this);
 
             foreach (IApplicationPlugin plugin in m_applicationPlugins)
-                plugin.PostInitialize();
+                plugin.PostInitialise();
 
             foreach (IApplicationPlugin plugin in m_applicationPlugins)
                 plugin.Start();

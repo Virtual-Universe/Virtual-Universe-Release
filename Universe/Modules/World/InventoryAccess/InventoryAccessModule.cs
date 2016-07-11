@@ -43,7 +43,7 @@ using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Services.ClassHelpers.Inventory;
 using Universe.Framework.Utilities;
 
-namespace Universe.Modules.World.InventoryAccess
+namespace Universe.Modules.InventoryAccess
 {
     public class BasicInventoryAccessModule : INonSharedRegionModule, IInventoryAccessModule
     {
@@ -61,7 +61,7 @@ namespace Universe.Modules.World.InventoryAccess
             get { return "BasicInventoryAccessModule"; }
         }
 
-        public virtual void Initialize (IConfigSource source)
+        public virtual void Initialise (IConfigSource source)
         {
             IConfig moduleConfig = source.Configs ["Modules"];
             if (moduleConfig != null) {
@@ -73,7 +73,7 @@ namespace Universe.Modules.World.InventoryAccess
             }
         }
 
-        public virtual void PostInitialize ()
+        public virtual void PostInitialise ()
         {
         }
 

@@ -99,8 +99,8 @@ namespace Universe.Framework.Physics
 
         public virtual int StatCollisionAccountingTime { get; protected set; }
 
-        public abstract void Initialize (IMesher meshmerizer, IScene scene);
-        public abstract void PostInitialize (IConfigSource config);
+        public abstract void Initialise (IMesher meshmerizer, IScene scene);
+        public abstract void PostInitialise (IConfigSource config);
 
         /// <summary>
         /// A unique identifying string for this instance of the physics engine.
@@ -116,11 +116,6 @@ namespace Universe.Framework.Physics
         /// TODO!!!!!
         /// public abstract string EngineType { get; protected set; }
         public abstract string EngineType { get; }
-
-        // TODO!!!!!
-        // Implement the EngineName information for the physics engines
-        // public abstract string EngineName { get; protected set; }
-        //public abstract string EngineName { get; }
 
 
         public abstract PhysicsActor AddAvatar (string avName, Vector3 position, Quaternion rotation, Vector3 size,
@@ -229,12 +224,12 @@ namespace Universe.Framework.Physics
             get { return false; }
         }
 
-        public override void Initialize (IMesher meshmerizer, IScene scene)
+        public override void Initialise (IMesher meshmerizer, IScene scene)
         {
             // Does nothing right now
         }
 
-        public override void PostInitialize (IConfigSource config)
+        public override void PostInitialise (IConfigSource config)
         {
         }
 

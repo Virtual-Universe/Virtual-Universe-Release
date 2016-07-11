@@ -38,21 +38,21 @@ using Universe.Framework.Serialization;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
 
-namespace Universe.Modules.World.Estate
+namespace Universe.Modules.Estate
 {
     public class EstateInitializer : ISharedRegionStartupModule, IUniverseBackupModule
     {
         protected IRegistryCore m_registry;
 
 
-        public void Initialize (IScene scene, IConfigSource source, ISimulationBase simBase)
+        public void Initialise (IScene scene, IConfigSource source, ISimulationBase simBase)
         {
             scene.StackModuleInterface<IUniverseBackupModule> (this);
             m_registry = simBase.ApplicationRegistry;
         }
 
 
-        public void PostInitialize (IScene scene, IConfigSource source, ISimulationBase simBase)
+        public void PostInitialise (IScene scene, IConfigSource source, ISimulationBase simBase)
         {
         }
 

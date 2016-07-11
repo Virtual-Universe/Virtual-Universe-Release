@@ -147,6 +147,7 @@ namespace Universe.Physics.OpenDynamicsEngine
         public float m_preJumpForceMultiplierZ = 4.5f;
         public float m_AvFlySpeed = 4.0f;
 
+
         protected int m_physicsiterations = 10;
         //protected int m_timeBetweenRevertingAutoConfigIterations = 50;
         protected const float m_SkipFramesAtms = 0.150f; // Drop frames gracefully at a 150 ms lag
@@ -185,6 +186,7 @@ namespace Universe.Physics.OpenDynamicsEngine
 
         protected volatile int m_global_contactcount;
 
+
         public Vector2 WorldExtents;
 
         public bool AllowUnderwaterPhysics;
@@ -208,10 +210,6 @@ namespace Universe.Physics.OpenDynamicsEngine
         }
 
         public override string EngineType { get { return "OpenDynamicsEngine"; } }
-
-        // TODO!!!!!!
-        // Implement the ability to get the EngineName osGetEngineName
-        //public override string EngineName { get { return "OpenDynamicsEngine"; } }
 
         #region Stats
 
@@ -262,7 +260,7 @@ namespace Universe.Physics.OpenDynamicsEngine
         }
 
         // Initialize the mesh plugin
-        public override void Initialize(IMesher meshmerizer, IScene scene)
+        public override void Initialise(IMesher meshmerizer, IScene scene)
         {
             mesher = meshmerizer;
             m_region = scene.RegionInfo;
@@ -270,7 +268,7 @@ namespace Universe.Physics.OpenDynamicsEngine
             WorldExtents = new Vector2(m_region.RegionSizeX, m_region.RegionSizeY);
         }
 
-        public override void PostInitialize(IConfigSource config)
+        public override void PostInitialise(IConfigSource config)
         {
             m_rayCastManager = new ODERayCastRequestManager(this);
             m_config = config;
@@ -308,7 +306,8 @@ namespace Universe.Physics.OpenDynamicsEngine
                     contactsurfacelayer = physicsconfig.GetFloat("world_contact_surface_layer", 0.001f);
 
                     AvatarContactBounce = physicsconfig.GetFloat("AvatarContactBounce", AvatarContactBounce);
-                    FrictionMovementMultiplier = physicsconfig.GetFloat("FrictionMovementMultiplier", FrictionMovementMultiplier);
+                    FrictionMovementMultiplier = physicsconfig.GetFloat("FrictionMovementMultiplier",
+                                                                        FrictionMovementMultiplier);
                     FrictionScale = physicsconfig.GetFloat("FrictionMovementMultiplier", FrictionScale);
 
                     ODE_STEPSIZE = physicsconfig.GetFloat("world_stepsize", 0.020f);
@@ -323,11 +322,13 @@ namespace Universe.Physics.OpenDynamicsEngine
                     contactsPerCollision = physicsconfig.GetInt("contacts_per_collision", 80);
 
                     geomContactPointsStartthrottle = physicsconfig.GetInt("geom_contactpoints_start_throttling", 3);
-                    geomCrossingFailuresBeforeOutofbounds = physicsconfig.GetInt("geom_crossing_failures_before_outofbounds", 5);
+                    geomCrossingFailuresBeforeOutofbounds =
+                        physicsconfig.GetInt("geom_crossing_failures_before_outofbounds", 5);
 
                     bodyFramesAutoDisable = physicsconfig.GetInt("body_frames_auto_disable", 10);
 
-                    forceSimplePrimMeshing = physicsconfig.GetBoolean("force_simple_prim_meshing", forceSimplePrimMeshing);
+                    forceSimplePrimMeshing = physicsconfig.GetBoolean("force_simple_prim_meshing",
+                                                                      forceSimplePrimMeshing);
                     meshSculptedPrim = physicsconfig.GetBoolean("mesh_sculpted_prim", true);
                     meshSculptLOD = physicsconfig.GetFloat("mesh_lod", 32f);
                     MeshSculptphysicalLOD = physicsconfig.GetFloat("mesh_physical_lod", 16f);
@@ -336,7 +337,8 @@ namespace Universe.Physics.OpenDynamicsEngine
                     PID_D = physicsconfig.GetFloat("av_pid_derivative", PID_D);
                     PID_P = physicsconfig.GetFloat("av_pid_proportional", PID_P);
 
-                    m_useFlightCeilingHeight = physicsconfig.GetBoolean("Use_Flight_Ceiling_Height_Max", m_useFlightCeilingHeight);
+                    m_useFlightCeilingHeight = physicsconfig.GetBoolean("Use_Flight_Ceiling_Height_Max",
+                                                                        m_useFlightCeilingHeight);
                     m_flightCeilingHeight = physicsconfig.GetFloat("Flight_Ceiling_Height_Max", m_flightCeilingHeight);
                     //Rex
 
@@ -387,7 +389,7 @@ namespace Universe.Physics.OpenDynamicsEngine
             //  spaces grid for static objects
 
             if (WorldExtents.X < WorldExtents.Y)
-                // // constant is 1/log(2),  -3 for division by 8 plus 0.5 for rounding
+                // // constant is 1/log(2),  -3 for diuniverse by 8 plus 0.5 for rounding
                 GridSpaceScaleBits = (int) (Math.Log(WorldExtents.X)*1.4426950f - 2.5f);
             else
                 GridSpaceScaleBits = (int) (Math.Log(WorldExtents.Y)*1.4426950f - 2.5f);
@@ -486,10 +488,8 @@ namespace Universe.Physics.OpenDynamicsEngine
                     MainConsole.Instance.WarnFormat("[ODE Physics]: SpaceCollide2 failed: {0} ", e);
                     return;
                 }
-
                 return;
             }
-
             IntPtr b1 = d.GeomGetBody(g1);
             IntPtr b2 = d.GeomGetBody(g2);
 
@@ -506,7 +506,8 @@ namespace Universe.Physics.OpenDynamicsEngine
                 if (b1 != IntPtr.Zero && b2 != IntPtr.Zero && d.AreConnectedExcluding(b1, b2, d.JointType.Contact))
                     return;
 
-                count = d.CollidePtr(g1, g2, (contactsPerCollision & 0xffff), ContactgeomsArray, d.ContactGeom.unmanagedSizeOf);
+                count = d.CollidePtr(g1, g2, (contactsPerCollision & 0xffff), ContactgeomsArray,
+                                     d.ContactGeom.unmanagedSizeOf);
             }
             catch (Exception e)
             {
@@ -548,7 +549,7 @@ namespace Universe.Physics.OpenDynamicsEngine
 
             ContactPoint maxDepthContact = new ContactPoint();
             d.ContactGeom curContact = new d.ContactGeom();
-            // 20131224 not used            d.ContactGeom maxContact = new d.ContactGeom();
+// 20131224 not used            d.ContactGeom maxContact = new d.ContactGeom();
 
             int NotSkipedCount = 0;
 
@@ -571,10 +572,9 @@ namespace Universe.Physics.OpenDynamicsEngine
                     maxDepthContact.SurfaceNormal.X = curContact.normal.X;
                     maxDepthContact.SurfaceNormal.Y = curContact.normal.Y;
                     maxDepthContact.SurfaceNormal.Z = curContact.normal.Z;
-                    // 20131224 not used                    maxContact = curContact;
+// 20131224 not used                    maxContact = curContact;
                 }
             }
-
             if (p1 is ODECharacter || p2 is ODECharacter)
                 //This really should be maxContact, but there are crashes that users have reported when this is used...
                 //AddODECollision(maxContact, p1, p2, b1, b2, maxDepthContact, ref NotSkipedCount);
@@ -604,9 +604,8 @@ namespace Universe.Physics.OpenDynamicsEngine
                         p2.ThrottleUpdates = true;
                     }
                 }
-
                 Collision_accounting_events(p1, p2, maxDepthContact);
-            }
+            } //);
         }
 
         void AddODECollision(d.ContactGeom curContact, PhysicsActor p1, PhysicsActor p2, IntPtr b1, IntPtr b2,

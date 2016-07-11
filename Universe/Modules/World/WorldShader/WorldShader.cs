@@ -40,7 +40,7 @@ using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Utilities;
 
 
-namespace Universe.Modules.World.WorldShader
+namespace Universe.Modules.WorldShader
 {
     public class WorldShader : INonSharedRegionModule
     {
@@ -50,7 +50,7 @@ namespace Universe.Modules.World.WorldShader
 
         #region ISharedRegionModule Members
 
-        public void Initialize (IConfigSource source)
+        public void Initialise (IConfigSource source)
         {
         }
 
@@ -160,13 +160,11 @@ namespace Universe.Modules.World.WorldShader
                                 }
 
                                 asset.ID = UUID.Random ();
-                                try
-                                {
-                                    texture = Shade(texture, shader, percent, greyScale);
-                                } catch
-                                {
-                                    asset.Dispose();
-                                    continue; // we cannot convert this one...
+                                try {
+                                    texture = Shade (texture, shader, percent, greyScale);
+                                } catch {
+                                    asset.Dispose ();
+                                    continue;   // cannot convert this one...
                                 }
 
                                 asset.Data = OpenJPEG.EncodeFromImage (texture, false);

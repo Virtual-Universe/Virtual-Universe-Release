@@ -76,7 +76,6 @@ namespace Universe.Modules.Web
         public IRegistryCore Registry { get; protected set; }
 
         public string GridName { get; private set; }
-
         public string LoginURL { get; private set; }
 
         public string HomeScreenURL {
@@ -260,11 +259,10 @@ namespace Universe.Modules.Web
 
         protected void AddDefaultVarsForPage (ref Dictionary<string, object> vars)
         {
-            if (vars != null)
-            {
+            if (vars != null) {
                 vars.Add ("SystemURL", MainServer.Instance.FullHostName + ":" + _port);
                 vars.Add ("SystemName", GridName);
-                vars.Add("LoginURL", LoginURL);
+                vars.Add ("LoginURL", LoginURL);
             }
         }
 
@@ -1094,10 +1092,10 @@ namespace Universe.Modules.Web
             Gridnick = mp ["Gridnick"];
             WelcomeMessage = mp ["WelcomeMessage"];
             GovernorName = mp ["GovernorName"];
-            RealEstateOwnerName = mp["RealEstateOwnerName"];
-            BankerName = mp["BankerName"];
-            MarketplaceOwnerName = mp["MarketplaceOwnerName"];
-            MainlandEstateName = mp["MainlandEstateName"];
+            RealEstateOwnerName = mp ["RealEstateOwnerName"];
+            BankerName = mp ["BankerName"];
+            MarketplaceOwnerName = mp ["MarketplaceOwnerName"];
+            MainlandEstateName = mp ["MainlandEstateName"];
             SystemEstateName = mp ["SystemEstateName"];
         }
 

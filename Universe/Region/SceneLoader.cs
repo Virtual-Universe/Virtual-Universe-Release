@@ -59,7 +59,7 @@ namespace Universe.Region
                 m_simBase.ApplicationRegistry.RegisterModuleInterface<ISceneLoader>(this);
         }
 
-        public void PostInitialize()
+        public void PostInitialise()
         {
         }
 
@@ -100,7 +100,7 @@ namespace Universe.Region
             List<IClientNetworkServer> allClientServers = new List<IClientNetworkServer>();
             foreach (IClientNetworkServer clientServer in clientServers)
             {
-                clientServer.Initialize((uint)regionInfo.RegionPort, m_configSource, circuitManager);
+                clientServer.Initialise((uint)regionInfo.RegionPort, m_configSource, circuitManager);
                 allClientServers.Add(clientServer);
             }
 

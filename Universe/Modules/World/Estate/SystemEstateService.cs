@@ -35,10 +35,10 @@ using Universe.Framework.SceneInfo;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
 
-namespace Universe.Modules.World.Estate
+namespace Universe.Modules.Estate
 {
     /// <summary>
-    ///     Basically a provision to allow user configuration of the system Estate Owner 'name and Estate' details
+    ///     Basically a prouniverse to allow user configuration of the system Estate Owner 'name and Estate' details
     /// </summary>
     public class SystemEstateService : ISystemEstateService, IService
     {

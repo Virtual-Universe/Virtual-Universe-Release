@@ -49,7 +49,7 @@ using Universe.Framework.Utilities;
 
 using GridRegion = Universe.Framework.Services.GridRegion;
 
-namespace Universe.Modules.World.Land
+namespace Universe.Modules.Land
 {
     public class ParcelManagementModule : INonSharedRegionModule, IParcelManagementModule
     {
@@ -130,7 +130,7 @@ namespace Universe.Modules.World.Land
             get { return null; }
         }
 
-        public void Initialize (IConfigSource source)
+        public void Initialise (IConfigSource source)
         {
             IConfig config = source.Configs ["LandManagement"];
             if (config != null) {
@@ -1839,7 +1839,7 @@ namespace Universe.Modules.World.Land
             land_update.MediaLoop = properties.MediaLoop;
             land_update.ObscureMusic = properties.ObscureMusic;
             land_update.ObscureMedia = properties.ObscureMedia;
-            // June 26, 2016 Added for LibOMV update 1.0.2.2
+            // 25062016 Added for LibOMV update 1.0.2.5
             land_update.SeeAVs = properties.SeeAVs;
             land_update.AnyAVSounds = properties.AnyAVSounds;
             land_update.GroupAVSounds = properties.GroupAVSounds;
@@ -1894,13 +1894,11 @@ namespace Universe.Modules.World.Land
                         if (info != null)
                             regionID = info.RegionID;
                     }
-
                     if (regionID == m_scene.RegionInfo.RegionID) {
                         ILandObject parcel = GetLandObject (x, y);
                         if (parcel != null)
                             parcelID = parcel.LandData.GlobalID;
                     }
-
                     if (parcelID == UUID.Zero) {
                         IDirectoryServiceConnector DSC = Framework.Utilities.DataManager.RequestPlugin<IDirectoryServiceConnector> ();
                         if (DSC != null) {

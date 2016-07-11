@@ -37,7 +37,7 @@ using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 
 
-namespace Universe.Modules.World.PhysicsState
+namespace Universe.Modules.PhysicsState
 {
     public class PhysicsStateModule : INonSharedRegionModule, IPhysicsStateModule
     {
@@ -51,7 +51,7 @@ namespace Universe.Modules.World.PhysicsState
 
         #region INonSharedRegionModule Members
 
-        public void Initialize (IConfigSource source)
+        public void Initialise (IConfigSource source)
         {
         }
 

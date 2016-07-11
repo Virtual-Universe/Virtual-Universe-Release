@@ -46,7 +46,7 @@ using Universe.Framework.Services;
 using Universe.Framework.Utilities;
 using RegionFlags = OpenMetaverse.RegionFlags;
 
-namespace Universe.Modules.World.Estate
+namespace Universe.Modules.Estate
 {
     public class EstateManagementModule : IEstateModule
     {
@@ -1013,7 +1013,7 @@ namespace Universe.Modules.World.Estate
 
         #region IRegionModule Members
 
-        public void Initialize (IConfigSource source)
+        public void Initialise (IConfigSource source)
         {
         }
 

@@ -28,7 +28,7 @@
 using System.Diagnostics;
 using Universe.Framework.Modules;
 
-namespace Universe.Modules.World.Monitoring.Monitors
+namespace Universe.Modules.Monitoring.Monitors
 {
     class PWSMemoryMonitor : IMonitor
     {

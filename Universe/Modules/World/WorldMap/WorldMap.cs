@@ -48,7 +48,7 @@ using Universe.Framework.Utilities;
 using GridRegion = Universe.Framework.Services.GridRegion;
 using RegionFlags = Universe.Framework.Services.RegionFlags;
 
-namespace Universe.Modules.World.WorldMap
+namespace Universe.Modules.WorldMap
 {
     public class WorldMapModule : INonSharedRegionModule, IWorldMapModule
     {
@@ -69,7 +69,7 @@ namespace Universe.Modules.World.WorldMap
 
         #region INonSharedRegionModule Members
 
-        public virtual void Initialize (IConfigSource source)
+        public virtual void Initialise (IConfigSource source)
         {
             if (source.Configs ["MapModule"] != null) {
                 if (source.Configs ["MapModule"].GetString ("WorldMapModule", "WorldMapModule") != Name)

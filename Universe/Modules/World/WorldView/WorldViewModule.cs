@@ -38,7 +38,7 @@ using Universe.Framework.SceneInfo;
 using Universe.Framework.Servers.HttpServer.Interfaces;
 using Universe.Framework.Utilities;
 
-namespace Universe.Modules.World.WorldView
+namespace Universe.Modules.WorldView
 {
     public class WorldViewModule : INonSharedRegionModule
     {
@@ -51,7 +51,7 @@ namespace Universe.Modules.World.WorldView
         float m_cacheExpires = 24;
         ISimulationBase simulationBase;
 
-        public void Initialize (IConfigSource config)
+        public void Initialise (IConfigSource config)
         {
 
             IConfig moduleConfig = config.Configs ["WorldViewModule"];

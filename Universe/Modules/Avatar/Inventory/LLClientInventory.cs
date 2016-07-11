@@ -75,7 +75,7 @@ namespace Universe.Modules.Inventory
 
         #region INonSharedRegionModule members
 
-        public void Initialize(IConfigSource source)
+        public void Initialise(IConfigSource source)
         {
         }
 

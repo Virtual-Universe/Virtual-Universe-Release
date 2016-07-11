@@ -33,7 +33,7 @@ using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 
-namespace Universe.Modules.World.WorldMap
+namespace Universe.Modules.WorldMap
 {
     public class ShadedMapTileRenderer : IMapTileTerrainRenderer
     {
@@ -44,7 +44,7 @@ namespace Universe.Modules.World.WorldMap
 
         #region IMapTileTerrainRenderer Members
 
-        public void Initialize (IScene scene, IConfigSource config)
+        public void Initialise (IScene scene, IConfigSource config)
         {
             m_scene = scene;
             // m_config = config; // not used currently

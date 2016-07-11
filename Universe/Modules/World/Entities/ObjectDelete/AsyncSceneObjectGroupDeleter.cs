@@ -39,7 +39,7 @@ using Universe.Framework.SceneInfo;
 using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Utilities;
 
-namespace Universe.Modules.World.Entities.ObjectDelete
+namespace Universe.Modules.Entities.ObjectDelete
 {
     public class DeleteToInventoryHolder
     {
@@ -79,7 +79,7 @@ namespace Universe.Modules.World.Entities.ObjectDelete
             get { return null; }
         }
 
-        public void Initialize (IConfigSource source)
+        public void Initialise (IConfigSource source)
         {
         }
 

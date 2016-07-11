@@ -39,7 +39,7 @@ using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
 
-namespace Universe.Modules.World.Land
+namespace Universe.Modules.Land
 {
     /// <summary>
     ///     Keeps track of a specific piece of land's information
@@ -258,7 +258,7 @@ namespace Universe.Modules.World.Land
                         LandData.MediaLoop = args.MediaLoop;
                         LandData.ObscureMusic = args.ObscureMusic;
                         LandData.ObscureMedia = args.ObscureMedia;
-                        // June 26, 2016 Added for LibOMV update 1.0.2.2
+                        // 25062016 Added for LibOMV update 1.0.2.5
                         LandData.AnyAVSounds = args.AnyAVSounds;
                         LandData.GroupAVSounds = args.GroupAVSounds;
                     }
@@ -311,10 +311,10 @@ namespace Universe.Modules.World.Land
                                 }
                             }
                         }
-
                         LandData.Flags = args.ParcelFlags;
-                        // June 26, 2016 Added for LibOMV update 1.0.2.2
+                        // 25062016 Added for LibOMV update 1.0.2.5
                         LandData.SeeAVS = args.SeeAVs;
+
                     }
 
                     if (m_scene.Permissions.CanEditParcelProperties (remote_client.AgentId, this,

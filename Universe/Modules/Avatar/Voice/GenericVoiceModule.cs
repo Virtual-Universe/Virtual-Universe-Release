@@ -49,7 +49,7 @@ namespace Universe.Modules.Voice
 
         #region INonSharedRegionModule Members
 
-        public void Initialize(IConfigSource config)
+        public void Initialise(IConfigSource config)
         {
             IConfig voiceconfig = config.Configs["Voice"];
             if (voiceconfig == null)
@@ -110,9 +110,9 @@ namespace Universe.Modules.Voice
         // every time Universe hands out capabilities to a client
         // (login, region crossing). We contribute two capabilities to
         // the set of capabilities handed back to the client:
-        // ProvisionVoiceAccountRequest and ParcelVoiceInfoRequest.
+        // ProuniverseVoiceAccountRequest and ParcelVoiceInfoRequest.
         // 
-        // ProvisionVoiceAccountRequest allows the client to obtain
+        // ProuniverseVoiceAccountRequest allows the client to obtain
         // the voice account credentials for the avatar it is
         // controlling (e.g., user name, password, etc).
         // 
@@ -121,14 +121,14 @@ namespace Universe.Modules.Voice
         //
         // Note that OnRegisterCaps is called here via a closure
         // delegate containing the scene of the respective region (see
-        // Initialize()).
+        // Initialise()).
         public OSDMap OnRegisterCaps(IScene scene, UUID agentID, IHttpServer caps)
         {
             OSDMap retVal = new OSDMap();
-            retVal["ProvisionVoiceAccountRequest"] = CapsUtil.CreateCAPS("ProvisionVoiceAccountRequest", "");
-            caps.AddStreamHandler(new GenericStreamHandler("POST", retVal["ProvisionVoiceAccountRequest"],
+            retVal["ProuniverseVoiceAccountRequest"] = CapsUtil.CreateCAPS("ProuniverseVoiceAccountRequest", "");
+            caps.AddStreamHandler(new GenericStreamHandler("POST", retVal["ProuniverseVoiceAccountRequest"],
                                                            (path, request, httpRequest, httpResponse) =>
-                                                           ProvisionVoiceAccountRequest(scene, agentID)));
+                                                           ProuniverseVoiceAccountRequest(scene, agentID)));
             retVal["ParcelVoiceInfoRequest"] = CapsUtil.CreateCAPS("ParcelVoiceInfoRequest", "");
             caps.AddStreamHandler(new GenericStreamHandler("POST", retVal["ParcelVoiceInfoRequest"],
                                                            (path, request, httpRequest, httpResponse) =>
@@ -138,7 +138,7 @@ namespace Universe.Modules.Voice
         }
 
         /// Callback for a client request for Voice Account Details.
-        public byte[] ProvisionVoiceAccountRequest(IScene scene, UUID agentID)
+        public byte[] ProuniverseVoiceAccountRequest(IScene scene, UUID agentID)
         {
             try
             {

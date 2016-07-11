@@ -51,7 +51,7 @@ namespace Universe.Modules.Chat
 
         #region INonSharedRegionModule Members
 
-        public void Initialize (IConfigSource config)
+        public void Initialise (IConfigSource config)
         {
             if (config.Configs ["Messaging"] != null) {
                 m_enabled = (config.Configs ["Messaging"].GetString ("InstantMessageModule", Name) == Name);

@@ -30,7 +30,7 @@ using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 
 
-namespace Universe.Modules.World.Terrain.PaintBrushes
+namespace Universe.Modules.Terrain.PaintBrushes
 {
     /// <summary>
     ///     Speed-Optimised Hybrid Erosion Brush

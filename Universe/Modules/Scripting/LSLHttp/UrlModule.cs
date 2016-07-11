@@ -87,7 +87,7 @@ namespace Universe.Modules.Scripting
             get { return "UrlModule"; }
         }
 
-        public void Initialize (IConfigSource config)
+        public void Initialise (IConfigSource config)
         {
         }
 

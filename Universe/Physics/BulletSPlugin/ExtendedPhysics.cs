@@ -67,7 +67,7 @@ namespace Universe.Physics.BulletSPlugin
 
         public string Name { get { return GetType().Name; } }
 
-        public void Initialize(IConfigSource config)
+        public void Initialise(IConfigSource config)
         {
             BaseScene = null;
             Enabled = false;

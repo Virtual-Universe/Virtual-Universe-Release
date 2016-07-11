@@ -36,7 +36,7 @@ using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.SceneInfo.Entities;
 
-namespace Universe.Modules.World.Land
+namespace Universe.Modules.Land
 {
     public class ParcelCounts
     {
@@ -79,7 +79,7 @@ namespace Universe.Modules.World.Land
             get { return null; }
         }
 
-        public void Initialize(IConfigSource source)
+        public void Initialise(IConfigSource source)
         {
         }
 

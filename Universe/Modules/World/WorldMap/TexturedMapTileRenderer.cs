@@ -37,7 +37,7 @@ using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Utilities;
 
-namespace Universe.Modules.World.WorldMap
+namespace Universe.Modules.WorldMap
 {
     // Hue, Saturation, Value; used for color-interpolation
     public struct HSV
@@ -149,7 +149,7 @@ namespace Universe.Modules.World.WorldMap
 
         #region IMapTileTerrainRenderer Members
 
-        public void Initialize (IScene scene, IConfigSource source)
+        public void Initialise (IScene scene, IConfigSource source)
         {
             m_scene = scene;
             // m_config = source; // not used currently

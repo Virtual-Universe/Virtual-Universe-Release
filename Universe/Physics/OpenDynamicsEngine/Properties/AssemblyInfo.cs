@@ -49,9 +49,9 @@ using System.Runtime.InteropServices;
 
 // The assembly version has following format :
 //
-// Major.Minor.Build.Revision
+// Major.Minor.Build.Reuniverse
 //
-// You can specify all values by your own or you can build default build and revision
+// You can specify all values by your own or you can build default build and reuniverse
 // numbers with the '*' character (the default):
 
 [assembly: AssemblyVersion("1.0.2.*")]

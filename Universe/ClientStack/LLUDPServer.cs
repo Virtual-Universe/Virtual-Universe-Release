@@ -192,7 +192,7 @@ namespace Universe.ClientStack
 
         #region IClientNetworkServer Members
 
-        public void Initialize (uint port, IConfigSource configSource, AgentCircuitManager circuitManager)
+        public void Initialise (uint port, IConfigSource configSource, AgentCircuitManager circuitManager)
         {
             IConfig networkConfig = configSource.Configs ["Network"];
             IPAddress internalIP = IPAddress.Any;
@@ -201,7 +201,7 @@ namespace Universe.ClientStack
 
             InitThreadPool (15);
 
-            base.Initialize (internalIP, (int)port);
+            base.Initialise (internalIP, (int)port);
 
             #region Environment.TickCount Measurement
 
@@ -277,7 +277,7 @@ namespace Universe.ClientStack
             if (networkConfig != null)
                 IPAddress.TryParse (networkConfig.GetString ("internal_ip", "0.0.0.0"), out internalIP);
 
-            base.Initialize (internalIP, (int)port);
+            base.Initialise (internalIP, (int)port);
         }
 
         public void Start ()

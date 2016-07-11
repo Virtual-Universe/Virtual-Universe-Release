@@ -30,7 +30,7 @@ using System.IO;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 
-namespace Universe.Modules.World.Terrain.FileLoaders
+namespace Universe.Modules.Terrain.FileLoaders
 {
     public class RAW32 : ITerrainLoader
     {

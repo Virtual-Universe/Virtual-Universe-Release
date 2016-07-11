@@ -1185,10 +1185,10 @@ namespace Universe.Modules
 
             if (m_voiceModule != null)
             {
-                service.AddStreamHandler("ProvisionVoiceAccountRequest",
+                service.AddStreamHandler("ProuniverseVoiceAccountRequest",
                                          new GenericStreamHandler("POST",
-                                                                  service.CreateCAPS("ProvisionVoiceAccountRequest", ""),
-                                                                  ProvisionVoiceAccountRequest));
+                                                                  service.CreateCAPS("ProuniverseVoiceAccountRequest", ""),
+                                                                  ProuniverseVoiceAccountRequest));
                 service.AddStreamHandler("ParcelVoiceInfoRequest",
                                          new GenericStreamHandler("POST",
                                                                   service.CreateCAPS("ParcelVoiceInfoRequest", ""),
@@ -1202,13 +1202,13 @@ namespace Universe.Modules
 
         public void DeregisterCaps()
         {
-            m_service.RemoveStreamHandler("ProvisionVoiceAccountRequest", "POST");
+            m_service.RemoveStreamHandler("ProuniverseVoiceAccountRequest", "POST");
             m_service.RemoveStreamHandler("ParcelVoiceInfoRequest", "POST");
         }
 
         #region Incoming voice caps
 
-        public byte[] ProvisionVoiceAccountRequest(string path, Stream request, OSHttpRequest httpRequest,
+        public byte[] ProuniverseVoiceAccountRequest(string path, Stream request, OSHttpRequest httpRequest,
                                                    OSHttpResponse httpResponse)
         {
             try

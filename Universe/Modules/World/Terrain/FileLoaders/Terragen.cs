@@ -32,7 +32,7 @@ using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Utilities;
 
-namespace Universe.Modules.World.Terrain.FileLoaders
+namespace Universe.Modules.Terrain.FileLoaders
 {
     /// <summary>
     ///     Terragen File Format Loader
@@ -225,7 +225,7 @@ namespace Universe.Modules.World.Terrain.FileLoaders
 
             double horizontalScale = Math.Ceiling ((heightMax - heightMin));
 
-            // if we are completely flat add 1cm range to avoid NaN divisions
+            // if we are completely flat add 1cm range to avoid NaN diuniverses
             if (horizontalScale < 0.01d)
                 horizontalScale = 0.01d;
 

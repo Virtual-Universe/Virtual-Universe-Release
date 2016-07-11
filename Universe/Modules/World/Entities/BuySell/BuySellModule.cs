@@ -39,7 +39,7 @@ using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.Services.ClassHelpers.Inventory;
 using Universe.Framework.Utilities;
 
-namespace Universe.Modules.World.Entities.BuySell
+namespace Universe.Modules.Entities.BuySell
 {
     public class BuySellModule : IBuySellModule, INonSharedRegionModule
     {
@@ -196,7 +196,7 @@ namespace Universe.Modules.World.Entities.BuySell
             get { return null; }
         }
 
-        public void Initialize (IConfigSource source)
+        public void Initialise (IConfigSource source)
         {
         }
 

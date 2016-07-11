@@ -39,7 +39,7 @@ using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Utilities;
 
-namespace Universe.Modules.World.Restart
+namespace Universe.Modules.Restart
 {
     public class RestartModule : INonSharedRegionModule, IRestartModule
     {
@@ -56,7 +56,7 @@ namespace Universe.Modules.World.Restart
 
         #region INonSharedRegionModule Members
 
-        public void Initialize (IConfigSource config)
+        public void Initialise (IConfigSource config)
         {
             IConfig rs_config = config.Configs ["FileBasedSimulationData"];
             if (rs_config != null) {

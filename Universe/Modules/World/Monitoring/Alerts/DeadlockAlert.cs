@@ -28,7 +28,7 @@
 
 using Universe.Framework.Modules;
 
-namespace Universe.Modules.World.Monitoring.Alerts
+namespace Universe.Modules.Monitoring.Alerts
 {
     class DeadlockAlert : IAlert
     {

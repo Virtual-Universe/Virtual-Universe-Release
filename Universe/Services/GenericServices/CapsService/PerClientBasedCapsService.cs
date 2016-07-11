@@ -95,7 +95,7 @@ namespace Universe.Services
             get { return m_CapsService.HostUri; }
         }
 
-        public void Initialize (ICapsService server, UUID agentID)
+        public void Initialise (ICapsService server, UUID agentID)
         {
             m_CapsService = server;
             m_agentID = agentID;
@@ -206,7 +206,7 @@ namespace Universe.Services
                 IRegionCapsService regionCaps = m_CapsService.GetCapsForRegion (regionID);
 
                 PerRegionClientCapsService regionClient = new PerRegionClientCapsService ();
-                regionClient.Initialize (this, regionCaps, capsBase, circuitData, port);
+                regionClient.Initialise (this, regionCaps, capsBase, circuitData, port);
                 m_RegionCapsServices [regionID] = regionClient;
 
                 //Now get and add them

@@ -41,7 +41,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Universe.Modules.World
+namespace Universe.Modules
 {
     public class EnvironmentSettingsModule : IEnvironmentSettingsModule, INonSharedRegionModule
     {
@@ -49,7 +49,7 @@ namespace Universe.Modules.World
 
         #region INonSharedRegionModule Members
 
-        public void Initialize(IConfigSource source)
+        public void Initialise(IConfigSource source)
         {
         }
 

@@ -338,7 +338,7 @@ namespace Universe.Simulation.Base
         public virtual void InitializeModules()
         {
             LocalDataService lds = new LocalDataService();
-            lds.Initialize(ConfigSource, ApplicationRegistry, m_dataPlugins);
+            lds.Initialise(ConfigSource, ApplicationRegistry, m_dataPlugins);
 
             List<dynamic> modules = new List<dynamic>();
             foreach (Type t in m_servicePlugins)

@@ -38,7 +38,7 @@ using Universe.Framework.Utilities;
 namespace Universe.Services.GenericServices.SystemAccountService
 {
     /// <summary>
-    ///     Basically a provision to allow user configuration of the system user accounts
+    ///     Basically a prouniverse to allow user configuration of the system user accounts
     /// </summary>
     public class SystemAccountService : ISystemAccountService, IService
     {
@@ -193,7 +193,7 @@ namespace Universe.Services.GenericServices.SystemAccountService
         {
 
             var userAccount = m_accountService.GetUserAccount (null, usrUUID);
-            var userPassword = Utilities.RandomPassword.Generate (4, 3, 0);
+            var userPassword = Utilities.RandomPassword.Generate (2, 3, 0);
 
             if (userAccount == null) {
                 MainConsole.Instance.WarnFormat ("Creating the {0} user '{1}'", usrType, usrName);
@@ -290,7 +290,7 @@ namespace Universe.Services.GenericServices.SystemAccountService
             question = MainConsole.Instance.Prompt ("Are you really sure that you want to reset the " + userType + " user password ? (yes/no)", "no");
             question = question.ToLower ();
             if (question.StartsWith ("y", StringComparison.Ordinal)) {
-                var newPassword = Utilities.RandomPassword.Generate (4, 3, 0);
+                var newPassword = Utilities.RandomPassword.Generate (2, 3, 0);
 
                 UserAccount account = m_accountService.GetUserAccount (null, systemUserName);
                 bool success = false;

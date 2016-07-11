@@ -34,7 +34,7 @@ using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 
-namespace Universe.Modules.World.Monitoring
+namespace Universe.Modules.Monitoring
 {
     public class BinaryLoggingModule : INonSharedRegionModule
     {
@@ -56,7 +56,7 @@ namespace Universe.Modules.World.Monitoring
             get { return null; }
         }
 
-        public void Initialize (IConfigSource source)
+        public void Initialise (IConfigSource source)
         {
             try {
                 IConfig statConfig = source.Configs ["Statistics.Binary"];

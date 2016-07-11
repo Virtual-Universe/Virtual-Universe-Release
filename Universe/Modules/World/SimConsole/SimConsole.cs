@@ -44,7 +44,7 @@ using System.IO;
 using System.Linq;
 using GridRegion = Universe.Framework.Services.GridRegion;
 
-namespace Universe.Modules.World.SimConsole
+namespace Universe.Modules.SimConsole
 {
     /// <summary>
     ///     This module allows for the console to be accessed in V2 viewers that support SimConsole
@@ -76,7 +76,7 @@ namespace Universe.Modules.World.SimConsole
 
         #region INonSharedRegionModule
 
-        public void Initialize(IConfigSource source)
+        public void Initialise(IConfigSource source)
         {
             IConfig config = source.Configs["SimConsole"];
             if (config != null)

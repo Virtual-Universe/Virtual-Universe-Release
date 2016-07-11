@@ -192,7 +192,7 @@ namespace Universe.Modules.Chat
 
         #region INonSharedRegionModule Members
 
-        public void Initialize (IConfigSource config)
+        public void Initialise (IConfigSource config)
         {
             IConfig m_config = config.Configs ["Dialog"];
             if (m_config != null) {

@@ -36,7 +36,7 @@ using Nini.Config;
 using OpenMetaverse;
 
 
-namespace Universe.Modules.World.Sound
+namespace Universe.Modules.Sound
 {
     public class SoundModule : INonSharedRegionModule, ISoundModule
     {
@@ -45,7 +45,7 @@ namespace Universe.Modules.World.Sound
 
         #region INonSharedRegionModule Members
 
-        public void Initialize(IConfigSource source)
+        public void Initialise(IConfigSource source)
         {
         }
 

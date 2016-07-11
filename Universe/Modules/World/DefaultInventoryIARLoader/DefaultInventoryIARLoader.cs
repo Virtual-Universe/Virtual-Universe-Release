@@ -40,7 +40,7 @@ using Universe.Framework.Services.ClassHelpers.Inventory;
 using Universe.Modules.Archivers;
 using Universe.Region;
 
-namespace Universe.Modules.World.DefaultInventoryIARLoader
+namespace Universe.Modules.DefaultInventoryIARLoader
 {
     public class DefaultInventoryIARLoader : IDefaultLibraryLoader
     {
