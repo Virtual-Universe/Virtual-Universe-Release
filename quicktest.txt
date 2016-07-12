@@ -1,0 +1,3 @@
+just a quick test to check an internal team commit system configuration  
+
+This does not affect operation of Virtual Universe and this file will be removed shortly.
