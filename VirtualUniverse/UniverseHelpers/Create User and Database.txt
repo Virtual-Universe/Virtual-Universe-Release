@@ -4,10 +4,10 @@ Then open up you favorite MySQL editor (phpMyAdmin, MySQLAdmin or another tool) 
 
 ================================================================================================================
 
-CREATE USER 'whitecore'@'%' IDENTIFIED BY '<insert password here>';
+CREATE USER 'universe'@'%' IDENTIFIED BY '<insert password here>';
 
-CREATE DATABASE IF NOT EXISTS `whitecore` ;
+CREATE DATABASE IF NOT EXISTS `universe` ;
 
-GRANT ALL PRIVILEGES ON `whitecore` . * TO 'whitecore'@'%';
+GRANT ALL PRIVILEGES ON `universe` . * TO 'universe'@'%';
 
 ================================================================================================================
