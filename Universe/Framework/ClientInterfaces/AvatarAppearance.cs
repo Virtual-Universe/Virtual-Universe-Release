@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -1497,7 +1499,7 @@ namespace Universe.Framework.ClientInterfaces
             SHAPE_LOWER_BRIDGE_NOSE = 150,
 
             /// <summary>
-            ///     Nostril Diuniverse - High 0--+255 Low
+            ///     Nostril Division - High 0--+255 Low
             /// </summary>
             SHAPE_LOW_SEPTUM_NOSE = 151,
 

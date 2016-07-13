@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -57,7 +59,7 @@ namespace Universe.Framework.SceneInfo
         /// <summary>
         ///     Initializes the data storage engine
         /// </summary>
-        void Initialise();
+        void Initialize();
 
         /// <summary>
         ///     Entirely removes the region, this includes everything about the region
@@ -77,7 +79,7 @@ namespace Universe.Framework.SceneInfo
         List<ISceneEntity> LoadObjects();
 
         /// <summary>
-        ///     Load the latest terrain reuniverse from region storage
+        ///     Load the latest terrain revision from region storage
         /// </summary>
         /// <param name="RevertMap"></param>
         /// <param name="RegionSizeX"></param>
@@ -86,7 +88,7 @@ namespace Universe.Framework.SceneInfo
         void LoadTerrain(bool RevertMap, int RegionSizeX, int RegionSizeY);
 
         /// <summary>
-        ///     Load the latest water reuniverse from region storage
+        ///     Load the latest water revision from region storage
         /// </summary>
         /// <param name="RevertMap"></param>
         /// <param name="RegionSizeX"></param>

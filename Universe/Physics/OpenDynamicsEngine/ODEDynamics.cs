@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -84,11 +86,11 @@ namespace Universe.Physics.OpenDynamicsEngine
         bool m_enabled;
         VehicleFlag m_flags = 0; // Boolean settings:
         List<Vector3> m_forcelist = new List<Vector3>();
-// not used        Vector3 m_lastAngVelocity = Vector3.Zero;
+        // not used        Vector3 m_lastAngVelocity = Vector3.Zero;
         Vector3 m_lastAngularVelocity = Vector3.Zero; // what was last applied to body
         Vector3 m_lastLinearVelocityVector = Vector3.Zero;
         Vector3 m_lastPositionVector = Vector3.Zero;
-// not used        Vector3 m_lastVelocity = Vector3.Zero;
+        // not used        Vector3 m_lastVelocity = Vector3.Zero;
         Vector3 m_lastposChange = Vector3.Zero;
         float m_linearDeflectionEfficiency;
         float m_linearDeflectionTimescale;
@@ -112,7 +114,6 @@ namespace Universe.Physics.OpenDynamicsEngine
         //Attractor properties
         float m_verticalAttractionEfficiency = 1.0f; // damped
         float m_verticalAttractionTimescale = 500f; // Timescale > 300  means no vert attractor.
-
 
         public Vehicle Type
         {
@@ -246,7 +247,6 @@ namespace Universe.Physics.OpenDynamicsEngine
             }
         }
 
-
         //All parts hooked up
         internal void ProcessVectorVehicleParam(Vehicle pParam, Vector3 pValue, float timestep)
         {
@@ -294,7 +294,6 @@ namespace Universe.Physics.OpenDynamicsEngine
             }
         }
 
-
         //All parts hooked up
         internal void ProcessRotationVehicleParam(Vehicle pParam, Quaternion pValue)
         {
@@ -308,7 +307,6 @@ namespace Universe.Physics.OpenDynamicsEngine
                     break;
             }
         }
-
 
         internal void ProcessVehicleFlags(int pParam, bool remove)
         {
@@ -325,7 +323,6 @@ namespace Universe.Physics.OpenDynamicsEngine
             else
                 m_flags |= param;
         }
-
 
         internal void ProcessTypeChange(ODEPrim parent, Vehicle pType, float timestep)
         {
@@ -511,7 +508,6 @@ namespace Universe.Physics.OpenDynamicsEngine
             }
         }
 
-
         internal void Enable(IntPtr pBody, ODEPrim parent, ODEPhysicsScene pParentScene)
         {
             if (m_enabled)
@@ -551,7 +547,6 @@ namespace Universe.Physics.OpenDynamicsEngine
 
             Mass = mass.mass;
         }
-
 
         internal void Step(IntPtr pBody, float pTimestep, ODEPhysicsScene pParentScene, ODEPrim parent)
         {
@@ -904,7 +899,6 @@ namespace Universe.Physics.OpenDynamicsEngine
             }
 
             d.BodyAddForce(Body, m_newVelocity.X, m_newVelocity.Y, m_newVelocity.Z);
-
         }
 
         void MoveAngular(float pTimestep, ODEPhysicsScene _pParentScene, ODEPrim parent)
@@ -1141,7 +1135,6 @@ namespace Universe.Physics.OpenDynamicsEngine
             return remainder;
         }
 
-
         internal void LimitRotation(float timestep)
         {
             if (m_RollreferenceFrame != Quaternion.Identity || (m_flags & VehicleFlag.LOCK_ROTATION) != 0)
@@ -1257,7 +1250,6 @@ namespace Universe.Physics.OpenDynamicsEngine
             }
             return rotBetween;
         }
-
 
         public int m_angularMotorApply { get; set; }
 

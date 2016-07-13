@@ -1,12 +1,14 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyrightD
+ *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
  *     * Neither the name of the Virtual Universe Project nor the
@@ -24,6 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 using System;
 using Nini.Config;
 using OpenMetaverse;
@@ -67,7 +70,7 @@ namespace Universe.Physics.BulletSPlugin
 
         public string Name { get { return GetType().Name; } }
 
-        public void Initialise(IConfigSource config)
+        public void Initialize(IConfigSource config)
         {
             BaseScene = null;
             Enabled = false;
@@ -214,7 +217,8 @@ namespace Universe.Physics.BulletSPlugin
         public const int PHYS_AXIS_UNLOCK_ANGULAR_Z = 14721;
         [ScriptConstant]
         public const int PHYS_AXIS_UNLOCK           = 14722;
-/*
+        
+        /*
         // physAxisLockLimits()
         [ScriptInvocation]
         public int physAxisLock(UUID hostID, UUID scriptID, object[] parms)
@@ -238,8 +242,8 @@ namespace Universe.Physics.BulletSPlugin
         public const int PHYS_LINKSET_TYPE_COMPOUND    = 1;
         [ScriptConstant]
         public const int PHYS_LINKSET_TYPE_MANUAL      = 2;
- */
-/*
+        */
+        /*
         [ScriptInvocation]
         public int physSetLinksetType(UUID hostID, UUID scriptID, int linksetType)
         {
@@ -327,7 +331,7 @@ namespace Universe.Physics.BulletSPlugin
             }
             return ret;
         }
-*/
+        */
         [ScriptConstant]
         public const int PHYS_LINK_TYPE_FIXED  = 1234;
         [ScriptConstant]
@@ -338,7 +342,7 @@ namespace Universe.Physics.BulletSPlugin
         public const int PHYS_LINK_TYPE_6DOF   = 6;
         [ScriptConstant]
         public const int PHYS_LINK_TYPE_SLIDER = 7;
-/*
+        /*
         // physChangeLinkType(integer linkNum, integer typeCode)
         [ScriptInvocation]
         public int physChangeLinkType(UUID hostID, UUID scriptID, int linkNum, int typeCode)
@@ -396,7 +400,7 @@ namespace Universe.Physics.BulletSPlugin
 
             return ret;
         }
-*/
+        */
         // Code for specifying params.
         // The choice if 14400 is arbitrary and only serves to catch parameter code misuse.
         public const int PHYS_PARAM_MIN                    = 14401;
@@ -465,7 +469,7 @@ namespace Universe.Physics.BulletSPlugin
         public const int PHYS_AXIS_ANGULAR_Y = 4;
         [ScriptConstant]
         public const int PHYS_AXIS_ANGULAR_Z = 5;
-/*
+        /*
         // physChangeLinkParams(integer linkNum, [ PHYS_PARAM_*, value, PHYS_PARAM_*, value, ...])
         [ScriptInvocation]
         public int physChangeLinkParams(UUID hostID, UUID scriptID, int linkNum, object[] parms)
@@ -611,6 +615,6 @@ namespace Universe.Physics.BulletSPlugin
             }
             return ret;
         }
-*/
+        */
     }
 }

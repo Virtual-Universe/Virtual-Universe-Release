@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -97,7 +99,7 @@ namespace Universe.Framework.SceneInfo
         Vector3 _userLocation;
         Vector3 _userLookAt;
         AuctionInfo m_AuctionInfo = new AuctionInfo ();
-        // 25062016 Added for LibOMV update 1.0.2.5
+        // 25062016 Added for LibOMV update 0.9.4.5
         bool _seeAVs;
         bool _anyAVSounds;
         bool _groupAVSounds;

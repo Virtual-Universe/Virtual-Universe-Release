@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -55,7 +57,6 @@ namespace Universe.Modules.WorldMap
 
         static readonly Color4 WATER_COLOR = new Color4 (29, 72, 96, 216);
         static readonly Color4 OPAQUE_WATER_COLOR = new Color4 (34, 92, 114, 255);
-        //static readonly Color4 SKY_COLOR = new Color4(106, 178, 236, 216);
         static readonly int SKYCOLOR = 0x8BC4EC;
 
         readonly Dictionary<UUID, Color4> m_colors = new Dictionary<UUID, Color4> ();
@@ -73,7 +74,7 @@ namespace Universe.Modules.WorldMap
 
         #region IMapTileTerrainRenderer Members
 
-        public void Initialise (IScene scene, IConfigSource config)
+        public void Initialize (IScene scene, IConfigSource config)
         {
             m_scene = scene;
             m_imgDecoder = m_scene.RequestModuleInterface<IJ2KDecoder> ();
@@ -98,7 +99,6 @@ namespace Universe.Modules.WorldMap
                 m_renderMeshes = mapConfig.GetBoolean ("RenderMeshes", m_renderMeshes);
             }
 
-
             ReadCacheMap ();
         }
 
@@ -109,7 +109,7 @@ namespace Universe.Modules.WorldMap
             Vector3 camPos = new Vector3 (
                 (m_scene.RegionInfo.RegionSizeX / 2f) - 0.5f,
                 (m_scene.RegionInfo.RegionSizeY / 2f) - 0.5f,
-                221f); //.7025033688163f);
+                221f);
 
             Viewport viewport = new Viewport (camPos, -Vector3.UnitZ, 256f, 0.1f,
                                              m_scene.RegionInfo.RegionSizeX - scaledRemovalFactor,
@@ -132,7 +132,7 @@ namespace Universe.Modules.WorldMap
             Vector3 camPos = new Vector3 (
                 (m_scene.RegionInfo.RegionSizeX / 2f) - 0.5f,
                 (m_scene.RegionInfo.RegionSizeY / 2f) - 0.5f,
-                221f);  //.7025033688163f);
+                221f);
 
 
             Viewport viewport = new Viewport (camPos, -Vector3.UnitZ, 256f, 0.1f,
@@ -149,7 +149,6 @@ namespace Universe.Modules.WorldMap
 
             mapBmp = TerrainBitmap (viewport, false);
             return mapBmp;
-
         }
 
         public Bitmap TerrainBitmap (Viewport viewport, bool threeD)
@@ -196,7 +195,6 @@ namespace Universe.Modules.WorldMap
             renderer.Scene.addLight ("Light1", new warp_Light (new warp_Vector (1.0f, 0.5f, 1f), 0xffffff, 0, 320, 40));
             renderer.Scene.addLight ("Light2", new warp_Light (new warp_Vector (-1f, -1f, 1f), 0xffffff, 0, 100, 40));
 
-
             try {
                 CreateWater (renderer, threeD);
                 CreateTerrain (renderer, m_textureTerrain);
@@ -217,7 +215,6 @@ namespace Universe.Modules.WorldMap
             using (Bitmap origBitmap = bitmap)
                 bitmap = ImageUtils.ResizeImage (origBitmap, viewport.Width, viewport.Height);
 
-
             // Clean up
             SaveCache ();
             foreach (var o in renderer.Scene.objectData.Values) {
@@ -236,11 +233,9 @@ namespace Universe.Modules.WorldMap
             return bitmap;
         }
 
-
         public Bitmap CreateViewImage (Vector3 camPos, Vector3 camDir, float fov, int width, int height, bool useTextures)
         {
             Viewport viewport = new Viewport (camPos, camDir, fov, 1024f, 0.1f, width, height);
-            //             Viewport viewport = new Viewport(camPos, camDir, fov, Constants.RegionSize,  0.1f, width, height);
             return TerrainBitmap (viewport, true);
         }
 
@@ -264,30 +259,11 @@ namespace Universe.Modules.WorldMap
                 renderer.AddPlane ("Water", maxSize);
                 renderer.Scene.sceneobject ("Water").setPos (0, waterHeight, 0);
 
-                /* reference    if(m_scene.RegionInfo.RegionSizeX >= m_scene.RegionInfo.RegionSizeY)
-                                    renderer.AddPlane ("Water", m_scene.RegionInfo.RegionSizeX/2);
-                                else
-                                    renderer.AddPlane ("Water", m_scene.RegionInfo.RegionSizeY/2);
-
-                                renderer.Scene.sceneobject ("Water").setPos (
-                                    (m_scene.RegionInfo.RegionSizeX / 2) - 0.5f,
-                                    waterHeight,
-                                    (m_scene.RegionInfo.RegionSizeY / 2) - 0.5f);
-
-
-                */
                 waterColormaterial = new warp_Material (ConvertColor (WATER_COLOR));
-                //  waterColormaterial.setTransparency ((byte)((1f - WATER_COLOR.A) * 255f) * 2);
                 waterColormaterial.setTransparency ((byte)((1f - WATER_COLOR.A) * 255f));
             } else {
                 renderer.AddPlane ("Water", maxSize / 2);
 
-                /* for reference
-                                if(m_scene.RegionInfo.RegionSizeX >= m_scene.RegionInfo.RegionSizeY)
-                                    renderer.AddPlane ("Water", m_scene.RegionInfo.RegionSizeX/2);
-                                else
-                                    renderer.AddPlane ("Water", m_scene.RegionInfo.RegionSizeY/2);
-                */
                 renderer.Scene.sceneobject ("Water").setPos (
                     (m_scene.RegionInfo.RegionSizeX / 2f) - 0.5f,
                     -0.5f,
@@ -296,7 +272,6 @@ namespace Universe.Modules.WorldMap
 
                 waterColormaterial = new warp_Material (ConvertColor (OPAQUE_WATER_COLOR));
                 waterColormaterial.setTransparency (48);
-                //waterColormaterial.opaque = true;
             }
 
             waterColormaterial.setReflectivity (0);
@@ -308,8 +283,8 @@ namespace Universe.Modules.WorldMap
         {
             ITerrainChannel terrain = m_scene.RequestModuleInterface<ITerrainChannel> ();
 
-            float diffX = 1.0f; //(float) m_scene.RegionInfo.RegionSizeX/(float) Constants.RegionSize;
-            float diffY = 1.0f; //(float) m_scene.RegionInfo.RegionSizeY/(float) Constants.RegionSize;
+            float diffX = 1.0f;
+            float diffY = 1.0f;
             int newRsX = m_scene.RegionInfo.RegionSizeX / (int)diffX;
             int newRsY = m_scene.RegionInfo.RegionSizeY / (int)diffY;
 
@@ -344,10 +319,8 @@ namespace Universe.Modules.WorldMap
 
                         // Normal
                         Vector3 v1 = new Vector3 (newX, newY, (terrain [(int)x, (int)y]) / normal_map_reduction);
-                        Vector3 v2 = new Vector3 (newX + 1, newY,
-                                                 (terrain [(int)x + 1, (int)y]) / normal_map_reduction);
-                        Vector3 v3 = new Vector3 (newX, newY + 1,
-                                                 (terrain [(int)x, (int)(y + 1)]) / normal_map_reduction);
+                        Vector3 v2 = new Vector3 (newX + 1, newY, (terrain [(int)x + 1, (int)y]) / normal_map_reduction);
+                        Vector3 v3 = new Vector3 (newX, newY + 1, (terrain [(int)x, (int)(y + 1)]) / normal_map_reduction);
                         warp_Vector norm = ConvertVector (SurfaceNormal (v1, v2, v3));
                         norm = norm.reverse ();
                         obj.vertex (v).n = norm;
@@ -444,8 +417,7 @@ namespace Universe.Modules.WorldMap
                           {
                             Image sculpt = m_imgDecoder.DecodeToImage (sculptAsset);
                             if (sculpt != null) {
-                                renderMesh = m_primMesher.GenerateFacetedSculptMesh (omvPrim, (Bitmap)sculpt,
-                                                                                    DetailLevel.Medium);
+                                renderMesh = m_primMesher.GenerateFacetedSculptMesh (omvPrim, (Bitmap)sculpt, DetailLevel.Medium);
                                 sculpt.Dispose ();
                             }
                         }
@@ -824,6 +796,7 @@ namespace Universe.Modules.WorldMap
 
                 graphics.DrawImage (image, 0, 0, result.Width, result.Height);
             }
+
             image.Dispose ();
 
             return result;

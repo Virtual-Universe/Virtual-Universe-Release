@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -24,7 +26,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 
 using System;
 using System.Collections.Generic;
@@ -234,7 +235,7 @@ namespace Universe.Modules.Startup
 
         #region ISharedRegionStartupModule Members
 
-        public void Initialise (IScene scene, IConfigSource source, ISimulationBase simBase)
+        public void Initialize (IScene scene, IConfigSource source, ISimulationBase simBase)
         {
             m_scene = scene;
             //Register the interface
@@ -253,7 +254,7 @@ namespace Universe.Modules.Startup
             RegisterRegionWithGrid (scene, false, true, m_RegisterRegionPassword);
         }
 
-        public void PostInitialise (IScene scene, IConfigSource source, ISimulationBase simBase)
+        public void PostInitialize (IScene scene, IConfigSource source, ISimulationBase simBase)
         {
         }
 
@@ -337,8 +338,7 @@ namespace Universe.Modules.Startup
                                 return true;
                             return false;
                         }) == null)
-                            m_knownNeighbors [targetregionID].Add (m_scene.GridService.GetRegionByUUID (null,
-                                regionID));
+                            m_knownNeighbors [targetregionID].Add (m_scene.GridService.GetRegionByUUID (null, regionID));
                     }
                 }
             }

@@ -1,12 +1,14 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://virtualnexus.eu/, http://aurora-sim.org/, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyrightD
+ *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
  *     * Neither the name of the Virtual Universe Project nor the
@@ -198,8 +200,6 @@ namespace Universe.Physics.BulletSPlugin
                         });
                     }
                 }
-
-
             }
             return true;
         }
@@ -472,13 +472,13 @@ namespace Universe.Physics.BulletSPlugin
         {
             bool ret = false;
 
-            // There have been instances of objects getting thrown way out of bounds and crashing
-            //    the border crossing code.
-//            uint wayOutThere = Constants.RegionSize * Constants.RegionSize;
-//            if (_position.X < -Constants.RegionSize || _position.X > wayOutThere
-//                || _position.Y < -Constants.RegionSize || _position.Y > wayOutThere
-//                || _position.Z < -Constants.RegionSize || _position.Z > wayOutThere)
-//            {
+          // There have been instances of objects getting thrown way out of bounds and crashing
+          //    the border crossing code.
+          //uint wayOutThere = Constants.RegionSize * Constants.RegionSize;
+          //if (_position.X < -Constants.RegionSize || _position.X > wayOutThere
+          //    || _position.Y < -Constants.RegionSize || _position.Y > wayOutThere
+          //    || _position.Z < -Constants.RegionSize || _position.Z > wayOutThere)
+          //  {
             int wayOutThere = 10000;
             int wayUnderThere = -10000;
             if (_position.X < wayUnderThere || _position.X > wayOutThere
@@ -489,7 +489,7 @@ namespace Universe.Physics.BulletSPlugin
                 ZeroMotion(inTaintTime);
                 ret = true;
             }
-//            if (RawVelocity.LengthSquared() > BSParam.MaxLinearVelocity)
+            //if (RawVelocity.LengthSquared() > BSParam.MaxLinearVelocity)
             if (RawVelocity.LengthSquared() > BSParam.MaxLinearVelocitySquared)
             {
                 RawVelocity = Util.ClampV(RawVelocity, BSParam.MaxLinearVelocity);

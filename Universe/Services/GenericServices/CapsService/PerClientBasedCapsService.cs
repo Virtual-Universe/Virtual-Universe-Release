@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -95,7 +97,7 @@ namespace Universe.Services
             get { return m_CapsService.HostUri; }
         }
 
-        public void Initialise (ICapsService server, UUID agentID)
+        public void Initialize (ICapsService server, UUID agentID)
         {
             m_CapsService = server;
             m_agentID = agentID;
@@ -206,7 +208,7 @@ namespace Universe.Services
                 IRegionCapsService regionCaps = m_CapsService.GetCapsForRegion (regionID);
 
                 PerRegionClientCapsService regionClient = new PerRegionClientCapsService ();
-                regionClient.Initialise (this, regionCaps, capsBase, circuitData, port);
+                regionClient.Initialize (this, regionCaps, capsBase, circuitData, port);
                 m_RegionCapsServices [regionID] = regionClient;
 
                 //Now get and add them

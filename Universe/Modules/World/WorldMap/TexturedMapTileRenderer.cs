@@ -1,6 +1,8 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -138,8 +140,6 @@ namespace Universe.Modules.WorldMap
 
         #endregion
 
-        // IConfigSource m_config; // not used currently
-
         // mapping from texture UUIDs to averaged color. This will contain all the textures in the sim.
         //   This could be considered a memory-leak, but it's *hopefully* taken care of after the terrain is generated
         Dictionary<UUID, Color> m_mapping;
@@ -149,10 +149,9 @@ namespace Universe.Modules.WorldMap
 
         #region IMapTileTerrainRenderer Members
 
-        public void Initialise (IScene scene, IConfigSource source)
+        public void Initialize (IScene scene, IConfigSource source)
         {
             m_scene = scene;
-            // m_config = source; // not used currently
 
             // get cache dir
             m_assetCacheDir = source.Configs ["AssetCache"].GetString ("CacheDirectory", m_assetCacheDir);
@@ -219,11 +218,7 @@ namespace Universe.Modules.WorldMap
                         // add a bit noise for breaking up those flat colors:
                         // - a large-scale noise, for the "patches" (using an doubled s-curve for sharper contrast)
                         // - a small-scale noise, for bringing in some small scale variation
-                        //float bigNoise = (float)TerrainUtil.InterpolatedNoise(x / 8.0, y / 8.0) * .5f + .5f; // map to 0.0 - 1.0
-                        //float smallNoise = (float)TerrainUtil.InterpolatedNoise(x + 33, y + 43) * .5f + .5f;
-                        //float hmod = heightvalue + smallNoise * 3f + S(S(bigNoise)) * 10f;
-                        float hmod =
-                            heightvalue; // 0 - 10
+                        float hmod = heightvalue; // 0 - 10
 
                         // find the low/high values for this point (interpolated bilinearily)
                         // (and remember, x=0,y=0 is SW)
@@ -303,8 +298,7 @@ namespace Universe.Modules.WorldMap
                 if (!loaded) {
                     //Something went wrong, delete the file
                     try {
-                        File.Delete (Path.Combine (Path.Combine (m_assetCacheDir, "mapTileTextureCache"),
-                                                 m_scene.RegionInfo.RegionName + ".tc"));
+                        File.Delete (Path.Combine (Path.Combine (m_assetCacheDir, "mapTileTextureCache"), m_scene.RegionInfo.RegionName + ".tc"));
                     } catch {
                     }
                 }
@@ -321,8 +315,7 @@ namespace Universe.Modules.WorldMap
                 Color4 c = kvp.Value.AsColor4 ();
                 UUID key = UUID.Parse (kvp.Key);
                 if (!m_mapping.ContainsKey (key))
-                    m_mapping.Add (key,
-                                  Color.FromArgb ((int)(c.A * 255), (int)(c.R * 255), (int)(c.G * 255), (int)(c.B * 255)));
+                    m_mapping.Add (key, Color.FromArgb ((int)(c.A * 255), (int)(c.R * 255), (int)(c.G * 255), (int)(c.B * 255)));
             }
 
             return true;
@@ -333,8 +326,7 @@ namespace Universe.Modules.WorldMap
             OSDMap map = SerializeCache ();
             FileStream stream =
                 new FileStream (
-                    Path.Combine (Path.Combine (m_assetCacheDir, "mapTileTextureCache"),
-                                 m_scene.RegionInfo.RegionName + ".tc"), FileMode.Create);
+                    Path.Combine (Path.Combine (m_assetCacheDir, "mapTileTextureCache"), m_scene.RegionInfo.RegionName + ".tc"), FileMode.Create);
             StreamWriter writer = new StreamWriter (stream);
             try {
                 writer.WriteLine (OSDParser.SerializeJsonString (map));
@@ -370,18 +362,16 @@ namespace Universe.Modules.WorldMap
                     }
                 } catch (DllNotFoundException) {
                     MainConsole.Instance.ErrorFormat (
-                        "[TexturedMap generator]: OpenJpeg is not installed correctly on this system. Asset Data is empty for {0}",
-                        id);
+                        "[TexturedMap generator]: OpenJpeg is not installed correctly on this system. Asset Data is empty for {0}", id);
                 } catch (IndexOutOfRangeException) {
                     MainConsole.Instance.ErrorFormat (
-                        "[TexturedMap generator]: OpenJpeg was unable to encode this. Asset Data is empty for {0}",
-                        id);
+                        "[TexturedMap generator]: OpenJpeg was unable to encode this. Asset Data is empty for {0}", id);
                 } catch (Exception) {
                     MainConsole.Instance.ErrorFormat (
-                        "[TexturedMap generator]: OpenJpeg was unable to encode this. Asset Data is empty for {0}",
-                        id);
+                        "[TexturedMap generator]: OpenJpeg was unable to encode this. Asset Data is empty for {0}", id);
                 }
             }
+
             return null;
         }
 

@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -24,7 +26,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 
 using System;
 using System.Diagnostics;
@@ -115,8 +116,7 @@ namespace Universe.Modules.WorldMap.Warp3DMap
                                 using (MemoryStream stream = new MemoryStream (cachedAsset.Data))
                                     detailTexture [i] = (Bitmap)Image.FromStream (stream);
                             } catch (Exception ex) {
-                                MainConsole.Instance.Warn ("Failed to decode cached terrain texture " + cacheID +
-                                                          " (textureID: " + textureIDs [i] + "): " + ex.Message);
+                                MainConsole.Instance.Warn ("Failed to decode cached terrain texture " + cacheID + " (textureID: " + textureIDs [i] + "): " + ex.Message);
                             }
                         }
                         if (cachedAsset != null)
@@ -129,8 +129,7 @@ namespace Universe.Modules.WorldMap.Warp3DMap
                                 try {
                                     detailTexture [i] = (Bitmap)m_imgDecoder.DecodeToImage (assetData);
                                 } catch (Exception ex) {
-                                    MainConsole.Instance.Warn ("Failed to decode terrain texture " + textureIDs [i] + ": " +
-                                                              ex.Message);
+                                    MainConsole.Instance.Warn ("Failed to decode terrain texture " + textureIDs [i] + ": " + ex.Message);
                                 }
                             }
 
@@ -242,8 +241,7 @@ namespace Universe.Modules.WorldMap.Warp3DMap
             #region Texture Compositing
 
             Bitmap output = new Bitmap (outWidth, outHeight, PixelFormat.Format24bppRgb);
-            BitmapData outputData = output.LockBits (new Rectangle (0, 0, outWidth, outHeight), ImageLockMode.WriteOnly,
-                                                    PixelFormat.Format24bppRgb);
+            BitmapData outputData = output.LockBits (new Rectangle (0, 0, outWidth, outHeight), ImageLockMode.WriteOnly, PixelFormat.Format24bppRgb);
 
             unsafe
             {
@@ -333,8 +331,7 @@ namespace Universe.Modules.WorldMap.Warp3DMap
             const float BASE_HSV_V = 34f / 100f;
 
             Bitmap img = new Bitmap (256, 256);
-            BitmapData bitmapData = img.LockBits (new Rectangle (0, 0, 256, 256), ImageLockMode.WriteOnly,
-                                                 PixelFormat.Format24bppRgb);
+            BitmapData bitmapData = img.LockBits (new Rectangle (0, 0, 256, 256), ImageLockMode.WriteOnly, PixelFormat.Format24bppRgb);
 
             unsafe
             {

@@ -1,6 +1,8 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -38,7 +40,7 @@ using Universe.Framework.Utilities;
 namespace Universe.Services.GenericServices.SystemAccountService
 {
     /// <summary>
-    ///     Basically a prouniverse to allow user configuration of the system user accounts
+    ///     Basically a provision to allow user configuration of the system user accounts
     /// </summary>
     public class SystemAccountService : ISystemAccountService, IService
     {
@@ -137,7 +139,6 @@ namespace Universe.Services.GenericServices.SystemAccountService
 
                 AddCommands ();
             }
-
         }
 
         #endregion
@@ -168,7 +169,6 @@ namespace Universe.Services.GenericServices.SystemAccountService
                     "reset marketplace password",
                     "Resets the password of the system Marketplace Owner",
                     HandleResetMarketplacePassword, false, true);
-
             }
         }
 
@@ -186,7 +186,6 @@ namespace Universe.Services.GenericServices.SystemAccountService
             VerifySystemUserInfo ("RealEstate", SystemEstateOwnerUUID, SystemEstateOwnerName, 150);
             VerifySystemUserInfo ("Banker", BankerUUID, BankerName, 100);
             VerifySystemUserInfo ("Marketplace", MarketplaceOwnerUUID, MarketplaceOwnerName, 100);
-
         }
 
         void VerifySystemUserInfo (string usrType, UUID usrUUID, string usrName, int usrLevel)
@@ -224,7 +223,6 @@ namespace Universe.Services.GenericServices.SystemAccountService
                     MainConsole.Instance.InfoFormat (" The {0} user has been elevated to '{1}' level", usrType, m_accountService.UserGodLevel (usrLevel));
 
                 return;
-
             }
 
             // we already have the account.. verify details in case of a configuration change
@@ -241,7 +239,6 @@ namespace Universe.Services.GenericServices.SystemAccountService
                 } else
                     MainConsole.Instance.WarnFormat (" There was a problem updating the {0} user", usrType);
             }
-
         }
 
         // Save passwords for later
@@ -309,7 +306,6 @@ namespace Universe.Services.GenericServices.SystemAccountService
                 }
             }
         }
-
 
         #endregion
     }

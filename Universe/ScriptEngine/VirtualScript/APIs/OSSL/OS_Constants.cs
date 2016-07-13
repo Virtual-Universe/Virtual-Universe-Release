@@ -1,6 +1,8 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -63,7 +65,6 @@ namespace Universe.ScriptEngine.VirtualScript.Runtime
         public static readonly LSL_Types.LSLInteger OS_NPC_LAND_AT_TARGET = 2;
         public static readonly LSL_Types.LSLInteger OS_NPC_RUNNING = 4;
         public static readonly LSL_Types.LSLInteger OS_NPC_SIT_NOW = 0;
-
         public static readonly LSL_Types.LSLInteger OS_NPC_CREATOR_OWNED = 0x1;
         public static readonly LSL_Types.LSLInteger OS_NPC_NOT_OWNED = 0x2;
         public static readonly LSL_Types.LSLInteger OS_NPC_SENSE_AS_AGENT = 0x4;

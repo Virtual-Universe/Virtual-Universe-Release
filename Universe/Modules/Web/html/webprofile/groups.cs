@@ -1,6 +1,8 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -124,7 +126,6 @@ namespace Universe.Modules.Web
                 vars.Add ("UserPartner", "Not specified yet");
                 vars.Add ("UserAboutMe", "Nothing here yet");
                 vars.Add("UserPictureURL", "../images/icons/no_avatar.jpg");
-
             }
 
             vars.Add("UsersGroupsText", translator.GetTranslatedString("UsersGroupsText"));
@@ -145,7 +146,6 @@ namespace Universe.Modules.Web
                         { "GroupPictureURL", url },
                         { "GroupName", grp.GroupName }
                     });
-
                 }
 
                 if (groups.Count == 0)
@@ -154,9 +154,7 @@ namespace Universe.Modules.Web
                         { "GroupPictureURL", "../images/icons/no_groups.jpg" },
                         { "GroupName", "None yet" }
                     });
-
                 }
-
             }
 
             vars.Add("GroupNameText", translator.GetTranslatedString("GroupNameText"));

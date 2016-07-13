@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -54,13 +56,13 @@ namespace Universe.Modules.Archivers
         protected Guid m_requestId;
         protected IScene m_scene;
         protected List<ISceneEntity> m_sceneObjects;
-        protected IRegionSerialiserModule m_serialiser;
+        protected IRegionSerializerModule m_serialiser;
         protected ITerrainModule m_terrainModule;
 
         public ArchiveWriteRequestExecution(
             List<ISceneEntity> sceneObjects,
             ITerrainModule terrainModule,
-            IRegionSerialiserModule serialiser,
+            IRegionSerializerModule serialiser,
             IScene scene,
             TarArchiveWriter archiveWriter,
             Guid requestId)

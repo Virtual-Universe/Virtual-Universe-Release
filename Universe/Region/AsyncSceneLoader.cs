@@ -1,6 +1,8 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -26,7 +28,6 @@
  */
 
 using System.Collections.Generic;
-
 using Nini.Config;
 using Universe.Framework.ModuleLoader;
 using Universe.Framework.Modules;
@@ -59,7 +60,7 @@ namespace Universe.Region
                 m_simBase.ApplicationRegistry.RegisterModuleInterface<ISceneLoader>(this);
         }
 
-        public void PostInitialise()
+        public void PostInitialize()
         {
         }
 
@@ -101,7 +102,7 @@ namespace Universe.Region
             List<IClientNetworkServer> allClientServers = new List<IClientNetworkServer>();
             foreach (IClientNetworkServer clientServer in clientServers)
             {
-                clientServer.Initialise((uint)regionInfo.RegionPort, m_configSource, circuitManager);
+                clientServer.Initialize((uint)regionInfo.RegionPort, m_configSource, circuitManager);
                 allClientServers.Add(clientServer);
             }
 

@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -24,7 +26,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 
 using System;
 using System.Collections.Generic;
@@ -162,7 +163,7 @@ namespace Universe.Modules.SimProtection
             get { return null; }
         }
 
-        public void Initialise (IConfigSource source)
+        public void Initialize (IConfigSource source)
         {
             if (m_physicsStatTimer == null) {
                 m_physicsStatTimer = new Timer { Interval = 10000 };
@@ -335,26 +336,16 @@ namespace Universe.Modules.SimProtection
                     m_lastPhysicsStats [kvp.Key].StatCollisionAccountingTime /= 10;
                     //Add the stats to the profiler
                     Profiler p = ProfilerManager.GetProfiler ();
-                    p.AddStat ("StatAvatarUpdatePosAndVelocity " + kvp.Key,
-                              m_lastPhysicsStats [kvp.Key].StatAvatarUpdatePosAndVelocity);
-                    p.AddStat ("StatCollisionOptimizedTime " + kvp.Key,
-                              m_lastPhysicsStats [kvp.Key].StatCollisionOptimizedTime);
-                    p.AddStat ("StatPhysicsMoveTime " + kvp.Key,
-                              m_lastPhysicsStats [kvp.Key].StatPhysicsMoveTime);
-                    p.AddStat ("StatPhysicsTaintTime " + kvp.Key,
-                              m_lastPhysicsStats [kvp.Key].StatPhysicsTaintTime);
-                    p.AddStat ("StatPrimUpdatePosAndVelocity " + kvp.Key,
-                              m_lastPhysicsStats [kvp.Key].StatPrimUpdatePosAndVelocity);
-                    p.AddStat ("StatSendCollisionsTime " + kvp.Key,
-                              m_lastPhysicsStats [kvp.Key].StatSendCollisionsTime);
-                    p.AddStat ("StatUnlockedArea " + kvp.Key,
-                              m_lastPhysicsStats [kvp.Key].StatUnlockedArea);
-                    p.AddStat ("StatFindContactsTime " + kvp.Key,
-                              m_lastPhysicsStats [kvp.Key].StatFindContactsTime);
-                    p.AddStat ("StatContactLoopTime " + kvp.Key,
-                              m_lastPhysicsStats [kvp.Key].StatContactLoopTime);
-                    p.AddStat ("StatCollisionAccountingTime " + kvp.Key,
-                              m_lastPhysicsStats [kvp.Key].StatCollisionAccountingTime);
+                    p.AddStat ("StatAvatarUpdatePosAndVelocity " + kvp.Key, m_lastPhysicsStats [kvp.Key].StatAvatarUpdatePosAndVelocity);
+                    p.AddStat ("StatCollisionOptimizedTime " + kvp.Key, m_lastPhysicsStats [kvp.Key].StatCollisionOptimizedTime);
+                    p.AddStat ("StatPhysicsMoveTime " + kvp.Key, m_lastPhysicsStats [kvp.Key].StatPhysicsMoveTime);
+                    p.AddStat ("StatPhysicsTaintTime " + kvp.Key, m_lastPhysicsStats [kvp.Key].StatPhysicsTaintTime);
+                    p.AddStat ("StatPrimUpdatePosAndVelocity " + kvp.Key, m_lastPhysicsStats [kvp.Key].StatPrimUpdatePosAndVelocity);
+                    p.AddStat ("StatSendCollisionsTime " + kvp.Key, m_lastPhysicsStats [kvp.Key].StatSendCollisionsTime);
+                    p.AddStat ("StatUnlockedArea " + kvp.Key, m_lastPhysicsStats [kvp.Key].StatUnlockedArea);
+                    p.AddStat ("StatFindContactsTime " + kvp.Key, m_lastPhysicsStats [kvp.Key].StatFindContactsTime);
+                    p.AddStat ("StatContactLoopTime " + kvp.Key, m_lastPhysicsStats [kvp.Key].StatContactLoopTime);
+                    p.AddStat ("StatCollisionAccountingTime " + kvp.Key, m_lastPhysicsStats [kvp.Key].StatCollisionAccountingTime);
                 }
                 m_currentPhysicsStats.Clear ();
             }

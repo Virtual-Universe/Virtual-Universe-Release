@@ -1,6 +1,8 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -25,7 +27,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -41,7 +42,6 @@ using Universe.Framework.Modules;
 using Universe.Framework.Servers.HttpServer;
 using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Services;
-
 
 namespace Universe.Modules
 {
@@ -1185,10 +1185,10 @@ namespace Universe.Modules
 
             if (m_voiceModule != null)
             {
-                service.AddStreamHandler("ProuniverseVoiceAccountRequest",
+                service.AddStreamHandler("ProvisionVoiceAccountRequest",
                                          new GenericStreamHandler("POST",
-                                                                  service.CreateCAPS("ProuniverseVoiceAccountRequest", ""),
-                                                                  ProuniverseVoiceAccountRequest));
+                                                                  service.CreateCAPS("ProvisionVoiceAccountRequest", ""),
+                                                                  ProvisionVoiceAccountRequest));
                 service.AddStreamHandler("ParcelVoiceInfoRequest",
                                          new GenericStreamHandler("POST",
                                                                   service.CreateCAPS("ParcelVoiceInfoRequest", ""),
@@ -1202,13 +1202,13 @@ namespace Universe.Modules
 
         public void DeregisterCaps()
         {
-            m_service.RemoveStreamHandler("ProuniverseVoiceAccountRequest", "POST");
+            m_service.RemoveStreamHandler("ProvisionVoiceAccountRequest", "POST");
             m_service.RemoveStreamHandler("ParcelVoiceInfoRequest", "POST");
         }
 
         #region Incoming voice caps
 
-        public byte[] ProuniverseVoiceAccountRequest(string path, Stream request, OSHttpRequest httpRequest,
+        public byte[] ProvisionVoiceAccountRequest(string path, Stream request, OSHttpRequest httpRequest,
                                                    OSHttpResponse httpResponse)
         {
             try

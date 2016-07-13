@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -24,7 +26,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 
 using System;
 using System.Collections.Generic;
@@ -57,7 +58,7 @@ namespace Universe.Modules.Caps
 
         #region INonSharedRegionModule Members
 
-        public void Initialise (IConfigSource source)
+        public void Initialize (IConfigSource source)
         {
             var cfg = source.Configs ["MaterialsModule"];
             if (cfg != null)
@@ -119,8 +120,7 @@ namespace Universe.Modules.Caps
             return retVal;
         }
 
-        public byte[] RenderMaterialsPostCap (string path, Stream request,
-                                             OSHttpRequest httpRequest, OSHttpResponse httpResponse)
+        public byte[] RenderMaterialsPostCap (string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse)
         {
             MainConsole.Instance.Debug ("[Materials]: POST cap handler");
 
@@ -208,7 +208,6 @@ namespace Universe.Modules.Caps
                                             }
                                             // MainConsole.Instance.Debug("[Materials]: matLocalId: " + matLocalID);
 
-
                                             OSDMap mat = null;
                                             if (matsMap.ContainsKey ("Material"))
                                             {
@@ -254,13 +253,7 @@ namespace Universe.Modules.Caps
                                                                 MainConsole.Instance.Debug ("[Materials]: te.DefaultTexture is null");
                                                             else
                                                             {
-//## FixMe ##
-// comparison always results in 'False'                                   if (te.DefaultTexture.MaterialID == null)
-//                                                                    MainConsole.Instance.Debug("[MaterialsDemoModule]: te.DefaultTexture.MaterialID is null");
-//                                                                else
-//                                                                {
                                                                 te.DefaultTexture.MaterialID = id;
-//                                                                }
                                                             }
                                                         } else
                                                         {
@@ -377,14 +370,11 @@ namespace Universe.Modules.Caps
             }
         }
 
-
-        public byte[] RenderMaterialsGetCap (string path, Stream request,
-                                            OSHttpRequest httpRequest, OSHttpResponse httpResponse)
+        public byte[] RenderMaterialsGetCap (string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse)
         {
             MainConsole.Instance.Debug ("[Materials]: GET cap handler");
 
             OSDMap resp = new OSDMap ();
-
 
             int matsCount = 0;
 
@@ -400,7 +390,6 @@ namespace Universe.Modules.Caps
                 allOsd.Add (matMap);
                 matsCount++;
             }
-
 
             resp ["Zipped"] = ZCompressOSD (allOsd, false);
             MainConsole.Instance.Debug ("[Materials]: matsCount: " + matsCount);

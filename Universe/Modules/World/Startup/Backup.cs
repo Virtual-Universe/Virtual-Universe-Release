@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -56,7 +58,7 @@ namespace Universe.Modules.Startup
 
         #region ISharedRegionStartupModule Members
 
-        public void Initialise (IScene scene, IConfigSource source, ISimulationBase simBase)
+        public void Initialize (IScene scene, IConfigSource source, ISimulationBase simBase)
         {
             if (MainConsole.Instance != null && m_backup.Count == 0) //Only add them once
             {
@@ -94,7 +96,7 @@ namespace Universe.Modules.Startup
             m_backup [scene] = new InternalSceneBackup (scene);
         }
 
-        public void PostInitialise (IScene scene, IConfigSource source, ISimulationBase simBase)
+        public void PostInitialize (IScene scene, IConfigSource source, ISimulationBase simBase)
         {
         }
 
@@ -514,7 +516,7 @@ namespace Universe.Modules.Startup
                     }
                 }
 
-                // Serialise calls to RemoveScriptInstances to avoid
+                // Serialize calls to RemoveScriptInstances to avoid
                 // deadlocking on m_parts inside SceneObjectGroup
                 if (DeleteScripts) {
                     group.RemoveScriptInstances (true);
@@ -675,7 +677,7 @@ namespace Universe.Modules.Startup
             {
                 int tMapSize = tModule.Width * tModule.Height;
                 byte [] sdata = new byte [tMapSize * 2];
-                Buffer.BlockCopy (tModule.GetSerialised (), 0, sdata, 0, sdata.Length);
+                Buffer.BlockCopy (tModule.GetSerialized (), 0, sdata, 0, sdata.Length);
 
                 return sdata;
             }

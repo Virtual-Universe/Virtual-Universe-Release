@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -103,7 +105,7 @@ namespace Universe.Modules
             _regionLoader = new ProtobufRegionDataLoader ();
         }
 
-        public void Initialise ()
+        public void Initialize ()
         {
             MainConsole.Instance.Commands.AddCommand (
                 "update region info",
@@ -123,7 +125,6 @@ namespace Universe.Modules
                 "Removes old region backup files older than [days] (default: " + m_removeArchiveDays + " days)",
                 CleanupRegionBackups,
                 false, true);
-
         }
 
         public virtual List<string> FindRegionInfos (out bool newRegion, ISimulationBase simBase)
@@ -158,7 +159,7 @@ namespace Universe.Modules
 
                 foreach (string regBak in allBackups) {
                     if (Path.GetFileName (regBak).StartsWith (regionName, StringComparison.Ordinal)) {
-                        //        MainConsole.Instance.Debug ("Found: " + Path.GetFileNameWithoutExtension (regBak));
+                        //MainConsole.Instance.Debug ("Found: " + Path.GetFileNameWithoutExtension (regBak));
                         regionBaks.Add (regBak);
                     }
                 }
@@ -1037,7 +1038,6 @@ namespace Universe.Modules
                     }
                 }
             }
-
             MainConsole.Instance.InfoFormat (" Removed {0} archive files", removed);
         }
 
@@ -1068,7 +1068,8 @@ namespace Universe.Modules
                 MainConsole.Instance.WarnFormat ("[Backup]: Exception caught: {0}", ex);
             }
 
-            MainConsole.Instance.Info ("[FileBasedSimulationData]: Backing up " + m_scene.RegionInfo.RegionName);
+            MainConsole.Instance.Info ("[FileBasedSimulationData]: Backing up " +
+                                      m_scene.RegionInfo.RegionName);
 
             RegionData regiondata = new RegionData ();
             regiondata.Init ();
@@ -1143,11 +1144,11 @@ namespace Universe.Modules
                     File.Copy (filename, oldfileName);
                 }
             }
-
             regiondata.Dispose ();
             //Now make it the full file again
             MapTileNeedsGenerated = true;
-            MainConsole.Instance.Info ("[FileBasedSimulationData]: Saved Backup for region " + m_scene.RegionInfo.RegionName);
+            MainConsole.Instance.Info ("[FileBasedSimulationData]: Saved Backup for region " +
+                                      m_scene.RegionInfo.RegionName);
         }
 
         string BuildOldSaveFileName ()
@@ -1179,7 +1180,7 @@ namespace Universe.Modules
         {
             int tMapSize = tModule.Width * tModule.Height;
             byte [] sdata = new byte [tMapSize * 2];
-            Buffer.BlockCopy (tModule.GetSerialised (), 0, sdata, 0, sdata.Length);
+            Buffer.BlockCopy (tModule.GetSerialized (), 0, sdata, 0, sdata.Length);
             return sdata;
         }
 
@@ -1208,7 +1209,6 @@ namespace Universe.Modules
                         (9000).ToString ()));
                 }
             }
-
             GC.Collect ();
         }
 

@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -24,7 +26,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 
 using System;
 using System.IO;
@@ -58,7 +59,7 @@ namespace Universe.Modules.Caps
             get { return null; }
         }
 
-        public void Initialise(IConfigSource source)
+        public void Initialize(IConfigSource source)
         {
         }
 
@@ -152,26 +153,6 @@ namespace Universe.Modules.Caps
                     rootpos = obj.Position;
                 }
 
-
-                // Combine the extraparams data into it's ugly blob again....
-                //int bytelength = 0;
-                //for (int extparams = 0; extparams < obj.ExtraParams.Length; extparams++)
-                //{
-                //    bytelength += obj.ExtraParams[extparams].ExtraParamData.Length;
-                //}
-                //byte[] extraparams = new byte[bytelength];
-                //int position = 0;
-
-
-                //for (int extparams = 0; extparams < obj.ExtraParams.Length; extparams++)
-                //{
-                //    Buffer.BlockCopy(obj.ExtraParams[extparams].ExtraParamData, 0, extraparams, position,
-                //                     obj.ExtraParams[extparams].ExtraParamData.Length);
-                //
-                //    position += obj.ExtraParams[extparams].ExtraParamData.Length;
-                // }
-
-                //pbs.ExtraParams = extraparams;
                 foreach (UploadObjectAssetMessage.Object.ExtraParam extraParam in obj.ExtraParams)
                 {
                     switch ((ushort) extraParam.Type)
@@ -235,8 +216,7 @@ namespace Universe.Modules.Caps
                 pbs.ProfileEnd = (ushort) obj.ProfileEnd;
                 pbs.Scale = obj.Scale;
                 pbs.State = 0;
-                SceneObjectPart prim = new SceneObjectPart(AgentId, pbs, obj.Position, obj.Rotation,
-                                                           Vector3.Zero, obj.Name)
+                SceneObjectPart prim = new SceneObjectPart(AgentId, pbs, obj.Position, obj.Rotation, Vector3.Zero, obj.Name)
                                            {
                                                UUID = UUID.Random(),
                                                CreatorID = AgentId,
@@ -253,8 +233,7 @@ namespace Universe.Modules.Caps
                 prim.PayPrice[2] = -2;
                 prim.PayPrice[3] = -2;
                 prim.PayPrice[4] = -2;
-                Primitive.TextureEntry tmp =
-                    new Primitive.TextureEntry(UUID.Parse("89556747-24cb-43ed-920b-47caed15465f"));
+                Primitive.TextureEntry tmp = new Primitive.TextureEntry(UUID.Parse("89556747-24cb-43ed-920b-47caed15465f"));
 
                 for (int j = 0; j < obj.Faces.Length; j++)
                 {
@@ -300,8 +279,7 @@ namespace Universe.Modules.Caps
                 else
                 {
                     //Stop now then
-                    avatar.ControllingClient.SendAlertMessage("You do not have permission to rez objects here: " +
-                                                              reason);
+                    avatar.ControllingClient.SendAlertMessage("You do not have permission to rez objects here: " + reason);
                     return MainServer.BlankResponse;
                 }
                 allparts[i] = grp;

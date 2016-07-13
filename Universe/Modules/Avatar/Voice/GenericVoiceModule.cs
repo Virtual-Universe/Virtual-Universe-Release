@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -25,7 +27,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 using System;
 using System.Text;
 using Nini.Config;
@@ -49,7 +50,7 @@ namespace Universe.Modules.Voice
 
         #region INonSharedRegionModule Members
 
-        public void Initialise(IConfigSource config)
+        public void Initialize(IConfigSource config)
         {
             IConfig voiceconfig = config.Configs["Voice"];
             if (voiceconfig == null)
@@ -110,9 +111,9 @@ namespace Universe.Modules.Voice
         // every time Universe hands out capabilities to a client
         // (login, region crossing). We contribute two capabilities to
         // the set of capabilities handed back to the client:
-        // ProuniverseVoiceAccountRequest and ParcelVoiceInfoRequest.
+        // ProvisionVoiceAccountRequest and ParcelVoiceInfoRequest.
         // 
-        // ProuniverseVoiceAccountRequest allows the client to obtain
+        // ProvisionVoiceAccountRequest allows the client to obtain
         // the voice account credentials for the avatar it is
         // controlling (e.g., user name, password, etc).
         // 
@@ -121,14 +122,14 @@ namespace Universe.Modules.Voice
         //
         // Note that OnRegisterCaps is called here via a closure
         // delegate containing the scene of the respective region (see
-        // Initialise()).
+        // Initialize()).
         public OSDMap OnRegisterCaps(IScene scene, UUID agentID, IHttpServer caps)
         {
             OSDMap retVal = new OSDMap();
-            retVal["ProuniverseVoiceAccountRequest"] = CapsUtil.CreateCAPS("ProuniverseVoiceAccountRequest", "");
-            caps.AddStreamHandler(new GenericStreamHandler("POST", retVal["ProuniverseVoiceAccountRequest"],
+            retVal["ProvisionVoiceAccountRequest"] = CapsUtil.CreateCAPS("ProvisionVoiceAccountRequest", "");
+            caps.AddStreamHandler(new GenericStreamHandler("POST", retVal["ProvisionVoiceAccountRequest"],
                                                            (path, request, httpRequest, httpResponse) =>
-                                                           ProuniverseVoiceAccountRequest(scene, agentID)));
+                                                           ProvisionVoiceAccountRequest(scene, agentID)));
             retVal["ParcelVoiceInfoRequest"] = CapsUtil.CreateCAPS("ParcelVoiceInfoRequest", "");
             caps.AddStreamHandler(new GenericStreamHandler("POST", retVal["ParcelVoiceInfoRequest"],
                                                            (path, request, httpRequest, httpResponse) =>
@@ -138,7 +139,7 @@ namespace Universe.Modules.Voice
         }
 
         /// Callback for a client request for Voice Account Details.
-        public byte[] ProuniverseVoiceAccountRequest(IScene scene, UUID agentID)
+        public byte[] ProvisionVoiceAccountRequest(IScene scene, UUID agentID)
         {
             try
             {
@@ -166,8 +167,6 @@ namespace Universe.Modules.Voice
             ((OSDMap) response["voice_credentials"])["channel_uri"] = "";
             return OSDParser.SerializeLLSDXmlBytes(response);
         }
-
-
 
         #region Region-side message sending
 

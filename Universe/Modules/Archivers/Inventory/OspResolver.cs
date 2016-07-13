@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -25,11 +27,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+using System.Text;
+using OpenMetaverse;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Services;
-using OpenMetaverse;
-using System.Text;
 
 namespace Universe.Modules.Archivers
 {
@@ -88,8 +89,8 @@ namespace Universe.Modules.Archivers
         {
             if (!ospa.StartsWith(OSPA_PREFIX))
                 return UUID.Zero;
-
-//            MainConsole.Instance.DebugFormat("[OSP RESOLVER]: Resolving {0}", ospa);
+            
+            //MainConsole.Instance.DebugFormat("[OSP RESOLVER]: Resolving {0}", ospa);
 
             string ospaMeat = ospa.Substring(OSPA_PREFIX.Length);
             string[] ospaTuples = ospaMeat.Split(OSPA_TUPLE_SEPARATOR_ARRAY);
@@ -100,8 +101,7 @@ namespace Universe.Modules.Archivers
 
                 if (tupleSeparatorIndex < 0)
                 {
-                    MainConsole.Instance.WarnFormat("[OSP RESOLVER]: Ignoring non-tuple component {0} in OSPA {1}",
-                                                    tuple, ospa);
+                    MainConsole.Instance.WarnFormat("[OSP RESOLVER]: Ignoring non-tuple component {0} in OSPA {1}", tuple, ospa);
                     continue;
                 }
 
@@ -153,20 +153,6 @@ namespace Universe.Modules.Archivers
             UserAccount account = userService.GetUserAccount(null, firstName, lastName);
             if (account != null)
                 return account.PrincipalID;
-
-            // XXX: Disable temporary user profile creation for now as implementation is incomplete - justincc
-            /*
-            UserProfileData tempUserProfile = new UserProfileData();
-            tempUserProfile.FirstName = firstName;
-            tempUserProfile.SurName = lastName;
-            tempUserProfile.ID = HashName(tempUserProfile.Name);
-            
-            MainConsole.Instance.DebugFormat(
-                "[OSP RESOLVER]: Adding temporary user profile for {0} {1}", tempUserProfile.Name, tempUserProfile.ID);
-            commsManager.UserService.AddTemporaryUserProfile(tempUserProfile);
-            
-            return tempUserProfile.ID;
-            */
 
             return UUID.Zero;
         }

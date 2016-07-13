@@ -1,6 +1,8 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -84,8 +86,6 @@ namespace Universe.Modules.Web
             vars.Add ("MarketplaceOwnerName", settings.MarketplaceOwnerName);
             vars.Add ("MainlandEstateName", settings.MainlandEstateName);
             vars.Add ("SystemEstateName", settings.SystemEstateName);
-
-
             vars.Add ("GridSettingsManager", translator.GetTranslatedString ("GridSettingsManager"));
             vars.Add ("GridnameText", translator.GetTranslatedString ("GridnameText"));
             vars.Add ("GridnickText", translator.GetTranslatedString ("GridnickText"));
@@ -96,9 +96,6 @@ namespace Universe.Modules.Web
             vars.Add ("MarketPlaceOwnerNameText", translator.GetTranslatedString ("MarketPlaceOwnerNameText"));
             vars.Add ("MainlandEstateNameText", translator.GetTranslatedString ("MainlandEstateNameText"));
             vars.Add ("SystemEstateNameText", translator.GetTranslatedString ("SystemEstateNameText"));
-
-
-
             vars.Add ("Save", translator.GetTranslatedString ("Save"));
             vars.Add ("No", translator.GetTranslatedString ("No"));
             vars.Add ("Yes", translator.GetTranslatedString ("Yes"));

@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -24,7 +26,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 
 using System;
 using System.Collections;
@@ -102,7 +103,7 @@ namespace Universe.Modules.Scripting
 
         #region INonSharedRegionModule Members
 
-        public void Initialise (IConfigSource config)
+        public void Initialize (IConfigSource config)
         {
             // wrap this in a try block so that defaults will work if
             // the config file doesn't specify otherwise.
@@ -355,8 +356,7 @@ namespace Universe.Modules.Scripting
         /// <param name="range"></param>
         /// <param name="toID"></param>
         public void DeliverMessage (ChatTypeEnum type, int channel, string name, UUID fromID, string msg,
-                                   Vector3 position,
-                                   float range, UUID toID)
+                                   Vector3 position, float range, UUID toID)
         {
             //Make sure that the cmd handler thread is running
             m_scriptModule.PokeThreads (UUID.Zero);
@@ -670,12 +670,12 @@ namespace Universe.Modules.Scripting
 
         public ListenerInfo (int handle, UUID ItemID, UUID hostID, int channel, string name, UUID id, string message, int regexBitfield)
         {
-            Initialise (handle, ItemID, hostID, channel, name, id, message, regexBitfield);
+            Initialize (handle, ItemID, hostID, channel, name, id, message, regexBitfield);
         }
 
         public ListenerInfo (ListenerInfo li, string name, UUID id, string message)
         {
-            Initialise (li.m_handle, li.m_itemID, li.m_hostID, li.m_channel, name, id, message, 0);
+            Initialize (li.m_handle, li.m_itemID, li.m_hostID, li.m_channel, name, id, message, 0);
         }
 
         #region IWorldCommListenerInfo Members
@@ -746,7 +746,7 @@ namespace Universe.Modules.Scripting
 
         #endregion
 
-        void Initialise (int handle, UUID ItemID, UUID hostID, int channel, string name,
+        void Initialize (int handle, UUID ItemID, UUID hostID, int channel, string name,
                                 UUID id, string message, int regexBitfield)
         {
             m_active = true;

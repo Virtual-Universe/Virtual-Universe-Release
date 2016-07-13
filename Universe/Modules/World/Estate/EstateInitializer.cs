@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -45,14 +47,14 @@ namespace Universe.Modules.Estate
         protected IRegistryCore m_registry;
 
 
-        public void Initialise (IScene scene, IConfigSource source, ISimulationBase simBase)
+        public void Initialize (IScene scene, IConfigSource source, ISimulationBase simBase)
         {
             scene.StackModuleInterface<IUniverseBackupModule> (this);
             m_registry = simBase.ApplicationRegistry;
         }
 
 
-        public void PostInitialise (IScene scene, IConfigSource source, ISimulationBase simBase)
+        public void PostInitialize (IScene scene, IConfigSource source, ISimulationBase simBase)
         {
         }
 
@@ -173,7 +175,6 @@ namespace Universe.Modules.Estate
 
             MainConsole.Instance.InfoFormat ("[Estate]: Successfully joined the {0} estate!", ES.EstateName);
             return ES;
-
         }
 
         int GetUserEstateID (IScene scene, IEstateConnector estateConnector)
@@ -240,9 +241,7 @@ namespace Universe.Modules.Estate
 
                 return estateID;
             }
-
         }
-
 
         /// <summary>
         /// Creates the estate info for a region.
@@ -251,7 +250,6 @@ namespace Universe.Modules.Estate
         /// <param name="scene">Scene.</param>
         EstateSettings CreateEstateInfo (IScene scene)
         {
-
             // check for regionType to determine if this is 'Mainland' or an 'Estate'
             string regType = scene.RegionInfo.RegionType.ToLower ();
             if (regType.StartsWith ("m", System.StringComparison.Ordinal)) {
@@ -269,7 +267,6 @@ namespace Universe.Modules.Estate
                 sysEstateOwnerName = sysAccounts.SystemEstateOwnerName;
             else
                 sysEstateOwnerName = sysAccount.Name;
-
 
             // This is an 'Estate' so get some details....
             var LastEstateOwner = sysEstateOwnerName;
@@ -330,7 +327,6 @@ namespace Universe.Modules.Estate
 
                 } else
                     LastEstateName = ownerEstates [0].EstateName;
-
 
                 // we should have a user account and estate name by now
                 int estateID = estateConnector.GetEstate (account.PrincipalID, LastEstateName);
@@ -490,7 +486,6 @@ namespace Universe.Modules.Estate
                         parcelManagement.ReclaimParcels (oldOwnerID, newEstate.EstateOwner);
                 }
             }
-
         }
 
         public bool IsArchiving {
@@ -510,8 +505,7 @@ namespace Universe.Modules.Estate
             if (settings == null)
                 return;
             writer.WriteDir ("estatesettings");
-            writer.WriteFile ("estatesettings/" + scene.RegionInfo.RegionName,
-                             OSDParser.SerializeLLSDBinary (settings.ToOSD ()));
+            writer.WriteFile ("estatesettings/" + scene.RegionInfo.RegionName, OSDParser.SerializeLLSDBinary (settings.ToOSD ()));
 
             MainConsole.Instance.Debug ("[Archive]: Finished writing estates to archive");
             MainConsole.Instance.Debug ("[Archive]: Writing region info to archive");
@@ -519,8 +513,7 @@ namespace Universe.Modules.Estate
             writer.WriteDir ("regioninfo");
             RegionInfo regionInfo = scene.RegionInfo;
 
-            writer.WriteFile ("regioninfo/" + scene.RegionInfo.RegionName,
-                             OSDParser.SerializeLLSDBinary (regionInfo.PackRegionInfoData ()));
+            writer.WriteFile ("regioninfo/" + scene.RegionInfo.RegionName, OSDParser.SerializeLLSDBinary (regionInfo.PackRegionInfoData ()));
 
             MainConsole.Instance.Debug ("[Archive]: Finished writing region info to archive");
         }
@@ -541,8 +534,7 @@ namespace Universe.Modules.Estate
             } else if (filePath.StartsWith ("regioninfo/", System.StringComparison.Ordinal)) {
                 string m_merge =
                     MainConsole.Instance.Prompt (
-                        "Should we load the region information from the archive (region name, region position, etc)?",
-                        "false");
+                        "Should we load the region information from the archive (region name, region position, etc)?", "false");
                 RegionInfo settings = new RegionInfo ();
                 settings.UnpackRegionInfoData ((OSDMap)OSDParser.DeserializeLLSDBinary (data));
                 if (m_merge == "false") {

@@ -1,6 +1,8 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -105,7 +107,6 @@ namespace Universe.Modules.Web
                         });
                     }
                 }
-
             }
             else
             {
@@ -122,15 +123,12 @@ namespace Universe.Modules.Web
             vars.Add ("RegionLocXText", translator.GetTranslatedString ("RegionLocXText"));
             vars.Add ("RegionLocYText", translator.GetTranslatedString ("RegionLocYText"));
             vars.Add ("RegionOnlineText", translator.GetTranslatedString ("Online"));
-
             vars.Add ("Search", translator.GetTranslatedString ("Search"));
-
             vars.Add ("FirstText", translator.GetTranslatedString ("FirstText"));
             vars.Add ("BackText", translator.GetTranslatedString ("BackText"));
             vars.Add ("NextText", translator.GetTranslatedString ("NextText"));
             vars.Add ("LastText", translator.GetTranslatedString ("LastText"));
             vars.Add ("CurrentPageText", translator.GetTranslatedString ("CurrentPageText"));
-
             vars.Add ("SearchResultForRegionText", translator.GetTranslatedString ("SearchResultForRegionText"));
             vars.Add ("RegionMoreInfo", translator.GetTranslatedString ("RegionMoreInfo"));
             vars.Add ("MoreInfoText", translator.GetTranslatedString ("MoreInfoText"));

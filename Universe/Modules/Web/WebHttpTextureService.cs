@@ -1,6 +1,8 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -84,8 +86,7 @@ namespace Universe.Modules.Web
             return _server.ServerURI + "/index.php?method=AvatarTexture&imageurl=" + imageURL;
         }
 
-        public byte [] OnHTTPGetTextureImage (string path, Stream request, OSHttpRequest httpRequest,
-                                            OSHttpResponse httpResponse)
+        public byte [] OnHTTPGetTextureImage (string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse)
         {
             byte [] jpeg = new byte [0];
             httpResponse.ContentType = "image/jpeg";
@@ -134,9 +135,7 @@ namespace Universe.Modules.Web
             return new byte [0];
         }
 
-
-      public byte [] OnHTTPGetAvatarImage (string path, Stream request, OSHttpRequest httpRequest,
-                                            OSHttpResponse httpResponse)
+      public byte [] OnHTTPGetAvatarImage (string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse)
         {
             httpResponse.ContentType = "image/jpeg";
 

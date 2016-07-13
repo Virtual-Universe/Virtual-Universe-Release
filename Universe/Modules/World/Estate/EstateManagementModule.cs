@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -1013,7 +1015,7 @@ namespace Universe.Modules.Estate
 
         #region IRegionModule Members
 
-        public void Initialise (IConfigSource source)
+        public void Initialize (IConfigSource source)
         {
         }
 
@@ -1188,7 +1190,7 @@ namespace Universe.Modules.Estate
         {
             client.OnDetailedEstateDataRequest += sendDetailedEstateData;
             client.OnSetEstateFlagsRequest += estateSetRegionInfoHandler;
-//            client.OnSetEstateTerrainBaseTexture += setEstateTerrainBaseTexture;
+            //client.OnSetEstateTerrainBaseTexture += setEstateTerrainBaseTexture;
             client.OnSetEstateTerrainDetailTexture += setEstateTerrainBaseTexture;
             client.OnSetEstateTerrainTextureHeights += setEstateTerrainTextureHeights;
             client.OnCommitEstateTerrainTextureRequest += handleCommitEstateTerrainTextureRequest;
@@ -1215,7 +1217,7 @@ namespace Universe.Modules.Estate
         {
             client.OnDetailedEstateDataRequest -= sendDetailedEstateData;
             client.OnSetEstateFlagsRequest -= estateSetRegionInfoHandler;
-            //            client.OnSetEstateTerrainBaseTexture -= setEstateTerrainBaseTexture;
+            //client.OnSetEstateTerrainBaseTexture -= setEstateTerrainBaseTexture;
             client.OnSetEstateTerrainDetailTexture -= setEstateTerrainBaseTexture;
             client.OnSetEstateTerrainTextureHeights -= setEstateTerrainTextureHeights;
             client.OnCommitEstateTerrainTextureRequest -= handleCommitEstateTerrainTextureRequest;
@@ -1242,7 +1244,6 @@ namespace Universe.Modules.Estate
             RegionFlags flags = RegionFlags.None;
 
             // Fully implemented
-            //
             if (m_scene.RegionInfo.RegionSettings.AllowDamage)
                 flags |= RegionFlags.AllowDamage;
             if (m_scene.RegionInfo.RegionSettings.BlockTerraform)
@@ -1281,7 +1282,6 @@ namespace Universe.Modules.Estate
                 if (m_scene.RegionInfo.EstateSettings.AllowVoice)
                     flags |= RegionFlags.AllowVoice;
             }
-
 
             // Omitted
             // update - greythane -July 2014
@@ -1398,7 +1398,6 @@ namespace Universe.Modules.Estate
                         sun = sunModule.GetCurrentSunHour ();
                 }
 
-                // 
                 m_scene.EventManager.TriggerEstateToolsSunUpdate (
                     m_scene.RegionInfo.RegionHandle,
                     m_scene.RegionInfo.EstateSettings.FixedSun,

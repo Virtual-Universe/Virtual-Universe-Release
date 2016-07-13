@@ -1,6 +1,8 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -25,19 +27,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Universe.Framework.ConsoleFramework;
-using Universe.Framework.ModuleLoader;
-using Universe.Framework.Modules;
-using Universe.Framework.SceneInfo;
-using Universe.Framework.Services;
-using Nini.Config;
-using OpenMetaverse.StructuredData;
-using RunTimeCompiler;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
+using Nini.Config;
+using OpenMetaverse.StructuredData;
+using RunTimeCompiler;
+using Universe.Framework.ConsoleFramework;
+using Universe.Framework.ModuleLoader;
+using Universe.Framework.Modules;
+using Universe.Framework.SceneInfo;
+using Universe.Framework.Services;
 
 namespace Universe.Modules.Installer
 {
@@ -92,14 +94,12 @@ namespace Universe.Modules.Installer
                     return;
             }
 
-
             if (useGUI)
             {
                 bool finished = false;
                 OpenFileDialog dialog = new OpenFileDialog
                                             {
-                                                Filter =
-                                                    "Build Files (*.am)|*.am|Xml Files (*.xml)|*.xml|Dll Files (*.dll)|*.dll"
+                                                Filter = "Build Files (*.am)|*.am|Xml Files (*.xml)|*.xml|Dll Files (*.dll)|*.dll"
                                             };
                 System.Threading.Thread t = new System.Threading.Thread(delegate()
                                                                             {
@@ -139,8 +139,7 @@ namespace Universe.Modules.Installer
                     //Install .dll files
             else
             {
-                string tmpFile = Path.Combine(Path.GetDirectoryName(fileName),
-                                              Path.GetFileNameWithoutExtension(fileName) + ".tmp.xml");
+                string tmpFile = Path.Combine(Path.GetDirectoryName(fileName), Path.GetFileNameWithoutExtension(fileName) + ".tmp.xml");
                 if (!File.Exists (tmpFile))
                 {
                     MainConsole.Instance.Error ("Unable to find the module prebuild information: " + tmpFile);
@@ -210,8 +209,7 @@ namespace Universe.Modules.Installer
         {
             Process p = new Process
                             {
-                                StartInfo =
-                                    new ProcessStartInfo(Path.Combine(Environment.CurrentDirectory, "Prebuild.exe"),
+                                StartInfo = new ProcessStartInfo(Path.Combine(Environment.CurrentDirectory, "Prebuild.exe"),
                                                          "/target vs2010 /targetframework v4_0 /file " + tmpFile)
                             };
             p.Start();
@@ -393,7 +391,7 @@ namespace Universe.Modules.Installer
             {
                 plugin.PreStartup(m_registry.RequestModuleInterface<ISimulationBase>());
                 plugin.Initialize(m_registry.RequestModuleInterface<ISimulationBase>());
-                plugin.PostInitialise();
+                plugin.PostInitialize();
                 plugin.Start();
                 plugin.PostStart();
             }
@@ -405,7 +403,7 @@ namespace Universe.Modules.Installer
                 {
                     foreach (IScene scene in manager.Scenes)
                     {
-                        nsrm.Initialise(m_config);
+                        nsrm.Initialize(m_config);
                         nsrm.AddRegion(scene);
                         nsrm.RegionLoaded(scene);
                         rmc.AllModules.Add(nsrm);

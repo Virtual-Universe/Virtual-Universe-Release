@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -25,7 +27,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 using System;
 using System.Drawing;
 using Nini.Config;
@@ -44,10 +45,9 @@ namespace Universe.Modules.WorldMap
 
         #region IMapTileTerrainRenderer Members
 
-        public void Initialise (IScene scene, IConfigSource config)
+        public void Initialize (IScene scene, IConfigSource config)
         {
             m_scene = scene;
-            // m_config = config; // not used currently
         }
 
         public Bitmap TerrainToBitmap (Bitmap mapbmp)
@@ -98,8 +98,6 @@ namespace Universe.Modules.WorldMap
 
                         try {
                             //X
-                            // .
-                            //
                             // Shade the terrain for shadows
                             if (x < (m_scene.RegionInfo.RegionSizeX - 1) && yr < (m_scene.RegionInfo.RegionSizeY - 1)) {
                                 float hfvalue = heightmap [x, y];
@@ -123,18 +121,14 @@ namespace Universe.Modules.WorldMap
                                 float highlightfactor = 0.18f;
 
                                 try {
-                                    // hfdiffi = Math.Abs((int)((hfdiff * 4) + (hfdiff * 0.5))) + 1;
                                     hfdiffi = Math.Abs ((int)(hfdiff * 4.5f)) + 1;
                                     if (hfdiff % 1f > 0) {
-                                        // hfdiffi = hfdiffi + Math.Abs((int)(((hfdiff % 1) * 0.5f) * 10f) - 1);
                                         hfdiffi = hfdiffi + Math.Abs ((int)((hfdiff % 1f) * 5f) - 1);
                                     }
 
                                     hfdiffihighlight = Math.Abs ((int)((hfdiff * highlightfactor) * 4.5f)) + 1;
                                     if (hfdiff % 1f > 0) {
-                                        // hfdiffi = hfdiffi + Math.Abs((int)(((hfdiff % 1) * 0.5f) * 10f) - 1);
-                                        hfdiffihighlight = hfdiffihighlight +
-                                                           Math.Abs ((int)(((hfdiff * highlightfactor) % 1f) * 5f) - 1);
+                                        hfdiffihighlight = hfdiffihighlight + Math.Abs ((int)(((hfdiff * highlightfactor) % 1f) * 5f) - 1);
                                     }
                                 } catch (OverflowException) {
                                     MainConsole.Instance.Debug ("[ShadedMap genertor]: Shadow failed at value: " + hfdiff);

@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -24,7 +26,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 
 using System;
 using System.Collections.Generic;
@@ -129,8 +130,7 @@ namespace Universe.Modules.DefaultInventoryIARLoader
             bool alreadyExists = rootFolders.Any (folder => folder.Name == iarFileName);
 
             if (alreadyExists) {
-                MainConsole.Instance.InfoFormat ("[Library Inventory]: Found previously loaded IAR file {0}, ignoring.",
-                                                iarFileName);
+                MainConsole.Instance.InfoFormat ("[Library Inventory]: Found previously loaded IAR file {0}, ignoring.", iarFileName);
                 return;
             }
 

@@ -1,12 +1,14 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://virtualnexus.eu/, http://aurora-sim.org/, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyrightD
+ *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
  *     * Neither the name of the Virtual Universe Project nor the
@@ -253,7 +255,6 @@ namespace Universe.Physics.BulletSPlugin
                     }
                 }
             
-
                 m_physicsScene.DetailLog("{0},BSCharacter.MoveMotor,taint,stopping,target={1},colliding={2}",
                     m_controllingPrim.LocalID, m_velocityMotor.TargetValue, m_controllingPrim.IsColliding);
             }
@@ -383,10 +384,7 @@ namespace Universe.Physics.BulletSPlugin
                 m_jumpStart = 0;
                 m_preJumpStart = 0;
             }
-
         }
-
-  
 
         // Called just as the property update is received from the physics engine.
         // Do any mode necessary for avatar movement.
@@ -469,7 +467,6 @@ namespace Universe.Physics.BulletSPlugin
                     }
                 }
         
-
                 m_walkingUpStairs = 0;
                 // If there is a good step sensing, move the avatar over the step.
                 if (highestTouchPosition != OMV.Vector3.Zero)
@@ -526,9 +523,9 @@ namespace Universe.Physics.BulletSPlugin
                         m_controllingPrim.ForcePosition = m_controllingPrim.RawPosition + displacement;
                     }
                 }
+
                 m_physicsScene.DetailLog("{0},BSCharacter.WalkUpStairs.ComputeStairCorrection,stepUp={1},isp={2},force={3}",
                                             m_controllingPrim.LocalID, stepUp, displacement, ret);
-
             }
 
             return ret;

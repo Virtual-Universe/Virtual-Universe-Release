@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -24,7 +26,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 
 using System;
 using System.Collections.Generic;
@@ -66,12 +67,8 @@ namespace Universe.Modules.Scripting
 
     public class UrlModule : INonSharedRegionModule, IUrlModule
     {
-        readonly Dictionary<UUID, UrlData> m_RequestMap =
-            new Dictionary<UUID, UrlData> ();
-
-        readonly Dictionary<string, UrlData> m_UrlMap =
-            new Dictionary<string, UrlData> ();
-
+        readonly Dictionary<UUID, UrlData> m_RequestMap = new Dictionary<UUID, UrlData> ();
+        readonly Dictionary<string, UrlData> m_UrlMap = new Dictionary<string, UrlData> ();
 
         const int m_TotalUrls = 100;
 
@@ -87,7 +84,7 @@ namespace Universe.Modules.Scripting
             get { return "UrlModule"; }
         }
 
-        public void Initialise (IConfigSource config)
+        public void Initialize (IConfigSource config)
         {
         }
 
@@ -114,8 +111,7 @@ namespace Universe.Modules.Scripting
 
             lock (m_UrlMap) {
                 if (m_UrlMap.Count >= m_TotalUrls) {
-                    engine.PostScriptEvent (itemID, host.UUID, "http_request",
-                                           new object [] { urlcode.ToString (), "URL_REQUEST_DENIED", "" });
+                    engine.PostScriptEvent (itemID, host.UUID, "http_request", new object [] { urlcode.ToString (), "URL_REQUEST_DENIED", "" });
                     return urlcode;
                 }
                 string url = MainServer.Instance.ServerURI + "/lslhttp/" + urlcode + "/";
@@ -137,8 +133,7 @@ namespace Universe.Modules.Scripting
                                                                                        GetEvents, NoEvents,
                                                                                        urlcode));
 
-                engine.PostScriptEvent (itemID, host.UUID, "http_request",
-                                       new object [] { urlcode.ToString (), "URL_REQUEST_GRANTED", url });
+                engine.PostScriptEvent (itemID, host.UUID, "http_request", new object [] { urlcode.ToString (), "URL_REQUEST_GRANTED", url });
             }
 
             return urlcode;
@@ -148,8 +143,7 @@ namespace Universe.Modules.Scripting
         {
             UUID urlcode = UUID.Random ();
 
-            engine.PostScriptEvent (itemID, host.UUID, "http_request",
-                                   new object [] { urlcode.ToString (), "URL_REQUEST_DENIED", "" });
+            engine.PostScriptEvent (itemID, host.UUID, "http_request", new object [] { urlcode.ToString (), "URL_REQUEST_DENIED", "" });
 
             return urlcode;
         }
@@ -188,8 +182,7 @@ namespace Universe.Modules.Scripting
                 //urlData.requests[request].ev.Set();
                 urlData.requests [request].requestDone = true;
             } else {
-                MainConsole.Instance.Info ("[HttpRequestHandler] There is no http-in request with id " +
-                                          request);
+                MainConsole.Instance.Info ("[HttpRequestHandler] There is no http-in request with id " + request);
             }
         }
 
@@ -277,7 +270,6 @@ namespace Universe.Modules.Scripting
 
                 return Encoding.UTF8.GetBytes ("Script timeout");
             }
-
 
             return MainServer.BlankResponse;
         }

@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -26,8 +28,8 @@
  */
 
 using System;
-using Universe.Framework.SceneInfo;
 using Nini.Config;
+using Universe.Framework.SceneInfo;
 
 namespace Universe.Framework.Modules
 {
@@ -60,11 +62,11 @@ namespace Universe.Framework.Modules
         /// <param name="source">
         ///     A <see cref="IConfigSource" />
         /// </param>
-        void Initialise(IConfigSource source);
+        void Initialize(IConfigSource source);
 
         /// <summary>
         ///     This is called whenever a <see cref="IScene" /> is added. For shared modules, this can happen several times.
-        ///     For non-shared modules, this happens exactly once, after <see cref="Initialise" /> has been called.
+        ///     For non-shared modules, this happens exactly once, after <see cref="Initialize" /> has been called.
         /// </summary>
         /// <param name="scene">
         ///     A <see cref="IScene" />
@@ -94,7 +96,7 @@ namespace Universe.Framework.Modules
         void RemoveRegion(IScene scene);
 
         /// <summary>
-        ///     This is the inverse to <see cref="Initialise" />. After a Close(), this instance won't be usable anymore.
+        ///     This is the inverse to <see cref="Initialize" />. After a Close(), this instance won't be usable anymore.
         /// </summary>
         void Close();
     }

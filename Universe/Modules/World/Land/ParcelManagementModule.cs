@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -130,7 +132,7 @@ namespace Universe.Modules.Land
             get { return null; }
         }
 
-        public void Initialise (IConfigSource source)
+        public void Initialize (IConfigSource source)
         {
             IConfig config = source.Configs ["LandManagement"];
             if (config != null) {
@@ -1839,7 +1841,7 @@ namespace Universe.Modules.Land
             land_update.MediaLoop = properties.MediaLoop;
             land_update.ObscureMusic = properties.ObscureMusic;
             land_update.ObscureMedia = properties.ObscureMedia;
-            // 25062016 Added for LibOMV update 1.0.2.5
+            // 25062016 Added for LibOMV update 0.9.4.5
             land_update.SeeAVs = properties.SeeAVs;
             land_update.AnyAVSounds = properties.AnyAVSounds;
             land_update.GroupAVSounds = properties.GroupAVSounds;

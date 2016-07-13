@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -42,7 +44,7 @@ namespace Universe.Services.DataService
         string ConnectionString = "";
         string StorageProvider = "";
 
-        public void Initialise(IConfigSource config, IRegistryCore registry)
+        public void Initialize(IConfigSource config, IRegistryCore registry)
         {
             IConfig m_config = config.Configs["UniverseData"];
             if (m_config != null)
@@ -100,7 +102,7 @@ namespace Universe.Services.DataService
             }
         }
 
-        public void Initialise(IConfigSource config, IRegistryCore registry, List<Type> types)
+        public void Initialize(IConfigSource config, IRegistryCore registry, List<Type> types)
         {
             IConfig m_config = config.Configs["UniverseData"];
             if (m_config != null)

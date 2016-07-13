@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -25,30 +27,30 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Universe.Framework.SceneInfo;
 using Nini.Config;
+using Universe.Framework.SceneInfo;
 
 namespace Universe.Framework.Modules
 {
     public interface ISharedRegionStartupModule
     {
         /// <summary>
-        ///     Initialise and load the configuration of the module
+        ///     Initialize and load the configuration of the module
         ///     This is used by IServices, DO NOT USE ANYTHING THAT REQUIRES IService here!
         /// </summary>
         /// <param name="scene"></param>
         /// <param name="source"></param>
         /// <param name="simBase"></param>
-        void Initialise(IScene scene, IConfigSource source, ISimulationBase simBase);
+        void Initialize(IScene scene, IConfigSource source, ISimulationBase simBase);
 
         /// <summary>
-        ///     PostInitialise the module
+        ///     PostInitialize the module
         ///     This is used by IServices, DO NOT USE ANYTHING THAT REQUIRES IService here!
         /// </summary>
         /// <param name="scene"></param>
         /// <param name="source"></param>
         /// <param name="simBase"></param>
-        void PostInitialise(IScene scene, IConfigSource source, ISimulationBase simBase);
+        void PostInitialize(IScene scene, IConfigSource source, ISimulationBase simBase);
 
         /// <summary>
         ///     Do the functions of the module and set up any necessary functions

@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -24,7 +26,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 
 using System;
 using System.Collections.Generic;
@@ -258,7 +259,7 @@ namespace Universe.Modules.Land
                         LandData.MediaLoop = args.MediaLoop;
                         LandData.ObscureMusic = args.ObscureMusic;
                         LandData.ObscureMedia = args.ObscureMedia;
-                        // 25062016 Added for LibOMV update 1.0.2.5
+                        // 25062016 Added for LibOMV update 0.9.4.5
                         LandData.AnyAVSounds = args.AnyAVSounds;
                         LandData.GroupAVSounds = args.GroupAVSounds;
                     }
@@ -312,7 +313,7 @@ namespace Universe.Modules.Land
                             }
                         }
                         LandData.Flags = args.ParcelFlags;
-                        // 25062016 Added for LibOMV update 1.0.2.5
+                        // 25062016 Added for LibOMV update 0.9.4.5
                         LandData.SeeAVS = args.SeeAVs;
 
                     }

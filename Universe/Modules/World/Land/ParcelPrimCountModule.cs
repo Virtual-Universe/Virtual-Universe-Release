@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -24,7 +26,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 
 using System;
 using System.Collections.Generic;
@@ -53,17 +54,10 @@ namespace Universe.Modules.Land
 
     public class PrimCountModule : IPrimCountModule, INonSharedRegionModule
     {
-        readonly Dictionary<UUID, UUID> m_OwnerMap =
-            new Dictionary<UUID, UUID>();
-
-        readonly Dictionary<UUID, ParcelCounts> m_ParcelCounts =
-            new Dictionary<UUID, ParcelCounts>();
-
-        readonly Dictionary<UUID, PrimCounts> m_PrimCounts =
-            new Dictionary<UUID, PrimCounts>();
-
-        readonly Dictionary<UUID, int> m_SimwideCounts =
-            new Dictionary<UUID, int>();
+        readonly Dictionary<UUID, UUID> m_OwnerMap = new Dictionary<UUID, UUID>();
+        readonly Dictionary<UUID, ParcelCounts> m_ParcelCounts = new Dictionary<UUID, ParcelCounts>();
+        readonly Dictionary<UUID, PrimCounts> m_PrimCounts = new Dictionary<UUID, PrimCounts>();
+        readonly Dictionary<UUID, int> m_SimwideCounts = new Dictionary<UUID, int>();
 
         // For now, a simple sim-wide taint to get this up. Later parcel based
         // taint to allow recounting a parcel if only ownership has changed
@@ -79,7 +73,7 @@ namespace Universe.Modules.Land
             get { return null; }
         }
 
-        public void Initialise(IConfigSource source)
+        public void Initialize(IConfigSource source)
         {
         }
 
@@ -502,8 +496,7 @@ namespace Universe.Modules.Land
                 catch (Exception e)
                 {
                     // Catch it and move on. This includes situations where splist has inconsistent info
-                    MainConsole.Instance.WarnFormat(
-                        "[ParcelPrimCountModule]: Problem processing action in Recount: {0}", e);
+                    MainConsole.Instance.WarnFormat("[ParcelPrimCountModule]: Problem processing action in Recount: {0}", e);
                 }
             }
 
@@ -539,13 +532,10 @@ namespace Universe.Modules.Land
             else if (FunctionName == "ObjectEnteringNewParcel")
             {
                 //Taint the parcels
-                //SceneObjectGroup grp = (((Object[])parameters)[0]) as SceneObjectGroup;
                 UUID newParcel = (UUID) (((Object[]) parameters)[1]);
                 UUID oldParcel = (UUID) (((Object[]) parameters)[2]);
-                ILandObject oldlandObject =
-                    m_Scene.RequestModuleInterface<IParcelManagementModule>().GetLandObject(oldParcel);
-                ILandObject newlandObject =
-                    m_Scene.RequestModuleInterface<IParcelManagementModule>().GetLandObject(newParcel);
+                ILandObject oldlandObject = m_Scene.RequestModuleInterface<IParcelManagementModule>().GetLandObject(oldParcel);
+                ILandObject newlandObject = m_Scene.RequestModuleInterface<IParcelManagementModule>().GetLandObject(newParcel);
 
                 TaintPrimCount(oldlandObject);
                 TaintPrimCount(newlandObject);

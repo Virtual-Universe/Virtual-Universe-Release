@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -1035,7 +1037,7 @@ namespace Universe.Physics.PrimMesher
             faceUVs = new List<UVCoord> ();
             foreach (Coord c in coords)
                 faceUVs.Add (new UVCoord (1.0f - (0.5f + c.X), 1.0f - (0.5f - c.Y)));
-// original 20150712               faceUVs.Add (new UVCoord (0.5f + c.X, 0.5f - c.Y));
+            // original 20150712               faceUVs.Add (new UVCoord (0.5f + c.X, 0.5f - c.Y));
         }
 
         internal Profile Copy ()
@@ -1423,8 +1425,8 @@ namespace Universe.Physics.PrimMesher
                     newNode.rotation = new Quat (new Coord (1.0f, 0.0f, 0.0f), angle + topShearY);
 
                     // next apply twist rotation to the profile layer
-// 20151106                    if ((Math.Abs(twistTotal) > Constants.FloatDifference) || (Math.Abs(twistBegin) > Constants.FloatDifference))
-// *=??                        newNode.rotation *= new Quat (new Coord (0.0f, 0.0f, 1.0f), twist);
+                    // 20151106                    if ((Math.Abs(twistTotal) > Constants.FloatDifference) || (Math.Abs(twistBegin) > Constants.FloatDifference))
+                    // *=??                        newNode.rotation *= new Quat (new Coord (0.0f, 0.0f, 1.0f), twist);
                     if (twistTotal != 0.0f || twistBegin != 0.0f)
                         newNode.rotation = new Quat(new Coord(0.0f, 0.0f, 1.0f), twist);
 

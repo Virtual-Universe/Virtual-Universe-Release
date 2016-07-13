@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -25,15 +27,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Reflection;
+using Nini.Config;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.ModuleLoader;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Services;
-using Nini.Config;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
 
 namespace Universe.CoreApplicationPlugins.RegionModulesController
 {
@@ -104,7 +106,7 @@ namespace Universe.CoreApplicationPlugins.RegionModulesController
                 //                  scene.RegionInfo.RegionName, module.Name);
 
                 // Initialize the module
-                module.Initialise(m_simBase.ConfigSource);
+                module.Initialize(m_simBase.ConfigSource);
 
                 IRegionModuleBaseModules.Add(module);
                 list.Add(module);
@@ -112,7 +114,7 @@ namespace Universe.CoreApplicationPlugins.RegionModulesController
 
             // Now add the modules that we found to the scene. If a module
             // wishes to override a replaceable interface, it needs to
-            // register it in Initialise, so that the deferred module
+            // register it in Initialize, so that the deferred module
             // won't load.
             foreach (INonSharedRegionModule module in list)
             {
@@ -152,7 +154,7 @@ namespace Universe.CoreApplicationPlugins.RegionModulesController
 
                 try
                 {
-                    module.Initialise(m_simBase.ConfigSource);
+                    module.Initialize(m_simBase.ConfigSource);
                 }
                 catch (Exception ex)
                 {
@@ -259,7 +261,7 @@ namespace Universe.CoreApplicationPlugins.RegionModulesController
             {
                 try
                 {
-                    module.Initialise(config);
+                    module.Initialize(config);
                 }
                 catch (Exception ex)
                 {
@@ -268,7 +270,7 @@ namespace Universe.CoreApplicationPlugins.RegionModulesController
             }
         }
 
-        public void PostInitialise()
+        public void PostInitialize()
         {
         }
 

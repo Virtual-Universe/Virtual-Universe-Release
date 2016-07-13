@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -105,8 +107,7 @@ namespace Universe.Modules.Archivers
             try {
                 var stream = ArchiveHelpers.GetStream (loadPath);
                 if (stream == null) {
-                    MainConsole.Instance.Error (
-                        "[Archiver]: We could not find the file specified, or the file was invalid: " + loadPath);
+                    MainConsole.Instance.Error ("[Archiver]: We could not find the file specified, or the file was invalid: " + loadPath);
                     return;
                 }
                 m_loadStream = new GZipStream (stream, CompressionMode.Decompress);
@@ -194,7 +195,7 @@ namespace Universe.Modules.Archivers
             if (backup != null)
                 backup.LoadingPrims = true;
 
-            IRegionSerialiserModule serialiser = m_scene.RequestModuleInterface<IRegionSerialiserModule> ();
+            IRegionSerializerModule serialiser = m_scene.RequestModuleInterface<IRegionSerializerModule> ();
             int sceneObjectsLoadedCount = 0;
 
             //We save the groups so that we can back them up later

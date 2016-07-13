@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -9,7 +11,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Aurora-Sim Project nor the
+ *     * Neither the name of the Virtual Universe Project nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
@@ -37,7 +39,6 @@ namespace Universe.Modules.WorldView
 {
     public class WorldViewRequestHandler : BaseRequestHandler
     {
-
         protected WorldViewModule m_WorldViewModule;
         protected object m_RequestLock = new object();
 
@@ -85,7 +86,6 @@ namespace Universe.Modules.WorldView
                         SaveCachedImage(uri,stdWworldview);
 
                     return stdWworldview;
-
                 }
             }
             catch (Exception e)
@@ -159,22 +159,16 @@ namespace Universe.Modules.WorldView
             return m_WorldViewModule.GenerateWorldView(pos, rot, fov, width, height, usetex);
         }
 
-
         /// <summary>
         /// Generates a standard world view.
         /// </summary>
         /// <returns>The world view.</returns>
         public byte [] GetWorldView()
         {
-
             // set some basic defaults
             Vector3 camPos = new Vector3 ();
 
             // this is the basic topdown view used for a map tile
-            //camPos.Y = scene.RegionInfo.RegionSizeY / 2 - 0.5f;
-            //camPos.X = scene.RegionInfo.RegionSizeX / 2 - 0.5f;
-            //camPos.Z = 221.7025033688163f);
-
             camPos.X = 80.25f;
             camPos.Y = 75.25f;
             camPos.Z = 61.0f;
@@ -191,7 +185,6 @@ namespace Universe.Modules.WorldView
 
             return m_WorldViewModule.GenerateWorldView(camPos, camDir, fov, width, height, true);
         }
-
 
         /// <summary>
         /// Finds the cached world view image.
@@ -228,7 +221,5 @@ namespace Universe.Modules.WorldView
             string cacheFile = cacheDir + "/" + name;
             File.WriteAllBytes(cacheFile, data);
         }
-
-
     }
 }

@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -67,7 +69,7 @@ namespace Universe.Modules.Estate
 
         #region ISharedRegionStartupModule Members
 
-        public void Initialise (IScene scene, IConfigSource source, ISimulationBase simBase)
+        public void Initialize (IScene scene, IConfigSource source, ISimulationBase simBase)
         {
             IConfig config = source.Configs ["EstateSettingsModule"];
             if (config != null) {
@@ -168,7 +170,7 @@ namespace Universe.Modules.Estate
             }
         }
 
-        public void PostInitialise (IScene scene, IConfigSource source, ISimulationBase simBase)
+        public void PostInitialize (IScene scene, IConfigSource source, ISimulationBase simBase)
         {
         }
 
@@ -1011,6 +1013,5 @@ namespace Universe.Modules.Estate
         }
 
         #endregion
-
     }
 }

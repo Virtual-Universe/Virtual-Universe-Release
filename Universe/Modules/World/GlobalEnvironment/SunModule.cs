@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -39,9 +41,7 @@ namespace Universe.Modules.GlobalEnvironment
 {
     public class SunModule : ISunModule
     {
-        //
         // Global Constants used to determine where in the sky the sun is
-        //
         const double m_SeasonalTilt = 0.03 * Math.PI;       // A daily shift of approximately 1.7188 degrees
         const double m_AverageTilt = -0.25 * Math.PI;       // A 45 degree tilt
         const double m_SunCycle = 2.0D * Math.PI;           // A perfect circle measured in radians
@@ -56,10 +56,7 @@ namespace Universe.Modules.GlobalEnvironment
         double SeasonSpeed;                                 // Rate of change for seasonal effects
         double SeasonalOffset;                              // Seasonal variation of tilt
 
-        //
         //    Per Region Values
-        //
-
         uint SecondsPerSunCycle;                            // Length of a virtual day in RW seconds
         uint SecondsPerYear;                                // Length of a virtual year in RW seconds
         double SunSpeed;                                    // Rate of passage in radians/second
@@ -96,7 +93,6 @@ namespace Universe.Modules.GlobalEnvironment
         IScene m_scene;
         bool m_sunIsReadyToRun;
         bool ready;
-
 
         // Current time in elapsed seconds since Jan 1st 1970
         ulong CurrentTime
@@ -156,7 +152,7 @@ namespace Universe.Modules.GlobalEnvironment
 
         #region IRegion Methods
 
-        public void Initialise (IConfigSource config)
+        public void Initialize (IConfigSource config)
         {
             m_frame = 0;
             m_config = config;
@@ -179,10 +175,9 @@ namespace Universe.Modules.GlobalEnvironment
                 }
             }
 
-
             TimeZone local = TimeZone.CurrentTimeZone;
             TicksUTCOffset = local.GetUtcOffset (local.ToLocalTime (DateTime.Now)).Ticks;
-            //MainConsole.Instance.Debug("[SUN]: localtime offset is " + TicksUTCOffset);
+            //MainConsole.Instance.Debug("[Sun]: localtime offset is " + TicksUTCOffset);
 
             // Align ticks with Second Life
 
@@ -365,7 +360,6 @@ namespace Universe.Modules.GlobalEnvironment
                 while (fixedSunHour < 0)
                     fixedSunHour += 24;
 
-
                 m_SunFixedHour = fixedSunHour;
                 m_SunFixed = fixedSun;
                 
@@ -374,7 +368,6 @@ namespace Universe.Modules.GlobalEnvironment
 
                 // When sun settings are updated, we should update all clients with new settings.
                 SunUpdateToAllClients ();
-
 
                 //MainConsole.Instance.DebugFormat("[SUN]: PosTime : {0}", PosTime.ToString());
             }

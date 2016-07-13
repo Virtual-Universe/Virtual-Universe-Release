@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -47,8 +49,7 @@ namespace Universe.Modules.WorldMap.Warp3DMap
         public Vector3 Position;
         public int Width;
 
-        public Viewport (Vector3 position, Vector3 lookDirection, float fieldOfView, float farPlaneDist,
-                        float nearPlaneDist, int width, int height)
+        public Viewport (Vector3 position, Vector3 lookDirection, float fieldOfView, float farPlaneDist, float nearPlaneDist, int width, int height)
         {
             // Perspective projection mode
             Position = position;
@@ -60,8 +61,7 @@ namespace Universe.Modules.WorldMap.Warp3DMap
             Height = height;
         }
 
-        public Viewport (Vector3 position, Vector3 lookDirection, float farPlaneDist, float nearPlaneDist, int width,
-                        int height, float orthoWindowWidth, float orthoWindowHeight)
+        public Viewport (Vector3 position, Vector3 lookDirection, float farPlaneDist, float nearPlaneDist, int width, int height, float orthoWindowWidth, float orthoWindowHeight)
         {
             // Orthographic projection mode
             Position = position;
@@ -116,8 +116,6 @@ namespace Universe.Modules.WorldMap.Warp3DMap
         public Matrix4 GetPerspectiveProjectionMatrix ()
         {
             float aspectRatio = Width / (float)Height;
-
-            //            float hFoV = FieldOfView*DEG_TO_RAD;  ///This is done in the camera settings already!!
             float hFoV = FieldOfView;
             float zn = NearPlaneDistance;
             float zf = FarPlaneDistance;

@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -24,7 +26,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 
 using System;
 using System.Collections.Generic;
@@ -104,34 +105,25 @@ namespace Universe.Modules
             if (m_useInstantUpdating) {
                 PhysicsTaintBox.Image = p.DrawGraph ("CurrentStatPhysicsTaintTime " + SceneSelected, MaxVal).Bitmap ();
                 PhysicsMoveTimeBox.Image = p.DrawGraph ("CurrentStatPhysicsMoveTime " + SceneSelected, MaxVal).Bitmap ();
-                CollisionOptimizedTimeBox.Image =
-                    p.DrawGraph ("CurrentStatCollisionOptimizedTime " + SceneSelected, MaxVal).Bitmap ();
-                SendCollisionsTimeBox.Image =
-                    p.DrawGraph ("CurrentStatSendCollisionsTime " + SceneSelected, MaxVal).Bitmap ();
-                AvatarUpdatePosAndVelocityBox.Image =
-                    p.DrawGraph ("CurrentStatAvatarUpdatePosAndVelocity " + SceneSelected, MaxVal).Bitmap ();
-                PrimUpdatePosAndVelocityBox.Image =
-                    p.DrawGraph ("CurrentStatPrimUpdatePosAndVelocity " + SceneSelected, MaxVal).Bitmap ();
+                CollisionOptimizedTimeBox.Image = p.DrawGraph ("CurrentStatCollisionOptimizedTime " + SceneSelected, MaxVal).Bitmap ();
+                SendCollisionsTimeBox.Image = p.DrawGraph ("CurrentStatSendCollisionsTime " + SceneSelected, MaxVal).Bitmap ();
+                AvatarUpdatePosAndVelocityBox.Image = p.DrawGraph ("CurrentStatAvatarUpdatePosAndVelocity " + SceneSelected, MaxVal).Bitmap ();
+                PrimUpdatePosAndVelocityBox.Image = p.DrawGraph ("CurrentStatPrimUpdatePosAndVelocity " + SceneSelected, MaxVal).Bitmap ();
                 UnlockedTimeBox.Image = p.DrawGraph ("CurrentStatUnlockedArea " + SceneSelected, MaxVal).Bitmap ();
                 FindContactsTimeBox.Image = p.DrawGraph ("CurrentStatFindContactsTime " + SceneSelected, MaxVal).Bitmap ();
                 ContactLoopTimeBox.Image = p.DrawGraph ("CurrentStatContactLoopTime " + SceneSelected, MaxVal).Bitmap ();
-                CollisionAccountingTimeBox.Image =
-                    p.DrawGraph ("CurrentStatCollisionAccountingTime " + SceneSelected, MaxVal).Bitmap ();
+                CollisionAccountingTimeBox.Image = p.DrawGraph ("CurrentStatCollisionAccountingTime " + SceneSelected, MaxVal).Bitmap ();
             } else {
                 PhysicsTaintBox.Image = p.DrawGraph ("StatPhysicsTaintTime " + SceneSelected, MaxVal).Bitmap ();
                 PhysicsMoveTimeBox.Image = p.DrawGraph ("StatPhysicsMoveTime " + SceneSelected, MaxVal).Bitmap ();
-                CollisionOptimizedTimeBox.Image =
-                    p.DrawGraph ("StatCollisionOptimizedTime " + SceneSelected, MaxVal).Bitmap ();
+                CollisionOptimizedTimeBox.Image = p.DrawGraph ("StatCollisionOptimizedTime " + SceneSelected, MaxVal).Bitmap ();
                 SendCollisionsTimeBox.Image = p.DrawGraph ("StatSendCollisionsTime " + SceneSelected, MaxVal).Bitmap ();
-                AvatarUpdatePosAndVelocityBox.Image =
-                    p.DrawGraph ("StatAvatarUpdatePosAndVelocity " + SceneSelected, MaxVal).Bitmap ();
-                PrimUpdatePosAndVelocityBox.Image =
-                    p.DrawGraph ("StatPrimUpdatePosAndVelocity " + SceneSelected, MaxVal).Bitmap ();
+                AvatarUpdatePosAndVelocityBox.Image = p.DrawGraph ("StatAvatarUpdatePosAndVelocity " + SceneSelected, MaxVal).Bitmap ();
+                PrimUpdatePosAndVelocityBox.Image = p.DrawGraph ("StatPrimUpdatePosAndVelocity " + SceneSelected, MaxVal).Bitmap ();
                 UnlockedTimeBox.Image = p.DrawGraph ("StatUnlockedArea " + SceneSelected, MaxVal).Bitmap ();
                 FindContactsTimeBox.Image = p.DrawGraph ("StatFindContactsTime " + SceneSelected, MaxVal).Bitmap ();
                 ContactLoopTimeBox.Image = p.DrawGraph ("StatContactLoopTime " + SceneSelected, MaxVal).Bitmap ();
-                CollisionAccountingTimeBox.Image =
-                    p.DrawGraph ("StatCollisionAccountingTime " + SceneSelected, MaxVal).Bitmap ();
+                CollisionAccountingTimeBox.Image = p.DrawGraph ("StatCollisionAccountingTime " + SceneSelected, MaxVal).Bitmap ();
             }
         }
 

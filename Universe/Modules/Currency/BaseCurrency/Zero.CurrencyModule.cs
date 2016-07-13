@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -89,8 +91,7 @@ namespace Universe.Modules.Currency
         }
 
         public bool Transfer(UUID toID, UUID fromID, UUID toObjectID, string toObjectName, UUID fromObjectID,
-                             string fromObjectName, int amount, string description,
-                             TransactionType type)
+                             string fromObjectName, int amount, string description, TransactionType type)
         {
             if ((type == TransactionType.PayObject) && (OnObjectPaid != null))
                 OnObjectPaid((fromObjectID == UUID.Zero) ? toObjectID : fromObjectID, fromID, amount);
@@ -109,7 +110,7 @@ namespace Universe.Modules.Currency
         ///     Startup
         /// </summary>
         /// <param name="config"></param>
-        public void Initialise(IConfigSource config)
+        public void Initialize(IConfigSource config)
         {
             m_config = config;
             IConfig currencyConfig = config.Configs["Currency"];
@@ -179,8 +180,7 @@ namespace Universe.Modules.Currency
             return true;
         }
 
-        public void ProcessMoneyTransferRequest(UUID source, UUID destination, int amount,
-                                                int transactiontype, string description)
+        public void ProcessMoneyTransferRequest(UUID source, UUID destination, int amount, int transactiontype, string description)
         {
         }
 

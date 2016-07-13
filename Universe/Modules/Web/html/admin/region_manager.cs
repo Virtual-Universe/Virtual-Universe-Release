@@ -1,6 +1,8 @@
 ﻿/*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -90,11 +92,9 @@ namespace Universe.Modules.Web
                 string RegionLocY = requestParameters["RegionLocY"].ToString();
                 string RegionSizeX = requestParameters["RegionSizeX"].ToString();
                 string RegionSizeY = requestParameters["RegionSizeY"].ToString();
-
                 string RegionType = requestParameters["RegionType"].ToString();
                 string RegionPresetType = requestParameters["RegionPresetType"].ToString();
                 string RegionTerrain = requestParameters["RegionTerrain"].ToString();
-
                 string RegionLoadTerrain = requestParameters.ContainsKey("RegionLoadTerrain")
                     ? requestParameters["RegionLoadTerrain"].ToString()
                     : "";
@@ -104,7 +104,6 @@ namespace Universe.Modules.Web
                // string UserType = requestParameters.ContainsKey("UserType")         // only admins can set membership
                //     ? requestParameters ["UserType"].ToString ()
                //     : "Resident";
-
 
                 // a bit of idiot proofing
                 if (RegionName == "")  {
@@ -129,10 +128,9 @@ namespace Universe.Modules.Web
                 newRegion.RegionLocY = int.Parse (RegionLocY);
                 newRegion.RegionSizeX = int.Parse (RegionSizeX);
                 newRegion.RegionSizeY = int.Parse (RegionSizeY);
-
                 newRegion.RegionPort = RegionPort;
                 newRegion.SeeIntoThisSimFromNeighbor = true;
-                newRegion.InfiniteRegion = false;
+                newRegion.InfiniteRegion = true;
                 newRegion.ObjectCapacity = 50000;
                 newRegion.Startup = StartupType.Normal;
 
@@ -146,7 +144,6 @@ namespace Universe.Modules.Web
 
                     string delayStartup = requestParameters["RegionDelayStartup"].ToString();
                     newRegion.Startup = delayStartup.StartsWith ("n", System.StringComparison.Ordinal) ? StartupType.Normal : StartupType.Medium;
-
                 }
 
                 if (regionPreset.StartsWith ("w", System.StringComparison.Ordinal))
@@ -157,11 +154,9 @@ namespace Universe.Modules.Web
                     newRegion.RegionTerrain = "Flatland";
                     newRegion.Startup = StartupType.Normal;
                     newRegion.SeeIntoThisSimFromNeighbor = true;
-                    newRegion.InfiniteRegion = false;
+                    newRegion.InfiniteRegion = true;
                     newRegion.ObjectCapacity = 50000;
                     newRegion.RegionPort = RegionPort;
- 
-
                 }
                 if (regionPreset.StartsWith ("o", System.StringComparison.Ordinal))       
                 {
@@ -174,7 +169,7 @@ namespace Universe.Modules.Web
                         newRegion.RegionTerrain = "Grassland";
                     newRegion.Startup = StartupType.Medium;
                     newRegion.SeeIntoThisSimFromNeighbor = true;
-                    newRegion.InfiniteRegion = false;
+                    newRegion.InfiniteRegion = true;
                     newRegion.ObjectCapacity = 750;
                     newRegion.RegionSettings.AgentLimit = 10;
                     newRegion.RegionSettings.AllowLandJoinDivide = false;
@@ -188,7 +183,7 @@ namespace Universe.Modules.Web
                     newRegion.RegionTerrain = "Homestead";
                     newRegion.Startup = StartupType.Medium;
                     newRegion.SeeIntoThisSimFromNeighbor = true;
-                    newRegion.InfiniteRegion = false;
+                    newRegion.InfiniteRegion = true;
                     newRegion.ObjectCapacity = 3750;
                     newRegion.RegionSettings.AgentLimit = 20;
                     newRegion.RegionSettings.AllowLandJoinDivide = false;
@@ -203,7 +198,7 @@ namespace Universe.Modules.Web
                     newRegion.RegionTerrain = RegionTerrain;
                     newRegion.Startup = StartupType.Normal;
                     newRegion.SeeIntoThisSimFromNeighbor = true;
-                    newRegion.InfiniteRegion = false;
+                    newRegion.InfiniteRegion = true;
                     newRegion.ObjectCapacity = 15000;
                     newRegion.RegionSettings.AgentLimit = 100;
                     if (newRegion.RegionType.StartsWith ("M", System.StringComparison.Ordinal))                           // defaults are 'true'
@@ -264,7 +259,6 @@ namespace Universe.Modules.Web
                 }
                 vars.Add ("OwnerUUID", estateOwner);
                 vars.Add ("OwnerName", estateOwnerAccount != null ? estateOwnerAccount.Name : "No account found");
-
                 vars.Add ("RegionLocX", region.RegionLocX / Constants.RegionSize);
                 vars.Add ("RegionLocY", region.RegionLocY / Constants.RegionSize);
                 vars.Add ("RegionSizeX", region.RegionSizeX);
@@ -324,20 +318,17 @@ namespace Universe.Modules.Web
                     vars.Add ("RegionLocX", settings.MapCenter.X);
                     vars.Add ("RegionLocY", settings.MapCenter.Y);
                     vars.Add("RegionPort", 9000);
-
                 }
-
                    
                 vars.Add ("RegionSizeX", Constants.RegionSize);
                 vars.Add ("RegionSizeY", Constants.RegionSize);
                 vars.Add ("RegionType", webInterface.RegionTypeArgs(translator));
                 vars.Add ("RegionPresetType", webInterface.RegionPresetArgs(translator));
-                vars.Add ("RegionTerrain", webInterface.RegionTerrainArgs(translator));
-              
+                vars.Add ("RegionTerrain", webInterface.RegionTerrainArgs(translator));             
             }
 
-                // Labels
-                //vars.Add ("RegionInformationText", translator.GetTranslatedString ("RegionInformationText"));
+            // Labels
+            //vars.Add ("RegionInformationText", translator.GetTranslatedString ("RegionInformationText"));
             vars.Add ("RegionNameText", translator.GetTranslatedString ("RegionNameText"));
             vars.Add ("RegionLocationText", translator.GetTranslatedString ("RegionLocationText"));
             vars.Add ("RegionSizeText", translator.GetTranslatedString ("RegionSizeText"));
@@ -356,9 +347,6 @@ namespace Universe.Modules.Web
             vars.Add("Submit", translator.GetTranslatedString("Submit"));
             vars.Add("SubmitURL", "home.html");
             vars.Add("ErrorMessage", "");
-
-
-         
 
             return vars;
         }

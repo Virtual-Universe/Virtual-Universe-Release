@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -60,7 +62,7 @@ namespace Universe.Modules.GlobalEnvironment
 
         #region IRegion Methods
 
-        public void Initialise (IConfigSource config)
+        public void Initialize (IConfigSource config)
         {
             windConfig = config.Configs ["Wind"];
             desiredWindPlugin = m_dWindPluginName;
@@ -104,7 +106,7 @@ namespace Universe.Modules.GlobalEnvironment
 
                     if (windConfig != null)
                     {
-                        m_activeWindPlugin.Initialise ();
+                        m_activeWindPlugin.Initialize ();
                         m_activeWindPlugin.WindConfig (m_scene, windConfig);
                     }
                 }

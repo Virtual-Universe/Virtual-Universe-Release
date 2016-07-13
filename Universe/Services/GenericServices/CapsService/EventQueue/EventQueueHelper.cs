@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -34,7 +36,6 @@ using OpenMetaverse.Packets;
 using OpenMetaverse.StructuredData;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Utilities;
-
 
 namespace Universe.Services
 {
@@ -245,12 +246,11 @@ namespace Universe.Services
                 OSD.FromReal (position.Y),
                 OSD.FromReal (position.Z)
             };
-            messageParams.Add ("position", positionArray);
 
+            messageParams.Add ("position", positionArray);
             messageParams.Add ("region_id", new OSDUUID (UUID.Zero));
             messageParams.Add ("to_id", new OSDUUID (toAgent));
             messageParams.Add ("source", new OSDInteger (0));
-
             OSDMap data = new OSDMap (1) { { "binary_bucket", OSD.FromBinary (binaryBucket) } };
             messageParams.Add ("data", data);
             messageParams.Add ("message", new OSDString (message));
@@ -331,6 +331,7 @@ namespace Universe.Services
                 { "message", new OSDString ("ChatterBoxInvitation") },
                 { "body", body }
             };
+
             return chatterboxInvitation;
         }
 
@@ -382,6 +383,7 @@ namespace Universe.Services
                     info.Add ("transition", OSD.FromString (Transition));
                 agentUpdates.Add (block.AgentID.ToString (), info);
             }
+
             body.Add ("agent_updates", agentUpdates);
             body.Add ("session_id", OSD.FromUUID (sessionID));
             body.Add ("updates", new OSD ());
@@ -485,6 +487,7 @@ namespace Universe.Services
                     num++;
                 }
             }
+
             message.Add ("body", message_body);
             return message;
         }
@@ -501,6 +504,7 @@ namespace Universe.Services
                     OSD.FromUInteger ((uint)Util.ToUnixTime (statReplyMessage.ReportDataBlocks [num].TimeStamp));
                 num++;
             }
+
             message.Add ("body", message_body);
             return message;
         }

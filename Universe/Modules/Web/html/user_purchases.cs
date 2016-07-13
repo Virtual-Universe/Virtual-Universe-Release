@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -75,7 +77,6 @@ namespace Universe.Modules.Web
             string dateStart = thirtyDays.ToShortDateString();
             string dateEnd = today.ToShortDateString();
  
-
             IMoneyModule moneyModule = webInterface.Registry.RequestModuleInterface<IMoneyModule>();
             string noDetails = translator.GetTranslatedString ("NoPurchasesText");
 
@@ -86,7 +87,6 @@ namespace Universe.Modules.Web
                     dateStart = requestParameters ["date_start"].ToString ();
                 if (requestParameters.ContainsKey ("date_end"))
                     dateEnd = requestParameters ["date_end"].ToString ();
-
             }
 
             UserAccount user = Authenticator.GetAuthentication(httpRequest);
@@ -118,14 +118,12 @@ namespace Universe.Modules.Web
                         { "RealAmount",((float) purchase.RealAmount/100).ToString("0.00") },
                         { "PurchaseDate", Culture.LocaleDate (purchase.PurchaseDate.ToLocalTime(), "MMM dd, hh:mm:ss tt") },
                         { "UpdateDate", Culture.LocaleDate (purchase.UpdateDate.ToLocalTime(), "MMM dd, hh:mm:ss tt") }
-
                     });
                 }
             }
 
             if (purchasesList.Count == 0)
             {
- 
                 purchasesList.Add(new Dictionary<string, object> {
                     {"ID", ""},
                     {"AgentID", ""},
@@ -136,7 +134,6 @@ namespace Universe.Modules.Web
                     {"RealAmount",""},
                     {"PurchaseDate",""},
                     {"UpdateDate", ""}
-
                 });
             }
 

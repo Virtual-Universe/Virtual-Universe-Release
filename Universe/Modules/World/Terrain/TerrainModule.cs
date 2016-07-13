@@ -1,6 +1,8 @@
 /*
- * Copyright (c) Contributors, http://virtual-planets.org/, http://whitecore-sim.org/, http://aurora-sim.org, http://opensimulator.org/
+ * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
+ * For an explanation of the license of each contributor and the content it 
+ * covers please see the Licenses directory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -74,15 +76,9 @@ namespace Universe.Modules.Terrain
         const int MIN_HEIGHT = 0;
 
         static readonly List<TerrainModule> m_terrainModules = new List<TerrainModule> ();
-
-        readonly Dictionary<StandardTerrainEffects, ITerrainFloodEffect> m_floodeffects =
-            new Dictionary<StandardTerrainEffects, ITerrainFloodEffect> ();
-
+        readonly Dictionary<StandardTerrainEffects, ITerrainFloodEffect> m_floodeffects = new Dictionary<StandardTerrainEffects, ITerrainFloodEffect> ();
         readonly Dictionary<string, ITerrainLoader> m_loaders = new Dictionary<string, ITerrainLoader> ();
-
-        readonly Dictionary<StandardTerrainEffects, ITerrainPaintableEffect> m_painteffects =
-            new Dictionary<StandardTerrainEffects, ITerrainPaintableEffect> ();
-
+        readonly Dictionary<StandardTerrainEffects, ITerrainPaintableEffect> m_painteffects = new Dictionary<StandardTerrainEffects, ITerrainPaintableEffect> ();
         readonly Timer m_queueTimer = new Timer ();
         readonly UndoStack<LandUndoState> m_undo = new UndoStack<LandUndoState> (5);
 
@@ -105,7 +101,7 @@ namespace Universe.Modules.Terrain
         ///     Creates and initializes a terrain module for a region
         /// </summary>
         /// <param name="config">Config for the region</param>
-        public void Initialise (IConfigSource config)
+        public void Initialize (IConfigSource config)
         {
             if (config.Configs ["TerrainModule"] != null) {
                 m_sendTerrainUpdatesByViewDistance =
@@ -130,7 +126,7 @@ namespace Universe.Modules.Terrain
             if (!m_noTerrain) {
                 LoadWorldHeightmap ();
                 LoadWorldWaterMap ();
-                scene.PhysicsScene.SetTerrain (m_channel, m_channel.GetSerialised ());
+                scene.PhysicsScene.SetTerrain (m_channel, m_channel.GetSerialized ());
                 UpdateWaterHeight (scene.RegionInfo.RegionSettings.WaterHeight);
             }
 
@@ -205,7 +201,7 @@ namespace Universe.Modules.Terrain
         {
             short [] waterMap = null;
             if (m_waterChannel != null)
-                waterMap = m_waterChannel.GetSerialised ();
+                waterMap = m_waterChannel.GetSerialized ();
             m_scene.PhysicsScene.SetWaterLevel (height, waterMap);
         }
 
@@ -623,7 +619,7 @@ namespace Universe.Modules.Terrain
 
             if (m_queueNextSave > 0 && m_queueNextSave < now) {
                 m_queueNextSave = 0;
-                m_scene.PhysicsScene.SetTerrain (m_channel, m_channel.GetSerialised ());
+                m_scene.PhysicsScene.SetTerrain (m_channel, m_channel.GetSerialized ());
 
                 if (m_queueNextSave == 0)
                     m_queueTimer.Stop ();
@@ -682,7 +678,7 @@ namespace Universe.Modules.Terrain
         {
             if (!m_sendTerrainUpdatesByViewDistance && !m_noTerrain) {
                 //Default way, send the full terrain at once
-                RemoteClient.SendLayerData (m_channel.GetSerialised ());
+                RemoteClient.SendLayerData (m_channel.GetSerialized ());
             } else {
                 //Send only what the client can see,
                 //  but the client isn't loaded yet, wait until they get set up
@@ -783,12 +779,12 @@ namespace Universe.Modules.Terrain
             }
             if (xs.Count != 0) {
                 //Send all the terrain patches at once
-                presence.ControllingClient.SendLayerData (xs.ToArray (), ys.ToArray (), m_channel.GetSerialised (),
+                presence.ControllingClient.SendLayerData (xs.ToArray (), ys.ToArray (), m_channel.GetSerialized (),
                                                          TerrainPatch.LayerType.Land);
                 if (m_use3DWater) {
                     //Send all the water patches at once
                     presence.ControllingClient.SendLayerData (xs.ToArray (), ys.ToArray (),
-                                                             m_waterChannel.GetSerialised (),
+                                                             m_waterChannel.GetSerialized (),
                                                              TerrainPatch.LayerType.Water);
                 }
             }
@@ -1208,7 +1204,7 @@ namespace Universe.Modules.Terrain
                 if (!m_sendTerrainUpdatesByViewDistance) {
                     presence.ControllingClient.SendLayerData (xs.ToArray (),
                                                               ys.ToArray (),
-                                                              channel.GetSerialised (),
+                                                              channel.GetSerialized (),
                                                               isWater
                                                                  ? TerrainPatch.LayerType.Land
                                                                  : TerrainPatch.LayerType.Water);
@@ -1541,7 +1537,7 @@ namespace Universe.Modules.Terrain
 
             foreach (TerrainModule tmodule in m) {
                 MainConsole.Instance.Info ("[Terrain]: Saving scene " + tmodule.m_scene.RegionInfo.RegionName + " physics");
-                tmodule.m_scene.PhysicsScene.SetTerrain (tmodule.m_channel, tmodule.m_channel.GetSerialised ());
+                tmodule.m_scene.PhysicsScene.SetTerrain (tmodule.m_channel, tmodule.m_channel.GetSerialized ());
             }
         }
 
