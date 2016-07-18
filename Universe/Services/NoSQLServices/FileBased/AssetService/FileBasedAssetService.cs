@@ -57,78 +57,82 @@ namespace Universe.FileBasedServices.AssetService
 
         public virtual string Name
         {
-            get { return GetType ().Name; }
+            get { return GetType().Name; }
         }
 
-        public virtual void Initialize (IConfigSource config, IRegistryCore registry)
+        public virtual void Initialize(IConfigSource config, IRegistryCore registry)
         {
-            IConfig handlerConfig = config.Configs ["Handlers"];
-            if (handlerConfig.GetString ("AssetHandler", "") != "FileBased" + Name)
+            IConfig handlerConfig = config.Configs["Handlers"];
+            if (handlerConfig.GetString("AssetHandler", "") != "FileBased" + Name)
                 return;
             m_enabled = true;
-            Configure (config, registry);
-            Init (registry, Name, serverPath: "/asset/", serverHandlerName: "AssetServerURI");
+            Configure(config, registry);
+            Init(registry, Name, serverPath: "/asset/", serverHandlerName: "AssetServerURI");
 
-            IConfig fileConfig = config.Configs ["FileBasedAssetService"];
+            // set defaults
+            var simbase = registry.RequestModuleInterface<ISimulationBase>();
+            var defpath = simbase.DefaultDataPath;
+            m_assetsDirectory = Path.Combine(defpath, Constants.DEFAULT_FILEASSETS_DIR);
+            m_migrateSQL = true;
+
+            IConfig fileConfig = config.Configs["FileBasedAssetService"];
             if (fileConfig != null)
             {
-                var assetFolderPath = fileConfig.GetString ("AssetFolderPath", m_assetsDirectory);
-                if (assetFolderPath == "")
-                {
-                    var defpath = registry.RequestModuleInterface<ISimulationBase> ().DefaultDataPath;
-                    assetFolderPath = Path.Combine (defpath, Constants.DEFAULT_FILEASSETS_DIR);
-                }
-                SetUpFileBase (assetFolderPath);
+                var assetsPath = fileConfig.GetString("AssetFolderPath", m_assetsDirectory);
+                if (assetsPath != "")
+                    m_assetsDirectory = assetsPath;
 
                 // try and migrate sql assets if they are missing?
-                m_migrateSQL = fileConfig.GetBoolean ("MigrateSQLAssets", true);
+                m_migrateSQL = fileConfig.GetBoolean("MigrateSQLAssets", true);
             }
+            SetUpFileBase(m_assetsDirectory);
+
         }
 
-        public virtual void Configure (IConfigSource config, IRegistryCore registry)
+        public virtual void Configure(IConfigSource config, IRegistryCore registry)
         {
             if (!m_enabled)
                 return;
             m_registry = registry;
 
-            registry.RegisterModuleInterface<IAssetService> (this);
+            registry.RegisterModuleInterface<IAssetService>(this);
 
-            IConfig handlers = config.Configs ["Handlers"];
+            IConfig handlers = config.Configs["Handlers"];
             if (handlers != null)
-                doDatabaseCaching = handlers.GetBoolean ("AssetHandlerUseCache", false);
+                doDatabaseCaching = handlers.GetBoolean("AssetHandlerUseCache", false);
 
-            if (IsLocalConnector  && (MainConsole.Instance != null))
+            if (IsLocalConnector && (MainConsole.Instance != null))
             {
-                MainConsole.Instance.Commands.AddCommand (
+                MainConsole.Instance.Commands.AddCommand(
                     "show digest",
                     "show digest <ID>",
-                    "Show asset digest", 
+                    "Show asset digest",
                     HandleShowDigest, false, true);
 
-                MainConsole.Instance.Commands.AddCommand (
+                MainConsole.Instance.Commands.AddCommand(
                     "delete asset",
                     "delete asset <ID>",
-                    "Delete asset from database", 
+                    "Delete asset from database",
                     HandleDeleteAsset, false, true);
 
-                MainConsole.Instance.Commands.AddCommand (
+                MainConsole.Instance.Commands.AddCommand(
                     "get asset",
                     "get asset <ID>",
-                    "Gets info about asset from database", 
+                    "Gets info about asset from database",
                     HandleGetAsset, false, true);
 
             }
-            MainConsole.Instance.Info ("[Filebased asset service]: File based asset service enabled");
+            MainConsole.Instance.Info("[Filebased asset service]: File based asset service enabled");
 
         }
 
-        public virtual void Start (IConfigSource config, IRegistryCore registry)
+        public virtual void Start(IConfigSource config, IRegistryCore registry)
         {
             if (m_migrateSQL)
-                m_assetService = Framework.Utilities.DataManager.RequestPlugin<IAssetDataPlugin> ();
+                m_assetService = Framework.Utilities.DataManager.RequestPlugin<IAssetDataPlugin>();
         }
 
-        public virtual void FinishedStartup ()
+        public virtual void FinishedStartup()
         {
         }
 
@@ -141,222 +145,232 @@ namespace Universe.FileBasedServices.AssetService
             get { return this; }
         }
 
-        [CanBeReflected (ThreatLevel = ThreatLevel.Low)]
-        public virtual AssetBase Get (string id)
+        [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
+        public virtual AssetBase Get(string id)
         {
-            return Get (id, true);
+            return Get(id, true);
         }
 
-        [CanBeReflected (ThreatLevel = ThreatLevel.Low)]
-        public virtual AssetBase Get (string id, bool showWarnings)
+        [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
+        public virtual AssetBase Get(string id, bool showWarnings)
         {
-            if (id == UUID.Zero.ToString ())
+            if (id == UUID.Zero.ToString())
                 return null;
 
-            IImprovedAssetCache cache = m_registry.RequestModuleInterface<IImprovedAssetCache> ();
+            IImprovedAssetCache cache = m_registry.RequestModuleInterface<IImprovedAssetCache>();
             if (doDatabaseCaching && cache != null)
             {
                 bool found;
-                AssetBase cachedAsset = cache.Get (id, out found);
+                AssetBase cachedAsset = cache.Get(id, out found);
                 if (found && (cachedAsset == null || cachedAsset.Data.Length != 0))
                     return cachedAsset;
             }
 
-            if (m_doRemoteOnly) {
-                object remoteValue = DoRemoteByURL ("AssetServerURI", id, showWarnings);
-                if (remoteValue != null) {
+            if (m_doRemoteOnly)
+            {
+                object remoteValue = DoRemoteByURL("AssetServerURI", id, showWarnings);
+                if (remoteValue != null)
+                {
                     if (doDatabaseCaching && cache != null)
-                        cache.Cache (id, (AssetBase)remoteValue);
+                        cache.Cache(id, (AssetBase)remoteValue);
                     return (AssetBase)remoteValue;
                 }
                 return null;
             }
 
-            AssetBase asset = FileGetAsset (id);
+            AssetBase asset = FileGetAsset(id);
             if (doDatabaseCaching && cache != null)
-                cache.Cache (id, asset);
+                cache.Cache(id, asset);
             return asset;
         }
 
-        public virtual AssetBase GetMesh (string id)
+        public virtual AssetBase GetMesh(string id)
         {
-            return Get (id);
+            return Get(id);
         }
 
-        public virtual AssetBase GetCached (string id)
+        public virtual AssetBase GetCached(string id)
         {
-            IImprovedAssetCache cache = m_registry.RequestModuleInterface<IImprovedAssetCache> ();
+            IImprovedAssetCache cache = m_registry.RequestModuleInterface<IImprovedAssetCache>();
             if (doDatabaseCaching && cache != null)
-                return cache.Get (id);
+                return cache.Get(id);
             return null;
         }
 
-        [CanBeReflected (ThreatLevel = ThreatLevel.Low)]
-        public virtual byte[] GetData (string id)
+        [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
+        public virtual byte[] GetData(string id)
         {
-            IImprovedAssetCache cache = m_registry.RequestModuleInterface<IImprovedAssetCache> ();
+            IImprovedAssetCache cache = m_registry.RequestModuleInterface<IImprovedAssetCache>();
             if (doDatabaseCaching && cache != null)
             {
                 bool found;
-                byte[] cachedAsset = cache.GetData (id, out found);
+                byte[] cachedAsset = cache.GetData(id, out found);
                 if (found)
                     return cachedAsset;
             }
 
-            if (m_doRemoteOnly) {
-                object remoteValue = DoRemoteByURL ("AssetServerURI", id);
-                if (remoteValue != null) {
-                    byte [] data = (byte [])remoteValue;
+            if (m_doRemoteOnly)
+            {
+                object remoteValue = DoRemoteByURL("AssetServerURI", id);
+                if (remoteValue != null)
+                {
+                    byte[] data = (byte[])remoteValue;
                     if (doDatabaseCaching && cache != null && data != null)
-                        cache.CacheData (id, data);
+                        cache.CacheData(id, data);
                     return data;
                 }
                 return null;
             }
 
-            AssetBase asset = FileGetAsset (id);
+            AssetBase asset = FileGetAsset(id);
             if (doDatabaseCaching && cache != null)
-                cache.Cache (id, asset);
+                cache.Cache(id, asset);
             if (asset == null)
                 return null;
 
             // see assetservice.GetData  byte[0] != null            return new byte[0];
-            var assetData = new byte [asset.Data.Length];
-            asset.Data.CopyTo (assetData, 0);
-            asset.Dispose ();
+            var assetData = new byte[asset.Data.Length];
+            asset.Data.CopyTo(assetData, 0);
+            asset.Dispose();
             return assetData;
         }
 
-        [CanBeReflected (ThreatLevel = ThreatLevel.Low)]
-        public virtual bool GetExists (string id)
+        [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
+        public virtual bool GetExists(string id)
         {
-            if (m_doRemoteOnly) {
-                object remoteValue = DoRemoteByURL ("AssetServerURI", id);
+            if (m_doRemoteOnly)
+            {
+                object remoteValue = DoRemoteByURL("AssetServerURI", id);
                 return remoteValue != null ? (bool)remoteValue : false;
             }
 
-            return FileExistsAsset (id);
+            return FileExistsAsset(id);
         }
 
-        public virtual void Get (string id, object sender, AssetRetrieved handler)
+        public virtual void Get(string id, object sender, AssetRetrieved handler)
         {
-            var asset = Get (id);
-            if (asset != null) {
-                Util.FireAndForget ((o) => {handler (id, sender, asset);});
+            var asset = Get(id);
+            if (asset != null)
+            {
+                Util.FireAndForget((o) => { handler(id, sender, asset); });
                 //asset.Dispose ();
             }
         }
 
-        [CanBeReflected (ThreatLevel = ThreatLevel.Low)]
-        public virtual UUID Store (AssetBase asset)
+        [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
+        public virtual UUID Store(AssetBase asset)
         {
             if (asset == null)
                 return UUID.Zero;
 
-            if (m_doRemoteOnly) {
-                object remoteValue = DoRemoteByURL ("AssetServerURI", asset);
+            if (m_doRemoteOnly)
+            {
+                object remoteValue = DoRemoteByURL("AssetServerURI", asset);
                 if (remoteValue == null)
                     return UUID.Zero;
                 asset.ID = (UUID)remoteValue;
-            } else
-                FileSetAsset (asset);
+            }
+            else
+                FileSetAsset(asset);
 
-            IImprovedAssetCache cache = m_registry.RequestModuleInterface<IImprovedAssetCache> ();
+            IImprovedAssetCache cache = m_registry.RequestModuleInterface<IImprovedAssetCache>();
             if (doDatabaseCaching && cache != null && asset != null && asset.Data != null && asset.Data.Length != 0)
             {
-                cache.Expire (asset.ID.ToString ());
-                cache.Cache (asset.ID.ToString (), asset);
+                cache.Expire(asset.ID.ToString());
+                cache.Cache(asset.ID.ToString(), asset);
             }
 
             return asset.ID;
         }
 
-        [CanBeReflected (ThreatLevel = ThreatLevel.Low)]
-        public virtual UUID UpdateContent (UUID id, byte[] data)
+        [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
+        public virtual UUID UpdateContent(UUID id, byte[] data)
         {
-            if (m_doRemoteOnly) {
-                object remoteValue = DoRemoteByURL ("AssetServerURI", id, data);
+            if (m_doRemoteOnly)
+            {
+                object remoteValue = DoRemoteByURL("AssetServerURI", id, data);
                 return remoteValue != null ? (UUID)remoteValue : UUID.Zero;
             }
 
-            AssetBase asset = FileGetAsset (id.ToString ());
+            AssetBase asset = FileGetAsset(id.ToString());
             if (asset == null)
                 return UUID.Zero;
-            UUID newID = asset.ID = UUID.Random ();
+            UUID newID = asset.ID = UUID.Random();
             asset.Data = data;
-            bool success = FileSetAsset (asset);
-            asset.Dispose ();
+            bool success = FileSetAsset(asset);
+            asset.Dispose();
 
             if (!success)
                 return UUID.Zero; //We weren't able to update the asset
             return newID;
         }
 
-        [CanBeReflected (ThreatLevel = ThreatLevel.Low)]
-        public virtual bool Delete (UUID id)
+        [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
+        public virtual bool Delete(UUID id)
         {
-            if (m_doRemoteOnly) {
-                object remoteValue = DoRemoteByURL ("AssetServerURI", id);
+            if (m_doRemoteOnly)
+            {
+                object remoteValue = DoRemoteByURL("AssetServerURI", id);
                 return remoteValue != null ? (bool)remoteValue : false;
             }
 
-            FileDeleteAsset (id.ToString ());
+            FileDeleteAsset(id.ToString());
             return true;
         }
 
         #endregion
 
-        void SetUpFileBase (string path)
+        void SetUpFileBase(string path)
         {
             m_assetsDirectory = path;
 
-            if (!Directory.Exists (m_assetsDirectory))
-                Directory.CreateDirectory (m_assetsDirectory);
+            if (!Directory.Exists(m_assetsDirectory))
+                Directory.CreateDirectory(m_assetsDirectory);
 
-            if (!Directory.Exists (Path.Combine (m_assetsDirectory, "data")))
-                Directory.CreateDirectory (Path.Combine (m_assetsDirectory, "data"));
+            if (!Directory.Exists(Path.Combine(m_assetsDirectory, "data")))
+                Directory.CreateDirectory(Path.Combine(m_assetsDirectory, "data"));
 
-            MainConsole.Instance.InfoFormat ("[Filebased asset service]: Set up Filebased Assets in {0}.",
+            MainConsole.Instance.InfoFormat("[Filebased asset service]: Set up Filebased Assets in {0}.",
                 m_assetsDirectory);
         }
 
-        string GetPathForID (string id)
+        string GetPathForID(string id)
         {
-            string fileName = MakeValidFileName (id);
+            string fileName = MakeValidFileName(id);
             string baseStr = m_assetsDirectory;
             for (int i = 0; i < 4; i++)
             {
-                baseStr = Path.Combine (baseStr, fileName.Substring (i * 2, 2));
-                if (!Directory.Exists (baseStr))
-                    Directory.CreateDirectory (baseStr);
+                baseStr = Path.Combine(baseStr, fileName.Substring(i * 2, 2));
+                if (!Directory.Exists(baseStr))
+                    Directory.CreateDirectory(baseStr);
             }
-            return Path.Combine (baseStr, fileName + ".asset");
+            return Path.Combine(baseStr, fileName + ".asset");
         }
 
-        string GetDataPathForID (string hashCode)
+        string GetDataPathForID(string hashCode)
         {
-            string fileName = MakeValidFileName (hashCode);
-            string baseStr = Path.Combine (m_assetsDirectory, "data");
+            string fileName = MakeValidFileName(hashCode);
+            string baseStr = Path.Combine(m_assetsDirectory, "data");
             for (int i = 0; i < 4; i++)
             {
-                baseStr = Path.Combine (baseStr, fileName.Substring (i * 2, 2));
-                if (!Directory.Exists (baseStr))
-                    Directory.CreateDirectory (baseStr);
+                baseStr = Path.Combine(baseStr, fileName.Substring(i * 2, 2));
+                if (!Directory.Exists(baseStr))
+                    Directory.CreateDirectory(baseStr);
             }
-            return Path.Combine (baseStr, fileName + ".data");
+            return Path.Combine(baseStr, fileName + ".data");
         }
 
-        static string MakeValidFileName (string name)
+        static string MakeValidFileName(string name)
         {
             string invalidChars =
-                System.Text.RegularExpressions.Regex.Escape (new string (Path.GetInvalidFileNameChars ())) + "+=";
-            string invalidReStr = string.Format (@"([{0}]*\.+$)|([{0}]+)", invalidChars);
-            return System.Text.RegularExpressions.Regex.Replace (name, invalidReStr, "");
+                System.Text.RegularExpressions.Regex.Escape(new string(Path.GetInvalidFileNameChars())) + "+=";
+            string invalidReStr = string.Format(@"([{0}]*\.+$)|([{0}]+)", invalidChars);
+            return System.Text.RegularExpressions.Regex.Replace(name, invalidReStr, "");
         }
 
-        object _lock = new object ();
+        object _lock = new object();
 
-        public AssetBase FileGetAsset (string id)
+        public AssetBase FileGetAsset(string id)
         {
             AssetBase asset;
 #if ASSET_DEBUG
@@ -364,21 +378,22 @@ namespace Universe.FileBasedServices.AssetService
 #endif
             try
             {
-                if (!File.Exists (GetPathForID (id)))
-                    return CheckForConversion (id);
+                if (!File.Exists(GetPathForID(id)))
+                    return CheckForConversion(id);
 
                 lock (_lock)
                 {
-                    FileStream openStream = File.OpenRead (GetPathForID (id));
-                    asset = ProtoBuf.Serializer.Deserialize<AssetBase> (openStream);
-                    openStream.Close ();
+                    FileStream openStream = File.OpenRead(GetPathForID(id));
+                    asset = ProtoBuf.Serializer.Deserialize<AssetBase>(openStream);
+                    openStream.Close();
                     if (asset.Type == -1)
                         asset.Type = 0;
-                    asset.Data = File.ReadAllBytes (GetDataPathForID (asset.HashCode));
+                    asset.Data = File.ReadAllBytes(GetDataPathForID(asset.HashCode));
                 }
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
-                MainConsole.Instance.WarnFormat ("[Filebased asset service]: Failed to retrieve asset {0}: {1} ", id, ex);
+                MainConsole.Instance.WarnFormat("[Filebased asset service]: Failed to retrieve asset {0}: {1} ", id, ex);
                 return null;
             }
 #if ASSET_DEBUG
@@ -394,13 +409,13 @@ namespace Universe.FileBasedServices.AssetService
             return asset;
         }
 
-        AssetBase CheckForConversion (string id)
+        AssetBase CheckForConversion(string id)
         {
             if (!m_migrateSQL)
                 return null;
 
             AssetBase asset;
-            asset = m_assetService.GetAsset (UUID.Parse (id), false);       // don't show wornings for missing assets
+            asset = m_assetService.GetAsset(UUID.Parse(id), false);       // don't show wornings for missing assets
 
             if (asset == null)
                 return null;
@@ -411,36 +426,36 @@ namespace Universe.FileBasedServices.AssetService
             //m_assetService.StoreAsset(asset);
 
             //Now store in Redis
-            FileSetAsset (asset);
+            FileSetAsset(asset);
 
             return asset;
         }
 
-        public bool FileExistsAsset (string id)
+        public bool FileExistsAsset(string id)
         {
-            bool success = File.Exists (GetPathForID (id));
+            bool success = File.Exists(GetPathForID(id));
             if (!success)
-                success = m_assetService.ExistsAsset (UUID.Parse (id));
+                success = m_assetService.ExistsAsset(UUID.Parse(id));
             return success;
         }
 
-        public bool FileSetAsset (AssetBase asset)
+        public bool FileSetAsset(AssetBase asset)
         {
             FileStream assetStream;
             try
             {
                 string hash = asset.HashCode;
-                bool duplicate = File.Exists (GetDataPathForID (hash));
+                bool duplicate = File.Exists(GetDataPathForID(hash));
 
                 byte[] data = asset.Data;
                 asset.Data = new byte[0];
                 lock (_lock)
                 {
-                    assetStream = File.OpenWrite (GetPathForID (asset.IDString));
+                    assetStream = File.OpenWrite(GetPathForID(asset.IDString));
                     asset.HashCode = hash;
-                    ProtoBuf.Serializer.Serialize<AssetBase> (assetStream, asset);
-                    assetStream.SetLength (assetStream.Position);
-                    assetStream.Close ();
+                    ProtoBuf.Serializer.Serialize<AssetBase>(assetStream, asset);
+                    assetStream.SetLength(assetStream.Position);
+                    assetStream.Close();
                     asset.Data = data;
 
                     //Deduplication...
@@ -450,21 +465,22 @@ namespace Universe.FileBasedServices.AssetService
                         return true;
                     }
 
-                    File.WriteAllBytes (GetDataPathForID (hash), data);
+                    File.WriteAllBytes(GetDataPathForID(hash), data);
                 }
                 return true;
-            } catch
+            }
+            catch
             {
                 return false;
             }
         }
 
-        public void FileDeleteAsset (string id)
+        public void FileDeleteAsset(string id)
         {
-            AssetBase asset = FileGetAsset (id);
+            AssetBase asset = FileGetAsset(id);
             if (asset == null)
                 return;
-            File.Delete (GetPathForID (id));
+            File.Delete(GetPathForID(id));
             //DON'T DO THIS, there might be other references to this hash
             //File.Delete(GetDataPathForID(asset.HashCode));
         }
@@ -476,29 +492,29 @@ namespace Universe.FileBasedServices.AssetService
         /// </summary>
         /// <param name="scene">Scene.</param>
         /// <param name="args">Arguments.</param>
-        void HandleShowDigest (IScene scene, string[] args)
+        void HandleShowDigest(IScene scene, string[] args)
         {
             if (args.Length < 3)
             {
-                MainConsole.Instance.Info ("Syntax: show digest <ID>");
+                MainConsole.Instance.Info("Syntax: show digest <ID>");
                 return;
             }
 
-            AssetBase asset = Get (args [2]);
+            AssetBase asset = Get(args[2]);
 
             if (asset == null || asset.Data.Length == 0)
             {
-                MainConsole.Instance.Info ("Asset not found");
+                MainConsole.Instance.Info("Asset not found");
                 return;
             }
 
             int i;
 
-            MainConsole.Instance.InfoFormat ("Name: {0}", asset.Name);
-            MainConsole.Instance.InfoFormat ("Description: {0}", asset.Description);
-            MainConsole.Instance.InfoFormat ("Type: {0}", asset.TypeAsset);
-            MainConsole.Instance.InfoFormat ("Content-type: {0}", asset.TypeAsset);
-            MainConsole.Instance.InfoFormat ("Flags: {0}", asset.Flags);
+            MainConsole.Instance.InfoFormat("Name: {0}", asset.Name);
+            MainConsole.Instance.InfoFormat("Description: {0}", asset.Description);
+            MainConsole.Instance.InfoFormat("Type: {0}", asset.TypeAsset);
+            MainConsole.Instance.InfoFormat("Content-type: {0}", asset.TypeAsset);
+            MainConsole.Instance.InfoFormat("Flags: {0}", asset.Flags);
 
             for (i = 0; i < 5; i++)
             {
@@ -510,10 +526,10 @@ namespace Universe.FileBasedServices.AssetService
                     len = asset.Data.Length - off;
 
                 byte[] line = new byte[len];
-                Array.Copy (asset.Data, off, line, 0, len);
+                Array.Copy(asset.Data, off, line, 0, len);
 
-                string text = BitConverter.ToString (line);
-                MainConsole.Instance.Info (string.Format ("{0:x4}: {1}", off, text));
+                string text = BitConverter.ToString(line);
+                MainConsole.Instance.Info(string.Format("{0:x4}: {1}", off, text));
             }
         }
 
@@ -522,25 +538,25 @@ namespace Universe.FileBasedServices.AssetService
         /// </summary>
         /// <param name="scene">Scene.</param>
         /// <param name="args">Arguments.</param>
-        void HandleDeleteAsset (IScene scene, string[] args)
+        void HandleDeleteAsset(IScene scene, string[] args)
         {
             if (args.Length < 3)
             {
-                MainConsole.Instance.Info ("Syntax: delete asset <ID>");
+                MainConsole.Instance.Info("Syntax: delete asset <ID>");
                 return;
             }
 
-            AssetBase asset = Get (args [2]);
+            AssetBase asset = Get(args[2]);
 
             if (asset == null || asset.Data.Length == 0)
             {
-                MainConsole.Instance.Info ("Asset not found");
+                MainConsole.Instance.Info("Asset not found");
                 return;
             }
 
-            Delete (UUID.Parse (args [2]));
+            Delete(UUID.Parse(args[2]));
 
-            MainConsole.Instance.Info ("Asset deleted");
+            MainConsole.Instance.Info("Asset deleted");
         }
 
         /// <summary>
@@ -548,21 +564,21 @@ namespace Universe.FileBasedServices.AssetService
         /// </summary>
         /// <param name="scene">Scene.</param>
         /// <param name="args">Arguments.</param>
-        void HandleGetAsset (IScene scene, string[] args)
+        void HandleGetAsset(IScene scene, string[] args)
         {
             if (args.Length < 3)
             {
-                MainConsole.Instance.Info ("Syntax: get asset <ID>");
+                MainConsole.Instance.Info("Syntax: get asset <ID>");
                 return;
             }
 
-            AssetBase asset = FileGetAsset (args [2]);
+            AssetBase asset = FileGetAsset(args[2]);
             if (asset == null)
-                asset = FileGetAsset (args [2]);
+                asset = FileGetAsset(args[2]);
 
             if (asset == null || asset.Data.Length == 0)
             {
-                MainConsole.Instance.Info ("Asset not found");
+                MainConsole.Instance.Info("Asset not found");
                 return;
             }
 
@@ -571,26 +587,26 @@ namespace Universe.FileBasedServices.AssetService
                 creatorName = "System";
             else
             {
-                var accountService = m_registry.RequestModuleInterface<IUserAccountService> ();
+                var accountService = m_registry.RequestModuleInterface<IUserAccountService>();
                 if (accountService != null)
                 {
-                    var account = accountService.GetUserAccount (null, asset.CreatorID);
+                    var account = accountService.GetUserAccount(null, asset.CreatorID);
                     if (account != null)
                         creatorName = account.Name;
                 }
             }
 
-            MainConsole.Instance.InfoFormat ("{0} - {1}",
+            MainConsole.Instance.InfoFormat("{0} - {1}",
                 asset.Name == "" ? "(No name)" : asset.Name,
                 asset.Description == "" ? "(No description)" : asset.Description
             );
 
-            MainConsole.Instance.CleanInfoFormat (
+            MainConsole.Instance.CleanInfoFormat(
                 "                  {0} created by {1} on {2}",
-                asset.AssetTypeInfo (),
+                asset.AssetTypeInfo(),
                 creatorName,
-                asset.CreationDate.ToShortDateString ()
-            );      
+                asset.CreationDate.ToShortDateString()
+            );
         }
 
         #endregion
