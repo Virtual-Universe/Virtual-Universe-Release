@@ -500,7 +500,7 @@ namespace Universe.Modules.WorldMap
         /// Generates the overlay.
         /// </summary>
         /// <returns>The overlay.</returns>
-        Byte [] GenerateOverlay ()
+        byte [] GenerateOverlay ()
         {
             Bitmap overlay = new Bitmap (m_scene.RegionInfo.RegionSizeX, m_scene.RegionInfo.RegionSizeY);
 
@@ -682,6 +682,7 @@ namespace Universe.Modules.WorldMap
                                     pos.Y = m_scene.RegionInfo.RegionSizeY - 1;
                                 isBelow256AboveTerrain = (pos.Z < (heightmap [(int)pos.X, (int)pos.Y] + 256f));
                             } catch (Exception) {
+                                MainConsole.Instance.Error("[Texture renderer]: Error determining terrain height");
                             }
 
                             if (isBelow256AboveTerrain) {
@@ -931,6 +932,7 @@ namespace Universe.Modules.WorldMap
                     try {
                         File.Delete (Path.Combine (Path.Combine (m_assetCacheDir, "mapTileTextureCache"), m_scene.RegionInfo.RegionName + ".tc"));
                     } catch {
+                        MainConsole.Instance.Error("[Texture renderer]: Error deleting cached map");
                     }
                 }
             }
@@ -946,8 +948,7 @@ namespace Universe.Modules.WorldMap
                 Color4 c = kvp.Value.AsColor4 ();
                 UUID key = UUID.Parse (kvp.Key);
                 if (!m_mapping.ContainsKey (key))
-                    m_mapping.Add (key,
-                                  Color.FromArgb ((int)(c.A * 255), (int)(c.R * 255), (int)(c.G * 255), (int)(c.B * 255)));
+                    m_mapping.Add (key, Color.FromArgb ((int)(c.A * 255), (int)(c.R * 255), (int)(c.G * 255), (int)(c.B * 255)));
             }
 
             return true;
@@ -963,7 +964,9 @@ namespace Universe.Modules.WorldMap
             try {
                 writer.WriteLine (OSDParser.SerializeJsonString (map));
             } catch {
+                MainConsole.Instance.Error("[Texture renderer]: Error saving cache map");
             }
+
             writer.Close ();
             stream.Close ();
         }
