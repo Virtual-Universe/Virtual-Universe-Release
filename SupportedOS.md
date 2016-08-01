@@ -61,6 +61,13 @@ The following operating systems have been tested by the Second Galaxy Developmen
    - KUbuntu 16.04 LTS x64
    - XUbuntu 16.04 LTS x86
    - XUbuntu 16.04 LTS x64
+ 
+ The following operating systems have not been tested by the Second Galaxy Development Team's Grid Architecture Development Work Group
+ but are known to the development team.  We will provide information for each OS listed in this section.  Those operating systems are as follows:
+
+ - Operating Systems Currently being watched but not tested yet
+   
+   - React OS (http://reactos.org/) - ReactOS is currently in alpha development stages.  It preports to be an open source alternative to the Windows Operating Systems.  The developers claim it is not based on Unix at all.
    
    NOTE: The Second Galaxy Development Team takes great pride in bringing you Virtual Universe
     and as such sets very high bars in its testing standards for every operating system we support.
