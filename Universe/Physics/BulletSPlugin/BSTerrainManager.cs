@@ -62,7 +62,7 @@ namespace Universe.Physics.BulletSPlugin
     // ==========================================================================================
     public sealed class BSTerrainManager : IDisposable
     {
-        private static string LogHeader = "[BULLETSIM TERRAIN MANAGER]";
+        private static string LogHeader = "[Bulletsim Terrain Manager]";
 
         // These height values are fractional so the odd values will be
         //     noticable when debugging.

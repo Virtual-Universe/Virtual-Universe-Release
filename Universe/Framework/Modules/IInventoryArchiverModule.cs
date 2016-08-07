@@ -43,8 +43,7 @@ namespace Universe.Framework.Modules
     /// <param name="invPath">The inventory path saved</param>
     /// <param name="saveStream">The stream to which the archive was saved</param>
     /// <param name="reportedException">Contains the exception generated if the save did not succeed</param>
-    public delegate void InventoryArchiveSaved(
-        Guid id, bool succeeded, UserAccount userInfo, string invPath, Stream saveStream, Exception reportedException);
+    public delegate void InventoryArchiveSaved(Guid id, bool succeeded, UserAccount userInfo, string invPath, Stream saveStream, Exception reportedException);
 
     public interface IInventoryArchiverModule
     {
@@ -62,9 +61,7 @@ namespace Universe.Framework.Modules
         /// <param name="loadPath">The file from which the inventory archive will be loaded</param>
         /// <param name="options"></param>
         /// <returns>true if the first stage of the operation succeeded, false otherwise</returns>
-        bool DearchiveInventory(
-            string firstName, string lastName, string invPath, string loadPath,
-            Dictionary<string, object> options);
+        bool DearchiveInventory(string firstName, string lastName, string invPath, string loadPath, Dictionary<string, object> options);
 
         /// <summary>
         ///     Archive a user's inventory folder to the given stream
@@ -87,8 +84,6 @@ namespace Universe.Framework.Modules
         /// <param name="saveStream">The stream to which the inventory archive will be saved</param>
         /// <param name="options">Archiving options.  Currently, there are none.</param>
         /// <returns>true if the first stage of the operation succeeded, false otherwise</returns>
-        bool ArchiveInventory(
-            Guid id, string firstName, string lastName, string invPath, Stream saveStream,
-            Dictionary<string, object> options);
+        bool ArchiveInventory(Guid id, string firstName, string lastName, string invPath, Stream saveStream, Dictionary<string, object> options);
     }
 }

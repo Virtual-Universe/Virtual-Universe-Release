@@ -46,19 +46,13 @@ namespace Universe.ClientStack
         const int POSITIVE_VALUE = 0x6;
         const int NEGATIVE_VALUE = 0x7;
 
-        static readonly float[] DequantizeTable16 =
-            new float[Constants.TerrainPatchSize*Constants.TerrainPatchSize];
-
-        static readonly float[] DequantizeTable32 =
-            new float[Constants.TerrainPatchSize*Constants.TerrainPatchSize];
-
+        static readonly float[] DequantizeTable16 = new float[Constants.TerrainPatchSize*Constants.TerrainPatchSize];
+        static readonly float[] DequantizeTable32 = new float[Constants.TerrainPatchSize*Constants.TerrainPatchSize];
         static readonly float[] CosineTable16 = new float[Constants.TerrainPatchSize*Constants.TerrainPatchSize];
-        // static readonly float[] CosineTable32 = new float[Constants.TerrainPatchSize * Constants.TerrainPatchSize];
         static readonly int[] CopyMatrix16 = new int[Constants.TerrainPatchSize*Constants.TerrainPatchSize];
         static readonly int[] CopyMatrix32 = new int[Constants.TerrainPatchSize*Constants.TerrainPatchSize];
 
-        static readonly float[] QuantizeTable16 =
-            new float[Constants.TerrainPatchSize*Constants.TerrainPatchSize];
+        static readonly float[] QuantizeTable16 = new float[Constants.TerrainPatchSize*Constants.TerrainPatchSize];
 
         static UniverseTerrainCompressor()
         {
@@ -69,13 +63,11 @@ namespace Universe.ClientStack
             BuildQuantizeTable16();
         }
 
-        public static LayerDataPacket CreateLayerDataPacket(TerrainPatch[] patches, byte type,
-                                                            int regionSizeX, int regionSizeY)
+        public static LayerDataPacket CreateLayerDataPacket(TerrainPatch[] patches, byte type, int regionSizeX, int regionSizeY)
         {
             LayerDataPacket layer = new LayerDataPacket {LayerID = {Type = type}};
 
-            TerrainPatch.GroupHeader header = new TerrainPatch.GroupHeader
-                                                  {Stride = STRIDE, PatchSize = Constants.TerrainPatchSize};
+            TerrainPatch.GroupHeader header = new TerrainPatch.GroupHeader {Stride = STRIDE, PatchSize = Constants.TerrainPatchSize};
 
             // Should be enough to fit even the most poorly packed data
             byte[] data = new byte[patches.Length*Constants.TerrainPatchSize*Constants.TerrainPatchSize*2];
@@ -117,13 +109,11 @@ namespace Universe.ClientStack
         /// <param name="regionSizeX"></param>
         /// <param name="regionSizeY"></param>
         /// <returns></returns>
-        public static LayerDataPacket CreateLandPacket(short[] heightmap, int[] x, int[] y, byte type,
-                                                       int regionSizeX, int regionSizeY)
+        public static LayerDataPacket CreateLandPacket(short[] heightmap, int[] x, int[] y, byte type, int regionSizeX, int regionSizeY)
         {
             LayerDataPacket layer = new LayerDataPacket {LayerID = {Type = type}};
 
-            TerrainPatch.GroupHeader header = new TerrainPatch.GroupHeader
-                                                  {Stride = STRIDE, PatchSize = Constants.TerrainPatchSize};
+            TerrainPatch.GroupHeader header = new TerrainPatch.GroupHeader {Stride = STRIDE, PatchSize = Constants.TerrainPatchSize};
 
             byte[] data = new byte[x.Length*Constants.TerrainPatchSize*Constants.TerrainPatchSize*2];
             BitPack bitpack = new BitPack(data, 0);
@@ -157,7 +147,6 @@ namespace Universe.ClientStack
                 header.PatchIDs += (x << 5);
             }
 
-
             // NOTE: No idea what prequant and postquant should be or what they do
 
             int wbits;
@@ -184,8 +173,7 @@ namespace Universe.ClientStack
         /// </param>
         /// <param name="regionSizeX"></param>
         /// <param name="regionSizeY"></param>
-        public static void CreatePatchFromHeightmap(BitPack output, short[] heightmap, int x, int y,
-                                                    int regionSizeX, int regionSizeY)
+        public static void CreatePatchFromHeightmap(BitPack output, short[] heightmap, int x, int y, int regionSizeX, int regionSizeY)
         {
             TerrainPatch.Header header = PrescanPatch(heightmap, x, y, regionSizeX, regionSizeY);
             header.QuantWBits = 136;
@@ -226,8 +214,7 @@ namespace Universe.ClientStack
             return header;
         }
 
-        static TerrainPatch.Header PrescanPatch(short[] heightmap, int patchX, int patchY, 
-                                                int regionSizeX, int regionSizeY)
+        static TerrainPatch.Header PrescanPatch(short[] heightmap, int patchX, int patchY, int regionSizeX, int regionSizeY)
         {
             TerrainPatch.Header header = new TerrainPatch.Header();
             short zmax = -32767;
@@ -273,54 +260,8 @@ namespace Universe.ClientStack
             return header;
         }
 
-        static int EncodePatchHeader(BitPack output, TerrainPatch.Header header, int[] patch, 
-                                     int regionSizeX, int regionSizeY, int wbits)
+        static int EncodePatchHeader(BitPack output, TerrainPatch.Header header, int[] patch, int regionSizeX, int regionSizeY, int wbits)
         {
-            /*
-                    int temp;
-                    int wbits = (header.QuantWBits & 0x0f) + 2;
-                    uint maxWbits = (uint)wbits + 5;
-                    uint minWbits = ((uint)wbits >> 1);
-                    int wbitsMaxValue;
-        */
-            // goal is to determine minimum number of bits to use so all data fits
-            /*
-                    wbits = (int)minWbits;
-                    wbitsMaxValue = (1 << wbits);
-
-                    for (int i = 0; i < patch.Length; i++)
-                    {
-                        temp = patch[i];
-                        if (temp != 0)
-                        {
-                            // Get the absolute value
-                            if (temp < 0) temp *= -1;
-
-         no coments..
-
-                            for (int j = (int)maxWbits; j > (int)minWbits; j--)
-                            {
-                                if ((temp & (1 << j)) != 0)
-                                {
-                                    if (j > wbits) wbits = j;
-                                    break;
-                                }
-                            }
- 
-                            while (temp > wbitsMaxValue)
-                                {
-                                wbits++;
-                                if (wbits == maxWbits)
-                                    goto Done;
-                                wbitsMaxValue = 1 << wbits;
-                                }
-                        }
-                    }
-
-                Done:
-
-                    //            wbits += 1;
-         */
             // better check
             if (wbits > 17)
                 wbits = 16;
@@ -376,35 +317,6 @@ namespace Universe.ClientStack
             }
         }
 
-/*
-        static void DCTLine16(float[] linein, float[] lineout, int line)
-        {
-            float total = 0.0f;
-            int lineSize = line * Constants.TerrainPatchSize;
-
-            for (int n = 0; n < Constants.TerrainPatchSize; n++)
-            {
-                total += linein[lineSize + n];
-            }
-
-            lineout[lineSize] = OO_SQRT2 * total;
-
-            int uptr = 0;
-            for (int u = 1; u < Constants.TerrainPatchSize; u++)
-            {
-                total = 0.0f;
-                uptr += Constants.TerrainPatchSize;
-
-                for (int n = 0; n < Constants.TerrainPatchSize; n++)
-                {
-                    total += linein[lineSize + n] * CosineTable16[uptr + n];
-                }
-
-                lineout[lineSize + u] = total;
-            }
-        }
-*/
-
         static void DCTLine16(float[] linein, float[] lineout, int line)
         {
             // outputs transpose data (lines exchanged with columns )
@@ -433,42 +345,12 @@ namespace Universe.ClientStack
             }
         }
 
-
-        /*
-                static void DCTColumn16(float[] linein, int[] lineout, int column)
-                {
-                    float total = 0.0f;
-        //            const float oosob = 2.0f / Constants.TerrainPatchSize;
-
-                    for (int n = 0; n < Constants.TerrainPatchSize; n++)
-                    {
-                        total += linein[Constants.TerrainPatchSize * n + column];
-                    }
-
-        //            lineout[CopyMatrix16[column]] = (int)(OO_SQRT2 * total * oosob * QuantizeTable16[column]);
-                    lineout[CopyMatrix16[column]] = (int)(OO_SQRT2 * total * QuantizeTable16[column]);
-
-                    for (int uptr = Constants.TerrainPatchSize; uptr < Constants.TerrainPatchSize * Constants.TerrainPatchSize; uptr += Constants.TerrainPatchSize)
-                    {
-                        total = 0.0f;
-
-                        for (int n = 0; n < Constants.TerrainPatchSize; n++)
-                        {
-                            total += linein[Constants.TerrainPatchSize * n + column] * CosineTable16[uptr + n];
-                        }
-
-        //                lineout[CopyMatrix16[Constants.TerrainPatchSize * u + column]] = (int)(total * oosob * QuantizeTable16[Constants.TerrainPatchSize * u + column]);
-                        lineout[CopyMatrix16[uptr + column]] = (int)(total * QuantizeTable16[uptr + column]);
-                        }
-                }
-        */
-
         static void DCTColumn16(float[] linein, int[] lineout, int column)
         {
             // input columns are in fact stored in lines now
 
             float total = 0.0f;
-//            const float oosob = 2.0f / Constants.TerrainPatchSize;
+
             int inlinesptr = Constants.TerrainPatchSize*column;
 
             for (int n = 0; n < Constants.TerrainPatchSize; n++)
@@ -476,7 +358,6 @@ namespace Universe.ClientStack
                 total += linein[inlinesptr + n];
             }
 
-            //            lineout[CopyMatrix16[column]] = (int)(OO_SQRT2 * total * oosob * QuantizeTable16[column]);
             lineout[CopyMatrix16[column]] = (int) (OO_SQRT2*total*QuantizeTable16[column]);
 
             for (int uptr = Constants.TerrainPatchSize;
@@ -490,7 +371,6 @@ namespace Universe.ClientStack
                     total += linein[n]*CosineTable16[ptru];
                 }
 
-//                lineout[CopyMatrix16[Constants.TerrainPatchSize * u + column]] = (int)(total * oosob * QuantizeTable16[Constants.TerrainPatchSize * u + column]);
                 lineout[CopyMatrix16[uptr + column]] = (int) (total*QuantizeTable16[uptr + column]);
             }
         }
@@ -503,7 +383,7 @@ namespace Universe.ClientStack
             int wbitsMaxValue = 1 << wbits;
 
             float total = 0.0f;
-            //            const float oosob = 2.0f / Constants.TerrainPatchSize;
+
             int inlinesptr = Constants.TerrainPatchSize*column;
 
             for (int n = 0; n < Constants.TerrainPatchSize; n++)
@@ -511,7 +391,6 @@ namespace Universe.ClientStack
                 total += linein[inlinesptr + n];
             }
 
-            //            lineout[CopyMatrix16[column]] = (int)(OO_SQRT2 * total * oosob * QuantizeTable16[column]);
             int tmp = (int) (OO_SQRT2*total*QuantizeTable16[column]);
             lineout[CopyMatrix16[column]] = tmp;
 
@@ -559,6 +438,7 @@ namespace Universe.ClientStack
                     }
                 }
             }
+
             return wbits;
         }
 
@@ -566,7 +446,6 @@ namespace Universe.ClientStack
         {
             for (int n = 0; n < size*size; n++)
             {
-                // ?
                 int temp = bitpack.UnpackBits(1);
                 if (temp != 0)
                 {
@@ -597,6 +476,7 @@ namespace Universe.ClientStack
                         {
                             patches[o] = 0;
                         }
+
                         break;
                     }
                 }
@@ -641,6 +521,7 @@ namespace Universe.ClientStack
                         output.PackBits(ZERO_EOB, 2);
                         return;
                     }
+
                     output.PackBits(ZERO_CODE, 1);
                 }
                 else
@@ -729,7 +610,6 @@ namespace Universe.ClientStack
             float[] ftemp = new float[Constants.TerrainPatchSize*Constants.TerrainPatchSize];
             int[] itemp = new int[Constants.TerrainPatchSize*Constants.TerrainPatchSize];
 
-
             int maxWbits = prequant + 5;
             wbits = (prequant >> 1);
 
@@ -774,8 +654,7 @@ namespace Universe.ClientStack
             return itemp;
         }
 
-        static int[] CompressPatch(short[] heightmap, int patchX, int patchY, TerrainPatch.Header header,
-                                   int prequant, int regionSizeX, int regionSizeY, out int wbits)
+        static int[] CompressPatch(short[] heightmap, int patchX, int patchY, TerrainPatch.Header header, int prequant, int regionSizeX, int regionSizeY, out int wbits)
         {
             float[] block = new float[Constants.TerrainPatchSize*Constants.TerrainPatchSize];
             int wordsize = prequant;
@@ -843,7 +722,6 @@ namespace Universe.ClientStack
             {
                 for (int i = 0; i < Constants.TerrainPatchSize; i++)
                 {
-//                    QuantizeTable16[j * Constants.TerrainPatchSize + i] = 1.0f / (1.0f + 2.0f * ((float)i + (float)j));
                     QuantizeTable16[j*Constants.TerrainPatchSize + i] = oosob/(1.0f + 2.0f*(i + (float) j));
                 }
             }

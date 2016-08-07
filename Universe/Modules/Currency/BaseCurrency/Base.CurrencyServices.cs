@@ -150,6 +150,8 @@ namespace Universe.Modules.Currency
 
         #endregion
 
+        #region Console Commands
+
         void AddCommands()
         {
             if (MainConsole.Instance != null) {
@@ -184,6 +186,8 @@ namespace Universe.Modules.Currency
                     HandleShowPurchases, false, true);
             }
         }
+
+        #endregion
 
         #region IMoneyModule Members
 

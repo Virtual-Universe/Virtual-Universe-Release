@@ -100,6 +100,7 @@ namespace Universe.BotManager
         {
             IMessageTransferModule m_TransferModule =
                 m_object.Scene.RequestModuleInterface<IMessageTransferModule>();
+
             if (m_TransferModule != null)
                 m_TransferModule.SendInstantMessage(im);
         }
@@ -164,6 +165,7 @@ namespace Universe.BotManager
         {
             if (speed > 4)
                 speed = 4;
+
             m_speed = speed;
         }
 

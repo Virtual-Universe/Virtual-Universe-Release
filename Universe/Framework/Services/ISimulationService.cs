@@ -67,6 +67,7 @@ namespace Universe.Framework.Services
                 ActiveGroup = new GroupMembershipData();
                 ActiveGroup.FromOSD((OSDMap)(map["ActiveGroup"]));
             }
+
             GroupMemberships = ((OSDArray) map["GroupMemberships"]).ConvertAll<GroupMembershipData>((o) =>
                                                                                                         {
                                                                                                             GroupMembershipData
@@ -101,8 +102,10 @@ namespace Universe.Framework.Services
                 Appearance = new AvatarAppearance();
                 Appearance.FromOSD((OSDMap)map["Appearance"]);
             }
+
             if (map.ContainsKey("FriendOnlineStatuses"))
                 FriendOnlineStatuses = ((OSDArray)map["FriendOnlineStatuses"]).ConvertAll<UUID>((o) => { return o; });
+
             if (map.ContainsKey("Friends"))
                 Friends = ((OSDArray)map["Friends"]).ConvertAll<FriendInfo>((o) =>
                 { 
@@ -145,8 +148,7 @@ namespace Universe.Framework.Services
         /// <param name="requestedUDPPort"></param>
         /// <param name="reason"></param>
         /// <returns></returns>
-        bool CreateAgent(GridRegion destination, AgentCircuitData aCircuit, uint teleportFlags,
-                         out CreateAgentResponse response);
+        bool CreateAgent(GridRegion destination, AgentCircuitData aCircuit, uint teleportFlags, out CreateAgentResponse response);
 
         /// <summary>
         ///     Full child agent update.
@@ -176,8 +178,7 @@ namespace Universe.Framework.Services
         /// <param name="agent"></param>
         /// <param name="circuitData"></param>
         /// <returns></returns>
-        bool RetrieveAgent(GridRegion destination, UUID id, bool agentIsLeaving, out AgentData agent,
-                           out AgentCircuitData circuitData);
+        bool RetrieveAgent(GridRegion destination, UUID id, bool agentIsLeaving, out AgentData agent, out AgentCircuitData circuitData);
 
         /// <summary>
         ///     Close agent.
@@ -205,8 +206,7 @@ namespace Universe.Framework.Services
         /// <param name="agentID"></param>
         /// <param name="reason"></param>
         /// <param name="isCrossing"></param>
-        bool FailedToTeleportAgent(GridRegion destination, UUID failedRegionID, UUID agentID, string reason,
-                                   bool isCrossing);
+        bool FailedToTeleportAgent(GridRegion destination, UUID failedRegionID, UUID agentID, string reason, bool isCrossing);
 
         /// <summary>
         ///     Tells the region that the agent was not able to leave the region and needs to be resumed
@@ -530,6 +530,7 @@ namespace Universe.Framework.Services
                 AgentData = new AgentData();
                 AgentData.FromOSD((OSDMap)map["AgentData"]);
             }
+
             if (map.ContainsKey("CircuitData"))
             {
                 CircuitData = new AgentCircuitData();

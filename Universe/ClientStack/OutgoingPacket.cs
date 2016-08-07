@@ -123,13 +123,6 @@ namespace Universe.ClientStack
         public void Destroy(int whoDoneIt)
         {
             WhoDoneIt = whoDoneIt;
-            /*if(!PacketPool.Instance.ReturnPacket(Packet))
-                Packet = null;
-            Buffer = null;
-            FinishedMethod = null;
-            UnackedMethod = null;
-            Client = null;
-            SequenceNumber = 0;*/
         }
     }
 }

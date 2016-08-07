@@ -76,6 +76,7 @@ namespace Universe.Framework.ConsoleFramework
                 requiresAScene = requiresAScene,
                 fn = new List<CommandDelegate> { fn }
             };
+
             tree.AddCommand (info);
         }
 
@@ -186,6 +187,7 @@ namespace Universe.Framework.ConsoleFramework
                         downTheTree.Initialize ((ourPath == "" ? "" : ourPath + " ") + commandPath [0], false);
                         commandsets.Add (commandPath [0], downTheTree);
                     }
+
                     downTheTree.AddCommand (info);
                 }
             }
@@ -204,11 +206,11 @@ namespace Universe.Framework.ConsoleFramework
                             break;
                         }
                     }
+
                     commandOptions.Reverse ();
                     commandPath = commandPathList.ToArray ();
-                    //if (commandOptions.Count > 0)
-                    //    MainConsole.Instance.Info("Options: " + string.Join(", ", commandOptions.ToArray()));
                     List<string> cmdList;
+
                     if (commandPath.Length == 1 || !m_allowSubSets) {
                         for (i = 1; i <= commandPath.Length; i++) {
                             string [] comm = new string [i];
@@ -224,6 +226,7 @@ namespace Universe.Framework.ConsoleFramework
                                     foreach (IScene scene in GetScenes (commands [com]))
                                         fn (scene, cmdList.ToArray ());
                                 }
+
                                 return new string [0];
                             }
 
@@ -233,6 +236,7 @@ namespace Universe.Framework.ConsoleFramework
                                 foreach (string s in help) {
                                     MainConsole.Instance.FormatNoTime (Level.Off, s);
                                 }
+
                                 return new string [0];
                             } else {
                                 foreach (KeyValuePair<string, CommandInfo> cmd in commands) {
@@ -244,34 +248,42 @@ namespace Universe.Framework.ConsoleFramework
                                                 any = true;
                                                 break;
                                             }
+
                                         bool same = !any;
                                         if (same) {
                                             foreach (CommandDelegate fn in cmd.Value.fn) {
                                                 cmdList = new List<string> (commandPath);
                                                 cmdList.AddRange (commandOptions);
+
                                                 if (fn != null) {
                                                     foreach (IScene scene in GetScenes (cmd.Value))
                                                         fn (scene, cmdList.ToArray ());
                                                 }
                                             }
+
                                             return new string [0];
                                         }
                                     }
                                 }
                             }
                         }
+
                         // unable to determine multi word command
                         MainConsole.Instance.Warn (" Sorry.. missed that...");
                     } else if (commandPath.Length > 0) {
                         string cmdToExecute = commandPath [0];
+
                         if (cmdToExecute == "help") {
                             cmdToExecute = commandPath [1];
                         }
+
                         if (!_ConsoleIsCaseSensitive) {
                             cmdToExecute = cmdToExecute.ToLower ();
                         }
+                        
                         //Its down the tree somewhere
                         CommandSet downTheTree;
+
                         if (commandsets.TryGetValue (cmdToExecute, out downTheTree)) {
                             cmdList = new List<string> (commandPath);
                             cmdList.AddRange (commandOptions);
@@ -293,10 +305,11 @@ namespace Universe.Framework.ConsoleFramework
                                     foreach (IScene scene in GetScenes (commands [cmdToExecute]))
                                         fn (scene, cmdList.ToArray ());
                                 }
+
                                 return new string [0];
                             }
-                            MainConsole.Instance.Warn (" Sorry.. missed that...");
 
+                            MainConsole.Instance.Warn (" Sorry.. missed that...");
                         }
                     }
                 }
@@ -348,16 +361,20 @@ namespace Universe.Framework.ConsoleFramework
                         values.AddRange (from cmd in commands
                                          where cmd.Key.StartsWith (fullcommand, StringComparison.Ordinal)
                                          select cmd.Value.commandHelp);
+
                         if (commandPath.Length != 0) {
                             string cmdToExecute = commandPath [0];
+
                             if (cmdToExecute == "help") {
                                 if (commandPath.Length > 1)
                                     cmdToExecute = commandPath [1];
                             }
+
                             if (!_ConsoleIsCaseSensitive)
                                 cmdToExecute = cmdToExecute.ToLower ();
 
                             CommandSet downTheTree;
+
                             if (commandsets.TryGetValue (cmdToExecute, out downTheTree)) {
                                 values.AddRange (downTheTree.FindCommands (commandPath));
                             } else {
@@ -371,12 +388,15 @@ namespace Universe.Framework.ConsoleFramework
                         }
                     } else if (commandPath.Length != 0) {
                         string cmdToExecute = commandPath [0];
+
                         if (cmdToExecute == "help") {
                             cmdToExecute = commandPath [1];
                         }
+
                         if (!_ConsoleIsCaseSensitive) {
                             cmdToExecute = cmdToExecute.ToLower ();
                         }
+                        
                         //Its down the tree somewhere
                         CommandSet downTheTree;
                         if (commandsets.TryGetValue (cmdToExecute, out downTheTree)) {
@@ -405,6 +425,7 @@ namespace Universe.Framework.ConsoleFramework
                     help.Add ("------- Help Sets (type the name and help to get more info about that set) -------");
                     help.Add ("");
                 }
+
                 List<string> paths = new List<string> ();
 
                 paths.AddRange (commandsets.Values.Select (set => string.Format ("-- Help Set: {0}", set.Path)));
@@ -414,12 +435,10 @@ namespace Universe.Framework.ConsoleFramework
                     help.Add ("");
                     help.Add ("------- Help options -------");
                 }
+
                 paths.Clear ();
 
                 paths.AddRange (
-                    //    commands.Values.Select(
-                    //    command =>
-                    //    string.Format("-- {0}  [{1}]:   {2}", command.command, command.commandHelp, command.info)));
                     commands.Values.Select (
                         command =>
                         string.Format ("-- {0}:\n      {1}", command.commandHelp, command.info.Replace ("\n", "\n        "))));
@@ -541,10 +560,6 @@ namespace Universe.Framework.ConsoleFramework
             string timestamp = logtime.ToString ("yyyyMMdd");
 
             // opens the logfile using the system process names
-            //string runFilename = System.Diagnostics.Process.GetCurrentProcess ().MainModule.FileName;
-            //string runProcess = Path.GetFileNameWithoutExtension(runFilename);
-            //m_logFile = StreamWriter.Synchronized(new StreamWriter(m_logPath + runProcess + m_logName + "_" + timestamp + ".log", true));
-
             m_logFile = TextWriter.Synchronized (new StreamWriter (m_logPath + m_logName + timestamp + ".log", true));
             m_logDate = logtime.Date;
         }
@@ -560,15 +575,13 @@ namespace Universe.Framework.ConsoleFramework
             else
                 serv = serv + "Simulator";
 
-            var startup = string.Format (serv + " has been running since {0}, {1}",
-                m_simbase.StartupTime.DayOfWeek, m_simbase.StartupTime);
+            var startup = string.Format (serv + " has been running since {0}, {1}", m_simbase.StartupTime.DayOfWeek, m_simbase.StartupTime);
             var elapsed = string.Format ("Current run time of {0}", DateTime.Now - m_simbase.StartupTime);
 
             MainConsole.Instance.Info ("==============================================================================");
             MainConsole.Instance.Info ("  " + startup);
             MainConsole.Instance.Info ("  " + elapsed);
             MainConsole.Instance.Info ("==============================================================================");
-
         }
 
         public void Dispose ()
@@ -629,9 +642,11 @@ namespace Universe.Framework.ConsoleFramework
                 } else {
                     Environment.Exit (0);
                 }
+
                 m_defaultPrompt = oldDefaultPrompt;
                 return string.Empty;
             }
+
             return cmdinput;
         }
 
@@ -673,6 +688,7 @@ namespace Universe.Framework.ConsoleFramework
                     temp = InternalPrompt (prompt, defaultresponse, options);
                 }
             }
+
             itisdone = false;
             while (!itisdone && excludedCharacters.Count > 0) {
                 foreach (char c in excludedCharacters.Where (c => temp.Contains (c.ToString ()))) {
@@ -680,6 +696,7 @@ namespace Universe.Framework.ConsoleFramework
                     itisdone = false;
                 }
             }
+
             m_isPrompting = false;
             m_promptOptions.Clear ();
             return temp;
@@ -694,6 +711,7 @@ namespace Universe.Framework.ConsoleFramework
                                                     ? ""
                                                     : ", Options are [" + string.Join (", ", options.ToArray ()) + "]"
                                       ), false, true);
+
             if (ret == string.Empty)
                 ret = defaultresponse;
 
@@ -703,6 +721,7 @@ namespace Universe.Framework.ConsoleFramework
                     if (option.StartsWith (ret, StringComparison.Ordinal))
                         ret = option;
             }
+
             return ret;
         }
 
@@ -820,27 +839,33 @@ namespace Universe.Framework.ConsoleFramework
 
         #region ILog Members
 
-        public bool IsDebugEnabled {
+        public bool IsDebugEnabled
+        {
             get { return Threshold <= Level.Debug; }
         }
 
-        public bool IsErrorEnabled {
+        public bool IsErrorEnabled
+        {
             get { return Threshold <= Level.Error; }
         }
 
-        public bool IsFatalEnabled {
+        public bool IsFatalEnabled
+        {
             get { return Threshold <= Level.Fatal; }
         }
 
-        public bool IsInfoEnabled {
+        public bool IsInfoEnabled
+        {
             get { return Threshold <= Level.Info; }
         }
 
-        public bool IsWarnEnabled {
+        public bool IsWarnEnabled
+        {
             get { return Threshold <= Level.Warn; }
         }
 
-        public bool IsTraceEnabled {
+        public bool IsTraceEnabled
+        {
             get { return Threshold <= Level.Trace; }
         }
 
@@ -907,6 +932,7 @@ namespace Universe.Framework.ConsoleFramework
         public void Ticker (string message, bool newline)
         {
             Console.Write (" " + message + " ");
+
             if (newline)
                 Console.WriteLine ("");
         }

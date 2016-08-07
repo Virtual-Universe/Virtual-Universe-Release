@@ -75,8 +75,7 @@ namespace Universe.Services
 
         #region Server Side Baked Textures
 
-        byte[] UpdateAvatarAppearance (string path, Stream request, OSHttpRequest httpRequest,
-                                      OSHttpResponse httpResponse)
+        byte[] UpdateAvatarAppearance (string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse)
         {
             try
             {
@@ -106,12 +105,7 @@ namespace Universe.Services
                 map ["success"] = success;
                 map ["error"] = error;
                 map ["agent_id"] = m_agentID;
-                /*map["avatar_scale"] = appearance.AvatarHeight;
-                map["textures"] = newBakeIDs.ToOSDArray();
-                OSDArray visualParams = new OSDArray();
-                foreach(byte b in appearance.VisualParams)
-                    visualParams.Add((int)b);
-                map["visual_params"] = visualParams;*/
+                
                 return OSDParser.SerializeLLSDXmlBytes (map);
 
             } catch (Exception e)

@@ -37,8 +37,7 @@ namespace Universe.Framework.Modules
     {
         AvatarArchive LoadAvatarArchive(string FileName, UUID principalID);
 
-        bool SaveAvatarArchive(string fileName, UUID principalID, string folderName,
-            UUID snapshotUUID, bool isPublic, bool isPortable);
+        bool SaveAvatarArchive(string fileName, UUID principalID, string folderName, UUID snapshotUUID, bool isPublic, bool isPortable);
 
         /// <summary>
         /// Gets all public avatar archives

@@ -103,8 +103,7 @@ namespace Universe.Framework.SceneInfo
         bool ShouldRunHeartbeat { get; set; }
         bool CloseQuietly { get; set; }
         void Initialize(RegionInfo regionInfo);
-        void Initialize(RegionInfo regionInfo, ISimulationDataStore simulationStore, 
-            AgentCircuitManager authen, List<IClientNetworkServer> clientServers);
+        void Initialize(RegionInfo regionInfo, ISimulationDataStore simulationStore,  AgentCircuitManager authen, List<IClientNetworkServer> clientServers);
         void StartHeartbeat();
         void FinishedStartup(string p, List<string> list);
         void Close(bool killAgents);
@@ -160,7 +159,6 @@ namespace Universe.Framework.SceneInfo
 
         float BaseSimFPS { get; }
         float BaseSimPhysFPS { get; }
-
         bool ShuttingDown { get; }
         object SyncRoot { get; }
         float TimeDilation { get; set; }

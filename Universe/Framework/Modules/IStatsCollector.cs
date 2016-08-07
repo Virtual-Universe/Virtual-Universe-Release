@@ -30,8 +30,8 @@
 using System;
 using OpenMetaverse;
 using Universe.Framework.ClientInterfaces;
-using Universe.Framework.Services.ClassHelpers.Assets;
 using Universe.Framework.SceneInfo;
+using Universe.Framework.Services.ClassHelpers.Assets;
 
 namespace Universe.Framework.Modules
 {

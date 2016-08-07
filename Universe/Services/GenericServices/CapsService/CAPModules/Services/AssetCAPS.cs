@@ -51,7 +51,6 @@ namespace Universe.Services
 {
     public class AssetCAPS : IExternalCapsRequestHandler
     {
-
         protected IAssetService m_assetService;
         protected IJ2KDecoder m_j2kDecoder;
         protected UUID m_AgentID;

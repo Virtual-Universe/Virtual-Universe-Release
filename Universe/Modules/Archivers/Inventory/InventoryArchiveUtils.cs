@@ -41,7 +41,6 @@ namespace Universe.Modules.Archivers
     /// </summary>
     public static class InventoryArchiveUtils
     {
-
         // Character used for escaping the path delimiter ("\/") and itself ("\\") in human escaped strings
         public static readonly char ESCAPE_CHARACTER = '\\';
 
@@ -67,8 +66,7 @@ namespace Universe.Modules.Archivers
         ///     It this is empty or consists only of the PATH_DELIMTER then this folder itself is returned.
         /// </param>
         /// <returns>An empty list if the folder is not found, otherwise a list of all folders that match the name</returns>
-        public static List<InventoryFolderBase> FindFolderByPath(
-            IInventoryService inventoryService, UUID userId, string path)
+        public static List<InventoryFolderBase> FindFolderByPath(IInventoryService inventoryService, UUID userId, string path)
         {
             InventoryFolderBase rootFolder = inventoryService.GetRootFolder(userId);
 
@@ -82,7 +80,6 @@ namespace Universe.Modules.Archivers
                 rootFolder = inventoryService.GetRootFolder(userId);
                 if (rootFolder == null)
                     return new List<InventoryFolderBase>();            // unable to create the root folder??
-
             }
 
             return FindFolderByPath(inventoryService, rootFolder, path);
@@ -212,7 +209,8 @@ namespace Universe.Modules.Archivers
 
             if (components.Length == 1)
             {
-                //MainConsole.Instance.DebugFormat("[Inventory Archive Utils]: FOUND SINGLE COMPONENT [{0}].  Looking for this in [{1}] {2}", components[0], startFolder.Name, startFolder.ID);
+                //MainConsole.Instance.DebugFormat(
+                //    "FOUND SINGLE COMPONENT [{0}].  Looking for this in [{1}] {2}", components[0], startFolder.Name, startFolder.ID);
 
                 List<InventoryItemBase> items = inventoryService.GetFolderItems(startFolder.Owner, startFolder.ID);
 

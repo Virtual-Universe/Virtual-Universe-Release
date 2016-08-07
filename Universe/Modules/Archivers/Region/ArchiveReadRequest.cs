@@ -107,7 +107,8 @@ namespace Universe.Modules.Archivers
             try {
                 var stream = ArchiveHelpers.GetStream (loadPath);
                 if (stream == null) {
-                    MainConsole.Instance.Error ("[Archiver]: We could not find the file specified, or the file was invalid: " + loadPath);
+                    MainConsole.Instance.Error (
+                        "[Archiver]: We could not find the file specified, or the file was invalid: " + loadPath);
                     return;
                 }
                 m_loadStream = new GZipStream (stream, CompressionMode.Decompress);
@@ -195,7 +196,7 @@ namespace Universe.Modules.Archivers
             if (backup != null)
                 backup.LoadingPrims = true;
 
-            IRegionSerializerModule serialiser = m_scene.RequestModuleInterface<IRegionSerializerModule> ();
+            IRegionSerializerModule serializer = m_scene.RequestModuleInterface<IRegionSerializerModule> ();
             int sceneObjectsLoadedCount = 0;
 
             //We save the groups so that we can back them up later
@@ -332,7 +333,7 @@ namespace Universe.Modules.Archivers
                     if (didChange)
                         data3 = Utils.StringToBytes (stringData);
 
-                    ISceneEntity sceneObject = serialiser.DeserializeGroupFromXml2 (data3, m_scene);
+                    ISceneEntity sceneObject = serializer.DeserializeGroupFromXml2 (data3, m_scene);
 
                     if (sceneObject == null) {
                         //! big error!

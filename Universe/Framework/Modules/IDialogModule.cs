@@ -90,9 +90,7 @@ namespace Universe.Framework.Modules
         /// <param name="textureID"></param>
         /// <param name="ch"></param>
         /// <param name="buttonlabels"></param>
-        void SendDialogToUser(
-            UUID avatarID, string objectName, UUID objectID, UUID ownerID,
-            string message, UUID textureID, int ch, string[] buttonlabels);
+        void SendDialogToUser(UUID avatarID, string objectName, UUID objectID, UUID ownerID, string message, UUID textureID, int ch, string[] buttonlabels);
 
         /// <summary>
         ///     Send a url to a particular user.
@@ -104,8 +102,7 @@ namespace Universe.Framework.Modules
         /// <param name="groupOwned"></param>
         /// <param name="message"></param>
         /// <param name="url"></param>
-        void SendUrlToUser(
-            UUID avatarID, string objectName, UUID objectID, UUID ownerID, bool groupOwned, string message, string url);
+        void SendUrlToUser(UUID avatarID, string objectName, UUID objectID, UUID ownerID, bool groupOwned, string message, string url);
 
         /// <summary>
         ///     Send a notification to all users in the scene.  This notification should remain around until the

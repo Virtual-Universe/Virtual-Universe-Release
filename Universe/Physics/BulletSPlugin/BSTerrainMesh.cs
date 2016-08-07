@@ -34,7 +34,7 @@ namespace Universe.Physics.BulletSPlugin
 {
     public sealed class BSTerrainMesh : BSTerrainPhys
     {
-        static string LogHeader = "[BULLETSIM TERRAIN MESH]";
+        static string LogHeader = "[Bulletsim Terrain Mesh]";
 
         float[] m_savedHeightMap;
         int m_sizeX;

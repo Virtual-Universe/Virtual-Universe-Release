@@ -106,8 +106,7 @@ namespace Universe.Framework.Utilities
                             bool isRunning = false;
                             if (!CallAndWait(intHB.millisecondTimeOut, intHB.heartBeat, out isRunning))
                             {
-                                MainConsole.Instance.Warn(
-                                    "[ThreadTracker]: Could not run Heartbeat in specified limits!");
+                                MainConsole.Instance.Warn("[Thread Tracker]: Could not run Heartbeat in specified limits!");
                             }
                             else if (!isRunning)
                             {
@@ -123,12 +122,14 @@ namespace Universe.Framework.Utilities
                             {
                                 m_heartbeats.Remove(intHB);
                             }
+
                             //Renull it for later
                             hbToRemove = null;
                             if (m_heartbeats.Count == 0) //None left, break
                                 break;
                         }
                     }
+
                     //0 is infinite
                     if (m_timesToIterate != 0)
                     {
@@ -137,8 +138,10 @@ namespace Universe.Framework.Utilities
                         if (m_timesToIterate == 0)
                             break;
                     }
+
                     if (m_timesToIterate == -1) //Kill signal
                         break;
+
                     if (m_sleepTime != 0)
                         Thread.Sleep(m_sleepTime);
                 }
@@ -191,6 +194,7 @@ namespace Universe.Framework.Utilities
                     isRunning = true;
                 }
             }
+
             //Return what we got
             return RetVal;
         }

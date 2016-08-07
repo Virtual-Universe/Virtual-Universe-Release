@@ -119,13 +119,11 @@ namespace Universe.Framework.SceneInfo
         /// <param name="assetUuids">The assets gathered</param>
         public void GatherAssetUuids (ISceneEntity sceneObject, IDictionary<UUID, AssetType> assetUuids)
         {
-            //MainConsole.Instance.DebugFormat(
-            //    "[ASSET GATHERER]: Getting assets for object {0}, {1}", sceneObject.Name, sceneObject.UUID);
+            //MainConsole.Instance.DebugFormat("[Asset Gatherer]: Getting assets for object {0}, {1}", sceneObject.Name, sceneObject.UUID);
 
             ISceneChildEntity [] parts = sceneObject.ChildrenEntities ().ToArray ();
             foreach (ISceneChildEntity part in parts) {
-                //MainConsole.Instance.DebugFormat(
-                //    "[Archiver]: Getting part {0}, {1} for object {2}", part.Name, part.UUID, sceneObject.UUID);
+                //MainConsole.Instance.DebugFormat("[Archiver]: Getting part {0}, {1} for object {2}", part.Name, part.UUID, sceneObject.UUID);
 
                 try {
                     Primitive.TextureEntry textureEntry = part.Shape.Textures;
@@ -134,11 +132,11 @@ namespace Universe.Framework.SceneInfo
                         if (textureEntry.DefaultTexture != null)
                             assetUuids [textureEntry.DefaultTexture.TextureID] = AssetType.Texture;
 
-                        if (textureEntry.FaceTextures != null) {
+                        if (textureEntry.FaceTextures != null)
+                        {
                             // Loop through the rest of the texture faces (a non-null face means the face is different from DefaultTexture)
                             foreach (
-                                Primitive.TextureEntryFace texture in
-                                    textureEntry.FaceTextures.Where (texture => texture != null)) {
+                                Primitive.TextureEntryFace texture in textureEntry.FaceTextures.Where (texture => texture != null)) {
                                 assetUuids [texture.TextureID] = AssetType.Texture;
                             }
                         }
@@ -152,17 +150,15 @@ namespace Universe.Framework.SceneInfo
 
                     // Now analyze this prim's inventory items to preserve all the uuids that they reference
                     foreach (
-                        TaskInventoryItem tii in
-                            taskDictionary.Values.Where (tii => !assetUuids.ContainsKey (tii.AssetID))) {
+                        TaskInventoryItem tii in taskDictionary.Values.Where (tii => !assetUuids.ContainsKey (tii.AssetID))) {
                         if (!assetUuids.ContainsKey (tii.AssetID))
                             GatherAssetUuids (tii.AssetID, (AssetType)tii.Type, assetUuids);
                     }
+
                     GatherMaterialsUuids (part, assetUuids);
                 } catch (Exception e) {
                     MainConsole.Instance.ErrorFormat ("[UUID Gatherer]: Failed to get part - {0}", e);
-                    MainConsole.Instance.DebugFormat (
-                        "[UUID Gatherer]: Texture entry length for prim was {0} (min is 46)",
-                        part.Shape.TextureEntry.Length);
+                    MainConsole.Instance.DebugFormat ("[UUID Gatherer]: Texture entry length for prim was {0} (min is 46)", part.Shape.TextureEntry.Length);
                 }
             }
         }
@@ -182,23 +178,30 @@ namespace Universe.Framework.SceneInfo
                 OSDArray matsArr = part.RenderMaterials as OSDArray;
                 foreach (OSDMap matMap in matsArr) {
                     try {
-                        if (matMap.ContainsKey ("Material")) {
+                        if (matMap.ContainsKey ("Material"))
+                        {
                             OSDMap mat = matMap ["Material"] as OSDMap;
-                            if (mat.ContainsKey ("NormMap")) {
+                            if (mat.ContainsKey ("NormMap"))
+                            {
                                 UUID normalMapId = mat ["NormMap"].AsUUID ();
-                                if (normalMapId != UUID.Zero) {
+                                if (normalMapId != UUID.Zero)
+                                {
                                     assetUuids [normalMapId] = AssetType.Texture;
                                     //MainConsole.Instance.Info("[UUID Gatherer]: found normal map ID: " + normalMapId);
                                 }
                             }
-                            if (mat.ContainsKey ("SpecMap")) {
+
+                            if (mat.ContainsKey ("SpecMap"))
+                            {
                                 UUID specularMapId = mat ["SpecMap"].AsUUID ();
-                                if (specularMapId != UUID.Zero) {
+                                if (specularMapId != UUID.Zero)
+                                {
                                     assetUuids [specularMapId] = AssetType.Texture;
                                     //MainConsole.Instance.Info("[UUID Gatherer]: found specular map ID: " + specularMapId);
                                 }
                             }
                         }
+
                         //Add the material itself
                         assetUuids [matMap ["ID"].AsUUID ()] = AssetType.Texture;
                     } catch (Exception e) {
@@ -238,8 +241,10 @@ namespace Universe.Framework.SceneInfo
             // 2. Come in via a different thread (if we need to go fetch it).
             //
             // The code below handles both these alternatives.
-            lock (this) {
-                if (m_waitingForObjectAsset) {
+            lock (this)
+            {
+                if (m_waitingForObjectAsset)
+                {
                     Monitor.Wait (this);
                     m_waitingForObjectAsset = false;
                 }
@@ -281,15 +286,16 @@ namespace Universe.Framework.SceneInfo
         {
             AssetBase assetBase = GetAsset (wearableAssetUuid);
 
-            if (null != assetBase) {
+            if (null != assetBase)
+            {
                 //MainConsole.Instance.Debug(new System.Text.ASCIIEncoding().GetString(bodypartAsset.Data));
                 AssetWearable wearableAsset = new AssetBodypart (wearableAssetUuid, assetBase.Data);
                 wearableAsset.Decode ();
 
-                //MainConsole.Instance.DebugFormat(
-                //    "[Archiver]: Wearable asset {0} references {1} assets", wearableAssetUuid, wearableAsset.Textures.Count);
+                //MainConsole.Instance.DebugFormat("[Archiver]: Wearable asset {0} references {1} assets", wearableAssetUuid, wearableAsset.Textures.Count);
 
-                foreach (UUID uuid in wearableAsset.Textures.Values) {
+                foreach (UUID uuid in wearableAsset.Textures.Values)
+                {
                     assetUuids [uuid] = AssetType.Texture;
                 }
             }
@@ -306,7 +312,8 @@ namespace Universe.Framework.SceneInfo
         {
             AssetBase objectAsset = GetAsset (sceneObjectUuid);
 
-            if (null != objectAsset) {
+            if (null != objectAsset)
+            {
                 string xml = Utils.BytesToString (objectAsset.Data);
                 ISceneEntity group = SceneEntitySerializer.SceneObjectSerializer.FromOriginalXmlFormat (xml, null);
                 if (group == null)
@@ -336,7 +343,8 @@ namespace Universe.Framework.SceneInfo
             sr.ReadLine (); // Comment ?
             int count = Convert.ToInt32 (sr.ReadLine ()); // Item count
 
-            for (int i = 0; i < count; i++) {
+            for (int i = 0; i < count; i++)
+            {
                 string type = sr.ReadLine ();
                 if (type == null)
                     break;

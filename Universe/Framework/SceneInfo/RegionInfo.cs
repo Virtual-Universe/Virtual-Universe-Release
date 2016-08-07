@@ -63,7 +63,6 @@ namespace Universe.Framework.SceneInfo
         protected string m_regionTerrain = "Flatland";
         protected uint m_regionArea;
 
-
         [XmlIgnore]
         public bool NewRegion = false;
 
@@ -312,7 +311,6 @@ namespace Universe.Framework.SceneInfo
                 m_regionTerrain = args["region_terrain"].AsString();
             if (args.ContainsKey("region_area"))
                 RegionArea = (uint) args["region_area"].AsInteger();
-
         }
 
         public override void FromOSD(OSDMap map)
@@ -326,7 +324,6 @@ namespace Universe.Framework.SceneInfo
         }
 
         // File based loading
-        //
 
         /// <summary>
         /// Initializes a new instance of a regions when loaded from a definition file"/> class.
@@ -350,12 +347,10 @@ namespace Universe.Framework.SceneInfo
             InfiniteRegion = ri.InfiniteRegion;
             EstateSettings = ri.EstateSettings;
             RegionSettings = ri.RegionSettings;
-            //GridSecureSessionID = ri.GridSecureSessionID;
             OpenRegionSettings = ri.OpenRegionSettings;
             EnvironmentSettings =  ri.EnvironmentSettings;
             RegionTerrain = ri.RegionTerrain;
             RegionArea = ri.RegionArea;
-
         }
 
         public void SaveRegionConfig(string fileName) 

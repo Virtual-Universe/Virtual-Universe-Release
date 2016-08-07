@@ -41,9 +41,7 @@ namespace Universe.Framework.SceneInfo
         UUID RegionUUID { get; }
         bool ContainsPoint(int x, int y);
         ILandObject Copy();
-
         void SendLandUpdateToAvatarsOverMe();
-
         void SendLandProperties(int sequence_id, bool snap_selection, int request_result, IClientAPI remote_client);
         void UpdateLandProperties(LandUpdateArgs args, IClientAPI remote_client);
         bool IsEitherBannedOrRestricted(UUID avatar);
@@ -55,13 +53,11 @@ namespace Universe.Framework.SceneInfo
         void SendAccessList(UUID agentID, UUID sessionID, uint flags, int sequenceID, IClientAPI remote_client);
         void UpdateAccessList(uint flags, List<ParcelManager.ParcelAccessEntry> entries, IClientAPI remote_client);
         void ForceUpdateLandInfo();
-
         void SendForceObjectSelect(int local_id, int request_type, List<UUID> returnIDs, IClientAPI remote_client);
         void SendLandObjectOwners(IClientAPI remote_client);
         void ReturnLandObjects(uint type, UUID[] owners, UUID[] tasks, IClientAPI remote_client);
         void DisableLandObjects(uint type, UUID[] owners, UUID[] tasks, IClientAPI remote_client);
         void UpdateLandSold(UUID avatarID, UUID groupID, bool groupOwned, uint AuctionID, int claimprice, int area);
-
         void DeedToGroup(UUID groupID);
 
         /// <summary>

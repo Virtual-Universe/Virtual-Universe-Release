@@ -73,8 +73,8 @@ namespace Universe.Modules.Web
             IGenericsConnector connector = Framework.Utilities.DataManager.RequestPlugin<IGenericsConnector>();
             GridWelcomeScreen welcomeInfo = null;
             if (connector != null)
-                welcomeInfo = connector.GetGeneric<GridWelcomeScreen>(UUID.Zero, "GridWelcomeScreen", "GridWelcomeScreen");
-
+                welcomeInfo = connector.GetGeneric<GridWelcomeScreen>(UUID.Zero, "GridWelcomeScreen",
+                                                                                    "GridWelcomeScreen");
             if (welcomeInfo == null)
                 welcomeInfo = GridWelcomeScreen.Default;
 
@@ -93,16 +93,20 @@ namespace Universe.Modules.Web
                      welcomeInfo.GridStatus
                          ? translator.GetTranslatedString("Online")
                          : translator.GetTranslatedString("Offline"));
-            vars.Add("UserCount", webInterface.Registry.RequestModuleInterface<IUserAccountService>(). NumberOfUserAccounts(null, "").ToString());
-            vars.Add("RegionCount", Framework.Utilities.DataManager.RequestPlugin<IRegionData>(). Count((RegionFlags) 0, (RegionFlags) 0).ToString());
-            string disabled = translator.GetTranslatedString("Disabled"), enabled = translator.GetTranslatedString("Enabled");
+            vars.Add("UserCount", webInterface.Registry.RequestModuleInterface<IUserAccountService>().
+                                               NumberOfUserAccounts(null, "").ToString());
+            vars.Add("RegionCount", Framework.Utilities.DataManager.RequestPlugin<IRegionData>().
+                                                Count((RegionFlags) 0, (RegionFlags) 0).ToString());
+            string disabled = translator.GetTranslatedString("Disabled"),
+                   enabled = translator.GetTranslatedString("Enabled");
             vars.Add("HGActive", disabled + "(TODO: FIX)");
             vars.Add("VoiceActive",
                      config.Configs["Voice"] != null &&
                      config.Configs["Voice"].GetString("Module", "GenericVoice") != "GenericVoice"
                          ? enabled
                          : disabled);
-            vars.Add("CurrencyActive", webInterface.Registry.RequestModuleInterface<IMoneyModule>() != null ? enabled : disabled);
+            vars.Add("CurrencyActive",
+                     webInterface.Registry.RequestModuleInterface<IMoneyModule>() != null ? enabled : disabled);
 
             if (recentUsers != null)
             {

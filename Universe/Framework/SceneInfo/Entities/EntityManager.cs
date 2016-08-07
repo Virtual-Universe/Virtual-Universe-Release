@@ -39,12 +39,8 @@ namespace Universe.Framework.SceneInfo.Entities
 {
     public class EntityManager
     {
-        protected readonly DoubleKeyDictionary<UUID, uint, UUID> m_child_2_parent_entities =
-            new DoubleKeyDictionary<UUID, uint, UUID> ();
-
-        protected readonly DoubleKeyDictionary<UUID, uint, ISceneEntity> m_objectEntities =
-            new DoubleKeyDictionary<UUID, uint, ISceneEntity> ();
-
+        protected readonly DoubleKeyDictionary<UUID, uint, UUID> m_child_2_parent_entities = new DoubleKeyDictionary<UUID, uint, UUID> ();
+        protected readonly DoubleKeyDictionary<UUID, uint, ISceneEntity> m_objectEntities = new DoubleKeyDictionary<UUID, uint, ISceneEntity> ();
         protected readonly Dictionary<UUID, IScenePresence> m_presenceEntities = new Dictionary<UUID, IScenePresence> ();
         protected readonly List<IScenePresence> m_presenceEntitiesList = new List<IScenePresence> ();
 
@@ -76,6 +72,7 @@ namespace Universe.Framework.SceneInfo.Entities
                             m_child_2_parent_entities.Add (part.UUID, part.LocalId, entity.UUID);
                         }
                     }
+
                     lock (m_objectEntitiesLock)
                         m_objectEntities.Add (entity.UUID, entity.LocalId, entity as ISceneEntity);
                 } else {
@@ -90,6 +87,7 @@ namespace Universe.Framework.SceneInfo.Entities
                 MainConsole.Instance.ErrorFormat ("Add Entity failed: {0}", e.Message);
                 return false;
             }
+
             return true;
         }
 
@@ -97,10 +95,12 @@ namespace Universe.Framework.SceneInfo.Entities
         {
             lock (m_objectEntitiesLock)
                 m_objectEntities.Clear ();
+
             lock (m_presenceEntitiesLock) {
                 m_presenceEntitiesList.Clear ();
                 m_presenceEntities.Clear ();
             }
+
             lock (m_child_2_parent_entitiesLock)
                 m_child_2_parent_entities.Clear ();
         }
@@ -119,6 +119,7 @@ namespace Universe.Framework.SceneInfo.Entities
                             m_child_2_parent_entities.Remove (part.LocalId);
                         }
                     }
+
                     lock (m_objectEntitiesLock) {
                         m_objectEntities.Remove (entity.UUID);
                         m_objectEntities.Remove (entity.LocalId);
@@ -129,6 +130,7 @@ namespace Universe.Framework.SceneInfo.Entities
                         m_presenceEntities.Remove (entity.UUID);
                     }
                 }
+
                 return true;
             } catch (Exception e) {
                 MainConsole.Instance.ErrorFormat ("Remove Entity failed for {0}", entity.UUID, e);
@@ -177,6 +179,7 @@ namespace Universe.Framework.SceneInfo.Entities
                         entity.IsAttachment)
                         tmp.Add (entity);
                 });
+
                 return tmp.ToArray ();
             }
         }
@@ -201,6 +204,7 @@ namespace Universe.Framework.SceneInfo.Entities
             bool gotit;
             lock (m_presenceEntitiesLock)
                 gotit = m_presenceEntities.TryGetValue (key, out presence);
+
             if (!gotit) {
                 ISceneEntity presence2;
                 lock (m_objectEntitiesLock)
@@ -217,6 +221,7 @@ namespace Universe.Framework.SceneInfo.Entities
                 obj = presence;
                 return true;
             }
+
             obj = null;
             return false;
         }
@@ -294,6 +299,7 @@ namespace Universe.Framework.SceneInfo.Entities
             IEntity entity;
             if (!TryGetChildPrimParent (childkey, out entity))
                 return false;
+
             if (!(entity is ISceneEntity))
                 return false;
 
@@ -307,6 +313,7 @@ namespace Universe.Framework.SceneInfo.Entities
             childPrim = null;
 
             IEntity entity;
+
             if (!TryGetChildPrimParent (objectID, out entity))
                 return false;
 

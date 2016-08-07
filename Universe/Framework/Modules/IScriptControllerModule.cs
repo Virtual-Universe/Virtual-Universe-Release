@@ -60,22 +60,13 @@ namespace Universe.Framework.Modules
     public interface IScriptControllerModule
     {
         ScriptControllers GetScriptControler(UUID uUID);
-
         void RegisterScriptController(ScriptControllers SC);
-
         void UnRegisterControlEventsToScript(uint p, UUID uUID);
-
-        void RegisterControlEventsToScript(int controls, int accept, int pass_on, ISceneChildEntity m_host,
-                                           UUID m_itemID);
-
+        void RegisterControlEventsToScript(int controls, int accept, int pass_on, ISceneChildEntity m_host, UUID m_itemID);
         void OnNewMovement(ref AgentManager.ControlFlags flags);
-
         void RemoveAllScriptControllers(ISceneChildEntity part);
-
         void HandleForceReleaseControls(IClientAPI remoteClient, UUID agentID);
-
         ControllerData[] Serialize();
-
         void Deserialize(ControllerData[] controllerData);
     }
 }

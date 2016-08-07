@@ -64,6 +64,7 @@ namespace Universe.Modules
             foreach (IScene scene in m_scenes) {
                 RegionNameSelector.Items.Add (scene.RegionInfo.RegionName);
             }
+
             RegionNameSelector.SelectedIndex = 0;
             m_updateStats = new Timer { Interval = 10000, Enabled = true };
             m_updateStats.Elapsed += m_updateStats_Elapsed;

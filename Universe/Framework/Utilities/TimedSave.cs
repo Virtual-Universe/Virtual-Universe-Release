@@ -144,6 +144,7 @@ namespace Universe.Framework.Utilities
                         _saveQueueData.Add (agentid, new List<T> ());
                     _saveQueueData [agentid].AddRange (data);
                 }
+
                 _updateTimer.Start ();
             }
         }
@@ -158,6 +159,7 @@ namespace Universe.Framework.Utilities
                         _saveQueueData.Add (agentid, new List<T> ());
                     _saveQueueData [agentid].Add (data);
                 }
+
                 _updateTimer.Start ();
             }
         }

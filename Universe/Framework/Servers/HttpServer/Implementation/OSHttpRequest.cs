@@ -205,8 +205,7 @@ namespace Universe.Framework.Servers.HttpServer.Implementation
                     }
                     catch (InvalidCastException)
                     {
-                        MainConsole.Instance.DebugFormat("[OSHttpRequest]: error parsing {0} query item, skipping it",
-                                                         item);
+                        MainConsole.Instance.DebugFormat("[OSHttpRequest]: error parsing {0} query item, skipping it", item);
                         continue;
                     }
                 }
@@ -230,8 +229,7 @@ namespace Universe.Framework.Servers.HttpServer.Implementation
                     if (!string.IsNullOrEmpty(element.Filename))
                     {
                         if (string.IsNullOrEmpty(element.ContentType))
-                            throw new FormatException("Error parsing request. Value '" + element.Name +
-                                                      "' lacks a content type.");
+                            throw new FormatException("Error parsing request. Value '" + element.Name + "' lacks a content type.");
 
                         // Read the file data
                         var buffer = new byte[element.Length];
@@ -265,16 +263,9 @@ namespace Universe.Framework.Servers.HttpServer.Implementation
                                            ContentType = element.ContentType,
                                            TempFileName = element.Filename
                                        };
+
                         Files.Add(element.Name, file);
                     }
-                    /*else
-                    {
-                        var buffer = new byte[element.Length];
-                        message.Body.Seek(element.Start, SeekOrigin.Begin);
-                        message.Body.Read(buffer, 0, (int)element.Length);
-
-                        form.Add(Uri.UnescapeDataString(element.Name), message.ContentEncoding.GetString(buffer));
-                    }*/
                 }
             }
         }

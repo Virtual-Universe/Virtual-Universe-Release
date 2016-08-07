@@ -45,9 +45,7 @@ namespace Universe.Framework.Services
         ///     The region the user is currently active in
         /// </summary>
         public UUID CurrentRegionID;
-
         public string CurrentRegionURI;
-
         public Vector3 HomeLookAt;
         public Vector3 HomePosition;
 
@@ -189,11 +187,8 @@ namespace Universe.Framework.Services
         /// <param name="loggingIn"></param>
         /// <param name="enteringRegion"></param>
         void FireUserStatusChangeEvent(string userID, bool loggingIn, UUID enteringRegion);
-
         void Start(IConfigSource config, IRegistryCore registry);
-
         void FinishedStartup();
-
         void Initialize(IConfigSource config, IRegistryCore registry);
     }
 
@@ -204,13 +199,10 @@ namespace Universe.Framework.Services
         void SetLastPosition(string userID, UUID regionID, string regionURI, Vector3 Position, Vector3 LookAt);
         void SetHomePosition(string userID, UUID regionID, Vector3 Position, Vector3 LookAt);
         UserInfo Get(string userID, bool checkOnlineStatus, out bool onlineStatusChanged);
-
         uint RecentlyOnline(uint secondsAgo, bool stillOnline);
         uint OnlineUsers (uint secondsAgo);
-
         List<UserInfo> RecentlyOnline(uint secondsAgo, bool stillOnline, Dictionary<string, bool> sort);
         List<UserInfo> CurrentlyOnline(uint secondsAgo, Dictionary<string, bool> sort);
-
         List<UserInfo> GetByCurrentRegion(string regionID);
     }
 }

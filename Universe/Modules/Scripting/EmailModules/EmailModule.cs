@@ -51,7 +51,9 @@ namespace Universe.Modules.Scripting
 {
     public class EmailModule : IEmailModule
     {
+        //
         // Module vars
+        //
         readonly Dictionary<UUID, DateTime> m_LastGetEmailCall = new Dictionary<UUID, DateTime> ();
         readonly Dictionary<UUID, List<Email>> m_MailQueues = new Dictionary<UUID, List<Email>> ();
 

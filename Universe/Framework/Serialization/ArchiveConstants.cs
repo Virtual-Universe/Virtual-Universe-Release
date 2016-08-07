@@ -151,7 +151,6 @@ namespace Universe.Framework.Serialization
             EXTENSION_TO_ASSET_TYPE [ASSET_EXTENSION_SEPARATOR + "sound.wav"] = AssetType.SoundWAV;
             EXTENSION_TO_ASSET_TYPE [ASSET_EXTENSION_SEPARATOR + "texture.jp2"] = AssetType.Texture;
             EXTENSION_TO_ASSET_TYPE [ASSET_EXTENSION_SEPARATOR + "texture.tga"] = AssetType.TextureTGA;
-            // new type??            EXTENSION_TO_ASSET_TYPE[ASSET_EXTENSION_SEPARATOR + "material.xml"] = AssetType.Material;
         }
 
         /// <summary>
@@ -203,6 +202,5 @@ namespace Universe.Framework.Serialization
 
             return string.Join ("/", plainDirs.ToArray ());
         }
-
     }
 }

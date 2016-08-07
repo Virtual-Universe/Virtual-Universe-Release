@@ -43,7 +43,7 @@ using Universe.Framework.Servers.HttpServer.Interfaces;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
 
-namespace Universe.Modules
+namespace Universe.Modules.GlobalEnvironment
 {
     public class EnvironmentSettingsModule : IEnvironmentSettingsModule, INonSharedRegionModule
     {
@@ -123,7 +123,8 @@ namespace Universe.Modules
             else
             {
                 fail_reason = "You don't have permissions to set the Windlight settings here.";
-                SP.ControllingClient.SendAlertMessage("You don't have the correct permissions to set the Windlight Settings");
+                SP.ControllingClient.SendAlertMessage(
+                    "You don't have the correct permissions to set the Windlight Settings");
             }
             OSDMap result = new OSDMap()
                                 {

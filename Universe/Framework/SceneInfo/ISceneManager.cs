@@ -36,7 +36,6 @@ namespace Universe.Framework.SceneInfo
     #region Delegates
 
     public delegate void NewScene(IScene scene);
-
     public delegate void NoParam();
 
     #endregion
@@ -77,13 +76,9 @@ namespace Universe.Framework.SceneInfo
         /// </summary>
         /// <returns>The current region info.</returns>
         Dictionary<string, int> FindCurrentRegionInfo();
-
         void HandleStartupComplete(List<string> data);
-
         IConfigSource ConfigSource { get; }
-
         List<IScene> Scenes { get; }
-
         event NewScene OnCloseScene;
         event NewScene OnAddedScene;
         event NewScene OnFinishedAddingScene;

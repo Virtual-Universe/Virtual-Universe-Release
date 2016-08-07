@@ -45,8 +45,7 @@ namespace Universe.Services.DataService
 
         #region IAuthenticationData Members
 
-        public void Initialize (IGenericData genericData, IConfigSource source, IRegistryCore simBase,
-                               string defaultConnectionString)
+        public void Initialize (IGenericData genericData, IConfigSource source, IRegistryCore simBase, string defaultConnectionString)
         {
             if (source.Configs ["UniverseConnectors"].GetString ("AuthConnector", "LocalConnector") != "LocalConnector")
                 return;
@@ -58,13 +57,13 @@ namespace Universe.Services.DataService
                 connectionString = source.Configs [Name].GetString ("ConnectionString", defaultConnectionString);
 
             if (GD != null)
-                GD.ConnectToDatabase (connectionString, "Auth",
-                                     source.Configs ["UniverseConnectors"].GetBoolean ("ValidateTables", true));
+                GD.ConnectToDatabase (connectionString, "Auth", source.Configs ["UniverseConnectors"].GetBoolean ("ValidateTables", true));
 
             Framework.Utilities.DataManager.RegisterPlugin (this);
         }
 
-        public string Name {
+        public string Name
+        {
             get { return "IAuthenticationData"; }
         }
 

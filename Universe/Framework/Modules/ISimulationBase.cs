@@ -110,8 +110,7 @@ namespace Universe.Framework.Modules
         /// <param name="configSource">The .ini config</param>
         /// <param name="cmdParameters"></param>
         /// <param name="configLoader"></param>
-        void Initialize(IConfigSource originalConfigSource, IConfigSource configSource, string[] cmdParameters,
-                        ConfigurationLoader configLoader);
+        void Initialize(IConfigSource originalConfigSource, IConfigSource configSource, string[] cmdParameters, ConfigurationLoader configLoader);
 
         /// <summary>
         ///     Start up any modules and run the HTTP server
@@ -125,5 +124,9 @@ namespace Universe.Framework.Modules
 
         // where all volatile data is kept
         string DefaultDataPath { get; set; }
+
+        // The center of the world
+        int MapCenterX { get; set; }
+        int MapCenterY { get; set; }
     }
 }

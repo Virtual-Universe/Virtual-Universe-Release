@@ -38,11 +38,8 @@ namespace Universe.Framework.Services
     {
         public int Created;
         public string Email;
-
         public string Name { get; set; }
-
         public UUID PrincipalID { get; set; }
-
         public int UserFlags = Constants.USER_FLAG_GUEST;
         public int UserLevel = Constants.USER_NORMAL;
 
@@ -251,7 +248,6 @@ namespace Universe.Framework.Services
         /// <returns>The god level description.</returns>
         /// <param name="level">Level.</param>
         string UserGodLevel (int level);
-
     }
 
     /// <summary>
@@ -260,19 +256,12 @@ namespace Universe.Framework.Services
     public interface IUserAccountData : IUniverseDataPlugin
     {
         string Realm { get; }
-
         UserAccount[] Get (List<UUID> scopeIDs, string[] fields, string[] values);
-
         bool Store (UserAccount data);
-
         bool DeleteAccount (UUID userID, bool archiveInformation);
-
         UserAccount[] GetUsers (List<UUID> scopeIDs, string query);
-
         UserAccount[] GetUsers (List<UUID> scopeIDs, string query, uint? start, uint? count);
-
         UserAccount[] GetUsers (List<UUID> scopeIDs, int level, int flags);
-
         uint NumberOfUsers (List<UUID> scopeIDs, string query);
     }
 }

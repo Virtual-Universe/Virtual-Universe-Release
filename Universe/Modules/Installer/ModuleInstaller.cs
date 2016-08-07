@@ -94,12 +94,14 @@ namespace Universe.Modules.Installer
                     return;
             }
 
+
             if (useGUI)
             {
                 bool finished = false;
                 OpenFileDialog dialog = new OpenFileDialog
                                             {
-                                                Filter = "Build Files (*.am)|*.am|Xml Files (*.xml)|*.xml|Dll Files (*.dll)|*.dll"
+                                                Filter =
+                                                    "Build Files (*.am)|*.am|Xml Files (*.xml)|*.xml|Dll Files (*.dll)|*.dll"
                                             };
                 System.Threading.Thread t = new System.Threading.Thread(delegate()
                                                                             {
@@ -139,7 +141,8 @@ namespace Universe.Modules.Installer
                     //Install .dll files
             else
             {
-                string tmpFile = Path.Combine(Path.GetDirectoryName(fileName), Path.GetFileNameWithoutExtension(fileName) + ".tmp.xml");
+                string tmpFile = Path.Combine(Path.GetDirectoryName(fileName),
+                                              Path.GetFileNameWithoutExtension(fileName) + ".tmp.xml");
                 if (!File.Exists (tmpFile))
                 {
                     MainConsole.Instance.Error ("Unable to find the module prebuild information: " + tmpFile);
@@ -209,7 +212,8 @@ namespace Universe.Modules.Installer
         {
             Process p = new Process
                             {
-                                StartInfo = new ProcessStartInfo(Path.Combine(Environment.CurrentDirectory, "Prebuild.exe"),
+                                StartInfo =
+                                    new ProcessStartInfo(Path.Combine(Environment.CurrentDirectory, "Prebuild.exe"),
                                                          "/target vs2010 /targetframework v4_0 /file " + tmpFile)
                             };
             p.Start();

@@ -39,15 +39,12 @@ namespace Universe.Framework.SceneInfo.Entities
         ///     since the group's last persistent backup
         /// </summary>
         protected bool m_hasGroupChanged;
-
         protected bool m_isDeleted;
         protected uint m_localId;
         protected string m_name;
         protected Vector3 m_pos;
         protected Quaternion m_rot;
-
         protected IScene m_scene;
-
         protected UUID m_uuid;
 
         /// <summary>
@@ -61,7 +58,8 @@ namespace Universe.Framework.SceneInfo.Entities
         /// <summary>
         ///     The scene to which this entity belongs
         /// </summary>
-        public IScene Scene {
+        public IScene Scene
+        {
             get { return m_scene; }
             set { m_scene = value; }
         }
@@ -69,19 +67,22 @@ namespace Universe.Framework.SceneInfo.Entities
         /// <summary>
         ///     Signals whether this entity was in a scene but has since been removed from it.
         /// </summary>
-        public bool IsDeleted {
+        public bool IsDeleted
+        {
             get { return m_isDeleted; }
             set { m_isDeleted = value; }
         }
 
-        public virtual bool HasGroupChanged {
+        public virtual bool HasGroupChanged
+        {
             get { return m_hasGroupChanged; }
             set { m_hasGroupChanged = value; }
         }
 
         #region IEntity Members
 
-        public virtual UUID UUID {
+        public virtual UUID UUID
+        {
             get { return m_uuid; }
             set { m_uuid = value; }
         }
@@ -89,7 +90,8 @@ namespace Universe.Framework.SceneInfo.Entities
         /// <summary>
         ///     The name of this entity
         /// </summary>
-        public virtual string Name {
+        public virtual string Name
+        {
             get { return m_name; }
             set { m_name = value; }
         }
@@ -98,14 +100,16 @@ namespace Universe.Framework.SceneInfo.Entities
 
         /// <summary>
         /// </summary>
-        public virtual Vector3 AbsolutePosition {
+        public virtual Vector3 AbsolutePosition
+        {
             get { return m_pos; }
             set { m_pos = value; }
         }
 
         /// <summary>
         /// </summary>
-        public virtual Quaternion Rotation {
+        public virtual Quaternion Rotation
+        {
             get { return m_rot; }
             set { m_rot = value; }
         }
@@ -113,12 +117,14 @@ namespace Universe.Framework.SceneInfo.Entities
         /// <summary>
         ///     Current velocity of the entity.
         /// </summary>
-        public virtual Vector3 Velocity {
+        public virtual Vector3 Velocity
+        {
             get { return Vector3.Zero; }
             set { }
         }
 
-        public virtual uint LocalId {
+        public virtual uint LocalId
+        {
             get { return m_localId; }
             set { m_localId = value; }
         }

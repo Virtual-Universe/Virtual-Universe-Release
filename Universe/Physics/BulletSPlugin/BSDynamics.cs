@@ -136,8 +136,8 @@ namespace Universe.Physics.BulletSPlugin
             m_haveRegisteredForSceneEvents = false;
             // SetupVehicleDebugging();
         }
-        
-        /*  using params fro BSParams now -gerythane-
+
+/*  using params fro BSParams now -gerythane-
         // Stopgap debugging enablement. Allows source level debugging but still checking
         //    in changes by making enablement of debugging flags from INI file.
         // For debugging, flags to turn on and off individual corrections.
@@ -156,7 +156,7 @@ namespace Universe.Physics.BulletSPlugin
                 enableAngularBanking = false;
             }
         }
-        */
+*/
 
         // Return 'true' if this vehicle is doing vehicle things
         public bool IsActive

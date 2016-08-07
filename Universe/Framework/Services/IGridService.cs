@@ -65,8 +65,7 @@ namespace Universe.Framework.Services
         /// <param name="minorProtocolVersion"></param>
         /// <returns></returns>
         /// <exception cref="System.Exception">Thrown if region registration failed</exception>
-        RegisterRegion RegisterRegion (GridRegion regionInfos, UUID oldSessionID, string password,
-                                      int majorProtocolVersion, int minorProtocolVersion);
+        RegisterRegion RegisterRegion (GridRegion regionInfos, UUID oldSessionID, string password, int majorProtocolVersion, int minorProtocolVersion);
 
         /// <summary>
         ///     Deregister a region with the grid service.
@@ -146,8 +145,7 @@ namespace Universe.Framework.Services
         /// <param name="centerY"></param>
         /// <param name="squareRangeFromCenterInMeters"></param>
         /// <returns></returns>
-        List<GridRegion> GetRegionRange (List<UUID> scopeIDs, float centerX, float centerY,
-                                        uint squareRangeFromCenterInMeters);
+        List<GridRegion> GetRegionRange (List<UUID> scopeIDs, float centerX, float centerY, uint squareRangeFromCenterInMeters);
 
         /// <summary>
         ///     Get the neighbors of the given region
@@ -226,11 +224,8 @@ namespace Universe.Framework.Services
         /// <param name="SessionID"></param>
         /// <returns></returns>
         bool VerifyRegionSessionID (GridRegion r, UUID SessionID);
-
         void Configure (Nini.Config.IConfigSource config, IRegistryCore registry);
-
         void Start (Nini.Config.IConfigSource config, IRegistryCore registry);
-
         void FinishedStartup ();
     }
 
@@ -282,6 +277,7 @@ namespace Universe.Framework.Services
                 Region = new GridRegion ();
                 Region.FromOSD ((OSDMap)map ["Region"]);
             }
+
             if (map.ContainsKey ("URIs"))
                 URIs = ((OSDMap)map ["URIs"]).ConvertMap<List<string>> ((o) => ((OSDArray)o).ConvertAll<string> ((oo) => oo));
         }
@@ -440,7 +436,6 @@ namespace Universe.Framework.Services
             ScopeID = ConvertFrom.ScopeID;
             AllScopeIDs = ConvertFrom.AllScopeIDs;
             SessionID = ConvertFrom.GridSecureSessionID;
-//            Flags |= (int) RegionFlags.RegionOnline;
             Flags |= ConvertFrom.RegionFlags;                           // not sure why we don't pass all the flags??
             RegionTerrain = ConvertFrom.RegionTerrain;
             RegionArea = ConvertFrom.RegionArea;
@@ -633,11 +628,12 @@ namespace Universe.Framework.Services
                 int port = map ["remoteEndPointPort"].AsInteger ();
                 m_remoteEndPoint = new IPEndPoint (add, port);
             }
+
             if (map.ContainsKey ("regionTerrain"))
                 RegionTerrain = map ["regionTerrain"].AsString ();
+
             if (map.ContainsKey ("regionArea"))
                 RegionArea = (uint)map ["regionArea"].AsInteger ();
-
         }
 
         #endregion

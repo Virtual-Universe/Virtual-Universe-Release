@@ -77,7 +77,6 @@ namespace Universe.Physics.OpenDynamicsEngine
         float m_angularMotorTimescale; // motor angular velocity ramp up rate
         Vector3 m_angularMotorVelocity = Vector3.Zero; // current angular motor velocity
 
-
         //Banking properties
         float m_bankingEfficiency;
         float m_bankingMix;
@@ -1248,6 +1247,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                     }
                 }
             }
+
             return rotBetween;
         }
 

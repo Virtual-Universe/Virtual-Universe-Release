@@ -137,21 +137,21 @@ namespace Universe.Physics.ConvexDecompositionDotNet
             float dx = bmax[0] - bmin[0];
             float dy = bmax[1] - bmin[1];
             float dz = bmax[2] - bmin[2];
-            
-            // 20131224 not used            float laxis = dx;
+
+// 20131224 not used            float laxis = dx;
 
             int axis = 0;
 
             if (dy > dx)
             {
                 axis = 1;
-                // 20131224 not used                laxis = dy;
+// 20131224 not used                laxis = dy;
             }
 
             if (dz > dx && dz > dy)
             {
                 axis = 2;
-                // 20131224 not used                laxis = dz;
+// 20131224 not used                laxis = dz;
             }
 
             float[] p1 = new float[3];

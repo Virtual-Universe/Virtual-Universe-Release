@@ -54,9 +54,8 @@ namespace Universe.Services
                                    string password, out object data)
         {
             data = null;
-            //
+
             // Authenticate this user
-            //
             if (authType == "UserAccount") {
                 password = password.StartsWith ("$1$", System.StringComparison.Ordinal) ? password.Remove (0, 3) : Util.Md5Hash (password); //remove $1$
             }

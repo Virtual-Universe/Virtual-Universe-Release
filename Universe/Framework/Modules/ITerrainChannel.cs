@@ -78,6 +78,5 @@ namespace Universe.Framework.Modules
         /// Recalculates land area.
         /// </summary>
         void ReCalcLandArea ();
-
     }
 }

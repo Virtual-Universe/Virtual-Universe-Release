@@ -74,7 +74,7 @@ namespace Universe.Modules.Agent.AssetTransaction
                     uploader = new AssetXferUploader(this, m_Scene, transactionID, m_dumpAssetsToFile);
 
                     //MainConsole.Instance.DebugFormat(
-                    //    "[Agent Assets Ttransactions]: Adding asset xfer uploader {0} since it didn't previously exist", transactionID);
+                    //    "[AGENT ASSETS TRANSACTIONS]: Adding asset xfer uploader {0} since it didn't previously exist", transactionID);
 
                     XferUploaders.Add(transactionID, uploader);
                 }
@@ -103,7 +103,7 @@ namespace Universe.Modules.Agent.AssetTransaction
                 foreach (AssetXferUploader uploader in XferUploaders.Values)
                 {
                     //MainConsole.Instance.DebugFormat(
-                    //    "[Agent Assets Transactions]: In HandleXfer, inspect xfer upload with xfer id {0}", uploader.XferID);
+                    //    "[AGENT ASSETS TRANSACTIONS]: In HandleXfer, inspect xfer upload with xfer id {0}", uploader.XferID);
 
                     if (uploader.XferID == xferID)
                     {
@@ -116,7 +116,7 @@ namespace Universe.Modules.Agent.AssetTransaction
             if (foundUploader != null)
             {
                 //MainConsole.Instance.DebugFormat(
-                //    "[Agent Assets Transactions]: Found xfer uploader for xfer id {0}, packet id {1}, data length {2}", xferID, packetID, data.Length);
+                //    "[AGENT ASSETS TRANSACTIONS]: Found xfer uploader for xfer id {0}, packet id {1}, data length {2}", xferID, packetID, data.Length);
 
                 foundUploader.HandleXferPacket(xferID, packetID, data);
             }
@@ -130,10 +130,11 @@ namespace Universe.Modules.Agent.AssetTransaction
 
                 if (!removed)
                     MainConsole.Instance.WarnFormat(
-                        "[Agent Assets Transactions]: Received request to remove xfer uploader with transaction ID {0} but none found",
+                        "[AGENT ASSET TRANSACTIONS]: Received request to remove xfer uploader with transaction ID {0} but none found",
                         transactionID);
                 //else
-                //  MainConsole.Instance.DebugFormat("[Agent Assets Transactions]: Removed xfer uploader with transaction ID {0}", transactionID);
+                //  MainConsole.Instance.DebugFormat(
+                //      "[AGENT ASSET TRANSACTIONS]: Removed xfer uploader with transaction ID {0}", transactionID);
 
                 return removed;
             }
@@ -147,17 +148,21 @@ namespace Universe.Modules.Agent.AssetTransaction
             AssetXferUploader uploader = RequestXferUploader(transactionID);
 
             uploader.RequestCreateInventoryItem(
-                remoteClient, folderID, callbackID, description, name, invType, type, wearableType, nextOwnerMask);
+                remoteClient, folderID, callbackID,
+                description, name, invType, type, wearableType, nextOwnerMask);
         }
 
-        public void RequestUpdateTaskInventoryItem(IClientAPI remoteClient, ISceneChildEntity part, UUID transactionID, TaskInventoryItem item)
+        public void RequestUpdateTaskInventoryItem(IClientAPI remoteClient,
+                                                   ISceneChildEntity part, UUID transactionID,
+                                                   TaskInventoryItem item)
         {
             AssetXferUploader uploader = RequestXferUploader(transactionID);
 
             uploader.RequestUpdateTaskInventoryItem(remoteClient, item);
         }
 
-        public void RequestUpdateInventoryItem(IClientAPI remoteClient, UUID transactionID, InventoryItemBase item)
+        public void RequestUpdateInventoryItem(IClientAPI remoteClient,
+                                               UUID transactionID, InventoryItemBase item)
         {
             AssetXferUploader uploader = RequestXferUploader(transactionID);
 

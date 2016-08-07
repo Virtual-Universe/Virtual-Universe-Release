@@ -115,25 +115,17 @@ namespace Universe.Framework.Services
         /// <returns>The schedule item.</returns>
         /// <param name="fireFunction">Fire function.</param>
         SchedulerItem GetFunctionItem (string fireFunction);
-
     }
 
     public interface IScheduleService
     {
 
         string Save(SchedulerItem I);
-
         void RemoveID(string scdID);
-
         void RemoveFireFunction(string identifier);
-
         bool Exist(string scdID);
-
         SchedulerItem Get(string ID);
-
         SchedulerItem Get(string scheduleFor, string fireFunction);
-
         SchedulerItem GetFunctionItem (string fireFunction);
-
     }
 }

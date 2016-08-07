@@ -72,6 +72,7 @@ namespace Universe.Framework.ClientInterfaces
         {
             if (args["point"] != null)
                 AttachPoint = args["point"].AsInteger();
+
             ItemID = (args["item"] != null) ? args["item"].AsUUID() : UUID.Zero;
             AssetID = (args["asset"] != null) ? args["asset"].AsUUID() : UUID.Zero;
         }

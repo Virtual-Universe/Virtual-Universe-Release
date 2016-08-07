@@ -47,8 +47,7 @@ namespace Universe.Framework.Modules
     {
         UUID MakeHttpRequest(string url, string parameters, string body);
 
-        UUID StartHttpRequest(UUID primID, UUID itemID, string url, List<string> parameters,
-                              Dictionary<string, string> headers, string body);
+        UUID StartHttpRequest(UUID primID, UUID itemID, string url, List<string> parameters, Dictionary<string, string> headers, string body);
 
         void StopHttpRequest(UUID m_primID, UUID m_itemID);
         IServiceRequest GetNextCompletedRequest();

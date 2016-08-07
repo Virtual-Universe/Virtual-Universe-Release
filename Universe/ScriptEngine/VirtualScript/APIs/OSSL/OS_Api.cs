@@ -1633,7 +1633,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             Hashtable jsondata = new Hashtable(); // the hashtable to be returned
             try
             {
-                // iterate through the serialised stream of tokens and store at the right depth in the hashtable
+                // iterate through the serialized stream of tokens and store at the right depth in the hashtable
                 // the top level hashtable may contain more nested hashtables within it each containing an objects representation
                 int i = 0;
                 for (i = 0; i < JSON.Length; i++)
@@ -3758,8 +3758,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                     touchArgs);
                 World.EventManager.TriggerObjectGrabbing(child.ParentEntity.RootChild, child, Vector3.Zero,
                     sp.ControllingClient, touchArgs);
-                World.EventManager.TriggerObjectDeGrab(child.ParentEntity.RootChild, child, sp.ControllingClient, touchArgs);
-                              
+                World.EventManager.TriggerObjectDeGrab(child.ParentEntity.RootChild, child, sp.ControllingClient, touchArgs);                             
             }
         }
     }

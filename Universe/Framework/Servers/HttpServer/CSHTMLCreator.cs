@@ -42,15 +42,12 @@ namespace Universe.Framework.Servers.HttpServer
 
     public class CSHTMLCreator
     {
-        public static string AddHTMLPage(string html, string urlToAppend, string methodName,
-                                         Dictionary<string, object> variables, HTTPReturned eventDelegate)
+        public static string AddHTMLPage(string html, string urlToAppend, string methodName, Dictionary<string, object> variables, HTTPReturned eventDelegate)
         {
             string secret = Util.RandomClass.Next(0, int.MaxValue).ToString();
             string secret2 = Util.RandomClass.Next(0, int.MaxValue).ToString();
-            string navUrl = MainServer.Instance.ServerURI +
-                            (urlToAppend == "" ? "" : "/") + urlToAppend + "/index.php?method=" + methodName + secret2;
-            string url = MainServer.Instance.ServerURI +
-                         (urlToAppend == "" ? "" : "/") + urlToAppend + "/index.php?method=" + methodName + secret;
+            string navUrl = MainServer.Instance.ServerURI + (urlToAppend == "" ? "" : "/") + urlToAppend + "/index.php?method=" + methodName + secret2;
+            string url = MainServer.Instance.ServerURI + (urlToAppend == "" ? "" : "/") + urlToAppend + "/index.php?method=" + methodName + secret;
             MainServer.Instance.RemoveStreamHandler("GET", "/index.php?method=" + methodName + secret);
             MainServer.Instance.RemoveStreamHandler("GET", "/index.php?method=" + methodName + secret2);
 
@@ -107,8 +104,7 @@ namespace Universe.Framework.Servers.HttpServer
             return Encoding.UTF8.GetBytes(html);
         }
 
-        static byte[] SetUpWebpage(OSHttpResponse response, string url, string html,
-                                           Dictionary<string, object> vars)
+        static byte[] SetUpWebpage(OSHttpResponse response, string url, string html, Dictionary<string, object> vars)
         {
             response.ContentType = "text/html";
             return Encoding.UTF8.GetBytes(BuildHTML(html, vars));
@@ -122,6 +118,7 @@ namespace Universe.Framework.Servers.HttpServer
                 if (!(kvp.Value is IList))
                     html = html.Replace("{" + kvp.Key + "}", (kvp.Value ?? "").ToString());
             }
+
             return html;
         }
     }

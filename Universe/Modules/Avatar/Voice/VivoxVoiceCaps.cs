@@ -43,6 +43,7 @@ using Universe.Framework.Servers.HttpServer;
 using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Services;
 
+
 namespace Universe.Modules
 {
     public class VivoxVoiceService : IVoiceService, IService
@@ -130,7 +131,7 @@ namespace Universe.Modules
 
             // This is a local service, either grid server or standalone
             // (region servers do not require the admin configuration)
-            // get and initialise admin configuration for control
+            // get and initialize admin configuration for control
             try
             {
                 // retrieve configuration variables

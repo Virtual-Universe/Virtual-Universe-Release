@@ -28,10 +28,10 @@
  */
 
 using System;
-using Nini.Config;
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
+using Nini.Config;
 
 namespace Universe.Modules.GlobalEnvironment
 {
@@ -193,7 +193,6 @@ namespace Universe.Modules.GlobalEnvironment
                 client.SendCloudData (cloudCover);
             }
         }
-
 
         /// <summary>
         ///     Calculate the cloud cover over the region.

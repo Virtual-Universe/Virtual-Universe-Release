@@ -79,8 +79,7 @@ namespace Universe.Framework.Utilities
         /// <param name="destinationTableName"></param>
         /// <param name="columnDefinitions"></param>
         /// <param name="indexDefinitions"></param>
-        void CopyTableToTable(string sourceTableName, string destinationTableName, ColumnDefinition[] columnDefinitions,
-                              IndexDefinition[] indexDefinitions);
+        void CopyTableToTable(string sourceTableName, string destinationTableName, ColumnDefinition[] columnDefinitions, IndexDefinition[] indexDefinitions);
 
         /// <summary>
         ///     Check whether the data table exists and that the columns are correct
@@ -89,8 +88,7 @@ namespace Universe.Framework.Utilities
         /// <param name="columnDefinitions"></param>
         /// <param name="indexDefinitions"></param>
         /// <returns></returns>
-        bool VerifyTableExists(string tableName, ColumnDefinition[] columnDefinitions,
-                               IndexDefinition[] indexDefinitions);
+        bool VerifyTableExists(string tableName, ColumnDefinition[] columnDefinitions, IndexDefinition[] indexDefinitions);
 
         /// <summary>
         ///     Check whether the data table exists and that the columns are correct
@@ -100,8 +98,7 @@ namespace Universe.Framework.Utilities
         /// <param name="columnDefinitions"></param>
         /// <param name="indexDefinitions"></param>
         /// <param name="renameColumns"></param>
-        void EnsureTableExists(string tableName, ColumnDefinition[] columnDefinitions,
-                               IndexDefinition[] indexDefinitions, Dictionary<string, string> renameColumns);
+        void EnsureTableExists(string tableName, ColumnDefinition[] columnDefinitions, IndexDefinition[] indexDefinitions, Dictionary<string, string> renameColumns);
 
         /// <summary>
         ///     Rename the table from oldTableName to newTableName
@@ -306,9 +303,6 @@ namespace Universe.Framework.Utilities
         public static readonly ColumnTypeDef UUID = new ColumnTypeDef(ColumnType.UUID, 36);
         public static readonly ColumnTypeDef Unknown = new ColumnTypeDef(ColumnType.Unknown);
 
-
-        
-
         #endregion
 
         public ColumnType Type { get; set; }
@@ -317,11 +311,9 @@ namespace Universe.Framework.Utilities
         public bool isNull { get; set; }
         public bool unsigned { get; set; }
         public bool auto_increment { get; set; }
-
         public ColumnTypeDef() { }
         public ColumnTypeDef(ColumnType type) { Type = type; }
         public ColumnTypeDef(ColumnType type, uint size) { Type = type; Size = size; }
-
         public ColumnTypeDef(ColumnType type, uint size, bool isunsigned) { Type = type; Size = size; unsigned = isunsigned; }
 
         public override bool Equals(object obj)
@@ -350,6 +342,7 @@ namespace Universe.Framework.Utilities
             {
                 return cdef.Name == Name && cdef.Type == Type;
             }
+
             return false;
         }
 
@@ -380,6 +373,7 @@ namespace Universe.Framework.Utilities
                 uint i = 0;
                 return idef.Fields.All(field => field == Fields[i++]);
             }
+
             return false;
         }
 

@@ -166,6 +166,7 @@ namespace Universe.Modules.Web
             vars.Add ("DateStartText", translator.GetTranslatedString ("DateStartText"));
             vars.Add ("DateEndText", translator.GetTranslatedString ("DateEndText"));
             vars.Add ("SearchUserText", translator.GetTranslatedString ("AvatarNameText"));
+
             vars.Add ("PurchaseAgentText", translator.GetTranslatedString ("TransactionToAgentText"));
             vars.Add ("PurchaseDateText", translator.GetTranslatedString ("TransactionDateText"));
             vars.Add ("PurchaseUpdateDateText", translator.GetTranslatedString ("TransactionDateText"));
@@ -174,6 +175,7 @@ namespace Universe.Modules.Web
             vars.Add ("LoggedIPText", translator.GetTranslatedString ("LoggedIPText"));
             vars.Add ("PurchaseAmountText", InWorldCurrency + translator.GetTranslatedString ("TransactionAmountText"));
             vars.Add ("PurchaseRealAmountText", RealCurrency + translator.GetTranslatedString ("PurchaseCostText"));
+
             vars.Add ("FirstText", translator.GetTranslatedString ("FirstText"));
             vars.Add ("BackText", translator.GetTranslatedString ("BackText"));
             vars.Add ("NextText", translator.GetTranslatedString ("NextText"));

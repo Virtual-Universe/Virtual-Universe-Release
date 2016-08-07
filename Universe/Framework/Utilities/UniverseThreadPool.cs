@@ -94,7 +94,6 @@ namespace Universe.Framework.Utilities
                         Interlocked.Decrement (ref nSleepingthreads);
                         Interlocked.Exchange (ref Sleeping [ThreadNumber], 0);
                         continue;
-
                     }
 
                     // workers have no business on pool waiting times
@@ -110,6 +109,7 @@ namespace Universe.Framework.Utilities
 
                 } catch {
                 }
+
                 Thread.Sleep (OurSleepTime);
             }
         }
@@ -160,6 +160,7 @@ namespace Universe.Framework.Utilities
                     if (Threads [i] == thread)
                         break;
                 }
+
                 if (i == Threads.Length)
                     return;
 
@@ -200,6 +201,7 @@ namespace Universe.Framework.Utilities
                 threads = new Thread [Threads.Length];
                 Threads.CopyTo (threads, 0);
             }
+
             return threads;
         }
     }

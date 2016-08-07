@@ -43,8 +43,7 @@ namespace Universe.Modules.Agent.AssetTransaction
         /// <summary>
         ///     Each agent has its own singleton collection of transactions
         /// </summary>
-        readonly Dictionary<UUID, AgentAssetTransactions> AgentTransactions =
-            new Dictionary<UUID, AgentAssetTransactions> ();
+        readonly Dictionary<UUID, AgentAssetTransactions> AgentTransactions = new Dictionary<UUID, AgentAssetTransactions> ();
 
         IScene m_scene;
 

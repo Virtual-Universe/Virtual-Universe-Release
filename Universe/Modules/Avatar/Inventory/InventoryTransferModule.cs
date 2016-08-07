@@ -183,6 +183,7 @@ namespace Universe.Modules.Inventory
                 // user is online now...
                 if (recipientUser != null)
                 {
+
                     // First byte is the asset type
                     AssetType assetType = (AssetType)im.BinaryBucket [0];
 
@@ -193,6 +194,7 @@ namespace Universe.Modules.Inventory
                         MainConsole.Instance.DebugFormat (
                             "[INVENTORY TRANSFER]: Inserting original folder {0} into agent {1}'s inventory",
                             folderID, im.ToAgentID);
+
 
                         clientScene.InventoryService.GiveInventoryFolderAsync (
                             receipientID,
@@ -214,8 +216,9 @@ namespace Universe.Modules.Inventory
                                 im.BinaryBucket = new byte[ 1 + copyIDBytes.Length ];
                                 im.BinaryBucket [0] = (byte)AssetType.Folder;
                                 Array.Copy (copyIDBytes, 0, im.BinaryBucket, 1, copyIDBytes.Length);
-                                
-                                //m_currencyService.UserCurrencyTransfer(im.FromAgentID, im.ToAgentID, 0, "Inworld inventory folder transfer", TransactionType.GiveInventory, UUID.Zero);
+
+//                                m_currencyService.UserCurrencyTransfer(im.FromAgentID, im.ToAgentID, 0,
+//                                    "Inworld inventory folder transfer", TransactionType.GiveInventory, UUID.Zero);
                             if (moneyService != null)
                                 moneyService.Transfer(im.ToAgentID, im.FromAgentID, 0,
                                 "Inworld inventory folder transfer", TransactionType.GiveInventory);
@@ -236,7 +239,8 @@ namespace Universe.Modules.Inventory
                         UUID itemID = new UUID (im.BinaryBucket, 1);
 
                         MainConsole.Instance.DebugFormat (
-                            "[INVENTORY TRANSFER]: (giving) Inserting item {0} into agent {1}'s inventory", itemID, im.ToAgentID);
+                            "[INVENTORY TRANSFER]: (giving) Inserting item {0} into agent {1}'s inventory",
+                            itemID, im.ToAgentID);
 
                         clientScene.InventoryService.GiveInventoryItemAsync (
                             im.ToAgentID,
@@ -249,7 +253,8 @@ namespace Universe.Modules.Inventory
                                 if (itemCopy == null)
                                 {
                                     MainConsole.Instance.DebugFormat (
-                                        "[INVENTORY TRANSFER]: (giving) Unable to find item {0} to give to agent {1}'s inventory", itemID, im.ToAgentID);
+                                        "[INVENTORY TRANSFER]: (giving) Unable to find item {0} to give to agent {1}'s inventory",
+                                        itemID, im.ToAgentID);
                                     client.SendAgentAlertMessage ("Can't find item to give. Nothing given.", false);
                                     return;
                                 }
@@ -258,7 +263,8 @@ namespace Universe.Modules.Inventory
                                 Array.Copy (copyID.GetBytes (), 0, im.BinaryBucket, 1, 16);
                                 
                                if (moneyService != null)
-                                  moneyService.Transfer(im.ToAgentID, im.FromAgentID, 0, "Inworld inventory item transfer", TransactionType.GiveInventory);
+                                  moneyService.Transfer(im.ToAgentID, im.FromAgentID, 0,
+                                          "Inworld inventory item transfer", TransactionType.GiveInventory);
 
                                 if (recipientUser != null)
                                 {
@@ -266,7 +272,9 @@ namespace Universe.Modules.Inventory
                                     im.SessionID = itemCopy.ID;
                                     recipientUser.ControllingClient.SendInstantMessage (im);
                                 }
-                            });       
+                            });
+  
+                    
                     }
                 }  else
                 {
@@ -274,6 +282,7 @@ namespace Universe.Modules.Inventory
                     // Send the IM to the recipient. The item is already
                     // in their inventory, so it will not be lost if
                     // they are offline.
+                    //
                      if (m_TransferModule != null)
                         m_TransferModule.SendInstantMessage(im);
                 }
@@ -298,10 +307,12 @@ namespace Universe.Modules.Inventory
                 // Here, the recipient is local and we can assume that the
                 // inventory is loaded. Courtesy of the above bulk update,
                 // It will have been pushed to the client, too
+                //
                 IInventoryService invService = clientScene.InventoryService;
                 MainConsole.Instance.DebugFormat ("[INVENTORY TRANSFER]: Declined message received");
 
-                InventoryFolderBase trashFolder = invService.GetFolderForType(client.AgentId, InventoryType.Unknown, FolderType.Trash);
+                InventoryFolderBase trashFolder =
+                    invService.GetFolderForType(client.AgentId, InventoryType.Unknown, FolderType.Trash);
 
                 UUID inventoryID = im.SessionID; // The inventory item/folder, back from it's trip
 
@@ -343,7 +354,8 @@ namespace Universe.Modules.Inventory
                     if (folder == null)
                         reason += " Folder not found.";
 
-                    client.SendAgentAlertMessage("Unable to delete " + "received inventory" + reason, false);
+                    client.SendAgentAlertMessage("Unable to delete " +
+                                                 "received inventory" + reason, false);
                 }
 
                 //m_currencyService.UserCurrencyTransfer(im.FromAgentID, im.ToAgentID, 0,
@@ -381,6 +393,7 @@ namespace Universe.Modules.Inventory
             }
 
             // Find agent to deliver to
+            //
             IScenePresence user = userScene.GetScenePresence(msg.ToAgentID);
 
             // Just forward to local handling

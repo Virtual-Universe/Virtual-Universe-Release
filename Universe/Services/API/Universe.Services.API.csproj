@@ -185,6 +185,9 @@
 	  <Compile Include="WorldAPI\Place.cs">
 		<SubType>Code</SubType>
 	  </Compile>
+	  <Compile Include="WorldAPI\Region.cs">
+		<SubType>Code</SubType>
+	  </Compile>
 	  <Compile Include="WorldAPI\Resident.cs">
 		<SubType>Code</SubType>
 	  </Compile>

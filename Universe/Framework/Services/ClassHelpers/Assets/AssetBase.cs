@@ -62,7 +62,7 @@ namespace Universe.Framework.Services.ClassHelpers.Assets
     {
         static readonly SHA256Managed SHA256Managed = new SHA256Managed();
         string idString = "";
-        byte[] myData = new byte[] {};
+        byte[] myData = new byte[] { };
         string myHashCode = "";
 
         #region Initiation
@@ -111,7 +111,7 @@ namespace Universe.Framework.Services.ClassHelpers.Assets
             LastHashCode = "";
             ParentID = UUID.Zero;
             MetaOnly = true;
-            Data = new byte[] {};
+            Data = new byte[] { };
             Flags = AssetFlags.Normal;
         }
 
@@ -121,9 +121,7 @@ namespace Universe.Framework.Services.ClassHelpers.Assets
             if (assetType == AssetType.Unknown)
             {
                 StackTrace trace = new StackTrace(true);
-                MainConsole.Instance.ErrorFormat(
-                    "[ASSETBASE]: Creating asset '{0}' ({1}) with an unknown asset type\n{2}",
-                    name, assetID, trace);
+                MainConsole.Instance.ErrorFormat("[Asset Base]: Creating asset '{0}' ({1}) with an unknown asset type\n{2}", name, assetID, trace);
             }
 
             IDString = assetID;
@@ -182,27 +180,26 @@ namespace Universe.Framework.Services.ClassHelpers.Assets
         {
             switch (TypeAsset)
             {
-            case AssetType.Animation:           return "Animation";
-            case AssetType.Bodypart:            return "Bodypart";
-            case AssetType.CallingCard:         return "CallingCard";
-            case AssetType.Clothing:            return "Clothing";
-            case AssetType.Gesture:             return "Gesture";
-            case AssetType.Landmark:            return "Landmark";
-            case AssetType.LSLText:             return "Script";
-            case AssetType.Mesh:                return "Mesh";
-            case AssetType.Notecard:            return "Notecard";
-            case AssetType.Object:              return "Object";
-            case AssetType.Sound:               return "Sound";
-            case AssetType.Texture:             return "Texture";
-            case AssetType.TextureTGA:          return "TGA Texture";
-            case AssetType.Simstate:            return "Simstate info";
-            case AssetType.ImageJPEG:           return "JPG image";
-            case AssetType.ImageTGA:            return "TGA image";
-            default:
-                return "Unknown asset";
+                case AssetType.Animation: return "Animation";
+                case AssetType.Bodypart: return "Bodypart";
+                case AssetType.CallingCard: return "CallingCard";
+                case AssetType.Clothing: return "Clothing";
+                case AssetType.Gesture: return "Gesture";
+                case AssetType.Landmark: return "Landmark";
+                case AssetType.LSLText: return "Script";
+                case AssetType.Mesh: return "Mesh";
+                case AssetType.Notecard: return "Notecard";
+                case AssetType.Object: return "Object";
+                case AssetType.Sound: return "Sound";
+                case AssetType.Texture: return "Texture";
+                case AssetType.TextureTGA: return "TGA Texture";
+                case AssetType.Simstate: return "Simstate info";
+                case AssetType.ImageJPEG: return "JPG image";
+                case AssetType.ImageTGA: return "TGA image";
+                default:
+                    return "Unknown asset";
             }
         }
-
 
         #endregion
 
@@ -215,8 +212,8 @@ namespace Universe.Framework.Services.ClassHelpers.Assets
 
         public string TypeString
         {
-            get { return SLUtil.SLAssetTypeToContentType((int) TypeAsset); }
-            set { TypeAsset = (AssetType) SLUtil.ContentTypeToSLAssetType(value); }
+            get { return SLUtil.SLAssetTypeToContentType((int)TypeAsset); }
+            set { TypeAsset = (AssetType)SLUtil.ContentTypeToSLAssetType(value); }
         }
 
         [ProtoMember(1)]
@@ -285,8 +282,8 @@ namespace Universe.Framework.Services.ClassHelpers.Assets
         [ProtoMember(7)]
         public int Type
         {
-            get { return (int) TypeAsset; }
-            set { TypeAsset = (AssetType) value; }
+            get { return (int)TypeAsset; }
+            set { TypeAsset = (AssetType)value; }
         }
 
         [ProtoMember(8)]
@@ -397,10 +394,10 @@ namespace Universe.Framework.Services.ClassHelpers.Assets
         {
             if (!(osd is OSDMap))
                 return null;
-            OSDMap assetMap = (OSDMap) osd;
+            OSDMap assetMap = (OSDMap)osd;
 
             if (assetMap.ContainsKey("AssetFlags"))
-                Flags = (AssetFlags) assetMap["AssetFlags"].AsInteger();
+                Flags = (AssetFlags)assetMap["AssetFlags"].AsInteger();
 
             if (assetMap.ContainsKey("AssetID"))
                 ID = assetMap["AssetID"].AsUUID();
@@ -424,7 +421,7 @@ namespace Universe.Framework.Services.ClassHelpers.Assets
                 Name = assetMap["Name"].AsString();
 
             if (assetMap.ContainsKey("TypeAsset"))
-                TypeAsset = (AssetType) assetMap["TypeAsset"].AsInteger();
+                TypeAsset = (AssetType)assetMap["TypeAsset"].AsInteger();
 
             if (assetMap.ContainsKey("Description"))
                 Description = assetMap["Description"].AsString();
@@ -459,7 +456,7 @@ namespace Universe.Framework.Services.ClassHelpers.Assets
             //Decompress the info back to json format
             string jsonString = Util.Decompress(compressedString);
             //Build the OSDMap 
-            OSDMap assetMap = (OSDMap) OSDParser.DeserializeJson(jsonString);
+            OSDMap assetMap = (OSDMap)OSDParser.DeserializeJson(jsonString);
             //Now unpack the contents
             Unpack(assetMap);
         }

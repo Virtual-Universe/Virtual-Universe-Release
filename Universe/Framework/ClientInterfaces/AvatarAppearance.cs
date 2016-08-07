@@ -127,10 +127,9 @@ namespace Universe.Framework.ClientInterfaces
             Unpack(map);
         }
 
-        public AvatarAppearance(UUID avatarID, AvatarWearable[] wearables, Primitive.TextureEntry textureEntry,
-                                byte[] visualParams)
+        public AvatarAppearance(UUID avatarID, AvatarWearable[] wearables, Primitive.TextureEntry textureEntry, byte[] visualParams)
         {
-            //            MainConsole.Instance.WarnFormat("[AVATAR APPEARANCE] create initialized appearance for {0}",avatarID);
+            //MainConsole.Instance.WarnFormat("[AVATAR APPEARANCE] create initialized appearance for {0}",avatarID);
 
             m_serial = 1;
             m_owner = avatarID;
@@ -162,7 +161,7 @@ namespace Universe.Framework.ClientInterfaces
 
         public AvatarAppearance(AvatarAppearance appearance, bool copyWearables)
         {
-            //            MainConsole.Instance.WarnFormat("[AVATAR APPEARANCE] create from an existing appearance");
+            //MainConsole.Instance.WarnFormat("[AVATAR APPEARANCE] create from an existing appearance");
 
             if (appearance == null)
             {
@@ -185,6 +184,7 @@ namespace Universe.Framework.ClientInterfaces
             m_wearables = new AvatarWearable[AvatarWearable.MAX_WEARABLES];
             for (int i = 0; i < AvatarWearable.MAX_WEARABLES; i++)
                 m_wearables[i] = new AvatarWearable();
+
             if (copyWearables && (appearance.Wearables != null))
             {
                 for (int i = 0; i < AvatarWearable.MAX_WEARABLES; i++)
@@ -199,6 +199,7 @@ namespace Universe.Framework.ClientInterfaces
             }
 
             m_visualparams = null;
+
             if (appearance.VisualParams != null)
                 m_visualparams = (byte [])appearance.VisualParams.Clone ();
             else
@@ -220,6 +221,7 @@ namespace Universe.Framework.ClientInterfaces
                 {
                     UUID itemID = m_wearables[i][j].ItemID;
                     UUID assetID = app.Wearables[i].GetAsset(itemID);
+
                     if (assetID != UUID.Zero)
                         m_wearables[i].Add(itemID, assetID);
                 }
@@ -326,8 +328,8 @@ namespace Universe.Framework.ClientInterfaces
                         if (!ChangedTextures.Contains(oldface.TextureID))
                             ChangedTextures.Add(oldface.TextureID);
 
-                    //                if (newface != null)
-                    //                    MainConsole.Instance.WarnFormat("[AVATAR APPEARANCE]: index {0}, new texture id {1}",i,newface.TextureID);
+                    //if (newface != null)
+                    //    MainConsole.Instance.WarnFormat("[AVATAR APPEARANCE]: index {0}, new texture id {1}",i,newface.TextureID);
                 }
             }
 
@@ -482,6 +484,7 @@ namespace Universe.Framework.ClientInterfaces
                     if (m_attachments[attach.AttachPoint].Contains(attach))
                         result = false;
                 }
+
                 m_attachments[attach.AttachPoint] = new List<AvatarAttachment> {attach};
                 return result;
             }
@@ -506,6 +509,7 @@ namespace Universe.Framework.ClientInterfaces
                     if (m_attachments.ContainsKey(attachpoint))
                         m_attachments.Remove(attachpoint);
                 }
+
                 return true;
             }
 
@@ -546,6 +550,7 @@ namespace Universe.Framework.ClientInterfaces
                     }
                 }
             }
+
             return true;
         }
 
@@ -598,6 +603,7 @@ namespace Universe.Framework.ClientInterfaces
                         return true;
                     }
                 }
+
                 return false;
             }
         }
@@ -612,6 +618,7 @@ namespace Universe.Framework.ClientInterfaces
         {
             if (wearables.Length == 0)
                 return;
+
             m_wearableCache.Clear();
             foreach (var w in wearables)
                 m_wearableCache.Add(w.TextureIndex.ToString(), w.CacheID);
@@ -657,12 +664,16 @@ namespace Universe.Framework.ClientInterfaces
 
             // Attachments
             int attachCount;
+
             lock (_attachmentslock) {
                 attachCount = m_attachments.Count;
             }
+
             OSDArray attachs = new OSDArray (attachCount);
+
             foreach (AvatarAttachment attach in GetAttachments ())
                 attachs.Add (attach.Pack ());
+
             data ["attachments"] = attachs;
 
             data["wearableCache"] = m_wearableCache.ToOSDMap();
@@ -683,6 +694,7 @@ namespace Universe.Framework.ClientInterfaces
         {
             if ((data != null) && (data["serial"] != null))
                 m_serial = data["serial"].AsInteger();
+
             if ((data != null) && (data["height"] != null))
                 m_avatarHeight = (float) data["height"].AsReal();
 
@@ -712,8 +724,10 @@ namespace Universe.Framework.ClientInterfaces
                     for (int i = 0; i < TEXTURE_COUNT && i < textures.Count; i++)
                     {
                         UUID textureID = AppearanceManager.DEFAULT_AVATAR_TEXTURE;
+
                         if (textures[i] != null)
                             textureID = textures[i].AsUUID();
+
                         if (textureID != AppearanceManager.DEFAULT_AVATAR_TEXTURE)
                             m_texture.CreateFace((uint) i).TextureID = new UUID(textureID);
                     }
@@ -743,8 +757,10 @@ namespace Universe.Framework.ClientInterfaces
                     foreach (OSD t in attachs)
                         AppendAttachment(new AvatarAttachment((OSDMap) t));
                 }
+
                 if (data != null && data["wearableCache"] != null && data["wearableCache"] is OSDMap)
                     m_wearableCache = ((OSDMap)data["wearableCache"]).ConvertMap<UUID>((o) => o);
+
                 SetHeight();
             }
             catch (Exception e)
@@ -1750,6 +1766,7 @@ namespace Universe.Framework.ClientInterfaces
             BREAST_PHYSICS_LEFTRIGHT_GAIN = 249,
             BREAST_PHYSICS_LEFTRIGHT_DAMPING = 250
         }
+
         #endregion
     }
 }

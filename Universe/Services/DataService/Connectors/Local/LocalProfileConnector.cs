@@ -48,7 +48,6 @@ namespace Universe.Services.DataService
         string m_userPicksTable = "user_picks";
         string m_userClassifiedsTable = "user_classifieds";
 
-
         #region IProfileConnector Members
 
         public void Initialize(IGenericData GenericData, IConfigSource source, IRegistryCore simBase,

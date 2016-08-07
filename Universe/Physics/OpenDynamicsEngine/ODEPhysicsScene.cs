@@ -1535,7 +1535,7 @@ namespace Universe.Physics.OpenDynamicsEngine
                                             	if (RegionTerrain != IntPtr.Zero)
                                                 {
 					                        		IntPtr sGeomIsIn = d.GeomGetSpace(RegionTerrain);       // 20140729 -greythane- this seems to correct the spaceremove crash
-                        							if (sGeomIsIn != IntPtr.Zero)                           // maybe 'space' has not yet been initialised??
+                        							if (sGeomIsIn != IntPtr.Zero)                           // maybe 'space' has not yet been initialized??
                         							{
                             							if (d.GeomIsSpace(sGeomIsIn))
                                 							d.SpaceRemove(sGeomIsIn, RegionTerrain);

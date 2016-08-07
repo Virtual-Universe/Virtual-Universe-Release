@@ -66,15 +66,12 @@ namespace Universe.Framework.Utilities
             FireFunction = sName;
             FireParams = sParams;
             RunOnce = runOnce;
-            //RunEvery = runEvery;
-            //RunEveryType = runEveryType;
             StartTime = DateTime.Now;                   // was UtcNow; but this is all relative to the server time not UTC
             TimeToRun = runSchedule;                    // dateTime to run this schedule
             CreateTime = DateTime.Now;                  // was UtcNow;
             ScheduleFor = agentID;
             Enabled = true;
         }
-
 
         void SimpleInitialize()
         {
@@ -91,31 +88,18 @@ namespace Universe.Framework.Utilities
         }
 
         public string id { get; set; }
-
         public string HistoryLastID { get; set; }
-
         public DateTime TimeToRun { get; set; }
-
         public bool Enabled { get; set; }
-
         public bool HistoryKeep { get; set; }
-
         public string FireParams { get; set; }
-
         public string FireFunction { get; set; }
-
         public bool HistoryReceipt { get; set; }
-
         public bool RunOnce { get; set; }
-
         public int RunEvery { get; set; }
-
         public DateTime CreateTime { get; set; }
-
         public RepeatType RunEveryType { get; set; }
-
         public DateTime StartTime { get; set; }
-
         public UUID ScheduleFor { get; set; }
 
         public override OSDMap ToOSD()
@@ -174,17 +158,11 @@ namespace Universe.Framework.Utilities
         }
 
         protected bool isComplete { get; set; }
-
         protected string ErrorLog { get; set; }
-
         protected string Reciept { get; set; }
-
         protected int CompleteTime { get; set; }
-
         protected int RanTime { get; set; }
-
         protected int SchedulerItemID { get; set; }
-
         protected int id { get; set; }
     }
 }

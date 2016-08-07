@@ -99,7 +99,7 @@ namespace Universe.Framework.SceneInfo
         Vector3 _userLocation;
         Vector3 _userLookAt;
         AuctionInfo m_AuctionInfo = new AuctionInfo ();
-        // 25062016 Added for LibOMV update 0.9.4.5
+        // 25062016 Added for LibOMV update 1.0.2.1.1
         bool _seeAVs;
         bool _anyAVSounds;
         bool _groupAVSounds;
@@ -649,7 +649,7 @@ namespace Universe.Framework.SceneInfo
                 _MediaLoopSet = _MediaLoopSet,
                 _obscureMusic = _obscureMusic,
                 _obscureMedia = _obscureMedia,
-                // 25062016 LibOMV update
+                // 25062016 LibOMV update 1.0.2.1.1
                 _seeAVs = _seeAVs,
                 _anyAVSounds = _anyAVSounds,
                 _groupAVSounds = _groupAVSounds,
@@ -659,7 +659,6 @@ namespace Universe.Framework.SceneInfo
                 _Maturity = _Maturity,
                 _private = _private
             };
-
 
             landData._parcelAccessList.Clear ();
 
@@ -705,7 +704,7 @@ namespace Universe.Framework.SceneInfo
             map ["MediaType"] = OSD.FromString (MediaType);
             map ["ObscureMedia"] = OSD.FromBoolean (ObscureMedia);
             map ["ObscureMusic"] = OSD.FromBoolean (ObscureMusic);
-            // 25062016 LibOMV update
+            // 25062016 LibOMV update 1.0.2.1.1
             map ["SeeAVs"] = OSD.FromBoolean(SeeAVS);
             map ["AnyAVSounds"] = OSD.FromBoolean(AnyAVSounds);
             map ["GroupAVSounds"] = OSD.FromBoolean(GroupAVSounds);
@@ -729,13 +728,9 @@ namespace Universe.Framework.SceneInfo
             map ["RegionHandle"] = OSD.FromULong (RegionHandle);
             map ["Private"] = OSD.FromBoolean (Private);
             map ["AuctionInfo"] = AuctionInfo.ToOSD ();
-
-            // OSD.FromVector3 is broken for non en_US locales
-            // map["UserLocation"] = OSD.FromVector3(UserLocation);
             map["ULocX"] = OSD.FromReal(UserLocation.X).ToString();
             map["ULocY"] = OSD.FromReal(UserLocation.Y).ToString();
             map["ULocZ"] = OSD.FromReal(UserLocation.Z).ToString ();
-            // map["UserLookAt"] = OSD.FromVector3(UserLookAt);
             map["ULookX"] = OSD.FromReal(UserLookAt.X).ToString();
             map["ULookY"] = OSD.FromReal(UserLookAt.Y).ToString ();
             map["ULookZ"] = OSD.FromReal(UserLookAt.Z).ToString ();
@@ -771,7 +766,7 @@ namespace Universe.Framework.SceneInfo
             MediaType = map["MediaType"].AsString();
             ObscureMedia = map["ObscureMedia"].AsBoolean();
             ObscureMusic = map["ObscureMusic"].AsBoolean();
-            // 25062016 LibOMV update
+            // 25062016 LibOMV update 1.0.2.1.1
             SeeAVS = map["SeeAVs"].AsBoolean();
             AnyAVSounds = map["AnyAVSounds"].AsBoolean();
             GroupAVSounds = map["GroupAVSounds"].AsBoolean();
@@ -799,7 +794,6 @@ namespace Universe.Framework.SceneInfo
 
             if ((IsGroupOwned) && (GroupID != OwnerID)) OwnerID = GroupID;
 
-            //UserLocation = map["UserLocation"].AsVector3();
             if (map.ContainsKey("UserLocation")) {
                 UserLocation = map ["UserLocation"].AsVector3 ();
             } else {
@@ -809,7 +803,6 @@ namespace Universe.Framework.SceneInfo
                 UserLocation = uloc;
             }
 
-            //UserLookAt = map["UserLookAt"].AsVector3();
             if (map.ContainsKey("UserLookAt")) {
                 UserLookAt = map ["UserLookAt"].AsVector3 ();
             } else {
@@ -818,7 +811,6 @@ namespace Universe.Framework.SceneInfo
                 ulook.Z = (float)Convert.ToDecimal (map ["ULookZ"].AsString (), Culture.NumberFormatInfo);
                 UserLookAt = ulook;
             }
-
         }
 
         #endregion

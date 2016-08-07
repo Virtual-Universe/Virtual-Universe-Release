@@ -40,8 +40,7 @@ namespace Universe.Framework.Serialization
     {
         ISceneEntity FromOriginalXmlFormat (string serialization, IRegistryCore scene);
 
-        ISceneEntity FromOriginalXmlFormat (UUID fromUserInventoryItemID, string xmlData,
-                                           IRegistryCore scene);
+        ISceneEntity FromOriginalXmlFormat (UUID fromUserInventoryItemID, string xmlData, IRegistryCore scene);
 
         string ToOriginalXmlFormat (ISceneEntity sceneObject);
         ISceneEntity FromXml2Format (string xmlData, IScene scene);

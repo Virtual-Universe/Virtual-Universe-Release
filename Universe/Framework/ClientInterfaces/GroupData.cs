@@ -456,5 +456,4 @@ namespace Universe.Framework.ClientInterfaces
             BanDate = values["BanDate"];
         }
     }
-
 }

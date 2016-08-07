@@ -48,7 +48,6 @@ namespace Universe.Framework.Servers.HttpServer.Implementation
         public virtual string ContentType
         {
             get { return _httpResponse.ContentType; }
-
             set { _httpResponse.ContentType = value; }
         }
 
@@ -58,14 +57,12 @@ namespace Universe.Framework.Servers.HttpServer.Implementation
         public Encoding ContentEncoding
         {
             get { return _httpResponse.ContentEncoding; }
-
             set { _httpResponse.ContentEncoding = value; }
         }
 
         public bool KeepAlive
         {
             get { return _httpResponse.KeepAlive; }
-
             set { _httpResponse.KeepAlive = value; }
         }
 
@@ -74,7 +71,6 @@ namespace Universe.Framework.Servers.HttpServer.Implementation
         /// </summary>
         public string RedirectLocation
         {
-            // get { return _redirectLocation; }
             set { _httpResponse.Redirect(value); }
         }
 
@@ -84,7 +80,6 @@ namespace Universe.Framework.Servers.HttpServer.Implementation
         public bool SendChunked
         {
             get { return _httpResponse.SendChunked; }
-
             set { _httpResponse.SendChunked = value; }
         }
 
@@ -94,7 +89,6 @@ namespace Universe.Framework.Servers.HttpServer.Implementation
         public virtual int StatusCode
         {
             get { return _httpResponse.StatusCode; }
-
             set { _httpResponse.StatusCode = value; }
         }
 
@@ -105,7 +99,6 @@ namespace Universe.Framework.Servers.HttpServer.Implementation
         public string StatusDescription
         {
             get { return _httpResponse.StatusDescription; }
-
             set { _httpResponse.StatusDescription = value; }
         }
 

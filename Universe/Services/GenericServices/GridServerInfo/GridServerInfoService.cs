@@ -57,7 +57,6 @@ namespace Universe.Services.GenericServices
             m_defaultURICount = conf.GetInt("DefaultURICount", m_defaultURICount);
             Init(registry, GetType().Name);
 
-
             conf = config.Configs["Configuration"];
             if (conf == null)
                 return;
@@ -132,7 +131,6 @@ namespace Universe.Services.GenericServices
                 DoRemoteCallPost(true, "ServerURI", uri);
                 return;
             }
-
 
             MainConsole.Instance.InfoFormat("[GridServerInfoService]: Adding {0} uris", uri.Count);
 

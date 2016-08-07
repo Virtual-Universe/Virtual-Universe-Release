@@ -84,6 +84,7 @@ namespace Universe.Framework.ConsoleFramework
                 // QUESTION Instead return cmdText.Length; ?
                 return matchText.Length;
             }
+
             return 0;
         }
 
@@ -99,9 +100,11 @@ namespace Universe.Framework.ConsoleFramework
                     if (cmdParams [skipParams].ToLower ().Equals (m_cmdText [currentParam].ToLower ())) {
                         skipParams++;
                     }
+
                     currentParam++;
                 }
             }
+
             string [] sendCmdParams = cmdParams;
             if (skipParams > 0) {
                 sendCmdParams = new string [cmdParams.Length - skipParams];
@@ -109,6 +112,7 @@ namespace Universe.Framework.ConsoleFramework
                     sendCmdParams [i] = cmdParams [skipParams++];
                 }
             }
+
             m_commandDelegate (sendCmdParams);
         }
 
@@ -118,8 +122,7 @@ namespace Universe.Framework.ConsoleFramework
         public bool IsHelpfull (string cmdWithParams)
         {
             cmdWithParams = cmdWithParams.ToLower ();
-            return cmdWithParams.Contains (string.Join (" ", m_cmdText).ToLower ()) ||
-                   m_helpText.ToLower ().Contains (cmdWithParams);
+            return cmdWithParams.Contains (string.Join (" ", m_cmdText).ToLower ()) || m_helpText.ToLower ().Contains (cmdWithParams);
         }
     }
 }

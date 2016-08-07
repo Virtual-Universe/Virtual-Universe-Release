@@ -154,7 +154,7 @@ namespace Universe.Physics.BulletSPlugin
         }
 
         [ScriptConstant]
-        public const int PHYS_CENTER_OF_MASS =     1 << 0;
+        public const int PHYS_CENTER_OF_MASS = 1 << 0;
 
         [ScriptInvocation]
         public string physGetEngineType(UUID hostID, UUID scriptID)
@@ -172,35 +172,35 @@ namespace Universe.Physics.BulletSPlugin
         // Code for specifying params.
         // The choice if 14700 is arbitrary and only serves to catch parameter code misuse.
         [ScriptConstant]
-        public const int PHYS_AXIS_LOCK_LINEAR     = 14700;
+        public const int PHYS_AXIS_LOCK_LINEAR = 14700;
         [ScriptConstant]
-        public const int PHYS_AXIS_LOCK_LINEAR_X   = 14701;
+        public const int PHYS_AXIS_LOCK_LINEAR_X = 14701;
         [ScriptConstant]
-        public const int PHYS_AXIS_LIMIT_LINEAR_X  = 14702;
+        public const int PHYS_AXIS_LIMIT_LINEAR_X = 14702;
         [ScriptConstant]
-        public const int PHYS_AXIS_LOCK_LINEAR_Y   = 14703;
+        public const int PHYS_AXIS_LOCK_LINEAR_Y = 14703;
         [ScriptConstant]
-        public const int PHYS_AXIS_LIMIT_LINEAR_Y  = 14704;
+        public const int PHYS_AXIS_LIMIT_LINEAR_Y = 14704;
         [ScriptConstant]
-        public const int PHYS_AXIS_LOCK_LINEAR_Z   = 14705;
+        public const int PHYS_AXIS_LOCK_LINEAR_Z = 14705;
         [ScriptConstant]
-        public const int PHYS_AXIS_LIMIT_LINEAR_Z  = 14706;
+        public const int PHYS_AXIS_LIMIT_LINEAR_Z = 14706;
         [ScriptConstant]
-        public const int PHYS_AXIS_LOCK_ANGULAR    = 14707;
+        public const int PHYS_AXIS_LOCK_ANGULAR = 14707;
         [ScriptConstant]
-        public const int PHYS_AXIS_LOCK_ANGULAR_X  = 14708;
+        public const int PHYS_AXIS_LOCK_ANGULAR_X = 14708;
         [ScriptConstant]
         public const int PHYS_AXIS_LIMIT_ANGULAR_X = 14709;
         [ScriptConstant]
-        public const int PHYS_AXIS_LOCK_ANGULAR_Y  = 14710;
+        public const int PHYS_AXIS_LOCK_ANGULAR_Y = 14710;
         [ScriptConstant]
         public const int PHYS_AXIS_LIMIT_ANGULAR_Y = 14711;
         [ScriptConstant]
-        public const int PHYS_AXIS_LOCK_ANGULAR_Z  = 14712;
+        public const int PHYS_AXIS_LOCK_ANGULAR_Z = 14712;
         [ScriptConstant]
         public const int PHYS_AXIS_LIMIT_ANGULAR_Z = 14713;
         [ScriptConstant]
-        public const int PHYS_AXIS_UNLOCK_LINEAR   = 14714;
+        public const int PHYS_AXIS_UNLOCK_LINEAR = 14714;
         [ScriptConstant]
         public const int PHYS_AXIS_UNLOCK_LINEAR_X = 14715;
         [ScriptConstant]
@@ -208,7 +208,7 @@ namespace Universe.Physics.BulletSPlugin
         [ScriptConstant]
         public const int PHYS_AXIS_UNLOCK_LINEAR_Z = 14717;
         [ScriptConstant]
-        public const int PHYS_AXIS_UNLOCK_ANGULAR  = 14718;
+        public const int PHYS_AXIS_UNLOCK_ANGULAR = 14718;
         [ScriptConstant]
         public const int PHYS_AXIS_UNLOCK_ANGULAR_X = 14719;
         [ScriptConstant]
@@ -216,239 +216,238 @@ namespace Universe.Physics.BulletSPlugin
         [ScriptConstant]
         public const int PHYS_AXIS_UNLOCK_ANGULAR_Z = 14721;
         [ScriptConstant]
-        public const int PHYS_AXIS_UNLOCK           = 14722;
-        
+        public const int PHYS_AXIS_UNLOCK = 14722;
         /*
-        // physAxisLockLimits()
-        [ScriptInvocation]
-        public int physAxisLock(UUID hostID, UUID scriptID, object[] parms)
-        {
-            int ret = -1;
-            if (!Enabled) return ret;
-
-            PhysicsActor rootPhysActor;
-            if (GetRootPhysActor(hostID, out rootPhysActor))
-            {
-                object[] parms2 = AddToBeginningOfArray(rootPhysActor, null, parms);
-                ret = MakeIntError(rootPhysActor.Extension(PhysFunctAxisLockLimits, parms2));
-            }
-
-            return ret;
-        }
-
-        [ScriptConstant]
-        public const int PHYS_LINKSET_TYPE_CONSTRAINT  = 0;
-        [ScriptConstant]
-        public const int PHYS_LINKSET_TYPE_COMPOUND    = 1;
-        [ScriptConstant]
-        public const int PHYS_LINKSET_TYPE_MANUAL      = 2;
-        */
-        /*
-        [ScriptInvocation]
-        public int physSetLinksetType(UUID hostID, UUID scriptID, int linksetType)
-        {
-            int ret = -1;
-            if (!Enabled) return ret;
-
-            // The part that is requesting the change.
-            SceneObjectPart requestingPart = BaseScene.GetSceneObjectPart(hostID);
-
-            if (requestingPart != null)
-            {
-                // The change is always made to the root of a linkset.
-                SceneObjectGroup containingGroup = requestingPart.ParentGroup;
-                SceneObjectPart rootPart = containingGroup.RootPart;
-
-                if (rootPart != null)
+                // physAxisLockLimits()
+                [ScriptInvocation]
+                public int physAxisLock(UUID hostID, UUID scriptID, object[] parms)
                 {
-                    PhysicsActor rootPhysActor = rootPart.PhysActor;
-                    if (rootPhysActor != null)
+                    int ret = -1;
+                    if (!Enabled) return ret;
+
+                    PhysicsActor rootPhysActor;
+                    if (GetRootPhysActor(hostID, out rootPhysActor))
                     {
-                        if (rootPhysActor.IsPhysical)
+                        object[] parms2 = AddToBeginningOfArray(rootPhysActor, null, parms);
+                        ret = MakeIntError(rootPhysActor.Extension(PhysFunctAxisLockLimits, parms2));
+                    }
+
+                    return ret;
+                }
+
+                [ScriptConstant]
+                public const int PHYS_LINKSET_TYPE_CONSTRAINT  = 0;
+                [ScriptConstant]
+                public const int PHYS_LINKSET_TYPE_COMPOUND    = 1;
+                [ScriptConstant]
+                public const int PHYS_LINKSET_TYPE_MANUAL      = 2;
+         */
+        /*
+                [ScriptInvocation]
+                public int physSetLinksetType(UUID hostID, UUID scriptID, int linksetType)
+                {
+                    int ret = -1;
+                    if (!Enabled) return ret;
+
+                    // The part that is requesting the change.
+                    SceneObjectPart requestingPart = BaseScene.GetSceneObjectPart(hostID);
+
+                    if (requestingPart != null)
+                    {
+                        // The change is always made to the root of a linkset.
+                        SceneObjectGroup containingGroup = requestingPart.ParentGroup;
+                        SceneObjectPart rootPart = containingGroup.RootPart;
+
+                        if (rootPart != null)
                         {
-                            // Change a physical linkset by making non-physical, waiting for one heartbeat so all
-                            //    the prim and linkset state is updated, changing the type and making the
-                            //    linkset physical again.
-                            containingGroup.ScriptSetPhysicsStatus(false);
-                            Thread.Sleep(150);  // longer than one heartbeat tick
+                            PhysicsActor rootPhysActor = rootPart.PhysActor;
+                            if (rootPhysActor != null)
+                            {
+                                if (rootPhysActor.IsPhysical)
+                                {
+                                    // Change a physical linkset by making non-physical, waiting for one heartbeat so all
+                                    //    the prim and linkset state is updated, changing the type and making the
+                                    //    linkset physical again.
+                                    containingGroup.ScriptSetPhysicsStatus(false);
+                                    Thread.Sleep(150);  // longer than one heartbeat tick
 
-                            // A kludge for the moment.
-                            // Since compound linksets move the children but don't generate position updates to the
-                            //     simulator, it is possible for compound linkset children to have out-of-sync simulator
-                            //     and physical positions. The following causes the simulator to push the real child positions
-                            //     down into the physics engine to get everything synced.
-                            containingGroup.UpdateGroupPosition(containingGroup.AbsolutePosition);
-                            containingGroup.UpdateGroupRotationR(containingGroup.GroupRotation);
+                                    // A kludge for the moment.
+                                    // Since compound linksets move the children but don't generate position updates to the
+                                    //     simulator, it is possible for compound linkset children to have out-of-sync simulator
+                                    //     and physical positions. The following causes the simulator to push the real child positions
+                                    //     down into the physics engine to get everything synced.
+                                    containingGroup.UpdateGroupPosition(containingGroup.AbsolutePosition);
+                                    containingGroup.UpdateGroupRotationR(containingGroup.GroupRotation);
 
-                            object[] parms2 = { rootPhysActor, null, linksetType };
-                            ret = MakeIntError(rootPhysActor.Extension(PhysFunctSetLinksetType, parms2));
-                            Thread.Sleep(150);  // longer than one heartbeat tick
+                                    object[] parms2 = { rootPhysActor, null, linksetType };
+                                    ret = MakeIntError(rootPhysActor.Extension(PhysFunctSetLinksetType, parms2));
+                                    Thread.Sleep(150);  // longer than one heartbeat tick
 
-                            containingGroup.ScriptSetPhysicsStatus(true);
+                                    containingGroup.ScriptSetPhysicsStatus(true);
+                                }
+                                else
+                                {
+                                    // Non-physical linksets don't have a physical instantiation so there is no state to
+                                    //    worry about being updated.
+                                    object[] parms2 = { rootPhysActor, null, linksetType };
+                                    ret = MakeIntError(rootPhysActor.Extension(PhysFunctSetLinksetType, parms2));
+                                }
+                            }
+                            else
+                            {
+                                MainConsole.Instance.WarnFormat("{0} physSetLinksetType: root part does not have a physics actor. rootName={1}, hostID={2}",
+                                                    LogHeader, rootPart.Name, hostID);
+                            }
                         }
                         else
                         {
-                            // Non-physical linksets don't have a physical instantiation so there is no state to
-                            //    worry about being updated.
-                            object[] parms2 = { rootPhysActor, null, linksetType };
-                            ret = MakeIntError(rootPhysActor.Extension(PhysFunctSetLinksetType, parms2));
+                            MainConsole.Instance.WarnFormat("{0} physSetLinksetType: root part does not exist. RequestingPartName={1}, hostID={2}",
+                                                LogHeader, requestingPart.Name, hostID);
                         }
                     }
                     else
                     {
-                        MainConsole.Instance.WarnFormat("{0} physSetLinksetType: root part does not have a physics actor. rootName={1}, hostID={2}",
-                                            LogHeader, rootPart.Name, hostID);
+                        MainConsole.Instance.WarnFormat("{0} physSetLinsetType: cannot find script object in scene. hostID={1}", LogHeader, hostID);
                     }
+                    return ret;
                 }
-                else
+
+                [ScriptInvocation]
+                public int physGetLinksetType(UUID hostID, UUID scriptID)
                 {
-                    MainConsole.Instance.WarnFormat("{0} physSetLinksetType: root part does not exist. RequestingPartName={1}, hostID={2}",
-                                        LogHeader, requestingPart.Name, hostID);
+                    int ret = -1;
+                    if (!Enabled) return ret;
+
+                    PhysicsActor rootPhysActor;
+                    if (GetRootPhysActor(hostID, out rootPhysActor))
+                    {
+                        object[] parms2 = { rootPhysActor, null };
+                        ret = MakeIntError(rootPhysActor.Extension(PhysFunctGetLinksetType, parms2));
+                    }
+                    else
+                    {
+                        MainConsole.Instance.WarnFormat("{0} physGetLinsetType: cannot find script object in scene. hostID={1}", LogHeader, hostID);
+                    }
+                    return ret;
                 }
-            }
-            else
-            {
-                MainConsole.Instance.WarnFormat("{0} physSetLinsetType: cannot find script object in scene. hostID={1}", LogHeader, hostID);
-            }
-            return ret;
-        }
-
-        [ScriptInvocation]
-        public int physGetLinksetType(UUID hostID, UUID scriptID)
-        {
-            int ret = -1;
-            if (!Enabled) return ret;
-
-            PhysicsActor rootPhysActor;
-            if (GetRootPhysActor(hostID, out rootPhysActor))
-            {
-                object[] parms2 = { rootPhysActor, null };
-                ret = MakeIntError(rootPhysActor.Extension(PhysFunctGetLinksetType, parms2));
-            }
-            else
-            {
-                MainConsole.Instance.WarnFormat("{0} physGetLinsetType: cannot find script object in scene. hostID={1}", LogHeader, hostID);
-            }
-            return ret;
-        }
         */
         [ScriptConstant]
-        public const int PHYS_LINK_TYPE_FIXED  = 1234;
+        public const int PHYS_LINK_TYPE_FIXED = 1234;
         [ScriptConstant]
-        public const int PHYS_LINK_TYPE_HINGE  = 4;
+        public const int PHYS_LINK_TYPE_HINGE = 4;
         [ScriptConstant]
         public const int PHYS_LINK_TYPE_SPRING = 9;
         [ScriptConstant]
-        public const int PHYS_LINK_TYPE_6DOF   = 6;
+        public const int PHYS_LINK_TYPE_6DOF = 6;
         [ScriptConstant]
         public const int PHYS_LINK_TYPE_SLIDER = 7;
         /*
-        // physChangeLinkType(integer linkNum, integer typeCode)
-        [ScriptInvocation]
-        public int physChangeLinkType(UUID hostID, UUID scriptID, int linkNum, int typeCode)
-        {
-            int ret = -1;
-            if (!Enabled) return ret;
+                // physChangeLinkType(integer linkNum, integer typeCode)
+                [ScriptInvocation]
+                public int physChangeLinkType(UUID hostID, UUID scriptID, int linkNum, int typeCode)
+                {
+                    int ret = -1;
+                    if (!Enabled) return ret;
 
-            PhysicsActor rootPhysActor;
-            PhysicsActor childPhysActor;
+                    PhysicsActor rootPhysActor;
+                    PhysicsActor childPhysActor;
 
-            if (GetRootAndChildPhysActors(hostID, linkNum, out rootPhysActor, out childPhysActor))
-            {
-                object[] parms2 = { rootPhysActor, childPhysActor, typeCode };
-                ret = MakeIntError(rootPhysActor.Extension(PhysFunctChangeLinkType, parms2));
-            }
+                    if (GetRootAndChildPhysActors(hostID, linkNum, out rootPhysActor, out childPhysActor))
+                    {
+                        object[] parms2 = { rootPhysActor, childPhysActor, typeCode };
+                        ret = MakeIntError(rootPhysActor.Extension(PhysFunctChangeLinkType, parms2));
+                    }
 
-            return ret;
-        }
+                    return ret;
+                }
 
-        // physGetLinkType(integer linkNum)
-        [ScriptInvocation]
-        public int physGetLinkType(UUID hostID, UUID scriptID, int linkNum)
-        {
-            int ret = -1;
-            if (!Enabled) return ret;
+                // physGetLinkType(integer linkNum)
+                [ScriptInvocation]
+                public int physGetLinkType(UUID hostID, UUID scriptID, int linkNum)
+                {
+                    int ret = -1;
+                    if (!Enabled) return ret;
 
-            PhysicsActor rootPhysActor;
-            PhysicsActor childPhysActor;
+                    PhysicsActor rootPhysActor;
+                    PhysicsActor childPhysActor;
 
-            if (GetRootAndChildPhysActors(hostID, linkNum, out rootPhysActor, out childPhysActor))
-            {
-                object[] parms2 = { rootPhysActor, childPhysActor };
-                ret = MakeIntError(rootPhysActor.Extension(PhysFunctGetLinkType, parms2));
-            }
+                    if (GetRootAndChildPhysActors(hostID, linkNum, out rootPhysActor, out childPhysActor))
+                    {
+                        object[] parms2 = { rootPhysActor, childPhysActor };
+                        ret = MakeIntError(rootPhysActor.Extension(PhysFunctGetLinkType, parms2));
+                    }
 
-            return ret;
-        }
+                    return ret;
+                }
 
-        // physChangeLinkFixed(integer linkNum)
-        // Change the link between the root and the linkNum into a fixed, static physical connection.
-        [ScriptInvocation]
-        public int physChangeLinkFixed(UUID hostID, UUID scriptID, int linkNum)
-        {
-            int ret = -1;
-            if (!Enabled) return ret;
+                // physChangeLinkFixed(integer linkNum)
+                // Change the link between the root and the linkNum into a fixed, static physical connection.
+                [ScriptInvocation]
+                public int physChangeLinkFixed(UUID hostID, UUID scriptID, int linkNum)
+                {
+                    int ret = -1;
+                    if (!Enabled) return ret;
 
-            PhysicsActor rootPhysActor;
-            PhysicsActor childPhysActor;
+                    PhysicsActor rootPhysActor;
+                    PhysicsActor childPhysActor;
 
-            if (GetRootAndChildPhysActors(hostID, linkNum, out rootPhysActor, out childPhysActor))
-            {
-                object[] parms2 = { rootPhysActor, childPhysActor , PHYS_LINK_TYPE_FIXED };
-                ret = MakeIntError(rootPhysActor.Extension(PhysFunctChangeLinkType, parms2));
-            }
+                    if (GetRootAndChildPhysActors(hostID, linkNum, out rootPhysActor, out childPhysActor))
+                    {
+                        object[] parms2 = { rootPhysActor, childPhysActor , PHYS_LINK_TYPE_FIXED };
+                        ret = MakeIntError(rootPhysActor.Extension(PhysFunctChangeLinkType, parms2));
+                    }
 
-            return ret;
-        }
+                    return ret;
+                }
         */
         // Code for specifying params.
         // The choice if 14400 is arbitrary and only serves to catch parameter code misuse.
-        public const int PHYS_PARAM_MIN                    = 14401;
+        public const int PHYS_PARAM_MIN = 14401;
 
         [ScriptConstant]
-        public const int PHYS_PARAM_FRAMEINA_LOC           = 14401;
+        public const int PHYS_PARAM_FRAMEINA_LOC = 14401;
         [ScriptConstant]
-        public const int PHYS_PARAM_FRAMEINA_ROT           = 14402;
+        public const int PHYS_PARAM_FRAMEINA_ROT = 14402;
         [ScriptConstant]
-        public const int PHYS_PARAM_FRAMEINB_LOC           = 14403;
+        public const int PHYS_PARAM_FRAMEINB_LOC = 14403;
         [ScriptConstant]
-        public const int PHYS_PARAM_FRAMEINB_ROT           = 14404;
+        public const int PHYS_PARAM_FRAMEINB_ROT = 14404;
         [ScriptConstant]
-        public const int PHYS_PARAM_LINEAR_LIMIT_LOW       = 14405;
+        public const int PHYS_PARAM_LINEAR_LIMIT_LOW = 14405;
         [ScriptConstant]
-        public const int PHYS_PARAM_LINEAR_LIMIT_HIGH      = 14406;
+        public const int PHYS_PARAM_LINEAR_LIMIT_HIGH = 14406;
         [ScriptConstant]
-        public const int PHYS_PARAM_ANGULAR_LIMIT_LOW      = 14407;
+        public const int PHYS_PARAM_ANGULAR_LIMIT_LOW = 14407;
         [ScriptConstant]
-        public const int PHYS_PARAM_ANGULAR_LIMIT_HIGH     = 14408;
+        public const int PHYS_PARAM_ANGULAR_LIMIT_HIGH = 14408;
         [ScriptConstant]
-        public const int PHYS_PARAM_USE_FRAME_OFFSET       = 14409;
+        public const int PHYS_PARAM_USE_FRAME_OFFSET = 14409;
         [ScriptConstant]
-        public const int PHYS_PARAM_ENABLE_TRANSMOTOR      = 14410;
+        public const int PHYS_PARAM_ENABLE_TRANSMOTOR = 14410;
         [ScriptConstant]
-        public const int PHYS_PARAM_TRANSMOTOR_MAXVEL      = 14411;
+        public const int PHYS_PARAM_TRANSMOTOR_MAXVEL = 14411;
         [ScriptConstant]
-        public const int PHYS_PARAM_TRANSMOTOR_MAXFORCE    = 14412;
+        public const int PHYS_PARAM_TRANSMOTOR_MAXFORCE = 14412;
         [ScriptConstant]
-        public const int PHYS_PARAM_CFM                    = 14413;
+        public const int PHYS_PARAM_CFM = 14413;
         [ScriptConstant]
-        public const int PHYS_PARAM_ERP                    = 14414;
+        public const int PHYS_PARAM_ERP = 14414;
         [ScriptConstant]
-        public const int PHYS_PARAM_SOLVER_ITERATIONS      = 14415;
+        public const int PHYS_PARAM_SOLVER_ITERATIONS = 14415;
         [ScriptConstant]
-        public const int PHYS_PARAM_SPRING_AXIS_ENABLE     = 14416;
+        public const int PHYS_PARAM_SPRING_AXIS_ENABLE = 14416;
         [ScriptConstant]
-        public const int PHYS_PARAM_SPRING_DAMPING         = 14417;
+        public const int PHYS_PARAM_SPRING_DAMPING = 14417;
         [ScriptConstant]
-        public const int PHYS_PARAM_SPRING_STIFFNESS       = 14418;
+        public const int PHYS_PARAM_SPRING_STIFFNESS = 14418;
         [ScriptConstant]
-        public const int PHYS_PARAM_LINK_TYPE              = 14419;
+        public const int PHYS_PARAM_LINK_TYPE = 14419;
         [ScriptConstant]
-        public const int PHYS_PARAM_USE_LINEAR_FRAMEA      = 14420;
+        public const int PHYS_PARAM_USE_LINEAR_FRAMEA = 14420;
         [ScriptConstant]
         public const int PHYS_PARAM_SPRING_EQUILIBRIUM_POINT = 14421;
 
-        public const int PHYS_PARAM_MAX                    = 14421;
+        public const int PHYS_PARAM_MAX = 14421;
 
         // Used when specifying a parameter that has settings for the three linear and three angular axis
         [ScriptConstant]
@@ -458,11 +457,11 @@ namespace Universe.Physics.BulletSPlugin
         [ScriptConstant]
         public const int PHYS_AXIS_ANGULAR_ALL = -3;
         [ScriptConstant]
-        public const int PHYS_AXIS_LINEAR_X  = 0;
+        public const int PHYS_AXIS_LINEAR_X = 0;
         [ScriptConstant]
-        public const int PHYS_AXIS_LINEAR_Y  = 1;
+        public const int PHYS_AXIS_LINEAR_Y = 1;
         [ScriptConstant]
-        public const int PHYS_AXIS_LINEAR_Z  = 2;
+        public const int PHYS_AXIS_LINEAR_Z = 2;
         [ScriptConstant]
         public const int PHYS_AXIS_ANGULAR_X = 3;
         [ScriptConstant]
@@ -470,151 +469,151 @@ namespace Universe.Physics.BulletSPlugin
         [ScriptConstant]
         public const int PHYS_AXIS_ANGULAR_Z = 5;
         /*
-        // physChangeLinkParams(integer linkNum, [ PHYS_PARAM_*, value, PHYS_PARAM_*, value, ...])
-        [ScriptInvocation]
-        public int physChangeLinkParams(UUID hostID, UUID scriptID, int linkNum, object[] parms)
-        {
-            int ret = -1;
-            if (!Enabled) return ret;
-
-            PhysicsActor rootPhysActor;
-            PhysicsActor childPhysActor;
-
-            if (GetRootAndChildPhysActors(hostID, linkNum, out rootPhysActor, out childPhysActor))
-            {
-                object[] parms2 = AddToBeginningOfArray(rootPhysActor, childPhysActor, parms);
-                ret = MakeIntError(rootPhysActor.Extension(PhysFunctChangeLinkParams, parms2));
-            }
-
-            return ret;
-        }
-
-
-        bool GetRootPhysActor(UUID hostID, out PhysicsActor rootPhysActor)
-        {
-            SceneObjectGroup containingGroup;
-            SceneObjectPart rootPart;
-            return GetRootPhysActor(hostID, out containingGroup, out rootPart, out rootPhysActor);
-        }
-
-        bool GetRootPhysActor(UUID hostID, out SceneObjectGroup containingGroup, out SceneObjectPart rootPart, out PhysicsActor rootPhysActor)
-        {
-            bool ret = false;
-            rootPhysActor = null;
-            containingGroup = null;
-            rootPart = null;
-
-            SceneObjectPart requestingPart;
-
-            requestingPart = BaseScene.GetSceneObjectPart(hostID);
-            if (requestingPart != null)
-            {
-                // The type is is always on the root of a linkset.
-                containingGroup = requestingPart.ParentGroup;
-                if (containingGroup != null && !containingGroup.IsDeleted)
+                // physChangeLinkParams(integer linkNum, [ PHYS_PARAM_*, value, PHYS_PARAM_*, value, ...])
+                [ScriptInvocation]
+                public int physChangeLinkParams(UUID hostID, UUID scriptID, int linkNum, object[] parms)
                 {
-                    rootPart = containingGroup.RootPart;
-                    if (rootPart != null)
+                    int ret = -1;
+                    if (!Enabled) return ret;
+
+                    PhysicsActor rootPhysActor;
+                    PhysicsActor childPhysActor;
+
+                    if (GetRootAndChildPhysActors(hostID, linkNum, out rootPhysActor, out childPhysActor))
                     {
-                        rootPhysActor = rootPart.PhysActor;
-                        if (rootPhysActor != null)
+                        object[] parms2 = AddToBeginningOfArray(rootPhysActor, childPhysActor, parms);
+                        ret = MakeIntError(rootPhysActor.Extension(PhysFunctChangeLinkParams, parms2));
+                    }
+
+                    return ret;
+                }
+
+
+                bool GetRootPhysActor(UUID hostID, out PhysicsActor rootPhysActor)
+                {
+                    SceneObjectGroup containingGroup;
+                    SceneObjectPart rootPart;
+                    return GetRootPhysActor(hostID, out containingGroup, out rootPart, out rootPhysActor);
+                }
+
+                bool GetRootPhysActor(UUID hostID, out SceneObjectGroup containingGroup, out SceneObjectPart rootPart, out PhysicsActor rootPhysActor)
+                {
+                    bool ret = false;
+                    rootPhysActor = null;
+                    containingGroup = null;
+                    rootPart = null;
+
+                    SceneObjectPart requestingPart;
+
+                    requestingPart = BaseScene.GetSceneObjectPart(hostID);
+                    if (requestingPart != null)
+                    {
+                        // The type is is always on the root of a linkset.
+                        containingGroup = requestingPart.ParentGroup;
+                        if (containingGroup != null && !containingGroup.IsDeleted)
                         {
-                            ret = true;
+                            rootPart = containingGroup.RootPart;
+                            if (rootPart != null)
+                            {
+                                rootPhysActor = rootPart.PhysActor;
+                                if (rootPhysActor != null)
+                                {
+                                    ret = true;
+                                }
+                                else
+                                {
+                                    MainConsole.Instance.WarnFormat("{0} GetRootAndChildPhysActors: Root part does not have a physics actor. rootName={1}, hostID={2}",
+                                                    LogHeader, rootPart.Name, hostID);
+                                }
+                            }
+                            else
+                            {
+                                MainConsole.Instance.WarnFormat("{0} GetRootAndChildPhysActors: Root part does not exist. RequestingPartName={1}, hostID={2}",
+                                                LogHeader, requestingPart.Name, hostID);
+                            }
                         }
                         else
                         {
-                            MainConsole.Instance.WarnFormat("{0} GetRootAndChildPhysActors: Root part does not have a physics actor. rootName={1}, hostID={2}",
-                                            LogHeader, rootPart.Name, hostID);
+                            MainConsole.Instance.WarnFormat("{0} GetRootAndChildPhysActors: Containing group missing or deleted. hostID={1}", LogHeader, hostID);
                         }
                     }
                     else
                     {
-                        MainConsole.Instance.WarnFormat("{0} GetRootAndChildPhysActors: Root part does not exist. RequestingPartName={1}, hostID={2}",
-                                        LogHeader, requestingPart.Name, hostID);
+                        MainConsole.Instance.WarnFormat("{0} GetRootAndChildPhysActors: cannot find script object in scene. hostID={1}", LogHeader, hostID);
                     }
+
+                    return ret;
                 }
-                else
+
+                // Find the root and child PhysActors based on the linkNum.
+                // Return 'true' if both are found and returned.
+                bool GetRootAndChildPhysActors(UUID hostID, int linkNum, out PhysicsActor rootPhysActor, out PhysicsActor childPhysActor)
                 {
-                    MainConsole.Instance.WarnFormat("{0} GetRootAndChildPhysActors: Containing group missing or deleted. hostID={1}", LogHeader, hostID);
-                }
-            }
-            else
-            {
-                MainConsole.Instance.WarnFormat("{0} GetRootAndChildPhysActors: cannot find script object in scene. hostID={1}", LogHeader, hostID);
-            }
+                    bool ret = false;
+                    rootPhysActor = null;
+                    childPhysActor = null;
 
-            return ret;
-        }
+                    SceneObjectGroup containingGroup;
+                    SceneObjectPart rootPart;
 
-        // Find the root and child PhysActors based on the linkNum.
-        // Return 'true' if both are found and returned.
-        bool GetRootAndChildPhysActors(UUID hostID, int linkNum, out PhysicsActor rootPhysActor, out PhysicsActor childPhysActor)
-        {
-            bool ret = false;
-            rootPhysActor = null;
-            childPhysActor = null;
-
-            SceneObjectGroup containingGroup;
-            SceneObjectPart rootPart;
-
-            if (GetRootPhysActor(hostID, out containingGroup, out rootPart, out rootPhysActor))
-            {
-                SceneObjectPart linkPart = containingGroup.GetLinkNumPart(linkNum);
-                if (linkPart != null)
-                {
-                    childPhysActor = linkPart.PhysActor;
-                    if (childPhysActor != null)
+                    if (GetRootPhysActor(hostID, out containingGroup, out rootPart, out rootPhysActor))
                     {
-                        ret = true;
+                        SceneObjectPart linkPart = containingGroup.GetLinkNumPart(linkNum);
+                        if (linkPart != null)
+                        {
+                            childPhysActor = linkPart.PhysActor;
+                            if (childPhysActor != null)
+                            {
+                                ret = true;
+                            }
+                            else
+                            {
+                                MainConsole.Instance.WarnFormat("{0} GetRootAndChildPhysActors: Link part has no physical actor. rootName={1}, hostID={2}, linknum={3}",
+                                                    LogHeader, rootPart.Name, hostID, linkNum);
+                            }
+                        }
+                        else
+                        {
+                            MainConsole.Instance.WarnFormat("{0} GetRootAndChildPhysActors: Could not find linknum part. rootName={1}, hostID={2}, linknum={3}",
+                                                LogHeader, rootPart.Name, hostID, linkNum);
+                        }
                     }
                     else
                     {
-                        MainConsole.Instance.WarnFormat("{0} GetRootAndChildPhysActors: Link part has no physical actor. rootName={1}, hostID={2}, linknum={3}",
-                                            LogHeader, rootPart.Name, hostID, linkNum);
+                        MainConsole.Instance.WarnFormat("{0} GetRootAndChildPhysActors: Root part does not have a physics actor. rootName={1}, hostID={2}",
+                                        LogHeader, rootPart.Name, hostID);
                     }
-                }
-                else
-                {
-                    MainConsole.Instance.WarnFormat("{0} GetRootAndChildPhysActors: Could not find linknum part. rootName={1}, hostID={2}, linknum={3}",
-                                        LogHeader, rootPart.Name, hostID, linkNum);
-                }
-            }
-            else
-            {
-                MainConsole.Instance.WarnFormat("{0} GetRootAndChildPhysActors: Root part does not have a physics actor. rootName={1}, hostID={2}",
-                                LogHeader, rootPart.Name, hostID);
-            }
 
-            return ret;
-        }
-
-        // Return an array of objects with the passed object as the first object of a new array
-        object[] AddToBeginningOfArray(object firstOne, object secondOne, object[] prevArray)
-        {
-            object[] newArray = new object[2 + prevArray.Length];
-            newArray[0] = firstOne;
-            newArray[1] = secondOne;
-            prevArray.CopyTo(newArray, 2);
-            return newArray;
-        }
-
-        // Extension() returns an object. Convert that object into the integer error we expect to return.
-        int MakeIntError(object extensionRet)
-        {
-            int ret = -1;
-            if (extensionRet != null)
-            {
-                try
-                {
-                    ret = (int)extensionRet;
+                    return ret;
                 }
-                catch
+
+                // Return an array of objects with the passed object as the first object of a new array
+                object[] AddToBeginningOfArray(object firstOne, object secondOne, object[] prevArray)
                 {
-                    ret = -1;
+                    object[] newArray = new object[2 + prevArray.Length];
+                    newArray[0] = firstOne;
+                    newArray[1] = secondOne;
+                    prevArray.CopyTo(newArray, 2);
+                    return newArray;
                 }
-            }
-            return ret;
-        }
+
+                // Extension() returns an object. Convert that object into the integer error we expect to return.
+                int MakeIntError(object extensionRet)
+                {
+                    int ret = -1;
+                    if (extensionRet != null)
+                    {
+                        try
+                        {
+                            ret = (int)extensionRet;
+                        }
+                        catch
+                        {
+                            ret = -1;
+                        }
+                    }
+                    return ret;
+                }
         */
     }
 }

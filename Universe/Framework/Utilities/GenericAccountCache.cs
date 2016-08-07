@@ -81,7 +81,7 @@ namespace Universe.Framework.Utilities
             if (account != null && !string.IsNullOrEmpty(account.Name))
                 m_NameCache.AddOrUpdate(account.Name, account.PrincipalID, CACHE_EXPIRATION_SECONDS);
 
-            //MainConsole.Instance.DebugFormat("[USER CACHE]: cached user {0}", userID);
+            //MainConsole.Instance.DebugFormat("[User Cache]: cached user {0}", userID);
         }
 
         public void Remove(UUID userID, string name)

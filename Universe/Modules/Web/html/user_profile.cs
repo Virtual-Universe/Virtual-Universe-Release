@@ -65,8 +65,10 @@ namespace Universe.Modules.Web
             response = null;
             var vars = new Dictionary<string, object> ();
 
-            IWebHttpTextureService webhttpService = webInterface.Registry.RequestModuleInterface<IWebHttpTextureService> ();
+            IWebHttpTextureService webhttpService =
+                webInterface.Registry.RequestModuleInterface<IWebHttpTextureService> ();
 
+            //string username = filename.Split('/').LastOrDefault();
             UserAccount account = Authenticator.GetAuthentication (httpRequest);
             if (account == null)
                 return vars;
@@ -104,6 +106,7 @@ namespace Universe.Modules.Web
                 vars.Add ("UserType", "Guest");
                 vars.Add ("UserPartner", "Not specified yet");
                 vars.Add ("UserAboutMe", "Nothing here yet");
+
             }
             vars.Add ("UserPictureURL", picUrl);
 
@@ -159,12 +162,15 @@ namespace Universe.Modules.Web
                     }
                 }
 
+
                 if (groups.Count == 0) {
                     groups.Add (new Dictionary<string, object> {
                         { "GroupPictureURL", "../images/icons/no_groups.jpg" },
                         { "GroupName", "None yet" }
                     });
+
                 }
+
             }
 
             vars.Add ("GroupNameText", translator.GetTranslatedString ("GroupNameText"));
@@ -196,6 +202,7 @@ namespace Universe.Modules.Web
             vars.Add ("styles3", translator.GetTranslatedString ("styles3"));
             vars.Add ("styles4", translator.GetTranslatedString ("styles4"));
             vars.Add ("styles5", translator.GetTranslatedString ("styles5"));
+
             vars.Add ("StyleSwitcherStylesText", translator.GetTranslatedString ("StyleSwitcherStylesText"));
             vars.Add ("StyleSwitcherLanguagesText", translator.GetTranslatedString ("StyleSwitcherLanguagesText"));
             vars.Add ("StyleSwitcherChoiceText", translator.GetTranslatedString ("StyleSwitcherChoiceText"));
@@ -207,7 +214,6 @@ namespace Universe.Modules.Web
             vars.Add ("it", translator.GetTranslatedString ("it"));
             vars.Add ("es", translator.GetTranslatedString ("es"));
             vars.Add ("nl", translator.GetTranslatedString ("nl"));
-            vars.Add ("ru", translator.GetTranslatedString ("ru"));
 
             var settings = webInterface.GetWebUISettings ();
             vars.Add ("ShowLanguageTranslatorBar", !settings.HideLanguageTranslatorBar);

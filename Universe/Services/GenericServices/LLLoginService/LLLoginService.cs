@@ -172,7 +172,6 @@ namespace Universe.Services
             LLLoginResponseRegister.RegisterValue("CloudTexture",
                                                   m_loginServerConfig.GetString("CloudTexture", cloudTexture));
 
-
             registry.RegisterModuleInterface<ILoginService>(this);
             m_registry = registry;
         }
@@ -279,11 +278,8 @@ namespace Universe.Services
                     return response;
                 }
 
-                //
                 // Authenticate this user
-                //
                 // We don't support clear passwords here
-                //
                 string token = m_AuthenticationService.Authenticate(account.PrincipalID, "UserAccount", passwd, 30);
                 UUID secureSession = UUID.Zero;
                 if ((token == string.Empty) || (token != string.Empty && !UUID.TryParse(token, out secureSession)))
@@ -313,9 +309,7 @@ namespace Universe.Services
                                                 ? name
                                                 : AgentID.ToString());
 
-            //
             // Get the account and check that it exists
-            //
             UserAccount account = AgentID != UUID.Zero
                                       ? m_UserAccountService.GetUserAccount(null, AgentID)
                                       : m_UserAccountService.GetUserAccount(null, name);
@@ -357,7 +351,6 @@ namespace Universe.Services
             UUID secureSession = UUID.Zero;
 
             // TODO: Make this check better
-            //
             // Some TPV's now send their name in Channel instead of clientVersion 
             // while others send a Channel and a clientVersion.
 
@@ -441,9 +434,7 @@ namespace Universe.Services
                 AvatarAppearance avappearance = null;
                 IProfileConnector profileData = Framework.Utilities.DataManager.RequestPlugin<IProfileConnector>();
 
-                //
                 // Get the user's inventory
-                //
                 if (m_RequireInventory && m_InventoryService == null)
                 {
                     MainConsole.Instance.WarnFormat(
@@ -493,7 +484,6 @@ namespace Universe.Services
                         UPI = profileData.GetUserProfile(account.PrincipalID);
                         UPI.AArchiveName = m_DefaultUserAvatarArchive;
                         UPI.IsNewUser = true;
-                        //profileData.UpdateUserProfile(UPI); //It gets hit later by the next thing
                     }
                     //Find which is set, if any
                     string archiveName = (UPI.AArchiveName != "" && UPI.AArchiveName != " ")
@@ -526,9 +516,8 @@ namespace Universe.Services
 
                 //Now get the logged in status, then below make sure to kill the previous agent if we crashed before
                 UserInfo guinfo = m_agentInfoService.GetUserInfo(account.PrincipalID.ToString());
-                //
+
                 // Clear out any existing CAPS the user may have
-                //
                 if (m_CapsService != null)
                 {
                     IAgentProcessing agentProcessor = m_registry.RequestModuleInterface<IAgentProcessing>();
@@ -546,9 +535,7 @@ namespace Universe.Services
                         m_CapsService.RemoveCAPS(account.PrincipalID);
                 }
 
-                //
                 // Change Online status and get the home region
-                //
                 GridRegion home = null;
                 if (guinfo != null && (guinfo.HomeRegionID != UUID.Zero) && m_GridService != null)
                     home = m_GridService.GetRegionByUUID(account.AllScopeIDs, guinfo.HomeRegionID);
@@ -608,9 +595,7 @@ namespace Universe.Services
                                               (guinfo.HomeRegionID == UUID.Zero ? "(no region found)" : guinfo.HomeRegionID.ToString()));
                 }
 
-                //
                 // Find the destination region/grid
-                //
                 string where = string.Empty;
                 Vector3 position = Vector3.Zero;
                 Vector3 lookAt = Vector3.Zero;
@@ -658,9 +643,7 @@ namespace Universe.Services
                 if (m_FriendsService != null)
                     friendsToInform = m_FriendsService.GetFriendOnlineStatuses(account.PrincipalID, true);
 
-                //
                 // Instantiate/get the simulation interface and launch an agent at the destination
-                //
                 string reason = "", seedCap = "";
                 AgentCircuitData aCircuit = LaunchAgentAtGrid(destination, tpFlags, account, session,
                                                               secureSession, position, where,
@@ -686,9 +669,7 @@ namespace Universe.Services
                                                destination.ServerURI);
                 m_agentInfoService.FireUserStatusChangeEvent(account.PrincipalID.ToString(), true, destination.RegionID);
 
-                //
                 // Finally, fill out the response and return it
-                //
                 string MaturityRating = "A";
                 string MaxMaturity = "A";
                 if (agent != null)
@@ -700,7 +681,6 @@ namespace Universe.Services
                                       ? "P"
                                       : agent.MaxMaturity == 1 ? "M" : "A";
                 }
-
 
                 ArrayList eventNotifications = new ArrayList();
                 BuildEventNotifications(account.PrincipalID, ref eventNotifications);

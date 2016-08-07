@@ -102,13 +102,15 @@ namespace Universe.Framework.Serialization
         /// <returns></returns>
         public void Close ()
         {
-            //MainConsole.Instance.Debug("[TAR arhive writer]: Writing final consecutive 0 blocks");
+            //MainConsole.Instance.Debug("[Tar arhive writer]: Writing final consecutive 0 blocks");
 
             // Write two consecutive 0 blocks to end the archive
             byte [] finalZeroPadding = new byte [1024];
 
-            lock (m_bw) {
-                if (!m_closed) {
+            lock (m_bw)
+            {
+                if (!m_closed)
+                {
                     m_closed = true;
                     m_bw.Write (finalZeroPadding);
 
@@ -122,12 +124,14 @@ namespace Universe.Framework.Serialization
         {
             string oString = "";
 
-            while (d > 0) {
+            while (d > 0)
+            {
                 oString = Convert.ToString ((byte)'0' + d & 7) + oString;
                 d >>= 3;
             }
 
-            while (oString.Length < padding) {
+            while (oString.Length < padding)
+            {
                 oString = "0" + oString;
             }
 
@@ -144,8 +148,7 @@ namespace Universe.Framework.Serialization
         /// <param name="fileType"></param>
         protected void WriteEntry (string filePath, byte [] data, char fileType)
         {
-            //            MainConsole.Instance.DebugFormat(
-            //                "[TAR archive writer]: Data for {0} is {1} bytes", filePath, (null == data ? "null" : data.Length.ToString()));
+            //MainConsole.Instance.DebugFormat("[Tar Archive Writer]: Data for {0} is {1} bytes", filePath, (null == data ? "null" : data.Length.ToString()));
 
             byte [] header = new byte [512];
 
@@ -168,7 +171,7 @@ namespace Universe.Framework.Serialization
 
             // file size in bytes (12)
             int fileSize = data.Length;
-            //MainConsole.Instance.DebugFormat("[TAR archive writer]: File size of {0} is {1}", filePath, fileSize);
+            //MainConsole.Instance.DebugFormat("[Tar Archive Writer]: File size of {0} is {1}", filePath, fileSize);
 
             byte [] fileSizeBytes = ConvertDecimalToPaddedOctalBytes (fileSize, 11);
 
@@ -189,7 +192,7 @@ namespace Universe.Framework.Serialization
 
             int checksum = header.Aggregate (0, (current, b) => current + b);
 
-            //MainConsole.Instance.DebugFormat("[TAR ARCHIVE WRITER]: Decimal header checksum is {0}", checksum);
+            //MainConsole.Instance.DebugFormat("[Tar Archive Writer]: Decimal header checksum is {0}", checksum);
 
             byte [] checkSumBytes = ConvertDecimalToPaddedOctalBytes (checksum, 6);
 
@@ -209,7 +212,7 @@ namespace Universe.Framework.Serialization
                 if (data.Length % 512 != 0) {
                     int paddingRequired = 512 - (data.Length % 512);
 
-                    //MainConsole.Instance.DebugFormat("[TAR archive writer]: Padding data with {0} bytes", paddingRequired);
+                    //MainConsole.Instance.DebugFormat("[Tar Archive Writer]: Padding data with {0} bytes", paddingRequired);
 
                     byte [] padding = new byte [paddingRequired];
                     m_bw.Write (padding);

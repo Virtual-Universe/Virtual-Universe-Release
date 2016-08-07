@@ -116,9 +116,7 @@ namespace Universe.Framework.Services
         /// <param name="friend"></param>
         /// <returns></returns>
         bool Delete(UUID principalID, string friend);
-
         List<UUID> GetFriendOnlineStatuses(UUID user, bool online);
-
         void SendFriendOnlineStatuses(UUID user, bool online);
     }
 }

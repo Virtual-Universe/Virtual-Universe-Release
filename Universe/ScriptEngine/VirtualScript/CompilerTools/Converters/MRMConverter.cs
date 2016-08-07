@@ -32,9 +32,10 @@ using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.CSharp;
-//using Microsoft.JScript;
 using OpenMetaverse;
 using Universe.ScriptEngine.VirtualScript.MiniModule;
+
+//using Microsoft.JScript;
 
 namespace Universe.ScriptEngine.VirtualScript.CompilerTools
 {
@@ -53,8 +54,7 @@ namespace Universe.ScriptEngine.VirtualScript.CompilerTools
         {
         }
 
-        public void Convert(string Script, out string CompiledScript,
-                            out object PositionMap)
+        public void Convert(string Script, out string CompiledScript, out object PositionMap)
         {
             CompiledScript = CreateCompilerScript(Script);
             PositionMap = null;
@@ -159,8 +159,7 @@ namespace Universe.ScriptEngine.VirtualScript.CompilerTools
             return script;
         }
 
-        public void GetGlobalEnvironment(IScriptModulePlugin plugin, ScriptData data, uint localID, out IWorld world,
-                                         out IHost host)
+        public void GetGlobalEnvironment(IScriptModulePlugin plugin, ScriptData data, uint localID, out IWorld world, out IHost host)
         {
             // UUID should be changed to object owner.
             UUID owner = data.World.RegionInfo.EstateSettings.EstateOwner;
@@ -168,8 +167,7 @@ namespace Universe.ScriptEngine.VirtualScript.CompilerTools
             SecurityCredential creds = new SecurityCredential(securityUser, data.World);
 
             world = new World(data.World, creds);
-            host = new Host(new SOPObject(data.World, localID, creds), data.World,
-                            new ExtensionHandler(plugin.Extensions));
+            host = new Host(new SOPObject(data.World, localID, creds), data.World, new ExtensionHandler(plugin.Extensions));
         }
 
         public void InitializeMRM(IScriptModulePlugin plugin, ScriptData data, MRMBase mmb, uint localID, UUID itemID)

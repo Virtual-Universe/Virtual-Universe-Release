@@ -13203,7 +13203,6 @@ namespace Universe.ClientStack
                 (RebakeAvatarTexturesPacket) PacketPool.Instance.GetPacket(PacketType.RebakeAvatarTextures);
 
             pack.TextureData = new RebakeAvatarTexturesPacket.TextureDataBlock {TextureID = textureID};
-            //            OutPacket(pack, ThrottleOutPacketType.Texture);
             OutPacket(pack, ThrottleOutPacketType.AvatarInfo);
         }
 
@@ -13345,9 +13344,6 @@ namespace Universe.ClientStack
 
                 OutPacket(packet, ThrottleOutPacketType.Task, true);
             }
-
-            //ControllingClient.SendAvatarTerseUpdate(new SendAvatarTerseData(m_rootRegionHandle, (ushort)(m_scene.TimeDilation * ushort.MaxValue), LocalId,
-            //        AbsolutePosition, Velocity, Vector3.Zero, m_bodyRot, new Vector4(0,0,1,AbsolutePosition.Z - 0.5f), m_uuid, null, GetUpdatePriority(ControllingClient)));
         }
 
         public void ForceSendOnAgentUpdate(IClientAPI client, AgentUpdateArgs args)

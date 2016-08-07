@@ -97,6 +97,7 @@ namespace Universe.Framework.Utilities
                     }
                 }
             }
+
             bmp.UnlockBitmap();
 
             return bmp;
@@ -130,6 +131,7 @@ namespace Universe.Framework.Utilities
                     }
                 }
             }
+
             bmp.UnlockBitmap();
 
             return bmp;
@@ -151,6 +153,7 @@ namespace Universe.Framework.Utilities
                         return true;
                 }
             }
+
             return false;
         }
     }
@@ -195,6 +198,7 @@ namespace Universe.Framework.Utilities
                     if (ii == lastSet)
                         ii = 0;
                 }
+
                 return copy;
             }
         }
@@ -210,6 +214,7 @@ namespace Universe.Framework.Utilities
                         MaxVal = infos[i];
                 }
             }
+
             return MaxVal;
         }
     }

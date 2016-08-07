@@ -34,8 +34,7 @@ using Universe.Framework.Servers.HttpServer.Implementation;
 
 namespace Universe.Framework.Servers.HttpServer
 {
-    public delegate byte[] HttpServerHandle(string path, Stream request,
-                                            OSHttpRequest httpRequest, OSHttpResponse httpResponse);
+    public delegate byte[] HttpServerHandle(string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse);
 
     public class GenericStreamHandler : BaseRequestHandler
     {
@@ -47,8 +46,7 @@ namespace Universe.Framework.Servers.HttpServer
             _method = method;
         }
 
-        public override byte[] Handle(string path, Stream request, OSHttpRequest httpRequest,
-                                      OSHttpResponse httpResponse)
+        public override byte[] Handle(string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse)
         {
             return _method(path, request, httpRequest, httpResponse);
         }
@@ -84,6 +82,7 @@ namespace Universe.Framework.Servers.HttpServer
                 count -= CHUNK_SIZE;
                 pos += CHUNK_SIZE;
             }
+
             //Finish writing
             stream.Flush();
         }
@@ -107,6 +106,7 @@ namespace Universe.Framework.Servers.HttpServer
                     sb.Append(Encoding.UTF8.GetString(buf, 0, count));
 
             } while (count > 0);
+
             return sb.ToString();
         }
 
@@ -122,6 +122,7 @@ namespace Universe.Framework.Servers.HttpServer
                     memStream.Write(buf, 0, count);
 
             } while (count > 0);
+
             return memStream.ToArray();
         }
     }

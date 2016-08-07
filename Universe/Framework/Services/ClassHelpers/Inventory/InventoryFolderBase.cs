@@ -119,9 +119,9 @@ namespace Universe.Framework.Services.ClassHelpers.Inventory
             map["ID"] = ID;
             map["Name"] = Name;
             map["Owner"] = Owner;
-            map["Type"] = (int) Type;
+            map["Type"] = (int)Type;
             map["ParentID"] = ParentID;
-            map["Version"] = (int) Version;
+            map["Version"] = (int)Version;
 
             return map;
         }
@@ -131,45 +131,42 @@ namespace Universe.Framework.Services.ClassHelpers.Inventory
             ID = map["ID"];
             Name = map["Name"];
             Owner = map["Owner"];
-            Type = (short) map["Type"];
+            Type = (short)map["Type"];
             ParentID = map["ParentID"];
-            Version = (ushort) (int) map["Version"];
+            Version = (ushort)(int)map["Version"];
         }
 
         public string FolderTypeInfo()
         {
-            switch ((FolderType) Type)
+            switch ((FolderType)Type)
             {
-            case FolderType.Animation:      return "Animations";
-            case FolderType.BodyPart:       return "Body parts";
-            case FolderType.CallingCard:    return "Calling cards";
-            case FolderType.Clothing:       return "Clothing";
-            case FolderType.CurrentOutfit:  return "CurrentOutfit";
-            case FolderType.Favorites:      return "Favourites";
-            case FolderType.Gesture:        return "Gestures";
-            case FolderType.HGSuitcase:     return "HG Suitcase";
-            case FolderType.Inbox:          return "Inbox";
-            case FolderType.Landmark:       return "Landmarks";
-            case FolderType.LostAndFound:   return "Lost & Found";
-            case FolderType.LSLText:        return "LSL Text";
-            case FolderType.Mesh:           return "Mesh";
-            case FolderType.MyOutfits:      return "My Outfits";
-            case FolderType.Notecard:       return "Notecard";
-            case FolderType.Object:         return "Objects";
-            case FolderType.Snapshot:       return "Photo folder";
-            case FolderType.Sound:          return "Sounds";
-            case FolderType.Texture:        return "Textures";
-            case FolderType.Trash:          return "Trash";
-            case FolderType.Outbox:         return "Outbox";
-            case FolderType.Outfit:         return "Outfits";
-            case FolderType.VMMListings:    return "VMM Listings";
-            case FolderType.VMMStocks:      return "VMM Stocks";
-            case FolderType.VMMVersions:    return "VMM Versions";
-                
-            default:
-                return "Unknown folder";
+                case FolderType.Animation: return "Animations";
+                case FolderType.BodyPart: return "Body parts";
+                case FolderType.CallingCard: return "Calling cards";
+                case FolderType.Clothing: return "Clothing";
+                case FolderType.CurrentOutfit: return "CurrentOutfit";
+                case FolderType.Favorites: return "Favourites";
+                case FolderType.Gesture: return "Gestures";
+                case FolderType.HGSuitcase: return "HG Suitcase";
+                case FolderType.Inbox: return "Inbox";
+                case FolderType.Landmark: return "Landmarks";
+                case FolderType.LostAndFound: return "Lost & Found";
+                case FolderType.LSLText: return "LSL Text";
+                case FolderType.Mesh: return "Mesh";
+                case FolderType.MyOutfits: return "My Outfits";
+                case FolderType.Notecard: return "Notecard";
+                case FolderType.Object: return "Objects";
+                case FolderType.Snapshot: return "Photo folder";
+                case FolderType.Sound: return "Sounds";
+                case FolderType.Texture: return "Textures";
+                case FolderType.Trash: return "Trash";
+                case FolderType.Outbox: return "Outbox";
+                case FolderType.Outfit: return "Outfits";
+                case FolderType.VMMListings: return "VMM Listings";
+                case FolderType.VMMStocks: return "VMM Stocks";
+                case FolderType.VMMVersions: return "VMM Versions";
+                default: return "Unknown folder";
             }
         }
-
     }
 }

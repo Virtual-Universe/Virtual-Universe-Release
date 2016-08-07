@@ -115,7 +115,8 @@ namespace Universe.Modules.Ban
                                 IGridWideMessageModule messageModule =
                                     m_registry.RequestModuleInterface<IGridWideMessageModule> ();
                                 if (messageModule != null)
-                                    messageModule.KickUser (avatarID, "You cannot use " + viewerMap ["name"] + " in this grid.");
+                                    messageModule.KickUser (avatarID,
+                                                           "You cannot use " + viewerMap ["name"] + " in this grid.");
                                 break;
                             }
                             break;

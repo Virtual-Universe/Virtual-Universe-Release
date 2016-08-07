@@ -479,7 +479,7 @@ namespace Universe.ScriptEngine.VirtualScript
 
         protected void UniverseDotNetStats(IScene scene, string[] cmdparams)
         {
-            MainConsole.Instance.Info ("Virtual Script Engine Stats:");
+            MainConsole.Instance.Info ("Universe DotNet Script Engine Stats:");
             MainConsole.Instance.CleanInfo ("    Region: " + scene.RegionInfo.RegionName);
             MainConsole.Instance.CleanInfo ("    Number of scripts compiled: " + Compiler.ScriptCompileCounter);
             MainConsole.Instance.CleanInfo ("    Max allowed threat level: " + ScriptProtection.GetThreatLevel ());

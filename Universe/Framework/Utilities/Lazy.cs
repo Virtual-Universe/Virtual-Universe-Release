@@ -31,28 +31,29 @@
  * Lazy.cs
  * 
  * Authors:
- *  Zoltan Varga (vargaz@gmail.com)
- *   Marek Safar (marek.safar@gmail.com)
- *   
- *   Copyright (C) 2009 Novell
- *   Permission is hereby granted, free of charge, to any person obtaining
- *   a copy of this software and associated documentation files (the
- *   "Software"), to deal in the Software without restriction, including
- *   without limitation the rights to use, copy, modify, merge, publish,
- *   distribute, sublicense, and/or sell copies of the Software, and to
- *   permit persons to whom the Software is furnished to do so, subject to
- *   the following conditions:
- *   
- *   The above copyright notice and this permission notice shall be
- *   included in all copies or substantial portions of the Software.
- *   
- *   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- *   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
- *   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- *   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
- *   LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
- *   OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
- *   WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *   Zoltan Varga (vargaz@gmail.com)
+ *    Marek Safar (marek.safar@gmail.com)
+ *    
+ * Copyright (C) 2009 Novell
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining
+ * a copy of this software and associated documentation files (the
+ * "Software"), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish,
+ * distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so, subject to
+ * the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+ * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+ * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+ * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
 using System;
@@ -142,10 +143,7 @@ namespace Universe.Framework.Utilities
             switch (mode) {
             case LazyThreadSafetyMode.None: {
                     var init_factory = factory;
-                    //if (init_factory == null)
-                    //    throw exception =
-                    //          new InvalidOperationException (
-                    //              "The initialization function tries to access Value on this instance");
+
                     try {
                         factory = null;
                         T v = init_factory ();
@@ -182,8 +180,7 @@ namespace Universe.Framework.Utilities
 
                         if (factory == null)
                             throw exception =
-                                  new InvalidOperationException (
-                                      "The initialization function tries to access Value on this instance");
+                                  new InvalidOperationException ("The initialization function tries to access Value on this instance");
 
                         var init_factory = factory;
                         try {
@@ -204,7 +201,6 @@ namespace Universe.Framework.Utilities
             }
 
             if (monitor == null) {
-                //value = factory();
                 value = default (T);        // 20160428 - greythane - not sure of this...  anyone?? :(
                 //lock (monitor)
                 inited = true;
@@ -214,8 +210,7 @@ namespace Universe.Framework.Utilities
                         return value;
 
                     if (factory == null)
-                        throw new InvalidOperationException (
-                            "The initialization function tries to access Value on this instance");
+                        throw new InvalidOperationException ("The initialization function tries to access Value on this instance");
 
                     var init_factory = factory;
                     try {

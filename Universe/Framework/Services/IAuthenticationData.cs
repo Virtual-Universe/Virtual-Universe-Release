@@ -45,15 +45,10 @@ namespace Universe.Framework.Services
     public interface IAuthenticationData : IUniverseDataPlugin
     {
         AuthData Get(UUID principalID, string authType);
-
         bool Store(AuthData data);
-
         bool SetDataItem(UUID principalID, string item, string value);
-
         bool SetToken(UUID principalID, string token, int lifetime);
-
         bool CheckToken(UUID principalID, string token, int lifetime);
-
         bool Delete(UUID principalID, string authType);
     }
 }

@@ -102,7 +102,7 @@ namespace Universe.Modules.Entities.Media
                     me = MediaEntry.FromOSD (me.GetOSD ());
             }
 
-            //MainConsole.Instance.DebugFormat("[MOAP]: GetMediaEntry for {0} face {1} found {2}", part.Name, face, me);
+            //            MainConsole.Instance.DebugFormat("[MOAP]: GetMediaEntry for {0} face {1} found {2}", part.Name, face, me);
 
             return me;
         }
@@ -155,8 +155,8 @@ namespace Universe.Modules.Entities.Media
 
             if (config != null && !config.GetBoolean ("Enabled", false))
                 m_isEnabled = false;
-            //else
-            //  MainConsole.Instance.Debug("[MOAP]: Initialized module.")l
+            //            else
+            //                MainConsole.Instance.Debug("[MOAP]: Initialized module.")l
         }
 
         public void AddRegion (IScene scene)
@@ -214,8 +214,7 @@ namespace Universe.Modules.Entities.Media
                 m_omuCapUrls [agentID] = retVal ["ObjectMediaNavigate"];
 
                 // Even though we're registering for POST we're going to get GETS and UPDATES too
-                server.AddStreamHandler (new GenericStreamHandler ("POST", retVal ["ObjectMediaNavigate"],
-                                                                 HandleObjectMediaNavigateMessage));
+                server.AddStreamHandler (new GenericStreamHandler ("POST", retVal ["ObjectMediaNavigate"], HandleObjectMediaNavigateMessage));
             }
             return retVal;
         }
@@ -260,8 +259,7 @@ namespace Universe.Modules.Entities.Media
         /// <param name="httpRequest"></param>
         /// <param name="httpResponse"></param>
         /// <returns></returns>
-        protected byte [] HandleObjectMediaMessage (string path, Stream request, OSHttpRequest httpRequest,
-                                                  OSHttpResponse httpResponse)
+        protected byte [] HandleObjectMediaMessage (string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse)
         {
             //MainConsole.Instance.DebugFormat("[MOAP]: Got ObjectMedia path [{0}], raw request [{1}]", path, request);
 
@@ -274,10 +272,7 @@ namespace Universe.Modules.Entities.Media
             else if (omm.Request is ObjectMediaUpdate)
                 return HandleObjectMediaUpdate (path, omm.Request as ObjectMediaUpdate);
 
-            throw new Exception (
-                string.Format (
-                    "[MOAP]: ObjectMediaMessage has unrecognized ObjectMediaBlock of {0}",
-                    omm.Request.GetType ()));
+            throw new Exception (string.Format ("[MOAP]: ObjectMediaMessage has unrecognized ObjectMediaBlock of {0}", omm.Request.GetType ()));
         }
 
         /// <summary>
@@ -357,7 +352,7 @@ namespace Universe.Modules.Entities.Media
             List<MediaEntry> media = part.Shape.Media;
 
             if (null == media) {
-                //MainConsole.Instance.DebugFormat("[MOAP]: Setting all new media list for {0}", part.Name);
+                //                MainConsole.Instance.DebugFormat("[MOAP]: Setting all new media list for {0}", part.Name);
                 part.Shape.Media = new PrimitiveBaseShape.MediaList (omu.FaceMedia);
 
                 for (int i = 0; i < omu.FaceMedia.Length; i++) {
@@ -367,7 +362,7 @@ namespace Universe.Modules.Entities.Media
                         // directly.
                         SetPartMediaFlags (part, i, true);
                         //MainConsole.Instance.DebugFormat(
-                        //    "[MOAP]: Media flags for face {0} is {1}",  i, part.Shape.Textures.FaceTextures[i].MediaFlags);
+                        //    "[MOAP]: Media flags for face {0} is {1}", i, part.Shape.Textures.FaceTextures[i].MediaFlags);
                     }
                 }
             } else {
@@ -391,7 +386,7 @@ namespace Universe.Modules.Entities.Media
 
                             SetPartMediaFlags (part, i, true);
 
-                            //MainConsole.Instance.DebugFormat("[MOAP]: Media flags for face {0} is {1}", i, face.MediaFlags);
+                            //MainConsole.Instance.DebugFormat("[MOAP]: Media flags for face {0} is {1}",  i, face.MediaFlags);
                             //MainConsole.Instance.DebugFormat("[MOAP]: Set media entry for face {0} on {1}", i, part.Name);
                         }
                     }
@@ -450,7 +445,8 @@ namespace Universe.Modules.Entities.Media
                 return MainServer.BlankResponse;
 
             //MainConsole.Instance.DebugFormat(
-            //    "[MOAP]: Received request to update media entry for face {0} on prim {1} {2} to {3}", omn.Face, part.Name, part.UUID, omn.URL);
+            //    "[MOAP]: Received request to update media entry for face {0} on prim {1} {2} to {3}", 
+            //    omn.Face, part.Name, part.UUID, omn.URL);
 
             // If media has never been set for this prim, then just return.
             if (null == part.Shape.Media)
@@ -469,7 +465,7 @@ namespace Universe.Modules.Entities.Media
                 if (!CheckUrlAgainstWhitelist (omn.URL, me.WhiteList)) {
                     //MainConsole.Instance.DebugFormat(
                     //    "[MOAP]: Blocking change of face {0} on prim {1} {2} to {3} since it's not on the enabled whitelist", 
-                    //     omn.Face, part.Name, part.UUID, omn.URL);
+                    //    omn.Face, part.Name, part.UUID, omn.URL);
 
                     return MainServer.BlankResponse;
                 }
@@ -547,7 +543,8 @@ namespace Universe.Modules.Entities.Media
                 if (wlUrl.StartsWith ("*", StringComparison.Ordinal)) {
                     wlUrl = wlUrl.Substring (1);
 
-                    if (url.Host.Contains (wlUrl)) {
+                    if (url.Host.Contains (wlUrl))
+                    {
                         //MainConsole.Instance.DebugFormat("[MOAP]: Whitelist URL {0} matches {1}", origWlUrl, rawUrl);
                         return true;
                     }

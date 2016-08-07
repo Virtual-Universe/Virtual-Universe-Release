@@ -76,9 +76,15 @@ namespace Universe.Modules.Terrain
         const int MIN_HEIGHT = 0;
 
         static readonly List<TerrainModule> m_terrainModules = new List<TerrainModule> ();
-        readonly Dictionary<StandardTerrainEffects, ITerrainFloodEffect> m_floodeffects = new Dictionary<StandardTerrainEffects, ITerrainFloodEffect> ();
+
+        readonly Dictionary<StandardTerrainEffects, ITerrainFloodEffect> m_floodeffects =
+            new Dictionary<StandardTerrainEffects, ITerrainFloodEffect> ();
+
         readonly Dictionary<string, ITerrainLoader> m_loaders = new Dictionary<string, ITerrainLoader> ();
-        readonly Dictionary<StandardTerrainEffects, ITerrainPaintableEffect> m_painteffects = new Dictionary<StandardTerrainEffects, ITerrainPaintableEffect> ();
+
+        readonly Dictionary<StandardTerrainEffects, ITerrainPaintableEffect> m_painteffects =
+            new Dictionary<StandardTerrainEffects, ITerrainPaintableEffect> ();
+
         readonly Timer m_queueTimer = new Timer ();
         readonly UndoStack<LandUndoState> m_undo = new UndoStack<LandUndoState> (5);
 

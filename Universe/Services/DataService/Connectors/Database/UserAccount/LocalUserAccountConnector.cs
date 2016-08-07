@@ -42,14 +42,14 @@ namespace Universe.Services.DataService
         IGenericData GD;
         const string m_realm = "user_accounts";
 
-        public string Realm {
+        public string Realm
+        {
             get { return m_realm; }
         }
 
         #region IUserAccountData Members
 
-        public void Initialize (IGenericData GenericData, IConfigSource source, IRegistryCore simBase,
-                               string defaultConnectionString)
+        public void Initialize (IGenericData GenericData, IConfigSource source, IRegistryCore simBase, string defaultConnectionString)
         {
             if (source.Configs ["UniverseConnectors"].GetString ("AbuseReportsConnector", "LocalConnector") != "LocalConnector")
                 return;
@@ -62,14 +62,13 @@ namespace Universe.Services.DataService
                 connectionString = source.Configs [Name].GetString ("ConnectionString", defaultConnectionString);
 
             if (GD != null)
-                GD.ConnectToDatabase (connectionString, "UserAccounts",
-                                         source.Configs ["UniverseConnectors"].GetBoolean ("ValidateTables", true));
+                GD.ConnectToDatabase (connectionString, "UserAccounts", source.Configs ["UniverseConnectors"].GetBoolean ("ValidateTables", true));
 
             Framework.Utilities.DataManager.RegisterPlugin (this);
-
         }
 
-        public string Name {
+        public string Name
+        {
             get { return "IUserAccountData"; }
         }
 
@@ -116,13 +115,15 @@ namespace Universe.Services.DataService
 
         public bool DeleteAccount (UUID userID, bool archiveInformation)
         {
-            if (archiveInformation) {
+            if (archiveInformation)
+            {
                 return GD.Update (m_realm,
                                   new Dictionary<string, object> { { "UserLevel", -2 } },
                                   null,
                                   new QueryFilter { andFilters = new Dictionary<string, object> { { "PrincipalID", userID } } },
                                   null, null);
             }
+
             QueryFilter filter = new QueryFilter ();
             filter.andFilters.Add ("PrincipalID", userID);
 
@@ -140,18 +141,25 @@ namespace Universe.Services.DataService
 
             string [] words = query.Split (new [] { ' ' });
 
-            for (int i = 0; i < words.Length; i++) {
-                if (words [i].Length < 3) {
-                    if (i != words.Length - 1) {
+            for (int i = 0; i < words.Length; i++)
+            {
+                if (words [i].Length < 3)
+                {
+                    if (i != words.Length - 1)
+                    {
                         Array.Copy (words, i + 1, words, i, words.Length - i - 1);
                     }
+
                     Array.Resize (ref words, words.Length - 1);
                 }
             }
-            if (words.Length > 0) {
+
+            if (words.Length > 0)
+            {
                 filter.orLikeFilters ["Name"] = "%" + query + "%";
                 filter.orLikeFilters ["FirstName"] = "%" + words [0] + "%";
-                if (words.Length == 2) {
+                if (words.Length == 2)
+                {
                     filter.orLikeMultiFilters ["LastName"] = new List<string> (2) { "%" + words [0], "%" + words [1] + "%" };
                 } else {
                     filter.orLikeFilters ["LastName"] = "%" + words [0] + "%";
@@ -230,11 +238,14 @@ namespace Universe.Services.DataService
         List<UserAccount> ParseQuery (List<UUID> scopeIDs, List<string> query)
         {
             List<UserAccount> list = new List<UserAccount> ();
-            for (int i = 0; i < query.Count; i += 9) {
-                UserAccount data = new UserAccount {
+            for (int i = 0; i < query.Count; i += 9)
+            {
+                UserAccount data = new UserAccount
+                {
                     PrincipalID = UUID.Parse (query [i + 0]),
                     ScopeID = UUID.Parse (query [i + 1])
                 };
+
                 //We keep these even though we don't always use them because we might need to create the "Name" from them
                 string FirstName = query [i + 2];
                 string LastName = query [i + 3];
@@ -243,11 +254,14 @@ namespace Universe.Services.DataService
                 data.UserLevel = int.Parse (query [i + 6]);
                 data.UserFlags = int.Parse (query [i + 7]);
                 data.Name = query [i + 8];
-                if (string.IsNullOrEmpty (data.Name)) {
+
+                if (string.IsNullOrEmpty (data.Name))
+                {
                     data.Name = FirstName + " " + LastName;
                     //Save the change!
                     Store (data);
                 }
+
                 list.Add (data);
             }
 

@@ -153,6 +153,26 @@ namespace Universe.Modules.Caps
                     rootpos = obj.Position;
                 }
 
+
+                // Combine the extraparams data into it's ugly blob again....
+                //int bytelength = 0;
+                //for (int extparams = 0; extparams < obj.ExtraParams.Length; extparams++)
+                //{
+                //    bytelength += obj.ExtraParams[extparams].ExtraParamData.Length;
+                //}
+                //byte[] extraparams = new byte[bytelength];
+                //int position = 0;
+
+
+                //for (int extparams = 0; extparams < obj.ExtraParams.Length; extparams++)
+                //{
+                //    Buffer.BlockCopy(obj.ExtraParams[extparams].ExtraParamData, 0, extraparams, position,
+                //                     obj.ExtraParams[extparams].ExtraParamData.Length);
+                //
+                //    position += obj.ExtraParams[extparams].ExtraParamData.Length;
+                // }
+
+                //pbs.ExtraParams = extraparams;
                 foreach (UploadObjectAssetMessage.Object.ExtraParam extraParam in obj.ExtraParams)
                 {
                     switch ((ushort) extraParam.Type)
@@ -216,7 +236,8 @@ namespace Universe.Modules.Caps
                 pbs.ProfileEnd = (ushort) obj.ProfileEnd;
                 pbs.Scale = obj.Scale;
                 pbs.State = 0;
-                SceneObjectPart prim = new SceneObjectPart(AgentId, pbs, obj.Position, obj.Rotation, Vector3.Zero, obj.Name)
+                SceneObjectPart prim = new SceneObjectPart(AgentId, pbs, obj.Position, obj.Rotation,
+                                                           Vector3.Zero, obj.Name)
                                            {
                                                UUID = UUID.Random(),
                                                CreatorID = AgentId,
@@ -233,7 +254,8 @@ namespace Universe.Modules.Caps
                 prim.PayPrice[2] = -2;
                 prim.PayPrice[3] = -2;
                 prim.PayPrice[4] = -2;
-                Primitive.TextureEntry tmp = new Primitive.TextureEntry(UUID.Parse("89556747-24cb-43ed-920b-47caed15465f"));
+                Primitive.TextureEntry tmp =
+                    new Primitive.TextureEntry(UUID.Parse("89556747-24cb-43ed-920b-47caed15465f"));
 
                 for (int j = 0; j < obj.Faces.Length; j++)
                 {
@@ -279,7 +301,8 @@ namespace Universe.Modules.Caps
                 else
                 {
                     //Stop now then
-                    avatar.ControllingClient.SendAlertMessage("You do not have permission to rez objects here: " + reason);
+                    avatar.ControllingClient.SendAlertMessage("You do not have permission to rez objects here: " +
+                                                              reason);
                     return MainServer.BlankResponse;
                 }
                 allparts[i] = grp;
@@ -291,8 +314,7 @@ namespace Universe.Modules.Caps
                 }
 
                 rootGroup.ScheduleGroupUpdate (PrimUpdateFlags.ForcedFullUpdate);
-                pos = m_scene.SceneGraph.GetNewRezLocation (Vector3.Zero, rootpos, UUID.Zero, rot, 1, 1, true,
-                                                           allparts [0].GroupScale (), false);
+                pos = m_scene.SceneGraph.GetNewRezLocation (Vector3.Zero, rootpos, UUID.Zero, rot, 1, 1, true, allparts [0].GroupScale (), false);
             } else
                 MainConsole.Instance.Error ("[UploadObjectAssetModule]: Unable to locate root group!");
             

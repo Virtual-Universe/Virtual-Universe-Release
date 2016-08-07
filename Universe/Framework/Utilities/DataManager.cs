@@ -37,8 +37,7 @@ namespace Universe.Framework.Utilities
     /// </summary>
     public static class DataManager
     {
-        private static readonly Dictionary<string, IUniverseDataPlugin> Plugins =
-            new Dictionary<string, IUniverseDataPlugin>();
+        private static readonly Dictionary<string, IUniverseDataPlugin> Plugins = new Dictionary<string, IUniverseDataPlugin>();
 
         public static List<IUniverseDataPlugin> GetPlugins()
         {
@@ -58,6 +57,7 @@ namespace Universe.Framework.Utilities
                 Plugins.TryGetValue(typeof (T).Name, out Plugin);
                 return (T) Plugin;
             }
+
             //Return null if we can't find it
             return default(T);
         }
@@ -75,6 +75,7 @@ namespace Universe.Framework.Utilities
                 Plugins.TryGetValue(name, out Plugin);
                 return (T) Plugin;
             }
+
             //Return null if we can't find it
             return default(T);
         }

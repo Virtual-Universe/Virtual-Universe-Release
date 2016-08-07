@@ -74,6 +74,7 @@ namespace Universe.Framework.ClientInterfaces
                     return true;
                 }
             }
+
             return false;
         }
 
@@ -97,6 +98,7 @@ namespace Universe.Framework.ClientInterfaces
                     }
                 }
             }
+
             return false;
         }
 
@@ -120,6 +122,7 @@ namespace Universe.Framework.ClientInterfaces
                 m_implicitDefaultAnimation = m_defaultAnimation;
                 return true;
             }
+
             return false;
         }
 
@@ -139,6 +142,7 @@ namespace Universe.Framework.ClientInterfaces
             {
                 return SetDefaultAnimation(uuid, sequenceNum, objectID);
             }
+
             return false;
         }
 
@@ -173,6 +177,7 @@ namespace Universe.Framework.ClientInterfaces
                 else
                     return anim_state;
             }
+
             return anim;
         }
 
@@ -225,7 +230,6 @@ namespace Universe.Framework.ClientInterfaces
                     foreach (Animation anim in m_animations)
                         theArray [i++] = anim;
                 } catch {
-                    /* S%^t happens. Ignore. */
                 }
 
                 return theArray;

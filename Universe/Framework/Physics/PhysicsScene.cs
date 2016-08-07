@@ -36,8 +36,7 @@ using Universe.Framework.SceneInfo;
 
 namespace Universe.Framework.Physics
 {
-    public delegate void RaycastCallback (
-        bool hitYN, Vector3 collisionPoint, uint localid, float distance, Vector3 normal);
+    public delegate void RaycastCallback (bool hitYN, Vector3 collisionPoint, uint localid, float distance, Vector3 normal);
 
     public delegate void RayCallback (List<ContactResult> list);
 
@@ -82,25 +81,15 @@ namespace Universe.Framework.Physics
         }
 
         public virtual int StatPhysicsTaintTime { get; protected set; }
-
         public virtual int StatPhysicsMoveTime { get; protected set; }
-
         public virtual int StatCollisionOptimizedTime { get; protected set; }
-
         public virtual int StatSendCollisionsTime { get; protected set; }
-
         public virtual int StatAvatarUpdatePosAndVelocity { get; protected set; }
-
         public virtual int StatPrimUpdatePosAndVelocity { get; protected set; }
-
         public virtual int StatUnlockedArea { get; protected set; }
-
         public virtual int StatFindContactsTime { get; protected set; }
-
         public virtual int StatContactLoopTime { get; protected set; }
-
         public virtual int StatCollisionAccountingTime { get; protected set; }
-
         public abstract void Initialize (IMesher meshmerizer, IScene scene);
         public abstract void PostInitialize (IConfigSource config);
 
@@ -180,8 +169,7 @@ namespace Universe.Framework.Physics
                 retMethod (false, Vector3.Zero, 0, 999999999999f, Vector3.Zero);
         }
 
-        public virtual void RaycastWorld (Vector3 position, Vector3 direction, float length, int Count,
-                                         RayCallback retMethod)
+        public virtual void RaycastWorld (Vector3 position, Vector3 direction, float length, int Count, RayCallback retMethod)
         {
             if (retMethod != null)
                 retMethod (new List<ContactResult> ());
@@ -253,14 +241,6 @@ namespace Universe.Framework.Physics
         public override void SetWaterLevel (double height, short [] map)
         {
         }
-
-        /*
-                    public override PhysicsActor AddPrim(Vector3 position, Vector3 size, Quaternion rotation)
-                    {
-                        MainConsole.Instance.InfoFormat("NullPhysicsScene : AddPrim({0},{1})", position, size);
-                        return PhysicsActor.Null;
-                    }
-        */
 
         public override PhysicsActor AddPrimShape (UUID primID, uint localID, string name, byte physicsType, PrimitiveBaseShape shape,
             Vector3 position, Vector3 size, Quaternion rotation, bool isPhysical, int material, float friction, float restitution,

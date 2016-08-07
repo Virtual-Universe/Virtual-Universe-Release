@@ -70,15 +70,15 @@ namespace Universe.Modules.Web
             UserAccount account = null;
 
             // future use // uint amountPerQuery = 10;
-            string noDetails = translator.GetTranslatedString("NoDetailsText");
+            string noDetails = translator.GetTranslatedString ("NoDetailsText");
 
             if (httpRequest.Query.ContainsKey("userid"))
             {
-                List<UUID> scopeUUID = new List<UUID>();
+                List <UUID> scopeUUID = new List<UUID>();
                 string userid = httpRequest.Query["userid"].ToString();
-                UUID userUUID = UUID.Parse(userid);
-                scopeUUID.Add(userUUID);
-
+                UUID userUUID = UUID.Parse (userid);
+                scopeUUID.Add (userUUID);
+                  
                 account = webInterface.Registry.RequestModuleInterface<IUserAccountService>().
                     GetUserAccount(null, userUUID);
 
@@ -100,7 +100,7 @@ namespace Universe.Modules.Web
                         info = (region.RegionArea < 1000000) ? region.RegionArea + " m2" : (region.RegionArea / 1000000) + " km2";
                         info = info + ", " + region.RegionTerrain;
 
-                        var regionData = new Dictionary<string, object>();
+                        var regionData = new Dictionary<string, object> ();
                         regionData.Add("RegionName", region.RegionName);
                         regionData.Add("RegionLocX", region.RegionLocX / Constants.RegionSize);
                         regionData.Add("RegionLocY", region.RegionLocY / Constants.RegionSize);
@@ -113,15 +113,15 @@ namespace Universe.Modules.Web
                         else
                             regionData.Add("RegionImageURL", "../images/icons/no_terrain.jpg");
 
-                        regionslist.Add(regionData);
+                        regionslist.Add (regionData);
                     }
-                }
+                } 
             }
 
             // provide something..
             if (regionslist.Count == 0)
             {
-                regionslist.Add(new Dictionary<string, object> {
+                regionslist.Add (new Dictionary<string, object> {
                     {"RegionName", translator.GetTranslatedString ("NoDetailsText")},
                     {"RegionLocX", ""},
                     {"RegionLocY", ""},
@@ -130,23 +130,23 @@ namespace Universe.Modules.Web
                     {"RegionID", ""},
                     {"RegionImageURL", "../images/icons/no_terrain.jpg"}
                     });
-            }
+             }
 
             vars.Add("NoDetailsText", noDetails);
             if (account != null)
-                vars.Add("UserName", account.Name);
+                vars.Add ("UserName", account.Name);
             else
-                vars.Add("UserName", "");
-
-            vars.Add("RegionListText", translator.GetTranslatedString("RegionListText"));
-            vars.Add("RegionList", regionslist);
-            vars.Add("RegionNameText", translator.GetTranslatedString("RegionNameText"));
-            vars.Add("RegionText", translator.GetTranslatedString("Region"));
-            vars.Add("RegionLocXText", translator.GetTranslatedString("RegionLocXText"));
-            vars.Add("RegionLocYText", translator.GetTranslatedString("RegionLocYText"));
-            vars.Add("RegionOnlineText", translator.GetTranslatedString("Online"));
-            vars.Add("RegionMoreInfo", translator.GetTranslatedString("RegionMoreInfo"));
-            vars.Add("MoreInfoText", translator.GetTranslatedString("MoreInfoText"));
+                vars.Add ("UserName", "");
+            
+            vars.Add ("RegionListText", translator.GetTranslatedString ("RegionListText"));
+            vars.Add ("RegionList", regionslist);
+            vars.Add ("RegionNameText", translator.GetTranslatedString ("RegionNameText"));
+            vars.Add ("RegionText", translator.GetTranslatedString ("Region"));
+            vars.Add ("RegionLocXText", translator.GetTranslatedString ("RegionLocXText"));
+            vars.Add ("RegionLocYText", translator.GetTranslatedString ("RegionLocYText"));
+            vars.Add ("RegionOnlineText", translator.GetTranslatedString ("Online"));
+            vars.Add ("RegionMoreInfo", translator.GetTranslatedString ("RegionMoreInfo"));
+            vars.Add ("MoreInfoText", translator.GetTranslatedString ("MoreInfoText"));
 
             return vars;
         }
@@ -156,7 +156,7 @@ namespace Universe.Modules.Web
             httpResponse.ContentType = "text/html";
             //text = "";
             text = File.ReadAllText("html/webprofile/index.html");
-            return false;
+                      return false;
         }
     }
 }

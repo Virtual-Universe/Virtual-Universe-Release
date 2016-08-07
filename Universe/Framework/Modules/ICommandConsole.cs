@@ -155,7 +155,6 @@ namespace Universe.Framework.Modules
         /// <returns></returns>
         bool CompareLogLevels(string levelA, string levelB);
 
-
         bool IsDebugEnabled { get; }
         bool IsErrorEnabled { get; }
         bool IsTraceEnabled { get; }

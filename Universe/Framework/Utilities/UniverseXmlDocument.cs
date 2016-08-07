@@ -171,7 +171,6 @@ namespace Universe.Framework.Utilities
             return CreateNode (nodeName, Convert.ToString (nodeValue), attributeName, Convert.ToString (attributeValue));
         }
 
-
         /// <summary>
         ///     Adds a node to root
         /// </summary>
@@ -230,12 +229,12 @@ namespace Universe.Framework.Utilities
         /// <param name="attributeName"></param>
         /// <param name="attributeValue"></param>
         /// <returns>XmlNode added</returns>
-        public XmlNode AddNode (string xPath, string nodeName, string nodeValue, string attributeName,
-                               string attributeValue)
+        public XmlNode AddNode (string xPath, string nodeName, string nodeValue, string attributeName, string attributeValue)
         {
-            if (DocumentElement == null) throw new Exception ("DocumentElemnt is null");
-            return AddNode (DocumentElement.SelectSingleNode (xPath),
-                           CreateNode (nodeName, nodeValue, attributeName, attributeValue));
+            if (DocumentElement == null)
+                throw new Exception ("DocumentElemnt is null");
+
+            return AddNode (DocumentElement.SelectSingleNode (xPath), CreateNode (nodeName, nodeValue, attributeName, attributeValue));
         }
 
         #endregion
@@ -253,8 +252,10 @@ namespace Universe.Framework.Utilities
         {
             if (DocumentElement == null) throw new Exception ("DocumentElemnt is null");
             XmlNode node = XmlDoc.SelectSingleNode (xPathFrom);
-            if (node != null) {
-                if (node.ParentNode != null) {
+            if (node != null)
+            {
+                if (node.ParentNode != null)
+                {
                     XmlNode selectedNode = node.ParentNode.RemoveChild (node);
                     XmlNode selectedNode2 = ImportNode (selectedNode, true);
                     XmlNode singleNode = DocumentElement.SelectSingleNode (xPathTo);
@@ -262,6 +263,7 @@ namespace Universe.Framework.Utilities
                         singleNode.AppendChild (selectedNode2);
                 }
             }
+
             return this;
         }
 
@@ -350,6 +352,7 @@ namespace Universe.Framework.Utilities
                 selectedNode.InnerText = theValue;
                 return selectedNode;
             }
+
             throw new Exception ("Node does not exist");
         }
 
@@ -438,7 +441,6 @@ namespace Universe.Framework.Utilities
             }
         }
 
-
         /// <summary>
         ///     Edit the value of an attribute
         /// </summary>
@@ -450,10 +452,13 @@ namespace Universe.Framework.Utilities
         {
             if (DocumentElement == null) throw new Exception ("DocumentElemnt is null");
             XmlNode node = DocumentElement.SelectSingleNode (xPath);
-            if (node != null) {
+            if (node != null)
+            {
                 XmlAttributeCollection oAtt = node.Attributes;
-                if (oAtt != null) oAtt [attributeName].Value = attributeValue;
+                if (oAtt != null)
+                    oAtt [attributeName].Value = attributeValue;
             }
+
             return DocumentElement.SelectSingleNode (xPath);
         }
 
@@ -468,11 +473,13 @@ namespace Universe.Framework.Utilities
             if (DocumentElement == null) throw new Exception ("DocumentElemnt is null");
             string returnValue = "";
             XmlNode node = DocumentElement.SelectSingleNode (xPath);
+
             if (node != null && ((node.Attributes != null) && (node.Attributes [attributeName] != null))) {
                 XmlNode singleNode = DocumentElement.SelectSingleNode (xPath);
                 if (singleNode != null)
                     if (singleNode.Attributes != null) returnValue = singleNode.Attributes [attributeName].Value;
             }
+
             return returnValue;
         }
 
@@ -485,7 +492,6 @@ namespace Universe.Framework.Utilities
             return selectedNode.ChildNodes.Cast<XmlNode> ().Any (selectedNode2 => selectedNode2.Name != "#text");
         }
 
-
         /// <summary>
         ///     Converts the common xml date to normal date
         /// </summary>
@@ -493,13 +499,16 @@ namespace Universe.Framework.Utilities
         /// <returns></returns>
         public string ConvertDateXML (string xmlDate)
         {
-            if (xmlDate.IndexOf ("T", StringComparison.Ordinal) == 0) {
+            if (xmlDate.IndexOf ("T", StringComparison.Ordinal) == 0)
+            {
                 if (IsDate (xmlDate))
                     return xmlDate;
                 return "";
             }
+
             if (xmlDate.IndexOf (".", StringComparison.Ordinal) > 0)
                 xmlDate = xmlDate.Substring (1, xmlDate.IndexOf (".", StringComparison.Ordinal) - 1);
+
             return Convert.ToString (Convert.ToDateTime (xmlDate.Replace ("T", " ")));
         }
 
@@ -520,6 +529,7 @@ namespace Universe.Framework.Utilities
             XmlNode node = DocumentElement.SelectSingleNode (xPath);
             if (node == null)
                 return string.Empty;
+
             return node.InnerText;
         }
 

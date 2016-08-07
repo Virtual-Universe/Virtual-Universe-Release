@@ -125,8 +125,7 @@ namespace Universe.Framework.Modules
             UUID simID, UUID primID, UUID oldAssetID, string contentType, string data, string extraParams,
             int updateTimer, bool SetBlending, int disp, byte AlphaValue, int face);
 
-        void GetDrawStringSize(string contentType, string text, string fontName, int fontSize,
-                               out double xSize, out double ySize);
+        void GetDrawStringSize(string contentType, string text, string fontName, int fontSize, out double xSize, out double ySize);
     }
 
     public interface IDynamicTextureRender
@@ -139,7 +138,6 @@ namespace Universe.Framework.Modules
         bool AsyncConvertUrl(UUID id, string url, string extraParams);
         bool AsyncConvertData(UUID id, string bodyData, string extraParams);
 
-        void GetDrawStringSize(string text, string fontName, int fontSize,
-                               out double xSize, out double ySize);
+        void GetDrawStringSize(string text, string fontName, int fontSize, out double xSize, out double ySize);
     }
 }

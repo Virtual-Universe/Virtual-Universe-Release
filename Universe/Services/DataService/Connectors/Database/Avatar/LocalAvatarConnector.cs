@@ -45,8 +45,7 @@ namespace Universe.Services.DataService
 
         #region IAvatarData Members
 
-        public void Initialize (IGenericData GenericData, IConfigSource source, IRegistryCore simBase,
-                               string defaultConnectionString)
+        public void Initialize (IGenericData GenericData, IConfigSource source, IRegistryCore simBase, string defaultConnectionString)
         {
             if (source.Configs ["UniverseConnectors"].GetString ("AvatarConnector", "LocalConnector") != "LocalConnector")
                 return;
@@ -54,12 +53,12 @@ namespace Universe.Services.DataService
             GD = GenericData;
 
             string connectionString = defaultConnectionString;
+
             if (source.Configs [Name] != null)
                 connectionString = source.Configs [Name].GetString ("ConnectionString", defaultConnectionString);
 
             if (GD != null)
-                GD.ConnectToDatabase (connectionString, "Avatars",
-                                     source.Configs ["UniverseConnectors"].GetBoolean ("ValidateTables", true));
+                GD.ConnectToDatabase (connectionString, "Avatars", source.Configs ["UniverseConnectors"].GetBoolean ("ValidateTables", true));
 
             Framework.Utilities.DataManager.RegisterPlugin (this);
         }
@@ -82,6 +81,7 @@ namespace Universe.Services.DataService
             lock (m_lock) {
                 data = GD.Query (new string [] { "Appearance" }, m_realm, filter, null, null, null);
             }
+
             if (data.Count == 0)
                 return null;
             
@@ -101,12 +101,14 @@ namespace Universe.Services.DataService
                 values.Add ("Appearance", OSDParser.SerializeJsonString (data.ToOSD ()));
                 GD.Replace (m_realm, values);
             }
+
             return true;
         }
 
         public bool Delete (UUID PrincipalID)
         {
-            lock (m_lock) {
+            lock (m_lock)
+            {
                 QueryFilter filter = new QueryFilter ();
                 filter.andFilters ["PrincipalID"] = PrincipalID;
 

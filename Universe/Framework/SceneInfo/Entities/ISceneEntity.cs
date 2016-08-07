@@ -200,115 +200,62 @@ namespace Universe.Framework.SceneInfo.Entities
         #endregion
 
         Vector3 GetTorque ();
-
         event BlankHandler OnFinishedPhysicalRepresentationBuilding;
-
         List<UUID> SitTargetAvatar { get; }
-
         void ClearUndoState ();
-
         void AttachToScene (IScene m_parentScene);
-
         ISceneEntity Copy (bool copyPhysicsRepresentation);
-
         void ForcePersistence ();
-
         void RebuildPhysicalRepresentation (bool keepSelectedStatus, Action actionToDoWhilePhysActorNull);
-
         void ScheduleGroupTerseUpdate ();
-
         void TriggerScriptChangedEvent (Changed changed);
-
         void ScheduleGroupUpdate (PrimUpdateFlags primUpdateFlags);
-
         void GetProperties (IClientAPI client);
-
         ISceneEntity DelinkFromGroup (ISceneChildEntity part, bool p);
-
         void UpdateGroupPosition (Vector3 vector3, bool p);
-
         void ResetChildPrimPhysicsPositions ();
-
         Vector3 GetAttachmentPos ();
-
         byte GetAttachmentPoint ();
-
         byte GetSavedAttachmentPoint ();
-
         void SetAttachmentPoint (byte p);
-
         void CreateScriptInstances (int p, bool p_2, StateSource stateSource, UUID rezzedFrom, bool clearStateSaves);
-
         void ResumeScripts ();
-
         void SetFromItemID (UUID itemID, UUID assetID);
-
         void FireAttachmentCollisionEvents (EventArgs e);
-
         void DetachToInventoryPrep ();
-
         TaskInventoryItem GetInventoryItem (uint localID, UUID itemID);
-
         int RemoveInventoryItem (uint localID, UUID itemID);
-
         bool AddInventoryItem (IClientAPI remoteClient, uint primLocalID, InventoryItemBase item, UUID copyID);
-
         void ScheduleGroupUpdateToAvatar (IScenePresence SP, PrimUpdateFlags primUpdateFlags);
-
         void SetOwnerId (UUID uUID);
-
         uint GetEffectivePermissions ();
-
         void SetRootPartOwner (ISceneChildEntity part, UUID uUID, UUID uUID_2);
-
         void SetGroup (UUID groupID, UUID attemptingUser, bool needsPropertyUpdateForuser);
-
         void ApplyNextOwnerPermissions ();
-
         bool UpdateInventoryItem (TaskInventoryItem item);
-
         void DetachToGround (Vector3 forcedPos, Quaternion forcedRotation);
-
         void UpdatePermissions (UUID agentID, byte field, uint localId, uint mask, byte set);
-
         float BSphereRadiusSQ { get; }
 
         /// <summary>
         ///     Prepares the object to be serialized
         /// </summary>
         void BackupPreparation ();
-
         void RemoveScriptInstances (bool p);
-
         float GetMass ();
-
         void AddKeyframedMotion (KeyframeAnimation animation, KeyframeAnimation.Commands command);
-
         void UpdateRootPosition (Vector3 pos);
-
         void GeneratedMesh (ISceneChildEntity _parent_entity, IMesh _mesh);
-
         void FinishedSerializingGenericProperties ();
-
         void OffsetForNewRegion (Vector3 oldGroupPosition);
-
         void SetAbsolutePosition (bool p, Vector3 attemptedPos);
-
         bool IsInTransit { get; set; }
-
         void ScriptSetPhysicsStatus (bool p);
-
         Vector3 GetAxisAlignedBoundingBox (out float offsetHeight);
-
         void ClearPartAttachmentData ();
-
         void UpdateGroupRotationR (Quaternion rot);
-
         void ApplyPermissions (uint p);
-
         EntityIntersection TestIntersection (Ray hRay, bool frontFacesOnly, bool faceCenters);
-
-        void GetAxisAlignedBoundingBoxRaw (out float minX, out float maxX, out float minY, out float maxY,
-                                                 out float minZ, out float maxZ);
+        void GetAxisAlignedBoundingBoxRaw (out float minX, out float maxX, out float minY, out float maxY, out float minZ, out float maxZ);
     }
 }

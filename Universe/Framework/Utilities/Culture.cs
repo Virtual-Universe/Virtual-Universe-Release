@@ -59,8 +59,7 @@ namespace Universe.Framework.Utilities
         /// The base system culture info before it is locked to "en_US".
         ///   Used for log date/time formatting
         /// </summary>
-        public static CultureInfo SystemCultureInfo
-        { get; set; }
+        public static CultureInfo SystemCultureInfo { get; set; }
 
         /// <summary>
         /// Returns a formatted date string depending upon the system Locale.
@@ -80,16 +79,17 @@ namespace Universe.Framework.Utilities
         public static string LocaleDate(DateTime userDateTime, string dtFormat )
         {
             const string defFormat = "MMM dd, yyyy";
-            //string dt = Culture.SystemCultureInfo.DateTimeFormat.ShortDatePattern;
-            //string dt = DateTime.Now.ToString (df);
+
             if (dtFormat == null)
                 dtFormat = defFormat;
 
             string dt;
+
             if (userDateTime > DateTime.MinValue)
                 dt = userDateTime.ToString (dtFormat,Culture.SystemCultureInfo);
             else
                 dt = DateTime.Now.ToString (dtFormat,Culture.SystemCultureInfo);
+
             return dt;
         }
 
@@ -99,7 +99,6 @@ namespace Universe.Framework.Utilities
         /// <returns>Local time & date string.</returns>
         public static string LocaleTimeDate()
         {
-            //string dt = Culture.SystemCultureInfo.DateTimeFormat.ShortDatePattern;
             string dt = DateTime.Now.ToString ("hh:mm:ss MMM dd",Culture.SystemCultureInfo);
             return dt;
         }
@@ -114,6 +113,5 @@ namespace Universe.Framework.Utilities
             string ts = DateTime.Now.ToString ("MMM dd hh:mm:ss",Culture.SystemCultureInfo);
             return ts;
         }
-
     }
 }

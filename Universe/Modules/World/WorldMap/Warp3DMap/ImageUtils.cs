@@ -66,6 +66,7 @@ namespace Universe.Modules.WorldMap.Warp3DMap
                 graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
                 graphics.SmoothingMode = SmoothingMode.HighQuality;
                 graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
                 graphics.DrawImage (image, 0, 0, result.Width, result.Height);
             }
 

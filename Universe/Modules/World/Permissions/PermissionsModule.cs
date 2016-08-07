@@ -240,13 +240,22 @@ namespace Universe.Modules.Permissions
             m_RegionOwnerIsGod = PermissionsConfig.GetBoolean("region_owner_is_god", m_RegionOwnerIsGod);
             m_RegionManagerIsGod = PermissionsConfig.GetBoolean("region_manager_is_god", m_RegionManagerIsGod);
             m_ParcelOwnerIsGod = PermissionsConfig.GetBoolean("parcel_owner_is_god", m_ParcelOwnerIsGod);
-            m_allowAdminFriendEditRights = PermissionsConfig.GetBoolean("allow_god_friends_edit_with_rights", m_allowAdminFriendEditRights);
-            m_adminHasToBeInGodMode = PermissionsConfig.GetBoolean("admin_has_to_be_in_god_mode", m_adminHasToBeInGodMode);
-            m_allowedScriptCreators = UserSetHelpers.ParseUserSetConfigSetting(PermissionsConfig, "allowed_script_creators", m_allowedScriptCreators);
-            m_allowedScriptEditors = UserSetHelpers.ParseUserSetConfigSetting(PermissionsConfig, "allowed_script_editors", m_allowedScriptEditors);
-            m_allowedLSLScriptCompilers = UserSetHelpers.ParseUserSetConfigSetting(PermissionsConfig, "allowed_lsl_script_compilers", m_allowedLSLScriptCompilers);
-            m_allowedCSScriptCompilers = UserSetHelpers.ParseUserSetConfigSetting(PermissionsConfig, "allowed_cs_script_compilers", m_allowedCSScriptCompilers);
-            m_allowedAScriptScriptCompilers = UserSetHelpers.ParseUserSetConfigSetting(PermissionsConfig, "allowed_ascript_script_compilers", m_allowedAScriptScriptCompilers);
+            m_allowAdminFriendEditRights = PermissionsConfig.GetBoolean("allow_god_friends_edit_with_rights",
+                m_allowAdminFriendEditRights);
+            m_adminHasToBeInGodMode = PermissionsConfig.GetBoolean("admin_has_to_be_in_god_mode",
+                m_adminHasToBeInGodMode);
+
+            m_allowedScriptCreators = UserSetHelpers.ParseUserSetConfigSetting(
+                PermissionsConfig, "allowed_script_creators", m_allowedScriptCreators);
+            m_allowedScriptEditors = UserSetHelpers.ParseUserSetConfigSetting(
+                PermissionsConfig, "allowed_script_editors", m_allowedScriptEditors);
+
+            m_allowedLSLScriptCompilers = UserSetHelpers.ParseUserSetConfigSetting(
+                PermissionsConfig, "allowed_lsl_script_compilers", m_allowedLSLScriptCompilers);
+            m_allowedCSScriptCompilers = UserSetHelpers.ParseUserSetConfigSetting(
+                PermissionsConfig, "allowed_cs_script_compilers", m_allowedCSScriptCompilers);
+            m_allowedAScriptScriptCompilers = UserSetHelpers.ParseUserSetConfigSetting(
+                PermissionsConfig, "allowed_ascript_script_compilers", m_allowedAScriptScriptCompilers);
 
             string perm = PermissionsConfig.GetString("Allowed_Administrators", "");
             if (perm != "")
@@ -312,21 +321,26 @@ namespace Universe.Modules.Permissions
             m_scene.Permissions.OnLinkObject += CanLinkObject; //MAYBE FULLY IMPLEMENTED
             m_scene.Permissions.OnDelinkObject += CanDelinkObject; //MAYBE FULLY IMPLEMENTED
             m_scene.Permissions.OnBuyLand += CanBuyLand; //NOT YET IMPLEMENTED
+
             m_scene.Permissions.OnViewNotecard += CanViewNotecard;
             m_scene.Permissions.OnViewScript += CanViewScript;
             m_scene.Permissions.OnEditNotecard += CanEditNotecard;
             m_scene.Permissions.OnEditScript += CanEditScript;
+
             m_scene.Permissions.OnCreateObjectInventory += CanCreateObjectInventory;
             m_scene.Permissions.OnEditObjectInventory += CanEditObjectInventory;
             m_scene.Permissions.OnCopyObjectInventory += CanCopyObjectInventory;
             m_scene.Permissions.OnDeleteObjectInventory += CanDeleteObjectInventory;
             m_scene.Permissions.OnResetScript += CanResetScript;
+
             m_scene.Permissions.OnCreateUserInventory += CanCreateUserInventory;
             m_scene.Permissions.OnCopyUserInventory += CanCopyUserInventory; //NOT YET IMPLEMENTED
             m_scene.Permissions.OnEditUserInventory += CanEditUserInventory; //NOT YET IMPLEMENTED
             m_scene.Permissions.OnDeleteUserInventory += CanDeleteUserInventory; //NOT YET IMPLEMENTED
+
             m_scene.Permissions.OnControlPrimMedia += CanControlPrimMedia;
             m_scene.Permissions.OnInteractWithPrimMedia += CanInteractWithPrimMedia;
+
             m_scene.Permissions.OnPushObject += CanPushObject;
             m_scene.Permissions.OnViewObjectOwners += CanViewObjectOwners;
             m_scene.Permissions.OnEditParcelAccessList += CanEditParcelAccessList;
@@ -373,6 +387,7 @@ namespace Universe.Modules.Permissions
                     HandleTransferLandOwnership, true, true);
             }
 
+
             string grant = PermissionsConfig.GetString("GrantLSL", "");
             if (grant.Length > 0)
             {
@@ -418,8 +433,8 @@ namespace Universe.Modules.Permissions
             m_moapModule = m_scene.RequestModuleInterface<IMoapModule>();
 
             // This log line will be commented out when no longer required for debugging
-            //if (m_moapModule == null)
-            //    MainConsole.Instance.Warn("[Permissions]: Media on a prim module not found, media on a prim permissions will not work");
+            //            if (m_moapModule == null)
+            //                MainConsole.Instance.Warn("[Permissions]: Media on a prim module not found, media on a prim permissions will not work");
 
             m_parcelManagement = m_scene.RequestModuleInterface<IParcelManagementModule>();
         }
@@ -455,7 +470,8 @@ namespace Universe.Modules.Permissions
                 {
                     MainConsole.Instance.HasProcessedCurrentCommand = true;
                     MainConsole.Instance.InfoFormat(
-                        "[Permissions]: Set permissions bypass to {0} for {1}", m_bypassPermissions, m_scene.RegionInfo.RegionName);
+                        "[Permissions]: Set permissions bypass to {0} for {1}",
+                        m_bypassPermissions, m_scene.RegionInfo.RegionName);
                 }
             }
         }
@@ -895,7 +911,7 @@ namespace Universe.Modules.Permissions
 
             //MainConsole.Instance.DebugFormat(
             //    "[Permissions]: Checking CanControlPrimMedia for {0} on {1} face {2} with control permissions {3}", 
-            //     agentID, primID, face, me.ControlPermissions);
+            //    agentID, primID, face, me.ControlPermissions);
 
             return GenericObjectPermission(part.UUID, agentID, true);
         }
@@ -928,6 +944,9 @@ namespace Universe.Modules.Permissions
 
         bool GenericPrimMediaPermission(ISceneChildEntity part, UUID agentID, MediaPermission perms)
         {
+            //            if (IsAdministrator(agentID))
+            //                return true;
+
             if ((perms & MediaPermission.Anyone) == MediaPermission.Anyone)
                 return true;
 

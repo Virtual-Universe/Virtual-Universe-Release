@@ -50,8 +50,7 @@ namespace Universe.Services.DataService
 
         #region IRegionData Members
 
-        public void Initialize (IGenericData GenericData, IConfigSource source, IRegistryCore simBase,
-                               string defaultConnectionString)
+        public void Initialize (IGenericData GenericData, IConfigSource source, IRegistryCore simBase, string defaultConnectionString)
         {
             if (source.Configs ["UniverseConnectors"].GetString ("GridConnector", "LocalConnector") != "LocalConnector")
                 return;
@@ -63,8 +62,7 @@ namespace Universe.Services.DataService
                         : defaultConnectionString;
 
             if (GD != null) {
-                GD.ConnectToDatabase (connectionString, "GridRegions",
-                                      source.Configs ["UniverseConnectors"].GetBoolean ("ValidateTables", true));
+                GD.ConnectToDatabase (connectionString, "GridRegions", source.Configs ["UniverseConnectors"].GetBoolean ("ValidateTables", true));
 
                 Framework.Utilities.DataManager.RegisterPlugin (this);
 
@@ -103,21 +101,21 @@ namespace Universe.Services.DataService
             IEstateConnector estatePlugin = Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ();
 
             if (estatePlugin == null) {
-                MainConsole.Instance.Error ("[LocalGridConnector] " + borked.Count +
-                                           " regions found with missing owners, but could not get IEstateConnector plugin.");
+                MainConsole.Instance.Error ("[LocalGridConnector] " + borked.Count + " regions found with missing owners, but could not get IEstateConnector plugin.");
                 return;
             }
 
-
-            MainConsole.Instance.Error ("[LocalGridConnector] " + borked.Count +
-                                           " regions found with missing owners, attempting fix.");
+            MainConsole.Instance.Error ("[LocalGridConnector] " + borked.Count + " regions found with missing owners, attempting fix.");
 
             Dictionary<int, List<GridRegion>> borkedByEstate = new Dictionary<int, List<GridRegion>> ();
-            foreach (GridRegion region in borked) {
+            foreach (GridRegion region in borked)
+            {
                 int estateID = estatePlugin.GetEstateID (region.RegionID);
+
                 if (!borkedByEstate.ContainsKey (estateID)) {
                     borkedByEstate [estateID] = new List<GridRegion> ();
                 }
+
                 borkedByEstate [estateID].Add (region);
             }
 
@@ -147,9 +145,7 @@ namespace Universe.Services.DataService
                 }
 
                 MainConsole.Instance.Error ("[LocalGridConnector] " + borked.Count +
-                                               " regions found with missing owners, could not locate estate settings for " +
-                                               estateFail + " estates.");
-
+                                               " regions found with missing owners, could not locate estate settings for " + estateFail + " estates.");
             }
 
             uint storeSuccess = 0;
@@ -160,8 +156,7 @@ namespace Universe.Services.DataService
                 foreach (GridRegion region in regions) {
                     region.EstateOwner = kvp.Value;
                     if (!Store (region)) {
-                        MainConsole.Instance.Error ("[LocalGridConnector] Failed to fix missing region for " +
-                                                   region.RegionName + " (" + region.RegionID + ")");
+                        MainConsole.Instance.Error ("[LocalGridConnector] Failed to fix missing region for " + region.RegionName + " (" + region.RegionID + ")");
                         ++storeFail;
                     } else {
                         ++storeSuccess;
@@ -179,16 +174,16 @@ namespace Universe.Services.DataService
                                            " regions found with missing owners, fix attempted on " + storeSuccess +
                                            " regions.");
             } else {
-                MainConsole.Instance.Info (
-                    "[LocalGridConnector] All regions found with missing owners should have their owners restored.");
+                MainConsole.Instance.Info ("[LocalGridConnector] All regions found with missing owners should have their owners restored.");
             }
+
             if (borked.Count > 0) {
                 List<string> blurbs = new List<string> (borked.Count);
                 foreach (GridRegion region in borked) {
                     blurbs.Add (region.RegionName + " (" + region.RegionID + ")");
                 }
-                MainConsole.Instance.Info ("[LocalGridConnector] Failed to fix missing region owners for regions " +
-                                          string.Join (", ", blurbs.ToArray ()));
+
+                MainConsole.Instance.Info ("[LocalGridConnector] Failed to fix missing region owners for regions " + string.Join (", ", blurbs.ToArray ()));
             }
         }
 
@@ -262,11 +257,13 @@ namespace Universe.Services.DataService
                 endX = startX;
                 startX = foo;
             }
+
             if (startY > endY) {
                 foo = endY;
                 endY = startY;
                 startY = foo;
             }
+
             QueryFilter filter = new QueryFilter ();
             filter.andGreaterThanEqFilters ["LocX"] = startX;
             filter.andLessThanEqFilters ["LocX"] = endX;
@@ -281,8 +278,7 @@ namespace Universe.Services.DataService
             return Get (flags, 0, null, null, sort);
         }
 
-        public List<GridRegion> Get (uint start, uint count, uint estateID, RegionFlags flags,
-                                    Dictionary<string, bool> sort)
+        public List<GridRegion> Get (uint start, uint count, uint estateID, RegionFlags flags, Dictionary<string, bool> sort)
         {
             List<GridRegion> resp = new List<GridRegion> ();
             IEstateConnector estates = Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ();
@@ -318,13 +314,13 @@ namespace Universe.Services.DataService
             return resp;
         }
 
-        public List<GridRegion> Get (RegionFlags includeFlags, RegionFlags excludeFlags, uint? start, uint? count,
-                                    Dictionary<string, bool> sort)
+        public List<GridRegion> Get (RegionFlags includeFlags, RegionFlags excludeFlags, uint? start, uint? count, Dictionary<string, bool> sort)
         {
             QueryFilter filter = new QueryFilter ();
             if (includeFlags > 0) {
                 filter.andBitfieldAndFilters ["Flags"] = (uint)includeFlags;
             }
+
             if (excludeFlags > 0) {
                 filter.andBitfieldNandFilters ["Flags"] = (uint)excludeFlags;
             }
@@ -338,6 +334,7 @@ namespace Universe.Services.DataService
             if (includeFlags > 0) {
                 filter.andBitfieldAndFilters ["Flags"] = (uint)includeFlags;
             }
+
             if (excludeFlags > 0) {
                 filter.andBitfieldNandFilters ["Flags"] = (uint)excludeFlags;
             }
@@ -360,8 +357,7 @@ namespace Universe.Services.DataService
             return regions;
         }
 
-        public List<GridRegion> Get (List<UUID> scopeIDs, UUID excludeRegion, float centerX, float centerY,
-                                    uint squareRangeFromCenterInMeters)
+        public List<GridRegion> Get (List<UUID> scopeIDs, UUID excludeRegion, float centerX, float centerY, uint squareRangeFromCenterInMeters)
         {
             QueryFilter filter = new QueryFilter ();
 
@@ -415,10 +411,13 @@ namespace Universe.Services.DataService
                 EstateSettings ES = null;
                 if (EstateConnector != null) {
                     ES = EstateConnector.GetEstateSettings (region.RegionID);
+
                     if ((ES != null) && (ES.EstateID != 0))
                         region.EstateOwner = ES.EstateOwner;
                 }
-                if (region.EstateOwner == UUID.Zero && ES != null && ES.EstateID != 0) {
+
+                if (region.EstateOwner == UUID.Zero && ES != null && ES.EstateID != 0)
+                {
                     MainConsole.Instance.Error (
                         "[LocalGridConnector] Attempt to store region with owner of UUID.Zero detected:" +
                         (new System.Diagnostics.StackTrace ()).GetFrame (1));
@@ -458,6 +457,7 @@ namespace Universe.Services.DataService
             foreach (object value in criteriaValue) {
                 filter.andFilters [criteriaKey [i++]] = value;
             }
+
             return GD.Delete (m_realm, filter);
         }
 

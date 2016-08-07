@@ -74,7 +74,8 @@ namespace Universe.Modules.Web
                 string UserEmail = requestParameters["UserEmail"].ToString();
 
                 UserAccount account =
-                    webInterface.Registry.RequestModuleInterface<IUserAccountService> ().GetUserAccount (null, username);
+                    webInterface.Registry.RequestModuleInterface<IUserAccountService> ()
+                        .GetUserAccount (null, username);
 
                 if (account == null)
                 {
@@ -141,7 +142,6 @@ namespace Universe.Modules.Web
                 return null;
             }
                     
-
             vars.Add("ErrorMessage", error);
             vars.Add("ForgotPassword", translator.GetTranslatedString("ForgotPassword"));
             vars.Add("UserNameText", translator.GetTranslatedString("UserName"));

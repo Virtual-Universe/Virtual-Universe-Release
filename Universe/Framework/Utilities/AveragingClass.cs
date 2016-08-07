@@ -63,7 +63,7 @@ namespace Universe.Framework.Utilities
             avg /= m_list.Count;
             return avg;
 #else
-            return total/count;
+            return total / count;
 #endif
         }
 

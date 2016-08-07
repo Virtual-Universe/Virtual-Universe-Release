@@ -72,8 +72,7 @@ namespace Universe.ScriptEngine.VirtualScript
 
         public void HookUpRegionEvents(IScene Scene)
         {
-            //MainConsole.Instance.Info("[" + myScriptEngine.ScriptEngineName +
-            //           "]: Hooking up to server events");
+            //MainConsole.Instance.Info("[" + myScriptEngine.ScriptEngineName + "]: Hooking up to server events");
 
             Scene.EventManager.OnObjectGrab += touch_start;
             Scene.EventManager.OnObjectGrabbing += touch;
@@ -95,7 +94,6 @@ namespace Universe.ScriptEngine.VirtualScript
             Scene.EventManager.OnScriptMovingEndEvent += moving_end;
 
             Scene.EventManager.OnRezScripts += rez_scripts;
-
 
             IMoneyModule moneyModule =
                 Scene.RequestModuleInterface<IMoneyModule>();

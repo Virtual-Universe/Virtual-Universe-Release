@@ -36,7 +36,6 @@ using Universe.Framework.ClientInterfaces;
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
-
 using GridRegion = Universe.Framework.Services.GridRegion;
 
 namespace Universe.Modules.Scripting

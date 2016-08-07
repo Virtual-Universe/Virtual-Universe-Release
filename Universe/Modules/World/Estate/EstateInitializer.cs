@@ -231,7 +231,6 @@ namespace Universe.Modules.Estate
                 } else
                     LastEstateName = ownerEstates [0].EstateName;
 
-
                 // we should have a user account and estate name by now
                 int estateID = estateConnector.GetEstate (account.PrincipalID, LastEstateName);
                 if (estateID == 0) {
@@ -242,6 +241,7 @@ namespace Universe.Modules.Estate
                 return estateID;
             }
         }
+
 
         /// <summary>
         /// Creates the estate info for a region.
@@ -505,7 +505,8 @@ namespace Universe.Modules.Estate
             if (settings == null)
                 return;
             writer.WriteDir ("estatesettings");
-            writer.WriteFile ("estatesettings/" + scene.RegionInfo.RegionName, OSDParser.SerializeLLSDBinary (settings.ToOSD ()));
+            writer.WriteFile ("estatesettings/" + scene.RegionInfo.RegionName,
+                             OSDParser.SerializeLLSDBinary (settings.ToOSD ()));
 
             MainConsole.Instance.Debug ("[Archive]: Finished writing estates to archive");
             MainConsole.Instance.Debug ("[Archive]: Writing region info to archive");
@@ -513,7 +514,8 @@ namespace Universe.Modules.Estate
             writer.WriteDir ("regioninfo");
             RegionInfo regionInfo = scene.RegionInfo;
 
-            writer.WriteFile ("regioninfo/" + scene.RegionInfo.RegionName, OSDParser.SerializeLLSDBinary (regionInfo.PackRegionInfoData ()));
+            writer.WriteFile ("regioninfo/" + scene.RegionInfo.RegionName,
+                             OSDParser.SerializeLLSDBinary (regionInfo.PackRegionInfoData ()));
 
             MainConsole.Instance.Debug ("[Archive]: Finished writing region info to archive");
         }
@@ -534,7 +536,8 @@ namespace Universe.Modules.Estate
             } else if (filePath.StartsWith ("regioninfo/", System.StringComparison.Ordinal)) {
                 string m_merge =
                     MainConsole.Instance.Prompt (
-                        "Should we load the region information from the archive (region name, region position, etc)?", "false");
+                        "Should we load the region information from the archive (region name, region position, etc)?",
+                        "false");
                 RegionInfo settings = new RegionInfo ();
                 settings.UnpackRegionInfoData ((OSDMap)OSDParser.DeserializeLLSDBinary (data));
                 if (m_merge == "false") {

@@ -43,11 +43,9 @@ namespace Universe.Services.DataService
         IGenericData GD;
         const string m_realm = "statsdata";
 
-        public void Initialize(IGenericData GenericData, IConfigSource source, IRegistryCore simBase,
-                               string defaultConnectionString)
+        public void Initialize(IGenericData GenericData, IConfigSource source, IRegistryCore simBase, string defaultConnectionString)
         {
-            if (source.Configs["UniverseConnectors"].GetString("WebStatsDataConnector", "LocalConnector") ==
-                "LocalConnector")
+            if (source.Configs["UniverseConnectors"].GetString("WebStatsDataConnector", "LocalConnector") == "LocalConnector")
             {
                 GD = GenericData;
 
@@ -56,8 +54,7 @@ namespace Universe.Services.DataService
 
                 if (GD != null)
                 {
-                    GD.ConnectToDatabase (defaultConnectionString, "Stats",
-                        source.Configs ["UniverseConnectors"].GetBoolean ("ValidateTables", true));
+                    GD.ConnectToDatabase (defaultConnectionString, "Stats", source.Configs ["UniverseConnectors"].GetBoolean ("ValidateTables", true));
 
                     Framework.Utilities.DataManager.RegisterPlugin (Name, this);
                 }
@@ -202,6 +199,7 @@ namespace Universe.Services.DataService
                 message.FailuresResent = int.Parse(results[i + 32]);
                 message.FailuresSendPacket = int.Parse(results[i + 33]);
             }
+
             return message;
         }
     }

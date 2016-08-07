@@ -49,10 +49,8 @@ namespace Universe.Framework.Modules
     {
         #region Create/Remove bot
 
-        UUID CreateAvatar(string firstName, string LastName, IScene scene, UUID cloneAppearanceFrom, UUID creatorID,
-                          Vector3 startPos);
-        UUID CreateAvatar (string firstName, string lastName, IScene scene, AvatarAppearance avatarApp,
-                          UUID creatorID, Vector3 startPos);
+        UUID CreateAvatar(string firstName, string LastName, IScene scene, UUID cloneAppearanceFrom, UUID creatorID, Vector3 startPos);
+        UUID CreateAvatar (string firstName, string lastName, IScene scene, AvatarAppearance avatarApp, UUID creatorID, Vector3 startPos);
 
         void RemoveAvatar(UUID Bot, IScene iScene, UUID userAttempting);
         bool SetAvatarAppearance (UUID botID, AvatarAppearance avatarApp, IScene scene);

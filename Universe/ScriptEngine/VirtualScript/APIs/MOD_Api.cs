@@ -123,6 +123,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                 //lease.RenewOnCallTime = TimeSpan.FromSeconds(10.0);
                 //lease.SponsorshipTimeout = TimeSpan.FromMinutes(1.0);
             }
+
             return lease;
         }
 
@@ -131,10 +132,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             throw new Exception ("MOD Runtime Error: " + msg);
         }
 
-        //
         //Dumps an error message on the debug console.
-        //
-
         internal void modShoutError (string message)
         {
             if (message.Length > 1023)

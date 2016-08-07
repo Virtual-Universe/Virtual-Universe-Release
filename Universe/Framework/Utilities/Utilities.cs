@@ -431,7 +431,6 @@ namespace Universe.Framework.Utilities
             return uncompressedData;
         }
 
-
         /// <summary>
         ///     Download the file from downloadLink and save it to Universe + Version +
         /// </summary>
@@ -473,7 +472,6 @@ namespace Universe.Framework.Utilities
             }
             webClient.Dispose ();
         }
-
 
         /// <summary>
         /// Determines whether a string is a valid email address.
@@ -755,7 +753,6 @@ namespace Universe.Framework.Utilities
             "Warin", "Wilbordic", "Wilf", "Wulfwaru", "Yule"
         };
 
-
         public static string TransactionTypeInfo (TransactionType transType)
         {
             switch (transType) {
@@ -796,6 +793,5 @@ namespace Universe.Framework.Utilities
             default: return "System Generated";
             }
         }
-
     }
 }

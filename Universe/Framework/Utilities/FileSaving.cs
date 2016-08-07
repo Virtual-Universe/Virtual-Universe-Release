@@ -53,6 +53,7 @@ namespace Universe.Framework.Utilities
                 System.Xml.XmlDocument doc = new System.Xml.XmlDocument();
                 doc.Load(stream);
                 FileSaving config;
+
                 if (typeof (T).Name != "opencv_storage")
                 {
                     System.IO.MemoryStream r =
@@ -74,6 +75,7 @@ namespace Universe.Framework.Utilities
             catch
             {
             }
+
             return null;
         }
 
@@ -94,6 +96,7 @@ namespace Universe.Framework.Utilities
                     System.IO.File.WriteAllText(file, "");
                     stream = System.IO.File.OpenWrite(file);
                 }
+
                 xns.Add(string.Empty, string.Empty);
                 x.Serialize(stream, config, xns);
                 if (config.GetType().Name != "opencv_storage")
@@ -101,10 +104,10 @@ namespace Universe.Framework.Utilities
                     stream.Position = 0;
                     byte[] bs = new byte[stream.Length];
                     ((System.IO.MemoryStream) stream).Read(bs, 0, bs.Length);
-                    string s = xmlHeader + "<opencv_storage>" +
-                               System.Text.Encoding.UTF8.GetString(bs).Replace(xmlHeader, "") + "</opencv_storage>";
+                    string s = xmlHeader + "<opencv_storage>" + System.Text.Encoding.UTF8.GetString(bs).Replace(xmlHeader, "") + "</opencv_storage>";
                     System.IO.File.WriteAllText(file, s);
                 }
+
                 stream.Close();
             }
         }

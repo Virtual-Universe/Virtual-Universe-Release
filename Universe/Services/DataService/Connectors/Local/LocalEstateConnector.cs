@@ -51,8 +51,7 @@ namespace Universe.Services.DataService
             return m_doRemoteCalls; 
         }
 
-        public void Initialize(IGenericData GenericData, IConfigSource source, IRegistryCore registry,
-                               string defaultConnectionString)
+        public void Initialize(IGenericData GenericData, IConfigSource source, IRegistryCore registry, string defaultConnectionString)
         {
             GD = GenericData;
             m_registry = registry;
@@ -61,8 +60,7 @@ namespace Universe.Services.DataService
                 defaultConnectionString = source.Configs[Name].GetString("ConnectionString", defaultConnectionString);
 
             if (GD != null)
-                GD.ConnectToDatabase(defaultConnectionString, "Estate",
-                                     source.Configs["UniverseConnectors"].GetBoolean("ValidateTables", true));
+                GD.ConnectToDatabase(defaultConnectionString, "Estate", source.Configs["UniverseConnectors"].GetBoolean("ValidateTables", true));
 
             Framework.Utilities.DataManager.RegisterPlugin(Name + "Local", this);
 
@@ -70,6 +68,7 @@ namespace Universe.Services.DataService
             {
                 Framework.Utilities.DataManager.RegisterPlugin(this);
             }
+
             Init(registry, Name);
         }
 
@@ -83,7 +82,8 @@ namespace Universe.Services.DataService
         {
             EstateSettings settings = new EstateSettings () { EstateID = 0 };
 
-            if (m_doRemoteOnly) {
+            if (m_doRemoteOnly)
+            {
                 object remoteValue = DoRemote (regionID);
                 return remoteValue != null ? (EstateSettings)remoteValue : settings;
             }
@@ -91,13 +91,15 @@ namespace Universe.Services.DataService
             int estateID = GetEstateID(regionID);
             if (estateID == 0)
                 return settings;
+
             settings = GetEstate(estateID);
             return settings;
         }
 
         public EstateSettings GetEstateSettings(int EstateID)
         {
-            if (m_doRemoteOnly) {
+            if (m_doRemoteOnly)
+            {
                 object remoteValue = DoRemote (EstateID);
                 return remoteValue != null ? (EstateSettings)remoteValue : new EstateSettings { EstateID = 0 };
             }
@@ -109,7 +111,6 @@ namespace Universe.Services.DataService
         {
             QueryFilter filter = new QueryFilter();
             filter.andFilters["EstateName"] = name;
-            //            var EstateID = int.Parse (GD.Query (new string[1] { "EstateID" }, "estatesettings", filter, null, null, null) [0]);
             List<string> estate = GD.Query(new string[1] { "EstateID" }, m_estateSettingsTable, filter, null, null, null);
 
             if (estate.Count == 0)              // not found!!
@@ -159,7 +160,6 @@ namespace Universe.Services.DataService
                 return remoteValue != null ? (int)remoteValue : 0;
             }
 
-
             int estateID = GetEstate(es.EstateOwner, es.EstateName);
             if (estateID > 0)
             {
@@ -167,12 +167,12 @@ namespace Universe.Services.DataService
                     return estateID;
                 return 0;
             }
+
             es.EstateID = GetNewEstateID();
             SaveEstateSettings(es, true);
             LinkRegion(RegionID, (int) es.EstateID);
             return (int) es.EstateID;
         }
-
 
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
         public void SaveEstateSettings(EstateSettings es)
@@ -188,7 +188,8 @@ namespace Universe.Services.DataService
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
         public bool LinkRegion(UUID regionID, int estateID)
         {
-            if (m_doRemoteOnly) {
+            if (m_doRemoteOnly)
+            {
                 object remoteValue = DoRemote (regionID, estateID);
                 return remoteValue != null ? (bool)remoteValue : false;
             }
@@ -204,7 +205,8 @@ namespace Universe.Services.DataService
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
         public bool DelinkRegion(UUID regionID)
         {
-            if (m_doRemoteOnly) {
+            if (m_doRemoteOnly)
+            {
                 object remoteValue = DoRemote (regionID);
                 return remoteValue != null ? (bool)remoteValue : false;
             }
@@ -219,7 +221,8 @@ namespace Universe.Services.DataService
         [CanBeReflected(ThreatLevel = ThreatLevel.High)]
         public bool DeleteEstate(int estateID)
         {
-            if (m_doRemoteOnly) {
+            if (m_doRemoteOnly)
+            {
                 object remoteValue = DoRemote (estateID);
                 return remoteValue != null ? (bool)remoteValue : false;
             }
@@ -235,7 +238,8 @@ namespace Universe.Services.DataService
         [CanBeReflected(ThreatLevel = ThreatLevel.High)]
         public bool EstateExists(string name)
         {
-            if (m_doRemoteOnly) {
+            if (m_doRemoteOnly)
+            {
                 object remoteValue = DoRemote (name);
                 return remoteValue != null ? (bool)remoteValue : false;
             }
@@ -250,7 +254,8 @@ namespace Universe.Services.DataService
         [CanBeReflected(ThreatLevel = ThreatLevel.High)]
         public bool EstateRegionExists(int estateID, UUID regionID)
         {
-            if (m_doRemoteOnly) {
+            if (m_doRemoteOnly)
+            {
                 object remoteValue = DoRemote (estateID, regionID);
                 return remoteValue != null ? (bool)remoteValue : false;
             }
@@ -270,7 +275,8 @@ namespace Universe.Services.DataService
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
         public int GetEstateID(string name)
         {
-            if (m_doRemoteOnly) {
+            if (m_doRemoteOnly)
+            {
                 object remoteValue = DoRemote (name);
                 return remoteValue != null ? (int)remoteValue : 0;
             }
@@ -287,7 +293,8 @@ namespace Universe.Services.DataService
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
         public int GetEstate(UUID ownerID, string name)
         {
-            if (m_doRemoteOnly) {
+            if (m_doRemoteOnly)
+            {
                 object remoteValue = DoRemote (ownerID, name);
                 return remoteValue != null ? (int)remoteValue : 0;
             }
@@ -306,7 +313,8 @@ namespace Universe.Services.DataService
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
         public List<UUID> GetRegions(int estateID)
         {
-            if (m_doRemoteOnly) {
+            if (m_doRemoteOnly)
+            {
                 object remoteValue = DoRemote (estateID);
                 return remoteValue != null ? (List<UUID>)remoteValue : new List<UUID> ();
             }
@@ -367,6 +375,7 @@ namespace Universe.Services.DataService
                 if (Add)
                     settings.Add(es);
             }
+
             return settings;
         }
 
@@ -411,6 +420,7 @@ namespace Universe.Services.DataService
                 if (esID > 99)                                 // Mainland is @#1, system estate is #10, user estates start at 100
                     return esID + 1;
             }
+
             return 100;
         }
 

@@ -136,7 +136,6 @@ namespace Universe.Framework.SceneInfo
     public class TaskInventoryItem : ICloneable
     {
         private UUID _assetID = UUID.Zero;
-
         private uint _baseMask = TaskInventoryItemHelpers.FULL_MASK_PERMISSIONS_GENERAL;
         private string _creatorData = String.Empty;
         private UUID _creatorID = UUID.Zero;
@@ -144,7 +143,6 @@ namespace Universe.Framework.SceneInfo
         private uint _everyoneMask = TaskInventoryItemHelpers.FULL_MASK_PERMISSIONS_GENERAL;
         private UUID _groupID = UUID.Zero;
         private uint _groupMask = TaskInventoryItemHelpers.FULL_MASK_PERMISSIONS_GENERAL;
-
         private UUID _itemID = UUID.Zero;
         private UUID _lastOwnerID = UUID.Zero;
         private string _name = String.Empty;
@@ -220,7 +218,7 @@ namespace Universe.Framework.SceneInfo
                     UUID.TryParse(value, out uuid);
                     _creatorID = uuid;
                 }
-                else // <uuid>[;<endpoint>[;name]]
+                else
                 {
                     string name = "Unknown User";
                     string[] parts = value.Split(';');
@@ -230,6 +228,7 @@ namespace Universe.Framework.SceneInfo
                         UUID.TryParse(parts[0], out uuid);
                         _creatorID = uuid;
                     }
+
                     if (parts.Length >= 2)
                         _creatorData = parts[1];
                     if (parts.Length >= 3)

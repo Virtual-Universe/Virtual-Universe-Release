@@ -43,12 +43,10 @@ namespace Universe.Services.DataService
 
         #region IFriendsData Members
 
-        public void Initialize (IGenericData GenericData, IConfigSource source, IRegistryCore simBase,
-                               string defaultConnectionString)
+        public void Initialize (IGenericData GenericData, IConfigSource source, IRegistryCore simBase, string defaultConnectionString)
         {
             if (source.Configs ["UniverseConnectors"].GetString ("FriendsConnector", "LocalConnector") != "LocalConnector")
                 return;
-
 
             GD = GenericData;
 
@@ -57,8 +55,7 @@ namespace Universe.Services.DataService
                 connectionString = source.Configs [Name].GetString ("ConnectionString", defaultConnectionString);
 
             if (GD != null)
-                GD.ConnectToDatabase (connectionString, "Friends",
-                                     source.Configs ["UniverseConnectors"].GetBoolean ("ValidateTables", true));
+                GD.ConnectToDatabase (connectionString, "Friends", source.Configs ["UniverseConnectors"].GetBoolean ("ValidateTables", true));
 
             Framework.Utilities.DataManager.RegisterPlugin (this);
         }
@@ -97,8 +94,7 @@ namespace Universe.Services.DataService
 
             QueryTables tables = new QueryTables ();
             tables.AddTable (m_realm, "my");
-            tables.AddTable (m_realm, "his", JoinType.Inner,
-                            new [,] { { "my.Friend", "his.PrincipalID" }, { "my.PrincipalID", "his.Friend" } });
+            tables.AddTable (m_realm, "his", JoinType.Inner, new [,] { { "my.Friend", "his.PrincipalID" }, { "my.PrincipalID", "his.Friend" } });
             QueryFilter filter = new QueryFilter ();
             filter.andFilters ["my.PrincipalID"] = principalID;
             List<string> query = GD.Query (new string []
@@ -117,6 +113,7 @@ namespace Universe.Services.DataService
                     MyFlags = int.Parse (query [i + 1]),
                     TheirFlags = int.Parse (query [i + 2])
                 };
+
                 infos.Add (info);
             }
 
@@ -146,6 +143,7 @@ namespace Universe.Services.DataService
                     Friend = query [i],
                     MyFlags = int.Parse (query [i + 1]),
                 };
+
                 infos.Add (info);
             }
 

@@ -41,8 +41,7 @@ namespace Universe.Framework.Modules
     {
         string CapsUpdateInventoryItemAsset(IClientAPI remoteClient, UUID itemID, byte[] data);
 
-        UUID DeleteToInventory(DeRezAction action, UUID folderID, List<ISceneEntity> objectGroups, UUID agentId,
-                               out UUID itemID);
+        UUID DeleteToInventory(DeRezAction action, UUID folderID, List<ISceneEntity> objectGroups, UUID agentId, out UUID itemID);
 
         /// <summary>
         ///     Saves the given objects as an asset and returns the UUID of it
@@ -69,7 +68,6 @@ namespace Universe.Framework.Modules
         /// <param name="assetID"></param>
         /// <returns></returns>
         ISceneEntity CreateObjectFromInventory(IClientAPI remoteClient, UUID itemID, UUID assetID, InventoryItemBase item);
-
 
         /// <summary>
         /// Restores the object in world.

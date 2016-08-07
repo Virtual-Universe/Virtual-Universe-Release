@@ -131,8 +131,9 @@ namespace Universe.Modules.Web
             vars.Add("MemoryUseageText", translator.GetTranslatedString("MemoryUseageText"));
             vars.Add("PingTimeText", translator.GetTranslatedString("PingTimeText"));
             vars.Add("AgentsInViewText", translator.GetTranslatedString("AgentsInViewText"));
+
             vars.Add("ClearStatsText", translator.GetTranslatedString("ClearStatsText"));
-                  
+                
             return vars;
         }
 

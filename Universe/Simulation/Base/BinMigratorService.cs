@@ -117,6 +117,7 @@ namespace Universe.Simulation.Base
                     else
                         section.Remove (name);
                 }
+
                 doc.Save ();
             }
         }

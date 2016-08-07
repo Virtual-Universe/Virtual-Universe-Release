@@ -41,7 +41,9 @@ namespace Universe.Modules.GlobalEnvironment
 {
     public class SunModule : ISunModule
     {
+        //
         // Global Constants used to determine where in the sky the sun is
+        //
         const double m_SeasonalTilt = 0.03 * Math.PI;       // A daily shift of approximately 1.7188 degrees
         const double m_AverageTilt = -0.25 * Math.PI;       // A 45 degree tilt
         const double m_SunCycle = 2.0D * Math.PI;           // A perfect circle measured in radians
@@ -56,7 +58,10 @@ namespace Universe.Modules.GlobalEnvironment
         double SeasonSpeed;                                 // Rate of change for seasonal effects
         double SeasonalOffset;                              // Seasonal variation of tilt
 
+        //
         //    Per Region Values
+        //
+
         uint SecondsPerSunCycle;                            // Length of a virtual day in RW seconds
         uint SecondsPerYear;                                // Length of a virtual year in RW seconds
         double SunSpeed;                                    // Rate of passage in radians/second
@@ -93,6 +98,7 @@ namespace Universe.Modules.GlobalEnvironment
         IScene m_scene;
         bool m_sunIsReadyToRun;
         bool ready;
+
 
         // Current time in elapsed seconds since Jan 1st 1970
         ulong CurrentTime
@@ -175,9 +181,10 @@ namespace Universe.Modules.GlobalEnvironment
                 }
             }
 
+
             TimeZone local = TimeZone.CurrentTimeZone;
             TicksUTCOffset = local.GetUtcOffset (local.ToLocalTime (DateTime.Now)).Ticks;
-            //MainConsole.Instance.Debug("[Sun]: localtime offset is " + TicksUTCOffset);
+            //MainConsole.Instance.Debug("[SUN]: localtime offset is " + TicksUTCOffset);
 
             // Align ticks with Second Life
 
@@ -360,6 +367,7 @@ namespace Universe.Modules.GlobalEnvironment
                 while (fixedSunHour < 0)
                     fixedSunHour += 24;
 
+
                 m_SunFixedHour = fixedSunHour;
                 m_SunFixed = fixedSun;
                 
@@ -368,6 +376,7 @@ namespace Universe.Modules.GlobalEnvironment
 
                 // When sun settings are updated, we should update all clients with new settings.
                 SunUpdateToAllClients ();
+
 
                 //MainConsole.Instance.DebugFormat("[SUN]: PosTime : {0}", PosTime.ToString());
             }

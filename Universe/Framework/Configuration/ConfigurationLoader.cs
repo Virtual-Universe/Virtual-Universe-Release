@@ -115,8 +115,10 @@ namespace Universe.Framework.Configuration
                             File.Exists (masterFilePath) &&
                             (!sources.Contains (masterFilePath)))
                             sources.Add (masterFilePath);
+
                         if (iniGridName == "") //Then it doesn't exist and we need to set this
                             iniFilePath = masterFilePath;
+
                         if (iniSimName == "") //Then it doesn't exist and we need to set this
                             iniFilePath = masterFilePath;
                     }
@@ -201,8 +203,6 @@ namespace Universe.Framework.Configuration
             IConfigSource m_config = new IniConfigSource ();
             IConfigSource m_fakeconfig = new IniConfigSource ();
 
-            //Console.WriteLine(string.Format("[Config]: Reading configuration settings"));
-
             if (sources.Count == 0) {
                 Console.WriteLine (string.Format ("[Config]: Could not load any configuration"));
                 Console.WriteLine (string.Format ("          If your Config folder is not located in the default location then you need to"));
@@ -252,9 +252,9 @@ namespace Universe.Framework.Configuration
                 Console.WriteLine (string.Format ("[Config]: Could not load any configuration"));
                 Console.WriteLine (string.Format ("[Config]: .. or Configuration possibly exists, but there was an error loading it!"));
                 Console.WriteLine (string.Format ("[Config]: Configuration : " + mainIniDirectory + ", " + mainIniFileName));
-                //throw new NotSupportedException();
                 return null;
             }
+
             // Make sure command line options take precedence
             if (argvSource != null)
                 m_config.Merge (argvSource);
@@ -278,6 +278,7 @@ namespace Universe.Framework.Configuration
                             select value1.Replace (def, m_defines [def])) {
                         config.Set (config.GetKeys () [i], newValue);
                     }
+
                     i++;
                 }
             }
@@ -291,8 +292,7 @@ namespace Universe.Framework.Configuration
         /// <param name="cntr">Where should we start inserting sources into the list?</param>
         /// <param name="triedPaths"></param>
         /// <param name="configSource"></param>
-        void AddIncludes (List<string> sources, string basePath, ref int cntr, ref List<string> triedPaths,
-                                 IConfigSource configSource)
+        void AddIncludes (List<string> sources, string basePath, ref int cntr, ref List<string> triedPaths, IConfigSource configSource)
         {
             int cn = cntr;
             //Where should we insert the sources into the list?
@@ -324,6 +324,7 @@ namespace Universe.Framework.Configuration
                                 chunkWithoutWildcards = file.Substring (0, wildcardIndex);
                                 chunkWithWildcards = file.Substring (wildcardIndex);
                             }
+
                             string path = Path.Combine (basePath, chunkWithoutWildcards + chunkWithWildcards);
                             List<string> paths = new List<string> (new string [] { path });
                             if (path.Contains ("*"))
@@ -347,7 +348,9 @@ namespace Universe.Framework.Configuration
                         string file = config.GetString (k);
                         if (triedPaths.Contains (file))
                             continue;
+
                         triedPaths.Add (file);
+
                         if (IsUri (file)) {
                             if (!sources.Contains (file)) {
                                 cn--;
@@ -358,10 +361,12 @@ namespace Universe.Framework.Configuration
                             string chunkWithoutWildcards = file;
                             string chunkWithWildcards = string.Empty;
                             int wildcardIndex = file.IndexOfAny (new [] { '*', '?' });
+
                             if (wildcardIndex != -1) {
                                 chunkWithoutWildcards = file.Substring (0, wildcardIndex);
                                 chunkWithWildcards = file.Substring (wildcardIndex);
                             }
+
                             string path = Path.Combine (basePath, chunkWithoutWildcards + chunkWithWildcards);
                             string [] paths = { path };
                             if (path.Contains ("*"))
@@ -402,13 +407,13 @@ namespace Universe.Framework.Configuration
 
             if (!IsUri (iniPath)) {
                 if (showIniLoading)
-                    Console.WriteLine (string.Format ("[Config]: Reading configuration file {0}",
-                                                    Util.BasePathCombine (iniPath)));
+                    Console.WriteLine (string.Format ("[Config]: Reading configuration file {0}", Util.BasePathCombine (iniPath)));
 
                 source.Merge (new IniConfigSource (iniPath, IniFileType.AuroraStyle));
                 if (inidbg) {
                     WriteConfigFile (i, source);
                 }
+
                 success = true;
             } else {
                 // The ini file path is a http URI
@@ -419,13 +424,13 @@ namespace Universe.Framework.Configuration
                     File.WriteAllText (filename, file);
 
                     if (showIniLoading)
-                        Console.WriteLine (string.Format ("[Config]: Reading configuration file {0}",
-                                                        Util.BasePathCombine (iniPath)));
+                        Console.WriteLine (string.Format ("[Config]: Reading configuration file {0}", Util.BasePathCombine (iniPath)));
 
                     source.Merge (new IniConfigSource (filename, IniFileType.AuroraStyle));
                     if (inidbg) {
                         WriteConfigFile (i, source);
                     }
+
                     File.Delete (filename);
                     success = true;
                 } catch (Exception e) {
@@ -433,6 +438,7 @@ namespace Universe.Framework.Configuration
                     Environment.Exit (1);
                 }
             }
+
             return success;
         }
 

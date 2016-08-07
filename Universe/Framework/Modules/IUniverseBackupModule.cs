@@ -43,11 +43,8 @@ namespace Universe.Framework.Modules
     {
         bool IsArchiving { get; }
         void SaveModuleToArchive(TarArchiveWriter writer, IScene scene);
-
         void BeginLoadModuleFromArchive(IScene scene);
-
         void LoadModuleFromArchive(byte[] data, string filePath, TarArchiveReader.TarEntryType type, IScene scene);
-
         void EndLoadModuleFromArchive(IScene scene);
     }
 }

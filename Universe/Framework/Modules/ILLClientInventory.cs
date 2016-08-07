@@ -82,8 +82,7 @@ namespace Universe.Framework.Modules
         /// <param name="m_host"></param>
         /// <param name="objID"></param>
         /// <param name="checkPermissions"></param>
-        InventoryItemBase MoveTaskInventoryItemToUserInventory(UUID destID, UUID uuid, ISceneChildEntity m_host,
-                                                               UUID objID, bool checkPermissions);
+        InventoryItemBase MoveTaskInventoryItemToUserInventory(UUID destID, UUID uuid, ISceneChildEntity m_host, UUID objID, bool checkPermissions);
 
         /// <summary>
         ///     Move the given items from the object task inventory to the agent's inventory

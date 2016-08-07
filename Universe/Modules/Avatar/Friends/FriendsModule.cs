@@ -228,6 +228,7 @@ namespace Universe.Modules.Friends
                 LocalFriendshipTerminated (ExFriend, Requester);
             } else if (message ["Method"] == "FriendshipOffered")
             {
+                //UUID Requester = message["Requester"].AsUUID();
                 UUID Friend = message ["Friend"].AsUUID ();
                 GridInstantMessage im = new GridInstantMessage ();
                 im.FromOSD ((OSDMap)message ["Message"]);
@@ -291,9 +292,11 @@ namespace Universe.Modules.Friends
                 UUID friendID = im.ToAgentID;
 
                 //Can't trust the incoming name for friend offers, so we have to find it ourselves.
-                UserAccount sender = m_scene.UserAccountService.GetUserAccount (m_scene.RegionInfo.AllScopeIDs, principalID);
+                UserAccount sender = m_scene.UserAccountService.GetUserAccount (m_scene.RegionInfo.AllScopeIDs,
+                                         principalID);
                 im.FromAgentName = sender.Name;
-                UserAccount reciever = m_scene.UserAccountService.GetUserAccount (m_scene.RegionInfo.AllScopeIDs, friendID);
+                UserAccount reciever = m_scene.UserAccountService.GetUserAccount (m_scene.RegionInfo.AllScopeIDs,
+                                           friendID);
 
                 MainConsole.Instance.DebugFormat ("[FRIENDS]: {0} offered friendship to {1}", sender.Name, reciever.Name);
                 // This user wants to be friends with the other user.
@@ -307,7 +310,7 @@ namespace Universe.Modules.Friends
 
         void ForwardFriendshipOffer (UUID agentID, UUID friendID, GridInstantMessage im)
         {
-            // This is a hack so that we don't have to keep state (transactionID/imSessionID)
+            // !!!!!!!! This is a hack so that we don't have to keep state (transactionID/imSessionID)
             // We stick this agent's ID as imSession, so that it's directly available on the receiving end
             im.SessionID = im.FromAgentID;
 
@@ -355,7 +358,8 @@ namespace Universe.Modules.Friends
             // Try Local
             if (LocalFriendshipApproved (agentID, client.Name, client, friendID))
                 return;
-            SyncMessagePosterService.PostToServer (SyncMessageHelper.FriendshipApproved (agentID, client.Name, friendID, m_scene.RegionInfo.RegionID));
+            SyncMessagePosterService.PostToServer (SyncMessageHelper.FriendshipApproved (
+                agentID, client.Name, friendID, m_scene.RegionInfo.RegionID));
         }
 
         void OnDenyFriendRequest (IClientAPI client, UUID agentID, UUID friendID, List<UUID> callingCardFolders)
@@ -420,7 +424,9 @@ namespace Universe.Modules.Friends
             if (friends.Length == 0)
                 return;
 
-            MainConsole.Instance.DebugFormat ("[FRIENDS MODULE]: User {0} changing rights to {1} for friend {2}", requester, rights, target);
+            MainConsole.Instance.DebugFormat ("[FRIENDS MODULE]: User {0} changing rights to {1} for friend {2}",
+                requester, rights,
+                target);
 
             // Let's find the friend in this user's friend list
             FriendInfo friend = null;
@@ -444,6 +450,7 @@ namespace Universe.Modules.Friends
                 //
                 // Notify the friend
                 //
+
 
                 // Try local
                 if (!LocalGrantRights (requester, target, myFlags, rights))
@@ -488,6 +495,7 @@ namespace Universe.Modules.Friends
                     LocalFriendshipOffered (agentID, im);
                 }
             }
+
         }
 
         void UpdateFriendsCache (UUID agentID)

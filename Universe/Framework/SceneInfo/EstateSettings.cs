@@ -121,8 +121,6 @@ namespace Universe.Framework.SceneInfo
         }
 
         // Used by the sim
-        //
-
         [ProtoMember(9)]
         public bool UseGlobalTime
         {
@@ -198,9 +196,7 @@ namespace Universe.Framework.SceneInfo
         [ProtoMember(25)]
         public bool DenyMinors { get; set; }
 
-        // All those lists...
-        //
-
+        // All those lists
         [ProtoMember(26)]
         public List<UUID> EstateManagers
         {
@@ -314,6 +310,7 @@ namespace Universe.Framework.SceneInfo
             {
                 Ban.Add(ban.ToOSD());
             }
+
             values["EstateBans"] = Ban;
 
             values["EstateManagers"] = EstateManagers.ToOSDArray();
@@ -327,6 +324,7 @@ namespace Universe.Framework.SceneInfo
         {
             if (avatarID == UUID.Zero)
                 return;
+
             if (!l_EstateAccess.Contains(avatarID))
                 l_EstateAccess.Add(avatarID);
         }
@@ -341,6 +339,7 @@ namespace Universe.Framework.SceneInfo
         {
             if (avatarID == UUID.Zero)
                 return;
+
             if (!l_EstateGroups.Contains(avatarID))
                 l_EstateGroups.Add(avatarID);
         }
@@ -355,6 +354,7 @@ namespace Universe.Framework.SceneInfo
         {
             if (avatarID == UUID.Zero)
                 return;
+
             if (!l_EstateManagers.Contains(avatarID))
                 l_EstateManagers.Add(avatarID);
         }
@@ -390,6 +390,7 @@ namespace Universe.Framework.SceneInfo
         {
             if (ban == null)
                 return;
+
             if (!IsBanned(ban.BannedUserID))
                 l_EstateBans.Add(ban);
         }
@@ -415,16 +416,11 @@ namespace Universe.Framework.SceneInfo
 
         public void SetFromFlags(ulong regionFlags)
         {
-            ResetHomeOnTeleport = ((regionFlags & (ulong) OpenMetaverse.RegionFlags.ResetHomeOnTeleport) ==
-                                   (ulong) OpenMetaverse.RegionFlags.ResetHomeOnTeleport);
-            BlockDwell = ((regionFlags & (ulong) OpenMetaverse.RegionFlags.BlockDwell) ==
-                          (ulong) OpenMetaverse.RegionFlags.BlockDwell);
-            AllowLandmark = ((regionFlags & (ulong) OpenMetaverse.RegionFlags.AllowLandmark) ==
-                             (ulong) OpenMetaverse.RegionFlags.AllowLandmark);
-            AllowParcelChanges = ((regionFlags & (ulong) OpenMetaverse.RegionFlags.AllowParcelChanges) ==
-                                  (ulong) OpenMetaverse.RegionFlags.AllowParcelChanges);
-            AllowSetHome = ((regionFlags & (ulong) OpenMetaverse.RegionFlags.AllowSetHome) ==
-                            (ulong) OpenMetaverse.RegionFlags.AllowSetHome);
+            ResetHomeOnTeleport = ((regionFlags & (ulong) OpenMetaverse.RegionFlags.ResetHomeOnTeleport) == (ulong) OpenMetaverse.RegionFlags.ResetHomeOnTeleport);
+            BlockDwell = ((regionFlags & (ulong) OpenMetaverse.RegionFlags.BlockDwell) == (ulong) OpenMetaverse.RegionFlags.BlockDwell);
+            AllowLandmark = ((regionFlags & (ulong) OpenMetaverse.RegionFlags.AllowLandmark) == (ulong) OpenMetaverse.RegionFlags.AllowLandmark);
+            AllowParcelChanges = ((regionFlags & (ulong) OpenMetaverse.RegionFlags.AllowParcelChanges) == (ulong) OpenMetaverse.RegionFlags.AllowParcelChanges);
+            AllowSetHome = ((regionFlags & (ulong) OpenMetaverse.RegionFlags.AllowSetHome) == (ulong) OpenMetaverse.RegionFlags.AllowSetHome);
         }
     }
 }

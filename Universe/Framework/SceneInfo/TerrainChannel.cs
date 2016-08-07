@@ -100,6 +100,7 @@ namespace Universe.Framework.SceneInfo
                 m_Width = scene.RegionInfo.RegionSizeX;
                 m_Height = scene.RegionInfo.RegionSizeY;
             }
+
             if (createMap) {
                 m_map = new short [m_Width * m_Height];
                 taint = new bool [m_Width / Constants.TerrainPatchSize, m_Height / Constants.TerrainPatchSize];
@@ -161,6 +162,7 @@ namespace Universe.Framework.SceneInfo
                 // Will "fix" terrain hole problems. Although not fantastically.
                 if (value * Constants.TerrainCompression > short.MaxValue)
                     value = short.MaxValue;
+
                 if (value * Constants.TerrainCompression < short.MinValue)
                     value = short.MinValue;
 
@@ -177,6 +179,7 @@ namespace Universe.Framework.SceneInfo
                 taint [x / Constants.TerrainPatchSize, y / Constants.TerrainPatchSize] = false;
                 return true;
             }
+
             return false;
         }
 
@@ -226,6 +229,7 @@ namespace Universe.Framework.SceneInfo
                 Y = (v0.Z * v1.X) - (v0.X * v1.Z),
                 Z = (v0.X * v1.Y) - (v0.Y * v1.X)
             };
+
             vsn.Normalize ();
 
             return ((vsn.X + vsn.Y) / (-1 * vsn.Z)) + p0.Z;
@@ -241,8 +245,6 @@ namespace Universe.Framework.SceneInfo
         {
             var groundHeight = GetNormalizedGroundHeight (x, y);
             var waterHeight = m_scene.RegionInfo.RegionSettings.WaterHeight;
-
-            //var landHeight = (groundHeight < waterHeight) ? 0f : groundHeight - waterHeight;
             var landHeight = groundHeight - waterHeight;
 
             // this is the height above/below the waterline
@@ -332,36 +334,17 @@ namespace Universe.Framework.SceneInfo
             m_map = null;
             taint = null;
             m_map = new short [m_scene.RegionInfo.RegionSizeX * m_scene.RegionInfo.RegionSizeY];
-            taint =
-                new bool [m_scene.RegionInfo.RegionSizeX / Constants.TerrainPatchSize,
-                    m_scene.RegionInfo.RegionSizeY / Constants.TerrainPatchSize];
+            taint = new bool [m_scene.RegionInfo.RegionSizeX / Constants.TerrainPatchSize, m_scene.RegionInfo.RegionSizeY / Constants.TerrainPatchSize];
             m_Width = m_scene.RegionInfo.RegionSizeX;
             m_Height = m_scene.RegionInfo.RegionSizeY;
-
-            /* int x;
-             for (x = 0; x < m_scene.RegionInfo.RegionSizeX; x++)
-             {
-                 int y;
-                 for (y = 0; y < m_scene.RegionInfo.RegionSizeY; y++)
-                 {
-                     // this[x, y] = (float) m_scene.RegionInfo.RegionSettings.WaterHeight + .1f;
-                     this[x, y] = 0.0f;
-                 }
-             }
-             */
-            //m_scene.RegionInfo.RegionSettings.WaterHeight = 0.0f;
-            //m_scene.RegionInfo.RegionSettings.TerrainTexture1 = UUID.Zero;
         }
 
         void CreateFlatlandTerrain ()
         {
-
             m_map = null;
             taint = null;
             m_map = new short [m_scene.RegionInfo.RegionSizeX * m_scene.RegionInfo.RegionSizeY];
-            taint =
-                new bool [m_scene.RegionInfo.RegionSizeX / Constants.TerrainPatchSize,
-                    m_scene.RegionInfo.RegionSizeY / Constants.TerrainPatchSize];
+            taint = new bool [m_scene.RegionInfo.RegionSizeX / Constants.TerrainPatchSize, m_scene.RegionInfo.RegionSizeY / Constants.TerrainPatchSize];
             m_Width = m_scene.RegionInfo.RegionSizeX;
             m_Height = m_scene.RegionInfo.RegionSizeY;
 
@@ -373,7 +356,6 @@ namespace Universe.Framework.SceneInfo
                 }
             }
         }
-
 
         void CreateMainlandTerrain (int smoothing)
         {
@@ -388,9 +370,7 @@ namespace Universe.Framework.SceneInfo
             m_map = null;
             taint = null;
             m_map = new short [m_scene.RegionInfo.RegionSizeX * m_scene.RegionInfo.RegionSizeY];
-            taint =
-                new bool [m_scene.RegionInfo.RegionSizeX / Constants.TerrainPatchSize,
-                         m_scene.RegionInfo.RegionSizeY / Constants.TerrainPatchSize];
+            taint = new bool [m_scene.RegionInfo.RegionSizeX / Constants.TerrainPatchSize, m_scene.RegionInfo.RegionSizeY / Constants.TerrainPatchSize];
 
             int rWidth = m_scene.RegionInfo.RegionSizeX;
             int rHeight = m_scene.RegionInfo.RegionSizeY;
@@ -425,9 +405,7 @@ namespace Universe.Framework.SceneInfo
             m_map = null;
             taint = null;
             m_map = new short [m_scene.RegionInfo.RegionSizeX * m_scene.RegionInfo.RegionSizeY];
-            taint =
-                new bool [m_scene.RegionInfo.RegionSizeX / Constants.TerrainPatchSize,
-                         m_scene.RegionInfo.RegionSizeY / Constants.TerrainPatchSize];
+            taint = new bool [m_scene.RegionInfo.RegionSizeX / Constants.TerrainPatchSize, m_scene.RegionInfo.RegionSizeY / Constants.TerrainPatchSize];
 
             int rWidth = m_scene.RegionInfo.RegionSizeX;
             int rHeight = m_scene.RegionInfo.RegionSizeY;
@@ -452,9 +430,7 @@ namespace Universe.Framework.SceneInfo
             m_map = null;
             taint = null;
             m_map = new short [m_scene.RegionInfo.RegionSizeX * m_scene.RegionInfo.RegionSizeY];
-            taint =
-                new bool [m_scene.RegionInfo.RegionSizeX / Constants.TerrainPatchSize,
-                         m_scene.RegionInfo.RegionSizeY / Constants.TerrainPatchSize];
+            taint = new bool [m_scene.RegionInfo.RegionSizeX / Constants.TerrainPatchSize, m_scene.RegionInfo.RegionSizeY / Constants.TerrainPatchSize];
             m_Width = m_scene.RegionInfo.RegionSizeX;
             m_Height = m_scene.RegionInfo.RegionSizeY;
 
@@ -488,12 +464,10 @@ namespace Universe.Framework.SceneInfo
                 for (y = 0; y < m_scene.RegionInfo.RegionSizeY; y++) {
                     if (this [x, y] > m_scene.RegionInfo.RegionSettings.WaterHeight)
                         regionArea++;
-
                 }
             }
 
             m_scene.RegionInfo.RegionArea = regionArea;
         }
-
     }
 }

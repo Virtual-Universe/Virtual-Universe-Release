@@ -41,7 +41,6 @@ namespace Universe.Services
     // Principals may be clients acting on users' behalf,
     // or any other components that need 
     // verifiable identification.
-    //
     public class PasswordAuthenticationService :
         AuthenticationServiceBase, IAuthenticationService, IService
     {

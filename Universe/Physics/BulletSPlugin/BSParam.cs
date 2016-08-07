@@ -35,7 +35,7 @@ namespace Universe.Physics.BulletSPlugin
 {
     public static class BSParam
     {
-        static string LogHeader = "[BULLETSIM PARAMETERS]";
+        static string LogHeader = "[Bulletsim Parameters]";
 
         // Tuning notes:
         // From: http://bulletphysics.org/Bullet/phpBB3/viewtopic.php?t=6575
@@ -146,15 +146,15 @@ namespace Universe.Physics.BulletSPlugin
         public static float AvatarTerminalVelocity { get; private set; }
         public static float AvatarContactProcessingThreshold { get; private set; }
         public static float AvatarStopZeroThreshold { get; private set; }
-        public static int AvatarJumpFrames { get; private set; }
+	    public static int AvatarJumpFrames { get; private set; }
         public static float AvatarBelowGroundUpCorrectionMeters { get; private set; }
         public static float AvatarStepHeight { get; private set; }
-        public static float AvatarStepAngle { get; private set; }
-        public static float AvatarStepGroundFudge { get; private set; }
+	    public static float AvatarStepAngle { get; private set; }
+	    public static float AvatarStepGroundFudge { get; private set; }
         public static float AvatarStepApproachFactor { get; private set; }
         public static float AvatarStepForceFactor { get; private set; }
-        public static float AvatarStepUpCorrectionFactor { get; private set; }
-        public static int AvatarStepSmoothingSteps { get; private set; }
+	    public static float AvatarStepUpCorrectionFactor { get; private set; }
+	    public static int AvatarStepSmoothingSteps { get; private set; }
 
         // Vehicle parameters
         public static float VehicleMaxLinearVelocity { get; private set; }
@@ -186,31 +186,31 @@ namespace Universe.Physics.BulletSPlugin
         public static float CSHullVolumeConservationThresholdPercent { get; private set; }
         public static int CSHullMaxVertices { get; private set; }
         public static float CSHullMaxSkinWidth { get; private set; }
-        public static float BHullMaxVerticesPerHull { get; private set; }       // 100
-        public static float BHullMinClusters { get; private set; }              // 2
-        public static float BHullCompacityWeight { get; private set; }          // 0.1
-        public static float BHullVolumeWeight { get; private set; }             // 0.0
-        public static float BHullConcavity { get; private set; }                    // 100
-        public static bool BHullAddExtraDistPoints { get; private set; }        // false
-        public static bool BHullAddNeighboursDistPoints { get; private set; }   // false
-        public static bool BHullAddFacesPoints { get; private set; }            // false
-        public static bool BHullShouldAdjustCollisionMargin { get; private set; }   // false
-        public static float WhichHACD { get; private set; }                 // zero if Bullet HACD, non-zero says VHACD
-                                                                            // Parameters for VHACD 2.0: http://code.google.com/p/v-hacd
-                                                                            // To enable, set both ShouldUseBulletHACD=true and WhichHACD=1
-                                                                            // http://kmamou.blogspot.ca/2014/12/v-hacd-20-parameters-description.html
-        public static float VHACDresolution { get; private set; }           // 100,000 max number of voxels generated during voxelization stage
-        public static float VHACDdepth { get; private set; }                // 20 max number of clipping stages
-        public static float VHACDconcavity { get; private set; }            // 0.0025 maximum concavity
-        public static float VHACDplaneDownsampling { get; private set; }    // 4 granularity of search for best clipping plane
-        public static float VHACDconvexHullDownsampling { get; private set; }   // 4 precision of hull gen process
-        public static float VHACDalpha { get; private set; }                // 0.05 bias toward clipping along symmetry planes
-        public static float VHACDbeta { get; private set; }                 // 0.05 bias toward clipping along revolution axis
-        public static float VHACDgamma { get; private set; }                // 0.00125 max concavity when merging
-        public static float VHACDpca { get; private set; }                  // 0 on/off normalizing mesh before decomp
-        public static float VHACDmode { get; private set; }                 // 0 0:voxel based, 1: tetrahedron based
-        public static float VHACDmaxNumVerticesPerCH { get; private set; }  // 64 max triangles per convex hull
-        public static float VHACDminVolumePerCH { get; private set; }		// 0.0001 sampling of generated convex hulls
+    	public static float BHullMaxVerticesPerHull { get; private set; }		// 100
+    	public static float BHullMinClusters { get; private set; }				// 2
+    	public static float BHullCompacityWeight { get; private set; }			// 0.1
+    	public static float BHullVolumeWeight { get; private set; }				// 0.0
+    	public static float BHullConcavity { get; private set; }				    // 100
+    	public static bool BHullAddExtraDistPoints { get; private set; }		// false
+    	public static bool BHullAddNeighboursDistPoints { get; private set; }	// false
+    	public static bool BHullAddFacesPoints { get; private set; }			// false
+    	public static bool BHullShouldAdjustCollisionMargin { get; private set; }	// false
+    	public static float WhichHACD { get; private set; }				    // zero if Bullet HACD, non-zero says VHACD
+        // Parameters for VHACD 2.0: http://code.google.com/p/v-hacd
+        // To enable, set both ShouldUseBulletHACD=true and WhichHACD=1
+    	// http://kmamou.blogspot.ca/2014/12/v-hacd-20-parameters-description.html
+    	public static float VHACDresolution { get; private set; }			// 100,000 max number of voxels generated during voxelization stage
+    	public static float VHACDdepth { get; private set; }				// 20 max number of clipping stages
+    	public static float VHACDconcavity { get; private set; }			// 0.0025 maximum concavity
+    	public static float VHACDplaneDownsampling { get; private set; }	// 4 granularity of search for best clipping plane
+    	public static float VHACDconvexHullDownsampling { get; private set; }	// 4 precision of hull gen process
+    	public static float VHACDalpha { get; private set; }				// 0.05 bias toward clipping along symmetry planes
+    	public static float VHACDbeta { get; private set; }				    // 0.05 bias toward clipping along revolution axis
+    	public static float VHACDgamma { get; private set; }				// 0.00125 max concavity when merging
+    	public static float VHACDpca { get; private set; }					// 0 on/off normalizing mesh before decomp
+    	public static float VHACDmode { get; private set; }				    // 0 0:voxel based, 1: tetrahedron based
+    	public static float VHACDmaxNumVerticesPerCH { get; private set; }	// 64 max triangles per convex hull
+    	public static float VHACDminVolumePerCH { get; private set; }		// 0.0001 sampling of generated convex hulls
 
         // Linkset implementation parameters
         public static float LinksetImplementation { get; private set; }
@@ -295,15 +295,16 @@ namespace Universe.Physics.BulletSPlugin
                 objectSet = pObjSetter;
             }
 
-            /*Wish I could simplify using this definition but CLR doesn't store references so closure around delegates of references won't work
-            public ParameterDefn(string pName, string pDesc, T pDefault, ref T loc)
-                : base(pName, pDesc)
-            {
-                defaultValue = pDefault;
-                setter = (s, v) => { loc = v; };
-                getter = (s) => { return loc; };
-                objectSet = null;
-            }*/
+            /* Wish I could simplify using this definition but CLR doesn't store references so closure around delegates of references won't work
+        public ParameterDefn(string pName, string pDesc, T pDefault, ref T loc)
+            : base(pName, pDesc)
+        {
+            defaultValue = pDefault;
+            setter = (s, v) => { loc = v; };
+            getter = (s) => { return loc; };
+            objectSet = null;
+        }
+         */
 
             public override void AssignDefault(BSScene s)
             {
@@ -726,7 +727,7 @@ namespace Universe.Physics.BulletSPlugin
                 0.1f,
                 (s) => { return AvatarContactProcessingThreshold; },
                 (s, v) => { AvatarContactProcessingThreshold = v; }),
-            new ParameterDefn<float>("AvatarStopZeroThreshold", "Movement velocity below which avatar is assumed to be stopped",
+	        new ParameterDefn<float>("AvatarStopZeroThreshold", "Movement velocity below which avatar is assumed to be stopped",
                 0.1f ,
                 (s) => { return AvatarStopZeroThreshold; },
                 (s, v) => { AvatarStopZeroThreshold = v; }),
@@ -735,7 +736,7 @@ namespace Universe.Physics.BulletSPlugin
                 1.0f,
                 (s) => { return AvatarBelowGroundUpCorrectionMeters; },
                 (s, v) => { AvatarBelowGroundUpCorrectionMeters = v; }),
-            new ParameterDefn<int>("AvatarJumpFrames", "Number of frames to allow jump forces. Changes jump height.",
+	        new ParameterDefn<int>("AvatarJumpFrames", "Number of frames to allow jump forces. Changes jump height.",
                 4,
                 (s) => { return AvatarJumpFrames; },
                 (s, v) => { AvatarJumpFrames = v; }),
@@ -743,11 +744,11 @@ namespace Universe.Physics.BulletSPlugin
                 0.3f,
                 (s) => { return AvatarStepHeight; },
                 (s, v) => { AvatarStepHeight = v; }),
-             new ParameterDefn<float>("AvatarStepAngle", "The angle (in radians) for a vertical surface to be considered a step",
+ 	        new ParameterDefn<float>("AvatarStepAngle", "The angle (in radians) for a vertical surface to be considered a step",
                 0.3f,      //OS => 0.999f
                 (s) => { return AvatarStepAngle; },
-                (s, v) => { AvatarStepAngle = v; }),
-            new ParameterDefn<float>("AvatarStepGroundFudge", "Fudge factor subtracted from avatar base when comparing collision height",
+                (s, v) => { AvatarStepAngle = v; }),   
+	        new ParameterDefn<float>("AvatarStepGroundFudge", "Fudge factor subtracted from avatar base when comparing collision height",
                 0.05f,      // OS =>  0.1f,
                 (s) => { return AvatarStepGroundFudge; },
                 (s, v) => { AvatarStepGroundFudge = v; }),
@@ -761,11 +762,11 @@ namespace Universe.Physics.BulletSPlugin
                 2.0f,   //OS =>0f
                 (s) => { return AvatarStepForceFactor; },
                 (s, v) => { AvatarStepForceFactor = v; }),
-            new ParameterDefn<float>("AvatarStepUpCorrectionFactor", "Multiplied by height of step collision to create up movement at step",
+	        new ParameterDefn<float>("AvatarStepUpCorrectionFactor", "Multiplied by height of step collision to create up movement at step",
                 0.8f,
                 (s) => { return AvatarStepUpCorrectionFactor; },
                 (s, v) => { AvatarStepUpCorrectionFactor = v; }),
-            new ParameterDefn<int>("AvatarStepSmoothingSteps", "Number of frames after a step collision that we continue walking up stairs",
+	        new ParameterDefn<int>("AvatarStepSmoothingSteps", "Number of frames after a step collision that we continue walking up stairs",
                 1,
                 (s) => { return AvatarStepSmoothingSteps; },
                 (s, v) => { AvatarStepSmoothingSteps = v; }),
@@ -941,7 +942,7 @@ namespace Universe.Physics.BulletSPlugin
                     GlobalContactBreakingThreshold = v;
                     s.UnmanagedParams[0].globalContactBreakingThreshold = v;
                 }),
-            new ParameterDefn<float>("PhysicsUnmanLoggingFrames", "If non-zero, frames between output of detailed unmanaged physics statistics",
+	        new ParameterDefn<float>("PhysicsUnmanLoggingFrames", "If non-zero, frames between output of detailed unmanaged physics statistics",
                 0f,
                 (s) => { return PhysicsUnmanLoggingFrames; },
                 (s,v) => { PhysicsUnmanLoggingFrames = v; s.UnmanagedParams[0].physicsLoggingFrames = v; } ),
@@ -972,92 +973,92 @@ namespace Universe.Physics.BulletSPlugin
                 0,
                 (s) => { return CSHullMaxSkinWidth; },
                 (s, v) => { CSHullMaxSkinWidth = v; }),
-            new ParameterDefn<float>("BHullMaxVerticesPerHull", "Bullet impl: max number of vertices per created hull",
+	        new ParameterDefn<float>("BHullMaxVerticesPerHull", "Bullet impl: max number of vertices per created hull",
                 200f,
                 (s) => { return BHullMaxVerticesPerHull; },
                 (s, v) => { BHullMaxVerticesPerHull = v; }),
-            new ParameterDefn<float>("BHullMinClusters", "Bullet impl: minimum number of hulls to create per mesh",
+	        new ParameterDefn<float>("BHullMinClusters", "Bullet impl: minimum number of hulls to create per mesh",
                 10f,
                 (s) => { return BHullMinClusters; },
                 (s, v) => { BHullMinClusters = v; }),
-            new ParameterDefn<float>("BHullCompacityWeight", "Bullet impl: weight factor for how compact to make hulls",
+	        new ParameterDefn<float>("BHullCompacityWeight", "Bullet impl: weight factor for how compact to make hulls",
                 20f,
                 (s) => { return BHullCompacityWeight; },
                 (s, v) => { BHullCompacityWeight = v; }),
-            new ParameterDefn<float>("BHullVolumeWeight", "Bullet impl: weight factor for volume in created hull",
+	        new ParameterDefn<float>("BHullVolumeWeight", "Bullet impl: weight factor for volume in created hull",
                 0.1f,
                 (s) => { return BHullVolumeWeight; },
                 (s, v) => { BHullVolumeWeight = v; }),
-            new ParameterDefn<float>("BHullConcavity", "Bullet impl: weight factor for how convex a created hull can be",
+	        new ParameterDefn<float>("BHullConcavity", "Bullet impl: weight factor for how convex a created hull can be",
                 10f,
                 (s) => { return BHullConcavity; },
                 (s, v) => { BHullConcavity = v; }),
-            new ParameterDefn<bool>("BHullAddExtraDistPoints", "Bullet impl: whether to add extra vertices for long distance vectors",
+	        new ParameterDefn<bool>("BHullAddExtraDistPoints", "Bullet impl: whether to add extra vertices for long distance vectors",
                 true,
                 (s) => { return BHullAddExtraDistPoints; },
                 (s, v) => { BHullAddExtraDistPoints = v; }),
-            new ParameterDefn<bool>("BHullAddNeighboursDistPoints", "Bullet impl: whether to add extra vertices between neighbor hulls",
+	        new ParameterDefn<bool>("BHullAddNeighboursDistPoints", "Bullet impl: whether to add extra vertices between neighbor hulls",
                 true,
                 (s) => { return BHullAddNeighboursDistPoints; },
                 (s, v) => { BHullAddNeighboursDistPoints = v; }),
-            new ParameterDefn<bool>("BHullAddFacesPoints", "Bullet impl: whether to add extra vertices to break up hull faces",
+	        new ParameterDefn<bool>("BHullAddFacesPoints", "Bullet impl: whether to add extra vertices to break up hull faces",
                 true,
                 (s) => { return BHullAddFacesPoints; },
                 (s, v) => { BHullAddFacesPoints = v; }),
-            new ParameterDefn<bool>("BHullShouldAdjustCollisionMargin", "Bullet impl: whether to shrink resulting hulls to account for collision margin",
+	        new ParameterDefn<bool>("BHullShouldAdjustCollisionMargin", "Bullet impl: whether to shrink resulting hulls to account for collision margin",
                 false,
                 (s) => { return BHullShouldAdjustCollisionMargin; },
                 (s, v) => { BHullShouldAdjustCollisionMargin = v; }),
 
-            new ParameterDefn<float>("WhichHACD", "zero if Bullet HACD, non-zero says VHACD",
+	        new ParameterDefn<float>("WhichHACD", "zero if Bullet HACD, non-zero says VHACD",
                 0f,
                 (s) => { return WhichHACD; },
                 (s, v) => { WhichHACD = v; }),
-            new ParameterDefn<float>("VHACDresolution", "max number of voxels generated during voxelization stage",
+	        new ParameterDefn<float>("VHACDresolution", "max number of voxels generated during voxelization stage",
                 100000f,
                 (s) => { return VHACDresolution; },
                 (s, v) => { VHACDresolution = v; }),
-            new ParameterDefn<float>("VHACDdepth", "max number of clipping stages",
+	        new ParameterDefn<float>("VHACDdepth", "max number of clipping stages",
                 20f,
                 (s) => { return VHACDdepth; },
                 (s, v) => { VHACDdepth = v; }),
-            new ParameterDefn<float>("VHACDconcavity", "maximum concavity",
+	        new ParameterDefn<float>("VHACDconcavity", "maximum concavity",
                 0.0025f,
                 (s) => { return VHACDconcavity; },
                 (s, v) => { VHACDconcavity = v; }),
-            new ParameterDefn<float>("VHACDplaneDownsampling", "granularity of search for best clipping plane",
+	        new ParameterDefn<float>("VHACDplaneDownsampling", "granularity of search for best clipping plane",
                 4f,
                 (s) => { return VHACDplaneDownsampling; },
                 (s, v) => { VHACDplaneDownsampling = v; }),
-            new ParameterDefn<float>("VHACDconvexHullDownsampling", "precision of hull gen process",
+	        new ParameterDefn<float>("VHACDconvexHullDownsampling", "precision of hull gen process",
                 4f,
                 (s) => { return VHACDconvexHullDownsampling; },
                 (s, v) => { VHACDconvexHullDownsampling = v; }),
-            new ParameterDefn<float>("VHACDalpha", "bias toward clipping along symmetry planes",
+	        new ParameterDefn<float>("VHACDalpha", "bias toward clipping along symmetry planes",
                 0.05f,
                 (s) => { return VHACDalpha; },
                 (s, v) => { VHACDalpha = v; }),
-            new ParameterDefn<float>("VHACDbeta", "bias toward clipping along revolution axis",
+	        new ParameterDefn<float>("VHACDbeta", "bias toward clipping along revolution axis",
                 0.05f,
                 (s) => { return VHACDbeta; },
                 (s, v) => { VHACDbeta = v; }),
-            new ParameterDefn<float>("VHACDgamma", "max concavity when merging",
+	        new ParameterDefn<float>("VHACDgamma", "max concavity when merging",
                 0.00125f,
                 (s) => { return VHACDgamma; },
                 (s, v) => { VHACDgamma = v; }),
-            new ParameterDefn<float>("VHACDpca", "on/off normalizing mesh before decomp",
+	        new ParameterDefn<float>("VHACDpca", "on/off normalizing mesh before decomp",
                 0f,
                 (s) => { return VHACDpca; },
                 (s, v) => { VHACDpca = v; }),
-            new ParameterDefn<float>("VHACDmode", "0:voxel based, 1: tetrahedron based",
+	        new ParameterDefn<float>("VHACDmode", "0:voxel based, 1: tetrahedron based",
                 0f,
                 (s) => { return VHACDmode; },
                 (s, v) => { VHACDmode = v; }),
-            new ParameterDefn<float>("VHACDmaxNumVerticesPerCH", "max triangles per convex hull",
+	        new ParameterDefn<float>("VHACDmaxNumVerticesPerCH", "max triangles per convex hull",
                 64f,
                 (s) => { return VHACDmode; },
                 (s, v) => { VHACDmode = v; }),
-            new ParameterDefn<float>("VHACDminVolumePerCH", "sampling of generated convex hulls",
+	        new ParameterDefn<float>("VHACDminVolumePerCH",	"sampling of generated convex hulls",
                 0.0001f,
                 (s) => { return VHACDminVolumePerCH; },
                 (s, v) => { VHACDminVolumePerCH = v; }),
@@ -1065,7 +1066,7 @@ namespace Universe.Physics.BulletSPlugin
                 (float) BSLinkset.LinksetImplementation.Compound,
                 (s) => { return LinksetImplementation; },
                 (s, v) => { LinksetImplementation = v; }),
-             new ParameterDefn<bool>("LinksetOffsetCenterOfMass", "If 'true', compute linkset center-of-mass and offset linkset position to account for same",
+ 	        new ParameterDefn<bool>("LinksetOffsetCenterOfMass", "If 'true', compute linkset center-of-mass and offset linkset position to account for same",
                 true,
                 (s) => { return LinksetOffsetCenterOfMass; },
                 (s, v) => { LinksetOffsetCenterOfMass = v; }),
@@ -1204,7 +1205,7 @@ namespace Universe.Physics.BulletSPlugin
         static void ResetBroadphasePoolTainted(BSScene pPhysScene, float v, bool inTaintTime)
         {
             BSScene physScene = pPhysScene;
-            physScene.TaintedObject(inTaintTime, "BSParam.ResetBroadphasePoolTainted", delegate ()
+            physScene.TaintedObject(inTaintTime, "BSParam.ResetBroadphasePoolTainted", delegate() 
             {
                 physScene.PE.ResetBroadphasePool(physScene.World);
             });
@@ -1214,7 +1215,7 @@ namespace Universe.Physics.BulletSPlugin
         static void ResetConstraintSolverTainted(BSScene pPhysScene, float v)
         {
             BSScene physScene = pPhysScene;
-            physScene.TaintedObject(BSScene.DetailLogZero, "BSParam.ResetConstraintSolver", delegate ()
+            physScene.TaintedObject(BSScene.DetailLogZero, "BSParam.ResetConstraintSolver", delegate() 
             {
                 physScene.PE.ResetConstraintSolver(physScene.World);
             });

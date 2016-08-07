@@ -108,7 +108,8 @@ namespace Universe.Modules.Avatar.Groups
             if (groupsModule != null && groupsModule.GroupPermissionCheck (agentID, groupID, GroupPowers.Accountable)) {
                 IMoneyModule moneyModule = client.Scene.RequestModuleInterface<IMoneyModule> ();
                 if (moneyModule != null) {
-                    List<GroupAccountHistory> history = moneyModule.GetGroupTransactions (groupID, agentID, currentInterval, intervalDays);
+                    List<GroupAccountHistory> history = moneyModule.GetGroupTransactions (groupID, agentID, currentInterval,
+                                                           intervalDays);
 
                     //We don't want payments, we only want stipends which we sent to users
                     history = (
@@ -129,7 +130,8 @@ namespace Universe.Modules.Avatar.Groups
                         history.ToArray ());
                 } else
                     client.SendGroupAccountingDetails (client, groupID, transactionID, sessionID, 0, currentInterval,
-                        intervalDays, "Never", new GroupAccountHistory [0]);
+                        intervalDays,
+                        "Never", new GroupAccountHistory [0]);
             }
         }
 
@@ -151,7 +153,8 @@ namespace Universe.Modules.Avatar.Groups
             if (groupsModule != null && groupsModule.GroupPermissionCheck (agentID, groupID, GroupPowers.Accountable)) {
                 IMoneyModule moneyModule = client.Scene.RequestModuleInterface<IMoneyModule> ();
                 if (moneyModule != null) {
-                    List<GroupAccountHistory> history = moneyModule.GetGroupTransactions (groupID, agentID, currentInterval, intervalDays);
+                    List<GroupAccountHistory> history = moneyModule.GetGroupTransactions (groupID, agentID, currentInterval,
+                                                            intervalDays);
 
                     //We want payments for things only, not stipends
                     history = (
@@ -179,7 +182,8 @@ namespace Universe.Modules.Avatar.Groups
             }
         }
 
-        void client_OnGroupAccountSummaryRequest (IClientAPI client, UUID agentID, UUID groupID, UUID requestID, int currentInterval, int intervalDays)
+        void client_OnGroupAccountSummaryRequest (IClientAPI client, UUID agentID, UUID groupID, UUID requestID,
+                                                 int currentInterval, int intervalDays)
         {
             IGroupsModule groupsModule = client.Scene.RequestModuleInterface<IGroupsModule> ();
             if (groupsModule != null && groupsModule.GroupPermissionCheck (agentID, groupID, GroupPowers.Accountable)) {
@@ -205,7 +209,9 @@ namespace Universe.Modules.Avatar.Groups
                         groupBalance.ObjectFee
                     );
                 } else
-                    client.SendGroupAccountingSummary (client, groupID, requestID, 0, 0, 0, "Never", currentInterval, intervalDays, "Never", "Never", 0, 0, 0, 0);
+                    client.SendGroupAccountingSummary (client, groupID, requestID, 0, 0, 0, "Never",
+                        currentInterval, intervalDays, "Never",
+                        "Never", 0, 0, 0, 0);
             }
         }
     }

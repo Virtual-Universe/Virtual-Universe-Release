@@ -40,9 +40,9 @@ namespace Universe.Physics.BulletSPlugin
         //    operations necessary for keeping the linkset created and, additionally, this
         //    calls the linkset implementation for its creation and management.
 
-//#pragma warning disable 414
-//         static readonly string LogHeader = "[BULLETS PRIMLINKABLE]";
-//#pragma warning restore 414
+        //#pragma warning disable 414
+        //         static readonly string LogHeader = "[Bulletsim Prim Linkable]";
+        //#pragma warning restore 414
 
         // This adds the overrides for link() and delink() so the prim is linkable.
 
@@ -60,7 +60,7 @@ namespace Universe.Physics.BulletSPlugin
             : base(localID, primName, parent_scene, pos, size, rotation, pbs, pisPhysical)
         {
             // Default linkset implementation for this prim
-            LinksetType = (BSLinkset.LinksetImplementation) BSParam.LinksetImplementation;
+            LinksetType = (BSLinkset.LinksetImplementation)BSParam.LinksetImplementation;
 
             Linkset = BSLinkset.Factory(PhysicsScene, this);
             if (Linkset != null)
@@ -104,7 +104,7 @@ namespace Universe.Physics.BulletSPlugin
                 DetailLog(
                     "{0},BSPrimLinkset.delink,parentBefore={1},childrenBefore={2},parentAfter={3},childrenAfter={4}, ",
                     LocalID, parentBefore.LocalID, childrenBefore, Linkset.LinksetRoot.LocalID, Linkset.NumberOfChildren);
-            
+
             return;
         }
 
@@ -116,7 +116,7 @@ namespace Universe.Physics.BulletSPlugin
             {
                 base.Position = value;
                 PhysicsScene.TaintedObject(LocalID, "BSPrimLinkset.setPosition",
-                    delegate() { Linkset.UpdateProperties(UpdatedProperties.Position, this); });
+                    delegate () { Linkset.UpdateProperties(UpdatedProperties.Position, this); });
             }
         }
 
@@ -127,8 +127,8 @@ namespace Universe.Physics.BulletSPlugin
             set
             {
                 base.Orientation = value;
-                PhysicsScene.TaintedObject(LocalID,"BSPrimLinkset.setOrientation",
-                    delegate() { Linkset.UpdateProperties(UpdatedProperties.Orientation, this); });
+                PhysicsScene.TaintedObject(LocalID, "BSPrimLinkset.setOrientation",
+                    delegate () { Linkset.UpdateProperties(UpdatedProperties.Orientation, this); });
             }
         }
 
@@ -225,61 +225,61 @@ namespace Universe.Physics.BulletSPlugin
             set
             {
                 if (value)
-                        SomeCollisionSimulationStep = PhysicsScene.SimulationStep;
+                    SomeCollisionSimulationStep = PhysicsScene.SimulationStep;
                 else
                     SomeCollisionSimulationStep = 0;
 
-                    base.IsColliding = value;
+                base.IsColliding = value;
             }
         }
-        
+
         /* not sure what this is for yet - 20150925 -
-        // Convert the existing linkset of this prim into a new type.
-        public bool ConvertLinkset(BSLinkset.LinksetImplementation newType)
-        {
-            bool ret = false;
-            if (LinksetType != newType)
-            {
-                DetailLog("{0},BSPrimLinkable.ConvertLinkset,oldT={1},newT={2}", LocalID, LinksetType, newType);
+               // Convert the existing linkset of this prim into a new type.
+               public bool ConvertLinkset(BSLinkset.LinksetImplementation newType)
+               {
+                   bool ret = false;
+                   if (LinksetType != newType)
+                   {
+                       DetailLog("{0},BSPrimLinkable.ConvertLinkset,oldT={1},newT={2}", LocalID, LinksetType, newType);
 
-                // Set the implementation type first so the call to BSLinkset.Factory gets the new type.
-                this.LinksetType = newType;
+                       // Set the implementation type first so the call to BSLinkset.Factory gets the new type.
+                       this.LinksetType = newType;
 
-                BSLinkset oldLinkset = this.Linkset;
-                BSLinkset newLinkset = BSLinkset.Factory(PhysScene, this);
+                       BSLinkset oldLinkset = this.Linkset;
+                       BSLinkset newLinkset = BSLinkset.Factory(PhysScene, this);
 
-                this.Linkset = newLinkset;
+                       this.Linkset = newLinkset;
 
-                // Pick up any physical dependencies this linkset might have in the physics engine.
-                oldLinkset.RemoveDependencies(this);
+                       // Pick up any physical dependencies this linkset might have in the physics engine.
+                       oldLinkset.RemoveDependencies(this);
 
-                // Create a list of the children (mainly because can't interate through a list that's changing)
-                List<BSPrimLinkable> children = new List<BSPrimLinkable>();
-                oldLinkset.ForEachMember((child) =>
-                {
-                    if (!oldLinkset.IsRoot(child))
-                        children.Add(child);
-                    return false;   // 'false' says to continue to next member
-                });
+                       // Create a list of the children (mainly because can't interate through a list that's changing)
+                       List<BSPrimLinkable> children = new List<BSPrimLinkable>();
+                       oldLinkset.ForEachMember((child) =>
+                       {
+                           if (!oldLinkset.IsRoot(child))
+                               children.Add(child);
+                           return false;   // 'false' says to continue to next member
+                       });
 
-                // Remove the children from the old linkset and add to the new (will be a new instance from the factory)
-                foreach (BSPrimLinkable child in children)
-                {
-                    oldLinkset.RemoveMeFromLinkset(child, true);
-                }
-                foreach (BSPrimLinkable child in children)
-                {
-                    newLinkset.AddMeToLinkset(child);
-                    child.Linkset = newLinkset;
-                }
+                       // Remove the children from the old linkset and add to the new (will be a new instance from the factory)
+                       foreach (BSPrimLinkable child in children)
+                       {
+                           oldLinkset.RemoveMeFromLinkset(child, true);
+                       }
+                       foreach (BSPrimLinkable child in children)
+                       {
+                           newLinkset.AddMeToLinkset(child);
+                           child.Linkset = newLinkset;
+                       }
 
-                // Force the shape and linkset to get reconstructed
-                newLinkset.Refresh(this);
-                this.ForceBodyShapeRebuild(true/);
-            }
-            return ret;
-        }
-        */
+                       // Force the shape and linkset to get reconstructed
+                       newLinkset.Refresh(this);
+                       this.ForceBodyShapeRebuild(true/);
+                   }
+                   return ret;
+               }
+       */
         /* not ported yet - 20150925
         #region Extension
         public override object Extension(string pFunct, params object[] pParams)

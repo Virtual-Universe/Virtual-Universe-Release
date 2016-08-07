@@ -47,8 +47,7 @@ using PrimType = Universe.Framework.SceneInfo.PrimType;
 
 namespace Universe.Region
 {
-    public delegate void SendCoarseLocationsMethod(
-        UUID scene, IScenePresence presence, List<Vector3> coarseLocations, List<UUID> avatarUUIDs);
+    public delegate void SendCoarseLocationsMethod(UUID scene, IScenePresence presence, List<Vector3> coarseLocations, List<UUID> avatarUUIDs);
 
     public class ScenePresence : EntityBase, IScenePresence
     {

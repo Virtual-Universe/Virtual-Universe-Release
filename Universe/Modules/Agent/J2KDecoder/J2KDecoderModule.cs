@@ -52,14 +52,12 @@ namespace Universe.Modules.Agent.J2KDecoder
         /// <summary>
         ///     Temporarily holds de-serialized layer data information in memory
         /// </summary>
-        readonly ExpiringCache<UUID, OpenJPEG.J2KLayerInfo[]> m_decodedCache =
-            new ExpiringCache<UUID, OpenJPEG.J2KLayerInfo[]>();
+        readonly ExpiringCache<UUID, OpenJPEG.J2KLayerInfo[]> m_decodedCache = new ExpiringCache<UUID, OpenJPEG.J2KLayerInfo[]>();
 
         /// <summary>
         ///     List of client methods to notify of results of decode
         /// </summary>
-        readonly Dictionary<UUID, List<DecodedCallback>> m_notifyList =
-            new Dictionary<UUID, List<DecodedCallback>>();
+        readonly Dictionary<UUID, List<DecodedCallback>> m_notifyList = new Dictionary<UUID, List<DecodedCallback>>();
 
         /// <summary>
         ///     Cache that will store decoded JPEG2000 layer boundary data

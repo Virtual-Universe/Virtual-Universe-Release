@@ -74,8 +74,7 @@ namespace Universe.Framework.Services
         /// <param name="circuitData">The circuit data of the agent that is being created</param>
         /// <param name="port">The port to use for the CAPS service</param>
         /// <returns>Returns the CAPS URL that was created by the CAPS Service</returns>
-        string CreateCAPS(UUID AgentID, string CAPSBase, UUID regionHandle, bool IsRootAgent,
-                          AgentCircuitData circuitData, uint port);
+        string CreateCAPS(UUID AgentID, string CAPSBase, UUID regionHandle, bool IsRootAgent, AgentCircuitData circuitData, uint port);
 
         /// <summary>
         ///     Get a client's caps service (contains all child and root agents) if it exists, otherwise
@@ -232,8 +231,7 @@ namespace Universe.Framework.Services
         /// <param name="circuitData"></param>
         /// <param name="port"></param>
         /// <returns></returns>
-        IRegionClientCapsService GetOrCreateCapsService(UUID regionID, string CAPSBase, AgentCircuitData circuitData,
-                                                        uint port);
+        IRegionClientCapsService GetOrCreateCapsService(UUID regionID, string CAPSBase, AgentCircuitData circuitData, uint port);
 
         /// <summary>
         ///     Remove the caps for this user from the given region
@@ -354,9 +352,7 @@ namespace Universe.Framework.Services
         /// </summary>
         /// <param name="CapsUrl"></param>
         void AddSEEDCap(string CapsUrl);
-
         void AddCAPS(string method, string caps);
-
         void AddCAPS(OSDMap caps);
 
         /// <summary>

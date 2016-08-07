@@ -65,6 +65,7 @@ namespace Universe.ScriptEngine.VirtualScript.Runtime
         public static readonly LSL_Types.LSLInteger OS_NPC_LAND_AT_TARGET = 2;
         public static readonly LSL_Types.LSLInteger OS_NPC_RUNNING = 4;
         public static readonly LSL_Types.LSLInteger OS_NPC_SIT_NOW = 0;
+
         public static readonly LSL_Types.LSLInteger OS_NPC_CREATOR_OWNED = 0x1;
         public static readonly LSL_Types.LSLInteger OS_NPC_NOT_OWNED = 0x2;
         public static readonly LSL_Types.LSLInteger OS_NPC_SENSE_AS_AGENT = 0x4;

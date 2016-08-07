@@ -147,12 +147,13 @@ namespace Universe.Modules.Archivers
                 FilterContent = checkPermissions.ToUpper();
 
             // some necessary services
-            m_inventoryService = m_registry.RequestModuleInterface<IInventoryService> ();
-            m_assetService = m_registry.RequestModuleInterface<IAssetService> ();
-            m_accountService = m_registry.RequestModuleInterface<IUserAccountService> ();
+            m_inventoryService = m_registry.RequestModuleInterface<IInventoryService>();
+            m_assetService = m_registry.RequestModuleInterface<IAssetService>();
+            m_accountService = m_registry.RequestModuleInterface<IUserAccountService>();
 
             // lastly as it is dependant       
             m_assetGatherer = new UuidGatherer(m_assetService);
+
         }
 
         protected void ReceivedAllAssets(ICollection<UUID> assetsFoundUuids, ICollection<UUID> assetsNotFoundUuids)
@@ -203,17 +204,18 @@ namespace Universe.Modules.Archivers
             // Record the creator of this item for user record purposes (which might go away soon)
             m_userUuids[inventoryItem.CreatorIdAsUuid] = 1;
 
-            InventoryItemBase saveItem = (InventoryItemBase) inventoryItem.Clone();
+            InventoryItemBase saveItem = (InventoryItemBase)inventoryItem.Clone();
             saveItem.CreatorId = OspResolver.MakeOspa(saveItem.CreatorIdAsUuid, m_accountService);
 
             string serialization = UserInventoryItemSerializer.Serialize(saveItem);
             m_archiveWriter.WriteFile(filename, serialization);
+
             //m_assetGatherer.GatherAssetUuids(saveItem.AssetID, (AssetType) saveItem.AssetType, m_assetUuids);
             AssetType itemAssetType = (AssetType)inventoryItem.AssetType;
 
             // Don't chase down link asset items as they actually point to their target item IDs rather than an asset
             if (m_saveAssets && itemAssetType != AssetType.Link && itemAssetType != AssetType.LinkFolder)
-                m_assetGatherer.GatherAssetUuids(saveItem.AssetID, (AssetType) inventoryItem.AssetType, m_assetUuids);
+                m_assetGatherer.GatherAssetUuids(saveItem.AssetID, (AssetType)inventoryItem.AssetType, m_assetUuids);
         }
 
         /// <summary>
@@ -225,8 +227,9 @@ namespace Universe.Modules.Archivers
         protected void SaveInvFolder(InventoryFolderBase inventoryFolder, string path, bool saveThisFolderItself)
         {
             // ignore viewer folders (special folders?)
-            if (inventoryFolder.Name.StartsWith ("#", StringComparison.Ordinal))
+            if (inventoryFolder.Name.StartsWith("#", StringComparison.Ordinal))
                 return;
+
 
             if (saveThisFolderItself)
             {
@@ -236,8 +239,7 @@ namespace Universe.Modules.Archivers
                 m_archiveWriter.WriteDir(path);
             }
 
-            InventoryCollection contents
-                = m_inventoryService.GetFolderContent(inventoryFolder.Owner, inventoryFolder.ID);
+            InventoryCollection contents = m_inventoryService.GetFolderContent(inventoryFolder.Owner, inventoryFolder.ID);
 
             foreach (InventoryFolderBase childFolder in contents.Folders)
             {
@@ -291,8 +293,9 @@ namespace Universe.Modules.Archivers
                 InventoryItemBase inventoryItem = null;
                 InventoryFolderBase rootFolder = m_inventoryService.GetRootFolder(m_userInfo.PrincipalID);
 
-                if (rootFolder == null) {
-                    MainConsole.Instance.ErrorFormat ("[Inventory Archiver]: Unable to fine root folder for {0}",
+                if (rootFolder == null)
+                {
+                    MainConsole.Instance.ErrorFormat("[Inventory Archiver]: Unable to fine root folder for {0}",
                                                m_userInfo.PrincipalID);
                     return;
                 }
@@ -303,9 +306,7 @@ namespace Universe.Modules.Archivers
                 bool saveFolderContentsOnly = false;
 
                 // Eliminate double slashes and any leading / on the path.
-                string[] components
-                    = m_invPath.Split(
-                        new[] {InventoryFolderImpl.PATH_DELIMITER}, StringSplitOptions.RemoveEmptyEntries);
+                string[] components = m_invPath.Split(new[] { InventoryFolderImpl.PATH_DELIMITER }, StringSplitOptions.RemoveEmptyEntries);
 
                 int maxComponentIndex = components.Length - 1;
 
@@ -315,11 +316,12 @@ namespace Universe.Modules.Archivers
                 {
                     saveFolderContentsOnly = true;
                     maxComponentIndex--;
-                } else if (maxComponentIndex == -1)
+                }
+                else if (maxComponentIndex == -1)
                 {
                     // If the user has just specified "/", then don't save the root "My Inventory" folder.  This is
                     // more intuitive then requiring the user to specify "/*" for this.
-                   // 20141119-greythane- This breaks saving default inventory //  saveFolderContentsOnly = true;
+                    // 20141119-greythane- This breaks saving default inventory //  saveFolderContentsOnly = true;
                 }
 
                 m_invPath = string.Empty;
@@ -336,9 +338,8 @@ namespace Universe.Modules.Archivers
                 }
                 else
                 {
-                    m_invPath = m_invPath.Remove(m_invPath.LastIndexOf (InventoryFolderImpl.PATH_DELIMITER, StringComparison.Ordinal));
-                    List<InventoryFolderBase> candidateFolders
-                        = InventoryArchiveUtils.FindFolderByPath(m_inventoryService, rootFolder, m_invPath);
+                    m_invPath = m_invPath.Remove(m_invPath.LastIndexOf(InventoryFolderImpl.PATH_DELIMITER, StringComparison.Ordinal));
+                    List<InventoryFolderBase> candidateFolders = InventoryArchiveUtils.FindFolderByPath(m_inventoryService, rootFolder, m_invPath);
                     if (candidateFolders.Count > 0)
                         inventoryFolder = candidateFolders[0];
                 }
@@ -395,11 +396,11 @@ namespace Universe.Modules.Archivers
             {
                 foreach (AssetBase asset in m_assetsToAdd)
                 {
-                    m_assetUuids[asset.ID] = (AssetType) asset.Type;
+                    m_assetUuids[asset.ID] = (AssetType)asset.Type;
                 }
                 new AssetsRequest(
                     new AssetsArchiver(m_archiveWriter), m_assetUuids, m_assetService, ReceivedAllAssets).Execute();
-                    
+
             }
             else
             {
@@ -429,7 +430,8 @@ namespace Universe.Modules.Archivers
                 }
                 else
                 {
-                    MainConsole.Instance.WarnFormat("[Inventory Archiver]: Failed to get creator profile for {0}", creatorId);
+                    MainConsole.Instance.WarnFormat("[Inventory Archiver]: Failed to get creator profile for {0}",
+                                                    creatorId);
                 }
             }
         }
@@ -495,13 +497,13 @@ namespace Universe.Modules.Archivers
         public static string CreateControlFile(bool saveAssets)
         {
             StringWriter sw = new StringWriter();
-            XmlTextWriter xtw = new XmlTextWriter(sw) {Formatting = Formatting.Indented};
+            XmlTextWriter xtw = new XmlTextWriter(sw) { Formatting = Formatting.Indented };
             xtw.WriteStartDocument();
             xtw.WriteStartElement("archive");
             xtw.WriteAttributeString("major_version", "0");
             xtw.WriteAttributeString("minor_version", "3");
 
-            var includeAssets = saveAssets ? "True": "False";
+            var includeAssets = saveAssets ? "True" : "False";
             xtw.WriteElementString("assets_included", includeAssets);
 
             xtw.WriteEndElement();

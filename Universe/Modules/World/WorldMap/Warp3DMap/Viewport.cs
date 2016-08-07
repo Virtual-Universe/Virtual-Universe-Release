@@ -49,7 +49,8 @@ namespace Universe.Modules.WorldMap.Warp3DMap
         public Vector3 Position;
         public int Width;
 
-        public Viewport (Vector3 position, Vector3 lookDirection, float fieldOfView, float farPlaneDist, float nearPlaneDist, int width, int height)
+        public Viewport (Vector3 position, Vector3 lookDirection, float fieldOfView, float farPlaneDist,
+                        float nearPlaneDist, int width, int height)
         {
             // Perspective projection mode
             Position = position;
@@ -61,7 +62,8 @@ namespace Universe.Modules.WorldMap.Warp3DMap
             Height = height;
         }
 
-        public Viewport (Vector3 position, Vector3 lookDirection, float farPlaneDist, float nearPlaneDist, int width, int height, float orthoWindowWidth, float orthoWindowHeight)
+        public Viewport (Vector3 position, Vector3 lookDirection, float farPlaneDist, float nearPlaneDist, int width,
+                        int height, float orthoWindowWidth, float orthoWindowHeight)
         {
             // Orthographic projection mode
             Position = position;
@@ -116,6 +118,8 @@ namespace Universe.Modules.WorldMap.Warp3DMap
         public Matrix4 GetPerspectiveProjectionMatrix ()
         {
             float aspectRatio = Width / (float)Height;
+
+            //            float hFoV = FieldOfView*DEG_TO_RAD;  ///This is done in the camera settings already!!
             float hFoV = FieldOfView;
             float zn = NearPlaneDistance;
             float zf = FarPlaneDistance;

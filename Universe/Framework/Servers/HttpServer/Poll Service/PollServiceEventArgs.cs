@@ -34,11 +34,8 @@ using Universe.Framework.Servers.HttpServer.Implementation;
 namespace Universe.Framework.Servers.HttpServer
 {
     public delegate void RequestMethod (UUID requestID, OSHttpRequest request);
-
     public delegate bool HasEventsMethod (UUID requestID, UUID pId);
-
     public delegate byte [] GetEventsMethod (UUID requestID, UUID pId, string request, OSHttpResponse response);
-
     public delegate byte [] NoEventsMethod (UUID requestID, UUID pId, OSHttpResponse response);
 
     public class PollServiceEventArgs : EventArgs

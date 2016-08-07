@@ -33,7 +33,7 @@ namespace Universe.Physics.BulletSPlugin
 {
     public sealed class BSTerrainHeightmap : BSTerrainPhys
     {
-        static string LogHeader = "[BULLETSIM TERRAIN HEIGHTMAP]";
+        static string LogHeader = "[Bulletsim Terrain Height Map]";
 
         BulletHMapInfo m_mapInfo = null;
 
@@ -87,6 +87,7 @@ namespace Universe.Physics.BulletSPlugin
             m_mapInfo.terrainShape = PhysicsScene.PE.CreateTerrainShape(m_mapInfo.ID,
                 new Vector3(m_mapInfo.sizeX, m_mapInfo.sizeY, 0), m_mapInfo.minZ, m_mapInfo.maxZ,
                 m_mapInfo.heightMap, 1f, BSParam.TerrainCollisionMargin);
+
 
             // The terrain object initial position is at the center of the object
             Vector3 centerPos;

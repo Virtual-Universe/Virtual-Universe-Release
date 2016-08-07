@@ -27,7 +27,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 using System.Collections.Generic;
 using Nini.Config;
 using OpenMetaverse;
@@ -44,8 +43,7 @@ namespace Universe.Services.DataService
 
         #region IEmailConnector Members
 
-        public void Initialize (IGenericData GenericData, IConfigSource source, IRegistryCore simBase,
-                               string defaultConnectionString)
+        public void Initialize (IGenericData GenericData, IConfigSource source, IRegistryCore simBase, string defaultConnectionString)
         {
             GD = GenericData;
 
@@ -53,14 +51,14 @@ namespace Universe.Services.DataService
                 defaultConnectionString = source.Configs [Name].GetString ("ConnectionString", defaultConnectionString);
 
             if (GD != null)
-                GD.ConnectToDatabase (defaultConnectionString, "Generics",
-                                     source.Configs ["UniverseConnectors"].GetBoolean ("ValidateTables", true));
+                GD.ConnectToDatabase (defaultConnectionString, "Generics", source.Configs ["UniverseConnectors"].GetBoolean ("ValidateTables", true));
 
             Framework.Utilities.DataManager.RegisterPlugin (Name + "Local", this);
 
             if (source.Configs ["UniverseConnectors"].GetString ("EmailConnector", "LocalConnector") == "LocalConnector") {
                 Framework.Utilities.DataManager.RegisterPlugin (this);
             }
+
             Init (simBase, Name);
         }
 
@@ -94,13 +92,13 @@ namespace Universe.Services.DataService
         [CanBeReflected (ThreatLevel = ThreatLevel.Low)]
         public void InsertEmail (Email email)
         {
-            if (m_doRemoteOnly) {
+            if (m_doRemoteOnly)
+            {
                 DoRemote (email);
                 return;
             }
 
-            GenericUtils.AddGeneric (email.toPrimID, "Emails", UUID.Random ().ToString (),
-                                    email.ToOSD (), GD);
+            GenericUtils.AddGeneric (email.toPrimID, "Emails", UUID.Random ().ToString (), email.ToOSD (), GD);
         }
 
         #endregion

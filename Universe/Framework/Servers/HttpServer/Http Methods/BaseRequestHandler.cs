@@ -97,7 +97,6 @@ namespace Universe.Framework.Servers.HttpServer
             return param.Split(new char[] {'/', '?', '&'}, StringSplitOptions.RemoveEmptyEntries);
         }
 
-        public abstract byte[] Handle(string path, Stream request,
-                                      OSHttpRequest httpRequest, OSHttpResponse httpResponse);
+        public abstract byte[] Handle(string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse);
     }
 }

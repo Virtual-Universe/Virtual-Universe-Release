@@ -168,12 +168,10 @@ namespace Universe.Framework.Serialization.External
                     settings.WaterHeight = double.Parse (xtr.ReadElementContentAsString (), Culture.NumberFormatInfo);
                     break;
                 case "TerrainRaiseLimit":
-                    settings.TerrainRaiseLimit = double.Parse (xtr.ReadElementContentAsString (),
-                                                              Culture.NumberFormatInfo);
+                    settings.TerrainRaiseLimit = double.Parse (xtr.ReadElementContentAsString (), Culture.NumberFormatInfo);
                     break;
                 case "TerrainLowerLimit":
-                    settings.TerrainLowerLimit = double.Parse (xtr.ReadElementContentAsString (),
-                                                              Culture.NumberFormatInfo);
+                    settings.TerrainLowerLimit = double.Parse (xtr.ReadElementContentAsString (), Culture.NumberFormatInfo);
                     break;
                 case "UseEstateSun":
                     settings.UseEstateSun = bool.Parse (xtr.ReadElementContentAsString ());
@@ -200,13 +198,6 @@ namespace Universe.Framework.Serialization.External
                     case "SpawnPoint":
                         settings.TeleHub.SpawnPos.Add (Vector3.Parse (xtr.ReadElementContentAsString ()));
                         break;
-
-                    //case "SpawnPoint":
-                    //    string str = xtr.ReadElementContentAsString();
-                    //    SpawnPoint sp = SpawnPoint.Parse(str);
-                    //    settings.AddSpawnPoint(sp);
-                    //    break;
-
 
                     case "TelehubName":
                         settings.TeleHub.Name = xtr.ReadElementContentAsString ();
@@ -267,9 +258,6 @@ namespace Universe.Framework.Serialization.External
             xtw.WriteElementString ("TerrainLowerLimit", settings.TerrainLowerLimit.ToString ());
             xtw.WriteElementString ("UseEstateSun", settings.UseEstateSun.ToString ());
             xtw.WriteElementString ("FixedSun", settings.FixedSun.ToString ());
-            // XXX: Need to expose interface to get sun phase information from sun module
-            // xtw.WriteStartElement("SunPhase", 
-
 
             // OAR format 0.8
             xtw.WriteStartElement ("Telehub");

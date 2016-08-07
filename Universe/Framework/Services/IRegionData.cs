@@ -47,9 +47,7 @@ namespace Universe.Framework.Services
         List<GridRegion> Get(int xStart, int yStart, int xEnd, int yEnd, List<UUID> scopeIDs);
         List<GridRegion> Get(RegionFlags flags, Dictionary<string, bool> sort);
         List<GridRegion> Get(uint start, uint count, uint EstateID, RegionFlags flags, Dictionary<string, bool> sort);
-
-        List<GridRegion> Get(RegionFlags includeFlags, RegionFlags excludeFlags, uint? start, uint? count,
-                             Dictionary<string, bool> sort);
+        List<GridRegion> Get(RegionFlags includeFlags, RegionFlags excludeFlags, uint? start, uint? count, Dictionary<string, bool> sort);
 
         /// <summary>
         ///     Gets the number of regions matching the specified flags
@@ -77,16 +75,11 @@ namespace Universe.Framework.Services
         /// <param name="centerY"></param>
         /// <param name="squareRangeFromCenterInMeters"></param>
         /// <returns></returns>
-        List<GridRegion> Get(List<UUID> scopeIDs, UUID excludeRegion, float centerX, float centerY,
-                             uint squareRangeFromCenterInMeters);
-
+        List<GridRegion> Get(List<UUID> scopeIDs, UUID excludeRegion, float centerX, float centerY, uint squareRangeFromCenterInMeters);
         uint Count(uint estateID, RegionFlags flags);
-
         bool Store(GridRegion data);
-
         bool Delete(UUID regionID);
         bool DeleteAll(string[] criteriaKey, object[] criteriaValue);
-
         List<GridRegion> GetDefaultRegions(List<UUID> scopeIDs);
         List<GridRegion> GetFallbackRegions(List<UUID> scopeIDs, int x, int y);
         List<GridRegion> GetSafeRegions(List<UUID> scopeIDs, int x, int y);

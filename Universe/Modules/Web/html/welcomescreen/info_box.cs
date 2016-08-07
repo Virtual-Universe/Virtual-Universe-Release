@@ -67,7 +67,8 @@ namespace Universe.Modules.Web
             IGenericsConnector connector = Framework.Utilities.DataManager.RequestPlugin<IGenericsConnector>();
             GridWelcomeScreen welcomeInfo = null;
             if (connector != null)
-                welcomeInfo = connector.GetGeneric<GridWelcomeScreen>(UUID.Zero, "GridWelcomeScreen", "GridWelcomeScreen");
+                welcomeInfo = connector.GetGeneric<GridWelcomeScreen>(UUID.Zero, "GridWelcomeScreen",
+                                                                                    "GridWelcomeScreen");
             if (welcomeInfo == null)
                 welcomeInfo = GridWelcomeScreen.Default;
 

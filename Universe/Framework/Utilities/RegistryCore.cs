@@ -51,7 +51,7 @@ namespace Universe.Framework.Utilities
         /// <param name="mod"></param>
         public void RegisterModuleInterface<T>(T mod)
         {
-            //            MainConsole.Instance.DebugFormat("[SCENE BASE]: Registering interface {0}", typeof(M));
+            //MainConsole.Instance.DebugFormat("[Scene Base]: Registering interface {0}", typeof(M));
 
             List<Object> l = null;
             if (!ModuleInterfaces.TryGetValue(typeof (T), out l))

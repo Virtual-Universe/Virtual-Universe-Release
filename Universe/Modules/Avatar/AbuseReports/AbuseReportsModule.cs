@@ -291,6 +291,7 @@ namespace Universe.Modules.AbuseReports
                     );
                 }
             }
+
             //Tell the DB about it
             IAbuseReports conn = m_Scene.RequestModuleInterface<IAbuseReports>();
             if (conn != null)

@@ -38,9 +38,7 @@ namespace Universe.Framework.ClientInterfaces
     public class SimStats
     {
         private readonly SimStatsPacket.RegionBlock m_regionBlock;
-
         private readonly SimStatsPacket.StatBlock[] m_statsBlock;
-
         private readonly UUID regionUUID;
 
         public SimStats(SimStatsPacket.RegionBlock regionBlock, SimStatsPacket.StatBlock[] statsBlock, UUID pRUUID)

@@ -310,8 +310,8 @@ namespace Universe.Modules.SimProtection
                 MainConsole.Instance.Info (" PrimUpdatePosAndVelocity: " + stats.StatPrimUpdatePosAndVelocity);
                 MainConsole.Instance.Info (" UnlockedArea: " + stats.StatUnlockedArea);
             }
-            MainConsole.Instance.Info ("");
 
+            MainConsole.Instance.Info ("");
         }
 
         protected virtual void PhysicsStatsHeartbeat (object sender, ElapsedEventArgs e)
@@ -347,8 +347,10 @@ namespace Universe.Modules.SimProtection
                     p.AddStat ("StatContactLoopTime " + kvp.Key, m_lastPhysicsStats [kvp.Key].StatContactLoopTime);
                     p.AddStat ("StatCollisionAccountingTime " + kvp.Key, m_lastPhysicsStats [kvp.Key].StatCollisionAccountingTime);
                 }
+
                 m_currentPhysicsStats.Clear ();
             }
+
             m_lastUpdated = DateTime.Now;
             //If there are stats waiting, we just pulled them
             m_waitingForCollectionOfStats--;

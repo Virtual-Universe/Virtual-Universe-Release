@@ -47,6 +47,5 @@ namespace Universe.Framework.Services
         /// <returns>The system estate name.</returns>
         /// <param name="EstateID">Estate ID.</param>
         string GetSystemEstateName (int EstateID);
-
     }
 }

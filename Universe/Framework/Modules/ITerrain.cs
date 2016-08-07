@@ -39,8 +39,7 @@ namespace Universe.Framework.Modules
         bool Tainted(int x, int y);
         void ResetTaint();
 
-        void ModifyTerrain(float height, float seconds, byte brushsize, byte action, float north, float west,
-                           IClientAPI remoteUser);
+        void ModifyTerrain(float height, float seconds, byte brushsize, byte action, float north, float west, IClientAPI remoteUser);
 
         void CheckHeightValues();
         float[] GetHeights1D();
@@ -91,7 +90,5 @@ namespace Universe.Framework.Modules
         Bitmap CreateViewTileImage (int size);
 
         void UpdateWorldMaps ();
-
-
     }
 }

@@ -154,6 +154,7 @@ namespace Universe.Modules.Web
                     {"PickLocation", ""}
                 });
             }
+
             vars.Add("UsersPicksText", translator.GetTranslatedString("UsersPicksText"));
             vars.Add("PickNameText", translator.GetTranslatedString("PickNameText"));
             vars.Add("PickRegionText", translator.GetTranslatedString("PickRegionText"));

@@ -94,6 +94,7 @@ namespace Universe.ClientStack
                     ++m_currentPacket;
                     ++packetsSent;
                 }
+
                 if (m_currentPacket < 2)
                 {
                     m_currentPacket = 2;
@@ -217,6 +218,7 @@ namespace Universe.ClientStack
                 client.SendImageNotFound(TextureID);
                 return true;
             }
+
             if (m_asset.Length <= FIRST_PACKET_SIZE)
             {
                 // We have less then one packet's worth of data
@@ -224,6 +226,7 @@ namespace Universe.ClientStack
                 m_stopPacket = 0;
                 return true;
             }
+
             // This is going to be a multi-packet texture download
             byte[] firstImageData = new byte[FIRST_PACKET_SIZE];
 
@@ -239,8 +242,7 @@ namespace Universe.ClientStack
                 return true;
             }
 
-            client.SendImageFirstPart(TexturePacketCount(), TextureID, (uint) m_asset.Length, firstImageData,
-                                      (byte) ImageCodec.J2C);
+            client.SendImageFirstPart(TexturePacketCount(), TextureID, (uint) m_asset.Length, firstImageData, (byte) ImageCodec.J2C);
             return false;
         }
 
@@ -322,12 +324,15 @@ namespace Universe.ClientStack
         {
             if (m_currentPacket == 1)
                 return m_asset.Length;
+
             int lastsize = (m_asset.Length - FIRST_PACKET_SIZE)%IMAGE_PACKET_SIZE;
+            
             //If the last packet size is zero, it's really cImagePacketSize, it sits on the boundary
             if (lastsize == 0)
             {
                 lastsize = IMAGE_PACKET_SIZE;
             }
+
             return lastsize;
         }
 
@@ -335,14 +340,17 @@ namespace Universe.ClientStack
         {
             if (m_currentPacket == 0)
                 return 0;
+
             if (m_currentPacket == 1)
                 return FIRST_PACKET_SIZE;
 
             int result = FIRST_PACKET_SIZE + ((int) m_currentPacket - 2)*IMAGE_PACKET_SIZE;
+
             if (result < 0)
             {
                 result = FIRST_PACKET_SIZE;
             }
+
             return result;
         }
 
@@ -374,6 +382,7 @@ namespace Universe.ClientStack
         void AssetReceived(string id, object sender, AssetBase asset)
         {
             UUID assetID = UUID.Zero;
+
             if (asset != null)
                 assetID = asset.ID;
 

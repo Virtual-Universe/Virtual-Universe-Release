@@ -67,6 +67,7 @@ namespace Universe.DataManager.Migration
         {
             if (genericData.GetUniverseVersion (MigrationName) != Version)
                 return false;
+
             return DoValidate(genericData);
         }
 
@@ -257,6 +258,7 @@ namespace Universe.DataManager.Migration
                     type = ColumnTypeDef.Unknown;
                     break;
             }
+
             return new ColumnDefinition {Name = name, Type = type};
         }
 
@@ -325,6 +327,7 @@ namespace Universe.DataManager.Migration
                 reason = s;
                 return false;
             }
+
             return true;
         }
 
@@ -344,11 +347,9 @@ namespace Universe.DataManager.Migration
             }
         }
 
-        static void CopyTableToTempVersion(IDataConnector genericData, string tablename,
-                                            ColumnDefinition[] columnDefinitions, IndexDefinition[] indexDefinitions)
+        static void CopyTableToTempVersion(IDataConnector genericData, string tablename, ColumnDefinition[] columnDefinitions, IndexDefinition[] indexDefinitions)
         {
-            genericData.CopyTableToTable(tablename, GetTempTableNameFromTableName(tablename), columnDefinitions,
-                                         indexDefinitions);
+            genericData.CopyTableToTable(tablename, GetTempTableNameFromTableName(tablename), columnDefinitions, indexDefinitions);
         }
 
         static string GetTempTableNameFromTableName(string tablename)
@@ -356,11 +357,9 @@ namespace Universe.DataManager.Migration
             return tablename + "_temp";
         }
 
-        static void RestoreTempTableToReal(IDataConnector genericData, string tablename,
-                                            ColumnDefinition[] columnDefinitions, IndexDefinition[] indexDefinitions)
+        static void RestoreTempTableToReal(IDataConnector genericData, string tablename, ColumnDefinition[] columnDefinitions, IndexDefinition[] indexDefinitions)
         {
-            genericData.CopyTableToTable(GetTempTableNameFromTableName(GetTempTableNameFromTableName(tablename)),
-                                         tablename, columnDefinitions, indexDefinitions);
+            genericData.CopyTableToTable(GetTempTableNameFromTableName(GetTempTableNameFromTableName(tablename)), tablename, columnDefinitions, indexDefinitions);
         }
 
         public void ClearRestorePoint(IDataConnector genericData)
@@ -374,6 +373,7 @@ namespace Universe.DataManager.Migration
         static void DeleteTempVersion(IDataConnector genericData, string tableName)
         {
             string tempTableName = GetTempTableNameFromTableName(tableName);
+
             if (genericData.TableExists(tempTableName))
             {
                 genericData.DropTable(tempTableName);

@@ -44,8 +44,7 @@ namespace Universe.Framework.Services.ClassHelpers.Other
     /// </summary>
     public class UniverseEventManager
     {
-        private readonly Dictionary<string, List<OnGenericEventHandler>> m_events =
-            new Dictionary<string, List<OnGenericEventHandler>>();
+        private readonly Dictionary<string, List<OnGenericEventHandler>> m_events = new Dictionary<string, List<OnGenericEventHandler>>();
 
         /// <summary>
         ///     Events so far:
@@ -127,6 +126,7 @@ namespace Universe.Framework.Services.ClassHelpers.Other
                                                                .Where(param => param != null));
                 }
             }
+
             return retVal;
         }
     }

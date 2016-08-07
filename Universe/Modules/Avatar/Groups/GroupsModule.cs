@@ -54,7 +54,6 @@ namespace Universe.Modules.Groups
     {
         readonly Dictionary<UUID, GroupMembershipData> m_cachedGroupTitles = new Dictionary<UUID, GroupMembershipData> ();
         readonly Dictionary<UUID, List<GroupMembershipData>> m_cachedGroupMemberships = new Dictionary<UUID, List<GroupMembershipData>> ();
-
         IScene m_scene;
 
         // Configuration settings

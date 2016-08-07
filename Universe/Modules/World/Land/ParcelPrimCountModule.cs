@@ -47,9 +47,7 @@ namespace Universe.Modules.Land
         public int Owner;
         public int Selected;
         public int Temporary;
-
-        public Dictionary<UUID, int> Users =
-            new Dictionary<UUID, int>();
+        public Dictionary<UUID, int> Users = new Dictionary<UUID, int>();
     }
 
     public class PrimCountModule : IPrimCountModule, INonSharedRegionModule
@@ -496,7 +494,8 @@ namespace Universe.Modules.Land
                 catch (Exception e)
                 {
                     // Catch it and move on. This includes situations where splist has inconsistent info
-                    MainConsole.Instance.WarnFormat("[ParcelPrimCountModule]: Problem processing action in Recount: {0}", e);
+                    MainConsole.Instance.WarnFormat(
+                        "[ParcelPrimCountModule]: Problem processing action in Recount: {0}", e);
                 }
             }
 
@@ -532,10 +531,13 @@ namespace Universe.Modules.Land
             else if (FunctionName == "ObjectEnteringNewParcel")
             {
                 //Taint the parcels
+                //SceneObjectGroup grp = (((Object[])parameters)[0]) as SceneObjectGroup;
                 UUID newParcel = (UUID) (((Object[]) parameters)[1]);
                 UUID oldParcel = (UUID) (((Object[]) parameters)[2]);
-                ILandObject oldlandObject = m_Scene.RequestModuleInterface<IParcelManagementModule>().GetLandObject(oldParcel);
-                ILandObject newlandObject = m_Scene.RequestModuleInterface<IParcelManagementModule>().GetLandObject(newParcel);
+                ILandObject oldlandObject =
+                    m_Scene.RequestModuleInterface<IParcelManagementModule>().GetLandObject(oldParcel);
+                ILandObject newlandObject =
+                    m_Scene.RequestModuleInterface<IParcelManagementModule>().GetLandObject(newParcel);
 
                 TaintPrimCount(oldlandObject);
                 TaintPrimCount(newlandObject);

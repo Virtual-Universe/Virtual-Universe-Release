@@ -84,7 +84,6 @@ namespace Universe.Framework.ClientInterfaces
                 { "message", OSD.FromString (Message) },
                 { "imSessionID", OSD.FromUUID (SessionID) },
                 { "offline", OSD.FromInteger (Offline) },
-                //  broken for non en_US locales                                  {"Position", OSD.FromVector3(Position)},
                 { "GPosX", OSD.FromReal (Position.X).ToString () },
                 { "GPosY", OSD.FromReal (Position.Y).ToString () },
                 { "GPosZ", OSD.FromReal (Position.Z).ToString () },
@@ -93,6 +92,7 @@ namespace Universe.Framework.ClientInterfaces
                 { "RegionID", OSD.FromUUID (RegionID) },
                 { "timestamp", OSD.FromUInteger (Timestamp) }
             };
+
             return map;
         }
 
@@ -105,7 +105,7 @@ namespace Universe.Framework.ClientInterfaces
             FromGroup = map ["fromGroup"].AsBoolean ();
             Message = map ["message"].ToString ();
             Offline = (byte)map ["offline"].AsInteger ();
-//            Position = map["Position"].AsVector3();
+
             if (map.ContainsKey ("Position"))
             {
                 Position = map ["Position"].AsVector3 ();

@@ -88,6 +88,7 @@ namespace Universe.DataManager
                 {
                     highestVersion[0] = version;
                 }
+
                 return highestVersion[0];
             }
 
@@ -111,6 +112,7 @@ namespace Universe.DataManager
                     },
                     new IndexDefinition[0]);
             }
+
             //Remove previous versions
             QueryFilter filter = new QueryFilter();
             filter.andFilters[COLUMN_NAME] = migrationName;
@@ -120,41 +122,34 @@ namespace Universe.DataManager
             Insert(VERSION_TABLE_NAME, new[] {version.ToString(), migrationName});
         }
 
-        public void CopyTableToTable(string sourceTableName, string destinationTableName,
-                                     ColumnDefinition[] columnDefinitions, IndexDefinition[] indexDefinitions)
+        public void CopyTableToTable(string sourceTableName, string destinationTableName, ColumnDefinition[] columnDefinitions, IndexDefinition[] indexDefinitions)
         {
             if (!TableExists(sourceTableName))
             {
-                throw new MigrationOperationException("Cannot copy table to new name, source table does not exist: " +
-                                                      sourceTableName);
+                throw new MigrationOperationException("Cannot copy table to new name, source table does not exist: " + sourceTableName);
             }
 
             if (TableExists(destinationTableName))
             {
                 DropTable(destinationTableName);
                 if (TableExists(destinationTableName))
-                    throw new MigrationOperationException(
-                        "Cannot copy table to new name, table with same name already exists: " + destinationTableName);
+                    throw new MigrationOperationException("Cannot copy table to new name, table with same name already exists: " + destinationTableName);
             }
 
             if (!VerifyTableExists(sourceTableName, columnDefinitions, indexDefinitions))
             {
-                throw new MigrationOperationException(
-                    "Cannot copy table to new name, source table does not match columnDefinitions: " +
-                    destinationTableName);
+                throw new MigrationOperationException("Cannot copy table to new name, source table does not match columnDefinitions: " + destinationTableName);
             }
 
             EnsureTableExists(destinationTableName, columnDefinitions, indexDefinitions, null);
             CopyAllDataBetweenMatchingTables(sourceTableName, destinationTableName, columnDefinitions, indexDefinitions);
         }
 
-        public bool VerifyTableExists(string tableName, ColumnDefinition[] columnDefinitions,
-                                      IndexDefinition[] indexDefinitions)
+        public bool VerifyTableExists(string tableName, ColumnDefinition[] columnDefinitions, IndexDefinition[] indexDefinitions)
         {
             if (!TableExists(tableName))
             {
-                MainConsole.Instance.Warn("[DataMigrator]: Issue finding table " + tableName +
-                    " when verifying tables exist!"); 
+                MainConsole.Instance.Warn("[DataMigrator]: Issue finding table " + tableName + " when verifying tables exist!"); 
                 return false;
             }
 
@@ -173,6 +168,7 @@ namespace Universe.DataManager
                             break;
                         }
                     }
+
                     //Check to see whether the two tables have the same type, but under different names
                     if (thisDef != null)
                     {
@@ -197,8 +193,7 @@ namespace Universe.DataManager
                 if (!newColumns.Contains(columnDefinition))
                 {
                     ColumnDefinition thisDef =
-                        newColumns.FirstOrDefault(
-                            extractedDefinition => extractedDefinition.Name.ToLower() == columnDefinition.Name.ToLower());
+                        newColumns.FirstOrDefault(extractedDefinition => extractedDefinition.Name.ToLower() == columnDefinition.Name.ToLower());
 
                     //Check to see whether the two tables have the same type, but under different names
                     if (thisDef != null)
@@ -208,6 +203,7 @@ namespace Universe.DataManager
                             continue; //They are the same type, let them go on through
                         }
                     }
+
                     MainConsole.Instance.Warn("[DataMigrator]: Issue verifying table " + tableName + " column " +
                                               columnDefinition.Name +
                                               " when verifying tables exist, problem with old column definitions");
@@ -221,6 +217,7 @@ namespace Universe.DataManager
             {
                 extractedIndices.Add(kvp.Value);
             }
+
             List<IndexDefinition> newIndices = new List<IndexDefinition>(indexDefinitions);
 
             foreach (IndexDefinition indexDefinition in indexDefinitions)
@@ -236,6 +233,7 @@ namespace Universe.DataManager
                             break;
                         }
                     }
+
                     if (thisDef == null)
                     {
                         MainConsole.Instance.Warn("[DataMigrator]: Issue verifying table " + tableName + " index " +
@@ -246,6 +244,7 @@ namespace Universe.DataManager
                     }
                 }
             }
+
             foreach (IndexDefinition indexDefinition in extractedIndices)
             {
                 if (!newIndices.Contains(indexDefinition))
@@ -259,6 +258,7 @@ namespace Universe.DataManager
                             break;
                         }
                     }
+
                     if (thisDef == null)
                     {
                         MainConsole.Instance.Warn("[DataMigrator]: Issue verifying table " + tableName + " index " +
@@ -273,16 +273,15 @@ namespace Universe.DataManager
             return true;
         }
 
-        public void EnsureTableExists(string tableName, ColumnDefinition[] columnDefinitions,
-                                      IndexDefinition[] indexDefinitions, Dictionary<string, string> renameColumns)
+        public void EnsureTableExists(string tableName, ColumnDefinition[] columnDefinitions, IndexDefinition[] indexDefinitions, Dictionary<string, string> renameColumns)
         {
             if (TableExists(tableName))
             {
                 if (!VerifyTableExists(tableName, columnDefinitions, indexDefinitions))
                 {
-                    //throw new MigrationOperationException("Cannot create, table with same name and different columns already exists. This should be fixed in a migration: " + tableName);
                     UpdateTable(tableName, columnDefinitions, indexDefinitions, renameColumns);
                 }
+
                 return;
             }
 
@@ -307,31 +306,19 @@ namespace Universe.DataManager
         #region UPDATE
 
         public abstract bool Update(string table, Dictionary<string, object> values,
-                                    Dictionary<string, int> incrementValue, QueryFilter queryFilter,
-                                    uint? start, uint? count);
+                                    Dictionary<string, int> incrementValue, QueryFilter queryFilter, uint? start, uint? count);
 
         #endregion
 
         #region SELECT
 
-        public abstract List<string> Query(string[] wantedValue, string table, QueryFilter queryFilter,
-                                           Dictionary<string, bool> sort, uint? start, uint? count);
-
+        public abstract List<string> Query(string[] wantedValue, string table, QueryFilter queryFilter, Dictionary<string, bool> sort, uint? start, uint? count);
         public abstract List<string> QueryFullData(string whereClause, string table, string wantedValue);
-
         public abstract DataReaderConnection QueryData(string whereClause, string table, string wantedValue);
-
-        public abstract Dictionary<string, List<string>> QueryNames(string[] keyRow, object[] keyValue, string table,
-                                                                    string wantedValue);
-
-        public abstract List<string> Query(string[] wantedValue, QueryTables tables, QueryFilter queryFilter,
-                                           Dictionary<string, bool> sort, uint? start, uint? count);
-
-        public abstract Dictionary<string, List<string>> QueryNames(string[] keyRow, object[] keyValue,
-                                                                    QueryTables tables, string wantedValue);
-
+        public abstract Dictionary<string, List<string>> QueryNames(string[] keyRow, object[] keyValue, string table, string wantedValue);
+        public abstract List<string> Query(string[] wantedValue, QueryTables tables, QueryFilter queryFilter, Dictionary<string, bool> sort, uint? start, uint? count);
+        public abstract Dictionary<string, List<string>> QueryNames(string[] keyRow, object[] keyValue, QueryTables tables, string wantedValue);
         public abstract DataReaderConnection QueryData(string whereClause, QueryTables tables, string wantedValue);
-
         public abstract List<string> QueryFullData(string whereClause, QueryTables tables, string wantedValue);
 
         #endregion
@@ -360,17 +347,13 @@ namespace Universe.DataManager
         #endregion
 
         public abstract void ConnectToDatabase(string connectionString, string migratorName, bool validateTables);
-
         public abstract void CloseDatabase(DataReaderConnection connection);
-
         public abstract IGenericData Copy();
         public abstract string ConCat(string[] toConcat);
 
         #endregion
 
-        public abstract void UpdateTable(string table, ColumnDefinition[] columns, IndexDefinition[] indexDefinitions,
-                                         Dictionary<string, string> renameColumns);
-
+        public abstract void UpdateTable(string table, ColumnDefinition[] columns, IndexDefinition[] indexDefinitions, Dictionary<string, string> renameColumns);
         public abstract string GetColumnTypeStringSymbol(ColumnTypes type);
         public abstract string GetColumnTypeStringSymbol(ColumnTypeDef coldef);
 

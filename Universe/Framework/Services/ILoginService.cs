@@ -49,9 +49,7 @@ namespace Universe.Framework.Services
         public static string ToSNeedsSent = "tos";                  //Pops up the ToS acceptance box
         public static string Update = "update";                     //Informs the client that they must update the viewer to login
         public static string OptionalUpdate = "optional";           //Informs the client that they have an optional update
-
-        public static string PresenceIssue = "presence";            //Used by Universe to tell the viewer that the agent is already logged in
-
+        public static string PresenceIssue = "presence";            //Used by Virtual Universe to tell the viewer that the agent is already logged in
         public static string OK = "true";                           //Login went fine
         public static string Indeterminant = "indeterminate";       //Unknown exactly what this does
         public static string Redirect = "redirect";                 //Redirect! TBA!
@@ -115,8 +113,7 @@ namespace Universe.Framework.Services
             InternalError = new LLFailedLoginResponse (
                 LoginResponseEnum.InternalError, 
                 "Error generating Login Response",
-                false);
-                                
+                false);                             
         }
 
         public LLFailedLoginResponse (string key, string value, bool login)
@@ -142,8 +139,7 @@ namespace Universe.Framework.Services
 
         void Initialize (ILoginService service, IConfigSource config, IRegistryCore registry);
 
-        LoginResponse Login (Hashtable request, UserAccount acc, IAgentInfo agentInfo, string authType, string password,
-                            out object data);
+        LoginResponse Login (Hashtable request, UserAccount acc, IAgentInfo agentInfo, string authType, string password, out object data);
     }
 
     public interface ILoginService

@@ -92,23 +92,16 @@ namespace Universe.Framework.Serialization
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create (uri);
 
-            // request.Credentials = credentials;
-
             request.ContentLength = 0;
             request.KeepAlive = false;
 
             WebResponse response = request.GetResponse ();
             Stream file = response.GetResponseStream ();
 
-            // justincc: going to ignore the content type for now and just try anything
-            //if (response.ContentType != "application/x-oar")
-            //    throw new Exception(String.Format("{0} does not identify an OAR file", uri.ToString()));
-
             if (response.ContentLength == 0)
                 MainConsole.Instance.Error(string.Format ("{0} returned an empty file", uri));
             response.Dispose ();
 
-            // return new BufferedStream(file, (int) response.ContentLength);
             return new BufferedStream (file, 1000000);
         }
     }

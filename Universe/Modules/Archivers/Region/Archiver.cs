@@ -27,7 +27,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 using System;
 using System.IO;
 using System.IO.Compression;
@@ -194,8 +193,7 @@ namespace Universe.Modules.Archivers
 
         void SaveUniverseArchive (IScene scene, string[] cmd)
         {
-            string fileName = MainConsole.Instance.Prompt ("What file name will this be saved as?",
-                                  scene.RegionInfo.RegionName + ".abackup");
+            string fileName = MainConsole.Instance.Prompt ("What file name will this be saved as?", scene.RegionInfo.RegionName + ".abackup");
 
             //some file sanity checks
             string extension = Path.GetExtension (fileName);

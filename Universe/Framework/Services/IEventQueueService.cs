@@ -62,8 +62,7 @@ namespace Universe.Framework.Services
         /// <param name="regionID"></param>
         void DisableSimulator(UUID avatarID, ulong RegionHandle, UUID regionID);
 
-        void EnableSimulator(ulong handle, byte[] IPAddress, int Port, UUID avatarID, int RegionSizeX, int RegionSizeY,
-                             UUID regionID);
+        void EnableSimulator(ulong handle, byte[] IPAddress, int Port, UUID avatarID, int RegionSizeX, int RegionSizeY, UUID regionID);
 
         void EstablishAgentCommunication(UUID avatarID, ulong regionHandle, byte[] IPAddress, int Port, string CapsUrl,
                                          int RegionSizeX, int RegionSizeY, UUID regionID);
@@ -97,10 +96,7 @@ namespace Universe.Framework.Services
 
         void GroupMembership(AgentGroupDataUpdatePacket groupUpdate, UUID avatarID, UUID regionID);
         void QueryReply(PlacesReplyPacket placesReply, UUID avatarID, string[] RegionTypes, UUID regionID);
-
-        void ScriptRunningReply(UUID objectID, UUID itemID, bool running, bool mono,
-                                UUID avatarID, UUID regionID);
-
+        void ScriptRunningReply(UUID objectID, UUID itemID, bool running, bool mono, UUID avatarID, UUID regionID);
         void ObjectPhysicsProperties(ISceneChildEntity[] entities, UUID avatarID, UUID regionID);
     }
 }

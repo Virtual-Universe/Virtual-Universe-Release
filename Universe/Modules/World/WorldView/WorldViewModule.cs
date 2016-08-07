@@ -77,9 +77,11 @@ namespace Universe.Modules.WorldView
                     "Save a maptile view of the region to a file",
                     HandleSaveWorldTile, true, true);
 
+
                 if (m_cacheEnabled) {
                     m_assetCacheDir = config.Configs ["AssetCache"].GetString ("CacheDirectory", m_assetCacheDir);
                 }
+
             }
         }
 
@@ -110,7 +112,8 @@ namespace Universe.Modules.WorldView
                 }
 
                 IHttpServer server = simulationBase.GetHttpServer (0);
-                server.AddStreamHandler (new WorldViewRequestHandler (this, scene.RegionInfo.RegionID.ToString ()));
+                server.AddStreamHandler (new WorldViewRequestHandler (this,
+                        scene.RegionInfo.RegionID.ToString ()));
                 MainConsole.Instance.Info ("[World view]: Configured and enabled for " + scene.RegionInfo.RegionName);
                 MainConsole.Instance.Info ("[World view]: RegionID " + scene.RegionInfo.RegionID);
             }
@@ -154,7 +157,8 @@ namespace Universe.Modules.WorldView
                 Directory.CreateDirectory (m_worldviewCacheDir);
         }
 
-        public byte [] GenerateWorldView (Vector3 pos, Vector3 rot, float fov, int width, int height, bool usetex)
+        public byte [] GenerateWorldView (Vector3 pos, Vector3 rot, float fov,
+                int width, int height, bool usetex)
         {
             if (!m_Enabled)
                 return new byte [0];
@@ -176,6 +180,10 @@ namespace Universe.Modules.WorldView
 
             // set some basic defaults
             Vector3 camPos = new Vector3 ();
+            //camPos.Y = scene.RegionInfo.RegionSizeY / 2 - 0.5f;
+            //camPos.X = scene.RegionInfo.RegionSizeX / 2 - 0.5f;
+            //camPos.Z = 221.7025033688163f);
+
             camPos.X = 1.25f;
             camPos.Y = 1.25f;
             camPos.Z = 61.0f;
@@ -192,6 +200,7 @@ namespace Universe.Modules.WorldView
             int width = 1280;
             int height = 720;
 
+            //byte[] jpeg = ExportWorldView(camPos, camDir, fov, width, height, true); 
             Bitmap bmp = m_Generator.CreateViewImage (camPos, camDir, fov, width, height, true);
             if (bmp == null)
                 return;
@@ -214,6 +223,11 @@ namespace Universe.Modules.WorldView
         public void SaveRegionWorldMapTile (IScene scene, string fileName, int size)
         {
             // if different formats etc are needed
+            //var imgEncoder = GetEncoderInfo ("image/jpeg");
+            //var encQuality = Encoder.Quality;
+            //var encParms = new EncoderParameters (1);
+            //encParms.Param[0] = new EncoderParameter (encQuality, 50L);
+
             m_Generator = scene.RequestModuleInterface<IMapImageGenerator> ();
             if (m_Generator == null)
                 return;
@@ -226,6 +240,7 @@ namespace Universe.Modules.WorldView
             Bitmap outbmp = ResizeBitmap (bmp, size, size, regionName);
             MemoryStream str = new MemoryStream ();
             outbmp.Save (str, ImageFormat.Jpeg);            // default quality is about 75
+            //outbmp.Save(str, imgEncoder, encParms);       // if encoder parms is used
             byte [] jpeg = str.ToArray ();
 
             // save image
@@ -239,6 +254,7 @@ namespace Universe.Modules.WorldView
             bmp.Dispose ();
             outbmp.Dispose ();
         }
+
 
         protected void HandleSaveWorldview (IScene scene, string [] cmdparams)
         {
@@ -269,9 +285,11 @@ namespace Universe.Modules.WorldView
             //some file sanity checks
             var savePath = PathHelpers.VerifyWriteFile (fileName, ".jpg", simulationBase.DefaultDataPath + "/Worldview", true);
 
-            MainConsole.Instance.InfoFormat ("[World view]: Saving worldview for {0} to {1}", scene.RegionInfo.RegionName, savePath);
+            MainConsole.Instance.InfoFormat (
+                "[World view]: Saving worldview for {0} to {1}", scene.RegionInfo.RegionName, savePath);
 
             SaveRegionWorldView (scene, savePath, fieldOfView);
+
         }
 
         protected void HandleSaveWorldTile (IScene scene, string [] cmdparams)
@@ -309,10 +327,75 @@ namespace Universe.Modules.WorldView
             //some file sanity checks
             var savePath = PathHelpers.VerifyWriteFile (fileName + "_maptile", ".jpg", simulationBase.DefaultDataPath + "/Worldview", true);
 
-            MainConsole.Instance.InfoFormat ("[World view]: Saving world maptile for {0} to {1}", scene.RegionInfo.RegionName, savePath);
+            MainConsole.Instance.InfoFormat (
+                "[World view]: Saving world maptile for {0} to {1}", scene.RegionInfo.RegionName, savePath);
 
             SaveRegionWorldMapTile (scene, savePath, size);
+
         }
+
+        /*
+         private void ExportArchiveImage(UUID imageUUID, string archiveName, string filePath)
+        {
+            byte[] jpeg = new byte[0];
+
+            using (MemoryStream imgstream = new MemoryStream())
+            {
+                // Taking our jpeg2000 data, decoding it, then saving it to a byte array with regular jpeg data
+
+                // non-async because we know we have the asset immediately.
+                byte[] imageAsset = AssetService.GetData(imageUUID.ToString());
+
+                if (imageAsset != null)
+                {
+                    // Decode image to System.Drawing.Image
+                    Image image = null;
+                    ManagedImage managedImage;
+                    if (OpenJPEG.DecodeToImage(imageAsset, out managedImage, out image))
+                    {
+                        // Save to bitmap
+                        using (Bitmap texture = ResizeBitmap(image, 256, 256, archiveName))
+                        {
+                            EncoderParameters myEncoderParameters = new EncoderParameters();
+                            myEncoderParameters.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality,
+                                75L);
+
+                            // Save bitmap to stream
+                            texture.Save(imgstream, GetEncoderInfo("image/jpeg"), myEncoderParameters);
+
+                            // Write the stream to a byte array for output
+                            jpeg = imgstream.ToArray();
+
+                            // save image
+                            string fileName = archiveName + ".jpg";
+                            string fullPath = Path.Combine(filePath, fileName);
+                            File.WriteAllBytes(fullPath, jpeg);
+
+                        }
+                        image.Dispose();
+                    }
+                }
+            }
+        }
+
+        // From MSDN
+         static ImageCodecInfo GetEncoderInfo(string mimeType)
+        {
+           ImageCodecInfo[] encoders;
+            try {
+                encoders = ImageCodecInfo.GetImageEncoders ();
+            } catch {
+                return null;
+            }
+
+            for (int j = 0; j < encoders.Length; ++j)
+            {
+                if (encoders[j].MimeType == mimeType)
+                    return encoders[j];
+            }
+            return null;
+        }
+        */
 
         Bitmap ResizeBitmap (Image b, int nWidth, int nHeight, string name)
         {

@@ -54,7 +54,6 @@ namespace Universe.Services
             var apiUri = service.CreateCAPS ("GroupAPIv1", "");
             service.AddStreamHandler ("GroupAPIv1", new GenericStreamHandler ("GET", apiUri, ProcessGetGroupAPI));
             service.AddStreamHandler ("GroupAPIv1", new GenericStreamHandler ("POST", apiUri, ProcessPostGroupAPI));
-
         }
 
         public void EnteringRegion ()

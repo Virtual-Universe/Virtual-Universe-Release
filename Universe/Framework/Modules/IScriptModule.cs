@@ -71,7 +71,6 @@ namespace Universe.Framework.Modules
         // is the UUID of a SOG, and the method acts on all contained
         // scripts. This is different from the suspend/resume that
         // can be issued by a client.
-        //
         void SuspendScript(UUID itemID);
         void ResumeScript(UUID itemID);
 
@@ -91,8 +90,7 @@ namespace Universe.Framework.Modules
         /// <param name="startParam"></param>
         /// <param name="postOnRez"></param>
         /// <param name="stateSource"></param>
-        void UpdateScript(UUID partID, UUID itemID, string script, int startParam, bool postOnRez,
-                          StateSource stateSource);
+        void UpdateScript(UUID partID, UUID itemID, string script, int startParam, bool postOnRez, StateSource stateSource);
 
         /// <summary>
         ///     Stops all scripts that the ScriptEngine is running

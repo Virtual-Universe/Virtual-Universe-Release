@@ -413,8 +413,7 @@ namespace Universe.Framework.Utilities
 
             public override string ToString ()
             {
-                return "ContentType " + ContentType + ", Name " + Name + ", Filename " + Filename + ", Start " +
-                       Start + ", Length " + Length;
+                return "ContentType " + ContentType + ", Name " + Name + ", Filename " + Filename + ", Start " + Start + ", Length " + Length;
             }
         }
 

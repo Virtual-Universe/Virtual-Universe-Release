@@ -49,8 +49,7 @@ namespace Universe.DataManager.Migration
             EndVersion = endVersion;
         }
 
-        public MigrationOperationDescription(MigrationOperationTypes createDefaultAndUpgradeToTarget,
-                                             Version currentVersion)
+        public MigrationOperationDescription(MigrationOperationTypes createDefaultAndUpgradeToTarget, Version currentVersion)
         {
             OperationType = createDefaultAndUpgradeToTarget;
             CurrentVersion = currentVersion;

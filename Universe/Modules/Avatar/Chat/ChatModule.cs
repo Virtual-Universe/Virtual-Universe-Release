@@ -632,7 +632,6 @@ namespace Universe.Modules.Chat
                 });
         }
 
-
         /// <summary>
         ///     Get all the mutes the client has set
         /// </summary>

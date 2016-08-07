@@ -182,7 +182,6 @@ namespace Universe.Modules.Voice
                 if (m_scene.RegionInfo.RegionName != regionName)
                     return null;                                            // not for the required region!!
 
-
                 bool success = true;
                 bool noAgent = false;
                 // get channel_uri: check first whether estate
@@ -192,8 +191,7 @@ namespace Universe.Modules.Voice
                 if (!m_scene.RegionInfo.EstateSettings.AllowVoice)
                 {
                     MainConsole.Instance.DebugFormat(
-                        "[Voice]: region \"{0}\": voice not enabled in estate settings",
-                        m_scene.RegionInfo.RegionName);
+                        "[Voice]: region \"{0}\": voice not enabled in estate settings", m_scene.RegionInfo.RegionName);
                     success = false;
                 }
                 if (avatar == null || avatar.CurrentParcel == null)
@@ -216,7 +214,6 @@ namespace Universe.Modules.Voice
                     //success = true;
                 }
 
-
                 OSDMap map = new OSDMap();
                 map ["Method"] = method;
                 map["Success"] = success;
@@ -228,8 +225,10 @@ namespace Universe.Modules.Voice
                     map["LocalID"] = avatar.CurrentParcel.LandData.LocalID;
                     map["ParcelFlags"] = avatar.CurrentParcel.LandData.Flags;
                 }
+
                 return map;
             }
+
             return null;
         }
 

@@ -75,8 +75,7 @@ namespace Universe.Framework.Utilities
         /// <returns>A hardened HttpWebRequest if the uri was determined to be safe</returns>
         /// <exception cref="ArgumentNullException">If uri is null</exception>
         /// <exception cref="ArgumentException">If uri is unsafe</exception>
-        public static HttpWebRequest Create(Uri uri, bool allowLoopback, int readWriteTimeoutMS, int timeoutMS,
-                                            int maximumRedirects)
+        public static HttpWebRequest Create(Uri uri, bool allowLoopback, int readWriteTimeoutMS, int timeoutMS, int maximumRedirects)
         {
             if (uri == null)
                 throw new ArgumentNullException("uri");
@@ -185,8 +184,7 @@ namespace Universe.Framework.Utilities
                         }
                         break;
                     default:
-                        MainConsole.Instance.WarnFormat(
-                            "Rejecting URL {0} because it does not use an IPv4 or IPv6 address.", uri);
+                        MainConsole.Instance.WarnFormat("Rejecting URL {0} because it does not use an IPv4 or IPv6 address.", uri);
                         return false;
                 }
             }
@@ -196,8 +194,7 @@ namespace Universe.Framework.Utilities
                 // help make sure it's not an internal address.
                 if (!allowLoopback && !uri.Host.Contains("."))
                 {
-                    MainConsole.Instance.WarnFormat(
-                        "Rejecting URL {0} because it does not contain a period in the host name.", uri);
+                    MainConsole.Instance.WarnFormat("Rejecting URL {0} because it does not contain a period in the host name.", uri);
                     return false;
                 }
             }

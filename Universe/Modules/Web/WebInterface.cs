@@ -478,16 +478,16 @@ namespace Universe.Modules.Web
             switch (Path.GetExtension (filename)) {
             case ".jpeg":
             case ".jpg":
-                response.AddHeader ("Cache-Control", "Public;max-age=" + CLIENT_CACHE_TIME);
+                response.AddHeader ("Cache-Control", "max-age=" + CLIENT_CACHE_TIME + ", public");
                 return "image/jpeg";
             case ".gif":
-                response.AddHeader ("Cache-Control", "Public;max-age=" + CLIENT_CACHE_TIME);
+                response.AddHeader ("Cache-Control", "max-age=" + CLIENT_CACHE_TIME + ", public");
                 return "image/gif";
             case ".png":
-                response.AddHeader ("Cache-Control", "Public;max-age=" + CLIENT_CACHE_TIME);
+                response.AddHeader ("Cache-Control", "max-age=" + CLIENT_CACHE_TIME + ", public");
                 return "image/png";
             case ".tiff":
-                response.AddHeader ("Cache-Control", "Public;max-age=" + CLIENT_CACHE_TIME);
+                response.AddHeader ("Cache-Control", "max-age=" + CLIENT_CACHE_TIME + ", public");
                 return "image/tiff";
             case ".html":
             case ".htm":
@@ -495,11 +495,11 @@ namespace Universe.Modules.Web
                 response.AddHeader ("Cache-Control", "no-cache");
                 return "text/html";
             case ".css":
-                //response.AddHeader("Cache-Control", "max-age=" + CLIENT_CACHE_TIME + ", public");
-                response.AddHeader ("Cache-Control", "no-cache");
+                response.AddHeader("Cache-Control", "max-age=" + CLIENT_CACHE_TIME + ", public");
+                //response.AddHeader ("Cache-Control", "no-cache");
                 return "text/css";
             case ".js":
-                //response.AddHeader("Cache-Control", "max-age=" + CLIENT_CACHE_TIME + ", public");
+                response.AddHeader("Cache-Control", "max-age=" + CLIENT_CACHE_TIME + ", public");
                 return "application/javascript";
             }
             return "text/plain";
@@ -735,9 +735,13 @@ namespace Universe.Modules.Web
             if (webUISettings == null) {
                 IGenericsConnector generics = Framework.Utilities.DataManager.RequestPlugin<IGenericsConnector> ();
                 var settings = generics.GetGeneric<WebUISettings> (UUID.Zero, "WebUISettings", "Settings");
-                if (settings == null)
+                if (settings == null) {
                     settings = new WebUISettings ();
 
+                    var simbase = Registry.RequestModuleInterface<ISimulationBase> ();
+                    settings.MapCenter.X = simbase.MapCenterX;
+                    settings.MapCenter.Y = simbase.MapCenterY;
+                }
                 return settings;
             }
 
@@ -839,8 +843,7 @@ namespace Universe.Modules.Web
     class GridWelcomeScreen : IDataTransferable
     {
         public static readonly GridWelcomeScreen Default = new GridWelcomeScreen {
-            SpecialWindowMessageTitle =
-                                                                       "Nothing to report at this time.",
+            SpecialWindowMessageTitle = "Nothing to report at this time.",
             SpecialWindowMessageText = "Grid is up and running.",
             SpecialWindowMessageColor = "white",
             SpecialWindowActive = true,
@@ -1147,8 +1150,8 @@ namespace Universe.Modules.Web
 
         public WebUISettings ()
         {
-            MapCenter.X = 1000;     // TODO:  Maybe this should be larger? eg 5000,5000
-            MapCenter.Y = 1000;
+            MapCenter.X = Constants.DEFAULT_REGIONSTART_X;
+            MapCenter.Y = Constants.DEFAULT_REGIONSTART_Y;
         }
 
         public WebUISettings (OSD map)

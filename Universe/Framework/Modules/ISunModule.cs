@@ -34,11 +34,8 @@ namespace Universe.Framework.Modules
     public interface ISunModule : INonSharedRegionModule
     {
         double GetSunParameter(string param);
-
         void SetSunParameter(IScene scene, string param, double value);
-
         float GetCurrentSunHour();
-
         float GetCurrentTimeAsLindenSunHour();
     }
 }

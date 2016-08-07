@@ -40,10 +40,7 @@ namespace Universe.Framework.Utilities
     public sealed class PacketPool
     {
         private static readonly PacketPool instance = new PacketPool();
-
-        private static readonly Dictionary<Type, Stack<Object>> DataBlocks =
-            new Dictionary<Type, Stack<Object>>();
-
+        private static readonly Dictionary<Type, Stack<Object>> DataBlocks = new Dictionary<Type, Stack<Object>>();
         private readonly object m_poolLock = new object();
         private readonly Dictionary<int, Stack<Packet>> pool = new Dictionary<int, Stack<Packet>>();
         private bool dataBlockPoolEnabled = true;
@@ -90,7 +87,7 @@ namespace Universe.Framework.Utilities
                 {
                     // Recycle old packages
 #if Debug
-                    MainConsole.Instance.Info("[PacketPool]: Using " + type);
+                    MainConsole.Instance.Info("[Packet Pool]: Using " + type);
 #endif
                     packet = (pool[t]).Pop();
                 }
@@ -153,7 +150,7 @@ namespace Universe.Framework.Utilities
             int i = 0;
             Packet packet = GetPacket(type);
             if (packet == null)
-                MainConsole.Instance.WarnFormat("[PACKETPOOL]: Failed to get packet of type {0}", type);
+                MainConsole.Instance.WarnFormat("[Packet Pool]: Failed to get packet of type {0}", type);
             else
                 packet.FromBytes(bytes, ref i, ref packetEnd, zeroBuffer);
             return packet;
@@ -165,35 +162,11 @@ namespace Universe.Framework.Utilities
         /// <param name="packet"></param>
         public bool ReturnPacket(Packet packet)
         {
-            /*if (dataBlockPoolEnabled)
-            {
-                switch (packet.Type)
-                {
-                    case PacketType.ObjectUpdate:
-                        ObjectUpdatePacket oup = (ObjectUpdatePacket)packet;
-
-                        foreach (ObjectUpdatePacket.ObjectDataBlock oupod in oup.ObjectData)
-                            ReturnDataBlock<ObjectUpdatePacket.ObjectDataBlock>(oupod);
-                        oup.ObjectData = null;
-                        break;
-
-                    case PacketType.ImprovedTerseObjectUpdate:
-                        ImprovedTerseObjectUpdatePacket itoup =
-                                (ImprovedTerseObjectUpdatePacket)packet;
-
-                        foreach(ImprovedTerseObjectUpdatePacket.ObjectDataBlock itoupod in itoup.ObjectData)
-                            ReturnDataBlock<ImprovedTerseObjectUpdatePacket.ObjectDataBlock>(itoupod);
-                        itoup.ObjectData = null;
-                        break;
-                }
-            }*/
-
             if (packetPoolEnabled)
             {
                 switch (packet.Type)
                 {
                         // List pooling packets here
-
                     case PacketType.ObjectUpdate:
                         lock (m_poolLock)
                         {
@@ -203,7 +176,7 @@ namespace Universe.Framework.Utilities
                                 t = (int) PacketType.ObjectUpdateCompressed;
 
 #if Debug
-                            MainConsole.Instance.Info("[PacketPool]: Returning " + type);
+                            MainConsole.Instance.Info("[Packet Pool]: Returning " + type);
 #endif
 
                             if (!pool.ContainsKey(t))
@@ -212,7 +185,9 @@ namespace Universe.Framework.Utilities
                             if ((pool[t]).Count < 50)
                                 (pool[t]).Push(packet);
                         }
+
                         return true;
+
                         //Outgoing packets:
                     case PacketType.ObjectUpdateCompressed:
                     case PacketType.ObjectUpdateCached:
@@ -242,7 +217,7 @@ namespace Universe.Framework.Utilities
                             int t = (int) packet.Type;
 
 #if Debug
-                            MainConsole.Instance.Info("[PacketPool]: Returning " + type);
+                            MainConsole.Instance.Info("[Packet Pool]: Returning " + type);
 #endif
 
                             if (!pool.ContainsKey(t))
@@ -251,6 +226,7 @@ namespace Universe.Framework.Utilities
                             if ((pool[t]).Count < 50)
                                 (pool[t]).Push(packet);
                         }
+
                         return true;
 
                         // Other packets wont pool
@@ -258,6 +234,7 @@ namespace Universe.Framework.Utilities
                         break;
                 }
             }
+
             return false;
         }
 
@@ -276,6 +253,7 @@ namespace Universe.Framework.Utilities
                 {
                     DataBlocks[typeof (T)] = new Stack<Object>();
                 }
+
                 return new T();
             }
         }

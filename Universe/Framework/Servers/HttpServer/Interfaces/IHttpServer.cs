@@ -55,7 +55,6 @@ namespace Universe.Framework.Servers.HttpServer.Interfaces
         ///     The hostname (external IP or DNS name) that this server is on (with http(s)://)
         /// </summary>
         string FullHostName { get; }
-
         bool AddPollServiceHTTPHandler(string methodName, PollServiceEventArgs args);
 
         /// <summary>
@@ -63,7 +62,6 @@ namespace Universe.Framework.Servers.HttpServer.Interfaces
         /// </summary>
         /// <param name="handler"></param>
         void AddStreamHandler(IStreamedRequestHandler handler);
-
         bool AddXmlRPCHandler(string method, XmlRpcMethod handler);
 
         /// <summary>
@@ -72,13 +70,9 @@ namespace Universe.Framework.Servers.HttpServer.Interfaces
         /// <param name="method">Name of the method</param>
         /// <returns>Returns null if not found</returns>
         XmlRpcMethod GetXmlRPCHandler(string method);
-
         void RemovePollServiceHTTPHandler(string httpMethod, string path);
-
         void RemoveStreamHandler(string httpMethod, string path);
-
         void Start();
-
         void Stop();
     }
 }

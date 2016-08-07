@@ -143,6 +143,7 @@ namespace Universe.Services
             	
                 return OSDParser.SerializeLLSDXmlBytes (resp);
             }
+
             return MainServer.BlankResponse;
         }
     }

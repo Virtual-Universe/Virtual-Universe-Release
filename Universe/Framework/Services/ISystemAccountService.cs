@@ -32,7 +32,6 @@ using OpenMetaverse;
 namespace Universe.Framework.Services
 {
     public interface ISystemAccountService
-
     {
         /// <summary>
         /// The governor UUID.
@@ -91,6 +90,5 @@ namespace Universe.Framework.Services
         /// <returns>The estate owner's UUID.</returns>
         /// <param name="estateID">Estate I.</param>
         UUID GetSystemEstateOwner (int estateID);
-
     }
 }

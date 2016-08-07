@@ -98,6 +98,18 @@ namespace Universe.Simulation.Base
             set { m_defaultDataPath = value;}
         }
 
+        protected int m_mapcenter_x = Constants.DEFAULT_REGIONSTART_X;
+        public int MapCenterX {
+            get { return m_mapcenter_x; }
+            set { m_mapcenter_x = value; }
+        }
+
+        protected int m_mapcenter_y = Constants.DEFAULT_REGIONSTART_Y;
+        public int MapCenterY {
+            get { return m_mapcenter_y; }
+            set { m_mapcenter_y = value; }
+        }
+
         protected IRegistryCore m_applicationRegistry = new RegistryCore();
 
         public IRegistryCore ApplicationRegistry
@@ -127,8 +139,7 @@ namespace Universe.Simulation.Base
             get { return m_BaseHTTPServer; }
         }
 
-        protected Dictionary<uint, IHttpServer> m_Servers =
-            new Dictionary<uint, IHttpServer>();
+        protected Dictionary<uint, IHttpServer> m_Servers = new Dictionary<uint, IHttpServer>();
 
         protected uint m_Port;
 
@@ -164,8 +175,7 @@ namespace Universe.Simulation.Base
         /// <param name="configSource"></param>
         /// <param name="cmdParams"></param>
         /// <param name="configLoader"></param>
-        public virtual void Initialize(IConfigSource originalConfig, IConfigSource configSource, string[] cmdParams,
-                                       ConfigurationLoader configLoader)
+        public virtual void Initialize(IConfigSource originalConfig, IConfigSource configSource, string[] cmdParams, ConfigurationLoader configLoader)
         {
             m_commandLineParameters = cmdParams;
             m_StartupTime = DateTime.Now;
@@ -205,8 +215,7 @@ namespace Universe.Simulation.Base
                     m_defaultDataPath = Constants.DEFAULT_DATA_DIR;
                 
                 m_startupCommandsFile = startupConfig.GetString("startup_console_commands_file", "startup_commands.txt");
-                m_shutdownCommandsFile = startupConfig.GetString("shutdown_console_commands_file",
-                                                                 "shutdown_commands.txt");
+                m_shutdownCommandsFile = startupConfig.GetString("shutdown_console_commands_file", "shutdown_commands.txt");
 
                 m_TimerScriptFileName = startupConfig.GetString("timer_Script", "disabled");
                 m_TimerScriptTime = startupConfig.GetInt("timer_time", m_TimerScriptTime);
@@ -236,6 +245,12 @@ namespace Universe.Simulation.Base
                     stpMinThreads = stpMaxThreads;           
             }
 
+            var mapConfig = m_config.Configs ["WebInterface"];
+            if (mapConfig != null) {
+                m_mapcenter_x = mapConfig.GetInt ("mapcenter_x", m_mapcenter_x);
+                m_mapcenter_y = mapConfig.GetInt ("mapcenter_y", m_mapcenter_y);
+            }
+
             if (Util.FireAndForgetMethod == FireAndForgetMethod.SmartThreadPool)
                 Util.InitThreadPool(stpMinThreads, stpMaxThreads);
 
@@ -254,12 +269,10 @@ namespace Universe.Simulation.Base
         {
             PrintFileToConsole (Path.Combine(DefaultDataPath,"startuplogo.txt"));
 
-            MainConsole.Instance.InfoFormat ("[Mini Virtual Universe]: Starting Mini Virtual Universe ({0})...",
-                                             (IntPtr.Size == 4 ? "x86" : "x64"));
+            MainConsole.Instance.InfoFormat ("[Mini Virtual Universe]: Starting Mini Virtual Universe ({0})...", (IntPtr.Size == 4 ? "x86" : "x64"));
             MainConsole.Instance.Info ("[Mini Virtual Universe]: Version : " + Version + "\n");
             MainConsole.Instance.Info ("[Mini Virtual Universe]: Git Base: " + VersionInfo.GitVersion + "\n");
-            MainConsole.Instance.Info ("[Mini Virtual Universe]: Startup completed in " +
-                                       (DateTime.Now - StartupTime).TotalSeconds);
+            MainConsole.Instance.Info ("[Mini Virtual Universe]: Startup completed in " + (DateTime.Now - StartupTime).TotalSeconds);
         }
 
         public virtual ISimulationBase Copy()
@@ -332,8 +345,10 @@ namespace Universe.Simulation.Base
                 //Then pass the exception upwards
                 throw;
             }
+
             if (m_Servers.Count == 0)
                 MainServer.Instance = server;
+
             return (m_Servers[port] = server);
         }
 
@@ -634,8 +649,7 @@ namespace Universe.Simulation.Base
                 if (close)
                     MainConsole.Instance.Info("[Shut Down]: Terminating");
 
-                MainConsole.Instance.Info("[Shut Down]: Shut down processing on main thread complete. " +
-                                          (close ? " Exiting Virtual Universe..." : ""));
+                MainConsole.Instance.Info("[Shut Down]: Shut down processing on main thread complete. " + (close ? " Exiting Virtual Universe..." : ""));
 
                 if (close)
                     Environment.Exit(0);

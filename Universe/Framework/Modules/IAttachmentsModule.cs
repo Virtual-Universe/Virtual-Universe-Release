@@ -45,8 +45,7 @@ namespace Universe.Framework.Modules
         /// <param name="AttachmentPt"></param>
         /// <param name="isTempAttach"></param>
         /// <returns>true if the object was successfully attached, false otherwise</returns>
-        bool AttachObjectFromInworldObject(
-            uint localID, IClientAPI remoteClient, ISceneEntity grp, int AttachmentPt, bool isTempAttach);
+        bool AttachObjectFromInworldObject(uint localID, IClientAPI remoteClient, ISceneEntity grp, int AttachmentPt, bool isTempAttach);
 
         /// <summary>
         ///     Rez an attachment from user inventory
@@ -57,8 +56,7 @@ namespace Universe.Framework.Modules
         /// <param name="AttachmentPt"></param>
         /// <param name="updateUUIDs">ONLY make this true if you know that the user will not be crossing or teleporting when this call will be happening</param>
         /// <returns>The scene object that was attached.  Null if the scene object could not be found</returns>
-        ISceneEntity RezSingleAttachmentFromInventory(
-            IClientAPI remoteClient, UUID itemID, UUID assetID, int AttachmentPt, bool updateUUIDs);
+        ISceneEntity RezSingleAttachmentFromInventory(IClientAPI remoteClient, UUID itemID, UUID assetID, int AttachmentPt, bool updateUUIDs);
 
         /// <summary>
         ///     Detach the given item to the ground.

@@ -35,7 +35,6 @@ namespace Universe.Framework.Modules
     {
         WindlightDayCycle GetCurrentDayCycle();
         void TriggerWindlightUpdate(int interpolate);
-
         void SetDayCycle(WindlightDayCycle cycle);
     }
 }

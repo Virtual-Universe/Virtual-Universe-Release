@@ -64,11 +64,9 @@ namespace Universe.Framework.DatabaseInterfaces
         void AddAgentToGroup(UUID requestingAgentID, UUID agentID, UUID groupID, UUID roleID);
         bool RemoveAgentFromGroup(UUID requestingAgentID, UUID agentID, UUID groupID);
 
-        void AddRoleToGroup(UUID requestingAgentID, UUID groupID, UUID roleID, string name, string description,
-                            string roleTitle, ulong powers);
+        void AddRoleToGroup(UUID requestingAgentID, UUID groupID, UUID roleID, string name, string description, string roleTitle, ulong powers);
 
-        void UpdateRole(UUID requestingAgentID, UUID groupID, UUID roleID, string name, string desc, string roleTitle,
-                        ulong powers);
+        void UpdateRole(UUID requestingAgentID, UUID groupID, UUID roleID, string name, string desc, string roleTitle, ulong powers);
 
         void RemoveRoleFromGroup(UUID requestingAgentID, UUID roleID, UUID groupID);
 
@@ -77,8 +75,7 @@ namespace Universe.Framework.DatabaseInterfaces
 
         void SetAgentGroupInfo(UUID requestingAgentID, UUID agentID, UUID groupID, int acceptNotices, int listInProfile);
 
-        void AddAgentGroupInvite(UUID requestingAgentID, UUID inviteID, UUID groupID, UUID roleID, UUID agentID,
-                                 string fromAgentName);
+        void AddAgentGroupInvite(UUID requestingAgentID, UUID inviteID, UUID groupID, UUID roleID, UUID agentID, string fromAgentName);
 
         void RemoveAgentInvite(UUID requestingAgentID, UUID inviteID);
 
@@ -114,8 +111,7 @@ namespace Universe.Framework.DatabaseInterfaces
         bool IsGroupBannedUser (UUID groupID, UUID agentID);
         GroupBannedAgentsData GetGroupBannedUser (UUID requestingAgentID, UUID groupID, UUID agentID);
 
-        List<DirGroupsReplyData> FindGroups(UUID requestingAgentID, string search, uint? start, uint? count,
-                                            uint queryflags);
+        List<DirGroupsReplyData> FindGroups(UUID requestingAgentID, string search, uint? start, uint? count, uint queryflags);
 
         List<GroupRolesData> GetAgentGroupRoles(UUID requestingAgentID, UUID agentID, UUID groupID);
         List<GroupRolesData> GetGroupRoles(UUID requestingAgentID, UUID groupID);
@@ -148,17 +144,20 @@ namespace Universe.Framework.DatabaseInterfaces
         public UUID SessionID;
     }
 
-    //Pulled from OpenMetaverse
-    // Summary:
-    //     Structure representing a member of a group chat session and their settings
+    /// <summary>
+    ///     Pulled from OpenMetaverse
+    ///         Structure representing a member of a group chat session and their settings
+    /// </summary>
     public class ChatSessionMember
     {
-        // Summary:
-        //     The OpenMetaverse.UUID of the Avatar
+        /// <summary>
+        ///     The OpenMetaverse.UUID of the avatar
+        /// </summary>
         public UUID AvatarKey;
-        //
-        // Summary:
-        //     True if user has voice chat enabled
+
+        /// <summary>
+        ///     True if the user has voice chat enabled
+        /// </summary>
         public bool CanVoiceChat;
 
         /// <summary>
@@ -171,21 +170,20 @@ namespace Universe.Framework.DatabaseInterfaces
         /// </summary>
         public bool RequestedRemoval;
 
-        //
-        // Summary:
-        //     True of Avatar has moderator abilities
+        /// <summary>
+        ///     True if Avatar has moderator abilities
+        /// </summary>
         public bool IsModerator;
-        //
-        // Summary:
-        //     True if a moderator has muted this avatars chat
+
+        /// <summary>
+        ///     True if a moderator has muted this avatars chat
+        /// </summary>
         public bool MuteText;
-        //
-        // Summary:
-        //     True if a moderator has muted this avatars voice
+
+        /// <summary>
+        ///     True if a moderator has muted this avatars voice
+        /// </summary>
         public bool MuteVoice;
-        //
-        // Summary:
-        //     True if they have been requested to join the session
     }
 
     public class GroupInviteInfo : IDataTransferable

@@ -66,19 +66,9 @@ namespace Universe.Framework.Physics
         public void AddCollider(uint localID, ContactPoint contact)
         {
             Cleared = false;
-            /*ContactPoint oldCol;
-            if(!m_objCollisionList.TryGetValue(localID, out oldCol))
-            {
-                */
+            
             lock (m_objCollisionList)
                 m_objCollisionList[localID] = contact;
-            /*}
-            else
-            {
-                if(oldCol.PenetrationDepth < contact.PenetrationDepth)
-                    lock(m_objCollisionList)
-                        m_objCollisionList[localID] = contact;
-            }*/
         }
 
         public int Count
@@ -104,6 +94,7 @@ namespace Universe.Framework.Physics
                 foreach (KeyValuePair<uint, ContactPoint> kvp in m_objCollisionList)
                     c.m_objCollisionList.Add(kvp.Key, kvp.Value);
             }
+
             return c;
         }
 
@@ -115,6 +106,7 @@ namespace Universe.Framework.Physics
                 foreach (KeyValuePair<uint, ContactPoint> kvp in m_objCollisionList)
                     c.Add(kvp.Key, kvp.Value);
             }
+
             return c;
         }
     }
@@ -214,7 +206,6 @@ namespace Universe.Framework.Physics
         public abstract Vector3 Velocity { get; set; }
         public virtual Vector3 Acceleration { get; set; }
         public abstract Vector3 Force { get; set; }
-
         public abstract float Mass { get; }
         public abstract float CollisionScore { get; set; }
         public abstract Quaternion Orientation { get; set; }
@@ -232,10 +223,8 @@ namespace Universe.Framework.Physics
         public virtual byte PhysicsShapeType { get; set; }
         public abstract void AddForce(Vector3 force, bool pushforce);
         public abstract bool SubscribedEvents();
-
         public abstract bool SendCollisions();
         public abstract void AddCollisionEvent(uint collidedWith, ContactPoint contact);
-
         public virtual void ForceSetVelocity(Vector3 velocity) { }
         public virtual void ForceSetRotVelocity(Vector3 velocity) { }
         public virtual void ForceSetPosition(Vector3 position) { }
@@ -253,14 +242,12 @@ namespace Universe.Framework.Physics
         public virtual void SetMaterial(int material, float friction, float restitution, float gravityMultiplier, float density) { }
         public virtual void SetCameraPos(Quaternion CameraRotation) { }
         public virtual void ClearVelocity() { }
-
         public virtual int VehicleType { get; set; }
         public virtual void VehicleFloatParam(int param, float value) { }
         public virtual void VehicleVectorParam(int param, Vector3 value) { }
         public virtual void VehicleRotationParam(int param, Quaternion rotation) { }
         public virtual void VehicleFlags(int param, bool remove) { }
         public virtual void AddAngularForce(Vector3 force, bool pushforce) { }
-
         public virtual PrimitiveBaseShape Shape { get; set; }
         public virtual bool Selected { get; set; }
         public virtual bool BlockPhysicalReconstruction { get; set; }

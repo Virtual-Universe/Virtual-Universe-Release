@@ -39,11 +39,11 @@ namespace Universe.Framework.Services
     /// <summary>
     ///     Callback used when a user's inventory is received from the inventory service
     /// </summary>
-    public delegate void InventoryReceiptCallback(
-        ICollection<InventoryFolderImpl> folders, ICollection<InventoryItemBase> items);
+    public delegate void InventoryReceiptCallback(ICollection<InventoryFolderImpl> folders, ICollection<InventoryItemBase> items);
 
     public interface IExternalInventoryService : IInventoryService
     {
+        // TODO:
         //This is the same as the normal inventory interface, but it is used to load the inventory service for external transactions (outside of this simulator/grid)
     }
 
@@ -321,8 +321,7 @@ namespace Universe.Framework.Services
         /// <param name="recipientFolderId"></param>
         /// <param name="doOwnerCheck"></param>
         /// <param name="success"></param>
-        void GiveInventoryItemAsync(UUID recipient, UUID senderId, UUID itemId,
-                                    UUID recipientFolderId, bool doOwnerCheck, GiveItemParam success);
+        void GiveInventoryItemAsync(UUID recipient, UUID senderId, UUID itemId, UUID recipientFolderId, bool doOwnerCheck, GiveItemParam success);
 
         /// <summary>
         ///     Gives an entire inventory folder to another user asynchronously
@@ -332,8 +331,7 @@ namespace Universe.Framework.Services
         /// <param name="folderId"></param>
         /// <param name="recipientParentFolderId"></param>
         /// <param name="success"></param>
-        void GiveInventoryFolderAsync(
-            UUID recipientId, UUID senderId, UUID folderId, UUID recipientParentFolderId, GiveFolderParam success);
+        void GiveInventoryFolderAsync(UUID recipientId, UUID senderId, UUID folderId, UUID recipientParentFolderId, GiveFolderParam success);
 
         #endregion
 
@@ -341,7 +339,6 @@ namespace Universe.Framework.Services
     }
 
     public delegate void GiveFolderParam(InventoryFolderBase folder);
-
     public delegate void GiveItemParam(InventoryItemBase item);
 
     public interface IInventoryData : IUniverseDataPlugin
@@ -353,26 +350,18 @@ namespace Universe.Framework.Services
         List<InventoryFolderBase> GetFolders(string[] fields, string[] vals);
         List<InventoryItemBase> GetItems(UUID avatarID, string[] fields, string[] vals);
         OSDArray GetLLSDItems(string[] fields, string[] vals);
-
         bool HasAssetForUser(UUID userID, UUID assetID);
         string GetItemNameByAsset(UUID assetID);
-
         bool StoreFolder(InventoryFolderBase folder);
         bool StoreItem(InventoryItemBase item);
-
         bool UpdateAssetIDForItem(UUID itemID, UUID assetID);
-
         bool DeleteFolders(string field, string val, bool safe);
         bool DeleteItems(string field, string val);
-
         bool MoveItem(string id, string newParent);
         InventoryItemBase[] GetActiveGestures(UUID principalID);
-
         byte[] FetchInventoryReply(OSDArray fetchRequest, UUID AgentID, UUID forceOwnerID, UUID libraryOwnerID);
-
         void IncrementFolder(UUID folderID);
         void IncrementFolderByItem(UUID folderID);
-
         List<UUID> GetItemAssetIDs(UUID userID, string[] p1, string[] p2);
     }
 }

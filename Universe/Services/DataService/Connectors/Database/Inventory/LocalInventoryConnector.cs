@@ -52,8 +52,7 @@ namespace Universe.Services.DataService
 
         #region IInventoryData Members
 
-        public virtual void Initialize(IGenericData GenericData, IConfigSource source, IRegistryCore simBase,
-                                       string defaultConnectionString)
+        public virtual void Initialize(IGenericData GenericData, IConfigSource source, IRegistryCore simBase, string defaultConnectionString)
         {
             if (source.Configs ["UniverseConnectors"].GetString ("InventoryConnector", "LocalConnector") != "LocalConnector")
                 return;
@@ -65,8 +64,7 @@ namespace Universe.Services.DataService
                 connectionString = source.Configs[Name].GetString("ConnectionString", defaultConnectionString);
 
             if (GD != null)
-                GD.ConnectToDatabase(connectionString, "Inventory",
-                                     source.Configs["UniverseConnectors"].GetBoolean("ValidateTables", true));
+                GD.ConnectToDatabase(connectionString, "Inventory", source.Configs["UniverseConnectors"].GetBoolean("ValidateTables", true));
 
             Framework.Utilities.DataManager.RegisterPlugin(this);
         }
@@ -139,6 +137,7 @@ namespace Universe.Services.DataService
                     GD.CloseDatabase(reader);
                 }
             }
+
             return null;
         }
 
@@ -196,8 +195,7 @@ namespace Universe.Services.DataService
             return (q != null && q.Count > 0) ? q[0] : "";
         }
 
-        public virtual byte[] FetchInventoryReply(OSDArray fetchRequest, UUID agentID, UUID forceOwnerID,
-                                                  UUID libraryOwnerID)
+        public virtual byte[] FetchInventoryReply(OSDArray fetchRequest, UUID agentID, UUID forceOwnerID, UUID libraryOwnerID)
         {
             LLSDSerializationDictionary contents = new LLSDSerializationDictionary();
             contents.WriteStartMap("llsd"); //Start llsd
@@ -209,12 +207,10 @@ namespace Universe.Services.DataService
                 contents.WriteStartMap("internalContents"); //Start internalContents kvp
                 OSDMap invFetch = (OSDMap) m;
 
-                //UUID agent_id = invFetch["agent_id"].AsUUID();
                 UUID owner_id = invFetch["owner_id"].AsUUID();
                 UUID folder_id = invFetch["folder_id"].AsUUID();
                 bool fetch_folders = invFetch["fetch_folders"].AsBoolean();
                 bool fetch_items = invFetch["fetch_items"].AsBoolean();
-                //int sort_order = invFetch["sort_order"].AsInteger();
 
                 //Set the normal stuff
                 contents["agent_id"] = agentID;
@@ -242,7 +238,6 @@ namespace Universe.Services.DataService
                                 contents["asset_id"] = assetID;
                                 contents["name"] = retVal.DataReader["inventoryName"].ToString();
                                 contents["desc"] = retVal.DataReader["inventoryDescription"].ToString();
-
 
                                 contents.WriteKey("permissions"); //Start permissions kvp
                                 contents.WriteStartMap("permissions");
@@ -347,6 +342,7 @@ namespace Universe.Services.DataService
                         moreLinkedItems.Clear();
                         goto redoQuery;
                     }
+
                     contents.WriteEndArray( /*"items"*/); //end array items
                 }
 
@@ -405,7 +401,7 @@ namespace Universe.Services.DataService
             }
 
             contents.WriteEndArray(); //end array folders
-            contents.WriteEndMap( /*"llsd"*/); //end llsd
+            contents.WriteEndMap(); //end llsd
 
             try {
                 return contents.GetSerializer();
@@ -583,6 +579,7 @@ namespace Universe.Services.DataService
                         sale_info["sale_type"] = "contents";
                         break;
                 }
+
                 item["sale_info"] = sale_info;
                 item["created_at"] = int.Parse(retVal["creationDate"].ToString());
                 permissions["group_id"] = UUID.Parse(retVal["groupID"].ToString());
@@ -602,7 +599,6 @@ namespace Universe.Services.DataService
 
                 array.Add(item);
             }
-            //retVal.Close();
 
             return array;
         }
@@ -660,6 +656,7 @@ namespace Universe.Services.DataService
                     item.InvType = 0;
                     StoreItem(item);
                 }
+
                 items.Add(item);
             }
 
@@ -854,11 +851,6 @@ namespace Universe.Services.DataService
                 writer.Close();
 
                 byte[] array = sw.ToArray();
-                /*byte[] newarr = new byte[array.Length - 3];
-                Array.Copy(array, 3, newarr, 0, newarr.Length);
-                writer = null;
-                sw = null;
-                array = null;*/
 
                 return array;
             }

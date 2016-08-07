@@ -34,10 +34,10 @@ using System.Linq;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
-using Universe.Framework.ConsoleFramework;
 using OpenMetaverse;
 using OpenMetaverse.StructuredData;
 using ProtoBuf;
+using Universe.Framework.ConsoleFramework;
 
 namespace Universe.Framework.SceneInfo
 {
@@ -80,8 +80,7 @@ namespace Universe.Framework.SceneInfo
     [Serializable, ProtoContract(UseProtoMembersOnly = false)]
     public class PrimitiveBaseShape
     {
-        private static readonly byte[] DEFAULT_TEXTURE =
-            new Primitive.TextureEntry(new UUID("89556747-24cb-43ed-920b-47caed15465f")).GetBytes();
+        private static readonly byte[] DEFAULT_TEXTURE = new Primitive.TextureEntry(new UUID("89556747-24cb-43ed-920b-47caed15465f")).GetBytes();
 
         [XmlIgnore] private float _flexiDrag;
         [XmlIgnore] private bool _flexiEntry;
@@ -204,7 +203,7 @@ namespace Universe.Framework.SceneInfo
                 if (!Enum.IsDefined(typeof (HollowShape), hollowShapeByte))
                 {
                     MainConsole.Instance.WarnFormat(
-                        "[SHAPE]: Attempt to set a ProfileCurve with a hollow shape value of {0}, which isn't a valid Enum.  Replacing with default shape.",
+                        "[Shape]: Attempt to set a ProfileCurve with a hollow shape value of {0}, which isn't a valid Enum.  Replacing with default shape.",
                         hollowShapeByte);
 
                     this._hollowShape = HollowShape.Same;
@@ -220,7 +219,7 @@ namespace Universe.Framework.SceneInfo
                 if (!Enum.IsDefined(typeof (ProfileShape), profileShapeByte))
                 {
                     MainConsole.Instance.WarnFormat(
-                        "[SHAPE]: Attempt to set a ProfileCurve with a profile shape value of {0}, which isn't a valid Enum.  Replacing with square.",
+                        "[Shape]: Attempt to set a ProfileCurve with a profile shape value of {0}, which isn't a valid Enum.  Replacing with square.",
                         profileShapeByte);
 
                     this._profileShape = ProfileShape.Square;
@@ -245,7 +244,7 @@ namespace Universe.Framework.SceneInfo
         {
             get
             {
-                //MainConsole.Instance.DebugFormat("[SHAPE]: get m_textureEntry length {0}", m_textureEntry.Length);
+                //MainConsole.Instance.DebugFormat("[Shape]: get m_textureEntry length {0}", m_textureEntry.Length);
                 try
                 {
                     return new Primitive.TextureEntry(m_textureEntry, 0, m_textureEntry.Length);
@@ -254,8 +253,7 @@ namespace Universe.Framework.SceneInfo
                 {
                 }
 
-                MainConsole.Instance.Warn("[SHAPE]: Failed to decode texture, length=" +
-                                          ((m_textureEntry != null) ? m_textureEntry.Length : 0));
+                MainConsole.Instance.Warn("[Shape]: Failed to decode texture, length=" + ((m_textureEntry != null) ? m_textureEntry.Length : 0));
                 return new Primitive.TextureEntry(UUID.Zero);
             }
 
@@ -692,11 +690,6 @@ namespace Universe.Framework.SceneInfo
             _scale.X = _scale.Y = radius*2f;
         }
 
-        /*void returns need to change of course
-        public virtual void GetMesh()
-        {
-        }*/
-
         public PrimitiveBaseShape Copy()
         {
             PrimitiveBaseShape copy = (PrimitiveBaseShape) MemberwiseClone();
@@ -713,6 +706,7 @@ namespace Universe.Framework.SceneInfo
 
                 copy.Media = dupeMedia;
             }
+
             return copy;
         }
 
@@ -773,18 +767,21 @@ namespace Universe.Framework.SceneInfo
                 TotalBytesLength += 16; // data
                 TotalBytesLength += 2 + 4; // type
             }
+
             if (_lightEntry)
             {
                 ExtraParamsNum++;
                 TotalBytesLength += 16; // data
                 TotalBytesLength += 2 + 4; // type
             }
+
             if (_sculptEntry)
             {
                 ExtraParamsNum++;
                 TotalBytesLength += 17; // data
                 TotalBytesLength += 2 + 4; // type
             }
+
             if (_projectionEntry)
             {
                 ExtraParamsNum++;
@@ -793,9 +790,6 @@ namespace Universe.Framework.SceneInfo
             }
 
             byte[] returnbytes = new byte[TotalBytesLength];
-
-
-            // uint paramlength = ExtraParamsNum;
 
             // Stick in the number of parameters
             returnbytes[i++] = (byte) ExtraParamsNum;
@@ -806,8 +800,6 @@ namespace Universe.Framework.SceneInfo
 
                 Utils.UInt16ToBytes(FlexiEP, returnbytes, i);
                 i += 2;
-                //returnbytes[i++] = (byte)(FlexiEP % 256);
-                //returnbytes[i++] = (byte)((FlexiEP >> 8) % 256);
 
                 Utils.UIntToBytes((uint) FlexiData.Length, returnbytes, i);
                 i += 4;
@@ -815,6 +807,7 @@ namespace Universe.Framework.SceneInfo
                 Array.Copy(FlexiData, 0, returnbytes, i, FlexiData.Length);
                 i += FlexiData.Length;
             }
+
             if (_lightEntry)
             {
                 byte[] LightData = GetLightBytes();
@@ -828,6 +821,7 @@ namespace Universe.Framework.SceneInfo
                 Array.Copy(LightData, 0, returnbytes, i, LightData.Length);
                 i += LightData.Length;
             }
+
             if (_sculptEntry)
             {
                 byte[] SculptData2 = GetSculptBytes();
@@ -841,6 +835,7 @@ namespace Universe.Framework.SceneInfo
                 Array.Copy(SculptData2, 0, returnbytes, i, SculptData2.Length);
                 i += SculptData2.Length;
             }
+
             if (_projectionEntry)
             {
                 byte[] ProjectionData = GetProjectionBytes();
@@ -854,6 +849,7 @@ namespace Universe.Framework.SceneInfo
                 Array.Copy(ProjectionData, 0, returnbytes, i, ProjectionData.Length);
                 i += ProjectionData.Length;
             }
+
             if (!_flexiEntry && !_lightEntry && !_sculptEntry && !_projectionEntry)
             {
                 byte[] returnbyte = new byte[1];
@@ -861,9 +857,8 @@ namespace Universe.Framework.SceneInfo
                 return returnbyte;
             }
 
-
             return returnbytes;
-            //MainConsole.Instance.Info("[EXTRAPARAMS]: Length = " + m_shape.ExtraParams.Length.ToString());
+            //MainConsole.Instance.Info("[Extra Params]: Length = " + m_shape.ExtraParams.Length.ToString());
         }
 
         public void ReadInUpdateExtraParam(ushort type, bool inUse, byte[] data)
@@ -881,6 +876,7 @@ namespace Universe.Framework.SceneInfo
                         _flexiEntry = false;
                         return;
                     }
+
                     ReadFlexiData(data, 0);
                     break;
 
@@ -890,6 +886,7 @@ namespace Universe.Framework.SceneInfo
                         _lightEntry = false;
                         return;
                     }
+
                     ReadLightData(data, 0);
                     break;
 
@@ -899,6 +896,7 @@ namespace Universe.Framework.SceneInfo
                         _sculptEntry = false;
                         return;
                     }
+
                     ReadSculptData(data, 0);
                     break;
                 case ProjectionEP:
@@ -907,6 +905,7 @@ namespace Universe.Framework.SceneInfo
                         _projectionEntry = false;
                         return;
                     }
+
                     ReadProjectionData(data, 0);
                     break;
             }
@@ -934,13 +933,11 @@ namespace Universe.Framework.SceneInfo
                 extraParamCount = data[i++];
             }
 
-
             for (int k = 0; k < extraParamCount; k++)
             {
                 ushort epType = Utils.BytesToUInt16(data, i);
 
                 i += 2;
-                // uint paramLength = Helpers.BytesToUIntBig(data, i);
 
                 i += 4;
                 switch (epType)
@@ -1008,7 +1005,7 @@ namespace Universe.Framework.SceneInfo
             }
             _sculptTexture = SculptUUID;
             _sculptType = SculptTypel;
-            //MainConsole.Instance.Info("[SCULPT]:" + SculptUUID.ToString());
+            //MainConsole.Instance.Info("[Sculpt]:" + SculptUUID.ToString());
         }
 
         public byte[] GetSculptBytes()
@@ -1162,7 +1159,6 @@ namespace Universe.Framework.SceneInfo
             return data;
         }
 
-
         /// <summary>
         ///     Creates a OpenMetaverse.Primitive and populates it with converted PrimitiveBaseShape values
         /// </summary>
@@ -1170,10 +1166,8 @@ namespace Universe.Framework.SceneInfo
         public Primitive ToOmvPrimitive()
         {
             // position and rotation defaults here since they are not available in PrimitiveBaseShape
-            return ToOmvPrimitive(new Vector3(0.0f, 0.0f, 0.0f),
-                                  new Quaternion(0.0f, 0.0f, 0.0f, 1.0f));
+            return ToOmvPrimitive(new Vector3(0.0f, 0.0f, 0.0f), new Quaternion(0.0f, 0.0f, 0.0f, 1.0f));
         }
-
 
         /// <summary>
         ///     Creates a OpenMetaverse.Primitive and populates it with converted PrimitiveBaseShape values
@@ -1188,8 +1182,7 @@ namespace Universe.Framework.SceneInfo
 
             if (this.SculptEntry)
             {
-                prim.Sculpt = new Primitive.SculptData
-                                  {Type = (SculptType) this.SculptType, SculptTexture = this.SculptTexture};
+                prim.Sculpt = new Primitive.SculptData {Type = (SculptType) this.SculptType, SculptTexture = this.SculptTexture};
             }
 
             prim.PrimData.PathShearX = this.PathShearX < 128 ? this.PathShearX*0.01f : (this.PathShearX - 256)*0.01f;
@@ -1358,7 +1351,7 @@ namespace Universe.Framework.SceneInfo
                         xtr.MoveToContent();
 
                         string type = xtr.GetAttribute("type");
-                        //MainConsole.Instance.DebugFormat("[MOAP]: Loaded media texture entry with type {0}", type);
+                        //MainConsole.Instance.DebugFormat("[Media On A Prim]: Loaded media texture entry with type {0}", type);
 
                         if (type != MEDIA_TEXTURE_TYPE)
                             return;
@@ -1418,6 +1411,7 @@ namespace Universe.Framework.SceneInfo
             {
                 Array.Reverse(lodBytes, 0, 4);
             }
+
             hash = lodBytes.Aggregate(hash, djb2);
 
             // include sculpt UUID

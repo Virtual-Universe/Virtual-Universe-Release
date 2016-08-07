@@ -47,8 +47,7 @@ namespace Universe.Services.DataService
 
         #region IAgentConnector Members
 
-        public void Initialize(IGenericData GenericData, IConfigSource source, IRegistryCore simBase,
-                               string defaultConnectionString)
+        public void Initialize(IGenericData GenericData, IConfigSource source, IRegistryCore simBase, string defaultConnectionString)
         {
             GD = GenericData;
 
@@ -56,8 +55,8 @@ namespace Universe.Services.DataService
                 defaultConnectionString = source.Configs[Name].GetString("ConnectionString", defaultConnectionString);
 
             if (GD != null)
-                GD.ConnectToDatabase(defaultConnectionString, "Agent",
-                                     source.Configs["UniverseConnectors"].GetBoolean("ValidateTables", true));
+                GD.ConnectToDatabase(defaultConnectionString, "Agent", source.Configs["UniverseConnectors"].GetBoolean("ValidateTables", true));
+
             Framework.Utilities.DataManager.RegisterPlugin(Name + "Local", this);
 
             if (source.Configs["UniverseConnectors"].GetString("AgentConnector", "LocalConnector") == "LocalConnector")
@@ -87,12 +86,16 @@ namespace Universe.Services.DataService
             
             agent = new IAgentInfo();
 
-            if (m_doRemoteOnly) {
+            if (m_doRemoteOnly)
+            {
                 object remoteValue = DoRemote(agentID);
-                if (remoteValue != null) {
+
+                if (remoteValue != null)
+                {
                     m_cache.Cache (agentID, (IAgentInfo)remoteValue);
                     return (IAgentInfo)remoteValue;
                 }
+
                 return null;
             }
 
@@ -131,9 +134,6 @@ namespace Universe.Services.DataService
         public void UpdateAgent(IAgentInfo agent)
         {
             CacheAgent(agent);
-            /*object remoteValue = DoRemoteForUser(agent.PrincipalID, agent.ToOSD());
-            if (remoteValue != null || m_doRemoteOnly)
-                return;*/
 
             Dictionary<string, object> values = new Dictionary<string, object>(1);
             values["Value"] = OSDParser.SerializeLLSDXmlString(agent.ToOSD());

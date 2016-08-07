@@ -30,6 +30,7 @@
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using Microsoft.CSharp;
+
 //using Microsoft.JScript;
 
 namespace Universe.ScriptEngine.VirtualScript.CompilerTools

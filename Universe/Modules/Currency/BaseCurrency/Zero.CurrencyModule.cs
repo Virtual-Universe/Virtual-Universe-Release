@@ -91,7 +91,8 @@ namespace Universe.Modules.Currency
         }
 
         public bool Transfer(UUID toID, UUID fromID, UUID toObjectID, string toObjectName, UUID fromObjectID,
-                             string fromObjectName, int amount, string description, TransactionType type)
+                             string fromObjectName, int amount, string description,
+                             TransactionType type)
         {
             if ((type == TransactionType.PayObject) && (OnObjectPaid != null))
                 OnObjectPaid((fromObjectID == UUID.Zero) ? toObjectID : fromObjectID, fromID, amount);
@@ -180,7 +181,8 @@ namespace Universe.Modules.Currency
             return true;
         }
 
-        public void ProcessMoneyTransferRequest(UUID source, UUID destination, int amount, int transactiontype, string description)
+        public void ProcessMoneyTransferRequest(UUID source, UUID destination, int amount,
+                                                int transactiontype, string description)
         {
         }
 
@@ -250,7 +252,7 @@ namespace Universe.Modules.Currency
 
             quoteResponse.Add("success", false);
             quoteResponse.Add("errorMessage", "Invalid parameters passed to the quote box");
-			quoteResponse.Add("errorURI", "http://virtual-planets.org/wiki");
+			quoteResponse.Add("errorURI", "http://universe-sim.org/wiki");
             returnval.Value = quoteResponse;
             return returnval;
         }

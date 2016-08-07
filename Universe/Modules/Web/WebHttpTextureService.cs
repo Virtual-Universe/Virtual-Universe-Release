@@ -86,7 +86,8 @@ namespace Universe.Modules.Web
             return _server.ServerURI + "/index.php?method=AvatarTexture&imageurl=" + imageURL;
         }
 
-        public byte [] OnHTTPGetTextureImage (string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse)
+        public byte [] OnHTTPGetTextureImage (string path, Stream request, OSHttpRequest httpRequest,
+                                            OSHttpResponse httpResponse)
         {
             byte [] jpeg = new byte [0];
             httpResponse.ContentType = "image/jpeg";
@@ -135,7 +136,9 @@ namespace Universe.Modules.Web
             return new byte [0];
         }
 
-      public byte [] OnHTTPGetAvatarImage (string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse)
+
+      public byte [] OnHTTPGetAvatarImage (string path, Stream request, OSHttpRequest httpRequest,
+                                            OSHttpResponse httpResponse)
         {
             httpResponse.ContentType = "image/jpeg";
 

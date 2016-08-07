@@ -169,6 +169,10 @@ namespace Universe.Modules.WorldView
             Vector3 camPos = new Vector3 ();
 
             // this is the basic topdown view used for a map tile
+            //camPos.Y = scene.RegionInfo.RegionSizeY / 2 - 0.5f;
+            //camPos.X = scene.RegionInfo.RegionSizeX / 2 - 0.5f;
+            //camPos.Z = 221.7025033688163f);
+
             camPos.X = 80.25f;
             camPos.Y = 75.25f;
             camPos.Z = 61.0f;
@@ -203,6 +207,7 @@ namespace Universe.Modules.WorldView
                 if (DateTime.Now < File.GetLastWriteTime(cacheFile).AddHours(m_WorldViewModule.CacheExpires))
                     return File.ReadAllBytes(cacheFile);
             }
+
             return new byte[0];
         }
 

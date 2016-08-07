@@ -76,6 +76,7 @@ namespace Universe.Framework.Utilities
                 if (m_old >= m_Undos.Length)
                     m_old -= m_Undos.Length;
             }
+
             if (++m_new >= m_Undos.Length)
                 m_new -= m_Undos.Length;
             m_Undos[m_new] = item;

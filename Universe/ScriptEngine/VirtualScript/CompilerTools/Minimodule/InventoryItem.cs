@@ -109,6 +109,7 @@ namespace Universe.ScriptEngine.VirtualScript.MiniModule
             if (typeof (InventoryItem).IsAssignableFrom (i.GetType ())) {
                 return (InventoryItem)i;
             }
+
             MainConsole.Instance.Error ("[MRM] There is no legal conversion from IInventoryItem to InventoryItem");
             return null;
         }

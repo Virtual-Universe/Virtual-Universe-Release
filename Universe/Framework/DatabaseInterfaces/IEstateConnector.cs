@@ -169,6 +169,5 @@ namespace Universe.Framework.DatabaseInterfaces
         /// <param name="estateID">Estate ID</param>
         /// <param name="regionID">Region ID</param>
         bool EstateRegionExists(int estateID, UUID regionID);
-
     }
 }

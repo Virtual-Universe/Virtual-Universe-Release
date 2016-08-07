@@ -50,6 +50,7 @@ namespace Universe.Framework.SceneInfo
             {
                 validcircuit = AgentCircuits[circuitcode];
             }
+
             //User never logged in... they shouldn't be attempting to connect
             if (validcircuit == null)
             {

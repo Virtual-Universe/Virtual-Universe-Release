@@ -356,7 +356,8 @@ namespace Universe.Modules.Scripting
         /// <param name="range"></param>
         /// <param name="toID"></param>
         public void DeliverMessage (ChatTypeEnum type, int channel, string name, UUID fromID, string msg,
-                                   Vector3 position, float range, UUID toID)
+                                   Vector3 position,
+                                   float range, UUID toID)
         {
             //Make sure that the cmd handler thread is running
             m_scriptModule.PokeThreads (UUID.Zero);

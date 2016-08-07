@@ -58,7 +58,6 @@ namespace Universe.Framework.ConsoleFramework
 
         public override string ReadLine (string p, bool isCommand, bool e)
         {
-            //Thread.CurrentThread.Join(1000);
             return string.Empty;
         }
 

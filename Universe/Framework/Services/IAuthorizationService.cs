@@ -31,8 +31,10 @@ using Universe.Framework.PresenceInfo;
 
 namespace Universe.Framework.Services
 {
-    // Generic Authorization service used for authorizing principals in a particular region
-
+    /// <summary>
+    ///     Genric authorization service used for
+    ///     authorizing principals in a particular region
+    /// </summary>
     public interface IAuthorizationService
     {
         /// <summary>
@@ -43,8 +45,7 @@ namespace Universe.Framework.Services
         /// <param name="isRootAgent">Whether the agent is a root agent or not</param>
         /// <param name="reason">If it fails, the reason they cannot enter</param>
         /// <returns></returns>
-        bool IsAuthorizedForRegion(GridRegion region, AgentCircuitData agent, bool isRootAgent,
-                                   out string reason);
+        bool IsAuthorizedForRegion(GridRegion region, AgentCircuitData agent, bool isRootAgent, out string reason);
     }
 
     public class AuthorizationRequest
@@ -69,13 +70,9 @@ namespace Universe.Framework.Services
         }
 
         public string ID { get; set; }
-
         public string FirstName { get; set; }
-
         public string SurName { get; set; }
-
         public string Email { get; set; }
-
         public string RegionID { get; set; }
     }
 
@@ -92,7 +89,6 @@ namespace Universe.Framework.Services
         }
 
         public bool IsAuthorized { get; set; }
-
         public string Message { get; set; }
     }
 }

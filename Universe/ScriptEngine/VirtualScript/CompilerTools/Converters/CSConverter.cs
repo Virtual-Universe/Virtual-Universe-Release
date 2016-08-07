@@ -33,6 +33,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.CSharp;
+
 //using Microsoft.JScript;
 
 namespace Universe.ScriptEngine.VirtualScript.CompilerTools
@@ -52,8 +53,7 @@ namespace Universe.ScriptEngine.VirtualScript.CompilerTools
         {
         }
 
-        public void Convert(string Script, out string CompiledScript,
-                            out object PositionMap)
+        public void Convert(string Script, out string CompiledScript, out object PositionMap)
         {
             CompiledScript = CreateCompilerScript(Script);
             PositionMap = null;
@@ -74,12 +74,11 @@ namespace Universe.ScriptEngine.VirtualScript.CompilerTools
                 lock (CScodeProvider)
                 {
                     if (isFile)
-                        results = CScodeProvider.CompileAssemblyFromFile(
-                            parameters, Script);
+                        results = CScodeProvider.CompileAssemblyFromFile(parameters, Script);
                     else
-                        results = CScodeProvider.CompileAssemblyFromSource(
-                            parameters, Script);
+                        results = CScodeProvider.CompileAssemblyFromSource(parameters, Script);
                 }
+
                 // Deal with an occasional segv in the compiler.
                 // Rarely, if ever, occurs twice in succession.
                 // Line # == 0 and no file name are indications that
@@ -90,7 +89,6 @@ namespace Universe.ScriptEngine.VirtualScript.CompilerTools
                     if (!retried && string.IsNullOrEmpty(results.Errors[0].FileName) &&
                         results.Errors[0].Line == 0)
                     {
-                        // System.Console.WriteLine("retrying failed compilation");
                         retried = true;
                     }
                     else
@@ -103,6 +101,7 @@ namespace Universe.ScriptEngine.VirtualScript.CompilerTools
                     complete = true;
                 }
             } while (!complete);
+
             return results;
         }
 
@@ -124,23 +123,12 @@ namespace Universe.ScriptEngine.VirtualScript.CompilerTools
 
         string CreateCompilerScript(string compileScript)
         {
-            compileScript = compileScript.Replace("string",
-                                                  "Universe.ScriptEngine.VirtualScript.LSL_Types.LSLString");
-
-            compileScript = compileScript.Replace("integer",
-                                                  "Universe.ScriptEngine.VirtualScript.LSL_Types.LSLInteger");
-
-            compileScript = compileScript.Replace("float",
-                                                  "Universe.ScriptEngine.VirtualScript.LSL_Types.LSLFloat");
-
-            compileScript = compileScript.Replace("list",
-                                                  "Universe.ScriptEngine.VirtualScript.LSL_Types.list");
-
-            compileScript = compileScript.Replace("rotation",
-                                                  "Universe.ScriptEngine.VirtualScript.LSL_Types.Quaternion");
-
-            compileScript = compileScript.Replace("vector",
-                                                  "Universe.ScriptEngine.VirtualScript.LSL_Types.Vector3");
+            compileScript = compileScript.Replace("string", "Universe.ScriptEngine.VirtualScript.LSL_Types.LSLString");
+            compileScript = compileScript.Replace("integer", "Universe.ScriptEngine.VirtualScript.LSL_Types.LSLInteger");
+            compileScript = compileScript.Replace("float", "Universe.ScriptEngine.VirtualScript.LSL_Types.LSLFloat");
+            compileScript = compileScript.Replace("list", "Universe.ScriptEngine.VirtualScript.LSL_Types.list");
+            compileScript = compileScript.Replace("rotation", "Universe.ScriptEngine.VirtualScript.LSL_Types.Quaternion");
+            compileScript = compileScript.Replace("vector", "Universe.ScriptEngine.VirtualScript.LSL_Types.Vector3");
             string compiledScript = "";
             compiledScript = string.Empty +
                              "using Universe.ScriptEngine.VirtualScript.Runtime;\n" +
@@ -151,14 +139,10 @@ namespace Universe.ScriptEngine.VirtualScript.CompilerTools
                              "namespace Script\n" +
                              "{\n";
 
-            compiledScript +=
-                "public class ScriptClass : Universe.ScriptEngine.VirtualScript.Runtime.ScriptBaseClass, IDisposable\n";
+            compiledScript += "public class ScriptClass : Universe.ScriptEngine.VirtualScript.Runtime.ScriptBaseClass, IDisposable\n";
             compiledScript += "{\n";
-            compiledScript +=
-                compileScript;
-
+            compiledScript += compileScript;
             compiledScript += "\n}"; // Close Class
-
             compiledScript += "\n}"; // Close Namespace
 
             return compiledScript;
@@ -187,8 +171,7 @@ namespace Universe.ScriptEngine.VirtualScript.CompilerTools
             m_compiler = compiler;
         }
 
-        public void Convert(string Script, out string CompiledScript,
-                            out object PositionMap)
+        public void Convert(string Script, out string CompiledScript, out object PositionMap)
         {
             #region Reset
 
@@ -215,20 +198,17 @@ namespace Universe.ScriptEngine.VirtualScript.CompilerTools
 
             if (rootPath != null)
             {
-                parameters.ReferencedAssemblies.Add(Path.Combine(rootPath,
-                                                                 "OpenMetaverse.dll"));
-                parameters.ReferencedAssemblies.Add(Path.Combine(rootPath,
-                                                                 "OpenMetaverseTypes.dll"));
-                parameters.ReferencedAssemblies.Add(Path.Combine(rootPath,
-                                                                 "OpenMetaverse.StructuredData.dll"));
-                parameters.ReferencedAssemblies.Add(Path.Combine(rootPath,
-                                                                 "Universe.BotManager.dll"));
+                parameters.ReferencedAssemblies.Add(Path.Combine(rootPath, "OpenMetaverse.dll"));
+                parameters.ReferencedAssemblies.Add(Path.Combine(rootPath, "OpenMetaverseTypes.dll"));
+                parameters.ReferencedAssemblies.Add(Path.Combine(rootPath, "OpenMetaverse.StructuredData.dll"));
+                parameters.ReferencedAssemblies.Add(Path.Combine(rootPath, "Universe.BotManager.dll"));
                 foreach (
                     string line in m_includedAssemblies.Where(line => !parameters.ReferencedAssemblies.Contains(line)))
                 {
                     parameters.ReferencedAssemblies.Add(Path.Combine(rootPath, line));
                 }
             }
+
             bool complete = false;
             bool retried = false;
             CompilerResults results;
@@ -237,12 +217,11 @@ namespace Universe.ScriptEngine.VirtualScript.CompilerTools
                 lock (CScodeProvider)
                 {
                     if (isFile)
-                        results = CScodeProvider.CompileAssemblyFromFile(
-                            parameters, Script);
+                        results = CScodeProvider.CompileAssemblyFromFile(parameters, Script);
                     else
-                        results = CScodeProvider.CompileAssemblyFromSource(
-                            parameters, Script);
+                        results = CScodeProvider.CompileAssemblyFromSource(parameters, Script);
                 }
+
                 // Deal with an occasional segv in the compiler.
                 // Rarely, if ever, occurs twice in succession.
                 // Line # == 0 and no file name are indications that
@@ -253,7 +232,6 @@ namespace Universe.ScriptEngine.VirtualScript.CompilerTools
                     if (!retried && string.IsNullOrEmpty(results.Errors[0].FileName) &&
                         results.Errors[0].Line == 0)
                     {
-                        // System.Console.WriteLine("retrying failed compilation");
                         retried = true;
                     }
                     else
@@ -266,6 +244,7 @@ namespace Universe.ScriptEngine.VirtualScript.CompilerTools
                     complete = true;
                 }
             } while (!complete);
+
             return results;
         }
 
@@ -356,14 +335,10 @@ namespace Universe.ScriptEngine.VirtualScript.CompilerTools
             compiledScript += "namespace Script\n" +
                               "{\n";
 
-            compiledScript +=
-                "public class ScriptClass : Universe.ScriptEngine.VirtualScript.Runtime.ScriptBaseClass, IDisposable\n";
+            compiledScript += "public class ScriptClass : Universe.ScriptEngine.VirtualScript.Runtime.ScriptBaseClass, IDisposable\n";
             compiledScript += "{\n";
-            compiledScript +=
-                compileScript;
-
+            compiledScript += compileScript;
             compiledScript += "\n}"; // Close Class
-
             compiledScript += "\n}"; // Close Namespace
 
             return compiledScript;

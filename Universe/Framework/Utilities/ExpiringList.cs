@@ -119,12 +119,8 @@ namespace Universe.Framework.Utilities
         ///     For thread safety
         /// </summary>
         private readonly object syncRoot = new object();
-
         private readonly List<TimedCacheKey<TKey>> timedStorage = new List<TimedCacheKey<TKey>>();
-
-        private readonly Dictionary<TKey, TimedCacheKey<TKey>> timedStorageIndex =
-            new Dictionary<TKey, TimedCacheKey<TKey>>();
-
+        private readonly Dictionary<TKey, TimedCacheKey<TKey>> timedStorageIndex = new Dictionary<TKey, TimedCacheKey<TKey>>();
         private readonly Timer timer = new Timer(TimeSpan.FromSeconds(CACHE_PURGE_HZ).TotalMilliseconds);
         private double DefaultTime;
 
@@ -430,14 +426,15 @@ namespace Universe.Framework.Utilities
             {
                 throw new ArgumentException("array must be of Rank 1 (one-dimensional)", "array");
             }
+
             if (startIndex >= array.Length)
             {
                 throw new ArgumentException("startIndex must be less than the length of the array.", "startIndex");
             }
+
             if (Count > array.Length - startIndex)
             {
-                throw new ArgumentException(
-                    "There is not enough space from startIndex to the end of the array to accomodate all items in the cache.");
+                throw new ArgumentException("There is not enough space from startIndex to the end of the array to accomodate all items in the cache.");
             }
 
             // Copy the data to the array (in a thread-safe manner)
@@ -484,8 +481,7 @@ namespace Universe.Framework.Utilities
                     Framework.Utilities.Lazy<List<object>> expiredItems = new Framework.Utilities.Lazy<List<object>>();
 
                     foreach (
-                        TimedCacheKey<TKey> timedKey in
-                            timedStorage.Where(timedKey => timedKey.ExpirationDate < signalTime))
+                        TimedCacheKey<TKey> timedKey in timedStorage.Where(timedKey => timedKey.ExpirationDate < signalTime))
                     {
                         // Mark the object for purge
                         expiredItems.Value.Add(timedKey.Key);

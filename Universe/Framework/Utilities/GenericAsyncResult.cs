@@ -53,7 +53,6 @@ namespace Universe.Framework.Utilities
         ///     Booleans and VolatileRead as m_completed
         /// </remarks>
         private byte m_completedSynchronously;
-
         private Exception m_exception;
         private ManualResetEvent m_waitHandle;
 
@@ -97,12 +96,10 @@ namespace Universe.Framework.Utilities
             }
         }
 
-
         public bool CompletedSynchronously
         {
             get { return Thread.VolatileRead(ref m_completedSynchronously) == 1; }
         }
-
 
         public bool IsCompleted
         {

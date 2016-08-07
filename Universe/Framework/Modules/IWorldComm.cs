@@ -80,7 +80,6 @@ namespace Universe.Framework.Modules
         /// <param name="id">key of sender (object or avatar)</param>
         /// <param name="msg">msg to sent</param>
         void DeliverMessage(ChatTypeEnum type, int channel, string name, UUID id, string msg);
-
         void DeliverMessage(ChatTypeEnum type, int channel, string name, UUID id, UUID to, string msg);
         void DeliverMessage(ChatTypeEnum type, int channel, string name, UUID id, string msg, float Range);
 
@@ -101,15 +100,11 @@ namespace Universe.Framework.Modules
         /// </summary>
         /// <returns>ListenerInfo with filter filled in</returns>
         IWorldCommListenerInfo GetNextMessage();
-
         void ListenControl(UUID itemID, int handle, int active);
         void ListenRemove(UUID itemID, int handle);
         void DeleteListener(UUID itemID);
         OSD GetSerializationData(UUID itemID, UUID primID);
-
-        void CreateFromData(UUID itemID, UUID hostID,
-                            OSD data);
-
+        void CreateFromData(UUID itemID, UUID hostID, OSD data);
         void AddBlockedChannel(int channel);
         void RemoveBlockedChannel(int channel);
     }

@@ -246,11 +246,12 @@ namespace Universe.Services
                 OSD.FromReal (position.Y),
                 OSD.FromReal (position.Z)
             };
-
             messageParams.Add ("position", positionArray);
+
             messageParams.Add ("region_id", new OSDUUID (UUID.Zero));
             messageParams.Add ("to_id", new OSDUUID (toAgent));
             messageParams.Add ("source", new OSDInteger (0));
+
             OSDMap data = new OSDMap (1) { { "binary_bucket", OSD.FromBinary (binaryBucket) } };
             messageParams.Add ("data", data);
             messageParams.Add ("message", new OSDString (message));
@@ -331,7 +332,6 @@ namespace Universe.Services
                 { "message", new OSDString ("ChatterBoxInvitation") },
                 { "body", body }
             };
-
             return chatterboxInvitation;
         }
 
@@ -383,7 +383,6 @@ namespace Universe.Services
                     info.Add ("transition", OSD.FromString (Transition));
                 agentUpdates.Add (block.AgentID.ToString (), info);
             }
-
             body.Add ("agent_updates", agentUpdates);
             body.Add ("session_id", OSD.FromUUID (sessionID));
             body.Add ("updates", new OSD ());
@@ -487,7 +486,6 @@ namespace Universe.Services
                     num++;
                 }
             }
-
             message.Add ("body", message_body);
             return message;
         }
@@ -504,7 +502,6 @@ namespace Universe.Services
                     OSD.FromUInteger ((uint)Util.ToUnixTime (statReplyMessage.ReportDataBlocks [num].TimeStamp));
                 num++;
             }
-
             message.Add ("body", message_body);
             return message;
         }

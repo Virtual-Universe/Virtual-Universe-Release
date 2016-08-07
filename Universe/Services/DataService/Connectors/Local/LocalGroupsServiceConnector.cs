@@ -64,8 +64,7 @@ namespace Universe.Services.DataService
 
         #region IUniverseDataPlugin members
 
-        public void Initialize(IGenericData genericData, IConfigSource source, IRegistryCore simBase,
-                               string defaultConnectionString)
+        public void Initialize(IGenericData genericData, IConfigSource source, IRegistryCore simBase, string defaultConnectionString)
         {
             GD = genericData;
 
@@ -80,8 +79,7 @@ namespace Universe.Services.DataService
             }
 
             if (GD != null)
-                GD.ConnectToDatabase (defaultConnectionString, "Groups",
-                    source.Configs ["UniverseConnectors"].GetBoolean ("ValidateTables", true));
+                GD.ConnectToDatabase (defaultConnectionString, "Groups", source.Configs ["UniverseConnectors"].GetBoolean ("ValidateTables", true));
 
             Framework.Utilities.DataManager.RegisterPlugin (Name + "Local", this);
 
@@ -238,8 +236,7 @@ namespace Universe.Services.DataService
                 GroupPowers.HostEvent |
                 GroupPowers.RemoveMember
             );
-
-                
+               
             Dictionary<string, object> row = new Dictionary<string, object>(11);
             row["GroupID"] = groupID;
             row["Name"] = name;
@@ -254,20 +251,10 @@ namespace Universe.Services.DataService
             row["OwnerRoleID"] = ownerRoleID;
 
             GD.Insert(_DATAREALM, row);
-
-            // const ulong EveryonePowers = 8796495740928;             // >> 0x80018010000
-            //
-            // 03-07-2015 Fly-Man- Removed this part in favor of using the real values
-            //
             
             //Add everyone role to group
             AddRoleToGroup(founderID, groupID, UUID.Zero, "Everyone", "Everyone in the group is in the everyone role.",
                            "Member of " + name, EveryonePowers);
-
-            // const ulong OfficersPowers = 436506116225230;           // >> 0x 18cfffffff8ce
-            //
-            // 03-07-2015 Fly-Man- Removed this part in favor of using the real values
-            //
 
             UUID officersRole = UUID.Random();
             //Add officers role to group
@@ -295,10 +282,6 @@ namespace Universe.Services.DataService
         //[CanBeReflected(ThreatLevel = ThreatLevel.Full)]
         public void UpdateGroupFounder(UUID groupID, UUID newOwner, bool keepOldOwnerInGroup)
         {
-            /*object remoteValue = DoRemote(groupID, newOwner, keepOldOwnerInGroup);
-            if (remoteValue != null || m_doRemoteOnly)
-                return;*/
-
             GroupRecord record = GetGroupRecord(UUID.Zero, groupID, "");
             bool newUserExists = GetAgentGroupMemberData(newOwner, groupID, newOwner) != null;
 
@@ -328,8 +311,7 @@ namespace Universe.Services.DataService
                 return;
             }
 
-            if (CheckGroupPermissions(requestingAgentID, groupID,
-                                      (ulong) (GroupPowers.ChangeOptions | GroupPowers.ChangeIdentity)))
+            if (CheckGroupPermissions(requestingAgentID, groupID, (ulong) (GroupPowers.ChangeOptions | GroupPowers.ChangeIdentity)))
             {
                 Dictionary<string, object> values = new Dictionary<string, object>(6);
                 values["Charter"] = charter;
@@ -351,9 +333,9 @@ namespace Universe.Services.DataService
         public void AddGroupNotice(UUID requestingAgentID, UUID groupID, UUID noticeID, string fromName, string subject,
                                    string message, UUID itemID, int assetType, string itemName)
         {
-            if (m_doRemoteOnly) {
-                DoRemote (requestingAgentID, groupID, noticeID, fromName, subject, message, itemID,
-                         assetType, itemName);
+            if (m_doRemoteOnly)
+            {
+                DoRemote (requestingAgentID, groupID, noticeID, fromName, subject, message, itemID, assetType, itemName);
                 return;
             }
 
@@ -378,7 +360,8 @@ namespace Universe.Services.DataService
         [CanBeReflected(ThreatLevel = ThreatLevel.High)]
         public bool EditGroupNotice(UUID requestingAgentID, UUID groupID, UUID noticeID, string subject, string message)
         {
-            if (m_doRemoteOnly) {
+            if (m_doRemoteOnly)
+            {
                 object remoteValue = DoRemote(requestingAgentID, groupID, noticeID, subject, message);
                 return remoteValue != null ? (bool) remoteValue : false;
             }
@@ -386,26 +369,24 @@ namespace Universe.Services.DataService
             if (!agentsCanBypassGroupNoticePermsCheck.Contains(requestingAgentID) &&
                 !CheckGroupPermissions(requestingAgentID, groupID, (ulong) GroupPowers.SendNotices))
             {
-                MainConsole.Instance.TraceFormat("Permission check failed when trying to edit group notice {0}.",
-                                                 noticeID);
+                MainConsole.Instance.TraceFormat("Permission check failed when trying to edit group notice {0}.", noticeID);
                 return false;
             }
 
             GroupNoticeInfo GNI = GetGroupNotice(requestingAgentID, noticeID);
-            if (GNI == null) {
+            if (GNI == null)
+            {
                 MainConsole.Instance.TraceFormat("Could not find group notice {0}", noticeID);
                 return false;
             }
 
             if (GNI.GroupID != groupID) {
-                MainConsole.Instance.TraceFormat("Group notice {0} group ID {1} does not match supplied group ID {2}",
-                                                 noticeID, GNI.GroupID, groupID);
+                MainConsole.Instance.TraceFormat("Group notice {0} group ID {1} does not match supplied group ID {2}", noticeID, GNI.GroupID, groupID);
                 return false;
             }
 
             if (subject.Trim() == string.Empty || message.Trim() == string.Empty) {
-                MainConsole.Instance.TraceFormat("Could not edit group notice {0}, message or subject was empty",
-                                                 noticeID);
+                MainConsole.Instance.TraceFormat("Could not edit group notice {0}, message or subject was empty", noticeID);
                 return false;
             }
 
@@ -431,8 +412,7 @@ namespace Universe.Services.DataService
             if (!agentsCanBypassGroupNoticePermsCheck.Contains(requestingAgentID) &&
                 !CheckGroupPermissions(requestingAgentID, groupID, (ulong) GroupPowers.SendNotices))
             {
-                MainConsole.Instance.TraceFormat("Permission check failed when trying to edit group notice {0}.",
-                                                 noticeID);
+                MainConsole.Instance.TraceFormat("Permission check failed when trying to edit group notice {0}.", noticeID);
                 return false;
             }
 
@@ -589,6 +569,7 @@ namespace Universe.Services.DataService
 
                 return true;
             }
+
             return false;
         }
 

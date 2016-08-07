@@ -95,6 +95,7 @@ namespace Universe.Modules.Web
             vars.Add("Offline", translator.GetTranslatedString("Offline"));
             vars.Add("Enabled", translator.GetTranslatedString("Enabled"));
             vars.Add("Disabled", translator.GetTranslatedString("Disabled"));
+
             vars.Add("SpecialWindowTitle", welcomeInfo.SpecialWindowMessageTitle);
             vars.Add("SpecialWindowMessage", welcomeInfo.SpecialWindowMessageText);
             vars.Add("SpecialWindowActive", welcomeInfo.SpecialWindowActive ? "selected" : "");

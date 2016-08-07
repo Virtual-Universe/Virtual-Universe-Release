@@ -181,6 +181,7 @@ namespace Universe.Modules.Web
 
             vars.Add("ShowLanguageTranslatorBar", !settings.HideLanguageTranslatorBar);
             vars.Add("ShowStyleBar", !settings.HideStyleBar);
+
             vars.Add("Maintenance", false);
             vars.Add("NoMaintenance", true);
             return vars;

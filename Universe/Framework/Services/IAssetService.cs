@@ -120,11 +120,8 @@ namespace Universe.Framework.Services
         /// <param name="id"></param>
         /// <returns></returns>
         bool Delete(UUID id);
-
         void Configure(IConfigSource config, IRegistryCore registry);
-
         void Start(IConfigSource config, IRegistryCore registry);
-
         void FinishedStartup();
     }
 

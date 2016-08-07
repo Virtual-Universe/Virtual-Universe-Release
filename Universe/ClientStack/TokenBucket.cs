@@ -210,6 +210,7 @@ namespace Universe.ClientStack
                 content -= amount;
                 return true;
             }
+
             return false;
         }
 
@@ -226,6 +227,7 @@ namespace Universe.ClientStack
                 content = maxBurst;
                 return true;
             }
+
             int now = Environment.TickCount & Int32.MaxValue;
             int deltaMS = now - lastDrip;
 
@@ -233,6 +235,7 @@ namespace Universe.ClientStack
             {
                 if (deltaMS < 0)
                     lastDrip = now;
+
                 return false;
             }
 
@@ -240,12 +243,7 @@ namespace Universe.ClientStack
 
             content = Math.Min(content + dripAmount, maxBurst);
             lastDrip = now;
-/*
-                if (dripAmount < 0 || content < 0)
-                    // sim has been idle for too long, integer is overflowing
-                    // previous calculation is meaningless, let's put it at correct max
-                    content = maxBurst;
-*/
+
             return true;
         }
     }

@@ -119,13 +119,15 @@ namespace Universe.Modules.Web
                             users.Add (user);
                         }
                     }
+
                     vars.Add ("UsersInRegion", users);
                 } else {
                     vars.Add ("NumberOfUsersInRegion", 0);
                     vars.Add ("UsersInRegion", new List<Dictionary<string, object>> ());
                 }
-                IDirectoryServiceConnector directoryConnector =
-                    Framework.Utilities.DataManager.RequestPlugin<IDirectoryServiceConnector> ();
+
+                IDirectoryServiceConnector directoryConnector = Framework.Utilities.DataManager.RequestPlugin<IDirectoryServiceConnector> ();
+
                 if (directoryConnector != null) {
                     List<LandData> parcelData = directoryConnector.GetParcelsByRegion (0, 10, region.RegionID, UUID.Zero,
                         ParcelFlags.None, ParcelCategory.Any);
@@ -152,12 +154,14 @@ namespace Universe.Modules.Web
                     }
 
                     vars.Add("ParcelInRegion", parcels);
-*/
+                    */
+
                     if (parcelData != null)
                         vars.Add ("NumberOfParcelsInRegion", parcelData.Count);
                     else
                         vars.Add ("NumberOfParcelsInRegion", 0);
                 }
+
                 IWebHttpTextureService webTextureService = webInterface.Registry.
                     RequestModuleInterface<IWebHttpTextureService> ();
                 var regionMapURL = "../images/icons/no_terrain.jpg";
@@ -186,6 +190,8 @@ namespace Universe.Modules.Web
                 vars.Add ("TooltipsMenuParcel", translator.GetTranslatedString ("TooltipsMenuParcel"));
                 vars.Add ("MenuOwnerTitle", translator.GetTranslatedString ("MenuOwnerTitle"));
                 vars.Add ("TooltipsMenuOwner", translator.GetTranslatedString ("TooltipsMenuOwner"));
+
+
                 vars.Add ("RegionInformationText", translator.GetTranslatedString ("RegionInformationText"));
                 vars.Add ("OwnerNameText", translator.GetTranslatedString ("OwnerNameText"));
                 vars.Add ("RegionLocationText", translator.GetTranslatedString ("RegionLocationText"));

@@ -49,8 +49,8 @@ namespace Universe.BotManager
         List<TravelMode> m_listOfStates = new List<TravelMode>();
         DateTime m_waitingSince = DateTime.MinValue;
 
-
-        public int CurrentPos {
+        public int CurrentPos
+        {
             get {
                 lock (m_lock) {
                     return m_currentpos;
@@ -109,20 +109,19 @@ namespace Universe.BotManager
                 position = Vector3.Zero;
                 state = TravelMode.None;
                 needsToTeleportToPosition = false;
+
                 if ((m_listOfPositions.Count - m_currentpos) > 0)
                 {
                     position = m_listOfPositions[m_currentpos];
                     state = m_listOfStates[m_currentpos];
-                    if (state != TravelMode.Wait && state != TravelMode.TriggerHereEvent &&
-                        position.ApproxEquals(currentPosition, closeToRange))
+                    if (state != TravelMode.Wait && state != TravelMode.TriggerHereEvent && position.ApproxEquals(currentPosition, closeToRange))
                     {
                         //Its close to a position, go look for the next pos
-                        //m_listOfPositions.RemoveAt (0);
-                        //m_listOfStates.RemoveAt (0);
                         m_currentpos++;
                         m_lastChangedPosition = DateTime.MinValue;
                         goto findNewTarget;
                     }
+
                     if (state == TravelMode.TriggerHereEvent)
                     {
                         m_currentpos++; //Clear for next time, as we only fire this one time
@@ -149,12 +148,12 @@ namespace Universe.BotManager
                         if ((DateTime.Now - m_lastChangedPosition).Seconds > secondsBeforeForcedTeleport)
                             needsToTeleportToPosition = true;
                     }
+
                     return true;
                 }
 
                 if (m_listOfPositions.Count == 0)          
                     return false;
-
 
                 if (FollowIndefinitely)
                 {
@@ -162,6 +161,7 @@ namespace Universe.BotManager
                     goto findNewTarget;
                 }
             }
+
             return found;
         }
 
@@ -175,7 +175,5 @@ namespace Universe.BotManager
         {
             return m_listOfPositions.Count;
         }
-
-
     }
 }

@@ -116,7 +116,8 @@ namespace Universe.Modules.WorldMap.Warp3DMap
                                 using (MemoryStream stream = new MemoryStream (cachedAsset.Data))
                                     detailTexture [i] = (Bitmap)Image.FromStream (stream);
                             } catch (Exception ex) {
-                                MainConsole.Instance.Warn ("Failed to decode cached terrain texture " + cacheID + " (textureID: " + textureIDs [i] + "): " + ex.Message);
+                                MainConsole.Instance.Warn ("Failed to decode cached terrain texture " + cacheID +
+                                                          " (textureID: " + textureIDs [i] + "): " + ex.Message);
                             }
                         }
                         if (cachedAsset != null)
@@ -129,7 +130,8 @@ namespace Universe.Modules.WorldMap.Warp3DMap
                                 try {
                                     detailTexture [i] = (Bitmap)m_imgDecoder.DecodeToImage (assetData);
                                 } catch (Exception ex) {
-                                    MainConsole.Instance.Warn ("Failed to decode terrain texture " + textureIDs [i] + ": " + ex.Message);
+                                    MainConsole.Instance.Warn ("Failed to decode terrain texture " + textureIDs [i] + ": " +
+                                                              ex.Message);
                                 }
                             }
 
@@ -241,7 +243,8 @@ namespace Universe.Modules.WorldMap.Warp3DMap
             #region Texture Compositing
 
             Bitmap output = new Bitmap (outWidth, outHeight, PixelFormat.Format24bppRgb);
-            BitmapData outputData = output.LockBits (new Rectangle (0, 0, outWidth, outHeight), ImageLockMode.WriteOnly, PixelFormat.Format24bppRgb);
+            BitmapData outputData = output.LockBits (new Rectangle (0, 0, outWidth, outHeight), ImageLockMode.WriteOnly,
+                                                    PixelFormat.Format24bppRgb);
 
             unsafe
             {
@@ -331,7 +334,8 @@ namespace Universe.Modules.WorldMap.Warp3DMap
             const float BASE_HSV_V = 34f / 100f;
 
             Bitmap img = new Bitmap (256, 256);
-            BitmapData bitmapData = img.LockBits (new Rectangle (0, 0, 256, 256), ImageLockMode.WriteOnly, PixelFormat.Format24bppRgb);
+            BitmapData bitmapData = img.LockBits (new Rectangle (0, 0, 256, 256), ImageLockMode.WriteOnly,
+                                                 PixelFormat.Format24bppRgb);
 
             unsafe
             {

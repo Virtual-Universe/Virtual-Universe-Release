@@ -59,7 +59,6 @@ using ReaderWriterLockSlim = System.Threading.ReaderWriterLockSlim;
 
 namespace Universe.Framework.Utilities
 {
-
     /// <summary>
     ///     The method used by Util.FireAndForget for asynchronously firing events
     /// </summary>
@@ -102,11 +101,9 @@ namespace Universe.Framework.Utilities
 
         // Unix-epoch starts at January 1st 1970, 00:00:00 UTC. And all our times in the server are (or at least should be) in UTC.
         public static readonly DateTime UnixEpoch =
-            DateTime.ParseExact ("1970-01-01 00:00:00 +0", "yyyy-MM-dd hh:mm:ss z", DateTimeFormatInfo.InvariantInfo).
-                     ToUniversalTime ();
+            DateTime.ParseExact ("1970-01-01 00:00:00 +0", "yyyy-MM-dd hh:mm:ss z", DateTimeFormatInfo.InvariantInfo).ToUniversalTime ();
 
-        public static readonly Regex UUIDPattern
-            = new Regex ("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
+        public static readonly Regex UUIDPattern = new Regex ("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
 
         public static FireAndForgetMethod FireAndForgetMethod = FireAndForgetMethod.SmartThreadPool;
 
@@ -377,6 +374,7 @@ namespace Universe.Framework.Utilities
             foreach (string val in list) {
                 builder.Append (val + ",");
             }
+
             return builder.ToString ();
         }
 
@@ -386,6 +384,7 @@ namespace Universe.Framework.Utilities
             foreach (var val in list) {
                 builder.Append (val.Key + "=" + val.Value + ",");
             }
+
             return builder.ToString ();
         }
 
@@ -405,6 +404,7 @@ namespace Universe.Framework.Utilities
                 else
                     builder.AppendFormat ("{0}{1}={2}\n", lineStart, key, val);
             }
+
             return builder.ToString ();
         }
 
@@ -427,6 +427,7 @@ namespace Universe.Framework.Utilities
                 var split = v.Split ('=');
                 dict.Add (split [0], split [1]);
             }
+
             return dict;
         }
 
@@ -510,7 +511,6 @@ namespace Universe.Framework.Utilities
         {
             return lerp (y, lerp (x, a, b), lerp (x, c, d));
         }
-
 
         public static Encoding UTF8 = Encoding.UTF8;
 
@@ -697,8 +697,7 @@ namespace Universe.Framework.Utilities
                     (up.X + fwd.Z) * s,
                     (left.Z + up.Y) * s,
                     z,
-                    (fwd.Y - left.X) * s);
-                
+                    (fwd.Y - left.X) * s);           
             }
         }
 
@@ -827,8 +826,7 @@ namespace Universe.Framework.Utilities
             MainConsole.Instance.DebugFormat ("[Util]: Loading native Windows library at {0}", nativeLibraryPath);
 
             if (LoadLibrary (nativeLibraryPath) == IntPtr.Zero) {
-                MainConsole.Instance.ErrorFormat (
-                    "[Util]: Couldn't find native Windows library at {0}", nativeLibraryPath);
+                MainConsole.Instance.ErrorFormat ("[Util]: Couldn't find native Windows library at {0}", nativeLibraryPath);
 
                 return false;
             }
@@ -1027,15 +1025,10 @@ namespace Universe.Framework.Utilities
             return Regex.Replace (filename, regexInvalidFileChars, string.Empty);
         }
 
-        //
         // directory locations
-        //
-
         public static string homeDir ()
         {
             string temp;
-            //            string personal=(Environment.GetFolderPath(Environment.SpecialFolder.Personal));
-            //            temp = Path.Combine(personal,".Universe");
             temp = ".";
             return temp;
         }
@@ -1513,8 +1506,6 @@ namespace Universe.Framework.Utilities
         {
             byte [] hash = ComputeMD5Hash (data + salt);
 
-            //string s = BitConverter.ToString(hash);
-
             Guid guid = new Guid (hash);
 
             return guid;
@@ -1644,6 +1635,7 @@ namespace Universe.Framework.Utilities
                         found.AddRange (files);
                     }
                 }
+
                 paths = addpaths;
             }
 
@@ -1791,7 +1783,6 @@ namespace Universe.Framework.Utilities
                 MainConsole.Instance.Warn ("[STP]: minThreads must be greater than 2 and <= maxThreads");
             }
 
-
             STPStartInfo startInfo = new STPStartInfo ();
             startInfo.ThreadPoolName = "Util";
             startInfo.IdleTimeout = 2000;
@@ -1800,8 +1791,6 @@ namespace Universe.Framework.Utilities
 
             m_ThreadPool = new SmartThreadPool (startInfo);
             m_threadPoolRunning = true;
-            //  old - remove if OK //m_ThreadPool = new SmartThreadPool(2000, maxThreads, 2);
-
         }
 
         public static void CloseThreadPool ()
@@ -2246,7 +2235,6 @@ namespace Universe.Framework.Utilities
                 value = Math.Truncate (value / 26);
             } while (value > 0);
 
-
             return retVal;
         }
     }
@@ -2317,7 +2305,6 @@ namespace Universe.Framework.Utilities
                 string s2 = y as string;
                 if (s2 == null)
                     return 0;
-
 
                 int len1 = s1.Length;
                 int len2 = s2.Length;
@@ -2396,7 +2383,6 @@ namespace Universe.Framework.Utilities
     {
         static bool m_noInternetConnection;
         static int m_nextInternetConnectionCheck;
-        //static bool useLocalhostLoopback=false;
         static readonly ExpiringCache<string, IPAddress> m_dnsCache = new ExpiringCache<string, IPAddress> ();
 
         public static IPEndPoint ResolveEndPoint (string hostName, int port)
@@ -2437,8 +2423,7 @@ namespace Universe.Framework.Utilities
             } catch (SocketException e) {
                 InternetFailure ();
                 throw new Exception (
-                    "Unable to resolve local hostname " + hostName + " innerException of type '" +
-                    e + "' attached to this exception", e);
+                    "Unable to resolve local hostname " + hostName + " innerException of type '" + e + "' attached to this exception", e);
             }
             if (ia != null)
                 endpoint = new IPEndPoint (ia, port);
@@ -2513,33 +2498,6 @@ namespace Universe.Framework.Utilities
         /// <returns></returns>
         public static IPAddress ResolveAddressForClient (IPAddress iPAddress, IPEndPoint clientIP)
         {
-            /*if (iPAddress == null)
-                return clientIP.Address;
-            if (iPAddress.Equals(clientIP.Address))
-            {
-                if (useLocalhostLoopback)
-                    return IPAddress.Loopback;
-                if (iPAddress == IPAddress.Loopback)
-                    return iPAddress; //Don't send something else if it is already on loopback
-                if (CheckInternetConnection())
-                {
-#pragma warning disable 618
-                    //The 'bad' way, only works for things on the same machine...
-                    try
-                    {
-                        string hostName = Dns.GetHostName();
-                        IPHostEntry ipEntry = Dns.GetHostByName(hostName);
-#pragma warning restore 618
-                        IPAddress[] addr = ipEntry.AddressList;
-                        return addr[0]; //Loopback around! They are on the same connection
-                    }
-                    catch
-                    {
-                        InternetFailure(); //Something went wrong
-                    }
-                }
-            }
-            return iPAddress;*/
             return iPAddress;
         }
 
@@ -2837,10 +2795,6 @@ namespace Universe.Framework.Utilities
                 EmitBoxIfNeeded (il, method.ReturnType);
             il.Emit (OpCodes.Ret);
             return dynamicMethod.Invoke (null, new object [] { invokeClass, invokeParameters });
-            /*FastInvokeHandler invoder =
-              (FastInvokeHandler)dynamicMethod.CreateDelegate(
-              typeof(FastInvokeHandler));
-            return invoder;*/
         }
 
         static void EmitCastToReference (ILGenerator il, Type type)

@@ -217,6 +217,10 @@ namespace Universe.Modules.WorldShader
         {
             Primitive.TextureEntry Textures = new Primitive.TextureEntry (id);
             Textures.DefaultTexture = CopyFace (c.DefaultTexture, Textures.DefaultTexture);
+            //for(int i = 0; i < c.FaceTextures.Length; i++)
+            //{
+            //    Textures.FaceTextures[i] = c.FaceTextures[i];
+            //}
             return Textures;
         }
 

@@ -293,9 +293,9 @@ namespace Universe.Framework.ClientInterfaces
         public static string ParseNotecardToString(string rawInput)
         {
             string[] output = ParseNotecardToList(rawInput).ToArray();
-
-//            foreach (string line in output)
-//                MainConsole.Instance.DebugFormat("[PARSE NOTECARD]: ParseNotecardToString got line {0}", line);
+            
+            //foreach (string line in output)
+            //   MainConsole.Instance.DebugFormat("[PARSE NOTECARD]: ParseNotecardToString got line {0}", line);
 
             return string.Join("\n", output);
         }
@@ -373,7 +373,6 @@ namespace Universe.Framework.ClientInterfaces
 
 						while (line < lines)
                             {
-								//m_log.DebugFormat("[PARSE NOTECARD]: Adding line {0}", input[idx]);
 								output.Add(input[idx]);
 								idx++;
 								line++;
@@ -393,6 +392,7 @@ namespace Universe.Framework.ClientInterfaces
                         }
                         break;
                 }
+
                 idx++;
             }
 

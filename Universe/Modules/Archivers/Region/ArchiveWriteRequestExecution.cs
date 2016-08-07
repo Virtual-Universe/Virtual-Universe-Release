@@ -56,20 +56,20 @@ namespace Universe.Modules.Archivers
         protected Guid m_requestId;
         protected IScene m_scene;
         protected List<ISceneEntity> m_sceneObjects;
-        protected IRegionSerializerModule m_serialiser;
+        protected IRegionSerializerModule m_serializer;
         protected ITerrainModule m_terrainModule;
 
         public ArchiveWriteRequestExecution(
             List<ISceneEntity> sceneObjects,
             ITerrainModule terrainModule,
-            IRegionSerializerModule serialiser,
+            IRegionSerializerModule serializer,
             IScene scene,
             TarArchiveWriter archiveWriter,
             Guid requestId)
         {
             m_sceneObjects = sceneObjects;
             m_terrainModule = terrainModule;
-            m_serialiser = serialiser;
+            m_serializer = serializer;
             m_scene = scene;
             m_archiveWriter = archiveWriter;
             m_requestId = requestId;
@@ -148,7 +148,7 @@ namespace Universe.Modules.Archivers
             {
                 //MainConsole.Instance.DebugFormat("[Archiver]: Saving {0} {1}, {2}", entity.Name, entity.UUID, entity.GetType());
 
-                string serializedObject = m_serialiser.SerializeGroupToXml2(sceneObject);
+                string serializedObject = m_serializer.SerializeGroupToXml2(sceneObject);
                 if (serializedObject != null)
                     m_archiveWriter.WriteFile(ArchiveHelpers.CreateObjectPath(sceneObject), serializedObject);
             }

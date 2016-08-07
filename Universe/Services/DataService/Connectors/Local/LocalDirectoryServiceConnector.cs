@@ -42,7 +42,6 @@ using Universe.Framework.SceneInfo;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Profile;
 using Universe.Framework.Utilities;
-
 using EventFlags = OpenMetaverse.DirectoryManager.EventFlags;
 using GridRegion = Universe.Framework.Services.GridRegion;
 
@@ -58,8 +57,7 @@ namespace Universe.Services.DataService
 
         #region IDirectoryServiceConnector Members
 
-        public void Initialize(IGenericData GenericData, IConfigSource source, IRegistryCore simBase,
-                               string defaultConnectionString)
+        public void Initialize(IGenericData GenericData, IConfigSource source, IRegistryCore simBase, string defaultConnectionString)
         {
             GD = GenericData;
             m_registry = simBase;
@@ -68,16 +66,15 @@ namespace Universe.Services.DataService
                 defaultConnectionString = source.Configs[Name].GetString("ConnectionString", defaultConnectionString);
 
             if (GD != null)
-                GD.ConnectToDatabase(defaultConnectionString, "Directory",
-                                     source.Configs["UniverseConnectors"].GetBoolean("ValidateTables", true));
+                GD.ConnectToDatabase(defaultConnectionString, "Directory", source.Configs["UniverseConnectors"].GetBoolean("ValidateTables", true));
 
             Framework.Utilities.DataManager.RegisterPlugin(Name + "Local", this);
 
-            if (source.Configs["UniverseConnectors"].GetString("DirectoryServiceConnector", "LocalConnector") ==
-                "LocalConnector")
+            if (source.Configs["UniverseConnectors"].GetString("DirectoryServiceConnector", "LocalConnector") == "LocalConnector")
             {
                 Framework.Utilities.DataManager.RegisterPlugin(this);
             }
+
             Init(simBase, Name);
         }
 
@@ -99,7 +96,8 @@ namespace Universe.Services.DataService
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
         public void AddRegion(List<LandData> parcels)
         {
-            if (m_doRemoteOnly) {
+            if (m_doRemoteOnly)
+            {
                 DoRemote (parcels);
                 return;
             }
@@ -181,13 +179,10 @@ namespace Universe.Services.DataService
                 var posZ = (float)Convert.ToDecimal (Query[i + 5], Culture.NumberFormatInfo);
                 landData.UserLocation = new Vector3 (posX, posY, posZ);
 
-                // UserLocation =
-                //     new Vector3(float.Parse(Query[i + 3]), float.Parse(Query[i + 4]), float.Parse(Query[i + 5])),
                 landData.Name = Query[i + 6];
                 landData.Description = Query[i + 7];
                 landData.Flags = uint.Parse(Query[i + 8]);
                 landData.Dwell = int.Parse(Query[i + 9]);
-                //landData.InfoUUID = UUID.Parse(Query[i + 10]);
                 landData.SalePrice = int.Parse(Query[i + 12]);
                 landData.AuctionID = uint.Parse(Query[i + 13]);
                 landData.Area = int.Parse(Query[i + 14]);
@@ -218,6 +213,7 @@ namespace Universe.Services.DataService
 
                 Lands.Add(landData);
             }
+
             return Lands;
         }
 
@@ -258,6 +254,7 @@ namespace Universe.Services.DataService
             List<LandData> Lands = Query2LandData(Query);
             if (parcelLandData == null && Lands.Count != 0)
                 parcelLandData = Lands[0];
+
             return parcelLandData;
         }
 
@@ -302,6 +299,7 @@ namespace Universe.Services.DataService
                     break;
                 }
             }
+
             if (landData == null && lands.Count != 0)
                 landData = lands[0];
             
@@ -377,8 +375,7 @@ namespace Universe.Services.DataService
                                }).ToList();
         }
 
-        static QueryFilter GetParcelsByRegionWhereClause(UUID RegionID, UUID owner, ParcelFlags flags,
-                                                                 ParcelCategory category)
+        static QueryFilter GetParcelsByRegionWhereClause(UUID RegionID, UUID owner, ParcelFlags flags, ParcelCategory category)
         {
             QueryFilter filter = new QueryFilter();
             filter.andFilters["RegionID"] = RegionID;
@@ -396,8 +393,7 @@ namespace Universe.Services.DataService
         }
 
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
-        public List<LandData> GetParcelsByRegion(uint start, uint count, UUID RegionID, UUID owner, ParcelFlags flags,
-                                                 ParcelCategory category)
+        public List<LandData> GetParcelsByRegion(uint start, uint count, UUID RegionID, UUID owner, ParcelFlags flags, ParcelCategory category)
         {
             List<LandData> resp = new List<LandData> (0);
             if (count == 0)
@@ -420,6 +416,7 @@ namespace Universe.Services.DataService
                     return Query2LandData(GD.Query(new[] { "*" }, m_SearchParcelTable, filter, sort, start, count));
                 }
             }
+
             return resp;
         }
 
@@ -441,6 +438,7 @@ namespace Universe.Services.DataService
                     return uint.Parse(GD.Query(new[] { "COUNT(ParcelID)" }, m_SearchParcelTable, filter, null, null, null)[0]);
                 }
             }
+
             return 0;
         }
 
@@ -455,7 +453,6 @@ namespace Universe.Services.DataService
                 object remoteValue = DoRemote (start, count, RegionID, name);
                 return remoteValue != null ? (List<LandData>)remoteValue : resp;
             }
-
 
             IRegionData regiondata = Framework.Utilities.DataManager.RequestPlugin<IRegionData>();
             if (regiondata != null)
@@ -480,7 +477,8 @@ namespace Universe.Services.DataService
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
         public uint GetNumberOfParcelsWithNameByRegion(UUID RegionID, string name)
         {
-            if (m_doRemoteOnly) {
+            if (m_doRemoteOnly)
+            {
                 object remoteValue = DoRemote (RegionID, name);
                 return remoteValue != null ? (uint)remoteValue : 0;
             }
@@ -498,6 +496,7 @@ namespace Universe.Services.DataService
                     return uint.Parse(GD.Query(new[] { "COUNT(ParcelID)" }, m_SearchParcelTable, filter, null, null, null)[0]);
                 }
             }
+
             return 0;
         }
 
@@ -511,8 +510,7 @@ namespace Universe.Services.DataService
         /// <param name="scopeID"> </param>
         /// <returns></returns>
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
-        public List<DirPlacesReplyData> FindLand(string queryText, string category, int StartQuery, uint Flags,
-                                                 UUID scopeID)
+        public List<DirPlacesReplyData> FindLand(string queryText, string category, int StartQuery, uint Flags, UUID scopeID)
         {
             if (m_doRemoteOnly) {
                 object remoteValue = DoRemote (queryText, category, StartQuery, Flags, scopeID);
@@ -532,10 +530,13 @@ namespace Universe.Services.DataService
             filter.orLikeFilters["Name"] = "%" + queryText + "%";
             filter.orLikeFilters["Description"] = "%" + queryText + "%";
             filter.andFilters["ShowInSearch"] = 1;
+
             if (category != "-1")
                 filter.andFilters["Category"] = category;
+
             if ((Flags & (uint) DirectoryManager.DirFindFlags.AreaSort) == (uint) DirectoryManager.DirFindFlags.AreaSort)
                 sort["Area"] = false;
+
             if ((Flags & (uint) DirectoryManager.DirFindFlags.NameSort) == (uint) DirectoryManager.DirFindFlags.NameSort)
                 sort["Name"] = false;
 
@@ -585,10 +586,10 @@ namespace Universe.Services.DataService
         /// <param name="scopeID"> </param>
         /// <returns></returns>
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
-        public List<DirLandReplyData> FindLandForSale(string searchType, uint price, uint area, int StartQuery,
-                                                      uint Flags, UUID scopeID)
+        public List<DirLandReplyData> FindLandForSale(string searchType, uint price, uint area, int StartQuery, uint Flags, UUID scopeID)
         {
-            if (m_doRemoteOnly) {
+            if (m_doRemoteOnly)
+            {
                 object remoteValue = DoRemote (searchType, price, area, StartQuery, Flags, scopeID);
                 return remoteValue != null ? (List<DirLandReplyData>)remoteValue : new List<DirLandReplyData> ();
             }
@@ -638,6 +639,7 @@ namespace Universe.Services.DataService
                                                      name = retVal[i + 1],
                                                      auction = (retVal[i + 2] != "0")
                                                  };
+
                 //If its an auction and we didn't request to see auctions, skip to the next and continue
                 if ((Flags & (uint) DirectoryManager.SearchTypeFlags.Auction) ==
                     (uint) DirectoryManager.SearchTypeFlags.Auction && !replyData.auction)
@@ -672,8 +674,7 @@ namespace Universe.Services.DataService
         /// <param name="regionID"> </param>
         /// <returns></returns>
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
-        public List<DirLandReplyData> FindLandForSaleInRegion(string searchType, uint price, uint area, int StartQuery,
-                                                              uint Flags, UUID regionID)
+        public List<DirLandReplyData> FindLandForSaleInRegion(string searchType, uint price, uint area, int StartQuery, uint Flags, UUID regionID)
         {
             if (m_doRemoteOnly) {
                 object remoteValue = DoRemote (searchType, price, area, StartQuery, Flags, regionID);
@@ -699,13 +700,15 @@ namespace Universe.Services.DataService
             {
                 filter.andGreaterThanEqFilters["Area"] = (int) area;
             }
+
             Dictionary<string, bool> sort = new Dictionary<string, bool>();
+
             if ((Flags & (uint) DirectoryManager.DirFindFlags.AreaSort) == (uint) DirectoryManager.DirFindFlags.AreaSort)
                 sort["Area"] = false;
+
             if ((Flags & (uint) DirectoryManager.DirFindFlags.NameSort) == (uint) DirectoryManager.DirFindFlags.NameSort)
                 sort["Name"] = false;
-            //if ((queryFlags & (uint)DirectoryManager.DirFindFlags.PerMeterSort) == (uint)DirectoryManager.DirFindFlags.PerMeterSort)
-            //    sort["Area"] = (queryFlags & (uint)DirectoryManager.DirFindFlags.SortAsc) == (uint)DirectoryManager.DirFindFlags.SortAsc);
+           
             if ((Flags & (uint) DirectoryManager.DirFindFlags.PricesSort) ==
                 (uint) DirectoryManager.DirFindFlags.PricesSort)
                 sort["SalePrice"] = (Flags & (uint) DirectoryManager.DirFindFlags.SortAsc) ==
@@ -735,6 +738,7 @@ namespace Universe.Services.DataService
                                                      name = retVal[i + 1],
                                                      auction = (retVal[i + 2] != "0")
                                                  };
+
                 //If its an auction and we didn't request to see auctions, skip to the next and continue
                 if ((Flags & (uint) DirectoryManager.SearchTypeFlags.Auction) ==
                     (uint) DirectoryManager.SearchTypeFlags.Auction && !replyData.auction)
@@ -781,16 +785,11 @@ namespace Universe.Services.DataService
             else if ((queryFlags & (uint) DirectoryManager.DirFindFlags.NameSort) ==
                      (uint) DirectoryManager.DirFindFlags.NameSort)
                 sort["Name"] = false;
-                //else if ((queryFlags & (uint)DirectoryManager.DirFindFlags.PerMeterSort) == (uint)DirectoryManager.DirFindFlags.PerMeterSort)
-                //    sort["Area"] = (queryFlags & (uint)DirectoryManager.DirFindFlags.SortAsc) == (uint)DirectoryManager.DirFindFlags.SortAsc);
-                //else if ((queryFlags & (uint)DirectoryManager.DirFindFlags.PricesSort) == (uint)DirectoryManager.DirFindFlags.PricesSort)
-                //    sort["SalePrice"] = (queryFlags & (uint)DirectoryManager.DirFindFlags.SortAsc) == (uint)DirectoryManager.DirFindFlags.SortAsc;
             else
                 sort["Dwell"] = false;
 
             if (scopeID != UUID.Zero)
                 filter.andFilters["ScopeID"] = scopeID;
-
 
             List<string> retVal = GD.Query(new[]
                                                {
@@ -865,8 +864,7 @@ namespace Universe.Services.DataService
         /// <param name="scopeID"> </param>
         /// <returns></returns>
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
-        public List<DirClassifiedReplyData> FindClassifieds(string queryText, string category, uint queryFlags,
-                                                            int StartQuery, UUID scopeID)
+        public List<DirClassifiedReplyData> FindClassifieds(string queryText, string category, uint queryFlags, int StartQuery, UUID scopeID)
         {
             if (m_doRemoteOnly) {
                 object remoteValue = DoRemote (queryText, category, queryFlags, StartQuery, scopeID);
@@ -876,12 +874,15 @@ namespace Universe.Services.DataService
             QueryFilter filter = new QueryFilter();
 
             filter.andLikeFilters["Name"] = "%" + queryText + "%";
+
             if (int.Parse(category) != (int) DirectoryManager.ClassifiedCategories.Any) //Check the category
                 filter.andFilters["Category"] = category;
+
             if (scopeID != UUID.Zero)
                 filter.andFilters["ScopeID"] = scopeID;
 
             List<string> retVal = GD.Query(new[] {"*"}, m_userClassifiedsTable, filter, null, (uint) StartQuery, 50);
+
             if (retVal.Count == 0)
                 return new List<DirClassifiedReplyData>();
 
@@ -913,6 +914,7 @@ namespace Universe.Services.DataService
                     //Its Mature, add all
                     Data.Add(replyData);
             }
+
             return Data;
         }
 
@@ -934,17 +936,15 @@ namespace Universe.Services.DataService
 
             QueryFilter filter = new QueryFilter ();
 
-            //filter.andLikeFilters ["Name"] = "%" + queryText + "%";
             if (category != (int)DirectoryManager.ClassifiedCategories.Any) //Check the category
                 filter.andFilters ["Category"] = category.ToString();
-            //if (scopeID != UUID.Zero)
-            //    filter.andFilters ["ScopeID"] = scopeID;
 
             List<string> retVal = GD.Query (new [] { "*" }, m_userClassifiedsTable, filter, null, null, null);
 
             if (retVal.Count != 0) {
                 for (int i = 0; i < retVal.Count; i += 9) {
                     Classified classified = new Classified ();
+
                     //Pull the classified out of OSD
                     classified.FromOSD ((OSDMap)OSDParser.DeserializeJson (retVal [i + 6]));
 
@@ -957,6 +957,7 @@ namespace Universe.Services.DataService
                         classifieds.Add (classified);
                 }
             }
+
             return classifieds;
         }
 
@@ -968,7 +969,8 @@ namespace Universe.Services.DataService
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
         public List<Classified> GetClassifiedsInRegion(string regionName)
         {
-            if (m_doRemoteOnly) {
+            if (m_doRemoteOnly)
+            {
                 object remoteValue = DoRemote (regionName);
                 return remoteValue != null ? (List<Classified>)remoteValue : new List<Classified> ();
             }
@@ -988,6 +990,7 @@ namespace Universe.Services.DataService
                 classified.FromOSD((OSDMap) OSDParser.DeserializeJson(retVal[i + 6]));
                 Classifieds.Add(classified);
             }
+
             return Classifieds;
         }
 
@@ -999,7 +1002,8 @@ namespace Universe.Services.DataService
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
         public Classified GetClassifiedByID(UUID id)
         {
-            if (m_doRemoteOnly) {
+            if (m_doRemoteOnly)
+            {
                 object remoteValue = DoRemote (id);
                 return remoteValue != null ? (Classified)remoteValue : new Classified ();
             }
@@ -1033,7 +1037,8 @@ namespace Universe.Services.DataService
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
         public List<DirEventsReplyData> FindEvents(string queryText, uint eventFlags, int StartQuery, UUID scopeID)
         {
-            if (m_doRemoteOnly) {
+            if (m_doRemoteOnly)
+            {
                 object remoteValue = DoRemote (queryText, eventFlags, StartQuery, scopeID);
                 return remoteValue != null ? (List<DirEventsReplyData>)remoteValue : new List<DirEventsReplyData> ();
             }
@@ -1097,7 +1102,6 @@ namespace Universe.Services.DataService
                     //Check the maturity levels
                     uint maturity = Convert.ToUInt32(retVal[i + 3]);
                     if (
-                        // (maturity == 0 && (eventFlags & (uint) EventFlags.PG) == (uint) EventFlags.PG) ||    // << this is always true!!  (zero && zero == zero)
                         (maturity == 0) ||
                         (maturity == 1 && (eventFlags & (uint) EventFlags.Mature) == (uint) EventFlags.Mature) ||
                         (maturity == 2 && (eventFlags & (uint) EventFlags.Adult) == (uint) EventFlags.Adult)
@@ -1252,12 +1256,6 @@ namespace Universe.Services.DataService
                 var posZ = (float)Convert.ToDecimal (RetVal[i + 11], Culture.NumberFormatInfo);
                 data.regionPos = new Vector3 (posX, posY, posZ);
 
-//                data.regionPos = new Vector3(
-//                    float.Parse(RetVal[i + 9]),
-//                    float.Parse(RetVal[i + 10]),
-//                    float.Parse(RetVal[i + 11])
-//                    );
-
                 data.globalPos = new Vector3(
                     region.RegionLocX + data.regionPos.X,
                     region.RegionLocY + data.regionPos.Y,
@@ -1355,8 +1353,7 @@ namespace Universe.Services.DataService
             return eventData;
         }
 
-        public List<EventData> GetEvents(uint start, uint count, Dictionary<string, bool> sort,
-                                         Dictionary<string, object> filter)
+        public List<EventData> GetEvents(uint start, uint count, Dictionary<string, bool> sort, Dictionary<string, object> filter)
         {
             return (count == 0)
                        ? new List<EventData>(0)
@@ -1383,6 +1380,7 @@ namespace Universe.Services.DataService
             {
                 return 0;
             }
+
             return uint.Parse(GD.Query(new[] { "MAX(EID)" }, m_eventInfoTable, null, null, null, null)[0]);
         }
 

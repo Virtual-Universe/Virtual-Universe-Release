@@ -70,13 +70,16 @@ namespace Universe.Modules.Web
             else
             {
                 //vars.Add("ErrorMessage", error);
+
                 vars.Add("SimConsoleText", translator.GetTranslatedString("SimConsoleText"));
                 vars.Add("SimAddressText", translator.GetTranslatedString("SimAddressText"));
                 vars.Add("UserNameText", translator.GetTranslatedString("UserNameText"));
                 vars.Add("PasswordText", translator.GetTranslatedString("PasswordText"));
                 vars.Add("SendCommandText", translator.GetTranslatedString("SendCommandText"));
+
                 vars.Add("Login", translator.GetTranslatedString("Login"));
             }
+
             return vars;
         }
 

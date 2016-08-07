@@ -104,7 +104,9 @@ namespace Universe.Modules.Caps
             if (!m_scene.TryGetScenePresence(AgentId, out avatar))
                 return MainServer.BadRequest;
 
+
             OSD r = OSDParser.DeserializeLLSDXml(HttpServerHandlerHelpers.ReadFully(request));
+            //UUID session_id = UUID.Zero;
             bool bypass_raycast = false;
             uint everyone_mask = 0;
             uint group_mask = 0;
@@ -218,6 +220,7 @@ namespace Universe.Modules.Caps
 
                     OSDMap AgentDataMap = (OSDMap) rm["AgentData"];
 
+                    //session_id = AgentDataMap["SessionId"].AsUUID();
                     group_id = AgentDataMap["GroupId"].AsUUID();
                 }
             }
@@ -225,6 +228,7 @@ namespace Universe.Modules.Caps
             {
                 //v1
                 bypass_raycast = rm["bypass_raycast"].AsBoolean();
+
                 everyone_mask = rm["everyone_mask"];
                 flags = rm["flags"];
                 group_id = rm["group_id"].AsUUID();
@@ -251,9 +255,13 @@ namespace Universe.Modules.Caps
                 profile_begin = rm["profile_begin"].AsInteger();
                 profile_curve = rm["profile_curve"].AsInteger();
                 profile_end = rm["profile_end"].AsInteger();
+
                 ray_end_is_intersection = rm["ray_end_is_intersection"].AsBoolean();
+
                 ray_target_id = rm["ray_target_id"].AsUUID();
 
+
+                //session_id = rm["session_id"].AsUUID();
                 state = rm["state"].AsInteger();
                 try
                 {
@@ -267,6 +275,7 @@ namespace Universe.Modules.Caps
                     return Encoding.UTF8.GetBytes("RayEnd, RayStart, Scale or Rotation wasn't in the expected format");
                 }
             }
+
 
             Vector3 pos = m_scene.SceneGraph.GetNewRezLocation(ray_start, ray_end, ray_target_id, rotation,
                                                                (bypass_raycast) ? (byte) 1 : (byte) 0,
@@ -312,6 +321,7 @@ namespace Universe.Modules.Caps
                 avatar.ControllingClient.SendAlertMessage("You do not have permission to rez objects here: " + reason);
             }
 
+
             if (obj == null)
                 return MainServer.BadRequest;
 
@@ -323,6 +333,7 @@ namespace Universe.Modules.Caps
             rootpart.GroupMask = group_mask;
             rootpart.NextOwnerMask = next_owner_mask;
             rootpart.UpdateMaterial(material);
+
             OSDMap map = new OSDMap();
             map["local_id"] = obj.LocalId;
             return OSDParser.SerializeLLSDXmlBytes(map);

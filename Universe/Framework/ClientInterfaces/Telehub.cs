@@ -104,6 +104,7 @@ namespace Universe.Framework.ClientInterfaces
         {
             if (SpawnPos == "" || SpawnPos == " ")
                 return new List<Vector3> ();
+
             return (from Pos in SpawnPos.Split ('\n') where Pos != "" select Vector3.Parse (Pos)).ToList ();
         }
 
@@ -140,6 +141,7 @@ namespace Universe.Framework.ClientInterfaces
                 {"ObjectUUID", OSD.FromUUID(ObjectUUID)},
                 {"Name", OSD.FromString(Name)}
             };
+
             return map;
         }
 
@@ -151,12 +153,15 @@ namespace Universe.Framework.ClientInterfaces
             xtw.WriteStartDocument ();
 
             xtw.WriteStartElement ("Telehub");
+
             if (settings.ObjectUUID != UUID.Zero) {
                 xtw.WriteElementString ("TelehubObject", settings.ObjectUUID.ToString ());
                 xtw.WriteElementString ("TelehubName", settings.Name);
+
                 foreach (var point in settings.SpawnPos)
                     xtw.WriteElementString ("SpawnPoint", point.ToString ());
             }
+
             xtw.WriteEndElement ();
 
             xtw.Close ();
@@ -164,14 +169,12 @@ namespace Universe.Framework.ClientInterfaces
             return sw.ToString ();
         }
 
-
         public static Telehub Deserialize (string serializedSettings, UUID RegionID)
         {
             Telehub settings = new Telehub ();
 
             StringReader sr = new StringReader (serializedSettings);
             XmlTextReader xtr = new XmlTextReader (sr);
-
 
             xtr.ReadEndElement ();
             xtr.ReadStartElement ("Telehub");
@@ -187,14 +190,6 @@ namespace Universe.Framework.ClientInterfaces
                 case "SpawnPoint":
                     settings.SpawnPos.Add (Vector3.Parse (xtr.ReadElementContentAsString ()));
                     break;
-
-                //case "SpawnPoint":
-                //    string str = xtr.ReadElementContentAsString();
-                //    SpawnPoint sp = SpawnPoint.Parse(str);
-                //    settings.AddSpawnPoint(sp);
-                //    break;
-
-
                 case "TelehubName":
                     settings.Name = xtr.ReadElementContentAsString ();
                     break;
@@ -206,7 +201,6 @@ namespace Universe.Framework.ClientInterfaces
 
             return settings;
         }
-
 
         #endregion
     }

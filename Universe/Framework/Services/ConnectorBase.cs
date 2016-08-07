@@ -33,6 +33,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using Nini.Config;
+using OpenMetaverse.StructuredData;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.Servers;
@@ -40,8 +42,6 @@ using Universe.Framework.Servers.HttpServer;
 using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Servers.HttpServer.Interfaces;
 using Universe.Framework.Utilities;
-using Nini.Config;
-using OpenMetaverse.StructuredData;
 
 namespace Universe.Framework.Services
 {
@@ -53,6 +53,7 @@ namespace Universe.Framework.Services
         {
             Connectors.Add(con);
         }
+
         public static List<ConnectorBase> ServerHandlerConnectors = new List<ConnectorBase>();
         public static void RegisterServerHandlerConnector(ConnectorBase con)
         {
@@ -128,9 +129,11 @@ namespace Universe.Framework.Services
                         serverHandlerPort = config.GetUInt(name + "ServerHandlerPort", serverHandlerPort);
                     }
                 }
+
                 if ((config = source.Configs["Configuration"]) != null)
                     m_OSDRequestTryCount = config.GetInt("OSDRequestTryCount", m_OSDRequestTryCount);
             }
+
             if (m_doRemoteCalls)
                 m_doRemoteOnly = true; //Lock out local + remote for now
             ConnectorRegistry.RegisterConnector(this);
@@ -248,8 +251,7 @@ namespace Universe.Framework.Services
             if (o.Length != parameters.Length)
             {
                 MainConsole.Instance.ErrorFormat(
-                    "FAILED TO GET VALID NUMBER OF PARAMETERS TO SEND REMOTELY FOR {0}, EXPECTED {1}, GOT {2}",
-                    methodName, parameters.Length, o.Length);
+                    "Failed to get valid number of parameters to send remotely for {0}, expected {1}, got {2}", methodName, parameters.Length, o.Length);
                 serverURL = "";
                 return false;
             }
@@ -307,11 +309,11 @@ namespace Universe.Framework.Services
                 instance.FromOSD((OSDMap)response["Value"]);
                 return instance;
             }
+
             return Util.OSDToObject(response["Value"], method.ReturnType);
         }
 
-        private void GetReflection(int upStack, StackTrace stackTrace, out MethodInfo method,
-                                   out CanBeReflected reflection)
+        private void GetReflection(int upStack, StackTrace stackTrace, out MethodInfo method, out CanBeReflected reflection)
         {
             method = (MethodInfo) stackTrace.GetFrame(upStack).GetMethod();
             reflection = (CanBeReflected) Attribute.GetCustomAttribute(method, typeof (CanBeReflected));
@@ -335,6 +337,7 @@ namespace Universe.Framework.Services
                 response = null;
                 return false;
             }
+
             return response["Success"];
         }
 
@@ -391,8 +394,7 @@ namespace Universe.Framework.Services
             }
         }
 
-        public override byte[] Handle(string path, Stream requestData,
-                                      OSHttpRequest httpRequest, OSHttpResponse httpResponse)
+        public override byte[] Handle(string path, Stream requestData, OSHttpRequest httpRequest, OSHttpResponse httpResponse)
         {
             string body = HttpServerHandlerHelpers.ReadString(requestData).Trim();
 
@@ -406,6 +408,7 @@ namespace Universe.Framework.Services
             {
                 MainConsole.Instance.Warn("[ServerHandler]: Error occurred: " + ex.ToString());
             }
+
             return MainServer.BadRequest;
         }
 
@@ -446,12 +449,11 @@ namespace Universe.Framework.Services
                 }
                 catch (Exception ex)
                 {
-                    MainConsole.Instance.WarnFormat("[ServerHandler]: Error occurred for method {0}: {1}", method,
-                                                    ex.ToString());
+                    MainConsole.Instance.WarnFormat("[Server Handler]: Error occurred for method {0}: {1}", method, ex.ToString());
                 }
             }
             else
-                MainConsole.Instance.Warn("[ServerHandler]: Post did not have a method block");
+                MainConsole.Instance.Warn("[Server Handler]: Post did not have a method block");
 
             return MainServer.BadRequest;
         }
@@ -475,7 +477,8 @@ namespace Universe.Framework.Services
                     }
                 }
             }
-            MainConsole.Instance.Warn("COULD NOT FIND METHOD: " + method);
+
+            MainConsole.Instance.Warn("Could not find method: " + method);
             methodInfo = null;
             return false;
         }

@@ -47,13 +47,8 @@ namespace Universe.Framework.Servers.HttpServer
 
         protected HttpListenerManager m_internalServer;
         protected Dictionary<string, XmlRpcMethod> m_rpcHandlers = new Dictionary<string, XmlRpcMethod> ();
-
-        protected Dictionary<string, IStreamedRequestHandler> m_streamHandlers =
-            new Dictionary<string, IStreamedRequestHandler> ();
-
-        protected Dictionary<string, PollServiceEventArgs> m_pollHandlers =
-            new Dictionary<string, PollServiceEventArgs> ();
-
+        protected Dictionary<string, IStreamedRequestHandler> m_streamHandlers = new Dictionary<string, IStreamedRequestHandler> ();
+        protected Dictionary<string, PollServiceEventArgs> m_pollHandlers = new Dictionary<string, PollServiceEventArgs> ();
         public Action<HttpListenerContext> OnOverrideRequest;
         protected bool m_isSecure;
         protected uint m_port, m_threadCount;
@@ -63,7 +58,8 @@ namespace Universe.Framework.Servers.HttpServer
 
         PollServiceRequestManager m_PollServiceManager;
 
-        internal PollServiceRequestManager PollServiceManager {
+        internal PollServiceRequestManager PollServiceManager
+        {
             get { return m_PollServiceManager; }
         }
 
@@ -71,11 +67,13 @@ namespace Universe.Framework.Servers.HttpServer
         /// Gets the server port.
         /// </summary>
         /// <value>The port.</value>
-        public uint Port {
+        public uint Port
+        {
             get { return m_port; }
         }
 
-        public bool Secure {
+        public bool Secure
+        {
             get { return m_isSecure; }
         }
 
@@ -83,7 +81,8 @@ namespace Universe.Framework.Servers.HttpServer
         /// Gets or sets the listen IP address.
         /// </summary>
         /// <value>The listen IP address.</value>
-        private IPAddress ListenIPAddress {
+        private IPAddress ListenIPAddress
+        {
             get { return m_listenIPAddress; }
             set { m_listenIPAddress = value; }
         }
@@ -92,7 +91,8 @@ namespace Universe.Framework.Servers.HttpServer
         /// The hostname (external IP or DNS name) that this server is on (without http(s)://)
         /// </summary>
         /// <value>The name of the host.</value>
-        public string HostName {
+        public string HostName
+        {
             get { return m_hostName; }
             set { m_hostName = value; }
         }
@@ -101,7 +101,8 @@ namespace Universe.Framework.Servers.HttpServer
         /// The hostname (external IP or DNS name) that this server is on (with http(s)://)
         /// </summary>
         /// <value>The full name of the host.</value>
-        public string FullHostName {
+        public string FullHostName
+        {
             get {
                 string protocol = "http://";
                 if (Secure)
@@ -113,7 +114,8 @@ namespace Universe.Framework.Servers.HttpServer
         /// <summary>
         ///     A well-formed URI for the host region server (namely "http://ExternalHostName:Port)
         /// </summary>
-        public string ServerURI {
+        public string ServerURI
+        {
             get {
                 string protocol = "http://";
                 if (Secure)
@@ -140,8 +142,10 @@ namespace Universe.Framework.Servers.HttpServer
             string path = handler.Path;
             string handlerKey = GetHandlerKey (httpMethod, path);
 
-            lock (m_streamHandlers) {
-                if (!m_streamHandlers.ContainsKey (handlerKey)) {
+            lock (m_streamHandlers)
+            {
+                if (!m_streamHandlers.ContainsKey (handlerKey))
+                {
                     // MainConsole.Instance.DebugFormat("[Base HTTP server]: Adding handler key {0}", handlerKey);
                     m_streamHandlers.Add (handlerKey, handler);
                 }
@@ -164,8 +168,10 @@ namespace Universe.Framework.Servers.HttpServer
 
         public bool AddPollServiceHTTPHandler (string methodName, PollServiceEventArgs args)
         {
-            lock (m_pollHandlers) {
-                if (!m_pollHandlers.ContainsKey (methodName)) {
+            lock (m_pollHandlers)
+            {
+                if (!m_pollHandlers.ContainsKey (methodName))
+                {
                     m_pollHandlers.Add (methodName, args);
                     return true;
                 }
@@ -182,21 +188,27 @@ namespace Universe.Framework.Servers.HttpServer
         {
             string bestMatch = null;
 
-            lock (m_streamHandlers) {
+            lock (m_streamHandlers)
+            {
                 if (m_streamHandlers.TryGetValue (handlerKey, out streamHandler))
                     return true;
-                foreach (string pattern in m_streamHandlers.Keys) {
-                    if (handlerKey.StartsWith (pattern, StringComparison.Ordinal)) {
-                        if (string.IsNullOrEmpty (bestMatch) || pattern.Length > bestMatch.Length) {
+                foreach (string pattern in m_streamHandlers.Keys)
+                {
+                    if (handlerKey.StartsWith (pattern, StringComparison.Ordinal))
+                    {
+                        if (string.IsNullOrEmpty (bestMatch) || pattern.Length > bestMatch.Length)
+                        {
                             bestMatch = pattern;
                         }
                     }
                 }
 
-                if (string.IsNullOrEmpty (bestMatch)) {
+                if (string.IsNullOrEmpty (bestMatch))
+                {
                     streamHandler = null;
                     return false;
                 }
+
                 streamHandler = m_streamHandlers [bestMatch];
                 return true;
             }
@@ -206,21 +218,26 @@ namespace Universe.Framework.Servers.HttpServer
         {
             string bestMatch = null;
 
-            lock (m_pollHandlers) {
+            lock (m_pollHandlers)
+            {
                 if (m_pollHandlers.TryGetValue (handlerKey, out oServiceEventArgs))
                     return true;
                 foreach (string pattern in m_pollHandlers.Keys) {
-                    if (handlerKey.StartsWith (pattern, StringComparison.Ordinal)) {
-                        if (string.IsNullOrEmpty (bestMatch) || pattern.Length > bestMatch.Length) {
+                    if (handlerKey.StartsWith (pattern, StringComparison.Ordinal))
+                    {
+                        if (string.IsNullOrEmpty (bestMatch) || pattern.Length > bestMatch.Length)
+                        {
                             bestMatch = pattern;
                         }
                     }
                 }
 
-                if (string.IsNullOrEmpty (bestMatch)) {
+                if (string.IsNullOrEmpty (bestMatch))
+                {
                     oServiceEventArgs = null;
                     return false;
                 }
+
                 oServiceEventArgs = m_pollHandlers [bestMatch];
                 return true;
             }
@@ -228,10 +245,13 @@ namespace Universe.Framework.Servers.HttpServer
 
         public XmlRpcMethod GetXmlRPCHandler (string method)
         {
-            lock (m_rpcHandlers) {
-                if (m_rpcHandlers.ContainsKey (method)) {
+            lock (m_rpcHandlers)
+            {
+                if (m_rpcHandlers.ContainsKey (method))
+                {
                     return m_rpcHandlers [method];
                 }
+
                 return null;
             }
         }
@@ -276,6 +296,7 @@ namespace Universe.Framework.Servers.HttpServer
                     sr.Close ();
                 result = "";
             }
+
             return result;
         }
 
@@ -305,7 +326,8 @@ namespace Universe.Framework.Servers.HttpServer
                         return;
                     PollServiceHttpRequest psreq = new PollServiceHttpRequest (psEvArgs, context);
 
-                    if (psEvArgs.Request != null) {
+                    if (psEvArgs.Request != null)
+                    {
                         OSHttpRequest req = new OSHttpRequest (context);
                         psEvArgs.Request (psreq.RequestID, req);
                     }
@@ -380,16 +402,16 @@ namespace Universe.Framework.Servers.HttpServer
                                     HttpServerHandlerHelpers.WriteChunked (stream, buffer);
                                 }
                             }
-                            //response.ContentLength64 = buffer.LongLength;
+
                             response.Close ();
                         } else
                             response.Close (new byte [0], true);
                     } catch (Exception ex) {
                         if (!(ex is HttpListenerException) ||
                             !HttpListenerManager.IGNORE_ERROR_CODES.Contains (((HttpListenerException)ex).ErrorCode)) {
-                            MainConsole.Instance.WarnFormat (
-                                "[Base HTTP server]: HandleRequest failed to write all data to the stream: {0}", ex.ToString ());
+                            MainConsole.Instance.WarnFormat ("[Base HTTP server]: HandleRequest failed to write all data to the stream: {0}", ex.ToString ());
                         }
+
                         response.Abort ();
                     }
 
@@ -440,9 +462,11 @@ namespace Universe.Framework.Servers.HttpServer
                     request.RemoteIPEndPoint, requestBody, e.ToString ());
             }
 
-            if (xmlRprcRequest != null) {
+            if (xmlRprcRequest != null)
+            {
                 string methodName = xmlRprcRequest.MethodName;
-                if (methodName != null) {
+                if (methodName != null)
+                {
                     xmlRprcRequest.Params.Add (request.RemoteIPEndPoint); // Param[1]
                     XmlRpcResponse xmlRpcResponse;
 
@@ -451,17 +475,21 @@ namespace Universe.Framework.Servers.HttpServer
                     lock (m_rpcHandlers)
                         methodWasFound = m_rpcHandlers.TryGetValue (methodName, out method);
 
-                    if (methodWasFound) {
+                    if (methodWasFound)
+                    {
                         xmlRprcRequest.Params.Add (request.Url); // Param[2]
 
                         string xff = "X-Forwarded-For";
                         string xfflower = xff.ToLower ();
-                        foreach (string s in request.Headers.AllKeys) {
-                            if (s != null && s.Equals (xfflower)) {
+                        foreach (string s in request.Headers.AllKeys)
+                        {
+                            if (s != null && s.Equals (xfflower))
+                            {
                                 xff = xfflower;
                                 break;
                             }
                         }
+
                         xmlRprcRequest.Params.Add (request.Headers.Get (xff)); // Param[3]
 
                         try {
@@ -492,15 +520,12 @@ namespace Universe.Framework.Servers.HttpServer
                     response.ContentType = "text/xml";
                     responseString = XmlRpcResponseSerializer.Singleton.Serialize (xmlRpcResponse);
                 } else {
-                    //HandleLLSDRequests(request, response);
                     response.ContentType = "text/plain";
                     response.StatusCode = 404;
                     response.StatusDescription = "Not Found";
                     responseString = "Not found";
 
-                    MainConsole.Instance.ErrorFormat (
-                        "[Base HTTP server]: Handler not found for http request {0} {1}",
-                        request.HttpMethod, request.Url.PathAndQuery);
+                    MainConsole.Instance.ErrorFormat ("[Base HTTP server]: Handler not found for http request {0} {1}", request.HttpMethod, request.Url.PathAndQuery);
                 }
             }
 
@@ -541,12 +566,9 @@ namespace Universe.Framework.Servers.HttpServer
 
         public void Start ()
         {
-            MainConsole.Instance.InfoFormat (
-                "[Base HTTP server]: Starting {0} server on port {1}", Secure ? "HTTPS" : "HTTP", Port);
+            MainConsole.Instance.InfoFormat ("[Base HTTP server]: Starting {0} server on port {1}", Secure ? "HTTPS" : "HTTP", Port);
 
             try {
-                //m_httpListener = new HttpListener();
-
                 NotSocketErrors = 0;
                 m_internalServer = new HttpListenerManager (m_threadCount, Secure);
                 if (OnOverrideRequest != null)
@@ -565,8 +587,7 @@ namespace Universe.Framework.Servers.HttpServer
                     MainConsole.Instance.Error ("[Base HTTP server]: You must run this program as an administrator.");
                 else {
                     MainConsole.Instance.Error ("[Base HTTP server]: Error - " + e.Message);
-                    MainConsole.Instance.Error ("[Base HTTP server]: Tip: Do you have permission to listen on port " +
-                                               m_port + "?");
+                    MainConsole.Instance.Error ("[Base HTTP server]: Tip: Do you have permission to listen on port " + m_port + "?");
                 }
 
                 // We want this exception to halt the entire server since in current configurations we aren't too
@@ -599,8 +620,10 @@ namespace Universe.Framework.Servers.HttpServer
 
         public void RemovePollServiceHTTPHandler (string httpMethod, string path)
         {
-            lock (m_pollHandlers) {
-                if (m_pollHandlers.ContainsKey (path)) {
+            lock (m_pollHandlers)
+            {
+                if (m_pollHandlers.ContainsKey (path))
+                {
                     m_pollHandlers.Remove (path);
                 }
             }
@@ -608,8 +631,10 @@ namespace Universe.Framework.Servers.HttpServer
 
         public void RemoveXmlRPCHandler (string method)
         {
-            lock (m_rpcHandlers) {
-                if (m_rpcHandlers.ContainsKey (method)) {
+            lock (m_rpcHandlers)
+            {
+                if (m_rpcHandlers.ContainsKey (method))
+                {
                     m_rpcHandlers.Remove (method);
                 }
             }

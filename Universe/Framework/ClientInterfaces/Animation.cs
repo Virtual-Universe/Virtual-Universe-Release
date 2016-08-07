@@ -55,7 +55,6 @@ namespace Universe.Framework.ClientInterfaces
         [ProtoMember(3)]
         public UUID ObjectID { get; set; }
 
-
         public Animation()
         {
         }
@@ -103,8 +102,10 @@ namespace Universe.Framework.ClientInterfaces
         {
             if (args["animation"] != null)
                 AnimID = args["animation"].AsUUID();
+
             if (args["object_id"] != null)
                 ObjectID = args["object_id"].AsUUID();
+
             if (args["seq_num"] != null)
                 SequenceNum = args["seq_num"].AsInteger();
         }

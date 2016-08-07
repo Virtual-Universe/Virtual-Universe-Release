@@ -51,6 +51,7 @@ namespace Universe.Framework.Utilities
         /// </summary>
         public const int MINIMUM_MINOR_PROTOCOL_VERSION = 4;
     }
+
     /// Changes:
     /// Major 1
     ///   Minor 1 - Initial bump

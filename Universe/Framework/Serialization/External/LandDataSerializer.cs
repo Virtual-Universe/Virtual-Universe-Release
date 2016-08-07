@@ -64,12 +64,9 @@ namespace Universe.Framework.Serialization.External
         public static LandData Deserialize (string serializedLandData)
         {
             LandData landData = new LandData ();
-
             StringReader sr = new StringReader (serializedLandData);
             XmlTextReader xtr = new XmlTextReader (sr);
-
             xtr.ReadStartElement ("LandData");
-
             landData.Area = Convert.ToInt32 (xtr.ReadElementString ("Area"));
             landData.AuctionID = Convert.ToUInt32 (xtr.ReadElementString ("AuctionID"));
             landData.AuthBuyerID = UUID.Parse (xtr.ReadElementString ("AuthBuyerID"));
@@ -97,20 +94,21 @@ namespace Universe.Framework.Serialization.External
             if (xtr.Name != "ParcelAccessList")
                 throw new XmlException (string.Format ("Expected \"ParcelAccessList\" element but got \"{0}\"", xtr.Name));
 
-            if (!xtr.IsEmptyElement) {
-                while (xtr.Read () && xtr.NodeType != XmlNodeType.EndElement) {
+            if (!xtr.IsEmptyElement)
+            {
+                while (xtr.Read () && xtr.NodeType != XmlNodeType.EndElement)
+                {
                     ParcelManager.ParcelAccessEntry pae = new ParcelManager.ParcelAccessEntry ();
-
                     xtr.ReadStartElement ("ParcelAccessEntry");
                     pae.AgentID = UUID.Parse (xtr.ReadElementString ("AgentID"));
                     xtr.ReadElementString ("Time");
                     pae.Flags = (AccessList)Convert.ToUInt32 (xtr.ReadElementString ("AccessList"));
                     pae.Time = DateTime.UtcNow;
                     xtr.ReadEndElement ();
-
                     landData.ParcelAccessList.Add (pae);
                 }
             }
+
             xtr.Read ();
 
             landData.PassHours = Convert.ToSingle (xtr.ReadElementString ("PassHours"));
@@ -122,9 +120,7 @@ namespace Universe.Framework.Serialization.External
             // No longer used here
             xtr.ReadElementString ("Dwell");
             landData.OtherCleanTime = Convert.ToInt32 (xtr.ReadElementString ("OtherCleanTime"));
-
             xtr.ReadEndElement ();
-
             xtr.Close ();
             sr.Close ();
 
@@ -138,7 +134,6 @@ namespace Universe.Framework.Serialization.External
 
             xtw.WriteStartDocument ();
             xtw.WriteStartElement ("LandData");
-
             xtw.WriteElementString ("Area", Convert.ToString (landData.Area));
             xtw.WriteElementString ("AuctionID", Convert.ToString (landData.AuctionID));
             xtw.WriteElementString ("AuthBuyerID", landData.AuthBuyerID.ToString ());
@@ -169,8 +164,8 @@ namespace Universe.Framework.Serialization.External
                 xtw.WriteElementString ("AccessList", Convert.ToString ((uint)pal.Flags));
                 xtw.WriteEndElement ();
             }
-            xtw.WriteEndElement ();
 
+            xtw.WriteEndElement ();
             xtw.WriteElementString ("PassHours", Convert.ToString (landData.PassHours));
             xtw.WriteElementString ("PassPrice", Convert.ToString (landData.PassPrice));
             xtw.WriteElementString ("SalePrice", Convert.ToString (landData.SalePrice));
@@ -179,7 +174,6 @@ namespace Universe.Framework.Serialization.External
             xtw.WriteElementString ("UserLookAt", landData.UserLookAt.ToString ());
             xtw.WriteElementString ("Dwell", "0");
             xtw.WriteElementString ("OtherCleanTime", Convert.ToString (landData.OtherCleanTime));
-
             xtw.WriteEndElement ();
 
             xtw.Close ();

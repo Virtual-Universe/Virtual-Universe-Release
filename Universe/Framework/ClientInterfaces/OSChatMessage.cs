@@ -178,6 +178,7 @@ namespace Universe.Framework.ClientInterfaces
                                             Type = Type,
                                             ToAgentID = ToAgentID
                                         };
+
             return message;
         }
 

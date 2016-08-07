@@ -45,19 +45,12 @@ namespace Universe.Framework.PresenceInfo
     #region Client API Delegate definitions
 
     public delegate void ViewerEffectEventHandler(IClientAPI sender, List<ViewerEffectEventHandlerArg> args);
-
     public delegate void ChatMessage(IClientAPI sender, OSChatMessage e);
-
     public delegate void GenericMessage(Object sender, string method, List<String> args);
-
     public delegate void TextureRequest(Object sender, TextureRequestArgs e);
-
     public delegate void AvatarNowWearing(IClientAPI sender, AvatarWearingArgs e);
-
     public delegate void ImprovedInstantMessage(IClientAPI remoteclient, GridInstantMessage im);
-
     public delegate bool PreSendImprovedInstantMessage(IClientAPI remoteclient, GridInstantMessage im);
-
     public delegate void RezRestoreToWorld(IClientAPI remoteClient, UUID itemID, UUID groupID);
 
     public delegate void RezObject(IClientAPI remoteClient, UUID itemID, Vector3 RayEnd, Vector3 RayStart,
@@ -70,8 +63,7 @@ namespace Universe.Framework.PresenceInfo
         IClientAPI remoteClient, RezMultipleAttachmentsFromInvPacket.HeaderDataBlock header,
         RezMultipleAttachmentsFromInvPacket.ObjectDataBlock[] objects);
 
-    public delegate void ObjectAttach(
-        IClientAPI remoteClient, uint objectLocalID, int AttachmentPt, bool silent);
+    public delegate void ObjectAttach(IClientAPI remoteClient, uint objectLocalID, int AttachmentPt, bool silent);
 
     public delegate void ModifyTerrain(UUID user,
                                        float height, float seconds, byte size, byte action, float north, float west,
@@ -79,41 +71,20 @@ namespace Universe.Framework.PresenceInfo
                                        UUID agentId, float BrushSize);
 
     public delegate void NetworkStats(int inPackets, int outPackets, int unAckedBytes);
-
-    public delegate void SetAppearance(
-        IClientAPI remoteClient, Primitive.TextureEntry textureEntry, byte[] visualParams, WearableCache[] wearables,
-        uint serial);
-
+    public delegate void SetAppearance(IClientAPI remoteClient, Primitive.TextureEntry textureEntry, byte[] visualParams, WearableCache[] wearables, uint serial);
     public delegate void StartAnim(IClientAPI remoteClient, UUID animID);
-
     public delegate void StopAnim(IClientAPI remoteClient, UUID animID);
-
     public delegate void LinkObjects(IClientAPI remoteClient, uint parent, List<uint> children);
-
     public delegate void DelinkObjects(List<uint> primIds, IClientAPI client);
-
     public delegate void RequestMapBlocks(IClientAPI remoteClient, int minX, int minY, int maxX, int maxY, uint flags);
-
     public delegate void RequestMapName(IClientAPI remoteClient, string mapName, uint flags);
-
-    public delegate void TeleportLocationRequest(
-        IClientAPI remoteClient, ulong regionHandle, Vector3 position, Vector3 lookAt, uint flags);
-
-    public delegate void TeleportLandmarkRequest(
-        IClientAPI remoteClient, UUID regionID, Vector3 position);
-
+    public delegate void TeleportLocationRequest(IClientAPI remoteClient, ulong regionHandle, Vector3 position, Vector3 lookAt, uint flags);
+    public delegate void TeleportLandmarkRequest(IClientAPI remoteClient, UUID regionID, Vector3 position);
     public delegate void DisconnectUser();
-
     public delegate void RequestAvatarProperties(IClientAPI remoteClient, UUID avatarID);
-
-    public delegate void UpdateAvatarProperties(
-        IClientAPI remoteClient, string AboutText, string FLAboutText, UUID FLImageID, UUID ImageID,
-        string WebProfileURL, bool AllowPublish, bool MaturePublish);
-
+    public delegate void UpdateAvatarProperties(IClientAPI remoteClient, string AboutText, string FLAboutText, UUID FLImageID, UUID ImageID, string WebProfileURL, bool AllowPublish, bool MaturePublish);
     public delegate void SetAlwaysRun(IClientAPI remoteClient, bool SetAlwaysRun);
-
     public delegate void GenericCall1(IClientAPI remoteClient);
-
     public delegate void GenericCall2();
 
     // really don't want to be passing packets in these events, so this is very temporary.

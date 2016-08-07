@@ -27,8 +27,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/*
-* Adapted for Virtual Universe from an article in gamedev magazine, with some additional ideas
+/* 
+* Adapted for Universe from an article in gamedev magazine, with some additional ideas
 * from Christopher Breinholt: http://breinygames.blogspot.com.au
 * Rowan D <greythane@gmail.com> , Oct 2013
 * 
@@ -48,7 +48,6 @@ namespace Universe.Framework.SceneInfo
         static Random random = new Random ();
         #endregion
 
-
         #region Reusable Functions
 
         public static float [] [] GenerateWhiteNoise (int width, int height)
@@ -56,7 +55,8 @@ namespace Universe.Framework.SceneInfo
             float [] [] noise = GetEmptyArray<float> (width, height);
 
             for (int i = 0; i < width; i++) {
-                for (int j = 0; j < height; j++) {
+                for (int j = 0; j < height; j++)
+                {
                     noise [i] [j] = (float)random.NextDouble () % 1;
                 }
             }
@@ -99,8 +99,10 @@ namespace Universe.Framework.SceneInfo
 
             Color [] [] image = GetEmptyArray<Color> (width, height); //an array of colors
 
-            for (int i = 0; i < width; i++) {
-                for (int j = 0; j < height; j++) {
+            for (int i = 0; i < width; i++)
+            {
+                for (int j = 0; j < height; j++)
+                {
                     image [i] [j] = GetColor (gradientStart, gradientEnd, perlinNoise [i] [j]);
                 }
             }
@@ -113,7 +115,8 @@ namespace Universe.Framework.SceneInfo
         {
             T [] [] image = new T [width] [];
 
-            for (int i = 0; i < width; i++) {
+            for (int i = 0; i < width; i++)
+            {
                 image [i] = new T [height];
             }
 
@@ -180,6 +183,7 @@ namespace Universe.Framework.SceneInfo
                         perlinNoise [i] [j] += smoothNoise [i] [j] * amplitude;
                     }
                 }
+
                 amplitude *= persistance;
             }
 
@@ -277,25 +281,10 @@ namespace Universe.Framework.SceneInfo
             return greyValues;
         }
 
-
-        /*		public float Turbulence(float value, float x, float y, float size)
-                {
-                    float initialSize = size;
-                    while (size >= 1) {
-                        value += value(x / size, y / size) * size;
-                        size /= 2.0;
-                    }
-                    value = (128.0 * value / initialSize);
-
-                    return value;
-                }
-        */
-
         public static float [] [] SmoothHeightMap (float [] [] greyValues)
         {
             int width = greyValues.Length;
             int height = greyValues [0].Length;
-
 
             for (int x = 0; x < width; x++) {
                 for (int y = 0; y < height; y++) {
@@ -306,30 +295,37 @@ namespace Universe.Framework.SceneInfo
                         average += greyValues [x - 1] [y];
                         points += 1;
                     }
+
                     if (x + 1 < width - 1) {
                         average += greyValues [x + 1] [y];
                         points += 1;
                     }
+
                     if (y - 1 >= 0) {
                         average += greyValues [x] [y - 1];
                         points += 1;
                     }
+
                     if (y + 1 < height - 1) {
                         average += greyValues [x] [y + 1];
                         points += 1;
                     }
+
                     if ((x - 1 >= 0) && (y - 1 >= 0)) {
                         average += greyValues [x - 1] [y - 1];
                         points += 1;
                     }
+
                     if ((x + 1 < width) && (y - 1 >= 0)) {
                         average += greyValues [x + 1] [y - 1];
                         points += 1;
                     }
+
                     if ((x - 1 >= 0) && (y + 1 < height)) {
                         average += greyValues [x - 1] [y + 1];
                         points += 1;
                     }
+
                     if ((x + 1 < width) && (y + 1 < height)) {
                         average += greyValues [x + 1] [y + 1];
                         points += 1;
@@ -363,6 +359,7 @@ namespace Universe.Framework.SceneInfo
                 bitmap.Save (fileName);
             } catch {
             }
+
             bitmap.Dispose ();
         }
 
@@ -375,11 +372,14 @@ namespace Universe.Framework.SceneInfo
 
             Color [] [] image = GetEmptyArray<Color> (width, height);
 
-            for (int i = 0; i < width; i++) {
-                for (int j = 0; j < height; j++) {
+            for (int i = 0; i < width; i++)
+            {
+                for (int j = 0; j < height; j++)
+                {
                     image [i] [j] = bitmap.GetPixel (i, j);
                 }
             }
+
             bitmap.Dispose ();
             return image;
         }
@@ -391,8 +391,10 @@ namespace Universe.Framework.SceneInfo
 
             Color [] [] image = GetEmptyArray<Color> (width, height); //an array of colors for the new image
 
-            for (int i = 0; i < width; i++) {
-                for (int j = 0; j < height; j++) {
+            for (int i = 0; i < width; i++)
+            {
+                for (int j = 0; j < height; j++)
+                {
                     image [i] [j] = Interpolate (image1 [i] [j], image2 [i] [j], perlinNoise [i] [j]);
                 }
             }
@@ -416,13 +418,16 @@ namespace Universe.Framework.SceneInfo
 
             float [] [] newImage = GetEmptyArray<float> (width, height);
 
-            for (int i = 0; i < width; i++) {
-                for (int j = 0; j < height; j++) {
+            for (int i = 0; i < width; i++)
+            {
+                for (int j = 0; j < height; j++)
+                {
                     float col = image [i] [j];
 
                     if (col <= low) {
                         newImage [i] [j] = 0;
-                    } else if (col >= high) {
+                    } else if (col >= high)
+                    {
                         newImage [i] [j] = 1;
                     } else {
                         newImage [i] [j] = (col - low) / (high - low);
@@ -447,13 +452,15 @@ namespace Universe.Framework.SceneInfo
             int wVar = (int)(width * .13);
             int hVar = (int)(height * .11);
 
-            float cx = (width - 1) / 2f;     // + random.Next(-1*wVar, wVar);
-            float cy = (height - 1) / 2f;     // + random.Next(-1*hVar, hVar);
+            float cx = (width - 1) / 2f;
+            float cy = (height - 1) / 2f;
 
             float [] [] blend_map = GetEmptyArray<float> (width, height);
 
-            for (int x = 0; x < width; x++) {
-                for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
                     float rx = cx - Math.Abs (cx - x);           // 0 - cx - 0
                     float ry = cy - Math.Abs (cy - y);           // 0 - cy - 0
 
@@ -461,13 +468,13 @@ namespace Universe.Framework.SceneInfo
                     edgeDistance = rx < ry ? rx : ry;           // closest edge 
                     edgeDistance = Math.Abs (rx - ry) < 0.001f ? (float)(1.4 * rx) : edgeDistance;
 
-                    if ((rx < 1) || (ry < 1)) {
+                    if ((rx < 1) || (ry < 1))
+                    {
                         blend_map [x] [y] = edgeLevel;
                     } else if ((rx > (wVar + random.Next (-2, 2))) && (ry > (hVar + random.Next (-2, 2)))) {
                         blend_map [x] [y] = map [x] [y];            // inside the borderlands... leave alone
                     } else {
                         float factor = (2 * edgeDistance) / (wVar + edgeDistance);
-                        //float factorY = (1- (1/(1+ry)));
 
                         blend_map [x] [y] = edgeLevel + ((map [x] [y] - edgeLevel) * factor);
                         //MainConsole.Instance.InfoFormat ("cx: {0}, cy: {1}, rx: {2}, ry: {3}. edge: {4}, factor: {5}, height: {6}",
@@ -475,7 +482,6 @@ namespace Universe.Framework.SceneInfo
                     }
                 }
             }
-
 
             return blend_map;
         }
@@ -497,17 +503,21 @@ namespace Universe.Framework.SceneInfo
             float maxRad = minRad * 1.33f;
 
             float [] [] gradient_map = GetEmptyArray<float> (width, height);
-            for (int x = 0; x < width; x++) {
-                for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
                     float rx = cx - x;
                     float ry = cy - y;
                     float rad = (float)Math.Sqrt (Math.Pow (rx, 2) + Math.Pow (ry, 2));
                     float tRad = minRad * (float)(.47 + (random.NextDouble () / 1.3));
 
                     float edgeDistance = maxRad - rad;
-                    if (edgeDistance >= tRad) {
+                    if (edgeDistance >= tRad)
+                    {
                         gradient_map [x] [y] = 1;
-                    } else if (edgeDistance <= 1) {
+                    } else if (edgeDistance <= 1)
+                    {
                         gradient_map [x] [y] = 0.001f;
                     } else {
                         float factor = (minRad / (random.Next (3, 9) * (edgeDistance) + minRad));
@@ -518,7 +528,6 @@ namespace Universe.Framework.SceneInfo
 
             return gradient_map;
         }
-
 
         /// <summary>
         /// Generates a height map for a 'Island' style area (Edges of the map under water)
@@ -532,10 +541,13 @@ namespace Universe.Framework.SceneInfo
         /// <param name="smoothing">Smoothing passes.</param>
         public static float [] [] GenerateIslandMap (int width, int height, int octaveCount, float min, float max, int smoothing)
         {
-            if (width <= 0) {
+            if (width <= 0)
+            {
                 width = 256;
             }
-            if (height <= 0) {
+
+            if (height <= 0)
+            {
                 height = 256;
             }
 
@@ -544,18 +556,20 @@ namespace Universe.Framework.SceneInfo
             perlinNoiseMap = AdjustLevels (perlinNoiseMap, 0.2f, 0.8f);
             float [] [] perlinMap = MapToGreyScale (perlinNoiseMap);
 
-
             // mask the edges to an 'Island' shape
             float [] [] map_mask = GenerateIslandGradientMap (width, height);
             int x;
             int y;
-            for (x = 0; x < width; x++) {
-                for (y = 0; y < height; y++) {
+            for (x = 0; x < width; x++)
+            {
+                for (y = 0; y < height; y++)
+                {
                     perlinMap [x] [y] = (perlinMap [x] [y] * map_mask [x] [y]);
                 }
             }
 
-            for (x = 0; x < smoothing; x++) {
+            for (x = 0; x < smoothing; x++)
+            {
                 perlinMap = SmoothHeightMap (perlinMap);
             }
 
@@ -563,7 +577,6 @@ namespace Universe.Framework.SceneInfo
 
             return perlinMap;
         }
-
 
         /// <summary>
         /// Generates a height map for a 'Mainland' style area (Terrain out to the edges of the map).
@@ -577,13 +590,18 @@ namespace Universe.Framework.SceneInfo
         /// <param name="smoothing">Smoothing passes.</param>
         public static float [] [] GenerateHeightMap (int width, int height, int octaveCount, float min, float max, int smoothing)
         {
-            if (width <= 0) {
+            if (width <= 0)
+            {
                 width = 256;
             }
-            if (height <= 0) {
+
+            if (height <= 0)
+            {
                 height = 256;
             }
-            if (octaveCount <= 0) {
+
+            if (octaveCount <= 0)
+            {
                 octaveCount = 8;
             }
 
@@ -591,8 +609,8 @@ namespace Universe.Framework.SceneInfo
             perlinNoiseMap = AdjustLevels (perlinNoiseMap, 0.2f, 0.8f);
             float [] [] perlinMap = MapToGreyScale (perlinNoiseMap);
 
-
-            for (int x = 0; x < smoothing; x++) {
+            for (int x = 0; x < smoothing; x++)
+            {
                 perlinMap = SmoothHeightMap (perlinMap);
             }
 

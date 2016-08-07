@@ -79,7 +79,6 @@ namespace Universe.Framework.SceneInfo
         double m_WaterHeight = 20;
         Telehub m_telehub = new Telehub ();
 
-
         [ProtoMember(1)]
         public UUID RegionUUID
         {

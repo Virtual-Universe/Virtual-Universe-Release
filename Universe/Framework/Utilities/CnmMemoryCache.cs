@@ -981,8 +981,7 @@ namespace Universe.Framework.Utilities
             /// <summary>
             ///     Enumerators to different generations.
             /// </summary>
-            private readonly IEnumerator<KeyValuePair<TKey, TValue>>[] m_generationEnumerators =
-                new IEnumerator<KeyValuePair<TKey, TValue>>[2];
+            private readonly IEnumerator<KeyValuePair<TKey, TValue>>[] m_generationEnumerators = new IEnumerator<KeyValuePair<TKey, TValue>>[2];
 
             /// <summary>
             ///     Current enumerator.
@@ -1690,8 +1689,7 @@ namespace Universe.Framework.Utilities
                             continue;
                         }
 
-                        m_current = new KeyValuePair<TKey, TValue>(m_generation.m_elements[m_currentIndex].Key,
-                                                                   m_generation.m_elements[m_currentIndex].Value);
+                        m_current = new KeyValuePair<TKey, TValue>(m_generation.m_elements[m_currentIndex].Key, m_generation.m_elements[m_currentIndex].Value);
                         m_currentIndex++;
                         return true;
                     }

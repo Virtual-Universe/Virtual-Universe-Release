@@ -55,26 +55,14 @@ namespace Universe.Services.DataService
 
             IGenericData DataConnector = null;
             if (StorageProvider == "MySQL")
-                //Allow for fallback when UniverseData isn't set
+                //Allow for fallback when eData isn't set
             {
                 MySQLDataLoader GenericData = new MySQLDataLoader();
 
                 DataConnector = GenericData;
             }
-                /*else if (StorageProvider == "MSSQL2008")
-            {
-                MSSQLDataLoader GenericData = new MSSQLDataLoader();
-
-                DataConnector = GenericData;
-            }
-            else if (StorageProvider == "MSSQL7")
-            {
-                MSSQLDataLoader GenericData = new MSSQLDataLoader();
-
-                DataConnector = GenericData;
-            }*/
             else if (StorageProvider == "SQLite")
-                //Allow for fallback when UniverseData isn't set
+                //Allow for fallback when Data isn't set
             {
                 SQLiteLoader GenericData = new SQLiteLoader();
 
@@ -90,14 +78,12 @@ namespace Universe.Services.DataService
             {
                 try
                 {
-                    plugin.Initialize(DataConnector == null ? null : DataConnector.Copy(), config, registry,
-                                      ConnectionString);
+                    plugin.Initialize(DataConnector == null ? null : DataConnector.Copy(), config, registry, ConnectionString);
                 }
                 catch (Exception ex)
                 {
                     if (MainConsole.Instance != null)
-                        MainConsole.Instance.Warn("[DataService]: Exception occurred starting data plugin " +
-                                                  plugin.Name + ", " + ex);
+                        MainConsole.Instance.Warn("[Data Service]: Exception occurred starting data plugin " + plugin.Name + ", " + ex);
                 }
             }
         }
@@ -113,24 +99,12 @@ namespace Universe.Services.DataService
 
             IGenericData DataConnector = null;
             if (StorageProvider == "MySQL")
-                //Allow for fallback when UniverseData isn't set
+                //Allow for fallback when Data isn't set
             {
                 MySQLDataLoader GenericData = new MySQLDataLoader();
 
                 DataConnector = GenericData;
             }
-                /*else if (StorageProvider == "MSSQL2008")
-            {
-                MSSQLDataLoader GenericData = new MSSQLDataLoader();
-
-                DataConnector = GenericData;
-            }
-            else if (StorageProvider == "MSSQL7")
-            {
-                MSSQLDataLoader GenericData = new MSSQLDataLoader();
-
-                DataConnector = GenericData;
-            }*/
             else if (StorageProvider == "SQLite")
                 //Allow for fallback when UniverseData isn't set
             {

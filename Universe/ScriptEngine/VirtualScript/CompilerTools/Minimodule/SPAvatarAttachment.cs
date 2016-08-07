@@ -34,7 +34,6 @@ namespace Universe.ScriptEngine.VirtualScript.MiniModule
 {
     public class SPAvatarAttachment : IAvatarAttachment
     {
-        // readonly UUID m_itemId;
         readonly UUID m_assetId;
         readonly int m_location;
         readonly IScene m_rootScene;
@@ -46,9 +45,7 @@ namespace Universe.ScriptEngine.VirtualScript.MiniModule
         {
             m_rootScene = rootScene;
             m_security = security;
-            //m_parent = self;
             m_location = location;
-            //m_itemId = itemId;
             m_assetId = assetId;
         }
 

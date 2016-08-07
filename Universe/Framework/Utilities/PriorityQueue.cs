@@ -28,7 +28,6 @@
  */
 
 // PriorityQueue.cs
-//
 // Jim Mischel
 
 using System;
@@ -202,11 +201,8 @@ namespace Universe.Framework.Utilities
                 items [i] = items [(i - 1) / 2];
                 i = (i - 1) / 2;
             }
+
             items [i] = newItem;
-            //if (!VerifyQueue())
-            //{
-            //    Console.WriteLine("ERROR: Queue out of order!");
-            //}
         }
 
         public void Enqueue (TValue value, TPriority priority)
@@ -250,10 +246,7 @@ namespace Universe.Framework.Utilities
                 // Be sure to store the item in its place.
                 items [i] = tmp;
             }
-            //if (!VerifyQueue())
-            //{
-            //    Console.WriteLine("ERROR: Queue out of order!");
-            //}
+
             return o;
         }
 
@@ -267,11 +260,14 @@ namespace Universe.Framework.Utilities
                 if (compareFunc (items [i].Priority, items [leftChild].Priority) < 0) {
                     return false;
                 }
+
                 if (rightChild < numItems && compareFunc (items [i].Priority, items [rightChild].Priority) < 0) {
                     return false;
                 }
+
                 ++i;
             }
+
             return true;
         }
 
@@ -310,6 +306,7 @@ namespace Universe.Framework.Utilities
                     return;
                 }
             }
+
             MainConsole.Instance.Warn ("[Priority Queue]: The specified item is not in the queue.");
         }
 
@@ -330,6 +327,7 @@ namespace Universe.Framework.Utilities
                     return items [index].Value;
                 }
             }
+
             return default (TValue);
         }
 
@@ -356,6 +354,7 @@ namespace Universe.Framework.Utilities
             for (int i = 0; i < numItems; ++i) {
                 items [i] = default (PriorityQueueItem<TValue, TPriority>);
             }
+
             numItems = 0;
             TrimExcess ();
         }
@@ -383,20 +382,25 @@ namespace Universe.Framework.Utilities
                 MainConsole.Instance.Error ("[Priority Queue]: Array is null");
                 return;
             }
+
             if (arrayIndex < 0) {
                 MainConsole.Instance.Error ("[Priority Queue]: arrayIndex is less than 0.");
                 return;
             }
+
             if (array.Rank > 1) {
                 MainConsole.Instance.Error ("[Priority Queue]: array is multidimensional.");
                 return;
             }
+
             if (numItems == 0)
                 return;
+
             if (arrayIndex >= array.Length) {
                 MainConsole.Instance.Error ("[Priority Queue]: ArrayIndex is equal to or greater than the length of the array.");
                 return;
             }
+
             if (numItems > (array.Length - arrayIndex)) {
                 MainConsole.Instance.Error ("[Priority Queue]: " +
                                             " The number of elements in the source ICollection is greater than the available space" +
@@ -591,8 +595,7 @@ namespace Universe.Framework.Utilities
             #region Require
 
             if (Count == 0) {
-                throw new InvalidOperationException (
-                    "Cannot dequeue into an empty PriorityQueue.");
+                throw new InvalidOperationException ("Cannot dequeue into an empty PriorityQueue.");
             }
 
             #endregion
@@ -911,9 +914,9 @@ namespace Universe.Framework.Utilities
             {
                 #region Require
 
-                if (!(y is IComparable)) {
-                    throw new ArgumentException (
-                        "Item does not implement IComparable.");
+                if (!(y is IComparable))
+                {
+                    throw new ArgumentException ("Item does not implement IComparable.");
                 }
 
                 #endregion
@@ -983,8 +986,7 @@ namespace Universe.Framework.Utilities
                 #region Require
 
                 if (version != owner.version) {
-                    MainConsole.Instance.Error ("[Priority Queue]: " +
-                        "The PriorityQueue was modified after the enumerator was created.");
+                    MainConsole.Instance.Error ("[Priority Queue]: " + "The PriorityQueue was modified after the enumerator was created.");
 
                     moveResult = false;
                     return;
@@ -1002,8 +1004,7 @@ namespace Universe.Framework.Utilities
 
                     if (currentNode == head || currentNode == null) {
                         throw new InvalidOperationException (
-                            "The enumerator is positioned before the first " +
-                            "element of the collection or after the last element.");
+                            "The enumerator is positioned before the first " + "element of the collection or after the last element.");
                     }
 
                     #endregion
@@ -1023,11 +1024,13 @@ namespace Universe.Framework.Utilities
 
                 #endregion
 
-                if (moveResult) {
+                if (moveResult)
+                {
                     currentNode = currentNode [0];
                 }
 
-                if (currentNode == null) {
+                if (currentNode == null)
+                {
                     moveResult = false;
                 }
 
@@ -1043,11 +1046,13 @@ namespace Universe.Framework.Utilities
 
         #region ICollection Members
 
-        public virtual bool IsSynchronized {
+        public virtual bool IsSynchronized
+        {
             get { return false; }
         }
 
-        public virtual int Count {
+        public virtual int Count
+        {
             get { return count; }
         }
 
@@ -1055,23 +1060,32 @@ namespace Universe.Framework.Utilities
         {
             #region Require
 
-            if (array == null) {
+            if (array == null)
+            {
                 MainConsole.Instance.Warn ("[Priority Queue]: Array is null");
                 return;
             }
-            if (index < 0) {
+
+            if (index < 0)
+            {
                 MainConsole.Instance.WarnFormat ("[Priority Queue]: Array index '{0}' is out of range.", index);
                 return;
             }
-            if (array.Rank > 1) {
+
+            if (array.Rank > 1)
+            {
                 MainConsole.Instance.WarnFormat ("[Priority Queue]: Array '{0}' has more than one dimension.", array);
                 return;
             }
-            if (index >= array.Length) {
+
+            if (index >= array.Length)
+            {
                 MainConsole.Instance.WarnFormat ("[Priority Queue]: index '{0}' is equal to or greater than the length of array.", index);
                 return;
             }
-            if (Count > array.Length - index) {
+
+            if (Count > array.Length - index)
+            {
                 MainConsole.Instance.WarnFormat ("[Priority Queue]:  The number of elements in the PriorityQueue is greater " +
                                                  "than the available space from index '{0}' to the end of the " +
                                                  "destination array.", "index");
@@ -1088,7 +1102,8 @@ namespace Universe.Framework.Utilities
             }
         }
 
-        public virtual object SyncRoot {
+        public virtual object SyncRoot
+        {
             get { return this; }
         }
 

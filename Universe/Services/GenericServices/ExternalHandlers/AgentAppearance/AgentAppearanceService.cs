@@ -53,7 +53,6 @@ namespace Universe.Services
     public class AgentAppearanceService : IService, IAgentAppearanceService
     {
         public string ServiceURI { get; protected set; }
-
         protected IRegistryCore m_registry;
         protected bool m_enabled;
         protected IAssetService m_assetService;
@@ -64,7 +63,8 @@ namespace Universe.Services
         {
             IConfig ssaConfig = config.Configs ["SSAService"];
             uint port = 8011;
-            if (ssaConfig != null) {
+            if (ssaConfig != null)
+            {
                 m_enabled = ssaConfig.GetBoolean ("Enabled", m_enabled);
                 port = ssaConfig.GetUInt ("Port", port);
             }
@@ -108,18 +108,14 @@ namespace Universe.Services
         {
             string [] req = path.Split ('/');
             UUID avID = UUID.Parse (req [2]);
-            //string type = req[3];
             UUID textureID = UUID.Parse (req [4]);
 
-            //IAvatarService avService = m_registry.RequestModuleInterface<IAvatarService>();
-            //Universe.Framework.ClientInterfaces.AvatarAppearance appearance = avService.GetAppearance(avID);
-            //AvatarTextureIndex textureIndex = AppearanceManager.BakeTypeToAgentTextureIndex((BakeType)Enum.Parse(typeof(BakeType), type, true));
-            //AssetBase texture = m_assetService.Get(appearance.Texture.FaceTextures[(int)textureIndex].TextureID.ToString());
             AssetBase texture = m_assetService.Get (textureID.ToString ());
             if (texture == null) {
                 MainConsole.Instance.WarnFormat ("[Agent appearance service]: Could not find baked texture {0} for {1}", textureID, avID);
                 return new byte [0];
             }
+
             MainConsole.Instance.DebugFormat ("[Agent appearance service]: Found baked texture {0} for {1}", textureID, avID);
             // Full content request
             httpResponse.StatusCode = (int)System.Net.HttpStatusCode.OK;
@@ -135,8 +131,6 @@ namespace Universe.Services
         }
 
         TextureData [] Textures = new TextureData [(int)AvatarTextureIndex.NumberOfEntries];
-        // List<UUID> m_lastInventoryItemIDs = new List<UUID>();
-
 
         public AvatarAppearance BakeAppearance (UUID agentID, int cof_version)
         {
@@ -173,8 +167,7 @@ namespace Universe.Services
                     UUID assetID = m_inventoryService.GetItemAssetID (agentID, itm.AssetID);
                     if (appearance.Wearables.Any ((w) => w.GetItem (assetID) != UUID.Zero)) {
                         currentItemIDs.Add (assetID);
-                        //if (m_lastInventoryItemIDs.Contains(assetID))
-                        //    continue;
+                        
                         WearableData wearable = new WearableData ();
                         AssetBase asset = m_assetService.Get (assetID.ToString ());
                         if (asset != null && asset.TypeAsset != AssetType.Object) {
@@ -191,43 +184,19 @@ namespace Universe.Services
                                     alphaWearable = wearable;
                                     continue;
                                 }
+
                                 AppearanceManager.DecodeWearableParams (wearable, ref Textures);
                             }
                         }
+
                         if (asset != null)  // have asset but not an object
                             asset.Dispose ();
                     }
                 }
             }
 
-            /*foreach (UUID id in m_lastInventoryItemIDs)
-            {
-                if (!currentItemIDs.Contains(id))
-                {
-                    OpenMetaverse.AppearanceManager.WearableData wearable = new OpenMetaverse.AppearanceManager.WearableData();
-                    AssetBase asset = m_assetService.Get(id.ToString());
-                    if (asset != null && asset.TypeAsset != AssetType.Object)
-                    {
-                        wearable.Asset = new AssetClothing(id, asset.Data);
-                        if (wearable.Asset.Decode())
-                        {
-                            foreach (KeyValuePair<AvatarTextureIndex, UUID> entry in wearable.Asset.Textures)
-                            {
-                                int i = (int)entry.Key;
-
-                                Textures[i].Texture = null;
-                                Textures[i].TextureID = UUID.Zero;
-                            }
-                        }
-                    }
-                }
-            }*/
-            //m_lastInventoryItemIDs = currentItemIDs;
             for (int i = 0; i < Textures.Length; i++) {
-                /*if (Textures[i].TextureID == UUID.Zero)
-                    continue;
-                if (Textures[i].Texture != null)
-                    continue;*/
+                
                 AssetBase asset = m_assetService.Get (Textures [i].TextureID.ToString ());
                 if (asset != null) {
                     var assetData = new byte [asset.Data.Length];
@@ -303,6 +272,7 @@ namespace Universe.Services
                 //it changed during the baking... kill it with fire!
                 return null;
             }
+
             m_avatarService.SetAppearance (agentID, appearance);
             return appearance;
         }

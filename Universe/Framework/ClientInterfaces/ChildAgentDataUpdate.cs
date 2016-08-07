@@ -175,10 +175,13 @@ namespace Universe.Framework.ClientInterfaces
         {
             if (args["item"] != null)
                 ItemID = args["item"].AsUUID();
+
             if (args["object"] != null)
                 ObjectID = args["object"].AsUUID();
+
             if (args["ignore"] != null)
                 IgnoreControls = (uint) args["ignore"].AsInteger();
+
             if (args["event"] != null)
                 EventControls = (uint) args["event"].AsInteger();
         }
@@ -202,8 +205,7 @@ namespace Universe.Framework.ClientInterfaces
         {
         }
 
-        public SittingObjectData(string sittingObjectXML, Vector3 sitTargetPos, Quaternion sitTargetRot,
-                                 string animation)
+        public SittingObjectData(string sittingObjectXML, Vector3 sitTargetPos, Quaternion sitTargetRot, string animation)
         {
             m_sittingObjectXML = sittingObjectXML;
             m_sitTargetPos = sitTargetPos;
@@ -227,15 +229,17 @@ namespace Universe.Framework.ClientInterfaces
             return controldata;
         }
 
-
         public override void FromOSD(OSDMap args)
         {
             if (args["sittingObjectXML"] != null)
                 m_sittingObjectXML = args["sittingObjectXML"];
+
             if (args["sitTargetPos"] != null)
                 m_sitTargetPos = args["sitTargetPos"];
+
             if (args["sitTargetRot"] != null)
                 m_sitTargetRot = args["sitTargetRot"];
+
             if (args["animation"] != null)
                 m_animation = args["animation"];
         }
@@ -368,6 +372,7 @@ namespace Universe.Framework.ClientInterfaces
                 OSDArray anims = new OSDArray(Anims.Length);
                 foreach (Animation aanim in Anims)
                     anims.Add(aanim.ToOSD());
+
                 args["animations"] = anims;
             }
 
@@ -379,6 +384,7 @@ namespace Universe.Framework.ClientInterfaces
                 OSDArray controls = new OSDArray(Controllers.Length);
                 foreach (ControllerData ctl in Controllers)
                     controls.Add(ctl.ToOSD());
+
                 args["controllers"] = controls;
             }
 

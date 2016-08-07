@@ -49,9 +49,7 @@ namespace Universe.Framework.SceneInfo
     public class EventManager
     {
         public delegate void OnFrameDelegate();
-
         public event OnFrameDelegate OnFrame;
-
         public delegate void OnNewClientDelegate(IClientAPI client);
 
         /// <summary>
@@ -59,23 +57,14 @@ namespace Universe.Framework.SceneInfo
         ///     Will be marked Obsolete after IClientCore has 100% of IClientAPI interfaces.
         /// </summary>
         public event OnNewClientDelegate OnNewClient;
-
         public event OnNewClientDelegate OnClosingClient;
-
         public delegate void OnClientLoginDelegate(IClientAPI client);
-
         public event OnClientLoginDelegate OnClientLogin;
-
         public delegate void OnNewPresenceDelegate(IScenePresence presence);
-
         public event OnNewPresenceDelegate OnNewPresence;
-
         public event OnNewPresenceDelegate OnRemovePresence;
-
         public delegate void OnPluginConsoleDelegate(string[] args);
-
         public event OnPluginConsoleDelegate OnPluginConsole;
-
         public delegate void OnPermissionErrorDelegate(UUID user, string reason);
 
         /// <summary>
@@ -84,16 +73,10 @@ namespace Universe.Framework.SceneInfo
         /// The child is the part that was actually touched.
         public event ObjectGrabDelegate OnObjectGrab;
 
-        public delegate void ObjectGrabDelegate(
-            ISceneChildEntity part, ISceneChildEntity child, Vector3 offsetPos, IClientAPI remoteClient,
-            SurfaceTouchEventArgs surfaceArgs);
-
+        public delegate void ObjectGrabDelegate(ISceneChildEntity part, ISceneChildEntity child, Vector3 offsetPos, IClientAPI remoteClient, SurfaceTouchEventArgs surfaceArgs);
         public event ObjectGrabDelegate OnObjectGrabbing;
         public event ObjectDeGrabDelegate OnObjectDeGrab;
-
-        public delegate void ObjectDeGrabDelegate(
-            ISceneChildEntity part, ISceneChildEntity child, IClientAPI remoteClient, SurfaceTouchEventArgs surfaceArgs);
-
+        public delegate void ObjectDeGrabDelegate(ISceneChildEntity part, ISceneChildEntity child, IClientAPI remoteClient, SurfaceTouchEventArgs surfaceArgs);
         public event OnPermissionErrorDelegate OnPermissionError;
 
         /// <summary>
@@ -106,57 +89,31 @@ namespace Universe.Framework.SceneInfo
             StateSource stateSource, UUID RezzedFrom, bool clearStateSaves);
 
         public delegate void RemoveScript(uint localID, UUID itemID);
-
         public event RemoveScript OnRemoveScript;
-
         public delegate bool SceneGroupMoved(UUID groupID, Vector3 delta);
-
         public event SceneGroupMoved OnSceneGroupMove;
-
         public delegate void SceneGroupGrabed(UUID groupID, Vector3 offset, UUID userID);
-
         public event SceneGroupGrabed OnSceneGroupGrab;
-
         public delegate bool SceneGroupSpinStarted(UUID groupID);
-
         public event SceneGroupSpinStarted OnSceneGroupSpinStart;
-
         public delegate bool SceneGroupSpun(UUID groupID, Quaternion rotation);
-
         public event SceneGroupSpun OnSceneGroupSpin;
-
         public delegate void LandObjectAdded(LandData newParcel);
-
         public event LandObjectAdded OnLandObjectAdded;
-
         public delegate void LandObjectRemoved(UUID RegionID, UUID globalID);
-
         public event LandObjectRemoved OnLandObjectRemoved;
-
         public delegate void AvatarEnteringNewParcel(IScenePresence avatar, ILandObject oldParcel);
-
         public event AvatarEnteringNewParcel OnAvatarEnteringNewParcel;
-
         public delegate void SignificantClientMovement(IScenePresence sp);
-
         public event SignificantClientMovement OnSignificantClientMovement;
-
         public event SignificantClientMovement OnClientMovement;
-
         public delegate void OnTerrainTickDelegate();
-
         public event OnTerrainTickDelegate OnTerrainTick;
-
         public delegate void SignificantObjectMovement(ISceneEntity group);
-
         public event SignificantObjectMovement OnSignificantObjectMovement;
-
         public delegate void IncomingInstantMessage(GridInstantMessage message);
-
         public event IncomingInstantMessage OnIncomingInstantMessage;
-
         public delegate string ChatSessionRequest(UUID agentID, OSDMap request);
-
         public event ChatSessionRequest OnChatSessionRequest;
 
         /// <summary>
@@ -165,86 +122,51 @@ namespace Universe.Framework.SceneInfo
         ///     (see http://lslwiki.net/lslwiki/wakka.php?wakka=changed)
         /// </summary>
         public event ScriptChangedEvent OnScriptChangedEvent;
-
         public delegate void ScriptChangedEvent(ISceneChildEntity part, uint change);
-
         public event ScriptMovingStartEvent OnScriptMovingStartEvent;
-
         public delegate void ScriptMovingStartEvent(ISceneChildEntity part);
-
         public event ScriptMovingEndEvent OnScriptMovingEndEvent;
-
         public delegate void ScriptMovingEndEvent(ISceneChildEntity part);
-
-        public delegate void ScriptControlEvent(
-            ISceneChildEntity part, UUID item, UUID avatarID, uint held, uint changed);
-
+        public delegate void ScriptControlEvent(ISceneChildEntity part, UUID item, UUID avatarID, uint held, uint changed);
         public event ScriptControlEvent OnScriptControlEvent;
-
         public delegate void ScriptAtTargetEvent(uint localID, uint handle, Vector3 targetpos, Vector3 atpos);
-
         public event ScriptAtTargetEvent OnScriptAtTargetEvent;
-
         public delegate void ScriptNotAtTargetEvent(uint localID);
-
         public event ScriptNotAtTargetEvent OnScriptNotAtTargetEvent;
-
         public delegate void ScriptAtRotTargetEvent(uint localID, uint handle, Quaternion targetrot, Quaternion atrot);
-
         public event ScriptAtRotTargetEvent OnScriptAtRotTargetEvent;
-
         public delegate void ScriptNotAtRotTargetEvent(uint localID);
-
         public event ScriptNotAtRotTargetEvent OnScriptNotAtRotTargetEvent;
-
         public delegate void ScriptColliding(ISceneChildEntity part, ColliderArgs colliders);
-
         public event ScriptColliding OnScriptColliderStart;
         public event ScriptColliding OnScriptColliding;
         public event ScriptColliding OnScriptCollidingEnd;
         public event ScriptColliding OnScriptLandColliderStart;
         public event ScriptColliding OnScriptLandColliding;
         public event ScriptColliding OnScriptLandColliderEnd;
-
         public delegate void OnMakeChildAgentDelegate(IScenePresence presence, GridRegion destination);
-
         public event OnMakeChildAgentDelegate OnMakeChildAgent;
         public event OnMakeChildAgentDelegate OnSetAgentLeaving;
-
         public delegate void OnMakeRootAgentDelegate(IScenePresence presence);
-
         public event OnMakeRootAgentDelegate OnMakeRootAgent;
         public event OnMakeRootAgentDelegate OnAgentFailedToLeave;
-
         public delegate void RequestChangeWaterHeight(float height);
-
         public event RequestChangeWaterHeight OnRequestChangeWaterHeight;
-
         public delegate void AddToStartupQueue(string name);
-
         public delegate void FinishedStartup(string name, List<string> data);
-
         public delegate void StartupComplete(IScene scene, List<string> data);
-
         public event FinishedStartup OnModuleFinishedStartup;
         public event AddToStartupQueue OnAddToStartupQueue;
-
         public event StartupComplete OnStartupComplete;
+        
         //This is called after OnStartupComplete is done, it should ONLY be registered to the Scene
         public event StartupComplete OnStartupFullyComplete;
-
         public delegate void EstateToolsSunUpdate(ulong regionHandle, bool FixedTime, bool EstateSun, float LindenHour);
-
         public event EstateToolsSunUpdate OnEstateToolsSunUpdate;
-
         public delegate void ObjectBeingRemovedFromScene(ISceneEntity obj);
-
         public event ObjectBeingRemovedFromScene OnObjectBeingRemovedFromScene;
-
         public event ObjectBeingRemovedFromScene OnObjectBeingAddedToScene;
-
         public delegate void IncomingLandDataFromStorage(List<LandData> data, Vector2 parcelOffset);
-
         public event IncomingLandDataFromStorage OnIncomingLandDataFromStorage;
 
         /// <summary>
@@ -253,7 +175,6 @@ namespace Universe.Framework.SceneInfo
         ///     client and provides region modules to add their caps.
         /// </summary>
         public delegate OSDMap RegisterCapsEvent(UUID agentID, IHttpServer httpServer);
-
         public event RegisterCapsEvent OnRegisterCaps;
 
         /// <summary>
@@ -261,7 +182,6 @@ namespace Universe.Framework.SceneInfo
         ///     handler for an agent are removed.
         /// </summary>
         public delegate void DeregisterCapsEvent(UUID agentID, IRegionClientCapsService caps);
-
         public event DeregisterCapsEvent OnDeregisterCaps;
 
         /// <summary>
@@ -269,7 +189,6 @@ namespace Universe.Framework.SceneInfo
         ///     from world comes in.
         /// </summary>
         public delegate void ChatFromWorldEvent(Object sender, OSChatMessage chat);
-
         public event ChatFromWorldEvent OnChatFromWorld;
 
         /// <summary>
@@ -278,7 +197,6 @@ namespace Universe.Framework.SceneInfo
         ///     from the client  comes in.
         /// </summary>
         public delegate void ChatFromClientEvent(IClientAPI sender, OSChatMessage chat);
-
         public event ChatFromClientEvent OnChatFromClient;
 
         /// <summary>
@@ -286,7 +204,6 @@ namespace Universe.Framework.SceneInfo
         ///     from world comes in
         /// </summary>
         public delegate void ChatBroadcastEvent(Object sender, OSChatMessage chat);
-
         public event ChatBroadcastEvent OnChatBroadcast;
 
         /// <summary>
@@ -295,7 +212,6 @@ namespace Universe.Framework.SceneInfo
         ///     Message is non empty string if there were problems loading the oar file
         /// </summary>
         public delegate void OarFileLoaded(Guid guid, string message);
-
         public event OarFileLoaded OnOarFileLoaded;
 
         /// <summary>
@@ -305,7 +221,6 @@ namespace Universe.Framework.SceneInfo
         ///     Guid.Empty is returned.
         /// </summary>
         public delegate void OarFileSaved(Guid guid, string message);
-
         public event OarFileSaved OnOarFileSaved;
 
         /// <summary>
@@ -313,7 +228,6 @@ namespace Universe.Framework.SceneInfo
         ///     Returns the number of scripts which failed to start
         /// </summary>
         public delegate void EmptyScriptCompileQueue(int numScriptsFailed, string message);
-
         public event EmptyScriptCompileQueue OnEmptyScriptCompileQueue;
 
         /// <summary>
@@ -322,26 +236,17 @@ namespace Universe.Framework.SceneInfo
         /// If the object is being attached, then the avatarID will be present.  If the object is being detached then
         /// the avatarID is UUID.Zero (I know, this doesn't make much sense but now it's historical).
         public delegate void Attach(uint localID, UUID itemID, UUID avatarID);
-
         public event Attach OnAttach;
-
         public delegate void RegionUp(GridRegion region);
-
         public event RegionUp OnRegionUp;
         public event RegionUp OnRegionDown;
-
         public delegate void CachedUserInfo(UUID agentID, Services.CachedUserInfo info);
-
         public event CachedUserInfo OnCachedUserInfo;
-
         public class LandBuyArgs : EventArgs
         {
             public UUID agentId = UUID.Zero;
-
             public UUID groupId = UUID.Zero;
-
             public UUID parcelOwnerID = UUID.Zero;
-
             public bool final = false;
             public bool groupOwned = false;
             public bool removeContribution = false;
@@ -388,9 +293,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerOnAttach failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerOnAttach failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -409,9 +312,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerOnScriptChangedEvent failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerOnScriptChangedEvent failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -430,9 +331,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerOnScriptMovingStartEvent failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerOnScriptMovingStartEvent failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -451,9 +350,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerOnScriptMovingEndEvent failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerOnScriptMovingEndEvent failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -472,9 +369,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerPermissionError failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerPermissionError failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -493,9 +388,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerOnPluginConsole failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerOnPluginConsole failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -514,9 +407,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerOnFrame failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerOnFrame failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -535,9 +426,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerOnClosingClient failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerOnClosingClient failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -556,9 +445,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerOnNewClient failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerOnNewClient failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -577,9 +464,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerOnClientLogin failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerOnClientLogin failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -598,9 +483,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerOnNewPresence failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerOnNewPresence failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -619,9 +502,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerOnRemovePresence failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerOnRemovePresence failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -640,9 +521,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerObjectBeingAddToScene failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerObjectBeingAddToScene failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -661,16 +540,13 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerObjectBeingRemovedFromScene failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerObjectBeingRemovedFromScene failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
         }
 
-        public void TriggerObjectGrab(ISceneChildEntity part, ISceneChildEntity child, Vector3 offsetPos,
-                                      IClientAPI remoteClient, SurfaceTouchEventArgs surfaceArgs)
+        public void TriggerObjectGrab(ISceneChildEntity part, ISceneChildEntity child, Vector3 offsetPos, IClientAPI remoteClient, SurfaceTouchEventArgs surfaceArgs)
         {
             ObjectGrabDelegate handlerObjectGrab = OnObjectGrab;
             if (handlerObjectGrab != null)
@@ -683,16 +559,13 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerObjectGrab failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerObjectGrab failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
         }
 
-        public void TriggerObjectGrabbing(ISceneChildEntity part, ISceneChildEntity child, Vector3 offsetPos,
-                                          IClientAPI remoteClient, SurfaceTouchEventArgs surfaceArgs)
+        public void TriggerObjectGrabbing(ISceneChildEntity part, ISceneChildEntity child, Vector3 offsetPos, IClientAPI remoteClient, SurfaceTouchEventArgs surfaceArgs)
         {
             ObjectGrabDelegate handlerObjectGrabbing = OnObjectGrabbing;
             if (handlerObjectGrabbing != null)
@@ -705,16 +578,13 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerObjectGrabbing failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerObjectGrabbing failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
         }
 
-        public void TriggerObjectDeGrab(ISceneChildEntity part, ISceneChildEntity child, IClientAPI remoteClient,
-                                        SurfaceTouchEventArgs surfaceArgs)
+        public void TriggerObjectDeGrab(ISceneChildEntity part, ISceneChildEntity child, IClientAPI remoteClient, SurfaceTouchEventArgs surfaceArgs)
         {
             ObjectDeGrabDelegate handlerObjectDeGrab = OnObjectDeGrab;
             if (handlerObjectDeGrab != null)
@@ -727,16 +597,13 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerObjectDeGrab failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerObjectDeGrab failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
         }
 
-        public void TriggerRezScripts(ISceneChildEntity part, TaskInventoryItem[] taskInventoryItem, int startParam,
-                                      bool postOnRez, StateSource stateSource, UUID rezzedFrom, bool clearStateSaves)
+        public void TriggerRezScripts(ISceneChildEntity part, TaskInventoryItem[] taskInventoryItem, int startParam, bool postOnRez, StateSource stateSource, UUID rezzedFrom, bool clearStateSaves)
         {
             NewRezScripts handlerRezScripts = OnRezScripts;
             if (handlerRezScripts != null)
@@ -749,9 +616,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerRezScript failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerRezScript failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -770,9 +635,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerRemoveScript failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerRemoveScript failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -794,9 +657,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerOnAttach failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerOnAttach failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -820,9 +681,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerGroupSpinStart failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerGroupSpinStart failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -846,9 +705,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerGroupSpin failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerGroupSpin failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -869,9 +726,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerGroupGrab failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerGroupGrab failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -890,9 +745,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerLandObjectAdded failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerLandObjectAdded failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -911,9 +764,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerLandObjectRemoved failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerLandObjectRemoved failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -932,9 +783,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerAvatarEnteringNewParcel failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerAvatarEnteringNewParcel failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -955,12 +804,11 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerIncomingInstantMessage failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerIncomingInstantMessage failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
+
             return "";
         }
 
@@ -977,9 +825,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerIncomingInstantMessage failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerIncomingInstantMessage failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -998,9 +844,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerOnMakeChildAgent failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerOnMakeChildAgent failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -1019,9 +863,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerOnAgentFailedToLeave failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerOnAgentFailedToLeave failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -1040,9 +882,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerOnSetAgentLeaving failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerOnSetAgentLeaving failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -1061,9 +901,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerOnMakeRootAgent failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerOnMakeRootAgent failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -1090,12 +928,11 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerOnRegisterCaps failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerOnRegisterCaps failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
+
             return retVal;
         }
 
@@ -1112,9 +949,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerOnDeregisterCaps failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerOnDeregisterCaps failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -1134,12 +969,11 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerLandBuy failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerLandBuy failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
+
             return true;
         }
 
@@ -1156,9 +990,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerAtTargetEvent failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerAtTargetEvent failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -1177,9 +1009,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerNotAtTargetEvent failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerNotAtTargetEvent failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -1198,9 +1028,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerAtRotTargetEvent failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerAtRotTargetEvent failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -1219,9 +1047,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerNotAtRotTargetEvent failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerNotAtRotTargetEvent failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -1240,9 +1066,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerRequestChangeWaterHeight failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerRequestChangeWaterHeight failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -1261,9 +1085,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerSignificantClientMovement failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerSignificantClientMovement failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -1282,9 +1104,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerSignificantClientMovement failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerSignificantClientMovement failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -1303,9 +1123,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerSignificantObjectMovement failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerSignificantObjectMovement failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -1324,9 +1142,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerOnChatFromWorld failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerOnChatFromWorld failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -1345,9 +1161,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerOnChatFromClient failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerOnChatFromClient failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -1366,9 +1180,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerOnChatBroadcast failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerOnChatBroadcast failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -1387,9 +1199,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerControlEvent failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerControlEvent failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -1408,9 +1218,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerIncomingLandDataFromStorage failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerIncomingLandDataFromStorage failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -1423,8 +1231,7 @@ namespace Universe.Framework.SceneInfo
         /// <param name="fixedTime">True if the Sun Position is fixed</param>
         /// <param name="useEstateTime">True if the Estate Settings should be used instead of region</param>
         /// <param name="fixedSunHour">The hour 0.0 &lt;= FixedSunHour &lt;= 24.0 at which the sun is fixed at. Sun Hour 0 is sun-rise, when Day/Night ratio is 1:1</param>
-        public void TriggerEstateToolsSunUpdate(ulong regionHandle, bool fixedTime, bool useEstateTime,
-                                                float fixedSunHour)
+        public void TriggerEstateToolsSunUpdate(ulong regionHandle, bool fixedTime, bool useEstateTime, float fixedSunHour)
         {
             EstateToolsSunUpdate handlerEstateToolsSunUpdate = OnEstateToolsSunUpdate;
             if (handlerEstateToolsSunUpdate != null)
@@ -1437,9 +1244,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerEstateToolsSunUpdate failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerEstateToolsSunUpdate failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -1458,9 +1263,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerOarFileLoaded failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerOarFileLoaded failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -1479,9 +1282,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerOarFileSaved failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerOarFileSaved failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -1500,9 +1301,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerEmptyScriptCompileQueue failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerEmptyScriptCompileQueue failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -1521,9 +1320,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerScriptCollidingStart failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerScriptCollidingStart failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -1542,9 +1339,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerScriptColliding failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerScriptColliding failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -1563,9 +1358,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerScriptCollidingEnd failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerScriptCollidingEnd failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -1584,9 +1377,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerScriptLandCollidingStart failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerScriptLandCollidingStart failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -1605,9 +1396,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerScriptLandColliding failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerScriptLandColliding failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -1626,9 +1415,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerScriptLandCollidingEnd failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerScriptLandCollidingEnd failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -1647,9 +1434,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerOnRegionUp failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerOnRegionUp failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -1668,9 +1453,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerOnRegionUp failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerOnRegionUp failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -1689,9 +1472,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for FinishedStartup failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for FinishedStartup failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -1710,9 +1491,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for AddToStartupQueue failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for AddToStartupQueue failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -1732,9 +1511,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for StartupComplete failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for StartupComplete failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
                 if (handlerOnStartupFullyComplete != null)
@@ -1747,9 +1524,7 @@ namespace Universe.Framework.SceneInfo
                         }
                         catch (Exception e)
                         {
-                            MainConsole.Instance.ErrorFormat(
-                                "[EVENT MANAGER]: Delegate for StartupComplete failed - continuing.  {0} {1}",
-                                e, e.StackTrace);
+                            MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for StartupComplete failed - continuing.  {0} {1}", e, e.StackTrace);
                         }
                     }
                 }
@@ -1769,9 +1544,7 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for AddToStartupQueue failed - continuing.  {0} {1}",
-                            e, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for AddToStartupQueue failed - continuing.  {0} {1}", e, e.StackTrace);
                     }
                 }
             }
@@ -1790,14 +1563,10 @@ namespace Universe.Framework.SceneInfo
                     }
                     catch (Exception e)
                     {
-                        MainConsole.Instance.ErrorFormat(
-                            "[EVENT MANAGER]: Delegate for TriggerTerrainTick failed - continuing.  {0} {1}",
-                            e.Message, e.StackTrace);
+                        MainConsole.Instance.ErrorFormat("[Event Manager]: Delegate for TriggerTerrainTick failed - continuing.  {0} {1}", e.Message, e.StackTrace);
                     }
                 }
             }
         }
-
-
     }
 }

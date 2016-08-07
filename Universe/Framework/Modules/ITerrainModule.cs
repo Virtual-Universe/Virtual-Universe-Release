@@ -37,7 +37,6 @@ namespace Universe.Framework.Modules
     {
         ITerrainChannel TerrainMap { get; set; }
         ITerrainChannel TerrainRevertMap { get; set; }
-
         ITerrainChannel TerrainWaterMap { get; set; }
         ITerrainChannel TerrainWaterRevertMap { get; set; }
         void LoadFromFile(string filename, int offsetX, int offsetY);

@@ -37,7 +37,7 @@ namespace Universe.Physics.BulletSPlugin
     public sealed class BSShapeCollection : IDisposable
     {
 //#pragma warning disable 414
-//        static string LogHeader = "[BULLETSIM SHAPE COLLECTION]";
+//        static string LogHeader = "[Bulletsim Shape Collection]";
 //#pragma warning restore 414
 
         BSScene PhysicsScene { get; set; }

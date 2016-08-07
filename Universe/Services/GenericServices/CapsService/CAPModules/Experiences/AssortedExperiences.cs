@@ -44,8 +44,7 @@ namespace Universe.Services
         {
             m_service = service;
             
-            service.AddStreamHandler ("ExperiencePreferences",
-                                      new GenericStreamHandler ("POST", service.CreateCAPS ("ExperiencePreferences", ""), ExperiencePreferences));
+            service.AddStreamHandler ("ExperiencePreferences", new GenericStreamHandler ("POST", service.CreateCAPS ("ExperiencePreferences", ""), ExperiencePreferences));
             
             service.AddStreamHandler ("FindExperienceByName",
                                       new GenericStreamHandler ("POST", service.CreateCAPS("FindExperienceByName", ""), FindExperienceByName));

@@ -84,9 +84,9 @@ namespace Universe.Modules.Web
                         ownerName = estateOwnerAccount == null ? "No account found" : estateOwnerAccount.Name;
                     }
                 }
-
                 vars.Add ("OwnerUUID", ownerUUID);
                 vars.Add ("OwnerName", ownerName);
+
                 vars.Add ("RegionName", region.RegionName);
                 vars.Add ("RegionLocX", region.RegionLocX / Constants.RegionSize);
                 vars.Add ("RegionLocY", region.RegionLocY / Constants.RegionSize);
@@ -112,6 +112,7 @@ namespace Universe.Modules.Web
                             if (userService != null) {
                                 UserAccount account = userService.GetUserAccount (null, client.UserID);
                                 if (account != null) {
+
                                     Dictionary<string, object> user = new Dictionary<string, object> ();
                                     user.Add ("UserNameText", translator.GetTranslatedString ("UserNameText"));
                                     user.Add ("UserUUID", client.UserID);
@@ -120,14 +121,12 @@ namespace Universe.Modules.Web
                                 }
                             }
                         }
-
                         vars.Add ("UsersInRegion", users);
                     }
                 } else {
                     vars.Add ("NumberOfUsersInRegion", 0);
                     vars.Add ("UsersInRegion", new List<Dictionary<string, object>> ());
                 }
-
                 IDirectoryServiceConnector directoryConnector =
                     Framework.Utilities.DataManager.RequestPlugin<IDirectoryServiceConnector> ();
 
@@ -150,15 +149,12 @@ namespace Universe.Modules.Web
                                 else
                                     parcel.Add ("ParcelOwnerName", translator.GetTranslatedString ("NoAccountFound"));
                             }
-
                             parcels.Add (parcel);
                         }
                     }
-
                     vars.Add ("ParcelInRegion", parcels);
                     vars.Add ("NumberOfParcelsInRegion", parcels.Count);
                 }
-
                 IWebHttpTextureService webTextureService = webInterface.Registry.
                                                                         RequestModuleInterface<IWebHttpTextureService> ();
                 if (webTextureService != null && region.TerrainMapImage != UUID.Zero)
@@ -170,6 +166,7 @@ namespace Universe.Modules.Web
                 vars.Add ("MenuRegionTitle", translator.GetTranslatedString ("MenuRegionTitle"));
                 vars.Add ("MenuParcelTitle", translator.GetTranslatedString ("MenuParcelTitle"));
                 vars.Add ("MenuOwnerTitle", translator.GetTranslatedString ("MenuOwnerTitle"));
+
                 vars.Add ("RegionInformationText", translator.GetTranslatedString ("RegionInformationText"));
                 vars.Add ("OwnerNameText", translator.GetTranslatedString ("OwnerNameText"));
                 vars.Add ("RegionLocationText", translator.GetTranslatedString ("RegionLocationText"));
@@ -188,6 +185,7 @@ namespace Universe.Modules.Web
                 vars.Add ("styles3", translator.GetTranslatedString ("styles3"));
                 vars.Add ("styles4", translator.GetTranslatedString ("styles4"));
                 vars.Add ("styles5", translator.GetTranslatedString ("styles5"));
+
                 vars.Add ("StyleSwitcherStylesText", translator.GetTranslatedString ("StyleSwitcherStylesText"));
                 vars.Add ("StyleSwitcherLanguagesText", translator.GetTranslatedString ("StyleSwitcherLanguagesText"));
                 vars.Add ("StyleSwitcherChoiceText", translator.GetTranslatedString ("StyleSwitcherChoiceText"));
@@ -199,7 +197,6 @@ namespace Universe.Modules.Web
                 vars.Add ("it", translator.GetTranslatedString ("it"));
                 vars.Add ("es", translator.GetTranslatedString ("es"));
                 vars.Add ("nl", translator.GetTranslatedString ("nl"));
-                vars.Add ("ru", translator.GetTranslatedString ("ru"));
 
                 var settings = webInterface.GetWebUISettings ();
                 vars.Add ("ShowLanguageTranslatorBar", !settings.HideLanguageTranslatorBar);

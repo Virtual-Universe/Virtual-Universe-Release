@@ -99,8 +99,7 @@ namespace Universe.Framework.DatabaseInterfaces
         /// <param name="flags"></param>
         /// <param name="category"></param>
         /// <returns></returns>
-        List<LandData> GetParcelsByRegion(uint start, uint count, UUID RegionID, UUID owner, ParcelFlags flags,
-                                          ParcelCategory category);
+        List<LandData> GetParcelsByRegion(uint start, uint count, UUID RegionID, UUID owner, ParcelFlags flags, ParcelCategory category);
 
         /// <summary>
         ///     Get the number of parcels in the specified region that match the specified filters.
@@ -151,8 +150,7 @@ namespace Universe.Framework.DatabaseInterfaces
         /// <param name="Flags"></param>
         /// <param name="scopeID"></param>
         /// <returns></returns>
-        List<DirLandReplyData> FindLandForSale(string searchType, uint price, uint area, int StartQuery, uint Flags,
-                                               UUID scopeID);
+        List<DirLandReplyData> FindLandForSale(string searchType, uint price, uint area, int StartQuery, uint Flags, UUID scopeID);
 
         /// <summary>
         ///     Searches for parcels for sale around the grid
@@ -164,8 +162,7 @@ namespace Universe.Framework.DatabaseInterfaces
         /// <param name="Flags"></param>
         /// <param name="regionID"></param>
         /// <returns></returns>
-        List<DirLandReplyData> FindLandForSaleInRegion(string searchType, uint price, uint area, int StartQuery,
-                                                       uint Flags, UUID regionID);
+        List<DirLandReplyData> FindLandForSaleInRegion(string searchType, uint price, uint area, int StartQuery, uint Flags, UUID regionID);
 
         /// <summary>
         ///     Searches for the most popular places around the grid
@@ -188,8 +185,7 @@ namespace Universe.Framework.DatabaseInterfaces
         /// <param name="StartQuery"></param>
         /// <param name="scopeID"></param>
         /// <returns></returns>
-        List<DirClassifiedReplyData> FindClassifieds(string queryText, string category, uint queryFlags, int StartQuery,
-                                                     UUID scopeID);
+        List<DirClassifiedReplyData> FindClassifieds(string queryText, string category, uint queryFlags, int StartQuery, UUID scopeID);
         /// <summary>
         /// Gets a lost of all classifieds.
         /// </summary>
@@ -249,7 +245,6 @@ namespace Universe.Framework.DatabaseInterfaces
         /// <returns></returns>
         EventData GetEventInfo(uint EventID);
 
-
         /// <summary>
         ///     creates an event
         /// </summary>
@@ -278,8 +273,7 @@ namespace Universe.Framework.DatabaseInterfaces
         /// <param name="sort"></param>
         /// <param name="filter"></param>
         /// <returns></returns>
-        List<EventData> GetEvents(uint start, uint count, Dictionary<string, bool> sort,
-                                  Dictionary<string, object> filter);
+        List<EventData> GetEvents(uint start, uint count, Dictionary<string, bool> sort, Dictionary<string, object> filter);
 
         /// <summary>
         ///     Get the number of events matching the specified filters

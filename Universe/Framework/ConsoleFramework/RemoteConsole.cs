@@ -54,7 +54,6 @@ namespace Universe.Framework.ConsoleFramework
     }
 
     // A console that uses REST interfaces
-    //
     public class RemoteConsole : CommandConsole
     {
         readonly Dictionary<UUID, ConsoleConnection> m_Connections = new Dictionary<UUID, ConsoleConnection> ();
@@ -77,7 +76,6 @@ namespace Universe.Framework.ConsoleFramework
             uint m_consolePort = 0;
 
             if (source.Configs ["Console"] != null) {
-                //if (source.Configs["Console"].GetString("RemoteConsole", string.Empty) != "enable")
                 if (source.Configs ["Console"].GetString ("Console", string.Empty) != Name)
                     return;
 
@@ -113,9 +111,11 @@ namespace Universe.Framework.ConsoleFramework
             lock (m_Scrollback) {
                 while (m_Scrollback.Count >= 1000)
                     m_Scrollback.RemoveAt (0);
+
                 m_LineNumber++;
                 m_Scrollback.Add (string.Format ("{0}", m_LineNumber) + ":" + level + ":" + text);
             }
+
             Console.WriteLine (text.Trim ());
         }
 
@@ -152,9 +152,11 @@ namespace Universe.Framework.ConsoleFramework
                         if (cmd [i].Contains (" "))
                             cmd [i] = "\"" + cmd [i] + "\"";
                     }
+
                     return string.Empty;
                 }
             }
+
             return cmdinput;
         }
 
@@ -162,7 +164,8 @@ namespace Universe.Framework.ConsoleFramework
         {
             List<UUID> expired = new List<UUID> ();
 
-            lock (m_Connections) {
+            lock (m_Connections)
+            {
                 expired.AddRange (from kvp in m_Connections
                                   where Environment.TickCount - kvp.Value.last > 500000
                                   select kvp.Key);
@@ -196,14 +199,14 @@ namespace Universe.Framework.ConsoleFramework
 
             UUID sessionID = UUID.Random ();
 
-            lock (m_Connections) {
+            lock (m_Connections)
+            {
                 m_Connections [sessionID] = c;
             }
 
             string uri = "/ReadResponses/" + sessionID + "/";
 
-            m_Server.AddPollServiceHTTPHandler (uri, new PollServiceEventArgs (null, HasEvents, GetEvents, NoEvents,
-                                                                        sessionID));
+            m_Server.AddPollServiceHTTPHandler (uri, new PollServiceEventArgs (null, HasEvents, GetEvents, NoEvents, sessionID));
 
             XmlDocument xmldoc = new XmlDocument ();
             XmlNode xmlnode = xmldoc.CreateNode (XmlNodeType.XmlDeclaration, "", "");
@@ -350,13 +353,16 @@ namespace Universe.Framework.ConsoleFramework
         {
             ConsoleConnection c;
 
-            lock (m_Connections) {
+            lock (m_Connections)
+            {
                 if (!m_Connections.ContainsKey (sessionID))
                     return false;
                 c = m_Connections [sessionID];
             }
+
             c.last = Environment.TickCount;
-            lock (m_Scrollback) {
+            lock (m_Scrollback)
+            {
                 if (c.lastLineSeen < m_LineNumber)
                     return true;
                 return false;
@@ -367,28 +373,34 @@ namespace Universe.Framework.ConsoleFramework
         {
             ConsoleConnection c;
 
-            lock (m_Connections) {
+            lock (m_Connections)
+            {
                 if (!m_Connections.ContainsKey (sessionID))
                     return NoEvents (RequestID, UUID.Zero, response);
                 c = m_Connections [sessionID];
             }
+
             c.last = Environment.TickCount;
-            lock (m_Scrollback) {
+            lock (m_Scrollback)
+            {
                 if (c.lastLineSeen >= m_LineNumber)
                     return NoEvents (RequestID, UUID.Zero, response);
             }
+
             XmlDocument xmldoc = new XmlDocument ();
             XmlNode xmlnode = xmldoc.CreateNode (XmlNodeType.XmlDeclaration, "", "");
 
             xmldoc.AppendChild (xmlnode);
             XmlElement rootElement = xmldoc.CreateElement ("", "ConsoleSession", "");
 
-            if (c.newConnection) {
+            if (c.newConnection)
+            {
                 c.newConnection = false;
                 Output ("+++" + DefaultPrompt, Threshold);
             }
 
-            lock (m_Scrollback) {
+            lock (m_Scrollback)
+            {
                 long startLine = m_LineNumber - m_Scrollback.Count;
                 long sendStart = startLine;
                 if (sendStart < c.lastLineSeen)
@@ -402,11 +414,11 @@ namespace Universe.Framework.ConsoleFramework
 
                     rootElement.AppendChild (res);
                 }
+
                 c.lastLineSeen = m_LineNumber;
             }
 
             xmldoc.AppendChild (rootElement);
-
 
             response.StatusCode = 200;
             response.ContentType = "application/xml";

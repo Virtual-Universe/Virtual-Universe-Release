@@ -304,6 +304,7 @@ namespace Universe.Framework.Services.ClassHelpers.Profile
                 { "Visible", OSD.FromBoolean (Visible) },
                 { "CustomType", OSD.FromString (CustomType) }
             };
+
             if (trusted)
             {
                 map.Add ("AArchiveName", OSD.FromString (AArchiveName));
@@ -400,7 +401,6 @@ namespace Universe.Framework.Services.ClassHelpers.Profile
                 { "SnapshotUUID", OSD.FromUUID (SnapshotUUID) },
                 { "ScopeID", OSD.FromUUID (ScopeID) },
                 { "SimName", OSD.FromString (SimName) },
-                //  broken for non en_US locales                                        {"GlobalPos", OSD.FromVector3(GlobalPos)},
                 { "GPosX", OSD.FromReal (GlobalPos.X).ToString () },
                 { "GPosY", OSD.FromReal (GlobalPos.Y).ToString () },
                 { "GPosZ", OSD.FromReal (GlobalPos.Z).ToString () },
@@ -408,6 +408,7 @@ namespace Universe.Framework.Services.ClassHelpers.Profile
                 { "ClassifiedFlags", OSD.FromInteger (ClassifiedFlags) },
                 { "PriceForListing", OSD.FromInteger (PriceForListing) }
             };
+
             return Classified;
         }
 
@@ -425,7 +426,7 @@ namespace Universe.Framework.Services.ClassHelpers.Profile
             SnapshotUUID = map ["SnapshotUUID"].AsUUID ();
             ScopeID = map ["ScopeID"].AsUUID ();
             SimName = map ["SimName"].AsString ();
-//            GlobalPos = map["GlobalPos"].AsVector3();
+
             if (map.ContainsKey ("GlobalPos"))
             {
                 GlobalPos = map ["GlobalPos"].AsVector3 ();
@@ -435,6 +436,7 @@ namespace Universe.Framework.Services.ClassHelpers.Profile
                 GlobalPos.Y = (float)Convert.ToDecimal (map ["GPosY"].AsString (), Culture.NumberFormatInfo);
                 GlobalPos.Z = (float)Convert.ToDecimal (map ["GPosZ"].AsString (), Culture.NumberFormatInfo);
             }
+
             ParcelName = map ["ParcelName"].AsString ();
             ClassifiedFlags = (byte)map ["ClassifiedFlags"].AsInteger ();
             PriceForListing = map ["PriceForListing"].AsInteger ();
@@ -470,13 +472,13 @@ namespace Universe.Framework.Services.ClassHelpers.Profile
                 { "User", OSD.FromString (User) },
                 { "OriginalName", OSD.FromString (OriginalName) },
                 { "SimName", OSD.FromString (SimName) },
-//  broken for non en_US locales   {"GlobalPos", OSD.FromVector3(GlobalPos)},
                 { "GPosX", OSD.FromReal (GlobalPos.X).ToString () },
                 { "GPosY", OSD.FromReal (GlobalPos.Y).ToString () },
                 { "GPosZ", OSD.FromReal (GlobalPos.Z).ToString () },
                 { "SortOrder", OSD.FromInteger (SortOrder) },
                 { "Enabled", OSD.FromInteger (Enabled) }
             };
+
             return Pick;
         }
 
@@ -502,9 +504,9 @@ namespace Universe.Framework.Services.ClassHelpers.Profile
                 GlobalPos.Y = (float)Convert.ToDecimal (map ["GPosY"].AsString (), Culture.NumberFormatInfo);
                 GlobalPos.Z = (float)Convert.ToDecimal (map ["GPosZ"].AsString (), Culture.NumberFormatInfo);
             }
+
             SortOrder = map ["SortOrder"].AsInteger ();
             Enabled = map ["Enabled"].AsInteger ();
-
         }
     }
 }

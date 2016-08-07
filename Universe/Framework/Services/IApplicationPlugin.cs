@@ -36,7 +36,7 @@ using Universe.Framework.Modules;
 namespace Universe.Framework.Services
 {
     /// <summary>
-    ///     Virtual Universe Application Plugin framework interface
+    ///     Application Plugin framework interface
     /// </summary>
     public interface IApplicationPlugin
     {
@@ -116,8 +116,7 @@ namespace Universe.Framework.Services
         /// <param name="start"></param>
         /// <param name="count"></param>
         /// <returns></returns>
-        List<string> Query(string[] wantedValue, string table, QueryFilter queryFilter, Dictionary<string, bool> sort,
-                           uint? start, uint? count);
+        List<string> Query(string[] wantedValue, string table, QueryFilter queryFilter, Dictionary<string, bool> sort, uint? start, uint? count);
 
         /// <summary>
         ///     select 'wantedValue' from 'table' 'whereClause'
@@ -137,12 +136,8 @@ namespace Universe.Framework.Services
 
         #region JOIN
 
-        List<string> Query(string[] wantedValue, QueryTables tables, QueryFilter queryFilter,
-                           Dictionary<string, bool> sort, uint? start, uint? count);
-
-        Dictionary<string, List<string>> QueryNames(string[] keyRow, object[] keyValue, QueryTables tables,
-                                                    string wantedValue);
-
+        List<string> Query(string[] wantedValue, QueryTables tables, QueryFilter queryFilter, Dictionary<string, bool> sort, uint? start, uint? count);
+        Dictionary<string, List<string>> QueryNames(string[] keyRow, object[] keyValue, QueryTables tables, string wantedValue);
         DataReaderConnection QueryData(string whereClause, QueryTables tables, string wantedValue);
         List<string> QueryFullData(string whereClause, QueryTables tables, string wantedValue);
 
@@ -271,33 +266,22 @@ namespace Universe.Framework.Services
         public Dictionary<string, object> andFilters = new Dictionary<string, object>();
         public Dictionary<string, object> orFilters = new Dictionary<string, object>();
         public Dictionary<string, List<object>> orMultiFilters = new Dictionary<string, List<object>>();
-
         public Dictionary<string, string> andLikeFilters = new Dictionary<string, string>();
         public Dictionary<string, string> orLikeFilters = new Dictionary<string, string>();
         public Dictionary<string, List<string>> orLikeMultiFilters = new Dictionary<string, List<string>>();
-
         public Dictionary<string, uint> andBitfieldAndFilters = new Dictionary<string, uint>();
         public Dictionary<string, uint> orBitfieldAndFilters = new Dictionary<string, uint>();
-
         public Dictionary<string, uint> andBitfieldNandFilters = new Dictionary<string, uint>();
-
         public Dictionary<string, object> andGreaterThanFilters = new Dictionary<string, object>();
         public Dictionary<string, object> orGreaterThanFilters = new Dictionary<string, object>();
-
         public Dictionary<string, object> andGreaterThanEqFilters = new Dictionary<string, object>();
         public Dictionary<string, object> orGreaterThanEqFilters = new Dictionary<string, object>();
-
         public Dictionary<string, object> andLessThanFilters = new Dictionary<string, object>();
         public Dictionary<string, object> orLessThanFilters = new Dictionary<string, object>();
-
         public Dictionary<string, object> andLessThanEqFilters = new Dictionary<string, object>();
-
         public Dictionary<string, object> andNotFilters = new Dictionary<string, object>();
-
         public List<string> andIsNullFilters = new List<string>();
         public List<string> andIsNotNullFilters = new List<string>();
-
-//        public List<QueryFilter> subFilters = new List<QueryFilter>();
 
         public uint Count
         {
@@ -324,11 +308,6 @@ namespace Universe.Framework.Services
                                         andIsNullFilters.Count +
                                         andIsNotNullFilters.Count
                                     );
-
-//                subFilters.ForEach(delegate(QueryFilter filter)
-//                {
-//                    total += filter.Count;
-//                });
 
                 return total;
             }
@@ -371,6 +350,7 @@ namespace Universe.Framework.Services
                     ps[key] = where.Value;
                     parts.Add(string.Format("{0} = {1}", where.Key, key));
                 }
+
                 if (parts.Count > 0)
                 {
                     query += " (" + string.Join(" AND ", parts.ToArray()) + ")";
@@ -384,6 +364,7 @@ namespace Universe.Framework.Services
                     ps[key] = where.Value;
                     parts.Add(string.Format("{0} = {1}", where.Key, key));
                 }
+
                 if (parts.Count > 0)
                 {
                     query += (had ? " AND" : string.Empty) + " (" + string.Join(" OR ", parts.ToArray()) + ")";
@@ -400,6 +381,7 @@ namespace Universe.Framework.Services
                         parts.Add(string.Format("{0} = {1}", where.Key, key));
                     }
                 }
+
                 if (parts.Count > 0)
                 {
                     query += (had ? " AND" : string.Empty) + " (" + string.Join(" OR ", parts.ToArray()) + ")";
@@ -413,6 +395,7 @@ namespace Universe.Framework.Services
                     ps[key] = where.Value;
                     parts.Add(string.Format("{0} != {1}", where.Key, key));
                 }
+
                 if (parts.Count > 0)
                 {
                     query += (had ? " AND" : string.Empty) + " (" + string.Join(" AND ", parts.ToArray()) + ")";
@@ -430,6 +413,7 @@ namespace Universe.Framework.Services
                     ps[key] = where.Value;
                     parts.Add(string.Format("{0} LIKE {1}", where.Key, key));
                 }
+
                 if (parts.Count > 0)
                 {
                     query += (had ? " AND" : string.Empty) + " (" + string.Join(" AND ", parts.ToArray()) + ")";
@@ -443,6 +427,7 @@ namespace Universe.Framework.Services
                     ps[key] = where.Value;
                     parts.Add(string.Format("{0} LIKE {1}", where.Key, key));
                 }
+
                 if (parts.Count > 0)
                 {
                     query += (had ? " AND" : string.Empty) + " (" + string.Join(" OR ", parts.ToArray()) + ")";
@@ -459,6 +444,7 @@ namespace Universe.Framework.Services
                         parts.Add(string.Format("{0} LIKE {1}", where.Key, key));
                     }
                 }
+
                 if (parts.Count > 0)
                 {
                     query += (had ? " AND" : string.Empty) + " (" + string.Join(" OR ", parts.ToArray()) + ")";
@@ -476,6 +462,7 @@ namespace Universe.Framework.Services
                     ps[key] = where.Value;
                     parts.Add(string.Format("{0} & {1}", where.Key, key));
                 }
+
                 if (parts.Count > 0)
                 {
                     query += (had ? " AND" : string.Empty) + " (" + string.Join(" AND ", parts.ToArray()) + ")";
@@ -489,6 +476,7 @@ namespace Universe.Framework.Services
                     ps[key] = where.Value;
                     parts.Add(string.Format("{0} & {1}", where.Key, key));
                 }
+
                 if (parts.Count > 0)
                 {
                     query += (had ? " AND" : string.Empty) + " (" + string.Join(" OR ", parts.ToArray()) + ")";
@@ -502,6 +490,7 @@ namespace Universe.Framework.Services
                     ps[key] = where.Value;
                     parts.Add(string.Format("({0} & {1}) = 0", where.Key, key));
                 }
+
                 if (parts.Count > 0)
                 {
                     query += (had ? " AND" : string.Empty) + " (" + string.Join(" AND ", parts.ToArray()) + ")";
@@ -519,6 +508,7 @@ namespace Universe.Framework.Services
                     ps[key] = float.Parse((where.Value).ToString());
                     parts.Add(string.Format("{0} > {1}", where.Key, key));
                 }
+
                 if (parts.Count > 0)
                 {
                     query += (had ? " AND" : string.Empty) + " (" + string.Join(" AND ", parts.ToArray()) + ")";
@@ -532,6 +522,7 @@ namespace Universe.Framework.Services
                     ps[key] = float.Parse((where.Value).ToString());
                     parts.Add(string.Format("{0} > {1}", where.Key, key));
                 }
+
                 if (parts.Count > 0)
                 {
                     query += (had ? " AND" : string.Empty) + " (" + string.Join(" OR ", parts.ToArray()) + ")";
@@ -545,6 +536,7 @@ namespace Universe.Framework.Services
                     ps[key] = float.Parse((where.Value).ToString());
                     parts.Add(string.Format("{0} >= {1}", where.Key, key));
                 }
+
                 if (parts.Count > 0)
                 {
                     query += (had ? " AND" : string.Empty) + " (" + string.Join(" AND ", parts.ToArray()) + ")";
@@ -558,6 +550,7 @@ namespace Universe.Framework.Services
                     ps[key] = float.Parse((where.Value).ToString());
                     parts.Add(string.Format("{0} >= {1}", where.Key, key));
                 }
+
                 if (parts.Count > 0)
                 {
                     query += (had ? " AND" : string.Empty) + " (" + string.Join(" OR ", parts.ToArray()) + ")";
@@ -575,6 +568,7 @@ namespace Universe.Framework.Services
                     ps[key] = float.Parse((where.Value).ToString());
                     parts.Add(string.Format("{0} < {1}", where.Key, key));
                 }
+
                 if (parts.Count > 0)
                 {
                     query += (had ? " AND" : string.Empty) + " (" + string.Join(" AND ", parts.ToArray()) + ")";
@@ -588,6 +582,7 @@ namespace Universe.Framework.Services
                     ps[key] = float.Parse((where.Value).ToString());
                     parts.Add(string.Format("{0} < {1}", where.Key, key));
                 }
+
                 if (parts.Count > 0)
                 {
                     query += (had ? " AND" : string.Empty) + " (" + string.Join(" OR ", parts.ToArray()) + ")";
@@ -601,6 +596,7 @@ namespace Universe.Framework.Services
                     ps[key] = float.Parse((where.Value).ToString());
                     parts.Add(string.Format("{0} <= {1}", where.Key, key));
                 }
+
                 if (parts.Count > 0)
                 {
                     query += (had ? " AND" : string.Empty) + " (" + string.Join(" AND ", parts.ToArray()) + ")";
@@ -616,6 +612,7 @@ namespace Universe.Framework.Services
                 {
                     parts.Add(string.Format("{0} IS NOT NULL", field));
                 }
+
                 if (parts.Count > 0)
                 {
                     query += (had ? " AND" : string.Empty) + " (" + string.Join(" AND ", parts.ToArray()) + ")";
@@ -627,6 +624,7 @@ namespace Universe.Framework.Services
                 {
                     parts.Add(string.Format("{0} IS NULL", field));
                 }
+
                 if (parts.Count > 0)
                 {
                     query += (had ? " AND" : string.Empty) + " (" + string.Join(" AND ", parts.ToArray()) + ")";
@@ -635,19 +633,9 @@ namespace Universe.Framework.Services
 
                 #endregion
 
-//                foreach (QueryFilter subFilter in subFilters)
-//                {
-//                    Dictionary<string, object> sps;
-//                    query += (had ? " AND" : string.Empty) + subFilter.ToSQL(prepared, out sps, ref i);
-//                    pss[pss.Length] = sps;
-//                    if (subFilter.Count > 0)
-//                    {
-//                        had = true;
-//                    }
-//                }
-
                 query += ")";
             }
+
             pss.SelectMany(x => x).ToLookup(x => x.Key, x => x.Value).ToDictionary(x => x.Key, x => x.First());
             return query;
         }
@@ -676,8 +664,7 @@ namespace Universe.Framework.Services
         /// <param name="source">Config if more parameters are needed</param>
         /// <param name="simBase"></param>
         /// <param name="defaultConnectionString">The connection string to use</param>
-        void Initialize(IGenericData genericData, IConfigSource source, IRegistryCore simBase,
-                        string defaultConnectionString);
+        void Initialize(IGenericData genericData, IConfigSource source, IRegistryCore simBase, string defaultConnectionString);
     }
 
     public class QueryTables
@@ -734,6 +721,7 @@ namespace Universe.Framework.Services
                     }
                 }
             }
+
             return returnValue;
         }
     }

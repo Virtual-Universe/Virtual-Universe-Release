@@ -70,8 +70,7 @@ namespace Universe.Modules.Archivers
         /// <returns></returns>
         public static string MakeOspa(string firstName, string lastName)
         {
-            return
-                OSPA_PREFIX + OSPA_NAME_KEY + OSPA_PAIR_SEPARATOR + firstName + OSPA_NAME_VALUE_SEPARATOR + lastName;
+            return OSPA_PREFIX + OSPA_NAME_KEY + OSPA_PAIR_SEPARATOR + firstName + OSPA_NAME_VALUE_SEPARATOR + lastName;
         }
 
         /// <summary>
@@ -89,8 +88,8 @@ namespace Universe.Modules.Archivers
         {
             if (!ospa.StartsWith(OSPA_PREFIX))
                 return UUID.Zero;
-            
-            //MainConsole.Instance.DebugFormat("[OSP RESOLVER]: Resolving {0}", ospa);
+
+//            MainConsole.Instance.DebugFormat("[OSP RESOLVER]: Resolving {0}", ospa);
 
             string ospaMeat = ospa.Substring(OSPA_PREFIX.Length);
             string[] ospaTuples = ospaMeat.Split(OSPA_TUPLE_SEPARATOR_ARRAY);
@@ -153,6 +152,20 @@ namespace Universe.Modules.Archivers
             UserAccount account = userService.GetUserAccount(null, firstName, lastName);
             if (account != null)
                 return account.PrincipalID;
+
+            // XXX: Disable temporary user profile creation for now as implementation is incomplete - justincc
+            /*
+            UserProfileData tempUserProfile = new UserProfileData();
+            tempUserProfile.FirstName = firstName;
+            tempUserProfile.SurName = lastName;
+            tempUserProfile.ID = HashName(tempUserProfile.Name);
+            
+            MainConsole.Instance.DebugFormat(
+                "[OSP RESOLVER]: Adding temporary user profile for {0} {1}", tempUserProfile.Name, tempUserProfile.ID);
+            commsManager.UserService.AddTemporaryUserProfile(tempUserProfile);
+            
+            return tempUserProfile.ID;
+            */
 
             return UUID.Zero;
         }

@@ -84,7 +84,6 @@ namespace Universe.Modules.Web
                 return null;
             }
 
-
             news = connector.GetGeneric<GridNewsItem>(UUID.Zero, "WebGridNews", httpRequest.Query["newsid"].ToString());
             if (news != null)
             {

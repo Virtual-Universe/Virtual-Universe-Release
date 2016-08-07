@@ -164,8 +164,7 @@ namespace Universe.Framework.Services.ClassHelpers.Other
             return buildEvent("AgentLoggedOut", llsdBody, AgentID, requestingRegion);
         }
 
-        public static OSDMap FriendGrantRights(UUID requester, UUID target, int myFlags, int rights,
-                                               UUID requestingRegion)
+        public static OSDMap FriendGrantRights(UUID requester, UUID target, int myFlags, int rights, UUID requestingRegion)
         {
             OSDMap llsdBody = new OSDMap
                                   {
@@ -191,8 +190,7 @@ namespace Universe.Framework.Services.ClassHelpers.Other
             return buildEvent("FriendTerminated", llsdBody, requester, requestingRegion);
         }
 
-        public static OSDMap FriendshipOffered(UUID requester, UUID friend, GridInstantMessage im,
-                                               UUID requestingRegion)
+        public static OSDMap FriendshipOffered(UUID requester, UUID friend, GridInstantMessage im, UUID requestingRegion)
         {
             OSDMap llsdBody = new OSDMap
                                   {

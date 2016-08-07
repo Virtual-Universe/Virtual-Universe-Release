@@ -134,7 +134,6 @@ namespace Universe.Services
                 foreach (var vclient in client_viewers)
                     MainConsole.Instance.CleanInfo (vclient.Key + ": " + vclient.Value);
 
-
                 MainConsole.Instance.CleanInfo ("");
                 MainConsole.Instance.CleanInfo ("Graphics cards:");
                 MainConsole.Instance.CleanInfo (
@@ -171,7 +170,6 @@ namespace Universe.Services
                     MainConsole.Instance.CleanInfo (string.Format ("Average agents in view: {0}", agents_in_view.Average ()));
 
                 MainConsole.Instance.CleanInfo ("");
-
             }
         }
     }

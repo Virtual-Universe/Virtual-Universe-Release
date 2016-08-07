@@ -81,8 +81,7 @@ namespace Universe.Framework.SceneInfo.Entities
         /// <summary>
         ///     Start all the scripts contained in this entity's inventory
         /// </summary>
-        void CreateScriptInstances (int startParam, bool postOnRez, StateSource stateSource, UUID RezzedFrom,
-                                   bool clearStateSaves);
+        void CreateScriptInstances (int startParam, bool postOnRez, StateSource stateSource, UUID RezzedFrom, bool clearStateSaves);
 
         ArrayList GetScriptErrors (UUID itemID);
         void ResumeScripts ();
@@ -103,8 +102,7 @@ namespace Universe.Framework.SceneInfo.Entities
         /// <param name="startParam"></param>
         /// <param name="postOnRez"></param>
         /// <param name="stateSource"></param>
-        void CreateScriptInstance (
-            TaskInventoryItem item, int startParam, bool postOnRez, StateSource stateSource);
+        void CreateScriptInstance (TaskInventoryItem item, int startParam, bool postOnRez, StateSource stateSource);
 
         /// <summary>
         ///     Start a script which is in this entity's inventory.

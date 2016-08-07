@@ -50,7 +50,8 @@ namespace Universe.Framework.ConsoleFramework
         public List<string> m_promptOptions = new List<string> ();
         public bool HasProcessedCurrentCommand { get; set; }
 
-        public string LogPath {
+        public string LogPath
+        {
             get { return MainConsole.Instance.LogPath; }
             set { MainConsole.Instance.LogPath = value; }
         }
@@ -89,15 +90,7 @@ namespace Universe.Framework.ConsoleFramework
             // Set this culture for the thread 
             // to en-US to avoid number parsing issues
             Culture.SetCurrentCulture ();
-            /*string line = */
             ReadLine (m_defaultPrompt + "# ", true, true);
-
-            //            result.AsyncWaitHandle.WaitOne(-1);
-
-            //            if (line != String.Empty && line.Replace(" ", "") != String.Empty) //If there is a space, its fine
-            //            {
-            //                MainConsole.Instance.Info("[GUICONSOLE] Invalid command");
-            //            }
         }
 
         public void RunCommand (string cmd)
@@ -118,13 +111,9 @@ namespace Universe.Framework.ConsoleFramework
         {
             string oldDefaultPrompt = m_defaultPrompt;
             m_defaultPrompt = p;
-            //            System.Console.Write("{0}", p);
+
             string cmdinput = Console.ReadLine ();
 
-            //            while (cmdinput.Equals(null))
-            //            {
-            //                ;
-            //            }
             if (cmdinput == null)
                 return string.Empty;
 
@@ -138,9 +127,11 @@ namespace Universe.Framework.ConsoleFramework
                         if (cmd [i].Contains (" "))
                             cmd [i] = "\"" + cmd [i] + "\"";
                     }
+
                     return string.Empty;
                 }
             }
+
             m_defaultPrompt = oldDefaultPrompt;
             return cmdinput;
         }
@@ -184,6 +175,7 @@ namespace Universe.Framework.ConsoleFramework
                     }
                 }
             }
+
             m_isPrompting = false;
 
             return ret;
@@ -208,6 +200,7 @@ namespace Universe.Framework.ConsoleFramework
                     temp = Prompt (prompt, defaultresponse);
                 }
             }
+
             m_isPrompting = false;
             m_promptOptions.Clear ();
             return temp;
@@ -249,30 +242,35 @@ namespace Universe.Framework.ConsoleFramework
         /// <summary>
         ///     The default prompt text.
         /// </summary>
-        public virtual string DefaultPrompt {
+        public virtual string DefaultPrompt
+        {
             set { m_defaultPrompt = value; }
             get { return m_defaultPrompt; }
         }
 
         protected string m_defaultPrompt;
 
-        public virtual string Name {
+        public virtual string Name
+        {
             get { return "GUIConsole"; }
         }
 
         public Commands m_Commands = new Commands ();
 
-        public Commands Commands {
+        public Commands Commands
+        {
             get { return m_Commands; }
             set { m_Commands = value; }
         }
 
-        public List<IScene> ConsoleScenes {
+        public List<IScene> ConsoleScenes
+        {
             get { return m_ConsoleScenes; }
             set { m_ConsoleScenes = value; }
         }
 
-        public IScene ConsoleScene {
+        public IScene ConsoleScene
+        {
             get { return m_ConsoleScene; }
             set { m_ConsoleScene = value; }
         }
@@ -304,27 +302,33 @@ namespace Universe.Framework.ConsoleFramework
 
         #region ILog Members
 
-        public bool IsDebugEnabled {
+        public bool IsDebugEnabled
+        {
             get { return Threshold <= Level.Debug; }
         }
 
-        public bool IsErrorEnabled {
+        public bool IsErrorEnabled
+        {
             get { return Threshold <= Level.Error; }
         }
 
-        public bool IsFatalEnabled {
+        public bool IsFatalEnabled
+        {
             get { return Threshold <= Level.Fatal; }
         }
 
-        public bool IsInfoEnabled {
+        public bool IsInfoEnabled
+        {
             get { return Threshold <= Level.Info; }
         }
 
-        public bool IsWarnEnabled {
+        public bool IsWarnEnabled
+        {
             get { return Threshold <= Level.Warn; }
         }
 
-        public bool IsTraceEnabled {
+        public bool IsTraceEnabled
+        {
             get { return Threshold <= Level.Trace; }
         }
 

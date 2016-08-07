@@ -36,124 +36,64 @@ using Universe.Framework.SceneInfo.Entities;
 
 namespace Universe.Framework.SceneInfo
 {
-
     #region Delegates
 
     public delegate uint GenerateClientFlagsHandler(UUID userID, ISceneChildEntity part);
-
     public delegate void SetBypassPermissionsHandler(bool value);
-
     public delegate bool BypassPermissionsHandler();
-
     public delegate bool PropagatePermissionsHandler();
-
-    public delegate bool RezObjectHandler(
-        int objectCount, UUID owner, Vector3 objectPosition, IScene scene, out string reason);
-
+    public delegate bool RezObjectHandler(int objectCount, UUID owner, Vector3 objectPosition, IScene scene, out string reason);
     public delegate bool DeleteObjectHandler(UUID objectID, UUID deleter, IScene scene);
-
     public delegate bool TakeObjectHandler(UUID objectID, UUID stealer, IScene scene);
-
     public delegate bool TakeCopyObjectHandler(UUID objectID, UUID userID, IScene inScene);
-
-    public delegate bool DuplicateObjectHandler(
-        int objectCount, UUID objectID, UUID owner, IScene scene, Vector3 objectPosition);
-
+    public delegate bool DuplicateObjectHandler(int objectCount, UUID objectID, UUID owner, IScene scene, Vector3 objectPosition);
     public delegate bool EditObjectHandler(UUID objectID, UUID editorID, IScene scene);
-
     public delegate bool EditObjectInventoryHandler(UUID objectID, UUID editorID, IScene scene);
-
     public delegate bool MoveObjectHandler(UUID objectID, UUID moverID, IScene scene);
-
     public delegate bool ObjectEntryHandler(UUID objectID, bool enteringRegion, Vector3 newPoint, UUID OwnerID);
-
     public delegate bool ReturnObjectsHandler(ILandObject land, UUID user, List<ISceneEntity> objects, IScene scene);
-
     public delegate bool InstantMessageHandler(UUID user, UUID target, IScene startScene);
-
     public delegate bool InventoryTransferHandler(UUID user, UUID target, IScene startScene);
-
     public delegate bool ViewScriptHandler(UUID script, UUID objectID, UUID user, IScene scene);
-
     public delegate bool ViewNotecardHandler(UUID script, UUID objectID, UUID user, IScene scene);
-
     public delegate bool EditScriptHandler(UUID script, UUID objectID, UUID user, IScene scene);
-
     public delegate bool EditNotecardHandler(UUID notecard, UUID objectID, UUID user, IScene scene);
-
     public delegate bool RunScriptHandler(UUID script, UUID objectID, UUID user, IScene scene);
-
     public delegate bool CompileScriptHandler(UUID ownerUUID, string scriptType, IScene scene);
-
     public delegate bool StartScriptHandler(UUID script, UUID user, IScene scene);
-
     public delegate bool StopScriptHandler(UUID script, UUID user, IScene scene);
-
     public delegate bool ResetScriptHandler(UUID prim, UUID script, UUID user, IScene scene);
-
     public delegate bool TerraformLandHandler(UUID user, Vector3 position, IScene requestFromScene);
-
     public delegate bool RunConsoleCommandHandler(UUID user, IScene requestFromScene);
-
     public delegate bool IssueEstateCommandHandler(UUID user, IScene requestFromScene, bool ownerCommand);
-
     public delegate bool IsGodHandler(UUID user, IScene requestFromScene);
-
     public delegate bool CanGodTpHandler(UUID user, UUID target);
-
     public delegate bool IsAdministratorHandler(UUID user);
-
     public delegate bool EditParcelPropertiesHandler(UUID user, ILandObject parcel, GroupPowers p, IScene scene);
-
     public delegate bool EditParcelHandler(UUID user, ILandObject parcel, IScene scene);
-
     public delegate bool SellParcelHandler(UUID user, ILandObject parcel, IScene scene);
-
     public delegate bool AbandonParcelHandler(UUID user, ILandObject parcel, IScene scene);
-
     public delegate bool ReclaimParcelHandler(UUID user, ILandObject parcel, IScene scene);
-
     public delegate bool DeedParcelHandler(UUID user, ILandObject parcel, IScene scene);
-
     public delegate bool DeedObjectHandler(UUID user, UUID group, IScene scene);
-
     public delegate bool BuyLandHandler(UUID user, ILandObject parcel, IScene scene);
-
     public delegate bool LinkObjectHandler(UUID user, UUID objectID);
-
     public delegate bool DelinkObjectHandler(UUID user, UUID objectID);
-
     public delegate bool CreateObjectInventoryHandler(int invType, UUID objectID, UUID userID);
-
     public delegate bool CopyObjectInventoryHandler(UUID itemID, UUID objectID, UUID userID);
-
     public delegate bool DeleteObjectInventoryHandler(UUID itemID, UUID objectID, UUID userID);
-
     public delegate bool CreateUserInventoryHandler(int invType, UUID userID);
-
     public delegate bool EditUserInventoryHandler(UUID itemID, UUID userID);
-
     public delegate bool CopyUserInventoryHandler(UUID itemID, UUID userID);
-
     public delegate bool DeleteUserInventoryHandler(UUID itemID, UUID userID);
-
-    public delegate bool TeleportHandler(
-        UUID userID, IScene scene, Vector3 Position, uint TeleportFlags, out Vector3 newPosition, out string reason);
-
+    public delegate bool TeleportHandler(UUID userID, IScene scene, Vector3 Position, uint TeleportFlags, out Vector3 newPosition, out string reason);
     public delegate bool OutgoingRemoteTeleport(UUID userID, IScene scene, out string reason);
-
     public delegate bool IncomingAgentHandler(IScene scene, AgentCircuitData agent, bool isRootAgent, out string reason);
-
     public delegate bool PushObjectHandler(UUID userID, ILandObject parcel);
-
     public delegate bool EditParcelAccessListHandler(UUID userID, ILandObject parcel, uint flags);
-
     public delegate bool GenericParcelHandler(UUID user, ILandObject parcel, ulong groupPowers);
-
     public delegate bool TakeLandmark(UUID user);
-
     public delegate bool ControlPrimMediaHandler(UUID userID, UUID primID, int face);
-
     public delegate bool InteractWithPrimMediaHandler(UUID userID, UUID primID, int face);
 
     #endregion
@@ -260,9 +200,9 @@ namespace Universe.Framework.SceneInfo
             if (handlerGenerateClientFlags != null)
             {
                 Delegate[] list = handlerGenerateClientFlags.GetInvocationList();
-                perms = list.Cast<GenerateClientFlagsHandler>()
-                            .Aggregate(perms, (current, check) => current & check(userID, part));
+                perms = list.Cast<GenerateClientFlagsHandler>().Aggregate(perms, (current, check) => current & check(userID, part));
             }
+
             return perms;
         }
 
@@ -281,6 +221,7 @@ namespace Universe.Framework.SceneInfo
                 Delegate[] list = handler.GetInvocationList();
                 return list.Cast<BypassPermissionsHandler>().All(h => h() != false);
             }
+
             return true;
         }
 
@@ -292,6 +233,7 @@ namespace Universe.Framework.SceneInfo
                 Delegate[] list = handler.GetInvocationList();
                 return list.Cast<PropagatePermissionsHandler>().All(h => h() != false);
             }
+
             return true;
         }
 
@@ -303,6 +245,7 @@ namespace Universe.Framework.SceneInfo
                 Delegate[] list = handler.GetInvocationList();
                 return list.Cast<ReclaimParcelHandler>().All(h => h(user, parcel, m_scene) != false);
             }
+
             return true;
         }
 
@@ -314,6 +257,7 @@ namespace Universe.Framework.SceneInfo
                 Delegate[] list = handler.GetInvocationList();
                 return list.Cast<DeedParcelHandler>().All(h => h(user, parcel, m_scene) != false);
             }
+
             return true;
         }
 
@@ -325,6 +269,7 @@ namespace Universe.Framework.SceneInfo
                 Delegate[] list = handler.GetInvocationList();
                 return list.Cast<DeedObjectHandler>().All(h => h(user, group, m_scene) != false);
             }
+
             return true;
         }
 
@@ -336,6 +281,7 @@ namespace Universe.Framework.SceneInfo
                 Delegate[] list = handler.GetInvocationList();
                 return list.Cast<BuyLandHandler>().All(h => h(user, parcel, m_scene) != false);
             }
+
             return true;
         }
 
@@ -347,6 +293,7 @@ namespace Universe.Framework.SceneInfo
                 Delegate[] list = handler.GetInvocationList();
                 return list.Cast<LinkObjectHandler>().All(h => h(user, objectID) != false);
             }
+
             return true;
         }
 
@@ -358,6 +305,7 @@ namespace Universe.Framework.SceneInfo
                 Delegate[] list = handler.GetInvocationList();
                 return list.Cast<DelinkObjectHandler>().All(h => h(user, objectID) != false);
             }
+
             return true;
         }
 
@@ -369,6 +317,7 @@ namespace Universe.Framework.SceneInfo
                 Delegate[] list = handler.GetInvocationList();
                 return list.Cast<DelinkObjectHandler>().All(h => h(user, groupID) != false);
             }
+
             return true;
         }
 

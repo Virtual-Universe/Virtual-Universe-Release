@@ -36,8 +36,7 @@ namespace Universe.Framework.SceneInfo
     {
         public static float MetersToSphericalStrength (float size)
         {
-            //return Math.Pow(2, size);
-            return (size + 1) * 1.35f; // MCP: a more useful brush size range
+            return (size + 1) * 1.35f; // a more useful brush size range
         }
 
         public static float SphericalFactor (float x, float y, float rx, float ry, float size)
@@ -52,19 +51,25 @@ namespace Universe.Framework.SceneInfo
 
             if (x > w - 2)
                 x = w - 2;
+
             if (y > h - 2)
                 y = h - 2;
+
             if (x < 0.0)
                 x = 1.0f;
+
             if (y < 0.0)
                 y = 1.0f;
 
             if (x > map.Width - 2)
                 x = map.Width - 2;
+
             if (x < 0)
                 x = 0;
+
             if (y > map.Height - 2)
                 y = map.Height - 2;
+
             if (y < 0)
                 y = 0;
 
@@ -130,12 +135,14 @@ namespace Universe.Framework.SceneInfo
         {
             float total = 0;
 
-            for (int i = 0; i < octaves; i++) {
+            for (int i = 0; i < octaves; i++)
+            {
                 float frequency = (float)Math.Pow (2, i);
                 float amplitude = (float)Math.Pow (persistence, i);
 
                 total += InterpolatedNoise (x * frequency, y * frequency) * amplitude;
             }
+
             return total;
         }
     }

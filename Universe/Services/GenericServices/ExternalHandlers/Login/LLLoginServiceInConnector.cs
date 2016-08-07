@@ -149,7 +149,6 @@ namespace Universe.Services
 
                     LoginResponse reply = null;
 
-
                     string loginName = (name == "" || name == null) ? first + " " + last : name;
                     reply = m_loginService.Login(UUID.Zero, loginName, "UserAccount", passwd, startLocation,
                                                  clientVersion, channel,

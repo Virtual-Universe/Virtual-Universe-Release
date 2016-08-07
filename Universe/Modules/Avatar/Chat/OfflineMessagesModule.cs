@@ -51,8 +51,7 @@ namespace Universe.Modules.Chat
         IOfflineMessagesConnector OfflineMessagesConnector;
         bool m_SendOfflineMessagesToEmail;
 
-        Dictionary<UUID, List<GridInstantMessage>> m_offlineMessagesCache =
-            new Dictionary<UUID, List<GridInstantMessage>> ();
+        Dictionary<UUID, List<GridInstantMessage>> m_offlineMessagesCache = new Dictionary<UUID, List<GridInstantMessage>> ();
 
         public void Initialize (IConfigSource config)
         {

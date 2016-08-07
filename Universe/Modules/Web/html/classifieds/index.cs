@@ -137,6 +137,7 @@ namespace Universe.Modules.Web
             vars.Add ("Classifieds", "Classifieds"); //translator.GetTranslatedString ("Classifieds"));
             vars.Add ("ClassifiedTitle", "ClassifiedTitle"); //translator.GetTranslatedString ("ClassifiedTitle"));
             vars.Add ("ClassifiedText", "ClassifiedText"); //translator.GetTranslatedString ("ClassifiedText"));
+
             vars.Add ("Classified", "Classified"); //translator.GetTranslatedString ("Classified"));
             vars.Add ("ClassifiedDateText", "Date"); // translator.GetTranslatedString ("DateText"));
             vars.Add ("ClassifiedTitleText", "Title"); //translator.GetTranslatedString ("TitleText"));

@@ -341,9 +341,7 @@ namespace Universe.Services
             }
 
             // Create cache and add synchronization wrapper over it
-            m_cache =
-                CnmSynchronizedCache<string, AssetBase>.Synchronized(new CnmMemoryCache<string, AssetBase>(
-                                                                         maximalSize, maximalCount, expirationTime));
+            m_cache = CnmSynchronizedCache<string, AssetBase>.Synchronized(new CnmMemoryCache<string, AssetBase>( maximalSize, maximalCount, expirationTime));
             MainConsole.Instance.DebugFormat(
                 "[ASSET CACHE]: Cenome asset cache enabled (MaxSize = {0} bytes, MaxCount = {1}, ExpirationTime = {2})",
                 maximalSize,

@@ -55,8 +55,7 @@ namespace Universe.DataManager.Migration
             List<IMigrator> allMigrators = UniverseModuleLoader.PickupModules<IMigrator>();
 
             foreach (
-                IMigrator m in
-                    allMigrators.Where(m => m.MigrationName != null).Where(m => m.MigrationName == migratorName))
+                IMigrator m in allMigrators.Where(m => m.MigrationName != null).Where(m => m.MigrationName == migratorName))
             {
                 migrators.Add((Migrator) m);
             }
@@ -79,7 +78,7 @@ namespace Universe.DataManager.Migration
             executed = false;
             Version currentVersion = genericData.GetUniverseVersion(migratorName);
 
-            //if there is no Universe version, this is likely an entirely new installation
+            //if there is no Virtual Universe version, this is likely an entirely new installation
             if (currentVersion == null)
             {
             	MainConsole.Instance.InfoFormat("[Migrator]: Clean installation for {0} found", migratorName);
@@ -88,8 +87,7 @@ namespace Universe.DataManager.Migration
                 Migrator startMigrator = GetMigratorAfterVersion(defaultMigrator.Version);
                 var latestMigrator = GetLatestVersionMigrator();
                 Migrator targetMigrator = defaultMigrator == latestMigrator ? null : latestMigrator;
-                operationDescription =
-                    new MigrationOperationDescription(MigrationOperationTypes.CreateDefaultAndUpgradeToTarget,
+                operationDescription = new MigrationOperationDescription(MigrationOperationTypes.CreateDefaultAndUpgradeToTarget,
                                                       currentVersion,
                                                       startMigrator != null ? startMigrator.Version : null,
                                                       targetMigrator != null ? targetMigrator.Version : null);
@@ -111,8 +109,7 @@ namespace Universe.DataManager.Migration
                 }
                 else
                 {
-                    operationDescription = new MigrationOperationDescription(MigrationOperationTypes.DoNothing,
-                                                                             currentVersion);
+                    operationDescription = new MigrationOperationDescription(MigrationOperationTypes.DoNothing, currentVersion);
                 }
             }
         }
@@ -125,8 +122,7 @@ namespace Universe.DataManager.Migration
             }
 
             return
-                (from m in migrators orderby m.Version ascending select m).FirstOrDefault(
-                    migrator => migrator.Version > version);
+                (from m in migrators orderby m.Version ascending select m).FirstOrDefault(migrator => migrator.Version > version);
         }
 
         Migrator GetLatestVersionMigrator()
@@ -144,8 +140,7 @@ namespace Universe.DataManager.Migration
             if (migratorName == "")
                 return;
 
-            if (operationDescription != null && !executed &&
-                operationDescription.OperationType != MigrationOperationTypes.DoNothing)
+            if (operationDescription != null && !executed && operationDescription.OperationType != MigrationOperationTypes.DoNothing)
             {
                 Migrator currentMigrator = GetMigratorByVersion(operationDescription.CurrentVersion);
 
@@ -159,6 +154,7 @@ namespace Universe.DataManager.Migration
                     catch
                     {
                     }
+
                     executed = true;
                 }
 
@@ -179,7 +175,7 @@ namespace Universe.DataManager.Migration
                         SchemaDefinition rec;
                         currentMigrator.DebugTestThatAllTablesValidate(genericData, out rec);
                         MainConsole.Instance.Fatal(string.Format(
-                            "[Migrator]: FAILED TO REVALIDATE MIGRATION {0}-{1}, FIXING TABLE FORCIBLY... NEW TABLE NAME {2}",
+                            "[Migrator]: Failed To Revalidate Migration {0}-{1}, Fixing Table Forcibly... New Table Name {2}",
                             currentMigrator.MigrationName,
                             currentMigrator.Version,
                             rec.Name + "_broken"
@@ -197,9 +193,6 @@ namespace Universe.DataManager.Migration
                         }
                     }
                 }
-                //else
-                //    MainConsole.Instance.Fatal (string.Format ("Failed to validate migration {0}-{1}, continueing...", currentMigrator.MigrationName, currentMigrator.Version));
-
 
                 bool restoreTaken = false;
                 //Loop through versions from start to end, migrating then validating
@@ -216,7 +209,6 @@ namespace Universe.DataManager.Migration
                     }
                 }
 
-
                 while (executingMigrator != null)
                 {
                     try
@@ -229,6 +221,7 @@ namespace Universe.DataManager.Migration
                             throw new MigrationOperationException(string.Format("[Migrator]: Migrating to version {0} failed, {1}.",
                                                                                 currentMigrator.Version, ex));
                     }
+
                     executed = true;
                     validated = executingMigrator.Validate(genericData);
 

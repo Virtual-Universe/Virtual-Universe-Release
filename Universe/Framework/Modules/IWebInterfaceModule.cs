@@ -39,7 +39,6 @@ namespace Universe.Framework.Modules
         string RegistrationScreenURL { get; }
         string ForgotPasswordScreenURL { get; }
         string HelpScreenURL { get; }
-
     }
 
     public interface IWebHttpTextureService

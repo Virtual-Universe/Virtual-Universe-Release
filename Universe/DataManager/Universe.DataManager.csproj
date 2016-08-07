@@ -188,9 +188,6 @@
 	  <Compile Include="Migration\Migrators\Currency\CurrencyMigrator_0.cs">
 		<SubType>Code</SubType>
 	  </Compile>
-	  <Compile Include="Migration\Migrators\Currency\CurrencyMigrator_1.cs">
-		<SubType>Code</SubType>
-	  </Compile>
 	  <Compile Include="Migration\Migrators\Directory\DirectoryMigrator_0.cs">
 		<SubType>Code</SubType>
 	  </Compile>

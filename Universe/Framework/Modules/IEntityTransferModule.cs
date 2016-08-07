@@ -47,8 +47,7 @@ namespace Universe.Framework.Modules
         /// <param name="position">The position in the new region you are teleporting into</param>
         /// <param name="lookAt">The rotation you will have once you enter the region</param>
         /// <param name="teleportFlags">The flags (TeleportFlags class) that are being sent along with this teleport</param>
-        void Teleport(IScenePresence agent, ulong regionHandle, Vector3 position,
-                      Vector3 lookAt, uint teleportFlags);
+        void Teleport(IScenePresence agent, ulong regionHandle, Vector3 position, Vector3 lookAt, uint teleportFlags);
 
         /// <summary>
         ///     Teleports the given agent to their home, and if it is not available, a welcome region
@@ -91,8 +90,7 @@ namespace Universe.Framework.Modules
         /// <param name="position">The position in the new region you are teleporting into</param>
         /// <param name="lookAt">The rotation you will have once you enter the region</param>
         /// <param name="teleportFlags">The flags (TeleportFlags class) that are being sent along with this teleport</param>
-        void RequestTeleportLocation(IClientAPI client, ulong regionHandle, Vector3 position, Vector3 lookAt,
-                                     uint teleportFlags);
+        void RequestTeleportLocation(IClientAPI client, ulong regionHandle, Vector3 position, Vector3 lookAt, uint teleportFlags);
 
         /// <summary>
         ///     Teleports the given client to the given region at position/rotation
@@ -102,8 +100,7 @@ namespace Universe.Framework.Modules
         /// <param name="position">The position in the new region you are teleporting into</param>
         /// <param name="lookAt">The rotation you will have once you enter the region</param>
         /// <param name="teleportFlags">The flags (TeleportFlags class) that are being sent along with this teleport</param>
-        void RequestTeleportLocation(IClientAPI client, GridRegion reg, Vector3 position, Vector3 lookAt,
-                                     uint teleportFlags);
+        void RequestTeleportLocation(IClientAPI client, GridRegion reg, Vector3 position, Vector3 lookAt, uint teleportFlags);
 
         /// <summary>
         ///     Teleports the given client to the given region at position/rotation
@@ -113,8 +110,7 @@ namespace Universe.Framework.Modules
         /// <param name="position">The position in the new region you are teleporting into</param>
         /// <param name="lookAt">The rotation you will have once you enter the region</param>
         /// <param name="teleportFlags">The flags (TeleportFlags class) that are being sent along with this teleport</param>
-        void RequestTeleportLocation(IClientAPI iClientAPI, string RegionName, Vector3 position, Vector3 lookAt,
-                                     uint teleportFlags);
+        void RequestTeleportLocation(IClientAPI iClientAPI, string RegionName, Vector3 position, Vector3 lookAt, uint teleportFlags);
 
         /// <summary>
         ///     A new object has come in from the SimulationHandlers, add it to the scene if we are able to
@@ -170,8 +166,7 @@ namespace Universe.Framework.Modules
         /// <returns>
         ///     True if the user was found, false if not
         /// </returns>
-        bool IncomingRetrieveRootAgent(IScene scene, UUID id, bool agentIsLeaving, out AgentData agent,
-                                       out AgentCircuitData circuitData);
+        bool IncomingRetrieveRootAgent(IScene scene, UUID id, bool agentIsLeaving, out AgentData agent, out AgentCircuitData circuitData);
 
         /// <summary>
         ///     Close the given agent in the given scene
