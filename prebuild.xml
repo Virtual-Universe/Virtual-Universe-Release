@@ -703,8 +703,8 @@
       </Files>
     </Project>
 	  
-    <!-- Universe app -->
-    <Project frameworkVersion="v4_5" name="Universe" path="Universe/Application" type="Exe" appmanifest="app.manifest">
+    <!-- Virtual Universe app -->
+    <Project frameworkVersion="v4_5" name="Universe" path="Universe/Application" type="Exe" appmanifest="app.manifest" icon="Universe.ico">
       <Configuration name="Debug" platform="x86">
         <Options>
           <OutputPath>../../VirtualUniverse/bin/</OutputPath>
@@ -740,7 +740,7 @@
       </Files>
     </Project>
 	
-    <Project frameworkVersion="v4_5" name="Universe.Server" path="Universe/Server" type="Exe" appmanifest="app.manifest">
+    <Project frameworkVersion="v4_5" name="Universe.Server" path="Universe/Server" type="Exe" appmanifest="app.manifest" icon="Universe.Server.ico">
       <Configuration name="Debug" platform="x86">
         <Options>
           <OutputPath>../../VirtualUniverse/bin/</OutputPath>
@@ -781,7 +781,7 @@
       </Files>
     </Project>
 
-    <Project frameworkVersion="v4_5" name="Universe.Server.AssetServer" path="Universe/Servers/AssetServer" type="Exe" appmanifest="app.manifest">
+    <Project frameworkVersion="v4_5" name="Universe.Server.AssetServer" path="Universe/Servers/AssetServer" type="Exe" appmanifest="app.manifest" icon="Universe.AssetServer.ico">
       <Configuration name="Debug" platform="x86">
         <Options>
           <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
@@ -822,7 +822,7 @@
       </Files>
     </Project>
 	
-    <Project frameworkVersion="v4_5" name="Universe.Server.AvatarServer" path="Universe/Servers/AvatarServer" type="Exe" appmanifest="app.manifest">
+    <Project frameworkVersion="v4_5" name="Universe.Server.AvatarServer" path="Universe/Servers/AvatarServer" type="Exe" appmanifest="app.manifest" icon="Universe.AvatarServer.ico">
       <Configuration name="Debug" platform="x86">
         <Options>
           <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
@@ -863,7 +863,7 @@
       </Files>
     </Project>
 	
-    <Project frameworkVersion="v4_5" name="Universe.Server.GridServer" path="Universe/Servers/GridServer" type="Exe" appmanifest="app.manifest">
+    <Project frameworkVersion="v4_5" name="Universe.Server.GridServer" path="Universe/Servers/GridServer" type="Exe" appmanifest="app.manifest" icon="Universe.GridServer.ico">
       <Configuration name="Debug" platform="x86">
         <Options>
           <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
@@ -904,7 +904,7 @@
       </Files>
     </Project>
 
-    <Project frameworkVersion="v4_5" name="Universe.Server.InventoryServer" path="Universe/Servers/InventoryServer" type="Exe" appmanifest="app.manifest">
+    <Project frameworkVersion="v4_5" name="Universe.Server.InventoryServer" path="Universe/Servers/InventoryServer" type="Exe" appmanifest="app.manifest" icon="Universe.InventoryServer.ico">
       <Configuration name="Debug" platform="x86">
         <Options>
           <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
@@ -945,7 +945,7 @@
       </Files>
     </Project>
 	
-    <Project frameworkVersion="v4_5" name="Universe.Server.WebServer" path="Universe/Servers/WebServer" type="Exe" appmanifest="app.manifest">
+    <Project frameworkVersion="v4_5" name="Universe.Server.WebServer" path="Universe/Servers/WebServer" type="Exe" appmanifest="app.manifest" icon="Universe.WebServer.ico">
       <Configuration name="Debug" platform="x86">
         <Options>
           <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
