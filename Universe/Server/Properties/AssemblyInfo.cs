@@ -38,7 +38,7 @@ using System.Resources;
 [assembly: AssemblyTitle("Universe.Server")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Virtual Universe Development Team")]
 [assembly: AssemblyProduct("Universe.Server")]
 [assembly: AssemblyCopyright("Copyright © 2016-2025")]
 [assembly: AssemblyTrademark("")]

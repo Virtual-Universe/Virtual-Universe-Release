@@ -39,7 +39,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Universe.Physics.BasicPhysicsPlugin")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Virtual Universe Development Team")]
 [assembly: AssemblyCopyright("Copyright © 2016-2025")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

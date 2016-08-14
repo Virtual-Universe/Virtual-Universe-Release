@@ -37,7 +37,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Universe.DataManager.MySQL")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Virtual Universe Development Team")]
 [assembly: AssemblyProduct("Universe.DataManager.MySQL")]
 [assembly: AssemblyCopyright("Copyright © 2016-2025")]
 [assembly: AssemblyTrademark("")]

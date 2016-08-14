@@ -37,7 +37,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Universe.CoreApplicationPlugins")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Virtual Universe Development Team")]
 [assembly: AssemblyProduct("Universe.CoreApplicationPlugins")]
 [assembly: AssemblyCopyright("Copyright © 2016-2025")]
 [assembly: AssemblyTrademark("")]
