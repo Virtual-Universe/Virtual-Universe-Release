@@ -266,6 +266,23 @@ namespace Universe.ScriptEngine.VirtualScript.Runtime
         public static readonly LSL_Types.LSLInteger ATTACH_NECK = 39;
         public static readonly LSL_Types.LSLInteger ATTACH_AVATAR_CENTER = 40;
 
+        // Project Bento Bones
+        public static readonly LSL_Types.LSLInteger ATTACH_LHAND_RING1 = 41;
+        public static readonly LSL_Types.LSLInteger ATTACH_RHAND_RING1 = 42;
+        public static readonly LSL_Types.LSLInteger ATTACH_TAIL_BASE = 43;
+        public static readonly LSL_Types.LSLInteger ATTACH_TAIL_TIP = 44;
+        public static readonly LSL_Types.LSLInteger ATTACH_LWING = 45;
+        public static readonly LSL_Types.LSLInteger ATTACH_RWING = 46;
+        public static readonly LSL_Types.LSLInteger ATTACH_FACE_JAW = 47;
+        public static readonly LSL_Types.LSLInteger ATTACH_FACE_LEAR = 48;
+        public static readonly LSL_Types.LSLInteger ATTACH_FACE_REAR = 49;
+        public static readonly LSL_Types.LSLInteger ATTACH_FACE_LEYE = 50;
+        public static readonly LSL_Types.LSLInteger ATTACH_FACE_REYE = 51;
+        public static readonly LSL_Types.LSLInteger ATTACH_FACE_TONGUE = 52;
+        public static readonly LSL_Types.LSLInteger ATTACH_GROIN = 53;
+        public static readonly LSL_Types.LSLInteger ATTACH_HIND_LFOOT = 54;
+        public static readonly LSL_Types.LSLInteger ATTACH_HIND_RFOOT = 55;
+
         public static readonly LSL_Types.LSLInteger LAND_LEVEL = 0;
         public static readonly LSL_Types.LSLInteger LAND_RAISE = 1;
         public static readonly LSL_Types.LSLInteger LAND_LOWER = 2;
