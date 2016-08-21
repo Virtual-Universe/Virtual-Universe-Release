@@ -53,7 +53,8 @@ namespace Universe.Modules.Web.Translators
                 case "CurrentPageText": return "Pagina corrente";
                 case "MoreInfoText": return "Piu informazioni";
                 case "NoDetailsText": return "Nessun dato trovato...";
-                case "MoreInfo": return "Piu informazioni";
+                case "MoreInfo":
+                    return "Piu informazioni";
 
                 case "ObjectNameText": return "Oggetto";
                 case "LocationText": return "Posizione";
@@ -84,9 +85,9 @@ namespace Universe.Modules.Web.Translators
 
                 // User login
                 case "Login": return "Login";
-                case "UserName": return "Nome Utente";
+                case "UserName":
                 case "UserNameText": return "Nome Utente";
-                case "Password": return "Password";
+                case "Password":
                 case "PasswordText": return "Password";
                 case "PasswordConfirmation": return "Conferma Password";
                 case "ForgotPassword": return "Password dimenticata?";
@@ -205,7 +206,7 @@ namespace Universe.Modules.Web.Translators
                 case "MenuMyPurchases": return "I miei acquisti ";
                 case "MenuTransactions": return "Operazioni utente";
                 case "MenuMyTransactions": return "Le mie transazioni";
-                case "MenuMyClassifieds": return "Le mie Classifieds <NT>";
+                case "MenuMyClassifieds": return "Le mie Inserzioni <NT>";
                 case "MenuStatistics": return "Statistiche Viewer";
                 case "MenuGridSettings": return "Impostazioni della grid";
 
@@ -270,10 +271,10 @@ namespace Universe.Modules.Web.Translators
 
                 // Style Switcher
                 case "styles1": return "Default Minimalista";
-                case "styles2": return "Light Degarde";
-                case "styles3": return "Blue Night";
-                case "styles4": return "Dark Degrade";
-                case "styles5": return "Luminus";
+                case "styles2": return "Gradiente Chiaro";
+                case "styles3": return "Blu notte";
+                case "styles4": return "Gradiente Scuro";
+                case "styles5": return "Luminoso";
 
                 case "StyleSwitcherStylesText": return "Stili";
                 case "StyleSwitcherLanguagesText": return "Lingua";
@@ -304,8 +305,6 @@ namespace Universe.Modules.Web.Translators
                 // Help Page
                 case "HelpText": return "Aiuto";
                 case "HelpViewersConfigText": return "Configurazione Viewer";
-
-                // Viewers
                 case "AngstromViewer": return "Angstrom Viewer";
                 case "AstraViewer": return "Astra Viewer";
                 case "FirestormViewer": return "Firestorm Viewer";
@@ -330,12 +329,14 @@ namespace Universe.Modules.Web.Translators
                 case "DeleteUserText": return "Cancella il mio Account";
                 case "DeleteText": return "Cancella";
                 case "DeleteUserInfoText":
-                    return "Questa operazione eliminera i tuoi dati nella grid e non ti consentira di accedere di nuovo. Se davvero vuoi continuare inserisci di nuovo la tua password e clicca su Cancella.";
+                    return
+                        "Questa operazione eliminera i tuoi dati nella grid e non ti consentira di accedere di nuovo. Se davvero vuoi continuare inserisci di nuovo la tua password e clicca su Cancella.";
                 case "EditText": return "Modifica";
                 case "EditUserAccountText": return "Modifica Account Utente";
 
                 //Maintenance page
-                case "WebsiteDownInfoText": return "Il sito web e attualmente offline, ti preghiamo di provare piu tardi.";
+                case "WebsiteDownInfoText":
+                    return "Il sito web e attualmente offline, ti preghiamo di provare piu tardi.";
                 case "WebsiteDownText": return "Il sito web e offline";
 
                 //http_404 page
@@ -362,7 +363,8 @@ namespace Universe.Modules.Web.Translators
 
                 //Edit user page
                 case "AdminDeleteUserText": return "Elimina Utente";
-                case "AdminDeleteUserInfoText": return "Questa operazione cancellera l Account ed eliminera tutti i dati associati ad esso.";
+                case "AdminDeleteUserInfoText":
+                    return "Questa operazione cancellera l Account ed eliminera tutti i dati associati ad esso.";
                 case "BanText": return "Vieta Accesso";
                 case "UnbanText": return "Consenti Accesso";
                 case "AdminTempBanUserText": return "Vieta temporaneamente Accesso";
@@ -373,7 +375,8 @@ namespace Universe.Modules.Web.Translators
                 case "AdminUnbanUserInfoText": return "Rimuove tutti i blocchi temporanei e definitivi su un utente.";
                 case "AdminLoginInAsUserText": return "Accedi come utente";
                 case "AdminLoginInAsUserInfoText":
-                    return "Verrai disconnesso dal tuo Account amministratore e ti connetterai come Utente e vedrai ogni cosa come la vedono gli Utenti normali.";
+                    return
+                        "Verrai disconnesso dal tuo Account amministratore e ti connetterai come Utente e vedrai ogni cosa come la vedono gli Utenti normali.";
                 case "TimeUntilUnbannedText": return "Tempo mancante allo sblocco utente";
                 case "DaysText": return "Giorni";
                 case "HoursText": return "Ore";
@@ -387,12 +390,15 @@ namespace Universe.Modules.Web.Translators
                 //factory_reset
                 case "FactoryReset": return "Reset ad impostazioni iniziali";
                 case "ResetMenuText": return "Reset del menu alle impostazioni iniziali";
-                case "ResetSettingsText": return "Reset delle impostazioni Web (pagina delle impostazioni Amministratore) alle impostazioni iniziali";
+                case "ResetSettingsText":
+                    return
+                        "Reset delle impostazioni Web (pagina delle impostazioni Amministratore) alle impostazioni iniziali";
                 case "Reset": return "Reset";
                 case "Settings": return "Impostazioni";
                 case "Pages": return "Pagine";
                 case "DefaultsUpdated":
-                    return "impostazioni di default aggiornate, vai alla pagina di reset delle impostazioni iniziali od alla sezione Amministrazione per eliminare questo messaggio.";
+                    return
+                        "impostazioni di default aggiornate, vai alla pagina di reset delle impostazioni iniziali od alla sezione Amministrazione per eliminare questo messaggio.";
 
                 //page_manager
                 case "PageManager": return "Manager della Pagina";
@@ -414,20 +420,20 @@ namespace Universe.Modules.Web.Translators
                 case "GridnameText": return "Nome della grid ";
                 case "GridnickText": return "Soprannome della grid ";
                 case "WelcomeMessageText": return "Sezione messaggi di benvenuto ";
-                case "GovernorNameText": return "Sistema di regolazione";
+                case "GovernorNameText": return "Sistema di Governo";
                 case "MainlandEstateNameText": return "Terraferma immobiliare";
                 case "RealEstateOwnerNameText": return "Nome proprietario terreni del Governo";
                 case "SystemEstateNameText": return "Nomi terreni del Governo";
-                case "BankerNameText": return "Sistema banchiere";
-                case "MarketPlaceOwnerNameText": return "Proprietario marketplace sistema";
+                case "BankerNameText": return "Sistema bancario";
+                case "MarketPlaceOwnerNameText": return "Proprietario del Marketplace";
 
                 //settings manager page
                 case "WebRegistrationText": return "Registrazioni Web consentite";
                 case "GridCenterXText": return "Centro della Grid: Coordinate X";
                 case "GridCenterYText": return "Centro della Grid: Coordinate Y";
                 case "SettingsManager": return "Manager delle Impostazioni";
-                case "IgnorePagesUpdatesText": return "Ignora gli aggiornamenti fino al prossimo update";
-                case "IgnoreSettingsUpdatesText": return "Ignora gli avvisi fino al prossimo update";
+                case "IgnorePagesUpdatesText": return "Ignora gli aggiornamenti fino al prossimo aggiornamento";
+                case "IgnoreSettingsUpdatesText": return "Ignora gli avvisi fino al prossimo aggiornamento";
 
                 // Transactions
                 case "TransactionsText": return "Operazioni";
@@ -446,7 +452,7 @@ namespace Universe.Modules.Web.Translators
                 case "PurchaseCostText": return "Costo";
 
                 // Classifieds
-                case "ClassifiedsText": return "Classifieds <NT>";
+                case "ClassifiedsText": return "Inserzioni <NT>";
 
                 // Sim Console
                 case "SimConsoleText": return "Console di comando della Sim";
@@ -454,7 +460,7 @@ namespace Universe.Modules.Web.Translators
 
                 // statistics
                 case "StatisticsText": return "Statistiche Viewer";
-                case "ViewersText": return "Usage Viewer";
+                case "ViewersText": return "Utilizzo Viewer";
                 case "GPUText": return "Schede grafiche";
                 case "PerformanceText": return "Medie prestazioni";
                 case "FPSText": return "Fotogrammi / secondo";
@@ -504,7 +510,7 @@ namespace Universe.Modules.Web.Translators
                 case "Oct_Short": return "Ott";
                 case "Nov_Short": return "Nov";
                 case "Dec_Short": return "Dic";
-
+                
                 // Months
                 case "January": return "Gennaio";
                 case "February": return "Febbraio";
@@ -521,7 +527,8 @@ namespace Universe.Modules.Web.Translators
 
                 // User types
                 case "UserTypeText": return "Tipo di utente";
-                case "AdminUserTypeInfoText": return "Il tipo di utente (Attualmente utilizzato per i pagamenti periodici stipendio).";
+                case "AdminUserTypeInfoText":
+                    return "Il tipo di utente (Attualmente utilizzato per i pagamenti periodici stipendio).";
                 case "Guest": return "Ospite";
                 case "Resident": return "Residente";
                 case "Member": return "Membro";
