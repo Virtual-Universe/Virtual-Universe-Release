@@ -2937,9 +2937,10 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             if (lease.CurrentState == LeaseState.Initial)
             {
                 lease.InitialLeaseTime = TimeSpan.FromMinutes(0);
-                //                lease.RenewOnCallTime = TimeSpan.FromSeconds(10.0);
-                //                lease.SponsorshipTimeout = TimeSpan.FromMinutes(1.0);
+                //lease.RenewOnCallTime = TimeSpan.FromSeconds(10.0);
+                //lease.SponsorshipTimeout = TimeSpan.FromMinutes(1.0);
             }
+
             return lease;
         }
 
@@ -3292,7 +3293,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             if (!ScriptProtection.CheckThreatLevel(ThreatLevel.High, "osNpcCreate", m_host, "OSSL", m_itemID)) 
                 return "";
 
-            return NpcCreate(firstname, lastname, position, notecard, false, false);
+            return NpcCreate(firstname, lastname, position, notecard, true, false);
         }
 
         public LSL_Key osNpcCreate(string firstname, string lastname, LSL_Types.Vector3 position, string notecard, int options)
