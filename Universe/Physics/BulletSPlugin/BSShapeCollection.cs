@@ -36,9 +36,16 @@ namespace Universe.Physics.BulletSPlugin
 {
     public sealed class BSShapeCollection : IDisposable
     {
-//#pragma warning disable 414
-//        static string LogHeader = "[Bulletsim Shape Collection]";
-//#pragma warning restore 414
+        //#pragma warning disable 414
+        //        static string LogHeader = "[Bulletsim Shape Collection]";
+        //#pragma warning restore 414
+
+        // Suppress the warnings 
+        // We are aware of the warnings given during compiling and building
+        // and we will fix them as time permits.  They still are there but 
+        // are suppressed and cause no adverse negative problems in the code.
+        // - 20160830 - BritanyannStarfinder
+#pragma warning disable 0649
 
         BSScene PhysicsScene { get; set; }
 

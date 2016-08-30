@@ -57,6 +57,13 @@ namespace Universe.Modules.Web
     {
         #region Declares
 
+        // Suppress the warnings 
+        // We are aware of the warnings given during compiling and building
+        // and we will fix them as time permits.  They still are there but 
+        // are suppressed and cause no adverse negative problems in the code.
+        // - 20160830 - BritanyannStarfinder
+#pragma warning disable 0649
+
         protected const int CLIENT_CACHE_TIME = 86400;  // 1 day
         protected uint _port = 8002;                    // assuming grid mode here
         protected bool _enabled = true;
