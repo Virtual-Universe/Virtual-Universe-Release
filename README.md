@@ -84,8 +84,8 @@ Second Galaxy and Virtual Universe Google + community is for both Second Galaxy 
 ## NOTES
 
 *NOTE:
- As of Version 1.0.2, it's advised to Linux users to use a Mono version higher then 4.2.3.4, following a report about  GC.Collect() not cleaning up memory correctly. The most current version of Mono is 4.2.3.4 (Released 1st March 2016)*
-
+ As of Version 1.0.2, it's advised to Linux users to use a Mono version higher then 4.2.3.4, following a report about  GC.Collect() not cleaning up memory correctly. The most current version of Mono is 4.6.1.3 (Released 1st August 2016)*
+ Attention Arch Linux Users: by default your Mono version is 4.4.1.0 and is customized to work on Arch Linux.  YOu should not experience any problems.
  More information can be found here: http://www.mono-project.com/docs/getting-started/install/linux/
 
 *NOTE:
