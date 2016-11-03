@@ -401,7 +401,7 @@ namespace Universe.Modules
                     info.Startup = StartupType.Medium;
                     info.SeeIntoThisSimFromNeighbor = true;
                     info.InfiniteRegion = true;
-                    info.ObjectCapacity = 750;
+                    info.ObjectCapacity = 1000;
                     info.RegionSettings.AgentLimit = 10;
                     info.RegionSettings.AllowLandJoinDivide = false;
                     info.RegionSettings.AllowLandResell = false;
@@ -418,7 +418,7 @@ namespace Universe.Modules
                     info.Startup = StartupType.Medium;
                     info.SeeIntoThisSimFromNeighbor = true;
                     info.InfiniteRegion = true;
-                    info.ObjectCapacity = 3750;
+                    info.ObjectCapacity = 5000;
                     info.RegionSettings.AgentLimit = 20;
                     info.RegionSettings.AllowLandJoinDivide = false;
                     info.RegionSettings.AllowLandResell = false;
@@ -431,7 +431,7 @@ namespace Universe.Modules
                     info.Startup = StartupType.Normal;
                     info.SeeIntoThisSimFromNeighbor = true;
                     info.InfiniteRegion = true;
-                    info.ObjectCapacity = 15000;
+                    info.ObjectCapacity = 20000;
                     info.RegionSettings.AgentLimit = 100;
                     if (info.RegionType.StartsWith ("M", StringComparison.Ordinal))                           // defaults are 'true'
                     {
