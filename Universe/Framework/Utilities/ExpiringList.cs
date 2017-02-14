@@ -37,483 +37,403 @@ using Timer = System.Timers.Timer;
 namespace Universe.Framework.Utilities
 {
 
-    #region TimedCacheKey Class
+	#region TimedCacheKey Class
 
-    internal class TimedCacheKey<TKey> : IComparable<TKey>
-    {
-        private readonly TKey key;
-        private readonly bool slidingExpiration;
-        private readonly TimeSpan slidingExpirationWindowSize;
-        private DateTime expirationDate;
+	internal class TimedCacheKey<TKey> : IComparable<TKey>
+	{
+		private readonly TKey key;
+		private readonly bool slidingExpiration;
+		private readonly TimeSpan slidingExpirationWindowSize;
+		private DateTime expirationDate;
 
-        public TimedCacheKey(TKey key, DateTime expirationDate)
-        {
-            this.key = key;
-            this.slidingExpiration = false;
-            this.expirationDate = expirationDate;
-        }
+		public TimedCacheKey (TKey key, DateTime expirationDate)
+		{
+			this.key = key;
+			this.slidingExpiration = false;
+			this.expirationDate = expirationDate;
+		}
 
-        public TimedCacheKey(TKey key, TimeSpan slidingExpirationWindowSize)
-        {
-            this.key = key;
-            this.slidingExpiration = true;
-            this.slidingExpirationWindowSize = slidingExpirationWindowSize;
-            Accessed();
-        }
+		public TimedCacheKey (TKey key, TimeSpan slidingExpirationWindowSize)
+		{
+			this.key = key;
+			this.slidingExpiration = true;
+			this.slidingExpirationWindowSize = slidingExpirationWindowSize;
+			Accessed ();
+		}
 
-        public DateTime ExpirationDate
-        {
-            get { return expirationDate; }
-        }
+		public DateTime ExpirationDate {
+			get { return expirationDate; }
+		}
 
-        public TKey Key
-        {
-            get { return key; }
-        }
+		public TKey Key {
+			get { return key; }
+		}
 
-        public bool SlidingExpiration
-        {
-            get { return slidingExpiration; }
-        }
+		public bool SlidingExpiration {
+			get { return slidingExpiration; }
+		}
 
-        public TimeSpan SlidingExpirationWindowSize
-        {
-            get { return slidingExpirationWindowSize; }
-        }
+		public TimeSpan SlidingExpirationWindowSize {
+			get { return slidingExpirationWindowSize; }
+		}
 
-        #region IComparable<TKey> Members
+		#region IComparable<TKey> Members
 
-        public int CompareTo(TKey other)
-        {
-            return key.GetHashCode().CompareTo(other.GetHashCode());
-        }
+		public int CompareTo (TKey other)
+		{
+			return key.GetHashCode ().CompareTo (other.GetHashCode ());
+		}
 
-        #endregion
+		#endregion
 
-        public void Accessed()
-        {
-            if (slidingExpiration)
-                expirationDate = DateTime.Now.Add(slidingExpirationWindowSize);
-        }
-    }
+		public void Accessed ()
+		{
+			if (slidingExpiration)
+				expirationDate = DateTime.Now.Add (slidingExpirationWindowSize);
+		}
+	}
 
-    #endregion
+	#endregion
 
-    /// <summary>
-    ///     List that has an expiring built in
-    /// </summary>
-    /// <typeparam name="TKey"></typeparam>
-    public sealed class ExpiringList<TKey> : IDisposable
-    {
-        private const double CACHE_PURGE_HZ = 1.0;
-        private const int MAX_LOCK_WAIT = 5000; // milliseconds
+	/// <summary>
+	///     List that has an expiring built in
+	/// </summary>
+	/// <typeparam name="TKey"></typeparam>
+	public sealed class ExpiringList<TKey> : IDisposable
+	{
+		private const double CACHE_PURGE_HZ = 1.0;
+		private const int MAX_LOCK_WAIT = 5000;
+		// milliseconds
 
-        #region Private fields
+		#region Private fields
 
-        /// <summary>
-        ///     For thread safety
-        /// </summary>
-        private readonly object isPurging = new object();
+		/// <summary>
+		///     For thread safety
+		/// </summary>
+		private readonly object isPurging = new object ();
 
-        /// <summary>
-        ///     For thread safety
-        /// </summary>
-        private readonly object syncRoot = new object();
-        private readonly List<TimedCacheKey<TKey>> timedStorage = new List<TimedCacheKey<TKey>>();
-        private readonly Dictionary<TKey, TimedCacheKey<TKey>> timedStorageIndex = new Dictionary<TKey, TimedCacheKey<TKey>>();
-        private readonly Timer timer = new Timer(TimeSpan.FromSeconds(CACHE_PURGE_HZ).TotalMilliseconds);
-        private double DefaultTime;
+		/// <summary>
+		///     For thread safety
+		/// </summary>
+		private readonly object syncRoot = new object ();
 
-        #endregion
+		private readonly List<TimedCacheKey<TKey>> timedStorage = new List<TimedCacheKey<TKey>> ();
 
-        #region Constructor
+		private readonly Dictionary<TKey, TimedCacheKey<TKey>> timedStorageIndex =
+			new Dictionary<TKey, TimedCacheKey<TKey>> ();
 
-        public ExpiringList()
-        {
-            timer.Elapsed += PurgeCache;
-            timer.Start();
-        }
+		private readonly Timer timer = new Timer (TimeSpan.FromSeconds (CACHE_PURGE_HZ).TotalMilliseconds);
+		private double DefaultTime;
 
-        #endregion
+		#endregion
 
-        #region Public methods
+		#region Constructor
 
-        public TKey this[int i]
-        {
-            get
-            {
-                TKey o;
-                if (!Monitor.TryEnter(syncRoot, MAX_LOCK_WAIT))
-                    throw new ApplicationException("Lock could not be acquired after " + MAX_LOCK_WAIT + "ms");
-                try
-                {
-                    if (timedStorage.Count > i)
-                    {
-                        TimedCacheKey<TKey> tkey = timedStorage[i];
-                        o = tkey.Key;
-                        timedStorage.Remove(tkey);
-                        tkey.Accessed();
-                        timedStorage.Insert(i, tkey);
-                        return o;
-                    }
-                    else
-                    {
-                        throw new ArgumentException("Key not found in the cache");
-                    }
-                }
-                finally
-                {
-                    Monitor.Exit(syncRoot);
-                }
-            }
-            set { AddOrUpdate(value, DefaultTime); }
-        }
+		public ExpiringList ()
+		{
+			timer.Elapsed += PurgeCache;
+			timer.Start ();
+		}
 
-        public int Count
-        {
-            get { return timedStorage.Count; }
-        }
+		#endregion
 
-        public void SetDefaultTime(double time)
-        {
-            DefaultTime = time;
-        }
+		#region Public methods
 
-        public bool Add(TKey key, double expirationSeconds)
-        {
-            if (!Monitor.TryEnter(syncRoot, MAX_LOCK_WAIT))
-                throw new ApplicationException("Lock could not be acquired after " + MAX_LOCK_WAIT + "ms");
-            try
-            {
-                // This is the actual adding of the key
-                if (timedStorageIndex.ContainsKey(key))
-                {
-                    return false;
-                }
-                else
-                {
-                    TimedCacheKey<TKey> internalKey = new TimedCacheKey<TKey>(key,
-                                                                              DateTime.UtcNow +
-                                                                              TimeSpan.FromSeconds(expirationSeconds));
-                    timedStorage.Add(internalKey);
-                    timedStorageIndex.Add(key, internalKey);
-                    return true;
-                }
-            }
-            finally
-            {
-                Monitor.Exit(syncRoot);
-            }
-        }
+		public TKey this [int i] {
+			get {
+				TKey o;
+				if (!Monitor.TryEnter (syncRoot, MAX_LOCK_WAIT))
+					throw new ApplicationException ("Lock could not be acquired after " + MAX_LOCK_WAIT + "ms");
+				try {
+					if (timedStorage.Count > i) {
+						TimedCacheKey<TKey> tkey = timedStorage [i];
+						o = tkey.Key;
+						timedStorage.Remove (tkey);
+						tkey.Accessed ();
+						timedStorage.Insert (i, tkey);
+						return o;
+					} else {
+						throw new ArgumentException ("Key not found in the cache");
+					}
+				} finally {
+					Monitor.Exit (syncRoot);
+				}
+			}
+			set { AddOrUpdate (value, DefaultTime); }
+		}
 
-        public bool Add(TKey key, TimeSpan slidingExpiration)
-        {
-            if (!Monitor.TryEnter(syncRoot, MAX_LOCK_WAIT))
-                throw new ApplicationException("Lock could not be acquired after " + MAX_LOCK_WAIT + "ms");
-            try
-            {
-                // This is the actual adding of the key
-                if (timedStorageIndex.ContainsKey(key))
-                {
-                    return false;
-                }
-                else
-                {
-                    TimedCacheKey<TKey> internalKey = new TimedCacheKey<TKey>(key, slidingExpiration);
-                    timedStorage.Add(internalKey);
-                    timedStorageIndex.Add(key, internalKey);
-                    return true;
-                }
-            }
-            finally
-            {
-                Monitor.Exit(syncRoot);
-            }
-        }
+		public int Count {
+			get { return timedStorage.Count; }
+		}
 
-        public bool AddOrUpdate(TKey key, double expirationSeconds)
-        {
-            if (!Monitor.TryEnter(syncRoot, MAX_LOCK_WAIT))
-                throw new ApplicationException("Lock could not be acquired after " + MAX_LOCK_WAIT + "ms");
-            try
-            {
-                if (Contains(key))
-                {
-                    Update(key, expirationSeconds);
-                    return false;
-                }
-                else
-                {
-                    Add(key, expirationSeconds);
-                    return true;
-                }
-            }
-            finally
-            {
-                Monitor.Exit(syncRoot);
-            }
-        }
+		public void SetDefaultTime (double time)
+		{
+			DefaultTime = time;
+		}
 
-        public bool AddOrUpdate(TKey key, TimeSpan slidingExpiration)
-        {
-            if (!Monitor.TryEnter(syncRoot, MAX_LOCK_WAIT))
-                throw new ApplicationException("Lock could not be acquired after " + MAX_LOCK_WAIT + "ms");
-            try
-            {
-                if (Contains(key))
-                {
-                    Update(key, slidingExpiration);
-                    return false;
-                }
-                else
-                {
-                    Add(key, slidingExpiration);
-                    return true;
-                }
-            }
-            finally
-            {
-                Monitor.Exit(syncRoot);
-            }
-        }
+		public bool Add (TKey key, double expirationSeconds)
+		{
+			if (!Monitor.TryEnter (syncRoot, MAX_LOCK_WAIT))
+				throw new ApplicationException ("Lock could not be acquired after " + MAX_LOCK_WAIT + "ms");
+			try {
+				// This is the actual adding of the key
+				if (timedStorageIndex.ContainsKey (key)) {
+					return false;
+				} else {
+					TimedCacheKey<TKey> internalKey = new TimedCacheKey<TKey> (key,
+						                                                 DateTime.UtcNow +
+						                                                 TimeSpan.FromSeconds (expirationSeconds));
+					timedStorage.Add (internalKey);
+					timedStorageIndex.Add (key, internalKey);
+					return true;
+				}
+			} finally {
+				Monitor.Exit (syncRoot);
+			}
+		}
 
-        public void Clear()
-        {
-            if (!Monitor.TryEnter(syncRoot, MAX_LOCK_WAIT))
-                throw new ApplicationException("Lock could not be acquired after " + MAX_LOCK_WAIT + "ms");
-            try
-            {
-                timedStorage.Clear();
-                timedStorageIndex.Clear();
-            }
-            finally
-            {
-                Monitor.Exit(syncRoot);
-            }
-        }
+		public bool Add (TKey key, TimeSpan slidingExpiration)
+		{
+			if (!Monitor.TryEnter (syncRoot, MAX_LOCK_WAIT))
+				throw new ApplicationException ("Lock could not be acquired after " + MAX_LOCK_WAIT + "ms");
+			try {
+				// This is the actual adding of the key
+				if (timedStorageIndex.ContainsKey (key)) {
+					return false;
+				} else {
+					TimedCacheKey<TKey> internalKey = new TimedCacheKey<TKey> (key, slidingExpiration);
+					timedStorage.Add (internalKey);
+					timedStorageIndex.Add (key, internalKey);
+					return true;
+				}
+			} finally {
+				Monitor.Exit (syncRoot);
+			}
+		}
 
-        public bool Contains(TKey key)
-        {
-            if (!Monitor.TryEnter(syncRoot, MAX_LOCK_WAIT))
-                throw new ApplicationException("Lock could not be acquired after " + MAX_LOCK_WAIT + "ms");
-            try
-            {
-                return timedStorageIndex.ContainsKey(key);
-            }
-            finally
-            {
-                Monitor.Exit(syncRoot);
-            }
-        }
+		public bool AddOrUpdate (TKey key, double expirationSeconds)
+		{
+			if (!Monitor.TryEnter (syncRoot, MAX_LOCK_WAIT))
+				throw new ApplicationException ("Lock could not be acquired after " + MAX_LOCK_WAIT + "ms");
+			try {
+				if (Contains (key)) {
+					Update (key, expirationSeconds);
+					return false;
+				} else {
+					Add (key, expirationSeconds);
+					return true;
+				}
+			} finally {
+				Monitor.Exit (syncRoot);
+			}
+		}
 
-        public bool Remove(TKey key)
-        {
-            if (!Monitor.TryEnter(syncRoot, MAX_LOCK_WAIT))
-                throw new ApplicationException("Lock could not be acquired after " + MAX_LOCK_WAIT + "ms");
-            try
-            {
-                if (timedStorageIndex.ContainsKey(key))
-                {
-                    timedStorage.Remove(timedStorageIndex[key]);
-                    timedStorageIndex.Remove(key);
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            finally
-            {
-                Monitor.Exit(syncRoot);
-            }
-        }
+		public bool AddOrUpdate (TKey key, TimeSpan slidingExpiration)
+		{
+			if (!Monitor.TryEnter (syncRoot, MAX_LOCK_WAIT))
+				throw new ApplicationException ("Lock could not be acquired after " + MAX_LOCK_WAIT + "ms");
+			try {
+				if (Contains (key)) {
+					Update (key, slidingExpiration);
+					return false;
+				} else {
+					Add (key, slidingExpiration);
+					return true;
+				}
+			} finally {
+				Monitor.Exit (syncRoot);
+			}
+		}
 
-        public bool Update(TKey key)
-        {
-            if (!Monitor.TryEnter(syncRoot, MAX_LOCK_WAIT))
-                throw new ApplicationException("Lock could not be acquired after " + MAX_LOCK_WAIT + "ms");
-            try
-            {
-                if (timedStorageIndex.ContainsKey(key))
-                {
-                    timedStorage.Remove(timedStorageIndex[key]);
-                    timedStorageIndex[key].Accessed();
-                    timedStorage.Add(timedStorageIndex[key]);
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            finally
-            {
-                Monitor.Exit(syncRoot);
-            }
-        }
+		public void Clear ()
+		{
+			if (!Monitor.TryEnter (syncRoot, MAX_LOCK_WAIT))
+				throw new ApplicationException ("Lock could not be acquired after " + MAX_LOCK_WAIT + "ms");
+			try {
+				timedStorage.Clear ();
+				timedStorageIndex.Clear ();
+			} finally {
+				Monitor.Exit (syncRoot);
+			}
+		}
 
-        public bool Update(TKey key, double expirationSeconds)
-        {
-            if (!Monitor.TryEnter(syncRoot, MAX_LOCK_WAIT))
-                throw new ApplicationException("Lock could not be acquired after " + MAX_LOCK_WAIT + "ms");
-            try
-            {
-                if (timedStorageIndex.ContainsKey(key))
-                {
-                    timedStorage.Remove(timedStorageIndex[key]);
-                    timedStorageIndex.Remove(key);
-                }
-                else
-                {
-                    return false;
-                }
+		public bool Contains (TKey key)
+		{
+			if (!Monitor.TryEnter (syncRoot, MAX_LOCK_WAIT))
+				throw new ApplicationException ("Lock could not be acquired after " + MAX_LOCK_WAIT + "ms");
+			try {
+				return timedStorageIndex.ContainsKey (key);
+			} finally {
+				Monitor.Exit (syncRoot);
+			}
+		}
 
-                TimedCacheKey<TKey> internalKey = new TimedCacheKey<TKey>(key,
-                                                                          DateTime.UtcNow +
-                                                                          TimeSpan.FromSeconds(expirationSeconds));
-                timedStorage.Add(internalKey);
-                timedStorageIndex.Add(key, internalKey);
-                return true;
-            }
-            finally
-            {
-                Monitor.Exit(syncRoot);
-            }
-        }
+		public bool Remove (TKey key)
+		{
+			if (!Monitor.TryEnter (syncRoot, MAX_LOCK_WAIT))
+				throw new ApplicationException ("Lock could not be acquired after " + MAX_LOCK_WAIT + "ms");
+			try {
+				if (timedStorageIndex.ContainsKey (key)) {
+					timedStorage.Remove (timedStorageIndex [key]);
+					timedStorageIndex.Remove (key);
+					return true;
+				} else {
+					return false;
+				}
+			} finally {
+				Monitor.Exit (syncRoot);
+			}
+		}
 
-        public bool Update(TKey key, TimeSpan slidingExpiration)
-        {
-            if (!Monitor.TryEnter(syncRoot, MAX_LOCK_WAIT))
-                throw new ApplicationException("Lock could not be acquired after " + MAX_LOCK_WAIT + "ms");
-            try
-            {
-                if (timedStorageIndex.ContainsKey(key))
-                {
-                    timedStorage.Remove(timedStorageIndex[key]);
-                    timedStorageIndex.Remove(key);
-                }
-                else
-                {
-                    return false;
-                }
+		public bool Update (TKey key)
+		{
+			if (!Monitor.TryEnter (syncRoot, MAX_LOCK_WAIT))
+				throw new ApplicationException ("Lock could not be acquired after " + MAX_LOCK_WAIT + "ms");
+			try {
+				if (timedStorageIndex.ContainsKey (key)) {
+					timedStorage.Remove (timedStorageIndex [key]);
+					timedStorageIndex [key].Accessed ();
+					timedStorage.Add (timedStorageIndex [key]);
+					return true;
+				} else {
+					return false;
+				}
+			} finally {
+				Monitor.Exit (syncRoot);
+			}
+		}
 
-                TimedCacheKey<TKey> internalKey = new TimedCacheKey<TKey>(key, slidingExpiration);
-                timedStorage.Add(internalKey);
-                timedStorageIndex.Add(key, internalKey);
-                return true;
-            }
-            finally
-            {
-                Monitor.Exit(syncRoot);
-            }
-        }
+		public bool Update (TKey key, double expirationSeconds)
+		{
+			if (!Monitor.TryEnter (syncRoot, MAX_LOCK_WAIT))
+				throw new ApplicationException ("Lock could not be acquired after " + MAX_LOCK_WAIT + "ms");
+			try {
+				if (timedStorageIndex.ContainsKey (key)) {
+					timedStorage.Remove (timedStorageIndex [key]);
+					timedStorageIndex.Remove (key);
+				} else {
+					return false;
+				}
 
-        public void CopyTo(Array array, int startIndex)
-        {
-            // Error checking
-            if (array == null)
-            {
-                throw new ArgumentNullException("array");
-            }
+				TimedCacheKey<TKey> internalKey = new TimedCacheKey<TKey> (key,
+					                                              DateTime.UtcNow +
+					                                              TimeSpan.FromSeconds (expirationSeconds));
+				timedStorage.Add (internalKey);
+				timedStorageIndex.Add (key, internalKey);
+				return true;
+			} finally {
+				Monitor.Exit (syncRoot);
+			}
+		}
 
-            if (startIndex < 0)
-            {
-                throw new ArgumentOutOfRangeException("startIndex", "startIndex must be >= 0.");
-            }
+		public bool Update (TKey key, TimeSpan slidingExpiration)
+		{
+			if (!Monitor.TryEnter (syncRoot, MAX_LOCK_WAIT))
+				throw new ApplicationException ("Lock could not be acquired after " + MAX_LOCK_WAIT + "ms");
+			try {
+				if (timedStorageIndex.ContainsKey (key)) {
+					timedStorage.Remove (timedStorageIndex [key]);
+					timedStorageIndex.Remove (key);
+				} else {
+					return false;
+				}
 
-            if (array.Rank > 1)
-            {
-                throw new ArgumentException("array must be of Rank 1 (one-dimensional)", "array");
-            }
+				TimedCacheKey<TKey> internalKey = new TimedCacheKey<TKey> (key, slidingExpiration);
+				timedStorage.Add (internalKey);
+				timedStorageIndex.Add (key, internalKey);
+				return true;
+			} finally {
+				Monitor.Exit (syncRoot);
+			}
+		}
 
-            if (startIndex >= array.Length)
-            {
-                throw new ArgumentException("startIndex must be less than the length of the array.", "startIndex");
-            }
+		public void CopyTo (Array array, int startIndex)
+		{
+			// Error checking
+			if (array == null) {
+				throw new ArgumentNullException ("array");
+			}
 
-            if (Count > array.Length - startIndex)
-            {
-                throw new ArgumentException("There is not enough space from startIndex to the end of the array to accomodate all items in the cache.");
-            }
+			if (startIndex < 0) {
+				throw new ArgumentOutOfRangeException ("startIndex", "startIndex must be >= 0.");
+			}
 
-            // Copy the data to the array (in a thread-safe manner)
-            if (!Monitor.TryEnter(syncRoot, MAX_LOCK_WAIT))
-                throw new ApplicationException("Lock could not be acquired after " + MAX_LOCK_WAIT + "ms");
-            try
-            {
-                foreach (object o in timedStorage)
-                {
-                    array.SetValue(o, startIndex);
-                    startIndex++;
-                }
-            }
-            finally
-            {
-                Monitor.Exit(syncRoot);
-            }
-        }
+			if (array.Rank > 1) {
+				throw new ArgumentException ("array must be of Rank 1 (one-dimensional)", "array");
+			}
+			if (startIndex >= array.Length) {
+				throw new ArgumentException ("startIndex must be less than the length of the array.", "startIndex");
+			}
+			if (Count > array.Length - startIndex) {
+				throw new ArgumentException (
+					"There is not enough space from startIndex to the end of the array to accomodate all items in the cache.");
+			}
 
-        #endregion
+			// Copy the data to the array (in a thread-safe manner)
+			if (!Monitor.TryEnter (syncRoot, MAX_LOCK_WAIT))
+				throw new ApplicationException ("Lock could not be acquired after " + MAX_LOCK_WAIT + "ms");
+			try {
+				foreach (object o in timedStorage) {
+					array.SetValue (o, startIndex);
+					startIndex++;
+				}
+			} finally {
+				Monitor.Exit (syncRoot);
+			}
+		}
 
-        #region Private methods
+		#endregion
 
-        /// <summary>
-        ///     Purges expired objects from the cache. Called automatically by the purge timer.
-        /// </summary>
-        private void PurgeCache(object sender, ElapsedEventArgs e)
-        {
-            // Only let one thread purge at once - a buildup could cause a crash
-            // This could cause the purge to be delayed while there are lots of read/write ops 
-            // happening on the cache
-            if (!Monitor.TryEnter(isPurging))
-                return;
+		#region Private methods
 
-            DateTime signalTime = DateTime.UtcNow;
+		/// <summary>
+		///     Purges expired objects from the cache. Called automatically by the purge timer.
+		/// </summary>
+		private void PurgeCache (object sender, ElapsedEventArgs e)
+		{
+			// Only let one thread purge at once - a buildup could cause a crash
+			// This could cause the purge to be delayed while there are lots of read/write ops 
+			// happening on the cache
+			if (!Monitor.TryEnter (isPurging))
+				return;
 
-            try
-            {
-                // If we fail to acquire a lock on the synchronization root after MAX_LOCK_WAIT, skip this purge cycle
-                if (!Monitor.TryEnter(syncRoot, MAX_LOCK_WAIT))
-                    return;
-                try
-                {
-                    Framework.Utilities.Lazy<List<object>> expiredItems = new Framework.Utilities.Lazy<List<object>>();
+			DateTime signalTime = DateTime.UtcNow;
 
-                    foreach (
-                        TimedCacheKey<TKey> timedKey in timedStorage.Where(timedKey => timedKey.ExpirationDate < signalTime))
-                    {
-                        // Mark the object for purge
-                        expiredItems.Value.Add(timedKey.Key);
-                    }
+			try {
+				// If we fail to acquire a lock on the synchronization root after MAX_LOCK_WAIT, skip this purge cycle
+				if (!Monitor.TryEnter (syncRoot, MAX_LOCK_WAIT))
+					return;
+				try {
+					Framework.Utilities.Lazy<List<object>> expiredItems = new Framework.Utilities.Lazy<List<object>> ();
 
-                    if (expiredItems.IsValueCreated)
-                    {
-                        foreach (
+					foreach (
+                        TimedCacheKey<TKey> timedKey in
+                            timedStorage.Where(timedKey => timedKey.ExpirationDate < signalTime)) {
+						// Mark the object for purge
+						expiredItems.Value.Add (timedKey.Key);
+					}
+
+					if (expiredItems.IsValueCreated) {
+						foreach (
                             TimedCacheKey<TKey> timedKey in
-                                from TKey key in expiredItems.Value select timedStorageIndex[key])
-                        {
-                            timedStorageIndex.Remove(timedKey.Key);
-                            timedStorage.Remove(timedKey);
-                        }
-                    }
-                }
-                finally
-                {
-                    Monitor.Exit(syncRoot);
-                }
-            }
-            finally
-            {
-                Monitor.Exit(isPurging);
-            }
-        }
+                                from TKey key in expiredItems.Value select timedStorageIndex[key]) {
+							timedStorageIndex.Remove (timedKey.Key);
+							timedStorage.Remove (timedKey);
+						}
+					}
+				} finally {
+					Monitor.Exit (syncRoot);
+				}
+			} finally {
+				Monitor.Exit (isPurging);
+			}
+		}
 
-        #endregion
+		#endregion
 
-        public void Dispose()
-        {
-            timer.Close();
-        }
-    }
+		public void Dispose ()
+		{
+			timer.Close ();
+		}
+	}
 }

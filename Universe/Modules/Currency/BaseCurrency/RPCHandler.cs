@@ -45,104 +45,103 @@ using Universe.Framework.Services.ClassHelpers.Profile;
 
 namespace Universe.Modules.Currency
 {
-    public class RPCHandler : IService
-    {
-        #region Declares
+	public class RPCHandler : IService
+	{
+		#region Declares
 
-        BaseCurrencyConnector m_connector;
-        ISyncMessagePosterService m_syncMessagePoster;
-        IAgentInfoService m_agentInfoService;
+		BaseCurrencyConnector m_connector;
+		ISyncMessagePosterService m_syncMessagePoster;
+		IAgentInfoService m_agentInfoService;
 
-        #endregion
+		#endregion
 
-        #region IService Members
+		#region IService Members
 
-        public void Initialize (IConfigSource config, IRegistryCore registry)
-        {
-        }
+		public void Initialize (IConfigSource config, IRegistryCore registry)
+		{
+		}
 
-        public void Start (IConfigSource config, IRegistryCore registry)
-        {
-            if (config.Configs ["Currency"] == null ||
-                config.Configs ["Currency"].GetString ("Module", "") != "BaseCurrency")
-                return;
+		public void Start (IConfigSource config, IRegistryCore registry)
+		{
+			if (config.Configs ["Currency"] == null ||
+			             config.Configs ["Currency"].GetString ("Module", "") != "BaseCurrency")
+				return;
 
-            // we only want this if we are local..
-            bool remoteCalls = false;
-            IConfig connectorConfig = config.Configs ["UniverseConnectors"];
-            if ((connectorConfig != null) && connectorConfig.Contains ("DoRemoteCalls"))
-                remoteCalls = connectorConfig.GetBoolean ("DoRemoteCalls", false);
+			// we only want this if we are local..
+			bool remoteCalls = false;
+			IConfig connectorConfig = config.Configs ["UniverseConnectors"];
+			if ((connectorConfig != null) && connectorConfig.Contains ("DoRemoteCalls"))
+				remoteCalls = connectorConfig.GetBoolean ("DoRemoteCalls", false);
 
-            if (remoteCalls)
-                return;
+			if (remoteCalls)
+				return;
 
-            m_connector = Framework.Utilities.DataManager.RequestPlugin<IBaseCurrencyConnector> () as BaseCurrencyConnector;
-            var curPort = m_connector.GetConfig ().ClientPort;
-            if (curPort == 0 && MainServer.Instance == null)
-                return;
+			m_connector = Framework.Utilities.DataManager.RequestPlugin<IBaseCurrencyConnector> () as BaseCurrencyConnector;
+			var curPort = m_connector.GetConfig ().ClientPort;
+			if (curPort == 0 && MainServer.Instance == null)
+				return;
 
-            IHttpServer server = registry.RequestModuleInterface<ISimulationBase> ().GetHttpServer ((uint)curPort);
-            server.AddXmlRPCHandler ("getCurrencyQuote", QuoteFunc);
-            server.AddXmlRPCHandler ("buyCurrency", BuyFunc);
-            server.AddXmlRPCHandler ("preflightBuyLandPrep", PreflightBuyLandPrepFunc);
-            server.AddXmlRPCHandler ("buyLandPrep", LandBuyFunc);
-            server.AddXmlRPCHandler ("getBalance", GetbalanceFunc);
-            server.AddXmlRPCHandler ("/currency.php", GetbalanceFunc);
-            server.AddXmlRPCHandler ("/landtool.php", GetbalanceFunc);
+			IHttpServer server = registry.RequestModuleInterface<ISimulationBase> ().GetHttpServer ((uint)curPort);
+			server.AddXmlRPCHandler ("getCurrencyQuote", QuoteFunc);
+			server.AddXmlRPCHandler ("buyCurrency", BuyFunc);
+			server.AddXmlRPCHandler ("preflightBuyLandPrep", PreflightBuyLandPrepFunc);
+			server.AddXmlRPCHandler ("buyLandPrep", LandBuyFunc);
+			server.AddXmlRPCHandler ("getBalance", GetbalanceFunc);
+			server.AddXmlRPCHandler ("/currency.php", GetbalanceFunc);
+			server.AddXmlRPCHandler ("/landtool.php", GetbalanceFunc);
 
-            m_syncMessagePoster = registry.RequestModuleInterface<ISyncMessagePosterService> ();
-            m_agentInfoService = registry.RequestModuleInterface<IAgentInfoService> ();
-        }
+			m_syncMessagePoster = registry.RequestModuleInterface<ISyncMessagePosterService> ();
+			m_agentInfoService = registry.RequestModuleInterface<IAgentInfoService> ();
+		}
 
-        public void FinishedStartup ()
-        {
-        }
+		public void FinishedStartup ()
+		{
+		}
 
-        #endregion
+		#endregion
 
-        #region RPC Calls
+		#region RPC Calls
 
-        public XmlRpcResponse GetbalanceFunc (XmlRpcRequest request, IPEndPoint ep)
-        {
-            MainConsole.Instance.Error ("Remote procedure calls GetbalanceFunc was called.");
-            throw new NotImplementedException ();
-        }
+		public XmlRpcResponse GetbalanceFunc (XmlRpcRequest request, IPEndPoint ep)
+		{
+			MainConsole.Instance.Error ("Remote procedure calls GetbalanceFunc was called.");
+			throw new NotImplementedException ();
+		}
 
-        public XmlRpcResponse LandBuyFunc (XmlRpcRequest request, IPEndPoint ep)
-        {
-            Hashtable requestData = (Hashtable)request.Params [0];
+		public XmlRpcResponse LandBuyFunc (XmlRpcRequest request, IPEndPoint ep)
+		{
+			Hashtable requestData = (Hashtable)request.Params [0];
 
-            bool success = false;
-            if (requestData.ContainsKey ("agentId") && requestData.ContainsKey ("currencyBuy") &&
-                m_connector.GetConfig ().CanBuyCurrencyInworld) {
-                UUID agentId;
-                if (UUID.TryParse ((string)requestData ["agentId"], out agentId)) {
-                    uint amountBuying = uint.Parse (requestData ["currencyBuy"].ToString ());
-                    m_connector.UserCurrencyTransfer (agentId, UUID.Zero, amountBuying,
-                                                     "Inworld purchase", TransactionType.SystemGenerated, UUID.Zero);
-                    success = true;
-                }
-            }
-            XmlRpcResponse returnval = new XmlRpcResponse ();
-            Hashtable returnresp = new Hashtable { { "success", success } };
-            returnval.Value = returnresp;
+			bool success = false;
+			if (requestData.ContainsKey ("agentId") && requestData.ContainsKey ("currencyBuy") &&
+			             m_connector.GetConfig ().CanBuyCurrencyInworld) {
+				UUID agentId;
+				if (UUID.TryParse ((string)requestData ["agentId"], out agentId)) {
+					uint amountBuying = uint.Parse (requestData ["currencyBuy"].ToString ());
+					m_connector.UserCurrencyTransfer (agentId, UUID.Zero, amountBuying,
+						"Inworld purchase", TransactionType.SystemGenerated, UUID.Zero);
+					success = true;
+				}
+			}
+			XmlRpcResponse returnval = new XmlRpcResponse ();
+			Hashtable returnresp = new Hashtable { { "success", success } };
+			returnval.Value = returnresp;
 
-            return returnval;
-        }
+			return returnval;
+		}
 
-        public XmlRpcResponse QuoteFunc (XmlRpcRequest request, IPEndPoint ep)
-        {
-            Hashtable requestData = (Hashtable)request.Params [0];
+		public XmlRpcResponse QuoteFunc (XmlRpcRequest request, IPEndPoint ep)
+		{
+			Hashtable requestData = (Hashtable)request.Params [0];
 
-            XmlRpcResponse returnval = new XmlRpcResponse ();
+			XmlRpcResponse returnval = new XmlRpcResponse ();
 
-            if (requestData.ContainsKey ("agentId") && requestData.ContainsKey ("currencyBuy")) {
-                if (m_connector.GetConfig ().CanBuyCurrencyInworld) {
-                    uint amount = uint.Parse (requestData ["currencyBuy"].ToString ());
-                    amount = (uint)m_connector.CheckMinMaxTransferSettings (UUID.Parse (requestData ["agentId"].ToString ()), amount);
-                    returnval.Value = new Hashtable {
-                        {"success", true},
-                        {"currency",new Hashtable {
+			if (requestData.ContainsKey ("agentId") && requestData.ContainsKey ("currencyBuy")) {
+				if (m_connector.GetConfig ().CanBuyCurrencyInworld) {
+					uint amount = uint.Parse (requestData ["currencyBuy"].ToString ());
+					amount = (uint)m_connector.CheckMinMaxTransferSettings (UUID.Parse (requestData ["agentId"].ToString ()), amount);
+					returnval.Value = new Hashtable {
+						{ "success", true }, {"currency",new Hashtable {
                                 {"estimatedCost", m_connector.CalculateEstimatedCost(amount)},
                                 {"currencyBuy", (int) amount}
                             }

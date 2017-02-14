@@ -35,124 +35,117 @@ using GridRegion = Universe.Framework.Services.GridRegion;
 
 namespace Universe.Services
 {
-    /// <summary>
-    ///     This keeps track of what clients are in the given region
-    /// </summary>
-    public class PerRegionCapsService : IRegionCapsService
-    {
-        #region Declares
+	/// <summary>
+	///     This keeps track of what clients are in the given region
+	/// </summary>
+	public class PerRegionCapsService : IRegionCapsService
+	{
+		#region Declares
 
-        UUID m_RegionID;
-        GridRegion m_cachedRegion;
+		UUID m_RegionID;
+		GridRegion m_cachedRegion;
 
-        protected Dictionary<UUID, IRegionClientCapsService> m_clientsInThisRegion =
-            new Dictionary<UUID, IRegionClientCapsService> ();
+		protected Dictionary<UUID, IRegionClientCapsService> m_clientsInThisRegion =
+			new Dictionary<UUID, IRegionClientCapsService> ();
 
-        IRegistryCore m_registry;
+		IRegistryCore m_registry;
 
-        public IRegistryCore Registry
-        {
-            get { return m_registry; }
-        }
+		public IRegistryCore Registry {
+			get { return m_registry; }
+		}
 
-        public ulong RegionHandle
-        {
-            get { return Region.RegionHandle; }
-        }
+		public ulong RegionHandle {
+			get { return Region.RegionHandle; }
+		}
 
-        public int RegionX
-        {
-            get { return Region.RegionLocX; }
-        }
+		public int RegionX {
+			get { return Region.RegionLocX; }
+		}
 
-        public int RegionY
-        {
-            get { return Region.RegionLocY; }
-        }
+		public int RegionY {
+			get { return Region.RegionLocY; }
+		}
 
-        public GridRegion Region
-        {
-            get
-            {
-                if (m_cachedRegion != null)
-                    return m_cachedRegion;
+		public GridRegion Region {
+			get {
+				if (m_cachedRegion != null)
+					return m_cachedRegion;
                 
-                m_cachedRegion = Registry.RequestModuleInterface<IGridService> ().GetRegionByUUID (null, m_RegionID);
-                return m_cachedRegion;
-            }
-        }
+				m_cachedRegion = Registry.RequestModuleInterface<IGridService> ().GetRegionByUUID (null, m_RegionID);
+				return m_cachedRegion;
+			}
+		}
 
-        #endregion
+		#endregion
 
-        #region Initialize
+		#region Initialize
 
-        /// <summary>
-        ///     Initialize the service
-        /// </summary>
-        /// <param name="regionID"></param>
-        /// <param name="registry"></param>
-        public void Initialize (UUID regionID, IRegistryCore registry)
-        {
-            m_RegionID = regionID;
-            m_registry = registry;
-        }
+		/// <summary>
+		///     Initialize the service
+		/// </summary>
+		/// <param name="regionID"></param>
+		/// <param name="registry"></param>
+		public void Initialize (UUID regionID, IRegistryCore registry)
+		{
+			m_RegionID = regionID;
+			m_registry = registry;
+		}
 
-        public void Close ()
-        {
-            foreach (IRegionClientCapsService regionC in m_clientsInThisRegion.Values)
-            {
-                regionC.ClientCaps.RemoveCAPS (m_RegionID);
-            }
-            m_clientsInThisRegion.Clear ();
-        }
+		public void Close ()
+		{
+			foreach (IRegionClientCapsService regionC in m_clientsInThisRegion.Values) {
+				regionC.ClientCaps.RemoveCAPS (m_RegionID);
+			}
+			m_clientsInThisRegion.Clear ();
+		}
 
-        #endregion
+		#endregion
 
-        #region Add/Get/Remove clients
+		#region Add/Get/Remove clients
 
-        /// <summary>
-        ///     Add this client to the region
-        /// </summary>
-        /// <param name="service"></param>
-        public void AddClientToRegion (IRegionClientCapsService service)
-        {
-            if (!m_clientsInThisRegion.ContainsKey (service.AgentID))
-                m_clientsInThisRegion.Add (service.AgentID, service);
-            else //Update the client then... this shouldn't ever happen!
+		/// <summary>
+		///     Add this client to the region
+		/// </summary>
+		/// <param name="service"></param>
+		public void AddClientToRegion (IRegionClientCapsService service)
+		{
+			if (!m_clientsInThisRegion.ContainsKey (service.AgentID))
+				m_clientsInThisRegion.Add (service.AgentID, service);
+			else //Update the client then... this shouldn't ever happen!
                 m_clientsInThisRegion [service.AgentID] = service;
-        }
+		}
 
-        /// <summary>
-        ///     Remove the client from this region
-        /// </summary>
-        /// <param name="service"></param>
-        public void RemoveClientFromRegion (IRegionClientCapsService service)
-        {
-            if (m_clientsInThisRegion.ContainsKey (service.AgentID))
-                m_clientsInThisRegion.Remove (service.AgentID);
-        }
+		/// <summary>
+		///     Remove the client from this region
+		/// </summary>
+		/// <param name="service"></param>
+		public void RemoveClientFromRegion (IRegionClientCapsService service)
+		{
+			if (m_clientsInThisRegion.ContainsKey (service.AgentID))
+				m_clientsInThisRegion.Remove (service.AgentID);
+		}
 
-        /// <summary>
-        ///     Get an agent's Caps by UUID
-        /// </summary>
-        /// <param name="agentID"></param>
-        /// <returns></returns>
-        public IRegionClientCapsService GetClient (UUID agentID)
-        {
-            if (m_clientsInThisRegion.ContainsKey (agentID))
-                return m_clientsInThisRegion [agentID];
-            return null;
-        }
+		/// <summary>
+		///     Get an agent's Caps by UUID
+		/// </summary>
+		/// <param name="agentID"></param>
+		/// <returns></returns>
+		public IRegionClientCapsService GetClient (UUID agentID)
+		{
+			if (m_clientsInThisRegion.ContainsKey (agentID))
+				return m_clientsInThisRegion [agentID];
+			return null;
+		}
 
-        /// <summary>
-        ///     Get all clients in this region
-        /// </summary>
-        /// <returns></returns>
-        public List<IRegionClientCapsService> GetClients ()
-        {
-            return new List<IRegionClientCapsService> (m_clientsInThisRegion.Values);
-        }
+		/// <summary>
+		///     Get all clients in this region
+		/// </summary>
+		/// <returns></returns>
+		public List<IRegionClientCapsService> GetClients ()
+		{
+			return new List<IRegionClientCapsService> (m_clientsInThisRegion.Values);
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

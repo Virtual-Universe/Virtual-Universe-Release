@@ -32,55 +32,56 @@ using OpenMetaverse;
 
 namespace Universe.Framework.Utilities
 {
-    /// <summary>
-    ///     Capabilities utility methods
-    /// </summary>
-    public class CapsUtil
-    {
-        /// <summary>
-        ///     Generate a CAPS seed path using a previously generated CAPS object path component
-        /// </summary>
-        /// <param name="capsObjectPath"></param>
-        /// <returns></returns>
-        public static string GetCapsSeedPath(string capsObjectPath)
-        {
-            return "/CAPS/" + capsObjectPath + "0000/";
-        }
+	/// <summary>
+	///     Capabilities utility methods
+	/// </summary>
+	public class CapsUtil
+	{
+		/// <summary>
+		///     Generate a CAPS seed path using a previously generated CAPS object path component
+		/// </summary>
+		/// <param name="capsObjectPath"></param>
+		/// <returns></returns>
+		public static string GetCapsSeedPath (string capsObjectPath)
+		{
+			return "/CAPS/" + capsObjectPath + "0000/";
+		}
 
-        /// <summary>
-        ///     Retrieve the CapsPath from a CapsSeed
-        /// </summary>
-        /// <param name="capsSeedPath">Should be in the form of "/CAPS/CapsPath/</param>
-        /// <returns></returns>
-        public static string GetCapsPathFromCapsSeed(string capsSeedPath)
-        {
-            capsSeedPath = !capsSeedPath.StartsWith("/CAPS/")
-                               ? capsSeedPath.Split(new string[1] {"/CAPS/"}, StringSplitOptions.RemoveEmptyEntries)[1]
-                               : capsSeedPath.Remove(0, 6);
-            //Now remove the trailing /
-            capsSeedPath = capsSeedPath.Remove(capsSeedPath.Length - 5, 5);
+		/// <summary>
+		///     Retrieve the CapsPath from a CapsSeed
+		/// </summary>
+		/// <param name="capsSeedPath">Should be in the form of "/CAPS/CapsPath/</param>
+		/// <returns></returns>
+		public static string GetCapsPathFromCapsSeed (string capsSeedPath)
+		{
+			capsSeedPath = !capsSeedPath.StartsWith ("/CAPS/")
+                               ? capsSeedPath.Split (new string[1] { "/CAPS/" }, StringSplitOptions.RemoveEmptyEntries) [1]
+                               : capsSeedPath.Remove (0, 6);
+			//Now remove the trailing /
+			capsSeedPath = capsSeedPath.Remove (capsSeedPath.Length - 5, 5);
 
-            return capsSeedPath;
-        }
+			return capsSeedPath;
+		}
 
-        /// <summary>
-        ///     Get a random CAPS object path component that will be used as the identifying part of all future CAPS requests
-        /// </summary>
-        /// <returns></returns>
-        public static string GetRandomCapsObjectPath()
-        {
-            UUID caps = UUID.Random();
-            string capsPath = caps.ToString();
-            // I'm commenting this, rather than delete, to keep as historical record.
-            // The caps seed is now a full UUID string that gets added four more digits
-            // for producing certain CAPs URLs in Virtual Universe
-            return capsPath;
-        }
+		/// <summary>
+		///     Get a random CAPS object path component that will be used as the identifying part of all future CAPS requests
+		/// </summary>
+		/// <returns></returns>
+		public static string GetRandomCapsObjectPath ()
+		{
+			UUID caps = UUID.Random ();
+			string capsPath = caps.ToString ();
+			// I'm commenting this, rather than delete, to keep as historical record.
+			// The caps seed is now a full UUID string that gets added four more digits
+			// for producing certain CAPs URLs in Universe
+			//capsPath = capsPath.Remove(capsPath.Length - 4, 4);
+			return capsPath;
+		}
 
-        public static string CreateCAPS(string method, string appendedPath)
-        {
-            string caps = "/CAPS/" + method + "/" + UUID.Random() + appendedPath + "/";
-            return caps;
-        }
-    }
+		public static string CreateCAPS (string method, string appendedPath)
+		{
+			string caps = "/CAPS/" + method + "/" + UUID.Random () + appendedPath + "/";
+			return caps;
+		}
+	}
 }

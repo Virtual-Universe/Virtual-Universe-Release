@@ -29,9 +29,10 @@
 
 namespace Universe.Modules.Web
 {
-    public interface ITranslator
-    {
-        string LanguageName { get; }
-        string GetTranslatedString (string key);
-    }
+	public interface ITranslator
+	{
+		string LanguageName { get; }
+
+		string GetTranslatedString (string key);
+	}
 }

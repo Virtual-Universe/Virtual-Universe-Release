@@ -45,296 +45,272 @@ using GridRegion = Universe.Framework.Services.GridRegion;
 
 namespace Universe.Services
 {
-    /// <summary>
-    ///     CapsHandlers is a cap handler container but also takes
-    ///     care of adding and removing cap handlers to and from the
-    ///     supplied BaseHttpServer.
-    /// </summary>
-    public class PerRegionClientCapsService : IRegionClientCapsService
-    {
-        #region Declares
+	/// <summary>
+	///     CapsHandlers is a cap handler container but also takes
+	///     care of adding and removing cap handlers to and from the
+	///     supplied BaseHttpServer.
+	/// </summary>
+	public class PerRegionClientCapsService : IRegionClientCapsService
+	{
+		#region Declares
 
-        List<ICapsServiceConnector> m_connectors = new List<ICapsServiceConnector>();
-        bool m_disabled = true;
-        AgentCircuitData m_circuitData;
-        IHttpServer m_server;
+		List<ICapsServiceConnector> m_connectors = new List<ICapsServiceConnector> ();
+		bool m_disabled = true;
+		AgentCircuitData m_circuitData;
+		IHttpServer m_server;
 
-        public AgentCircuitData CircuitData
-        {
-            get { return m_circuitData; }
-        }
+		public AgentCircuitData CircuitData {
+			get { return m_circuitData; }
+		}
 
-        public IPAddress LoopbackRegionIP { get; set; }
+		public IPAddress LoopbackRegionIP { get; set; }
 
-        public bool Disabled
-        {
-            get { return m_disabled; }
-            set { m_disabled = value; }
-        }
+		public bool Disabled {
+			get { return m_disabled; }
+			set { m_disabled = value; }
+		}
 
-        public ulong RegionHandle
-        {
-            get { return m_regionCapsService.RegionHandle; }
-        }
+		public ulong RegionHandle {
+			get { return m_regionCapsService.RegionHandle; }
+		}
 
-        public UUID RegionID
-        {
-            get { return m_regionCapsService.Region.RegionID; }
-        }
+		public UUID RegionID {
+			get { return m_regionCapsService.Region.RegionID; }
+		}
 
-        public int RegionX
-        {
-            get { return m_regionCapsService.RegionX; }
-        }
+		public int RegionX {
+			get { return m_regionCapsService.RegionX; }
+		}
 
-        public int RegionY
-        {
-            get { return m_regionCapsService.RegionY; }
-        }
+		public int RegionY {
+			get { return m_regionCapsService.RegionY; }
+		}
 
-        public GridRegion Region
-        {
-            get { return m_regionCapsService.Region; }
-        }
+		public GridRegion Region {
+			get { return m_regionCapsService.Region; }
+		}
 
-        public Vector3 LastPosition { get; set; }
+		public Vector3 LastPosition { get; set; }
 
-        /// <summary>
-        ///     This is the /CAPS/UUID 0000/ string
-        /// </summary>
-        protected string m_capsUrlBase;
+		/// <summary>
+		///     This is the /CAPS/UUID 0000/ string
+		/// </summary>
+		protected string m_capsUrlBase;
 
-        public UUID AgentID
-        {
-            get { return m_clientCapsService.AgentID; }
-        }
+		public UUID AgentID {
+			get { return m_clientCapsService.AgentID; }
+		}
 
-        protected bool m_isRootAgent = false;
+		protected bool m_isRootAgent = false;
 
-        public bool RootAgent
-        {
-            get { return m_isRootAgent; }
-            set { m_isRootAgent = value; }
-        }
+		public bool RootAgent {
+			get { return m_isRootAgent; }
+			set { m_isRootAgent = value; }
+		}
 
-        protected IClientCapsService m_clientCapsService;
+		protected IClientCapsService m_clientCapsService;
 
-        public IClientCapsService ClientCaps
-        {
-            get { return m_clientCapsService; }
-        }
+		public IClientCapsService ClientCaps {
+			get { return m_clientCapsService; }
+		}
 
-        protected IRegionCapsService m_regionCapsService;
+		protected IRegionCapsService m_regionCapsService;
 
-        public IRegionCapsService RegionCaps
-        {
-            get { return m_regionCapsService; }
-        }
+		public IRegionCapsService RegionCaps {
+			get { return m_regionCapsService; }
+		}
 
-        #endregion
+		#endregion
 
-        #region Properties
+		#region Properties
 
-        public string HostUri
-        {
-            get { return Server.ServerURI; }
-        }
+		public string HostUri {
+			get { return Server.ServerURI; }
+		}
 
-        public IRegistryCore Registry
-        {
-            get { return m_clientCapsService.Registry; }
-        }
+		public IRegistryCore Registry {
+			get { return m_clientCapsService.Registry; }
+		}
 
-        public IHttpServer Server
-        {
-            get { return m_server ?? (m_server = m_clientCapsService.Server); }
-            set { m_server = value; }
-        }
+		public IHttpServer Server {
+			get { return m_server ?? (m_server = m_clientCapsService.Server); }
+			set { m_server = value; }
+		}
 
-        string m_overrideCapsURL; // ONLY FOR OPENSIM
+		string m_overrideCapsURL;
+		// ONLY FOR OPENSIM
 
-        /// <summary>
-        ///     This is the full URL to the Caps SEED request
-        /// </summary>
-        public string CapsUrl
-        {
-            get
-            {
-                if (!string.IsNullOrEmpty(m_overrideCapsURL))
-                    return m_overrideCapsURL;
-                return HostUri + m_capsUrlBase;
-            }
-            set { m_overrideCapsURL = value; }
-        }
+		/// <summary>
+		///     This is the full URL to the Caps SEED request
+		/// </summary>
+		public string CapsUrl {
+			get {
+				if (!string.IsNullOrEmpty (m_overrideCapsURL))
+					return m_overrideCapsURL;
+				return HostUri + m_capsUrlBase;
+			}
+			set { m_overrideCapsURL = value; }
+		}
 
-        #endregion
+		#endregion
 
-        #region Initialize
+		#region Initialize
 
-        public void Initialize(IClientCapsService clientCapsService, IRegionCapsService regionCapsService,
-                               string capsBase, AgentCircuitData circuitData, uint port)
-        {
-            m_clientCapsService = clientCapsService;
-            m_regionCapsService = regionCapsService;
-            m_circuitData = circuitData;
-            if (port != 0) //Someone requested a non standard port, probably for OpenSim
-            {
-                ISimulationBase simBase = Registry.RequestModuleInterface<ISimulationBase>();
-                Server = simBase.GetHttpServer(port);
-            }
-            AddSEEDCap(capsBase);
+		public void Initialize (IClientCapsService clientCapsService, IRegionCapsService regionCapsService,
+		                             string capsBase, AgentCircuitData circuitData, uint port)
+		{
+			m_clientCapsService = clientCapsService;
+			m_regionCapsService = regionCapsService;
+			m_circuitData = circuitData;
+			if (port != 0) { //Someone requested a non standard port, probably for OpenSim
+				ISimulationBase simBase = Registry.RequestModuleInterface<ISimulationBase> ();
+				Server = simBase.GetHttpServer (port);
+			}
+			AddSEEDCap (capsBase);
 
-            AddCAPS();
-        }
+			AddCAPS ();
+		}
 
-        #endregion
+		#endregion
 
-        #region Add/Remove Caps from the known caps OSDMap
+		#region Add/Remove Caps from the known caps OSDMap
 
-        //X cap name to path
-        protected OSDMap RegisteredCAPS = new OSDMap();
+		//X cap name to path
+		protected OSDMap RegisteredCAPS = new OSDMap ();
 
-        public string CreateCAPS(string method, string appendedPath)
-        {
-            return "/CAPS/" + method + "/" + UUID.Random() + appendedPath + "/";
-        }
+		public string CreateCAPS (string method, string appendedPath)
+		{
+			return "/CAPS/" + method + "/" + UUID.Random () + appendedPath + "/";
+		}
 
-        public void AddCAPS(string method, string caps)
-        {
-            if (method == null || caps == null)
-                return;
-            string CAPSPath = HostUri + caps;
-            RegisteredCAPS[method] = CAPSPath;
-        }
+		public void AddCAPS (string method, string caps)
+		{
+			if (method == null || caps == null)
+				return;
+			string CAPSPath = HostUri + caps;
+			RegisteredCAPS [method] = CAPSPath;
+		}
 
-        public void AddCAPS(OSDMap caps)
-        {
-            foreach (KeyValuePair<string, OSD> kvp in caps)
-            {
-                if (!RegisteredCAPS.ContainsKey(kvp.Key))
-                    RegisteredCAPS[kvp.Key] = kvp.Value;
-            }
-        }
+		public void AddCAPS (OSDMap caps)
+		{
+			foreach (KeyValuePair<string, OSD> kvp in caps) {
+				if (!RegisteredCAPS.ContainsKey (kvp.Key))
+					RegisteredCAPS [kvp.Key] = kvp.Value;
+			}
+		}
 
-        protected void RemoveCaps(string method)
-        {
-            RegisteredCAPS.Remove(method);
-        }
+		protected void RemoveCaps (string method)
+		{
+			RegisteredCAPS.Remove (method);
+		}
 
-        public OSDMap GetCAPS()
-        {
-            return RegisteredCAPS;
-        }
+		public OSDMap GetCAPS ()
+		{
+			return RegisteredCAPS;
+		}
 
-        #endregion
+		#endregion
 
-        #region Overriden Http Server methods
+		#region Overriden Http Server methods
 
-        public void AddStreamHandler(string method, IStreamedRequestHandler handler)
-        {
-            Server.AddStreamHandler(handler);
-            AddCAPS(method, handler.Path);
-        }
+		public void AddStreamHandler (string method, IStreamedRequestHandler handler)
+		{
+			Server.AddStreamHandler (handler);
+			AddCAPS (method, handler.Path);
+		}
 
-        public void RemoveStreamHandler(string method, string httpMethod, string path)
-        {
-            Server.RemoveStreamHandler(httpMethod, path);
-            RemoveCaps(method);
-        }
+		public void RemoveStreamHandler (string method, string httpMethod, string path)
+		{
+			Server.RemoveStreamHandler (httpMethod, path);
+			RemoveCaps (method);
+		}
 
-        public void RemoveStreamHandler(string method, string httpMethod)
-        {
-            string path = RegisteredCAPS[method].AsString();
-            if (path != "") //If it doesn't exist...
-            {
-                if (path.StartsWith (HostUri, StringComparison.Ordinal)) //Only try to remove local ones
-                {
-                    path = path.Remove(0, HostUri.Length);
-                    Server.RemoveStreamHandler(httpMethod, path);
-                }
-                RemoveCaps(method);
-            }
-        }
+		public void RemoveStreamHandler (string method, string httpMethod)
+		{
+			string path = RegisteredCAPS [method].AsString ();
+			if (path != "") { //If it doesn't exist...
+				if (path.StartsWith (HostUri, StringComparison.Ordinal)) { //Only try to remove local ones
+					path = path.Remove (0, HostUri.Length);
+					Server.RemoveStreamHandler (httpMethod, path);
+				}
+				RemoveCaps (method);
+			}
+		}
 
-        #endregion
+		#endregion
 
-        #region SEED cap handling
+		#region SEED cap handling
 
-        public void AddSEEDCap(string capsUrl2)
-        {
-            if (capsUrl2 != "")
-                m_capsUrlBase = capsUrl2;
-            Disabled = false;
-            //Add our SEED cap
-            AddStreamHandler("SEED", new GenericStreamHandler("POST", m_capsUrlBase, CapsRequest));
-        }
+		public void AddSEEDCap (string capsUrl2)
+		{
+			if (capsUrl2 != "")
+				m_capsUrlBase = capsUrl2;
+			Disabled = false;
+			//Add our SEED cap
+			AddStreamHandler ("SEED", new GenericStreamHandler ("POST", m_capsUrlBase, CapsRequest));
+		}
 
-        public void Close()
-        {
-            //Remove our SEED cap
-            RemoveStreamHandler("SEED", "POST", m_capsUrlBase);
-            RemoveCAPS();
-        }
+		public void Close ()
+		{
+			//Remove our SEED cap
+			RemoveStreamHandler ("SEED", "POST", m_capsUrlBase);
+			RemoveCAPS ();
+		}
 
-        public virtual byte[] CapsRequest(string path, Stream request, OSHttpRequest httpRequest,
-                                          OSHttpResponse httpResponse)
-        {
-            MainConsole.Instance.Debug("[CapsHandlers]: Handling Seed Cap request at " + CapsUrl);
-            return OSDParser.SerializeLLSDXmlBytes(RegisteredCAPS);
-        }
+		public virtual byte[] CapsRequest (string path, Stream request, OSHttpRequest httpRequest,
+		                                        OSHttpResponse httpResponse)
+		{
+			MainConsole.Instance.Debug ("[CapsHandlers]: Handling Seed Cap request at " + CapsUrl);
+			return OSDParser.SerializeLLSDXmlBytes (RegisteredCAPS);
+		}
 
-        #endregion
+		#endregion
 
-        #region Add/Remove known caps
+		#region Add/Remove known caps
 
-        protected void AddCAPS()
-        {
-            List<ICapsServiceConnector> connectors = GetServiceConnectors();
-            foreach (ICapsServiceConnector connector in connectors)
-            {
-                connector.RegisterCaps(this);
-            }
+		protected void AddCAPS ()
+		{
+			List<ICapsServiceConnector> connectors = GetServiceConnectors ();
+			foreach (ICapsServiceConnector connector in connectors) {
+				connector.RegisterCaps (this);
+			}
 
-            IExternalCapsHandler externalService = Registry.RequestModuleInterface<IExternalCapsHandler>();
-            if (externalService != null)
-            {
-                foreach (KeyValuePair<string, OSD> kvp in externalService.GetExternalCaps(AgentID, Region))
-                    if (kvp.Key != null && kvp.Value != null && !RegisteredCAPS.ContainsKey(kvp.Key))
-                        RegisteredCAPS.Add(kvp.Key, kvp.Value);
-            }
-        }
+			IExternalCapsHandler externalService = Registry.RequestModuleInterface<IExternalCapsHandler> ();
+			if (externalService != null) {
+				foreach (KeyValuePair<string, OSD> kvp in externalService.GetExternalCaps(AgentID, Region))
+					if (kvp.Key != null && kvp.Value != null && !RegisteredCAPS.ContainsKey (kvp.Key))
+						RegisteredCAPS.Add (kvp.Key, kvp.Value);
+			}
+		}
 
-        protected void RemoveCAPS()
-        {
-            List<ICapsServiceConnector> connectors = GetServiceConnectors();
-            foreach (ICapsServiceConnector connector in connectors)
-            {
-                connector.DeregisterCaps();
-            }
+		protected void RemoveCAPS ()
+		{
+			List<ICapsServiceConnector> connectors = GetServiceConnectors ();
+			foreach (ICapsServiceConnector connector in connectors) {
+				connector.DeregisterCaps ();
+			}
 
-            IExternalCapsHandler externalService = Registry.RequestModuleInterface<IExternalCapsHandler>();
-            if (externalService != null)
-                externalService.RemoveExternalCaps(AgentID, Region);
-        }
+			IExternalCapsHandler externalService = Registry.RequestModuleInterface<IExternalCapsHandler> ();
+			if (externalService != null)
+				externalService.RemoveExternalCaps (AgentID, Region);
+		}
 
-        public void InformModulesOfRequest()
-        {
-            List<ICapsServiceConnector> connectors = GetServiceConnectors();
-            foreach (ICapsServiceConnector connector in connectors)
-            {
-                connector.EnteringRegion();
-            }
-        }
+		public void InformModulesOfRequest ()
+		{
+			List<ICapsServiceConnector> connectors = GetServiceConnectors ();
+			foreach (ICapsServiceConnector connector in connectors) {
+				connector.EnteringRegion ();
+			}
+		}
 
-        public List<ICapsServiceConnector> GetServiceConnectors()
-        {
-            if (m_connectors.Count == 0)
-            {
-                m_connectors = UniverseModuleLoader.PickupModules<ICapsServiceConnector>();
-            }
-            return m_connectors;
-        }
+		public List<ICapsServiceConnector> GetServiceConnectors ()
+		{
+			if (m_connectors.Count == 0) {
+				m_connectors = UniverseModuleLoader.PickupModules<ICapsServiceConnector> ();
+			}
+			return m_connectors;
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

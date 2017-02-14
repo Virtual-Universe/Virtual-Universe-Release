@@ -31,64 +31,68 @@ using Universe.Framework.PresenceInfo;
 
 namespace Universe.Framework.Services
 {
-    /// <summary>
-    ///     Genric authorization service used for
-    ///     authorizing principals in a particular region
-    /// </summary>
-    public interface IAuthorizationService
-    {
-        /// <summary>
-        ///     Gets whether the given agent is able to enter the given region as a root or child agent
-        /// </summary>
-        /// <param name="region">The region the agent is attempting to enter</param>
-        /// <param name="agent">The CircuitData of the agent that is attempting to enter</param>
-        /// <param name="isRootAgent">Whether the agent is a root agent or not</param>
-        /// <param name="reason">If it fails, the reason they cannot enter</param>
-        /// <returns></returns>
-        bool IsAuthorizedForRegion(GridRegion region, AgentCircuitData agent, bool isRootAgent, out string reason);
-    }
+	// Generic Authorization service used for authorizing principals in a particular region
 
-    public class AuthorizationRequest
-    {
-        public AuthorizationRequest()
-        {
-        }
+	public interface IAuthorizationService
+	{
+		/// <summary>
+		///     Gets whether the given agent is able to enter the given region as a root or child agent
+		/// </summary>
+		/// <param name="region">The region the agent is attempting to enter</param>
+		/// <param name="agent">The CircuitData of the agent that is attempting to enter</param>
+		/// <param name="isRootAgent">Whether the agent is a root agent or not</param>
+		/// <param name="reason">If it fails, the reason they cannot enter</param>
+		/// <returns></returns>
+		bool IsAuthorizedForRegion (GridRegion region, AgentCircuitData agent, bool isRootAgent,
+		                                 out string reason);
+	}
 
-        public AuthorizationRequest(string ID, string RegionID)
-        {
-            this.ID = ID;
-            this.RegionID = RegionID;
-        }
+	public class AuthorizationRequest
+	{
+		public AuthorizationRequest ()
+		{
+		}
 
-        public AuthorizationRequest(string ID, string FirstName, string SurName, string Email, string RegionID)
-        {
-            this.ID = ID;
-            this.FirstName = FirstName;
-            this.SurName = SurName;
-            this.Email = Email;
-            this.RegionID = RegionID;
-        }
+		public AuthorizationRequest (string ID, string RegionID)
+		{
+			this.ID = ID;
+			this.RegionID = RegionID;
+		}
 
-        public string ID { get; set; }
-        public string FirstName { get; set; }
-        public string SurName { get; set; }
-        public string Email { get; set; }
-        public string RegionID { get; set; }
-    }
+		public AuthorizationRequest (string ID, string FirstName, string SurName, string Email, string RegionID)
+		{
+			this.ID = ID;
+			this.FirstName = FirstName;
+			this.SurName = SurName;
+			this.Email = Email;
+			this.RegionID = RegionID;
+		}
 
-    public class AuthorizationResponse
-    {
-        public AuthorizationResponse()
-        {
-        }
+		public string ID { get; set; }
 
-        public AuthorizationResponse(bool isAuthorized, string message)
-        {
-            IsAuthorized = isAuthorized;
-            Message = message;
-        }
+		public string FirstName { get; set; }
 
-        public bool IsAuthorized { get; set; }
-        public string Message { get; set; }
-    }
+		public string SurName { get; set; }
+
+		public string Email { get; set; }
+
+		public string RegionID { get; set; }
+	}
+
+	public class AuthorizationResponse
+	{
+		public AuthorizationResponse ()
+		{
+		}
+
+		public AuthorizationResponse (bool isAuthorized, string message)
+		{
+			IsAuthorized = isAuthorized;
+			Message = message;
+		}
+
+		public bool IsAuthorized { get; set; }
+
+		public string Message { get; set; }
+	}
 }

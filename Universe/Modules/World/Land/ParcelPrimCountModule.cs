@@ -39,603 +39,567 @@ using Universe.Framework.SceneInfo.Entities;
 
 namespace Universe.Modules.Land
 {
-    public class ParcelCounts
-    {
-        public int Group;
-        public Dictionary<UUID, ISceneEntity> Objects = new Dictionary<UUID, ISceneEntity>();
-        public int Others;
-        public int Owner;
-        public int Selected;
-        public int Temporary;
-        public Dictionary<UUID, int> Users = new Dictionary<UUID, int>();
-    }
+	public class ParcelCounts
+	{
+		public int Group;
+		public Dictionary<UUID, ISceneEntity> Objects = new Dictionary<UUID, ISceneEntity> ();
+		public int Others;
+		public int Owner;
+		public int Selected;
+		public int Temporary;
 
-    public class PrimCountModule : IPrimCountModule, INonSharedRegionModule
-    {
-        readonly Dictionary<UUID, UUID> m_OwnerMap = new Dictionary<UUID, UUID>();
-        readonly Dictionary<UUID, ParcelCounts> m_ParcelCounts = new Dictionary<UUID, ParcelCounts>();
-        readonly Dictionary<UUID, PrimCounts> m_PrimCounts = new Dictionary<UUID, PrimCounts>();
-        readonly Dictionary<UUID, int> m_SimwideCounts = new Dictionary<UUID, int>();
+		public Dictionary<UUID, int> Users =
+			new Dictionary<UUID, int> ();
+	}
 
-        // For now, a simple sim-wide taint to get this up. Later parcel based
-        // taint to allow recounting a parcel if only ownership has changed
-        // without recounting the whole sim.
-        readonly Object m_TaintLock = new Object();
-        IScene m_Scene;
-        bool m_Tainted = true;
+	public class PrimCountModule : IPrimCountModule, INonSharedRegionModule
+	{
+		readonly Dictionary<UUID, UUID> m_OwnerMap =
+			new Dictionary<UUID, UUID> ();
 
-        #region INonSharedRegionModule Members
+		readonly Dictionary<UUID, ParcelCounts> m_ParcelCounts =
+			new Dictionary<UUID, ParcelCounts> ();
 
-        public Type ReplaceableInterface
-        {
-            get { return null; }
-        }
+		readonly Dictionary<UUID, PrimCounts> m_PrimCounts =
+			new Dictionary<UUID, PrimCounts> ();
 
-        public void Initialize(IConfigSource source)
-        {
-        }
+		readonly Dictionary<UUID, int> m_SimwideCounts =
+			new Dictionary<UUID, int> ();
 
-        public void AddRegion(IScene scene)
-        {
-            m_Scene = scene;
+		// For now, a simple sim-wide taint to get this up. Later parcel based
+		// taint to allow recounting a parcel if only ownership has changed
+		// without recounting the whole sim.
+		readonly Object m_TaintLock = new Object ();
+		IScene m_Scene;
+		bool m_Tainted = true;
 
-            scene.RegisterModuleInterface<IPrimCountModule>(this);
+		#region INonSharedRegionModule Members
 
-            m_Scene.EventManager.OnObjectBeingAddedToScene +=
+		public Type ReplaceableInterface {
+			get { return null; }
+		}
+
+		public void Initialize (IConfigSource source)
+		{
+		}
+
+		public void AddRegion (IScene scene)
+		{
+			m_Scene = scene;
+
+			scene.RegisterModuleInterface<IPrimCountModule> (this);
+
+			m_Scene.EventManager.OnObjectBeingAddedToScene +=
                 OnPrimCountAdd;
-            m_Scene.EventManager.OnObjectBeingRemovedFromScene +=
+			m_Scene.EventManager.OnObjectBeingRemovedFromScene +=
                 OnObjectBeingRemovedFromScene;
-            m_Scene.EventManager.OnLandObjectAdded += OnLandObjectAdded;
-            m_Scene.EventManager.OnLandObjectRemoved += OnLandObjectRemoved;
-            m_Scene.UniverseEventManager.RegisterEventHandler("ObjectChangedOwner", OnGenericEvent);
-            m_Scene.UniverseEventManager.RegisterEventHandler("ObjectEnteringNewParcel", OnGenericEvent);
-            m_Scene.EventManager.OnSceneGroupMove += EventManager_OnSceneGroupMove;
-        }
+			m_Scene.EventManager.OnLandObjectAdded += OnLandObjectAdded;
+			m_Scene.EventManager.OnLandObjectRemoved += OnLandObjectRemoved;
+			m_Scene.UniverseEventManager.RegisterEventHandler ("ObjectChangedOwner", OnGenericEvent);
+			m_Scene.UniverseEventManager.RegisterEventHandler ("ObjectEnteringNewParcel", OnGenericEvent);
+			m_Scene.EventManager.OnSceneGroupMove += EventManager_OnSceneGroupMove;
+		}
 
-        bool EventManager_OnSceneGroupMove(UUID groupID, Vector3 pos)
-        {
-            IParcelManagementModule parcelManagment = m_Scene.RequestModuleInterface<IParcelManagementModule>();
-            ILandObject landObject = parcelManagment.GetLandObject(pos.X, pos.Y) ??
-                                     parcelManagment.GetNearestAllowedParcel(UUID.Zero, pos.X, pos.Y);
-            if (landObject == null) return true;
-            ParcelCounts parcelCounts;
-            if ((m_ParcelCounts.TryGetValue(landObject.LandData.GlobalID, out parcelCounts)) &&
-                (!parcelCounts.Objects.ContainsKey(groupID)))
-
-                lock (m_TaintLock)
-                    m_Tainted = true;
+		bool EventManager_OnSceneGroupMove (UUID groupID, Vector3 pos)
+		{
+			IParcelManagementModule parcelManagment = m_Scene.RequestModuleInterface<IParcelManagementModule> ();
+			ILandObject landObject = parcelManagment.GetLandObject (pos.X, pos.Y) ??
+			                                  parcelManagment.GetNearestAllowedParcel (UUID.Zero, pos.X, pos.Y);
+			if (landObject == null)
+				return true;
+			ParcelCounts parcelCounts;
+			if ((m_ParcelCounts.TryGetValue (landObject.LandData.GlobalID, out parcelCounts)) &&
+			             (!parcelCounts.Objects.ContainsKey (groupID)))
+				lock (m_TaintLock)
+					m_Tainted = true;
             
-            return true;
-        }
+			return true;
+		}
 
-        public void RegionLoaded(IScene scene)
-        {
-        }
+		public void RegionLoaded (IScene scene)
+		{
+		}
 
-        public void RemoveRegion(IScene scene)
-        {
-            m_Scene.UnregisterModuleInterface<IPrimCountModule>(this);
+		public void RemoveRegion (IScene scene)
+		{
+			m_Scene.UnregisterModuleInterface<IPrimCountModule> (this);
 
-            m_Scene.EventManager.OnObjectBeingAddedToScene -=
+			m_Scene.EventManager.OnObjectBeingAddedToScene -=
                 OnPrimCountAdd;
-            m_Scene.EventManager.OnObjectBeingRemovedFromScene -=
+			m_Scene.EventManager.OnObjectBeingRemovedFromScene -=
                 OnObjectBeingRemovedFromScene;
-            m_Scene.EventManager.OnLandObjectAdded -= OnLandObjectAdded;
-            m_Scene.EventManager.OnLandObjectRemoved -= OnLandObjectRemoved;
-            m_Scene.UniverseEventManager.UnregisterEventHandler("ObjectChangedOwner", OnGenericEvent);
-            m_Scene.UniverseEventManager.UnregisterEventHandler("ObjectEnteringNewParcel", OnGenericEvent);
-            m_Scene.EventManager.OnSceneGroupMove -= EventManager_OnSceneGroupMove;
-            m_Scene = null;
-        }
-
-        public void Close()
-        {
-        }
-
-        public string Name
-        {
-            get { return "PrimCountModule"; }
-        }
-
-        #endregion
-
-        #region IPrimCountModule Members
-
-        public void TaintPrimCount(ILandObject land)
-        {
-            lock (m_TaintLock)
-                m_Tainted = true;
-        }
-
-        public void TaintPrimCount(int x, int y)
-        {
-            lock (m_TaintLock)
-                m_Tainted = true;
-        }
-
-        public void TaintPrimCount()
-        {
-            lock (m_TaintLock)
-                m_Tainted = true;
-        }
-
-        public int GetParcelMaxPrimCount(ILandObject thisObject)
-        {
-            // Normal Calculations
-            // max = (this Land area) / (calculated region area) * region capacity * bonus  [ bonus is normally = 1 ]
-            return (int) Math.Round(
-                ((float) thisObject.LandData.Area / (m_Scene.RegionInfo.RegionSizeX * m_Scene.RegionInfo.RegionSizeY)) *   
-                m_Scene.RegionInfo.ObjectCapacity * (float) m_Scene.RegionInfo.RegionSettings.ObjectBonus
-            );
-        }
-
-        public IPrimCounts GetPrimCounts(UUID parcelID)
-        {
-            PrimCounts primCounts;
-
-            lock (m_PrimCounts)
-            {
-                if (m_PrimCounts.TryGetValue(parcelID, out primCounts))
-                    return primCounts;
-
-                primCounts = new PrimCounts(parcelID, this);
-                m_PrimCounts[parcelID] = primCounts;
-            }
-            return primCounts;
-        }
-
-        #endregion
-
-        void OnPrimCountAdd(ISceneEntity obj)
-        {
-            // If we're tainted already, don't bother to add. The next
-            // access will cause a recount anyway
-            lock (m_TaintLock)
-            {
-                if (!m_Tainted)
-                    AddObject(obj);
-            }
-        }
-
-        void OnObjectBeingRemovedFromScene(ISceneEntity obj)
-        {
-            // Don't bother to update tainted counts
-            lock (m_TaintLock)
-            {
-                if (!m_Tainted)
-                    RemoveObject(obj);
-            }
-        }
-
-        void OnParcelPrimCountTainted()
-        {
-            lock (m_TaintLock)
-                m_Tainted = true;
-        }
-
-        // NOTE: Call under Taint Lock
-        void AddObject(ISceneEntity obj)
-        {
-            if (obj.IsAttachment)
-                return;
-            if (((obj.RootChild.Flags & PrimFlags.TemporaryOnRez) != 0))
-                return;
-
-            Vector3 pos = obj.AbsolutePosition;
-            ILandObject landObject = m_Scene.RequestModuleInterface<IParcelManagementModule>().GetLandObject(pos.X,
-                                                                                                             pos.Y);
-            if (landObject == null)
-                return;
-            LandData landData = landObject.LandData;
-
-            ParcelCounts parcelCounts;
-            if (m_ParcelCounts.TryGetValue(landData.GlobalID, out parcelCounts))
-            {
-                UUID landOwner = landData.OwnerID;
-
-                parcelCounts.Objects[obj.UUID] = obj;
-                if (!m_SimwideCounts.ContainsKey(landOwner))
-                    m_SimwideCounts.Add(landOwner, 0);
-                m_SimwideCounts[landOwner] += obj.PrimCount;
-
-                if (parcelCounts.Users.ContainsKey(obj.OwnerID))
-                    parcelCounts.Users[obj.OwnerID] += obj.PrimCount;
-                else
-                    parcelCounts.Users[obj.OwnerID] = obj.PrimCount;
-
-                if (landData.IsGroupOwned)
-                {
-                    if (obj.OwnerID == landData.GroupID)
-                        parcelCounts.Owner += obj.PrimCount;
-                    else if (obj.GroupID == landData.GroupID)
-                        parcelCounts.Group += obj.PrimCount;
-                    else
-                        parcelCounts.Others += obj.PrimCount;
-                }
-                else
-                {
-                    if (obj.OwnerID == landData.OwnerID)
-                        parcelCounts.Owner += obj.PrimCount;
-                    else if (obj.GroupID == landData.GroupID)
-                        parcelCounts.Group += obj.PrimCount;
-                    else
-                        parcelCounts.Others += obj.PrimCount;
-                }
-            }
-        }
-
-        // NOTE: Call under Taint Lock
-        void RemoveObject(ISceneEntity obj)
-        {
-            if (obj.IsAttachment)
-                return;
-            if (((obj.RootChild.Flags & PrimFlags.TemporaryOnRez) != 0))
-                return;
-
-            IParcelManagementModule parcelManagment = m_Scene.RequestModuleInterface<IParcelManagementModule>();
-            Vector3 pos = obj.AbsolutePosition;
-            ILandObject landObject = parcelManagment.GetLandObject(pos.X, pos.Y) ??
-                                     parcelManagment.GetNearestAllowedParcel(UUID.Zero, pos.X, pos.Y);
-            if (landObject == null) return;
-            LandData landData = landObject.LandData;
-            ParcelCounts parcelCounts;
-            if (m_ParcelCounts.TryGetValue(landData.GlobalID, out parcelCounts))
-            {
-                UUID landOwner = landData.OwnerID;
-
-                foreach (ISceneChildEntity child in obj.ChildrenEntities())
-                {
-                    bool foundit = false;
-                    if (!parcelCounts.Objects.ContainsKey(child.UUID))
-                    {
-                        //was not found, lets look through all the parcels
-                        foreach (ILandObject parcel in parcelManagment.AllParcels())
-                        {
-                            landData = parcel.LandData;
-                            if (!m_ParcelCounts.TryGetValue(landData.GlobalID, out parcelCounts)) continue;
-                            landOwner = landData.OwnerID;
-                            if (!parcelCounts.Objects.ContainsKey(child.UUID)) continue;
-                            foundit = true;
-                            break;
-                        }
-                    }
-                    else
-                        foundit = true;
-                    if (!foundit) continue;
-                    parcelCounts.Objects.Remove(child.UUID);
-                    if (m_SimwideCounts.ContainsKey(landOwner))
-                        m_SimwideCounts[landOwner] -= 1;
-                    if (parcelCounts.Users.ContainsKey(obj.OwnerID))
-                        parcelCounts.Users[obj.OwnerID] -= 1;
-
-                    if (landData.IsGroupOwned)
-                    {
-                        if (obj.OwnerID == landData.GroupID)
-                            parcelCounts.Owner -= 1;
-                        else if (obj.GroupID == landData.GroupID)
-                            parcelCounts.Group -= 1;
-                        else
-                            parcelCounts.Others -= 1;
-                    }
-                    else
-                    {
-                        if (obj.OwnerID == landData.OwnerID)
-                            parcelCounts.Owner -= 1;
-                        else if (obj.GroupID == landData.GroupID)
-                            parcelCounts.Group -= 1;
-                        else
-                            parcelCounts.Others -= 1;
-                    }
-                }
-            }
-        }
-
-        public Dictionary<UUID, int> GetAllUserCounts(UUID parcelID)
-        {
-            lock (m_TaintLock)
-            {
-                if (m_Tainted)
-                    Recount();
-
-                ParcelCounts counts;
-                if (m_ParcelCounts.TryGetValue(parcelID, out counts))
-                {
-                    return new Dictionary<UUID, int>(counts.Users);
-                }
-            }
-            return new Dictionary<UUID, int>();
-        }
-
-        public List<ISceneEntity> GetParcelObjects(UUID parcelID)
-        {
-            lock (m_TaintLock)
-            {
-                if (m_Tainted)
-                    Recount();
-
-                ParcelCounts counts;
-                if (m_ParcelCounts.TryGetValue(parcelID, out counts))
-                {
-                    return new List<ISceneEntity>(counts.Objects.Values);
-                }
-            }
-            return new List<ISceneEntity>();
-        }
-
-        public int GetOwnerCount(UUID parcelID)
-        {
-            lock (m_TaintLock)
-            {
-                if (m_Tainted)
-                    Recount();
-
-                ParcelCounts counts;
-                if (m_ParcelCounts.TryGetValue(parcelID, out counts))
-                    return counts.Owner;
-            }
-            return 0;
-        }
-
-        public int GetGroupCount(UUID parcelID)
-        {
-            lock (m_TaintLock)
-            {
-                if (m_Tainted)
-                    Recount();
-
-                ParcelCounts counts;
-                if (m_ParcelCounts.TryGetValue(parcelID, out counts))
-                    return counts.Group;
-            }
-            return 0;
-        }
-
-        public int GetOthersCount(UUID parcelID)
-        {
-            lock (m_TaintLock)
-            {
-                if (m_Tainted)
-                    Recount();
-
-                ParcelCounts counts;
-                if (m_ParcelCounts.TryGetValue(parcelID, out counts))
-                    return counts.Others;
-            }
-            return 0;
-        }
-
-        public int GetSelectedCount(UUID parcelID)
-        {
-            lock (m_TaintLock)
-            {
-                if (m_Tainted)
-                    Recount();
-
-                ParcelCounts counts;
-                if (m_ParcelCounts.TryGetValue(parcelID, out counts))
-                    return counts.Selected;
-            }
-            return 0;
-        }
-
-        public int GetSimulatorCount(UUID parcelID)
-        {
-            lock (m_TaintLock)
-            {
-                if (m_Tainted)
-                    Recount();
-
-                UUID owner;
-                if (m_OwnerMap.TryGetValue(parcelID, out owner))
-                {
-                    int val;
-                    if (m_SimwideCounts.TryGetValue(owner, out val))
-                        return val;
-                }
-            }
-            return 0;
-        }
-
-        public int GetTemporaryCount(UUID parcelID)
-        {
-            lock (m_TaintLock)
-            {
-                if (m_Tainted)
-                    Recount();
-
-                ParcelCounts counts;
-                if (m_ParcelCounts.TryGetValue(parcelID, out counts))
-                    return counts.Temporary;
-            }
-            return 0;
-        }
-
-        public int GetUserCount(UUID parcelID, UUID userID)
-        {
-            lock (m_TaintLock)
-            {
-                if (m_Tainted)
-                    Recount();
-
-                ParcelCounts counts;
-                if (m_ParcelCounts.TryGetValue(parcelID, out counts))
-                {
-                    int val;
-                    if (counts.Users.TryGetValue(userID, out val))
-                        return val;
-                }
-            }
-            return 0;
-        }
-
-        // NOTE: This method MUST be called while holding the taint lock!
-        void Recount()
-        {
-            m_OwnerMap.Clear();
-            m_SimwideCounts.Clear();
-            m_ParcelCounts.Clear();
-
-            List<ILandObject> land = m_Scene.RequestModuleInterface<IParcelManagementModule>().AllParcels();
-
-            foreach (LandData landData in land.Select(l => l.LandData))
-            {
-                m_OwnerMap[landData.GlobalID] = landData.OwnerID;
-                m_SimwideCounts[landData.OwnerID] = 0;
-                m_ParcelCounts[landData.GlobalID] = new ParcelCounts();
-            }
-
-            ISceneEntity[] objlist = m_Scene.Entities.GetEntities();
-            foreach (ISceneEntity obj in objlist)
-            {
-                try
-                {
-                    AddObject(obj);
-                }
-                catch (Exception e)
-                {
-                    // Catch it and move on. This includes situations where splist has inconsistent info
-                    MainConsole.Instance.WarnFormat(
-                        "[ParcelPrimCountModule]: Problem processing action in Recount: {0}", e);
-                }
-            }
-
-            List<UUID> primcountKeys = new List<UUID>(m_PrimCounts.Keys);
-
-            foreach (UUID k in primcountKeys.Where(k => !m_OwnerMap.ContainsKey(k)))
-            {
-                m_PrimCounts.Remove(k);
-            }
-
-            m_Tainted = false;
-        }
-
-        void OnLandObjectRemoved(UUID RegionID, UUID globalID)
-        {
-            //Taint everything... we don't know what might have hapened
-            TaintPrimCount();
-        }
-
-        void OnLandObjectAdded(LandData newParcel)
-        {
-            //Taint it!
-            TaintPrimCount(m_Scene.RequestModuleInterface<IParcelManagementModule>().GetLandObject(newParcel.GlobalID));
-        }
-
-        object OnGenericEvent(string FunctionName, object parameters)
-        {
-            if (FunctionName == "ObjectChangedOwner")
-            {
-                TaintPrimCount((int) ((ISceneEntity) parameters).AbsolutePosition.X,
-                               (int) ((ISceneEntity) parameters).AbsolutePosition.Y);
-            }
-            else if (FunctionName == "ObjectEnteringNewParcel")
-            {
-                //Taint the parcels
-                //SceneObjectGroup grp = (((Object[])parameters)[0]) as SceneObjectGroup;
-                UUID newParcel = (UUID) (((Object[]) parameters)[1]);
-                UUID oldParcel = (UUID) (((Object[]) parameters)[2]);
-                ILandObject oldlandObject =
-                    m_Scene.RequestModuleInterface<IParcelManagementModule>().GetLandObject(oldParcel);
-                ILandObject newlandObject =
-                    m_Scene.RequestModuleInterface<IParcelManagementModule>().GetLandObject(newParcel);
-
-                TaintPrimCount(oldlandObject);
-                TaintPrimCount(newlandObject);
-            }
-            return null;
-        }
-    }
-
-    public class PrimCounts : IPrimCounts
-    {
-        readonly UUID m_ParcelID;
-        readonly PrimCountModule m_Parent;
-        readonly UserPrimCounts m_UserPrimCounts;
-
-        public PrimCounts(UUID parcelID, PrimCountModule parent)
-        {
-            m_ParcelID = parcelID;
-            m_Parent = parent;
-
-            m_UserPrimCounts = new UserPrimCounts(this);
-        }
-
-        #region IPrimCounts Members
-
-        public int Owner
-        {
-            get { return m_Parent.GetOwnerCount(m_ParcelID); }
-        }
-
-        public int Group
-        {
-            get { return m_Parent.GetGroupCount(m_ParcelID); }
-        }
-
-        public List<ISceneEntity> Objects
-        {
-            get { return m_Parent.GetParcelObjects(m_ParcelID); }
-        }
-
-        public int Others
-        {
-            get { return m_Parent.GetOthersCount(m_ParcelID); }
-        }
-
-        public int Selected
-        {
-            get { return m_Parent.GetSelectedCount(m_ParcelID); }
-        }
-
-        public int Simulator
-        {
-            get { return m_Parent.GetSimulatorCount(m_ParcelID); }
-        }
-
-        public int Temporary
-        {
-            get { return m_Parent.GetTemporaryCount(m_ParcelID); }
-        }
-
-        public int Total
-        {
-            get { return Group + Owner + Others; }
-        }
-
-        public IUserPrimCounts Users
-        {
-            get { return m_UserPrimCounts; }
-        }
-
-        public Dictionary<UUID, int> GetAllUserCounts()
-        {
-            return m_Parent.GetAllUserCounts(m_ParcelID);
-        }
-
-        #endregion
-
-        public int GetUserCount(UUID userID)
-        {
-            return m_Parent.GetUserCount(m_ParcelID, userID);
-        }
-    }
-
-    public class UserPrimCounts : IUserPrimCounts
-    {
-        readonly PrimCounts m_Parent;
-
-        public UserPrimCounts(PrimCounts parent)
-        {
-            m_Parent = parent;
-        }
-
-        #region IUserPrimCounts Members
-
-        public int this[UUID userID]
-        {
-            get { return m_Parent.GetUserCount(userID); }
-        }
-
-        #endregion
-    }
+			m_Scene.EventManager.OnLandObjectAdded -= OnLandObjectAdded;
+			m_Scene.EventManager.OnLandObjectRemoved -= OnLandObjectRemoved;
+			m_Scene.UniverseEventManager.UnregisterEventHandler ("ObjectChangedOwner", OnGenericEvent);
+			m_Scene.UniverseEventManager.UnregisterEventHandler ("ObjectEnteringNewParcel", OnGenericEvent);
+			m_Scene.EventManager.OnSceneGroupMove -= EventManager_OnSceneGroupMove;
+			m_Scene = null;
+		}
+
+		public void Close ()
+		{
+		}
+
+		public string Name {
+			get { return "PrimCountModule"; }
+		}
+
+		#endregion
+
+		#region IPrimCountModule Members
+
+		public void TaintPrimCount (ILandObject land)
+		{
+			lock (m_TaintLock)
+				m_Tainted = true;
+		}
+
+		public void TaintPrimCount (int x, int y)
+		{
+			lock (m_TaintLock)
+				m_Tainted = true;
+		}
+
+		public void TaintPrimCount ()
+		{
+			lock (m_TaintLock)
+				m_Tainted = true;
+		}
+
+		public int GetParcelMaxPrimCount (ILandObject thisObject)
+		{
+			// Normal Calculations
+			// max = (this Land area) / (calculated region area) * region capacity * bonus  [ bonus is normally = 1 ]
+			return (int)Math.Round (
+				((float)thisObject.LandData.Area / (m_Scene.RegionInfo.RegionSizeX * m_Scene.RegionInfo.RegionSizeY)) *
+				m_Scene.RegionInfo.ObjectCapacity * (float)m_Scene.RegionInfo.RegionSettings.ObjectBonus
+			);
+		}
+
+		public IPrimCounts GetPrimCounts (UUID parcelID)
+		{
+			PrimCounts primCounts;
+
+			lock (m_PrimCounts) {
+				if (m_PrimCounts.TryGetValue (parcelID, out primCounts))
+					return primCounts;
+
+				primCounts = new PrimCounts (parcelID, this);
+				m_PrimCounts [parcelID] = primCounts;
+			}
+			return primCounts;
+		}
+
+		#endregion
+
+		void OnPrimCountAdd (ISceneEntity obj)
+		{
+			// If we're tainted already, don't bother to add. The next
+			// access will cause a recount anyway
+			lock (m_TaintLock) {
+				if (!m_Tainted)
+					AddObject (obj);
+			}
+		}
+
+		void OnObjectBeingRemovedFromScene (ISceneEntity obj)
+		{
+			// Don't bother to update tainted counts
+			lock (m_TaintLock) {
+				if (!m_Tainted)
+					RemoveObject (obj);
+			}
+		}
+
+		void OnParcelPrimCountTainted ()
+		{
+			lock (m_TaintLock)
+				m_Tainted = true;
+		}
+
+		// NOTE: Call under Taint Lock
+		void AddObject (ISceneEntity obj)
+		{
+			if (obj.IsAttachment)
+				return;
+			if (((obj.RootChild.Flags & PrimFlags.TemporaryOnRez) != 0))
+				return;
+
+			Vector3 pos = obj.AbsolutePosition;
+			ILandObject landObject = m_Scene.RequestModuleInterface<IParcelManagementModule> ().GetLandObject (pos.X,
+				                                  pos.Y);
+			if (landObject == null)
+				return;
+			LandData landData = landObject.LandData;
+
+			ParcelCounts parcelCounts;
+			if (m_ParcelCounts.TryGetValue (landData.GlobalID, out parcelCounts)) {
+				UUID landOwner = landData.OwnerID;
+
+				parcelCounts.Objects [obj.UUID] = obj;
+				if (!m_SimwideCounts.ContainsKey (landOwner))
+					m_SimwideCounts.Add (landOwner, 0);
+				m_SimwideCounts [landOwner] += obj.PrimCount;
+
+				if (parcelCounts.Users.ContainsKey (obj.OwnerID))
+					parcelCounts.Users [obj.OwnerID] += obj.PrimCount;
+				else
+					parcelCounts.Users [obj.OwnerID] = obj.PrimCount;
+
+				if (landData.IsGroupOwned) {
+					if (obj.OwnerID == landData.GroupID)
+						parcelCounts.Owner += obj.PrimCount;
+					else if (obj.GroupID == landData.GroupID)
+						parcelCounts.Group += obj.PrimCount;
+					else
+						parcelCounts.Others += obj.PrimCount;
+				} else {
+					if (obj.OwnerID == landData.OwnerID)
+						parcelCounts.Owner += obj.PrimCount;
+					else if (obj.GroupID == landData.GroupID)
+						parcelCounts.Group += obj.PrimCount;
+					else
+						parcelCounts.Others += obj.PrimCount;
+				}
+			}
+		}
+
+		// NOTE: Call under Taint Lock
+		void RemoveObject (ISceneEntity obj)
+		{
+			if (obj.IsAttachment)
+				return;
+			if (((obj.RootChild.Flags & PrimFlags.TemporaryOnRez) != 0))
+				return;
+
+			IParcelManagementModule parcelManagment = m_Scene.RequestModuleInterface<IParcelManagementModule> ();
+			Vector3 pos = obj.AbsolutePosition;
+			ILandObject landObject = parcelManagment.GetLandObject (pos.X, pos.Y) ??
+			                                  parcelManagment.GetNearestAllowedParcel (UUID.Zero, pos.X, pos.Y);
+			if (landObject == null)
+				return;
+			LandData landData = landObject.LandData;
+			ParcelCounts parcelCounts;
+			if (m_ParcelCounts.TryGetValue (landData.GlobalID, out parcelCounts)) {
+				UUID landOwner = landData.OwnerID;
+
+				foreach (ISceneChildEntity child in obj.ChildrenEntities()) {
+					bool foundit = false;
+					if (!parcelCounts.Objects.ContainsKey (child.UUID)) {
+						//was not found, lets look through all the parcels
+						foreach (ILandObject parcel in parcelManagment.AllParcels()) {
+							landData = parcel.LandData;
+							if (!m_ParcelCounts.TryGetValue (landData.GlobalID, out parcelCounts))
+								continue;
+							landOwner = landData.OwnerID;
+							if (!parcelCounts.Objects.ContainsKey (child.UUID))
+								continue;
+							foundit = true;
+							break;
+						}
+					} else
+						foundit = true;
+					if (!foundit)
+						continue;
+					parcelCounts.Objects.Remove (child.UUID);
+					if (m_SimwideCounts.ContainsKey (landOwner))
+						m_SimwideCounts [landOwner] -= 1;
+					if (parcelCounts.Users.ContainsKey (obj.OwnerID))
+						parcelCounts.Users [obj.OwnerID] -= 1;
+
+					if (landData.IsGroupOwned) {
+						if (obj.OwnerID == landData.GroupID)
+							parcelCounts.Owner -= 1;
+						else if (obj.GroupID == landData.GroupID)
+							parcelCounts.Group -= 1;
+						else
+							parcelCounts.Others -= 1;
+					} else {
+						if (obj.OwnerID == landData.OwnerID)
+							parcelCounts.Owner -= 1;
+						else if (obj.GroupID == landData.GroupID)
+							parcelCounts.Group -= 1;
+						else
+							parcelCounts.Others -= 1;
+					}
+				}
+			}
+		}
+
+		public Dictionary<UUID, int> GetAllUserCounts (UUID parcelID)
+		{
+			lock (m_TaintLock) {
+				if (m_Tainted)
+					Recount ();
+
+				ParcelCounts counts;
+				if (m_ParcelCounts.TryGetValue (parcelID, out counts)) {
+					return new Dictionary<UUID, int> (counts.Users);
+				}
+			}
+			return new Dictionary<UUID, int> ();
+		}
+
+		public List<ISceneEntity> GetParcelObjects (UUID parcelID)
+		{
+			lock (m_TaintLock) {
+				if (m_Tainted)
+					Recount ();
+
+				ParcelCounts counts;
+				if (m_ParcelCounts.TryGetValue (parcelID, out counts)) {
+					return new List<ISceneEntity> (counts.Objects.Values);
+				}
+			}
+			return new List<ISceneEntity> ();
+		}
+
+		public int GetOwnerCount (UUID parcelID)
+		{
+			lock (m_TaintLock) {
+				if (m_Tainted)
+					Recount ();
+
+				ParcelCounts counts;
+				if (m_ParcelCounts.TryGetValue (parcelID, out counts))
+					return counts.Owner;
+			}
+			return 0;
+		}
+
+		public int GetGroupCount (UUID parcelID)
+		{
+			lock (m_TaintLock) {
+				if (m_Tainted)
+					Recount ();
+
+				ParcelCounts counts;
+				if (m_ParcelCounts.TryGetValue (parcelID, out counts))
+					return counts.Group;
+			}
+			return 0;
+		}
+
+		public int GetOthersCount (UUID parcelID)
+		{
+			lock (m_TaintLock) {
+				if (m_Tainted)
+					Recount ();
+
+				ParcelCounts counts;
+				if (m_ParcelCounts.TryGetValue (parcelID, out counts))
+					return counts.Others;
+			}
+			return 0;
+		}
+
+		public int GetSelectedCount (UUID parcelID)
+		{
+			lock (m_TaintLock) {
+				if (m_Tainted)
+					Recount ();
+
+				ParcelCounts counts;
+				if (m_ParcelCounts.TryGetValue (parcelID, out counts))
+					return counts.Selected;
+			}
+			return 0;
+		}
+
+		public int GetSimulatorCount (UUID parcelID)
+		{
+			lock (m_TaintLock) {
+				if (m_Tainted)
+					Recount ();
+
+				UUID owner;
+				if (m_OwnerMap.TryGetValue (parcelID, out owner)) {
+					int val;
+					if (m_SimwideCounts.TryGetValue (owner, out val))
+						return val;
+				}
+			}
+			return 0;
+		}
+
+		public int GetTemporaryCount (UUID parcelID)
+		{
+			lock (m_TaintLock) {
+				if (m_Tainted)
+					Recount ();
+
+				ParcelCounts counts;
+				if (m_ParcelCounts.TryGetValue (parcelID, out counts))
+					return counts.Temporary;
+			}
+			return 0;
+		}
+
+		public int GetUserCount (UUID parcelID, UUID userID)
+		{
+			lock (m_TaintLock) {
+				if (m_Tainted)
+					Recount ();
+
+				ParcelCounts counts;
+				if (m_ParcelCounts.TryGetValue (parcelID, out counts)) {
+					int val;
+					if (counts.Users.TryGetValue (userID, out val))
+						return val;
+				}
+			}
+			return 0;
+		}
+
+		// NOTE: This method MUST be called while holding the taint lock!
+		void Recount ()
+		{
+			m_OwnerMap.Clear ();
+			m_SimwideCounts.Clear ();
+			m_ParcelCounts.Clear ();
+
+			List<ILandObject> land = m_Scene.RequestModuleInterface<IParcelManagementModule> ().AllParcels ();
+
+			foreach (LandData landData in land.Select(l => l.LandData)) {
+				m_OwnerMap [landData.GlobalID] = landData.OwnerID;
+				m_SimwideCounts [landData.OwnerID] = 0;
+				m_ParcelCounts [landData.GlobalID] = new ParcelCounts ();
+			}
+
+			ISceneEntity[] objlist = m_Scene.Entities.GetEntities ();
+			foreach (ISceneEntity obj in objlist) {
+				try {
+					AddObject (obj);
+				} catch (Exception e) {
+					// Catch it and move on. This includes situations where splist has inconsistent info
+					MainConsole.Instance.WarnFormat (
+						"[ParcelPrimCountModule]: Problem processing action in Recount: {0}", e);
+				}
+			}
+
+			List<UUID> primcountKeys = new List<UUID> (m_PrimCounts.Keys);
+
+			foreach (UUID k in primcountKeys.Where(k => !m_OwnerMap.ContainsKey(k))) {
+				m_PrimCounts.Remove (k);
+			}
+
+			m_Tainted = false;
+		}
+
+		void OnLandObjectRemoved (UUID RegionID, UUID globalID)
+		{
+			//Taint everything... we don't know what might have hapened
+			TaintPrimCount ();
+		}
+
+		void OnLandObjectAdded (LandData newParcel)
+		{
+			//Taint it!
+			TaintPrimCount (m_Scene.RequestModuleInterface<IParcelManagementModule> ().GetLandObject (newParcel.GlobalID));
+		}
+
+		object OnGenericEvent (string FunctionName, object parameters)
+		{
+			if (FunctionName == "ObjectChangedOwner") {
+				TaintPrimCount ((int)((ISceneEntity)parameters).AbsolutePosition.X,
+					(int)((ISceneEntity)parameters).AbsolutePosition.Y);
+			} else if (FunctionName == "ObjectEnteringNewParcel") {
+				//Taint the parcels
+				//SceneObjectGroup grp = (((Object[])parameters)[0]) as SceneObjectGroup;
+				UUID newParcel = (UUID)(((Object[])parameters) [1]);
+				UUID oldParcel = (UUID)(((Object[])parameters) [2]);
+				ILandObject oldlandObject =
+					m_Scene.RequestModuleInterface<IParcelManagementModule> ().GetLandObject (oldParcel);
+				ILandObject newlandObject =
+					m_Scene.RequestModuleInterface<IParcelManagementModule> ().GetLandObject (newParcel);
+
+				TaintPrimCount (oldlandObject);
+				TaintPrimCount (newlandObject);
+			}
+			return null;
+		}
+	}
+
+	public class PrimCounts : IPrimCounts
+	{
+		readonly UUID m_ParcelID;
+		readonly PrimCountModule m_Parent;
+		readonly UserPrimCounts m_UserPrimCounts;
+
+		public PrimCounts (UUID parcelID, PrimCountModule parent)
+		{
+			m_ParcelID = parcelID;
+			m_Parent = parent;
+
+			m_UserPrimCounts = new UserPrimCounts (this);
+		}
+
+		#region IPrimCounts Members
+
+		public int Owner {
+			get { return m_Parent.GetOwnerCount (m_ParcelID); }
+		}
+
+		public int Group {
+			get { return m_Parent.GetGroupCount (m_ParcelID); }
+		}
+
+		public List<ISceneEntity> Objects {
+			get { return m_Parent.GetParcelObjects (m_ParcelID); }
+		}
+
+		public int Others {
+			get { return m_Parent.GetOthersCount (m_ParcelID); }
+		}
+
+		public int Selected {
+			get { return m_Parent.GetSelectedCount (m_ParcelID); }
+		}
+
+		public int Simulator {
+			get { return m_Parent.GetSimulatorCount (m_ParcelID); }
+		}
+
+		public int Temporary {
+			get { return m_Parent.GetTemporaryCount (m_ParcelID); }
+		}
+
+		public int Total {
+			get { return Group + Owner + Others; }
+		}
+
+		public IUserPrimCounts Users {
+			get { return m_UserPrimCounts; }
+		}
+
+		public Dictionary<UUID, int> GetAllUserCounts ()
+		{
+			return m_Parent.GetAllUserCounts (m_ParcelID);
+		}
+
+		#endregion
+
+		public int GetUserCount (UUID userID)
+		{
+			return m_Parent.GetUserCount (m_ParcelID, userID);
+		}
+	}
+
+	public class UserPrimCounts : IUserPrimCounts
+	{
+		readonly PrimCounts m_Parent;
+
+		public UserPrimCounts (PrimCounts parent)
+		{
+			m_Parent = parent;
+		}
+
+		#region IUserPrimCounts Members
+
+		public int this [UUID userID] {
+			get { return m_Parent.GetUserCount (userID); }
+		}
+
+		#endregion
+	}
 }

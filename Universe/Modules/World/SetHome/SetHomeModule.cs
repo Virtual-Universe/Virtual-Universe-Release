@@ -45,172 +45,158 @@ using Universe.Framework.Utilities;
 
 namespace Universe.Modules.SetHome
 {
-    public class SetHomeModule : INonSharedRegionModule
-    {
-        private IScene m_scene;
+	public class SetHomeModule : INonSharedRegionModule
+	{
+		private IScene m_scene;
 
-        #region INonSharedRegionModule Members
+		#region INonSharedRegionModule Members
 
-        public void Initialize(IConfigSource pSource)
-        {
-        }
+		public void Initialize (IConfigSource pSource)
+		{
+		}
 
-        public void AddRegion(IScene scene)
-        {
-            m_scene = scene;
-            m_scene.EventManager.OnNewClient += EventManager_OnNewClient;
-            m_scene.EventManager.OnClosingClient += EventManager_OnClosingClient;
-            m_scene.EventManager.OnRegisterCaps += RegisterCaps;
-        }
+		public void AddRegion (IScene scene)
+		{
+			m_scene = scene;
+			m_scene.EventManager.OnNewClient += EventManager_OnNewClient;
+			m_scene.EventManager.OnClosingClient += EventManager_OnClosingClient;
+			m_scene.EventManager.OnRegisterCaps += RegisterCaps;
+		}
 
-        public void RemoveRegion(IScene scene)
-        {
-            m_scene.EventManager.OnRegisterCaps -= RegisterCaps;
-            m_scene.EventManager.OnNewClient -= EventManager_OnNewClient;
-            m_scene.EventManager.OnClosingClient -= EventManager_OnClosingClient;
-        }
+		public void RemoveRegion (IScene scene)
+		{
+			m_scene.EventManager.OnRegisterCaps -= RegisterCaps;
+			m_scene.EventManager.OnNewClient -= EventManager_OnNewClient;
+			m_scene.EventManager.OnClosingClient -= EventManager_OnClosingClient;
+		}
 
-        public void RegionLoaded(IScene scene)
-        {
-        }
+		public void RegionLoaded (IScene scene)
+		{
+		}
 
-        public Type ReplaceableInterface
-        {
-            get { return null; }
-        }
+		public Type ReplaceableInterface {
+			get { return null; }
+		}
 
-        public string Name
-        {
-            get { return "SetHomeModule"; }
-        }
+		public string Name {
+			get { return "SetHomeModule"; }
+		}
 
-        public void Close()
-        {
-        }
+		public void Close ()
+		{
+		}
 
-        #endregion
+		#endregion
 
-        private void EventManager_OnNewClient(IClientAPI client)
-        {
-            client.OnSetStartLocationRequest += SetHomeRezPoint;
-        }
+		private void EventManager_OnNewClient (IClientAPI client)
+		{
+			client.OnSetStartLocationRequest += SetHomeRezPoint;
+		}
 
-        private void EventManager_OnClosingClient(IClientAPI client)
-        {
-            client.OnSetStartLocationRequest -= SetHomeRezPoint;
-        }
+		private void EventManager_OnClosingClient (IClientAPI client)
+		{
+			client.OnSetStartLocationRequest -= SetHomeRezPoint;
+		}
 
-        public OSDMap RegisterCaps(UUID agentID, IHttpServer server)
-        {
-            OSDMap retVal = new OSDMap();
+		public OSDMap RegisterCaps (UUID agentID, IHttpServer server)
+		{
+			OSDMap retVal = new OSDMap ();
 
-            retVal["CopyInventoryFromNotecard"] = CapsUtil.CreateCAPS("CopyInventoryFromNotecard", "");
+			retVal ["CopyInventoryFromNotecard"] = CapsUtil.CreateCAPS ("CopyInventoryFromNotecard", "");
 
-            server.AddStreamHandler(new GenericStreamHandler("POST", retVal["CopyInventoryFromNotecard"],
-                                                             delegate(string path, Stream request,
-                                                                      OSHttpRequest httpRequest,
-                                                                      OSHttpResponse httpResponse)
-                                                                 { return CopyInventoryFromNotecard(request, agentID); }));
-            return retVal;
-        }
+			server.AddStreamHandler (new GenericStreamHandler ("POST", retVal ["CopyInventoryFromNotecard"],
+				delegate(string path, Stream request,
+				                                                                  OSHttpRequest httpRequest,
+				                                                                  OSHttpResponse httpResponse) {
+					return CopyInventoryFromNotecard (request, agentID);
+				}));
+			return retVal;
+		}
 
-        private byte[] CopyInventoryFromNotecard(Stream request, UUID agentID)
-        {
-            OSDMap rm = (OSDMap) OSDParser.DeserializeLLSDXml(HttpServerHandlerHelpers.ReadFully(request));
-            UUID FolderID = rm["folder-id"].AsUUID();
-            UUID ItemID = rm["item-id"].AsUUID();
-            UUID NotecardID = rm["notecard-id"].AsUUID();
-            UUID ObjectID = rm["object-id"].AsUUID();
-            UUID notecardAssetID = UUID.Zero;
-            if (ObjectID != UUID.Zero)
-            {
-                ISceneChildEntity part = m_scene.GetSceneObjectPart(ObjectID);
-                if (part != null)
-                {
-                    TaskInventoryItem item = part.Inventory.GetInventoryItem(NotecardID);
-                    if (m_scene.Permissions.CanCopyObjectInventory(NotecardID, ObjectID, agentID))
-                        notecardAssetID = item.AssetID;
-                }
-            }
-            else
-                notecardAssetID = m_scene.InventoryService.GetItemAssetID(agentID, NotecardID);
-            if (notecardAssetID != UUID.Zero)
-            {
-                byte[] asset = m_scene.AssetService.GetData(notecardAssetID.ToString());
-                if (asset != null)
-                {
-                    AssetNotecard noteCardAsset = new AssetNotecard(UUID.Zero, asset);
-                    noteCardAsset.Decode();
-                    bool found = false;
-                    UUID lastOwnerID = UUID.Zero;
-                    foreach (
+		private byte[] CopyInventoryFromNotecard (Stream request, UUID agentID)
+		{
+			OSDMap rm = (OSDMap)OSDParser.DeserializeLLSDXml (HttpServerHandlerHelpers.ReadFully (request));
+			UUID FolderID = rm ["folder-id"].AsUUID ();
+			UUID ItemID = rm ["item-id"].AsUUID ();
+			UUID NotecardID = rm ["notecard-id"].AsUUID ();
+			UUID ObjectID = rm ["object-id"].AsUUID ();
+			UUID notecardAssetID = UUID.Zero;
+			if (ObjectID != UUID.Zero) {
+				ISceneChildEntity part = m_scene.GetSceneObjectPart (ObjectID);
+				if (part != null) {
+					TaskInventoryItem item = part.Inventory.GetInventoryItem (NotecardID);
+					if (m_scene.Permissions.CanCopyObjectInventory (NotecardID, ObjectID, agentID))
+						notecardAssetID = item.AssetID;
+				}
+			} else
+				notecardAssetID = m_scene.InventoryService.GetItemAssetID (agentID, NotecardID);
+			if (notecardAssetID != UUID.Zero) {
+				byte[] asset = m_scene.AssetService.GetData (notecardAssetID.ToString ());
+				if (asset != null) {
+					AssetNotecard noteCardAsset = new AssetNotecard (UUID.Zero, asset);
+					noteCardAsset.Decode ();
+					bool found = false;
+					UUID lastOwnerID = UUID.Zero;
+					foreach (
                         InventoryItem notecardObjectItem in
-                            noteCardAsset.EmbeddedItems.Where(notecardObjectItem => notecardObjectItem.UUID == ItemID))
-                    {
-                        //Make sure that it exists
-                        found = true;
-                        lastOwnerID = notecardObjectItem.OwnerID;
-                        break;
-                    }
-                    if (found)
-                    {
-                        m_scene.InventoryService.GiveInventoryItemAsync(agentID, lastOwnerID, ItemID, FolderID, false,
-                                                                        (item) =>
-                                                                            {
-                                                                                IClientAPI client;
-                                                                                m_scene.ClientManager.TryGetValue(
-                                                                                    agentID, out client);
-                                                                                if (item != null)
-                                                                                    client.SendBulkUpdateInventory(item);
-                                                                                else
-                                                                                    client.SendAlertMessage(
-                                                                                        "Failed to retrieve item");
-                                                                            });
-                    }
-                }
-            }
+                            noteCardAsset.EmbeddedItems.Where(notecardObjectItem => notecardObjectItem.UUID == ItemID)) {
+						//Make sure that it exists
+						found = true;
+						lastOwnerID = notecardObjectItem.OwnerID;
+						break;
+					}
+					if (found) {
+						m_scene.InventoryService.GiveInventoryItemAsync (agentID, lastOwnerID, ItemID, FolderID, false,
+							(item) => {
+								IClientAPI client;
+								m_scene.ClientManager.TryGetValue (
+									agentID, out client);
+								if (item != null)
+									client.SendBulkUpdateInventory (item);
+								else
+									client.SendAlertMessage (
+										"Failed to retrieve item");
+							});
+					}
+				}
+			}
 
-            return new byte[0];
-        }
+			return new byte[0];
+		}
 
-        /// <summary>
-        ///     Sets the Home Point. The LoginService uses this to know where to put a user when they log-in
-        /// </summary>
-        /// <param name="remoteClient"></param>
-        /// <param name="regionHandle"></param>
-        /// <param name="position"></param>
-        /// <param name="lookAt"></param>
-        /// <param name="flags"></param>
-        public void SetHomeRezPoint(IClientAPI remoteClient, ulong regionHandle, Vector3 position, Vector3 lookAt,
-                                    uint flags)
-        {
-            IScene scene = remoteClient.Scene;
+		/// <summary>
+		///     Sets the Home Point. The LoginService uses this to know where to put a user when they log-in
+		/// </summary>
+		/// <param name="remoteClient"></param>
+		/// <param name="regionHandle"></param>
+		/// <param name="position"></param>
+		/// <param name="lookAt"></param>
+		/// <param name="flags"></param>
+		public void SetHomeRezPoint (IClientAPI remoteClient, ulong regionHandle, Vector3 position, Vector3 lookAt,
+		                                  uint flags)
+		{
+			IScene scene = remoteClient.Scene;
 
-            IScenePresence SP = scene.GetScenePresence(remoteClient.AgentId);
-            IDialogModule module = scene.RequestModuleInterface<IDialogModule>();
+			IScenePresence SP = scene.GetScenePresence (remoteClient.AgentId);
+			IDialogModule module = scene.RequestModuleInterface<IDialogModule> ();
 
-            if (SP != null)
-            {
-                if (scene.Permissions.CanSetHome(SP.UUID))
-                {
-                    IAvatarAppearanceModule appearance = SP.RequestModuleInterface<IAvatarAppearanceModule>();
-                    position.Z += appearance.Appearance.AvatarHeight/2;
-                    IAgentInfoService agentInfoService = scene.RequestModuleInterface<IAgentInfoService>();
-                    if (agentInfoService != null &&
-                        agentInfoService.SetHomePosition(remoteClient.AgentId.ToString(), scene.RegionInfo.RegionID,
-                                                         position, lookAt) &&
-                        module != null) //Do this last so it doesn't screw up the rest
-                    {
-                        // FUBAR ALERT: this needs to be "Home position set." so the viewer saves a home-screenshot.
-                        module.SendAlertToUser(remoteClient, "Home position set.");
-                    }
-                    else if (module != null)
-                        module.SendAlertToUser(remoteClient, "Set Home request failed.");
-                }
-                else if (module != null)
-                    module.SendAlertToUser(remoteClient,
-                                           "Set Home request failed: Permissions do not allow the setting of home here.");
-            }
-        }
-    }
+			if (SP != null) {
+				if (scene.Permissions.CanSetHome (SP.UUID)) {
+					IAvatarAppearanceModule appearance = SP.RequestModuleInterface<IAvatarAppearanceModule> ();
+					position.Z += appearance.Appearance.AvatarHeight / 2;
+					IAgentInfoService agentInfoService = scene.RequestModuleInterface<IAgentInfoService> ();
+					if (agentInfoService != null &&
+					                   agentInfoService.SetHomePosition (remoteClient.AgentId.ToString (), scene.RegionInfo.RegionID,
+						                   position, lookAt) &&
+					                   module != null) { //Do this last so it doesn't screw up the rest
+						// FUBAR ALERT: this needs to be "Home position set." so the viewer saves a home-screenshot.
+						module.SendAlertToUser (remoteClient, "Home position set.");
+					} else if (module != null)
+						module.SendAlertToUser (remoteClient, "Set Home request failed.");
+				} else if (module != null)
+					module.SendAlertToUser (remoteClient,
+						"Set Home request failed: Permissions do not allow the setting of home here.");
+			}
+		}
+	}
 }

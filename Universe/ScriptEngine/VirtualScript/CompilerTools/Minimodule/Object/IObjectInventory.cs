@@ -32,11 +32,11 @@ using OpenMetaverse;
 
 namespace Universe.ScriptEngine.VirtualScript.MiniModule
 {
-    /// <summary>
-    ///     This implements the methods necessary to operate on the inventory of an object
-    /// </summary>
-    public interface IObjectInventory : IDictionary<UUID, IInventoryItem>
-    {
-        IInventoryItem this[string name] { get; }
-    }
+	/// <summary>
+	///     This implements the methods necessary to operate on the inventory of an object
+	/// </summary>
+	public interface IObjectInventory : IDictionary<UUID, IInventoryItem>
+	{
+		IInventoryItem this [string name] { get; }
+	}
 }

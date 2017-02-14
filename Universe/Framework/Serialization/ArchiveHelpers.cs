@@ -35,74 +35,81 @@ using Universe.Framework.SceneInfo.Entities;
 
 namespace Universe.Framework.Serialization
 {
-    /// <summary>
-    ///     Helper methods for archive manipulation
-    /// </summary>
-    /// This is a separate class from ArchiveConstants because we need to bring in very OpenSim specific classes.
-    public static class ArchiveHelpers
-    {
-        /// <summary>
-        ///     Create the filename used for objects in OpenSim/Universe Archives.
-        /// </summary>
-        /// <param name="sog"></param>
-        /// <returns></returns>
-        public static string CreateObjectFilename (ISceneEntity sog)
-        {
-            return ArchiveConstants.CreateOarObjectFilename (sog.Name, sog.UUID, sog.AbsolutePosition);
-        }
+	/// <summary>
+	///     Helper methods for archive manipulation
+	/// </summary>
+	/// This is a separate class from ArchiveConstants because we need to bring in very OpenSim specific classes.
+	public static class ArchiveHelpers
+	{
+		/// <summary>
+		///     Create the filename used for objects in OpenSim/Universe Archives.
+		/// </summary>
+		/// <param name="sog"></param>
+		/// <returns></returns>
+		public static string CreateObjectFilename (ISceneEntity sog)
+		{
+			return ArchiveConstants.CreateOarObjectFilename (sog.Name, sog.UUID, sog.AbsolutePosition);
+		}
 
-        /// <summary>
-        ///     Create the path used to store an object in an OpenSim Archive.
-        /// </summary>
-        /// <param name="sog"></param>
-        /// <returns></returns>
-        public static string CreateObjectPath (ISceneEntity sog)
-        {
-            return ArchiveConstants.CreateOarObjectPath (sog.Name, sog.UUID, sog.AbsolutePosition);
-        }
+		/// <summary>
+		///     Create the path used to store an object in an OpenSim Archive.
+		/// </summary>
+		/// <param name="sog"></param>
+		/// <returns></returns>
+		public static string CreateObjectPath (ISceneEntity sog)
+		{
+			return ArchiveConstants.CreateOarObjectPath (sog.Name, sog.UUID, sog.AbsolutePosition);
+		}
 
-        /// <summary>
-        ///     Resolve path to a working FileStream
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        public static Stream GetStream (string path)
-        {
-            if (File.Exists (path)) {
-                return new FileStream (path, FileMode.Open, FileAccess.Read);
-            }
-            try {
-                Uri uri = new Uri (path);
-                if (uri.Scheme == "file") {
-                    return new FileStream (uri.AbsolutePath, FileMode.Open, FileAccess.Read);
-                }
-                if (uri.Scheme != "http" && uri.Scheme != "https")
-                    MainConsole.Instance.Error (string.Format ("Unsupported URI scheme ({0})", path));
+		/// <summary>
+		///     Resolve path to a working FileStream
+		/// </summary>
+		/// <param name="path"></param>
+		/// <returns></returns>
+		public static Stream GetStream (string path)
+		{
+			if (File.Exists (path)) {
+				return new FileStream (path, FileMode.Open, FileAccess.Read);
+			}
+			try {
+				Uri uri = new Uri (path);
+				if (uri.Scheme == "file") {
+					return new FileStream (uri.AbsolutePath, FileMode.Open, FileAccess.Read);
+				}
+				if (uri.Scheme != "http" && uri.Scheme != "https")
+					MainConsole.Instance.Error (string.Format ("Unsupported URI scheme ({0})", path));
 
-                // OK, now we know we have an HTTP URI to work with
-                return URIFetch (uri);
-            } catch (UriFormatException) {
-                // In many cases the user will put in a plain old filename that cannot be found so assume that
-                // this is the problem rather than confusing the issue with a UriFormatException
-                return null;
-            }
-        }
+				// OK, now we know we have an HTTP URI to work with
+				return URIFetch (uri);
+			} catch (UriFormatException) {
+				// In many cases the user will put in a plain old filename that cannot be found so assume that
+				// this is the problem rather than confusing the issue with a UriFormatException
+				return null;
+			}
+		}
 
-        public static Stream URIFetch (Uri uri)
-        {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create (uri);
+		public static Stream URIFetch (Uri uri)
+		{
+			HttpWebRequest request = (HttpWebRequest)WebRequest.Create (uri);
 
-            request.ContentLength = 0;
-            request.KeepAlive = false;
+			// request.Credentials = credentials;
 
-            WebResponse response = request.GetResponse ();
-            Stream file = response.GetResponseStream ();
+			request.ContentLength = 0;
+			request.KeepAlive = false;
 
-            if (response.ContentLength == 0)
-                MainConsole.Instance.Error(string.Format ("{0} returned an empty file", uri));
-            response.Dispose ();
+			WebResponse response = request.GetResponse ();
+			Stream file = response.GetResponseStream ();
 
-            return new BufferedStream (file, 1000000);
-        }
-    }
+			// justincc: going to ignore the content type for now and just try anything
+			//if (response.ContentType != "application/x-oar")
+			//    throw new Exception(String.Format("{0} does not identify an OAR file", uri.ToString()));
+
+			if (response.ContentLength == 0)
+				MainConsole.Instance.Error (string.Format ("{0} returned an empty file", uri));
+			response.Dispose ();
+
+			// return new BufferedStream(file, (int) response.ContentLength);
+			return new BufferedStream (file, 1000000);
+		}
+	}
 }

@@ -32,55 +32,58 @@ using Universe.Framework.ClientInterfaces;
 
 namespace Universe.Framework.Services
 {
-    public interface IAvatarService
-    {
-        /// <summary>
-        ///     The local service (if possible)
-        /// </summary>
-        IAvatarService InnerService { get; }
+	public interface IAvatarService
+	{
+		/// <summary>
+		///     The local service (if possible)
+		/// </summary>
+		IAvatarService InnerService { get; }
 
-        /// <summary>
-        ///     Called by the login service
-        /// </summary>
-        /// <param name="userID"></param>
-        /// <returns></returns>
-        AvatarAppearance GetAppearance(UUID userID);
+		/// <summary>
+		///     Called by the login service
+		/// </summary>
+		/// <param name="userID"></param>
+		/// <returns></returns>
+		AvatarAppearance GetAppearance (UUID userID);
 
-        /// <summary>
-        ///     Called by everyone who can change the avatar data (so, regions)
-        /// </summary>
-        /// <param name="userID"></param>
-        /// <param name="appearance"></param>
-        /// <returns></returns>
-        void SetAppearance(UUID userID, AvatarAppearance appearance);
+		/// <summary>
+		///     Called by everyone who can change the avatar data (so, regions)
+		/// </summary>
+		/// <param name="userID"></param>
+		/// <param name="appearance"></param>
+		/// <returns></returns>
+		void SetAppearance (UUID userID, AvatarAppearance appearance);
 
-        /// <summary>
-        ///     Not sure if it's needed
-        /// </summary>
-        /// <param name="userID"></param>
-        /// <returns></returns>
-        void ResetAvatar(UUID userID);
+		/// <summary>
+		///     Not sure if it's needed
+		/// </summary>
+		/// <param name="userID"></param>
+		/// <returns></returns>
+		void ResetAvatar (UUID userID);
 
-        /// <summary>
-        ///     Gets a user's appearance, and if it does not exist, create it
-        /// </summary>
-        /// <param name="userID"></param>
-        /// <param name="defaultUserAvatarArchive"></param>
-        /// <param name="loadedArchive"></param>
-        /// <returns></returns>
-        AvatarAppearance GetAndEnsureAppearance(UUID userID, string defaultUserAvatarArchive, out bool loadedArchive);
-    }
+		/// <summary>
+		///     Gets a user's appearance, and if it does not exist, create it
+		/// </summary>
+		/// <param name="userID"></param>
+		/// <param name="defaultUserAvatarArchive"></param>
+		/// <param name="loadedArchive"></param>
+		/// <returns></returns>
+		AvatarAppearance GetAndEnsureAppearance (UUID userID, string defaultUserAvatarArchive, out bool loadedArchive);
+	}
 
-    public interface IAgentAppearanceService
-    {
-        string ServiceURI { get; }
-        AvatarAppearance BakeAppearance(UUID agentID, int cof_version);
-    }
-    
-    public interface IAvatarData : IUniverseDataPlugin
-    {
-        AvatarAppearance Get(UUID PrincipalID);
-        bool Store(UUID PrincipalID, AvatarAppearance data);
-        bool Delete(UUID PrincipalID);
-    }
+	public interface IAgentAppearanceService
+	{
+		string ServiceURI { get; }
+
+		AvatarAppearance BakeAppearance (UUID agentID, int cof_version);
+	}
+
+	public interface IAvatarData : IUniverseDataPlugin
+	{
+		AvatarAppearance Get (UUID PrincipalID);
+
+		bool Store (UUID PrincipalID, AvatarAppearance data);
+
+		bool Delete (UUID PrincipalID);
+	}
 }

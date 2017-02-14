@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
+ 
 using System.IO;
 using System.Text;
 using Nini.Config;
@@ -42,24 +42,24 @@ namespace Universe.Services.API.WebAPI
 	{
 		#region IService implementation
 
-		public void Initialize(IConfigSource config, IRegistryCore registry)
+		public void Initialize (IConfigSource config, IRegistryCore registry)
 		{
 		}
-        
-		public void Start(IConfigSource config, IRegistryCore registry)
+
+		public void Start (IConfigSource config, IRegistryCore registry)
 		{
-			MainServer.Instance.AddStreamHandler(new GenericStreamHandler("GET", "/API/Events/", HandleEvents));
+			MainServer.Instance.AddStreamHandler (new GenericStreamHandler ("GET", "/API/Events/", HandleEvents));
 		}
-        
-		public void FinishedStartup()
+
+		public void FinishedStartup ()
 		{
 		}
 
 		#endregion
-        
-		public byte[] HandleEvents(string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse)
+
+		public byte[] HandleEvents (string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse)
 		{
-			return Encoding.UTF8.GetBytes("");
+			return Encoding.UTF8.GetBytes ("");
 		}
 	}
 }

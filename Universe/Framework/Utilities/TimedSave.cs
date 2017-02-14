@@ -34,160 +34,164 @@ using OpenMetaverse;
 
 namespace Universe.Framework.Utilities
 {
-    public sealed class TimedSaving<T> : IDisposable
-    {
-        public delegate void TimeElapsed (UUID agentID, T data);
+	public sealed class TimedSaving<T> : IDisposable
+	{
+		public delegate void TimeElapsed (UUID agentID, T data);
 
-        readonly Dictionary<UUID, T> _saveQueueData = new Dictionary<UUID, T> ();
-        readonly Dictionary<UUID, long> _queue = new Dictionary<UUID, long> ();
+		readonly Dictionary<UUID, T> _saveQueueData = new Dictionary<UUID, T> ();
+		readonly Dictionary<UUID, long> _queue = new Dictionary<UUID, long> ();
 
-        readonly Timer _updateTimer = new Timer ();
-        const int _checkTime = 500; // milliseconds to wait between checks for updates
-        int _sendtime = 2;
-        TimeElapsed _arg;
+		readonly Timer _updateTimer = new Timer ();
+		const int _checkTime = 500;
+		// milliseconds to wait between checks for updates
+		int _sendtime = 2;
+		TimeElapsed _arg;
 
-        public void Start (int secondsToWait, TimeElapsed args)
-        {
-            _arg = args;
-            _sendtime = secondsToWait;
-            _updateTimer.Enabled = false;
-            _updateTimer.AutoReset = true;
-            _updateTimer.Interval = _checkTime; // 500 milliseconds wait to start async ops
-            _updateTimer.Elapsed += timer_elapsed;
-        }
+		public void Start (int secondsToWait, TimeElapsed args)
+		{
+			_arg = args;
+			_sendtime = secondsToWait;
+			_updateTimer.Enabled = false;
+			_updateTimer.AutoReset = true;
+			_updateTimer.Interval = _checkTime; // 500 milliseconds wait to start async ops
+			_updateTimer.Elapsed += timer_elapsed;
+		}
 
-        public void Add (UUID agentid)
-        {
-            long timestamp = DateTime.Now.Ticks + Convert.ToInt64 (_sendtime * 1000 * 10000);
-            lock (_queue) {
-                _queue [agentid] = timestamp;
-                _updateTimer.Start ();
-            }
-        }
+		public void Add (UUID agentid)
+		{
+			long timestamp = DateTime.Now.Ticks + Convert.ToInt64 (_sendtime * 1000 * 10000);
+			lock (_queue) {
+				_queue [agentid] = timestamp;
+				_updateTimer.Start ();
+			}
+		}
 
-        public void Add (UUID agentid, T data)
-        {
-            long timestamp = DateTime.Now.Ticks + Convert.ToInt64 (_sendtime * 1000 * 10000);
-            lock (_queue) {
-                _queue [agentid] = timestamp;
-                lock (_saveQueueData)
-                    _saveQueueData [agentid] = data;
-                _updateTimer.Start ();
-            }
-        }
+		public void Add (UUID agentid, T data)
+		{
+			long timestamp = DateTime.Now.Ticks + Convert.ToInt64 (_sendtime * 1000 * 10000);
+			lock (_queue) {
+				_queue [agentid] = timestamp;
+				lock (_saveQueueData)
+					_saveQueueData [agentid] = data;
+				_updateTimer.Start ();
+			}
+		}
 
-        void timer_elapsed (object sender, EventArgs ea)
-        {
-            long now = DateTime.Now.Ticks;
+		void timer_elapsed (object sender, EventArgs ea)
+		{
+			long now = DateTime.Now.Ticks;
 
-            Dictionary<UUID, long> sends;
-            lock (_queue)
-                sends = new Dictionary<UUID, long> (_queue);
+			Dictionary<UUID, long> sends;
+			lock (_queue)
+				sends = new Dictionary<UUID, long> (_queue);
 
-            foreach (KeyValuePair<UUID, long> kvp in sends) {
-                if (kvp.Value < now) {
-                    T data = default (T);
-                    lock (_saveQueueData)
-                        if (_saveQueueData.TryGetValue (kvp.Key, out data))
-                            _saveQueueData.Remove (kvp.Key);
-                    Util.FireAndForget (delegate { _arg (kvp.Key, data); });
-                    lock (_queue)
-                        _queue.Remove (kvp.Key);
-                }
-            }
-        }
+			foreach (KeyValuePair<UUID, long> kvp in sends) {
+				if (kvp.Value < now) {
+					T data = default (T);
+					lock (_saveQueueData)
+						if (_saveQueueData.TryGetValue (kvp.Key, out data))
+							_saveQueueData.Remove (kvp.Key);
+					Util.FireAndForget (delegate {
+						_arg (kvp.Key, data);
+					});
+					lock (_queue)
+						_queue.Remove (kvp.Key);
+				}
+			}
+		}
 
-        public void Dispose ()
-        {
-            _updateTimer.Close ();
-        }
-    }
+		public void Dispose ()
+		{
+			_updateTimer.Close ();
+		}
+	}
 
-    public sealed class ListCombiningTimedSaving<T> : IDisposable
-    {
-        public delegate void TimeElapsed (UUID agentID, List<T> data);
+	public sealed class ListCombiningTimedSaving<T> : IDisposable
+	{
+		public delegate void TimeElapsed (UUID agentID, List<T> data);
 
-        readonly Dictionary<UUID, List<T>> _saveQueueData = new Dictionary<UUID, List<T>> ();
-        readonly Dictionary<UUID, long> _queue = new Dictionary<UUID, long> ();
+		readonly Dictionary<UUID, List<T>> _saveQueueData = new Dictionary<UUID, List<T>> ();
+		readonly Dictionary<UUID, long> _queue = new Dictionary<UUID, long> ();
 
-        readonly Timer _updateTimer = new Timer ();
-        const int _checkTime = 500; // milliseconds to wait between checks for updates
-        double _sendtime = 3;
-        TimeElapsed _arg;
+		readonly Timer _updateTimer = new Timer ();
+		const int _checkTime = 500;
+		// milliseconds to wait between checks for updates
+		double _sendtime = 3;
+		TimeElapsed _arg;
 
-        public void Start (double secondsToWait, TimeElapsed args)
-        {
-            _arg = args;
-            _sendtime = secondsToWait;
-            _updateTimer.Enabled = false;
-            _updateTimer.AutoReset = true;
-            _updateTimer.Interval = _checkTime; // 500 milliseconds wait to start async ops
-            _updateTimer.Elapsed += timer_elapsed;
-        }
+		public void Start (double secondsToWait, TimeElapsed args)
+		{
+			_arg = args;
+			_sendtime = secondsToWait;
+			_updateTimer.Enabled = false;
+			_updateTimer.AutoReset = true;
+			_updateTimer.Interval = _checkTime; // 500 milliseconds wait to start async ops
+			_updateTimer.Elapsed += timer_elapsed;
+		}
 
-        public void Add (UUID agentid)
-        {
-            long timestamp = DateTime.Now.Ticks + Convert.ToInt64 (_sendtime * 1000 * 10000);
-            lock (_queue) {
-                _queue [agentid] = timestamp;
-                _updateTimer.Start ();
-            }
-        }
+		public void Add (UUID agentid)
+		{
+			long timestamp = DateTime.Now.Ticks + Convert.ToInt64 (_sendtime * 1000 * 10000);
+			lock (_queue) {
+				_queue [agentid] = timestamp;
+				_updateTimer.Start ();
+			}
+		}
 
-        public void Add (UUID agentid, List<T> data)
-        {
-            long timestamp = DateTime.Now.Ticks + Convert.ToInt64 (_sendtime * 1000 * 10000);
-            lock (_queue) {
-                _queue [agentid] = timestamp;
-                lock (_saveQueueData) {
-                    if (!_saveQueueData.ContainsKey (agentid))
-                        _saveQueueData.Add (agentid, new List<T> ());
-                    _saveQueueData [agentid].AddRange (data);
-                }
+		public void Add (UUID agentid, List<T> data)
+		{
+			long timestamp = DateTime.Now.Ticks + Convert.ToInt64 (_sendtime * 1000 * 10000);
+			lock (_queue) {
+				_queue [agentid] = timestamp;
+				lock (_saveQueueData) {
+					if (!_saveQueueData.ContainsKey (agentid))
+						_saveQueueData.Add (agentid, new List<T> ());
+					_saveQueueData [agentid].AddRange (data);
+				}
+				_updateTimer.Start ();
+			}
+		}
 
-                _updateTimer.Start ();
-            }
-        }
+		public void Add (UUID agentid, T data)
+		{
+			long timestamp = DateTime.Now.Ticks + Convert.ToInt64 (_sendtime * 1000 * 10000);
+			lock (_queue) {
+				_queue [agentid] = timestamp;
+				lock (_saveQueueData) {
+					if (!_saveQueueData.ContainsKey (agentid))
+						_saveQueueData.Add (agentid, new List<T> ());
+					_saveQueueData [agentid].Add (data);
+				}
+				_updateTimer.Start ();
+			}
+		}
 
-        public void Add (UUID agentid, T data)
-        {
-            long timestamp = DateTime.Now.Ticks + Convert.ToInt64 (_sendtime * 1000 * 10000);
-            lock (_queue) {
-                _queue [agentid] = timestamp;
-                lock (_saveQueueData) {
-                    if (!_saveQueueData.ContainsKey (agentid))
-                        _saveQueueData.Add (agentid, new List<T> ());
-                    _saveQueueData [agentid].Add (data);
-                }
+		void timer_elapsed (object sender, EventArgs ea)
+		{
+			long now = DateTime.Now.Ticks;
 
-                _updateTimer.Start ();
-            }
-        }
+			Dictionary<UUID, long> sends;
+			lock (_queue)
+				sends = new Dictionary<UUID, long> (_queue);
 
-        void timer_elapsed (object sender, EventArgs ea)
-        {
-            long now = DateTime.Now.Ticks;
+			foreach (KeyValuePair<UUID, long> kvp in sends) {
+				if (kvp.Value < now) {
+					List<T> data = new List<T> ();
+					lock (_saveQueueData)
+						if (_saveQueueData.TryGetValue (kvp.Key, out data))
+							_saveQueueData.Remove (kvp.Key);
+					Util.FireAndForget (delegate {
+						_arg (kvp.Key, data);
+					});
+					lock (_queue)
+						_queue.Remove (kvp.Key);
+				}
+			}
+		}
 
-            Dictionary<UUID, long> sends;
-            lock (_queue)
-                sends = new Dictionary<UUID, long> (_queue);
-
-            foreach (KeyValuePair<UUID, long> kvp in sends) {
-                if (kvp.Value < now) {
-                    List<T> data = new List<T> ();
-                    lock (_saveQueueData)
-                        if (_saveQueueData.TryGetValue (kvp.Key, out data))
-                            _saveQueueData.Remove (kvp.Key);
-                    Util.FireAndForget (delegate { _arg (kvp.Key, data); });
-                    lock (_queue)
-                        _queue.Remove (kvp.Key);
-                }
-            }
-        }
-
-        public void Dispose ()
-        {
-            _updateTimer.Close ();
-        }
-    }
+		public void Dispose ()
+		{
+			_updateTimer.Close ();
+		}
+	}
 }

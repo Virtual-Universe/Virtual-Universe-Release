@@ -36,34 +36,34 @@ using Universe.Framework.Services;
 
 namespace Universe.Services
 {
-    public class GroupExperiencesCAPS : ICapsServiceConnector
-    {
-        protected IRegionClientCapsService m_service;
+	public class GroupExperiencesCAPS : ICapsServiceConnector
+	{
+		protected IRegionClientCapsService m_service;
 
-        public void RegisterCaps (IRegionClientCapsService service)
-        {
-            m_service = service;
+		public void RegisterCaps (IRegionClientCapsService service)
+		{
+			m_service = service;
             
-            service.AddStreamHandler ("GroupExperiences",
-                new GenericStreamHandler ("GET", service.CreateCAPS ("GroupExperiences", ""), GroupExperiences));
-        }
+			service.AddStreamHandler ("GroupExperiences",
+				new GenericStreamHandler ("GET", service.CreateCAPS ("GroupExperiences", ""), GroupExperiences));
+		}
 
-        public void EnteringRegion ()
-        {
-        }
+		public void EnteringRegion ()
+		{
+		}
 
-        public void DeregisterCaps ()
-        {
-            m_service.RemoveStreamHandler ("GroupExperiences", "GET");
-        }
-        
-        public byte[] GroupExperiences (string path, Stream request, OSHttpRequest httpRequest,
-                                      OSHttpResponse httpResponse)
-        {
-            MainConsole.Instance.DebugFormat("[GroupExperiences] Call = {0}", httpRequest);
-            var groupExp = new OSDMap();
+		public void DeregisterCaps ()
+		{
+			m_service.RemoveStreamHandler ("GroupExperiences", "GET");
+		}
 
-            return OSDParser.SerializeLLSDXmlBytes (groupExp);
-        }
-    }
+		public byte[] GroupExperiences (string path, Stream request, OSHttpRequest httpRequest,
+		                                      OSHttpResponse httpResponse)
+		{
+			MainConsole.Instance.DebugFormat ("[GroupExperiences] Call = {0}", httpRequest);
+			var groupExp = new OSDMap ();
+
+			return OSDParser.SerializeLLSDXmlBytes (groupExp);
+		}
+	}
 }

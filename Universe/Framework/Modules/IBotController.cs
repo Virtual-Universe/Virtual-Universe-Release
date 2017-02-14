@@ -34,28 +34,44 @@ using Universe.Framework.SceneInfo;
 
 namespace Universe.Framework.Modules
 {
-    public interface IBotController
-    {
-        string Name { get; }
-        UUID UUID { get; }
-        bool SetAlwaysRun { get; set; }
-        bool ForceFly { get; set; }
-        PhysicsActor PhysicsActor { get; }
-        bool CanMove { get; }
-        Vector3 AbsolutePosition { get; }
-        IScene GetScene();
+	public interface IBotController
+	{
+		string Name { get; }
 
-        void SendChatMessage(int sayType, string message, int channel);
-        void SendInstantMessage(GridInstantMessage im);
-        void Close();
-        void OnBotAgentUpdate(Vector3 toward, uint controlFlag, Quaternion bodyRotation);
-        void UpdateMovementAnimations(bool sendTerseUpdate);
-        void StandUp();
-        void Teleport(Vector3 pos);
-        void StopMoving(bool fly, bool clearPath);
-        void SetSpeedModifier(float speed);
-        void SetDrawDistance(float draw);
+		UUID UUID { get; }
 
-        void Jump();
-    }
+		bool SetAlwaysRun { get; set; }
+
+		bool ForceFly { get; set; }
+
+		PhysicsActor PhysicsActor { get; }
+
+		bool CanMove { get; }
+
+		Vector3 AbsolutePosition { get; }
+
+		IScene GetScene ();
+
+		void SendChatMessage (int sayType, string message, int channel);
+
+		void SendInstantMessage (GridInstantMessage im);
+
+		void Close ();
+
+		void OnBotAgentUpdate (Vector3 toward, uint controlFlag, Quaternion bodyRotation);
+
+		void UpdateMovementAnimations (bool sendTerseUpdate);
+
+		void StandUp ();
+
+		void Teleport (Vector3 pos);
+
+		void StopMoving (bool fly, bool clearPath);
+
+		void SetSpeedModifier (float speed);
+
+		void SetDrawDistance (float draw);
+
+		void Jump ();
+	}
 }

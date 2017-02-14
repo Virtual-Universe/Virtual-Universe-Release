@@ -35,325 +35,347 @@ using Universe.Framework.Services.ClassHelpers.Assets;
 
 namespace Universe.Framework.Modules
 {
-    public delegate void SendStatResult(SimStats stats);
+	public delegate void SendStatResult (SimStats stats);
 
-    public interface IMonitorModule
-    {
-        /// <summary>
-        ///     Event that gives others the SimStats class that is being sent out to the client
-        /// </summary>
-        event SendStatResult OnSendStatsResult;
+	public interface IMonitorModule
+	{
+		/// <summary>
+		///     Event that gives others the SimStats class that is being sent out to the client
+		/// </summary>
+		event SendStatResult OnSendStatsResult;
 
-        T GetMonitor<T>(IScene scene) where T : IMonitor;
+		T GetMonitor<T> (IScene scene) where T : IMonitor;
 
-        /// <summary>
-        ///     Get the latest stats
-        /// </summary>
-        /// <returns></returns>
-        float[] GetRegionStats(IScene scene);
-    }
+		/// <summary>
+		///     Get the latest stats
+		/// </summary>
+		/// <returns></returns>
+		float[] GetRegionStats (IScene scene);
+	}
 
-    public interface IMonitor
-    {
-        /// <summary>
-        ///     Get the value of this monitor
-        /// </summary>
-        /// <returns></returns>
-        double GetValue();
+	public interface IMonitor
+	{
+		/// <summary>
+		///     Get the value of this monitor
+		/// </summary>
+		/// <returns></returns>
+		double GetValue ();
 
-        /// <summary>
-        ///     Get the name of this monitor
-        /// </summary>
-        /// <returns></returns>
-        string GetName();
+		/// <summary>
+		///     Get the name of this monitor
+		/// </summary>
+		/// <returns></returns>
+		string GetName ();
 
-        /// <summary>
-        /// Gets the name of the interface this monitor implements
-        /// </summary>
-        /// <returns></returns>
-        string GetInterfaceName();
+		/// <summary>
+		/// Gets the name of the interface this monitor implements
+		/// </summary>
+		/// <returns></returns>
+		string GetInterfaceName ();
 
-        /// <summary>
-        ///     Get the nice looking value of GetValue()
-        /// </summary>
-        /// <returns></returns>
-        string GetFriendlyValue();
+		/// <summary>
+		///     Get the nice looking value of GetValue()
+		/// </summary>
+		/// <returns></returns>
+		string GetFriendlyValue ();
 
-        /// <summary>
-        ///     Resets any per stats beat stats that may need done
-        /// </summary>
-        void ResetStats();
-    }
+		/// <summary>
+		///     Resets any per stats beat stats that may need done
+		/// </summary>
+		void ResetStats ();
+	}
 
-    public delegate void Alert(Type reporter, string reason, bool fatal);
+	public delegate void Alert (Type reporter, string reason, bool fatal);
 
-    public interface IAlert
-    {
-        /// <summary>
-        ///     The name of the alert
-        /// </summary>
-        /// <returns></returns>
-        string GetName();
+	public interface IAlert
+	{
+		/// <summary>
+		///     The name of the alert
+		/// </summary>
+		/// <returns></returns>
+		string GetName ();
 
-        /// <summary>
-        ///     Test the alert
-        /// </summary>
-        void Test();
+		/// <summary>
+		///     Test the alert
+		/// </summary>
+		void Test ();
 
-        /// <summary>
-        ///     What will happen when the alert is triggered
-        /// </summary>
-        event Alert OnTriggerAlert;
-    }
+		/// <summary>
+		///     What will happen when the alert is triggered
+		/// </summary>
+		event Alert OnTriggerAlert;
+	}
 
-    public interface IOtherFrameMonitor : ITimeMonitor { }
-    public interface IPhysicsUpdateFrameMonitor : ITimeMonitor { }
-    public interface IPhysicsSyncFrameMonitor : ITimeMonitor { }
-    public interface IScriptFrameTimeMonitor : ITimeMonitor { }
-    public interface ISleepFrameMonitor : ITimeMonitor { }
+	public interface IOtherFrameMonitor : ITimeMonitor
+	{
 
-    public interface ITimeMonitor : IMonitor
-    {
-        void AddTime(int time);
-    }
+	}
 
-    public interface IAssetMonitor : IMonitor
-    {
-        /// <summary>
-        ///     Add a failure to ask the asset service
-        /// </summary>
-        void AddAssetServiceRequestFailure();
+	public interface IPhysicsUpdateFrameMonitor : ITimeMonitor
+	{
 
-        /// <summary>
-        ///     The time that it took to request the asset after it was not found in the cache
-        /// </summary>
-        /// <param name="ts"></param>
-        void AddAssetRequestTimeAfterCacheMiss(TimeSpan ts);
+	}
 
-        /// <summary>
-        ///     Add the asset's memory to the memory count
-        /// </summary>
-        /// <param name="asset"></param>
-        void AddAsset(AssetBase asset);
+	public interface IPhysicsSyncFrameMonitor : ITimeMonitor
+	{
 
-        /// <summary>
-        ///     This asset was removed, take it out of the asset list
-        /// </summary>
-        /// <param name="uuid"></param>
-        void RemoveAsset(UUID uuid);
+	}
 
-        /// <summary>
-        ///     Clear the cache for assets
-        /// </summary>
-        void ClearAssetCacheStatistics();
+	public interface IScriptFrameTimeMonitor : ITimeMonitor
+	{
 
-        /// <summary>
-        ///     Add a missing texture request
-        /// </summary>
-        void AddBlockedMissingTextureRequest();
-    }
+	}
 
-    public interface INetworkMonitor : IMonitor
-    {
-        /// <summary>
-        ///     The number of packets coming in per second
-        /// </summary>
-        float InPacketsPerSecond { get; }
+	public interface ISleepFrameMonitor : ITimeMonitor
+	{
 
-        /// <summary>
-        ///     The number of packets going out per second
-        /// </summary>
-        float OutPacketsPerSecond { get; }
+	}
 
-        /// <summary>
-        ///     The number of bytes that we have not acked yet (see LLUDPClient for more info)
-        /// </summary>
-        float UnackedBytes { get; }
+	public interface ITimeMonitor : IMonitor
+	{
+		void AddTime (int time);
+	}
 
-        /// <summary>
-        ///     The number of downloads that the client has requested, but has not received at this time
-        /// </summary>
-        float PendingDownloads { get; }
+	public interface IAssetMonitor : IMonitor
+	{
+		/// <summary>
+		///     Add a failure to ask the asset service
+		/// </summary>
+		void AddAssetServiceRequestFailure ();
 
-        /// <summary>
-        ///     The number of updates that the client has started, but not finished
-        /// </summary>
-        float PendingUploads { get; }
+		/// <summary>
+		///     The time that it took to request the asset after it was not found in the cache
+		/// </summary>
+		/// <param name="ts"></param>
+		void AddAssetRequestTimeAfterCacheMiss (TimeSpan ts);
 
-        /// <summary>
-        ///     Add the number of packets that are incoming
-        /// </summary>
-        /// <param name="numPackets"></param>
-        void AddInPackets(int numPackets);
+		/// <summary>
+		///     Add the asset's memory to the memory count
+		/// </summary>
+		/// <param name="asset"></param>
+		void AddAsset (AssetBase asset);
 
-        /// <summary>
-        ///     Add the number of outgoing packets
-        /// </summary>
-        /// <param name="numPackets"></param>
-        void AddOutPackets(int numPackets);
+		/// <summary>
+		///     This asset was removed, take it out of the asset list
+		/// </summary>
+		/// <param name="uuid"></param>
+		void RemoveAsset (UUID uuid);
 
-        /// <summary>
-        ///     Add the current bytes that are not acked
-        /// </summary>
-        /// <param name="numBytes"></param>
-        void AddUnackedBytes(int numBytes);
+		/// <summary>
+		///     Clear the cache for assets
+		/// </summary>
+		void ClearAssetCacheStatistics ();
 
-        /// <summary>
-        ///     Add new pending downloads
-        /// </summary>
-        /// <param name="count"></param>
-        void AddPendingDownloads(int count);
+		/// <summary>
+		///     Add a missing texture request
+		/// </summary>
+		void AddBlockedMissingTextureRequest ();
+	}
 
-        /// <summary>
-        ///     Add new pending upload
-        /// </summary>
-        /// <param name="count"></param>
-        void AddPendingUploads(int count);
-    }
+	public interface INetworkMonitor : IMonitor
+	{
+		/// <summary>
+		///     The number of packets coming in per second
+		/// </summary>
+		float InPacketsPerSecond { get; }
 
-    public interface IScriptCountMonitor : IMonitor
-    {
-        /// <summary>
-        ///     The number of active scripts in the region
-        /// </summary>
-        int ActiveScripts { get; }
+		/// <summary>
+		///     The number of packets going out per second
+		/// </summary>
+		float OutPacketsPerSecond { get; }
 
-        /// <summary>
-        ///     The number of events firing per second in the script engine
-        /// </summary>
-        int ScriptEPS { get; }
-    }
+		/// <summary>
+		///     The number of bytes that we have not acked yet (see LLUDPClient for more info)
+		/// </summary>
+		float UnackedBytes { get; }
 
-    public interface ILastFrameTimeMonitor : ISetMonitor { }
+		/// <summary>
+		///     The number of downloads that the client has requested, but has not received at this time
+		/// </summary>
+		float PendingDownloads { get; }
 
-    public interface ISetMonitor : IMonitor
-    {
-        /// <summary>
-        ///     Set the Value for the monitor
-        /// </summary>
-        /// <param name="value"></param>
-        void SetValue(int value);
-    }
+		/// <summary>
+		///     The number of updates that the client has started, but not finished
+		/// </summary>
+		float PendingUploads { get; }
 
-    public interface ITimeDilationMonitor : IMonitor
-    {
-        /// <summary>
-        ///     Set the Value for the monitor
-        /// </summary>
-        /// <param name="value"></param>
-        void SetPhysicsFPS(float value);
-    }
+		/// <summary>
+		///     Add the number of packets that are incoming
+		/// </summary>
+		/// <param name="numPackets"></param>
+		void AddInPackets (int numPackets);
 
-    public interface IPhysicsFrameMonitor : IMonitor
-    {
-        /// <summary>
-        ///     The last reported PhysicsSim FPS
-        /// </summary>
-        float LastReportedPhysicsFPS { get; set; }
+		/// <summary>
+		///     Add the number of outgoing packets
+		/// </summary>
+		/// <param name="numPackets"></param>
+		void AddOutPackets (int numPackets);
 
-        /// <summary>
-        ///     The 'current' Physics FPS (NOTE: This will NOT be what you expect, you will have to divide by the time since the last check to get the correct average Physics FPS)
-        /// </summary>
-        float PhysicsFPS { get; }
+		/// <summary>
+		///     Add the current bytes that are not acked
+		/// </summary>
+		/// <param name="numBytes"></param>
+		void AddUnackedBytes (int numBytes);
 
-        /// <summary>
-        ///     Add X frames to the stats
-        /// </summary>
-        /// <param name="frames"></param>
-        void AddFPS(int frames);
-    }
+		/// <summary>
+		///     Add new pending downloads
+		/// </summary>
+		/// <param name="count"></param>
+		void AddPendingDownloads (int count);
 
-    public interface ISimFrameMonitor : IMonitor
-    {
-        /// <summary>
-        ///     The last reported Sim FPS (for llGetRegionFPS())
-        /// </summary>
-        float LastReportedSimFPS { get; set; }
+		/// <summary>
+		///     Add new pending upload
+		/// </summary>
+		/// <param name="count"></param>
+		void AddPendingUploads (int count);
+	}
 
-        /// <summary>
-        ///     The 'current' Sim FPS (NOTE: This will NOT be what you expect, you will have to divide by the time since the last check to get the correct average Sim FPS)
-        /// </summary>
-        float SimFPS { get; }
+	public interface IScriptCountMonitor : IMonitor
+	{
+		/// <summary>
+		///     The number of active scripts in the region
+		/// </summary>
+		int ActiveScripts { get; }
 
-        /// <summary>
-        ///     Add X frames to the stats
-        /// </summary>
-        /// <param name="frames"></param>
-        void AddFPS(int frames);
-    }
+		/// <summary>
+		///     The number of events firing per second in the script engine
+		/// </summary>
+		int ScriptEPS { get; }
+	}
 
-    public interface IImageFrameTimeMonitor : IMonitor
-    {
-        /// <summary>
-        ///     Add the time it took to process sending of images to the client
-        /// </summary>
-        /// <param name="time">time in milliseconds</param>
-        void AddImageTime(int time);
-    }
+	public interface ILastFrameTimeMonitor : ISetMonitor
+	{
 
-    public interface ITotalFrameTimeMonitor : IMonitor
-    {
-        /// <summary>
-        ///     Add the time it took to process sending of images to the client
-        /// </summary>
-        /// <param name="time">time in milliseconds</param>
-        void AddFrameTime(int time);
-    }
+	}
 
-    public interface IObjectUpdateMonitor : IMonitor
-    {
-        /// <summary>
-        ///     The current number of prims that were not sent to the client
-        /// </summary>
-        float PrimsLimited { get; }
+	public interface ISetMonitor : IMonitor
+	{
+		/// <summary>
+		///     Set the Value for the monitor
+		/// </summary>
+		/// <param name="value"></param>
+		void SetValue (int value);
+	}
 
-        /// <summary>
-        ///     Add X prims updates that were limited to the stats
-        /// </summary>
-        /// <param name="prims"></param>
-        void AddLimitedPrims(int prims);
-    }
+	public interface ITimeDilationMonitor : IMonitor
+	{
+		/// <summary>
+		///     Set the Value for the monitor
+		/// </summary>
+		/// <param name="value"></param>
+		void SetPhysicsFPS (float value);
+	}
 
-    public interface IAgentUpdateMonitor : IMonitor
-    {
-        /// <summary>
-        ///     The time it takes to update the agent with info
-        /// </summary>
-        int AgentFrameTime { get; }
+	public interface IPhysicsFrameMonitor : IMonitor
+	{
+		/// <summary>
+		///     The last reported PhysicsSim FPS
+		/// </summary>
+		float LastReportedPhysicsFPS { get; set; }
 
-        /// <summary>
-        ///     The number of updates sent to the agent
-        /// </summary>
-        int AgentUpdates { get; }
+		/// <summary>
+		///     The 'current' Physics FPS (NOTE: This will NOT be what you expect, you will have to divide by the time since the last check to get the correct average Physics FPS)
+		/// </summary>
+		float PhysicsFPS { get; }
 
-        /// <summary>
-        ///     Add the agent updates
-        /// </summary>
-        /// <param name="value"></param>
-        void AddAgentUpdates(int value);
+		/// <summary>
+		///     Add X frames to the stats
+		/// </summary>
+		/// <param name="frames"></param>
+		void AddFPS (int frames);
+	}
 
-        /// <summary>
-        ///     Add the amount of time it took to update the client
-        /// </summary>
-        /// <param name="value"></param>
-        void AddAgentTime(int value);
-    }
+	public interface ISimFrameMonitor : IMonitor
+	{
+		/// <summary>
+		///     The last reported Sim FPS (for llGetRegionFPS())
+		/// </summary>
+		float LastReportedSimFPS { get; set; }
 
-    public interface ILoginMonitor : IMonitor
-    {
-        /// <summary>
-        ///     Add a successful login to the stats
-        /// </summary>
-        void AddSuccessfulLogin();
+		/// <summary>
+		///     The 'current' Sim FPS (NOTE: This will NOT be what you expect, you will have to divide by the time since the last check to get the correct average Sim FPS)
+		/// </summary>
+		float SimFPS { get; }
 
-        /// <summary>
-        ///     Add a successful logout to the stats
-        /// </summary>
-        void AddLogout();
+		/// <summary>
+		///     Add X frames to the stats
+		/// </summary>
+		/// <param name="frames"></param>
+		void AddFPS (int frames);
+	}
 
-        /// <summary>
-        ///     Add a terminated client thread to the stats
-        /// </summary>
-        void AddAbnormalClientThreadTermination();
-    }
+	public interface IImageFrameTimeMonitor : IMonitor
+	{
+		/// <summary>
+		///     Add the time it took to process sending of images to the client
+		/// </summary>
+		/// <param name="time">time in milliseconds</param>
+		void AddImageTime (int time);
+	}
+
+	public interface ITotalFrameTimeMonitor : IMonitor
+	{
+		/// <summary>
+		///     Add the time it took to process sending of images to the client
+		/// </summary>
+		/// <param name="time">time in milliseconds</param>
+		void AddFrameTime (int time);
+	}
+
+	public interface IObjectUpdateMonitor : IMonitor
+	{
+		/// <summary>
+		///     The current number of prims that were not sent to the client
+		/// </summary>
+		float PrimsLimited { get; }
+
+		/// <summary>
+		///     Add X prims updates that were limited to the stats
+		/// </summary>
+		/// <param name="prims"></param>
+		void AddLimitedPrims (int prims);
+	}
+
+	public interface IAgentUpdateMonitor : IMonitor
+	{
+		/// <summary>
+		///     The time it takes to update the agent with info
+		/// </summary>
+		int AgentFrameTime { get; }
+
+		/// <summary>
+		///     The number of updates sent to the agent
+		/// </summary>
+		int AgentUpdates { get; }
+
+		/// <summary>
+		///     Add the agent updates
+		/// </summary>
+		/// <param name="value"></param>
+		void AddAgentUpdates (int value);
+
+		/// <summary>
+		///     Add the amount of time it took to update the client
+		/// </summary>
+		/// <param name="value"></param>
+		void AddAgentTime (int value);
+	}
+
+	public interface ILoginMonitor : IMonitor
+	{
+		/// <summary>
+		///     Add a successful login to the stats
+		/// </summary>
+		void AddSuccessfulLogin ();
+
+		/// <summary>
+		///     Add a successful logout to the stats
+		/// </summary>
+		void AddLogout ();
+
+		/// <summary>
+		///     Add a terminated client thread to the stats
+		/// </summary>
+		void AddAbnormalClientThreadTermination ();
+	}
 }

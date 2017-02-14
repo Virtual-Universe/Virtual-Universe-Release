@@ -38,287 +38,307 @@ using Universe.Framework.Services;
 
 namespace Universe.Framework.DatabaseInterfaces
 {
-    public interface IGroupsServiceConnector : IUniverseDataPlugin
-    {
-        bool IsGroup (UUID groupID);
+	public interface IGroupsServiceConnector : IUniverseDataPlugin
+	{
+		bool IsGroup (UUID groupID);
 
-        void CreateGroup(UUID groupID, string name, string charter, bool showInList, UUID insigniaID, int membershipFee,
-                         bool openEnrollment, bool allowPublish, bool maturePublish, UUID founderID, UUID ownerRoleID);
+		void CreateGroup (UUID groupID, string name, string charter, bool showInList, UUID insigniaID, int membershipFee,
+		                       bool openEnrollment, bool allowPublish, bool maturePublish, UUID founderID, UUID ownerRoleID);
 
-        void UpdateGroup(UUID requestingAgentID, UUID groupID, string charter, int showInList, UUID insigniaID,
-                         int membershipFee, int openEnrollment, int allowPublish, int maturePublish);
+		void UpdateGroup (UUID requestingAgentID, UUID groupID, string charter, int showInList, UUID insigniaID,
+		                       int membershipFee, int openEnrollment, int allowPublish, int maturePublish);
 
-        void UpdateGroupFounder(UUID groupID, UUID newOwner, bool keepOldOwnerInGroup);
+		void UpdateGroupFounder (UUID groupID, UUID newOwner, bool keepOldOwnerInGroup);
 
-        void AddGroupNotice(UUID requestingAgentID, UUID groupID, UUID noticeID, string fromName, string subject,
-                            string message, UUID ItemID, int assetType, string itemName);
+		void AddGroupNotice (UUID requestingAgentID, UUID groupID, UUID noticeID, string fromName, string subject,
+		                          string message, UUID ItemID, int assetType, string itemName);
 
-        bool EditGroupNotice(UUID requestingAgentID, UUID groupID, UUID noticeID, string subject, string message);
-        bool RemoveGroupNotice(UUID requestingAgentID, UUID groupID, UUID noticeID);
+		bool EditGroupNotice (UUID requestingAgentID, UUID groupID, UUID noticeID, string subject, string message);
 
-        string SetAgentActiveGroup(UUID agentID, UUID groupID);
-        UUID GetAgentActiveGroup(UUID requestingAgentID, UUID agentID);
+		bool RemoveGroupNotice (UUID requestingAgentID, UUID groupID, UUID noticeID);
 
-        string SetAgentGroupSelectedRole(UUID agentID, UUID groupID, UUID roleID);
+		string SetAgentActiveGroup (UUID agentID, UUID groupID);
 
-        void AddAgentToGroup(UUID requestingAgentID, UUID agentID, UUID groupID, UUID roleID);
-        bool RemoveAgentFromGroup(UUID requestingAgentID, UUID agentID, UUID groupID);
+		UUID GetAgentActiveGroup (UUID requestingAgentID, UUID agentID);
 
-        void AddRoleToGroup(UUID requestingAgentID, UUID groupID, UUID roleID, string name, string description, string roleTitle, ulong powers);
+		string SetAgentGroupSelectedRole (UUID agentID, UUID groupID, UUID roleID);
 
-        void UpdateRole(UUID requestingAgentID, UUID groupID, UUID roleID, string name, string desc, string roleTitle, ulong powers);
+		void AddAgentToGroup (UUID requestingAgentID, UUID agentID, UUID groupID, UUID roleID);
 
-        void RemoveRoleFromGroup(UUID requestingAgentID, UUID roleID, UUID groupID);
+		bool RemoveAgentFromGroup (UUID requestingAgentID, UUID agentID, UUID groupID);
 
-        void AddAgentToRole(UUID requestingAgentID, UUID agentID, UUID groupID, UUID roleID);
-        void RemoveAgentFromRole(UUID requestingAgentID, UUID agentID, UUID groupID, UUID roleID);
+		void AddRoleToGroup (UUID requestingAgentID, UUID groupID, UUID roleID, string name, string description,
+		                          string roleTitle, ulong powers);
 
-        void SetAgentGroupInfo(UUID requestingAgentID, UUID agentID, UUID groupID, int acceptNotices, int listInProfile);
+		void UpdateRole (UUID requestingAgentID, UUID groupID, UUID roleID, string name, string desc, string roleTitle,
+		                      ulong powers);
 
-        void AddAgentGroupInvite(UUID requestingAgentID, UUID inviteID, UUID groupID, UUID roleID, UUID agentID, string fromAgentName);
+		void RemoveRoleFromGroup (UUID requestingAgentID, UUID roleID, UUID groupID);
 
-        void RemoveAgentInvite(UUID requestingAgentID, UUID inviteID);
+		void AddAgentToRole (UUID requestingAgentID, UUID agentID, UUID groupID, UUID roleID);
 
-        uint GetNumberOfGroupNotices(UUID requestingAgentID, UUID groupID);
-        uint GetNumberOfGroupNotices(UUID requestingAgentID, List<UUID> groupIDList);
+		void RemoveAgentFromRole (UUID requestingAgentID, UUID agentID, UUID groupID, UUID roleID);
 
-        uint GetNumberOfGroups(UUID requestingAgentID, Dictionary<string, bool> boolFields);
+		void SetAgentGroupInfo (UUID requestingAgentID, UUID agentID, UUID groupID, int acceptNotices, int listInProfile);
 
-        List <UUID> GetAllGroups (UUID requestingAgentID);
+		void AddAgentGroupInvite (UUID requestingAgentID, UUID inviteID, UUID groupID, UUID roleID, UUID agentID,
+		                               string fromAgentName);
 
-        GroupRecord GetGroupRecord(UUID requestingAgentID, UUID groupID, string groupName);
+		void RemoveAgentInvite (UUID requestingAgentID, UUID inviteID);
 
-        List<GroupRecord> GetGroupRecords(UUID requestingAgentID, uint start, uint count, Dictionary<string, bool> sort,
-                                          Dictionary<string, bool> boolFields);
+		uint GetNumberOfGroupNotices (UUID requestingAgentID, UUID groupID);
 
-        List<GroupRecord> GetGroupRecords(UUID requestingAgentID, List<UUID> groupIDList);
+		uint GetNumberOfGroupNotices (UUID requestingAgentID, List<UUID> groupIDList);
 
-        GroupProfileData GetMemberGroupProfile(UUID requestingAgentID, UUID groupID, UUID agentID);
+		uint GetNumberOfGroups (UUID requestingAgentID, Dictionary<string, bool> boolFields);
 
-        GroupMembershipData GetGroupMembershipData(UUID requestingAgentID, UUID groupID, UUID agentID);
-        List<GroupMembershipData> GetAgentGroupMemberships(UUID requestingAgentID, UUID agentID);
+		List <UUID> GetAllGroups (UUID requestingAgentID);
 
-        GroupInviteInfo GetAgentToGroupInvite(UUID requestingAgentID, UUID inviteID);
-        List<GroupInviteInfo> GetGroupInvites(UUID requestingAgentID);
+		GroupRecord GetGroupRecord (UUID requestingAgentID, UUID groupID, string groupName);
 
-        GroupMembersData GetAgentGroupMemberData(UUID requestingAgentID, UUID groupID, UUID agentID);
-        List<GroupMembersData> GetGroupMembers(UUID requestingAgentID, UUID groupID);
+		List<GroupRecord> GetGroupRecords (UUID requestingAgentID, uint start, uint count, Dictionary<string, bool> sort,
+		                                        Dictionary<string, bool> boolFields);
 
-        // banned
-        List<GroupBannedAgentsData> GetGroupBannedMembers(UUID requestingAgentID, UUID groupID);
-        void AddGroupBannedAgent (UUID requestingAgentID, UUID groupID, List<UUID> bannedUserID);
-        void RemoveGroupBannedAgent (UUID requestingAgentID, UUID groupID, List<UUID> bannedUserID);
-        bool IsGroupBannedUser (UUID groupID, UUID agentID);
-        GroupBannedAgentsData GetGroupBannedUser (UUID requestingAgentID, UUID groupID, UUID agentID);
+		List<GroupRecord> GetGroupRecords (UUID requestingAgentID, List<UUID> groupIDList);
 
-        List<DirGroupsReplyData> FindGroups(UUID requestingAgentID, string search, uint? start, uint? count, uint queryflags);
+		GroupProfileData GetMemberGroupProfile (UUID requestingAgentID, UUID groupID, UUID agentID);
 
-        List<GroupRolesData> GetAgentGroupRoles(UUID requestingAgentID, UUID agentID, UUID groupID);
-        List<GroupRolesData> GetGroupRoles(UUID requestingAgentID, UUID groupID);
+		GroupMembershipData GetGroupMembershipData (UUID requestingAgentID, UUID groupID, UUID agentID);
 
-        List<GroupRoleMembersData> GetGroupRoleMembers(UUID requestingAgentID, UUID groupID);
+		List<GroupMembershipData> GetAgentGroupMemberships (UUID requestingAgentID, UUID agentID);
 
-        GroupNoticeData GetGroupNoticeData(UUID requestingAgentID, UUID noticeID);
-        GroupNoticeInfo GetGroupNotice(UUID requestingAgentID, UUID noticeID);
+		GroupInviteInfo GetAgentToGroupInvite (UUID requestingAgentID, UUID inviteID);
 
-        List<GroupNoticeData> GetGroupNotices(UUID requestingAgentID, uint start, uint count, UUID groupID);
-        List<GroupNoticeData> GetGroupNotices(UUID requestingAgentID, uint start, uint count, List<UUID> groupIDList);
+		List<GroupInviteInfo> GetGroupInvites (UUID requestingAgentID);
 
-        GroupProfileData GetGroupProfile(UUID requestingAgentID, UUID groupID);
+		GroupMembersData GetAgentGroupMemberData (UUID requestingAgentID, UUID groupID, UUID agentID);
 
-        List<GroupTitlesData> GetGroupTitles(UUID requestingAgentID, UUID groupID);
+		List<GroupMembersData> GetGroupMembers (UUID requestingAgentID, UUID groupID);
 
-        List<GroupProposalInfo> GetActiveProposals(UUID agentID, UUID groupID);
-        List<GroupProposalInfo> GetInactiveProposals(UUID agentID, UUID groupID);
-        void VoteOnActiveProposals(UUID agentID, UUID groupID, UUID proposalID, string vote);
-        void AddGroupProposal(UUID agentID, GroupProposalInfo info);
-    }
+		// banned
+		List<GroupBannedAgentsData> GetGroupBannedMembers (UUID requestingAgentID, UUID groupID);
 
-    /// <summary>
-    ///     Internal class for chat sessions
-    /// </summary>
-    public class ChatSession
-    {
-        public List<ChatSessionMember> Members;
-        public string Name;
-        public UUID SessionID;
-    }
+		void AddGroupBannedAgent (UUID requestingAgentID, UUID groupID, List<UUID> bannedUserID);
 
-    /// <summary>
-    ///     Pulled from OpenMetaverse
-    ///         Structure representing a member of a group chat session and their settings
-    /// </summary>
-    public class ChatSessionMember
-    {
-        /// <summary>
-        ///     The OpenMetaverse.UUID of the avatar
-        /// </summary>
-        public UUID AvatarKey;
+		void RemoveGroupBannedAgent (UUID requestingAgentID, UUID groupID, List<UUID> bannedUserID);
 
-        /// <summary>
-        ///     True if the user has voice chat enabled
-        /// </summary>
-        public bool CanVoiceChat;
+		bool IsGroupBannedUser (UUID groupID, UUID agentID);
 
-        /// <summary>
-        ///     Whether the user has accepted being added to the group chat
-        /// </summary>
-        public bool HasBeenAdded;
+		GroupBannedAgentsData GetGroupBannedUser (UUID requestingAgentID, UUID groupID, UUID agentID);
 
-        /// <summary>
-        ///     Whether the user has asked to be removed from the chat
-        /// </summary>
-        public bool RequestedRemoval;
+		List<DirGroupsReplyData> FindGroups (UUID requestingAgentID, string search, uint? start, uint? count,
+		                                          uint queryflags);
 
-        /// <summary>
-        ///     True if Avatar has moderator abilities
-        /// </summary>
-        public bool IsModerator;
+		List<GroupRolesData> GetAgentGroupRoles (UUID requestingAgentID, UUID agentID, UUID groupID);
 
-        /// <summary>
-        ///     True if a moderator has muted this avatars chat
-        /// </summary>
-        public bool MuteText;
+		List<GroupRolesData> GetGroupRoles (UUID requestingAgentID, UUID groupID);
 
-        /// <summary>
-        ///     True if a moderator has muted this avatars voice
-        /// </summary>
-        public bool MuteVoice;
-    }
+		List<GroupRoleMembersData> GetGroupRoleMembers (UUID requestingAgentID, UUID groupID);
 
-    public class GroupInviteInfo : IDataTransferable
-    {
-        public UUID AgentID = UUID.Zero;
-        public string FromAgentName = "";
-        public UUID GroupID = UUID.Zero;
-        public UUID InviteID = UUID.Zero;
-        public UUID RoleID = UUID.Zero;
+		GroupNoticeData GetGroupNoticeData (UUID requestingAgentID, UUID noticeID);
 
-        public GroupInviteInfo()
-        {
-        }
+		GroupNoticeInfo GetGroupNotice (UUID requestingAgentID, UUID noticeID);
 
-        public override OSDMap ToOSD()
-        {
-            OSDMap values = new OSDMap();
-            values["GroupID"] = GroupID;
-            values["RoleID"] = RoleID;
-            values["AgentID"] = AgentID;
-            values["InviteID"] = InviteID;
-            values["FromAgentName"] = FromAgentName;
-            return values;
-        }
+		List<GroupNoticeData> GetGroupNotices (UUID requestingAgentID, uint start, uint count, UUID groupID);
 
-        public override void FromOSD(OSDMap values)
-        {
-            GroupID = values["GroupID"];
-            RoleID = values["RoleID"];
-            AgentID = values["AgentID"];
-            InviteID = values["InviteID"];
-            FromAgentName = values["FromAgentName"];
-        }
-    }
+		List<GroupNoticeData> GetGroupNotices (UUID requestingAgentID, uint start, uint count, List<UUID> groupIDList);
 
-    public class GroupNoticeInfo : IDataTransferable
-    {
-        public byte[] BinaryBucket = new byte[0];
-        public UUID GroupID = UUID.Zero;
-        public string Message = string.Empty;
-        public GroupNoticeData noticeData = new GroupNoticeData();
+		GroupProfileData GetGroupProfile (UUID requestingAgentID, UUID groupID);
 
-        public GroupNoticeInfo()
-        {
-        }
+		List<GroupTitlesData> GetGroupTitles (UUID requestingAgentID, UUID groupID);
 
-        public override OSDMap ToOSD()
-        {
-            OSDMap values = new OSDMap();
-            values["noticeData"] = noticeData.ToOSD();
-            values["GroupID"] = GroupID;
-            values["Message"] = Message;
-            values["BinaryBucket"] = BinaryBucket;
-            return values;
-        }
+		List<GroupProposalInfo> GetActiveProposals (UUID agentID, UUID groupID);
 
-        public override void FromOSD(OSDMap values)
-        {
-            noticeData = new GroupNoticeData();
-            noticeData.FromOSD((OSDMap)values["noticeData"]);
-            GroupID = values["GroupID"];
-            Message = values["Message"];
-            BinaryBucket = values["BinaryBucket"];
-        }
-    }
+		List<GroupProposalInfo> GetInactiveProposals (UUID agentID, UUID groupID);
 
-    public class GroupProposalInfo : IDataTransferable
-    {
-        public int Duration;
-        public UUID GroupID = UUID.Zero;
-        public float Majority;
-        public int Quorum;
-        public UUID Session = UUID.Zero;
-        public string Text = string.Empty;
-        public UUID BallotInitiator = UUID.Zero;
-        public DateTime Created = DateTime.Now;
-        public DateTime Ending = DateTime.Now;
-        public UUID VoteID = UUID.Random();
+		void VoteOnActiveProposals (UUID agentID, UUID groupID, UUID proposalID, string vote);
 
-        /// <summary>
-        ///     Only set when a user is calling to find out proposal info, it is what said user voted
-        /// </summary>
-        public string VoteCast = "";
+		void AddGroupProposal (UUID agentID, GroupProposalInfo info);
+	}
 
-        /// <summary>
-        ///     The result of the proposal (success or failure)
-        /// </summary>
-        public bool Result = false;
+	/// <summary>
+	///     Internal class for chat sessions
+	/// </summary>
+	public class ChatSession
+	{
+		public List<ChatSessionMember> Members;
+		public string Name;
+		public UUID SessionID;
+	}
 
-        /// <summary>
-        ///     The number of votes cast (so far if the proposal is still open)
-        /// </summary>
-        public int NumVotes = 0;
+	//Pulled from OpenMetaverse
+	// Summary:
+	//     Structure representing a member of a group chat session and their settings
+	public class ChatSessionMember
+	{
+		// Summary:
+		//     The OpenMetaverse.UUID of the Avatar
+		public UUID AvatarKey;
+		//
+		// Summary:
+		//     True if user has voice chat enabled
+		public bool CanVoiceChat;
 
-        /// <summary>
-        ///     If this is false, the result of the proposal has not been calculated and should be when it is retrieved next
-        /// </summary>
-        public bool HasCalculatedResult = false;
+		/// <summary>
+		///     Whether the user has accepted being added to the group chat
+		/// </summary>
+		public bool HasBeenAdded;
 
-        public override void FromOSD(OSDMap map)
-        {
-            GroupID = map["GroupID"].AsUUID();
-            Duration = map["Duration"].AsInteger();
-            Majority = (float)map["Majority"].AsReal();
-            Text = map["Text"].AsString();
-            Quorum = map["Quorum"].AsInteger();
-            Session = map["Session"].AsUUID();
-            BallotInitiator = map["BallotInitiator"];
-            Created = map["Created"];
-            Ending = map["Ending"];
-            VoteID = map["VoteID"];
-            VoteCast = map["VoteCast"];
-            Result = map["Result"];
-            NumVotes = map["NumVotes"];
-            HasCalculatedResult = map["HasCalculatedResult"];
-        }
+		/// <summary>
+		///     Whether the user has asked to be removed from the chat
+		/// </summary>
+		public bool RequestedRemoval;
 
-        public override OSDMap ToOSD()
-        {
-            OSDMap map = new OSDMap();
-            map["GroupID"] = GroupID;
-            map["Duration"] = Duration;
-            map["Majority"] = Majority;
-            map["Text"] = Text;
-            map["Quorum"] = Quorum;
-            map["Session"] = Session;
-            map["BallotInitiator"] = BallotInitiator;
-            map["Created"] = Created;
-            map["Ending"] = Ending;
-            map["VoteID"] = VoteID;
-            map["VoteCast"] = VoteCast;
-            map["Result"] = Result;
-            map["NumVotes"] = NumVotes;
-            map["HasCalculatedResult"] = HasCalculatedResult;
-            return map;
-        }
-    }
+		//
+		// Summary:
+		//     True of Avatar has moderator abilities
+		public bool IsModerator;
+		//
+		// Summary:
+		//     True if a moderator has muted this avatars chat
+		public bool MuteText;
+		//
+		// Summary:
+		//     True if a moderator has muted this avatars voice
+		public bool MuteVoice;
+		//
+		// Summary:
+		//     True if they have been requested to join the session
+	}
+
+	public class GroupInviteInfo : IDataTransferable
+	{
+		public UUID AgentID = UUID.Zero;
+		public string FromAgentName = "";
+		public UUID GroupID = UUID.Zero;
+		public UUID InviteID = UUID.Zero;
+		public UUID RoleID = UUID.Zero;
+
+		public GroupInviteInfo ()
+		{
+		}
+
+		public override OSDMap ToOSD ()
+		{
+			OSDMap values = new OSDMap ();
+			values ["GroupID"] = GroupID;
+			values ["RoleID"] = RoleID;
+			values ["AgentID"] = AgentID;
+			values ["InviteID"] = InviteID;
+			values ["FromAgentName"] = FromAgentName;
+			return values;
+		}
+
+		public override void FromOSD (OSDMap values)
+		{
+			GroupID = values ["GroupID"];
+			RoleID = values ["RoleID"];
+			AgentID = values ["AgentID"];
+			InviteID = values ["InviteID"];
+			FromAgentName = values ["FromAgentName"];
+		}
+	}
+
+	public class GroupNoticeInfo : IDataTransferable
+	{
+		public byte[] BinaryBucket = new byte[0];
+		public UUID GroupID = UUID.Zero;
+		public string Message = string.Empty;
+		public GroupNoticeData noticeData = new GroupNoticeData ();
+
+		public GroupNoticeInfo ()
+		{
+		}
+
+		public override OSDMap ToOSD ()
+		{
+			OSDMap values = new OSDMap ();
+			values ["noticeData"] = noticeData.ToOSD ();
+			values ["GroupID"] = GroupID;
+			values ["Message"] = Message;
+			values ["BinaryBucket"] = BinaryBucket;
+			return values;
+		}
+
+		public override void FromOSD (OSDMap values)
+		{
+			noticeData = new GroupNoticeData ();
+			noticeData.FromOSD ((OSDMap)values ["noticeData"]);
+			GroupID = values ["GroupID"];
+			Message = values ["Message"];
+			BinaryBucket = values ["BinaryBucket"];
+		}
+	}
+
+	public class GroupProposalInfo : IDataTransferable
+	{
+		public int Duration;
+		public UUID GroupID = UUID.Zero;
+		public float Majority;
+		public int Quorum;
+		public UUID Session = UUID.Zero;
+		public string Text = string.Empty;
+		public UUID BallotInitiator = UUID.Zero;
+		public DateTime Created = DateTime.Now;
+		public DateTime Ending = DateTime.Now;
+		public UUID VoteID = UUID.Random ();
+
+		/// <summary>
+		///     Only set when a user is calling to find out proposal info, it is what said user voted
+		/// </summary>
+		public string VoteCast = "";
+
+		/// <summary>
+		///     The result of the proposal (success or failure)
+		/// </summary>
+		public bool Result = false;
+
+		/// <summary>
+		///     The number of votes cast (so far if the proposal is still open)
+		/// </summary>
+		public int NumVotes = 0;
+
+		/// <summary>
+		///     If this is false, the result of the proposal has not been calculated and should be when it is retrieved next
+		/// </summary>
+		public bool HasCalculatedResult = false;
+
+		public override void FromOSD (OSDMap map)
+		{
+			GroupID = map ["GroupID"].AsUUID ();
+			Duration = map ["Duration"].AsInteger ();
+			Majority = (float)map ["Majority"].AsReal ();
+			Text = map ["Text"].AsString ();
+			Quorum = map ["Quorum"].AsInteger ();
+			Session = map ["Session"].AsUUID ();
+			BallotInitiator = map ["BallotInitiator"];
+			Created = map ["Created"];
+			Ending = map ["Ending"];
+			VoteID = map ["VoteID"];
+			VoteCast = map ["VoteCast"];
+			Result = map ["Result"];
+			NumVotes = map ["NumVotes"];
+			HasCalculatedResult = map ["HasCalculatedResult"];
+		}
+
+		public override OSDMap ToOSD ()
+		{
+			OSDMap map = new OSDMap ();
+			map ["GroupID"] = GroupID;
+			map ["Duration"] = Duration;
+			map ["Majority"] = Majority;
+			map ["Text"] = Text;
+			map ["Quorum"] = Quorum;
+			map ["Session"] = Session;
+			map ["BallotInitiator"] = BallotInitiator;
+			map ["Created"] = Created;
+			map ["Ending"] = Ending;
+			map ["VoteID"] = VoteID;
+			map ["VoteCast"] = VoteCast;
+			map ["Result"] = Result;
+			map ["NumVotes"] = NumVotes;
+			map ["HasCalculatedResult"] = HasCalculatedResult;
+			return map;
+		}
+	}
 }

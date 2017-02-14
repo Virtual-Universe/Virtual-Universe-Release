@@ -32,35 +32,36 @@ using Universe.Framework.SceneInfo;
 
 namespace Universe.ScriptEngine.VirtualScript.MiniModule
 {
-    public class SPAvatarAttachment : IAvatarAttachment
-    {
-        readonly UUID m_assetId;
-        readonly int m_location;
-        readonly IScene m_rootScene;
+	public class SPAvatarAttachment : IAvatarAttachment
+	{
+		// readonly UUID m_itemId;
+		readonly UUID m_assetId;
+		readonly int m_location;
+		readonly IScene m_rootScene;
 
-        readonly ISecurityCredential m_security;
+		readonly ISecurityCredential m_security;
 
-        public SPAvatarAttachment(IScene rootScene, IAvatar self, int location, UUID itemId, UUID assetId,
-                                  ISecurityCredential security)
-        {
-            m_rootScene = rootScene;
-            m_security = security;
-            m_location = location;
-            m_assetId = assetId;
-        }
+		public SPAvatarAttachment (IScene rootScene, IAvatar self, int location, UUID itemId, UUID assetId,
+		                                ISecurityCredential security)
+		{
+			m_rootScene = rootScene;
+			m_security = security;
+			//m_parent = self;
+			m_location = location;
+			//m_itemId = itemId;
+			m_assetId = assetId;
+		}
 
-        #region IAvatarAttachment Members
+		#region IAvatarAttachment Members
 
-        public int Location
-        {
-            get { return m_location; }
-        }
+		public int Location {
+			get { return m_location; }
+		}
 
-        public IObject Asset
-        {
-            get { return new SOPObject(m_rootScene, m_rootScene.GetSceneObjectPart(m_assetId).LocalId, m_security); }
-        }
+		public IObject Asset {
+			get { return new SOPObject (m_rootScene, m_rootScene.GetSceneObjectPart (m_assetId).LocalId, m_security); }
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

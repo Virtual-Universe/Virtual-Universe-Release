@@ -32,21 +32,21 @@ using Universe.Framework.Services.ClassHelpers.Assets;
 
 namespace Universe.Framework.ClientInterfaces
 {
-    /// <summary>
-    ///     This class was created to refactor OutPacket out of AssetCache
-    /// </summary>
-    public class AssetRequestToClient
-    {
-        public AssetBase AssetInf;
-        public byte AssetRequestSource = 2;
-        public long DataPointer;
-        public int DiscardLevel = -1;
-        public AssetBase ImageInfo;
-        public bool IsTextureRequest;
-        public int NumPackets;
-        public int PacketCounter;
-        public byte[] Params;
-        public UUID RequestAssetID;
-        public UUID TransferRequestID;
-    }
+	/// <summary>
+	///     This class was created to refactor OutPacket out of AssetCache
+	/// </summary>
+	public class AssetRequestToClient
+	{
+		public AssetBase AssetInf;
+		public byte AssetRequestSource = 2;
+		public long DataPointer;
+		public int DiscardLevel = -1;
+		public AssetBase ImageInfo;
+		public bool IsTextureRequest;
+		public int NumPackets;
+		public int PacketCounter;
+		public byte[] Params;
+		public UUID RequestAssetID;
+		public UUID TransferRequestID;
+	}
 }

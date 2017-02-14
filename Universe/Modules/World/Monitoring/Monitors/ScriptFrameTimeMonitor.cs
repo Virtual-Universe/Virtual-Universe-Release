@@ -32,50 +32,50 @@ using Universe.Framework.SceneInfo;
 
 namespace Universe.Modules.Monitoring.Monitors
 {
-    public class ScriptFrameTimeMonitor : IScriptFrameTimeMonitor
-    {
-        int MonitorScriptFrameTime;
+	public class ScriptFrameTimeMonitor : IScriptFrameTimeMonitor
+	{
+		int MonitorScriptFrameTime;
 
-        public ScriptFrameTimeMonitor (IScene scene)
-        {
-        }
+		public ScriptFrameTimeMonitor (IScene scene)
+		{
+		}
 
-        #region Implementation of IMonitor
+		#region Implementation of IMonitor
 
-        public double GetValue ()
-        {
-            return MonitorScriptFrameTime;
-        }
+		public double GetValue ()
+		{
+			return MonitorScriptFrameTime;
+		}
 
-        public string GetName ()
-        {
-            return "Script Frame Time";
-        }
+		public string GetName ()
+		{
+			return "Script Frame Time";
+		}
 
-        public string GetInterfaceName ()
-        {
-            return "IScriptFrameTimeMonitor";
-        }
+		public string GetInterfaceName ()
+		{
+			return "IScriptFrameTimeMonitor";
+		}
 
-        public string GetFriendlyValue ()
-        {
-            return (int)GetValue () + "ms";
-        }
+		public string GetFriendlyValue ()
+		{
+			return (int)GetValue () + "ms";
+		}
 
-        #endregion
+		#endregion
 
-        #region ITimeMonitor Members
+		#region ITimeMonitor Members
 
-        public void AddTime (int time)
-        {
-            MonitorScriptFrameTime += time;
-        }
+		public void AddTime (int time)
+		{
+			MonitorScriptFrameTime += time;
+		}
 
-        public void ResetStats ()
-        {
-            MonitorScriptFrameTime = 0;
-        }
+		public void ResetStats ()
+		{
+			MonitorScriptFrameTime = 0;
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

@@ -32,13 +32,13 @@ using OpenMetaverse;
 
 namespace Universe.Framework.ClientInterfaces
 {
-    public class ViewerEffectEventHandlerArg : EventArgs
-    {
-        public UUID AgentID;
-        public byte[] Color;
-        public float Duration;
-        public UUID ID;
-        public byte Type;
-        public byte[] TypeData;
-    }
+	public class ViewerEffectEventHandlerArg : EventArgs
+	{
+		public UUID AgentID;
+		public byte[] Color;
+		public float Duration;
+		public UUID ID;
+		public byte Type;
+		public byte[] TypeData;
+	}
 }

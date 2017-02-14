@@ -32,11 +32,17 @@ using OpenMetaverse;
 
 namespace Universe.Framework.Modules
 {
-    public interface ISoundModule
-    {
-        void PlayAttachedSound(UUID soundID, UUID ownerID, UUID objectID, double gain, Vector3 position, byte flags, float radius);
-        void TriggerSound(UUID soundId, UUID ownerID, UUID objectID, UUID parentID, double gain, Vector3 position, UInt64 handle, float radius);
-        void AddConeOfSilence(UUID objectID, Vector3 position, double Radius);
-        void RemoveConeOfSilence(UUID objectID);
-    }
+	public interface ISoundModule
+	{
+		void PlayAttachedSound (UUID soundID, UUID ownerID, UUID objectID, double gain, Vector3 position, byte flags,
+		                             float radius);
+
+		void TriggerSound (
+			UUID soundId, UUID ownerID, UUID objectID, UUID parentID, double gain, Vector3 position, UInt64 handle,
+			float radius);
+
+		void AddConeOfSilence (UUID objectID, Vector3 position, double Radius);
+
+		void RemoveConeOfSilence (UUID objectID);
+	}
 }

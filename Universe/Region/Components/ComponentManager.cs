@@ -42,78 +42,78 @@ using Universe.Framework.Utilities;
 
 namespace Universe.Region.Components
 {
-    public class ComponentManager : IService, ISOPSerializerModule
-    {
-        #region IComponentManager Members
+	public class ComponentManager : IService, ISOPSerializerModule
+	{
+		#region IComponentManager Members
 
-        /// <summary>
-        ///     Take the serialized string and set up the Components for this object
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <param name="serialized"></param>
-        public void DeserializeComponents (ISceneChildEntity obj, string serialized)
-        {
-            //Pull the OSDMap out for components
-            OSDMap map;
-            try {
-                if (serialized == "")
-                    map = new OSDMap ();
-                else
-                    map = (OSDMap)OSDParser.DeserializeJson (serialized);
-            } catch {
-                //Bad JSON? Just return
-                return;
-            }
+		/// <summary>
+		///     Take the serialized string and set up the Components for this object
+		/// </summary>
+		/// <param name="obj"></param>
+		/// <param name="serialized"></param>
+		public void DeserializeComponents (ISceneChildEntity obj, string serialized)
+		{
+			//Pull the OSDMap out for components
+			OSDMap map;
+			try {
+				if (serialized == "")
+					map = new OSDMap ();
+				else
+					map = (OSDMap)OSDParser.DeserializeJson (serialized);
+			} catch {
+				//Bad JSON? Just return
+				return;
+			}
 
-            //Now check against the list of components we have loaded
-            foreach (KeyValuePair<string, OSD> kvp in map) {
-                PropertyInfo property = obj.GetType ().GetProperty (kvp.Key);
-                if (property != null) {
-                    property.SetValue (obj, Util.OSDToObject (kvp.Value, property.PropertyType), null);
-                }
-            }
-            map.Clear ();
-            map = null;
-        }
+			//Now check against the list of components we have loaded
+			foreach (KeyValuePair<string, OSD> kvp in map) {
+				PropertyInfo property = obj.GetType ().GetProperty (kvp.Key);
+				if (property != null) {
+					property.SetValue (obj, Util.OSDToObject (kvp.Value, property.PropertyType), null);
+				}
+			}
+			map.Clear ();
+			map = null;
+		}
 
-        #endregion
+		#endregion
 
-        #region ISOPSerializerModule Members
+		#region ISOPSerializerModule Members
 
-        public void Deserialization (ISceneChildEntity obj, XmlTextReader reader)
-        {
-            string components = reader.ReadElementContentAsString ("Components", string.Empty);
-            if (components != "") {
-                try {
-                    DeserializeComponents (obj, components);
-                } catch (Exception ex) {
-                    MainConsole.Instance.Warn ("[Component manager]: Error on deserializing Components! " + ex);
-                }
-            }
-        }
+		public void Deserialization (ISceneChildEntity obj, XmlTextReader reader)
+		{
+			string components = reader.ReadElementContentAsString ("Components", string.Empty);
+			if (components != "") {
+				try {
+					DeserializeComponents (obj, components);
+				} catch (Exception ex) {
+					MainConsole.Instance.Warn ("[Component manager]: Error on deserializing Components! " + ex);
+				}
+			}
+		}
 
-        public string Serialization (ISceneChildEntity part)
-        {
-            return null;
-        }
+		public string Serialization (ISceneChildEntity part)
+		{
+			return null;
+		}
 
-        #endregion
+		#endregion
 
-        #region IService Members
+		#region IService Members
 
-        public void Initialize (IConfigSource config, IRegistryCore registry)
-        {
-            SceneEntitySerializer.SceneObjectSerializer.AddSerializer ("Components", this);
-        }
+		public void Initialize (IConfigSource config, IRegistryCore registry)
+		{
+			SceneEntitySerializer.SceneObjectSerializer.AddSerializer ("Components", this);
+		}
 
-        public void Start (IConfigSource config, IRegistryCore registry)
-        {
-        }
+		public void Start (IConfigSource config, IRegistryCore registry)
+		{
+		}
 
-        public void FinishedStartup ()
-        {
-        }
+		public void FinishedStartup ()
+		{
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

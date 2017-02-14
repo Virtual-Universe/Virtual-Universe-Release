@@ -32,10 +32,12 @@ using Universe.Framework.SceneInfo;
 
 namespace Universe.Framework.Modules
 {
-    public interface IRegionModulesController
-    {
-        List<IRegionModuleBase> AllModules { get; }
-        void AddRegionToModules(IScene scene);
-        void RemoveRegionFromModules(IScene scene);
-    }
+	public interface IRegionModulesController
+	{
+		List<IRegionModuleBase> AllModules { get; }
+
+		void AddRegionToModules (IScene scene);
+
+		void RemoveRegionFromModules (IScene scene);
+	}
 }

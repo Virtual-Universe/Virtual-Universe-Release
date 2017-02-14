@@ -41,171 +41,169 @@ using System.Net;
 
 namespace Universe.ScriptEngine.VirtualScript
 {
-    /// <summary>
-    ///     This manages app domains and controls what app domains are created/destroyed
-    /// </summary>
-    public class AppDomainManager
-    {
-        readonly List<AppDomainStructure> appDomains = new List<AppDomainStructure> ();
+	/// <summary>
+	///     This manages app domains and controls what app domains are created/destroyed
+	/// </summary>
+	public class AppDomainManager
+	{
+		readonly List<AppDomainStructure> appDomains = new List<AppDomainStructure> ();
 
-        readonly object m_appDomainLock = new object ();
-        readonly ScriptEngine m_scriptEngine;
-        int AppDomainNameCount;
-        AppDomainStructure currentAD;
+		readonly object m_appDomainLock = new object ();
+		readonly ScriptEngine m_scriptEngine;
+		int AppDomainNameCount;
+		AppDomainStructure currentAD;
 
-        bool loadAllScriptsIntoCurrentDomain;
-        bool loadAllScriptsIntoOneDomain = true;
-        string m_PermissionLevel = "Internet";
-        int maxScriptsPerAppDomain = 1;
+		bool loadAllScriptsIntoCurrentDomain;
+		bool loadAllScriptsIntoOneDomain = true;
+		string m_PermissionLevel = "Internet";
+		int maxScriptsPerAppDomain = 1;
 
-        public AppDomainManager (ScriptEngine scriptEngine)
-        {
-            m_scriptEngine = scriptEngine;
-            ReadConfig ();
-        }
+		public AppDomainManager (ScriptEngine scriptEngine)
+		{
+			m_scriptEngine = scriptEngine;
+			ReadConfig ();
+		}
 
-        public string PermissionLevel {
-            get { return m_PermissionLevel; }
-        }
+		public string PermissionLevel {
+			get { return m_PermissionLevel; }
+		}
 
-        public int NumberOfAppDomains {
-            get { 
-                lock (m_appDomainLock)
-                    return appDomains.Count;
-            }
-        }
+		public int NumberOfAppDomains {
+			get { 
+				lock (m_appDomainLock)
+					return appDomains.Count;
+			}
+		}
 
-        // Internal list of all AppDomains
+		// Internal list of all AppDomains
 
-        public void ReadConfig()
-        {
-            maxScriptsPerAppDomain = m_scriptEngine.ScriptConfigSource.GetInt(
-                "ScriptsPerAppDomain", 1);
-            m_PermissionLevel = m_scriptEngine.ScriptConfigSource.GetString(
-                "AppDomainPermissions", "Internet");
-            loadAllScriptsIntoCurrentDomain =
-                m_scriptEngine.ScriptConfigSource.GetBoolean("LoadAllScriptsIntoCurrentAppDomain", false);
-            loadAllScriptsIntoOneDomain = m_scriptEngine.ScriptConfigSource.GetBoolean(
-                "LoadAllScriptsIntoOneAppDomain", true);
-        }
+		public void ReadConfig ()
+		{
+			maxScriptsPerAppDomain = m_scriptEngine.ScriptConfigSource.GetInt (
+				"ScriptsPerAppDomain", 1);
+			m_PermissionLevel = m_scriptEngine.ScriptConfigSource.GetString (
+				"AppDomainPermissions", "Internet");
+			loadAllScriptsIntoCurrentDomain =
+                m_scriptEngine.ScriptConfigSource.GetBoolean ("LoadAllScriptsIntoCurrentAppDomain", false);
+			loadAllScriptsIntoOneDomain = m_scriptEngine.ScriptConfigSource.GetBoolean (
+				"LoadAllScriptsIntoOneAppDomain", true);
+		}
 
-        // Find a free AppDomain, creating one if necessary
-        AppDomainStructure GetFreeAppDomain()
-        {
-            // use only the current domain?
-            if (loadAllScriptsIntoCurrentDomain)
-            {
-                // existing?
-                lock (m_appDomainLock) {
-                    if (currentAD != null)
-                        return currentAD;
-                }
+		// Find a free AppDomain, creating one if necessary
+		AppDomainStructure GetFreeAppDomain ()
+		{
+			// use only the current domain?
+			if (loadAllScriptsIntoCurrentDomain) {
+				// existing?
+				lock (m_appDomainLock) {
+					if (currentAD != null)
+						return currentAD;
+				}
 
-                // create a new one then
-                lock (m_appDomainLock) {
-                    currentAD = new AppDomainStructure {CurrentAppDomain = AppDomain.CurrentDomain};
-                    AppDomain.CurrentDomain.AssemblyResolve += m_scriptEngine.AssemblyResolver.OnAssemblyResolve;
-                    return currentAD;
-                }
-            }
-
-
-            // use a single script domain?
-            if (loadAllScriptsIntoOneDomain) {
-                lock (m_appDomainLock) {
-                    if (currentAD == null) {
-                        // Create a new current AppDomain
-                        currentAD = new AppDomainStructure { CurrentAppDomain = PrepareNewAppDomain () };
-                    }
-                    return currentAD;
-                }
-            }
-
-            // multiple script domains then    
-            lock( m_appDomainLock) {
-                // Current full?
-                if (currentAD != null && currentAD.ScriptsLoaded >= maxScriptsPerAppDomain) {
-                    // Add it to AppDomains list and empty current
-                    appDomains.Add (currentAD);
-                    currentAD = null;
-                }
-                // NO or New current
-                if (currentAD == null) {
-                    // Create a new current AppDomain
-                    currentAD = new AppDomainStructure { CurrentAppDomain = PrepareNewAppDomain () };
-                }
-                return currentAD;
-            }
-        }
-
-        // Create and prepare a new AppDomain for scripts
-        AppDomain PrepareNewAppDomain()
-        {
-            // Create and prepare a new AppDomain
-            AppDomainNameCount++;
-
-            // Construct and initialize settings for a second AppDomain.
-            AppDomainSetup ads = new AppDomainSetup
-                                     {
-                                         ApplicationBase = AppDomain.CurrentDomain.BaseDirectory,
-                                         DisallowBindingRedirects = true,
-                                         DisallowCodeDownload = true,
-                                         LoaderOptimization = LoaderOptimization.MultiDomainHost,
-                                         ShadowCopyFiles = "false",
-                                         ConfigurationFile = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile
-                                     };
-            // Disable shadowing
-
-            AppDomain AD = CreateRestrictedDomain(m_PermissionLevel,
-                                                  "ScriptAppDomain_" + AppDomainNameCount, ads);
-
-            AD.AssemblyResolve += m_scriptEngine.AssemblyResolver.OnAssemblyResolve;
-
-            // Return the new AppDomain
-            return AD;
-        }
+				// create a new one then
+				lock (m_appDomainLock) {
+					currentAD = new AppDomainStructure { CurrentAppDomain = AppDomain.CurrentDomain };
+					AppDomain.CurrentDomain.AssemblyResolve += m_scriptEngine.AssemblyResolver.OnAssemblyResolve;
+					return currentAD;
+				}
+			}
 
 
-        /// From MRMModule.cs by Adam Frisby
-        /// <summary>
-        ///     Create an AppDomain that contains policy restricting code to execute
-        ///     with only the permissions granted by a named permission set
-        /// </summary>
-        /// <param name="permissionSetName">name of the permission set to restrict to</param>
-        /// <param name="appDomainName">'friendly' name of the appdomain to be created</param>
-        /// <param name="ads"></param>
-        /// <exception cref="ArgumentNullException">
-        ///     if <paramref name="permissionSetName" /> is null
-        /// </exception>
-        /// <exception cref="ArgumentOutOfRangeException">
-        ///     if <paramref name="permissionSetName" /> is empty
-        /// </exception>
-        /// <returns>AppDomain with a restricted security policy</returns>
-        /// <remarks>
-        ///     Substantial portions of this function from: http://blogs.msdn.com/shawnfa/archive/2004/10/25/247379.aspx
-        ///     Valid permissionSetName values are:
-        ///     * FullTrust
-        ///     * SkipVerification
-        ///     * Execution
-        ///     * Nothing
-        ///     * LocalIntranet
-        ///     * Internet
-        ///     * Everything
-        /// </remarks>
-        public AppDomain CreateRestrictedDomain(string permissionSetName, string appDomainName, AppDomainSetup ads)
-        {
-            if (permissionSetName == null)
-                throw new ArgumentNullException("permissionSetName");
-            if (permissionSetName.Length == 0)
-                throw new ArgumentOutOfRangeException("permissionSetName", permissionSetName,
-                                                      "Cannot have an empty permission set name");
+			// use a single script domain?
+			if (loadAllScriptsIntoOneDomain) {
+				lock (m_appDomainLock) {
+					if (currentAD == null) {
+						// Create a new current AppDomain
+						currentAD = new AppDomainStructure { CurrentAppDomain = PrepareNewAppDomain () };
+					}
+					return currentAD;
+				}
+			}
 
-            // Default to all code getting everything
-            PermissionSet setIntersection = new PermissionSet(PermissionState.Unrestricted);
-            AppDomain restrictedDomain = null;
+			// multiple script domains then    
+			lock (m_appDomainLock) {
+				// Current full?
+				if (currentAD != null && currentAD.ScriptsLoaded >= maxScriptsPerAppDomain) {
+					// Add it to AppDomains list and empty current
+					appDomains.Add (currentAD);
+					currentAD = null;
+				}
+				// NO or New current
+				if (currentAD == null) {
+					// Create a new current AppDomain
+					currentAD = new AppDomainStructure { CurrentAppDomain = PrepareNewAppDomain () };
+				}
+				return currentAD;
+			}
+		}
+
+		// Create and prepare a new AppDomain for scripts
+		AppDomain PrepareNewAppDomain ()
+		{
+			// Create and prepare a new AppDomain
+			AppDomainNameCount++;
+
+			// Construct and initialize settings for a second AppDomain.
+			AppDomainSetup ads = new AppDomainSetup {
+				ApplicationBase = AppDomain.CurrentDomain.BaseDirectory,
+				DisallowBindingRedirects = true,
+				DisallowCodeDownload = true,
+				LoaderOptimization = LoaderOptimization.MultiDomainHost,
+				ShadowCopyFiles = "false",
+				ConfigurationFile = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile
+			};
+			// Disable shadowing
+
+			AppDomain AD = CreateRestrictedDomain (m_PermissionLevel,
+				                        "ScriptAppDomain_" + AppDomainNameCount, ads);
+
+			AD.AssemblyResolve += m_scriptEngine.AssemblyResolver.OnAssemblyResolve;
+
+			// Return the new AppDomain
+			return AD;
+		}
+
+
+		/// From MRMModule.cs by Adam Frisby
+		/// <summary>
+		///     Create an AppDomain that contains policy restricting code to execute
+		///     with only the permissions granted by a named permission set
+		/// </summary>
+		/// <param name="permissionSetName">name of the permission set to restrict to</param>
+		/// <param name="appDomainName">'friendly' name of the appdomain to be created</param>
+		/// <param name="ads"></param>
+		/// <exception cref="ArgumentNullException">
+		///     if <paramref name="permissionSetName" /> is null
+		/// </exception>
+		/// <exception cref="ArgumentOutOfRangeException">
+		///     if <paramref name="permissionSetName" /> is empty
+		/// </exception>
+		/// <returns>AppDomain with a restricted security policy</returns>
+		/// <remarks>
+		///     Substantial portions of this function from: http://blogs.msdn.com/shawnfa/archive/2004/10/25/247379.aspx
+		///     Valid permissionSetName values are:
+		///     * FullTrust
+		///     * SkipVerification
+		///     * Execution
+		///     * Nothing
+		///     * LocalIntranet
+		///     * Internet
+		///     * Everything
+		/// </remarks>
+		public AppDomain CreateRestrictedDomain (string permissionSetName, string appDomainName, AppDomainSetup ads)
+		{
+			if (permissionSetName == null)
+				throw new ArgumentNullException ("permissionSetName");
+			if (permissionSetName.Length == 0)
+				throw new ArgumentOutOfRangeException ("permissionSetName", permissionSetName,
+					"Cannot have an empty permission set name");
+
+			// Default to all code getting everything
+			PermissionSet setIntersection = new PermissionSet (PermissionState.Unrestricted);
+			AppDomain restrictedDomain = null;
 
 #if LINUX
-	#pragma warning disable 612, 618
+			#pragma warning disable 612, 618
             PolicyStatement emptyPolicy = new PolicyStatement(new PermissionSet(PermissionState.None));
             UnionCodeGroup policyRoot = new UnionCodeGroup(new AllMembershipCondition(), emptyPolicy);
 
@@ -255,143 +253,124 @@ namespace Universe.ScriptEngine.VirtualScript
             // create an AppDomain where this policy will be in effect
             restrictedDomain = AppDomain.CreateDomain(appDomainName, null, ads);
             restrictedDomain.SetAppDomainPolicy(appDomainLevel);
-	#pragma warning restore 612, 618
+			#pragma warning restore 612, 618
 #else
-            SecurityZone zone = SecurityZone.MyComputer;
-            try
-            {
-                zone = (SecurityZone) Enum.Parse(typeof (SecurityZone), permissionSetName);
-            }
-            catch
-            {
-                zone = SecurityZone.MyComputer;
-            }
+			SecurityZone zone = SecurityZone.MyComputer;
+			try {
+				zone = (SecurityZone)Enum.Parse (typeof(SecurityZone), permissionSetName);
+			} catch {
+				zone = SecurityZone.MyComputer;
+			}
 
-            Evidence ev = new Evidence();
-            ev.AddHostEvidence(new Zone(zone));
-            setIntersection = SecurityManager.GetStandardSandbox(ev);
-            setIntersection.AddPermission(new System.Net.SocketPermission(PermissionState.Unrestricted));
-            setIntersection.AddPermission(new System.Net.WebPermission(PermissionState.Unrestricted));
-            setIntersection.AddPermission(
-                new System.Security.Permissions.SecurityPermission(PermissionState.Unrestricted));
+			Evidence ev = new Evidence ();
+			ev.AddHostEvidence (new Zone (zone));
+			setIntersection = SecurityManager.GetStandardSandbox (ev);
+			setIntersection.AddPermission (new System.Net.SocketPermission (PermissionState.Unrestricted));
+			setIntersection.AddPermission (new System.Net.WebPermission (PermissionState.Unrestricted));
+			setIntersection.AddPermission (
+				new System.Security.Permissions.SecurityPermission (PermissionState.Unrestricted));
 
-            // create an AppDomain where this policy will be in effect
-            restrictedDomain = AppDomain.CreateDomain(appDomainName, ev, ads, setIntersection, null);
+			// create an AppDomain where this policy will be in effect
+			restrictedDomain = AppDomain.CreateDomain (appDomainName, ev, ads, setIntersection, null);
 #endif
 
-            return restrictedDomain;
-        }
+			return restrictedDomain;
+		}
 
-        // Unload appdomains that are full and have only dead scripts
-        void UnloadAppDomains()
-        {
-            lock (m_appDomainLock)
-            {
-                // Go through all
+		// Unload appdomains that are full and have only dead scripts
+		void UnloadAppDomains ()
+		{
+			lock (m_appDomainLock) {
+				// Go through all
 
-                foreach (
-                    AppDomainStructure ads in appDomains.Where(ads => ads.ScriptsLoaded <= ads.ScriptsWaitingUnload))
-                {
-                    // Remove from internal list
-                    appDomains.Remove(ads);
+				foreach (
+                    AppDomainStructure ads in appDomains.Where(ads => ads.ScriptsLoaded <= ads.ScriptsWaitingUnload)) {
+					// Remove from internal list
+					appDomains.Remove (ads);
 
-                    try
-                    {
-                        // Unload
-                        if (ads != null) {
-                            AppDomain.Unload (ads.CurrentAppDomain);
-                            if (currentAD != null) {
-                                if (ads.CurrentAppDomain == currentAD.CurrentAppDomain)
-                                    currentAD = null;
-                            }
-                        }
-                    }
-                    catch
-                    {
-                    }
-                    if (ads != null)
-                        ads.CurrentAppDomain = null;
-                }
+					try {
+						// Unload
+						if (ads != null) {
+							AppDomain.Unload (ads.CurrentAppDomain);
+							if (currentAD != null) {
+								if (ads.CurrentAppDomain == currentAD.CurrentAppDomain)
+									currentAD = null;
+							}
+						}
+					} catch {
+					}
+					if (ads != null)
+						ads.CurrentAppDomain = null;
+				}
 
-                if (currentAD != null)
-                {
-                    if (currentAD.ScriptsLoaded <= currentAD.ScriptsWaitingUnload)
-                    {
-                        if (currentAD.CurrentAppDomain.Id != AppDomain.CurrentDomain.Id)
-                            //Don't kill the current app domain!
-                        {
-                            try
-                            {
-                                // Unload
-                                AppDomain.Unload(currentAD.CurrentAppDomain);
-                            }
-                            catch
-                            {
-                            }
-                            currentAD.CurrentAppDomain = null;
-                            currentAD = null;
-                        }
-                    }
-                }
-            }
-        }
+				if (currentAD != null) {
+					if (currentAD.ScriptsLoaded <= currentAD.ScriptsWaitingUnload) {
+						if (currentAD.CurrentAppDomain.Id != AppDomain.CurrentDomain.Id)
+ {                            //Don't kill the current app domain!
+							try {
+								// Unload
+								AppDomain.Unload (currentAD.CurrentAppDomain);
+							} catch {
+							}
+							currentAD.CurrentAppDomain = null;
+							currentAD = null;
+						}
+					}
+				}
+			}
+		}
 
-        public IScript LoadScript(string fileName, string typeName, out AppDomain ad)
-        {
-            // Find next available AppDomain to put it in
-            AppDomainStructure FreeAppDomain = GetFreeAppDomain();
-            lock (m_appDomainLock) {
-                IScript mbrt = (IScript)
+		public IScript LoadScript (string fileName, string typeName, out AppDomain ad)
+		{
+			// Find next available AppDomain to put it in
+			AppDomainStructure FreeAppDomain = GetFreeAppDomain ();
+			lock (m_appDomainLock) {
+				IScript mbrt = (IScript)
                            FreeAppDomain.CurrentAppDomain.CreateInstanceFromAndUnwrap (
-                               fileName, typeName);
-                FreeAppDomain.ScriptsLoaded++;
-                ad = FreeAppDomain.CurrentAppDomain;
+					                           fileName, typeName);
+				FreeAppDomain.ScriptsLoaded++;
+				ad = FreeAppDomain.CurrentAppDomain;
 
-                return mbrt;
-            }
-        }
+				return mbrt;
+			}
+		}
 
 
-        // Increase "dead script" counter for an AppDomain
-        public void UnloadScriptAppDomain(AppDomain ad)
-        {
-            lock (m_appDomainLock)
-            {
-                // Check if it is current AppDomain
-                if (currentAD.CurrentAppDomain == ad)
-                {
-                    // Yes - increase
-                    currentAD.ScriptsWaitingUnload++;
-                }
-                else
-                {
-                    // Lopp through all AppDomains
-                    foreach (AppDomainStructure ads in appDomains.Where(ads => ads.CurrentAppDomain == ad))
-                    {
-                        // Found it
-                        ads.ScriptsWaitingUnload++;
-                        break;
-                    }
-                }
-            }
+		// Increase "dead script" counter for an AppDomain
+		public void UnloadScriptAppDomain (AppDomain ad)
+		{
+			lock (m_appDomainLock) {
+				// Check if it is current AppDomain
+				if (currentAD.CurrentAppDomain == ad) {
+					// Yes - increase
+					currentAD.ScriptsWaitingUnload++;
+				} else {
+					// Lopp through all AppDomains
+					foreach (AppDomainStructure ads in appDomains.Where(ads => ads.CurrentAppDomain == ad)) {
+						// Found it
+						ads.ScriptsWaitingUnload++;
+						break;
+					}
+				}
+			}
 
-            UnloadAppDomains(); // Outsite lock, has its own GetLock
-        }
+			UnloadAppDomains (); // Outsite lock, has its own GetLock
+		}
 
-        #region Nested type: AppDomainStructure
+		#region Nested type: AppDomainStructure
 
-        class AppDomainStructure
-        {
-            // The AppDomain itself
-            public AppDomain CurrentAppDomain;
+		class AppDomainStructure
+		{
+			// The AppDomain itself
+			public AppDomain CurrentAppDomain;
 
-            // Number of scripts loaded into AppDomain
-            public int ScriptsLoaded;
+			// Number of scripts loaded into AppDomain
+			public int ScriptsLoaded;
 
-            // Number of dead scripts
-            public int ScriptsWaitingUnload;
-        }
+			// Number of dead scripts
+			public int ScriptsWaitingUnload;
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

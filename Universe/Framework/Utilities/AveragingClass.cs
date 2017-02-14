@@ -31,31 +31,32 @@
 
 namespace Universe.Framework.Utilities
 {
-    public class AveragingClass
-    {
-#if ACURATE
+	public class AveragingClass
+	{
+		#if ACURATE
         private List<float> m_list;
         private int timeToBeatLastSet = 0;
 
         private bool haveFilledBeatList = false;
+
 #else
 
-        private float total;
-        private readonly int capacity;
-        private int count;
-#endif
+		private float total;
+		private readonly int capacity;
+		private int count;
+		#endif
 
-        public AveragingClass(int capacity)
-        {
+		public AveragingClass (int capacity)
+		{
 #if ACURATE
             m_list = new List<float> (capacity);
 #else
-            this.capacity = capacity;
+			this.capacity = capacity;
 #endif
-        }
+		}
 
-        public float GetAverage()
-        {
+		public float GetAverage ()
+		{
 #if ACURATE
             float avg = 0;
             foreach (float a in m_list)
@@ -63,12 +64,12 @@ namespace Universe.Framework.Utilities
             avg /= m_list.Count;
             return avg;
 #else
-            return total / count;
+			return total / count;
 #endif
-        }
+		}
 
-        public void Add(float value)
-        {
+		public void Add (float value)
+		{
 #if ACURATE
             if (haveFilledBeatList)
                 m_list[timeToBeatLastSet] = value;
@@ -81,12 +82,12 @@ namespace Universe.Framework.Utilities
                 haveFilledBeatList = true;
             }
 #else
-            if (count < capacity)
-                count++;
-            else
-                total -= GetAverage();
-            total += value;
+			if (count < capacity)
+				count++;
+			else
+				total -= GetAverage ();
+			total += value;
 #endif
-        }
-    }
+		}
+	}
 }

@@ -34,74 +34,64 @@ using Universe.Framework.SceneInfo;
 
 namespace Universe.Modules.Terrain.PaintBrushes
 {
-    public class FlattenSphere : ITerrainPaintableEffect
-    {
-        #region ITerrainPaintableEffect Members
+	public class FlattenSphere : ITerrainPaintableEffect
+	{
+		#region ITerrainPaintableEffect Members
 
-        public void PaintEffect(ITerrainChannel map, UUID userID, float rx, float ry, float rz, float strength,
-                                float duration, float BrushSize)
-        {
-            strength = TerrainUtil.MetersToSphericalStrength(BrushSize);
+		public void PaintEffect (ITerrainChannel map, UUID userID, float rx, float ry, float rz, float strength,
+		                              float duration, float BrushSize)
+		{
+			strength = TerrainUtil.MetersToSphericalStrength (BrushSize);
 
-            int x, y;
+			int x, y;
 
-            int xFrom = (int) (rx - BrushSize + 0.5);
-            int xTo = (int) (rx + BrushSize + 0.5) + 1;
-            int yFrom = (int) (ry - BrushSize + 0.5);
-            int yTo = (int) (ry + BrushSize + 0.5) + 1;
+			int xFrom = (int)(rx - BrushSize + 0.5);
+			int xTo = (int)(rx + BrushSize + 0.5) + 1;
+			int yFrom = (int)(ry - BrushSize + 0.5);
+			int yTo = (int)(ry + BrushSize + 0.5) + 1;
 
-            if (xFrom < 0)
-                xFrom = 0;
+			if (xFrom < 0)
+				xFrom = 0;
 
-            if (yFrom < 0)
-                yFrom = 0;
+			if (yFrom < 0)
+				yFrom = 0;
 
-            if (xTo > map.Width)
-                xTo = map.Width;
+			if (xTo > map.Width)
+				xTo = map.Width;
 
-            if (yTo > map.Height)
-                yTo = map.Height;
+			if (yTo > map.Height)
+				yTo = map.Height;
 
-            // blend in map
-            for (x = xFrom; x < xTo; x++)
-            {
-                for (y = yFrom; y < yTo; y++)
-                {
-                    if (!map.Scene.Permissions.CanTerraformLand(userID, new Vector3(x, y, 0)))
-                        continue;
+			// blend in map
+			for (x = xFrom; x < xTo; x++) {
+				for (y = yFrom; y < yTo; y++) {
+					if (!map.Scene.Permissions.CanTerraformLand (userID, new Vector3 (x, y, 0)))
+						continue;
 
-                    float z;
-                    if (duration < 4.0)
-                    {
-                        z = TerrainUtil.SphericalFactor(x, y, rx, ry, strength)*duration*0.25f;
-                    }
-                    else
-                    {
-                        z = 1;
-                    }
+					float z;
+					if (duration < 4.0) {
+						z = TerrainUtil.SphericalFactor (x, y, rx, ry, strength) * duration * 0.25f;
+					} else {
+						z = 1;
+					}
 
-                    float delta = rz - map[x, y];
-                    if (Math.Abs(delta) > 0.1)
-                    {
-                        if (z > 1)
-                        {
-                            z = 1;
-                        }
-                        else if (z < 0)
-                        {
-                            z = 0;
-                        }
-                        delta *= z;
-                    }
+					float delta = rz - map [x, y];
+					if (Math.Abs (delta) > 0.1) {
+						if (z > 1) {
+							z = 1;
+						} else if (z < 0) {
+							z = 0;
+						}
+						delta *= z;
+					}
 
-                    if (delta != 0) // add in non-zero amount
-                    {
-                        map[x, y] += delta;
-                    }
-                }
-            }
-        }
+					if (delta != 0) { // add in non-zero amount
+						map [x, y] += delta;
+					}
+				}
+			}
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

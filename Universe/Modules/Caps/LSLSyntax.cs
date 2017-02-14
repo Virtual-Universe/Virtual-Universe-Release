@@ -41,76 +41,73 @@ using Universe.Framework.Utilities;
 
 namespace Universe.Modules.Caps
 {
-    public class LSLSyntax : INonSharedRegionModule
-    {
-        private IScene m_scene;
+	public class LSLSyntax : INonSharedRegionModule
+	{
+		private IScene m_scene;
 
-        #region INonSharedRegionModule Members
+		#region INonSharedRegionModule Members
 
-        public void Initialize(IConfigSource pSource)
-        {
-        }
+		public void Initialize (IConfigSource pSource)
+		{
+		}
 
-        public void AddRegion(IScene scene)
-        {
-            m_scene = scene;
-            m_scene.EventManager.OnRegisterCaps += RegisterCaps;
-        }
+		public void AddRegion (IScene scene)
+		{
+			m_scene = scene;
+			m_scene.EventManager.OnRegisterCaps += RegisterCaps;
+		}
 
-        public void RemoveRegion(IScene scene)
-        {
-            m_scene.EventManager.OnRegisterCaps -= RegisterCaps;
-        }
+		public void RemoveRegion (IScene scene)
+		{
+			m_scene.EventManager.OnRegisterCaps -= RegisterCaps;
+		}
 
-        public void RegionLoaded(IScene scene)
-        {
-        }
+		public void RegionLoaded (IScene scene)
+		{
+		}
 
-        public Type ReplaceableInterface
-        {
-            get { return null; }
-        }
+		public Type ReplaceableInterface {
+			get { return null; }
+		}
 
-        public void Close()
-        {
-        }
+		public void Close ()
+		{
+		}
 
-        public string Name
-        {
-            get { return "LSLSyntax"; }
-        }
+		public string Name {
+			get { return "LSLSyntax"; }
+		}
 
-        #endregion
+		#endregion
 
-        public OSDMap RegisterCaps(UUID agentID, IHttpServer server)
-        {
-            OSDMap retVal = new OSDMap();
-            retVal["LSLSyntax"] = CapsUtil.CreateCAPS("LSLSyntax", "");
+		public OSDMap RegisterCaps (UUID agentID, IHttpServer server)
+		{
+			OSDMap retVal = new OSDMap ();
+			retVal ["LSLSyntax"] = CapsUtil.CreateCAPS ("LSLSyntax", "");
 
-            server.AddStreamHandler(new GenericStreamHandler("POST", retVal["LSLSyntax"],
-                                                 delegate(string path, Stream request,
-                                                          OSHttpRequest httpRequest,
-                                                          OSHttpResponse httpResponse)
-                                                 { return ProcessLSLSyntax(request, httpResponse, agentID); }));
+			server.AddStreamHandler (new GenericStreamHandler ("POST", retVal ["LSLSyntax"],
+				delegate(string path, Stream request,
+				                                                      OSHttpRequest httpRequest,
+				                                                      OSHttpResponse httpResponse) {
+					return ProcessLSLSyntax (request, httpResponse, agentID);
+				}));
 
-            return retVal;
-        }
+			return retVal;
+		}
 
-        private byte[] ProcessLSLSyntax(Stream request, OSHttpResponse httpResponse, UUID agentID)
-        {
-            // According to the information, this CAPS sends the LSL Syntax to the viewer
-            // so new functions in LSL are reported correctly.
-            //
-            // After determining what the LSLSyntax Caps exactly does:
-            //
-            // * Request comes in to see what version the currency LSLSyntax.xml file is
-            //
-            // * If version of LSLSyntax.xml file is older, request the new version through the Caps
-            //
-            // * Including a bogus file for the time being in bin/Caps
-            //
-            // Fly-Man- 17 May 2015
-            throw new NotImplementedException();
-        }
-    }
+		private byte[] ProcessLSLSyntax (Stream request, OSHttpResponse httpResponse, UUID agentID)
+		{
+			// According to the information, this CAPS sends the LSL Syntax to the viewer
+			// so new functions in LSL are reported correctly.
+			//
+			// After determining what the LSLSyntax Caps exactly does:
+			//
+			// * Request comes in to see what version the currency LSLSyntax.xml file is
+			//
+			// * If version of LSLSyntax.xml file is older, request the new version through the Caps
+			//
+			// * Including a bogus file for the time being in bin/Caps
+			throw new NotImplementedException ();
+		}
+	}
 }

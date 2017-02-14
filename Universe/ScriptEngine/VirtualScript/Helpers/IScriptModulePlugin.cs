@@ -36,44 +36,50 @@ using Universe.Framework.SceneInfo;
 
 namespace Universe.ScriptEngine.VirtualScript
 {
-    public interface IScriptModulePlugin : IScriptModule
-    {
-        IConfig Config { get; }
+	public interface IScriptModulePlugin : IScriptModule
+	{
+		IConfig Config { get; }
 
-        IConfigSource ConfigSource { get; }
+		IConfigSource ConfigSource { get; }
 
-        IScriptModule ScriptModule { get; }
-        Dictionary<Type, object> Extensions { get; }
+		IScriptModule ScriptModule { get; }
 
-        bool PostScriptEvent(UUID m_itemID, UUID uUID, EventParams EventParams, EventPriority EventPriority);
+		Dictionary<Type, object> Extensions { get; }
 
-        void SetState(UUID m_itemID, string newState);
+		bool PostScriptEvent (UUID m_itemID, UUID uUID, EventParams EventParams, EventPriority EventPriority);
 
-        void SetScriptRunningState(UUID item, bool p);
+		void SetState (UUID m_itemID, string newState);
 
-        IScriptPlugin GetScriptPlugin(string p);
+		void SetScriptRunningState (UUID item, bool p);
 
-        DetectParams GetDetectParams(UUID uUID, UUID m_itemID, int number);
+		IScriptPlugin GetScriptPlugin (string p);
 
-        void ResetScript(UUID uUID, UUID m_itemID, bool p);
+		DetectParams GetDetectParams (UUID uUID, UUID m_itemID, int number);
 
-        bool GetScriptRunningState(UUID item);
+		void ResetScript (UUID uUID, UUID m_itemID, bool p);
 
-        int GetStartParameter(UUID m_itemID, UUID uUID);
+		bool GetScriptRunningState (UUID item);
 
-        void SetMinEventDelay(UUID m_itemID, UUID uUID, double delay);
+		int GetStartParameter (UUID m_itemID, UUID uUID);
 
-        IScriptApi GetApi(UUID m_itemID, string p);
+		void SetMinEventDelay (UUID m_itemID, UUID uUID, double delay);
 
-        bool PipeEventsForScript(ISceneChildEntity m_host, Vector3 vector3);
+		IScriptApi GetApi (UUID m_itemID, string p);
 
-        void RegisterExtension<T>(T instance);
-    }
+		bool PipeEventsForScript (ISceneChildEntity m_host, Vector3 vector3);
 
-    public class EventInfo
-    {
-        public string Name;
-        public string[] ArgumentTypes;
-        public EventInfo(string name, string[] types) { Name = name; ArgumentTypes = types; }
-    }
+		void RegisterExtension<T> (T instance);
+	}
+
+	public class EventInfo
+	{
+		public string Name;
+		public string[] ArgumentTypes;
+
+		public EventInfo (string name, string[] types)
+		{
+			Name = name;
+			ArgumentTypes = types;
+		}
+	}
 }

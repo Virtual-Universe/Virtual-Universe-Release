@@ -33,18 +33,21 @@ using Universe.Framework.SceneInfo;
 
 namespace Universe.Modules.Terrain
 {
-    public interface ITerrainLoader
-    {
-        string FileExtension { get; }
-        ITerrainChannel LoadFile(string filename, IScene scene);
+	public interface ITerrainLoader
+	{
+		string FileExtension { get; }
 
-        ITerrainChannel LoadFile(string filename, IScene scene, 
-            int fileStartX, int fileStartY, 
-            int fileWidth, int fileHeight,
-            int sectionWidth, int sectionHeight);
+		ITerrainChannel LoadFile (string filename, IScene scene);
 
-        ITerrainChannel LoadStream(Stream stream, IScene scene);
-        void SaveFile(string filename, ITerrainChannel map);
-        void SaveStream(Stream stream, ITerrainChannel map);
-    }
+		ITerrainChannel LoadFile (string filename, IScene scene, 
+		                               int fileStartX, int fileStartY, 
+		                               int fileWidth, int fileHeight,
+		                               int sectionWidth, int sectionHeight);
+
+		ITerrainChannel LoadStream (Stream stream, IScene scene);
+
+		void SaveFile (string filename, ITerrainChannel map);
+
+		void SaveStream (Stream stream, ITerrainChannel map);
+	}
 }

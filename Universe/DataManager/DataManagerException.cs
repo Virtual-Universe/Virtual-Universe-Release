@@ -31,11 +31,11 @@ using System;
 
 namespace Universe.DataManager
 {
-    [Serializable]
-    public class DataManagerException : Exception
-    {
-        public DataManagerException(string message) : base(message)
-        {
-        }
-    }
+	[Serializable]
+	public class DataManagerException : Exception
+	{
+		public DataManagerException (string message) : base (message)
+		{
+		}
+	}
 }

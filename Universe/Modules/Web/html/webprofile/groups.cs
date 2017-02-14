@@ -39,136 +39,120 @@ using Universe.Framework.Services.ClassHelpers.Profile;
 
 namespace Universe.Modules.Web
 {
-    public class AgentGroupsPage : IWebInterfacePage
-    {
-        public string[] FilePath
-        {
-            get
-            {
-                return new[]
-                           {
-                               "html/webprofile/groups.html"
-                           };
-            }
-        }
+	public class AgentGroupsPage : IWebInterfacePage
+	{
+		public string[] FilePath {
+			get {
+				return new[] {
+					"html/webprofile/groups.html"
+				};
+			}
+		}
 
-        public bool RequiresAuthentication
-        {
-            get { return false; }
-        }
+		public bool RequiresAuthentication {
+			get { return false; }
+		}
 
-        public bool RequiresAdminAuthentication
-        {
-            get { return false; }
-        }
+		public bool RequiresAdminAuthentication {
+			get { return false; }
+		}
 
-        public Dictionary<string, object> Fill(WebInterface webInterface, string filename, OSHttpRequest httpRequest,
-                                               OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
-                                               ITranslator translator, out string response)
-        {
-            response = null;
-            var vars = new Dictionary<string, object>();
+		public Dictionary<string, object> Fill (WebInterface webInterface, string filename, OSHttpRequest httpRequest,
+		                                             OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
+		                                             ITranslator translator, out string response)
+		{
+			response = null;
+			var vars = new Dictionary<string, object> ();
 
-            string username = filename.Split('/').LastOrDefault();
-            UserAccount account = null;
-            if (httpRequest.Query.ContainsKey("userid"))
-            {
-                string userid = httpRequest.Query["userid"].ToString();
+			string username = filename.Split ('/').LastOrDefault ();
+			UserAccount account = null;
+			if (httpRequest.Query.ContainsKey ("userid")) {
+				string userid = httpRequest.Query ["userid"].ToString ();
 
-                account = webInterface.Registry.RequestModuleInterface<IUserAccountService>().
-                                       GetUserAccount(null, UUID.Parse(userid));
-            }
-            else if (httpRequest.Query.ContainsKey("name") || username.Contains('.'))
-            {
-                string name = httpRequest.Query.ContainsKey("name") ? httpRequest.Query["name"].ToString() : username;
-                name = name.Replace('.', ' ');
-                account = webInterface.Registry.RequestModuleInterface<IUserAccountService>().
-                                       GetUserAccount(null, name);
-            }
-            else
-            {
-                username = username.Replace("%20", " ");
-                account = webInterface.Registry.RequestModuleInterface<IUserAccountService>().
-                                       GetUserAccount(null, username);
-            }
+				account = webInterface.Registry.RequestModuleInterface<IUserAccountService> ().
+                                       GetUserAccount (null, UUID.Parse (userid));
+			} else if (httpRequest.Query.ContainsKey ("name") || username.Contains ('.')) {
+				string name = httpRequest.Query.ContainsKey ("name") ? httpRequest.Query ["name"].ToString () : username;
+				name = name.Replace ('.', ' ');
+				account = webInterface.Registry.RequestModuleInterface<IUserAccountService> ().
+                                       GetUserAccount (null, name);
+			} else {
+				username = username.Replace ("%20", " ");
+				account = webInterface.Registry.RequestModuleInterface<IUserAccountService> ().
+                                       GetUserAccount (null, username);
+			}
 
-            if (account == null)
-                return vars;
+			if (account == null)
+				return vars;
 
-            // User found...
-            vars.Add("UserName", account.Name);
+			// User found...
+			vars.Add ("UserName", account.Name);
 
-            IUserProfileInfo profile = Framework.Utilities.DataManager.RequestPlugin<IProfileConnector>().
-                                              GetUserProfile(account.PrincipalID);
-            IWebHttpTextureService webhttpService =
-                webInterface.Registry.RequestModuleInterface<IWebHttpTextureService>();
+			IUserProfileInfo profile = Framework.Utilities.DataManager.RequestPlugin<IProfileConnector> ().
+                                              GetUserProfile (account.PrincipalID);
+			IWebHttpTextureService webhttpService =
+				webInterface.Registry.RequestModuleInterface<IWebHttpTextureService> ();
 
-            if (profile != null)
-            {
-                vars.Add("UserType", profile.MembershipGroup == "" ? "Resident" : profile.MembershipGroup);
-                               if (profile.Partner != UUID.Zero)
-                {
-                    account = webInterface.Registry.RequestModuleInterface<IUserAccountService>().
-                                           GetUserAccount(null, profile.Partner);
-                    vars.Add("UserPartner", account.Name);
-                }
-                else
-                    vars.Add("UserPartner", "No partner");
-                vars.Add("UserAboutMe", profile.AboutText == "" ? "Nothing here" : profile.AboutText);
-                string url = "../images/icons/no_avatar.jpg";
-                if (webhttpService != null && profile.Image != UUID.Zero)
-                    url = webhttpService.GetTextureURL(profile.Image);
-                vars.Add("UserPictureURL", url);
-            } else
-            {
-                // no profile yet
-                vars.Add ("UserType", "Guest");
-                vars.Add ("UserPartner", "Not specified yet");
-                vars.Add ("UserAboutMe", "Nothing here yet");
-                vars.Add("UserPictureURL", "../images/icons/no_avatar.jpg");
-            }
+			if (profile != null) {
+				vars.Add ("UserType", profile.MembershipGroup == "" ? "Resident" : profile.MembershipGroup);
+				if (profile.Partner != UUID.Zero) {
+					account = webInterface.Registry.RequestModuleInterface<IUserAccountService> ().
+                                           GetUserAccount (null, profile.Partner);
+					vars.Add ("UserPartner", account.Name);
+				} else
+					vars.Add ("UserPartner", "No partner");
+				vars.Add ("UserAboutMe", profile.AboutText == "" ? "Nothing here" : profile.AboutText);
+				string url = "../images/icons/no_avatar.jpg";
+				if (webhttpService != null && profile.Image != UUID.Zero)
+					url = webhttpService.GetTextureURL (profile.Image);
+				vars.Add ("UserPictureURL", url);
+			} else {
+				// no profile yet
+				vars.Add ("UserType", "Resident");
+				vars.Add ("UserPartner", "Not specified yet");
+				vars.Add ("UserAboutMe", "Nothing here yet");
+				vars.Add ("UserPictureURL", "../images/icons/no_avatar.jpg");
 
-            vars.Add("UsersGroupsText", translator.GetTranslatedString("UsersGroupsText"));
+			}
 
-            IGroupsServiceConnector groupsConnector =
-                Framework.Utilities.DataManager.RequestPlugin<IGroupsServiceConnector>();
-            List<Dictionary<string, object>> groups = new List<Dictionary<string, object>> ();
+			vars.Add ("UsersGroupsText", translator.GetTranslatedString ("UsersGroupsText"));
 
-            if (groupsConnector != null)
-            {
-                foreach (var grp in groupsConnector.GetAgentGroupMemberships(account.PrincipalID, account.PrincipalID))
-                {
-                    var grpData = groupsConnector.GetGroupProfile (account.PrincipalID, grp.GroupID);
-                    string url = "../images/icons/no_groups.jpg";
-                    if (webhttpService != null && grpData.InsigniaID != UUID.Zero)
-                        url = webhttpService.GetTextureURL (grpData.InsigniaID);
-                    groups.Add (new Dictionary<string, object> {
-                        { "GroupPictureURL", url },
-                        { "GroupName", grp.GroupName }
-                    });
-                }
+			IGroupsServiceConnector groupsConnector =
+				Framework.Utilities.DataManager.RequestPlugin<IGroupsServiceConnector> ();
+			List<Dictionary<string, object>> groups = new List<Dictionary<string, object>> ();
 
-                if (groups.Count == 0)
-                {
-                    groups.Add (new Dictionary<string, object> {
-                        { "GroupPictureURL", "../images/icons/no_groups.jpg" },
-                        { "GroupName", "None yet" }
-                    });
-                }
-            }
+			if (groupsConnector != null) {
+				foreach (var grp in groupsConnector.GetAgentGroupMemberships(account.PrincipalID, account.PrincipalID)) {
+					var grpData = groupsConnector.GetGroupProfile (account.PrincipalID, grp.GroupID);
+					string url = "../images/icons/no_groups.jpg";
+					if (webhttpService != null && grpData.InsigniaID != UUID.Zero)
+						url = webhttpService.GetTextureURL (grpData.InsigniaID);
+					groups.Add (new Dictionary<string, object> {
+						{ "GroupPictureURL", url },
+						{ "GroupName", grp.GroupName }
+					});
+				}
 
-            vars.Add("GroupNameText", translator.GetTranslatedString("GroupNameText"));
-            vars.Add ("Groups", groups);
-            vars.Add ("GroupsJoined", groups.Count);
+				if (groups.Count == 0) {
+					groups.Add (new Dictionary<string, object> {
+						{ "GroupPictureURL", "../images/icons/no_groups.jpg" },
+						{ "GroupName", "None yet" }
+					});
+				}
+			}
 
-            return vars;
-        }
+			vars.Add ("GroupNameText", translator.GetTranslatedString ("GroupNameText"));
+			vars.Add ("Groups", groups);
+			vars.Add ("GroupsJoined", groups.Count);
 
-        public bool AttemptFindPage(string filename, ref OSHttpResponse httpResponse, out string text)
-        {
-            httpResponse.ContentType = "text/html";
-            text = File.ReadAllText("html/webprofile/index.html");
-            return true;
-        }
-    }
+			return vars;
+		}
+
+		public bool AttemptFindPage (string filename, ref OSHttpResponse httpResponse, out string text)
+		{
+			httpResponse.ContentType = "text/html";
+			text = File.ReadAllText ("html/webprofile/index.html");
+			return true;
+		}
+	}
 }

@@ -33,9 +33,10 @@ using Universe.Framework.SceneInfo;
 
 namespace Universe.Framework.Modules
 {
-    public interface IMapTileTerrainRenderer
-    {
-        void Initialize(IScene scene, IConfigSource config);
-        Bitmap TerrainToBitmap(Bitmap mapbmp);
-    }
+	public interface IMapTileTerrainRenderer
+	{
+		void Initialize (IScene scene, IConfigSource config);
+
+		Bitmap TerrainToBitmap (Bitmap mapbmp);
+	}
 }

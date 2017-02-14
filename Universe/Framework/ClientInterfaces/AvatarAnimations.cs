@@ -33,37 +33,31 @@ using OpenMetaverse;
 
 namespace Universe.Framework.ClientInterfaces
 {
-    public class AvatarAnimations
-    {
-        public Dictionary<UUID, string> AnimStateNames = new Dictionary<UUID, string>();
-        public Dictionary<string, UUID> AnimsUUID = new Dictionary<string, UUID>();
+	public class AvatarAnimations
+	{
+		public Dictionary<UUID, string> AnimStateNames = new Dictionary<UUID, string> ();
+		public Dictionary<string, UUID> AnimsUUID = new Dictionary<string, UUID> ();
 
-        public AvatarAnimations()
-        {
-            using (XmlTextReader reader = new XmlTextReader("data/avataranimations.xml"))
-            {
-                XmlDocument doc = new XmlDocument();
-                doc.Load(reader);
-                foreach (XmlNode nod in doc.DocumentElement.ChildNodes)
-                {
-                    if (nod.Attributes["name"] != null)
-                    {
-                        string name = nod.Attributes["name"].Value;
-                        UUID id = (UUID) nod.InnerText;
-                        string animState = nod.Attributes["state"].Value;
+		public AvatarAnimations ()
+		{
+			using (XmlTextReader reader = new XmlTextReader ("data/avataranimations.xml")) {
+				XmlDocument doc = new XmlDocument ();
+				doc.Load (reader);
+				foreach (XmlNode nod in doc.DocumentElement.ChildNodes) {
+					if (nod.Attributes ["name"] != null) {
+						string name = nod.Attributes ["name"].Value;
+						UUID id = (UUID)nod.InnerText;
+						string animState = nod.Attributes ["state"].Value;
 
-                        try
-                        {
-                            AnimsUUID.Add(name, id);
-                            if (animState != "" && !AnimStateNames.ContainsKey(id))
-                                AnimStateNames.Add(id, animState);
-                        }
-                        catch
-                        {
-                        }
-                    }
-                }
-            }
-        }
-    }
+						try {
+							AnimsUUID.Add (name, id);
+							if (animState != "" && !AnimStateNames.ContainsKey (id))
+								AnimStateNames.Add (id, animState);
+						} catch {
+						}
+					}
+				}
+			}
+		}
+	}
 }

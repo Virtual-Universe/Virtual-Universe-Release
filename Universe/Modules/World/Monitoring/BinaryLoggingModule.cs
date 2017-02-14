@@ -38,126 +38,129 @@ using Universe.Framework.SceneInfo;
 
 namespace Universe.Modules.Monitoring
 {
-    public class BinaryLoggingModule : INonSharedRegionModule
-    {
-        static StatLogger m_statLog;
-        static TimeSpan m_statLogPeriod = TimeSpan.FromSeconds (300);
-        static string m_statsDir = MainConsole.Instance.LogPath;
-        static readonly object m_statLockObject = new object ();
+	public class BinaryLoggingModule : INonSharedRegionModule
+	{
+		static StatLogger m_statLog;
+		static TimeSpan m_statLogPeriod = TimeSpan.FromSeconds (300);
+		static string m_statsDir = MainConsole.Instance.LogPath;
+		static readonly object m_statLockObject = new object ();
 
-        protected bool m_collectStats;
-        protected IScene m_scene;
+		protected bool m_collectStats;
+		protected IScene m_scene;
 
-        #region INonSharedRegionModule Members
+		#region INonSharedRegionModule Members
 
-        public string Name {
-            get { return "Binary Statistics Logging Module"; }
-        }
+		public string Name {
+			get { return "Binary Statistics Logging Module"; }
+		}
 
-        public Type ReplaceableInterface {
-            get { return null; }
-        }
+		public Type ReplaceableInterface {
+			get { return null; }
+		}
 
-        public void Initialize (IConfigSource source)
-        {
-            try {
-                IConfig statConfig = source.Configs ["Statistics.Binary"];
-                if (statConfig != null) {
-                    if (statConfig.Contains ("enabled") && statConfig.GetBoolean ("enabled")) {
-                        if (statConfig.Contains ("collect_region_stats")) {
-                            if (statConfig.GetBoolean ("collect_region_stats")) {
-                                m_collectStats = true;
-                            }
-                        }
-                        if (statConfig.Contains ("region_stats_period_seconds")) {
-                            m_statLogPeriod = TimeSpan.FromSeconds (statConfig.GetInt ("region_stats_period_seconds"));
-                        }
-                        if (statConfig.Contains ("stats_dir")) {
-                            m_statsDir = statConfig.GetString ("stats_dir");
-                        }
-                    }
-                }
-            } catch {
-                // if it doesn't work, we don't collect anything
-                MainConsole.Instance.ErrorFormat ("[Binary stats]: Statistics gathering iitialise failed");
-            }
-        }
+		public void Initialize (IConfigSource source)
+		{
+			try {
+				IConfig statConfig = source.Configs ["Statistics.Binary"];
+				if (statConfig != null) {
+					if (statConfig.Contains ("enabled") && statConfig.GetBoolean ("enabled")) {
+						if (statConfig.Contains ("collect_region_stats")) {
+							if (statConfig.GetBoolean ("collect_region_stats")) {
+								m_collectStats = true;
+							}
+						}
+						if (statConfig.Contains ("region_stats_period_seconds")) {
+							m_statLogPeriod = TimeSpan.FromSeconds (statConfig.GetInt ("region_stats_period_seconds"));
+						}
+						if (statConfig.Contains ("stats_dir")) {
+							m_statsDir = statConfig.GetString ("stats_dir");
+						}
+					}
+				}
+			} catch {
+				// if it doesn't work, we don't collect anything
+				MainConsole.Instance.ErrorFormat ("[Binary stats]: Statistics gathering iitialise failed");
+			}
+		}
 
-        public void AddRegion (IScene scene)
-        {
-            m_scene = scene;
-        }
+		public void AddRegion (IScene scene)
+		{
+			m_scene = scene;
+		}
 
-        public void RemoveRegion (IScene scene)
-        {
-        }
+		public void RemoveRegion (IScene scene)
+		{
+		}
 
-        public void RegionLoaded (IScene scene)
-        {
-            if (m_collectStats) {
-                IMonitorModule reporter = m_scene.RequestModuleInterface<IMonitorModule> ();
-                if (reporter != null)
-                    reporter.OnSendStatsResult += LogSimStats;
-            }
-        }
+		public void RegionLoaded (IScene scene)
+		{
+			if (m_collectStats) {
+				IMonitorModule reporter = m_scene.RequestModuleInterface<IMonitorModule> ();
+				if (reporter != null)
+					reporter.OnSendStatsResult += LogSimStats;
+			}
+		}
 
-        public void Close ()
-        {
-        }
+		public void Close ()
+		{
+		}
 
-        #endregion
+		#endregion
 
-        void LogSimStats (SimStats stats)
-        {
-            SimStatsPacket pack = new SimStatsPacket { Region = stats.RegionBlock, Stat = stats.StatsBlock, Header = { Reliable = false } };
+		void LogSimStats (SimStats stats)
+		{
+			SimStatsPacket pack = new SimStatsPacket {
+				Region = stats.RegionBlock,
+				Stat = stats.StatsBlock,
+				Header = { Reliable = false }
+			};
 
-            // note that we are inside the reporter lock when called
-            DateTime now = DateTime.Now;
+			// note that we are inside the reporter lock when called
+			DateTime now = DateTime.Now;
 
-            // hide some time information into the packet
-            pack.Header.Sequence = (uint)now.Ticks;
+			// hide some time information into the packet
+			pack.Header.Sequence = (uint)now.Ticks;
 
-            lock (m_statLockObject) // m_statLog is shared so make sure there is only executer here
-            {
-                try {
-                    if (m_statLog == null || now > m_statLog.StartTime + m_statLogPeriod) {
-                        // First log file or time has expired, start writing to a new log file
-                        if (m_statLog != null && m_statLog.Log != null) {
-                            m_statLog.Log.Close ();
-                        }
-                        m_statLog = new StatLogger {
-                            StartTime = now,
-                            Path = (m_statsDir.Length > 0
+			lock (m_statLockObject) { // m_statLog is shared so make sure there is only executer here
+				try {
+					if (m_statLog == null || now > m_statLog.StartTime + m_statLogPeriod) {
+						// First log file or time has expired, start writing to a new log file
+						if (m_statLog != null && m_statLog.Log != null) {
+							m_statLog.Log.Close ();
+						}
+						m_statLog = new StatLogger {
+							StartTime = now,
+							Path = (m_statsDir.Length > 0
                                                         ? m_statsDir + Path.DirectorySeparatorChar
                                                         : "")
-                                                   + string.Format ("stats-{0}.log", now.ToString ("yyyyMMddHHmmss"))
-                        };
-                        m_statLog.Log = new BinaryWriter (File.Open (m_statLog.Path, FileMode.Append, FileAccess.Write));
-                    }
+							+ string.Format ("stats-{0}.log", now.ToString ("yyyyMMddHHmmss"))
+						};
+						m_statLog.Log = new BinaryWriter (File.Open (m_statLog.Path, FileMode.Append, FileAccess.Write));
+					}
 
-                    // Write the serialized data to disk
-                    if (m_statLog != null && m_statLog.Log != null)
-                        m_statLog.Log.Write (pack.ToBytes ());
-                } catch (Exception ex) {
-                    MainConsole.Instance.ErrorFormat ("[Binary stats]: Statistics gathering failed: {0}", ex);
-                    if (m_statLog != null && m_statLog.Log != null) {
-                        m_statLog.Log.Close ();
-                    }
-                    m_statLog = null;
-                }
-            }
-            return;
-        }
+					// Write the serialized data to disk
+					if (m_statLog != null && m_statLog.Log != null)
+						m_statLog.Log.Write (pack.ToBytes ());
+				} catch (Exception ex) {
+					MainConsole.Instance.ErrorFormat ("[Binary stats]: Statistics gathering failed: {0}", ex);
+					if (m_statLog != null && m_statLog.Log != null) {
+						m_statLog.Log.Close ();
+					}
+					m_statLog = null;
+				}
+			}
+			return;
+		}
 
-        #region Nested type: StatLogger
+		#region Nested type: StatLogger
 
-        public class StatLogger
-        {
-            public BinaryWriter Log;
-            public string Path;
-            public DateTime StartTime;
-        }
+		public class StatLogger
+		{
+			public BinaryWriter Log;
+			public string Path;
+			public DateTime StartTime;
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

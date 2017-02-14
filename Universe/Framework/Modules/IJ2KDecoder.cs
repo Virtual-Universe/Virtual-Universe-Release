@@ -33,12 +33,14 @@ using OpenMetaverse.Imaging;
 
 namespace Universe.Framework.Modules
 {
-    public delegate void DecodedCallback(UUID AssetId, OpenJPEG.J2KLayerInfo[] layers);
+	public delegate void DecodedCallback (UUID AssetId, OpenJPEG.J2KLayerInfo[] layers);
 
-    public interface IJ2KDecoder
-    {
-        void BeginDecode(UUID assetID, byte[] j2kData, DecodedCallback callback);
-        bool Decode(UUID assetID, byte[] j2kData);
-        Image DecodeToImage(byte[] j2kData);
-    }
+	public interface IJ2KDecoder
+	{
+		void BeginDecode (UUID assetID, byte[] j2kData, DecodedCallback callback);
+
+		bool Decode (UUID assetID, byte[] j2kData);
+
+		Image DecodeToImage (byte[] j2kData);
+	}
 }

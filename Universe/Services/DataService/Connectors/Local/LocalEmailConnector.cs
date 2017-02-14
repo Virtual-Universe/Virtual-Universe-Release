@@ -37,70 +37,71 @@ using Universe.Framework.Utilities;
 
 namespace Universe.Services.DataService
 {
-    public class LocalEmailMessagesConnector : ConnectorBase, IEmailConnector
-    {
-        IGenericData GD;
+	public class LocalEmailMessagesConnector : ConnectorBase, IEmailConnector
+	{
+		IGenericData GD;
 
-        #region IEmailConnector Members
+		#region IEmailConnector Members
 
-        public void Initialize (IGenericData GenericData, IConfigSource source, IRegistryCore simBase, string defaultConnectionString)
-        {
-            GD = GenericData;
+		public void Initialize (IGenericData GenericData, IConfigSource source, IRegistryCore simBase,
+		                              string defaultConnectionString)
+		{
+			GD = GenericData;
 
-            if (source.Configs [Name] != null)
-                defaultConnectionString = source.Configs [Name].GetString ("ConnectionString", defaultConnectionString);
+			if (source.Configs [Name] != null)
+				defaultConnectionString = source.Configs [Name].GetString ("ConnectionString", defaultConnectionString);
 
-            if (GD != null)
-                GD.ConnectToDatabase (defaultConnectionString, "Generics", source.Configs ["UniverseConnectors"].GetBoolean ("ValidateTables", true));
+			if (GD != null)
+				GD.ConnectToDatabase (defaultConnectionString, "Generics",
+					source.Configs ["UniverseConnectors"].GetBoolean ("ValidateTables", true));
 
-            Framework.Utilities.DataManager.RegisterPlugin (Name + "Local", this);
+			Framework.Utilities.DataManager.RegisterPlugin (Name + "Local", this);
 
-            if (source.Configs ["UniverseConnectors"].GetString ("EmailConnector", "LocalConnector") == "LocalConnector") {
-                Framework.Utilities.DataManager.RegisterPlugin (this);
-            }
+			if (source.Configs ["UniverseConnectors"].GetString ("EmailConnector", "LocalConnector") == "LocalConnector") {
+				Framework.Utilities.DataManager.RegisterPlugin (this);
+			}
+			Init (simBase, Name);
+		}
 
-            Init (simBase, Name);
-        }
+		public string Name {
+			get { return "IEmailConnector"; }
+		}
 
-        public string Name {
-            get { return "IEmailConnector"; }
-        }
+		/// <summary>
+		///     Gets all offline messages for the user in GridInstantMessage format.
+		/// </summary>
+		/// <param name="objectID"></param>
+		/// <returns></returns>
+		[CanBeReflected (ThreatLevel = ThreatLevel.Low)]
+		public List<Email> GetEmails (UUID objectID)
+		{
+			if (m_doRemoteOnly) {
+				object remoteValue = DoRemote (objectID);
+				return remoteValue != null ? (List<Email>)remoteValue : new List<Email> ();
+			}
 
-        /// <summary>
-        ///     Gets all offline messages for the user in GridInstantMessage format.
-        /// </summary>
-        /// <param name="objectID"></param>
-        /// <returns></returns>
-        [CanBeReflected (ThreatLevel = ThreatLevel.Low)]
-        public List<Email> GetEmails (UUID objectID)
-        {
-            if (m_doRemoteOnly) {
-                object remoteValue = DoRemote (objectID);
-                return remoteValue != null ? (List<Email>)remoteValue : new List<Email> ();
-            }
+			//Get all the messages
+			List<Email> emails = GenericUtils.GetGenerics<Email> (objectID, "Emails", GD);
+			GenericUtils.RemoveGenericByType (objectID, "Emails", GD);
+			return emails;
+		}
 
-            //Get all the messages
-            List<Email> emails = GenericUtils.GetGenerics<Email> (objectID, "Emails", GD);
-            GenericUtils.RemoveGenericByType (objectID, "Emails", GD);
-            return emails;
-        }
+		/// <summary>
+		///     Adds a new offline message for the user.
+		/// </summary>
+		/// <param name="email"></param>
+		[CanBeReflected (ThreatLevel = ThreatLevel.Low)]
+		public void InsertEmail (Email email)
+		{
+			if (m_doRemoteOnly) {
+				DoRemote (email);
+				return;
+			}
 
-        /// <summary>
-        ///     Adds a new offline message for the user.
-        /// </summary>
-        /// <param name="email"></param>
-        [CanBeReflected (ThreatLevel = ThreatLevel.Low)]
-        public void InsertEmail (Email email)
-        {
-            if (m_doRemoteOnly)
-            {
-                DoRemote (email);
-                return;
-            }
+			GenericUtils.AddGeneric (email.toPrimID, "Emails", UUID.Random ().ToString (),
+				email.ToOSD (), GD);
+		}
 
-            GenericUtils.AddGeneric (email.toPrimID, "Emails", UUID.Random ().ToString (), email.ToOSD (), GD);
-        }
-
-        #endregion
-    }
+		#endregion
+	}
 }

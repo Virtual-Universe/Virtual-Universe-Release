@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  * For an explanation of the license of each contributor and the content it 
@@ -29,11 +29,10 @@
 
 using Universe.Simulation.Base;
 
-
 namespace Universe.Server
 {
     /// <summary>
-    ///     Starting class for the Universe Server
+    ///     This is the starting class for the Virtual Universe Server
     /// </summary>
     public class Application
     {

@@ -41,372 +41,371 @@ using Universe.Framework.Servers.HttpServer.Implementation;
 
 namespace Universe.Modules.Scripting
 {
-    public class UrlData
-    {
-        public UUID hostID;
-        public UUID itemID;
-        public IScriptModule engine;
-        public string url;
-        public UUID urlcode;
-        public Dictionary<UUID, RequestData> requests;
-    }
-
-    public class RequestData
-    {
-        public UUID requestID;
-        public Dictionary<string, string> headers;
-        public string body;
-        public int responseCode;
-        public string responseBody;
-        public string contentType;
-        //public ManualResetEvent ev;
-        public bool requestDone;
-        public int startTime;
-        public string uri;
-    }
-
-    public class UrlModule : INonSharedRegionModule, IUrlModule
-    {
-        readonly Dictionary<UUID, UrlData> m_RequestMap =
-            new Dictionary<UUID, UrlData> ();
-
-        readonly Dictionary<string, UrlData> m_UrlMap =
-            new Dictionary<string, UrlData> ();
-
-
-        const int m_TotalUrls = 100;
-
-        public string ExternalHostNameForLSL {
-            get { return MainServer.Instance.HostName; }
-        }
-
-        public Type ReplaceableInterface {
-            get { return null; }
-        }
-
-        public string Name {
-            get { return "UrlModule"; }
-        }
-
-        public void Initialize (IConfigSource config)
-        {
-        }
-
-        public void AddRegion (IScene scene)
-        {
-            scene.RegisterModuleInterface<IUrlModule> (this);
-        }
-
-        public void RegionLoaded (IScene scene)
-        {
-        }
-
-        public void RemoveRegion (IScene scene)
-        {
-        }
-
-        public void Close ()
-        {
-        }
-
-        public UUID RequestURL (IScriptModule engine, ISceneChildEntity host, UUID itemID)
-        {
-            UUID urlcode = UUID.Random ();
-
-            lock (m_UrlMap) {
-                if (m_UrlMap.Count >= m_TotalUrls) {
-                    engine.PostScriptEvent (itemID, host.UUID, "http_request",
-                                           new object [] { urlcode.ToString (), "URL_REQUEST_DENIED", "" });
-                    return urlcode;
-                }
-                string url = MainServer.Instance.ServerURI + "/lslhttp/" + urlcode + "/";
-
-                UrlData urlData = new UrlData {
-                    hostID = host.UUID,
-                    itemID = itemID,
-                    engine = engine,
-                    url = url,
-                    urlcode = urlcode,
-                    requests = new Dictionary<UUID, RequestData> ()
-                };
-
-
-                m_UrlMap [url] = urlData;
-
-                string uri = "/lslhttp/" + urlcode + "/";
-                MainServer.Instance.AddPollServiceHTTPHandler (uri, new PollServiceEventArgs (HttpRequestHandler, HasEvents,
-                                                                                       GetEvents, NoEvents,
-                                                                                       urlcode));
-
-                engine.PostScriptEvent (itemID, host.UUID, "http_request",
-                                       new object [] { urlcode.ToString (), "URL_REQUEST_GRANTED", url });
-            }
-
-            return urlcode;
-        }
-
-        public UUID RequestSecureURL (IScriptModule engine, ISceneChildEntity host, UUID itemID)
-        {
-            UUID urlcode = UUID.Random ();
-
-            engine.PostScriptEvent (itemID, host.UUID, "http_request",
-                                   new object [] { urlcode.ToString (), "URL_REQUEST_DENIED", "" });
-
-            return urlcode;
-        }
-
-        public void ReleaseURL (string url)
-        {
-            lock (m_UrlMap) {
-                UrlData data;
-
-                if (!m_UrlMap.TryGetValue (url, out data)) {
-                    return;
-                }
-
-                foreach (UUID req in data.requests.Keys)
-                    m_RequestMap.Remove (req);
-
-                RemoveUrl (data);
-                m_UrlMap.Remove (url);
-            }
-        }
-
-        public void SetContentType (UUID request, string content_type)
-        {
-            if (m_RequestMap.ContainsKey (request)) {
-                UrlData urlData = m_RequestMap [request];
-                urlData.requests [request].contentType = content_type;
-            }
-        }
-
-        public void HttpResponse (UUID request, int status, string body)
-        {
-            if (m_RequestMap.ContainsKey (request)) {
-                UrlData urlData = m_RequestMap [request];
-                urlData.requests [request].responseCode = status;
-                urlData.requests [request].responseBody = body;
-                //urlData.requests[request].ev.Set();
-                urlData.requests [request].requestDone = true;
-            } else {
-                MainConsole.Instance.Info ("[HttpRequestHandler] There is no http-in request with id " +
-                                          request);
-            }
-        }
-
-        public string GetHttpHeader (UUID requestId, string header)
-        {
-            if (m_RequestMap.ContainsKey (requestId)) {
-                UrlData urlData = m_RequestMap [requestId];
-                string value;
-                if (urlData.requests [requestId].headers.TryGetValue (header, out value))
-                    return value;
-            } else {
-                MainConsole.Instance.Warn ("[HttpRequestHandler] There was no http-in request with id " + requestId);
-            }
-            return string.Empty;
-        }
-
-        public int GetFreeUrls ()
-        {
-            lock (m_UrlMap)
-                return m_TotalUrls - m_UrlMap.Count;
-        }
-
-        public void ScriptRemoved (UUID itemID)
-        {
-            lock (m_UrlMap) {
-                List<string> removeURLs = new List<string> ();
-
-                foreach (KeyValuePair<string, UrlData> url in m_UrlMap) {
-                    if (url.Value.itemID == itemID) {
-                        RemoveUrl (url.Value);
-                        removeURLs.Add (url.Key);
-                        foreach (UUID req in url.Value.requests.Keys)
-                            m_RequestMap.Remove (req);
-                    }
-                }
-
-                foreach (string urlname in removeURLs)
-                    m_UrlMap.Remove (urlname);
-            }
-        }
-
-        public void ObjectRemoved (UUID objectID)
-        {
-            lock (m_UrlMap) {
-                List<string> removeURLs = new List<string> ();
-
-                foreach (KeyValuePair<string, UrlData> url in m_UrlMap) {
-                    if (url.Value.hostID == objectID) {
-                        RemoveUrl (url.Value);
-                        removeURLs.Add (url.Key);
-                        foreach (UUID req in url.Value.requests.Keys)
-                            m_RequestMap.Remove (req);
-                    }
-                }
-
-                foreach (string urlname in removeURLs)
-                    m_UrlMap.Remove (urlname);
-            }
-        }
-
-
-        void RemoveUrl (UrlData data)
-        {
-            MainServer.Instance.RemovePollServiceHTTPHandler ("", "/lslhttp/" + data.urlcode + "/");
-        }
-
-        byte [] NoEvents (UUID requestID, UUID sessionID, OSHttpResponse response)
-        {
-            UrlData url;
-            lock (m_RequestMap) {
-                if (!m_RequestMap.ContainsKey (requestID))
-                    return MainServer.BlankResponse;
-                url = m_RequestMap [requestID];
-            }
-
-            if (Environment.TickCount - url.requests [requestID].startTime > 25000) {
-                response.StatusCode = 500;
-                response.ContentType = "text/plain";
-
-                //remove from map
-                lock (url) {
-                    url.requests.Remove (requestID);
-                    m_RequestMap.Remove (requestID);
-                }
-
-                return Encoding.UTF8.GetBytes ("Script timeout");
-            }
-
-
-            return MainServer.BlankResponse;
-        }
-
-        bool HasEvents (UUID requestID, UUID sessionID)
-        {
-            UrlData url = null;
-
-            lock (m_RequestMap) {
-                if (!m_RequestMap.ContainsKey (requestID)) {
-                    return false;
-                }
-                url = m_RequestMap [requestID];
-                if (!url.requests.ContainsKey (requestID)) {
-                    return false;
-                }
-            }
-
-            if (Environment.TickCount - url.requests [requestID].startTime > 25000) {
-                return true;
-            }
-
-            if (url.requests [requestID].requestDone)
-                return true;
-            return false;
-        }
-
-        byte [] GetEvents (UUID requestID, UUID sessionID, string req, OSHttpResponse response)
-        {
-            UrlData url = null;
-            RequestData requestData = null;
-
-            lock (m_RequestMap) {
-                if (!m_RequestMap.ContainsKey (requestID))
-                    return NoEvents (requestID, sessionID, response);
-                url = m_RequestMap [requestID];
-                requestData = url.requests [requestID];
-            }
-
-            if (!requestData.requestDone)
-                return NoEvents (requestID, sessionID, response);
-
-            if (Environment.TickCount - requestData.startTime > 25000) {
-                response.ContentType = "text/plain";
-                response.StatusCode = 500;
-                return Encoding.UTF8.GetBytes ("Script timeout");
-            }
-            //put response
-            response.StatusCode = requestData.responseCode;
-            response.ContentType = requestData.contentType;
-            //remove from map
-            lock (url) {
-                url.requests.Remove (requestID);
-                m_RequestMap.Remove (requestID);
-            }
-
-            return Encoding.UTF8.GetBytes (requestData.responseBody);
-        }
-
-        public void HttpRequestHandler (UUID requestID, OSHttpRequest request)
-        {
-            lock (request) {
-                string uri = request.RawUrl;
-
-                try {
-                    int pos1 = uri.IndexOf ("/", StringComparison.Ordinal); // /lslhttp
-                    int pos2 = uri.IndexOf ("/", pos1 + 1, StringComparison.Ordinal); // /lslhttp/
-                    int pos3 = uri.IndexOf ("/", pos2 + 1, StringComparison.Ordinal); // /lslhttp/<UUID>/
-                    string uri_tmp = uri.Substring (0, pos3 + 1);
-
-                    string pathInfo = uri.Substring (pos3);
-
-                    UrlData url;
-                    lock (m_UrlMap)
-                        url = m_UrlMap [MainServer.Instance.ServerURI + uri_tmp];
-
-                    //for llGetHttpHeader support we need to store original URI here
-                    //to make x-path-info / x-query-string / x-script-url / x-remote-ip headers 
-                    //as per http://wiki.secondlife.com/wiki/LlGetHTTPHeader
-
-                    RequestData requestData = new RequestData {
-                        requestID = requestID,
-                        requestDone = false,
-                        startTime = Environment.TickCount,
-                        uri = uri
-                    };
-                    if (requestData.headers == null)
-                        requestData.headers = new Dictionary<string, string> ();
-
-                    foreach (string header in request.Headers.Keys)
-                        requestData.headers.Add (header, request.Headers [header]);
-
-                    //if this machine is behind DNAT/port forwarding, currently this is being
-                    //set to address of port forwarding router
-                    requestData.headers ["x-remote-ip"] = request.RemoteIPEndPoint.ToString ();
-                    requestData.headers ["x-path-info"] = pathInfo;
-                    requestData.headers ["x-query-string"] = request.QueryString.ToString ();
-                    requestData.headers ["x-script-url"] = url.url;
-                    requestData.contentType = "text/plain";
-
-                    //requestData.ev = new ManualResetEvent(false);
-                    lock (url.requests) {
-                        url.requests.Add (requestID, requestData);
-                    }
-                    lock (m_RequestMap) {
-                        //add to request map
-                        m_RequestMap.Add (requestID, url);
-                    }
-
-                    lock (m_UrlMap)
-                        url.engine.PostScriptEvent (url.itemID, url.hostID, "http_request",
-                                               new object []
-                                                   {
-                                                       requestID.ToString(), request.HttpMethod,
-                                                       HttpServerHandlerHelpers.ReadString(request.InputStream)
-                                                   });
-                } catch (Exception we) {
-                    //Hashtable response = new Hashtable();
-                    MainConsole.Instance.Warn ("[HttpRequestHandler]: http-in request failed");
-                    MainConsole.Instance.Warn (we.Message);
-                    MainConsole.Instance.Warn (we.StackTrace);
-                }
-            }
-        }
-
-        void OnScriptReset (uint localID, UUID itemID)
-        {
-            ScriptRemoved (itemID);
-        }
-    }
+	public class UrlData
+	{
+		public UUID hostID;
+		public UUID itemID;
+		public IScriptModule engine;
+		public string url;
+		public UUID urlcode;
+		public Dictionary<UUID, RequestData> requests;
+	}
+
+	public class RequestData
+	{
+		public UUID requestID;
+		public Dictionary<string, string> headers;
+		public string body;
+		public int responseCode;
+		public string responseBody;
+		public string contentType;
+		//public ManualResetEvent ev;
+		public bool requestDone;
+		public int startTime;
+		public string uri;
+	}
+
+	public class UrlModule : INonSharedRegionModule, IUrlModule
+	{
+		readonly Dictionary<UUID, UrlData> m_RequestMap =
+			new Dictionary<UUID, UrlData> ();
+
+		readonly Dictionary<string, UrlData> m_UrlMap =
+			new Dictionary<string, UrlData> ();
+
+
+		const int m_TotalUrls = 100;
+
+		public string ExternalHostNameForLSL {
+			get { return MainServer.Instance.HostName; }
+		}
+
+		public Type ReplaceableInterface {
+			get { return null; }
+		}
+
+		public string Name {
+			get { return "UrlModule"; }
+		}
+
+		public void Initialize (IConfigSource config)
+		{
+		}
+
+		public void AddRegion (IScene scene)
+		{
+			scene.RegisterModuleInterface<IUrlModule> (this);
+		}
+
+		public void RegionLoaded (IScene scene)
+		{
+		}
+
+		public void RemoveRegion (IScene scene)
+		{
+		}
+
+		public void Close ()
+		{
+		}
+
+		public UUID RequestURL (IScriptModule engine, ISceneChildEntity host, UUID itemID)
+		{
+			UUID urlcode = UUID.Random ();
+
+			lock (m_UrlMap) {
+				if (m_UrlMap.Count >= m_TotalUrls) {
+					engine.PostScriptEvent (itemID, host.UUID, "http_request",
+						new object [] { urlcode.ToString (), "URL_REQUEST_DENIED", "" });
+					return urlcode;
+				}
+				string url = MainServer.Instance.ServerURI + "/lslhttp/" + urlcode + "/";
+
+				UrlData urlData = new UrlData {
+					hostID = host.UUID,
+					itemID = itemID,
+					engine = engine,
+					url = url,
+					urlcode = urlcode,
+					requests = new Dictionary<UUID, RequestData> ()
+				};
+
+
+				m_UrlMap [url] = urlData;
+
+				string uri = "/lslhttp/" + urlcode + "/";
+				MainServer.Instance.AddPollServiceHTTPHandler (uri, new PollServiceEventArgs (HttpRequestHandler, HasEvents,
+					GetEvents, NoEvents,
+					urlcode));
+
+				engine.PostScriptEvent (itemID, host.UUID, "http_request",
+					new object [] { urlcode.ToString (), "URL_REQUEST_GRANTED", url });
+			}
+
+			return urlcode;
+		}
+
+		public UUID RequestSecureURL (IScriptModule engine, ISceneChildEntity host, UUID itemID)
+		{
+			UUID urlcode = UUID.Random ();
+
+			engine.PostScriptEvent (itemID, host.UUID, "http_request",
+				new object [] { urlcode.ToString (), "URL_REQUEST_DENIED", "" });
+
+			return urlcode;
+		}
+
+		public void ReleaseURL (string url)
+		{
+			lock (m_UrlMap) {
+				UrlData data;
+
+				if (!m_UrlMap.TryGetValue (url, out data)) {
+					return;
+				}
+
+				foreach (UUID req in data.requests.Keys)
+					m_RequestMap.Remove (req);
+
+				RemoveUrl (data);
+				m_UrlMap.Remove (url);
+			}
+		}
+
+		public void SetContentType (UUID request, string content_type)
+		{
+			if (m_RequestMap.ContainsKey (request)) {
+				UrlData urlData = m_RequestMap [request];
+				urlData.requests [request].contentType = content_type;
+			}
+		}
+
+		public void HttpResponse (UUID request, int status, string body)
+		{
+			if (m_RequestMap.ContainsKey (request)) {
+				UrlData urlData = m_RequestMap [request];
+				urlData.requests [request].responseCode = status;
+				urlData.requests [request].responseBody = body;
+				//urlData.requests[request].ev.Set();
+				urlData.requests [request].requestDone = true;
+			} else {
+				MainConsole.Instance.Info ("[HttpRequestHandler] There is no http-in request with id " +
+				request);
+			}
+		}
+
+		public string GetHttpHeader (UUID requestId, string header)
+		{
+			if (m_RequestMap.ContainsKey (requestId)) {
+				UrlData urlData = m_RequestMap [requestId];
+				string value;
+				if (urlData.requests [requestId].headers.TryGetValue (header, out value))
+					return value;
+			} else {
+				MainConsole.Instance.Warn ("[HttpRequestHandler] There was no http-in request with id " + requestId);
+			}
+			return string.Empty;
+		}
+
+		public int GetFreeUrls ()
+		{
+			lock (m_UrlMap)
+				return m_TotalUrls - m_UrlMap.Count;
+		}
+
+		public void ScriptRemoved (UUID itemID)
+		{
+			lock (m_UrlMap) {
+				List<string> removeURLs = new List<string> ();
+
+				foreach (KeyValuePair<string, UrlData> url in m_UrlMap) {
+					if (url.Value.itemID == itemID) {
+						RemoveUrl (url.Value);
+						removeURLs.Add (url.Key);
+						foreach (UUID req in url.Value.requests.Keys)
+							m_RequestMap.Remove (req);
+					}
+				}
+
+				foreach (string urlname in removeURLs)
+					m_UrlMap.Remove (urlname);
+			}
+		}
+
+		public void ObjectRemoved (UUID objectID)
+		{
+			lock (m_UrlMap) {
+				List<string> removeURLs = new List<string> ();
+
+				foreach (KeyValuePair<string, UrlData> url in m_UrlMap) {
+					if (url.Value.hostID == objectID) {
+						RemoveUrl (url.Value);
+						removeURLs.Add (url.Key);
+						foreach (UUID req in url.Value.requests.Keys)
+							m_RequestMap.Remove (req);
+					}
+				}
+
+				foreach (string urlname in removeURLs)
+					m_UrlMap.Remove (urlname);
+			}
+		}
+
+
+		void RemoveUrl (UrlData data)
+		{
+			MainServer.Instance.RemovePollServiceHTTPHandler ("", "/lslhttp/" + data.urlcode + "/");
+		}
+
+		byte [] NoEvents (UUID requestID, UUID sessionID, OSHttpResponse response)
+		{
+			UrlData url;
+			lock (m_RequestMap) {
+				if (!m_RequestMap.ContainsKey (requestID))
+					return MainServer.BlankResponse;
+				url = m_RequestMap [requestID];
+			}
+
+			if (Environment.TickCount - url.requests [requestID].startTime > 25000) {
+				response.StatusCode = 500;
+				response.ContentType = "text/plain";
+
+				//remove from map
+				lock (url) {
+					url.requests.Remove (requestID);
+					m_RequestMap.Remove (requestID);
+				}
+
+				return Encoding.UTF8.GetBytes ("Script timeout");
+			}
+
+
+			return MainServer.BlankResponse;
+		}
+
+		bool HasEvents (UUID requestID, UUID sessionID)
+		{
+			UrlData url = null;
+
+			lock (m_RequestMap) {
+				if (!m_RequestMap.ContainsKey (requestID)) {
+					return false;
+				}
+				url = m_RequestMap [requestID];
+				if (!url.requests.ContainsKey (requestID)) {
+					return false;
+				}
+			}
+
+			if (Environment.TickCount - url.requests [requestID].startTime > 25000) {
+				return true;
+			}
+
+			if (url.requests [requestID].requestDone)
+				return true;
+			return false;
+		}
+
+		byte [] GetEvents (UUID requestID, UUID sessionID, string req, OSHttpResponse response)
+		{
+			UrlData url = null;
+			RequestData requestData = null;
+
+			lock (m_RequestMap) {
+				if (!m_RequestMap.ContainsKey (requestID))
+					return NoEvents (requestID, sessionID, response);
+				url = m_RequestMap [requestID];
+				requestData = url.requests [requestID];
+			}
+
+			if (!requestData.requestDone)
+				return NoEvents (requestID, sessionID, response);
+
+			if (Environment.TickCount - requestData.startTime > 25000) {
+				response.ContentType = "text/plain";
+				response.StatusCode = 500;
+				return Encoding.UTF8.GetBytes ("Script timeout");
+			}
+			//put response
+			response.StatusCode = requestData.responseCode;
+			response.ContentType = requestData.contentType;
+			//remove from map
+			lock (url) {
+				url.requests.Remove (requestID);
+				m_RequestMap.Remove (requestID);
+			}
+
+			return Encoding.UTF8.GetBytes (requestData.responseBody);
+		}
+
+		public void HttpRequestHandler (UUID requestID, OSHttpRequest request)
+		{
+			lock (request) {
+				string uri = request.RawUrl;
+
+				try {
+					int pos1 = uri.IndexOf ("/", StringComparison.Ordinal); // /lslhttp
+					int pos2 = uri.IndexOf ("/", pos1 + 1, StringComparison.Ordinal); // /lslhttp/
+					int pos3 = uri.IndexOf ("/", pos2 + 1, StringComparison.Ordinal); // /lslhttp/<UUID>/
+					string uri_tmp = uri.Substring (0, pos3 + 1);
+
+					string pathInfo = uri.Substring (pos3);
+
+					UrlData url;
+					lock (m_UrlMap)
+						url = m_UrlMap [MainServer.Instance.ServerURI + uri_tmp];
+
+					//for llGetHttpHeader support we need to store original URI here
+					//to make x-path-info / x-query-string / x-script-url / x-remote-ip headers 
+					//as per http://wiki.secondlife.com/wiki/LlGetHTTPHeader
+
+					RequestData requestData = new RequestData {
+						requestID = requestID,
+						requestDone = false,
+						startTime = Environment.TickCount,
+						uri = uri
+					};
+					if (requestData.headers == null)
+						requestData.headers = new Dictionary<string, string> ();
+
+					foreach (string header in request.Headers.Keys)
+						requestData.headers.Add (header, request.Headers [header]);
+
+					//if this machine is behind DNAT/port forwarding, currently this is being
+					//set to address of port forwarding router
+					requestData.headers ["x-remote-ip"] = request.RemoteIPEndPoint.ToString ();
+					requestData.headers ["x-path-info"] = pathInfo;
+					requestData.headers ["x-query-string"] = request.QueryString.ToString ();
+					requestData.headers ["x-script-url"] = url.url;
+					requestData.contentType = "text/plain";
+
+					//requestData.ev = new ManualResetEvent(false);
+					lock (url.requests) {
+						url.requests.Add (requestID, requestData);
+					}
+					lock (m_RequestMap) {
+						//add to request map
+						m_RequestMap.Add (requestID, url);
+					}
+
+					lock (m_UrlMap)
+						url.engine.PostScriptEvent (url.itemID, url.hostID, "http_request",
+							new object [] {
+								requestID.ToString (), request.HttpMethod,
+								HttpServerHandlerHelpers.ReadString (request.InputStream)
+							});
+				} catch (Exception we) {
+					//Hashtable response = new Hashtable();
+					MainConsole.Instance.Warn ("[HttpRequestHandler]: http-in request failed");
+					MainConsole.Instance.Warn (we.Message);
+					MainConsole.Instance.Warn (we.StackTrace);
+				}
+			}
+		}
+
+		void OnScriptReset (uint localID, UUID itemID)
+		{
+			ScriptRemoved (itemID);
+		}
+	}
 }

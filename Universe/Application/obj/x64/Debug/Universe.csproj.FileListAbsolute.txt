@@ -3,3 +3,8 @@ C:\Users\virtu\Desktop\Universe-Dev\VirtualUniverse\bin\Universe.pdb
 C:\Users\virtu\Desktop\Universe-Dev\Universe\Application\obj\x64\Debug\Universe.csprojResolveAssemblyReference.cache
 C:\Users\virtu\Desktop\Universe-Dev\Universe\Application\obj\x64\Debug\Universe.exe
 C:\Users\virtu\Desktop\Universe-Dev\Universe\Application\obj\x64\Debug\Universe.pdb
+C:\Users\virtu\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.exe
+C:\Users\virtu\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.pdb
+C:\Users\virtu\Desktop\Virtual-Dev\Universe\Application\obj\x64\Debug\Universe.csprojResolveAssemblyReference.cache
+C:\Users\virtu\Desktop\Virtual-Dev\Universe\Application\obj\x64\Debug\Universe.exe
+C:\Users\virtu\Desktop\Virtual-Dev\Universe\Application\obj\x64\Debug\Universe.pdb

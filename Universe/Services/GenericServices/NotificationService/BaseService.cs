@@ -38,91 +38,92 @@ using Universe.Framework.Services;
 
 namespace Universe.Services
 {
-    public class BaseService : IApplicationPlugin
-    {
-        #region IApplicationPlugin Members
+	public class BaseService : IApplicationPlugin
+	{
+		#region IApplicationPlugin Members
 
-        public string Name {
-            get { return "BaseNotificationService"; }
-        }
+		public string Name {
+			get { return "BaseNotificationService"; }
+		}
 
-        public void PreStartup (ISimulationBase simBase)
-        {
-            SetUpConsole (simBase.ConfigSource, simBase);
-        }
+		public void PreStartup (ISimulationBase simBase)
+		{
+			SetUpConsole (simBase.ConfigSource, simBase);
+		}
 
-        public void Initialize (ISimulationBase simBase)
-        {
-        }
+		public void Initialize (ISimulationBase simBase)
+		{
+		}
 
-        void SetUpConsole (IConfigSource config, ISimulationBase simbase)
-        {
-            List<ICommandConsole> Plugins = UniverseModuleLoader.PickupModules<ICommandConsole> ();
-            foreach (ICommandConsole plugin in Plugins) {
-                plugin.Initialize (config, simbase);
-            }
+		void SetUpConsole (IConfigSource config, ISimulationBase simbase)
+		{
+			List<ICommandConsole> Plugins = UniverseModuleLoader.PickupModules<ICommandConsole> ();
+			foreach (ICommandConsole plugin in Plugins) {
+				plugin.Initialize (config, simbase);
+			}
 
-            if (MainConsole.Instance == null) {
-                Console.WriteLine ("[Console]: No Console configured, falling back to 'LocalConsole'");
-                new LocalConsole ().LocalInitialize (config, simbase);
-            }
+			if (MainConsole.Instance == null) {
+				Console.WriteLine ("[Console]: No Console configured, falling back to 'LocalConsole'");
+				new LocalConsole ().LocalInitialize (config, simbase);
+			}
 
-            MainConsole.Instance.Threshold = Level.Info;
+			MainConsole.Instance.Threshold = Level.Info;
 
-            MainConsole.Instance.Fatal (string.Format ("[Console]: Console log level is {0}", MainConsole.Instance.Threshold));
+			MainConsole.Instance.Fatal (string.Format ("[Console]: Console log level is {0}", MainConsole.Instance.Threshold));
 
-            MainConsole.Instance.Commands.AddCommand (
-                "set log level",
-                "set log level [level]",
-                "Set the console logging level",
-                HandleLogLevel, false, true);
+			MainConsole.Instance.Commands.AddCommand (
+				"set log level",
+				"set log level [level]",
+				"Set the console logging level",
+				HandleLogLevel, false, true);
 
-            MainConsole.Instance.Commands.AddCommand (
-                "get log level",
-                "get log level",
-                "Returns the current console logging level",
-                HandleGetLogLevel, false, true);
-        }
+			MainConsole.Instance.Commands.AddCommand (
+				"get log level",
+				"get log level",
+				"Returns the current console logging level",
+				HandleGetLogLevel, false, true);
+		}
 
-        public void PostInitialize ()
-        {
-        }
+		public void PostInitialize ()
+		{
+		}
 
-        public void Start ()
-        {
-        }
+		public void Start ()
+		{
+		}
 
-        public void PostStart ()
-        {
-        }
+		public void PostStart ()
+		{
+		}
 
-        public void Close ()
-        {
-        }
+		public void Close ()
+		{
+		}
 
-        public void ReloadConfiguration (IConfigSource m_config)
-        {
-        }
+		public void ReloadConfiguration (IConfigSource m_config)
+		{
+		}
 
-        #endregion
+		#endregion
 
-        #region Console Commands
+		#region Console Commands
 
-        static void HandleGetLogLevel (IScene scene, string [] cmd)
-        {
-            MainConsole.Instance.Fatal (string.Format ("Console log level is {0}", MainConsole.Instance.Threshold));
-        }
+		static void HandleGetLogLevel (IScene scene, string[] cmd)
+		{
+			MainConsole.Instance.Fatal (string.Format ("Console log level is {0}", MainConsole.Instance.Threshold));
+		}
 
-        static void HandleLogLevel (IScene scene, string [] cmd)
-        {
-            string rawLevel = cmd [3];
+		static void HandleLogLevel (IScene scene, string[] cmd)
+		{
+			string rawLevel = cmd [3];
 
-            try {
-                MainConsole.Instance.Threshold = (Level)Enum.Parse (typeof (Level), rawLevel, true);
-            } catch { }
-            MainConsole.Instance.Format (Level.Off, "Console log level is {0}", MainConsole.Instance.Threshold);
-        }
+			try {
+				MainConsole.Instance.Threshold = (Level)Enum.Parse (typeof(Level), rawLevel, true);
+			} catch {
+			}
+			MainConsole.Instance.Format (Level.Off, "Console log level is {0}", MainConsole.Instance.Threshold);
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

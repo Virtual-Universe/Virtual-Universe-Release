@@ -29,11 +29,14 @@
 
 namespace Universe.ScriptEngine.VirtualScript.MiniModule
 {
-    public interface IHost
-    {
-        IObject Object { get; }
-        IGraphics Graphics { get; }
-        IExtension Extensions { get; }
-        IMicrothreader Microthreads { get; }
-    }
+	public interface IHost
+	{
+		IObject Object { get; }
+
+		IGraphics Graphics { get; }
+
+		IExtension Extensions { get; }
+
+		IMicrothreader Microthreads { get; }
+	}
 }

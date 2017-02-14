@@ -36,186 +36,189 @@ using Universe.Framework.SceneInfo.Entities;
 
 namespace Universe.Framework.Modules
 {
-    public interface IScriptModule
-    {
-        /// <summary>
-        ///     Should we be able to run currently?
-        /// </summary>
-        bool Disabled { get; set; }
+	public interface IScriptModule
+	{
+		/// <summary>
+		///     Should we be able to run currently?
+		/// </summary>
+		bool Disabled { get; set; }
 
-        /// <summary>
-        ///     The name of our script engine
-        /// </summary>
-        string ScriptEngineName { get; }
+		/// <summary>
+		///     The name of our script engine
+		/// </summary>
+		string ScriptEngineName { get; }
 
-        /// <summary>
-        ///     Adds an event to one script with the given parameters
-        /// </summary>
-        /// <param name="itemID"></param>
-        /// <param name="primID"></param>
-        /// <param name="name"></param>
-        /// <param name="args"></param>
-        /// <returns></returns>
-        bool PostScriptEvent(UUID itemID, UUID primID, string name, Object[] args);
+		/// <summary>
+		///     Adds an event to one script with the given parameters
+		/// </summary>
+		/// <param name="itemID"></param>
+		/// <param name="primID"></param>
+		/// <param name="name"></param>
+		/// <param name="args"></param>
+		/// <returns></returns>
+		bool PostScriptEvent (UUID itemID, UUID primID, string name, Object[] args);
 
-        /// <summary>
-        ///     Posts an event to the entire given object
-        /// </summary>
-        /// <param name="primID"></param>
-        /// <param name="name"></param>
-        /// <param name="args"></param>
-        /// <returns></returns>
-        bool PostObjectEvent(UUID primID, string name, Object[] args);
+		/// <summary>
+		///     Posts an event to the entire given object
+		/// </summary>
+		/// <param name="primID"></param>
+		/// <param name="name"></param>
+		/// <param name="args"></param>
+		/// <returns></returns>
+		bool PostObjectEvent (UUID primID, string name, Object[] args);
 
-        // Suspend ALL scripts in a given scene object. The item ID
-        // is the UUID of a SOG, and the method acts on all contained
-        // scripts. This is different from the suspend/resume that
-        // can be issued by a client.
-        void SuspendScript(UUID itemID);
-        void ResumeScript(UUID itemID);
+		// Suspend ALL scripts in a given scene object. The item ID
+		// is the UUID of a SOG, and the method acts on all contained
+		// scripts. This is different from the suspend/resume that
+		// can be issued by a client.
+		//
+		void SuspendScript (UUID itemID);
 
-        /// <summary>
-        ///     Gets all script errors for the given itemID
-        /// </summary>
-        /// <param name="itemID"></param>
-        /// <returns></returns>
-        ArrayList GetScriptErrors(UUID itemID);
+		void ResumeScript (UUID itemID);
 
-        /// <summary>
-        ///     Updates the given script with the options given
-        /// </summary>
-        /// <param name="partID"></param>
-        /// <param name="itemID"></param>
-        /// <param name="script"></param>
-        /// <param name="startParam"></param>
-        /// <param name="postOnRez"></param>
-        /// <param name="stateSource"></param>
-        void UpdateScript(UUID partID, UUID itemID, string script, int startParam, bool postOnRez, StateSource stateSource);
+		/// <summary>
+		///     Gets all script errors for the given itemID
+		/// </summary>
+		/// <param name="itemID"></param>
+		/// <returns></returns>
+		ArrayList GetScriptErrors (UUID itemID);
 
-        /// <summary>
-        ///     Stops all scripts that the ScriptEngine is running
-        /// </summary>
-        void StopAllScripts();
+		/// <summary>
+		///     Updates the given script with the options given
+		/// </summary>
+		/// <param name="partID"></param>
+		/// <param name="itemID"></param>
+		/// <param name="script"></param>
+		/// <param name="startParam"></param>
+		/// <param name="postOnRez"></param>
+		/// <param name="stateSource"></param>
+		void UpdateScript (UUID partID, UUID itemID, string script, int startParam, bool postOnRez,
+		                        StateSource stateSource);
 
-        /// <summary>
-        ///     Attempt to compile a script from the given assetID and return any compile errors
-        /// </summary>
-        /// <param name="assetID"></param>
-        /// <param name="itemID"></param>
-        /// <returns></returns>
-        string TestCompileScript(UUID assetID, UUID itemID);
+		/// <summary>
+		///     Stops all scripts that the ScriptEngine is running
+		/// </summary>
+		void StopAllScripts ();
 
-        /// <summary>
-        ///     Changes script references from an old Item/Prim to a new one
-        /// </summary>
-        /// <param name="olditemID"></param>
-        /// <param name="newItem"></param>
-        /// <param name="newPart"></param>
-        void UpdateScriptToNewObject(UUID olditemID, TaskInventoryItem newItem, ISceneChildEntity newPart);
+		/// <summary>
+		///     Attempt to compile a script from the given assetID and return any compile errors
+		/// </summary>
+		/// <param name="assetID"></param>
+		/// <param name="itemID"></param>
+		/// <returns></returns>
+		string TestCompileScript (UUID assetID, UUID itemID);
 
-        /// <summary>
-        ///     Force a state save for the given script
-        /// </summary>
-        /// <param name="itemID"></param>
-        /// <param name="primID"></param>
-        void SaveStateSave(UUID itemID, UUID primID);
+		/// <summary>
+		///     Changes script references from an old Item/Prim to a new one
+		/// </summary>
+		/// <param name="olditemID"></param>
+		/// <param name="newItem"></param>
+		/// <param name="newPart"></param>
+		void UpdateScriptToNewObject (UUID olditemID, TaskInventoryItem newItem, ISceneChildEntity newPart);
 
-        /// <summary>
-        ///     Get a list of all script function names in the API's
-        /// </summary>
-        /// <returns></returns>
-        List<string> GetAllFunctionNames();
+		/// <summary>
+		///     Force a state save for the given script
+		/// </summary>
+		/// <param name="itemID"></param>
+		/// <param name="primID"></param>
+		void SaveStateSave (UUID itemID, UUID primID);
 
-        /// <summary>
-        ///     Get the number of active (running) scripts in the given entity
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        int GetActiveScripts(IEntity obj);
+		/// <summary>
+		///     Get a list of all script function names in the API's
+		/// </summary>
+		/// <returns></returns>
+		List<string> GetAllFunctionNames ();
 
-        /// <summary>
-        ///     Get the number of scripts in the given entity
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        int GetTotalScripts(IEntity obj);
+		/// <summary>
+		///     Get the number of active (running) scripts in the given entity
+		/// </summary>
+		/// <param name="obj"></param>
+		/// <returns></returns>
+		int GetActiveScripts (IEntity obj);
 
-        /// <summary>
-        ///     Get the number of active (running) scripts that this engine is controlling
-        /// </summary>
-        /// <returns></returns>
-        int GetActiveScripts();
+		/// <summary>
+		///     Get the number of scripts in the given entity
+		/// </summary>
+		/// <param name="obj"></param>
+		/// <returns></returns>
+		int GetTotalScripts (IEntity obj);
 
-        /// <summary>
-        ///     Get the number of events fired per second currently
-        /// </summary>
-        /// <returns></returns>
-        int GetScriptEPS();
+		/// <summary>
+		///     Get the number of active (running) scripts that this engine is controlling
+		/// </summary>
+		/// <returns></returns>
+		int GetActiveScripts ();
 
-        /// <summary>
-        ///     Get the top scripts in the Script Engine
-        /// </summary>
-        /// <param name="RegionID"></param>
-        /// <returns></returns>
-        Dictionary<uint, float> GetTopScripts(UUID RegionID);
+		/// <summary>
+		///     Get the number of events fired per second currently
+		/// </summary>
+		/// <returns></returns>
+		int GetScriptEPS ();
 
-        /// <summary>
-        ///     This makes sure that the cmd handler (for long running events like timers/listeners) is running
-        /// </summary>
-        /// <param name="itemID">Item causing the poke</param>
-        void PokeThreads(UUID itemID);
+		/// <summary>
+		///     Get the top scripts in the Script Engine
+		/// </summary>
+		/// <param name="RegionID"></param>
+		/// <returns></returns>
+		Dictionary<uint, float> GetTopScripts (UUID RegionID);
 
-        /// <summary>
-        ///     Save states for all scripts that require it
-        /// </summary>
-        void SaveStateSaves();
+		/// <summary>
+		///     This makes sure that the cmd handler (for long running events like timers/listeners) is running
+		/// </summary>
+		/// <param name="itemID">Item causing the poke</param>
+		void PokeThreads (UUID itemID);
 
-        /// <summary>
-        ///     Get the script time for the given script
-        /// </summary>
-        /// <param name="itemID"></param>
-        /// <returns></returns>
-        int GetScriptTime(UUID itemID);
-    }
+		/// <summary>
+		///     Save states for all scripts that require it
+		/// </summary>
+		void SaveStateSaves ();
 
-    [Flags]
-    public enum scriptEvents : long
-    {
-        None = 0,
-        attach = 1,
-        collision = 16,
-        collision_end = 32,
-        collision_start = 64,
-        control = 128,
-        dataserver = 256,
-        email = 512,
-        http_response = 1024,
-        land_collision = 2048,
-        land_collision_end = 4096,
-        land_collision_start = 8192,
-        at_target = 16384,
-        at_rot_target = 16777216,
-        listen = 32768,
-        money = 65536,
-        moving_end = 131072,
-        moving_start = 262144,
-        not_at_rot_target = 524288,
-        not_at_target = 1048576,
-        remote_data = 8388608,
-        run_time_permissions = 268435456,
-        state_entry = 1073741824,
-        state_exit = 2,
-        timer = 4,
-        touch = 8,
-        touch_end = 536870912,
-        touch_start = 2097152,
-        object_rez = 4194304,
-        changed = 2147483648,
-        link_message = 4294967296,
-        no_sensor = 8589934592,
-        on_rez = 17179869184,
-        sensor = 34359738368,
-        transaction_event = 68719476736,
-        http_request = 137438953472
-    }
+		/// <summary>
+		///     Get the script time for the given script
+		/// </summary>
+		/// <param name="itemID"></param>
+		/// <returns></returns>
+		int GetScriptTime (UUID itemID);
+	}
+
+	[Flags]
+	public enum scriptEvents : long
+	{
+		None = 0,
+		attach = 1,
+		collision = 16,
+		collision_end = 32,
+		collision_start = 64,
+		control = 128,
+		dataserver = 256,
+		email = 512,
+		http_response = 1024,
+		land_collision = 2048,
+		land_collision_end = 4096,
+		land_collision_start = 8192,
+		at_target = 16384,
+		at_rot_target = 16777216,
+		listen = 32768,
+		money = 65536,
+		moving_end = 131072,
+		moving_start = 262144,
+		not_at_rot_target = 524288,
+		not_at_target = 1048576,
+		remote_data = 8388608,
+		run_time_permissions = 268435456,
+		state_entry = 1073741824,
+		state_exit = 2,
+		timer = 4,
+		touch = 8,
+		touch_end = 536870912,
+		touch_start = 2097152,
+		object_rez = 4194304,
+		changed = 2147483648,
+		link_message = 4294967296,
+		no_sensor = 8589934592,
+		on_rez = 17179869184,
+		sensor = 34359738368,
+		transaction_event = 68719476736,
+		http_request = 137438953472
+	}
 }

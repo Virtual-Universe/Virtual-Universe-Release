@@ -29,52 +29,52 @@
 
 namespace Universe.Framework.ClientInterfaces
 {
-    public enum ParcelMediaCommandEnum
-    {
-        Stop = 0,
-        Pause = 1,
-        Play = 2,
-        Loop = 3,
-        Texture = 4,
-        Url = 5,
-        Time = 6,
-        Agent = 7,
-        Unload = 8,
-        AutoAlign = 9,
-        Type = 10,
-        Size = 11,
-        Desc = 12,
-        LoopSet = 13
-    }
+	public enum ParcelMediaCommandEnum
+	{
+		Stop = 0,
+		Pause = 1,
+		Play = 2,
+		Loop = 3,
+		Texture = 4,
+		Url = 5,
+		Time = 6,
+		Agent = 7,
+		Unload = 8,
+		AutoAlign = 9,
+		Type = 10,
+		Size = 11,
+		Desc = 12,
+		LoopSet = 13
+	}
 
-    public enum PrimMediaCommandEnum
-    {
-        AltImageEnable = 0,
-        Controls = 1,
-        CurrentURL = 2,
-        HomeURL = 3,
-        AutoLoop = 4,
-        AutoPlay = 5,
-        AutoScale = 6,
-        AutoZoom = 7,
-        FirstClickInteract = 8,
-        WidthPixels = 9,
-        HeightPixels = 10,
-        WhitelistEnable = 11,
-        Whitelist = 12,
-        PermsInteract = 13,
-        PermsControl = 14
-    }
+	public enum PrimMediaCommandEnum
+	{
+		AltImageEnable = 0,
+		Controls = 1,
+		CurrentURL = 2,
+		HomeURL = 3,
+		AutoLoop = 4,
+		AutoPlay = 5,
+		AutoScale = 6,
+		AutoZoom = 7,
+		FirstClickInteract = 8,
+		WidthPixels = 9,
+		HeightPixels = 10,
+		WhitelistEnable = 11,
+		Whitelist = 12,
+		PermsInteract = 13,
+		PermsControl = 14
+	}
 
-    public enum PrimMediaUpdate
-    {
-        OK = 0,
-        MALFORMED_PARAMS = 1000,
-        TYPE_MISMATCH = 1001,
-        BOUNDS_ERROR = 1002,
-        NOT_FOUND = 1003,
-        NOT_SUPPORTED = 1004,
-        INTERNAL_ERROR = 1999,
-        WHITELIST_FAILED = 2001,
-    }
+	public enum PrimMediaUpdate
+	{
+		OK = 0,
+		MALFORMED_PARAMS = 1000,
+		TYPE_MISMATCH = 1001,
+		BOUNDS_ERROR = 1002,
+		NOT_FOUND = 1003,
+		NOT_SUPPORTED = 1004,
+		INTERNAL_ERROR = 1999,
+		WHITELIST_FAILED = 2001,
+	}
 }

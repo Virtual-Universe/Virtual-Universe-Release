@@ -37,161 +37,163 @@ using OSDArray = OpenMetaverse.StructuredData.OSDArray;
 
 #if DEBUGING
 using PrimMesher;
+
 #else
 using Universe.Physics.PrimMesher;
 #endif
 
 namespace Universe.Physics.Meshing
 {
-    public class Mesh : IMesh
-    {
-        readonly ulong m_key;
-        public bool WasCached { get; set; }
+	public class Mesh : IMesh
+	{
+		readonly ulong m_key;
 
-        Vector3 _centroid;
-        int _centroidDiv;
-        IntPtr m_indicesPtr = IntPtr.Zero;
-        GCHandle m_pinnedIndex;
-        GCHandle m_pinnedVertexes;
-        int [] m_triangles;
-        float [] m_vertices;
-        int m_vertexCount;
-        int m_indexCount;
-        IntPtr m_verticesPtr = IntPtr.Zero;
+		public bool WasCached { get; set; }
 
-        public Mesh (ulong key)
-        {
-            m_key = key;
-            _centroid = Vector3.Zero;
-            _centroidDiv = 0;
-        }
+		Vector3 _centroid;
+		int _centroidDiv;
+		IntPtr m_indicesPtr = IntPtr.Zero;
+		GCHandle m_pinnedIndex;
+		GCHandle m_pinnedVertexes;
+		int[] m_triangles;
+		float[] m_vertices;
+		int m_vertexCount;
+		int m_indexCount;
+		IntPtr m_verticesPtr = IntPtr.Zero;
 
-        #region IMesh Members
+		public Mesh (ulong key)
+		{
+			m_key = key;
+			_centroid = Vector3.Zero;
+			_centroidDiv = 0;
+		}
 
-        public ulong Key {
-            get { return m_key; }
-        }
+		#region IMesh Members
 
-        public Vector3 GetCentroid ()
-        {
-            if (_centroidDiv > 0) {
-                float tmp = 1.0f / _centroidDiv;
-                return new Vector3 (_centroid.X * tmp, _centroid.Y * tmp, _centroid.Z * tmp);
-            }
+		public ulong Key {
+			get { return m_key; }
+		}
 
-            return Vector3.Zero;
-        }
+		public Vector3 GetCentroid ()
+		{
+			if (_centroidDiv > 0) {
+				float tmp = 1.0f / _centroidDiv;
+				return new Vector3 (_centroid.X * tmp, _centroid.Y * tmp, _centroid.Z * tmp);
+			}
 
-        public void getVertexListAsPtrToFloatArray (out IntPtr vertices, out int vertexStride, out int vertexCount)
-        {
-            // A vertex is 3 floats
-            vertexStride = 3 * sizeof (float);
+			return Vector3.Zero;
+		}
 
-            // If there isn't an unmanaged array allocated yet, do it now
-            if (m_verticesPtr == IntPtr.Zero) {
-                // Each vertex is 3 elements (floats)
-                int byteCount = m_vertexCount * vertexStride;
-                m_verticesPtr = Marshal.AllocHGlobal (byteCount);
-                Marshal.Copy (m_vertices, 0, m_verticesPtr, m_vertexCount * 3);
-                if (m_vertexCount > 0)
-                    GC.AddMemoryPressure ((long)m_vertexCount * 3);
-            }
-            vertices = m_verticesPtr;
-            vertexCount = m_vertexCount;
-        }
+		public void getVertexListAsPtrToFloatArray (out IntPtr vertices, out int vertexStride, out int vertexCount)
+		{
+			// A vertex is 3 floats
+			vertexStride = 3 * sizeof(float);
 
-        public void setIndexListAsInt (List<Face> faces)
-        {
-            m_triangles = new int [faces.Count * 3];
-            for (int i = 0; i < faces.Count; i++) {
-                //Face t = m_triangles[i];
-                m_triangles [3 * i + 0] = faces [i].v1;
-                m_triangles [3 * i + 1] = faces [i].v2;
-                m_triangles [3 * i + 2] = faces [i].v3;
-            }
-            m_indexCount = m_triangles.Length;
-        }
+			// If there isn't an unmanaged array allocated yet, do it now
+			if (m_verticesPtr == IntPtr.Zero) {
+				// Each vertex is 3 elements (floats)
+				int byteCount = m_vertexCount * vertexStride;
+				m_verticesPtr = Marshal.AllocHGlobal (byteCount);
+				Marshal.Copy (m_vertices, 0, m_verticesPtr, m_vertexCount * 3);
+				if (m_vertexCount > 0)
+					GC.AddMemoryPressure ((long)m_vertexCount * 3);
+			}
+			vertices = m_verticesPtr;
+			vertexCount = m_vertexCount;
+		}
 
-        void setVertexListAsFloat (List<Coord> coords)
-        {
-            m_vertices = new float [coords.Count * 3];
-            for (int i = 0; i < coords.Count; i++) {
-                //Coord v = m_vertices[i];
-                m_vertices [3 * i + 0] = coords [i].X;
-                m_vertices [3 * i + 1] = coords [i].Y;
-                m_vertices [3 * i + 2] = coords [i].Z;
-            }
-            m_vertexCount = m_vertices.Length / 3;
-        }
+		public void setIndexListAsInt (List<Face> faces)
+		{
+			m_triangles = new int [faces.Count * 3];
+			for (int i = 0; i < faces.Count; i++) {
+				//Face t = m_triangles[i];
+				m_triangles [3 * i + 0] = faces [i].v1;
+				m_triangles [3 * i + 1] = faces [i].v2;
+				m_triangles [3 * i + 2] = faces [i].v3;
+			}
+			m_indexCount = m_triangles.Length;
+		}
 
-        public void getIndexListAsPtrToIntArray (out IntPtr indices, out int triStride, out int indexCount)
-        {
-            // If there isn't an unmanaged array allocated yet, do it now
-            if (m_indicesPtr == IntPtr.Zero) {
-                int byteCount = m_indexCount * sizeof (int);
-                m_indicesPtr = Marshal.AllocHGlobal (byteCount);
-                Marshal.Copy (m_triangles, 0, m_indicesPtr, m_indexCount);
-                if (byteCount > 0)
-                    GC.AddMemoryPressure (byteCount);
-            }
-            // A triangle is 3 ints (indices)
-            triStride = 3 * sizeof (int);
-            indices = m_indicesPtr;
-            indexCount = m_indexCount;
-        }
+		void setVertexListAsFloat (List<Coord> coords)
+		{
+			m_vertices = new float [coords.Count * 3];
+			for (int i = 0; i < coords.Count; i++) {
+				//Coord v = m_vertices[i];
+				m_vertices [3 * i + 0] = coords [i].X;
+				m_vertices [3 * i + 1] = coords [i].Y;
+				m_vertices [3 * i + 2] = coords [i].Z;
+			}
+			m_vertexCount = m_vertices.Length / 3;
+		}
 
-        public void releasePinned ()
-        {
-            if (m_pinnedVertexes.IsAllocated)
-                m_pinnedVertexes.Free ();
-            if (m_pinnedIndex.IsAllocated)
-                m_pinnedIndex.Free ();
-            if (m_verticesPtr != IntPtr.Zero) {
-                Marshal.FreeHGlobal (m_verticesPtr);
-                m_verticesPtr = IntPtr.Zero;
-            }
-            if (m_indicesPtr != IntPtr.Zero) {
-                Marshal.FreeHGlobal (m_indicesPtr);
-                m_indicesPtr = IntPtr.Zero;
-            }
-            GC.RemoveMemoryPressure (m_indexCount * sizeof (int));
-            GC.RemoveMemoryPressure (m_vertexCount * 3 * sizeof (float));
-        }
+		public void getIndexListAsPtrToIntArray (out IntPtr indices, out int triStride, out int indexCount)
+		{
+			// If there isn't an unmanaged array allocated yet, do it now
+			if (m_indicesPtr == IntPtr.Zero) {
+				int byteCount = m_indexCount * sizeof(int);
+				m_indicesPtr = Marshal.AllocHGlobal (byteCount);
+				Marshal.Copy (m_triangles, 0, m_indicesPtr, m_indexCount);
+				if (byteCount > 0)
+					GC.AddMemoryPressure (byteCount);
+			}
+			// A triangle is 3 ints (indices)
+			triStride = 3 * sizeof(int);
+			indices = m_indicesPtr;
+			indexCount = m_indexCount;
+		}
 
-        /// <summary>
-        ///     frees up the source mesh data to minimize memory - call this method after calling get*Locked() functions
-        /// </summary>
-        public void releaseSourceMeshData ()
-        {
-            m_triangles = null;
-            m_vertices = null;
-        }
+		public void releasePinned ()
+		{
+			if (m_pinnedVertexes.IsAllocated)
+				m_pinnedVertexes.Free ();
+			if (m_pinnedIndex.IsAllocated)
+				m_pinnedIndex.Free ();
+			if (m_verticesPtr != IntPtr.Zero) {
+				Marshal.FreeHGlobal (m_verticesPtr);
+				m_verticesPtr = IntPtr.Zero;
+			}
+			if (m_indicesPtr != IntPtr.Zero) {
+				Marshal.FreeHGlobal (m_indicesPtr);
+				m_indicesPtr = IntPtr.Zero;
+			}
+			GC.RemoveMemoryPressure (m_indexCount * sizeof(int));
+			GC.RemoveMemoryPressure (m_vertexCount * 3 * sizeof(float));
+		}
 
-        #endregion
+		/// <summary>
+		///     frees up the source mesh data to minimize memory - call this method after calling get*Locked() functions
+		/// </summary>
+		public void releaseSourceMeshData ()
+		{
+			m_triangles = null;
+			m_vertices = null;
+		}
 
-        public void Set (List<Coord> vertices, List<Face> faces)
-        {
-            if (m_pinnedIndex.IsAllocated || m_pinnedVertexes.IsAllocated || m_indicesPtr != IntPtr.Zero ||
-                m_verticesPtr != IntPtr.Zero)
-                throw new NotSupportedException ("Attempt to Add to a pinned Mesh");
+		#endregion
 
-            _centroid = Vector3.Zero;
-            _centroidDiv = 0;
-            foreach (Coord vert in vertices) {
-                _centroid.X += vert.X;
-                _centroid.Y += vert.Y;
-                _centroid.Z += vert.Z;
-                _centroidDiv++;
-            }
+		public void Set (List<Coord> vertices, List<Face> faces)
+		{
+			if (m_pinnedIndex.IsAllocated || m_pinnedVertexes.IsAllocated || m_indicesPtr != IntPtr.Zero ||
+			             m_verticesPtr != IntPtr.Zero)
+				throw new NotSupportedException ("Attempt to Add to a pinned Mesh");
 
-            setIndexListAsInt (faces);
-            setVertexListAsFloat (vertices);
-        }
+			_centroid = Vector3.Zero;
+			_centroidDiv = 0;
+			foreach (Coord vert in vertices) {
+				_centroid.X += vert.X;
+				_centroid.Y += vert.Y;
+				_centroid.Z += vert.Z;
+				_centroidDiv++;
+			}
 
-        public OSD Serialize ()
-        {
-            OSDArray array = new OSDArray ();
-            /*foreach (Face t in m_triangles)
+			setIndexListAsInt (faces);
+			setVertexListAsFloat (vertices);
+		}
+
+		public OSD Serialize ()
+		{
+			OSDArray array = new OSDArray ();
+			/*foreach (Face t in m_triangles)
             {
                 OSDArray triArray = new OSDArray
                                         {
@@ -201,12 +203,12 @@ namespace Universe.Physics.Meshing
                                         };
                 array.Add(triArray);
             }*/
-            return array;
-        }
+			return array;
+		}
 
-        public void Deserialize (OSD cachedMesh)
-        {
-            /*OSDArray array = (OSDArray) cachedMesh;
+		public void Deserialize (OSD cachedMesh)
+		{
+			/*OSDArray array = (OSDArray) cachedMesh;
             foreach (OSD triangle in array)
             {
                 OSDArray triangleArray = (OSDArray) triangle;
@@ -214,20 +216,20 @@ namespace Universe.Physics.Meshing
                                  new Coord(triangleArray[1].AsVector3()),
                                  new Coord(triangleArray[2].AsVector3())));
             }*/
-        }
+		}
 
-        public int [] getIndexListAsInt ()
-        {
-            if (m_triangles == null)
-                throw new NotSupportedException ();
-            return m_triangles;
-        }
+		public int [] getIndexListAsInt ()
+		{
+			if (m_triangles == null)
+				throw new NotSupportedException ();
+			return m_triangles;
+		}
 
-        public float [] getVertexListAsFloat ()
-        {
-            if (m_vertices == null)
-                throw new NotSupportedException ();
-            return m_vertices;
-        }
-    }
+		public float [] getVertexListAsFloat ()
+		{
+			if (m_vertices == null)
+				throw new NotSupportedException ();
+			return m_vertices;
+		}
+	}
 }

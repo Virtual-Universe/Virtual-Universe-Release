@@ -30,26 +30,25 @@
 using OpenMetaverse;
 using Universe.Framework.Modules;
 
-
 namespace Universe.Modules.Terrain.FloodBrushes
 {
-    public class LowerArea : ITerrainFloodEffect
-    {
-        #region ITerrainFloodEffect Members
+	public class LowerArea : ITerrainFloodEffect
+	{
+		#region ITerrainFloodEffect Members
 
-        public void FloodEffect (ITerrainChannel map, UUID userID, float north,
-                                float west, float south, float east, float strength)
-        {
-            int x, y;
-            for (x = (int)west; x < (int)east; x++) {
-                for (y = (int)south; y < (int)north; y++) {
-                    if (!map.Scene.Permissions.CanTerraformLand (userID, new Vector3 (x, y, 0)))
-                        continue;
-                    map [x, y] -= strength;
-                }
-            }
-        }
+		public void FloodEffect (ITerrainChannel map, UUID userID, float north,
+		                               float west, float south, float east, float strength)
+		{
+			int x, y;
+			for (x = (int)west; x < (int)east; x++) {
+				for (y = (int)south; y < (int)north; y++) {
+					if (!map.Scene.Permissions.CanTerraformLand (userID, new Vector3 (x, y, 0)))
+						continue;
+					map [x, y] -= strength;
+				}
+			}
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

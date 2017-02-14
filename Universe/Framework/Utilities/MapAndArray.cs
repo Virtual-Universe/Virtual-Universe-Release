@@ -31,179 +31,173 @@ using System.Collections.Generic;
 
 namespace Universe.Framework.Utilities
 {
-    /// <summary>
-    ///     Stores two synchronized collections: a mutable dictionary and an
-    ///     immutable array. Slower inserts/removes than a normal dictionary,
-    ///     but provides safe iteration while maintaining fast hash lookups
-    /// </summary>
-    /// <typeparam name="TKey">Key type to use for hash lookups</typeparam>
-    /// <typeparam name="TValue">Value type to store</typeparam>
-    public sealed class MapAndArray<TKey, TValue>
-    {
-        private readonly object m_syncRoot = new object();
-        private TValue[] m_array;
-        private Dictionary<TKey, TValue> m_dict;
+	/// <summary>
+	///     Stores two synchronized collections: a mutable dictionary and an
+	///     immutable array. Slower inserts/removes than a normal dictionary,
+	///     but provides safe iteration while maintaining fast hash lookups
+	/// </summary>
+	/// <typeparam name="TKey">Key type to use for hash lookups</typeparam>
+	/// <typeparam name="TValue">Value type to store</typeparam>
+	public sealed class MapAndArray<TKey, TValue>
+	{
+		private readonly object m_syncRoot = new object ();
+		private TValue[] m_array;
+		private Dictionary<TKey, TValue> m_dict;
 
-        /// <summary>
-        ///     Constructor
-        /// </summary>
-        public MapAndArray()
-        {
-            m_dict = new Dictionary<TKey, TValue>();
-            m_array = new TValue[0];
-        }
+		/// <summary>
+		///     Constructor
+		/// </summary>
+		public MapAndArray ()
+		{
+			m_dict = new Dictionary<TKey, TValue> ();
+			m_array = new TValue[0];
+		}
 
-        /// <summary>
-        ///     Constructor
-        /// </summary>
-        /// <param name="capacity">Initial capacity of the dictionary</param>
-        public MapAndArray(int capacity)
-        {
-            m_dict = new Dictionary<TKey, TValue>(capacity);
-            m_array = new TValue[0];
-        }
+		/// <summary>
+		///     Constructor
+		/// </summary>
+		/// <param name="capacity">Initial capacity of the dictionary</param>
+		public MapAndArray (int capacity)
+		{
+			m_dict = new Dictionary<TKey, TValue> (capacity);
+			m_array = new TValue[0];
+		}
 
-        /// <summary>
-        ///     Number of values currently stored in the collection
-        /// </summary>
-        public int Count
-        {
-            get { return m_array.Length; }
-        }
+		/// <summary>
+		///     Number of values currently stored in the collection
+		/// </summary>
+		public int Count {
+			get { return m_array.Length; }
+		}
 
-        /// <summary>
-        ///     NOTE: This collection is thread safe. You do not need to
-        ///     acquire a lock to add, remove, or enumerate entries. This
-        ///     synchronization object should only be locked for larger
-        ///     transactions
-        /// </summary>
-        public object SyncRoot
-        {
-            get { return m_syncRoot; }
-        }
+		/// <summary>
+		///     NOTE: This collection is thread safe. You do not need to
+		///     acquire a lock to add, remove, or enumerate entries. This
+		///     synchronization object should only be locked for larger
+		///     transactions
+		/// </summary>
+		public object SyncRoot {
+			get { return m_syncRoot; }
+		}
 
-        /// <summary>
-        ///     Adds a key/value pair to the collection, or updates an existing key
-        ///     with a new value
-        /// </summary>
-        /// <param name="key">Key to add or update</param>
-        /// <param name="value">Value to add</param>
-        /// <returns>
-        ///     True if a new key was added, false if an existing key was
-        ///     updated
-        /// </returns>
-        public bool AddOrReplace(TKey key, TValue value)
-        {
-            lock (m_syncRoot)
-            {
-                bool containedKey = m_dict.ContainsKey(key);
+		/// <summary>
+		///     Adds a key/value pair to the collection, or updates an existing key
+		///     with a new value
+		/// </summary>
+		/// <param name="key">Key to add or update</param>
+		/// <param name="value">Value to add</param>
+		/// <returns>
+		///     True if a new key was added, false if an existing key was
+		///     updated
+		/// </returns>
+		public bool AddOrReplace (TKey key, TValue value)
+		{
+			lock (m_syncRoot) {
+				bool containedKey = m_dict.ContainsKey (key);
 
-                m_dict[key] = value;
-                CreateArray();
+				m_dict [key] = value;
+				CreateArray ();
 
-                return !containedKey;
-            }
-        }
+				return !containedKey;
+			}
+		}
 
-        /// <summary>
-        ///     Adds a key/value pair to the collection. This will throw an
-        ///     exception if the key is already present in the collection
-        /// </summary>
-        /// <param name="key">Key to add or update</param>
-        /// <param name="value">Value to add</param>
-        /// <returns>Index of the inserted item</returns>
-        public int Add(TKey key, TValue value)
-        {
-            lock (m_syncRoot)
-            {
-                m_dict.Add(key, value);
-                CreateArray();
-                return m_array.Length;
-            }
-        }
+		/// <summary>
+		///     Adds a key/value pair to the collection. This will throw an
+		///     exception if the key is already present in the collection
+		/// </summary>
+		/// <param name="key">Key to add or update</param>
+		/// <param name="value">Value to add</param>
+		/// <returns>Index of the inserted item</returns>
+		public int Add (TKey key, TValue value)
+		{
+			lock (m_syncRoot) {
+				m_dict.Add (key, value);
+				CreateArray ();
+				return m_array.Length;
+			}
+		}
 
-        /// <summary>
-        ///     Removes a key/value pair from the collection
-        /// </summary>
-        /// <param name="key">Key to remove</param>
-        /// <returns>True if the key was found and removed, otherwise false</returns>
-        public bool Remove(TKey key)
-        {
-            lock (m_syncRoot)
-            {
-                bool removed = m_dict.Remove(key);
-                CreateArray();
+		/// <summary>
+		///     Removes a key/value pair from the collection
+		/// </summary>
+		/// <param name="key">Key to remove</param>
+		/// <returns>True if the key was found and removed, otherwise false</returns>
+		public bool Remove (TKey key)
+		{
+			lock (m_syncRoot) {
+				bool removed = m_dict.Remove (key);
+				CreateArray ();
 
-                return removed;
-            }
-        }
+				return removed;
+			}
+		}
 
-        /// <summary>
-        ///     Determines whether the collections contains a specified key
-        /// </summary>
-        /// <param name="key">Key to search for</param>
-        /// <returns>True if the key was found, otherwise false</returns>
-        public bool ContainsKey(TKey key)
-        {
-            lock (m_syncRoot)
-                return m_dict.ContainsKey(key);
-        }
+		/// <summary>
+		///     Determines whether the collections contains a specified key
+		/// </summary>
+		/// <param name="key">Key to search for</param>
+		/// <returns>True if the key was found, otherwise false</returns>
+		public bool ContainsKey (TKey key)
+		{
+			lock (m_syncRoot)
+				return m_dict.ContainsKey (key);
+		}
 
-        /// <summary>
-        ///     Gets the value associated with the specified key
-        /// </summary>
-        /// <param name="key">Key of the value to get</param>
-        /// <param name="value">
-        ///     Will contain the value associated with the
-        ///     given key if the key is found. If the key is not found it will
-        ///     contain the default value for the type of the value parameter
-        /// </param>
-        /// <returns>
-        ///     True if the key was found and a value was retrieved,
-        ///     otherwise false
-        /// </returns>
-        public bool TryGetValue(TKey key, out TValue value)
-        {
-            lock (m_syncRoot)
-                return m_dict.TryGetValue(key, out value);
-        }
+		/// <summary>
+		///     Gets the value associated with the specified key
+		/// </summary>
+		/// <param name="key">Key of the value to get</param>
+		/// <param name="value">
+		///     Will contain the value associated with the
+		///     given key if the key is found. If the key is not found it will
+		///     contain the default value for the type of the value parameter
+		/// </param>
+		/// <returns>
+		///     True if the key was found and a value was retrieved,
+		///     otherwise false
+		/// </returns>
+		public bool TryGetValue (TKey key, out TValue value)
+		{
+			lock (m_syncRoot)
+				return m_dict.TryGetValue (key, out value);
+		}
 
-        /// <summary>
-        ///     Clears all key/value pairs from the collection
-        /// </summary>
-        public void Clear()
-        {
-            lock (m_syncRoot)
-            {
-                m_dict = new Dictionary<TKey, TValue>();
-                m_array = new TValue[0];
-            }
-        }
+		/// <summary>
+		///     Clears all key/value pairs from the collection
+		/// </summary>
+		public void Clear ()
+		{
+			lock (m_syncRoot) {
+				m_dict = new Dictionary<TKey, TValue> ();
+				m_array = new TValue[0];
+			}
+		}
 
-        /// <summary>
-        ///     Gets a reference to the immutable array of values stored in this
-        ///     collection. This array is thread safe for iteration
-        /// </summary>
-        /// <returns>
-        ///     A thread safe reference ton an array of all of the stored
-        ///     values
-        /// </returns>
-        public TValue[] GetArray()
-        {
-            return m_array;
-        }
+		/// <summary>
+		///     Gets a reference to the immutable array of values stored in this
+		///     collection. This array is thread safe for iteration
+		/// </summary>
+		/// <returns>
+		///     A thread safe reference ton an array of all of the stored
+		///     values
+		/// </returns>
+		public TValue[] GetArray ()
+		{
+			return m_array;
+		}
 
-        private void CreateArray()
-        {
-            // Rebuild the array from the dictionary. This method must be 
-            // called from inside a lock
-            TValue[] array = new TValue[m_dict.Count];
-            int i = 0;
+		private void CreateArray ()
+		{
+			// Rebuild the array from the dictionary. This method must be 
+			// called from inside a lock
+			TValue[] array = new TValue[m_dict.Count];
+			int i = 0;
 
-            foreach (TValue value in m_dict.Values)
-                array[i++] = value;
+			foreach (TValue value in m_dict.Values)
+				array [i++] = value;
 
-            m_array = array;
-        }
-    }
+			m_array = array;
+		}
+	}
 }

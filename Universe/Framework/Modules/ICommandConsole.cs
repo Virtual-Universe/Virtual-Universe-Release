@@ -34,164 +34,188 @@ using Universe.Framework.SceneInfo;
 
 namespace Universe.Framework.Modules
 {
-    /// <summary>
-    ///     The console interface
-    ///     This deals with all things that happen on the console or GUI
-    /// </summary>
-    public interface ICommandConsole
-    {
-        /// <summary>
-        ///     Returns the plugin name
-        /// </summary>
-        /// <returns></returns>
-        string Name { get; }
+	/// <summary>
+	///     The console interface
+	///     This deals with all things that happen on the console or GUI
+	/// </summary>
+	public interface ICommandConsole
+	{
+		/// <summary>
+		///     Returns the plugin name
+		/// </summary>
+		/// <returns></returns>
+		string Name { get; }
 
-        /// <summary>
-        /// Gets or sets the log path.
-        /// </summary>
-        /// <value>The log path.</value>
-        string LogPath { get; set; }
+		/// <summary>
+		/// Gets or sets the log path.
+		/// </summary>
+		/// <value>The log path.</value>
+		string LogPath { get; set; }
 
-        /// <summary>
-        ///     All commands that are enabled on this console
-        /// </summary>
-        Commands Commands { get; set; }
+		/// <summary>
+		///     All commands that are enabled on this console
+		/// </summary>
+		Commands Commands { get; set; }
 
-        /// <summary>
-        ///     The log level required to write onto the console
-        /// </summary>
-        Level Threshold { get; set; }
+		/// <summary>
+		///     The log level required to write onto the console
+		/// </summary>
+		Level Threshold { get; set; }
 
-        /// <summary>
-        ///     The text behind the blinking cursor on the console
-        /// </summary>
-        string DefaultPrompt { get; set; }
+		/// <summary>
+		///     The text behind the blinking cursor on the console
+		/// </summary>
+		string DefaultPrompt { get; set; }
 
-        /// <summary>
-        ///     The current scene the console is set to use (can be null)
-        /// </summary>
-        IScene ConsoleScene { get; set; }
+		/// <summary>
+		///     The current scene the console is set to use (can be null)
+		/// </summary>
+		IScene ConsoleScene { get; set; }
 
-        /// <summary>
-        ///     All scenes that the console has
-        /// </summary>
-        List<IScene> ConsoleScenes { get; set; }
+		/// <summary>
+		///     All scenes that the console has
+		/// </summary>
+		List<IScene> ConsoleScenes { get; set; }
 
-        bool HasProcessedCurrentCommand { get; set; }
+		bool HasProcessedCurrentCommand { get; set; }
 
-        /// <summary>
-        ///     Set up this console
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="simBase"></param>
-        void Initialize(IConfigSource source, ISimulationBase simBase);
+		/// <summary>
+		///     Set up this console
+		/// </summary>
+		/// <param name="source"></param>
+		/// <param name="simBase"></param>
+		void Initialize (IConfigSource source, ISimulationBase simBase);
 
-        /// <summary>
-        ///     Locks other threads from inserting text onto the console until the other threads are done
-        /// </summary>
-        void LockOutput();
+		/// <summary>
+		///     Locks other threads from inserting text onto the console until the other threads are done
+		/// </summary>
+		void LockOutput ();
 
-        /// <summary>
-        ///     All finished with inserting text onto the console, let other threads go through
-        /// </summary>
-        void UnlockOutput();
+		/// <summary>
+		///     All finished with inserting text onto the console, let other threads go through
+		/// </summary>
+		void UnlockOutput ();
 
-        /// <summary>
-        ///     Read a line of text from the console, can return ""
-        /// </summary>
-        /// <param name="prompt">The message that will be displayed to the console before a prompt is started</param>
-        /// <returns></returns>
-        string Prompt(string prompt);
+		/// <summary>
+		///     Read a line of text from the console, can return ""
+		/// </summary>
+		/// <param name="prompt">The message that will be displayed to the console before a prompt is started</param>
+		/// <returns></returns>
+		string Prompt (string prompt);
 
-        /// <summary>
-        ///     Reads a line of text from the console, and if the user presses enter with no text, defaultReturn is returned for this method
-        /// </summary>
-        /// <param name="prompt">The message that will be displayed to the console before a prompt is started</param>
-        /// <param name="defaultReturn">The default response to return if "" is given</param>
-        /// <returns></returns>
-        string Prompt(string prompt, string defaultReturn);
+		/// <summary>
+		///     Reads a line of text from the console, and if the user presses enter with no text, defaultReturn is returned for this method
+		/// </summary>
+		/// <param name="prompt">The message that will be displayed to the console before a prompt is started</param>
+		/// <param name="defaultReturn">The default response to return if "" is given</param>
+		/// <returns></returns>
+		string Prompt (string prompt, string defaultReturn);
 
-        /// <summary>
-        ///     Reads a line of text from the console, excluding the given characters and will return defaultResponse if enter is pressed with ""
-        /// </summary>
-        /// <param name="prompt">The message that will be displayed to the console before a prompt is started</param>
-        /// <param name="defaultResponse">The default response to return if "" is given</param>
-        /// <param name="excludedCharacters">The characters that cannot be in the response</param>
-        /// <returns></returns>
-        string Prompt(string prompt, string defaultResponse, List<char> excludedCharacters);
+		/// <summary>
+		///     Reads a line of text from the console, excluding the given characters and will return defaultResponse if enter is pressed with ""
+		/// </summary>
+		/// <param name="prompt">The message that will be displayed to the console before a prompt is started</param>
+		/// <param name="defaultResponse">The default response to return if "" is given</param>
+		/// <param name="excludedCharacters">The characters that cannot be in the response</param>
+		/// <returns></returns>
+		string Prompt (string prompt, string defaultResponse, List<char> excludedCharacters);
 
-        /// <summary>
-        ///     Reads a line of text from the console, returning defaultResponse if no response is given, only the given options are valid entries for the user to use
-        /// </summary>
-        /// <param name="prompt">The message that will be displayed to the console before a prompt is started</param>
-        /// <param name="defaultresponse">The default response to return if "" is given</param>
-        /// <param name="options">The options that the user has to select from</param>
-        /// <returns></returns>
-        string Prompt(string prompt, string defaultresponse, List<string> options);
+		/// <summary>
+		///     Reads a line of text from the console, returning defaultResponse if no response is given, only the given options are valid entries for the user to use
+		/// </summary>
+		/// <param name="prompt">The message that will be displayed to the console before a prompt is started</param>
+		/// <param name="defaultresponse">The default response to return if "" is given</param>
+		/// <param name="options">The options that the user has to select from</param>
+		/// <returns></returns>
+		string Prompt (string prompt, string defaultresponse, List<string> options);
 
-        /// <summary>
-        ///     Sets up a prompt for secure information (hides the user text and disallows viewing of the text typed later)
-        /// </summary>
-        /// <param name="prompt">The message that will be displayed to the console before a prompt is started</param>
-        /// <returns></returns>
-        string PasswordPrompt(string prompt);
+		/// <summary>
+		///     Sets up a prompt for secure information (hides the user text and disallows viewing of the text typed later)
+		/// </summary>
+		/// <param name="prompt">The message that will be displayed to the console before a prompt is started</param>
+		/// <returns></returns>
+		string PasswordPrompt (string prompt);
 
-        /// <summary>
-        ///     Run the given command (acts like it was typed from the console)
-        /// </summary>
-        /// <param name="cmd"></param>
-        void RunCommand(string cmd);
+		/// <summary>
+		///     Run the given command (acts like it was typed from the console)
+		/// </summary>
+		/// <param name="cmd"></param>
+		void RunCommand (string cmd);
 
-        /// <summary>
-        ///     Starts the prompt for the console. This will never stop until the region is closed.
-        /// </summary>
-        void ReadConsole();
+		/// <summary>
+		///     Starts the prompt for the console. This will never stop until the region is closed.
+		/// </summary>
+		void ReadConsole ();
 
-        /// <summary>
-        ///     Check to see whether level A is lower or equal to levelB
-        /// </summary>
-        /// <param name="levelA"></param>
-        /// <param name="levelB"></param>
-        /// <returns></returns>
-        bool CompareLogLevels(string levelA, string levelB);
+		/// <summary>
+		///     Check to see whether level A is lower or equal to levelB
+		/// </summary>
+		/// <param name="levelA"></param>
+		/// <param name="levelB"></param>
+		/// <returns></returns>
+		bool CompareLogLevels (string levelA, string levelB);
 
-        bool IsDebugEnabled { get; }
-        bool IsErrorEnabled { get; }
-        bool IsTraceEnabled { get; }
-        bool IsFatalEnabled { get; }
-        bool IsInfoEnabled { get; }
-        bool IsWarnEnabled { get; }
 
-        void Debug(object message);
-        void DebugFormat(string format, params object[] args);
-        void Error(object message);
-        void ErrorFormat(string format, params object[] args);
-        void Fatal(object message);
-        void FatalFormat(string format, params object[] args);
-        void Format(Level level, string format, params object[] args);
-        void FormatNoTime(Level level, string format, params object[] args);
-        void Info(object message);
-        void CleanInfo(object message);
-        void CleanInfoFormat(string format, params object[] args);
-        void Ticker();
-        void Ticker (string message, bool newline);
-        void InfoFormat(string format, params object[] args);
-        void Log(Level level, object message);
-        void Trace(object message);
-        void TraceFormat(string format, params object[] args);
-        void Warn(object message);
-        void WarnFormat(string format, params object[] args);
-    }
+		bool IsDebugEnabled { get; }
 
-    public enum Level
-    {
-        All = 0,
-        Trace = 1,
-        Debug = 2,
-        Info = 3,
-        Warn = 4,
-        Error = 5,
-        Fatal = 6,
-        Off = 7
-    }
+		bool IsErrorEnabled { get; }
+
+		bool IsTraceEnabled { get; }
+
+		bool IsFatalEnabled { get; }
+
+		bool IsInfoEnabled { get; }
+
+		bool IsWarnEnabled { get; }
+
+		void Debug (object message);
+
+		void DebugFormat (string format, params object[] args);
+
+		void Error (object message);
+
+		void ErrorFormat (string format, params object[] args);
+
+		void Fatal (object message);
+
+		void FatalFormat (string format, params object[] args);
+
+		void Format (Level level, string format, params object[] args);
+
+		void FormatNoTime (Level level, string format, params object[] args);
+
+		void Info (object message);
+
+		void CleanInfo (object message);
+
+		void CleanInfoFormat (string format, params object[] args);
+
+		void Ticker ();
+
+		void Ticker (string message, bool newline);
+
+		void InfoFormat (string format, params object[] args);
+
+		void Log (Level level, object message);
+
+		void Trace (object message);
+
+		void TraceFormat (string format, params object[] args);
+
+		void Warn (object message);
+
+		void WarnFormat (string format, params object[] args);
+	}
+
+	public enum Level
+	{
+		All = 0,
+		Trace = 1,
+		Debug = 2,
+		Info = 3,
+		Warn = 4,
+		Error = 5,
+		Fatal = 6,
+		Off = 7
+	}
 }

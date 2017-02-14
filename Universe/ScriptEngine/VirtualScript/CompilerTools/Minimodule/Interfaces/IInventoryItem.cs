@@ -32,13 +32,15 @@ using OpenMetaverse.Assets;
 
 namespace Universe.ScriptEngine.VirtualScript.MiniModule
 {
-    /// <summary>
-    ///     This implements the methods needed to operate on individual inventory items.
-    /// </summary>
-    public interface IInventoryItem
-    {
-        int Type { get; }
-        UUID AssetID { get; }
-        T RetrieveAsset<T>() where T : Asset, new();
-    }
+	/// <summary>
+	///     This implements the methods needed to operate on individual inventory items.
+	/// </summary>
+	public interface IInventoryItem
+	{
+		int Type { get; }
+
+		UUID AssetID { get; }
+
+		T RetrieveAsset<T> () where T : Asset, new();
+	}
 }

@@ -33,75 +33,75 @@ using Universe.Framework.Modules;
 
 namespace Universe.Framework.ClientInterfaces
 {
-    public class AvatarArchive : IDataTransferable
-    {
-        /// <summary>
-        ///     Appearance in the archive
-        /// </summary>
-        public AvatarAppearance Appearance;
+	public class AvatarArchive : IDataTransferable
+	{
+		/// <summary>
+		///     Appearance in the archive
+		/// </summary>
+		public AvatarAppearance Appearance;
 
-        /// <summary>
-        ///     true/false if its public
-        /// </summary>
-        public bool IsPublic;
+		/// <summary>
+		///     true/false if its public
+		/// </summary>
+		public bool IsPublic;
 
-        /// <summary>
-        ///     true/false if it is a portabl;e archive
-        /// </summary>
-        public bool IsPortable;
+		/// <summary>
+		///     true/false if it is a portabl;e archive
+		/// </summary>
+		public bool IsPortable;
 
-        /// <summary>
-        ///     Name of the archive
-        /// </summary>
-        public string FileName;
+		/// <summary>
+		///     Name of the archive
+		/// </summary>
+		public string FileName;
 
-        /// <summary>
-        ///     Folder to load this archive into
-        /// </summary>
-        public string FolderName;
+		/// <summary>
+		///     Folder to load this archive into
+		/// </summary>
+		public string FolderName;
 
-        /// <summary>
-        ///     uuid of a text that shows off this archive
-        /// </summary>
-        public UUID Snapshot;
+		/// <summary>
+		///     uuid of a text that shows off this archive
+		/// </summary>
+		public UUID Snapshot;
 
-        /// <summary>
-        ///     filename of the local snapshot that shows off this archive (for portable use)
-        /// </summary>
-        public string LocalSnapshot;
+		/// <summary>
+		///     filename of the local snapshot that shows off this archive (for portable use)
+		/// </summary>
+		public string LocalSnapshot;
 
-        public OSDMap AssetsMap;
+		public OSDMap AssetsMap;
 
-        public OSDMap ItemsMap;
+		public OSDMap ItemsMap;
 
-        public OSDMap BodyMap;
+		public OSDMap BodyMap;
 
-        public override void FromOSD(OSDMap map)
-        {
-            AssetsMap = ((OSDMap)map["Assets"]);
-            ItemsMap = ((OSDMap)map["Items"]);
-            BodyMap = ((OSDMap)map["Body"]);
-            FolderName = map["FolderName"];
-            Snapshot = map["Snapshot"];
-            LocalSnapshot = map ["LocalSnapshot"];
-            IsPublic = map["Public"];
-            IsPortable = map["Portable"];
-        }
+		public override void FromOSD (OSDMap map)
+		{
+			AssetsMap = ((OSDMap)map ["Assets"]);
+			ItemsMap = ((OSDMap)map ["Items"]);
+			BodyMap = ((OSDMap)map ["Body"]);
+			FolderName = map ["FolderName"];
+			Snapshot = map ["Snapshot"];
+			LocalSnapshot = map ["LocalSnapshot"];
+			IsPublic = map ["Public"];
+			IsPortable = map ["Portable"];
+		}
 
-        public override OSDMap ToOSD()
-        {
-            OSDMap map = new OSDMap();
+		public override OSDMap ToOSD ()
+		{
+			OSDMap map = new OSDMap ();
 
-            map["Assets"] = AssetsMap;
-            map["Items"] = ItemsMap;
-            map["Body"] = BodyMap;
-            map["FolderName"] = FolderName;
-            map["Snapshot"] = Snapshot;
-            map["LocalSnapshot"] = LocalSnapshot;
-            map["Public"] = IsPublic;
-            map["Portable"] = IsPortable;
+			map ["Assets"] = AssetsMap;
+			map ["Items"] = ItemsMap;
+			map ["Body"] = BodyMap;
+			map ["FolderName"] = FolderName;
+			map ["Snapshot"] = Snapshot;
+			map ["LocalSnapshot"] = LocalSnapshot;
+			map ["Public"] = IsPublic;
+			map ["Portable"] = IsPortable;
 
-            return map;
-        }
-    }
+			return map;
+		}
+	}
 }

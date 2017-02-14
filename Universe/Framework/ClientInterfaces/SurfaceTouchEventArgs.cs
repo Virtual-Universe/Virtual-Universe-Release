@@ -31,13 +31,13 @@ using OpenMetaverse;
 
 namespace Universe.Framework.ClientInterfaces
 {
-    public class SurfaceTouchEventArgs
-    {
-        public Vector3 Binormal;
-        public int FaceIndex;
-        public Vector3 Normal;
-        public Vector3 Position;
-        public Vector3 STCoord;
-        public Vector3 UVCoord;
-    }
+	public class SurfaceTouchEventArgs
+	{
+		public Vector3 Binormal;
+		public int FaceIndex;
+		public Vector3 Normal;
+		public Vector3 Position;
+		public Vector3 STCoord;
+		public Vector3 UVCoord;
+	}
 }

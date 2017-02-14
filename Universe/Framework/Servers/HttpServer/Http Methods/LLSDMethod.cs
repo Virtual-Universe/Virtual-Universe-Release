@@ -32,5 +32,5 @@ using OpenMetaverse.StructuredData;
 
 namespace Universe.Framework.Servers.HttpServer
 {
-    public delegate OSD LLSDMethod(string path, OSD request, IPEndPoint client);
+	public delegate OSD LLSDMethod (string path, OSD request, IPEndPoint client);
 }

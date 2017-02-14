@@ -32,51 +32,47 @@ using Universe.Framework.SceneInfo;
 
 namespace Universe.ScriptEngine.VirtualScript.MiniModule
 {
-    class Host : MarshalByRefObject, IHost
-    {
-        readonly IExtension m_extend;
-        readonly IGraphics m_graphics;
-        readonly IObject m_obj;
-        readonly MicroScheduler m_threader = new MicroScheduler();
-        // Scene m_scene;
+	class Host : MarshalByRefObject, IHost
+	{
+		readonly IExtension m_extend;
+		readonly IGraphics m_graphics;
+		readonly IObject m_obj;
+		readonly MicroScheduler m_threader = new MicroScheduler ();
+		// Scene m_scene;
 
-        public Host(IObject m_obj, IScene m_scene, IExtension m_extend)
-        {
-            this.m_obj = m_obj;
-            this.m_extend = m_extend;
+		public Host (IObject m_obj, IScene m_scene, IExtension m_extend)
+		{
+			this.m_obj = m_obj;
+			this.m_extend = m_extend;
 
-            m_graphics = new Graphics(m_scene);
+			m_graphics = new Graphics (m_scene);
 
-            m_scene.EventManager.OnFrame += EventManager_OnFrame;
-        }
+			m_scene.EventManager.OnFrame += EventManager_OnFrame;
+		}
 
-        #region IHost Members
+		#region IHost Members
 
-        public IObject Object
-        {
-            get { return m_obj; }
-        }
+		public IObject Object {
+			get { return m_obj; }
+		}
 
-        public IGraphics Graphics
-        {
-            get { return m_graphics; }
-        }
+		public IGraphics Graphics {
+			get { return m_graphics; }
+		}
 
-        public IExtension Extensions
-        {
-            get { return m_extend; }
-        }
+		public IExtension Extensions {
+			get { return m_extend; }
+		}
 
-        public IMicrothreader Microthreads
-        {
-            get { return m_threader; }
-        }
+		public IMicrothreader Microthreads {
+			get { return m_threader; }
+		}
 
-        #endregion
+		#endregion
 
-        void EventManager_OnFrame()
-        {
-            m_threader.Tick(1000);
-        }
-    }
+		void EventManager_OnFrame ()
+		{
+			m_threader.Tick (1000);
+		}
+	}
 }

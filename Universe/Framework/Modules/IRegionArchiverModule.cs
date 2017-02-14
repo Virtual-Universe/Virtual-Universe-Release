@@ -32,109 +32,110 @@ using System.IO;
 
 namespace Universe.Framework.Modules
 {
-    /// <summary>
-    ///     Interface to region archive functionality
-    /// </summary>
-    public interface IRegionArchiverModule
-    {
-        bool HandleLoadOarConsoleCommand(string[] cmdparams);
-        void HandleSaveOarConsoleCommand(string[] cmdparams);
+	/// <summary>
+	///     Interface to region archive functionality
+	/// </summary>
+	public interface IRegionArchiverModule
+	{
+		bool HandleLoadOarConsoleCommand (string[] cmdparams);
 
-        /// <summary>
-        ///     Archive the region to the given path
-        /// </summary>
-        /// This method occurs asynchronously.  If you want notification of when it has completed then subscribe to
-        /// the EventManager.OnOarFileSaved event.
-        /// <param name="savePath"></param>
-        void ArchiveRegion(string savePath);
+		void HandleSaveOarConsoleCommand (string[] cmdparams);
 
-        /// <summary>
-        ///     Archive the region to the given path
-        /// </summary>
-        /// This method occurs asynchronously.  If you want notification of when it has completed then subscribe to
-        /// the EventManager.OnOarFileSaved event.
-        /// <param name="savePath"></param>
-        /// <param name="requestId">If supplied, this request Id is later returned in the saved event</param>
-        /// <param name="permissions">Permission string, see the 'save oar' help</param>
-        void ArchiveRegion(string savePath, Guid requestId, string permissions);
+		/// <summary>
+		///     Archive the region to the given path
+		/// </summary>
+		/// This method occurs asynchronously.  If you want notification of when it has completed then subscribe to
+		/// the EventManager.OnOarFileSaved event.
+		/// <param name="savePath"></param>
+		void ArchiveRegion (string savePath);
 
-        /// <summary>
-        ///     Archive the region to a stream.
-        /// </summary>
-        /// This method occurs asynchronously.  If you want notification of when it has completed then subscribe to
-        /// the EventManager.OnOarFileSaved event.
-        /// <param name="saveStream"></param>
-        /// <param name="requestId">If supplied, this request Id is later returned in the saved event</param>
-        void ArchiveRegion(Stream saveStream, Guid requestId);
+		/// <summary>
+		///     Archive the region to the given path
+		/// </summary>
+		/// This method occurs asynchronously.  If you want notification of when it has completed then subscribe to
+		/// the EventManager.OnOarFileSaved event.
+		/// <param name="savePath"></param>
+		/// <param name="requestId">If supplied, this request Id is later returned in the saved event</param>
+		/// <param name="permissions">Permission string, see the 'save oar' help</param>
+		void ArchiveRegion (string savePath, Guid requestId, string permissions);
 
-        /// <summary>
-        ///     De-archive the given region archive.  This replaces the existing scene.
-        /// </summary>
-        /// If you want notification of when it has completed then subscribe to the EventManager.OnOarFileLoaded event.
-        /// <param name="loadPath"></param>
-        bool DearchiveRegion(string loadPath);
+		/// <summary>
+		///     Archive the region to a stream.
+		/// </summary>
+		/// This method occurs asynchronously.  If you want notification of when it has completed then subscribe to
+		/// the EventManager.OnOarFileSaved event.
+		/// <param name="saveStream"></param>
+		/// <param name="requestId">If supplied, this request Id is later returned in the saved event</param>
+		void ArchiveRegion (Stream saveStream, Guid requestId);
 
-        /// <summary>
-        ///     De-archive the given region archive.  This replaces the existing scene.
-        /// </summary>
-        /// If you want notification of when it has completed then subscribe to the EventManager.OnOarFileLoaded event.
-        /// <param name="loadPath"></param>
-        /// <param name="merge">
-        ///     If true, the loaded region merges with the existing one rather than replacing it.  Any terrain or region
-        ///     settings in the archive will be ignored.
-        /// </param>
-        /// <param name="skipAssets">
-        ///     If true, the archive is loaded without loading any assets contained within it.  This is useful if the
-        ///     assets are already known to be present in the grid's asset service.
-        /// </param>
-        /// <param name="skipTerrain">
-        ///     If true, the archive is loaded without loading any terrain contained within it. 
-        ///     This is useful if assets need to be transferred to another existing region.
-        /// </param>
-        /// <param name="offsetX"></param>
-        /// <param name="offsetY"></param>
-        /// <param name="offsetZ"></param>
-        /// <param name="flipX"></param>
-        /// <param name="flipY"></param>
-        /// <param name="useParcelOwnership"></param>
-        /// <param name="checkOwnership"></param>
-        bool DearchiveRegion(string loadPath, bool merge, bool skipAssets, bool skipTerrain, 
-                             int offsetX, int offsetY, int offsetZ,
-                             bool flipX, bool flipY, bool useParcelOwnership, bool checkOwnership);
+		/// <summary>
+		///     De-archive the given region archive.  This replaces the existing scene.
+		/// </summary>
+		/// If you want notification of when it has completed then subscribe to the EventManager.OnOarFileLoaded event.
+		/// <param name="loadPath"></param>
+		bool DearchiveRegion (string loadPath);
 
-        /// <summary>
-        ///     De-archive a region from a stream.  This replaces the existing scene.
-        /// </summary>
-        /// If you want notification of when it has completed then subscribe to the EventManager.OnOarFileLoaded event.
-        /// <param name="loadStream"></param>
-        bool DearchiveRegion(Stream loadStream);
+		/// <summary>
+		///     De-archive the given region archive.  This replaces the existing scene.
+		/// </summary>
+		/// If you want notification of when it has completed then subscribe to the EventManager.OnOarFileLoaded event.
+		/// <param name="loadPath"></param>
+		/// <param name="merge">
+		///     If true, the loaded region merges with the existing one rather than replacing it.  Any terrain or region
+		///     settings in the archive will be ignored.
+		/// </param>
+		/// <param name="skipAssets">
+		///     If true, the archive is loaded without loading any assets contained within it.  This is useful if the
+		///     assets are already known to be present in the grid's asset service.
+		/// </param>
+		/// <param name="skipTerrain">
+		///     If true, the archive is loaded without loading any terrain contained within it. 
+		///     This is useful if assets need to be transferred to another existing region.
+		/// </param>
+		/// <param name="offsetX"></param>
+		/// <param name="offsetY"></param>
+		/// <param name="offsetZ"></param>
+		/// <param name="flipX"></param>
+		/// <param name="flipY"></param>
+		/// <param name="useParcelOwnership"></param>
+		/// <param name="checkOwnership"></param>
+		bool DearchiveRegion (string loadPath, bool merge, bool skipAssets, bool skipTerrain, 
+		                           int offsetX, int offsetY, int offsetZ,
+		                           bool flipX, bool flipY, bool useParcelOwnership, bool checkOwnership);
 
-        /// <summary>
-        ///     De-archive a region from a stream.  This replaces the existing scene.
-        /// </summary>
-        /// If you want notification of when it has completed then subscribe to the EventManager.OnOarFileLoaded event.
-        /// <param name="loadStream"></param>
-        /// <param name="merge">
-        ///     If true, the loaded region merges with the existing one rather than replacing it.  Any terrain or region
-        ///     settings in the archive will be ignored.
-        /// </param>
-        /// <param name="skipAssets">
-        ///     If true, the archive is loaded without loading any assets contained within it.  This is useful if the
-        ///     assets are already known to be present in the grid's asset service.
-        /// </param>
-        /// <param name="skipTerrain">
-        ///     If true, the archive is loaded without loading any terrain contained within it. 
-        ///     This is useful if assets need to be transferred to another existing region.
-        /// </param>
-        /// <param name="offsetX"></param>
-        /// <param name="offsetY"></param>
-        /// <param name="offsetZ"></param>
-        /// <param name="flipX"></param>
-        /// <param name="flipY"></param>
-        /// <param name="useParcelOwnership"></param>
-        /// <param name="checkOwnership"></param>
-        bool DearchiveRegion(Stream loadStream, bool merge, bool skipAssets, bool skipTerrain,
-                             int offsetX, int offsetY, int offsetZ,
-                             bool flipX, bool flipY, bool useParcelOwnership, bool checkOwnership);
-    }
+		/// <summary>
+		///     De-archive a region from a stream.  This replaces the existing scene.
+		/// </summary>
+		/// If you want notification of when it has completed then subscribe to the EventManager.OnOarFileLoaded event.
+		/// <param name="loadStream"></param>
+		bool DearchiveRegion (Stream loadStream);
+
+		/// <summary>
+		///     De-archive a region from a stream.  This replaces the existing scene.
+		/// </summary>
+		/// If you want notification of when it has completed then subscribe to the EventManager.OnOarFileLoaded event.
+		/// <param name="loadStream"></param>
+		/// <param name="merge">
+		///     If true, the loaded region merges with the existing one rather than replacing it.  Any terrain or region
+		///     settings in the archive will be ignored.
+		/// </param>
+		/// <param name="skipAssets">
+		///     If true, the archive is loaded without loading any assets contained within it.  This is useful if the
+		///     assets are already known to be present in the grid's asset service.
+		/// </param>
+		/// <param name="skipTerrain">
+		///     If true, the archive is loaded without loading any terrain contained within it. 
+		///     This is useful if assets need to be transferred to another existing region.
+		/// </param>
+		/// <param name="offsetX"></param>
+		/// <param name="offsetY"></param>
+		/// <param name="offsetZ"></param>
+		/// <param name="flipX"></param>
+		/// <param name="flipY"></param>
+		/// <param name="useParcelOwnership"></param>
+		/// <param name="checkOwnership"></param>
+		bool DearchiveRegion (Stream loadStream, bool merge, bool skipAssets, bool skipTerrain,
+		                           int offsetX, int offsetY, int offsetZ,
+		                           bool flipX, bool flipY, bool useParcelOwnership, bool checkOwnership);
+	}
 }

@@ -33,7 +33,7 @@ using ProtoBuf;
 
 namespace Universe.Framework.SceneInfo
 {
-    public class TaskInventoryItemHelpers
+    public static class TaskInventoryItemHelpers
     {
         /// <summary>
         ///     Full permissions
@@ -43,119 +43,118 @@ namespace Universe.Framework.SceneInfo
         /// <summary>
         ///     Inventory types
         /// </summary>
-        public static string[] InvTypes = new[]
-                                              {
-                                                  "texture",
-                                                  "sound",
-                                                  "calling_card",
-                                                  "landmark",
-                                                  String.Empty,
-                                                  String.Empty,
-                                                  "object",
-                                                  "notecard",
-                                                  String.Empty,
-                                                  String.Empty,
-                                                  "lsl_text",
-                                                  String.Empty,
-                                                  String.Empty,
-                                                  "bodypart",
-                                                  String.Empty,
-                                                  "snapshot",
-                                                  String.Empty,
-                                                  String.Empty,
-                                                  "wearable",
-                                                  "animation",
-                                                  "gesture",
-                                                  String.Empty,
-                                                  String.Empty,
-                                                  "link",
-                                                  String.Empty,
-                                                  String.Empty,
-                                                  String.Empty,
-                                                  String.Empty,
-                                                  String.Empty,
-                                                  String.Empty,
-                                                  String.Empty,
-                                              };
+        public static string[] InvTypes = {
+            "texture",
+            "sound",
+            "calling_card",
+            "landmark",
+            string.Empty,
+            string.Empty,
+            "object",
+            "notecard",
+            string.Empty,
+            string.Empty,
+            "lsl_text",
+            string.Empty,
+            string.Empty,
+            "bodypart",
+            string.Empty,
+            "snapshot",
+            string.Empty,
+            string.Empty,
+            "wearable",
+            "animation",
+            "gesture",
+            string.Empty,
+            string.Empty,
+            "link",
+            string.Empty,
+            string.Empty,
+            string.Empty,
+            string.Empty,
+            string.Empty,
+            string.Empty,
+            string.Empty
+            };
 
         /// <summary>
         ///     Asset types
         /// </summary>
-        public static string[] Types = new[]
-                                           {
-                                               "texture",
-                                               "sound",
-                                               "callcard",
-                                               "landmark",
-                                               "clothing", // Deprecated
-                                               "clothing",
-                                               "object",
-                                               "notecard",
-                                               "category",
-                                               "root",
-                                               "lsltext",
-                                               "lslbyte",
-                                               "txtr_tga",
-                                               "bodypart",
-                                               "trash",
-                                               "snapshot",
-                                               "lstndfnd",
-                                               "snd_wav",
-                                               "img_tga",
-                                               "jpeg",
-                                               "animatn",
-                                               "gesture",
-                                               "simstate",
-                                               "favoritefolder",
-                                               "link",
-                                               "linkfolder",
-                                               "ensemblestart",
-                                               "ensembleend",
-                                               "currentoutfitfolder",
-                                               "outfitfolder",
-                                               "myoutfitsfolder",
-                                               "inboxfolder"
-                                           };
+        public static string[] Types = {
+            "texture",
+            "sound",
+            "callcard",
+            "landmark",
+            "clothing", // Deprecated
+            "clothing",
+            "object",
+            "notecard",
+            "category",
+            "root",
+            "lsltext",
+            "lslbyte",
+            "txtr_tga",
+            "bodypart",
+            "trash",
+            "snapshot",
+            "lstndfnd",
+            "snd_wav",
+            "img_tga",
+            "jpeg",
+            "animatn",
+            "gesture",
+            "simstate",
+            "favoritefolder",
+            "link",
+            "linkfolder",
+            "ensemblestart",
+            "ensembleend",
+            "currentoutfitfolder",
+            "outfitfolder",
+            "myoutfitsfolder",
+            "inboxfolder"
+            };
 
         /// <summary>
         ///     Asset types
         /// </summary>
-        public static string[] SaleTypes = new[]
-                                               {
-                                                   "not",
-                                                   "original",
-                                                   "copy",
-                                                   "contents"
-                                               };
+        public static string[] SaleTypes = {
+            "not",
+            "original",
+            "copy",
+            "contents"
+        };
     }
 
     /// <summary>
     ///     Represents an item in a task inventory
     /// </summary>
-    [Serializable, ProtoContract()]
+    [Serializable, ProtoContract]
     public class TaskInventoryItem : ICloneable
     {
-        private UUID _assetID = UUID.Zero;
-        private uint _baseMask = TaskInventoryItemHelpers.FULL_MASK_PERMISSIONS_GENERAL;
-        private string _creatorData = String.Empty;
-        private UUID _creatorID = UUID.Zero;
-        private string _description = String.Empty;
-        private uint _everyoneMask = TaskInventoryItemHelpers.FULL_MASK_PERMISSIONS_GENERAL;
-        private UUID _groupID = UUID.Zero;
-        private uint _groupMask = TaskInventoryItemHelpers.FULL_MASK_PERMISSIONS_GENERAL;
-        private UUID _itemID = UUID.Zero;
-        private UUID _lastOwnerID = UUID.Zero;
-        private string _name = String.Empty;
-        private uint _nextOwnerMask = TaskInventoryItemHelpers.FULL_MASK_PERMISSIONS_GENERAL;
-        private UUID _oldID;
-        private UUID _ownerID = UUID.Zero;
-        private uint _ownerMask = TaskInventoryItemHelpers.FULL_MASK_PERMISSIONS_GENERAL;
-        private UUID _parentID = UUID.Zero; //parent folder id
-        private UUID _parentPartID = UUID.Zero; // SceneObjectPart this is inside
+        UUID _assetID = UUID.Zero;
+
+        uint _baseMask = TaskInventoryItemHelpers.FULL_MASK_PERMISSIONS_GENERAL;
+        string _creatorData = string.Empty;
+        UUID _creatorID = UUID.Zero;
+        string _description = string.Empty;
+        uint _everyoneMask = TaskInventoryItemHelpers.FULL_MASK_PERMISSIONS_GENERAL;
+        UUID _groupID = UUID.Zero;
+        uint _groupMask = TaskInventoryItemHelpers.FULL_MASK_PERMISSIONS_GENERAL;
+
+        UUID _itemID = UUID.Zero;
+        UUID _lastOwnerID = UUID.Zero;
+        string _name = string.Empty;
+        uint _nextOwnerMask = TaskInventoryItemHelpers.FULL_MASK_PERMISSIONS_GENERAL;
+        UUID _oldID;
+        UUID _ownerID = UUID.Zero;
+        uint _ownerMask = TaskInventoryItemHelpers.FULL_MASK_PERMISSIONS_GENERAL;
+        UUID _parentID = UUID.Zero;     //parent folder id
+        UUID _parentPartID = UUID.Zero; // SceneObjectPart this is inside
 
         public TaskInventoryItem()
         {
-            CreationDate = (uint) (DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
+            CreationDate = (uint)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
         }
 
         [ProtoMember(1)]
@@ -201,8 +200,7 @@ namespace Universe.Framework.SceneInfo
             {
                 if (!string.IsNullOrEmpty(_creatorData))
                     return _creatorID.ToString() + ';' + _creatorData;
-                else
-                    return _creatorID.ToString();
+                return _creatorID.ToString();
             }
             set
             {
@@ -228,7 +226,6 @@ namespace Universe.Framework.SceneInfo
                         UUID.TryParse(parts[0], out uuid);
                         _creatorID = uuid;
                     }
-
                     if (parts.Length >= 2)
                         _creatorData = parts[1];
                     if (parts.Length >= 3)
@@ -362,7 +359,7 @@ namespace Universe.Framework.SceneInfo
 
         #region ICloneable Members
 
-        public Object Clone()
+        public object Clone()
         {
             return MemberwiseClone();
         }

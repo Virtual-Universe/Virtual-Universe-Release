@@ -46,90 +46,85 @@ using Universe.Framework.Utilities;
 
 namespace Universe.Modules.Archivers
 {
-    public class Archiver : IService, IUniverseBackupArchiver
-    {
-        Int64 m_AllowPrompting;
+	public class UniverseArchiver : IService, IUniverseBackupArchiver
+	{
+		Int64 m_AllowPrompting;
 
-        #region IUniverseBackupArchiver Members
+		#region IUniverseBackupArchiver Members
 
-        public bool AllowPrompting
-        {
-            get { return Interlocked.Read (ref m_AllowPrompting) == 0; }
-            set
-            {
-                if (value)
-                    Interlocked.Increment (ref m_AllowPrompting);
-                else
-                    Interlocked.Decrement (ref m_AllowPrompting);
-            }
-        }
+		public bool AllowPrompting {
+			get { return Interlocked.Read (ref m_AllowPrompting) == 0; }
+			set {
+				if (value)
+					Interlocked.Increment (ref m_AllowPrompting);
+				else
+					Interlocked.Decrement (ref m_AllowPrompting);
+			}
+		}
 
-        public void SaveRegionBackup (TarArchiveWriter writer, IScene scene)
-        {
-            writer.WriteDir ("assets"); //Used by many, create it by default
+		public void SaveRegionBackup (TarArchiveWriter writer, IScene scene)
+		{
+			writer.WriteDir ("assets"); //Used by many, create it by default
 
-            IUniverseBackupModule[] modules = scene.RequestModuleInterfaces<IUniverseBackupModule> ();
-            foreach (IUniverseBackupModule module in modules)
-                module.SaveModuleToArchive (writer, scene);
+			IUniverseBackupModule[] modules = scene.RequestModuleInterfaces<IUniverseBackupModule> ();
+			foreach (IUniverseBackupModule module in modules)
+				module.SaveModuleToArchive (writer, scene);
 
-            foreach (IUniverseBackupModule module in modules)
-            {
-                while (module.IsArchiving) //Wait until all are done
+			foreach (IUniverseBackupModule module in modules) {
+				while (module.IsArchiving) //Wait until all are done
                     Thread.Sleep (100);
-            }
+			}
 
-            writer.Close ();
-            GC.Collect ();
-            MainConsole.Instance.Info ("[Archive]: Finished saving of archive.");
-        }
+			writer.Close ();
+			GC.Collect ();
+			MainConsole.Instance.Info ("[Archive]: Finished saving of archive.");
+		}
 
-        public void LoadRegionBackup (TarArchiveReader reader, IScene scene)
-        {
-            IUniverseBackupModule[] modules = scene.RequestModuleInterfaces<IUniverseBackupModule> ();
+		public void LoadRegionBackup (TarArchiveReader reader, IScene scene)
+		{
+			IUniverseBackupModule[] modules = scene.RequestModuleInterfaces<IUniverseBackupModule> ();
 
-            byte[] data;
-            string filePath;
-            TarArchiveReader.TarEntryType entryType;
+			byte[] data;
+			string filePath;
+			TarArchiveReader.TarEntryType entryType;
 
-            foreach (IUniverseBackupModule module in modules)
-                module.BeginLoadModuleFromArchive (scene);
+			foreach (IUniverseBackupModule module in modules)
+				module.BeginLoadModuleFromArchive (scene);
 
-            while ((data = reader.ReadEntry (out filePath, out entryType)) != null)
-            {
-                if (TarArchiveReader.TarEntryType.TYPE_DIRECTORY == entryType)
-                    continue;
-                foreach (IUniverseBackupModule module in modules)
-                    module.LoadModuleFromArchive (data, filePath, entryType, scene);
-            }
+			while ((data = reader.ReadEntry (out filePath, out entryType)) != null) {
+				if (TarArchiveReader.TarEntryType.TYPE_DIRECTORY == entryType)
+					continue;
+				foreach (IUniverseBackupModule module in modules)
+					module.LoadModuleFromArchive (data, filePath, entryType, scene);
+			}
 
-            reader.Close ();
+			reader.Close ();
 
-            foreach (IUniverseBackupModule module in modules)
-                module.EndLoadModuleFromArchive (scene);
-        }
+			foreach (IUniverseBackupModule module in modules)
+				module.EndLoadModuleFromArchive (scene);
+		}
 
-        #endregion
+		#endregion
 
-        #region IService Members
+		#region IService Members
 
-        public void Initialize (IConfigSource config, IRegistryCore registry)
-        {
-            if (MainConsole.Instance != null)
-            {
-                MainConsole.Instance.Commands.AddCommand (
-                    "save archive",
-                    "save archive",
-                    "Saves a Universe '.abackup' archive (deprecated)",
-                    SaveUniverseArchive, true, false);
+		public void Initialize (IConfigSource config, IRegistryCore registry)
+		{
+			if (MainConsole.Instance != null) {
+				MainConsole.Instance.Commands.AddCommand (
+					"save archive",
+					"save archive",
+					"Saves a Universe '.abackup' archive (deprecated)",
+					SaveUniverseArchive, true, false);
 
-                MainConsole.Instance.Commands.AddCommand (
-                    "load archive",
-                    "load archive",
-                    "Loads a Universe '.abackup' archive",
-                    LoadUniverseArchive, true, false);
-            }
+				MainConsole.Instance.Commands.AddCommand (
+					"load archive",
+					"load archive",
+					"Loads a Universe '.abackup' archive",
+					LoadUniverseArchive, true, false);
+			}
 
-            #if ISWIN
+			#if ISWIN
             //Register the extension
             const string ext = ".abackup";
             try
@@ -143,89 +138,84 @@ namespace Universe.Modules.Archivers
             } catch
             {
             }
-            #endif
+			#endif
 
-            //Register the interface
-            registry.RegisterModuleInterface<IUniverseBackupArchiver> (this);
+			//Register the interface
+			registry.RegisterModuleInterface<IUniverseBackupArchiver> (this);
 
-        }
+		}
 
-        public void Start (IConfigSource config, IRegistryCore registry)
-        {
-        }
+		public void Start (IConfigSource config, IRegistryCore registry)
+		{
+		}
 
-        public void FinishedStartup ()
-        {
-        }
+		public void FinishedStartup ()
+		{
+		}
 
-        #endregion
+		#endregion
 
-        void LoadUniverseArchive (IScene scene, string[] cmd)
-        {
-            string fileName = MainConsole.Instance.Prompt ("What file name should we load?", scene.RegionInfo.RegionName + ".abackup");
+		void LoadUniverseArchive (IScene scene, string[] cmd)
+		{
+			string fileName = MainConsole.Instance.Prompt ("What file name should we load?",
+				                           scene.RegionInfo.RegionName + ".abackup");
 
-            // a couple of sanity checks
-            string extension = Path.GetExtension (fileName);
+			// a couple of sanity checks
+			string extension = Path.GetExtension (fileName);
 
-            if (extension == string.Empty)
-            {
-                fileName = fileName + ".abackup";
-            }
+			if (extension == string.Empty) {
+				fileName = fileName + ".abackup";
+			}
 
-            if (!File.Exists (fileName))
-            {
-                MainConsole.Instance.Info ("[Archiver]: Region archive file '" + fileName + "' not found.");
-                return;
-            }
+			if (!File.Exists (fileName)) {
+				MainConsole.Instance.Info ("[Archiver]: Region archive file '" + fileName + "' not found.");
+				return;
+			}
 
-            var stream = ArchiveHelpers.GetStream (fileName);
-            if (stream == null)
-            {
-                MainConsole.Instance.Warn ("No file found with the specified name.");
-                return;
-            }
-            GZipStream m_loadStream = new GZipStream (stream, CompressionMode.Decompress);
-            TarArchiveReader reader = new TarArchiveReader (m_loadStream);
+			var stream = ArchiveHelpers.GetStream (fileName);
+			if (stream == null) {
+				MainConsole.Instance.Warn ("No file found with the specified name.");
+				return;
+			}
+			GZipStream m_loadStream = new GZipStream (stream, CompressionMode.Decompress);
+			TarArchiveReader reader = new TarArchiveReader (m_loadStream);
 
-            LoadRegionBackup (reader, scene);
-            GC.Collect ();
-        }
+			LoadRegionBackup (reader, scene);
+			GC.Collect ();
+		}
 
-        void SaveUniverseArchive (IScene scene, string[] cmd)
-        {
-            string fileName = MainConsole.Instance.Prompt ("What file name will this be saved as?", scene.RegionInfo.RegionName + ".abackup");
+		void SaveUniverseArchive (IScene scene, string[] cmd)
+		{
+			string fileName = MainConsole.Instance.Prompt ("What file name will this be saved as?",
+				                           scene.RegionInfo.RegionName + ".abackup");
 
-            //some file sanity checks
-            string extension = Path.GetExtension (fileName);
+			//some file sanity checks
+			string extension = Path.GetExtension (fileName);
 
-            if (extension == string.Empty)
-            {
-                fileName = fileName + ".abackup";
-            }
+			if (extension == string.Empty) {
+				fileName = fileName + ".abackup";
+			}
 
-            string fileDir = Path.GetDirectoryName (fileName);
-            if (fileDir == "")
-            {
-                fileDir = "./";
-            }
-            if (!Directory.Exists (fileDir))
-            {
-                MainConsole.Instance.Info ("[Archiver]: The file path specified, '" + fileDir + "' does not exist!");
-                return;
-            }
+			string fileDir = Path.GetDirectoryName (fileName);
+			if (fileDir == "") {
+				fileDir = "./";
+			}
+			if (!Directory.Exists (fileDir)) {
+				MainConsole.Instance.Info ("[Archiver]: The file path specified, '" + fileDir + "' does not exist!");
+				return;
+			}
 
-            if (File.Exists (fileName))
-            {
-                if (MainConsole.Instance.Prompt ("[Archiver]: The Region archive file '" + fileName + "' already exists. Overwrite?", "yes") != "yes")
-                    return;
+			if (File.Exists (fileName)) {
+				if (MainConsole.Instance.Prompt ("[Archiver]: The Region archive file '" + fileName + "' already exists. Overwrite?", "yes") != "yes")
+					return;
 
-                File.Delete (fileName);
-            }
+				File.Delete (fileName);
+			}
 
-            GZipStream m_saveStream = new GZipStream (new FileStream (fileName, FileMode.Create), CompressionMode.Compress);
-            TarArchiveWriter writer = new TarArchiveWriter (m_saveStream);
+			GZipStream m_saveStream = new GZipStream (new FileStream (fileName, FileMode.Create), CompressionMode.Compress);
+			TarArchiveWriter writer = new TarArchiveWriter (m_saveStream);
 
-            SaveRegionBackup (writer, scene);
-        }
-    }
+			SaveRegionBackup (writer, scene);
+		}
+	}
 }

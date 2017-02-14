@@ -63,7 +63,7 @@ namespace Universe.DataManager.Migration.Migrators.Currency
 				));
 
 			// Currency Transaction Logs
-			AddSchema ("currency_history", ColDefs (
+			AddSchema ("user_currency_history", ColDefs (
 				ColDef ("TransactionID", ColumnTypes.UUID),
 				ColDef ("Description", ColumnTypes.String128),
 				ColDef ("FromPrincipalID", ColumnTypes.UUID),

@@ -34,61 +34,53 @@ using Universe.Framework.Servers.HttpServer.Implementation;
 
 namespace Universe.Modules.Web
 {
-    public class PageManagerPage : IWebInterfacePage
-    {
-        public string[] FilePath
-        {
-            get
-            {
-                return new[]
-                           {
-                               "html/admin/page_manager.html"
-                           };
-            }
-        }
+	public class PageManagerPage : IWebInterfacePage
+	{
+		public string[] FilePath {
+			get {
+				return new[] {
+					"html/admin/page_manager.html"
+				};
+			}
+		}
 
-        public bool RequiresAuthentication
-        {
-            get { return true; }
-        }
+		public bool RequiresAuthentication {
+			get { return true; }
+		}
 
-        public bool RequiresAdminAuthentication
-        {
-            get { return true; }
-        }
+		public bool RequiresAdminAuthentication {
+			get { return true; }
+		}
 
-        public Dictionary<string, object> Fill(WebInterface webInterface, string filename, OSHttpRequest httpRequest,
-                                               OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
-                                               ITranslator translator, out string response)
-        {
-            response = null;
-            var vars = new Dictionary<string, object>();
+		public Dictionary<string, object> Fill (WebInterface webInterface, string filename, OSHttpRequest httpRequest,
+		                                             OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
+		                                             ITranslator translator, out string response)
+		{
+			response = null;
+			var vars = new Dictionary<string, object> ();
 
-            #region Find pages
+			#region Find pages
 
-            List<Dictionary<string, object>> pages = new List<Dictionary<string, object>>();
+			List<Dictionary<string, object>> pages = new List<Dictionary<string, object>> ();
 
-            IGenericsConnector generics = Framework.Utilities.DataManager.RequestPlugin<IGenericsConnector>();
-            GridPage rootPage = generics.GetGeneric<GridPage>(UUID.Zero, "WebPages", "Root");
-            if (rootPage == null)
-                return null;            // major bummer !!
+			IGenericsConnector generics = Framework.Utilities.DataManager.RequestPlugin<IGenericsConnector> ();
+			GridPage rootPage = generics.GetGeneric<GridPage> (UUID.Zero, "WebPages", "Root");
+			if (rootPage == null)
+				return null;            // major bummer !!
             
-            rootPage.Children.Sort((a, b) => a.MenuPosition.CompareTo(b.MenuPosition));
-            List<GridPage> allPages = new List<GridPage>(rootPage.Children);
-            foreach (GridPage page in rootPage.Children)
-                allPages.AddRange(page.Children);
-            allPages.RemoveAll((a) => !a.ShowInMenu);
+			rootPage.Children.Sort ((a, b) => a.MenuPosition.CompareTo (b.MenuPosition));
+			List<GridPage> allPages = new List<GridPage> (rootPage.Children);
+			foreach (GridPage page in rootPage.Children)
+				allPages.AddRange (page.Children);
+			allPages.RemoveAll ((a) => !a.ShowInMenu);
 
-            string MenuItem = requestParameters.ContainsKey("MenuItem")
-                                  ? requestParameters["MenuItem"].ToString()
+			string MenuItem = requestParameters.ContainsKey ("MenuItem")
+                                  ? requestParameters ["MenuItem"].ToString ()
                                   : "";
-            foreach (GridPage page in allPages)
-            {
-                pages.Add(new Dictionary<string, object>
-                              {
-                                  {"Value", page.Location},
-                                  {"Name", page.Location},
-                                  {
+			foreach (GridPage page in allPages) {
+				pages.Add (new Dictionary<string, object> {
+					{ "Value", page.Location },
+					{ "Name", page.Location }, {
                                       "PageSelected", MenuItem == page.Location
                                                           ? "selected=\"selected\""
                                                           : ""

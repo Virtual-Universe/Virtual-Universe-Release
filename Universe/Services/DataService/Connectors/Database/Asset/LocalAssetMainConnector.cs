@@ -39,316 +39,303 @@ using Universe.Framework.Services.ClassHelpers.Assets;
 
 namespace Universe.Services.DataService.Connectors.Database.Asset
 {
-    public class LocalAssetMainConnector : IAssetDataPlugin
-    {
-        IGenericData m_Gd;
+	public class LocalAssetMainConnector : IAssetDataPlugin
+	{
+		IGenericData m_Gd;
 
-        #region Implementation of IUniverseDataPlugin
+		#region Implementation of IUniverseDataPlugin
 
-        public string Name
-        {
-            get { return "IAssetDataPlugin"; }
-        }
+		public string Name {
+			get { return "IAssetDataPlugin"; }
+		}
 
-        public void Initialize (IGenericData genericData, IConfigSource source, IRegistryCore simBase, string defaultConnectionString)
-        {
-            if (source.Configs ["UniverseConnectors"].GetString ("AssetConnector", "LocalConnector") != "LocalConnector")
-                return;
+		public void Initialize (IGenericData genericData, IConfigSource source, IRegistryCore simBase,
+		                              string defaultConnectionString)
+		{
+			if (source.Configs ["UniverseConnectors"].GetString ("AssetConnector", "LocalConnector") != "LocalConnector")
+				return;
 
-            m_Gd = genericData;
+			m_Gd = genericData;
 
-            if (source.Configs [Name] != null)
-                defaultConnectionString = source.Configs [Name].GetString ("ConnectionString", defaultConnectionString);
+			if (source.Configs [Name] != null)
+				defaultConnectionString = source.Configs [Name].GetString ("ConnectionString", defaultConnectionString);
 
-            if (genericData != null)
-                genericData.ConnectToDatabase (defaultConnectionString, "Asset", source.Configs ["UniverseConnectors"].GetBoolean ("ValidateTables", true));
+			if (genericData != null)
+				genericData.ConnectToDatabase (defaultConnectionString, "Asset",
+					source.Configs ["UniverseConnectors"].GetBoolean ("ValidateTables", true));
+			Framework.Utilities.DataManager.RegisterPlugin (this);
+		}
 
-            Framework.Utilities.DataManager.RegisterPlugin (this);
-        }
+		#endregion
 
-        #endregion
+		#region Implementation of IAssetDataPlugin
 
-        #region Implementation of IAssetDataPlugin
+		public AssetBase GetAsset (UUID uuid)
+		{
+			return GetAsset (uuid, true);
+		}
 
-        public AssetBase GetAsset (UUID uuid)
-        {
-            return GetAsset (uuid, true);
-        }
+		public List<string> GetAssetUUIDs (uint? start, uint? count)
+		{
+			return m_Gd.Query (new string [] { "id" }, "assets", null, null, start, count);
+		}
 
-        public List<string> GetAssetUUIDs (uint? start, uint? count)
-        {
-            return m_Gd.Query (new string [] { "id" }, "assets", null, null, start, count);
-        }
+		public AssetBase GetMeta (UUID uuid)
+		{
+			DataReaderConnection dr = null;
+			try {
+				dr = m_Gd.QueryData ("where id = '" + uuid + "' LIMIT 1", "assets",
+					"id, name, description, assetType, local, temporary, asset_flags, creatorID");
+				while (dr.DataReader.Read ()) {
+					return LoadAssetFromDataRead (dr.DataReader);
+				}
+				if (MainConsole.Instance != null)
+					MainConsole.Instance.WarnFormat ("[LocalAssetDatabase] GetMeta({0}) - Asset UUID was not found.", uuid);
+			} catch (Exception e) {
+				if (MainConsole.Instance != null)
+					MainConsole.Instance.Error ("[LocalAssetDatabase]: Failed to fetch asset " + uuid + ", " + e);
+			} finally {
+				if (dr != null)
+					m_Gd.CloseDatabase (dr);
+			}
 
-        public AssetBase GetMeta (UUID uuid)
-        {
-            DataReaderConnection dr = null;
-            try {
-                dr = m_Gd.QueryData ("where id = '" + uuid + "' LIMIT 1", "assets", "id, name, description, assetType, local, temporary, asset_flags, creatorID");
-                while (dr.DataReader.Read ())
-                {
-                    return LoadAssetFromDataRead (dr.DataReader);
-                }
+			return null;
+		}
 
-                if (MainConsole.Instance != null)
-                    MainConsole.Instance.WarnFormat ("[LocalAssetDatabase] GetMeta({0}) - Asset UUID was not found.", uuid);
-            } catch (Exception e) {
-                if (MainConsole.Instance != null)
-                    MainConsole.Instance.Error ("[LocalAssetDatabase]: Failed to fetch asset " + uuid + ", " + e);
-            } finally {
-                if (dr != null)
-                    m_Gd.CloseDatabase (dr);
-            }
+		public UUID Store (AssetBase asset)
+		{
+			StoreAsset (asset);
 
-            return null;
-        }
+			return asset.ID;
+		}
 
-        public UUID Store (AssetBase asset)
-        {
-            StoreAsset (asset);
+		public bool StoreAsset (AssetBase asset)
+		{
+			try {
+				if (asset.Name.Length > 64)
+					asset.Name = asset.Name.Substring (0, 64);
+				if (asset.Description.Length > 128)
+					asset.Description = asset.Description.Substring (0, 128);
+				if (ExistsAsset (asset.ID)) {
+					AssetBase oldAsset = GetAsset (asset.ID);
+					if (oldAsset == null || (oldAsset.Flags & AssetFlags.Rewritable) == AssetFlags.Rewritable) {
+						if (MainConsole.Instance != null)
+							MainConsole.Instance.Debug (
+								"[LocalAssetDatabase]: Asset already exists in the db, overwriting - " + asset.ID);
+						Delete (asset.ID, true);
+						InsertAsset (asset, asset.ID);
+					} else {
+						if (MainConsole.Instance != null)
+							MainConsole.Instance.Debug (
+								"[LocalAssetDatabase]: Asset already exists in the db, fixing ID... - " + asset.ID);
+						InsertAsset (asset, UUID.Random ());
+					}
+					if (oldAsset != null)
+						oldAsset.Dispose ();
+				} else {
+					InsertAsset (asset, asset.ID);
+				}
+			} catch (Exception e) {
+				if (MainConsole.Instance != null)
+					MainConsole.Instance.ErrorFormat (
+						"[LocalAssetDatabase]: Failure creating asset {0} with name \"{1}\". Error: {2}",
+						asset.ID, asset.Name, e);
+			}
 
-            return asset.ID;
-        }
+			return true;
+		}
 
-        public bool StoreAsset (AssetBase asset)
-        {
-            try {
-                if (asset.Name.Length > 64)
-                    asset.Name = asset.Name.Substring (0, 64);
+		public void UpdateContent (UUID id, byte[] assetData, out UUID newID)
+		{
+			newID = UUID.Zero;
 
-                if (asset.Description.Length > 128)
-                    asset.Description = asset.Description.Substring (0, 128);
+			AssetBase oldAsset = GetAsset (id, false);   // fail quietly as this is an update 
+			if (oldAsset == null)
+				return;
 
-                if (ExistsAsset (asset.ID))
-                {
-                    AssetBase oldAsset = GetAsset (asset.ID);
-                    if (oldAsset == null || (oldAsset.Flags & AssetFlags.Rewritable) == AssetFlags.Rewritable) {
-                        if (MainConsole.Instance != null)
-                            MainConsole.Instance.Debug ("[Local Asset Database]: Asset already exists in the db, overwriting - " + asset.ID);
-                        Delete (asset.ID, true);
-                        InsertAsset (asset, asset.ID);
-                    } else {
-                        if (MainConsole.Instance != null)
-                            MainConsole.Instance.Debug ("[Local Asset Database]: Asset already exists in the db, fixing ID... - " + asset.ID);
-                        InsertAsset (asset, UUID.Random ());
-                    }
+			if ((oldAsset.Flags & AssetFlags.Rewritable) == AssetFlags.Rewritable) {
+				try {
+					Dictionary<string, object> values = new Dictionary<string, object> (1);
+					values ["data"] = assetData;
 
-                    if (oldAsset != null)
-                        oldAsset.Dispose ();
-                } else {
-                    InsertAsset (asset, asset.ID);
-                }
-            } catch (Exception e)
-            {
-                if (MainConsole.Instance != null)
-                    MainConsole.Instance.ErrorFormat ("[Local Asset Database]: Failure creating asset {0} with name \"{1}\". Error: {2}", asset.ID, asset.Name, e);
-            }
+					QueryFilter filter = new QueryFilter ();
+					filter.andFilters ["id"] = id;
 
-            return true;
-        }
+					m_Gd.Update ("assets", values, null, filter, null, null);
+				} catch (Exception e) {
+					if (MainConsole.Instance != null)
+						MainConsole.Instance.Error ("[LocalAssetDatabase] UpdateContent(" + id + ") - Errored, " + e);
+				}
+				newID = id;
+			} else {
+				newID = UUID.Random ();
+				oldAsset.Data = assetData;
+				InsertAsset (oldAsset, newID);
+			}
+			oldAsset.Dispose ();
+		}
 
-        public void UpdateContent (UUID id, byte [] assetData, out UUID newID)
-        {
-            newID = UUID.Zero;
+		void InsertAsset (AssetBase asset, UUID assetID)
+		{
+			int now = (int)Utils.DateTimeToUnixTime (DateTime.UtcNow);
+			Dictionary<string, object> row = new Dictionary<string, object> (11);
+			row ["id"] = assetID;
+			row ["name"] = asset.Name;
+			row ["description"] = asset.Description;
+			row ["assetType"] = (sbyte)asset.TypeAsset;
+			row ["local"] = (asset.Flags & AssetFlags.Local) == AssetFlags.Local;
+			row ["temporary"] = (asset.Flags & AssetFlags.Temporary) == AssetFlags.Temporary;
+			row ["create_time"] = now;
+			row ["access_time"] = now;
+			row ["asset_flags"] = (int)asset.Flags;
+			row ["creatorID"] = asset.CreatorID;
+			row ["data"] = asset.Data;
 
-            AssetBase oldAsset = GetAsset (id, false);   // fail quietly as this is an update 
-            if (oldAsset == null)
-                return;
+			m_Gd.Insert ("assets", row);
+		}
 
-            if ((oldAsset.Flags & AssetFlags.Rewritable) == AssetFlags.Rewritable) {
-                try {
-                    Dictionary<string, object> values = new Dictionary<string, object> (1);
-                    values ["data"] = assetData;
+		public bool ExistsAsset (UUID uuid)
+		{
+			try {
+				QueryFilter filter = new QueryFilter ();
+				filter.andFilters ["id"] = uuid;
+				return m_Gd.Query (new string [] { "id" }, "assets", filter, null, null, null).Count > 0;
+			} catch (Exception e) {
+				if (MainConsole.Instance != null)
+					MainConsole.Instance.ErrorFormat (
+						"[LocalAssetDatabase]: Failure fetching asset {0}" + Environment.NewLine + e, uuid);
+			}
 
-                    QueryFilter filter = new QueryFilter ();
-                    filter.andFilters ["id"] = id;
+			return false;
+		}
 
-                    m_Gd.Update ("assets", values, null, filter, null, null);
-                } catch (Exception e) {
-                    if (MainConsole.Instance != null)
-                        MainConsole.Instance.Error ("[LocalAssetDatabase] UpdateContent(" + id + ") - Errored, " + e);
-                }
+		public bool Delete (UUID id)
+		{
+			return Delete (id, false);
+		}
 
-                newID = id;
-            } else {
-                newID = UUID.Random ();
-                oldAsset.Data = assetData;
-                InsertAsset (oldAsset, newID);
-            }
+		public AssetBase GetAsset (UUID uuid, bool showWarnings)
+		{
+			DataReaderConnection dr = null;
+			try {
+				dr = m_Gd.QueryData ("where id = '" + uuid + "'", "assets",
+					"id, name, description, assetType, local, temporary, asset_flags, creatorID, data");
+				while (dr != null && dr.DataReader.Read ()) {
+					return LoadAssetFromDataRead (dr.DataReader);
+				}
+				if (showWarnings && MainConsole.Instance != null)
+					MainConsole.Instance.WarnFormat ("[LocalAssetDatabase] GetAsset({0}) - Asset UUID was not found.", uuid);
+			} catch (Exception e) {
+				if (MainConsole.Instance != null)
+					MainConsole.Instance.Error ("[LocalAssetDatabase]: Failed to fetch asset " + uuid + ", " + e);
+			} finally {
+				if (dr != null)
+					m_Gd.CloseDatabase (dr);
+			}
 
-            oldAsset.Dispose ();
-        }
+			return null;
+		}
 
-        void InsertAsset (AssetBase asset, UUID assetID)
-        {
-            int now = (int)Utils.DateTimeToUnixTime (DateTime.UtcNow);
-            Dictionary<string, object> row = new Dictionary<string, object> (11);
-            row ["id"] = assetID;
-            row ["name"] = asset.Name;
-            row ["description"] = asset.Description;
-            row ["assetType"] = (sbyte)asset.TypeAsset;
-            row ["local"] = (asset.Flags & AssetFlags.Local) == AssetFlags.Local;
-            row ["temporary"] = (asset.Flags & AssetFlags.Temporary) == AssetFlags.Temporary;
-            row ["create_time"] = now;
-            row ["access_time"] = now;
-            row ["asset_flags"] = (int)asset.Flags;
-            row ["creatorID"] = asset.CreatorID;
-            row ["data"] = asset.Data;
+		public byte [] GetData (UUID uuid)
+		{
+			DataReaderConnection dr = null;
+			try {
+				dr = m_Gd.QueryData ("where id = '" + uuid + "' LIMIT 1", "assets", "data");
+				if (dr != null)
+					return (byte[])dr.DataReader ["data"];
+				if (MainConsole.Instance != null)
+					MainConsole.Instance.WarnFormat ("[LocalAssetDatabase] GetData({0}) - Asset (UUID data) was not found.", uuid);
+			} catch (Exception e) {
+				if (MainConsole.Instance != null)
+					MainConsole.Instance.Error ("[LocalAssetDatabase]: Failed to fetch asset " + uuid + ", " + e);
+			} finally {
+				if (dr != null)
+					m_Gd.CloseDatabase (dr);
+			}
 
-            m_Gd.Insert ("assets", row);
-        }
+			return null;
+		}
 
-        public bool ExistsAsset (UUID uuid)
-        {
-            try {
-                QueryFilter filter = new QueryFilter ();
-                filter.andFilters ["id"] = uuid;
-                return m_Gd.Query (new string [] { "id" }, "assets", filter, null, null, null).Count > 0;
-            } catch (Exception e) {
-                if (MainConsole.Instance != null)
-                    MainConsole.Instance.ErrorFormat ("[Local Asset Database]: Failure fetching asset {0}" + Environment.NewLine + e, uuid);
-            }
+		public bool Delete (UUID id, bool ignoreFlags)
+		{
+			try {
+				if (!ignoreFlags) {
+					AssetBase asset = GetAsset (id, false);
+					if (asset == null)
+						return false;
 
-            return false;
-        }
+					if ((asset.Flags & AssetFlags.Maptile) != 0 || //Deprecated, use Deletable instead
+					                   (asset.Flags & AssetFlags.Deletable) != 0)
+						ignoreFlags = true;
 
-        public bool Delete (UUID id)
-        {
-            return Delete (id, false);
-        }
+					asset.Dispose ();
 
-        public AssetBase GetAsset (UUID uuid, bool showWarnings)
-        {
-            DataReaderConnection dr = null;
-            try {
-                dr = m_Gd.QueryData ("where id = '" + uuid + "'", "assets", "id, name, description, assetType, local, temporary, asset_flags, creatorID, data");
-                while (dr != null && dr.DataReader.Read ()) {
-                    return LoadAssetFromDataRead (dr.DataReader);
-                }
+				}
+				if (ignoreFlags) {
+					QueryFilter filter = new QueryFilter ();
+					filter.andFilters ["id"] = id;
+					m_Gd.Delete ("assets", filter);
+				}
+			} catch (Exception e) {
+				if (MainConsole.Instance != null)
+					MainConsole.Instance.Error ("[LocalAssetDatabase] Error while deleting asset " + e);
+			}
 
-                if (showWarnings && MainConsole.Instance != null)
-                    MainConsole.Instance.WarnFormat ("[LocalAssetDatabase] GetAsset({0}) - Asset UUID was not found.", uuid);
-            } catch (Exception e) {
-                if (MainConsole.Instance != null)
-                    MainConsole.Instance.Error ("[LocalAssetDatabase]: Failed to fetch asset " + uuid + ", " + e);
-            } finally {
-                if (dr != null)
-                    m_Gd.CloseDatabase (dr);
-            }
+			return true;
+		}
 
-            return null;
-        }
+		static AssetBase LoadAssetFromDataRead (IDataRecord dr)
+		{
+			AssetBase asset = new AssetBase (dr ["id"].ToString ()) {
+				Name = dr ["name"].ToString (),
+				Description = dr ["description"].ToString ()
+			};
 
-        public byte [] GetData (UUID uuid)
-        {
-            DataReaderConnection dr = null;
-            try {
-                dr = m_Gd.QueryData ("where id = '" + uuid + "' LIMIT 1", "assets", "data");
-                if (dr != null)
-                    return (byte [])dr.DataReader ["data"];
+			string Flags = dr ["asset_flags"].ToString ();
+			if (Flags != "")
+				asset.Flags = (AssetFlags)int.Parse (Flags);
+			string type = dr ["assetType"].ToString ();
+			asset.TypeAsset = (AssetType)int.Parse (type);
+			UUID creator;
 
-                if (MainConsole.Instance != null)
-                    MainConsole.Instance.WarnFormat ("[LocalAssetDatabase] GetData({0}) - Asset (UUID data) was not found.", uuid);
-            } catch (Exception e) {
-                if (MainConsole.Instance != null)
-                    MainConsole.Instance.Error ("[LocalAssetDatabase]: Failed to fetch asset " + uuid + ", " + e);
-            } finally {
-                if (dr != null)
-                    m_Gd.CloseDatabase (dr);
-            }
-
-            return null;
-        }
-
-        public bool Delete (UUID id, bool ignoreFlags)
-        {
-            try {
-                if (!ignoreFlags)
-                {
-                    AssetBase asset = GetAsset (id, false);
-                    if (asset == null)
-                        return false;
-
-                    if ((asset.Flags & AssetFlags.Maptile) != 0 || //Depreciated, use Deletable instead
-                        (asset.Flags & AssetFlags.Deletable) != 0)
-                        ignoreFlags = true;
-
-                    asset.Dispose ();
-
-                }
-
-                if (ignoreFlags)
-                {
-                    QueryFilter filter = new QueryFilter ();
-                    filter.andFilters ["id"] = id;
-                    m_Gd.Delete ("assets", filter);
-                }
-            } catch (Exception e)
-            {
-                if (MainConsole.Instance != null)
-                    MainConsole.Instance.Error ("[Local Asset Database] Error while deleting asset " + e);
-            }
-
-            return true;
-        }
-
-        static AssetBase LoadAssetFromDataRead (IDataRecord dr)
-        {
-            AssetBase asset = new AssetBase (dr ["id"].ToString ()) {
-                Name = dr ["name"].ToString (),
-                Description = dr ["description"].ToString ()
-            };
-
-            string Flags = dr ["asset_flags"].ToString ();
-            if (Flags != "")
-                asset.Flags = (AssetFlags)int.Parse (Flags);
-            string type = dr ["assetType"].ToString ();
-            asset.TypeAsset = (AssetType)int.Parse (type);
-            UUID creator;
-
-            if (UUID.TryParse (dr ["creatorID"].ToString (), out creator))
-                asset.CreatorID = creator;
+			if (UUID.TryParse (dr ["creatorID"].ToString (), out creator))
+				asset.CreatorID = creator;
             
-            try {
-                object d = dr ["data"];
-                if ((d != null) && (d.ToString () != "")) {
-                    asset.Data = (byte [])d;
-                    asset.MetaOnly = false;
-                } else {
-                    asset.MetaOnly = true;
-                    asset.Data = new byte [0];
-                }
-            } catch (Exception ex) {
-                asset.MetaOnly = true;
-                asset.Data = new byte [0];
-                if (MainConsole.Instance != null)
-                    MainConsole.Instance.Error ("[Local Asset Database]: Failed to cast data for " + asset.ID + ", " + ex);
-            }
+			try {
+				object d = dr ["data"];
+				if ((d != null) && (d.ToString () != "")) {
+					asset.Data = (byte[])d;
+					asset.MetaOnly = false;
+				} else {
+					asset.MetaOnly = true;
+					asset.Data = new byte [0];
+				}
+			} catch (Exception ex) {
+				asset.MetaOnly = true;
+				asset.Data = new byte [0];
+				if (MainConsole.Instance != null)
+					MainConsole.Instance.Error ("[LocalAssetDatabase]: Failed to cast data for " + asset.ID + ", " + ex);
+			}
 
-            if (dr ["local"].ToString ().Equals ("1") ||
-                dr ["local"].ToString ().Equals ("true", StringComparison.InvariantCultureIgnoreCase))
-                asset.Flags |= AssetFlags.Local;
+			if (dr ["local"].ToString ().Equals ("1") ||
+			             dr ["local"].ToString ().Equals ("true", StringComparison.InvariantCultureIgnoreCase))
+				asset.Flags |= AssetFlags.Local;
+			string temp = dr ["temporary"].ToString ();
+			if (temp != "") {
+				bool tempbool;
+				int tempint;
+				if (bool.TryParse (temp, out tempbool)) {
+					if (tempbool)
+						asset.Flags |= AssetFlags.Temporary;
+				} else if (int.TryParse (temp, out tempint)) {
+					if (tempint == 1)
+						asset.Flags |= AssetFlags.Temporary;
+				}
+			}
 
-            string temp = dr ["temporary"].ToString ();
+			return asset;
+		}
 
-            if (temp != "") {
-                bool tempbool;
-                int tempint;
-
-                if (bool.TryParse (temp, out tempbool))
-                {
-                    if (tempbool)
-                        asset.Flags |= AssetFlags.Temporary;
-                } else if (int.TryParse (temp, out tempint))
-                {
-                    if (tempint == 1)
-                        asset.Flags |= AssetFlags.Temporary;
-                }
-            }
-
-            return asset;
-        }
-
-        #endregion
-    }
+		#endregion
+	}
 }

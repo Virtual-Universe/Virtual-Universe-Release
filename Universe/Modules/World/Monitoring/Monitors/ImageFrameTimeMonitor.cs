@@ -32,54 +32,54 @@ using Universe.Framework.SceneInfo;
 
 namespace Universe.Modules.Monitoring.Monitors
 {
-    public class ImageFrameTimeMonitor : IImageFrameTimeMonitor
-    {
-        int MonitorImageFrameTick;
+	public class ImageFrameTimeMonitor : IImageFrameTimeMonitor
+	{
+		int MonitorImageFrameTick;
 
-        public ImageFrameTimeMonitor (IScene scene)
-        {
-        }
+		public ImageFrameTimeMonitor (IScene scene)
+		{
+		}
 
-        #region Implementation of IMonitor
+		#region Implementation of IMonitor
 
-        public double GetValue ()
-        {
-            return MonitorImageFrameTick;
-        }
+		public double GetValue ()
+		{
+			return MonitorImageFrameTick;
+		}
 
-        public string GetName ()
-        {
-            return "Images Frame Time";
-        }
+		public string GetName ()
+		{
+			return "Images Frame Time";
+		}
 
-        public string GetInterfaceName ()
-        {
-            return "IImageFrameTimeMonitor";
-        }
+		public string GetInterfaceName ()
+		{
+			return "IImageFrameTimeMonitor";
+		}
 
-        public string GetFriendlyValue ()
-        {
-            return (int)GetValue () + "ms";
-        }
+		public string GetFriendlyValue ()
+		{
+			return (int)GetValue () + "ms";
+		}
 
-        #endregion
+		#endregion
 
-        #region IImageFrameTimeMonitor Members
+		#region IImageFrameTimeMonitor Members
 
-        public void AddImageTime (int value)
-        {
-            MonitorImageFrameTick += value;
-        }
+		public void AddImageTime (int value)
+		{
+			MonitorImageFrameTick += value;
+		}
 
-        #endregion
+		#endregion
 
-        #region IMonitor Members
+		#region IMonitor Members
 
-        public void ResetStats ()
-        {
-            MonitorImageFrameTick = 0;
-        }
+		public void ResetStats ()
+		{
+			MonitorImageFrameTick = 0;
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

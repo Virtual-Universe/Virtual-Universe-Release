@@ -32,39 +32,38 @@ using System.Collections.Generic;
 
 namespace Universe.ScriptEngine.VirtualScript.MiniModule
 {
-    class ExtensionHandler : IExtension
-    {
-        readonly Dictionary<Type, object> m_instances;
+	class ExtensionHandler : IExtension
+	{
+		readonly Dictionary<Type, object> m_instances;
 
-        public ExtensionHandler(Dictionary<Type, object> instances)
-        {
-            m_instances = instances;
-        }
+		public ExtensionHandler (Dictionary<Type, object> instances)
+		{
+			m_instances = instances;
+		}
 
-        #region IExtension Members
+		#region IExtension Members
 
-        public T Get<T>()
-        {
-            return (T) m_instances[typeof (T)];
-        }
+		public T Get<T> ()
+		{
+			return (T)m_instances [typeof(T)];
+		}
 
-        public bool TryGet<T>(out T extension)
-        {
-            if (!m_instances.ContainsKey(typeof (T)))
-            {
-                extension = default(T);
-                return false;
-            }
+		public bool TryGet<T> (out T extension)
+		{
+			if (!m_instances.ContainsKey (typeof(T))) {
+				extension = default(T);
+				return false;
+			}
 
-            extension = Get<T>();
-            return true;
-        }
+			extension = Get<T> ();
+			return true;
+		}
 
-        public bool Has<T>()
-        {
-            return m_instances.ContainsKey(typeof (T));
-        }
+		public bool Has<T> ()
+		{
+			return m_instances.ContainsKey (typeof(T));
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

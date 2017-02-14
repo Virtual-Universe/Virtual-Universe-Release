@@ -35,56 +35,61 @@ using Universe.Framework.SceneInfo;
 
 namespace Universe.ScriptEngine.VirtualScript
 {
-    [Serializable]
-    public class EnumeratorInfo
-    {
-        public Guid Key = Guid.Empty;
-        public DateTime SleepTo = DateTime.MinValue;
-    }
+	[Serializable]
+	public class EnumeratorInfo
+	{
+		public Guid Key = Guid.Empty;
+		public DateTime SleepTo = DateTime.MinValue;
+	}
 
-    public interface IScript : IDisposable
-    {
-        ISponsor Sponsor { get; }
-        string Name { get; }
+	public interface IScript : IDisposable
+	{
+		ISponsor Sponsor { get; }
 
-        /// <summary>
-        ///     Whether this script needs a state save performed
-        /// </summary>
-        bool NeedsStateSaved { get; set; }
+		string Name { get; }
 
-        void InitApi(IScriptApi data);
+		/// <summary>
+		///     Whether this script needs a state save performed
+		/// </summary>
+		bool NeedsStateSaved { get; set; }
 
-        long GetStateEventFlags(string state);
+		void InitApi (IScriptApi data);
 
-        EnumeratorInfo ExecuteEvent(string state, string FunctionName, object[] args, EnumeratorInfo Start,
-                                    out Exception ex);
+		long GetStateEventFlags (string state);
 
-        Dictionary<string, Object> GetVars();
-        void SetVars(Dictionary<string, Object> vars);
-        Dictionary<string, Object> GetStoreVars();
-        void SetStoreVars(Dictionary<string, Object> vars);
-        void ResetVars();
+		EnumeratorInfo ExecuteEvent (string state, string FunctionName, object[] args, EnumeratorInfo Start,
+		                                  out Exception ex);
 
-        /// <summary>
-        ///     Find the initial variables so that we can reset the state later if needed
-        /// </summary>
-        void UpdateInitialValues();
+		Dictionary<string, Object> GetVars ();
 
-        void Close();
+		void SetVars (Dictionary<string, Object> vars);
 
-        /// <summary>
-        ///     Gives a ref to the scene the script is in and its parent object
-        /// </summary>
-        /// <param name="iScene"></param>
-        /// <param name="iSceneChildEntity"></param>
-        /// <param name="useStateSaves"></param>
-        void SetSceneRefs(IScene iScene, ISceneChildEntity iSceneChildEntity, bool useStateSaves);
+		Dictionary<string, Object> GetStoreVars ();
 
-        /// <summary>
-        ///     Fires a generic event by the given name
-        /// </summary>
-        /// <param name="evName"></param>
-        /// <param name="parameters"></param>
-        IEnumerator FireEvent(string evName, object[] parameters);
-    }
+		void SetStoreVars (Dictionary<string, Object> vars);
+
+		void ResetVars ();
+
+		/// <summary>
+		///     Find the initial variables so that we can reset the state later if needed
+		/// </summary>
+		void UpdateInitialValues ();
+
+		void Close ();
+
+		/// <summary>
+		///     Gives a ref to the scene the script is in and its parent object
+		/// </summary>
+		/// <param name="iScene"></param>
+		/// <param name="iSceneChildEntity"></param>
+		/// <param name="useStateSaves"></param>
+		void SetSceneRefs (IScene iScene, ISceneChildEntity iSceneChildEntity, bool useStateSaves);
+
+		/// <summary>
+		///     Fires a generic event by the given name
+		/// </summary>
+		/// <param name="evName"></param>
+		/// <param name="parameters"></param>
+		IEnumerator FireEvent (string evName, object[] parameters);
+	}
 }

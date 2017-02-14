@@ -36,125 +36,114 @@ using Universe.Framework.SceneInfo;
 
 namespace Universe.Modules.GlobalEnvironment.Plugins
 {
-    public class SimpleRandomWind : IWindModelPlugin
-    {
-        readonly Random m_rndnums = new Random (Environment.TickCount);
-        float m_strength = 1.0f;
-        Vector2[] m_windSpeeds = new Vector2[16 * 16];
+	public class SimpleRandomWind : IWindModelPlugin
+	{
+		readonly Random m_rndnums = new Random (Environment.TickCount);
+		float m_strength = 1.0f;
+		Vector2[] m_windSpeeds = new Vector2[16 * 16];
 
-        public string Version
-        {
-            get { return "1.0.0.0"; }
-        }
+		public string Version {
+			get { return "1.0.0.0"; }
+		}
 
-        #region IWindModelPlugin Members
+		#region IWindModelPlugin Members
 
-        public string Name
-        {
-            get { return "SimpleRandomWind"; }
-        }
+		public string Name {
+			get { return "SimpleRandomWind"; }
+		}
 
-        public void Initialize ()
-        {
-        }
+		public void Initialize ()
+		{
+		}
 
-        public void WindConfig (IScene scene, IConfig windConfig)
-        {
-            if (windConfig != null)
-            {
-                if (windConfig.Contains ("strength"))
-                {
-                    m_strength = windConfig.GetFloat ("strength", 1.0F);
-                }
-            }
-        }
+		public void WindConfig (IScene scene, IConfig windConfig)
+		{
+			if (windConfig != null) {
+				if (windConfig.Contains ("strength")) {
+					m_strength = windConfig.GetFloat ("strength", 1.0F);
+				}
+			}
+		}
 
-        public void WindUpdate (uint frame)
-        {
-            //Make sure our object is valid (we haven't been disposed of yet)
-            if (m_windSpeeds != null)
-            {
-                for (int y = 0; y < 16; y++)
-                {
-                    for (int x = 0; x < 16; x++)
-                    {
-                        m_windSpeeds [y * 16 + x].X = (float)(m_rndnums.NextDouble () * 2d - 1d); // -1 to 1
-                        m_windSpeeds [y * 16 + x].Y = (float)(m_rndnums.NextDouble () * 2d - 1d); // -1 to 1
-                        m_windSpeeds [y * 16 + x].X *= m_strength;
-                        m_windSpeeds [y * 16 + x].Y *= m_strength;
-                    }
-                }
-            }
-        }
+		public void WindUpdate (uint frame)
+		{
+			//Make sure our object is valid (we haven't been disposed of yet)
+			if (m_windSpeeds != null) {
+				for (int y = 0; y < 16; y++) {
+					for (int x = 0; x < 16; x++) {
+						m_windSpeeds [y * 16 + x].X = (float)(m_rndnums.NextDouble () * 2d - 1d); // -1 to 1
+						m_windSpeeds [y * 16 + x].Y = (float)(m_rndnums.NextDouble () * 2d - 1d); // -1 to 1
+						m_windSpeeds [y * 16 + x].X *= m_strength;
+						m_windSpeeds [y * 16 + x].Y *= m_strength;
+					}
+				}
+			}
+		}
 
-        public Vector3 WindSpeed (float fX, float fY, float fZ)
-        {
-            Vector3 windVector = new Vector3 (0.0f, 0.0f, 0.0f);
+		public Vector3 WindSpeed (float fX, float fY, float fZ)
+		{
+			Vector3 windVector = new Vector3 (0.0f, 0.0f, 0.0f);
 
-            int x = (int)fX / 16;
-            int y = (int)fY / 16;
+			int x = (int)fX / 16;
+			int y = (int)fY / 16;
 
-            if (x < 0)
-                x = 0;
-            if (x > 15)
-                x = 15;
-            if (y < 0)
-                y = 0;
-            if (y > 15)
-                y = 15;
+			if (x < 0)
+				x = 0;
+			if (x > 15)
+				x = 15;
+			if (y < 0)
+				y = 0;
+			if (y > 15)
+				y = 15;
 
-            if (m_windSpeeds != null)
-            {
-                windVector.X = m_windSpeeds [y * 16 + x].X;
-                windVector.Y = m_windSpeeds [y * 16 + x].Y;
-            }
+			if (m_windSpeeds != null) {
+				windVector.X = m_windSpeeds [y * 16 + x].X;
+				windVector.Y = m_windSpeeds [y * 16 + x].Y;
+			}
 
-            return windVector;
-        }
+			return windVector;
+		}
 
-        public Vector2[] WindLLClientArray ()
-        {
-            return m_windSpeeds;
-        }
+		public Vector2[] WindLLClientArray ()
+		{
+			return m_windSpeeds;
+		}
 
-        public string Description
-        {
-            get { return "Provides a simple wind model that creates random wind of a given strength in 16m x 16m patches."; }
-        }
+		public string Description {
+			get { return "Provides a simple wind model that creates random wind of a given strength in 16m x 16m patches."; }
+		}
 
-        public Dictionary<string, string> WindParams ()
-        {
-            Dictionary<string, string> Params = new Dictionary<string, string> { { "strength", "wind strength" } };
+		public Dictionary<string, string> WindParams ()
+		{
+			Dictionary<string, string> Params = new Dictionary<string, string> { { "strength", "wind strength" } };
 
-            return Params;
-        }
+			return Params;
+		}
 
-        public void WindParamSet (string param, float value)
-        {
-            switch (param)
-            {
-            case "strength":
-                m_strength = value;
-                break;
-            }
-        }
+		public void WindParamSet (string param, float value)
+		{
+			switch (param) {
+			case "strength":
+				m_strength = value;
+				break;
+			}
+		}
 
-        public float WindParamGet (string param)
-        {
-            switch (param)
-            {
-            case "strength":
-                return m_strength;
-            default:
-                throw new Exception (String.Format ("Unknown {0} parameter {1}", Name, param));
-            }
-        }
+		public float WindParamGet (string param)
+		{
+			switch (param) {
+			case "strength":
+				return m_strength;
+			default:
+				throw new Exception (String.Format ("Unknown {0} parameter {1}", Name, param));
+			}
+		}
 
-        #endregion
+		#endregion
 
-        public void Dispose ()
-        {
-            m_windSpeeds = null;
-        }
-    }
+		public void Dispose ()
+		{
+			m_windSpeeds = null;
+		}
+	}
 }

@@ -32,20 +32,20 @@ using System.Runtime.Remoting.Lifetime;
 
 namespace Universe.ScriptEngine.VirtualScript.Runtime
 {
-    public class ScriptSponsor : MarshalByRefObject, ISponsor
-    {
-        bool m_closed;
+	public class ScriptSponsor : MarshalByRefObject, ISponsor
+	{
+		bool m_closed;
 
-        public TimeSpan Renewal(ILease lease)
-        {
-            if (!m_closed)
-                return lease.InitialLeaseTime;
-            return TimeSpan.FromTicks(0);
-        }
+		public TimeSpan Renewal (ILease lease)
+		{
+			if (!m_closed)
+				return lease.InitialLeaseTime;
+			return TimeSpan.FromTicks (0);
+		}
 
-        public void Close()
-        {
-            m_closed = true;
-        }
-    }
+		public void Close ()
+		{
+			m_closed = true;
+		}
+	}
 }

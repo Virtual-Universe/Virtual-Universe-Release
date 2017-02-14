@@ -28,37 +28,44 @@
  */
 
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-[assembly: AssemblyTitle("ConvexDecompositionDotNet")]
-[assembly: AssemblyDescription("")]
+/// <summary>
+///     This is the general information about an assembly, that is controlled through
+///     the following set of attributes.  We change these attribute values to modify
+///     the information associated with an assembly
+/// </summary>
+[assembly: AssemblyCompany("Virtual Universe Development Team")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Intel Corporation")]
-[assembly: AssemblyProduct("ConvexDecompositionDotNet")]
-[assembly: AssemblyCopyright("Copyright © Intel Corporation 2010")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCopyright("Copyright © 2016-2025")]
 [assembly: AssemblyCulture("")]
+[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Universe.Physics.ConvexDecompositionDotNet")]
+[assembly: AssemblyTrademark("")]
 
-// Setting ComVisible to false makes the types in this assembly not visible 
-// to COM components.  If you need to access a type in this assembly from 
-// COM, set the ComVisible attribute to true on that type.
+/// <summary>
+///     By setting the ComVisable to false, we are making the types in this assembly
+///     not visible to COM components.  if we need to access a type in this assembly
+///     from the COM, then we set the ComVisible attribute to true on that type
+/// </summary>
 [assembly: ComVisible(false)]
 
-// The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("2a1c9467-1a17-4c8d-bf9f-4b4d86dd0cbb")]
+/// <summary>
+///     The following GUID is for the ID of the typelib if this project is exposed to COM
+/// </summary>
+[assembly: Guid("269c99ff-0740-4886-8593-7527903090bf")]
 
-// Version information for an assembly consists of the following four values:
-//
-//      Major Version
-//      Minor Version 
-//      Build Number
-//      Revision
-//
-// You can specify all the values or you can default the Build and Revision Numbers 
-// by using the '*' as shown below:
-// [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.2.*")]
+/// <summary>
+///     Version Information:
+///         The version information for an assembly consists of the following four values:
+///         
+///             Major Version Number
+///             Minor Version Number
+///             Build Version Number
+///             Revision Version Number
+///         
+///         We can specify all of the values, or we can default the build and revision version
+///         numbers by using the '*' as shown below:
+///             [assembly: AssemblyVersion("1.0.*")]
+/// </summary>
+[assembly: AssemblyVersion("1.0.3.*")]

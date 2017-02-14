@@ -710,7 +710,7 @@ namespace Universe.Modules.Permissions
                 if (m_allowedScriptCreators == UserSet.Administrators && !IsAdministrator(userID))
                     return false;
                 if (m_allowedScriptCreators == UserSet.ParcelOwners &&
-                    !GenericParcelPermission(userID, m_scene.GetScenePresence(userID).AbsolutePosition, 0))
+                                !GenericParcelPermission(userID, m_scene.GetScenePresence(userID).AbsolutePosition, 0))
                     return false;
             }
 
@@ -741,7 +741,7 @@ namespace Universe.Modules.Permissions
                 if (m_allowedScriptCreators == UserSet.Administrators && !IsAdministrator(userID))
                     return false;
                 if (m_allowedScriptCreators == UserSet.ParcelOwners &&
-                    !GenericParcelPermission(userID, m_scene.GetScenePresence(userID).AbsolutePosition, 0))
+                                !GenericParcelPermission(userID, m_scene.GetScenePresence(userID).AbsolutePosition, 0))
                     return false;
             }
 
@@ -830,27 +830,27 @@ namespace Universe.Modules.Permissions
                 case "lsl":
                 case "lsl2":
                     if ((m_allowedLSLScriptCompilers == UserSet.Administrators && !IsAdministrator(ownerUUID)) ||
-                            (m_allowedLSLScriptCompilers == UserSet.ParcelOwners &&
-                            !GenericParcelPermission(ownerUUID, scene.GetScenePresence(ownerUUID).AbsolutePosition, 0)) ||
-                            GrantLSL.Count == 0 || GrantLSL.ContainsKey(ownerUUID.ToString()))
+                                    (m_allowedLSLScriptCompilers == UserSet.ParcelOwners &&
+                                    !GenericParcelPermission(ownerUUID, scene.GetScenePresence(ownerUUID).AbsolutePosition, 0)) ||
+                                    GrantLSL.Count == 0 || GrantLSL.ContainsKey(ownerUUID.ToString()))
                     {
                         return (true);
                     }
                     break;
                 case "cs":
                     if ((m_allowedCSScriptCompilers == UserSet.Administrators && !IsAdministrator(ownerUUID)) ||
-                            (m_allowedCSScriptCompilers == UserSet.ParcelOwners &&
-                            !GenericParcelPermission(ownerUUID, scene.GetScenePresence(ownerUUID).AbsolutePosition, 0)) ||
-                            GrantCS.Count == 0 || GrantCS.ContainsKey(ownerUUID.ToString()))
+                                    (m_allowedCSScriptCompilers == UserSet.ParcelOwners &&
+                                    !GenericParcelPermission(ownerUUID, scene.GetScenePresence(ownerUUID).AbsolutePosition, 0)) ||
+                                    GrantCS.Count == 0 || GrantCS.ContainsKey(ownerUUID.ToString()))
                     {
                         return (true);
                     }
                     break;
                 case "ascript":
                     if ((m_allowedAScriptScriptCompilers == UserSet.Administrators && !IsAdministrator(ownerUUID)) ||
-                            (m_allowedAScriptScriptCompilers == UserSet.ParcelOwners &&
-                            !GenericParcelPermission(ownerUUID, scene.GetScenePresence(ownerUUID).AbsolutePosition, 0)) ||
-                            GrantAScript.Count == 0 || GrantAScript.ContainsKey(ownerUUID.ToString()))
+                                    (m_allowedAScriptScriptCompilers == UserSet.ParcelOwners &&
+                                    !GenericParcelPermission(ownerUUID, scene.GetScenePresence(ownerUUID).AbsolutePosition, 0)) ||
+                                    GrantAScript.Count == 0 || GrantAScript.ContainsKey(ownerUUID.ToString()))
                     {
                         return (true);
                     }
@@ -885,16 +885,16 @@ namespace Universe.Modules.Permissions
                     return false;
             if (AccessFlag == AccessList.Ban)
                 if (!GenericParcelPermission(userID, parcel,
-                        (ulong)(GroupPowers.LandManageAllowed | GroupPowers.LandManageBanned)))
+                                     (ulong)(GroupPowers.LandManageAllowed | GroupPowers.LandManageBanned)))
                     return false;
             return true;
         }
 
         bool CanControlPrimMedia(UUID agentID, UUID primID, int face)
         {
-            //MainConsole.Instance.DebugFormat(
-            //    "[Permissions]: Performing CanControlPrimMedia check with agentID {0}, primID {1}, face {2}",
-            //    agentID, primID, face);
+            //            MainConsole.Instance.DebugFormat(
+            //                "[Permissions]: Performing CanControlPrimMedia check with agentID {0}, primID {1}, face {2}",
+            //                agentID, primID, face);
 
             if (null == m_moapModule)
                 return false;
@@ -909,18 +909,18 @@ namespace Universe.Modules.Permissions
             if (null == me)
                 return true;
 
-            //MainConsole.Instance.DebugFormat(
-            //    "[Permissions]: Checking CanControlPrimMedia for {0} on {1} face {2} with control permissions {3}", 
-            //    agentID, primID, face, me.ControlPermissions);
+            //            MainConsole.Instance.DebugFormat(
+            //                "[Permissions]: Checking CanControlPrimMedia for {0} on {1} face {2} with control permissions {3}", 
+            //                agentID, primID, face, me.ControlPermissions);
 
             return GenericObjectPermission(part.UUID, agentID, true);
         }
 
         bool CanInteractWithPrimMedia(UUID agentID, UUID primID, int face)
         {
-            //MainConsole.Instance.DebugFormat(
-            //    "[Permissions]: Performing CanInteractWithPrimMedia check with agentID {0}, primID {1}, face {2}",
-            //    agentID, primID, face);
+            //            MainConsole.Instance.DebugFormat(
+            //                "[Permissions]: Performing CanInteractWithPrimMedia check with agentID {0}, primID {1}, face {2}",
+            //                agentID, primID, face);
 
             if (null == m_moapModule)
                 return false;
@@ -935,9 +935,9 @@ namespace Universe.Modules.Permissions
             if (null == me)
                 return true;
 
-            //MainConsole.Instance.DebugFormat(
-            //    "[Permissions]: Checking CanInteractWithPrimMedia for {0} on {1} face {2} with interact permissions {3}", 
-            //    agentID, primID, face, me.InteractPermissions);
+            //            MainConsole.Instance.DebugFormat(
+            //                "[Permissions]: Checking CanInteractWithPrimMedia for {0} on {1} face {2} with interact permissions {3}", 
+            //                agentID, primID, face, me.InteractPermissions);
 
             return GenericPrimMediaPermission(part, agentID, me.InteractPermissions);
         }
@@ -1037,7 +1037,7 @@ namespace Universe.Modules.Permissions
 
             // libomv will moan about PrimFlags.ObjectYouOfficer being
             // deprecated
-#pragma warning disable 0612 
+#pragma warning disable 0612
             objflags &= (uint)
                         ~(PrimFlags.ObjectCopy | // Tells client you can copy the object
             PrimFlags.ObjectModify | // tells client you can modify the object
@@ -1155,8 +1155,8 @@ namespace Universe.Modules.Permissions
             // Group members should be able to edit group objects
             ISceneChildEntity part = m_scene.GetSceneObjectPart(objId);
             if ((group.GroupID != UUID.Zero)
-                && (part != null && (part.GroupMask & (uint)PermissionMask.Modify) != 0)
-                && IsGroupMember(group.GroupID, currentUser, (ulong)GroupPowers.ObjectManipulate))
+                         && (part != null && (part.GroupMask & (uint)PermissionMask.Modify) != 0)
+                         && IsGroupMember(group.GroupID, currentUser, (ulong)GroupPowers.ObjectManipulate))
             {
                 // Return immediately, so that the administrator can shares group objects
                 return true;
@@ -1238,6 +1238,18 @@ namespace Universe.Modules.Permissions
 
             if (GenericEstatePermission(user))
                 return true;
+
+            // need to check for bots
+            var botMgr = m_scene.RequestModuleInterface<IBotManager>();
+            if (botMgr != null)
+            {
+                if (botMgr.IsNpcAgent(user))
+                {
+                    var owner = botMgr.GetOwner(user);
+                    if (GenericEstatePermission(user))
+                        return true;
+                }
+            }
 
             return false;
         }
@@ -1394,7 +1406,7 @@ namespace Universe.Modules.Permissions
             if (part.GroupID != UUID.Zero)
             {
                 if ((part.OwnerID == part.GroupID) &&
-                    ((owner != part.LastOwnerID) || ((part.GroupMask & PERM_TRANS) == 0)))
+                                ((owner != part.LastOwnerID) || ((part.GroupMask & PERM_TRANS) == 0)))
                     return false;
 
                 if ((part.GroupMask & PERM_COPY) == 0)
@@ -1495,7 +1507,7 @@ namespace Universe.Modules.Permissions
             if (m_allowedScriptEditors == UserSet.Administrators && !IsAdministrator(user))
                 return false;
             if (m_allowedScriptEditors == UserSet.ParcelOwners &&
-                !GenericParcelPermission(user, scene.GetScenePresence(user).AbsolutePosition, 0))
+                         !GenericParcelPermission(user, scene.GetScenePresence(user).AbsolutePosition, 0))
                 return false;
 
             // Ordinarily, if you can view it, you can edit it
@@ -1661,7 +1673,7 @@ namespace Universe.Modules.Permissions
                 return m_bypassPermissionsValue;
 
             if (newPoint.X > m_scene.RegionInfo.RegionSizeX || newPoint.X < 0 ||
-                newPoint.Y > m_scene.RegionInfo.RegionSizeY || newPoint.Y < 0)
+                         newPoint.Y > m_scene.RegionInfo.RegionSizeY || newPoint.Y < 0)
             {
                 return true;
             }
@@ -1695,8 +1707,8 @@ namespace Universe.Modules.Permissions
 
             //Check for group permissions
             if (((land.LandData.Flags & ((int)ParcelFlags.AllowGroupObjectEntry)) != 0) &&
-                (land.LandData.GroupID != UUID.Zero)
-                && IsGroupMember(land.LandData.GroupID, OwnerID, (ulong)GroupPowers.None))
+                         (land.LandData.GroupID != UUID.Zero)
+                         && IsGroupMember(land.LandData.GroupID, OwnerID, (ulong)GroupPowers.None))
             {
                 return true;
             }
@@ -1775,7 +1787,7 @@ namespace Universe.Modules.Permissions
                     // Group deeded object?
                     //
                     if (g.OwnerID == l.LandData.GroupID &&
-                        !m_groupsModule.GroupPermissionCheck(client.AgentId, g.GroupID, GroupPowers.ReturnGroupOwned))
+                                       !m_groupsModule.GroupPermissionCheck(client.AgentId, g.GroupID, GroupPowers.ReturnGroupOwned))
                     {
                         objects.Remove(g);
                         continue;
@@ -1784,7 +1796,7 @@ namespace Universe.Modules.Permissions
                     // Group set object?
                     //
                     if (g.GroupID == l.LandData.GroupID &&
-                        !m_groupsModule.GroupPermissionCheck(client.AgentId, g.GroupID, GroupPowers.ReturnGroupSet))
+                                       !m_groupsModule.GroupPermissionCheck(client.AgentId, g.GroupID, GroupPowers.ReturnGroupSet))
                     {
                         objects.Remove(g);
                         continue;
@@ -1814,7 +1826,7 @@ namespace Universe.Modules.Permissions
         }
 
         bool CanRezObject(int objectCount, UUID attemptedRezzer, Vector3 objectPosition, IScene scene,
-                          out string reason)
+                                 out string reason)
         {
             reason = "";
             DebugPermissionInformation(MethodBase.GetCurrentMethod().Name);
@@ -1833,13 +1845,13 @@ namespace Universe.Modules.Permissions
             }
 
             if ((land.LandData.Flags & ((int)ParcelFlags.CreateObjects)) ==
-                (int)ParcelFlags.CreateObjects)
+                         (int)ParcelFlags.CreateObjects)
                 permission = true;
 
             if ((land.LandData.Flags & ((int)ParcelFlags.CreateGroupObjects)) ==
-                (int)ParcelFlags.CreateGroupObjects &&
-                land.LandData.GroupID != UUID.Zero &&
-                IsGroupMember(land.LandData.GroupID, attemptedRezzer, 0))
+                         (int)ParcelFlags.CreateGroupObjects &&
+                         land.LandData.GroupID != UUID.Zero &&
+                         IsGroupMember(land.LandData.GroupID, attemptedRezzer, 0))
                 permission = true;
 
             if (IsAdministrator(attemptedRezzer))
@@ -2034,8 +2046,8 @@ namespace Universe.Modules.Permissions
             if (IsAdministrator(user))
                 return true;
 
-            if (objectID == UUID.Zero) // User inventory
-            {
+            if (objectID == UUID.Zero)
+            { // User inventory
                 IInventoryService invService = m_scene.InventoryService;
                 InventoryItemBase assetRequestItem = invService.GetItem(user, script);
                 if (assetRequestItem == null)
@@ -2055,16 +2067,16 @@ namespace Universe.Modules.Permissions
                 // readable only if it's really full perms
                 //
                 if ((assetRequestItem.CurrentPermissions &
-                    ((uint)PermissionMask.Modify |
-                    (uint)PermissionMask.Copy |
-                    (uint)PermissionMask.Transfer)) !=
-                    ((uint)PermissionMask.Modify |
-                    (uint)PermissionMask.Copy |
-                    (uint)PermissionMask.Transfer))
+                                ((uint)PermissionMask.Modify |
+                                (uint)PermissionMask.Copy |
+                                (uint)PermissionMask.Transfer)) !=
+                                ((uint)PermissionMask.Modify |
+                                (uint)PermissionMask.Copy |
+                                (uint)PermissionMask.Transfer))
                     return false;
             }
-            else // Prim inventory
-            {
+            else
+            { // Prim inventory
                 ISceneChildEntity part = scene.GetSceneObjectPart(objectID);
 
                 if (part == null)
@@ -2106,12 +2118,12 @@ namespace Universe.Modules.Permissions
 
                 // Require full perms
                 if ((ti.CurrentPermissions &
-                    ((uint)PermissionMask.Modify |
-                    (uint)PermissionMask.Copy |
-                    (uint)PermissionMask.Transfer)) !=
-                    ((uint)PermissionMask.Modify |
-                    (uint)PermissionMask.Copy |
-                    (uint)PermissionMask.Transfer))
+                                ((uint)PermissionMask.Modify |
+                                (uint)PermissionMask.Copy |
+                                (uint)PermissionMask.Transfer)) !=
+                                ((uint)PermissionMask.Modify |
+                                (uint)PermissionMask.Copy |
+                                (uint)PermissionMask.Transfer))
                     return false;
             }
 
@@ -2139,13 +2151,13 @@ namespace Universe.Modules.Permissions
             if (IsAdministrator(user))
                 return true;
 
-            if (objectID == UUID.Zero) // User inventory
-            {
+            if (objectID == UUID.Zero)
+            { // User inventory
                 IInventoryService invService = m_scene.InventoryService;
                 InventoryItemBase assetRequestItem = invService.GetItem(user, notecard);
-                if (assetRequestItem == null) // Library item
-                {
-                    //Can't find, can't read
+                if (assetRequestItem == null)
+                { // Library item
+                  //Can't find, can't read
                     return false;
                 }
 
@@ -2160,16 +2172,16 @@ namespace Universe.Modules.Permissions
                 // readable only if it's really full perms
                 //
                 if ((assetRequestItem.CurrentPermissions &
-                    ((uint)PermissionMask.Modify |
-                    (uint)PermissionMask.Copy |
-                    (uint)PermissionMask.Transfer)) !=
-                    ((uint)PermissionMask.Modify |
-                    (uint)PermissionMask.Copy |
-                    (uint)PermissionMask.Transfer))
+                                ((uint)PermissionMask.Modify |
+                                (uint)PermissionMask.Copy |
+                                (uint)PermissionMask.Transfer)) !=
+                                ((uint)PermissionMask.Modify |
+                                (uint)PermissionMask.Copy |
+                                (uint)PermissionMask.Transfer))
                     return false;
             }
-            else // Prim inventory
-            {
+            else
+            { // Prim inventory
                 ISceneChildEntity part = scene.GetSceneObjectPart(objectID);
 
                 if (part == null)
@@ -2211,12 +2223,12 @@ namespace Universe.Modules.Permissions
 
                 // Require full perms
                 if ((ti.CurrentPermissions &
-                    ((uint)PermissionMask.Modify |
-                    (uint)PermissionMask.Copy |
-                    (uint)PermissionMask.Transfer)) !=
-                    ((uint)PermissionMask.Modify |
-                    (uint)PermissionMask.Copy |
-                    (uint)PermissionMask.Transfer))
+                                ((uint)PermissionMask.Modify |
+                                (uint)PermissionMask.Copy |
+                                (uint)PermissionMask.Transfer)) !=
+                                ((uint)PermissionMask.Modify |
+                                (uint)PermissionMask.Copy |
+                                (uint)PermissionMask.Transfer))
                     return false;
             }
 

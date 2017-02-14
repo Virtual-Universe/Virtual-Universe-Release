@@ -32,69 +32,69 @@ using Universe.Framework.SceneInfo;
 
 namespace Universe.Modules.Monitoring.Monitors
 {
-    public class AgentUpdateMonitor : IAgentUpdateMonitor
-    {
-        int agentTime;
-        int agentUpdates;
+	public class AgentUpdateMonitor : IAgentUpdateMonitor
+	{
+		int agentTime;
+		int agentUpdates;
 
-        public AgentUpdateMonitor (IScene scene)
-        {
-        }
+		public AgentUpdateMonitor (IScene scene)
+		{
+		}
 
-        #region Implementation of IMonitor
+		#region Implementation of IMonitor
 
-        public double GetValue ()
-        {
-            return agentUpdates;
-        }
+		public double GetValue ()
+		{
+			return agentUpdates;
+		}
 
-        public string GetName ()
-        {
-            return "Agent Update Count";
-        }
+		public string GetName ()
+		{
+			return "Agent Update Count";
+		}
 
-        public string GetInterfaceName ()
-        {
-            return "IAgentUpdateMonitor";
-        }
+		public string GetInterfaceName ()
+		{
+			return "IAgentUpdateMonitor";
+		}
 
-        public string GetFriendlyValue ()
-        {
-            return (int)GetValue () + " updates/sec";
-        }
+		public string GetFriendlyValue ()
+		{
+			return (int)GetValue () + " updates/sec";
+		}
 
-        #endregion
+		#endregion
 
-        #region IAgentUpdateMonitor Members
+		#region IAgentUpdateMonitor Members
 
-        public int AgentFrameTime {
-            get { return agentTime; }
-        }
+		public int AgentFrameTime {
+			get { return agentTime; }
+		}
 
-        public int AgentUpdates {
-            get { return agentUpdates; }
-        }
+		public int AgentUpdates {
+			get { return agentUpdates; }
+		}
 
-        public void AddAgentUpdates (int value)
-        {
-            agentUpdates += value;
-        }
+		public void AddAgentUpdates (int value)
+		{
+			agentUpdates += value;
+		}
 
-        public void AddAgentTime (int value)
-        {
-            agentTime += value;
-        }
+		public void AddAgentTime (int value)
+		{
+			agentTime += value;
+		}
 
-        #endregion
+		#endregion
 
-        #region IMonitor Members
+		#region IMonitor Members
 
-        public void ResetStats ()
-        {
-            agentUpdates = 0;
-            agentTime = 0;
-        }
+		public void ResetStats ()
+		{
+			agentUpdates = 0;
+			agentTime = 0;
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

@@ -29,7 +29,7 @@
 
 namespace Universe.Framework.Modules
 {
-    public interface IWorldMapModule
-    {
-    }
+	public interface IWorldMapModule
+	{
+	}
 }

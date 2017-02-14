@@ -26,7 +26,7 @@
 	<div class="text">
 		<p class=minitext>{WelcomeToText}</p>
 		<h1> {SystemName}</h1>
-		<p>powered by Universe</p>
+		<p>powered by Virtual Universe</p>
 	</div>
 </div>
 
@@ -45,6 +45,9 @@
 		<p class=minitext>{WelcomeToText} {SystemName}</p>
 		<h1>Virtual Universe</h1><br/>
 		<p>Viewer Welcome Screen</p>
+		<!--
+		<p>{HomeTextTips}: <a target="_top" class='welcomescreen' href="welcomescreen/" alt="{TooltipsWelcomeScreen}" title="{TooltipsWelcomeScreen}">{WelcomeScreen}</a></p>
+		-->
 	</div>
 </div>
 
@@ -53,10 +56,16 @@
 	<div class="text">
 		<p class=minitext>{WelcomeToText} {SystemName}</p>
 		<h1>World Map</h1><br />
+		<!--
+		<p>{HomeTextTips}: <a target="_top" class='world_map' href="world_map.html" alt="{TooltipsWorldMap}" title="{TooltipsWorldMap}">{TooltipsWorldMap}</a></p>
+		-->
 	</div>
 </div>
 </div>
 {IfShowSlideshowBarEnd}
+
+<p class=textsize>{PagesUpdateRequired}</p>
+<p class=textsize>{SettingsUpdateRequired}</p>
 
 <!-- news or user info -->
 
@@ -105,6 +114,7 @@
 	</form>
 	</div>
 {IfUserLoginEnd}
+
 
 	<!-- grid info -->
 	<div class=homegrid>

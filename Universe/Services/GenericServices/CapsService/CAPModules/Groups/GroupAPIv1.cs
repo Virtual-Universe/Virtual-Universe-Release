@@ -41,109 +41,110 @@ using Universe.Framework.Utilities;
 
 namespace Universe.Services
 {
-    public class GroupAPIv1 : ICapsServiceConnector
-    {
-        protected IGroupsServiceConnector m_groupService;
-        protected IRegionClientCapsService m_service;
+	public class GroupAPIv1 : ICapsServiceConnector
+	{
+		protected IGroupsServiceConnector m_groupService;
+		protected IRegionClientCapsService m_service;
 
-        public void RegisterCaps (IRegionClientCapsService service)
-        {
-            m_service = service;
-            m_groupService = Framework.Utilities.DataManager.RequestPlugin<IGroupsServiceConnector> ();
+		public void RegisterCaps (IRegionClientCapsService service)
+		{
+			m_service = service;
+			m_groupService = Framework.Utilities.DataManager.RequestPlugin<IGroupsServiceConnector> ();
 
-            var apiUri = service.CreateCAPS ("GroupAPIv1", "");
-            service.AddStreamHandler ("GroupAPIv1", new GenericStreamHandler ("GET", apiUri, ProcessGetGroupAPI));
-            service.AddStreamHandler ("GroupAPIv1", new GenericStreamHandler ("POST", apiUri, ProcessPostGroupAPI));
-        }
+			var apiUri = service.CreateCAPS ("GroupAPIv1", "");
+			service.AddStreamHandler ("GroupAPIv1", new GenericStreamHandler ("GET", apiUri, ProcessGetGroupAPI));
+			service.AddStreamHandler ("GroupAPIv1", new GenericStreamHandler ("POST", apiUri, ProcessPostGroupAPI));
 
-        public void EnteringRegion ()
-        {
-        }
+		}
 
-        public void DeregisterCaps ()
-        {
-            m_service.RemoveStreamHandler ("GroupAPIv1", "GET");
-            m_service.RemoveStreamHandler ("GroupAPIv1", "POST");
-        }
+		public void EnteringRegion ()
+		{
+		}
 
-        #region Group API v1
+		public void DeregisterCaps ()
+		{
+			m_service.RemoveStreamHandler ("GroupAPIv1", "GET");
+			m_service.RemoveStreamHandler ("GroupAPIv1", "POST");
+		}
 
-        public byte [] ProcessGetGroupAPI (string path, Stream request, OSHttpRequest httpRequest,
-                                          OSHttpResponse httpResponse)
-        {
-            string groupID;
-            if (httpRequest.QueryString ["group_id"] != null) {
-                groupID = httpRequest.QueryString ["group_id"];
-                MainConsole.Instance.Debug ("[GroupAPIv1] Requesting groups bans for group_id: " + groupID);
+		#region Group API v1
 
-                // Get group banned member list
-                OSDMap bannedUsers = new OSDMap ();
-                var banUsers = m_groupService.GetGroupBannedMembers (m_service.AgentID, (UUID)groupID);
-                if (banUsers != null) {
-                    foreach (GroupBannedAgentsData user in banUsers) {
-                        OSDMap banned = new OSDMap ();
-                        banned ["ban_date"] = user.BanDate;
-                        bannedUsers [user.AgentID.ToString ()] = banned;
-                    }
-                }
+		public byte [] ProcessGetGroupAPI (string path, Stream request, OSHttpRequest httpRequest,
+		                                         OSHttpResponse httpResponse)
+		{
+			string groupID;
+			if (httpRequest.QueryString ["group_id"] != null) {
+				groupID = httpRequest.QueryString ["group_id"];
+				MainConsole.Instance.Debug ("[GroupAPIv1] Requesting groups bans for group_id: " + groupID);
 
-                OSDMap map = new OSDMap ();
-                map ["group_id"] = groupID;
-                map ["ban_list"] = bannedUsers;
-                return OSDParser.SerializeLLSDXmlBytes (map);
-            }
+				// Get group banned member list
+				OSDMap bannedUsers = new OSDMap ();
+				var banUsers = m_groupService.GetGroupBannedMembers (m_service.AgentID, (UUID)groupID);
+				if (banUsers != null) {
+					foreach (GroupBannedAgentsData user in banUsers) {
+						OSDMap banned = new OSDMap ();
+						banned ["ban_date"] = user.BanDate;
+						bannedUsers [user.AgentID.ToString ()] = banned;
+					}
+				}
 
-            return null;
-        }
+				OSDMap map = new OSDMap ();
+				map ["group_id"] = groupID;
+				map ["ban_list"] = bannedUsers;
+				return OSDParser.SerializeLLSDXmlBytes (map);
+			}
 
-        public byte [] ProcessPostGroupAPI (string path, Stream request, OSHttpRequest httpRequest,
-                                           OSHttpResponse httpResponse)
-        {
-            string groupID;
+			return null;
+		}
 
-            if (httpRequest.QueryString ["group_id"] != null) {
-                List<UUID> banUsers = new List<UUID> ();
+		public byte [] ProcessPostGroupAPI (string path, Stream request, OSHttpRequest httpRequest,
+		                                          OSHttpResponse httpResponse)
+		{
+			string groupID;
 
-                groupID = httpRequest.QueryString ["group_id"];
+			if (httpRequest.QueryString ["group_id"] != null) {
+				List<UUID> banUsers = new List<UUID> ();
 
-                string body = HttpServerHandlerHelpers.ReadString (request).Trim ();
-                OSDMap map = (OSDMap)OSDParser.DeserializeLLSDXml (body);
+				groupID = httpRequest.QueryString ["group_id"];
 
-                MainConsole.Instance.Debug ("[GroupAPIv1] Requesting a POST for group_id: " + groupID);
+				string body = HttpServerHandlerHelpers.ReadString (request).Trim ();
+				OSDMap map = (OSDMap)OSDParser.DeserializeLLSDXml (body);
 
-                if (map.ContainsKey ("ban_ids"))
-                    banUsers = ((OSDArray)map ["ban_ids"]).ConvertAll<UUID> (o => o);
+				MainConsole.Instance.Debug ("[GroupAPIv1] Requesting a POST for group_id: " + groupID);
 
-                if (map.ContainsKey ("ban_action")) {
-                    if (map ["ban_action"].AsInteger () == 1) {
-                        m_groupService.AddGroupBannedAgent (m_service.AgentID, (UUID)groupID, banUsers);
-                        return null;
-                    }
-                    if (map ["ban_action"].AsInteger () == 2) {
-                        m_groupService.RemoveGroupBannedAgent (m_service.AgentID, (UUID)groupID, banUsers);
-                        return null;
-                    }
-                }
+				if (map.ContainsKey ("ban_ids"))
+					banUsers = ((OSDArray)map ["ban_ids"]).ConvertAll<UUID> (o => o);
 
-                // get banned agent details
-                var banUser = m_groupService.GetGroupBannedUser (m_service.AgentID, (UUID)groupID, banUsers [0]);
+				if (map.ContainsKey ("ban_action")) {
+					if (map ["ban_action"].AsInteger () == 1) {
+						m_groupService.AddGroupBannedAgent (m_service.AgentID, (UUID)groupID, banUsers);
+						return null;
+					}
+					if (map ["ban_action"].AsInteger () == 2) {
+						m_groupService.RemoveGroupBannedAgent (m_service.AgentID, (UUID)groupID, banUsers);
+						return null;
+					}
+				}
 
-                OSDMap retMap = new OSDMap ();
-                retMap ["group_id"] = groupID;
+				// get banned agent details
+				var banUser = m_groupService.GetGroupBannedUser (m_service.AgentID, (UUID)groupID, banUsers [0]);
 
-                OSDMap banned = new OSDMap ();
-                if (banUser != null) {
-                    banned ["ban_date"] = banUser.BanDate;
-                    banned [banUser.AgentID.ToString ()] = banned;
-                }
-                retMap ["ban_list"] = banned;
+				OSDMap retMap = new OSDMap ();
+				retMap ["group_id"] = groupID;
 
-                return OSDParser.SerializeLLSDXmlBytes (retMap);
+				OSDMap banned = new OSDMap ();
+				if (banUser != null) {
+					banned ["ban_date"] = banUser.BanDate;
+					banned [banUser.AgentID.ToString ()] = banned;
+				}
+				retMap ["ban_list"] = banned;
 
-            }
-            return null;
-        }
+				return OSDParser.SerializeLLSDXmlBytes (retMap);
 
-        #endregion
-    }
+			}
+			return null;
+		}
+
+		#endregion
+	}
 }

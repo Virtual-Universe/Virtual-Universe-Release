@@ -36,115 +36,110 @@ using Universe.Framework.SceneInfo;
 
 namespace Universe.ScriptEngine.VirtualScript.MiniModule
 {
-    public abstract class MRMBase : IScript
-    {
-        IHost m_host;
-        UUID m_id;
-        IWorld m_world;
+	public abstract class MRMBase : IScript
+	{
+		IHost m_host;
+		UUID m_id;
+		IWorld m_world;
 
-        protected IWorld World
-        {
-            get { return m_world; }
-        }
+		protected IWorld World {
+			get { return m_world; }
+		}
 
-        protected IHost Host
-        {
-            get { return m_host; }
-        }
+		protected IHost Host {
+			get { return m_host; }
+		}
 
-        public UUID ID
-        {
-            get { return m_id; }
-        }
+		public UUID ID {
+			get { return m_id; }
+		}
 
-        #region IScript Members
+		#region IScript Members
 
-        public void InitApi(IScriptApi data)
-        {
-        }
+		public void InitApi (IScriptApi data)
+		{
+		}
 
-        public ISponsor Sponsor
-        {
-            get { return null; }
-        }
+		public ISponsor Sponsor {
+			get { return null; }
+		}
 
-        public long GetStateEventFlags(string state)
-        {
-            return 0;
-        }
+		public long GetStateEventFlags (string state)
+		{
+			return 0;
+		}
 
-        public EnumeratorInfo ExecuteEvent(string state, string FunctionName, object[] args, EnumeratorInfo Start,
-                                           out Exception ex)
-        {
-            ex = null;
-            return null;
-        }
+		public EnumeratorInfo ExecuteEvent (string state, string FunctionName, object[] args, EnumeratorInfo Start,
+		                                         out Exception ex)
+		{
+			ex = null;
+			return null;
+		}
 
-        public Dictionary<string, object> GetVars()
-        {
-            return new Dictionary<string, object>();
-        }
+		public Dictionary<string, object> GetVars ()
+		{
+			return new Dictionary<string, object> ();
+		}
 
-        public void SetVars(Dictionary<string, object> vars)
-        {
-        }
+		public void SetVars (Dictionary<string, object> vars)
+		{
+		}
 
-        public Dictionary<string, object> GetStoreVars()
-        {
-            return new Dictionary<string, object>();
-        }
+		public Dictionary<string, object> GetStoreVars ()
+		{
+			return new Dictionary<string, object> ();
+		}
 
-        public void SetStoreVars(Dictionary<string, object> vars)
-        {
-        }
+		public void SetStoreVars (Dictionary<string, object> vars)
+		{
+		}
 
-        public void ResetVars()
-        {
-        }
+		public void ResetVars ()
+		{
+		}
 
-        public void UpdateInitialValues()
-        {
-        }
+		public void UpdateInitialValues ()
+		{
+		}
 
-        public void Close()
-        {
-            Stop();
-        }
+		public void Close ()
+		{
+			Stop ();
+		}
 
-        public string Name
-        {
-            get { return "MRMBase"; }
-        }
+		public string Name {
+			get { return "MRMBase"; }
+		}
 
-        public void Dispose()
-        {
-        }
+		public void Dispose ()
+		{
+		}
 
-        public void SetSceneRefs(IScene iScene, ISceneChildEntity iSceneChildEntity, bool useStateSaves)
-        {
-        }
+		public void SetSceneRefs (IScene iScene, ISceneChildEntity iSceneChildEntity, bool useStateSaves)
+		{
+		}
 
-        public bool NeedsStateSaved
-        {
-            get { return false; }
-            set { }
-        }
+		public bool NeedsStateSaved {
+			get { return false; }
+			set { }
+		}
 
-        public IEnumerator FireEvent(string evName, object[] parameters)
-        {
-            yield break;
-        }
+		public IEnumerator FireEvent (string evName, object[] parameters)
+		{
+			yield break;
+		}
 
-        #endregion
+		#endregion
 
-        public void InitMiniModule(IWorld world, IHost host, UUID uniqueID)
-        {
-            m_world = world;
-            m_host = host;
-            m_id = uniqueID;
-        }
+		public void InitMiniModule (IWorld world, IHost host, UUID uniqueID)
+		{
+			m_world = world;
+			m_host = host;
+			m_id = uniqueID;
+		}
 
-        public abstract void Start();
-        public abstract void Stop();
-    }
+		public abstract void Start ();
+
+		public abstract void Stop ();
+	}
 }

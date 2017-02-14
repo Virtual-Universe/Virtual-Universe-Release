@@ -32,18 +32,18 @@ using Universe.Framework.PresenceInfo;
 
 namespace Universe.Framework.Modules
 {
-    public interface IBuySellModule
-    {
-        /// <summary>
-        ///     Try to buy an object
-        /// </summary>
-        /// <param name="remoteClient"></param>
-        /// <param name="categoryID"></param>
-        /// <param name="localID"></param>
-        /// <param name="saleType"></param>
-        /// <returns>
-        ///     True on a successful purchase, false on failure
-        /// </returns>
-        bool BuyObject(IClientAPI remoteClient, UUID categoryID, uint localID, byte saleType);
-    }
+	public interface IBuySellModule
+	{
+		/// <summary>
+		///     Try to buy an object
+		/// </summary>
+		/// <param name="remoteClient"></param>
+		/// <param name="categoryID"></param>
+		/// <param name="localID"></param>
+		/// <param name="saleType"></param>
+		/// <returns>
+		///     True on a successful purchase, false on failure
+		/// </returns>
+		bool BuyObject (IClientAPI remoteClient, UUID categoryID, uint localID, byte saleType);
+	}
 }

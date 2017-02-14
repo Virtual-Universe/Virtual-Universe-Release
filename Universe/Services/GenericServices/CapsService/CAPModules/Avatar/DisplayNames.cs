@@ -45,6 +45,7 @@ using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Services;
 using Universe.Framework.Services.ClassHelpers.Profile;
 using Universe.Framework.Utilities;
+using Universe.Framework.ConsoleFramework;
 
 namespace Universe.Services
 {
@@ -56,18 +57,24 @@ namespace Universe.Services
         IRegionClientCapsService m_service;
         IUserAccountService m_userService;
 
+        double m_update_days = 0;
+
         #region ICapsServiceConnector Members
 
         public void RegisterCaps(IRegionClientCapsService service)
         {
-            IConfig displayNamesConfig = service.ClientCaps.Registry.RequestModuleInterface<ISimulationBase>().ConfigSource.Configs["DisplayNamesModule"];
+            var cfgservice = service.ClientCaps.Registry.RequestModuleInterface<ISimulationBase>();
+            var displayNamesConfig = cfgservice.ConfigSource.Configs["DisplayNames"];
             if (displayNamesConfig != null)
             {
                 if (!displayNamesConfig.GetBoolean("Enabled", true))
                     return;
+
                 string bannedNamesString = displayNamesConfig.GetString("BannedUserNames", "");
                 if (bannedNamesString != "")
                     bannedNames = new List<string>(bannedNamesString.Split(','));
+
+                m_update_days = displayNamesConfig.GetDouble("UpdateDays", m_update_days);
             }
 
             m_service = service;
@@ -88,9 +95,9 @@ namespace Universe.Services
 
         public void DeregisterCaps()
         {
-            if (m_service == null)          //If display names aren't enabled
-                return; 
-            
+            if (m_service == null)          // If display names aren't enabled
+                return;
+
             m_service.RemoveStreamHandler("SetDisplayName", "POST");
             m_service.RemoveStreamHandler("GetDisplayNames", "GET");
         }
@@ -111,14 +118,14 @@ namespace Universe.Services
         {
             try
             {
-                OSDMap rm = (OSDMap) OSDParser.DeserializeLLSDXml(HttpServerHandlerHelpers.ReadFully(request));
-                OSDArray display_name = (OSDArray) rm["display_name"];
+                OSDMap rm = (OSDMap)OSDParser.DeserializeLLSDXml(HttpServerHandlerHelpers.ReadFully(request));
+                OSDArray display_name = (OSDArray)rm["display_name"];
                 string oldDisplayName = display_name[0].AsString();
                 string newDisplayName = display_name[1].AsString();
 
                 //Check to see if their name contains a banned character
-                if (
-                    bannedNames.Select(bannedUserName => bannedUserName.Replace(" ", "")).Any(BannedUserName => newDisplayName.ToLower().Contains(BannedUserName.ToLower())))
+                if (bannedNames.Select(bannedUserName => bannedUserName.Replace(" ", ""))
+                               .Any(BannedUserName => newDisplayName.ToLower().Contains(BannedUserName.ToLower())))
                 {
                     newDisplayName = m_service.ClientCaps.AccountInfo.Name;
                 }
@@ -126,28 +133,34 @@ namespace Universe.Services
                 IUserProfileInfo info = m_profileConnector.GetUserProfile(m_service.AgentID);
                 if (info == null)
                 {
+                    //m_avatar.ControllingClient.SendAlertMessage ("You cannot update your display name currently as your profile cannot be found.");
                 }
                 else
                 {
                     //Set the name
                     info.DisplayName = newDisplayName;
+                    info.DisplayNameUpdated = DateTime.UtcNow;
                     m_profileConnector.UpdateUserProfile(info);
 
+                    var nextUpdate = info.DisplayNameUpdated.AddDays(m_update_days);
+
                     //One for us
-                    DisplayNameUpdate(newDisplayName, oldDisplayName, m_service.ClientCaps.AccountInfo, m_service.AgentID);
+                    DisplayNameUpdate(newDisplayName, oldDisplayName, m_service.ClientCaps.AccountInfo, m_service.AgentID, nextUpdate);
 
                     foreach (
                         IRegionClientCapsService avatar in m_service.RegionCaps.GetClients().Where(avatar => avatar.AgentID != m_service.AgentID))
                     {
                         //Update all others
-                        DisplayNameUpdate(newDisplayName, oldDisplayName, m_service.ClientCaps.AccountInfo, avatar.AgentID);
+                        DisplayNameUpdate(newDisplayName, oldDisplayName, m_service.ClientCaps.AccountInfo, avatar.AgentID, nextUpdate);
                     }
                     //The reply
-                    SetDisplayNameReply(newDisplayName, oldDisplayName, m_service.ClientCaps.AccountInfo);
+                    SetDisplayNameReply(newDisplayName, oldDisplayName, m_service.ClientCaps.AccountInfo, nextUpdate);
+
                 }
             }
             catch
             {
+                // nothing to do 
             }
 
             return MainServer.BlankResponse;
@@ -180,13 +193,11 @@ namespace Universe.Services
                     UserAccount account = m_userService.GetUserAccount(m_service.ClientCaps.AccountInfo.AllScopeIDs, UUID.Parse(id));
                     if (account != null)
                     {
-                        IUserProfileInfo info =
-                            Framework.Utilities.DataManager.RequestPlugin<IProfileConnector>()
-                                  .GetUserProfile(account.PrincipalID);
+                        IUserProfileInfo info = Framework.Utilities.DataManager.RequestPlugin<IProfileConnector>().GetUserProfile(account.PrincipalID);
                         if (info != null)
                             PackUserInfo(info, account, ref agents);
                         else
-                            PackUserInfo(new IUserProfileInfo (), account, ref agents);
+                            PackUserInfo(new IUserProfileInfo(), account, ref agents);
                     }
                 }
             }
@@ -195,7 +206,7 @@ namespace Universe.Services
                 UserAccount account = m_userService.GetUserAccount(m_service.ClientCaps.AccountInfo.AllScopeIDs, username.Replace('.', ' '));
                 if (account != null)
                 {
-                    IUserProfileInfo info = Framework.Utilities.DataManager.RequestPlugin<IProfileConnector>().GetUserProfile(account.PrincipalID);
+                    var info = Framework.Utilities.DataManager.RequestPlugin<IProfileConnector>().GetUserProfile(account.PrincipalID);
                     if (info != null)
                         PackUserInfo(info, account, ref agents);
                     else
@@ -215,12 +226,18 @@ namespace Universe.Services
             OSDMap agentMap = new OSDMap();
             agentMap["username"] = account.Name;
             agentMap["display_name"] = (info == null || info.DisplayName == "") ? account.Name : info.DisplayName;
-            agentMap["display_name_next_update"] =
-                OSD.FromDate(DateTime.ParseExact("1970-01-01 00:00:00 +0", "yyyy-MM-dd hh:mm:ss z", DateTimeFormatInfo.InvariantInfo).ToUniversalTime());
             agentMap["legacy_first_name"] = account.FirstName;
             agentMap["legacy_last_name"] = account.LastName;
             agentMap["id"] = account.PrincipalID;
-            agentMap["is_display_name_default"] = isDefaultDisplayName(account.FirstName, account.LastName, account.Name, info == null ? account.Name : info.DisplayName);
+            agentMap["is_display_name_default"] = isDefaultDisplayName(account.FirstName, account.LastName, account.Name,
+                                                                       info == null ? account.Name : info.DisplayName);
+            if (info != null)
+            {
+                if (m_update_days > 0)
+                    agentMap["display_name_next_update"] = OSD.FromDate(info.DisplayNameUpdated.AddDays(m_update_days));
+                else
+                    agentMap["display_name_next_update"] = OSD.FromDate(info.DisplayNameUpdated);
+            }
 
             agents.Add(agentMap);
         }
@@ -234,7 +251,7 @@ namespace Universe.Services
         /// <param name="oldDisplayName"></param>
         /// <param name="infoFromAv"></param>
         /// <param name="toAgentID"></param>
-        public void DisplayNameUpdate(string newDisplayName, string oldDisplayName, UserAccount infoFromAv, UUID toAgentID)
+        void DisplayNameUpdate(string newDisplayName, string oldDisplayName, UserAccount infoFromAv, UUID toAgentID, DateTime nextUpdate)
         {
             if (m_eventQueue != null)
             {
@@ -246,7 +263,8 @@ namespace Universe.Services
 
                 OSD item = DisplayNameUpdate(newDisplayName, oldDisplayName, infoFromAv.PrincipalID, isDefaultName,
                                              infoFromAv.FirstName, infoFromAv.LastName,
-                                             infoFromAv.FirstName + "." + infoFromAv.LastName);
+                                             infoFromAv.FirstName + "." + infoFromAv.LastName,
+                                             nextUpdate);
                 m_eventQueue.Enqueue(item, toAgentID, m_service.Region.RegionID);
             }
         }
@@ -264,7 +282,7 @@ namespace Universe.Services
         /// <param name="newDisplayName"></param>
         /// <param name="oldDisplayName"></param>
         /// <param name="mAvatar"></param>
-        public void SetDisplayNameReply(string newDisplayName, string oldDisplayName, UserAccount mAvatar)
+        public void SetDisplayNameReply(string newDisplayName, string oldDisplayName, UserAccount mAvatar, DateTime nextUpdate)
         {
             if (m_eventQueue != null)
             {
@@ -272,7 +290,8 @@ namespace Universe.Services
 
                 OSD item = DisplayNameReply(newDisplayName, oldDisplayName, mAvatar.PrincipalID, isDefaultName,
                                             mAvatar.FirstName, mAvatar.LastName,
-                                            mAvatar.FirstName + "." + mAvatar.LastName);
+                                            mAvatar.FirstName + "." + mAvatar.LastName,
+                                            nextUpdate);
                 m_eventQueue.Enqueue(item, mAvatar.PrincipalID, m_service.Region.RegionID);
             }
         }
@@ -288,25 +307,22 @@ namespace Universe.Services
         /// <param name="last"></param>
         /// <param name="account"></param>
         /// <returns></returns>
-        public OSD DisplayNameUpdate(string newDisplayName, string oldDisplayName, UUID iD, bool isDefault, string first, string last, string account)
+        public OSD DisplayNameUpdate(string newDisplayName, string oldDisplayName, UUID iD, bool isDefault, string first,
+                                     string last, string account, DateTime nextUpdate)
         {
-            OSDMap nameReply = new OSDMap {{"message", OSD.FromString("DisplayNameUpdate")}};
+            OSDMap nameReply = new OSDMap { { "message", OSD.FromString("DisplayNameUpdate") } };
 
             OSDMap body = new OSDMap();
-            OSDMap agentData = new OSDMap
-                                   {
-                                       {"display_name", OSD.FromString(newDisplayName)},
-                                       {
-                                           "display_name_next_update", OSD.FromDate(
-                                               DateTime.ParseExact("1970-01-01 00:00:00 +0", "yyyy-MM-dd hh:mm:ss z",
-                                                                   DateTimeFormatInfo.InvariantInfo).ToUniversalTime())
-                                       },
-                                       {"id", OSD.FromUUID(iD)},
-                                       {"is_display_name_default", OSD.FromBoolean(isDefault)},
-                                       {"legacy_first_name", OSD.FromString(first)},
-                                       {"legacy_last_name", OSD.FromString(last)},
-                                       {"username", OSD.FromString(account)}
-                                   };
+
+            OSDMap agentData = new OSDMap();
+            agentData["display_name"] = OSD.FromString(newDisplayName);
+            agentData["id"] = OSD.FromUUID(iD);
+            agentData["is_display_name_default"] = OSD.FromBoolean(isDefault);
+            agentData["legacy_first_name"] = OSD.FromString(first);
+            agentData["legacy_last_name"] = OSD.FromString(last);
+            agentData["username"] = OSD.FromString(account);
+            agentData["display_name_next_update"] = OSD.FromDate(nextUpdate);
+
             body.Add("agent", agentData);
             body.Add("agent_id", OSD.FromUUID(iD));
             body.Add("old_display_name", OSD.FromString(oldDisplayName));
@@ -327,7 +343,8 @@ namespace Universe.Services
         /// <param name="last"></param>
         /// <param name="account"></param>
         /// <returns></returns>
-        public OSD DisplayNameReply(string newDisplayName, string oldDisplayName, UUID iD, bool isDefault, string first, string last, string account)
+        OSD DisplayNameReply(string newDisplayName, string oldDisplayName, UUID iD, bool isDefault, string first,
+                                    string last, string account, DateTime nextUpdate)
         {
             OSDMap nameReply = new OSDMap();
 
@@ -336,8 +353,7 @@ namespace Universe.Services
             OSDMap agentData = new OSDMap();
 
             content.Add("display_name", OSD.FromString(newDisplayName));
-            content.Add("display_name_next_update",
-                        OSD.FromDate(DateTime.ParseExact("1970-01-01 00:00:00 +0", "yyyy-MM-dd hh:mm:ss z", DateTimeFormatInfo.InvariantInfo).ToUniversalTime()));
+            content.Add("display_name_next_update", OSD.FromDate(nextUpdate));
             content.Add("id", OSD.FromUUID(iD));
             content.Add("is_display_name_default", OSD.FromBoolean(isDefault));
             content.Add("legacy_first_name", OSD.FromString(first));

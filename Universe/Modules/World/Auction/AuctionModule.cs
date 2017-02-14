@@ -45,198 +45,195 @@ using Universe.Framework.Utilities;
 
 namespace Universe.Modules.Auction
 {
-    public class AuctionModule : IAuctionModule, INonSharedRegionModule
-    {
-        IScene m_scene;
+	public class AuctionModule : IAuctionModule, INonSharedRegionModule
+	{
+		IScene m_scene;
 
-        #region INonSharedRegionModule Members
+		#region INonSharedRegionModule Members
 
-        public void Initialize(IConfigSource pSource)
-        {
-        }
+		public void Initialize (IConfigSource pSource)
+		{
+		}
 
-        public void AddRegion(IScene scene)
-        {
-            m_scene = scene;
-            m_scene.EventManager.OnRegisterCaps += RegisterCaps;
-            m_scene.EventManager.OnNewClient += OnNewClient;
-            m_scene.EventManager.OnClosingClient += OnClosingClient;
-        }
+		public void AddRegion (IScene scene)
+		{
+			m_scene = scene;
+			m_scene.EventManager.OnRegisterCaps += RegisterCaps;
+			m_scene.EventManager.OnNewClient += OnNewClient;
+			m_scene.EventManager.OnClosingClient += OnClosingClient;
+		}
 
-        public void RemoveRegion(IScene scene)
-        {
-            m_scene.EventManager.OnRegisterCaps -= RegisterCaps;
-            m_scene.EventManager.OnNewClient -= OnNewClient;
-            m_scene.EventManager.OnClosingClient -= OnClosingClient;
-        }
+		public void RemoveRegion (IScene scene)
+		{
+			m_scene.EventManager.OnRegisterCaps -= RegisterCaps;
+			m_scene.EventManager.OnNewClient -= OnNewClient;
+			m_scene.EventManager.OnClosingClient -= OnClosingClient;
+		}
 
-        public void RegionLoaded(IScene scene)
-        {
-        }
+		public void RegionLoaded (IScene scene)
+		{
+		}
 
-        public Type ReplaceableInterface
-        {
-            get { return null; }
-        }
+		public Type ReplaceableInterface {
+			get { return null; }
+		}
 
-        public string Name
-        {
-            get { return "AuctionModule"; }
-        }
+		public string Name {
+			get { return "AuctionModule"; }
+		}
 
-        public void Close()
-        {
-        }
+		public void Close ()
+		{
+		}
 
-        #endregion
+		#endregion
 
-        #region Client members
+		#region Client members
 
-        public void OnNewClient(IClientAPI client)
-        {
-            client.OnViewerStartAuction += StartAuction;
-        }
+		public void OnNewClient (IClientAPI client)
+		{
+			client.OnViewerStartAuction += StartAuction;
+		}
 
-        void OnClosingClient(IClientAPI client)
-        {
-            client.OnViewerStartAuction -= StartAuction;
-        }
+		void OnClosingClient (IClientAPI client)
+		{
+			client.OnViewerStartAuction -= StartAuction;
+		}
 
-        public void StartAuction(IClientAPI client, int localID, UUID snapshotID)
-        {
-            if (!m_scene.Permissions.IsGod(client.AgentId))
-                return;
-            StartAuction(localID, snapshotID);
-        }
+		public void StartAuction (IClientAPI client, int localID, UUID snapshotID)
+		{
+			if (!m_scene.Permissions.IsGod (client.AgentId))
+				return;
+			StartAuction (localID, snapshotID);
+		}
 
-        #endregion
+		#endregion
 
-        #region CAPS
+		#region CAPS
 
-        public OSDMap RegisterCaps(UUID agentID, IHttpServer server)
-        {
-            OSDMap retVal = new OSDMap();
-            retVal["ViewerStartAuction"] = CapsUtil.CreateCAPS("ViewerStartAuction", "");
+		public OSDMap RegisterCaps (UUID agentID, IHttpServer server)
+		{
+			OSDMap retVal = new OSDMap ();
+			retVal ["ViewerStartAuction"] = CapsUtil.CreateCAPS ("ViewerStartAuction", "");
 
-            server.AddStreamHandler(new GenericStreamHandler("POST", retVal["ViewerStartAuction"],
-                                                             ViewerStartAuction));
-            return retVal;
-        }
+			server.AddStreamHandler (new GenericStreamHandler ("POST", retVal ["ViewerStartAuction"],
+				ViewerStartAuction));
+			return retVal;
+		}
 
-        byte[] ViewerStartAuction(string path, Stream request,
-                                          OSHttpRequest httpRequest, OSHttpResponse httpResponse)
-        {
-            //OSDMap rm = (OSDMap)OSDParser.DeserializeLLSDXml(HttpServerHandlerHelpers.ReadFully(request));
+		byte[] ViewerStartAuction (string path, Stream request,
+		                                OSHttpRequest httpRequest, OSHttpResponse httpResponse)
+		{
+			//OSDMap rm = (OSDMap)OSDParser.DeserializeLLSDXml(HttpServerHandlerHelpers.ReadFully(request));
 
-            return MainServer.BlankResponse;
-        }
+			return MainServer.BlankResponse;
+		}
 
-        #endregion
+		#endregion
 
-        #region IAuctionModule members
+		#region IAuctionModule members
 
-        public void StartAuction(int localID, UUID snapshotID)
-        {
-            IParcelManagementModule parcelManagement = m_scene.RequestModuleInterface<IParcelManagementModule>();
-            if (parcelManagement != null)
-            {
-                ILandObject landObject = parcelManagement.GetLandObject(localID);
-                if (landObject == null)
-                    return;
-                landObject.LandData.SnapshotID = snapshotID;
-                landObject.LandData.AuctionID = (uint) Util.RandomClass.Next(0, int.MaxValue);
+		public void StartAuction (int localID, UUID snapshotID)
+		{
+			IParcelManagementModule parcelManagement = m_scene.RequestModuleInterface<IParcelManagementModule> ();
+			if (parcelManagement != null) {
+				ILandObject landObject = parcelManagement.GetLandObject (localID);
+				if (landObject == null)
+					return;
+				landObject.LandData.SnapshotID = snapshotID;
+				landObject.LandData.AuctionID = (uint)Util.RandomClass.Next (0, int.MaxValue);
  
-                // During an Auction, the Status of an parcel stays "Leased"
-                // 20160204 -greythane- maybe this could be set to 'pending'?
-                landObject.LandData.Status = ParcelStatus.Leased;
-                landObject.SendLandUpdateToAvatarsOverMe();
-            }
-        }
+				// During an Auction, the Status of an parcel stays "Leased"
+				// 20160204 -greythane- maybe this could be set to 'pending'?
+				landObject.LandData.Status = ParcelStatus.Leased;
+				landObject.SendLandUpdateToAvatarsOverMe ();
+			}
+		}
 
-        public void SetAuctionInfo(int localID, AuctionInfo info)
-        {
-            SaveAuctionInfo(localID, info);
-        }
+		public void SetAuctionInfo (int localID, AuctionInfo info)
+		{
+			SaveAuctionInfo (localID, info);
+		}
 
-        public void AddAuctionBid(int localID, UUID userID, int bid)
-        {
-            AuctionInfo info = GetAuctionInfo(localID);
-            if (info != null) {
-                info.AuctionBids.Add (new AuctionBid () { Amount = bid, AuctionBidder = userID, TimeBid = DateTime.Now });
-                SaveAuctionInfo (localID, info);
-            }
-        }
+		public void AddAuctionBid (int localID, UUID userID, int bid)
+		{
+			AuctionInfo info = GetAuctionInfo (localID);
+			if (info != null) {
+				info.AuctionBids.Add (new AuctionBid () {
+					Amount = bid,
+					AuctionBidder = userID,
+					TimeBid = DateTime.Now
+				});
+				SaveAuctionInfo (localID, info);
+			}
+		}
 
-        public void AuctionEnd (int localID)
-        {
-            IParcelManagementModule parcelManagement = m_scene.RequestModuleInterface<IParcelManagementModule>();
-            if (parcelManagement != null)
-            {
-                ILandObject landObject = parcelManagement.GetLandObject(localID);
-                if (landObject == null)
-                    return;
+		public void AuctionEnd (int localID)
+		{
+			IParcelManagementModule parcelManagement = m_scene.RequestModuleInterface<IParcelManagementModule> ();
+			if (parcelManagement != null) {
+				ILandObject landObject = parcelManagement.GetLandObject (localID);
+				if (landObject == null)
+					return;
 
-                AuctionInfo info = GetAuctionInfo(localID);
-                if (info == null)
-                    return; // cannot find this auction??
+				AuctionInfo info = GetAuctionInfo (localID);
+				if (info == null)
+					return; // cannot find this auction??
                     
-                AuctionBid highestBid = new AuctionBid() {Amount = 0};
-                foreach (AuctionBid bid in info.AuctionBids)
-                    if (highestBid.Amount < bid.Amount)
-                        highestBid = bid;
+				AuctionBid highestBid = new AuctionBid () { Amount = 0 };
+				foreach (AuctionBid bid in info.AuctionBids)
+					if (highestBid.Amount < bid.Amount)
+						highestBid = bid;
 
-                IOfflineMessagesConnector offlineMessages =
-                    Framework.Utilities.DataManager.RequestPlugin<IOfflineMessagesConnector>();
-                if (offlineMessages != null)
-                    offlineMessages.AddOfflineMessage(new GridInstantMessage()
-                                                          {
-                                                              BinaryBucket = new byte[0],
-                                                              Dialog = (byte) InstantMessageDialog.MessageBox,
-                                                              FromAgentID = UUID.Zero,
-                                                              FromAgentName = "System",
-                                                              FromGroup = false,
-                                                              SessionID = UUID.Random(),
-                                                              Message =
+				IOfflineMessagesConnector offlineMessages =
+					Framework.Utilities.DataManager.RequestPlugin<IOfflineMessagesConnector> ();
+				if (offlineMessages != null)
+					offlineMessages.AddOfflineMessage (new GridInstantMessage () {
+						BinaryBucket = new byte[0],
+						Dialog = (byte)InstantMessageDialog.MessageBox,
+						FromAgentID = UUID.Zero,
+						FromAgentName = "System",
+						FromGroup = false,
+						SessionID = UUID.Random (),
+						Message =
                                                                   "You won the auction for the parcel " +
-                                                                  landObject.LandData.Name + ", paying " +
-                                                                  highestBid.Amount + " for it",
-                                                              Offline = 0,
-                                                              ParentEstateID = 0,
-                                                              Position = Vector3.Zero,
-                                                              RegionID = m_scene.RegionInfo.RegionID,
-                                                              Timestamp = (uint) Util.UnixTimeSinceEpoch(),
-                                                              ToAgentID = highestBid.AuctionBidder
-                                                          });
-                landObject.UpdateLandSold(highestBid.AuctionBidder, UUID.Zero, false, landObject.LandData.AuctionID,
-                                          highestBid.Amount, landObject.LandData.Area);
-            }
-        }
+						landObject.LandData.Name + ", paying " +
+						highestBid.Amount + " for it",
+						Offline = 0,
+						ParentEstateID = 0,
+						Position = Vector3.Zero,
+						RegionID = m_scene.RegionInfo.RegionID,
+						Timestamp = (uint)Util.UnixTimeSinceEpoch (),
+						ToAgentID = highestBid.AuctionBidder
+					});
+				landObject.UpdateLandSold (highestBid.AuctionBidder, UUID.Zero, false, landObject.LandData.AuctionID,
+					highestBid.Amount, landObject.LandData.Area);
+			}
+		}
 
-        void SaveAuctionInfo(int localID, AuctionInfo info)
-        {
-            IParcelManagementModule parcelManagement = m_scene.RequestModuleInterface<IParcelManagementModule>();
-            if (parcelManagement != null)
-            {
-                ILandObject landObject = parcelManagement.GetLandObject(localID);
-                if (landObject == null)
-                    return;
-                landObject.LandData.AuctionInfo = info;
-            }
-        }
+		void SaveAuctionInfo (int localID, AuctionInfo info)
+		{
+			IParcelManagementModule parcelManagement = m_scene.RequestModuleInterface<IParcelManagementModule> ();
+			if (parcelManagement != null) {
+				ILandObject landObject = parcelManagement.GetLandObject (localID);
+				if (landObject == null)
+					return;
+				landObject.LandData.AuctionInfo = info;
+			}
+		}
 
-        AuctionInfo GetAuctionInfo(int localID)
-        {
-            IParcelManagementModule parcelManagement = m_scene.RequestModuleInterface<IParcelManagementModule>();
-            if (parcelManagement != null)
-            {
-                ILandObject landObject = parcelManagement.GetLandObject(localID);
-                if (landObject == null)
-                    return null;
-                return landObject.LandData.AuctionInfo;
-            }
-            return null;
-        }
+		AuctionInfo GetAuctionInfo (int localID)
+		{
+			IParcelManagementModule parcelManagement = m_scene.RequestModuleInterface<IParcelManagementModule> ();
+			if (parcelManagement != null) {
+				ILandObject landObject = parcelManagement.GetLandObject (localID);
+				if (landObject == null)
+					return null;
+				return landObject.LandData.AuctionInfo;
+			}
+			return null;
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

@@ -29,16 +29,16 @@
 
 namespace Universe.ScriptEngine.VirtualScript.MiniModule
 {
-    public interface IAvatarAttachment
-    {
-        /// <value>
-        ///     Describes where on the avatar the attachment is located
-        /// </value>
-        int Location { get; }
+	public interface IAvatarAttachment
+	{
+		/// <value>
+		///     Describes where on the avatar the attachment is located
+		/// </value>
+		int Location { get; }
 
-        /// <value>
-        ///     Accessor to the rezzed asset, representing the attachment
-        /// </value>
-        IObject Asset { get; }
-    }
+		/// <value>
+		///     Accessor to the rezzed asset, representing the attachment
+		/// </value>
+		IObject Asset { get; }
+	}
 }

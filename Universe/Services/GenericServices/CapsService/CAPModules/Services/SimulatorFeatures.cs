@@ -37,119 +37,155 @@ using Universe.Framework.Utilities;
 
 namespace Universe.Services
 {
-    public class SimulatorFeatures : ICapsServiceConnector
-    {
-        IRegionClientCapsService m_service;
+	public class SimulatorFeatures : ICapsServiceConnector
+	{
+		IRegionClientCapsService m_service;
 
-        // Configuration
-        static List<string> m_lastNames = new List<string> ();
-        static List<string> m_fullNames = new List<string> ();
+		// Configuration
+		static List<string> m_lastNames = new List<string> ();
+		static List<string> m_fullNames = new List<string> ();
 
-        #region ICapsServiceConnector Members
 
-        public void RegisterCaps (IRegionClientCapsService service)
+		#region ICapsServiceConnector Members
+
+		public void RegisterCaps (IRegionClientCapsService service)
+		{
+			m_service = service;
+
+			// retrieve our god's if needed
+			InitGodNames ();
+
+			m_service.AddStreamHandler ("SimulatorFeatures",
+				new GenericStreamHandler ("GET", m_service.CreateCAPS ("SimulatorFeatures", ""), SimulatorFeaturesCAP));
+		}
+
+		public void DeregisterCaps ()
+		{
+			m_service.RemoveStreamHandler ("SimulatorFeatures", "GET");
+		}
+
+		public void EnteringRegion ()
+		{
+		}
+
+		#endregion
+
+		byte [] SimulatorFeaturesCAP (string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse)
+		{
+			OSDMap data = new OSDMap ();
+			// 17-06-2015 Fly-Man- AvatarHoverHeight enabled
+			data ["AvatarHoverHeightEnabled"] = true;
+
+			// 17-06-2015 Fly-Man- MaxMaterialsPerTransaction enabled
+			data ["MaxMaterialsPerTransaction"] = 50;
+
+			data ["MeshRezEnabled"] = true;
+			data ["MeshUploadEnabled"] = true;
+			data ["MeshXferEnabled"] = true;
+			data ["PhysicsMaterialsEnabled"] = true;
+
+			OSDMap typesMap = new OSDMap ();
+
+			typesMap ["convex"] = true;
+			typesMap ["none"] = true;
+			typesMap ["prim"] = true;
+
+			data ["PhysicsShapeTypes"] = typesMap;
+
+			// some additional features
+			data ["god_names"] = GodNames (httpRequest);
+
+			//Send back data
+			return OSDParser.SerializeLLSDXmlBytes (data);
+		}
+
+		#region helpers
+
+		void InitGodNames ()
+		{
+			if (m_fullNames.Count > 0)
+				return;
+
+			IUserAccountService userService = m_service.Registry.RequestModuleInterface<IUserAccountService> ();
+			var gods = userService.GetUserAccounts (null, "*");
+			if (gods != null) {
+				foreach (UserAccount user in gods)
+					if (user.UserLevel >= Constants.USER_GOD_LIASON) {
+						m_lastNames.Add (user.LastName);
+						m_fullNames.Add (user.Name);
+					}
+			}
+		}
+
+		OSDMap GodNames (OSHttpRequest httpRequest)
+		{
+
+
+			OSDMap namesmap = new OSDMap ();
+			if (httpRequest.Query.ContainsKey ("god_names")) {
+				OSD nmap = httpRequest.Query ["god_names"].ToString ();
+				namesmap = (OSDMap)nmap;
+			}
+
+			OSDArray fnames = new OSDArray ();
+			foreach (string name in m_fullNames) {
+				fnames.Add (name);
+			}
+			namesmap ["full_names"] = fnames;
+
+			OSDArray lnames = new OSDArray ();
+			foreach (string name in m_lastNames) {
+				lnames.Add (name);
+			}
+			namesmap ["last_names"] = lnames;
+
+			return namesmap;
+		}
+
+		void CameraOnllyModeRequest (OSHttpRequest httpRequest)
+		{
+			//if (ShouldSend(m_service.AgentID,m_service.RegionID) && UserLevel(m_service.AgentID) <= m_UserLevel)
+			//{
+			OSDMap extrasMap = new OSDMap ();
+			if (httpRequest.Query.ContainsKey ("OpenSimExtras")) {
+				OSD nmap = httpRequest.Query ["OpenSimExtras"].ToString ();
+				extrasMap = (OSDMap)nmap;
+			}
+
+			extrasMap ["camera-only-mode"] = OSDMap.FromString ("true");
+
+			// TODO: Need to find out how this is determined  i.e. sent from viewer??
+			// Detach agent attachments
+			//Util.FireAndForget(delegate { DetachAttachments(agentID); });
+
+			//}
+		}
+
+		/*        void DetachAttachments(UUID agentID)
         {
-            m_service = service;
+            ScenePresence sp = m_scene.GetScenePresence(agentID);
+            if ((sp.TeleportFlags & TeleportFlags.ViaLogin) != 0)
+                // Wait a little, cos there's weird stuff going on at  login related to
+                // the Current Outfit Folder
+                Thread.Sleep(8000);
 
-            // retrieve our god's if needed
-            InitGodNames ();
+            if (sp != null && m_scene.AttachmentsModule != null)
+            {
+                List<SceneObjectGroup> attachs = sp.GetAttachments();
+                if (attachs != null && attachs.Count > 0)
+                {
+                    foreach (SceneObjectGroup sog in attachs)
+                    {
+                        MainConsole.Instance.DebugFormat("[CAMERA-ONLY MODE]: Forcibly detaching attach {0} from {1} in {2}", 
+                            sog.Name, sp.Name, m_service.Region);
 
-            m_service.AddStreamHandler ("SimulatorFeatures",
-                new GenericStreamHandler ("GET", m_service.CreateCAPS ("SimulatorFeatures", ""), SimulatorFeaturesCAP));
-        }
-
-        public void DeregisterCaps ()
-        {
-            m_service.RemoveStreamHandler ("SimulatorFeatures", "GET");
-        }
-
-        public void EnteringRegion ()
-        {
-        }
-
-        #endregion
-
-        byte [] SimulatorFeaturesCAP (string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse)
-        {
-            OSDMap data = new OSDMap ();
-            // AvatarHoverHeight enabled
-            data ["AvatarHoverHeightEnabled"] = true;
-
-            // MaxMaterialsPerTransaction enabled
-            data ["MaxMaterialsPerTransaction"] = 50;
-
-            data ["MeshRezEnabled"] = true;
-            data ["MeshUploadEnabled"] = true;
-            data ["MeshXferEnabled"] = true;
-            data ["PhysicsMaterialsEnabled"] = true;
-
-            OSDMap typesMap = new OSDMap ();
-
-            typesMap ["convex"] = true;
-            typesMap ["none"] = true;
-            typesMap ["prim"] = true;
-
-            data ["PhysicsShapeTypes"] = typesMap;
-
-            // some additional features
-            data ["god_names"] = GodNames (httpRequest);
-
-            //Send back data
-            return OSDParser.SerializeLLSDXmlBytes (data);
-        }
-
-        #region helpers
-
-        void InitGodNames ()
-        {
-            if (m_fullNames.Count > 0)
-                return;
-
-            IUserAccountService userService = m_service.Registry.RequestModuleInterface<IUserAccountService> ();
-            var gods = userService.GetUserAccounts (null, "*");
-            if (gods != null) {
-                foreach (UserAccount user in gods)
-                    if (user.UserLevel >= Constants.USER_GOD_LIASON) {
-                        m_lastNames.Add (user.LastName);
-                        m_fullNames.Add (user.Name);
+                        m_scene.AttachmentsModule.DetachSingleAttachmentToInv(sp, sog);
                     }
+                }
             }
         }
+        */
 
-        OSDMap GodNames (OSHttpRequest httpRequest)
-        {
-            OSDMap namesmap = new OSDMap ();
-            if (httpRequest.Query.ContainsKey ("god_names")) {
-                OSD nmap = httpRequest.Query ["god_names"].ToString ();
-                namesmap = (OSDMap)nmap;
-            }
-
-            OSDArray fnames = new OSDArray ();
-            foreach (string name in m_fullNames) {
-                fnames.Add (name);
-            }
-            namesmap ["full_names"] = fnames;
-
-            OSDArray lnames = new OSDArray ();
-            foreach (string name in m_lastNames) {
-                lnames.Add (name);
-            }
-            namesmap ["last_names"] = lnames;
-
-            return namesmap;
-        }
-
-        void CameraOnllyModeRequest (OSHttpRequest httpRequest)
-        {
-            OSDMap extrasMap = new OSDMap ();
-            if (httpRequest.Query.ContainsKey ("OpenSimExtras")) {
-                OSD nmap = httpRequest.Query ["OpenSimExtras"].ToString ();
-                extrasMap = (OSDMap)nmap;
-            }
-
-            extrasMap ["camera-only-mode"] = OSDMap.FromString ("true");
-        }
-
-        #endregion
-    }
+		#endregion
+	}
 }

@@ -32,37 +32,37 @@ using OpenMetaverse;
 
 namespace Universe.Framework.ClientInterfaces
 {
-    public class LandUpdateArgs : EventArgs
-    {
-        public UUID AuthBuyerID;
-        public ParcelCategory Category;
-        public string Desc;
-        public UUID GroupID;
-        public byte LandingType;
-        public byte MediaAutoScale;
-        public string MediaDescription;
-        public int MediaHeight;
-        public UUID MediaID;
-        public bool MediaLoop;
-        public string MediaType;
-        public string MediaURL;
-        public int MediaWidth;
-        public string MusicURL;
-        public string Name;
-        public bool ObscureMedia;
-        public bool ObscureMusic;
-        public uint ParcelFlags;
-        public float PassHours;
-        public int PassPrice;
-        public bool Privacy;
-        public int SalePrice;
-        // 25062016 Added for LibOMV update 1.0.2.1
-        public bool SeeAVs;
-        public bool AnyAVSounds;
-        public bool GroupAVSounds;
-        // End
-        public UUID SnapshotID;
-        public Vector3 UserLocation;
-        public Vector3 UserLookAt;
-    }
+	public class LandUpdateArgs : EventArgs
+	{
+		public UUID AuthBuyerID;
+		public ParcelCategory Category;
+		public string Desc;
+		public UUID GroupID;
+		public byte LandingType;
+		public byte MediaAutoScale;
+		public string MediaDescription;
+		public int MediaHeight;
+		public UUID MediaID;
+		public bool MediaLoop;
+		public string MediaType;
+		public string MediaURL;
+		public int MediaWidth;
+		public string MusicURL;
+		public string Name;
+		public bool ObscureMedia;
+		public bool ObscureMusic;
+		public uint ParcelFlags;
+		public float PassHours;
+		public int PassPrice;
+		public bool Privacy;
+		public int SalePrice;
+		// 25062016 Added for LibOMV update 1.0.2.1
+		public bool SeeAVs;
+		public bool AnyAVSounds;
+		public bool GroupAVSounds;
+		// End
+		public UUID SnapshotID;
+		public Vector3 UserLocation;
+		public Vector3 UserLookAt;
+	}
 }

@@ -33,62 +33,97 @@ using Universe.Framework.PresenceInfo;
 
 namespace Universe.Framework.Modules
 {
-    public interface ITerrain
-    {
-        bool Tainted();
-        bool Tainted(int x, int y);
-        void ResetTaint();
+	public interface ITerrain
+	{
+		bool Tainted ();
 
-        void ModifyTerrain(float height, float seconds, byte brushsize, byte action, float north, float west, IClientAPI remoteUser);
+		bool Tainted (int x, int y);
 
-        void CheckHeightValues();
-        float[] GetHeights1D();
-        float[,] GetHeights2D();
-        double[,] GetHeights2DD();
-        void GetHeights1D(float[] heights);
-        void SetHeights2D(float[,] heights);
-        void SetHeights2D(double[,] heights);
-        void SwapRevertMaps();
-        void SaveRevertMap();
-        bool RunTerrainCmd(string[] args, ref string resultText, string simName);
-        void SetRange(float min, float max);
-        void LoadFromFileF64(string filename);
-        void LoadFromFileF32(string filename);
-        void LoadFromFileF32(string filename, int dimensionX, int dimensionY, int lowerboundX, int lowerboundY);
-        void LoadFromFileIMG(string filename, int dimensionX, int dimensionY, int lowerboundX, int lowerboundY);
-        void LoadFromFileSLRAW(string filename);
-        void WriteToFileF64(string filename);
-        void WriteToFileF32(string filename);
-        void WriteToFileRAW(string filename);
-        void WriteToFileHiRAW(string filename);
-        void SetSeed(int val);
-        void RaiseTerrain(double rx, double ry, double size, double amount);
-        void LowerTerrain(double rx, double ry, double size, double amount);
-        void FlattenTerrain(double rx, double ry, double size, double amount);
-        void NoiseTerrain(double rx, double ry, double size, double amount);
-        void RevertTerrain(double rx, double ry, double size, double amount);
-        void SmoothTerrain(double rx, double ry, double size, double amount);
-        void HillsGenerator();
-        double GetHeight(int x, int y);
-        void ExportImage(string filename, string gradientmap);
-        byte[] ExportJpegImage(string gradientmap);
-    }
+		void ResetTaint ();
 
-    public interface IMapImageGenerator
-    {
-        /// <summary>
-        ///     Build a terrain tile for the current region
-        /// </summary>
-        void CreateTerrainTexture();
+		void ModifyTerrain (float height, float seconds, byte brushsize, byte action, float north, float west,
+		                         IClientAPI remoteUser);
 
-        void CreateTerrainTexture(bool forced);
+		void CheckHeightValues ();
 
-        void CreateMapTile(out Bitmap terrainBMP, out Bitmap mapBMP);
-        void CreateMapTile(out byte[] terrain, out byte[] map);
+		float[] GetHeights1D ();
 
-        Bitmap CreateViewImage(Vector3 pos, Vector3 camDir, float fov, int width, int height, bool usetex);
-        Bitmap CreateViewTileImage (int size);
+		float[,] GetHeights2D ();
 
-        void UpdateWorldMaps ();
-    }
+		double[,] GetHeights2DD ();
+
+		void GetHeights1D (float[] heights);
+
+		void SetHeights2D (float[,] heights);
+
+		void SetHeights2D (double[,] heights);
+
+		void SwapRevertMaps ();
+
+		void SaveRevertMap ();
+
+		bool RunTerrainCmd (string[] args, ref string resultText, string simName);
+
+		void SetRange (float min, float max);
+
+		void LoadFromFileF64 (string filename);
+
+		void LoadFromFileF32 (string filename);
+
+		void LoadFromFileF32 (string filename, int dimensionX, int dimensionY, int lowerboundX, int lowerboundY);
+
+		void LoadFromFileIMG (string filename, int dimensionX, int dimensionY, int lowerboundX, int lowerboundY);
+
+		void LoadFromFileSLRAW (string filename);
+
+		void WriteToFileF64 (string filename);
+
+		void WriteToFileF32 (string filename);
+
+		void WriteToFileRAW (string filename);
+
+		void WriteToFileHiRAW (string filename);
+
+		void SetSeed (int val);
+
+		void RaiseTerrain (double rx, double ry, double size, double amount);
+
+		void LowerTerrain (double rx, double ry, double size, double amount);
+
+		void FlattenTerrain (double rx, double ry, double size, double amount);
+
+		void NoiseTerrain (double rx, double ry, double size, double amount);
+
+		void RevertTerrain (double rx, double ry, double size, double amount);
+
+		void SmoothTerrain (double rx, double ry, double size, double amount);
+
+		void HillsGenerator ();
+
+		double GetHeight (int x, int y);
+
+		void ExportImage (string filename, string gradientmap);
+
+		byte[] ExportJpegImage (string gradientmap);
+	}
+
+	public interface IMapImageGenerator
+	{
+		/// <summary>
+		///     Build a terrain tile for the current region
+		/// </summary>
+		void CreateTerrainTexture ();
+
+		void CreateTerrainTexture (bool forced);
+
+		void CreateMapTile (out Bitmap terrainBMP, out Bitmap mapBMP);
+
+		void CreateMapTile (out byte[] terrain, out byte[] map);
+
+		Bitmap CreateViewImage (Vector3 pos, Vector3 camDir, float fov, int width, int height, bool usetex);
+
+		Bitmap CreateViewTileImage (int size);
+
+		void UpdateWorldMaps ();
+	}
 }

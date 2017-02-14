@@ -33,175 +33,175 @@ using Universe.Framework.SceneInfo;
 
 namespace Universe.Modules.Terrain.PaintBrushes
 {
-    /// <summary>
-    ///     Thermal Weathering Paint Brush
-    /// </summary>
-    public class WeatherSphere : ITerrainPaintableEffect
-    {
-        const float talus = 0.2f;
-        const NeighbourSystem type = NeighbourSystem.Moore;
+	/// <summary>
+	///     Thermal Weathering Paint Brush
+	/// </summary>
+	public class WeatherSphere : ITerrainPaintableEffect
+	{
+		const float talus = 0.2f;
+		const NeighbourSystem type = NeighbourSystem.Moore;
 
-        #region Supporting Functions
+		#region Supporting Functions
 
-        static int [] Neighbours (NeighbourSystem neighbourType, int index)
-        {
-            int [] coord = new int [2];
+		static int [] Neighbours (NeighbourSystem neighbourType, int index)
+		{
+			int[] coord = new int [2];
 
-            index++;
+			index++;
 
-            switch (neighbourType) {
-            case NeighbourSystem.Moore:
-                switch (index) {
-                case 1:
-                    coord [0] = -1;
-                    coord [1] = -1;
-                    break;
+			switch (neighbourType) {
+			case NeighbourSystem.Moore:
+				switch (index) {
+				case 1:
+					coord [0] = -1;
+					coord [1] = -1;
+					break;
 
-                case 2:
-                    coord [0] = -0;
-                    coord [1] = -1;
-                    break;
+				case 2:
+					coord [0] = -0;
+					coord [1] = -1;
+					break;
 
-                case 3:
-                    coord [0] = +1;
-                    coord [1] = -1;
-                    break;
+				case 3:
+					coord [0] = +1;
+					coord [1] = -1;
+					break;
 
-                case 4:
-                    coord [0] = -1;
-                    coord [1] = -0;
-                    break;
+				case 4:
+					coord [0] = -1;
+					coord [1] = -0;
+					break;
 
-                case 5:
-                    coord [0] = -0;
-                    coord [1] = -0;
-                    break;
+				case 5:
+					coord [0] = -0;
+					coord [1] = -0;
+					break;
 
-                case 6:
-                    coord [0] = +1;
-                    coord [1] = -0;
-                    break;
+				case 6:
+					coord [0] = +1;
+					coord [1] = -0;
+					break;
 
-                case 7:
-                    coord [0] = -1;
-                    coord [1] = +1;
-                    break;
+				case 7:
+					coord [0] = -1;
+					coord [1] = +1;
+					break;
 
-                case 8:
-                    coord [0] = -0;
-                    coord [1] = +1;
-                    break;
+				case 8:
+					coord [0] = -0;
+					coord [1] = +1;
+					break;
 
-                case 9:
-                    coord [0] = +1;
-                    coord [1] = +1;
-                    break;
+				case 9:
+					coord [0] = +1;
+					coord [1] = +1;
+					break;
 
-                default:
-                    break;
-                }
-                break;
+				default:
+					break;
+				}
+				break;
 
-            case NeighbourSystem.VonNeumann:
-                switch (index) {
-                case 1:
-                    coord [0] = 0;
-                    coord [1] = -1;
-                    break;
+			case NeighbourSystem.VonNeumann:
+				switch (index) {
+				case 1:
+					coord [0] = 0;
+					coord [1] = -1;
+					break;
 
-                case 2:
-                    coord [0] = -1;
-                    coord [1] = 0;
-                    break;
+				case 2:
+					coord [0] = -1;
+					coord [1] = 0;
+					break;
 
-                case 3:
-                    coord [0] = +1;
-                    coord [1] = 0;
-                    break;
+				case 3:
+					coord [0] = +1;
+					coord [1] = 0;
+					break;
 
-                case 4:
-                    coord [0] = 0;
-                    coord [1] = +1;
-                    break;
+				case 4:
+					coord [0] = 0;
+					coord [1] = +1;
+					break;
 
-                case 5:
-                    coord [0] = -0;
-                    coord [1] = -0;
-                    break;
+				case 5:
+					coord [0] = -0;
+					coord [1] = -0;
+					break;
 
-                default:
-                    break;
-                }
-                break;
-            }
+				default:
+					break;
+				}
+				break;
+			}
 
-            return coord;
-        }
+			return coord;
+		}
 
-        enum NeighbourSystem
-        {
-            Moore,
-            VonNeumann
-        };
+		enum NeighbourSystem
+		{
+			Moore,
+			VonNeumann}
 
-        #endregion
+		;
 
-        #region ITerrainPaintableEffect Members
+		#endregion
 
-        public void PaintEffect (ITerrainChannel map, UUID userID, float rx, float ry, float rz, float strength,
-                                float duration, float BrushSize)
-        {
-            strength = TerrainUtil.MetersToSphericalStrength (strength);
+		#region ITerrainPaintableEffect Members
 
-            int x;
+		public void PaintEffect (ITerrainChannel map, UUID userID, float rx, float ry, float rz, float strength,
+		                               float duration, float BrushSize)
+		{
+			strength = TerrainUtil.MetersToSphericalStrength (strength);
 
-            for (x = 0; x < map.Width; x++) {
-                int y;
-                for (y = 0; y < map.Height; y++) {
-                    if (!map.Scene.Permissions.CanTerraformLand (userID, new Vector3 (x, y, 0)))
-                        continue;
+			int x;
 
-                    float z = TerrainUtil.SphericalFactor (x, y, rx, ry, strength);
+			for (x = 0; x < map.Width; x++) {
+				int y;
+				for (y = 0; y < map.Height; y++) {
+					if (!map.Scene.Permissions.CanTerraformLand (userID, new Vector3 (x, y, 0)))
+						continue;
 
-                    if (z > 0) // add in non-zero amount
-                    {
-                        const int NEIGHBOUR_ME = 4;
-                        const int NEIGHBOUR_MAX = 9;
+					float z = TerrainUtil.SphericalFactor (x, y, rx, ry, strength);
 
-                        for (int j = 0; j < NEIGHBOUR_MAX; j++) {
-                            if (j != NEIGHBOUR_ME) {
-                                int [] coords = Neighbours (type, j);
+					if (z > 0) { // add in non-zero amount
+						const int NEIGHBOUR_ME = 4;
+						const int NEIGHBOUR_MAX = 9;
 
-                                coords [0] += x;
-                                coords [1] += y;
+						for (int j = 0; j < NEIGHBOUR_MAX; j++) {
+							if (j != NEIGHBOUR_ME) {
+								int[] coords = Neighbours (type, j);
 
-                                if (coords [0] > map.Width - 1)
-                                    continue;
-                                if (coords [1] > map.Height - 1)
-                                    continue;
-                                if (coords [0] < 0)
-                                    continue;
-                                if (coords [1] < 0)
-                                    continue;
+								coords [0] += x;
+								coords [1] += y;
 
-                                float heightF = map [x, y];
-                                float target = map [coords [0], coords [1]];
+								if (coords [0] > map.Width - 1)
+									continue;
+								if (coords [1] > map.Height - 1)
+									continue;
+								if (coords [0] < 0)
+									continue;
+								if (coords [1] < 0)
+									continue;
 
-                                if (target > heightF + talus) {
-                                    float calc = duration * ((target - heightF) - talus) * z;
-                                    heightF += calc;
-                                    target -= calc;
-                                }
+								float heightF = map [x, y];
+								float target = map [coords [0], coords [1]];
 
-                                map [x, y] = heightF;
-                                map [coords [0], coords [1]] = target;
-                            }
-                        }
-                    }
-                }
-            }
-        }
+								if (target > heightF + talus) {
+									float calc = duration * ((target - heightF) - talus) * z;
+									heightF += calc;
+									target -= calc;
+								}
 
-        #endregion
-    }
+								map [x, y] = heightF;
+								map [coords [0], coords [1]] = target;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		#endregion
+	}
 }

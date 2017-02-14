@@ -1,5 +1,4 @@
-;; This file is used as a template when the configurator is run for a standalone setup
-;;  ##  You DO NOT need to change anything here  ##
+;; This is the main configuration file for standalone Virtual Universe instances
 
 [Include]
 Include-Standalone = Sim/Standalone/Standalone.ini
@@ -39,7 +38,7 @@ UseVariableRegionSightDistance = false
 MaxDistanceVariableRegionSightDistance = 512
 
 [LibraryService]
-;; Set this if you want to change the name or owner of the Virtual Universe Library
+;; Set these if you want to change the name or owner of the Virtual Universe Library
 ;;  (This is the system default inventory)
 LibraryName = "Virtual Universe Library"
 LibraryOwnerName = "Library Owner"
@@ -52,7 +51,8 @@ BankerName = "Universe Banker"
 MarketplaceOwnerName = "Marketplace Concierge"
 
 [EstateService]
-;;  Modify this if you want to change the Virtual Universe system Estate name
+;;  Modify these if you want to change the Virtual Universe system Estate names
+MainlandEstateName = "Universe Mainland"
 SystemEstateName = "Universe Estate"
 
 [LoginService]
@@ -70,12 +70,14 @@ WelcomeMessage = "Welcome to Virtual Universe, <USERNAME>!"
 ;;  If this is enabled, the FileNameOfTOS will be used to set what the users see.
 UseTermsOfServiceOnFirstLogin = false
 
-;; File name or the location of the ToS document
-;; If a text file is specified, this should be in the 'Data' folder unless specified
+;; File name or the location of the Terms of Service document
+;;  The default is a text file. This should be in the 'Data/html' folder unless specified
 FileNameOfTOS = ToS.txt
 
-;; Alternatively, a web location may be specified. Comment the previous setting and uncomment below
-;;  'ServersHostname' will be replaced with the local grid URL 
+;; Alternatively, an html formatted version of the Terms of Service  may be specified. 
+;;  The 'ToS.html' file should also be located in the 'Data/html' folder
+;; Comment the previous setting and uncomment below
+;;    'ServersHostname' will be replaced with the local grid URL
 ; FileNameOfTOS = http://ServersHostname:8002/local/ToS.html
 
 ;; Allow users to login anonymously and have a new account created automatically? 

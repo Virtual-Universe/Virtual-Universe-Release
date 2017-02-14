@@ -39,249 +39,223 @@ using Universe.Framework.Services;
 
 namespace Universe.CoreApplicationPlugins.RegionModulesController
 {
-    public class RegionModulesControllerPlugin : IRegionModulesController, IApplicationPlugin
-    {
-        protected List<IRegionModuleBase> IRegionModuleBaseModules = new List<IRegionModuleBase>();
+	public class RegionModulesControllerPlugin : IRegionModulesController, IApplicationPlugin
+	{
+		protected List<IRegionModuleBase> IRegionModuleBaseModules = new List<IRegionModuleBase> ();
 
-        // Config access
+		// Config access
 
-        // Our name
-        const string m_name = "RegionModulesControllerPlugin";
-        ISimulationBase m_simBase;
+		// Our name
+		const string m_name = "RegionModulesControllerPlugin";
+		ISimulationBase m_simBase;
 
-        #region IApplicationPlugin Members
+		#region IApplicationPlugin Members
 
-        public string Name
-        {
-            get { return m_name; }
-        }
+		public string Name {
+			get { return m_name; }
+		}
 
-        #endregion
+		#endregion
 
-        #region IRegionModulesController implementation
+		#region IRegionModulesController implementation
 
-        // The root of all evil.
-        // This is where we handle adding the modules to scenes when they
-        // load. This means that here we deal with replaceable interfaces,
-        // non-shared modules, etc.
-        protected Dictionary<IScene, Dictionary<string, IRegionModuleBase>> RegionModules = new Dictionary<IScene, Dictionary<string, IRegionModuleBase>>();
+		// The root of all evil.
+		// This is where we handle adding the modules to scenes when they
+		// load. This means that here we deal with replaceable interfaces,
+		// non-shared modules, etc.
+		//
 
-        public void AddRegionToModules(IScene scene)
-        {
-            Dictionary<Type, INonSharedRegionModule> deferredNonSharedModules = new Dictionary<Type, INonSharedRegionModule>();
+		protected Dictionary<IScene, Dictionary<string, IRegionModuleBase>> RegionModules =
+			new Dictionary<IScene, Dictionary<string, IRegionModuleBase>> ();
 
-            // We need this to see if a module has already been loaded and
-            // has defined a replaceable interface. It's a generic call,
-            // so this can't be used directly. It will be used later
-            Type s = scene.GetType();
-            MethodInfo mi = s.GetMethod("RequestModuleInterface");
+		public void AddRegionToModules (IScene scene)
+		{
+			Dictionary<Type, INonSharedRegionModule> deferredNonSharedModules =
+				new Dictionary<Type, INonSharedRegionModule> ();
 
-            // Scan for, and load, non-shared modules
-            List<INonSharedRegionModule> list = new List<INonSharedRegionModule>();
-            List<INonSharedRegionModule> m_nonSharedModules = UniverseModuleLoader.PickupModules<INonSharedRegionModule>();
-            foreach (INonSharedRegionModule module in m_nonSharedModules)
-            {
-                Type replaceableInterface = module.ReplaceableInterface;
-                if (replaceableInterface != null)
-                {
-                    MethodInfo mii = mi.MakeGenericMethod(replaceableInterface);
+			// We need this to see if a module has already been loaded and
+			// has defined a replaceable interface. It's a generic call,
+			// so this can't be used directly. It will be used later
+			Type s = scene.GetType ();
+			MethodInfo mi = s.GetMethod ("RequestModuleInterface");
 
-                    if (mii.Invoke(scene, new object[0]) != null)
-                    {
-                        MainConsole.Instance.DebugFormat("[Region Module]: Not loading {0} because another module has registered {1}", module.Name, replaceableInterface);
-                        continue;
-                    }
+			// Scan for, and load, non-shared modules
+			List<INonSharedRegionModule> list = new List<INonSharedRegionModule> ();
+			List<INonSharedRegionModule> m_nonSharedModules = UniverseModuleLoader.PickupModules<INonSharedRegionModule> ();
+			foreach (INonSharedRegionModule module in m_nonSharedModules) {
+				Type replaceableInterface = module.ReplaceableInterface;
+				if (replaceableInterface != null) {
+					MethodInfo mii = mi.MakeGenericMethod (replaceableInterface);
 
-                    deferredNonSharedModules[replaceableInterface] = module;
-                    MainConsole.Instance.DebugFormat("[Region Module]: Deferred load of {0}", module.Name);
-                    continue;
-                }
+					if (mii.Invoke (scene, new object[0]) != null) {
+						MainConsole.Instance.DebugFormat ("[REGIONMODULE]: Not loading {0} because another module has registered {1}",
+							module.Name, replaceableInterface);
+						continue;
+					}
 
-                //MainConsole.Instance.DebugFormat("[Region Module]: Adding scene {0} to non-shared module {1}", scene.RegionInfo.RegionName, module.Name);
+					deferredNonSharedModules [replaceableInterface] = module;
+					MainConsole.Instance.DebugFormat ("[REGIONMODULE]: Deferred load of {0}", module.Name);
+					continue;
+				}
 
-                // Initialize the module
-                module.Initialize(m_simBase.ConfigSource);
+				//MainConsole.Instance.DebugFormat("[REGIONMODULE]: Adding scene {0} to non-shared module {1}",
+				//                  scene.RegionInfo.RegionName, module.Name);
 
-                IRegionModuleBaseModules.Add(module);
-                list.Add(module);
-            }
+				// Initialize the module
+				module.Initialize (m_simBase.ConfigSource);
 
-            // Now add the modules that we found to the scene. If a module
-            // wishes to override a replaceable interface, it needs to
-            // register it in Initialize, so that the deferred module
-            // won't load.
-            foreach (INonSharedRegionModule module in list)
-            {
-                try
-                {
-                    module.AddRegion(scene);
-                }
-                catch (Exception ex)
-                {
-                    MainConsole.Instance.ErrorFormat("[Region Modules Controller Plugin]: Failed to load module {0}: {1}", module.Name, ex.ToString());
-                }
+				IRegionModuleBaseModules.Add (module);
+				list.Add (module);
+			}
 
-                AddRegionModule(scene, module.Name, module);
-            }
+			// Now add the modules that we found to the scene. If a module
+			// wishes to override a replaceable interface, it needs to
+			// register it in Initialize, so that the deferred module
+			// won't load.
+			foreach (INonSharedRegionModule module in list) {
+				try {
+					module.AddRegion (scene);
+				} catch (Exception ex) {
+					MainConsole.Instance.ErrorFormat ("[RegionModulesControllerPlugin]: Failed to load module {0}: {1}", module.Name, ex.ToString ());
+				}
+				AddRegionModule (scene, module.Name, module);
+			}
 
-            // Same thing for non-shared modules, load them unless overridden
-            List<INonSharedRegionModule> deferredlist = new List<INonSharedRegionModule>();
+			// Same thing for non-shared modules, load them unless overridden
+			List<INonSharedRegionModule> deferredlist =
+				new List<INonSharedRegionModule> ();
 
-            foreach (INonSharedRegionModule module in deferredNonSharedModules.Values)
-            {
-                // Check interface override
-                Type replaceableInterface = module.ReplaceableInterface;
-                if (replaceableInterface != null)
-                {
-                    MethodInfo mii = mi.MakeGenericMethod(replaceableInterface);
+			foreach (INonSharedRegionModule module in deferredNonSharedModules.Values) {
+				// Check interface override
+				Type replaceableInterface = module.ReplaceableInterface;
+				if (replaceableInterface != null) {
+					MethodInfo mii = mi.MakeGenericMethod (replaceableInterface);
 
-                    if (mii.Invoke(scene, new object[0]) != null)
-                    {
-                        MainConsole.Instance.DebugFormat("[Region Module]: Not loading {0} because another module has registered {1}",
-                                          module.Name, replaceableInterface);
-                        continue;
-                    }
-                }
+					if (mii.Invoke (scene, new object[0]) != null) {
+						MainConsole.Instance.DebugFormat ("[REGIONMODULE]: Not loading {0} because another module has registered {1}",
+							module.Name, replaceableInterface);
+						continue;
+					}
+				}
 
-                MainConsole.Instance.DebugFormat("[Region Module]: Adding scene {0} to non-shared module {1} (deferred)",
-                                  scene.RegionInfo.RegionName, module.Name);
+				MainConsole.Instance.DebugFormat ("[REGIONMODULE]: Adding scene {0} to non-shared module {1} (deferred)",
+					scene.RegionInfo.RegionName, module.Name);
 
-                try
-                {
-                    module.Initialize(m_simBase.ConfigSource);
-                }
-                catch (Exception ex)
-                {
-                    MainConsole.Instance.ErrorFormat("[Region Modules Controller Plugin]: Failed to load module {0}: {1}", module.Name, ex.ToString());
-                }
+				try {
+					module.Initialize (m_simBase.ConfigSource);
+				} catch (Exception ex) {
+					MainConsole.Instance.ErrorFormat ("[RegionModulesControllerPlugin]: Failed to load module {0}: {1}", module.Name, ex.ToString ());
+				}
 
-                IRegionModuleBaseModules.Add(module);
-                list.Add(module);
-                deferredlist.Add(module);
-            }
+				IRegionModuleBaseModules.Add (module);
+				list.Add (module);
+				deferredlist.Add (module);
+			}
 
-            // Finally, load valid deferred modules
-            foreach (INonSharedRegionModule module in deferredlist)
-            {
-                try
-                {
-                    module.AddRegion(scene);
-                }
-                catch (Exception ex)
-                {
-                    MainConsole.Instance.ErrorFormat("[Region Modules Controller Plugin]: Failed to load module {0}: {1}", module.Name, ex.ToString());
-                }
+			// Finally, load valid deferred modules
+			foreach (INonSharedRegionModule module in deferredlist) {
+				try {
+					module.AddRegion (scene);
+				} catch (Exception ex) {
+					MainConsole.Instance.ErrorFormat ("[RegionModulesControllerPlugin]: Failed to load module {0}: {1}", module.Name, ex.ToString ());
+				}
+				AddRegionModule (scene, module.Name, module);
+			}
 
-                AddRegionModule(scene, module.Name, module);
-            }
+			// This is needed for all module types. Modules will register
+			// Interfaces with scene in AddScene, and will also need a means
+			// to access interfaces registered by other modules. Without
+			// this extra method, a module attempting to use another modules's
+			// interface would be successful only depending on load order,
+			// which can't be depended upon, or modules would need to resort
+			// to ugly kludges to attempt to request interfaces when needed
+			// and unnecessary caching logic repeated in all modules.
+			// The extra function stub is just that much cleaner
+			foreach (INonSharedRegionModule module in list) {
+				try {
+					module.RegionLoaded (scene);
+				} catch (Exception ex) {
+					MainConsole.Instance.ErrorFormat ("[RegionModulesControllerPlugin]: Failed to load module {0}: {1}", module.Name, ex.ToString ());
+				}
+			}
+		}
 
-            // This is needed for all module types. Modules will register
-            // Interfaces with scene in AddScene, and will also need a means
-            // to access interfaces registered by other modules. Without
-            // this extra method, a module attempting to use another modules's
-            // interface would be successful only depending on load order,
-            // which can't be depended upon, or modules would need to resort
-            // to ugly kludges to attempt to request interfaces when needed
-            // and unnecessary caching logic repeated in all modules.
-            // The extra function stub is just that much cleaner
-            foreach (INonSharedRegionModule module in list)
-            {
-                try
-                {
-                    module.RegionLoaded(scene);
-                }
-                catch (Exception ex)
-                {
-                    MainConsole.Instance.ErrorFormat("[Region Modules Controller Plugin]: Failed to load module {0}: {1}", module.Name, ex.ToString());
-                }
-            }
-        }
+		public void RemoveRegionFromModules (IScene scene)
+		{
+			foreach (IRegionModuleBase module in RegionModules[scene].Values) {
+				MainConsole.Instance.DebugFormat ("[REGIONMODULE]: Removing scene {0} from module {1}",
+					scene.RegionInfo.RegionName, module.Name);
+				module.RemoveRegion (scene);
+				if (module is INonSharedRegionModule) {
+					// as we were the only user, this instance has to die
+					module.Close ();
+				}
+			}
+			RegionModules [scene].Clear ();
+		}
 
-        public void RemoveRegionFromModules(IScene scene)
-        {
-            foreach (IRegionModuleBase module in RegionModules[scene].Values)
-            {
-                MainConsole.Instance.DebugFormat("[Region Module]: Removing scene {0} from module {1}",
-                                  scene.RegionInfo.RegionName, module.Name);
-                module.RemoveRegion(scene);
-                if (module is INonSharedRegionModule)
-                {
-                    // as we were the only user, this instance has to die
-                    module.Close();
-                }
-            }
+		void AddRegionModule (IScene scene, string p, IRegionModuleBase module)
+		{
+			if (!RegionModules.ContainsKey (scene))
+				RegionModules.Add (scene, new Dictionary<string, IRegionModuleBase> ());
+			RegionModules [scene] [p] = module;
+		}
 
-            RegionModules[scene].Clear();
-        }
+		#endregion
 
-        void AddRegionModule(IScene scene, string p, IRegionModuleBase module)
-        {
-            if (!RegionModules.ContainsKey(scene))
-                RegionModules.Add(scene, new Dictionary<string, IRegionModuleBase>());
+		#region IRegionModulesController Members
 
-            RegionModules[scene][p] = module;
-        }
+		public List<IRegionModuleBase> AllModules {
+			get { return IRegionModuleBaseModules; }
+		}
 
-        #endregion
+		#endregion
 
-        #region IRegionModulesController Members
+		#region IApplicationPlugin implementation
 
-        public List<IRegionModuleBase> AllModules
-        {
-            get { return IRegionModuleBaseModules; }
-        }
+		public void PreStartup (ISimulationBase simBase)
+		{
+		}
 
-        #endregion
+		public void Initialize (ISimulationBase simBase)
+		{
+			m_simBase = simBase;
 
-        #region IApplicationPlugin implementation
+			IConfig handlerConfig = simBase.ConfigSource.Configs ["ApplicationPlugins"];
+			if (handlerConfig.GetString ("RegionModulesControllerPlugin", "") != Name)
+				return;
 
-        public void PreStartup(ISimulationBase simBase)
-        {
-        }
+			m_simBase.ApplicationRegistry.RegisterModuleInterface<IRegionModulesController> (this);
+		}
 
-        public void Initialize(ISimulationBase simBase)
-        {
-            m_simBase = simBase;
+		public void ReloadConfiguration (IConfigSource config)
+		{
+			//Update all modules that we have here
+			foreach (IRegionModuleBase module in AllModules) {
+				try {
+					module.Initialize (config);
+				} catch (Exception ex) {
+					MainConsole.Instance.ErrorFormat ("[RegionModulesControllerPlugin]: Failed to load module {0}: {1}", module.Name, ex.ToString ());
+				}
+			}
+		}
 
-            IConfig handlerConfig = simBase.ConfigSource.Configs["ApplicationPlugins"];
-            if (handlerConfig.GetString("RegionModulesControllerPlugin", "") != Name)
-                return;
+		public void PostInitialize ()
+		{
+		}
 
-            m_simBase.ApplicationRegistry.RegisterModuleInterface<IRegionModulesController>(this);
-        }
+		public void Start ()
+		{
+		}
 
-        public void ReloadConfiguration(IConfigSource config)
-        {
-            //Update all modules that we have here
-            foreach (IRegionModuleBase module in AllModules)
-            {
-                try
-                {
-                    module.Initialize(config);
-                }
-                catch (Exception ex)
-                {
-                    MainConsole.Instance.ErrorFormat("[Region Modules Controller Plugin]: Failed to load module {0}: {1}", module.Name, ex.ToString());
-                }
-            }
-        }
+		public void PostStart ()
+		{
+		}
 
-        public void PostInitialize()
-        {
-        }
+		public void Close ()
+		{
+		}
 
-        public void Start()
-        {
-        }
-
-        public void PostStart()
-        {
-        }
-
-        public void Close()
-        {
-        }
-
-        #endregion
-    }
+		#endregion
+	}
 }

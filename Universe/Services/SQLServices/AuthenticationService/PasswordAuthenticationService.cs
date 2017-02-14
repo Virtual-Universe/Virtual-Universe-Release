@@ -36,89 +36,87 @@ using Universe.Framework.Utilities;
 
 namespace Universe.Services
 {
-    // Generic Authentication service used for identifying
-    // and authenticating principals.
-    // Principals may be clients acting on users' behalf,
-    // or any other components that need 
-    // verifiable identification.
-    public class PasswordAuthenticationService :
+	// Generic Authentication service used for identifying
+	// and authenticating principals.
+	// Principals may be clients acting on users' behalf,
+	// or any other components that need
+	// verifiable identification.
+	public class PasswordAuthenticationService :
         AuthenticationServiceBase, IAuthenticationService, IService
-    {
-        public virtual string Name {
-            get { return GetType ().Name; }
-        }
+	{
+		public virtual string Name {
+			get { return GetType ().Name; }
+		}
 
-        #region IAuthenticationService Members
+		#region IAuthenticationService Members
 
-        public string Authenticate (UUID principalID, string authType, string password, int lifetime)
-        {
-            //Return automatically if we do not auth users
-            if (!m_authenticateUsers) {
-                return GetToken (principalID, lifetime);
-            }
+		public string Authenticate (UUID principalID, string authType, string password, int lifetime)
+		{
+			//Return automatically if we do not auth users
+			if (!m_authenticateUsers) {
+				return GetToken (principalID, lifetime);
+			}
 
-            AuthData data = m_Database.Get (principalID, authType);
+			AuthData data = m_Database.Get (principalID, authType);
 
-            if (data == null) {
-                if (!CheckExists (principalID, authType)) {
-                    MainConsole.Instance.DebugFormat ("[Auth service]: PrincipalID {0} not found", principalID);
-                } else {
-                    MainConsole.Instance.DebugFormat ("[Auth service]: PrincipalID {0} data not found", principalID);
-                }
-            } else {
-                if (authType != "UserAccount") {
-                    if (data.PasswordHash == password) {
-                        //Really should be moved out in the future
-                        if (authType == "WebLoginKey") {
-                            Remove (principalID, authType); //Only allow it to be used once
-                        }
-                        return GetToken (principalID, lifetime);
-                    }
-                } else {
-                    string hashed = Util.Md5Hash (password + ":" + data.PasswordSalt);
+			if (data == null) {
+				if (!CheckExists (principalID, authType)) {
+					MainConsole.Instance.DebugFormat ("[Auth service]: PrincipalID {0} not found", principalID);
+				} else {
+					MainConsole.Instance.DebugFormat ("[Auth service]: PrincipalID {0} data not found", principalID);
+				}
+			} else {
+				if (authType != "UserAccount") {
+					if (data.PasswordHash == password) {
+						//Really should be moved out in the future
+						if (authType == "WebLoginKey") {
+							Remove (principalID, authType); //Only allow it to be used once
+						}
+						return GetToken (principalID, lifetime);
+					}
+				} else {
+					string hashed = Util.Md5Hash (password + ":" + data.PasswordSalt);
 
-                    MainConsole.Instance.TraceFormat ("[Password auth]: got {0}; hashed = {1}; stored = {2}", password,
-                                                     hashed, data.PasswordHash);
+					MainConsole.Instance.TraceFormat ("[Password auth]: got {0}; hashed = {1}; stored = {2}", password,
+						hashed, data.PasswordHash);
 
-                    if (data.PasswordHash == hashed) {
-                        return GetToken (principalID, lifetime);
-                    }
-                }
-            }
+					if (data.PasswordHash == hashed) {
+						return GetToken (principalID, lifetime);
+					}
+				}
+			}
 
-            return string.Empty;
-        }
+			return string.Empty;
+		}
 
-        #endregion
+		#endregion
 
-        #region IService Members
+		#region IService Members
 
-        public void Initialize (IConfigSource config, IRegistryCore registry)
-        {
-            IConfig handlerConfig = config.Configs ["Handlers"];
-            if (handlerConfig.GetString ("AuthenticationHandler", "") != Name)
-                return;
+		public void Initialize (IConfigSource config, IRegistryCore registry)
+		{
+			IConfig handlerConfig = config.Configs ["Handlers"];
+			if (handlerConfig.GetString ("AuthenticationHandler", "") != Name)
+				return;
 
-            //
-            // Try reading the [AuthenticationService] section first, if it exists
-            //
-            IConfig authConfig = config.Configs ["AuthenticationService"];
-            if (authConfig != null) {
-                m_authenticateUsers = authConfig.GetBoolean ("AuthenticateUsers", m_authenticateUsers);
-            }
+			// Try reading the [AuthenticationService] section first, if it exists
+			IConfig authConfig = config.Configs ["AuthenticationService"];
+			if (authConfig != null) {
+				m_authenticateUsers = authConfig.GetBoolean ("AuthenticateUsers", m_authenticateUsers);
+			}
 
-            m_Database = Framework.Utilities.DataManager.RequestPlugin<IAuthenticationData> ();
-            registry.RegisterModuleInterface<IAuthenticationService> (this);
-        }
+			m_Database = Framework.Utilities.DataManager.RequestPlugin<IAuthenticationData> ();
+			registry.RegisterModuleInterface<IAuthenticationService> (this);
+		}
 
-        public void Start (IConfigSource config, IRegistryCore registry)
-        {
-        }
+		public void Start (IConfigSource config, IRegistryCore registry)
+		{
+		}
 
-        public void FinishedStartup ()
-        {
-        }
+		public void FinishedStartup ()
+		{
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

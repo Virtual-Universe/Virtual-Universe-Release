@@ -33,56 +33,56 @@ using Universe.Framework.SceneInfo;
 
 namespace Universe.Modules.Terrain.PaintBrushes
 {
-    public class RevertSphere : ITerrainPaintableEffect
-    {
-        readonly ITerrainModule m_module;
+	public class RevertSphere : ITerrainPaintableEffect
+	{
+		readonly ITerrainModule m_module;
 
-        public RevertSphere (ITerrainModule module)
-        {
-            m_module = module;
-        }
+		public RevertSphere (ITerrainModule module)
+		{
+			m_module = module;
+		}
 
-        #region ITerrainPaintableEffect Members
+		#region ITerrainPaintableEffect Members
 
-        public void PaintEffect (ITerrainChannel map, UUID userID, float rx, float ry, float rz, float strength,
-                                float duration, float BrushSize)
-        {
-            strength = TerrainUtil.MetersToSphericalStrength (BrushSize);
-            duration = 0.03f; //MCP Should be read from ini file
+		public void PaintEffect (ITerrainChannel map, UUID userID, float rx, float ry, float rz, float strength,
+		                               float duration, float BrushSize)
+		{
+			strength = TerrainUtil.MetersToSphericalStrength (BrushSize);
+			duration = 0.03f; //MCP Should be read from ini file
 
-            if (duration > 1.0)
-                duration = 1;
-            if (duration < 0)
-                return;
+			if (duration > 1.0)
+				duration = 1;
+			if (duration < 0)
+				return;
 
-            int n = (int)(BrushSize + 0.5f);
-            int zx = (int)(rx + 0.5);
-            int zy = (int)(ry + 0.5);
+			int n = (int)(BrushSize + 0.5f);
+			int zx = (int)(rx + 0.5);
+			int zy = (int)(ry + 0.5);
 
-            int dx;
-            for (dx = -n; dx <= n; dx++) {
-                int dy;
-                for (dy = -n; dy <= n; dy++) {
-                    int x = zx + dx;
-                    int y = zy + dy;
-                    if (x >= 0 && y >= 0 && x < map.Width && y < map.Height) {
-                        if (!map.Scene.Permissions.CanTerraformLand (userID, new Vector3 (x, y, 0)))
-                            continue;
+			int dx;
+			for (dx = -n; dx <= n; dx++) {
+				int dy;
+				for (dy = -n; dy <= n; dy++) {
+					int x = zx + dx;
+					int y = zy + dy;
+					if (x >= 0 && y >= 0 && x < map.Width && y < map.Height) {
+						if (!map.Scene.Permissions.CanTerraformLand (userID, new Vector3 (x, y, 0)))
+							continue;
 
-                        // Calculate a sphere and add it to the heightmap
-                        float z = 0;
-                        if (duration < 4.0)
-                            z = TerrainUtil.SphericalFactor (x, y, rx, ry, strength) * duration * 0.25f;
+						// Calculate a sphere and add it to the heightmap
+						float z = 0;
+						if (duration < 4.0)
+							z = TerrainUtil.SphericalFactor (x, y, rx, ry, strength) * duration * 0.25f;
 
-                        if (z > 0.0) {
-                            float s = strength * 0.025f;
-                            map [x, y] = (map [x, y] * (1 - s)) + (m_module.TerrainRevertMap [x, y] * s);
-                        }
-                    }
-                }
-            }
-        }
+						if (z > 0.0) {
+							float s = strength * 0.025f;
+							map [x, y] = (map [x, y] * (1 - s)) + (m_module.TerrainRevertMap [x, y] * s);
+						}
+					}
+				}
+			}
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

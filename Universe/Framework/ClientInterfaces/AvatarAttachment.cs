@@ -32,49 +32,48 @@ using OpenMetaverse.StructuredData;
 
 namespace Universe.Framework.ClientInterfaces
 {
-    public class AvatarAttachment
-    {
-        public UUID AssetID;
-        public int AttachPoint;
-        public UUID ItemID;
+	public class AvatarAttachment
+	{
+		public UUID AssetID;
+		public int AttachPoint;
+		public UUID ItemID;
 
-        public AvatarAttachment(AvatarAttachment attach)
-        {
-            AttachPoint = attach.AttachPoint;
-            ItemID = attach.ItemID;
-            AssetID = attach.AssetID;
-        }
+		public AvatarAttachment (AvatarAttachment attach)
+		{
+			AttachPoint = attach.AttachPoint;
+			ItemID = attach.ItemID;
+			AssetID = attach.AssetID;
+		}
 
-        public AvatarAttachment(int point, UUID item, UUID asset)
-        {
-            AttachPoint = point;
-            ItemID = item;
-            AssetID = asset;
-        }
+		public AvatarAttachment (int point, UUID item, UUID asset)
+		{
+			AttachPoint = point;
+			ItemID = item;
+			AssetID = asset;
+		}
 
-        public AvatarAttachment(OSDMap args)
-        {
-            Unpack(args);
-        }
+		public AvatarAttachment (OSDMap args)
+		{
+			Unpack (args);
+		}
 
-        public OSDMap Pack()
-        {
-            OSDMap attachdata = new OSDMap();
-            attachdata["point"] = OSD.FromInteger(AttachPoint);
-            attachdata["item"] = OSD.FromUUID(ItemID);
-            attachdata["asset"] = OSD.FromUUID(AssetID);
+		public OSDMap Pack ()
+		{
+			OSDMap attachdata = new OSDMap ();
+			attachdata ["point"] = OSD.FromInteger (AttachPoint);
+			attachdata ["item"] = OSD.FromUUID (ItemID);
+			attachdata ["asset"] = OSD.FromUUID (AssetID);
 
-            return attachdata;
-        }
+			return attachdata;
+		}
 
 
-        public void Unpack(OSDMap args)
-        {
-            if (args["point"] != null)
-                AttachPoint = args["point"].AsInteger();
-
-            ItemID = (args["item"] != null) ? args["item"].AsUUID() : UUID.Zero;
-            AssetID = (args["asset"] != null) ? args["asset"].AsUUID() : UUID.Zero;
-        }
-    }
+		public void Unpack (OSDMap args)
+		{
+			if (args ["point"] != null)
+				AttachPoint = args ["point"].AsInteger ();
+			ItemID = (args ["item"] != null) ? args ["item"].AsUUID () : UUID.Zero;
+			AssetID = (args ["asset"] != null) ? args ["asset"].AsUUID () : UUID.Zero;
+		}
+	}
 }

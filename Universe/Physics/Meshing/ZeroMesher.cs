@@ -47,35 +47,35 @@ using Universe.Framework.SceneInfo;
 
 namespace Universe.Physics.Meshing
 {
-    public class ZeroMesherPlugin : IMeshingPlugin
-    {
-        #region IMeshingPlugin Members
+	public class ZeroMesherPlugin : IMeshingPlugin
+	{
+		#region IMeshingPlugin Members
 
-        public string GetName ()
-        {
-            return "ZeroMesher";
-        }
+		public string GetName ()
+		{
+			return "ZeroMesher";
+		}
 
-        public IMesher GetMesher (IConfigSource config, IRegistryCore registry)
-        {
-            return new ZeroMesher ();
-        }
+		public IMesher GetMesher (IConfigSource config, IRegistryCore registry)
+		{
+			return new ZeroMesher ();
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 
-    public class ZeroMesher : IMesher
-    {
-        #region IMesher Members
+	public class ZeroMesher : IMesher
+	{
+		#region IMesher Members
 
-        public IMesh CreateMesh (string primName, PrimitiveBaseShape primShape, Vector3 size, float lod, bool isPhysical, bool shouldCache)
-        {
-            // Remove the reference to the encoded JPEG2000 data so it can be GCed
-            primShape.SculptData = Utils.EmptyBytes;
+		public IMesh CreateMesh (string primName, PrimitiveBaseShape primShape, Vector3 size, float lod, bool isPhysical, bool shouldCache)
+		{
+			// Remove the reference to the encoded JPEG2000 data so it can be GCed
+			primShape.SculptData = Utils.EmptyBytes;
 
-            return null;
-        }
+			return null;
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

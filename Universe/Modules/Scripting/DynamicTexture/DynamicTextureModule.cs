@@ -43,399 +43,406 @@ using Universe.Framework.Utilities;
 
 namespace Universe.Modules.Scripting
 {
-    public class DynamicTextureModule : INonSharedRegionModule, IDynamicTextureManager
-    {
-        const int ALL_SIDES = -1;
-
-        public const int DISP_EXPIRE = 1;
-        public const int DISP_TEMP = 2;
-
-        IScene m_scene;
-        readonly Dictionary<string, IDynamicTextureRender> RenderPlugins =
-            new Dictionary<string, IDynamicTextureRender> ();
-
-        readonly Dictionary<UUID, DynamicTextureUpdater> Updaters =
-            new Dictionary<UUID, DynamicTextureUpdater> ();
-
-        #region IDynamicTextureManager Members
-
-        public void RegisterRender (string handleType, IDynamicTextureRender render)
-        {
-            if (!RenderPlugins.ContainsKey (handleType)) {
-                RenderPlugins.Add (handleType, render);
-            }
-        }
-
-        /// <summary>
-        ///     Called by code which actually renders the dynamic texture to supply texture data.
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="data"></param>
-        public void ReturnData (UUID id, byte [] data)
-        {
-            DynamicTextureUpdater updater = null;
-
-            lock (Updaters) {
-                if (Updaters.ContainsKey (id)) {
-                    updater = Updaters [id];
-                }
-            }
-
-            if (updater != null) {
-                updater.DataReceived (data, m_scene);
-
-                if (updater.UpdateTimer == 0) {
-                    lock (Updaters) {
-                        if (!Updaters.ContainsKey (updater.UpdaterID)) {
-                            Updaters.Remove (updater.UpdaterID);
-                        }
-                    }
-                }
-            }
-        }
-
-        public UUID AddDynamicTextureURL (UUID simID, UUID primID, UUID oldAssetID, string contentType, string url,
-                                         string extraParams, int updateTimer)
-        {
-            return AddDynamicTextureURL (simID, primID, oldAssetID, contentType, url, extraParams, updateTimer, false,
-                                        255);
-        }
-
-        public UUID AddDynamicTextureURL (UUID simID, UUID primID, UUID oldAssetID, string contentType, string url,
-                                         string extraParams, int updateTimer, bool SetBlending, byte AlphaValue)
-        {
-            return AddDynamicTextureURL (simID, primID, oldAssetID, contentType, url,
-                                        extraParams, updateTimer, SetBlending,
-                                        (DISP_TEMP | DISP_EXPIRE), AlphaValue, ALL_SIDES);
-        }
-
-        public UUID AddDynamicTextureURL (UUID simID, UUID primID, UUID oldAssetID, string contentType, string url,
-                                         string extraParams, int updateTimer, bool SetBlending,
-                                         int disp, byte AlphaValue, int face)
-        {
-            if (RenderPlugins.ContainsKey (contentType)) {
-                DynamicTextureUpdater updater = new DynamicTextureUpdater {
-                    SimUUID = simID,
-                    PrimID = primID,
-                    ContentType = contentType,
-                    Url = url,
-                    UpdateTimer = updateTimer,
-                    UpdaterID = UUID.Random (),
-                    Params = extraParams,
-                    BlendWithOldTexture = SetBlending,
-                    FrontAlpha = AlphaValue,
-                    Face = face,
-                    Disp = disp,
-                    LastAssetID = oldAssetID
-                };
-
-                lock (Updaters) {
-                    if (!Updaters.ContainsKey (updater.UpdaterID)) {
-                        Updaters.Add (updater.UpdaterID, updater);
-                    }
-                }
-
-                RenderPlugins [contentType].AsyncConvertUrl (updater.UpdaterID, url, extraParams);
-                return updater.UpdaterID;
-            }
-            return UUID.Zero;
-        }
-
-        public UUID AddDynamicTextureData (UUID simID, UUID primID, UUID oldAssetID, string contentType, string data,
-                                          string extraParams, int updateTimer)
-        {
-            return AddDynamicTextureData (simID, primID, oldAssetID, contentType, data, extraParams, updateTimer, false,
-                                         255);
-        }
-
-        public UUID AddDynamicTextureData (UUID simID, UUID primID, UUID oldAssetID, string contentType, string data,
-                                          string extraParams, int updateTimer, bool SetBlending, byte AlphaValue)
-        {
-            return AddDynamicTextureData (simID, primID, oldAssetID, contentType, data, extraParams, updateTimer,
-                                         SetBlending,
-                                         (DISP_TEMP | DISP_EXPIRE), AlphaValue, ALL_SIDES);
-        }
-
-        public UUID AddDynamicTextureData (UUID simID, UUID primID, UUID oldAssetID, string contentType, string data,
-                                          string extraParams, int updateTimer, bool SetBlending, int disp,
-                                          byte AlphaValue, int face)
-        {
-            if (RenderPlugins.ContainsKey (contentType)) {
-                DynamicTextureUpdater updater = new DynamicTextureUpdater {
-                    SimUUID = simID,
-                    PrimID = primID,
-                    ContentType = contentType,
-                    BodyData = data,
-                    UpdateTimer = updateTimer,
-                    UpdaterID = UUID.Random (),
-                    Params = extraParams,
-                    BlendWithOldTexture = SetBlending,
-                    FrontAlpha = AlphaValue,
-                    Face = face,
-                    Url = "Local image",
-                    Disp = disp,
-                    LastAssetID = oldAssetID
-                };
-
-                lock (Updaters) {
-                    if (!Updaters.ContainsKey (updater.UpdaterID)) {
-                        Updaters.Add (updater.UpdaterID, updater);
-                    }
-                }
-
-                RenderPlugins [contentType].AsyncConvertData (updater.UpdaterID, data, extraParams);
-                return updater.UpdaterID;
-            }
-            return UUID.Zero;
-        }
-
-        public void GetDrawStringSize (string contentType, string text, string fontName, int fontSize,
-                                      out double xSize, out double ySize)
-        {
-            xSize = 0;
-            ySize = 0;
-            if (RenderPlugins.ContainsKey (contentType)) {
-                RenderPlugins [contentType].GetDrawStringSize (text, fontName, fontSize, out xSize, out ySize);
-            }
-        }
-
-        #endregion
-
-        #region INonSharedRegionModule Members
-
-        public void Initialize (IConfigSource config)
-        {
-        }
-
-        public void AddRegion (IScene scene)
-        {
-            m_scene = scene;
-            scene.RegisterModuleInterface<IDynamicTextureManager> (this);
-        }
-
-        public void RemoveRegion (IScene scene)
-        {
-        }
-
-        public void RegionLoaded (IScene scene)
-        {
-        }
-
-        public Type ReplaceableInterface {
-            get { return null; }
-        }
-
-        public void Close ()
-        {
-        }
-
-        public string Name {
-            get { return "DynamicTextureModule"; }
-        }
-
-        #endregion
-
-        #region Nested type: DynamicTextureUpdater
-
-        public class DynamicTextureUpdater
-        {
-            public bool BlendWithOldTexture;
-            public string BodyData;
-            public string ContentType;
-            public int Disp;
-            public int Face;
-            public byte FrontAlpha = 255;
-            public UUID LastAssetID = UUID.Zero;
-            public string Params;
-            public UUID PrimID;
-            public bool SetNewFrontAlpha;
-            public UUID SimUUID;
-            public int UpdateTimer;
-            public UUID UpdaterID;
-            public string Url;
-
-            public DynamicTextureUpdater ()
-            {
-                UpdateTimer = 0;
-                BodyData = null;
-            }
-
-            /// <summary>
-            ///     Called once new texture data has been received for this updater.
-            /// </summary>
-            public void DataReceived (byte [] data, IScene scene)
-            {
-                ISceneChildEntity part = scene.GetSceneObjectPart (PrimID);
-
-                if (part == null || data == null || data.Length <= 1) {
-                    IChatModule chatModule = scene.RequestModuleInterface<IChatModule> ();
-                    if (chatModule != null) {
-                        string msg =
-                        string.Format ("DynamicTextureModule: Error preparing image using URL {0}", Url);
-                        if (part != null)
-                            chatModule.SimChat (msg, ChatTypeEnum.Say, 0,
-                                                part.ParentEntity.AbsolutePosition, part.Name, part.UUID, false, scene);
-                        else
-                            chatModule.SimChat (msg, ChatTypeEnum.Say, 0,
-                                                new Vector3 (), "Unknown", UUID.Zero, false, scene);
-                    }
-                    return;
-                }
-
-                byte [] assetData = null;
-                AssetBase oldAsset = null;
-
-                if (BlendWithOldTexture) {
-                    Primitive.TextureEntryFace defaultFace = part.Shape.Textures.DefaultTexture;
-                    if (defaultFace != null) {
-                        oldAsset = scene.AssetService.Get (defaultFace.TextureID.ToString ());
-
-                        if (oldAsset != null)
-                            assetData = BlendTextures (data, oldAsset.Data, SetNewFrontAlpha, FrontAlpha, scene);
-                    }
-                }
-
-                if (assetData == null) {
-                    assetData = new byte [data.Length];
-                    Array.Copy (data, assetData, data.Length);
-                }
-
-                AssetBase asset = null;
-
-                if (LastAssetID != UUID.Zero) {
-                    asset = scene.AssetService.Get (LastAssetID.ToString ());
-                    if (asset != null) {
-                        asset.Description = string.Format ("URL image : {0}", Url);
-                        asset.Data = assetData;
-                        if ((asset.Flags & AssetFlags.Local) == AssetFlags.Local) {
-                            asset.Flags = asset.Flags & ~AssetFlags.Local;
-                        }
-                        if (((asset.Flags & AssetFlags.Temporary) == AssetFlags.Temporary) != ((Disp & DISP_TEMP) != 0)) {
-                            if ((Disp & DISP_TEMP) != 0) asset.Flags |= AssetFlags.Temporary;
-                            else asset.Flags = asset.Flags & ~AssetFlags.Temporary;
-                        }
-                        asset.ID = scene.AssetService.Store (asset);
-                    }
-                } 
-
-                // either we have no LastAssetID or the above failed to retrieve the asset...so...
-                if (asset == null) {
-                    // Create a new asset for user
-                    asset = new AssetBase (UUID.Random (), "DynamicImage" + Util.RandomClass.Next (1, 10000),
-                                          AssetType.Texture,
-                                          scene.RegionInfo.RegionID) { Data = assetData, Description = string.Format ("URL image : {0}", Url) };
-                    if ((Disp & DISP_TEMP) != 0) asset.Flags = AssetFlags.Temporary;
-                    asset.ID = scene.AssetService.Store (asset);
-                }
-
-                IJ2KDecoder cacheLayerDecode = scene.RequestModuleInterface<IJ2KDecoder> ();
-                if (cacheLayerDecode != null) {
-                    cacheLayerDecode.Decode (asset.ID, asset.Data);
-                    cacheLayerDecode = null;
-                    LastAssetID = asset.ID;
-                }
-
-                UUID oldID = UUID.Zero;
-
-                lock (part) {
-                    // mostly keep the values from before
-                    Primitive.TextureEntry tmptex = part.Shape.Textures;
-
-                    // remove the old asset from the cache
-                    oldID = tmptex.DefaultTexture.TextureID;
-
-                    if (Face == ALL_SIDES) {
-                        tmptex.DefaultTexture.TextureID = asset.ID;
-                    } else {
-                        try {
-                            Primitive.TextureEntryFace texface = tmptex.CreateFace ((uint)Face);
-                            texface.TextureID = asset.ID;
-                            tmptex.FaceTextures [Face] = texface;
-                        } catch (Exception) {
-                            tmptex.DefaultTexture.TextureID = asset.ID;
-                        }
-                    }
-
-                    // I'm pretty sure we always want to force this to true
-                    // I'm pretty sure no one wants to set fullbright true if it wasn't true before.
-                    // tmptex.DefaultTexture.Fullbright = true;
-
-                    part.UpdateTexture (tmptex, true);
-                }
-
-                if (oldID != UUID.Zero && ((Disp & DISP_EXPIRE) != 0)) {
-                    if (oldAsset == null) oldAsset = scene.AssetService.Get (oldID.ToString ());
-                    if (oldAsset != null) {
-                        if ((oldAsset.Flags & AssetFlags.Temporary) == AssetFlags.Temporary) {
-                            scene.AssetService.Delete (oldID);
-                        }
-                    }
-                }
-
-                if (oldAsset != null)
-                    oldAsset.Dispose ();
-                asset.Dispose ();
-            }
-
-            byte [] BlendTextures (byte [] frontImage, byte [] backImage, bool setNewAlpha, byte newAlpha,
-                                         IScene scene)
-            {
-                Image image = scene.RequestModuleInterface<IJ2KDecoder> ().DecodeToImage (frontImage);
-
-                if (image != null) {
-                    Bitmap image1 = new Bitmap (image);
-
-                    image = scene.RequestModuleInterface<IJ2KDecoder> ().DecodeToImage (backImage);
-                    if (image != null) {
-                        Bitmap image2 = new Bitmap (image);
-
-                        if (setNewAlpha)
-                            SetAlpha (ref image1, newAlpha);
-
-                        Bitmap joint = MergeBitMaps (image1, image2);
-
-                        byte [] result = new byte [0];
-
-                        try {
-                            result = OpenJPEG.EncodeFromImage (joint, true);
-                        } catch (Exception) {
-                            MainConsole.Instance.Error (
-                                "[Dynamic texture]: OpenJpeg Encode Failed.  Empty byte data returned!");
-                        }
-
-                        return result;
-                    }
-                }
-
-                return null;
-            }
-
-            public Bitmap MergeBitMaps (Bitmap front, Bitmap back)
-            {
-                Bitmap joint;
-                Graphics jG;
-
-                joint = new Bitmap (back.Width, back.Height, PixelFormat.Format32bppArgb);
-                jG = Graphics.FromImage (joint);
-
-                jG.DrawImage (back, 0, 0, back.Width, back.Height);
-                jG.DrawImage (front, 0, 0, back.Width, back.Height);
-
-                jG.Dispose ();
-
-                return joint;
-            }
-
-            void SetAlpha (ref Bitmap b, byte alpha)
-            {
-                for (int w = 0; w < b.Width; w++) {
-                    for (int h = 0; h < b.Height; h++) {
-                        b.SetPixel (w, h, Color.FromArgb (alpha, b.GetPixel (w, h)));
-                    }
-                }
-            }
-        }
-
-        #endregion
-    }
+	public class DynamicTextureModule : INonSharedRegionModule, IDynamicTextureManager
+	{
+		const int ALL_SIDES = -1;
+
+		public const int DISP_EXPIRE = 1;
+		public const int DISP_TEMP = 2;
+
+		IScene m_scene;
+		readonly Dictionary<string, IDynamicTextureRender> RenderPlugins =
+			new Dictionary<string, IDynamicTextureRender> ();
+
+		readonly Dictionary<UUID, DynamicTextureUpdater> Updaters =
+			new Dictionary<UUID, DynamicTextureUpdater> ();
+
+		#region IDynamicTextureManager Members
+
+		public void RegisterRender (string handleType, IDynamicTextureRender render)
+		{
+			if (!RenderPlugins.ContainsKey (handleType)) {
+				RenderPlugins.Add (handleType, render);
+			}
+		}
+
+		/// <summary>
+		///     Called by code which actually renders the dynamic texture to supply texture data.
+		/// </summary>
+		/// <param name="id"></param>
+		/// <param name="data"></param>
+		public void ReturnData (UUID id, byte[] data)
+		{
+			DynamicTextureUpdater updater = null;
+
+			lock (Updaters) {
+				if (Updaters.ContainsKey (id)) {
+					updater = Updaters [id];
+				}
+			}
+
+			if (updater != null) {
+				updater.DataReceived (data, m_scene);
+
+				if (updater.UpdateTimer == 0) {
+					lock (Updaters) {
+						if (!Updaters.ContainsKey (updater.UpdaterID)) {
+							Updaters.Remove (updater.UpdaterID);
+						}
+					}
+				}
+			}
+		}
+
+		public UUID AddDynamicTextureURL (UUID simID, UUID primID, UUID oldAssetID, string contentType, string url,
+		                                        string extraParams, int updateTimer)
+		{
+			return AddDynamicTextureURL (simID, primID, oldAssetID, contentType, url, extraParams, updateTimer, false,
+				255);
+		}
+
+		public UUID AddDynamicTextureURL (UUID simID, UUID primID, UUID oldAssetID, string contentType, string url,
+		                                        string extraParams, int updateTimer, bool SetBlending, byte AlphaValue)
+		{
+			return AddDynamicTextureURL (simID, primID, oldAssetID, contentType, url,
+				extraParams, updateTimer, SetBlending,
+				(DISP_TEMP | DISP_EXPIRE), AlphaValue, ALL_SIDES);
+		}
+
+		public UUID AddDynamicTextureURL (UUID simID, UUID primID, UUID oldAssetID, string contentType, string url,
+		                                        string extraParams, int updateTimer, bool SetBlending,
+		                                        int disp, byte AlphaValue, int face)
+		{
+			if (RenderPlugins.ContainsKey (contentType)) {
+				DynamicTextureUpdater updater = new DynamicTextureUpdater {
+					SimUUID = simID,
+					PrimID = primID,
+					ContentType = contentType,
+					Url = url,
+					UpdateTimer = updateTimer,
+					UpdaterID = UUID.Random (),
+					Params = extraParams,
+					BlendWithOldTexture = SetBlending,
+					FrontAlpha = AlphaValue,
+					Face = face,
+					Disp = disp,
+					LastAssetID = oldAssetID
+				};
+
+				lock (Updaters) {
+					if (!Updaters.ContainsKey (updater.UpdaterID)) {
+						Updaters.Add (updater.UpdaterID, updater);
+					}
+				}
+
+				RenderPlugins [contentType].AsyncConvertUrl (updater.UpdaterID, url, extraParams);
+				return updater.UpdaterID;
+			}
+			return UUID.Zero;
+		}
+
+		public UUID AddDynamicTextureData (UUID simID, UUID primID, UUID oldAssetID, string contentType, string data,
+		                                         string extraParams, int updateTimer)
+		{
+			return AddDynamicTextureData (simID, primID, oldAssetID, contentType, data, extraParams, updateTimer, false,
+				255);
+		}
+
+		public UUID AddDynamicTextureData (UUID simID, UUID primID, UUID oldAssetID, string contentType, string data,
+		                                         string extraParams, int updateTimer, bool SetBlending, byte AlphaValue)
+		{
+			return AddDynamicTextureData (simID, primID, oldAssetID, contentType, data, extraParams, updateTimer,
+				SetBlending,
+				(DISP_TEMP | DISP_EXPIRE), AlphaValue, ALL_SIDES);
+		}
+
+		public UUID AddDynamicTextureData (UUID simID, UUID primID, UUID oldAssetID, string contentType, string data,
+		                                         string extraParams, int updateTimer, bool SetBlending, int disp,
+		                                         byte AlphaValue, int face)
+		{
+			if (RenderPlugins.ContainsKey (contentType)) {
+				DynamicTextureUpdater updater = new DynamicTextureUpdater {
+					SimUUID = simID,
+					PrimID = primID,
+					ContentType = contentType,
+					BodyData = data,
+					UpdateTimer = updateTimer,
+					UpdaterID = UUID.Random (),
+					Params = extraParams,
+					BlendWithOldTexture = SetBlending,
+					FrontAlpha = AlphaValue,
+					Face = face,
+					Url = "Local image",
+					Disp = disp,
+					LastAssetID = oldAssetID
+				};
+
+				lock (Updaters) {
+					if (!Updaters.ContainsKey (updater.UpdaterID)) {
+						Updaters.Add (updater.UpdaterID, updater);
+					}
+				}
+
+				RenderPlugins [contentType].AsyncConvertData (updater.UpdaterID, data, extraParams);
+				return updater.UpdaterID;
+			}
+			return UUID.Zero;
+		}
+
+		public void GetDrawStringSize (string contentType, string text, string fontName, int fontSize,
+		                                     out double xSize, out double ySize)
+		{
+			xSize = 0;
+			ySize = 0;
+			if (RenderPlugins.ContainsKey (contentType)) {
+				RenderPlugins [contentType].GetDrawStringSize (text, fontName, fontSize, out xSize, out ySize);
+			}
+		}
+
+		#endregion
+
+		#region INonSharedRegionModule Members
+
+		public void Initialize (IConfigSource config)
+		{
+		}
+
+		public void AddRegion (IScene scene)
+		{
+			m_scene = scene;
+			scene.RegisterModuleInterface<IDynamicTextureManager> (this);
+		}
+
+		public void RemoveRegion (IScene scene)
+		{
+		}
+
+		public void RegionLoaded (IScene scene)
+		{
+		}
+
+		public Type ReplaceableInterface {
+			get { return null; }
+		}
+
+		public void Close ()
+		{
+		}
+
+		public string Name {
+			get { return "DynamicTextureModule"; }
+		}
+
+		#endregion
+
+		#region Nested type: DynamicTextureUpdater
+
+		public class DynamicTextureUpdater
+		{
+			public bool BlendWithOldTexture;
+			public string BodyData;
+			public string ContentType;
+			public int Disp;
+			public int Face;
+			public byte FrontAlpha = 255;
+			public UUID LastAssetID = UUID.Zero;
+			public string Params;
+			public UUID PrimID;
+			public bool SetNewFrontAlpha;
+			public UUID SimUUID;
+			public int UpdateTimer;
+			public UUID UpdaterID;
+			public string Url;
+
+			public DynamicTextureUpdater ()
+			{
+				UpdateTimer = 0;
+				BodyData = null;
+			}
+
+			/// <summary>
+			///     Called once new texture data has been received for this updater.
+			/// </summary>
+			public void DataReceived (byte[] data, IScene scene)
+			{
+				ISceneChildEntity part = scene.GetSceneObjectPart (PrimID);
+
+				if (part == null || data == null || data.Length <= 1) {
+					IChatModule chatModule = scene.RequestModuleInterface<IChatModule> ();
+					if (chatModule != null) {
+						string msg =
+							string.Format ("DynamicTextureModule: Error preparing image using URL {0}", Url);
+						if (part != null)
+							chatModule.SimChat (msg, ChatTypeEnum.Say, 0,
+								part.ParentEntity.AbsolutePosition, part.Name, part.UUID, false, scene);
+						else
+							chatModule.SimChat (msg, ChatTypeEnum.Say, 0,
+								new Vector3 (), "Unknown", UUID.Zero, false, scene);
+					}
+					return;
+				}
+
+				byte[] assetData = null;
+				AssetBase oldAsset = null;
+
+				if (BlendWithOldTexture) {
+					Primitive.TextureEntryFace defaultFace = part.Shape.Textures.DefaultTexture;
+					if (defaultFace != null) {
+						oldAsset = scene.AssetService.Get (defaultFace.TextureID.ToString ());
+
+						if (oldAsset != null)
+							assetData = BlendTextures (data, oldAsset.Data, SetNewFrontAlpha, FrontAlpha, scene);
+					}
+				}
+
+				if (assetData == null) {
+					assetData = new byte [data.Length];
+					Array.Copy (data, assetData, data.Length);
+				}
+
+				AssetBase asset = null;
+
+				if (LastAssetID != UUID.Zero) {
+					asset = scene.AssetService.Get (LastAssetID.ToString ());
+					if (asset != null) {
+						asset.Description = string.Format ("URL image : {0}", Url);
+						asset.Data = assetData;
+						if ((asset.Flags & AssetFlags.Local) == AssetFlags.Local) {
+							asset.Flags = asset.Flags & ~AssetFlags.Local;
+						}
+						if (((asset.Flags & AssetFlags.Temporary) == AssetFlags.Temporary) != ((Disp & DISP_TEMP) != 0)) {
+							if ((Disp & DISP_TEMP) != 0)
+								asset.Flags |= AssetFlags.Temporary;
+							else
+								asset.Flags = asset.Flags & ~AssetFlags.Temporary;
+						}
+						asset.ID = scene.AssetService.Store (asset);
+					}
+				} 
+
+				// either we have no LastAssetID or the above failed to retrieve the asset...so...
+				if (asset == null) {
+					// Create a new asset for user
+					asset = new AssetBase (UUID.Random (), "DynamicImage" + Util.RandomClass.Next (1, 10000),
+						AssetType.Texture,
+						scene.RegionInfo.RegionID) {
+						Data = assetData,
+						Description = string.Format ("URL image : {0}", Url)
+					};
+					if ((Disp & DISP_TEMP) != 0)
+						asset.Flags = AssetFlags.Temporary;
+					asset.ID = scene.AssetService.Store (asset);
+				}
+
+				IJ2KDecoder cacheLayerDecode = scene.RequestModuleInterface<IJ2KDecoder> ();
+				if (cacheLayerDecode != null) {
+					cacheLayerDecode.Decode (asset.ID, asset.Data);
+					cacheLayerDecode = null;
+					LastAssetID = asset.ID;
+				}
+
+				UUID oldID = UUID.Zero;
+
+				lock (part) {
+					// mostly keep the values from before
+					Primitive.TextureEntry tmptex = part.Shape.Textures;
+
+					// remove the old asset from the cache
+					oldID = tmptex.DefaultTexture.TextureID;
+
+					if (Face == ALL_SIDES) {
+						tmptex.DefaultTexture.TextureID = asset.ID;
+					} else {
+						try {
+							Primitive.TextureEntryFace texface = tmptex.CreateFace ((uint)Face);
+							texface.TextureID = asset.ID;
+							tmptex.FaceTextures [Face] = texface;
+						} catch (Exception) {
+							tmptex.DefaultTexture.TextureID = asset.ID;
+						}
+					}
+
+					// I'm pretty sure we always want to force this to true
+					// I'm pretty sure no one wants to set fullbright true if it wasn't true before.
+					// tmptex.DefaultTexture.Fullbright = true;
+
+					part.UpdateTexture (tmptex, true);
+				}
+
+				if (oldID != UUID.Zero && ((Disp & DISP_EXPIRE) != 0)) {
+					if (oldAsset == null)
+						oldAsset = scene.AssetService.Get (oldID.ToString ());
+					if (oldAsset != null) {
+						if ((oldAsset.Flags & AssetFlags.Temporary) == AssetFlags.Temporary) {
+							scene.AssetService.Delete (oldID);
+						}
+					}
+				}
+
+				if (oldAsset != null)
+					oldAsset.Dispose ();
+				asset.Dispose ();
+			}
+
+			byte [] BlendTextures (byte[] frontImage, byte[] backImage, bool setNewAlpha, byte newAlpha,
+			                                IScene scene)
+			{
+				Image image = scene.RequestModuleInterface<IJ2KDecoder> ().DecodeToImage (frontImage);
+
+				if (image != null) {
+					Bitmap image1 = new Bitmap (image);
+
+					image = scene.RequestModuleInterface<IJ2KDecoder> ().DecodeToImage (backImage);
+					if (image != null) {
+						Bitmap image2 = new Bitmap (image);
+
+						if (setNewAlpha)
+							SetAlpha (ref image1, newAlpha);
+
+						Bitmap joint = MergeBitMaps (image1, image2);
+
+						byte[] result = new byte [0];
+
+						try {
+							result = OpenJPEG.EncodeFromImage (joint, true);
+						} catch (Exception) {
+							MainConsole.Instance.Error (
+								"[Dynamic texture]: OpenJpeg Encode Failed.  Empty byte data returned!");
+						}
+
+						return result;
+					}
+				}
+
+				return null;
+			}
+
+			public Bitmap MergeBitMaps (Bitmap front, Bitmap back)
+			{
+				Bitmap joint;
+				Graphics jG;
+
+				joint = new Bitmap (back.Width, back.Height, PixelFormat.Format32bppArgb);
+				jG = Graphics.FromImage (joint);
+
+				jG.DrawImage (back, 0, 0, back.Width, back.Height);
+				jG.DrawImage (front, 0, 0, back.Width, back.Height);
+
+				jG.Dispose ();
+
+				return joint;
+			}
+
+			void SetAlpha (ref Bitmap b, byte alpha)
+			{
+				for (int w = 0; w < b.Width; w++) {
+					for (int h = 0; h < b.Height; h++) {
+						b.SetPixel (w, h, Color.FromArgb (alpha, b.GetPixel (w, h)));
+					}
+				}
+			}
+		}
+
+		#endregion
+	}
 }

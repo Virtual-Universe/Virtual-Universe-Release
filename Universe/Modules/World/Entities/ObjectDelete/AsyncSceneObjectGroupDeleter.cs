@@ -42,168 +42,169 @@ using Universe.Framework.Utilities;
 
 namespace Universe.Modules.Entities.ObjectDelete
 {
-    public class DeleteToInventoryHolder
-    {
-        public DeRezAction action;
-        public UUID agentId;
-        public UUID folderID;
-        public List<ISceneEntity> objectGroups;
-        public bool permissionToDelete;
-        public bool permissionToTake;
-    }
+	public class DeleteToInventoryHolder
+	{
+		public DeRezAction action;
+		public UUID agentId;
+		public UUID folderID;
+		public List<ISceneEntity> objectGroups;
+		public bool permissionToDelete;
+		public bool permissionToTake;
+	}
 
-    /// <summary>
-    ///     Asynchronously de-rez objects.  This is used to de-rez large number of objects to inventory without holding
-    ///     up the main client thread.
-    /// </summary>
-    public class AsyncSceneObjectGroupDeleter : INonSharedRegionModule, IAsyncSceneObjectGroupDeleter
-    {
-        readonly ConcurrentQueue<DeleteToInventoryHolder> m_removeFromSimQueue = new ConcurrentQueue<DeleteToInventoryHolder> ();
+	/// <summary>
+	///     Asynchronously de-rez objects.  This is used to de-rez large number of objects to inventory without holding
+	///     up the main client thread.
+	/// </summary>
+	public class AsyncSceneObjectGroupDeleter : INonSharedRegionModule, IAsyncSceneObjectGroupDeleter
+	{
+		readonly ConcurrentQueue<DeleteToInventoryHolder> m_removeFromSimQueue =
+			new ConcurrentQueue<DeleteToInventoryHolder> ();
 
-        bool DeleteLoopInUse;
+		bool DeleteLoopInUse;
 
-        /// <value>
-        ///     Is the module currently enabled?
-        /// </value>
-        public bool Enabled;
+		/// <value>
+		///     Is the module currently enabled?
+		/// </value>
+		public bool Enabled;
 
-        IScene m_scene;
+		IScene m_scene;
 
-        #region INonSharedRegionModule Members
+		#region INonSharedRegionModule Members
 
-        public string Name {
-            get { return "AsyncSceneObjectGroupDeleter"; }
-        }
+		public string Name {
+			get { return "AsyncSceneObjectGroupDeleter"; }
+		}
 
-        public Type ReplaceableInterface {
-            get { return null; }
-        }
+		public Type ReplaceableInterface {
+			get { return null; }
+		}
 
-        public void Initialize (IConfigSource source)
-        {
-        }
+		public void Initialize (IConfigSource source)
+		{
+		}
 
-        public void Close ()
-        {
-        }
+		public void Close ()
+		{
+		}
 
-        public void AddRegion (IScene scene)
-        {
-            scene.RegisterModuleInterface<IAsyncSceneObjectGroupDeleter> (this);
-            m_scene = scene;
-        }
+		public void AddRegion (IScene scene)
+		{
+			scene.RegisterModuleInterface<IAsyncSceneObjectGroupDeleter> (this);
+			m_scene = scene;
+		}
 
-        public void RemoveRegion (IScene scene)
-        {
-            scene.UnregisterModuleInterface<IAsyncSceneObjectGroupDeleter> (this);
-        }
+		public void RemoveRegion (IScene scene)
+		{
+			scene.UnregisterModuleInterface<IAsyncSceneObjectGroupDeleter> (this);
+		}
 
-        public void RegionLoaded (IScene scene)
-        {
-        }
+		public void RegionLoaded (IScene scene)
+		{
+		}
 
-        #endregion
+		#endregion
 
-        #region Delete To Inventory
+		#region Delete To Inventory
 
-        /// <summary>
-        ///     Delete the given object from the scene
-        /// </summary>
-        public void DeleteToInventory (DeRezAction action, UUID folderID,
-                                      List<ISceneEntity> objectGroups, UUID agentId,
-                                      bool permissionToDelete, bool permissionToTake)
-        {
-            DeleteToInventoryHolder dtis = new DeleteToInventoryHolder {
-                action = action,
-                folderID = folderID,
-                objectGroups = objectGroups,
-                agentId = agentId,
-                permissionToDelete = permissionToDelete,
-                permissionToTake = permissionToTake
-            };
-            //Do this before the locking so that the objects 'appear' gone and the client doesn't think things have gone wrong
-            if (permissionToDelete) {
-                DeleteGroups (objectGroups);
-            }
+		/// <summary>
+		///     Delete the given object from the scene
+		/// </summary>
+		public void DeleteToInventory (DeRezAction action, UUID folderID,
+		                               List<ISceneEntity> objectGroups, UUID agentId,
+		                               bool permissionToDelete, bool permissionToTake)
+		{
+			DeleteToInventoryHolder dtis = new DeleteToInventoryHolder {
+				action = action,
+				folderID = folderID,
+				objectGroups = objectGroups,
+				agentId = agentId,
+				permissionToDelete = permissionToDelete,
+				permissionToTake = permissionToTake
+			};
+			//Do this before the locking so that the objects 'appear' gone and the client doesn't think things have gone wrong
+			if (permissionToDelete) {
+				DeleteGroups (objectGroups);
+			}
 
-            m_removeFromSimQueue.Enqueue (dtis);
+			m_removeFromSimQueue.Enqueue (dtis);
 
-            if (!DeleteLoopInUse) {
-                DeleteLoopInUse = true;
-                //MainConsole.Instance.Debug("[SCENE]: Starting delete loop");
-                Util.FireAndForget (DoDeleteObject);
-            }
-        }
+			if (!DeleteLoopInUse) {
+				DeleteLoopInUse = true;
+				//MainConsole.Instance.Debug("[SCENE]: Starting delete loop");
+				Util.FireAndForget (DoDeleteObject);
+			}
+		}
 
-        void DeleteGroups (List<ISceneEntity> objectGroups)
-        {
-            lock (objectGroups) {
-                m_scene.ForEachScenePresence (delegate (IScenePresence avatar) {
-                    foreach (ISceneEntity grp in objectGroups) {
-                        if (avatar != null && avatar.ControllingClient != null)
-                            avatar.ControllingClient.SendKillObject (
-                                m_scene.RegionInfo.RegionHandle,
-                                grp.ChildrenEntities ().ToArray ());
-                    }
-                });
-            }
-        }
+		void DeleteGroups (List<ISceneEntity> objectGroups)
+		{
+			lock (objectGroups) {
+				m_scene.ForEachScenePresence (delegate (IScenePresence avatar) {
+					foreach (ISceneEntity grp in objectGroups) {
+						if (avatar != null && avatar.ControllingClient != null)
+							avatar.ControllingClient.SendKillObject (
+								m_scene.RegionInfo.RegionHandle,
+								grp.ChildrenEntities ().ToArray ());
+					}
+				});
+			}
+		}
 
-        public void DoDeleteObject (object o)
-        {
-            if (DeleteObject ()) {
-                //Requeue us if there is some left
-                Thread.Sleep (5);
-                DoDeleteObject (o);
-            } else {
-                DeleteLoopInUse = false;
-                //MainConsole.Instance.Debug("[SCENE]: Ending delete loop");
-            }
-        }
+		public void DoDeleteObject (object o)
+		{
+			if (DeleteObject ()) {
+				//Requeue us if there is some left
+				Thread.Sleep (5);
+				DoDeleteObject (o);
+			} else {
+				DeleteLoopInUse = false;
+				//MainConsole.Instance.Debug("[SCENE]: Ending delete loop");
+			}
+		}
 
-        public bool DeleteObject ()
-        {
-            DeleteToInventoryHolder x = null;
+		public bool DeleteObject ()
+		{
+			DeleteToInventoryHolder x = null;
 
-            try {
-                if (m_removeFromSimQueue.TryDequeue (out x)) {
-                    MainConsole.Instance.DebugFormat (
-                        "[Scene]: Sending object to user's inventory, {0} item(s) remaining.",
-                        m_removeFromSimQueue.Count);
+			try {
+				if (m_removeFromSimQueue.TryDequeue (out x)) {
+					MainConsole.Instance.DebugFormat (
+						"[Scene]: Sending object to user's inventory, {0} item(s) remaining.",
+						m_removeFromSimQueue.Count);
 
-                    if (x.permissionToTake) {
-                        try {
-                            IInventoryAccessModule invAccess = m_scene.RequestModuleInterface<IInventoryAccessModule> ();
-                            UUID itemID;
-                            if (invAccess != null)
-                                invAccess.DeleteToInventory (x.action, x.folderID, x.objectGroups, x.agentId, out itemID);
-                        } catch (Exception e) {
-                            MainConsole.Instance.ErrorFormat (
-                                "[Async deleter]: Exception background sending object: {0}{1}", e.Message, e.StackTrace);
-                        }
-                    }
+					if (x.permissionToTake) {
+						try {
+							IInventoryAccessModule invAccess = m_scene.RequestModuleInterface<IInventoryAccessModule> ();
+							UUID itemID;
+							if (invAccess != null)
+								invAccess.DeleteToInventory (x.action, x.folderID, x.objectGroups, x.agentId, out itemID);
+						} catch (Exception e) {
+							MainConsole.Instance.ErrorFormat (
+								"[Async deleter]: Exception background sending object: {0}{1}", e.Message, e.StackTrace);
+						}
+					}
 
-                    //AR: Moved Delete To After Object Taken To Inventory. Prevents script variables not being updated before taken to inventory
-                    if (x.permissionToDelete) {
-                        IBackupModule backup = m_scene.RequestModuleInterface<IBackupModule> ();
-                        if (backup != null)
-                            backup.DeleteSceneObjects (x.objectGroups.ToArray (), true, true);
-                    }
-                    return true;
-                }
-            } catch (Exception e) {
-                // We can't put the object group details in here since the root part may have disappeared (which is where these sit).
-                // FIXME: This needs to be fixed.
-                MainConsole.Instance.ErrorFormat (
-                    "[Scene]: Queued sending of scene object to agent {0} {1} failed: {2}",
-                    (x != null ? x.agentId.ToString () : "unavailable"),
-                    (x != null ? x.agentId.ToString () : "unavailable"), e);
-            }
+					//AR: Moved Delete To After Object Taken To Inventory. Prevents script variables not being updated before taken to inventory
+					if (x.permissionToDelete) {
+						IBackupModule backup = m_scene.RequestModuleInterface<IBackupModule> ();
+						if (backup != null)
+							backup.DeleteSceneObjects (x.objectGroups.ToArray (), true, true);
+					}
+					return true;
+				}
+			} catch (Exception e) {
+				// We can't put the object group details in here since the root part may have disappeared (which is where these sit).
+				// FIXME: This needs to be fixed.
+				MainConsole.Instance.ErrorFormat (
+					"[Scene]: Queued sending of scene object to agent {0} {1} failed: {2}",
+					(x != null ? x.agentId.ToString () : "unavailable"),
+					(x != null ? x.agentId.ToString () : "unavailable"), e);
+			}
 
-            //MainConsole.Instance.Debug("[SCENE]: No objects left in delete queue.");
-            return false;
-        }
+			//MainConsole.Instance.Debug("[SCENE]: No objects left in delete queue.");
+			return false;
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

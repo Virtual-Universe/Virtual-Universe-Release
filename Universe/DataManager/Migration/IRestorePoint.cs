@@ -31,8 +31,8 @@ using Universe.Framework.Utilities;
 
 namespace Universe.DataManager.Migration
 {
-    public interface IRestorePoint
-    {
-        void DoRestore(IDataConnector genericData);
-    }
+	public interface IRestorePoint
+	{
+		void DoRestore (IDataConnector genericData);
+	}
 }

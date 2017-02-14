@@ -32,34 +32,31 @@ using OpenMetaverse;
 
 namespace Universe.ScriptEngine.VirtualScript.MiniModule
 {
-    class SEUser : MarshalByRefObject, ISocialEntity
-    {
-        readonly string m_name;
-        readonly UUID m_uuid;
+	class SEUser : MarshalByRefObject, ISocialEntity
+	{
+		readonly string m_name;
+		readonly UUID m_uuid;
 
-        public SEUser(UUID uuid, string name)
-        {
-            m_uuid = uuid;
-            m_name = name;
-        }
+		public SEUser (UUID uuid, string name)
+		{
+			m_uuid = uuid;
+			m_name = name;
+		}
 
-        #region ISocialEntity Members
+		#region ISocialEntity Members
 
-        public UUID GlobalID
-        {
-            get { return m_uuid; }
-        }
+		public UUID GlobalID {
+			get { return m_uuid; }
+		}
 
-        public string Name
-        {
-            get { return m_name; }
-        }
+		public string Name {
+			get { return m_name; }
+		}
 
-        public bool IsUser
-        {
-            get { return true; }
-        }
+		public bool IsUser {
+			get { return true; }
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

@@ -36,147 +36,131 @@ using Universe.Framework.SceneInfo;
 
 namespace Universe.Physics.BasicPhysicsPlugin
 {
-    public class BasicScene : PhysicsScene
-    {
-        readonly List<PhysicsActor> _actors = new List<PhysicsActor>();
-        short[] _heightMap;
-        RegionInfo m_region;
+	public class BasicScene : PhysicsScene
+	{
+		readonly List<PhysicsActor> _actors = new List<PhysicsActor> ();
+		short[] _heightMap;
+		RegionInfo m_region;
 
-        public BasicScene()
-        {
-        }
+		public BasicScene ()
+		{
+		}
 
-        public override string EngineType { get { return "BasicScene"; } }
+		public override string EngineType { get { return "BasicScene"; } }
 
-        public override bool DisableCollisions
-        {
-            get { return false; }
-            set { }
-        }
+		public override bool DisableCollisions {
+			get { return false; }
+			set { }
+		}
 
-        public override bool UseUnderWaterPhysics
-        {
-            get { return false; }
-        }
+		public override bool UseUnderWaterPhysics {
+			get { return false; }
+		}
 
-        public override void Initialize(IMesher meshmerizer, IScene scene)
-        {
-            m_region = scene.RegionInfo;
-        }
+		public override void Initialize (IMesher meshmerizer, IScene scene)
+		{
+			m_region = scene.RegionInfo;
+		}
 
-        public override void PostInitialize(IConfigSource config)
-        {
-        }
+		public override void PostInitialize (IConfigSource config)
+		{
+		}
 
-        public override void Dispose()
-        {
-        }
+		public override void Dispose ()
+		{
+		}
 
-        public override PhysicsActor AddAvatar(string avName, Vector3 position, Quaternion rotation, Vector3 size,
-                                                   bool isFlying, uint localID, UUID UUID)
-        {
-            BasicCharacterActor act = new BasicCharacterActor {Position = position, Flying = isFlying};
-            _actors.Add(act);
-            return act;
-        }
+		public override PhysicsActor AddAvatar (string avName, Vector3 position, Quaternion rotation, Vector3 size,
+		                                             bool isFlying, uint localID, UUID UUID)
+		{
+			BasicCharacterActor act = new BasicCharacterActor { Position = position, Flying = isFlying };
+			_actors.Add (act);
+			return act;
+		}
 
-        public override void RemovePrim(PhysicsActor prim)
-        {
-        }
+		public override void RemovePrim (PhysicsActor prim)
+		{
+		}
 
-        public override void RemoveAvatar(PhysicsActor actor)
-        {
-            BasicCharacterActor act = (BasicCharacterActor) actor;
-            if (_actors.Contains(act))
-            {
-                _actors.Remove(act);
-            }
-        }
+		public override void RemoveAvatar (PhysicsActor actor)
+		{
+			BasicCharacterActor act = (BasicCharacterActor)actor;
+			if (_actors.Contains (act)) {
+				_actors.Remove (act);
+			}
+		}
 
-/*
+		/*
         public override PhysicsActor AddPrim(Vector3 position, Vector3 size, Quaternion rotation)
         {
             return null;
         }
 */
 
-        public override PhysicsActor AddPrimShape(UUID primID, uint localID, string name, byte physicsType, PrimitiveBaseShape shape,
-                                                Vector3 position, Vector3 size, Quaternion rotation, bool isPhysical, int material,
-                                                float friction, float restitution, float gravityMultiplier, float density)
-        {
-            return null;
-        }
+		public override PhysicsActor AddPrimShape (UUID primID, uint localID, string name, byte physicsType, PrimitiveBaseShape shape,
+		                                                Vector3 position, Vector3 size, Quaternion rotation, bool isPhysical, int material,
+		                                                float friction, float restitution, float gravityMultiplier, float density)
+		{
+			return null;
+		}
 
-        public override void Simulate(float timeStep)
-        {
-            foreach (PhysicsActor actor in _actors)
-            {
-                Vector3 actorPosition = actor.Position;
-                Vector3 actorVelocity = actor.Velocity;
+		public override void Simulate (float timeStep)
+		{
+			foreach (PhysicsActor actor in _actors) {
+				Vector3 actorPosition = actor.Position;
+				Vector3 actorVelocity = actor.Velocity;
 
-                actorPosition.X += actor.Velocity.X*timeStep;
-                actorPosition.Y += actor.Velocity.Y*timeStep;
+				actorPosition.X += actor.Velocity.X * timeStep;
+				actorPosition.Y += actor.Velocity.Y * timeStep;
 
-                if (actor.Position.Y < 0)
-                {
-                    actorPosition.Y = 0.1F;
-                }
-                else if (actor.Position.Y >= m_region.RegionSizeY)
-                {
-                    actorPosition.Y = (m_region.RegionSizeY - 0.1f);
-                }
+				if (actor.Position.Y < 0) {
+					actorPosition.Y = 0.1F;
+				} else if (actor.Position.Y >= m_region.RegionSizeY) {
+					actorPosition.Y = (m_region.RegionSizeY - 0.1f);
+				}
 
-                if (actor.Position.X < 0)
-                {
-                    actorPosition.X = 0.1F;
-                }
-                else if (actor.Position.X >= m_region.RegionSizeX)
-                {
-                    actorPosition.X = (m_region.RegionSizeX - 0.1f);
-                }
+				if (actor.Position.X < 0) {
+					actorPosition.X = 0.1F;
+				} else if (actor.Position.X >= m_region.RegionSizeX) {
+					actorPosition.X = (m_region.RegionSizeX - 0.1f);
+				}
 
-                float height = _heightMap[(int) actor.Position.Y*m_region.RegionSizeX + (int) actor.Position.X] +
-                               actor.Size.Z;
-                if (actor.Flying)
-                {
-                    if (actor.Position.Z + (actor.Velocity.Z*timeStep) <
-                        _heightMap[(int) actor.Position.Y*m_region.RegionSizeX + (int) actor.Position.X] + 2)
-                    {
-                        actorPosition.Z = height;
-                        actorVelocity.Z = 0;
-                        actor.IsColliding = true;
-                    }
-                    else
-                    {
-                        actorPosition.Z += actor.Velocity.Z*timeStep;
-                        actor.IsColliding = false;
-                    }
-                }
-                else
-                {
-                    actorPosition.Z = height;
-                    actorVelocity.Z = 0;
-                    actor.IsColliding = true;
-                }
+				float height = _heightMap [(int)actor.Position.Y * m_region.RegionSizeX + (int)actor.Position.X] +
+				                           actor.Size.Z;
+				if (actor.Flying) {
+					if (actor.Position.Z + (actor.Velocity.Z * timeStep) <
+					                   _heightMap [(int)actor.Position.Y * m_region.RegionSizeX + (int)actor.Position.X] + 2) {
+						actorPosition.Z = height;
+						actorVelocity.Z = 0;
+						actor.IsColliding = true;
+					} else {
+						actorPosition.Z += actor.Velocity.Z * timeStep;
+						actor.IsColliding = false;
+					}
+				} else {
+					actorPosition.Z = height;
+					actorVelocity.Z = 0;
+					actor.IsColliding = true;
+				}
 
-                actor.Position = actorPosition;
-                actor.Velocity = actorVelocity;
-            }
-        }
+				actor.Position = actorPosition;
+				actor.Velocity = actorVelocity;
+			}
+		}
 
-        public override void SetWaterLevel(double height, short[] map)
-        {
-        }
+		public override void SetWaterLevel (double height, short[] map)
+		{
+		}
 
-        public override Dictionary<uint, float> GetTopColliders()
-        {
-            Dictionary<uint, float> returncolliders = new Dictionary<uint, float>();
-            return returncolliders;
-        }
+		public override Dictionary<uint, float> GetTopColliders ()
+		{
+			Dictionary<uint, float> returncolliders = new Dictionary<uint, float> ();
+			return returncolliders;
+		}
 
-        public override void SetTerrain(ITerrainChannel channel, short[] heightMap)
-        {
-            _heightMap = heightMap;
-        }
-    }
+		public override void SetTerrain (ITerrainChannel channel, short[] heightMap)
+		{
+			_heightMap = heightMap;
+		}
+	}
 }

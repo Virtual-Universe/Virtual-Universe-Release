@@ -31,24 +31,24 @@ using System;
 
 namespace Universe.Framework.ClientInterfaces
 {
-    public class RegionInfoForEstateMenuArgs : EventArgs
-    {
-        public float billableFactor;
-        public uint estateID;
-        public byte maxAgents;
-        public float objectBonusFactor;
-        public uint parentEstateID;
-        public int pricePerMeter;
-        public int redirectGridX;
-        public int redirectGridY;
-        public ulong regionFlags;
-        public string regionType;
-        public byte simAccess;
-        public string simName;
-        public float sunHour;
-        public float terrainLowerLimit;
-        public float terrainRaiseLimit;
-        public bool useEstateSun;
-        public float waterHeight;
-    }
+	public class RegionInfoForEstateMenuArgs : EventArgs
+	{
+		public float billableFactor;
+		public uint estateID;
+		public byte maxAgents;
+		public float objectBonusFactor;
+		public uint parentEstateID;
+		public int pricePerMeter;
+		public int redirectGridX;
+		public int redirectGridY;
+		public ulong regionFlags;
+		public string regionType;
+		public byte simAccess;
+		public string simName;
+		public float sunHour;
+		public float terrainLowerLimit;
+		public float terrainRaiseLimit;
+		public bool useEstateSun;
+		public float waterHeight;
+	}
 }

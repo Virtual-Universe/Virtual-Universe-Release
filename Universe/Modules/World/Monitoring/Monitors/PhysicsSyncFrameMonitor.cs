@@ -32,50 +32,50 @@ using Universe.Framework.SceneInfo;
 
 namespace Universe.Modules.Monitoring.Monitors
 {
-    public class PhysicsSyncFrameMonitor : IPhysicsSyncFrameMonitor
-    {
-        float physicsSyncTime;
+	public class PhysicsSyncFrameMonitor : IPhysicsSyncFrameMonitor
+	{
+		float physicsSyncTime;
 
-        public PhysicsSyncFrameMonitor (IScene scene)
-        {
-        }
+		public PhysicsSyncFrameMonitor (IScene scene)
+		{
+		}
 
-        #region Implementation of IMonitor
+		#region Implementation of IMonitor
 
-        public double GetValue ()
-        {
-            return physicsSyncTime;
-        }
+		public double GetValue ()
+		{
+			return physicsSyncTime;
+		}
 
-        public string GetName ()
-        {
-            return "Physics Sync Frame Time";
-        }
+		public string GetName ()
+		{
+			return "Physics Sync Frame Time";
+		}
 
-        public string GetInterfaceName ()
-        {
-            return "IPhysicsSyncFrameMonitor";
-        }
+		public string GetInterfaceName ()
+		{
+			return "IPhysicsSyncFrameMonitor";
+		}
 
-        public string GetFriendlyValue ()
-        {
-            return (int)GetValue () + "ms";
-        }
+		public string GetFriendlyValue ()
+		{
+			return (int)GetValue () + "ms";
+		}
 
-        #endregion
+		#endregion
 
-        #region Other Methods
+		#region Other Methods
 
-        public void AddTime (int time)
-        {
-            physicsSyncTime += time;
-        }
+		public void AddTime (int time)
+		{
+			physicsSyncTime += time;
+		}
 
-        public void ResetStats ()
-        {
-            physicsSyncTime = 0;
-        }
+		public void ResetStats ()
+		{
+			physicsSyncTime = 0;
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

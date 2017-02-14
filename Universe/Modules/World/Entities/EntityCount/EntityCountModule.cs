@@ -49,7 +49,7 @@ namespace Universe.Modules.Entities.EntityCount
         int m_activeObjects;
         int m_childAgents;
         int m_objects;
-         int m_rootAgents;
+        int m_rootAgents;
 
         #endregion
 
@@ -67,8 +67,10 @@ namespace Universe.Modules.Entities.EntityCount
 
         public int Objects
         {
-            get {
-                lock (m_objectsLock) {
+            get
+            {
+                lock (m_objectsLock)
+                {
                     return m_objects;
                 }
             }
@@ -76,8 +78,10 @@ namespace Universe.Modules.Entities.EntityCount
 
         public int ActiveObjects
         {
-            get {
-                lock (m_objectsLock) {
+            get
+            {
+                lock (m_objectsLock)
+                {
                     return m_activeObjects;
                 }
             }
@@ -136,6 +140,10 @@ namespace Universe.Modules.Entities.EntityCount
 
         protected void OnMakeChildAgent(IScenePresence presence, GridRegion destination)
         {
+            // Do not count bots
+            if (presence.IsNpcAgent)
+                return;
+
             //Switch child agent to root agent
             m_rootAgents--;
             m_childAgents++;
@@ -143,18 +151,30 @@ namespace Universe.Modules.Entities.EntityCount
 
         protected void OnMakeRootAgent(IScenePresence presence)
         {
+            // Do not count bots
+            if (presence.IsNpcAgent)
+                return;
+
             m_rootAgents++;
             m_childAgents--;
         }
 
         protected void OnNewPresence(IScenePresence presence)
         {
+            // Do not count bots
+            if (presence.IsNpcAgent)
+                return;
+
             // Why don't we check for root agents? We don't because it will be added in MakeRootAgent and removed from here
             m_childAgents++;
         }
 
         private void OnRemovePresence(IScenePresence presence)
         {
+            // Do not count bots
+            if (presence.IsNpcAgent)
+                return;
+
             if (presence.IsChildAgent)
                 m_childAgents--;
             else
@@ -227,7 +247,7 @@ namespace Universe.Modules.Entities.EntityCount
             //If the object changes physical status, we need to make sure to update the active objects count
             if (FunctionName == "ObjectChangedPhysicalStatus")
             {
-                OnObjectBeingAddedToScene((ISceneEntity) parameters);
+                OnObjectBeingAddedToScene((ISceneEntity)parameters);
             }
             return null;
         }

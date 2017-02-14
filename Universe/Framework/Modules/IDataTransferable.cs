@@ -31,33 +31,33 @@ using OpenMetaverse.StructuredData;
 
 namespace Universe.Framework.Modules
 {
-    public interface IDataTransferableOSD
-    {
-        OSD ToOSD();
-    }
+	public interface IDataTransferableOSD
+	{
+		OSD ToOSD ();
+	}
 
-    public interface IDataTransferableOSDMap
-    {
-        /// <summary>
-        ///     Serialize the module to OSD
-        /// </summary>
-        /// <returns></returns>
-        OSDMap ToOSD();
-    }
+	public interface IDataTransferableOSDMap
+	{
+		/// <summary>
+		///     Serialize the module to OSD
+		/// </summary>
+		/// <returns></returns>
+		OSDMap ToOSD ();
+	}
 
-    public class IDataTransferable : IDataTransferableOSDMap
-    {
-        public virtual OSDMap ToOSD()
-        {
-            return null;
-        }
+	public class IDataTransferable : IDataTransferableOSDMap
+	{
+		public virtual OSDMap ToOSD ()
+		{
+			return null;
+		}
 
-        /// <summary>
-        ///     Deserialize the module from OSD
-        /// </summary>
-        /// <param name="map"></param>
-        public virtual void FromOSD(OSDMap map)
-        {
-        }
-    }
+		/// <summary>
+		///     Deserialize the module from OSD
+		/// </summary>
+		/// <param name="map"></param>
+		public virtual void FromOSD (OSDMap map)
+		{
+		}
+	}
 }

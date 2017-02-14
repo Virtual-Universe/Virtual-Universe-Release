@@ -28,64 +28,65 @@
  */
 
 using System.Linq;
+
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 
 namespace Universe.Modules.Monitoring.Monitors
 {
-    class ScriptCountMonitor : IScriptCountMonitor
-    {
-        readonly IScene m_scene;
+	class ScriptCountMonitor : IScriptCountMonitor
+	{
+		readonly IScene m_scene;
 
-        public ScriptCountMonitor (IScene scene)
-        {
-            m_scene = scene;
-        }
+		public ScriptCountMonitor (IScene scene)
+		{
+			m_scene = scene;
+		}
 
-        #region Implementation of IMonitor
+		#region Implementation of IMonitor
 
-        public double GetValue ()
-        {
-            return 0;
-        }
+		public double GetValue ()
+		{
+			return 0;
+		}
 
-        public string GetName ()
-        {
-            return "Total Script Count";
-        }
+		public string GetName ()
+		{
+			return "Total Script Count";
+		}
 
-        public string GetInterfaceName ()
-        {
-            return "IScriptCountMonitor";
-        }
+		public string GetInterfaceName ()
+		{
+			return "IScriptCountMonitor";
+		}
 
-        public string GetFriendlyValue ()
-        {
-            return ActiveScripts + " active script(s), " + ScriptEPS + " event(s) per second";
-        }
+		public string GetFriendlyValue ()
+		{
+			return ActiveScripts + " active script(s), " + ScriptEPS + " event(s) per second";
+		}
 
-        public void ResetStats ()
-        {
-        }
+		public void ResetStats ()
+		{
+		}
 
-        #endregion
+		#endregion
 
-        #region IScriptCountMonitor Members
+		#region IScriptCountMonitor Members
 
-        public int ActiveScripts {
-            get {
-                IScriptModule [] modules = m_scene.RequestModuleInterfaces<IScriptModule> ();
-                return modules.Where (module => module != null).Sum (module => module.GetActiveScripts ());
-            }
-        }
+		public int ActiveScripts {
+			get {
+				IScriptModule[] modules = m_scene.RequestModuleInterfaces<IScriptModule> ();
+				return modules.Where (module => module != null).Sum (module => module.GetActiveScripts ());
+			}
+		}
 
-        public int ScriptEPS {
-            get {
-                IScriptModule [] modules = m_scene.RequestModuleInterfaces<IScriptModule> ();
-                return modules.Where (module => module != null).Sum (module => module.GetScriptEPS ());
-            }
-        }
+		public int ScriptEPS {
+			get {
+				IScriptModule[] modules = m_scene.RequestModuleInterfaces<IScriptModule> ();
+				return modules.Where (module => module != null).Sum (module => module.GetScriptEPS ());
+			}
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

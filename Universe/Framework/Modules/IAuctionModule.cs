@@ -35,96 +35,98 @@ using ProtoBuf;
 
 namespace Universe.Framework.Modules
 {
-    public interface IAuctionModule
-    {
-        void StartAuction(int localID, UUID snapshotID);
-        void SetAuctionInfo(int localID, AuctionInfo info);
-        void AddAuctionBid(int localID, UUID userID, int bid);
-        void AuctionEnd(int localID);
-    }
+	public interface IAuctionModule
+	{
+		void StartAuction (int localID, UUID snapshotID);
 
-    [Serializable, ProtoContract(UseProtoMembersOnly = false)]
-    public class AuctionInfo
-    {
-        /// <summary>
-        ///     Auction length (in days)
-        /// </summary>
-        [ProtoMember(1)] public int AuctionLength = 7;
+		void SetAuctionInfo (int localID, AuctionInfo info);
 
-        /// <summary>
-        ///     Date the auction started
-        /// </summary>
-        [ProtoMember(2)] public DateTime AuctionStart = DateTime.Now;
+		void AddAuctionBid (int localID, UUID userID, int bid);
 
-        /// <summary>
-        ///     Description of the parcel
-        /// </summary>
-        [ProtoMember(3)] public string Description = "";
+		void AuctionEnd (int localID);
+	}
 
-        /// <summary>
-        ///     List of bids on the auction so far
-        /// </summary>
-        [ProtoMember(4)] public List<AuctionBid> AuctionBids = new List<AuctionBid>();
+	[Serializable, ProtoContract (UseProtoMembersOnly = false)]
+	public class AuctionInfo
+	{
+		/// <summary>
+		///     Auction length (in days)
+		/// </summary>
+		[ProtoMember (1)] public int AuctionLength = 7;
 
-        public void FromOSD(OSDMap map)
-        {
-            AuctionStart = map["AuctionStart"];
-            Description = map["Description"];
-            AuctionLength = map["AuctionLength"];
-            foreach (OSD o in (OSDArray) map["AuctionBids"])
-            {
-                AuctionBid bid = new AuctionBid();
-                bid.FromOSD((OSDMap) o);
-                AuctionBids.Add(bid);
-            }
-        }
+		/// <summary>
+		///     Date the auction started
+		/// </summary>
+		[ProtoMember (2)] public DateTime AuctionStart = DateTime.Now;
 
-        public OSDMap ToOSD()
-        {
-            OSDMap map = new OSDMap();
-            map["AuctionStart"] = AuctionStart;
-            map["AuctionLength"] = AuctionLength;
-            map["Description"] = Description;
-            OSDArray array = new OSDArray();
-            foreach (AuctionBid bid in AuctionBids)
-                array.Add(bid.ToOSD());
-            map["AuctionBids"] = array;
-            return map;
-        }
-    }
+		/// <summary>
+		///     Description of the parcel
+		/// </summary>
+		[ProtoMember (3)] public string Description = "";
 
-    [Serializable, ProtoContract(UseProtoMembersOnly = false)]
-    public class AuctionBid
-    {
-        /// <summary>
-        ///     The person who bid on the auction
-        /// </summary>
-        [ProtoMember(1)] public UUID AuctionBidder;
+		/// <summary>
+		///     List of bids on the auction so far
+		/// </summary>
+		[ProtoMember (4)] public List<AuctionBid> AuctionBids = new List<AuctionBid> ();
 
-        /// <summary>
-        ///     The amount bid on the auction
-        /// </summary>
-        [ProtoMember(2)] public int Amount;
+		public void FromOSD (OSDMap map)
+		{
+			AuctionStart = map ["AuctionStart"];
+			Description = map ["Description"];
+			AuctionLength = map ["AuctionLength"];
+			foreach (OSD o in (OSDArray) map["AuctionBids"]) {
+				AuctionBid bid = new AuctionBid ();
+				bid.FromOSD ((OSDMap)o);
+				AuctionBids.Add (bid);
+			}
+		}
 
-        /// <summary>
-        ///     The time the bid was added
-        /// </summary>
-        [ProtoMember(3)] public DateTime TimeBid;
+		public OSDMap ToOSD ()
+		{
+			OSDMap map = new OSDMap ();
+			map ["AuctionStart"] = AuctionStart;
+			map ["AuctionLength"] = AuctionLength;
+			map ["Description"] = Description;
+			OSDArray array = new OSDArray ();
+			foreach (AuctionBid bid in AuctionBids)
+				array.Add (bid.ToOSD ());
+			map ["AuctionBids"] = array;
+			return map;
+		}
+	}
 
-        public OSDMap ToOSD()
-        {
-            OSDMap map = new OSDMap();
-            map["TimeBid"] = TimeBid;
-            map["Amount"] = Amount;
-            map["AuctionBidder"] = AuctionBidder;
-            return map;
-        }
+	[Serializable, ProtoContract (UseProtoMembersOnly = false)]
+	public class AuctionBid
+	{
+		/// <summary>
+		///     The person who bid on the auction
+		/// </summary>
+		[ProtoMember (1)] public UUID AuctionBidder;
 
-        public void FromOSD(OSDMap map)
-        {
-            TimeBid = map["TimeBid"];
-            Amount = map["Amount"];
-            AuctionBidder = map["AuctionBidder"];
-        }
-    }
+		/// <summary>
+		///     The amount bid on the auction
+		/// </summary>
+		[ProtoMember (2)] public int Amount;
+
+		/// <summary>
+		///     The time the bid was added
+		/// </summary>
+		[ProtoMember (3)] public DateTime TimeBid;
+
+		public OSDMap ToOSD ()
+		{
+			OSDMap map = new OSDMap ();
+			map ["TimeBid"] = TimeBid;
+			map ["Amount"] = Amount;
+			map ["AuctionBidder"] = AuctionBidder;
+			return map;
+		}
+
+		public void FromOSD (OSDMap map)
+		{
+			TimeBid = map ["TimeBid"];
+			Amount = map ["Amount"];
+			AuctionBidder = map ["AuctionBidder"];
+		}
+	}
 }

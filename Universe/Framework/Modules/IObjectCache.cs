@@ -31,10 +31,12 @@ using OpenMetaverse;
 
 namespace Universe.Framework.Modules
 {
-    public interface IObjectCache
-    {
-        bool UseCachedObject(UUID AgentID, uint localID, uint CurrentEntityCRC);
-        void AddCachedObject(UUID AgentID, uint localID, uint CurrentEntityCRC);
-        void RemoveObject(UUID AgentID, uint localID, byte cacheMissType);
-    }
+	public interface IObjectCache
+	{
+		bool UseCachedObject (UUID AgentID, uint localID, uint CurrentEntityCRC);
+
+		void AddCachedObject (UUID AgentID, uint localID, uint CurrentEntityCRC);
+
+		void RemoveObject (UUID AgentID, uint localID, byte cacheMissType);
+	}
 }

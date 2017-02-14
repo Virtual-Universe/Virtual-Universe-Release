@@ -39,122 +39,122 @@ using Universe.Framework.SceneInfo;
 
 namespace Universe.Modules.VisitorLogger
 {
-    /// <summary>
-    ///     This module logs all visitors to the sim to a specified file
-    /// </summary>
-    public class VisitorLoggerModule : INonSharedRegionModule
-    {
-        #region Declares
+	/// <summary>
+	///     This module logs all visitors to the sim to a specified file
+	/// </summary>
+	public class VisitorLoggerModule : INonSharedRegionModule
+	{
+		#region Declares
 
-        protected bool m_enabled = true;
-        protected string m_fileName = "Visitors.log";
-        protected Dictionary<UUID, DateTime> m_timesOfUsers = new Dictionary<UUID, DateTime> ();
+		protected bool m_enabled = true;
+		protected string m_fileName = "Visitors.log";
+		protected Dictionary<UUID, DateTime> m_timesOfUsers = new Dictionary<UUID, DateTime> ();
 
-        #endregion
+		#endregion
 
-        #region INonSharedRegionModule
+		#region INonSharedRegionModule
 
-        public void Initialize (IConfigSource source)
-        {
-            IConfig config = source.Configs ["VisitorLogModule"];
-            if (config != null) {
-                m_enabled = config.GetBoolean ("Enabled", m_enabled);
-                m_fileName = config.GetString ("FileName", m_fileName);
+		public void Initialize (IConfigSource source)
+		{
+			IConfig config = source.Configs ["VisitorLogModule"];
+			if (config != null) {
+				m_enabled = config.GetBoolean ("Enabled", m_enabled);
+				m_fileName = config.GetString ("FileName", m_fileName);
 
-                if (m_enabled && (m_fileName == ""))        // in case of default config
+				if (m_enabled && (m_fileName == ""))        // in case of default config
                     m_fileName = "Visitors.log";
-            }
-        }
+			}
+		}
 
-        public void Close ()
-        {
-        }
+		public void Close ()
+		{
+		}
 
-        public void AddRegion (IScene scene)
-        {
-            if (m_enabled) {
-                scene.EventManager.OnMakeRootAgent += OnMakeRootAgent;
-                scene.EventManager.OnClosingClient += EventManager_OnClosingClient;
-            }
-        }
+		public void AddRegion (IScene scene)
+		{
+			if (m_enabled) {
+				scene.EventManager.OnMakeRootAgent += OnMakeRootAgent;
+				scene.EventManager.OnClosingClient += EventManager_OnClosingClient;
+			}
+		}
 
-        public void RegionLoaded (IScene scene)
-        {
-        }
+		public void RegionLoaded (IScene scene)
+		{
+		}
 
-        public void RemoveRegion (IScene scene)
-        {
-        }
+		public void RemoveRegion (IScene scene)
+		{
+		}
 
-        public string Name {
-            get { return "VisitorLoggerModule"; }
-        }
+		public string Name {
+			get { return "VisitorLoggerModule"; }
+		}
 
-        public Type ReplaceableInterface {
-            get { return null; }
-        }
+		public Type ReplaceableInterface {
+			get { return null; }
+		}
 
-        void EventManager_OnClosingClient (IClientAPI client)
-        {
-            string logPath = MainConsole.Instance.LogPath;
-            IScenePresence presence;
-            if (client.Scene.TryGetScenePresence (client.AgentId, out presence) && !presence.IsChildAgent &&
-                m_timesOfUsers.ContainsKey (client.AgentId)) {
-                //Add the user
-                FileStream stream = new FileStream (logPath + m_fileName, FileMode.OpenOrCreate);
-                StreamWriter m_streamWriter = new StreamWriter (stream);
-                try {
-                    m_streamWriter.BaseStream.Position += m_streamWriter.BaseStream.Length;
+		void EventManager_OnClosingClient (IClientAPI client)
+		{
+			string logPath = MainConsole.Instance.LogPath;
+			IScenePresence presence;
+			if (client.Scene.TryGetScenePresence (client.AgentId, out presence) && !presence.IsChildAgent &&
+			             m_timesOfUsers.ContainsKey (client.AgentId)) {
+				//Add the user
+				FileStream stream = new FileStream (logPath + m_fileName, FileMode.OpenOrCreate);
+				StreamWriter m_streamWriter = new StreamWriter (stream);
+				try {
+					m_streamWriter.BaseStream.Position += m_streamWriter.BaseStream.Length;
 
-                    string LineToWrite = DateTime.Now.ToShortDateString () + " " + DateTime.Now.ToLongTimeString () +
-                                         " - " + client.Name + " left " +
-                                         client.Scene.RegionInfo.RegionName + " after " +
-                                         (DateTime.Now - m_timesOfUsers [client.AgentId]).Minutes + " minutes.";
-                    m_timesOfUsers.Remove (presence.UUID);
+					string LineToWrite = DateTime.Now.ToShortDateString () + " " + DateTime.Now.ToLongTimeString () +
+					                                    " - " + client.Name + " left " +
+					                                    client.Scene.RegionInfo.RegionName + " after " +
+					                                    (DateTime.Now - m_timesOfUsers [client.AgentId]).Minutes + " minutes.";
+					m_timesOfUsers.Remove (presence.UUID);
 
-                    m_streamWriter.WriteLine (LineToWrite);
-                    m_streamWriter.Close ();
-                } catch {
-                    m_streamWriter.Close ();
-                }
-                stream.Close ();
-            }
-        }
+					m_streamWriter.WriteLine (LineToWrite);
+					m_streamWriter.Close ();
+				} catch {
+					m_streamWriter.Close ();
+				}
+				stream.Close ();
+			}
+		}
 
-        void OnMakeRootAgent (IScenePresence presence)
-        {
-            string logPath = MainConsole.Instance.LogPath;
-            FileStream stream = new FileStream (logPath + m_fileName, FileMode.OpenOrCreate);
-            StreamWriter m_streamWriter = new StreamWriter (stream);
+		void OnMakeRootAgent (IScenePresence presence)
+		{
+			string logPath = MainConsole.Instance.LogPath;
+			FileStream stream = new FileStream (logPath + m_fileName, FileMode.OpenOrCreate);
+			StreamWriter m_streamWriter = new StreamWriter (stream);
 
-            try {
-                m_streamWriter.BaseStream.Position += m_streamWriter.BaseStream.Length;
-                string lineToWrite;
+			try {
+				m_streamWriter.BaseStream.Position += m_streamWriter.BaseStream.Length;
+				string lineToWrite;
 
-                // are we just moving around...
-                if (m_timesOfUsers.ContainsKey (presence.UUID)) {
-                    lineToWrite = DateTime.Now.ToShortDateString () + " " + DateTime.Now.ToLongTimeString () +
-                        " - " + presence.Name + " online for " +
-                        (DateTime.Now - m_timesOfUsers [presence.UUID]).Minutes + " minutes.";
+				// are we just moving around...
+				if (m_timesOfUsers.ContainsKey (presence.UUID)) {
+					lineToWrite = DateTime.Now.ToShortDateString () + " " + DateTime.Now.ToLongTimeString () +
+					" - " + presence.Name + " online for " +
+					(DateTime.Now - m_timesOfUsers [presence.UUID]).Minutes + " minutes.";
 
-                    m_streamWriter.WriteLine (lineToWrite);
-                } else {
-                    // ..or first login
-                    m_timesOfUsers [presence.UUID] = DateTime.Now;
-                }
+					m_streamWriter.WriteLine (lineToWrite);
+				} else {
+					// ..or first login
+					m_timesOfUsers [presence.UUID] = DateTime.Now;
+				}
 
-                lineToWrite = DateTime.Now.ToShortDateString () + " " + DateTime.Now.ToLongTimeString () + " - " +
-                    presence.Name + " entered " +
-                    presence.Scene.RegionInfo.RegionName + ".";
+				lineToWrite = DateTime.Now.ToShortDateString () + " " + DateTime.Now.ToLongTimeString () + " - " +
+				presence.Name + " entered " +
+				presence.Scene.RegionInfo.RegionName + ".";
 
-                m_streamWriter.WriteLine (lineToWrite);
-                m_streamWriter.Close ();
-            } catch {
-                m_streamWriter.Close ();
-            }
-            stream.Close ();
-        }
+				m_streamWriter.WriteLine (lineToWrite);
+				m_streamWriter.Close ();
+			} catch {
+				m_streamWriter.Close ();
+			}
+			stream.Close ();
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

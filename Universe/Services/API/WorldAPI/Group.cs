@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
+ 
 using Nini.Config;
 using Universe.Framework.Modules;
 using Universe.Framework.Services;
@@ -37,21 +37,21 @@ namespace Universe.Services.API.WorldAPI
 	{
 		#region IService implementation
 
-		public void Initialize(IConfigSource config, IRegistryCore registry)
+		public void Initialize (IConfigSource config, IRegistryCore registry)
 		{
-			throw new System.NotImplementedException();
+			throw new System.NotImplementedException ();
 		}
-		
-		public void Start(IConfigSource config, IRegistryCore registry)
+
+		public void Start (IConfigSource config, IRegistryCore registry)
 		{
-			throw new System.NotImplementedException();
+			throw new System.NotImplementedException ();
 		}
-		
-		public void FinishedStartup()
+
+		public void FinishedStartup ()
 		{
-			throw new System.NotImplementedException();
+			throw new System.NotImplementedException ();
 		}
-		
+
 		#endregion
 	}
 }

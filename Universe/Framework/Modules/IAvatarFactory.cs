@@ -31,30 +31,30 @@ using OpenMetaverse;
 
 namespace Universe.Framework.Modules
 {
-    public interface IAvatarFactory
-    {
-        /// <summary>
-        ///     Queue the appearance to be sent for the given client
-        /// </summary>
-        /// <param name="agentid"></param>
-        void QueueAppearanceSend(UUID agentid);
+	public interface IAvatarFactory
+	{
+		/// <summary>
+		///     Queue the appearance to be sent for the given client
+		/// </summary>
+		/// <param name="agentid"></param>
+		void QueueAppearanceSend (UUID agentid);
 
-        /// <summary>
-        ///     Queue the appearance to be saved to the database for the given client
-        /// </summary>
-        /// <param name="agentid"></param>
-        void QueueAppearanceSave(UUID agentid);
+		/// <summary>
+		///     Queue the appearance to be saved to the database for the given client
+		/// </summary>
+		/// <param name="agentid"></param>
+		void QueueAppearanceSave (UUID agentid);
 
-        /// <summary>
-        ///     Send the initial data to the client
-        /// </summary>
-        /// <param name="agentid"></param>
-        void QueueInitialAppearanceSend(UUID agentid);
+		/// <summary>
+		///     Send the initial data to the client
+		/// </summary>
+		/// <param name="agentid"></param>
+		void QueueInitialAppearanceSend (UUID agentid);
 
-        /// <summary>
-        ///     Force send all parts of the avatar's appearance
-        /// </summary>
-        /// <param name="agentid"></param>
-        void ForceSendAvatarAppearance(UUID agentid);
-    }
+		/// <summary>
+		///     Force send all parts of the avatar's appearance
+		/// </summary>
+		/// <param name="agentid"></param>
+		void ForceSendAvatarAppearance (UUID agentid);
+	}
 }

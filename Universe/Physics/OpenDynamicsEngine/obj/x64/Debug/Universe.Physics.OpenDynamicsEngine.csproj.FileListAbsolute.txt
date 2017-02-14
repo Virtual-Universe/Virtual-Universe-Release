@@ -2,3 +2,8 @@ C:\Users\virtu\Desktop\Universe-Dev\VirtualUniverse\bin\Physics\Universe.Physics
 C:\Users\virtu\Desktop\Universe-Dev\VirtualUniverse\bin\Physics\Universe.Physics.OpenDynamicsEngine.pdb
 C:\Users\virtu\Desktop\Universe-Dev\Universe\Physics\OpenDynamicsEngine\obj\x64\Debug\Universe.Physics.OpenDynamicsEngine.dll
 C:\Users\virtu\Desktop\Universe-Dev\Universe\Physics\OpenDynamicsEngine\obj\x64\Debug\Universe.Physics.OpenDynamicsEngine.pdb
+C:\Users\virtu\Desktop\Virtual-Dev\VirtualUniverse\bin\Physics\Universe.Physics.OpenDynamicsEngine.dll
+C:\Users\virtu\Desktop\Virtual-Dev\VirtualUniverse\bin\Physics\Universe.Physics.OpenDynamicsEngine.pdb
+C:\Users\virtu\Desktop\Virtual-Dev\Universe\Physics\OpenDynamicsEngine\obj\x64\Debug\Universe.Physics.OpenDynamicsEngine.csprojResolveAssemblyReference.cache
+C:\Users\virtu\Desktop\Virtual-Dev\Universe\Physics\OpenDynamicsEngine\obj\x64\Debug\Universe.Physics.OpenDynamicsEngine.dll
+C:\Users\virtu\Desktop\Virtual-Dev\Universe\Physics\OpenDynamicsEngine\obj\x64\Debug\Universe.Physics.OpenDynamicsEngine.pdb

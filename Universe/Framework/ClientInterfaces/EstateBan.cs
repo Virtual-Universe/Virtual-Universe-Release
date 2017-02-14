@@ -34,78 +34,73 @@ using ProtoBuf;
 
 namespace Universe.Framework.ClientInterfaces
 {
-    [Serializable, ProtoContract(UseProtoMembersOnly = false)]
-    public class EstateBan
-    {
-        private string m_bannedHostAddress = string.Empty;
-        private string m_bannedHostIPMask = string.Empty;
-        private string m_bannedHostNameMask = string.Empty;
-        private UUID m_bannedUserID = UUID.Zero;
-        private uint m_estateID = 1;
+	[Serializable, ProtoContract (UseProtoMembersOnly = false)]
+	public class EstateBan
+	{
+		private string m_bannedHostAddress = string.Empty;
+		private string m_bannedHostIPMask = string.Empty;
+		private string m_bannedHostNameMask = string.Empty;
+		private UUID m_bannedUserID = UUID.Zero;
+		private uint m_estateID = 1;
 
-        /// <summary>
-        ///     ID of the estate this ban limits access to.
-        /// </summary>
-        [ProtoMember(1)]
-        public uint EstateID
-        {
-            get { return m_estateID; }
-            set { m_estateID = value; }
-        }
+		/// <summary>
+		///     ID of the estate this ban limits access to.
+		/// </summary>
+		[ProtoMember (1)]
+		public uint EstateID {
+			get { return m_estateID; }
+			set { m_estateID = value; }
+		}
 
-        /// <summary>
-        ///     ID of the banned user.
-        /// </summary>
-        [ProtoMember(2)]
-        public UUID BannedUserID
-        {
-            get { return m_bannedUserID; }
-            set { m_bannedUserID = value; }
-        }
+		/// <summary>
+		///     ID of the banned user.
+		/// </summary>
+		[ProtoMember (2)]
+		public UUID BannedUserID {
+			get { return m_bannedUserID; }
+			set { m_bannedUserID = value; }
+		}
 
-        /// <summary>
-        ///     IP address or domain name of the banned client.
-        /// </summary>
-        [ProtoMember(3)]
-        public string BannedHostAddress
-        {
-            get { return m_bannedHostAddress; }
-            set { m_bannedHostAddress = value; }
-        }
+		/// <summary>
+		///     IP address or domain name of the banned client.
+		/// </summary>
+		[ProtoMember (3)]
+		public string BannedHostAddress {
+			get { return m_bannedHostAddress; }
+			set { m_bannedHostAddress = value; }
+		}
 
-        /// <summary>
-        ///     IP address mask for banning group of client hosts.
-        /// </summary>
-        [ProtoMember(3)]
-        public string BannedHostIPMask
-        {
-            get { return m_bannedHostIPMask; }
-            set { m_bannedHostIPMask = value; }
-        }
+		/// <summary>
+		///     IP address mask for banning group of client hosts.
+		/// </summary>
+		[ProtoMember (3)]
+		public string BannedHostIPMask {
+			get { return m_bannedHostIPMask; }
+			set { m_bannedHostIPMask = value; }
+		}
 
-        /// <summary>
-        ///     Domain name mask for banning group of client hosts.
-        /// </summary>
-        [ProtoMember(4)]
-        public string BannedHostNameMask
-        {
-            get { return m_bannedHostNameMask; }
-            set { m_bannedHostNameMask = value; }
-        }
+		/// <summary>
+		///     Domain name mask for banning group of client hosts.
+		/// </summary>
+		[ProtoMember (4)]
+		public string BannedHostNameMask {
+			get { return m_bannedHostNameMask; }
+			set { m_bannedHostNameMask = value; }
+		}
 
-        public void FromOSD(OSD o)
-        {
-            OSDMap values = (OSDMap) o;
-            EstateID = (uint) values["EstateID"].AsInteger();
-            BannedUserID = values["BannedUserID"].AsUUID();
-        }
+		public void FromOSD (OSD o)
+		{
+			OSDMap values = (OSDMap)o;
+			EstateID = (uint)values ["EstateID"].AsInteger ();
+			BannedUserID = values ["BannedUserID"].AsUUID ();
+		}
 
-        public OSD ToOSD()
-        {
-            OSDMap kvp = new OSDMap();
-            kvp["EstateID"] = (int) EstateID;
-            kvp["BannedUserID"] = BannedUserID;
-            return kvp;
-        }
-    }
+		public OSD ToOSD ()
+		{
+			OSDMap kvp = new OSDMap ();
+			kvp ["EstateID"] = (int)EstateID;
+			kvp ["BannedUserID"] = BannedUserID;
+			return kvp;
+		}
+	}
 }

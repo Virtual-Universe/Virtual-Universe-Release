@@ -31,74 +31,66 @@ using System;
 
 namespace Universe.Framework.Utilities
 {
-    /// <summary>
-    ///     Undo stack.  Deletes entries beyond a certain capacity
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    [Serializable]
-    public class UndoStack<T>
-    {
-        private readonly T[] m_Undos;
-        private int m_new = 1;
-        private int m_old;
+	/// <summary>
+	///     Undo stack.  Deletes entries beyond a certain capacity
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	[Serializable]
+	public class UndoStack<T>
+	{
+		private readonly T[] m_Undos;
+		private int m_new = 1;
+		private int m_old;
 
-        public UndoStack(int capacity)
-        {
-            m_Undos = new T[capacity + 1];
-        }
+		public UndoStack (int capacity)
+		{
+			m_Undos = new T[capacity + 1];
+		}
 
-        public bool IsFull
-        {
-            get { return m_new == m_old; }
-        }
+		public bool IsFull {
+			get { return m_new == m_old; }
+		}
 
-        public int Capacity
-        {
-            get { return m_Undos.Length - 1; }
-        }
+		public int Capacity {
+			get { return m_Undos.Length - 1; }
+		}
 
-        public int Count
-        {
-            get
-            {
-                int count = m_new - m_old - 1;
-                if (count < 0)
-                    count += m_Undos.Length;
-                return count;
-            }
-        }
+		public int Count {
+			get {
+				int count = m_new - m_old - 1;
+				if (count < 0)
+					count += m_Undos.Length;
+				return count;
+			}
+		}
 
-        public void Push(T item)
-        {
-            if (IsFull)
-            {
-                m_old++;
-                if (m_old >= m_Undos.Length)
-                    m_old -= m_Undos.Length;
-            }
+		public void Push (T item)
+		{
+			if (IsFull) {
+				m_old++;
+				if (m_old >= m_Undos.Length)
+					m_old -= m_Undos.Length;
+			}
+			if (++m_new >= m_Undos.Length)
+				m_new -= m_Undos.Length;
+			m_Undos [m_new] = item;
+		}
 
-            if (++m_new >= m_Undos.Length)
-                m_new -= m_Undos.Length;
-            m_Undos[m_new] = item;
-        }
+		public T Pop ()
+		{
+			if (Count > 0) {
+				T deleted = m_Undos [m_new];
+				m_Undos [m_new--] = default(T);
+				if (m_new < 0)
+					m_new += m_Undos.Length;
+				return deleted;
+			} else
+				throw new InvalidOperationException ("Cannot pop from empty stack");
+		}
 
-        public T Pop()
-        {
-            if (Count > 0)
-            {
-                T deleted = m_Undos[m_new];
-                m_Undos[m_new--] = default(T);
-                if (m_new < 0)
-                    m_new += m_Undos.Length;
-                return deleted;
-            }
-            else
-                throw new InvalidOperationException("Cannot pop from empty stack");
-        }
-
-        public T Peek()
-        {
-            return m_Undos[m_new];
-        }
-    }
+		public T Peek ()
+		{
+			return m_Undos [m_new];
+		}
+	}
 }

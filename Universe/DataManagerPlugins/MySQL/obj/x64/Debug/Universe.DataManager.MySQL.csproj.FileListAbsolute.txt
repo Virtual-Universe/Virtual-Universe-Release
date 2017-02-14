@@ -3,3 +3,8 @@ C:\Users\virtu\Desktop\Universe-Dev\VirtualUniverse\bin\Universe.DataManager.MyS
 C:\Users\virtu\Desktop\Universe-Dev\Universe\DataManagerPlugins\MySQL\obj\x64\Debug\Universe.DataManager.MySQL.csprojResolveAssemblyReference.cache
 C:\Users\virtu\Desktop\Universe-Dev\Universe\DataManagerPlugins\MySQL\obj\x64\Debug\Universe.DataManager.MySQL.dll
 C:\Users\virtu\Desktop\Universe-Dev\Universe\DataManagerPlugins\MySQL\obj\x64\Debug\Universe.DataManager.MySQL.pdb
+C:\Users\virtu\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.DataManager.MySQL.dll
+C:\Users\virtu\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.DataManager.MySQL.pdb
+C:\Users\virtu\Desktop\Virtual-Dev\Universe\DataManagerPlugins\MySQL\obj\x64\Debug\Universe.DataManager.MySQL.csprojResolveAssemblyReference.cache
+C:\Users\virtu\Desktop\Virtual-Dev\Universe\DataManagerPlugins\MySQL\obj\x64\Debug\Universe.DataManager.MySQL.dll
+C:\Users\virtu\Desktop\Virtual-Dev\Universe\DataManagerPlugins\MySQL\obj\x64\Debug\Universe.DataManager.MySQL.pdb

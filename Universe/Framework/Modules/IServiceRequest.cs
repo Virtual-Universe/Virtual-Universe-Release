@@ -31,18 +31,22 @@ using OpenMetaverse;
 
 namespace Universe.Framework.Modules
 {
-    public interface IServiceRequest
-    {
-        // Status
-        bool Finished { get; }
+	public interface IServiceRequest
+	{
+		// Status
+		bool Finished { get; }
 
-        // Request info
-        UUID ItemID { get; set; }
-        UUID PrimID { get; set; }
-        UUID ReqID { get; set; }
+		// Request info
+		UUID ItemID { get; set; }
 
-        void Process();
-        void SendRequest();
-        void Stop();
-    }
+		UUID PrimID { get; set; }
+
+		UUID ReqID { get; set; }
+
+		void Process ();
+
+		void SendRequest ();
+
+		void Stop ();
+	}
 }

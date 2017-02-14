@@ -42,521 +42,528 @@ using Universe.Framework.Utilities;
 
 namespace Universe.Modules.Estate
 {
-    public class EstateInitializer : ISharedRegionStartupModule, IUniverseBackupModule
-    {
-        protected IRegistryCore m_registry;
+	public class EstateInitializer : ISharedRegionStartupModule, IUniverseBackupModule
+	{
+		protected IRegistryCore m_registry;
 
 
-        public void Initialize (IScene scene, IConfigSource source, ISimulationBase simBase)
-        {
-            scene.StackModuleInterface<IUniverseBackupModule> (this);
-            m_registry = simBase.ApplicationRegistry;
-        }
+		public void Initialize (IScene scene, IConfigSource source, ISimulationBase simBase)
+		{
+			scene.StackModuleInterface<IUniverseBackupModule> (this);
+			m_registry = simBase.ApplicationRegistry;
+		}
 
 
-        public void PostInitialize (IScene scene, IConfigSource source, ISimulationBase simBase)
-        {
-        }
+		public void PostInitialize (IScene scene, IConfigSource source, ISimulationBase simBase)
+		{
+		}
 
-        public void FinishStartup (IScene scene, IConfigSource source, ISimulationBase simBase)
-        {
-            IEstateConnector estateConnector = Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ();
+		public void FinishStartup (IScene scene, IConfigSource source, ISimulationBase simBase)
+		{
+			IEstateConnector estateConnector = Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ();
 
-            if (estateConnector != null) {
-                EstateSettings ES = estateConnector.GetEstateSettings (scene.RegionInfo.RegionID);
-                if (ES == null) {
-                    //Could not locate the estate service, wait until it can find it
-                    MainConsole.Instance.Warn (
-                        "We could not find the estate service for this region. Please make sure that your URLs are correct in grid mode.");
-                    while (true) {
-                        MainConsole.Instance.Prompt ("Press enter to try again.");
-                        if ((ES = estateConnector.GetEstateSettings (scene.RegionInfo.RegionID)) == null ||
-                            ES.EstateID == 0) {
-                            ES = CreateEstateInfo (scene);
-                            break;
-                        }
-                        if (ES != null)
-                            break;
-                    }
-                } else if (ES.EstateID == 0) {
-                    //This region does not belong to an estate, make a new one or join and existing one
-                    MainConsole.Instance.Warn ("[EstateInitializer]: Your region '" + scene.RegionInfo.RegionName +
-                        "' is not part of an estate.");
+			if (estateConnector != null) {
+				EstateSettings ES = estateConnector.GetEstateSettings (scene.RegionInfo.RegionID);
+				if (ES == null) {
+					//Could not locate the estate service, wait until it can find it
+					MainConsole.Instance.Warn (
+						"We could not find the estate service for this region. Please make sure that your URLs are correct in grid mode.");
+					while (true) {
+						MainConsole.Instance.Prompt ("Press enter to try again.");
+						if ((ES = estateConnector.GetEstateSettings (scene.RegionInfo.RegionID)) == null ||
+						                      ES.EstateID == 0) {
+							ES = CreateEstateInfo (scene);
+							break;
+						}
+						if (ES != null)
+							break;
+					}
+				} else if (ES.EstateID == 0) {
+					//This region does not belong to an estate, make a new one or join and existing one
+					MainConsole.Instance.Warn ("[EstateInitializer]: Your region '" + scene.RegionInfo.RegionName +
+					"' is not part of an estate.");
 
-                    ES = CreateEstateInfo (scene);
-                }
-                scene.RegionInfo.EstateSettings = ES;
-            }
-        }
+					ES = CreateEstateInfo (scene);
+				}
+				scene.RegionInfo.EstateSettings = ES;
+			}
+		}
 
-        public void PostFinishStartup (IScene scene, IConfigSource source, ISimulationBase simBase)
-        {
-        }
+		public void PostFinishStartup (IScene scene, IConfigSource source, ISimulationBase simBase)
+		{
+		}
 
-        public void StartupComplete ()
-        {
-            if (MainConsole.Instance != null) {
-                MainConsole.Instance.Commands.AddCommand (
-                    "change estate",
-                    "change estate [New estate for region]",
-                    "change the estate that the current region is part of",
-                    ChangeEstate, true, true);
+		public void StartupComplete ()
+		{
+			if (MainConsole.Instance != null) {
+				MainConsole.Instance.Commands.AddCommand (
+					"change estate",
+					"change estate [New estate for region]",
+					"change the estate that the current region is part of",
+					ChangeEstate, true, true);
 
-                MainConsole.Instance.Commands.AddCommand (
-                    "change regionestate",
-                    "change regionestate [region [new estate for region]]",
-                    "change the estate of the given region",
-                    ChangeRegionEstate, false, true);
-            }
-        }
+				MainConsole.Instance.Commands.AddCommand (
+					"change regionestate",
+					"change regionestate [region [new estate for region]]",
+					"change the estate of the given region",
+					ChangeRegionEstate, false, true);
+			}
+		}
 
-        public void Close (IScene scene)
-        {
-        }
+		public void Close (IScene scene)
+		{
+		}
 
-        public void DeleteRegion (IScene scene)
-        {
-        }
+		public void DeleteRegion (IScene scene)
+		{
+		}
 
-        /// <summary>
-        /// Links a region to a system estate.
-        /// </summary>
-        /// <returns>The system estate.</returns>
-        /// <param name="regionID">Region ID.</param>
-        /// <param name="estateID">Estate ID.</param>
-        EstateSettings LinkSystemEstate (UUID regionID, int estateID)
-        {
-            // link region to a system estate > Mainland / Governor  or System / RealEstateOwner
-            IEstateConnector estateConnector = Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ();
-            ISystemEstateService sysEstates = m_registry.RequestModuleInterface<ISystemEstateService> ();
-            EstateSettings ES;
-            string estateName = sysEstates.GetSystemEstateName (estateID);
+		/// <summary>
+		/// Links a region to a system estate.
+		/// </summary>
+		/// <returns>The system estate.</returns>
+		/// <param name="regionID">Region ID.</param>
+		/// <param name="estateID">Estate ID.</param>
+		EstateSettings LinkSystemEstate (UUID regionID, int estateID)
+		{
+			// link region to a system estate > Mainland / Governor  or System / RealEstateOwner
+			IEstateConnector estateConnector = Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ();
+			ISystemEstateService sysEstates = m_registry.RequestModuleInterface<ISystemEstateService> ();
+			EstateSettings ES;
+			string estateName = sysEstates.GetSystemEstateName (estateID);
 
-            // try & link region 
-            if (estateConnector.LinkRegion (regionID, estateID)) {
-                ES = estateConnector.GetEstateSettings (regionID);     // refresh to check linking
-                if ((ES == null) || (ES.EstateID == 0)) {
-                    MainConsole.Instance.Warn ("An error was encountered linking the region to '" + estateName + "'!\n" +
-                        "Possibly a problem with the server connection, please link this region later.");
-                    return null;
-                }
-                MainConsole.Instance.Warn ("Successfully joined '" + estateName + "'!");
-                return ES;
-            }
+			// try & link region 
+			if (estateConnector.LinkRegion (regionID, estateID)) {
+				ES = estateConnector.GetEstateSettings (regionID);     // refresh to check linking
+				if ((ES == null) || (ES.EstateID == 0)) {
+					MainConsole.Instance.Warn ("An error was encountered linking the region to '" + estateName + "'!\n" +
+					"Possibly a problem with the server connection, please link this region later.");
+					return null;
+				}
+				MainConsole.Instance.Warn ("Successfully joined '" + estateName + "'!");
+				return ES;
+			}
 
-            MainConsole.Instance.Warn ("Joining '" + estateName + "' failed. Please link this region later.");
-            return null;
-        }
+			MainConsole.Instance.Warn ("Joining '" + estateName + "' failed. Please link this region later.");
+			return null;
+		}
 
-        /// <summary>
-        /// Links a region to an estate.
-        /// </summary>
-        /// <returns>The region estate.</returns>
-        /// <param name="regionID">Region identifier.</param>
-        /// <param name="estateID">Estate name.</param>
-        EstateSettings LinkRegionEstate (UUID regionID, int estateID)
-        {
-            EstateSettings ES = null;
-            IEstateConnector estateConnector = Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ();
+		/// <summary>
+		/// Links a region to an estate.
+		/// </summary>
+		/// <returns>The region estate.</returns>
+		/// <param name="regionID">Region identifier.</param>
+		/// <param name="estateID">Estate name.</param>
+		EstateSettings LinkRegionEstate (UUID regionID, int estateID)
+		{
+			EstateSettings ES = null;
+			IEstateConnector estateConnector = Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ();
 
-            // link up the region
-            ES = estateConnector.GetEstateSettings (regionID);
+			// link up the region
+			ES = estateConnector.GetEstateSettings (regionID);
 
-            if (!estateConnector.LinkRegion (regionID, estateID)) {
-                MainConsole.Instance.WarnFormat ("[Estate]: Joining the {0} estate failed. Please try again.", ES.EstateName);
-                return ES;
-            }
+			if (!estateConnector.LinkRegion (regionID, estateID)) {
+				MainConsole.Instance.WarnFormat ("[Estate]: Joining the {0} estate failed. Please try again.", ES.EstateName);
+				return ES;
+			}
 
-            // make sure that the region is fully set up
-            if ((ES = estateConnector.GetEstateSettings (regionID)) == null || ES.EstateID == 0) {
-                MainConsole.Instance.Warn ("[Estate]: Unable to verify region update (possible server connection error), please try again.");
-                return null;
-            }
+			// make sure that the region is fully set up
+			if ((ES = estateConnector.GetEstateSettings (regionID)) == null || ES.EstateID == 0) {
+				MainConsole.Instance.Warn ("[Estate]: Unable to verify region update (possible server connection error), please try again.");
+				return null;
+			}
 
-            MainConsole.Instance.InfoFormat ("[Estate]: Successfully joined the {0} estate!", ES.EstateName);
-            return ES;
-        }
+			MainConsole.Instance.InfoFormat ("[Estate]: Successfully joined the {0} estate!", ES.EstateName);
+			return ES;
 
-        int GetUserEstateID (IScene scene, IEstateConnector estateConnector)
-        {
-            while (true) {
-                UserAccount account;
-                string estateOwner;
+		}
 
-                estateOwner = MainConsole.Instance.Prompt ("Estate owner name");
-                if (string.IsNullOrEmpty (estateOwner))
-                    return 0;
+		int GetUserEstateID (IScene scene, IEstateConnector estateConnector)
+		{
+			while (true) {
+				UserAccount account;
+				string estateOwner;
 
-                // we have a prospective estate owner...
-                List<EstateSettings> ownerEstates = null;
-                account = scene.UserAccountService.GetUserAccount (scene.RegionInfo.AllScopeIDs, estateOwner);
-                if (account != null) {
-                    // we have a user account...
-                    ownerEstates = estateConnector.GetEstates (account.PrincipalID);
-                }
+				estateOwner = MainConsole.Instance.Prompt ("Estate owner name");
+				if (string.IsNullOrEmpty (estateOwner))
+					return 0;
 
-                if (ownerEstates == null || ownerEstates.Count == 0) {
-                    if (account == null)
-                        MainConsole.Instance.Warn ("[Estate]: Unable to locate the user " + estateOwner);
-                    else
-                        MainConsole.Instance.WarnFormat ("[Estate]: The user, {0}, has no estates currently.", account.Name);
+				// we have a prospective estate owner...
+				List<EstateSettings> ownerEstates = null;
+				account = scene.UserAccountService.GetUserAccount (scene.RegionInfo.AllScopeIDs, estateOwner);
+				if (account != null) {
+					// we have a user account...
+					ownerEstates = estateConnector.GetEstates (account.PrincipalID);
+				}
 
-                    continue;   // try again
-                }
+				if (ownerEstates == null || ownerEstates.Count == 0) {
+					if (account == null)
+						MainConsole.Instance.Warn ("[Estate]: Unable to locate the user " + estateOwner);
+					else
+						MainConsole.Instance.WarnFormat ("[Estate]: The user, {0}, has no estates currently.", account.Name);
 
-                string LastEstateName;
-                if (ownerEstates.Count > 1) {
-                    MainConsole.Instance.InfoFormat ("[Estate]: User {0} has {1} estates currently. {2}",
-                        account.Name, ownerEstates.Count, "These estates are the following:");
-                    foreach (EstateSettings t in ownerEstates)
-                        MainConsole.Instance.CleanInfo ("         " + t.EstateName);
+					continue;   // try again
+				}
 
-                    LastEstateName = ownerEstates [0].EstateName;
+				string LastEstateName;
+				if (ownerEstates.Count > 1) {
+					MainConsole.Instance.InfoFormat ("[Estate]: User {0} has {1} estates currently. {2}",
+						account.Name, ownerEstates.Count, "These estates are the following:");
+					foreach (EstateSettings t in ownerEstates)
+						MainConsole.Instance.CleanInfo ("         " + t.EstateName);
 
-                    List<string> responses = ownerEstates.Select (settings => settings.EstateName).ToList ();
-                    responses.Add ("Cancel");
+					LastEstateName = ownerEstates [0].EstateName;
 
-                    do {
-                        //TODO: This could be a problem if we have a lot of estates
-                        string response = MainConsole.Instance.Prompt ("Estate name to join", LastEstateName, responses);
-                        if (response == "None" || response == "Cancel") {
-                            LastEstateName = "";
-                            break;
-                        }
-                        LastEstateName = response;
-                    } while (LastEstateName == "");
-                    if (LastEstateName == "")
-                        continue;
+					List<string> responses = ownerEstates.Select (settings => settings.EstateName).ToList ();
+					responses.Add ("Cancel");
 
-                } else
-                    LastEstateName = ownerEstates [0].EstateName;
+					do {
+						//TODO: This could be a problem if we have a lot of estates
+						string response = MainConsole.Instance.Prompt ("Estate name to join", LastEstateName, responses);
+						if (response == "None" || response == "Cancel") {
+							LastEstateName = "";
+							break;
+						}
+						LastEstateName = response;
+					} while (LastEstateName == "");
+					if (LastEstateName == "")
+						continue;
 
-                // we should have a user account and estate name by now
-                int estateID = estateConnector.GetEstate (account.PrincipalID, LastEstateName);
-                if (estateID == 0) {
-                    MainConsole.Instance.Warn ("[Estate]: The name you have entered matches no known estate. Please try again");
-                    continue;
-                }
-
-                return estateID;
-            }
-        }
+				} else
+					LastEstateName = ownerEstates [0].EstateName;
 
 
-        /// <summary>
-        /// Creates the estate info for a region.
-        /// </summary>
-        /// <returns>The estate info.</returns>
-        /// <param name="scene">Scene.</param>
-        EstateSettings CreateEstateInfo (IScene scene)
-        {
-            // check for regionType to determine if this is 'Mainland' or an 'Estate'
-            string regType = scene.RegionInfo.RegionType.ToLower ();
-            if (regType.StartsWith ("m", System.StringComparison.Ordinal)) {
-                return LinkSystemEstate (scene.RegionInfo.RegionID, Constants.MainlandEstateID);
-            }
+				// we should have a user account and estate name by now
+				int estateID = estateConnector.GetEstate (account.PrincipalID, LastEstateName);
+				if (estateID == 0) {
+					MainConsole.Instance.Warn ("[Estate]: The name you have entered matches no known estate. Please try again");
+					continue;
+				}
 
-            // we are linking to a user estate
-            IEstateConnector estateConnector = Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ();
-            ISystemAccountService sysAccounts = m_registry.RequestModuleInterface<ISystemAccountService> ();
+				return estateID;
+			}
 
-            string sysEstateOwnerName;
-            var sysAccount = scene.UserAccountService.GetUserAccount (scene.RegionInfo.AllScopeIDs, sysAccounts.SystemEstateOwnerUUID);
+		}
 
-            if (sysAccount == null)
-                sysEstateOwnerName = sysAccounts.SystemEstateOwnerName;
-            else
-                sysEstateOwnerName = sysAccount.Name;
 
-            // This is an 'Estate' so get some details....
-            var LastEstateOwner = sysEstateOwnerName;
-            string LastEstateName;
+		/// <summary>
+		/// Creates the estate info for a region.
+		/// </summary>
+		/// <returns>The estate info.</returns>
+		/// <param name="scene">Scene.</param>
+		EstateSettings CreateEstateInfo (IScene scene)
+		{
 
-            while (true) {
-                UserAccount account;
-                string estateOwner;
+			// check for regionType to determine if this is 'Mainland' or an 'Estate'
+			string regType = scene.RegionInfo.RegionType.ToLower ();
+			if (regType.StartsWith ("m", System.StringComparison.Ordinal)) {
+				return LinkSystemEstate (scene.RegionInfo.RegionID, Constants.MainlandEstateID);
+			}
 
-                estateOwner = MainConsole.Instance.Prompt ("Estate owner name (" + sysEstateOwnerName + "/User Name)", LastEstateOwner);
+			// we are linking to a user estate
+			IEstateConnector estateConnector = Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ();
+			ISystemAccountService sysAccounts = m_registry.RequestModuleInterface<ISystemAccountService> ();
 
-                // we have a prospective estate owner...
-                List<EstateSettings> ownerEstates = null;
-                account = scene.UserAccountService.GetUserAccount (scene.RegionInfo.AllScopeIDs, estateOwner);
-                if (account != null) {
-                    // we have a user account...
-                    LastEstateOwner = account.Name;
+			string sysEstateOwnerName;
+			var sysAccount = scene.UserAccountService.GetUserAccount (scene.RegionInfo.AllScopeIDs, sysAccounts.SystemEstateOwnerUUID);
 
-                    ownerEstates = estateConnector.GetEstates (account.PrincipalID);
-                }
+			if (sysAccount == null)
+				sysEstateOwnerName = sysAccounts.SystemEstateOwnerName;
+			else
+				sysEstateOwnerName = sysAccount.Name;
 
-                if (account == null || ownerEstates == null || ownerEstates.Count == 0) {
-                    if (account == null)
-                        MainConsole.Instance.Warn ("[Estate]: Unable to locate the user " + estateOwner);
-                    else
-                        MainConsole.Instance.WarnFormat ("[Estate]: The user, {0}, has no estates currently.", account.Name);
 
-                    string joinSystemland = MainConsole.Instance.Prompt (
-                        "Do you want to 'park' the region with the system owner/estate? (yes/no)", "yes");
-                    if (joinSystemland.ToLower ().StartsWith ("y", System.StringComparison.Ordinal))                      // joining 'Systemland'
+			// This is an 'Estate' so get some details....
+			var LastEstateOwner = sysEstateOwnerName;
+			string LastEstateName;
+
+			while (true) {
+				UserAccount account;
+				string estateOwner;
+
+				estateOwner = MainConsole.Instance.Prompt ("Estate owner name (" + sysEstateOwnerName + "/User Name)", LastEstateOwner);
+
+				// we have a prospective estate owner...
+				List<EstateSettings> ownerEstates = null;
+				account = scene.UserAccountService.GetUserAccount (scene.RegionInfo.AllScopeIDs, estateOwner);
+				if (account != null) {
+					// we have a user account...
+					LastEstateOwner = account.Name;
+
+					ownerEstates = estateConnector.GetEstates (account.PrincipalID);
+				}
+
+				if (account == null || ownerEstates == null || ownerEstates.Count == 0) {
+					if (account == null)
+						MainConsole.Instance.Warn ("[Estate]: Unable to locate the user " + estateOwner);
+					else
+						MainConsole.Instance.WarnFormat ("[Estate]: The user, {0}, has no estates currently.", account.Name);
+
+					string joinSystemland = MainConsole.Instance.Prompt (
+						                                       "Do you want to 'park' the region with the system owner/estate? (yes/no)", "yes");
+					if (joinSystemland.ToLower ().StartsWith ("y", System.StringComparison.Ordinal))                      // joining 'Systemland'
                         return LinkSystemEstate (scene.RegionInfo.RegionID, Constants.SystemEstateID);
 
-                    continue;
-                }
+					continue;
+				}
 
-                if (ownerEstates.Count > 1) {
-                    MainConsole.Instance.InfoFormat ("[Estate]: User {0} has {1} estates currently. {2}",
-                        account.Name, ownerEstates.Count, "These estates are the following:");
-                    foreach (EstateSettings t in ownerEstates)
-                        MainConsole.Instance.CleanInfo ("         " + t.EstateName);
+				if (ownerEstates.Count > 1) {
+					MainConsole.Instance.InfoFormat ("[Estate]: User {0} has {1} estates currently. {2}",
+						account.Name, ownerEstates.Count, "These estates are the following:");
+					foreach (EstateSettings t in ownerEstates)
+						MainConsole.Instance.CleanInfo ("         " + t.EstateName);
 
-                    LastEstateName = ownerEstates [0].EstateName;
+					LastEstateName = ownerEstates [0].EstateName;
 
-                    List<string> responses = ownerEstates.Select (settings => settings.EstateName).ToList ();
-                    responses.Add ("Cancel");
+					List<string> responses = ownerEstates.Select (settings => settings.EstateName).ToList ();
+					responses.Add ("Cancel");
 
-                    do {
-                        //TODO: This could be a problem if we have a lot of estates
-                        string response = MainConsole.Instance.Prompt ("Estate name to join", LastEstateName, responses);
-                        if (response == "None" || response == "Cancel") {
-                            LastEstateName = "";
-                            break;
-                        }
-                        LastEstateName = response;
-                    } while (LastEstateName == "");
-                    if (LastEstateName == "")
-                        continue;
+					do {
+						//TODO: This could be a problem if we have a lot of estates
+						string response = MainConsole.Instance.Prompt ("Estate name to join", LastEstateName, responses);
+						if (response == "None" || response == "Cancel") {
+							LastEstateName = "";
+							break;
+						}
+						LastEstateName = response;
+					} while (LastEstateName == "");
+					if (LastEstateName == "")
+						continue;
 
-                } else
-                    LastEstateName = ownerEstates [0].EstateName;
+				} else
+					LastEstateName = ownerEstates [0].EstateName;
 
-                // we should have a user account and estate name by now
-                int estateID = estateConnector.GetEstate (account.PrincipalID, LastEstateName);
-                if (estateID == 0) {
-                    MainConsole.Instance.Warn ("[Estate]: The name you have entered matches no known estate. Please try again");
-                    continue;
-                }
 
-                // link up the region
-                EstateSettings ES;
-                UUID oldOwnerID = UUID.Zero;
-                if (scene.RegionInfo.EstateSettings != null)
-                    oldOwnerID = scene.RegionInfo.EstateSettings.EstateOwner;
+				// we should have a user account and estate name by now
+				int estateID = estateConnector.GetEstate (account.PrincipalID, LastEstateName);
+				if (estateID == 0) {
+					MainConsole.Instance.Warn ("[Estate]: The name you have entered matches no known estate. Please try again");
+					continue;
+				}
 
-                if (!estateConnector.LinkRegion (scene.RegionInfo.RegionID, estateID)) {
-                    MainConsole.Instance.WarnFormat ("[Estate]: Joining the {0} estate failed. Please try again.", LastEstateName);
-                    continue;
-                }
+				// link up the region
+				EstateSettings ES;
+				UUID oldOwnerID = UUID.Zero;
+				if (scene.RegionInfo.EstateSettings != null)
+					oldOwnerID = scene.RegionInfo.EstateSettings.EstateOwner;
 
-                // make sure that the region is fully set up
-                if ((ES = estateConnector.GetEstateSettings (scene.RegionInfo.RegionID)) == null || ES.EstateID == 0) {
-                    MainConsole.Instance.Warn ("[Estate]: Unable to verify region update (possible server connection error), please try again.");
-                    continue;
-                }
+				if (!estateConnector.LinkRegion (scene.RegionInfo.RegionID, estateID)) {
+					MainConsole.Instance.WarnFormat ("[Estate]: Joining the {0} estate failed. Please try again.", LastEstateName);
+					continue;
+				}
 
-                // Linking was successful, change any previously owned parcels to the new owner 
-                if (oldOwnerID != UUID.Zero) {
-                    IParcelManagementModule parcelManagement = scene.RequestModuleInterface<IParcelManagementModule> ();
-                    if (parcelManagement != null)
-                        parcelManagement.ReclaimParcels (oldOwnerID, ES.EstateOwner);
-                }
+				// make sure that the region is fully set up
+				if ((ES = estateConnector.GetEstateSettings (scene.RegionInfo.RegionID)) == null || ES.EstateID == 0) {
+					MainConsole.Instance.Warn ("[Estate]: Unable to verify region update (possible server connection error), please try again.");
+					continue;
+				}
 
-                MainConsole.Instance.InfoFormat ("[Estate]: Successfully joined the {0} estate!", LastEstateName);
-                return ES;
-            }
-        }
+				// Linking was successful, change any previously owned parcels to the new owner 
+				if (oldOwnerID != UUID.Zero) {
+					IParcelManagementModule parcelManagement = scene.RequestModuleInterface<IParcelManagementModule> ();
+					if (parcelManagement != null)
+						parcelManagement.ReclaimParcels (oldOwnerID, ES.EstateOwner);
+				}
 
-        /// <summary>
-        /// Changes the region estate.
-        /// </summary>
-        /// <param name="scene">Scene.</param>
-        /// <param name="cmd">Cmd.</param>
-        protected void ChangeEstate (IScene scene, string [] cmd)
-        {
-            // create new command parameters if passed
-            var newParams = new List<string> (cmd);
-            if (cmd.Length > 2)
-                newParams.Insert (2, "dummy");
+				MainConsole.Instance.InfoFormat ("[Estate]: Successfully joined the {0} estate!", LastEstateName);
+				return ES;
+			}
+		}
 
-            // Use the command already prepared previously  :)
-            ChangeRegionEstate (scene, newParams.ToArray ());
-        }
+		/// <summary>
+		/// Changes the region estate.
+		/// </summary>
+		/// <param name="scene">Scene.</param>
+		/// <param name="cmd">Cmd.</param>
+		protected void ChangeEstate (IScene scene, string[] cmd)
+		{
+			// create new command parameters if passed
+			var newParams = new List<string> (cmd);
+			if (cmd.Length > 2)
+				newParams.Insert (2, "dummy");
 
-        /// <summary>
-        /// Changes the region estate.
-        /// </summary>
-        /// <param name="scene">Scene.</param>
-        /// <param name="cmd">Cmd parameters.</param>
-        protected void ChangeRegionEstate (IScene scene, string [] cmd)
-        {
-            var conScenes = MainConsole.Instance.ConsoleScenes;
-            IScene regScene = scene;
+			// Use the command already prepared previously  :)
+			ChangeRegionEstate (scene, newParams.ToArray ());
+		}
 
-            IEstateConnector estateConnector = Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ();
-            if (estateConnector == null) {
-                MainConsole.Instance.Error ("[Estate]: Unable to obtain estate connector for update");
-                return;
-            }
+		/// <summary>
+		/// Changes the region estate.
+		/// </summary>
+		/// <param name="scene">Scene.</param>
+		/// <param name="cmd">Cmd parameters.</param>
+		protected void ChangeRegionEstate (IScene scene, string[] cmd)
+		{
+			var conScenes = MainConsole.Instance.ConsoleScenes;
+			IScene regScene = scene;
 
-            string regionName;
-            if (regScene == null) {
-                regionName = cmd.Length > 2 ? cmd [2] : MainConsole.Instance.Prompt ("The region you wish to change?");
-                if (string.IsNullOrEmpty (regionName))
-                    return;
+			IEstateConnector estateConnector = Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ();
+			if (estateConnector == null) {
+				MainConsole.Instance.Error ("[Estate]: Unable to obtain estate connector for update");
+				return;
+			}
 
-                // find the required region/scene
-                regionName = regionName.ToLower ();
-                foreach (IScene scn in conScenes) {
-                    if (scn.RegionInfo.RegionName.ToLower () == regionName) {
-                        regScene = scn;
-                        break;
-                    }
-                }
+			string regionName;
+			if (regScene == null) {
+				regionName = cmd.Length > 2 ? cmd [2] : MainConsole.Instance.Prompt ("The region you wish to change?");
+				if (string.IsNullOrEmpty (regionName))
+					return;
 
-                if (regScene == null) {
-                    MainConsole.Instance.Error ("[Estate]: The region '" + regionName + "' could not be found.");
-                    return;
-                }
-            } else
-                regionName = regScene.RegionInfo.RegionName;
+				// find the required region/scene
+				regionName = regionName.ToLower ();
+				foreach (IScene scn in conScenes) {
+					if (scn.RegionInfo.RegionName.ToLower () == regionName) {
+						regScene = scn;
+						break;
+					}
+				}
 
-            var regionID = regScene.RegionInfo.RegionID;
-            var oldOwnerID = regScene.RegionInfo.EstateSettings.EstateOwner;
+				if (regScene == null) {
+					MainConsole.Instance.Error ("[Estate]: The region '" + regionName + "' could not be found.");
+					return;
+				}
+			} else
+				regionName = regScene.RegionInfo.RegionName;
 
-            // get the new estate name
-            string estateName = cmd.Length > 3
+			var regionID = regScene.RegionInfo.RegionID;
+			var oldOwnerID = regScene.RegionInfo.EstateSettings.EstateOwner;
+
+			// get the new estate name
+			string estateName = cmd.Length > 3
                 ? cmd [3]
                 : MainConsole.Instance.Prompt ("The new estate for " + regionName + " (? for more options)");
 
-            if (string.IsNullOrEmpty (estateName))
-                return;
+			if (string.IsNullOrEmpty (estateName))
+				return;
 
-            int newEstateId = 0;
-            if (estateName != "?")
-                newEstateId = estateConnector.GetEstateID (estateName);
+			int newEstateId = 0;
+			if (estateName != "?")
+				newEstateId = estateConnector.GetEstateID (estateName);
 
-            if (newEstateId == 0) {
-                if (estateName != "?")
-                    MainConsole.Instance.Warn ("[Estate]: The estate '" + estateName + "' matches no known estate.");
+			if (newEstateId == 0) {
+				if (estateName != "?")
+					MainConsole.Instance.Warn ("[Estate]: The estate '" + estateName + "' matches no known estate.");
 
-                // try the long way...
-                newEstateId = GetUserEstateID (regScene, estateConnector);
-                if (newEstateId == 0)
-                    return;
-                estateName = estateConnector.GetEstateSettings (newEstateId).EstateName;
-            }
+				// try the long way...
+				newEstateId = GetUserEstateID (regScene, estateConnector);
+				if (newEstateId == 0)
+					return;
+				estateName = estateConnector.GetEstateSettings (newEstateId).EstateName;
+			}
 
-            // we have a region & estate name
-            bool deLinkEstate = true;
+			// we have a region & estate name
+			bool deLinkEstate = true;
 
-            if (cmd.Length == 3) {
-                var resp = MainConsole.Instance.Prompt (
-                    "Are you sure you want to change '" + regionName + "' to the '" + estateName + "' estate? (yes/no)", "yes");
-                deLinkEstate = (resp.StartsWith ("y", System.StringComparison.Ordinal));
-            }
-            if (!deLinkEstate)
-                return;
+			if (cmd.Length == 3) {
+				var resp = MainConsole.Instance.Prompt (
+					                       "Are you sure you want to change '" + regionName + "' to the '" + estateName + "' estate? (yes/no)", "yes");
+				deLinkEstate = (resp.StartsWith ("y", System.StringComparison.Ordinal));
+			}
+			if (!deLinkEstate)
+				return;
 
-            // good to go
-            if (!estateConnector.DelinkRegion (regionID)) {
-                MainConsole.Instance.Warn ("[Estate]: Aborting - Unable to remove this region from the current estate.");
-                return;
-            }
+			// good to go
+			if (!estateConnector.DelinkRegion (regionID)) {
+				MainConsole.Instance.Warn ("[Estate]: Aborting - Unable to remove this region from the current estate.");
+				return;
+			}
 
-            // check for'Mainland'
-            string regType = regScene.RegionInfo.RegionType.ToLower ();
-            if (regType.StartsWith ("m", System.StringComparison.Ordinal)) {
-                if (newEstateId == Constants.MainlandEstateID) {
-                    MainConsole.Instance.Info ("[Estate]: This region is already part of the Mainland estate");
-                    return;
-                }
+			// check for'Mainland'
+			string regType = regScene.RegionInfo.RegionType.ToLower ();
+			if (regType.StartsWith ("m", System.StringComparison.Ordinal)) {
+				if (newEstateId == Constants.MainlandEstateID) {
+					MainConsole.Instance.Info ("[Estate]: This region is already part of the Mainland estate");
+					return;
+				}
 
-                // link this region to the mainland
-                MainConsole.Instance.Info ("[Estate]: Mainland type regions must be part of the Mainland estate");
-                LinkSystemEstate (regionID, Constants.MainlandEstateID);
-                return;
-            }
+				// link this region to the mainland
+				MainConsole.Instance.Info ("[Estate]: Mainland type regions must be part of the Mainland estate");
+				LinkSystemEstate (regionID, Constants.MainlandEstateID);
+				return;
+			}
 
-            var newEstate = LinkRegionEstate (regionID, newEstateId);
-            if (newEstate != null) {
-                regScene.RegionInfo.EstateSettings = newEstate;
+			var newEstate = LinkRegionEstate (regionID, newEstateId);
+			if (newEstate != null) {
+				regScene.RegionInfo.EstateSettings = newEstate;
 
-                // Linking was successful, change any previously owned parcels to the new owner 
-                if (oldOwnerID != UUID.Zero) {
-                    IParcelManagementModule parcelManagement = regScene.RequestModuleInterface<IParcelManagementModule> ();
-                    if (parcelManagement != null)
-                        parcelManagement.ReclaimParcels (oldOwnerID, newEstate.EstateOwner);
-                }
-            }
-        }
+				// Linking was successful, change any previously owned parcels to the new owner 
+				if (oldOwnerID != UUID.Zero) {
+					IParcelManagementModule parcelManagement = regScene.RequestModuleInterface<IParcelManagementModule> ();
+					if (parcelManagement != null)
+						parcelManagement.ReclaimParcels (oldOwnerID, newEstate.EstateOwner);
+				}
+			}
 
-        public bool IsArchiving {
-            get { return false; }
-        }
+		}
 
-        /// <summary>
-        /// Saves the estate settings to an archive.
-        /// </summary>
-        /// <param name="writer">Writer.</param>
-        /// <param name="scene">Scene.</param>
-        public void SaveModuleToArchive (TarArchiveWriter writer, IScene scene)
-        {
-            MainConsole.Instance.Debug ("[Archive]: Writing estates to archive");
+		public bool IsArchiving {
+			get { return false; }
+		}
 
-            EstateSettings settings = scene.RegionInfo.EstateSettings;
-            if (settings == null)
-                return;
-            writer.WriteDir ("estatesettings");
-            writer.WriteFile ("estatesettings/" + scene.RegionInfo.RegionName,
-                             OSDParser.SerializeLLSDBinary (settings.ToOSD ()));
+		/// <summary>
+		/// Saves the estate settings to an archive.
+		/// </summary>
+		/// <param name="writer">Writer.</param>
+		/// <param name="scene">Scene.</param>
+		public void SaveModuleToArchive (TarArchiveWriter writer, IScene scene)
+		{
+			MainConsole.Instance.Debug ("[Archive]: Writing estates to archive");
 
-            MainConsole.Instance.Debug ("[Archive]: Finished writing estates to archive");
-            MainConsole.Instance.Debug ("[Archive]: Writing region info to archive");
+			EstateSettings settings = scene.RegionInfo.EstateSettings;
+			if (settings == null)
+				return;
+			writer.WriteDir ("estatesettings");
+			writer.WriteFile ("estatesettings/" + scene.RegionInfo.RegionName,
+				OSDParser.SerializeLLSDBinary (settings.ToOSD ()));
 
-            writer.WriteDir ("regioninfo");
-            RegionInfo regionInfo = scene.RegionInfo;
+			MainConsole.Instance.Debug ("[Archive]: Finished writing estates to archive");
+			MainConsole.Instance.Debug ("[Archive]: Writing region info to archive");
 
-            writer.WriteFile ("regioninfo/" + scene.RegionInfo.RegionName,
-                             OSDParser.SerializeLLSDBinary (regionInfo.PackRegionInfoData ()));
+			writer.WriteDir ("regioninfo");
+			RegionInfo regionInfo = scene.RegionInfo;
 
-            MainConsole.Instance.Debug ("[Archive]: Finished writing region info to archive");
-        }
+			writer.WriteFile ("regioninfo/" + scene.RegionInfo.RegionName,
+				OSDParser.SerializeLLSDBinary (regionInfo.PackRegionInfoData ()));
 
-        /// <summary>
-        /// Loads the estate settings from an archive.
-        /// </summary>
-        /// <param name="data">Data.</param>
-        /// <param name="filePath">File path.</param>
-        /// <param name="type">Type.</param>
-        /// <param name="scene">Scene.</param>
-        public void LoadModuleFromArchive (byte [] data, string filePath, TarArchiveReader.TarEntryType type, IScene scene)
-        {
-            if (filePath.StartsWith ("estatesettings/", System.StringComparison.Ordinal)) {
-                EstateSettings settings = new EstateSettings ();
-                settings.FromOSD ((OSDMap)OSDParser.DeserializeLLSDBinary (data));
-                scene.RegionInfo.EstateSettings = settings;
-            } else if (filePath.StartsWith ("regioninfo/", System.StringComparison.Ordinal)) {
-                string m_merge =
-                    MainConsole.Instance.Prompt (
-                        "Should we load the region information from the archive (region name, region position, etc)?",
-                        "false");
-                RegionInfo settings = new RegionInfo ();
-                settings.UnpackRegionInfoData ((OSDMap)OSDParser.DeserializeLLSDBinary (data));
-                if (m_merge == "false") {
-                    //Still load the region settings though
-                    scene.RegionInfo.RegionSettings = settings.RegionSettings;
-                    return;
-                }
-                settings.RegionSettings = scene.RegionInfo.RegionSettings;
-                settings.EstateSettings = scene.RegionInfo.EstateSettings;
-                scene.RegionInfo = settings;
-            }
-        }
+			MainConsole.Instance.Debug ("[Archive]: Finished writing region info to archive");
+		}
 
-        public void BeginLoadModuleFromArchive (IScene scene)
-        {
-        }
+		/// <summary>
+		/// Loads the estate settings from an archive.
+		/// </summary>
+		/// <param name="data">Data.</param>
+		/// <param name="filePath">File path.</param>
+		/// <param name="type">Type.</param>
+		/// <param name="scene">Scene.</param>
+		public void LoadModuleFromArchive (byte[] data, string filePath, TarArchiveReader.TarEntryType type, IScene scene)
+		{
+			if (filePath.StartsWith ("estatesettings/", System.StringComparison.Ordinal)) {
+				EstateSettings settings = new EstateSettings ();
+				settings.FromOSD ((OSDMap)OSDParser.DeserializeLLSDBinary (data));
+				scene.RegionInfo.EstateSettings = settings;
+			} else if (filePath.StartsWith ("regioninfo/", System.StringComparison.Ordinal)) {
+				string m_merge =
+					MainConsole.Instance.Prompt (
+						"Should we load the region information from the archive (region name, region position, etc)?",
+						"false");
+				RegionInfo settings = new RegionInfo ();
+				settings.UnpackRegionInfoData ((OSDMap)OSDParser.DeserializeLLSDBinary (data));
+				if (m_merge == "false") {
+					//Still load the region settings though
+					scene.RegionInfo.RegionSettings = settings.RegionSettings;
+					return;
+				}
+				settings.RegionSettings = scene.RegionInfo.RegionSettings;
+				settings.EstateSettings = scene.RegionInfo.EstateSettings;
+				scene.RegionInfo = settings;
+			}
+		}
 
-        public void EndLoadModuleFromArchive (IScene scene)
-        {
-        }
-    }
+		public void BeginLoadModuleFromArchive (IScene scene)
+		{
+		}
+
+		public void EndLoadModuleFromArchive (IScene scene)
+		{
+		}
+	}
 }

@@ -32,34 +32,34 @@ using Universe.Framework.Modules;
 
 namespace Universe.Modules.Monitoring.Monitors
 {
-    class PWSMemoryMonitor : IMonitor
-    {
-        #region Implementation of IMonitor
+	class PWSMemoryMonitor : IMonitor
+	{
+		#region Implementation of IMonitor
 
-        public double GetValue ()
-        {
-            return Process.GetCurrentProcess ().PrivateMemorySize64;
-        }
+		public double GetValue ()
+		{
+			return Process.GetCurrentProcess ().PrivateMemorySize64;
+		}
 
-        public string GetName ()
-        {
-            return "Private Working Set Memory";
-        }
+		public string GetName ()
+		{
+			return "Private Working Set Memory";
+		}
 
-        public string GetInterfaceName ()
-        {
-            return "";
-        }
+		public string GetInterfaceName ()
+		{
+			return "";
+		}
 
-        public string GetFriendlyValue ()
-        {
-            return (int)(GetValue () / (1024 * 1024)) + "MB (Global)";
-        }
+		public string GetFriendlyValue ()
+		{
+			return (int)(GetValue () / (1024 * 1024)) + "MB (Global)";
+		}
 
-        public void ResetStats ()
-        {
-        }
+		public void ResetStats ()
+		{
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

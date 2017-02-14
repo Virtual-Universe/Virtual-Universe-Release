@@ -31,19 +31,19 @@ using System;
 
 namespace Universe.Modules.Terrain
 {
-    [Serializable]
-    public class TerrainException : Exception
-    {
-        public TerrainException()
-        {
-        }
+	[Serializable]
+	public class TerrainException : Exception
+	{
+		public TerrainException ()
+		{
+		}
 
-        public TerrainException(string msg) : base(msg)
-        {
-        }
+		public TerrainException (string msg) : base (msg)
+		{
+		}
 
-        public TerrainException(string msg, Exception e) : base(msg, e)
-        {
-        }
-    }
+		public TerrainException (string msg, Exception e) : base (msg, e)
+		{
+		}
+	}
 }

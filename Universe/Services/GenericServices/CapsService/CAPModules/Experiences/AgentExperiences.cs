@@ -36,32 +36,34 @@ using Universe.Framework.Services;
 
 namespace Universe.Services
 {
-    public class AgentExperiencesCAPS : ICapsServiceConnector
-    {
-        protected IRegionClientCapsService m_service;
+	public class AgentExperiencesCAPS : ICapsServiceConnector
+	{
+		protected IRegionClientCapsService m_service;
 
-        public void RegisterCaps (IRegionClientCapsService service)
-        {
-            m_service = service;
+		public void RegisterCaps (IRegionClientCapsService service)
+		{
+			m_service = service;
             
-            service.AddStreamHandler ("AgentExperiences", new GenericStreamHandler ("GET", service.CreateCAPS ("AgentExperiences", ""), AgentExperiences));
-        }
+			service.AddStreamHandler ("AgentExperiences",
+				new GenericStreamHandler ("GET", service.CreateCAPS ("AgentExperiences", ""), AgentExperiences));
+		}
 
-        public void EnteringRegion ()
-        {
-        }
+		public void EnteringRegion ()
+		{
+		}
 
-        public void DeregisterCaps ()
-        {
-            m_service.RemoveStreamHandler ("AgentExperiences", "GET");
-        }
-        
-        public byte[] AgentExperiences (string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse)
-        {
-        	MainConsole.Instance.DebugFormat("[AgentExperiences] Call = {0}", httpRequest);
-            var agentExp = new OSDMap();
+		public void DeregisterCaps ()
+		{
+			m_service.RemoveStreamHandler ("AgentExperiences", "GET");
+		}
 
-            return OSDParser.SerializeLLSDXmlBytes (agentExp);
-        }
-    }
+		public byte[] AgentExperiences (string path, Stream request, OSHttpRequest httpRequest,
+		                                      OSHttpResponse httpResponse)
+		{
+			MainConsole.Instance.DebugFormat ("[AgentExperiences] Call = {0}", httpRequest);
+			var agentExp = new OSDMap ();
+
+			return OSDParser.SerializeLLSDXmlBytes (agentExp);
+		}
+	}
 }

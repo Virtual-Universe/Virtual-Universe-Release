@@ -40,147 +40,188 @@ using Universe.Framework.Services.ClassHelpers.Other;
 
 namespace Universe.Framework.SceneInfo
 {
-    /// <value>
-    ///     Indicate what action to take on an object de-rez request
-    /// </value>
-    public enum DeRezAction : byte
-    {
-        SaveToExistingUserInventoryItem = 0,
+	/// <value>
+	///     Indicate what action to take on an object de-rez request
+	/// </value>
+	public enum DeRezAction : byte
+	{
+		SaveToExistingUserInventoryItem = 0,
 
-        /// <summary>
-        ///     try to leave copy in world
-        /// </summary>
-        AcquireToUserInventory = 1,
-        SaveIntoTaskInventory = 2,
-        Attachment = 3,
-        Take = 4,
+		/// <summary>
+		///     try to leave copy in world
+		/// </summary>
+		AcquireToUserInventory = 1,
+		SaveIntoTaskInventory = 2,
+		Attachment = 3,
+		Take = 4,
 
-        /// <summary>
-        ///     force take copy
-        /// </summary>
-        GodTakeCopy = 5,
-        Delete = 6,
-        AttachmentToInventory = 7,
-        AttachmentExists = 8,
+		/// <summary>
+		///     force take copy
+		/// </summary>
+		GodTakeCopy = 5,
+		Delete = 6,
+		AttachmentToInventory = 7,
+		AttachmentExists = 8,
 
-        /// <summary>
-        ///     back to owner's inventory
-        /// </summary>
-        Return = 9,
+		/// <summary>
+		///     back to owner's inventory
+		/// </summary>
+		Return = 9,
 
-        /// <summary>
-        ///     deeded object back to last owner's inventory
-        /// </summary>
-        ReturnToLastOwner = 10
-    };
+		/// <summary>
+		///     deeded object back to last owner's inventory
+		/// </summary>
+		ReturnToLastOwner = 10}
 
-    public enum ShutdownType
-    {
-        Immediate,
-        Delayed
-    }
+	;
 
-    public interface IScene : IRegistryCore
-    {
-        #region Core
+	public enum ShutdownType
+	{
+		Immediate,
+		Delayed
+	}
 
-        RegionInfo RegionInfo { get; set; }
-        UniverseEventManager UniverseEventManager { get; }
-        EntityManager Entities { get; }
-        EventManager EventManager { get; }
-        ScenePermissions Permissions { get; }
-        PhysicsScene PhysicsScene { get; set; }
-        ISceneGraph SceneGraph { get; }
-        AgentCircuitManager AuthenticateHandler { get; }
-        IConfigSource Config { get; set; }
-        ISimulationDataStore SimulationDataService { get; }
-        List<IClientNetworkServer> ClientServers { get; }
+	public interface IScene : IRegistryCore
+	{
+		#region Core
 
-        #endregion
+		RegionInfo RegionInfo { get; set; }
 
-        #region Initialize/Close
+		UniverseEventManager UniverseEventManager { get; }
 
-        bool ShouldRunHeartbeat { get; set; }
-        bool CloseQuietly { get; set; }
-        void Initialize(RegionInfo regionInfo);
-        void Initialize(RegionInfo regionInfo, ISimulationDataStore simulationStore,  AgentCircuitManager authen, List<IClientNetworkServer> clientServers);
-        void StartHeartbeat();
-        void FinishedStartup(string p, List<string> list);
-        void Close(bool killAgents);
+		EntityManager Entities { get; }
 
-        #endregion
+		EventManager EventManager { get; }
 
-        #region Physics methods
+		ScenePermissions Permissions { get; }
 
-        /// <summary>
-        ///     Reload the last saved physics state to the Physics Scene
-        /// </summary>
-        void StartPhysicsScene();
+		PhysicsScene PhysicsScene { get; set; }
 
-        /// <summary>
-        ///     Takes a state save of the Physics Scene, then clears all velocity from it so that objects stop moving
-        /// </summary>
-        void StopPhysicsScene();
+		ISceneGraph SceneGraph { get; }
 
-        #endregion
+		AgentCircuitManager AuthenticateHandler { get; }
 
-        #region Client Methods
+		IConfigSource Config { get; set; }
 
-        ClientManager ClientManager { get; }
-        void AddNewClient(IClientAPI client, BlankHandler completed);
-        IScenePresence GetScenePresence(UUID uUID);
-        List<IScenePresence> GetScenePresences();
-        int GetScenePresenceCount();
-        IScenePresence GetScenePresence(uint localID);
-        bool TryGetScenePresence(UUID agentID, out IScenePresence scenePresence);
-        bool TryGetAvatarByName(string p, out IScenePresence NewSP);
-        bool RemoveAgent(IScenePresence presence, bool forceClose);
+		ISimulationDataStore SimulationDataService { get; }
 
-        #endregion
+		List<IClientNetworkServer> ClientServers { get; }
 
-        #region ForEach
+		#endregion
 
-        void ForEachClient(Action<IClientAPI> action);
-        void ForEachScenePresence(Action<IScenePresence> action);
-        void ForEachSceneEntity(Action<ISceneEntity> action);
+		#region Initialize/Close
 
-        #endregion
+		bool ShouldRunHeartbeat { get; set; }
 
-        #region Parts
+		bool CloseQuietly { get; set; }
 
-        ISceneChildEntity GetSceneObjectPart(uint localID);
-        ISceneChildEntity GetSceneObjectPart(UUID objectID);
-        ISceneEntity GetGroupByPrim(uint objectLocalID);
-        bool TryGetPart(UUID objecUUID, out ISceneChildEntity SensedObject);
+		void Initialize (RegionInfo regionInfo);
 
-        #endregion
+		void Initialize (RegionInfo regionInfo, ISimulationDataStore simulationStore, 
+		                      AgentCircuitManager authen, List<IClientNetworkServer> clientServers);
 
-        #region FPS/stats
+		void StartHeartbeat ();
 
-        float BaseSimFPS { get; }
-        float BaseSimPhysFPS { get; }
-        bool ShuttingDown { get; }
-        object SyncRoot { get; }
-        float TimeDilation { get; set; }
-        uint Frame { get; }
+		void FinishedStartup (string p, List<string> list);
 
-        #endregion
+		void Close (bool killAgents);
 
-        #region Services
+		#endregion
 
-        IAssetService AssetService { get; }
-        IAuthenticationService AuthenticationService { get; }
-        IAvatarService AvatarService { get; }
-        IGridService GridService { get; }
-        IInventoryService InventoryService { get; }
-        IUserAccountService UserAccountService { get; }
+		#region Physics methods
 
-        #endregion
+		/// <summary>
+		///     Reload the last saved physics state to the Physics Scene
+		/// </summary>
+		void StartPhysicsScene ();
 
-        #region Other
+		/// <summary>
+		///     Takes a state save of the Physics Scene, then clears all velocity from it so that objects stop moving
+		/// </summary>
+		void StopPhysicsScene ();
 
-        List<ISceneEntity> PhysicsReturns { get; }
+		#endregion
 
-        #endregion
-    }
+		#region Client Methods
+
+		ClientManager ClientManager { get; }
+
+		void AddNewClient (IClientAPI client, BlankHandler completed);
+
+		IScenePresence GetScenePresence (UUID uUID);
+
+		List<IScenePresence> GetScenePresences ();
+
+		int GetScenePresenceCount ();
+
+		IScenePresence GetScenePresence (uint localID);
+
+		bool TryGetScenePresence (UUID agentID, out IScenePresence scenePresence);
+
+		bool TryGetAvatarByName (string p, out IScenePresence NewSP);
+
+		bool RemoveAgent (IScenePresence presence, bool forceClose);
+
+		#endregion
+
+		#region ForEach
+
+		void ForEachClient (Action<IClientAPI> action);
+
+		void ForEachScenePresence (Action<IScenePresence> action);
+
+		void ForEachSceneEntity (Action<ISceneEntity> action);
+
+		#endregion
+
+		#region Parts
+
+		ISceneChildEntity GetSceneObjectPart (uint localID);
+
+		ISceneChildEntity GetSceneObjectPart (UUID objectID);
+
+		ISceneEntity GetGroupByPrim (uint objectLocalID);
+
+		bool TryGetPart (UUID objecUUID, out ISceneChildEntity SensedObject);
+
+		#endregion
+
+		#region FPS/stats
+
+		float BaseSimFPS { get; }
+
+		float BaseSimPhysFPS { get; }
+
+		bool ShuttingDown { get; }
+
+		object SyncRoot { get; }
+
+		float TimeDilation { get; set; }
+
+		uint Frame { get; }
+
+		#endregion
+
+		#region Services
+
+		IAssetService AssetService { get; }
+
+		IAuthenticationService AuthenticationService { get; }
+
+		IAvatarService AvatarService { get; }
+
+		IGridService GridService { get; }
+
+		IInventoryService InventoryService { get; }
+
+		IUserAccountService UserAccountService { get; }
+
+		#endregion
+
+		#region Other
+
+		List<ISceneEntity> PhysicsReturns { get; }
+
+		#endregion
+	}
 }

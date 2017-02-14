@@ -38,237 +38,208 @@ using Universe.Framework.SceneInfo;
 
 namespace Universe.ScriptEngine.VirtualScript.MiniModule
 {
-    public class World : MarshalByRefObject, IWorld, IWorldAudio
-    {
-        readonly Heightmap m_heights;
-        readonly IScene m_internalScene;
+	public class World : MarshalByRefObject, IWorld, IWorldAudio
+	{
+		readonly Heightmap m_heights;
+		readonly IScene m_internalScene;
 
-        readonly ObjectAccessor m_objs;
-        readonly ISecurityCredential m_security;
+		readonly ObjectAccessor m_objs;
+		readonly ISecurityCredential m_security;
 
-        public World(IScene internalScene, ISecurityCredential securityCredential)
-        {
-            m_security = securityCredential;
-            m_internalScene = internalScene;
-            m_heights = new Heightmap(m_internalScene);
-            m_objs = new ObjectAccessor(m_internalScene, securityCredential);
-        }
+		public World (IScene internalScene, ISecurityCredential securityCredential)
+		{
+			m_security = securityCredential;
+			m_internalScene = internalScene;
+			m_heights = new Heightmap (m_internalScene);
+			m_objs = new ObjectAccessor (m_internalScene, securityCredential);
+		}
 
-        #region Events
+		#region Events
 
-        #region OnNewUser
+		#region OnNewUser
 
-        bool _OnNewUserActive;
+		bool _OnNewUserActive;
 
-        public event OnNewUserDelegate OnNewUser
-        {
-            add
-            {
-                if (!_OnNewUserActive)
-                {
-                    _OnNewUserActive = true;
-                    m_internalScene.EventManager.OnNewPresence += EventManager_OnNewPresence;
-                }
+		public event OnNewUserDelegate OnNewUser {
+			add {
+				if (!_OnNewUserActive) {
+					_OnNewUserActive = true;
+					m_internalScene.EventManager.OnNewPresence += EventManager_OnNewPresence;
+				}
 
-                _OnNewUser += value;
-            }
-            remove
-            {
-                _OnNewUser -= value;
+				_OnNewUser += value;
+			}
+			remove {
+				_OnNewUser -= value;
 
-                if (_OnNewUser == null)
-                {
-                    _OnNewUserActive = false;
-                    m_internalScene.EventManager.OnNewPresence -= EventManager_OnNewPresence;
-                }
-            }
-        }
+				if (_OnNewUser == null) {
+					_OnNewUserActive = false;
+					m_internalScene.EventManager.OnNewPresence -= EventManager_OnNewPresence;
+				}
+			}
+		}
 
-        private event OnNewUserDelegate _OnNewUser;
+		private event OnNewUserDelegate _OnNewUser;
 
-        void EventManager_OnNewPresence(IScenePresence presence)
-        {
-            if (_OnNewUser != null)
-            {
-                NewUserEventArgs e = new NewUserEventArgs
-                                         {
-                                             Avatar =
-                                                 new SPAvatar(m_internalScene, presence.UUID,
-                                                              m_security)
-                                         };
-                _OnNewUser(this, e);
-            }
-        }
+		void EventManager_OnNewPresence (IScenePresence presence)
+		{
+			if (_OnNewUser != null) {
+				NewUserEventArgs e = new NewUserEventArgs {
+					Avatar =
+                                                 new SPAvatar (m_internalScene, presence.UUID,
+						m_security)
+				};
+				_OnNewUser (this, e);
+			}
+		}
 
-        #endregion
+		#endregion
 
-        #region OnChat
+		#region OnChat
 
-        bool _OnChatActive;
+		bool _OnChatActive;
 
-        public IWorldAudio Audio
-        {
-            get { return this; }
-        }
+		public IWorldAudio Audio {
+			get { return this; }
+		}
 
-        public event OnChatDelegate OnChat
-        {
-            add
-            {
-                if (!_OnChatActive)
-                {
-                    _OnChatActive = true;
-                    m_internalScene.EventManager.OnChatFromClient += EventManager_OnChatFromClient;
-                    m_internalScene.EventManager.OnChatFromWorld += EventManager_OnChatFromWorld;
-                }
+		public event OnChatDelegate OnChat {
+			add {
+				if (!_OnChatActive) {
+					_OnChatActive = true;
+					m_internalScene.EventManager.OnChatFromClient += EventManager_OnChatFromClient;
+					m_internalScene.EventManager.OnChatFromWorld += EventManager_OnChatFromWorld;
+				}
 
-                _OnChat += value;
-            }
-            remove
-            {
-                _OnChat -= value;
+				_OnChat += value;
+			}
+			remove {
+				_OnChat -= value;
 
-                if (_OnChat == null)
-                {
-                    _OnChatActive = false;
-                    m_internalScene.EventManager.OnChatFromClient -= EventManager_OnChatFromClient;
-                    m_internalScene.EventManager.OnChatFromWorld -= EventManager_OnChatFromWorld;
-                }
-            }
-        }
+				if (_OnChat == null) {
+					_OnChatActive = false;
+					m_internalScene.EventManager.OnChatFromClient -= EventManager_OnChatFromClient;
+					m_internalScene.EventManager.OnChatFromWorld -= EventManager_OnChatFromWorld;
+				}
+			}
+		}
 
-        private event OnChatDelegate _OnChat;
+		private event OnChatDelegate _OnChat;
 
-        void EventManager_OnChatFromWorld(object sender, OSChatMessage chat)
-        {
-            if (_OnChat != null)
-            {
-                HandleChatPacket(chat);
-                return;
-            }
-        }
+		void EventManager_OnChatFromWorld (object sender, OSChatMessage chat)
+		{
+			if (_OnChat != null) {
+				HandleChatPacket (chat);
+				return;
+			}
+		}
 
-        void HandleChatPacket(OSChatMessage chat)
-        {
-            if (string.IsNullOrEmpty(chat.Message))
-                return;
+		void HandleChatPacket (OSChatMessage chat)
+		{
+			if (string.IsNullOrEmpty (chat.Message))
+				return;
 
-            // Object?
-            if (chat.Sender == null && chat.SenderObject != null)
-            {
-                ChatEventArgs e = new ChatEventArgs
-                                      {
-                                          Sender = new SOPObject(m_internalScene, chat.SenderObject.LocalId, m_security),
-                                          Text = chat.Message,
-                                          Channel = chat.Channel
-                                      };
+			// Object?
+			if (chat.Sender == null && chat.SenderObject != null) {
+				ChatEventArgs e = new ChatEventArgs {
+					Sender = new SOPObject (m_internalScene, chat.SenderObject.LocalId, m_security),
+					Text = chat.Message,
+					Channel = chat.Channel
+				};
 
-                _OnChat(this, e);
-                return;
-            }
-            // Avatar?
-            if (chat.Sender != null && chat.SenderObject == null)
-            {
-                ChatEventArgs e = new ChatEventArgs
-                                      {
-                                          Sender = new SPAvatar(m_internalScene, chat.SenderUUID, m_security),
-                                          Text = chat.Message,
-                                          Channel = chat.Channel
-                                      };
+				_OnChat (this, e);
+				return;
+			}
+			// Avatar?
+			if (chat.Sender != null && chat.SenderObject == null) {
+				ChatEventArgs e = new ChatEventArgs {
+					Sender = new SPAvatar (m_internalScene, chat.SenderUUID, m_security),
+					Text = chat.Message,
+					Channel = chat.Channel
+				};
 
-                _OnChat(this, e);
-                return;
-            }
-            // Skip if other
-        }
+				_OnChat (this, e);
+				return;
+			}
+			// Skip if other
+		}
 
-        void EventManager_OnChatFromClient(object sender, OSChatMessage chat)
-        {
-            if (_OnChat != null)
-            {
-                HandleChatPacket(chat);
-                return;
-            }
-        }
+		void EventManager_OnChatFromClient (object sender, OSChatMessage chat)
+		{
+			if (_OnChat != null) {
+				HandleChatPacket (chat);
+				return;
+			}
+		}
 
-        #endregion
+		#endregion
 
-        #endregion
+		#endregion
 
-        #region IWorld Members
+		#region IWorld Members
 
-        public IObjectAccessor Objects
-        {
-            get { return m_objs; }
-        }
+		public IObjectAccessor Objects {
+			get { return m_objs; }
+		}
 
-        public IParcel[] Parcels
-        {
-            get
-            {
-                IParcelManagementModule parcelManagement =
-                    m_internalScene.RequestModuleInterface<IParcelManagementModule>();
-                List<IParcel> m_parcels = new List<IParcel>();
-                if (parcelManagement != null)
-                {
-                    List<ILandObject> m_los = parcelManagement.AllParcels();
+		public IParcel[] Parcels {
+			get {
+				IParcelManagementModule parcelManagement =
+					m_internalScene.RequestModuleInterface<IParcelManagementModule> ();
+				List<IParcel> m_parcels = new List<IParcel> ();
+				if (parcelManagement != null) {
+					List<ILandObject> m_los = parcelManagement.AllParcels ();
 
-                    m_parcels.AddRange(
-                        m_los.Select(landObject => new LOParcel(m_internalScene, landObject.LandData.LocalID))
-                             .Cast<IParcel>());
-                }
+					m_parcels.AddRange (
+						m_los.Select (landObject => new LOParcel (m_internalScene, landObject.LandData.LocalID))
+                             .Cast<IParcel> ());
+				}
 
-                return m_parcels.ToArray();
-            }
-        }
+				return m_parcels.ToArray ();
+			}
+		}
 
 
-        public IAvatar[] Avatars
-        {
-            get
-            {
-                List<IScenePresence> ents = m_internalScene.Entities.GetPresences();
-                IAvatar[] rets = new IAvatar[ents.Count];
+		public IAvatar[] Avatars {
+			get {
+				List<IScenePresence> ents = m_internalScene.Entities.GetPresences ();
+				IAvatar[] rets = new IAvatar[ents.Count];
 
-                for (int i = 0; i < ents.Count; i++)
-                {
-                    IScenePresence ent = ents[i];
-                    rets[i] = new SPAvatar(m_internalScene, ent.UUID, m_security);
-                }
+				for (int i = 0; i < ents.Count; i++) {
+					IScenePresence ent = ents [i];
+					rets [i] = new SPAvatar (m_internalScene, ent.UUID, m_security);
+				}
 
-                return rets;
-            }
-        }
+				return rets;
+			}
+		}
 
-        public IHeightmap Terrain
-        {
-            get { return m_heights; }
-        }
+		public IHeightmap Terrain {
+			get { return m_heights; }
+		}
 
-        #endregion
+		#endregion
 
-        #region Implementation of IWorldAudio
+		#region Implementation of IWorldAudio
 
-        public void PlaySound(UUID audio, Vector3 position, double volume)
-        {
-            ISoundModule soundModule = m_internalScene.RequestModuleInterface<ISoundModule>();
-            if (soundModule != null)
-            {
-                soundModule.TriggerSound(audio, UUID.Zero, UUID.Zero, UUID.Zero, volume, position,
-                                         m_internalScene.RegionInfo.RegionHandle, 0);
-            }
-        }
+		public void PlaySound (UUID audio, Vector3 position, double volume)
+		{
+			ISoundModule soundModule = m_internalScene.RequestModuleInterface<ISoundModule> ();
+			if (soundModule != null) {
+				soundModule.TriggerSound (audio, UUID.Zero, UUID.Zero, UUID.Zero, volume, position,
+					m_internalScene.RegionInfo.RegionHandle, 0);
+			}
+		}
 
-        public void PlaySound(UUID audio, Vector3 position)
-        {
-            ISoundModule soundModule = m_internalScene.RequestModuleInterface<ISoundModule>();
-            if (soundModule != null)
-            {
-                soundModule.TriggerSound(audio, UUID.Zero, UUID.Zero, UUID.Zero, 1.0, position,
-                                         m_internalScene.RegionInfo.RegionHandle, 0);
-            }
-        }
+		public void PlaySound (UUID audio, Vector3 position)
+		{
+			ISoundModule soundModule = m_internalScene.RequestModuleInterface<ISoundModule> ();
+			if (soundModule != null) {
+				soundModule.TriggerSound (audio, UUID.Zero, UUID.Zero, UUID.Zero, 1.0, position,
+					m_internalScene.RegionInfo.RegionHandle, 0);
+			}
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

@@ -31,13 +31,13 @@ using OpenMetaverse;
 
 namespace Universe.Framework.Modules
 {
-    public interface IVoiceModule
-    {
-        /// <summary>
-        ///     Set the SIP url to be used by a parcel, this will allow manual setting of a SIP address
-        ///     for a particular piece of land, allowing region owners to use preconfigured SIP conference channels.
-        ///     This is used by osSetParcelSIPAddress
-        /// </summary>
-        void setLandSIPAddress(string SIPAddress, UUID GlobalID);
-    }
+	public interface IVoiceModule
+	{
+		/// <summary>
+		///     Set the SIP url to be used by a parcel, this will allow manual setting of a SIP address
+		///     for a particular piece of land, allowing region owners to use preconfigured SIP conference channels.
+		///     This is used by osSetParcelSIPAddress
+		/// </summary>
+		void setLandSIPAddress (string SIPAddress, UUID GlobalID);
+	}
 }

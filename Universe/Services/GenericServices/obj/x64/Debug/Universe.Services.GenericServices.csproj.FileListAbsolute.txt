@@ -3,3 +3,8 @@ C:\Users\virtu\Desktop\Universe-Dev\VirtualUniverse\bin\Universe.Services.Generi
 C:\Users\virtu\Desktop\Universe-Dev\Universe\Services\GenericServices\obj\x64\Debug\Universe.Services.GenericServices.csprojResolveAssemblyReference.cache
 C:\Users\virtu\Desktop\Universe-Dev\Universe\Services\GenericServices\obj\x64\Debug\Universe.Services.GenericServices.dll
 C:\Users\virtu\Desktop\Universe-Dev\Universe\Services\GenericServices\obj\x64\Debug\Universe.Services.GenericServices.pdb
+C:\Users\virtu\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.Services.GenericServices.dll
+C:\Users\virtu\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.Services.GenericServices.pdb
+C:\Users\virtu\Desktop\Virtual-Dev\Universe\Services\GenericServices\obj\x64\Debug\Universe.Services.GenericServices.csprojResolveAssemblyReference.cache
+C:\Users\virtu\Desktop\Virtual-Dev\Universe\Services\GenericServices\obj\x64\Debug\Universe.Services.GenericServices.dll
+C:\Users\virtu\Desktop\Virtual-Dev\Universe\Services\GenericServices\obj\x64\Debug\Universe.Services.GenericServices.pdb

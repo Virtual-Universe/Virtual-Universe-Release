@@ -36,82 +36,80 @@ using Universe.Framework.Services;
 
 namespace Universe.Region
 {
-    public class SceneLoader : ISceneLoader, IApplicationPlugin
-    {
-        IConfigSource m_configSource;
-        ISimulationBase m_simBase;
+	public class SceneLoader : ISceneLoader, IApplicationPlugin
+	{
+		IConfigSource m_configSource;
+		ISimulationBase m_simBase;
 
-        #region IApplicationPlugin Members
+		#region IApplicationPlugin Members
 
-        public void PreStartup(ISimulationBase simBase)
-        {
-        }
+		public void PreStartup (ISimulationBase simBase)
+		{
+		}
 
-        public void Initialize(ISimulationBase simBase)
-        {
-            m_simBase = simBase;
-            m_configSource = simBase.ConfigSource;
+		public void Initialize (ISimulationBase simBase)
+		{
+			m_simBase = simBase;
+			m_configSource = simBase.ConfigSource;
 
-            bool enabled = true;
-            if (m_simBase.ConfigSource.Configs["SceneLoader"] != null)
-                enabled = m_simBase.ConfigSource.Configs["SceneLoader"].GetBoolean("SceneLoader", true);
+			bool enabled = true;
+			if (m_simBase.ConfigSource.Configs ["SceneLoader"] != null)
+				enabled = m_simBase.ConfigSource.Configs ["SceneLoader"].GetBoolean ("SceneLoader", true);
 
-            if (enabled)
-                m_simBase.ApplicationRegistry.RegisterModuleInterface<ISceneLoader>(this);
-        }
+			if (enabled)
+				m_simBase.ApplicationRegistry.RegisterModuleInterface<ISceneLoader> (this);
+		}
 
-        public void PostInitialize()
-        {
-        }
+		public void PostInitialize ()
+		{
+		}
 
-        public void Start()
-        {
-        }
+		public void Start ()
+		{
+		}
 
-        public void PostStart()
-        {
-        }
+		public void PostStart ()
+		{
+		}
 
-        public void Close()
-        {
-        }
+		public void Close ()
+		{
+		}
 
-        public void ReloadConfiguration(IConfigSource m_config)
-        {
-        }
+		public void ReloadConfiguration (IConfigSource m_config)
+		{
+		}
 
-        #endregion
+		#endregion
 
-        #region ISceneLoader Members
+		#region ISceneLoader Members
 
-        public string Name
-        {
-            get { return "SceneLoader"; }
-        }
+		public string Name {
+			get { return "SceneLoader"; }
+		}
 
-        /// <summary>
-        ///     Create a scene and its initial base structures.
-        /// </summary>
-        /// <param name="regionInfo"></param>
-        /// <returns></returns>
-        public IScene CreateScene(ISimulationDataStore dataStore, RegionInfo regionInfo)
-        {
-            AgentCircuitManager circuitManager = new AgentCircuitManager();
-            List<IClientNetworkServer> clientServers = UniverseModuleLoader.PickupModules<IClientNetworkServer>();
-            List<IClientNetworkServer> allClientServers = new List<IClientNetworkServer>();
-            foreach (IClientNetworkServer clientServer in clientServers)
-            {
-                clientServer.Initialize((uint)regionInfo.RegionPort, m_configSource, circuitManager);
-                allClientServers.Add(clientServer);
-            }
+		/// <summary>
+		///     Create a scene and its initial base structures.
+		/// </summary>
+		/// <param name="regionInfo"></param>
+		/// <returns></returns>
+		public IScene CreateScene (ISimulationDataStore dataStore, RegionInfo regionInfo)
+		{
+			AgentCircuitManager circuitManager = new AgentCircuitManager ();
+			List<IClientNetworkServer> clientServers = UniverseModuleLoader.PickupModules<IClientNetworkServer> ();
+			List<IClientNetworkServer> allClientServers = new List<IClientNetworkServer> ();
+			foreach (IClientNetworkServer clientServer in clientServers) {
+				clientServer.Initialize ((uint)regionInfo.RegionPort, m_configSource, circuitManager);
+				allClientServers.Add (clientServer);
+			}
 
-            Scene scene = new Scene();
-            scene.AddModuleInterfaces(m_simBase.ApplicationRegistry.GetInterfaces());
-            scene.Initialize(regionInfo, dataStore, circuitManager, allClientServers);
+			Scene scene = new Scene ();
+			scene.AddModuleInterfaces (m_simBase.ApplicationRegistry.GetInterfaces ());
+			scene.Initialize (regionInfo, dataStore, circuitManager, allClientServers);
 
-            return scene;
-        }
+			return scene;
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

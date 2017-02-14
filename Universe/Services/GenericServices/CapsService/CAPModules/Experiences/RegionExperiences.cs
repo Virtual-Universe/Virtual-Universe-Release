@@ -36,35 +36,35 @@ using Universe.Framework.Services;
 
 namespace Universe.Services
 {
-    public class RegionExperiencesCAPS : ICapsServiceConnector
-    {
-        protected IRegionClientCapsService m_service;
+	public class RegionExperiencesCAPS : ICapsServiceConnector
+	{
+		protected IRegionClientCapsService m_service;
 
-        public void RegisterCaps (IRegionClientCapsService service)
-        {
-            m_service = service;
+		public void RegisterCaps (IRegionClientCapsService service)
+		{
+			m_service = service;
             
-            service.AddStreamHandler ("RegionExperiences",
-                new GenericStreamHandler ("GET", service.CreateCAPS ("RegionExperiences", ""), RegionExperiences));
-        }
+			service.AddStreamHandler ("RegionExperiences",
+				new GenericStreamHandler ("GET", service.CreateCAPS ("RegionExperiences", ""), RegionExperiences));
+		}
 
-        public void EnteringRegion ()
-        {
-        }
+		public void EnteringRegion ()
+		{
+		}
 
-        public void DeregisterCaps ()
-        {
-            m_service.RemoveStreamHandler ("RegionExperiences", "GET");
-        }
-        
-        public byte[] RegionExperiences (string path, Stream request, OSHttpRequest httpRequest,
-                                      OSHttpResponse httpResponse)
-        {
-        	MainConsole.Instance.DebugFormat("[RegionExperiences] Call = {0}", httpRequest);
-            var regionExp = new OSDMap();
+		public void DeregisterCaps ()
+		{
+			m_service.RemoveStreamHandler ("RegionExperiences", "GET");
+		}
 
-            return OSDParser.SerializeLLSDXmlBytes (regionExp);
+		public byte[] RegionExperiences (string path, Stream request, OSHttpRequest httpRequest,
+		                                       OSHttpResponse httpResponse)
+		{
+			MainConsole.Instance.DebugFormat ("[RegionExperiences] Call = {0}", httpRequest);
+			var regionExp = new OSDMap ();
 
-        }
-    }
+			return OSDParser.SerializeLLSDXmlBytes (regionExp);
+
+		}
+	}
 }

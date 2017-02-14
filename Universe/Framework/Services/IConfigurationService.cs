@@ -31,27 +31,27 @@ using System.Collections.Generic;
 
 namespace Universe.Framework.Services
 {
-    /// <summary>
-    ///     This service helps to automate the remote grid mode for users so that they do not have to input so many URLs
-    /// </summary>
-    public interface IConfigurationService
-    {
-        /// <summary>
-        ///     Get the default url's for this service
-        /// </summary>
-        /// <returns></returns>
-        string FindValueOf(string key);
+	/// <summary>
+	///     This service helps to automate the remote grid mode for users so that they do not have to input so many URLs
+	/// </summary>
+	public interface IConfigurationService
+	{
+		/// <summary>
+		///     Get the default url's for this service
+		/// </summary>
+		/// <returns></returns>
+		string FindValueOf (string key);
 
-        /// <summary>
-        /// Gets the list of all URIs for this grid
-        /// </summary>
-        /// <returns></returns>
-        Dictionary<string, string> GetURIs();
+		/// <summary>
+		/// Gets the list of all URIs for this grid
+		/// </summary>
+		/// <returns></returns>
+		Dictionary<string, string> GetURIs ();
 
-        /// <summary>
-        /// Set the list of URIs for this grid
-        /// </summary>
-        /// <param name="uris"></param>
-        void SetURIs(Dictionary<string, List<string>> uris);
-    }
+		/// <summary>
+		/// Set the list of URIs for this grid
+		/// </summary>
+		/// <param name="uris"></param>
+		void SetURIs (Dictionary<string, List<string>> uris);
+	}
 }

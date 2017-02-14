@@ -35,39 +35,43 @@ using Universe.Framework.Utilities;
 
 namespace Universe.Framework.ClientInterfaces
 {
-    public class ExtendedLandData : IDataTransferable
-    {
-        public float GlobalPosX;
-        public float GlobalPosY;
-        public LandData LandData;
-        public string RegionName;
-        public string RegionType;
-        public string RegionTerrain;
-        public uint RegionArea;
+	public class ExtendedLandData : IDataTransferable
+	{
+		public float GlobalPosX;
+		public float GlobalPosY;
+		public LandData LandData;
+		public string RegionName;
+		public string RegionType;
+		public string RegionTerrain;
+		public uint RegionArea;
 
-        public override void FromOSD(OSDMap map)
-        {
-            GlobalPosX = (float)Convert.ToDecimal (map ["GlobalPosX"].AsString (), Culture.NumberFormatInfo);
-            GlobalPosY = (float)Convert.ToDecimal (map ["GlobalPosY"].AsString (), Culture.NumberFormatInfo);
-            LandData = new LandData();
-            LandData.FromOSD((OSDMap) map["LandData"]);
-            RegionName = map["RegionName"];
-            RegionType = map["RegionType"];
-            RegionTerrain = map["RegionTerrain"];
-            RegionArea = map["RegionArea"];
-        }
+		public override void FromOSD (OSDMap map)
+		{
+			GlobalPosX = (float)Convert.ToDecimal (map ["GlobalPosX"].AsString (), Culture.NumberFormatInfo);
+			GlobalPosY = (float)Convert.ToDecimal (map ["GlobalPosY"].AsString (), Culture.NumberFormatInfo);
+//            GlobalPosX = map["GlobalPosX"];
+//            GlobalPosY = map["GlobalPosY"];
+			LandData = new LandData ();
+			LandData.FromOSD ((OSDMap)map ["LandData"]);
+			RegionName = map ["RegionName"];
+			RegionType = map ["RegionType"];
+			RegionTerrain = map ["RegionTerrain"];
+			RegionArea = map ["RegionArea"];
+		}
 
-        public override OSDMap ToOSD()
-        {
-            OSDMap map = new OSDMap();
-            map["GlobalPosX"] = OSD.FromReal (GlobalPosX).ToString();
-            map["GlobalPosY"] = OSD.FromReal (GlobalPosY).ToString();
-            map["LandData"] = LandData.ToOSD();
-            map["RegionName"] = RegionName;
-            map["RegionType"] = RegionType;
-            map["RegionTerrain"] = RegionTerrain;
-            map["RegionArea"] = RegionArea;
-            return map;
-        }
-    }
+		public override OSDMap ToOSD ()
+		{
+			OSDMap map = new OSDMap ();
+			map ["GlobalPosX"] = OSD.FromReal (GlobalPosX).ToString ();
+			map ["GlobalPosY"] = OSD.FromReal (GlobalPosY).ToString ();
+//            map["GlobalPosX"] = GlobalPosX;
+//            map["GlobalPosY"] = GlobalPosY;
+			map ["LandData"] = LandData.ToOSD ();
+			map ["RegionName"] = RegionName;
+			map ["RegionType"] = RegionType;
+			map ["RegionTerrain"] = RegionTerrain;
+			map ["RegionArea"] = RegionArea;
+			return map;
+		}
+	}
 }

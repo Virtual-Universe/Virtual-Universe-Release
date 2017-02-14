@@ -1,3 +1,4 @@
+
 /*
  * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
@@ -26,7 +27,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -84,496 +84,456 @@ using Universe.Framework.Utilities;
 
 namespace Universe.Modules.Scripting
 {
-    public class HttpRequestModule : INonSharedRegionModule, IHttpRequestModule
-    {
-        private readonly object HttpListLock = new object();
-        private readonly Dictionary<UUID, HTTPMax> m_numberOfPrimHTTPRequests = new Dictionary<UUID, HTTPMax>();
-        private readonly Dictionary<UUID, UUID> m_reqID2itemID = new Dictionary<UUID, UUID>();
-        private int DEFAULT_BODY_MAXLENGTH = 2048;
-        private int MaxNumberOfHTTPRequestsPerSecond = 1;
-        private int httpTimeout = 30000;
-        private string m_name = "HttpScriptRequests";
+	public class HttpRequestModule : INonSharedRegionModule, IHttpRequestModule
+	{
+		private readonly object HttpListLock = new object ();
+		private readonly Dictionary<UUID, HTTPMax> m_numberOfPrimHTTPRequests = new Dictionary<UUID, HTTPMax> ();
+		private readonly Dictionary<UUID, UUID> m_reqID2itemID = new Dictionary<UUID, UUID> ();
+		private int DEFAULT_BODY_MAXLENGTH = 2048;
+		private int MaxNumberOfHTTPRequestsPerSecond = 1;
+		private int httpTimeout = 30000;
+		private string m_name = "HttpScriptRequests";
 
-        // <itemID, HttpRequestClasss>
-        private Dictionary<UUID, List<HttpRequestClass>> m_pendingRequests;
-        private string m_proxyexcepts = "";
-        private string m_proxyurl = "";
-        // <reqID, itemID>
-        private IScene m_scene;
-        private IScriptModule m_scriptModule;
+		// <itemID, HttpRequestClasss>
+		private Dictionary<UUID, List<HttpRequestClass>> m_pendingRequests;
+		private string m_proxyexcepts = "";
+		private string m_proxyurl = "";
+		// <reqID, itemID>
+		private IScene m_scene;
+		private IScriptModule m_scriptModule;
 
-        // private Queue<HttpRequestClass> rpcQueue = new Queue<HttpRequestClass>();
+		// private Queue<HttpRequestClass> rpcQueue = new Queue<HttpRequestClass>();
 
-        public HttpRequestModule()
-        {
-            ServicePointManager.ServerCertificateValidationCallback += ValidateServerCertificate;
-        }
+		public HttpRequestModule ()
+		{
+			ServicePointManager.ServerCertificateValidationCallback += ValidateServerCertificate;
+		}
 
-        #region IHttpRequestModule Members
+		#region IHttpRequestModule Members
 
-        public UUID MakeHttpRequest(string url, string parameters, string body)
-        {
-            //Make sure that the cmd handler thread is running
-            m_scriptModule.PokeThreads(UUID.Zero);
-            return UUID.Zero;
-        }
+		public UUID MakeHttpRequest (string url, string parameters, string body)
+		{
+			//Make sure that the cmd handler thread is running
+			m_scriptModule.PokeThreads (UUID.Zero);
+			return UUID.Zero;
+		}
 
-        public UUID StartHttpRequest(UUID primID, UUID itemID, string url, List<string> parameters,
-                                     Dictionary<string, string> headers, string body)
-        {
-            UUID reqID = UUID.Random();
-            HttpRequestClass htc = new HttpRequestClass();
+		public UUID StartHttpRequest (UUID primID, UUID itemID, string url, List<string> parameters,
+		                                   Dictionary<string, string> headers, string body)
+		{
+			UUID reqID = UUID.Random ();
+			HttpRequestClass htc = new HttpRequestClass ();
 
-            // Partial implementation: support for parameter flags needed
-            //   see http://wiki.secondlife.com/wiki/LlHTTPRequest
-            //
-            // Parameters are expected in {key, value, ... , key, value}
+			// Partial implementation: support for parameter flags needed
+			//   see http://wiki.secondlife.com/wiki/LlHTTPRequest
+			//
+			// Parameters are expected in {key, value, ... , key, value}
 
-            int BODY_MAXLENGTH = DEFAULT_BODY_MAXLENGTH;
+			int BODY_MAXLENGTH = DEFAULT_BODY_MAXLENGTH;
 
-            if (parameters != null)
-            {
-                string[] parms = parameters.ToArray();
-                for (int i = 0; i < parms.Length; i += 2)
-                {
-                    switch (Int32.Parse(parms[i]))
-                    {
-                        case (int) HttpRequestConstants.HTTP_METHOD:
+			if (parameters != null) {
+				string[] parms = parameters.ToArray ();
+				for (int i = 0; i < parms.Length; i += 2) {
+					switch (Int32.Parse (parms [i])) {
+					case (int) HttpRequestConstants.HTTP_METHOD:
 
-                            htc.HttpMethod = parms[i + 1];
-                            break;
+						htc.HttpMethod = parms [i + 1];
+						break;
 
-                        case (int) HttpRequestConstants.HTTP_MIMETYPE:
+					case (int) HttpRequestConstants.HTTP_MIMETYPE:
 
-                            htc.HttpMIMEType = parms[i + 1];
-                            break;
+						htc.HttpMIMEType = parms [i + 1];
+						break;
 
-                        case (int) HttpRequestConstants.HTTP_BODY_MAXLENGTH:
+					case (int) HttpRequestConstants.HTTP_BODY_MAXLENGTH:
 
-                            BODY_MAXLENGTH = int.Parse(parms[i + 1]);
-                            break;
+						BODY_MAXLENGTH = int.Parse (parms [i + 1]);
+						break;
 
-                        case (int) HttpRequestConstants.HTTP_VERIFY_CERT:
+					case (int) HttpRequestConstants.HTTP_VERIFY_CERT:
 
-                            htc.HttpVerifyCert = (int.Parse(parms[i + 1]) != 0);
-                            break;
+						htc.HttpVerifyCert = (int.Parse (parms [i + 1]) != 0);
+						break;
 
-                        case (int) HttpRequestConstants.HTTP_VERBOSE_THROTTLE:
+					case (int) HttpRequestConstants.HTTP_VERBOSE_THROTTLE:
 
-                            htc.VerbroseThrottle = (int.Parse(parms[i + 1]) != 0);
-                            break;
+						htc.VerbroseThrottle = (int.Parse (parms [i + 1]) != 0);
+						break;
 
-                        case (int) HttpRequestConstants.HTTP_PRAGMA_NO_CACHE:
+					case (int) HttpRequestConstants.HTTP_PRAGMA_NO_CACHE:
 
-                            if (int.Parse(parms[i + 1]) != 0)
-                            {
-                                headers["Pragma"] = "no-cache";
-                            }
-                            break;
+						if (int.Parse (parms [i + 1]) != 0) {
+							headers ["Pragma"] = "no-cache";
+						}
+						break;
 
-                        case (int) HttpRequestConstants.HTTP_CUSTOM_HEADER:
+					case (int) HttpRequestConstants.HTTP_CUSTOM_HEADER:
 
-                            string name = parms[i + 1];
-                            string value = parms[i + 2];
-                            i++; //Move forward one, since we pulled out 3 instead of 2
-                            headers[name] = value;
-                            break;
-                    }
-                }
-            }
+						string name = parms [i + 1];
+						string value = parms [i + 2];
+						i++; //Move forward one, since we pulled out 3 instead of 2
+						headers [name] = value;
+						break;
+					}
+				}
+			}
 
-            bool ShouldProcess = true;
+			bool ShouldProcess = true;
 
-            HTTPMax r = null;
-            if (!m_numberOfPrimHTTPRequests.TryGetValue(primID, out r))
-                r = new HTTPMax();
+			HTTPMax r = null;
+			if (!m_numberOfPrimHTTPRequests.TryGetValue (primID, out r))
+				r = new HTTPMax ();
 
-            if (DateTime.Now.AddSeconds(1).Ticks > r.LastTicks)
-                r.Number = 0;
+			if (DateTime.Now.AddSeconds (1).Ticks > r.LastTicks)
+				r.Number = 0;
 
-            if (r.Number++ > MaxNumberOfHTTPRequestsPerSecond)
-            {
-                ShouldProcess = false; //Too many for this prim, return status 499
-                htc.Status = (int) 499;
-                htc.Finished = true;
-            }
+			if (r.Number++ > MaxNumberOfHTTPRequestsPerSecond) {
+				ShouldProcess = false; //Too many for this prim, return status 499
+				htc.Status = (int)499;
+				htc.Finished = true;
+			}
 
-            htc.PrimID = primID;
-            htc.ItemID = itemID;
-            htc.Url = url;
-            htc.MaxLength = BODY_MAXLENGTH;
-            htc.ReqID = reqID;
-            htc.HttpTimeout = httpTimeout;
-            htc.OutboundBody = body;
-            htc.ResponseHeaders = headers;
-            htc.proxyurl = m_proxyurl;
-            htc.proxyexcepts = m_proxyexcepts;
+			htc.PrimID = primID;
+			htc.ItemID = itemID;
+			htc.Url = url;
+			htc.MaxLength = BODY_MAXLENGTH;
+			htc.ReqID = reqID;
+			htc.HttpTimeout = httpTimeout;
+			htc.OutboundBody = body;
+			htc.ResponseHeaders = headers;
+			htc.proxyurl = m_proxyurl;
+			htc.proxyexcepts = m_proxyexcepts;
 
-            lock (HttpListLock)
-            {
-                if (m_pendingRequests.ContainsKey(itemID))
-                    m_pendingRequests[itemID].Add(htc);
-                else
-                {
-                    m_reqID2itemID.Add(reqID, itemID);
-                    m_pendingRequests.Add(itemID, new List<HttpRequestClass> {htc});
-                }
-            }
+			lock (HttpListLock) {
+				if (m_pendingRequests.ContainsKey (itemID))
+					m_pendingRequests [itemID].Add (htc);
+				else {
+					m_reqID2itemID.Add (reqID, itemID);
+					m_pendingRequests.Add (itemID, new List<HttpRequestClass> { htc });
+				}
+			}
 
-            if (ShouldProcess)
-                htc.Process();
-            //Make sure that the cmd handler thread is running
-            m_scriptModule.PokeThreads(itemID);
+			if (ShouldProcess)
+				htc.Process ();
+			//Make sure that the cmd handler thread is running
+			m_scriptModule.PokeThreads (itemID);
 
-            return reqID;
-        }
+			return reqID;
+		}
 
-        public void StopHttpRequest(UUID primID, UUID m_itemID)
-        {
-            //Make sure that the cmd handler thread is running
-            m_scriptModule.PokeThreads(m_itemID);
-            //Kill all requests and return
-            if (m_pendingRequests != null)
-            {
-                lock (HttpListLock)
-                {
-                    List<HttpRequestClass> tmpReqs;
-                    if (m_pendingRequests.TryGetValue(m_itemID, out tmpReqs))
-                    {
-                        foreach (HttpRequestClass tmpReq in tmpReqs)
-                        {
-                            tmpReq.Stop();
-                        }
-                    }
-                    m_pendingRequests.Remove(m_itemID);
-                }
-            }
-        }
+		public void StopHttpRequest (UUID primID, UUID m_itemID)
+		{
+			//Make sure that the cmd handler thread is running
+			m_scriptModule.PokeThreads (m_itemID);
+			//Kill all requests and return
+			if (m_pendingRequests != null) {
+				lock (HttpListLock) {
+					List<HttpRequestClass> tmpReqs;
+					if (m_pendingRequests.TryGetValue (m_itemID, out tmpReqs)) {
+						foreach (HttpRequestClass tmpReq in tmpReqs) {
+							tmpReq.Stop ();
+						}
+					}
+					m_pendingRequests.Remove (m_itemID);
+				}
+			}
+		}
 
-        public int GetRequestCount()
-        {
-            return m_pendingRequests.Count;
-        }
+		public int GetRequestCount ()
+		{
+			return m_pendingRequests.Count;
+		}
 
-        public IServiceRequest GetNextCompletedRequest()
-        {
-            if (m_pendingRequests.Count == 0)
-                return null;
-            lock (HttpListLock)
-            {
-                foreach (
+		public IServiceRequest GetNextCompletedRequest ()
+		{
+			if (m_pendingRequests.Count == 0)
+				return null;
+			lock (HttpListLock) {
+				foreach (
                     HttpRequestClass luid in
-                        from luids in m_pendingRequests.Values from luid in luids where luid.Finished select luid)
-                {
-                    return luid;
-                }
-            }
-            return null;
-        }
+                        from luids in m_pendingRequests.Values from luid in luids where luid.Finished select luid) {
+					return luid;
+				}
+			}
+			return null;
+		}
 
-        public void RemoveCompletedRequest(IServiceRequest reqid)
-        {
-            HttpRequestClass req = (HttpRequestClass) reqid;
-            lock (HttpListLock)
-            {
-                List<HttpRequestClass> tmpReqs;
-                if (m_pendingRequests.TryGetValue(req.ItemID, out tmpReqs))
-                {
-                    for (int i = 0; i < tmpReqs.Count; i++)
-                    {
-                        if (tmpReqs[i].ReqID == req.ReqID)
-                        {
-                            tmpReqs[i].Stop();
-                            tmpReqs.RemoveAt(i);
-                        }
-                    }
-                    if (tmpReqs.Count == 1)
-                        m_pendingRequests.Remove(req.ItemID);
-                    else
-                        m_pendingRequests[req.ItemID] = tmpReqs;
-                }
-            }
-        }
+		public void RemoveCompletedRequest (IServiceRequest reqid)
+		{
+			HttpRequestClass req = (HttpRequestClass)reqid;
+			lock (HttpListLock) {
+				List<HttpRequestClass> tmpReqs;
+				if (m_pendingRequests.TryGetValue (req.ItemID, out tmpReqs)) {
+					for (int i = 0; i < tmpReqs.Count; i++) {
+						if (tmpReqs [i].ReqID == req.ReqID) {
+							tmpReqs [i].Stop ();
+							tmpReqs.RemoveAt (i);
+						}
+					}
+					if (tmpReqs.Count == 1)
+						m_pendingRequests.Remove (req.ItemID);
+					else
+						m_pendingRequests [req.ItemID] = tmpReqs;
+				}
+			}
+		}
 
-        #endregion
+		#endregion
 
-        #region INonSharedRegionModule Members
+		#region INonSharedRegionModule Members
 
-        public void Initialize(IConfigSource config)
-        {
-            m_proxyurl = config.Configs["HTTPScriptModule"].GetString("HttpProxy");
-            m_proxyexcepts = config.Configs["HTTPScriptModule"].GetString("HttpProxyExceptions");
+		public void Initialize (IConfigSource config)
+		{
+			m_proxyurl = config.Configs ["HTTPScriptModule"].GetString ("HttpProxy");
+			m_proxyexcepts = config.Configs ["HTTPScriptModule"].GetString ("HttpProxyExceptions");
 
-            m_pendingRequests = new Dictionary<UUID, List<HttpRequestClass>>();
-        }
+			m_pendingRequests = new Dictionary<UUID, List<HttpRequestClass>> ();
+		}
 
-        public void AddRegion(IScene scene)
-        {
-            m_scene = scene;
+		public void AddRegion (IScene scene)
+		{
+			m_scene = scene;
 
-            m_scene.RegisterModuleInterface<IHttpRequestModule>(this);
-        }
+			m_scene.RegisterModuleInterface<IHttpRequestModule> (this);
+		}
 
-        public void RemoveRegion(IScene scene)
-        {
-        }
+		public void RemoveRegion (IScene scene)
+		{
+		}
 
-        public void RegionLoaded(IScene scene)
-        {
-            m_scriptModule = scene.RequestModuleInterface<IScriptModule>();
-        }
+		public void RegionLoaded (IScene scene)
+		{
+			m_scriptModule = scene.RequestModuleInterface<IScriptModule> ();
+		}
 
-        public Type ReplaceableInterface
-        {
-            get { return null; }
-        }
+		public Type ReplaceableInterface {
+			get { return null; }
+		}
 
-        public void Close()
-        {
-        }
+		public void Close ()
+		{
+		}
 
-        public string Name
-        {
-            get { return m_name; }
-        }
+		public string Name {
+			get { return m_name; }
+		}
 
-        #endregion
+		#endregion
 
-        public static bool ValidateServerCertificate(
-            object sender,
-            X509Certificate certificate,
-            X509Chain chain,
-            SslPolicyErrors sslPolicyErrors)
-        {
-            HttpWebRequest Request = (HttpWebRequest) sender;
+		public static bool ValidateServerCertificate (
+			object sender,
+			X509Certificate certificate,
+			X509Chain chain,
+			SslPolicyErrors sslPolicyErrors)
+		{
+			HttpWebRequest Request = (HttpWebRequest)sender;
 
-            if (Request.Headers.Get("NoVerifyCert") != null)
-            {
-                return true;
-            }
-            if ((((int) sslPolicyErrors) & ~4) != 0)
-                return false;
+			if (Request.Headers.Get ("NoVerifyCert") != null) {
+				return true;
+			}
+			if ((((int)sslPolicyErrors) & ~4) != 0)
+				return false;
 #pragma warning disable 618
-            if (ServicePointManager.CertificatePolicy != null)
-            {
-                ServicePoint sp = Request.ServicePoint;
-                return ServicePointManager.CertificatePolicy.CheckValidationResult(sp, certificate, Request, 0);
-            }
+			if (ServicePointManager.CertificatePolicy != null) {
+				ServicePoint sp = Request.ServicePoint;
+				return ServicePointManager.CertificatePolicy.CheckValidationResult (sp, certificate, Request, 0);
+			}
 #pragma warning restore 618
-            return true;
-        }
+			return true;
+		}
 
-        #region Nested type: HTTPMax
+		#region Nested type: HTTPMax
 
-        public class HTTPMax
-        {
-            public long LastTicks;
-            public int Number;
-        }
+		public class HTTPMax
+		{
+			public long LastTicks;
+			public int Number;
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 
-    public class HttpRequestClass : IHttpRequestClass
-    {
-        // Constants for parameters
-        // public const int HTTP_BODY_MAXLENGTH = 2;
-        // public const int HTTP_METHOD = 0;
-        // public const int HTTP_MIMETYPE = 1;
-        // public const int HTTP_VERIFY_CERT = 3;
-        public string HttpMIMEType = "text/plain;charset=utf-8";
-        public string HttpMethod = "GET";
-        public int HttpTimeout;
-        public bool HttpVerifyCert = true;
-        private bool _VerbroseThrottle = false;
+	public class HttpRequestClass : IHttpRequestClass
+	{
+		// Constants for parameters
+		// public const int HTTP_BODY_MAXLENGTH = 2;
+		// public const int HTTP_METHOD = 0;
+		// public const int HTTP_MIMETYPE = 1;
+		// public const int HTTP_VERIFY_CERT = 3;
+		public string HttpMIMEType = "text/plain;charset=utf-8";
+		public string HttpMethod = "GET";
+		public int HttpTimeout;
+		public bool HttpVerifyCert = true;
+		private bool _VerbroseThrottle = false;
 
-        public bool VerbroseThrottle
-        {
-            get { return _VerbroseThrottle; }
-            set { _VerbroseThrottle = value; }
-        }
+		public bool VerbroseThrottle {
+			get { return _VerbroseThrottle; }
+			set { _VerbroseThrottle = value; }
+		}
 
-        public int MaxLength;
-        public object[] _Metadata = new object[0];
+		public int MaxLength;
+		public object[] _Metadata = new object[0];
 
-        public object[] Metadata
-        {
-            get { return _Metadata; }
-            set { _Metadata = value; }
-        }
+		public object[] Metadata {
+			get { return _Metadata; }
+			set { _Metadata = value; }
+		}
 
-        public DateTime Next;
-        public string OutboundBody;
+		public DateTime Next;
+		public string OutboundBody;
 
-        public HttpWebRequest Request;
-        public string ResponseBody { get; set; }
-        public Dictionary<string, string> ResponseHeaders;
-        public List<string> ResponseMetadata;
-        public int Status { get; set; }
-        public string Url;
-        private bool _finished;
-        private Thread httpThread;
-        public string proxyexcepts;
-        public string proxyurl;
+		public HttpWebRequest Request;
 
-        #region IServiceRequest Members
+		public string ResponseBody { get; set; }
 
-        public bool Finished
-        {
-            get { return _finished; }
-            set { _finished = value; }
-        }
+		public Dictionary<string, string> ResponseHeaders;
+		public List<string> ResponseMetadata;
 
-        public UUID ItemID { get; set; }
+		public int Status { get; set; }
 
-        public UUID PrimID { get; set; }
-        public UUID ReqID { get; set; }
+		public string Url;
+		private bool _finished;
+		private Thread httpThread;
+		public string proxyexcepts;
+		public string proxyurl;
 
-        public void Process()
-        {
-            httpThread = new Thread(SendRequest)
-                             {Name = "HttpRequestThread", Priority = ThreadPriority.Lowest, IsBackground = true};
-            _finished = false;
-            httpThread.Start();
-        }
+		#region IServiceRequest Members
 
-        /*
+		public bool Finished {
+			get { return _finished; }
+			set { _finished = value; }
+		}
+
+		public UUID ItemID { get; set; }
+
+		public UUID PrimID { get; set; }
+
+		public UUID ReqID { get; set; }
+
+		public void Process ()
+		{
+			httpThread = new Thread (SendRequest)
+                             { Name = "HttpRequestThread", Priority = ThreadPriority.Lowest, IsBackground = true };
+			_finished = false;
+			httpThread.Start ();
+		}
+
+		/*
          * TODO: More work on the response codes.  Right now
          * returning 200 for success or 499 for exception
          */
 
-        public void SendRequest()
-        {
-            Culture.SetCurrentCulture();
-            HttpWebResponse response = null;
-            StringBuilder sb = new StringBuilder();
-            byte[] buf = new byte[8192];
-            string tempString = null;
-            int count = 0;
+		public void SendRequest ()
+		{
+			Culture.SetCurrentCulture ();
+			HttpWebResponse response = null;
+			StringBuilder sb = new StringBuilder ();
+			byte[] buf = new byte[8192];
+			string tempString = null;
+			int count = 0;
 
-            try
-            {
-                Request = (HttpWebRequest) WebRequest.Create(Url);
+			try {
+				Request = (HttpWebRequest)WebRequest.Create (Url);
 
-                Request.Method = HttpMethod;
-                Request.ContentType = HttpMIMEType;
+				Request.Method = HttpMethod;
+				Request.ContentType = HttpMIMEType;
 
-                if (!HttpVerifyCert)
-                {
-                    // Connection Group Name is probably not used so we hijack it to identify
-                    // a desired security exception
+				if (!HttpVerifyCert) {
+					// Connection Group Name is probably not used so we hijack it to identify
+					// a desired security exception
 //                  Request.ConnectionGroupName="NoVerify";
-                    Request.Headers.Add("NoVerifyCert", "true");
-                }
+					Request.Headers.Add ("NoVerifyCert", "true");
+				}
 //              else
 //              {
 //                  Request.ConnectionGroupName="Verify";
 //              }
 
-                if (!string.IsNullOrEmpty(proxyurl))
-                {
-                    if (!string.IsNullOrEmpty(proxyexcepts))
-                    {
-                        string[] elist = proxyexcepts.Split(';');
-                        Request.Proxy = new WebProxy(proxyurl, true, elist);
-                    }
-                    else
-                    {
-                        Request.Proxy = new WebProxy(proxyurl, true);
-                    }
-                }
+				if (!string.IsNullOrEmpty (proxyurl)) {
+					if (!string.IsNullOrEmpty (proxyexcepts)) {
+						string[] elist = proxyexcepts.Split (';');
+						Request.Proxy = new WebProxy (proxyurl, true, elist);
+					} else {
+						Request.Proxy = new WebProxy (proxyurl, true);
+					}
+				}
 
-                foreach (KeyValuePair<string, string> entry in ResponseHeaders)
-                    if (entry.Key.ToLower().Equals("user-agent"))
-                        Request.UserAgent = entry.Value;
-                    else
-                        Request.Headers[entry.Key] = entry.Value;
+				foreach (KeyValuePair<string, string> entry in ResponseHeaders)
+					if (entry.Key.ToLower ().Equals ("user-agent"))
+						Request.UserAgent = entry.Value;
+					else
+						Request.Headers [entry.Key] = entry.Value;
 
-                // Encode outbound data
-                if (OutboundBody.Length > 0)
-                {
-                    byte[] data = Util.UTF8.GetBytes(OutboundBody);
+				// Encode outbound data
+				if (OutboundBody.Length > 0) {
+					byte[] data = Util.UTF8.GetBytes (OutboundBody);
 
-                    Request.ContentLength = data.Length;
-                    Stream bstream = Request.GetRequestStream();
-                    bstream.Write(data, 0, data.Length);
-                    bstream.Close();
-                }
+					Request.ContentLength = data.Length;
+					Stream bstream = Request.GetRequestStream ();
+					bstream.Write (data, 0, data.Length);
+					bstream.Close ();
+				}
 
-                Request.Timeout = HttpTimeout;
-                // execute the request
-                try
-                {
-                    // execute the request
-                    response = (HttpWebResponse) Request.GetResponse();
-                }
-                catch (WebException e)
-                {
-                    if (e.Status != WebExceptionStatus.ProtocolError)
-                    {
-                        throw;
-                    }
-                    response = (HttpWebResponse) e.Response;
-                }
+				Request.Timeout = HttpTimeout;
+				// execute the request
+				try {
+					// execute the request
+					response = (HttpWebResponse)Request.GetResponse ();
+				} catch (WebException e) {
+					if (e.Status != WebExceptionStatus.ProtocolError) {
+						throw;
+					}
+					response = (HttpWebResponse)e.Response;
+				}
 
-                Status = (int) response.StatusCode;
+				Status = (int)response.StatusCode;
 
-                Stream resStream = response.GetResponseStream();
+				Stream resStream = response.GetResponseStream ();
 
-                do
-                {
-                    // fill the buffer with data
-                    count = resStream.Read(buf, 0, buf.Length);
+				do {
+					// fill the buffer with data
+					count = resStream.Read (buf, 0, buf.Length);
 
-                    // make sure we read some data
-                    if (count != 0)
-                    {
-                        // translate from bytes to ASCII text
-                        tempString = Util.UTF8.GetString(buf, 0, count);
+					// make sure we read some data
+					if (count != 0) {
+						// translate from bytes to ASCII text
+						tempString = Util.UTF8.GetString (buf, 0, count);
 
-                        // continue building the string
-                        sb.Append(tempString);
-                    }
-                } while (count > 0); // any more data to read?
+						// continue building the string
+						sb.Append (tempString);
+					}
+				} while (count > 0); // any more data to read?
 
-                ResponseBody = sb.ToString();
+				ResponseBody = sb.ToString ();
 
-                if (ResponseBody.Length > MaxLength) //Cut it off then
-                {
-                    ResponseBody = ResponseBody.Remove(MaxLength);
-                    //Add the metaData
-                    Metadata = new object[2] {0, MaxLength};
-                }
-            }
-            catch (Exception e)
-            {
-                //Too many for this prim, return status 499
-                Status = (int)499;
-                ResponseBody = e.Message;
+				if (ResponseBody.Length > MaxLength) { //Cut it off then
+					ResponseBody = ResponseBody.Remove (MaxLength);
+					//Add the metaData
+					Metadata = new object[2] { 0, MaxLength };
+				}
+			} catch (Exception e) {
+				//Too many for this prim, return status 499
+				Status = (int)499;
+				ResponseBody = e.Message;
 
-                _finished = true;
-                return;
-            }
-            finally
-            {
-                if (response != null)
-                    response.Close();
-            }
+				_finished = true;
+				return;
+			} finally {
+				if (response != null)
+					response.Close ();
+			}
             
-            _finished = true;
-        }
+			_finished = true;
+		}
 
-        public void Stop()
-        {
-            try
-            {
-                httpThread.Abort();
-            }
-            catch (Exception)
-            {
-            }
-        }
+		public void Stop ()
+		{
+			try {
+				httpThread.Abort ();
+			} catch (Exception) {
+			}
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

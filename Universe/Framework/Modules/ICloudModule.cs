@@ -29,13 +29,13 @@
 
 namespace Universe.Framework.Modules
 {
-    public interface ICloudModule : INonSharedRegionModule
-    {
-        /// <summary>
-        ///     Retrieves the cloud density at the given region coordinates
-        /// </summary>
-        float CloudCover(int x, int y, int z);
+	public interface ICloudModule : INonSharedRegionModule
+	{
+		/// <summary>
+		///     Retrieves the cloud density at the given region coordinates
+		/// </summary>
+		float CloudCover (int x, int y, int z);
 
-        void SetCloudDensity(float density);
-    }
+		void SetCloudDensity (float density);
+	}
 }

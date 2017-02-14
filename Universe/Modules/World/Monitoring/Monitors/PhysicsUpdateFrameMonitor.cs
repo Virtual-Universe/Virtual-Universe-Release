@@ -32,50 +32,50 @@ using Universe.Framework.SceneInfo;
 
 namespace Universe.Modules.Monitoring.Monitors
 {
-    public class PhysicsUpdateFrameMonitor : IPhysicsUpdateFrameMonitor
-    {
-        int MonitorPhysicsUpdateTime;
+	public class PhysicsUpdateFrameMonitor : IPhysicsUpdateFrameMonitor
+	{
+		int MonitorPhysicsUpdateTime;
 
-        public PhysicsUpdateFrameMonitor (IScene scene)
-        {
-        }
+		public PhysicsUpdateFrameMonitor (IScene scene)
+		{
+		}
 
-        #region Implementation of IMonitor
+		#region Implementation of IMonitor
 
-        public double GetValue ()
-        {
-            return MonitorPhysicsUpdateTime;
-        }
+		public double GetValue ()
+		{
+			return MonitorPhysicsUpdateTime;
+		}
 
-        public string GetName ()
-        {
-            return "Physics Update Frame Time";
-        }
+		public string GetName ()
+		{
+			return "Physics Update Frame Time";
+		}
 
-        public string GetInterfaceName ()
-        {
-            return "IPhysicsUpdateFrameMonitor";
-        }
+		public string GetInterfaceName ()
+		{
+			return "IPhysicsUpdateFrameMonitor";
+		}
 
-        public string GetFriendlyValue ()
-        {
-            return (int)GetValue () + "ms";
-        }
+		public string GetFriendlyValue ()
+		{
+			return (int)GetValue () + "ms";
+		}
 
-        #endregion
+		#endregion
 
-        #region ITimeMonitor Members
+		#region ITimeMonitor Members
 
-        public void AddTime (int time)
-        {
-            MonitorPhysicsUpdateTime += time;
-        }
+		public void AddTime (int time)
+		{
+			MonitorPhysicsUpdateTime += time;
+		}
 
-        public void ResetStats ()
-        {
-            MonitorPhysicsUpdateTime = 0;
-        }
+		public void ResetStats ()
+		{
+			MonitorPhysicsUpdateTime = 0;
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

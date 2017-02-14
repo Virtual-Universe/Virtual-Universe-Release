@@ -34,64 +34,62 @@ using OpenMetaverse.Imaging;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Services.ClassHelpers.Assets;
+using Universe.Framework.Utilities;
 
 namespace Universe.ScriptEngine.VirtualScript.MiniModule
 {
-    class Graphics : MarshalByRefObject, IGraphics
-    {
-        readonly IScene m_scene;
+	class Graphics : MarshalByRefObject, IGraphics
+	{
+		readonly IScene m_scene;
 
-        public Graphics (IScene m_scene)
-        {
-            this.m_scene = m_scene;
-        }
+		public Graphics (IScene m_scene)
+		{
+			this.m_scene = m_scene;
+		}
 
-        #region IGraphics Members
+		#region IGraphics Members
 
-        public UUID SaveBitmap (Bitmap data)
-        {
-            return SaveBitmap (data, false, true);
-        }
+		public UUID SaveBitmap (Bitmap data)
+		{
+			return SaveBitmap (data, false, true);
+		}
 
-        public UUID SaveBitmap (Bitmap data, bool lossless, bool temporary)
-        {
-            AssetBase asset = new AssetBase (
-                UUID.Random (),
-                "MRMDynamicImage",
-                AssetType.Texture,
-                m_scene.RegionInfo.RegionID) {
-                Data = OpenJPEG.EncodeFromImage (data, lossless),
-                Description = "MRM Image",
-                Flags = (temporary) ? AssetFlags.Temporary : 0
-            };
+		public UUID SaveBitmap (Bitmap data, bool lossless, bool temporary)
+		{
+			AssetBase asset = new AssetBase (
+				                           UUID.Random (),
+				                           "MRMDynamicImage",
+				                           AssetType.Texture,
+				                           m_scene.RegionInfo.RegionID) {
+				Data = OpenJPEG.EncodeFromImage (data, lossless),
+				Description = "MRM Image",
+				Flags = (temporary) ? AssetFlags.Temporary : 0
+			};
 
-            var assetID = m_scene.AssetService.Store (asset);
-            asset.Dispose ();
-            return assetID;
-        }
+			var assetID = m_scene.AssetService.Store (asset);
+			asset.Dispose ();
+			return assetID;
+		}
 
-        public Bitmap LoadBitmap (UUID assetID)
-        {
-            // from AssetCaps
-            const string MISSING_TEXTURE_ID = "41fcdbb9-0896-495d-8889-1eb6fad88da3";       // texture to use when all else fails...
+		public Bitmap LoadBitmap (UUID assetID)
+		{
+			byte[] bmp = m_scene.AssetService.GetData (assetID.ToString ());
+			if (bmp == null)
+				bmp = m_scene.AssetService.GetData (Constants.MISSING_TEXTURE_ID);
 
-            byte[] bmp = m_scene.AssetService.GetData (assetID.ToString ());
-            if (bmp == null)
-                bmp = m_scene.AssetService.GetData (MISSING_TEXTURE_ID);
-
-            if (bmp == null)    // something reqlly wrong here
+			if (bmp == null)    // something reqlly wrong here
                 return null;
 
-            Image img = m_scene.RequestModuleInterface<IJ2KDecoder> ().DecodeToImage (bmp);
-            if (img == null)
-                return null;
+			Image img = m_scene.RequestModuleInterface<IJ2KDecoder> ().DecodeToImage (bmp);
+			if (img == null)
+				return null;
             
-            var retbmp = new Bitmap (img);
-            img.Dispose ();
+			var retbmp = new Bitmap (img);
+			img.Dispose ();
 
-            return retbmp;
-        }
+			return retbmp;
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

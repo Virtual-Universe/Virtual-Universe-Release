@@ -2,3 +2,8 @@ C:\Users\virtu\Desktop\Universe-Dev\VirtualUniverse\bin\Universe.Region.dll
 C:\Users\virtu\Desktop\Universe-Dev\VirtualUniverse\bin\Universe.Region.pdb
 C:\Users\virtu\Desktop\Universe-Dev\Universe\Region\obj\x64\Debug\Universe.Region.dll
 C:\Users\virtu\Desktop\Universe-Dev\Universe\Region\obj\x64\Debug\Universe.Region.pdb
+C:\Users\virtu\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.Region.dll
+C:\Users\virtu\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.Region.pdb
+C:\Users\virtu\Desktop\Virtual-Dev\Universe\Region\obj\x64\Debug\Universe.Region.csprojResolveAssemblyReference.cache
+C:\Users\virtu\Desktop\Virtual-Dev\Universe\Region\obj\x64\Debug\Universe.Region.dll
+C:\Users\virtu\Desktop\Virtual-Dev\Universe\Region\obj\x64\Debug\Universe.Region.pdb

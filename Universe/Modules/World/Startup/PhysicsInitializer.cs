@@ -36,69 +36,66 @@ using Universe.Framework.Utilities;
 
 namespace Universe.Modules.Startup
 {
-    public class PhysicsInitializer : ISharedRegionStartupModule
-    {
-        #region ISharedRegionStartupModule Members
+	public class PhysicsInitializer : ISharedRegionStartupModule
+	{
+		#region ISharedRegionStartupModule Members
 
-        public void Initialize(IScene scene, IConfigSource source, ISimulationBase simBase)
-        {
-            IConfig PhysConfig = source.Configs["Physics"];
-            IConfig MeshingConfig = source.Configs["Meshing"];
-            string engine = "";
-            string meshEngine = "";
-            string Path = "Physics";
-            if (PhysConfig != null)
-            {
-                Path = PhysConfig.GetString("PathToPhysicsAssemblies", Path);
-                engine = PhysConfig.GetString("DefaultPhysicsEngine", "OpenDynamicsEngine");
-                meshEngine = MeshingConfig.GetString("DefaultMeshingEngine", "Meshmerizer");
-                string regionName = scene.RegionInfo.RegionName.Trim().Replace(' ', '_');
-                string RegionPhysicsEngine = PhysConfig.GetString("Region_" + regionName + "_PhysicsEngine",
-                                                                  String.Empty);
-                if (RegionPhysicsEngine != "")
-                    engine = RegionPhysicsEngine;
-                string RegionMeshingEngine = MeshingConfig.GetString("Region_" + regionName + "_MeshingEngine",
-                                                                     String.Empty);
-                if (RegionMeshingEngine != "")
-                    meshEngine = RegionMeshingEngine;
-            }
-            else
-            {
-                //Load Sane defaults
-                engine = "OpenDynamicsEngine";
-                meshEngine = "Meshmerizer";
-            }
-            PhysicsPluginManager physicsPluginManager = new PhysicsPluginManager();
-            physicsPluginManager.LoadPluginsFromAssemblies(Util.BasePathCombine(Path));
+		public void Initialize (IScene scene, IConfigSource source, ISimulationBase simBase)
+		{
+			IConfig PhysConfig = source.Configs ["Physics"];
+			IConfig MeshingConfig = source.Configs ["Meshing"];
+			string engine = "";
+			string meshEngine = "";
+			string Path = "Physics";
+			if (PhysConfig != null) {
+				Path = PhysConfig.GetString ("PathToPhysicsAssemblies", Path);
+				engine = PhysConfig.GetString ("DefaultPhysicsEngine", "OpenDynamicsEngine");
+				meshEngine = MeshingConfig.GetString ("DefaultMeshingEngine", "Meshmerizer");
+				string regionName = scene.RegionInfo.RegionName.Trim ().Replace (' ', '_');
+				string RegionPhysicsEngine = PhysConfig.GetString ("Region_" + regionName + "_PhysicsEngine",
+					                                         String.Empty);
+				if (RegionPhysicsEngine != "")
+					engine = RegionPhysicsEngine;
+				string RegionMeshingEngine = MeshingConfig.GetString ("Region_" + regionName + "_MeshingEngine",
+					                                         String.Empty);
+				if (RegionMeshingEngine != "")
+					meshEngine = RegionMeshingEngine;
+			} else {
+				//Load Sane defaults
+				engine = "OpenDynamicsEngine";
+				meshEngine = "Meshmerizer";
+			}
+			PhysicsPluginManager physicsPluginManager = new PhysicsPluginManager ();
+			physicsPluginManager.LoadPluginsFromAssemblies (Util.BasePathCombine (Path));
 
-            PhysicsScene pScene = physicsPluginManager.GetPhysicsScene(engine, meshEngine, source, scene);
-            scene.PhysicsScene = pScene;
-        }
+			PhysicsScene pScene = physicsPluginManager.GetPhysicsScene (engine, meshEngine, source, scene);
+			scene.PhysicsScene = pScene;
+		}
 
-        public void PostInitialize(IScene scene, IConfigSource source, ISimulationBase simBase)
-        {
-        }
+		public void PostInitialize (IScene scene, IConfigSource source, ISimulationBase simBase)
+		{
+		}
 
-        public void FinishStartup(IScene scene, IConfigSource source, ISimulationBase simBase)
-        {
-        }
+		public void FinishStartup (IScene scene, IConfigSource source, ISimulationBase simBase)
+		{
+		}
 
-        public void PostFinishStartup(IScene scene, IConfigSource source, ISimulationBase simBase)
-        {
-        }
+		public void PostFinishStartup (IScene scene, IConfigSource source, ISimulationBase simBase)
+		{
+		}
 
-        public void StartupComplete()
-        {
-        }
+		public void StartupComplete ()
+		{
+		}
 
-        public void Close(IScene scene)
-        {
-        }
+		public void Close (IScene scene)
+		{
+		}
 
-        public void DeleteRegion(IScene scene)
-        {
-        }
+		public void DeleteRegion (IScene scene)
+		{
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

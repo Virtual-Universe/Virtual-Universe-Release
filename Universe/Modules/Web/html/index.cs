@@ -32,77 +32,67 @@ using Universe.Framework.Servers.HttpServer.Implementation;
 
 namespace Universe.Modules.Web
 {
-    public class IndexMain : IWebInterfacePage
-    {
-        public string[] FilePath
-        {
-            get
-            {
-                return new[]
-                           {
-                               "html/index.html",
-                               "html/js/menu.js"
-                           };
-            }
-        }
+	public class IndexMain : IWebInterfacePage
+	{
+		public string[] FilePath {
+			get {
+				return new[] {
+					"html/index.html",
+					"html/js/menu.js"
+				};
+			}
+		}
 
-        public bool RequiresAuthentication
-        {
-            get { return false; }
-        }
+		public bool RequiresAuthentication {
+			get { return false; }
+		}
 
-        public bool RequiresAdminAuthentication
-        {
-            get { return false; }
-        }
+		public bool RequiresAdminAuthentication {
+			get { return false; }
+		}
 
-        public Dictionary<string, object> Fill(WebInterface webInterface, string filename, OSHttpRequest httpRequest,
-                                               OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
-                                               ITranslator translator, out string response)
-        {
-            response = null;
-            var vars = new Dictionary<string, object>();
+		public Dictionary<string, object> Fill (WebInterface webInterface, string filename, OSHttpRequest httpRequest,
+		                                        OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
+		                                        ITranslator translator, out string response)
+		{
+			response = null;
+			var vars = new Dictionary<string, object> ();
 
-            #region Find pages
+			#region Find pages
 
-            List<Dictionary<string, object>> pages = new List<Dictionary<string, object>>();
+			List<Dictionary<string, object>> pages = new List<Dictionary<string, object>> ();
 
-            var settings = webInterface.GetWebUISettings();
-            var rootPage = webInterface.GetGridPages();
+			var settings = webInterface.GetWebUISettings ();
+			var rootPage = webInterface.GetGridPages ();
 
-            rootPage.Children.Sort((a, b) => a.MenuPosition.CompareTo(b.MenuPosition));
+			rootPage.Children.Sort ((a, b) => a.MenuPosition.CompareTo (b.MenuPosition));
 
-            foreach (GridPage page in rootPage.Children)
-            {
-                if (page.LoggedOutRequired && Authenticator.CheckAuthentication(httpRequest))
-                    continue;
-                if (page.LoggedInRequired && !Authenticator.CheckAuthentication(httpRequest))
-                    continue;
-                if (page.AdminRequired && !Authenticator.CheckAdminAuthentication(httpRequest, page.AdminLevelRequired))
-                    continue;
+			foreach (GridPage page in rootPage.Children) {
+				if (page.LoggedOutRequired && Authenticator.CheckAuthentication (httpRequest))
+					continue;
+				if (page.LoggedInRequired && !Authenticator.CheckAuthentication (httpRequest))
+					continue;
+				if (page.AdminRequired && !Authenticator.CheckAdminAuthentication (httpRequest, page.AdminLevelRequired))
+					continue;
 
-                List<Dictionary<string, object>> childPages = new List<Dictionary<string, object>>();
-                page.Children.Sort((a, b) => a.MenuPosition.CompareTo(b.MenuPosition));
-                foreach (GridPage childPage in page.Children)
-                {
-                    if (childPage.LoggedOutRequired && Authenticator.CheckAuthentication(httpRequest))
-                        continue;
-                    if (childPage.LoggedInRequired && !Authenticator.CheckAuthentication(httpRequest))
-                        continue;
-                    if (childPage.AdminRequired &&
-                        !Authenticator.CheckAdminAuthentication(httpRequest, childPage.AdminLevelRequired))
-                        continue;
+				List<Dictionary<string, object>> childPages = new List<Dictionary<string, object>> ();
+				page.Children.Sort ((a, b) => a.MenuPosition.CompareTo (b.MenuPosition));
+				foreach (GridPage childPage in page.Children) {
+					if (childPage.LoggedOutRequired && Authenticator.CheckAuthentication (httpRequest))
+						continue;
+					if (childPage.LoggedInRequired && !Authenticator.CheckAuthentication (httpRequest))
+						continue;
+					if (childPage.AdminRequired &&
+					    !Authenticator.CheckAdminAuthentication (httpRequest, childPage.AdminLevelRequired))
+						continue;
 
-                    childPages.Add(new Dictionary<string, object>
-                                       {
-                                           {"ChildMenuItemID", childPage.MenuID},
-                                           {"ChildShowInMenu", childPage.ShowInMenu},
-                                           {"ChildMenuItemLocation", childPage.Location},
-                                           {
-                                               "ChildMenuItemTitleHelp",
-                                               GetTranslatedString(translator, childPage.MenuToolTip, childPage, true)
-                                           },
-                                           {
+					childPages.Add (new Dictionary<string, object> {
+						{ "ChildMenuItemID", childPage.MenuID },
+						{ "ChildShowInMenu", childPage.ShowInMenu },
+						{ "ChildMenuItemLocation", childPage.Location }, {
+							"ChildMenuItemTitleHelp",
+							GetTranslatedString (translator, childPage.MenuToolTip, childPage, true)
+						}, {
                                                "ChildMenuItemTitle",
                                                GetTranslatedString(translator, childPage.MenuTitle, childPage, false)
                                            }
@@ -187,7 +177,7 @@ namespace Universe.Modules.Web
             return vars;
         }
 
-        private string GetTranslatedString(ITranslator translator, string name, GridPage page, bool isTooltip)
+        string GetTranslatedString(ITranslator translator, string name, GridPage page, bool isTooltip)
         {
             string retVal = translator.GetTranslatedString(name);
             if (retVal == "UNKNOWN CHARACTER")

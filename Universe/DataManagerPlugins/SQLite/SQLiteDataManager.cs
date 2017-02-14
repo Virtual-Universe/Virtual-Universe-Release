@@ -44,7 +44,7 @@ namespace Universe.DataManager.SQLite
 {
     public class SQLiteLoader : DataManagerBase
     {
-        string m_defaultDataPath = Constants.DEFAULT_DATA_DIR+"/SQLite";  
+        string m_defaultDataPath = Constants.DEFAULT_DATA_DIR + "/SQLite";
         protected Dictionary<string, FieldInfo> m_Fields = new Dictionary<string, FieldInfo>();
         protected string m_connectionString;
         protected static Dictionary<string, object> _locks = new Dictionary<string, object>();
@@ -74,44 +74,46 @@ namespace Universe.DataManager.SQLite
 
         public override void ConnectToDatabase(string connectionString, string migratorName, bool validateTables)
         {
-        
+
             // connection string in the format...
             // Data Source=File:<db_filename>
             m_connectionString = connectionString;
-            string[] s1 = m_connectionString.Split(new[] {"Data Source=", ";", ","}, StringSplitOptions.RemoveEmptyEntries);
+            string[] s1 = m_connectionString.Split(new[] { "Data Source=", ";", "," }, StringSplitOptions.RemoveEmptyEntries);
 
             // first element should be file:<db_filename>
             s1[0] = s1[0].Remove(0, 5);
-            m_fileName = s1 [0];
+            m_fileName = s1[0];
 
             // some sanity checks
-            string filePath = Path.GetDirectoryName (s1[0]);
-            string fileName = Path.GetFileName (s1[0]);
+            string filePath = Path.GetDirectoryName(s1[0]);
+            string fileName = Path.GetFileName(s1[0]);
 
             if (filePath == "") //Only add this if we aren't an absolute path already eg file:data.db
             {
-                m_connectionString = string.Format ("Data Source=file://{0}", Path.Combine (m_defaultDataPath, fileName));
+                m_connectionString = string.Format("Data Source=file://{0}", Path.Combine(m_defaultDataPath, fileName));
                 filePath = m_defaultDataPath;
-                m_fileName = Path.Combine (m_defaultDataPath, fileName);
+                m_fileName = Path.Combine(m_defaultDataPath, fileName);
             }
 
-            if (!Directory.Exists (filePath))
-                Directory.CreateDirectory (filePath);           // directory does not exist!
+            if (!Directory.Exists(filePath))
+                Directory.CreateDirectory(filePath);           // directory does not exist!
             if (!File.Exists(m_fileName))
                 File.Create(m_fileName).Dispose();              // database file does not exist, create an empty one to use     
 
             SqliteConnection connection = new SqliteConnection(m_connectionString);
 
-            try {
-                connection.Open ();
+            try
+            {
+                connection.Open();
 
-                var migrationManager = new MigrationManager (this, migratorName, validateTables);
-                migrationManager.DetermineOperation ();
-                migrationManager.ExecuteOperation ();
-            } catch {
-                MainConsole.Instance.Warn ("[Sqlite]: Unable to connect to database ("+m_connectionString+")");
+                var migrationManager = new MigrationManager(this, migratorName, validateTables);
+                migrationManager.DetermineOperation();
+                migrationManager.ExecuteOperation();
             }
-
+            catch
+            {
+                MainConsole.Instance.Warn("[Sqlite]: Unable to connect to database (" + m_connectionString + ")");
+            }
             connection.Close();
         }
 
@@ -119,14 +121,12 @@ namespace Universe.DataManager.SQLite
         {
             if (connection == null)
                 return;
-
             if (connection.DataReader != null)
                 connection.DataReader.Close();
-
             if (connection.Connection != null && connection.Connection is SqliteConnection)
-                ((SqliteConnection) connection.Connection).Close();
+                ((SqliteConnection)connection.Connection).Close();
 
-            connection.Dispose ();
+            connection.Dispose();
         }
 
         #endregion
@@ -136,7 +136,7 @@ namespace Universe.DataManager.SQLite
         protected void PrepReader(ref SqliteCommand cmd)
         {
             int retries = 0;
-            restart:
+        restart:
             try
             {
                 SqliteConnection connection = new SqliteConnection(m_connectionString);
@@ -147,17 +147,20 @@ namespace Universe.DataManager.SQLite
             catch (SqliteBusyException ex)
             {
                 if (retries++ > 5)
-                    MainConsole.Instance.WarnFormat("[Sqlite]: Exception processing command: {0}, Exception: {1}", cmd.CommandText, ex);
+                    MainConsole.Instance.WarnFormat("[Sqlite]: Exception processing command: {0}, Exception: {1}",
+                                            cmd.CommandText, ex);
                 else
                     goto restart;
             }
             catch (SqliteException ex)
             {
-                MainConsole.Instance.WarnFormat("[Sqlite]: Exception processing command: {0}, Exception: {1}", cmd.CommandText, ex);
+                MainConsole.Instance.WarnFormat("[Sqlite]: Exception processing command: {0}, Exception: {1}",
+                                        cmd.CommandText, ex);
             }
             catch (Exception ex)
             {
-                MainConsole.Instance.WarnFormat("[Sqlite]: Exception processing command: {0}, Exception: {1}", cmd.CommandText, ex);
+                MainConsole.Instance.WarnFormat("[Sqlite]: Exception processing command: {0}, Exception: {1}",
+                                        cmd.CommandText, ex);
             }
         }
 
@@ -173,21 +176,23 @@ namespace Universe.DataManager.SQLite
             }
             catch (SqliteException ex)
             {
-                MainConsole.Instance.WarnFormat ("[Sqlite]: Exception prepping reader command: {0}, Exception: {1}", query, ex);
+                MainConsole.Instance.WarnFormat("[Sqlite]: Exception prepping reader command: {0}, Exception: {1}",
+                                                 query, ex);
             }
             catch (Exception ex)
             {
-                MainConsole.Instance.WarnFormat ("[Sqlite]: Exception prepping reader command: {0}, Exception: {1}", query, ex);
+                MainConsole.Instance.WarnFormat("[Sqlite]: Exception prepping reader command: {0}, Exception: {1}",
+                                                 query, ex);
             }
             return null;
         }
 
-        // TODO: As all exceptions appear to be caught here the ExecuteNonQuery() calls probably 
+        // TODO: As all exceptions apper to be caught here the ExecuteNonQuery() calls probably 
         // do not need to be in try/catch 's
         protected int ExecuteNonQuery(SqliteCommand cmd)
         {
             int retries = 0;
-            restart:
+        restart:
             try
             {
                 lock (GetLock())
@@ -202,20 +207,22 @@ namespace Universe.DataManager.SQLite
             catch (SqliteBusyException ex)
             {
                 if (retries++ > 5)
-                    MainConsole.Instance.WarnFormat("[Sqlite]: Exception processing command: {0}, Exception: {1}", cmd.CommandText, ex);
+                    MainConsole.Instance.WarnFormat("[Sqlite]: Exception processing command: {0}, Exception: {1}",
+                                            cmd.CommandText, ex);
                 else
                     goto restart;
                 return 0;
             }
             catch (SqliteException ex)
             {
-                MainConsole.Instance.WarnFormat("[Sqlite]: Exception processing command: {0}, Exception: {1}", cmd.CommandText, ex);
+                MainConsole.Instance.WarnFormat("[Sqlite]: Exception processing command: {0}, Exception: {1}",
+                                        cmd.CommandText, ex);
             }
             catch (Exception ex)
             {
-                MainConsole.Instance.WarnFormat("[Sqlite]: Exception processing command: {0}, Exception: {1}", cmd.CommandText, ex); 
+                MainConsole.Instance.WarnFormat("[Sqlite]: Exception processing command: {0}, Exception: {1}",
+                                        cmd.CommandText, ex);
             }
-
             return 0;
         }
 
@@ -225,12 +232,13 @@ namespace Universe.DataManager.SQLite
             {
                 if (v.Value == null)
                     v.Value = "";
-                
+
                 if (v.Value.ToString().Contains("\\'"))
                     v.Value = v.Value.ToString().Replace("\\'", "\'");
-                
+
                 if (v.Value.ToString().Contains("\\\""))
-                    v.Value = v.Value.ToString().Replace("\\\"", "\"");              
+                    v.Value = v.Value.ToString().Replace("\\\"", "\"");
+
             }
         }
 
@@ -238,7 +246,7 @@ namespace Universe.DataManager.SQLite
         {
             cmd.Connection.Close();
             cmd.Parameters.Clear();
-            cmd.Dispose ();                 // previously commented but this is a resource leak if not cleared out - greythane - 20160427
+            cmd.Dispose();                 // previously commented but this is a resource leak if not cleared out - greythane - 20160427
         }
 
         void AddParams(ref SqliteCommand cmd, Dictionary<string, object> ps)
@@ -261,8 +269,8 @@ namespace Universe.DataManager.SQLite
             else if (value is Quaternion)
                 cmd.Parameters.Add(key, value.ToString());
             else if (value is byte[] && convertByteString)
-                cmd.Parameters.Add(key, Utils.BytesToString((byte[]) value));
-            else if (value is ulong)                                                
+                cmd.Parameters.Add(key, Utils.BytesToString((byte[])value));
+            else if (value is ulong)
                 cmd.Parameters.Add(key, value.ToString());
             else
                 cmd.Parameters.Add(key, value);
@@ -298,7 +306,7 @@ namespace Universe.DataManager.SQLite
                             }
                         }
                     }
-
+                    //reader.Close();
                     CloseReaderCommand(cmd);
 
                     return RetVal;
@@ -311,7 +319,7 @@ namespace Universe.DataManager.SQLite
             string query = string.Format("select {0} from {1} {2}", wantedValue, table, whereClause);
             SqliteConnection conn;
             var data = QueryData2(query, out conn);
-            return new DataReaderConnection {DataReader = data, Connection = conn};
+            return new DataReaderConnection { DataReader = data, Connection = conn };
         }
 
         public override DataReaderConnection QueryData(string whereClause, QueryTables tables, string wantedValue)
@@ -319,7 +327,7 @@ namespace Universe.DataManager.SQLite
             string query = string.Format("SELECT {0} FROM {1} {2}", wantedValue, tables, whereClause);
             SqliteConnection conn;
             var data = QueryData2(query, out conn);
-            return new DataReaderConnection {DataReader = data, Connection = conn};
+            return new DataReaderConnection { DataReader = data, Connection = conn };
         }
 
         IDataReader QueryData2(string query, out SqliteConnection conn)
@@ -332,19 +340,23 @@ namespace Universe.DataManager.SQLite
             }
         }
 
-        public override List<string> Query(string[] wantedValue, string table, QueryFilter queryFilter, Dictionary<string, bool> sort, uint? start, uint? count)
+
+        public override List<string> Query(string[] wantedValue, string table, QueryFilter queryFilter,
+                                           Dictionary<string, bool> sort, uint? start, uint? count)
         {
             string query = string.Format("SELECT {0} FROM {1}", string.Join(", ", wantedValue), table);
             return Query2(query, queryFilter, sort, start, count);
         }
 
-        public override List<string> Query(string[] wantedValue, QueryTables tables, QueryFilter queryFilter, Dictionary<string, bool> sort, uint? start, uint? count)
+        public override List<string> Query(string[] wantedValue, QueryTables tables, QueryFilter queryFilter,
+                                           Dictionary<string, bool> sort, uint? start, uint? count)
         {
             string query = string.Format("SELECT {0} FROM {1} ", string.Join(", ", wantedValue), tables.ToSQL());
             return Query2(query, queryFilter, sort, start, count);
         }
 
-        List<string> Query2(string query, QueryFilter queryFilter, Dictionary<string, bool> sort,  uint? start, uint? count)
+        List<string> Query2(string query, QueryFilter queryFilter, Dictionary<string, bool> sort,
+                            uint? start, uint? count)
         {
             Dictionary<string, object> ps = new Dictionary<string, object>();
             List<string> parts;
@@ -352,6 +364,30 @@ namespace Universe.DataManager.SQLite
             if (queryFilter != null && queryFilter.Count > 0)
             {
                 query += " WHERE " + queryFilter.ToSQL(':', out ps);
+
+                // 20161014 -greythane- 
+                // temporary fix for events until the datetime field can be modified to something that SQLite can handle
+                if (query.Contains("UNIX_TIMESTAMP"))
+                {
+                    // reset to the 'datetime()' function
+                    query = query.Replace("UNIX_TIMESTAMP(", "datetime(");
+
+                    // convert unix times to utc seconds
+                    var newps = new Dictionary<string, object>();
+                    foreach (var qval in ps)
+                    {
+                        if (qval.Key.Contains("UNIX_TIMESTAMP"))
+                        {
+                            var unixTs = (float)qval.Value;
+                            var unixDateTime = Util.ToDateTime((ulong)unixTs);
+                            var newVal = unixDateTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm");
+                            newps.Add(qval.Key, newVal);
+                        }
+                        else
+                            newps.Add(qval.Key, qval.Value);
+                    }
+                    ps = newps;
+                }
             }
 
             if (sort != null && sort.Count > 0)
@@ -361,7 +397,6 @@ namespace Universe.DataManager.SQLite
                 {
                     parts.Add(string.Format("`{0}` {1}", sortOrder.Key, sortOrder.Value ? "ASC" : "DESC"));
                 }
-
                 query += " ORDER BY " + string.Join(", ", parts.ToArray());
             }
 
@@ -390,7 +425,7 @@ namespace Universe.DataManager.SQLite
                                 RetVal.Add(reader[i] == null ? null : reader[i].ToString());
                         }
                     }
-
+                    //reader.Close();
                     CloseReaderCommand(cmd);
 
                     return RetVal;
@@ -398,13 +433,15 @@ namespace Universe.DataManager.SQLite
             }
         }
 
-        public override Dictionary<string, List<string>> QueryNames(string[] keyRow, object[] keyValue, string table, string wantedValue)
+        public override Dictionary<string, List<string>> QueryNames(string[] keyRow, object[] keyValue, string table,
+                                                                    string wantedValue)
         {
             string query = string.Format("select {0} from {1} where ", wantedValue, table);
             return QueryNames2(keyRow, keyValue, query);
         }
 
-        public override Dictionary<string, List<string>> QueryNames(string[] keyRow, object[] keyValue, QueryTables tables, string wantedValue)
+        public override Dictionary<string, List<string>> QueryNames(string[] keyRow, object[] keyValue,
+                                                                    QueryTables tables, string wantedValue)
         {
             string query = string.Format("SELECT {0} FROM {1} where ", wantedValue, tables.ToSQL());
             return QueryNames2(keyRow, keyValue, query);
@@ -420,7 +457,6 @@ namespace Universe.DataManager.SQLite
                 query += string.Format("{0} = :{1} and ", keyRow[i], keyRow[i].Replace("`", ""));
                 i++;
             }
-
             query = query.Remove(query.Length - 5);
             var cmd = PrepReader(query);
             AddParams(ref cmd, ps);
@@ -436,14 +472,14 @@ namespace Universe.DataManager.SQLite
                             for (i = 0; i < reader.FieldCount; i++)
                             {
                                 Type r = reader[i].GetType();
-                                if (r == typeof (DBNull))
+                                if (r == typeof(DBNull))
                                     AddValueToList(ref RetVal, reader.GetName(i), null);
                                 else
                                     AddValueToList(ref RetVal, reader.GetName(i), reader[i].ToString());
                             }
                         }
                     }
-
+                    //reader.Close();
                     CloseReaderCommand(cmd);
 
                     return RetVal;
@@ -492,7 +528,6 @@ namespace Universe.DataManager.SQLite
                     parts.Add(string.Format("{0} = {1}", value.Key, key));
                 }
             }
-
             if (incrementValue != null)
             {
                 foreach (KeyValuePair<string, int> value in incrementValue)
@@ -525,7 +560,6 @@ namespace Universe.DataManager.SQLite
             {
                 MainConsole.Instance.Error("[Sqlite]: Update (" + query + "), " + e);
             }
-
             CloseReaderCommand(cmd);
             return true;
         }
@@ -547,20 +581,20 @@ namespace Universe.DataManager.SQLite
                     query += ":" + Util.ConvertDecString(a) + ",";
                     AddParam(ref cmd, Util.ConvertDecString(a++), v, true);
                 }
-
                 query = query.Remove(query.Length - 1);
                 query += " union all select ";
             }
-
             query = query.Remove(query.Length - (" union all select ").Length);
 
             cmd.CommandText = query;
-            try {
-                ExecuteNonQuery (cmd);
-            } catch (SqliteException e) {
-                MainConsole.Instance.Error ("[Sqlite]: Insert multiple (" + query + "), " + e);
+            try
+            {
+                ExecuteNonQuery(cmd);
             }
-
+            catch (SqliteException e)
+            {
+                MainConsole.Instance.Error("[Sqlite]: Insert multiple (" + query + "), " + e);
+            }
             CloseReaderCommand(cmd);
             return true;
         }
@@ -577,16 +611,17 @@ namespace Universe.DataManager.SQLite
                 query += ":" + Util.ConvertDecString(a) + ",";
                 AddParam(ref cmd, Util.ConvertDecString(a++), value, true);
             }
-
             query = query.Remove(query.Length - 1);
             query += ")";
             cmd.CommandText = query;
-            try {
+            try
+            {
                 ExecuteNonQuery(cmd);
-            } catch (SqliteException e) {
-                MainConsole.Instance.Error ("[Sqlite]: Insert (" + query + "), " + e);
             }
-
+            catch (SqliteException e)
+            {
+                MainConsole.Instance.Error("[Sqlite]: Insert (" + query + "), " + e);
+            }
             CloseReaderCommand(cmd);
             return true;
         }
@@ -594,7 +629,8 @@ namespace Universe.DataManager.SQLite
         bool InsertOrReplace(string table, Dictionary<string, object> row, bool insert)
         {
             SqliteCommand cmd = new SqliteCommand();
-            string query = (insert ? "INSERT" : "REPLACE") + " INTO " + table + " (" + string.Join(", ", row.Keys.ToArray ()) + ")";
+            string query = (insert ? "INSERT" : "REPLACE") + " INTO " + table + " (" +
+                           string.Join(", ", row.Keys.ToArray()) + ")";
             List<string> ps = new List<string>();
             foreach (KeyValuePair<string, object> field in row)
             {
@@ -602,7 +638,6 @@ namespace Universe.DataManager.SQLite
                 ps.Add(key);
                 AddParam(ref cmd, key, field.Value);
             }
-
             query += " VALUES( " + string.Join(", ", ps.ToArray<string>()) + " )";
 
             cmd.CommandText = query;
@@ -614,7 +649,6 @@ namespace Universe.DataManager.SQLite
             {
                 MainConsole.Instance.Error("[Sqlite]: " + (insert ? "Insert" : "Replace") + "(" + query + "), " + e);
             }
-
             CloseReaderCommand(cmd);
             return true;
         }
@@ -637,7 +671,6 @@ namespace Universe.DataManager.SQLite
                 ps[":" + Util.ConvertDecString(i)] = value;
                 query = string.Format(query + ":{0},", Util.ConvertDecString(i++));
             }
-
             query = query.Remove(query.Length - 1);
             query += ")";
             cmd.CommandText = query;
@@ -647,7 +680,6 @@ namespace Universe.DataManager.SQLite
                 ExecuteNonQuery(cmd);
                 CloseReaderCommand(cmd);
             }
-
             //Execute the update then...
             catch (Exception)
             {
@@ -657,7 +689,6 @@ namespace Universe.DataManager.SQLite
                 ExecuteNonQuery(cmd);
                 CloseReaderCommand(cmd);
             }
-
             return true;
         }
 
@@ -680,7 +711,6 @@ namespace Universe.DataManager.SQLite
             {
                 MainConsole.Instance.Error("[Sqlite]: INSERT .. SELECT (" + cmd.CommandText + "), " + e);
             }
-
             CloseReaderCommand(cmd);
             return true;
         }
@@ -701,7 +731,8 @@ namespace Universe.DataManager.SQLite
         public override bool DeleteByTime(string table, string key)
         {
             QueryFilter filter = new QueryFilter();
-            filter.andLessThanEqFilters["(datetime(" + key.Replace("`", "") + ", 'localtime') - datetime('now', 'localtime'))"] = 0;
+            filter.andLessThanEqFilters[
+                "(datetime(" + key.Replace("`", "") + ", 'localtime') - datetime('now', 'localtime'))"] = 0;
 
             return Delete(table, filter);
         }
@@ -709,7 +740,8 @@ namespace Universe.DataManager.SQLite
         public override bool Delete(string table, QueryFilter queryFilter)
         {
             Dictionary<string, object> ps = new Dictionary<string, object>();
-            string query = "DELETE FROM " + table + (queryFilter != null ? (" WHERE " + queryFilter.ToSQL(':', out ps)) : "");
+            string query = "DELETE FROM " + table +
+                           (queryFilter != null ? (" WHERE " + queryFilter.ToSQL(':', out ps)) : "");
 
             SqliteCommand cmd = new SqliteCommand(query);
             AddParams(ref cmd, ps);
@@ -722,7 +754,6 @@ namespace Universe.DataManager.SQLite
                 MainConsole.Instance.Error("[Sqlite]: Delete(" + query + "), " + e);
                 return false;
             }
-
             CloseReaderCommand(cmd);
             return true;
         }
@@ -755,6 +786,7 @@ namespace Universe.DataManager.SQLite
 
                         CloseReaderCommand(cmd);
                         return false;
+
                     }
                 }
                 catch
@@ -790,30 +822,30 @@ namespace Universe.DataManager.SQLite
                 has_auto_increment |= column.Type.auto_increment;
                 columnDefinition.Add(column.Name + " " + GetColumnTypeStringSymbol(column.Type));
             }
-
             if (!has_auto_increment && primary != null && primary.Fields.Length > 0)
             {
                 columnDefinition.Add("PRIMARY KEY (" + string.Join(", ", primary.Fields) + ")");
             }
 
-            var cmd = new SqliteCommand 
-                            {
-                                CommandText = 
-                                    string.Format ("create table " + table + " ({0})",
-                                    string.Join (", ", columnDefinition.ToArray ()))
-                            };
-            try {
-                ExecuteNonQuery (cmd);
-            } catch (SqliteException e) {
-                MainConsole.Instance.Error ("[Sqlite]: Create table (" + table + "), " + e);
+            var cmd = new SqliteCommand
+            {
+                CommandText =
+                                    string.Format("create table " + table + " ({0})",
+                                    string.Join(", ", columnDefinition.ToArray()))
+            };
+            try
+            {
+                ExecuteNonQuery(cmd);
             }
-
+            catch (SqliteException e)
+            {
+                MainConsole.Instance.Error("[Sqlite]: Create table (" + table + "), " + e);
+            }
             CloseReaderCommand(cmd);
 
             if (indexDefinitions.Length >= 1 && (primary == null || indexDefinitions.Length >= 2))
             {
                 columnDefinition = new List<string>(primary != null ? indexDefinitions.Length : indexDefinitions.Length - 1);
-                
                 // reusing existing variable for laziness
                 uint i = 0;
                 foreach (IndexDefinition index in indexDefinitions)
@@ -828,17 +860,19 @@ namespace Universe.DataManager.SQLite
                                          "INDEX idx_" + table + "_" + i + " ON " + table + "(" +
                                          string.Join(", ", index.Fields) + ")");
                 }
-
                 foreach (string query in columnDefinition)
                 {
                     cmd = new SqliteCommand
-                              {
-                                  CommandText = query
-                              };
-                    try {
-                    ExecuteNonQuery(cmd);
-                    } catch (SqliteException e) {
-                        MainConsole.Instance.Error ("[Sqlite]: Create index (" + query + "), " + e);
+                    {
+                        CommandText = query
+                    };
+                    try
+                    {
+                        ExecuteNonQuery(cmd);
+                    }
+                    catch (SqliteException e)
+                    {
+                        MainConsole.Instance.Error("[Sqlite]: Create index (" + query + "), " + e);
                     }
 
                     CloseReaderCommand(cmd);
@@ -851,7 +885,7 @@ namespace Universe.DataManager.SQLite
         {
             if (!TableExists(table))
             {
-                MainConsole.Instance.WarnFormat ("[SQLite]: Trying to update a table {0} that does not exist.", table);
+                MainConsole.Instance.WarnFormat("[SQLite]: Trying to update a table {0} that does not exist.", table);
                 return;
             }
 
@@ -878,48 +912,53 @@ namespace Universe.DataManager.SQLite
                     renamedTempTableColumnDefinition += ", ";
                     renamedTempTableColumn += ", ";
                 }
-
                 renamedTempTableColumn += column.Name;
                 renamedTempTableColumnDefinition += column.Name + " " + GetColumnTypeStringSymbol(column.Type);
             }
 
             var cmd = new SqliteCommand
-                          {
-                              CommandText =
+            {
+                CommandText =
                                   "CREATE TABLE " + table + "__temp(" + renamedTempTableColumnDefinition + ");"
-                          };
-            try {
+            };
+            try
+            {
                 ExecuteNonQuery(cmd);
-            } catch (SqliteException e) {
-                MainConsole.Instance.Error ("[Sqlite]: Create temporary table, " + e);
             }
-
+            catch (SqliteException e)
+            {
+                MainConsole.Instance.Error("[Sqlite]: Create temporary table, " + e);
+            }
             CloseReaderCommand(cmd);
 
             cmd = new SqliteCommand
-                      {
-                          CommandText =
+            {
+                CommandText =
                               "INSERT INTO " + table + "__temp SELECT " + renamedTempTableColumn + " from " + table +
                               ";"
-                      };
-            try {
+            };
+            try
+            {
                 ExecuteNonQuery(cmd);
-            } catch (SqliteException e) {
-                MainConsole.Instance.Error ("[Sqlite]: Copy to tempory table, " + e);
             }
-
+            catch (SqliteException e)
+            {
+                MainConsole.Instance.Error("[Sqlite]: Copy to tempory table, " + e);
+            }
             CloseReaderCommand(cmd);
 
             cmd = new SqliteCommand
-                      {
-                          CommandText = "drop table " + table
-                      };
-            try {
+            {
+                CommandText = "drop table " + table
+            };
+            try
+            {
                 ExecuteNonQuery(cmd);
-            } catch (SqliteException e) {
-                MainConsole.Instance.Error ("[Sqlite]: Drop table, " + e);
             }
-
+            catch (SqliteException e)
+            {
+                MainConsole.Instance.Error("[Sqlite]: Drop table, " + e);
+            }
             CloseReaderCommand(cmd);
 
             List<string> newTableColumnDefinition = new List<string>(columns.Length);
@@ -940,29 +979,30 @@ namespace Universe.DataManager.SQLite
                 has_auto_increment |= column.Type.auto_increment;
                 newTableColumnDefinition.Add(column.Name + " " + GetColumnTypeStringSymbol(column.Type));
             }
-
             if (!has_auto_increment && primary != null && primary.Fields.Length > 0)
             {
                 newTableColumnDefinition.Add("PRIMARY KEY (" + string.Join(", ", primary.Fields) + ")");
             }
 
             cmd = new SqliteCommand
-                      {
-                          CommandText =
-                              string.Format("create table " + table + " ({0}) ", string.Join(", ", newTableColumnDefinition.ToArray()))
-                      };
-            try {
+            {
+                CommandText =
+                              string.Format("create table " + table + " ({0}) ",
+                                            string.Join(", ", newTableColumnDefinition.ToArray()))
+            };
+            try
+            {
                 ExecuteNonQuery(cmd);
-            } catch (SqliteException e) {
-                MainConsole.Instance.Error ("[Sqlite]: Create new table, " + e);
             }
-
+            catch (SqliteException e)
+            {
+                MainConsole.Instance.Error("[Sqlite]: Create new table, " + e);
+            }
             CloseReaderCommand(cmd);
 
             if (indexDefinitions.Length >= 1 && (primary == null || indexDefinitions.Length >= 2))
             {
                 newTableColumnDefinition = new List<string>(primary != null ? indexDefinitions.Length : indexDefinitions.Length - 1);
-                
                 // reusing existing variable for laziness
                 uint i = 0;
                 foreach (IndexDefinition index in indexDefinitions)
@@ -977,22 +1017,24 @@ namespace Universe.DataManager.SQLite
                                                  "INDEX idx_" + table + "_" + i + " ON " + table + "(" +
                                                  string.Join(", ", index.Fields) + ")");
                 }
-
                 foreach (string query in newTableColumnDefinition)
                 {
                     cmd = new SqliteCommand
-                              {
-                                  CommandText = query
-                              };
-                    try {
+                    {
+                        CommandText = query
+                    };
+                    try
+                    {
                         ExecuteNonQuery(cmd);
-                    } catch (SqliteException e) {
-                        MainConsole.Instance.Error ("[Sqlite]: Create new index, " + e);
                     }
-
+                    catch (SqliteException e)
+                    {
+                        MainConsole.Instance.Error("[Sqlite]: Create new index, " + e);
+                    }
                     CloseReaderCommand(cmd);
                 }
             }
+
 
             string InsertFromTempTableColumnDefinition = string.Empty;
             string InsertIntoFromTempTableColumnDefinition = string.Empty;
@@ -1001,42 +1043,47 @@ namespace Universe.DataManager.SQLite
             {
                 if (InsertFromTempTableColumnDefinition != string.Empty)
                     InsertFromTempTableColumnDefinition += ", ";
-               
+
                 if (InsertIntoFromTempTableColumnDefinition != string.Empty)
                     InsertIntoFromTempTableColumnDefinition += ", ";
-              
+
                 if (renameColumns.ContainsKey(column.Name))
                     InsertIntoFromTempTableColumnDefinition += renameColumns[column.Name];
                 else
                     InsertIntoFromTempTableColumnDefinition += column.Name;
-                
+
                 InsertFromTempTableColumnDefinition += column.Name;
             }
 
             cmd = new SqliteCommand
-                      {
-                          CommandText =
+            {
+                CommandText =
                               "INSERT INTO " + table + " (" + InsertIntoFromTempTableColumnDefinition + ") SELECT " +
                               InsertFromTempTableColumnDefinition + " from " + table + "__temp;"
-                      };
-            try {
+            };
+            try
+            {
                 ExecuteNonQuery(cmd);
-            } catch (SqliteException e) {
-                MainConsole.Instance.Error ("[Sqlite]: Copy to new table, " + e);
+            }
+            catch (SqliteException e)
+            {
+                MainConsole.Instance.Error("[Sqlite]: Copy to new table, " + e);
             }
 
             CloseReaderCommand(cmd);
 
             cmd = new SqliteCommand
-                      {
-                          CommandText = "drop table " + table + "__temp"
-                      };
-            try {
+            {
+                CommandText = "drop table " + table + "__temp"
+            };
+            try
+            {
                 ExecuteNonQuery(cmd);
-            } catch (SqliteException e) {
-                MainConsole.Instance.Error ("[Sqlite]: Drop temporary table, " + e);
             }
-
+            catch (SqliteException e)
+            {
+                MainConsole.Instance.Error("[Sqlite]: Drop temporary table, " + e);
+            }
             CloseReaderCommand(cmd);
         }
 
@@ -1139,7 +1186,7 @@ namespace Universe.DataManager.SQLite
                 case ColumnTypes.Unknown:
                     return "";
                 default:
-                throw new DataManagerException ("[SQLite]: Unknown column type - " + type);
+                    throw new DataManagerException("[SQLite]: Unknown column type - " + type);
             }
         }
 
@@ -1205,8 +1252,8 @@ namespace Universe.DataManager.SQLite
                         ? " DEFAULT NULL"
                         : (coldef.defaultValue != null
                                ? " DEFAULT " +
-                                 (coldef.defaultValue.StartsWith ("'", StringComparison.Ordinal) && 
-                                  coldef.defaultValue.EndsWith ("'", StringComparison.Ordinal)
+                                 (coldef.defaultValue.StartsWith("'", StringComparison.Ordinal) &&
+                                  coldef.defaultValue.EndsWith("'", StringComparison.Ordinal)
                                       ? coldef.defaultValue
                                       : "'" + coldef.defaultValue + "'")
                                : ""));
@@ -1259,15 +1306,14 @@ namespace Universe.DataManager.SQLite
                             }
 
                             defs.Add(new ColumnDefinition
-                                         {
-                                             Name = name.ToString(),
-                                             Type = typeDef
-                                         });
+                            {
+                                Name = name.ToString(),
+                                Type = typeDef
+                            });
                         }
                     }
                 }
             }
-
             CloseReaderCommand(cmd);
 
             return defs;
@@ -1277,10 +1323,10 @@ namespace Universe.DataManager.SQLite
         {
             Dictionary<string, IndexDefinition> defs = new Dictionary<string, IndexDefinition>();
             IndexDefinition primary = new IndexDefinition
-                                          {
-                                              Fields = new string[] {},
-                                              Type = IndexType.Primary
-                                          };
+            {
+                Fields = new string[] { },
+                Type = IndexType.Primary
+            };
 
             string autoIncrementField = null;
 
@@ -1311,7 +1357,6 @@ namespace Universe.DataManager.SQLite
                     }
                 }
             }
-
             CloseReaderCommand(cmd);
             primary.Fields = fields.ToArray();
 
@@ -1328,16 +1373,15 @@ namespace Universe.DataManager.SQLite
                     }
                 }
             }
-
             CloseReaderCommand(cmd);
 
             bool checkForPrimary = primary.Fields.Length > 0;
             foreach (KeyValuePair<string, bool> index in indices)
             {
                 defs[index.Key] = new IndexDefinition
-                                      {
-                                          Type = index.Value ? IndexType.Unique : IndexType.Index
-                                      };
+                {
+                    Type = index.Value ? IndexType.Unique : IndexType.Index
+                };
                 fields = new List<string>();
                 cmd = PrepReader(string.Format("PRAGMA index_info({0})", index.Key));
                 lock (GetLock())
@@ -1351,7 +1395,6 @@ namespace Universe.DataManager.SQLite
                         }
                     }
                 }
-
                 defs[index.Key].Fields = fields.ToArray();
                 CloseReaderCommand(cmd);
                 if (checkForPrimary && defs[index.Key].Fields.Length == primary.Fields.Length)
@@ -1366,10 +1409,9 @@ namespace Universe.DataManager.SQLite
                             break;
                         }
                     }
-
                     if (isPrimary)
                     {
-                        //MainConsole.Instance.Warn("[" + Identifier + "]: Primary Key found (" + string.Join(", ", defs[index.Key].Fields) + ")");
+                        //                        MainConsole.Instance.Warn("[" + Identifier + "]: Primary Key found (" + string.Join(", ", defs[index.Key].Fields) + ")");
                         defs[index.Key].Type = IndexType.Primary;
                         checkForPrimary = false;
                     }
@@ -1379,11 +1421,10 @@ namespace Universe.DataManager.SQLite
             if (checkForPrimary && (autoIncrementField != null))
             {
                 primary = new IndexDefinition
-                              {
-                                  Fields = new string[] {autoIncrementField},
-                                  Type = IndexType.Primary
-                              };
-
+                {
+                    Fields = new string[] { autoIncrementField },
+                    Type = IndexType.Primary
+                };
                 defs["#fauxprimary#"] = primary;
             }
 
@@ -1392,7 +1433,7 @@ namespace Universe.DataManager.SQLite
 
         public override void DropTable(string tableName)
         {
-            var cmd = new SqliteCommand {CommandText = string.Format("drop table {0}", tableName)};
+            var cmd = new SqliteCommand { CommandText = string.Format("drop table {0}", tableName) };
             ExecuteNonQuery(cmd);
             CloseReaderCommand(cmd);
         }
@@ -1400,10 +1441,11 @@ namespace Universe.DataManager.SQLite
         public override void ForceRenameTable(string oldTableName, string newTableName)
         {
             var cmd = new SqliteCommand
-                          {
-                              CommandText = string.Format("ALTER TABLE {0} RENAME TO {1}", oldTableName, newTableName + "_renametemp")
-                          };
-
+            {
+                CommandText =
+                                  string.Format("ALTER TABLE {0} RENAME TO {1}", oldTableName,
+                                                newTableName + "_renametemp")
+            };
             ExecuteNonQuery(cmd);
             cmd.CommandText = string.Format("ALTER TABLE {0} RENAME TO {1}", newTableName + "_renametemp", newTableName);
             ExecuteNonQuery(cmd);
@@ -1415,10 +1457,11 @@ namespace Universe.DataManager.SQLite
                                                                  IndexDefinition[] indexDefinitions)
         {
             var cmd = new SqliteCommand
-                          {
-                              CommandText = string.Format("insert into {0} select * from {1}", destinationTableName, sourceTableName)
-                          };
-
+            {
+                CommandText =
+                                  string.Format("insert into {0} select * from {1}", destinationTableName,
+                                                sourceTableName)
+            };
             ExecuteNonQuery(cmd);
             CloseReaderCommand(cmd);
         }

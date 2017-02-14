@@ -41,343 +41,326 @@ using Universe.Framework.Utilities;
 
 namespace Universe.ScriptEngine.VirtualScript
 {
-    /// <summary>
-    ///     Prepares events so they can be directly executed upon a script by EventQueueManager, then queues it.
-    /// </summary>
-    public class EventManager
-    {
-        //
-        // This class it the link between an event inside Universe and
-        // the corresponding event in a user script being executed.
-        //
-        // For example when an user touches an object then the
-        // "scene.EventManager.OnObjectGrab" event is fired
-        // inside Universe.
-        // We hook up to this event and queue a touch_start in
-        // the event queue with the proper LSL parameters.
-        //
-        // You can check debug C# dump of an LSL script if you need to
-        // verify what exact parameters are needed.
-        //
+	/// <summary>
+	///     Prepares events so they can be directly executed upon a script by EventQueueManager, then queues it.
+	/// </summary>
+	public class EventManager
+	{
+		//
+		// This class it the link between an event inside Universe and
+		// the corresponding event in a user script being executed.
+		//
+		// For example when an user touches an object then the
+		// "scene.EventManager.OnObjectGrab" event is fired
+		// inside Universe.
+		// We hook up to this event and queue a touch_start in
+		// the event queue with the proper LSL parameters.
+		//
+		// You can check debug C# dump of an LSL script if you need to
+		// verify what exact parameters are needed.
+		//
 
-        readonly Dictionary<uint, Dictionary<UUID, DetectParams>> CoalescedTouchEvents =
-            new Dictionary<uint, Dictionary<UUID, DetectParams>>();
+		readonly Dictionary<uint, Dictionary<UUID, DetectParams>> CoalescedTouchEvents =
+			new Dictionary<uint, Dictionary<UUID, DetectParams>> ();
 
-        readonly ScriptEngine m_scriptEngine;
+		readonly ScriptEngine m_scriptEngine;
 
-        public EventManager(ScriptEngine _ScriptEngine)
-        {
-            m_scriptEngine = _ScriptEngine;
-        }
+		public EventManager (ScriptEngine _ScriptEngine)
+		{
+			m_scriptEngine = _ScriptEngine;
+		}
 
-        public void HookUpRegionEvents(IScene Scene)
-        {
-            //MainConsole.Instance.Info("[" + myScriptEngine.ScriptEngineName + "]: Hooking up to server events");
+		public void HookUpRegionEvents (IScene Scene)
+		{
+			//MainConsole.Instance.Info("[" + myScriptEngine.ScriptEngineName +
+			//           "]: Hooking up to server events");
 
-            Scene.EventManager.OnObjectGrab += touch_start;
-            Scene.EventManager.OnObjectGrabbing += touch;
-            Scene.EventManager.OnObjectDeGrab += touch_end;
-            Scene.EventManager.OnScriptChangedEvent += changed;
-            Scene.EventManager.OnScriptAtTargetEvent += at_target;
-            Scene.EventManager.OnScriptNotAtTargetEvent += not_at_target;
-            Scene.EventManager.OnScriptAtRotTargetEvent += at_rot_target;
-            Scene.EventManager.OnScriptNotAtRotTargetEvent += not_at_rot_target;
-            Scene.EventManager.OnScriptControlEvent += control;
-            Scene.EventManager.OnScriptColliderStart += collision_start;
-            Scene.EventManager.OnScriptColliding += collision;
-            Scene.EventManager.OnScriptCollidingEnd += collision_end;
-            Scene.EventManager.OnScriptLandColliderStart += land_collision_start;
-            Scene.EventManager.OnScriptLandColliding += land_collision;
-            Scene.EventManager.OnScriptLandColliderEnd += land_collision_end;
-            Scene.EventManager.OnAttach += attach;
-            Scene.EventManager.OnScriptMovingStartEvent += moving_start;
-            Scene.EventManager.OnScriptMovingEndEvent += moving_end;
+			Scene.EventManager.OnObjectGrab += touch_start;
+			Scene.EventManager.OnObjectGrabbing += touch;
+			Scene.EventManager.OnObjectDeGrab += touch_end;
+			Scene.EventManager.OnScriptChangedEvent += changed;
+			Scene.EventManager.OnScriptAtTargetEvent += at_target;
+			Scene.EventManager.OnScriptNotAtTargetEvent += not_at_target;
+			Scene.EventManager.OnScriptAtRotTargetEvent += at_rot_target;
+			Scene.EventManager.OnScriptNotAtRotTargetEvent += not_at_rot_target;
+			Scene.EventManager.OnScriptControlEvent += control;
+			Scene.EventManager.OnScriptColliderStart += collision_start;
+			Scene.EventManager.OnScriptColliding += collision;
+			Scene.EventManager.OnScriptCollidingEnd += collision_end;
+			Scene.EventManager.OnScriptLandColliderStart += land_collision_start;
+			Scene.EventManager.OnScriptLandColliding += land_collision;
+			Scene.EventManager.OnScriptLandColliderEnd += land_collision_end;
+			Scene.EventManager.OnAttach += attach;
+			Scene.EventManager.OnScriptMovingStartEvent += moving_start;
+			Scene.EventManager.OnScriptMovingEndEvent += moving_end;
 
-            Scene.EventManager.OnRezScripts += rez_scripts;
+			Scene.EventManager.OnRezScripts += rez_scripts;
 
-            IMoneyModule moneyModule =
-                Scene.RequestModuleInterface<IMoneyModule>();
-            if (moneyModule != null)
-                moneyModule.OnObjectPaid += money;
-        }
 
-        public void changed(ISceneChildEntity part, uint change)
-        {
-            ScriptData[] datas = ScriptEngine.ScriptProtection.GetScripts(part.UUID);
+			IMoneyModule moneyModule =
+				Scene.RequestModuleInterface<IMoneyModule> ();
+			if (moneyModule != null)
+				moneyModule.OnObjectPaid += money;
+		}
 
-            if (datas == null || datas.Length == 0)
-            {
-                datas = ScriptEngine.ScriptProtection.GetScripts(part.ParentEntity.RootChild.UUID);
-                if (datas == null || datas.Length == 0)
-                    return;
-            }
-            string functionName = "changed";
-            object[] param = { new LSL_Types.LSLInteger(change)};
+		public void changed (ISceneChildEntity part, uint change)
+		{
+			ScriptData[] datas = ScriptEngine.ScriptProtection.GetScripts (part.UUID);
 
-            foreach (ScriptData ID in datas)
-            {
-                m_scriptEngine.AddToScriptQueue(ID, functionName, new DetectParams[0],
-                                                EventPriority.FirstStart, param);
-            }
-        }
+			if (datas == null || datas.Length == 0) {
+				datas = ScriptEngine.ScriptProtection.GetScripts (part.ParentEntity.RootChild.UUID);
+				if (datas == null || datas.Length == 0)
+					return;
+			}
+			string functionName = "changed";
+			object[] param = { new LSL_Types.LSLInteger (change) };
 
-        /// <summary>
-        ///     Handles piping the proper stuff to The script engine for touching
-        ///     Including DetectedParams
-        /// </summary>
-        /// <param name="part"></param>
-        /// <param name="child"></param>
-        /// <param name="offsetPos"></param>
-        /// <param name="remoteClient"></param>
-        /// <param name="surfaceArgs"></param>
-        public void touch_start(ISceneChildEntity part, ISceneChildEntity child, Vector3 offsetPos,
-                                IClientAPI remoteClient, SurfaceTouchEventArgs surfaceArgs)
-        {
-            // Add to queue for all scripts in ObjectID object
-            Dictionary<UUID, DetectParams> det = new Dictionary<UUID, DetectParams>();
-            if (!CoalescedTouchEvents.TryGetValue(part.LocalId, out det))
-                det = new Dictionary<UUID, DetectParams>();
+			foreach (ScriptData ID in datas) {
+				m_scriptEngine.AddToScriptQueue (ID, functionName, new DetectParams[0],
+					EventPriority.FirstStart, param);
+			}
+		}
 
-            DetectParams detparam = new DetectParams {Key = remoteClient.AgentId};
+		/// <summary>
+		///     Handles piping the proper stuff to The script engine for touching
+		///     Including DetectedParams
+		/// </summary>
+		/// <param name="part"></param>
+		/// <param name="child"></param>
+		/// <param name="offsetPos"></param>
+		/// <param name="remoteClient"></param>
+		/// <param name="surfaceArgs"></param>
+		public void touch_start (ISceneChildEntity part, ISceneChildEntity child, Vector3 offsetPos,
+		                              IClientAPI remoteClient, SurfaceTouchEventArgs surfaceArgs)
+		{
+			// Add to queue for all scripts in ObjectID object
+			Dictionary<UUID, DetectParams> det = new Dictionary<UUID, DetectParams> ();
+			if (!CoalescedTouchEvents.TryGetValue (part.LocalId, out det))
+				det = new Dictionary<UUID, DetectParams> ();
 
-            detparam.Populate(part.ParentEntity.Scene);
-            detparam.LinkNum = child.LinkNum;
+			DetectParams detparam = new DetectParams { Key = remoteClient.AgentId };
 
-            if (surfaceArgs != null)
-            {
-                detparam.SurfaceTouchArgs = surfaceArgs;
-            }
+			detparam.Populate (part.ParentEntity.Scene);
+			detparam.LinkNum = child.LinkNum;
 
-            det[remoteClient.AgentId] = detparam;
-            CoalescedTouchEvents[part.LocalId] = det;
+			if (surfaceArgs != null) {
+				detparam.SurfaceTouchArgs = surfaceArgs;
+			}
 
-            ScriptData[] datas = ScriptEngine.ScriptProtection.GetScripts(part.UUID);
+			det [remoteClient.AgentId] = detparam;
+			CoalescedTouchEvents [part.LocalId] = det;
 
-            if (datas == null || datas.Length == 0)
-                return;
+			ScriptData[] datas = ScriptEngine.ScriptProtection.GetScripts (part.UUID);
 
-            string functionName = "touch_start";
-            object[] param = { new LSL_Types.LSLInteger(det.Count)};
+			if (datas == null || datas.Length == 0)
+				return;
 
-            foreach (ScriptData ID in datas)
-            {
-                m_scriptEngine.AddToScriptQueue(ID, functionName, new List<DetectParams>(det.Values).ToArray(),
-                                                EventPriority.FirstStart, param);
-            }
-        }
+			string functionName = "touch_start";
+			object[] param = { new LSL_Types.LSLInteger (det.Count) };
 
-        public void touch(ISceneChildEntity part, ISceneChildEntity child, Vector3 offsetPos,
-                          IClientAPI remoteClient, SurfaceTouchEventArgs surfaceArgs)
-        {
-            Dictionary<UUID, DetectParams> det = new Dictionary<UUID, DetectParams>();
-            if (!CoalescedTouchEvents.TryGetValue(part.LocalId, out det))
-                det = new Dictionary<UUID, DetectParams>();
+			foreach (ScriptData ID in datas) {
+				m_scriptEngine.AddToScriptQueue (ID, functionName, new List<DetectParams> (det.Values).ToArray (),
+					EventPriority.FirstStart, param);
+			}
+		}
 
-            // Add to queue for all scripts in ObjectID object
-            DetectParams detparam = new DetectParams();
-            detparam = new DetectParams
-                           {
-                               Key = remoteClient.AgentId,
-                               OffsetPos = new LSL_Types.Vector3(offsetPos.X,
-                                                                 offsetPos.Y,
-                                                                 offsetPos.Z)
-                           };
+		public void touch (ISceneChildEntity part, ISceneChildEntity child, Vector3 offsetPos,
+		                        IClientAPI remoteClient, SurfaceTouchEventArgs surfaceArgs)
+		{
+			Dictionary<UUID, DetectParams> det = new Dictionary<UUID, DetectParams> ();
+			if (!CoalescedTouchEvents.TryGetValue (part.LocalId, out det))
+				det = new Dictionary<UUID, DetectParams> ();
 
-            detparam.Populate(part.ParentEntity.Scene);
-            detparam.LinkNum = child.LinkNum;
+			// Add to queue for all scripts in ObjectID object
+			DetectParams detparam = new DetectParams ();
+			detparam = new DetectParams {
+				Key = remoteClient.AgentId,
+				OffsetPos = new LSL_Types.Vector3 (offsetPos.X,
+					offsetPos.Y,
+					offsetPos.Z)
+			};
 
-            if (surfaceArgs != null)
-                detparam.SurfaceTouchArgs = surfaceArgs;
+			detparam.Populate (part.ParentEntity.Scene);
+			detparam.LinkNum = child.LinkNum;
 
-            det[remoteClient.AgentId] = detparam;
-            CoalescedTouchEvents[part.LocalId] = det;
+			if (surfaceArgs != null)
+				detparam.SurfaceTouchArgs = surfaceArgs;
 
-            ScriptData[] datas = ScriptEngine.ScriptProtection.GetScripts(part.UUID);
+			det [remoteClient.AgentId] = detparam;
+			CoalescedTouchEvents [part.LocalId] = det;
 
-            if (datas == null || datas.Length == 0)
-                return;
+			ScriptData[] datas = ScriptEngine.ScriptProtection.GetScripts (part.UUID);
 
-            string functionName = "touch";
-            object[] param = {new LSL_Types.LSLInteger(det.Count)};
+			if (datas == null || datas.Length == 0)
+				return;
 
-            foreach (ScriptData ID in datas)
-            {
-                m_scriptEngine.AddToScriptQueue(ID, functionName, new List<DetectParams>(det.Values).ToArray(),
-                                                EventPriority.FirstStart, param);
-            }
-        }
+			string functionName = "touch";
+			object[] param = { new LSL_Types.LSLInteger (det.Count) };
 
-        public void touch_end(ISceneChildEntity part, ISceneChildEntity child, IClientAPI remoteClient,
-                              SurfaceTouchEventArgs surfaceArgs)
-        {
-            Dictionary<UUID, DetectParams> det = new Dictionary<UUID, DetectParams>();
-            if (!CoalescedTouchEvents.TryGetValue(part.LocalId, out det))
-                det = new Dictionary<UUID, DetectParams>();
+			foreach (ScriptData ID in datas) {
+				m_scriptEngine.AddToScriptQueue (ID, functionName, new List<DetectParams> (det.Values).ToArray (),
+					EventPriority.FirstStart, param);
+			}
+		}
 
-            // Add to queue for all scripts in ObjectID object
-            DetectParams detparam = new DetectParams();
-            detparam = new DetectParams {Key = remoteClient.AgentId};
+		public void touch_end (ISceneChildEntity part, ISceneChildEntity child, IClientAPI remoteClient,
+		                            SurfaceTouchEventArgs surfaceArgs)
+		{
+			Dictionary<UUID, DetectParams> det = new Dictionary<UUID, DetectParams> ();
+			if (!CoalescedTouchEvents.TryGetValue (part.LocalId, out det))
+				det = new Dictionary<UUID, DetectParams> ();
 
-            detparam.Populate(part.ParentEntity.Scene);
-            detparam.LinkNum = child.LinkNum;
+			// Add to queue for all scripts in ObjectID object
+			DetectParams detparam = new DetectParams ();
+			detparam = new DetectParams { Key = remoteClient.AgentId };
 
-            if (surfaceArgs != null)
-                detparam.SurfaceTouchArgs = surfaceArgs;
+			detparam.Populate (part.ParentEntity.Scene);
+			detparam.LinkNum = child.LinkNum;
 
-            det[remoteClient.AgentId] = detparam;
-            CoalescedTouchEvents[part.LocalId] = det;
+			if (surfaceArgs != null)
+				detparam.SurfaceTouchArgs = surfaceArgs;
 
-            ScriptData[] datas = ScriptEngine.ScriptProtection.GetScripts(part.UUID);
+			det [remoteClient.AgentId] = detparam;
+			CoalescedTouchEvents [part.LocalId] = det;
 
-            if (datas == null || datas.Length == 0)
-                return;
+			ScriptData[] datas = ScriptEngine.ScriptProtection.GetScripts (part.UUID);
 
-            string functionName = "touch_end";
-            object[] param = {new LSL_Types.LSLInteger(det.Count)};
+			if (datas == null || datas.Length == 0)
+				return;
 
-            foreach (ScriptData ID in datas)
-            {
-                m_scriptEngine.AddToScriptQueue(ID, functionName, new List<DetectParams>(det.Values).ToArray(),
-                                                EventPriority.FirstStart, param);
-            }
-            //Remove us from the det param list
-            det.Remove(remoteClient.AgentId);
-            CoalescedTouchEvents[part.LocalId] = det;
-        }
+			string functionName = "touch_end";
+			object[] param = { new LSL_Types.LSLInteger (det.Count) };
 
-        //public void money(uint localID, UUID agentID, int amount)
-        public bool money(UUID primID, UUID agentID, int amount)
-        {
-            bool ret = false;
-            ISceneChildEntity part = m_scriptEngine.findPrim(primID);
-            if (part == null) return ret;
+			foreach (ScriptData ID in datas) {
+				m_scriptEngine.AddToScriptQueue (ID, functionName, new List<DetectParams> (det.Values).ToArray (),
+					EventPriority.FirstStart, param);
+			}
+			//Remove us from the det param list
+			det.Remove (remoteClient.AgentId);
+			CoalescedTouchEvents [part.LocalId] = det;
+		}
 
-            ScriptData[] datas = ScriptEngine.ScriptProtection.GetScripts(part.UUID);
+		//public void money(uint localID, UUID agentID, int amount)
+		public bool money (UUID primID, UUID agentID, int amount)
+		{
+			bool ret = false;
+			ISceneChildEntity part = m_scriptEngine.findPrim (primID);
+			if (part == null)
+				return ret;
 
-            if (datas == null || datas.Length == 0)
-            {
-                datas = ScriptEngine.ScriptProtection.GetScripts(part.ParentEntity.UUID);
-                if (datas == null || datas.Length == 0) return ret;
-            }
-            string functionName = "money";
-            object[] param = { 
-                                new LSL_Types.LSLString(agentID.ToString()),
-                                new LSL_Types.LSLInteger(amount) 
-            };
+			ScriptData[] datas = ScriptEngine.ScriptProtection.GetScripts (part.UUID);
 
-            foreach (ScriptData ID in datas)
-            {
-                m_scriptEngine.AddToScriptQueue(ID, functionName, new DetectParams[0],
-                                                EventPriority.FirstStart, param);
-                ret = true;
-            }
-            return ret;
-        }
+			if (datas == null || datas.Length == 0) {
+				datas = ScriptEngine.ScriptProtection.GetScripts (part.ParentEntity.UUID);
+				if (datas == null || datas.Length == 0)
+					return ret;
+			}
+			string functionName = "money";
+			object[] param = { 
+				new LSL_Types.LSLString (agentID.ToString ()),
+				new LSL_Types.LSLInteger (amount) 
+			};
 
-        public void collision_start(ISceneChildEntity part, ColliderArgs col)
-        {
-            // Add to queue for all scripts in ObjectID object
-            List<DetectParams> det = new List<DetectParams>();
+			foreach (ScriptData ID in datas) {
+				m_scriptEngine.AddToScriptQueue (ID, functionName, new DetectParams[0],
+					EventPriority.FirstStart, param);
+				ret = true;
+			}
+			return ret;
+		}
 
-            foreach (DetectParams d in col.Colliders.Select(detobj => new DetectParams {Key = detobj.keyUUID}))
-            {
-                d.Populate(part.ParentEntity.Scene);
-                d.LinkNum = part.LinkNum;
-                det.Add(d);
-            }
+		public void collision_start (ISceneChildEntity part, ColliderArgs col)
+		{
+			// Add to queue for all scripts in ObjectID object
+			List<DetectParams> det = new List<DetectParams> ();
 
-            if (det.Count > 0)
-            {
-                ScriptData[] datas = ScriptEngine.ScriptProtection.GetScripts(part.UUID);
+			foreach (DetectParams d in col.Colliders.Select(detobj => new DetectParams {Key = detobj.keyUUID})) {
+				d.Populate (part.ParentEntity.Scene);
+				d.LinkNum = part.LinkNum;
+				det.Add (d);
+			}
 
-                if (datas == null || datas.Length == 0)
-                {
-                    //datas = ScriptEngine.ScriptProtection.GetScripts(part.ParentGroup.RootPart.UUID);
-                    //if (datas == null || datas.Length == 0)
-                    return;
-                }
-                string functionName = "collision_start";
-                object[] param = { new LSL_Types.LSLInteger(det.Count)};
+			if (det.Count > 0) {
+				ScriptData[] datas = ScriptEngine.ScriptProtection.GetScripts (part.UUID);
 
-                foreach (ScriptData ID in datas)
-                {
-                    m_scriptEngine.AddToScriptQueue(ID, functionName, det.ToArray(),
-                                                    EventPriority.FirstStart, param);
-                }
-            }
-        }
+				if (datas == null || datas.Length == 0) {
+					//datas = ScriptEngine.ScriptProtection.GetScripts(part.ParentGroup.RootPart.UUID);
+					//if (datas == null || datas.Length == 0)
+					return;
+				}
+				string functionName = "collision_start";
+				object[] param = { new LSL_Types.LSLInteger (det.Count) };
 
-        public void collision(ISceneChildEntity part, ColliderArgs col)
-        {
-            // Add to queue for all scripts in ObjectID object
-            List<DetectParams> det = new List<DetectParams>();
+				foreach (ScriptData ID in datas) {
+					m_scriptEngine.AddToScriptQueue (ID, functionName, det.ToArray (),
+						EventPriority.FirstStart, param);
+				}
+			}
+		}
 
-            foreach (DetectParams d in col.Colliders.Select(detobj => new DetectParams {Key = detobj.keyUUID}))
-            {
-                d.Populate(part.ParentEntity.Scene);
-                d.LinkNum = part.LinkNum;
-                det.Add(d);
-            }
+		public void collision (ISceneChildEntity part, ColliderArgs col)
+		{
+			// Add to queue for all scripts in ObjectID object
+			List<DetectParams> det = new List<DetectParams> ();
 
-            if (det.Count > 0)
-            {
-                ScriptData[] datas = ScriptEngine.ScriptProtection.GetScripts(part.UUID);
+			foreach (DetectParams d in col.Colliders.Select(detobj => new DetectParams {Key = detobj.keyUUID})) {
+				d.Populate (part.ParentEntity.Scene);
+				d.LinkNum = part.LinkNum;
+				det.Add (d);
+			}
 
-                if (datas == null || datas.Length == 0)
-                {
-                    //datas = ScriptEngine.ScriptProtection.GetScripts(part.ParentGroup.RootPart.UUID);
-                    //if (datas == null || datas.Length == 0)
-                    return;
-                }
-                string functionName = "collision";
-                object[] param = {new LSL_Types.LSLInteger(det.Count)};
+			if (det.Count > 0) {
+				ScriptData[] datas = ScriptEngine.ScriptProtection.GetScripts (part.UUID);
 
-                foreach (ScriptData ID in datas)
-                {
-                    m_scriptEngine.AddToScriptQueue(ID, functionName, det.ToArray(),
-                                                    EventPriority.FirstStart, param);
-                }
-            }
-        }
+				if (datas == null || datas.Length == 0) {
+					//datas = ScriptEngine.ScriptProtection.GetScripts(part.ParentGroup.RootPart.UUID);
+					//if (datas == null || datas.Length == 0)
+					return;
+				}
+				string functionName = "collision";
+				object[] param = { new LSL_Types.LSLInteger (det.Count) };
 
-        public void collision_end(ISceneChildEntity part, ColliderArgs col)
-        {
-            // Add to queue for all scripts in ObjectID object
-            List<DetectParams> det = new List<DetectParams>();
+				foreach (ScriptData ID in datas) {
+					m_scriptEngine.AddToScriptQueue (ID, functionName, det.ToArray (),
+						EventPriority.FirstStart, param);
+				}
+			}
+		}
 
-            foreach (DetectParams d in col.Colliders.Select(detobj => new DetectParams {Key = detobj.keyUUID}))
-            {
-                d.Populate(part.ParentEntity.Scene);
-                d.LinkNum = part.LinkNum;
-                det.Add(d);
-            }
+		public void collision_end (ISceneChildEntity part, ColliderArgs col)
+		{
+			// Add to queue for all scripts in ObjectID object
+			List<DetectParams> det = new List<DetectParams> ();
 
-            if (det.Count > 0)
-            {
-                ScriptData[] datas = ScriptEngine.ScriptProtection.GetScripts(part.UUID);
+			foreach (DetectParams d in col.Colliders.Select(detobj => new DetectParams {Key = detobj.keyUUID})) {
+				d.Populate (part.ParentEntity.Scene);
+				d.LinkNum = part.LinkNum;
+				det.Add (d);
+			}
 
-                if (datas == null || datas.Length == 0)
-                {
-                    //datas = ScriptEngine.ScriptProtection.GetScripts(part.ParentGroup.RootPart.UUID);
-                    //if (datas == null || datas.Length == 0)
-                    return;
-                }
-                string functionName = "collision_end";
-                object[] param = {new LSL_Types.LSLInteger(det.Count)};
+			if (det.Count > 0) {
+				ScriptData[] datas = ScriptEngine.ScriptProtection.GetScripts (part.UUID);
 
-                foreach (ScriptData ID in datas)
-                {
-                    m_scriptEngine.AddToScriptQueue(ID, functionName, det.ToArray(),
-                                                    EventPriority.FirstStart, param);
-                }
-            }
-        }
+				if (datas == null || datas.Length == 0) {
+					//datas = ScriptEngine.ScriptProtection.GetScripts(part.ParentGroup.RootPart.UUID);
+					//if (datas == null || datas.Length == 0)
+					return;
+				}
+				string functionName = "collision_end";
+				object[] param = { new LSL_Types.LSLInteger (det.Count) };
 
-        public void land_collision_start(ISceneChildEntity part, ColliderArgs col)
-        {
-            List<DetectParams> det = new List<DetectParams>();
+				foreach (ScriptData ID in datas) {
+					m_scriptEngine.AddToScriptQueue (ID, functionName, det.ToArray (),
+						EventPriority.FirstStart, param);
+				}
+			}
+		}
 
-            foreach (DetectParams d in col.Colliders.Select(detobj => new DetectParams
+		public void land_collision_start (ISceneChildEntity part, ColliderArgs col)
+		{
+			List<DetectParams> det = new List<DetectParams> ();
+
+			foreach (DetectParams d in col.Colliders.Select(detobj => new DetectParams
                                                                           {
                                                                               Position =
                                                                                   new LSL_Types.Vector3(
@@ -385,39 +368,35 @@ namespace Universe.ScriptEngine.VirtualScript
                                                                                   detobj.posVector.Y,
                                                                                   detobj.posVector.Z),
                                                                               Key = detobj.keyUUID
-                                                                          }))
-            {
-                d.Populate(part.ParentEntity.Scene);
-                d.LinkNum = part.LinkNum;
-                det.Add(d);
-            }
+                                                                          })) {
+				d.Populate (part.ParentEntity.Scene);
+				d.LinkNum = part.LinkNum;
+				det.Add (d);
+			}
 
-            if (det.Count != 0)
-            {
-                ScriptData[] datas = ScriptEngine.ScriptProtection.GetScripts(part.UUID);
+			if (det.Count != 0) {
+				ScriptData[] datas = ScriptEngine.ScriptProtection.GetScripts (part.UUID);
 
-                if (datas == null || datas.Length == 0)
-                {
-                    //datas = ScriptEngine.ScriptProtection.GetScripts(part.ParentGroup.RootPart.UUID);
-                    //if (datas == null || datas.Length == 0)
-                    return;
-                }
-                string functionName = "land_collision_start";
-                object[] param = {new LSL_Types.Vector3(det[0].Position)};
+				if (datas == null || datas.Length == 0) {
+					//datas = ScriptEngine.ScriptProtection.GetScripts(part.ParentGroup.RootPart.UUID);
+					//if (datas == null || datas.Length == 0)
+					return;
+				}
+				string functionName = "land_collision_start";
+				object[] param = { new LSL_Types.Vector3 (det [0].Position) };
 
-                foreach (ScriptData ID in datas)
-                {
-                    m_scriptEngine.AddToScriptQueue(ID, functionName, det.ToArray(),
-                                                    EventPriority.FirstStart, param);
-                }
-            }
-        }
+				foreach (ScriptData ID in datas) {
+					m_scriptEngine.AddToScriptQueue (ID, functionName, det.ToArray (),
+						EventPriority.FirstStart, param);
+				}
+			}
+		}
 
-        public void land_collision(ISceneChildEntity part, ColliderArgs col)
-        {
-            List<DetectParams> det = new List<DetectParams>();
+		public void land_collision (ISceneChildEntity part, ColliderArgs col)
+		{
+			List<DetectParams> det = new List<DetectParams> ();
 
-            foreach (DetectParams d in col.Colliders.Select(detobj => new DetectParams
+			foreach (DetectParams d in col.Colliders.Select(detobj => new DetectParams
                                                                           {
                                                                               Position =
                                                                                   new LSL_Types.Vector3(
@@ -425,39 +404,35 @@ namespace Universe.ScriptEngine.VirtualScript
                                                                                   detobj.posVector.Y,
                                                                                   detobj.posVector.Z),
                                                                               Key = detobj.keyUUID
-                                                                          }))
-            {
-                d.Populate(part.ParentEntity.Scene);
-                d.LinkNum = part.LinkNum;
-                det.Add(d);
-            }
+                                                                          })) {
+				d.Populate (part.ParentEntity.Scene);
+				d.LinkNum = part.LinkNum;
+				det.Add (d);
+			}
 
-            if (det.Count != 0)
-            {
-                ScriptData[] datas = ScriptEngine.ScriptProtection.GetScripts(part.UUID);
+			if (det.Count != 0) {
+				ScriptData[] datas = ScriptEngine.ScriptProtection.GetScripts (part.UUID);
 
-                if (datas == null || datas.Length == 0)
-                {
-                    //datas = ScriptEngine.ScriptProtection.GetScripts(part.ParentGroup.RootPart.UUID);
-                    //if (datas == null || datas.Length == 0)
-                    return;
-                }
-                string functionName = "land_collision";
-                object[] param = {new LSL_Types.Vector3(det[0].Position)};
+				if (datas == null || datas.Length == 0) {
+					//datas = ScriptEngine.ScriptProtection.GetScripts(part.ParentGroup.RootPart.UUID);
+					//if (datas == null || datas.Length == 0)
+					return;
+				}
+				string functionName = "land_collision";
+				object[] param = { new LSL_Types.Vector3 (det [0].Position) };
 
-                foreach (ScriptData ID in datas)
-                {
-                    m_scriptEngine.AddToScriptQueue(ID, functionName, det.ToArray(),
-                                                    EventPriority.FirstStart, param);
-                }
-            }
-        }
+				foreach (ScriptData ID in datas) {
+					m_scriptEngine.AddToScriptQueue (ID, functionName, det.ToArray (),
+						EventPriority.FirstStart, param);
+				}
+			}
+		}
 
-        public void land_collision_end(ISceneChildEntity part, ColliderArgs col)
-        {
-            List<DetectParams> det = new List<DetectParams>();
+		public void land_collision_end (ISceneChildEntity part, ColliderArgs col)
+		{
+			List<DetectParams> det = new List<DetectParams> ();
 
-            foreach (DetectParams d in col.Colliders.Select(detobj => new DetectParams
+			foreach (DetectParams d in col.Colliders.Select(detobj => new DetectParams
                                                                           {
                                                                               Position =
                                                                                   new LSL_Types.Vector3(
@@ -465,46 +440,41 @@ namespace Universe.ScriptEngine.VirtualScript
                                                                                   detobj.posVector.Y,
                                                                                   detobj.posVector.Z),
                                                                               Key = detobj.keyUUID
-                                                                          }))
-            {
-                d.Populate(part.ParentEntity.Scene);
-                d.LinkNum = part.LinkNum;
-                det.Add(d);
-            }
+                                                                          })) {
+				d.Populate (part.ParentEntity.Scene);
+				d.LinkNum = part.LinkNum;
+				det.Add (d);
+			}
 
-            if (det.Count != 0)
-            {
-                ScriptData[] datas = ScriptEngine.ScriptProtection.GetScripts(part.UUID);
+			if (det.Count != 0) {
+				ScriptData[] datas = ScriptEngine.ScriptProtection.GetScripts (part.UUID);
 
-                if (datas == null || datas.Length == 0)
-                {
-                    //datas = ScriptEngine.ScriptProtection.GetScripts(part.ParentGroup.RootPart.UUID);
-                    //if (datas == null || datas.Length == 0)
-                    return;
-                }
-                string functionName = "land_collision_end";
-                object[] param = {new LSL_Types.Vector3(det[0].Position)};
+				if (datas == null || datas.Length == 0) {
+					//datas = ScriptEngine.ScriptProtection.GetScripts(part.ParentGroup.RootPart.UUID);
+					//if (datas == null || datas.Length == 0)
+					return;
+				}
+				string functionName = "land_collision_end";
+				object[] param = { new LSL_Types.Vector3 (det [0].Position) };
 
-                foreach (ScriptData ID in datas)
-                {
-                    m_scriptEngine.AddToScriptQueue(ID, functionName, det.ToArray(),
-                                                    EventPriority.FirstStart, param);
-                }
-            }
-        }
+				foreach (ScriptData ID in datas) {
+					m_scriptEngine.AddToScriptQueue (ID, functionName, det.ToArray (),
+						EventPriority.FirstStart, param);
+				}
+			}
+		}
 
-        public void control(ISceneChildEntity part, UUID itemID, UUID agentID, uint held, uint change)
-        {
-            if (part == null)
-                return;
-            ScriptData ID = ScriptEngine.ScriptProtection.GetScript(part.UUID, itemID);
+		public void control (ISceneChildEntity part, UUID itemID, UUID agentID, uint held, uint change)
+		{
+			if (part == null)
+				return;
+			ScriptData ID = ScriptEngine.ScriptProtection.GetScript (part.UUID, itemID);
 
-            if (ID == null)
-                return;
+			if (ID == null)
+				return;
 
-            string functionName = "control";
-            object[] param = 
-                             {
+			string functionName = "control";
+			object[] param = {
                                  new LSL_Types.LSLString(agentID.ToString()),
                                  new LSL_Types.LSLInteger(held),
                                  new LSL_Types.LSLInteger(change)

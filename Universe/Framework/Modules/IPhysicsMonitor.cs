@@ -32,8 +32,8 @@ using Universe.Framework.Physics;
 
 namespace Universe.Framework.Modules
 {
-    public interface IPhysicsMonitor
-    {
-        void AddPhysicsStats(UUID regionID, PhysicsScene scene);
-    }
+	public interface IPhysicsMonitor
+	{
+		void AddPhysicsStats (UUID regionID, PhysicsScene scene);
+	}
 }

@@ -36,165 +36,151 @@ using Universe.Framework.SceneInfo;
 
 namespace Universe.ScriptEngine.VirtualScript.Plugins
 {
-    public class DataserverPlugin : IScriptPlugin
-    {
-        readonly Dictionary<string, DataserverRequest> DataserverRequests =
-            new Dictionary<string, DataserverRequest>();
+	public class DataserverPlugin : IScriptPlugin
+	{
+		readonly Dictionary<string, DataserverRequest> DataserverRequests =
+			new Dictionary<string, DataserverRequest> ();
 
-        public ScriptEngine m_ScriptEngine;
+		public ScriptEngine m_ScriptEngine;
 
-        #region IScriptPlugin Members
+		#region IScriptPlugin Members
 
-        public bool RemoveOnStateChange
-        {
-            get { return true; }
-        }
+		public bool RemoveOnStateChange {
+			get { return true; }
+		}
 
-        public void Initialize(ScriptEngine engine)
-        {
-            m_ScriptEngine = engine;
-        }
+		public void Initialize (ScriptEngine engine)
+		{
+			m_ScriptEngine = engine;
+		}
 
-        public void AddRegion(IScene scene)
-        {
-        }
+		public void AddRegion (IScene scene)
+		{
+		}
 
-        public void RemoveScript(UUID primID, UUID itemID)
-        {
-            lock (DataserverRequests)
-            {
-                List<DataserverRequest> ToRemove = DataserverRequests.Values.Where(ds => ds.itemID == itemID).ToList();
-                foreach (DataserverRequest re in ToRemove)
-                {
-                    DataserverRequests.Remove(re.handle);
-                }
-            }
-        }
+		public void RemoveScript (UUID primID, UUID itemID)
+		{
+			lock (DataserverRequests) {
+				List<DataserverRequest> ToRemove = DataserverRequests.Values.Where (ds => ds.itemID == itemID).ToList ();
+				foreach (DataserverRequest re in ToRemove) {
+					DataserverRequests.Remove (re.handle);
+				}
+			}
+		}
 
-        public bool Check()
-        {
-            lock (DataserverRequests)
-            {
-                if (DataserverRequests.Count == 0)
-                    return false;
-                List<DataserverRequest> ToRemove = new List<DataserverRequest>();
-                foreach (DataserverRequest ds in DataserverRequests.Values)
-                {
-                    if (ds.IsCompleteAt < DateTime.Now)
-                    {
-                        DataserverReply(ds.handle, ds.Reply);
-                        ToRemove.Add(ds);
-                    }
+		public bool Check ()
+		{
+			lock (DataserverRequests) {
+				if (DataserverRequests.Count == 0)
+					return false;
+				List<DataserverRequest> ToRemove = new List<DataserverRequest> ();
+				foreach (DataserverRequest ds in DataserverRequests.Values) {
+					if (ds.IsCompleteAt < DateTime.Now) {
+						DataserverReply (ds.handle, ds.Reply);
+						ToRemove.Add (ds);
+					}
 
-                    if (ds.startTime > DateTime.Now.AddSeconds(30))
-                        ToRemove.Add(ds);
-                }
-                foreach (DataserverRequest re in ToRemove)
-                {
-                    DataserverRequests.Remove(re.handle);
-                }
-                return DataserverRequests.Count > 0;
-            }
-        }
+					if (ds.startTime > DateTime.Now.AddSeconds (30))
+						ToRemove.Add (ds);
+				}
+				foreach (DataserverRequest re in ToRemove) {
+					DataserverRequests.Remove (re.handle);
+				}
+				return DataserverRequests.Count > 0;
+			}
+		}
 
-        public string Name
-        {
-            get { return "Dataserver"; }
-        }
+		public string Name {
+			get { return "Dataserver"; }
+		}
 
-        public OSD GetSerializationData(UUID itemID, UUID primID)
-        {
-            return "";
-        }
+		public OSD GetSerializationData (UUID itemID, UUID primID)
+		{
+			return "";
+		}
 
-        public void CreateFromData(UUID itemID, UUID objectID, OSD data)
-        {
-        }
+		public void CreateFromData (UUID itemID, UUID objectID, OSD data)
+		{
+		}
 
-        #endregion
+		#endregion
 
-        public UUID RegisterRequest(UUID primID, UUID itemID,
-                                    string identifier)
-        {
-            DataserverRequest ds = new DataserverRequest
-                                       {
-                                           primID = primID,
-                                           itemID = itemID,
-                                           ID = UUID.Random(),
-                                           handle = identifier,
-                                           startTime = DateTime.Now,
-                                           IsCompleteAt = DateTime.Now.AddHours(1),
-                                           Reply = ""
-                                       };
+		public UUID RegisterRequest (UUID primID, UUID itemID,
+		                                  string identifier)
+		{
+			DataserverRequest ds = new DataserverRequest {
+				primID = primID,
+				itemID = itemID,
+				ID = UUID.Random (),
+				handle = identifier,
+				startTime = DateTime.Now,
+				IsCompleteAt = DateTime.Now.AddHours (1),
+				Reply = ""
+			};
 
 
-            lock (DataserverRequests)
-            {
-                if (DataserverRequests.ContainsKey(identifier))
-                    return UUID.Zero;
+			lock (DataserverRequests) {
+				if (DataserverRequests.ContainsKey (identifier))
+					return UUID.Zero;
 
-                DataserverRequests[identifier] = ds;
-            }
+				DataserverRequests [identifier] = ds;
+			}
 
-            //Make sure that the cmd handler thread is running
-            m_ScriptEngine.MaintenanceThread.PokeThreads(ds.itemID);
+			//Make sure that the cmd handler thread is running
+			m_ScriptEngine.MaintenanceThread.PokeThreads (ds.itemID);
 
-            return ds.ID;
-        }
+			return ds.ID;
+		}
 
-        void DataserverReply(string identifier, string reply)
-        {
-            DataserverRequest ds;
+		void DataserverReply (string identifier, string reply)
+		{
+			DataserverRequest ds;
 
-            lock (DataserverRequests)
-            {
-                if (!DataserverRequests.ContainsKey(identifier))
-                    return;
+			lock (DataserverRequests) {
+				if (!DataserverRequests.ContainsKey (identifier))
+					return;
 
-                ds = DataserverRequests[identifier];
-            }
+				ds = DataserverRequests [identifier];
+			}
 
-            m_ScriptEngine.PostObjectEvent(ds.primID,
-                                           "dataserver", new object[]
-                                                             {
-                                                                 new LSL_Types.LSLString(ds.ID.ToString()),
-                                                                 new LSL_Types.LSLString(reply)
-                                                             });
-        }
+			m_ScriptEngine.PostObjectEvent (ds.primID,
+				"dataserver", new object[] {
+				new LSL_Types.LSLString (ds.ID.ToString ()),
+				new LSL_Types.LSLString (reply)
+			});
+		}
 
-        internal void AddReply(string handle, string reply, int millisecondsToWait)
-        {
-            lock (DataserverRequests)
-            {
-                DataserverRequest request = null;
-                if (DataserverRequests.TryGetValue(handle, out request))
-                {
-                    //Wait for the value to be returned in LSL_Api
-                    request.IsCompleteAt = DateTime.Now.AddSeconds((millisecondsToWait / (double)1000) + 0.1);
-                    request.Reply = reply;
-                    //Make sure that the cmd handler thread is running
-                    m_ScriptEngine.MaintenanceThread.PokeThreads(request.itemID);
-                }
-            }
-        }
+		internal void AddReply (string handle, string reply, int millisecondsToWait)
+		{
+			lock (DataserverRequests) {
+				DataserverRequest request = null;
+				if (DataserverRequests.TryGetValue (handle, out request)) {
+					//Wait for the value to be returned in LSL_Api
+					request.IsCompleteAt = DateTime.Now.AddSeconds ((millisecondsToWait / (double)1000) + 0.1);
+					request.Reply = reply;
+					//Make sure that the cmd handler thread is running
+					m_ScriptEngine.MaintenanceThread.PokeThreads (request.itemID);
+				}
+			}
+		}
 
-        public void Dispose()
-        {
-        }
+		public void Dispose ()
+		{
+		}
 
-        #region Nested type: DataserverRequest
+		#region Nested type: DataserverRequest
 
-        class DataserverRequest
-        {
-            public UUID ID;
-            public DateTime IsCompleteAt;
-            public string Reply;
-            public string handle;
-            public UUID itemID;
-            public UUID primID;
-            public DateTime startTime;
-        }
+		class DataserverRequest
+		{
+			public UUID ID;
+			public DateTime IsCompleteAt;
+			public string Reply;
+			public string handle;
+			public UUID itemID;
+			public UUID primID;
+			public DateTime startTime;
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

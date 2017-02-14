@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  * For an explanation of the license of each contributor and the content it 
@@ -30,30 +30,42 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-// Information about this assembly is defined by the following
-// attributes.
-//
-// change them to the information which is associated with the assembly
-// you compile.
-
-[assembly: AssemblyTitle("Universe.Physics.BasicPhysicsPlugin")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
+/// <summary>
+///     This is the general information about an assembly, that is controlled through
+///     the following set of attributes.  We change these attribute values to modify
+///     the information associated with an assembly
+/// </summary>
 [assembly: AssemblyCompany("Virtual Universe Development Team")]
+[assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCopyright("Copyright © 2016-2025")]
-[assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
+[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Universe.Physics.BasicPhysicsPlugin")]
+[assembly: AssemblyTrademark("")]
 
-// This sets the default COM visibility of types in the assembly to invisible.
-// If you need to expose a type to COM, use [ComVisible(true)] on that type.
-
+/// <summary>
+///     By setting the ComVisable to false, we are making the types in this assembly
+///     not visible to COM components.  if we need to access a type in this assembly
+///     from the COM, then we set the ComVisible attribute to true on that type
+/// </summary>
 [assembly: ComVisible(false)]
 
-// The assembly version has following format :
-//
-// Major.Minor.Build.Revision
-//
-// You can specify all values by your own or you can build default build and revision
-// numbers with the '*' character (the default):
+/// <summary>
+///     The following GUID is for the ID of the typelib if this project is exposed to COM
+/// </summary>
+[assembly: Guid("269c99ff-0740-4886-8593-7527903090bf")]
 
-[assembly: AssemblyVersion("1.0.2.*")]
+/// <summary>
+///     Version Information:
+///         The version information for an assembly consists of the following four values:
+///         
+///             Major Version Number
+///             Minor Version Number
+///             Build Version Number
+///             Revision Version Number
+///         
+///         We can specify all of the values, or we can default the build and revision version
+///         numbers by using the '*' as shown below:
+///             [assembly: AssemblyVersion("1.0.*")]
+/// </summary>
+[assembly: AssemblyVersion("1.0.3.*")]

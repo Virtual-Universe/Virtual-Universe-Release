@@ -32,101 +32,93 @@ using System.Collections;
 namespace Universe.ScriptEngine.VirtualScript
 {
 
-    #region StartPerformanceQueue
+	#region StartPerformanceQueue
 
-    public class StartPerformanceQueue
-    {
-        readonly Queue ContinuedQueue = new Queue(10000);
-        readonly Queue FirstStartQueue = new Queue(10000);
-        readonly Queue SuspendedQueue = new Queue(100);     //Smaller, we don't get this very often
-        int ContinuedQueueCount;
+	public class StartPerformanceQueue
+	{
+		readonly Queue ContinuedQueue = new Queue (10000);
+		readonly Queue FirstStartQueue = new Queue (10000);
+		readonly Queue SuspendedQueue = new Queue (100);
+		//Smaller, we don't get this very often
+		int ContinuedQueueCount;
 
-        int FirstStartQueueCount;
-        int SuspendedQueueCount;
+		int FirstStartQueueCount;
+		int SuspendedQueueCount;
 
-        public bool GetNext(out object Item)
-        {
-            Item = null;
-            lock (FirstStartQueue)
-            {
-                if (FirstStartQueue.Count != 0)
-                {
-                    FirstStartQueueCount--;
-                    Item = FirstStartQueue.Dequeue();
-                    return true;
-                }
-            }
-            lock (SuspendedQueue)
-            {
-                if (SuspendedQueue.Count != 0)
-                {
-                    SuspendedQueueCount--;
-                    Item = SuspendedQueue.Dequeue();
-                    return true;
-                }
-            }
-            lock (ContinuedQueue)
-            {
-                if (ContinuedQueue.Count != 0)
-                {
-                    ContinuedQueueCount--;
-                    Item = ContinuedQueue.Dequeue();
-                    return true;
-                }
-            }
-            return false;
-        }
+		public bool GetNext (out object Item)
+		{
+			Item = null;
+			lock (FirstStartQueue) {
+				if (FirstStartQueue.Count != 0) {
+					FirstStartQueueCount--;
+					Item = FirstStartQueue.Dequeue ();
+					return true;
+				}
+			}
+			lock (SuspendedQueue) {
+				if (SuspendedQueue.Count != 0) {
+					SuspendedQueueCount--;
+					Item = SuspendedQueue.Dequeue ();
+					return true;
+				}
+			}
+			lock (ContinuedQueue) {
+				if (ContinuedQueue.Count != 0) {
+					ContinuedQueueCount--;
+					Item = ContinuedQueue.Dequeue ();
+					return true;
+				}
+			}
+			return false;
+		}
 
-        public void Clear()
-        {
-            lock (ContinuedQueue) {
-                lock (SuspendedQueue) {
-                    lock (FirstStartQueue) {
-                        ContinuedQueue.Clear();
-                        SuspendedQueue.Clear();
-                        FirstStartQueue.Clear();
-                        ContinuedQueueCount = SuspendedQueueCount = FirstStartQueueCount = 0;
-                    }
-                }
-            }
-        }
+		public void Clear ()
+		{
+			lock (ContinuedQueue) {
+				lock (SuspendedQueue) {
+					lock (FirstStartQueue) {
+						ContinuedQueue.Clear ();
+						SuspendedQueue.Clear ();
+						FirstStartQueue.Clear ();
+						ContinuedQueueCount = SuspendedQueueCount = FirstStartQueueCount = 0;
+					}
+				}
+			}
+		}
 
-        public int Count()
-        {
-            int queCount = 0;
+		public int Count ()
+		{
+			int queCount = 0;
 
-            lock (ContinuedQueue) {
-                lock (SuspendedQueue) {
-                    lock (FirstStartQueue)
-                        queCount = ContinuedQueueCount + SuspendedQueueCount + FirstStartQueueCount;
-                }
-            }
+			lock (ContinuedQueue) {
+				lock (SuspendedQueue) {
+					lock (FirstStartQueue)
+						queCount = ContinuedQueueCount + SuspendedQueueCount + FirstStartQueueCount;
+				}
+			}
 
-            return queCount;
-        }
+			return queCount;
+		}
 
-        public void Add(object item, LoadPriority priority)
-        {
-            if (priority == LoadPriority.FirstStart)
-                lock (FirstStartQueue)
-                {
-                    FirstStartQueueCount++;
-                    FirstStartQueue.Enqueue(item);
-                }
-            if (priority == LoadPriority.Restart)
-                lock (SuspendedQueue)
-                {
-                    SuspendedQueueCount++;
-                    SuspendedQueue.Enqueue(item);
-                }
-            if (priority == LoadPriority.Stop)
-                lock (ContinuedQueue)
-                {
-                    ContinuedQueueCount++;
-                    ContinuedQueue.Enqueue(item);
-                }
-        }
-    }
+		public void Add (object item, LoadPriority priority)
+		{
+			if (priority == LoadPriority.FirstStart)
+				lock (FirstStartQueue) {
+					FirstStartQueueCount++;
+					FirstStartQueue.Enqueue (item);
+				}
+			if (priority == LoadPriority.Restart)
+				lock (SuspendedQueue) {
+					SuspendedQueueCount++;
+					SuspendedQueue.Enqueue (item);
+				}
+			if (priority == LoadPriority.Stop)
+				lock (ContinuedQueue) {
+					ContinuedQueueCount++;
+					ContinuedQueue.Enqueue (item);
+				}
+		}
+	}
 
-    #endregion
+	#endregion
 }

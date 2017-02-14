@@ -75,9 +75,9 @@ namespace Universe.Modules.Attachments
             if (source.Configs["Attachments"] != null)
             {
                 m_maxNumberOfAttachments = source.Configs["Attachments"].GetInt("MaxNumberOfAttachments",
-                                                                                m_maxNumberOfAttachments);
+                    m_maxNumberOfAttachments);
                 m_allowMultipleAttachments = source.Configs["Attachments"].GetBoolean("EnableMultipleAttachments",
-                                                                                      m_allowMultipleAttachments);
+                    m_allowMultipleAttachments);
             }
         }
 
@@ -129,51 +129,51 @@ namespace Universe.Modules.Attachments
         public void ResumeAvatar(IScenePresence presence)
         {
             Util.FireAndForget(delegate
-                                   {
-                                       IAvatarAppearanceModule appearance =
-                                           presence.RequestModuleInterface<IAvatarAppearanceModule>();
-                                       if (null == appearance || null == appearance.Appearance)
-                                       {
-                                           MainConsole.Instance.WarnFormat(
-                                               "[ATTACHMENT]: Appearance has not been initialized for agent {0}",
-                                               presence.UUID);
-                                           return;
-                                       }
+            {
+                IAvatarAppearanceModule appearance =
+                    presence.RequestModuleInterface<IAvatarAppearanceModule>();
+                if (null == appearance || null == appearance.Appearance)
+                {
+                    MainConsole.Instance.WarnFormat(
+                        "[ATTACHMENT]: Appearance has not been initialized for agent {0}",
+                        presence.UUID);
+                    return;
+                }
 
-                                       //Create the avatar attachments plugin for the av
-                                       AvatarAttachments attachmentsPlugin = new AvatarAttachments(presence);
-                                       presence.RegisterModuleInterface(attachmentsPlugin);
+                //Create the avatar attachments plugin for the av
+                AvatarAttachments attachmentsPlugin = new AvatarAttachments(presence);
+                presence.RegisterModuleInterface(attachmentsPlugin);
 
-                                       List<AvatarAttachment> attachments = appearance.Appearance.GetAttachments();
-                                       MainConsole.Instance.InfoFormat(
-                                           "[ATTACHMENTS MODULE]:  Found {0} attachments to attach to avatar {1}",
-                                           attachments.Count, presence.Name);
-                                       foreach (AvatarAttachment attach in attachments)
-                                       {
-                                           try
-                                           {
-                                               RezSingleAttachmentFromInventory(presence.ControllingClient,
-                                                                                attach.ItemID, attach.AssetID, 0, false);
-                                           }
-                                           catch (Exception e)
-                                           {
-                                               MainConsole.Instance.ErrorFormat(
-                                                   "[ATTACHMENT]: Unable to rez attachment: {0}", e);
-                                           }
-                                       }
-                                       presence.AttachmentsLoaded = true;
-                                       lock (_usersToSendAttachmentsToWhenLoaded)
-                                       {
-                                           if (_usersToSendAttachmentsToWhenLoaded.ContainsKey(presence.UUID))
-                                           {
-                                               foreach (var id in _usersToSendAttachmentsToWhenLoaded[presence.UUID])
-                                               {
-                                                   SendAttachmentsToPresence(id, presence);
-                                               }
-                                               _usersToSendAttachmentsToWhenLoaded.Remove(presence.UUID);
-                                           }
-                                       }
-                                   });
+                List<AvatarAttachment> attachments = appearance.Appearance.GetAttachments();
+                MainConsole.Instance.InfoFormat(
+                    "[Attachments Module]:  Found {0} attachments to attach to avatar {1}",
+                    attachments.Count, presence.Name);
+                foreach (AvatarAttachment attach in attachments)
+                {
+                    try
+                    {
+                        RezSingleAttachmentFromInventory(presence.ControllingClient,
+                            attach.ItemID, attach.AssetID, 0, false);
+                    }
+                    catch (Exception e)
+                    {
+                        MainConsole.Instance.ErrorFormat(
+                            "[ATTACHMENT]: Unable to rez attachment: {0}", e);
+                    }
+                }
+                presence.AttachmentsLoaded = true;
+                lock (_usersToSendAttachmentsToWhenLoaded)
+                {
+                    if (_usersToSendAttachmentsToWhenLoaded.ContainsKey(presence.UUID))
+                    {
+                        foreach (var id in _usersToSendAttachmentsToWhenLoaded[presence.UUID])
+                        {
+                            SendAttachmentsToPresence(id, presence);
+                        }
+                        _usersToSendAttachmentsToWhenLoaded.Remove(presence.UUID);
+                    }
+                }
+            });
         }
 
         public void SendAttachmentsToPresence(IScenePresence receiver, IScenePresence sender)
@@ -196,7 +196,7 @@ namespace Universe.Modules.Attachments
                     if (_usersToSendAttachmentsToWhenLoaded.ContainsKey(sender.UUID))
                         _usersToSendAttachmentsToWhenLoaded[sender.UUID].Add(receiver);
                     else
-                        _usersToSendAttachmentsToWhenLoaded.Add(sender.UUID, new List<IScenePresence>() {receiver});
+                        _usersToSendAttachmentsToWhenLoaded.Add(sender.UUID, new List<IScenePresence>() { receiver });
             }
         }
 
@@ -208,7 +208,7 @@ namespace Universe.Modules.Attachments
             foreach (ISceneEntity group in attachments)
             {
                 if (group.RootChild.AttachedPos != group.RootChild.SavedAttachedPos ||
-                    group.RootChild.SavedAttachmentPoint != group.RootChild.AttachmentPoint)
+                                group.RootChild.SavedAttachmentPoint != group.RootChild.AttachmentPoint)
                 {
                     group.RootChild.SavedAttachedPos = group.RootChild.AttachedPos;
                     group.RootChild.SavedAttachmentPoint = group.RootChild.AttachmentPoint;
@@ -229,8 +229,8 @@ namespace Universe.Modules.Attachments
                 if (group.HasGroupChanged)
                 {
                     UUID assetID = UpdateKnownItem(presence.ControllingClient, group,
-                                                    group.RootChild.FromUserInventoryItemID,
-                                                    group.OwnerID);
+                                                      group.RootChild.FromUserInventoryItemID,
+                                                      group.OwnerID);
                     group.RootChild.FromUserInventoryAssetID = assetID;
                 }
             }
@@ -238,7 +238,7 @@ namespace Universe.Modules.Attachments
             {
                 appearance.Appearance.SetAttachments(attachments);
                 presence.Scene.AvatarService.SetAppearance(presence.UUID,
-                                                            appearance.Appearance);
+                    appearance.Appearance);
             }
             IBackupModule backup = presence.Scene.RequestModuleInterface<IBackupModule>();
             if (backup != null)
@@ -320,7 +320,7 @@ namespace Universe.Modules.Attachments
 
         protected void ClientAttachObject(IClientAPI remoteClient, uint objectLocalID, int AttachmentPt, bool silent)
         {
-            MainConsole.Instance.Debug("[ATTACHMENTS MODULE]: Invoking AttachObject");
+            MainConsole.Instance.Debug("[Attachments Module]: Invoking AttachObject");
 
             try
             {
@@ -334,12 +334,12 @@ namespace Universe.Modules.Attachments
             }
             catch (Exception e)
             {
-                MainConsole.Instance.DebugFormat("[ATTACHMENTS MODULE]: exception upon Attach Object {0}", e);
+                MainConsole.Instance.DebugFormat("[Attachments Module]: exception upon Attach Object {0}", e);
             }
         }
 
         protected void ClientUpdateAttachmentPosition(uint objectLocalID, Vector3 pos, IClientAPI remoteClient,
-                                                      bool SaveUpdate)
+                                                            bool SaveUpdate)
         {
             ISceneEntity group = m_scene.GetGroupByPrim(objectLocalID);
             if (group != null)
@@ -363,7 +363,7 @@ namespace Universe.Modules.Attachments
         #region Attach
 
         public bool AttachObjectFromInworldObject(uint localID, IClientAPI remoteClient,
-                                                  ISceneEntity group, int AttachmentPt, bool isTempAttach)
+                                                        ISceneEntity group, int AttachmentPt, bool isTempAttach)
         {
             if (isTempAttach || m_scene.Permissions.CanTakeObject(group.UUID, remoteClient.AgentId))
                 FindAttachmentPoint(remoteClient, localID, group, AttachmentPt, UUID.Zero, true, isTempAttach);
@@ -382,15 +382,15 @@ namespace Universe.Modules.Attachments
             IClientAPI remoteClient, UUID itemID, UUID assetID, int AttachmentPt, bool updateUUIDs)
         {
             MainConsole.Instance.DebugFormat(
-                "[ATTACHMENTS MODULE]: Rezzing attachment to point {0} from item {1} for {2}",
-                (AttachmentPoint) AttachmentPt, itemID, remoteClient.Name);
+                "[Attachments Module]: Rezzing attachment to point {0} from item {1} for {2}",
+                (AttachmentPoint)AttachmentPt, itemID, remoteClient.Name);
             IInventoryAccessModule invAccess = m_scene.RequestModuleInterface<IInventoryAccessModule>();
             if (invAccess != null)
             {
                 InventoryItemBase item = null;
                 ISceneEntity objatt = assetID == UUID.Zero
                                           ? invAccess.CreateObjectFromInventory(remoteClient,
-                                                                                itemID, out item)
+                                                      itemID, out item)
                                           : invAccess.CreateObjectFromInventory(remoteClient, itemID, assetID, null);
 
                 if (objatt != null)
@@ -477,15 +477,15 @@ namespace Universe.Modules.Attachments
                             if (obj.RootChild.FromUserInventoryItemID == objatt.RootChild.FromUserInventoryItemID)
                                 foundDuplicate = true;
                         IEntity e;
-                        if (!m_scene.SceneGraph.TryGetEntity(objatt.UUID, out e)) //if (updateUUIDs)
-                        {
+                        if (!m_scene.SceneGraph.TryGetEntity(objatt.UUID, out e))
+                        { //if (updateUUIDs)
                             foreach (var prim in objatt.ChildrenEntities())
                                 prim.LocalId = 0;
                             bool success = m_scene.SceneGraph.RestorePrimToScene(objatt, false);
                             if (!success)
                             {
                                 MainConsole.Instance.Error("[AttachmentModule]: Failed to add attachment " + objatt.Name +
-                                                           " for user " + remoteClient.Name + "!");
+                                " for user " + remoteClient.Name + "!");
                                 return null;
                             }
                         }
@@ -495,7 +495,7 @@ namespace Universe.Modules.Attachments
                             {
                                 if (m_scene.SceneGraph.AddPrimToScene(objatt))
                                     forceUpdateOnNextDeattach = true;
-                                        //If the user has information stored about this object, we need to force updating next time
+                                //If the user has information stored about this object, we need to force updating next time
                             }
                             else
                             {
@@ -519,7 +519,7 @@ namespace Universe.Modules.Attachments
                     IScenePresence presence = m_scene.GetScenePresence(remoteClient.AgentId);
                     if (presence != null)
                         FindAttachmentPoint(remoteClient, objatt.LocalId, objatt, AttachmentPt, assetID,
-                                            forceUpdateOnNextDeattach, false);
+                            forceUpdateOnNextDeattach, false);
                     else
                         objatt = null; //Presence left, kill the attachment
 
@@ -528,7 +528,7 @@ namespace Universe.Modules.Attachments
                 else
                 {
                     MainConsole.Instance.WarnFormat(
-                        "[ATTACHMENTS MODULE]: Could not retrieve item {0} for attaching to avatar {1} at point {2}",
+                        "[Attachments Module]: Could not retrieve item {0} for attaching to avatar {1} at point {2}",
                         itemID, remoteClient.Name, AttachmentPt);
                 }
 
@@ -561,8 +561,8 @@ namespace Universe.Modules.Attachments
                         return; //Its not attached! What are we doing!
                 }
 
-                MainConsole.Instance.Debug("[ATTACHMENTS MODULE]: Detaching from UserID: " + remoteClient.AgentId +
-                                           ", ItemID: " + itemID);
+                MainConsole.Instance.Debug("[Attachments Module]: Detaching from UserID: " + remoteClient.AgentId +
+                ", ItemID: " + itemID);
                 if (AvatarFactory != null)
                     AvatarFactory.QueueAppearanceSave(remoteClient.AgentId);
             }
@@ -576,7 +576,7 @@ namespace Universe.Modules.Attachments
                     //And from storage as well
                     IBackupModule backup = presence.Scene.RequestModuleInterface<IBackupModule>();
                     if (backup != null)
-                        backup.DeleteSceneObjects(new[] {grp}, false, true);
+                        backup.DeleteSceneObjects(new[] { grp }, false, true);
                 }
             }
         }
@@ -602,7 +602,7 @@ namespace Universe.Modules.Attachments
             {
                 string reason;
                 if (!m_scene.Permissions.CanRezObject(
-                    part.ParentEntity.PrimCount, remoteClient.AgentId, presence.AbsolutePosition, out reason))
+                                    part.ParentEntity.PrimCount, remoteClient.AgentId, presence.AbsolutePosition, out reason))
                     return;
 
                 IAvatarAppearanceModule appearance = presence.RequestModuleInterface<IAvatarAppearanceModule>();
@@ -612,7 +612,7 @@ namespace Universe.Modules.Attachments
 
                 part.ParentEntity.DetachToGround(forcedPos, forcedRotation);
 
-                List<UUID> uuids = new List<UUID> {inventoryID};
+                List<UUID> uuids = new List<UUID> { inventoryID };
                 m_scene.InventoryService.DeleteItems(remoteClient.AgentId, uuids);
                 remoteClient.SendRemoveInventoryItem(inventoryID);
             }
@@ -644,7 +644,7 @@ namespace Universe.Modules.Attachments
                 // and retrieve GroupPosition information for the attachment.
                 // Then we save the asset back into the appropriate inventory
                 // entry. Finally, we restore the object's attachment status.
-                byte attachmentPoint = (byte) sog.RootChild.AttachmentPoint;
+                byte attachmentPoint = (byte)sog.RootChild.AttachmentPoint;
                 sog.UpdateGroupPosition(pos, true);
                 sog.RootChild.AttachedPos = pos;
                 sog.RootChild.FixOffsetPosition((pos), false);
@@ -719,7 +719,7 @@ namespace Universe.Modules.Attachments
         /// <param name="forceUpdatePrim">Force updating of the prim the next time the user attempts to detach it</param>
         /// <param name="isTempAttach">Is a temporary attachment</param>
         protected void FindAttachmentPoint(IClientAPI remoteClient, uint localID, ISceneEntity group,
-                                           int AttachmentPt, UUID assetID, bool forceUpdatePrim, bool isTempAttach)
+                                                 int AttachmentPt, UUID assetID, bool forceUpdatePrim, bool isTempAttach)
         {
             //Make sure that we aren't over the limit of attachments
             ISceneEntity[] attachments = GetAttachmentsForAvatar(remoteClient.AgentId);
@@ -772,7 +772,7 @@ namespace Universe.Modules.Attachments
                 if (AttachmentPt == 0)
                 {
                     // Stick it on right hand with Zero Offset from the attachment point.
-                    AttachmentPt = (int) AttachmentPoint.RightHand;
+                    AttachmentPt = (int)AttachmentPoint.RightHand;
                     //Default location
                     attachPos = Vector3.Zero;
                     changedPositionPoint = true;
@@ -780,11 +780,11 @@ namespace Universe.Modules.Attachments
             }
 
             MainConsole.Instance.DebugFormat(
-                "[ATTACHMENTS MODULE]: Retrieved single object {0} for attachment to {1} on point {2} localID {3}",
+                "[Attachments Module]: Retrieved single object {0} for attachment to {1} on point {2} localID {3}",
                 group.Name, remoteClient.Name, AttachmentPt, group.LocalId);
 
             //Update where we are put
-            group.SetAttachmentPoint((byte) AttachmentPt);
+            group.SetAttachmentPoint((byte)AttachmentPt);
             //Fix the position with the one we found
             group.AbsolutePosition = attachPos;
 
@@ -798,7 +798,7 @@ namespace Universe.Modules.Attachments
             {
                 foreach (ISceneEntity grp in attachments)
                 {
-                    if (grp.GetAttachmentPoint() == (byte) AttachmentPt)
+                    if (grp.GetAttachmentPoint() == (byte)AttachmentPt)
                     {
                         itemID = grp.RootChild.FromUserInventoryItemID;
                         break;
@@ -850,12 +850,12 @@ namespace Universe.Modules.Attachments
                 {
                     //Delete the object inworld to inventory
 
-                    List<ISceneEntity> groups = new List<ISceneEntity>(1) {group};
+                    List<ISceneEntity> groups = new List<ISceneEntity>(1) { group };
 
                     IInventoryAccessModule inventoryAccess = m_scene.RequestModuleInterface<IInventoryAccessModule>();
                     if (inventoryAccess != null)
                         inventoryAccess.DeleteToInventory(DeRezAction.AcquireToUserInventory, UUID.Zero,
-                                                          groups, remoteClient.AgentId, out itemID);
+                            groups, remoteClient.AgentId, out itemID);
                 }
                 else
                 {
@@ -869,7 +869,7 @@ namespace Universe.Modules.Attachments
                 if (UUID.Zero == itemID)
                 {
                     MainConsole.Instance.Error(
-                        "[ATTACHMENTS MODULE]: Unable to save attachment. Error inventory item ID.");
+                        "[Attachments Module]: Unable to save attachment. Error inventory item ID.");
                     remoteClient.SendAgentAlertMessage(
                         "Unable to save attachment. Error inventory item ID.", false);
                     return;
@@ -919,7 +919,7 @@ namespace Universe.Modules.Attachments
         protected void SendKillEntity(uint rootPart)
         {
             m_scene.ForEachClient(
-                client => client.SendKillObject(m_scene.RegionInfo.RegionHandle, new uint[] {rootPart}));
+                client => client.SendKillObject(m_scene.RegionInfo.RegionHandle, new uint[] { rootPart }));
         }
 
         // What makes this method odd and unique is it tries to detach using an UUID....     Yay for standards.
@@ -944,7 +944,7 @@ namespace Universe.Modules.Attachments
         }
 
         private void DetachSingleAttachmentGroupToInventoryInternal(UUID itemID, IClientAPI remoteClient, bool fireEvent,
-                                                                    ISceneEntity group)
+                                                                          ISceneEntity group)
         {
             if (fireEvent)
             {
@@ -959,15 +959,16 @@ namespace Universe.Modules.Attachments
                 AvatarAttachments attModule = presence.RequestModuleInterface<AvatarAttachments>();
                 if (attModule != null)
                     attModule.RemoveAttachment(group);
-                if (attModule != null) presence.SetAttachments(attModule.Get());
+                if (attModule != null)
+                    presence.SetAttachments(attModule.Get());
             }
 
-            MainConsole.Instance.Debug("[ATTACHMENTS MODULE]: Saving attachpoint: " +
-                                       ((uint) group.GetAttachmentPoint()).ToString());
+            MainConsole.Instance.Debug("[Attachments Module]: Saving attachpoint: " +
+            ((uint)group.GetAttachmentPoint()).ToString());
 
             //Update the saved attach points
             if (group.RootChild.AttachedPos != group.RootChild.SavedAttachedPos ||
-                group.RootChild.SavedAttachmentPoint != group.RootChild.AttachmentPoint)
+                         group.RootChild.SavedAttachmentPoint != group.RootChild.AttachmentPoint)
             {
                 group.RootChild.SavedAttachedPos = group.RootChild.AttachedPos;
                 group.RootChild.SavedAttachmentPoint = group.RootChild.AttachmentPoint;
@@ -1004,25 +1005,33 @@ namespace Universe.Modules.Attachments
             {
                 if (!grp.HasGroupChanged)
                 {
-                    //MainConsole.Instance.WarnFormat("[ATTACHMENTS MODULE]: Save request for {0} which is unchanged", grp.UUID);
+                    //MainConsole.Instance.WarnFormat("[Attachments Module]: Save request for {0} which is unchanged", grp.UUID);
                     return UUID.Zero;
+                }
+
+                // Saving attachments for NPCs messes them up for the real owner!
+                var botMgr = m_scene.RequestModuleInterface<IBotManager>();
+                if (botMgr != null)
+                {
+                    if (botMgr.IsNpcAgent(agentID))
+                        return UUID.Zero;
                 }
 
                 //let things like state saves and another async things be performed before we serialize the object
                 grp.BackupPreparation();
 
                 MainConsole.Instance.InfoFormat(
-                    "[ATTACHMENTS MODULE]: Updating asset for attachment {0}, attachpoint {1}",
+                    "[Attachments Module]: Updating asset for attachment {0}, attachpoint {1}",
                     grp.UUID, grp.GetAttachmentPoint());
 
                 string sceneObjectXml = SceneEntitySerializer.SceneObjectSerializer.ToOriginalXmlFormat(grp);
 
                 AssetBase asset = new AssetBase(UUID.Random(), grp.Name,
-                                                AssetType.Object, remoteClient.AgentId)
-                                      {
-                                          Description = grp.RootChild.Description,
-                                          Data = Utils.StringToBytes(sceneObjectXml)
-                                      };
+                                                  AssetType.Object, remoteClient.AgentId)
+                {
+                    Description = grp.RootChild.Description,
+                    Data = Utils.StringToBytes(sceneObjectXml)
+                };
                 asset.ID = m_scene.AssetService.Store(asset);
 
 

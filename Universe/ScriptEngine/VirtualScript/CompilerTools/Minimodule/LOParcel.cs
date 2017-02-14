@@ -33,47 +33,43 @@ using Universe.Framework.SceneInfo;
 
 namespace Universe.ScriptEngine.VirtualScript.MiniModule
 {
-    class LOParcel : MarshalByRefObject, IParcel
-    {
-        readonly int m_parcelID;
-        readonly IScene m_scene;
+	class LOParcel : MarshalByRefObject, IParcel
+	{
+		readonly int m_parcelID;
+		readonly IScene m_scene;
 
-        public LOParcel(IScene m_scene, int m_parcelID)
-        {
-            this.m_scene = m_scene;
-            this.m_parcelID = m_parcelID;
-        }
+		public LOParcel (IScene m_scene, int m_parcelID)
+		{
+			this.m_scene = m_scene;
+			this.m_parcelID = m_parcelID;
+		}
 
-        #region IParcel Members
+		#region IParcel Members
 
-        public string Name
-        {
-            get { return GetLO().LandData.Name; }
-            set { GetLO().LandData.Name = value; }
-        }
+		public string Name {
+			get { return GetLO ().LandData.Name; }
+			set { GetLO ().LandData.Name = value; }
+		}
 
-        public string Description
-        {
-            get { return GetLO().LandData.Description; }
-            set { GetLO().LandData.Description = value; }
-        }
+		public string Description {
+			get { return GetLO ().LandData.Description; }
+			set { GetLO ().LandData.Description = value; }
+		}
 
-        public ISocialEntity Owner
-        {
-            get { throw new NotImplementedException(); }
-            set { throw new NotImplementedException(); }
-        }
+		public ISocialEntity Owner {
+			get { throw new NotImplementedException (); }
+			set { throw new NotImplementedException (); }
+		}
 
-        #endregion
+		#endregion
 
-        ILandObject GetLO()
-        {
-            IParcelManagementModule parcelManagement = m_scene.RequestModuleInterface<IParcelManagementModule>();
-            if (parcelManagement != null)
-            {
-                return parcelManagement.GetLandObject(m_parcelID);
-            }
-            return null;
-        }
-    }
+		ILandObject GetLO ()
+		{
+			IParcelManagementModule parcelManagement = m_scene.RequestModuleInterface<IParcelManagementModule> ();
+			if (parcelManagement != null) {
+				return parcelManagement.GetLandObject (m_parcelID);
+			}
+			return null;
+		}
+	}
 }

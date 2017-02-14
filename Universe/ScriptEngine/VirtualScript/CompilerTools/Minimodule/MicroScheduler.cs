@@ -33,39 +33,37 @@ using System.Collections.Generic;
 
 namespace Universe.ScriptEngine.VirtualScript.MiniModule
 {
-    public class MicroScheduler : MarshalByRefObject, IMicrothreader
-    {
-        readonly List<IEnumerator> m_threads = new List<IEnumerator>();
+	public class MicroScheduler : MarshalByRefObject, IMicrothreader
+	{
+		readonly List<IEnumerator> m_threads = new List<IEnumerator> ();
 
-        #region IMicrothreader Members
+		#region IMicrothreader Members
 
-        public void Run(IEnumerable microthread)
-        {
-            lock (m_threads)
-                m_threads.Add(microthread.GetEnumerator());
-        }
+		public void Run (IEnumerable microthread)
+		{
+			lock (m_threads)
+				m_threads.Add (microthread.GetEnumerator ());
+		}
 
-        #endregion
+		#endregion
 
-        public void Tick(int count)
-        {
-            lock (m_threads)
-            {
-                if (m_threads.Count == 0)
-                    return;
+		public void Tick (int count)
+		{
+			lock (m_threads) {
+				if (m_threads.Count == 0)
+					return;
 
-                int i = 0;
-                while (m_threads.Count > 0 && i < count)
-                {
-                    i++;
+				int i = 0;
+				while (m_threads.Count > 0 && i < count) {
+					i++;
 
-                    bool running = m_threads[i%m_threads.Count].MoveNext();
+					bool running = m_threads [i % m_threads.Count].MoveNext ();
 
 
-                    if (!running)
-                        m_threads.Remove(m_threads[i%m_threads.Count]);
-                }
-            }
-        }
-    }
+					if (!running)
+						m_threads.Remove (m_threads [i % m_threads.Count]);
+				}
+			}
+		}
+	}
 }

@@ -4,7 +4,6 @@
 * Copyright (c) 2010 Linden Research, Inc.
 * Copyright (c) 2011 SignpostMarv
 * Hacked around by Greythane for WhitcoreSim, June 2014
-* Updated for Virtual Universe by IrishwolfStarfinder May 2016
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -160,7 +159,7 @@ var SLURL = {
 				if(typeof result == 'string'){
 					mapWindow(result, x, y);
 				}else if((result == null || result.error) && SLURL.debugMode){
-					alert('The coordinates of the WCURL (' + x + ', ' + y + ') were not recognised as being in a Universe region.');
+					alert('The coordinates of the WCURL (' + x + ', ' + y + ') were not recognised as being in a Virtual Universe region.');
 				}
 			}, SLURL.getRegionCoordsByNameVar());
 		}else{
@@ -560,9 +559,9 @@ SLURL.EuclideanProjection.prototype.getWrapWidth=function(zoom)
 }
 
 
-///////////////////////////////////////
-////////////// SL Map API /////////////
-///////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+// SL Map API ///////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 // ------------------------------------
@@ -695,6 +694,7 @@ SLURL.Map.prototype.mousehoverHandler = function(){
 	var tileX = Math.floor(tilePos.x);
 	var tileY = Math.floor(tilePos.y);
 
+//	this.showTileToolTip(tileX, tileY);
 	this.showTileNameToolTip(this, tileX, tileY);
 }
 
@@ -730,7 +730,7 @@ SLURL.Map.prototype.showTileNameToolTip = function(slMap, tileX, tileY){
 				if(typeof result == 'string'){
 					nameTip(result);
 				} else if((result == null || result.error) && SLURL.debugMode){
-					alert('The coordinates of the WCURL (' + x + ', ' + y + ') were not recognised as being in a Universe region.');
+					alert('The coordinates of the WCURL (' + x + ', ' + y + ') were not recognised as being in a Virtual Universe region.');
 				}
 			}, SLURL.getRegionNameByCoordsVar());
 }
@@ -745,13 +745,14 @@ SLURL.Map.prototype.CreateMapTypes = function(){
 	var mapTypes = [];
 
 		var copyCollection = new GCopyrightCollection('Universe');
-		var copyright = new GCopyright(1, new GLatLngBounds(new GLatLng(0, 0), new GLatLng(-90, 90)), 0, "(C) 2016-2025 - " + (new Date).getFullYear() + " Virtual Universe.org");
+		var copyright = new GCopyright(1, new GLatLngBounds(new GLatLng(0, 0), new GLatLng(-90, 90)), 0, "(C) 2016 - 2025 " + (new Date).getFullYear() + " http://virtual-planets.org");
 		copyCollection.addCopyright(copyright);
 
 		// Create the 'Land' type of map
 		var landTilelayers = [new GTileLayer(copyCollection, 10, 16)];
 		landTilelayers[0].getTileUrl = SLURL.getTileUrl;
 
+		//var landMap = new GMapType(landTilelayers, this.mapProjection, "Land", {errorMessage:"No SL data available"});
 		var landMap = new GMapType(landTilelayers, this.mapProjection, "Land" );
 		landMap.getMinimumResolution = function() { return SLURL.convertZoom(SLURL.minZoomLevel); };
 		landMap.getMaximumResolution = function() { return SLURL.convertZoom(SLURL.maxZoomLevel); };
@@ -773,7 +774,7 @@ SLURL.Map.prototype.CreateMapDiv = function(mainDiv){
 	if(SLMap.options.showRegionSearchForm){ // create the div for the text input form
 		var
 			form          = document.createElement("form"),
-			formLabel     = document.createTextNode("Enter region name:"),
+			formLabel     = document.createTextNode("Search for: "),
 			formLabelSpan = document.createElement("span"),
 			formText      = document.createElement("input"),
 			formButton    = document.createElement("input"),
@@ -802,7 +803,7 @@ SLURL.Map.prototype.CreateMapDiv = function(mainDiv){
 		formLabelSpan.appendChild(formLabel);
 
 		// Text field for the region name
-		formText.value = "<Search Region>";
+		formText.value = "";
 		formText.size = 15;
 
 		// Button to activate 'go to region'
@@ -834,7 +835,7 @@ SLURL.Map.prototype.gotoRegion = function(regionName){
 				new SLURL.XYPoint(x, y)
 			);
 		} else {
-			alert('No coordinates could be found for region "' + regionName + '"');
+			alert('No coordinates could be found for "' + regionName + '"');
 		}
 	}, SLURL.getRegionCoordsByNameVar());
 }
@@ -887,6 +888,19 @@ SLURL.Map.prototype.addTextMarker = function(marker, mapWindow){
 			isClickable  = false,
 			markerZIndex = (marker.options.zLayer) ? marker.options.zLayer : 0
 		;
+
+		// Work out hotspot of marker
+//		if(marker.options.horizontalAlign == "left"){
+//			hotspotX = 0;  //locX = 0;
+//		}else if(marker.options.horizontalAlign == "right"){
+//			hotspotX = gicon.iconSize.width;
+//		}
+//		if(marker.options.verticalAlign == "top"){
+//			hotspotY = 0;
+//		}else if(marker.options.verticalAlign == "bottom"){
+//			hotspotY = gicon.iconSize.height;
+//		}
+
 
 		// The SL marker 'owns' the GMarker
 		marker.gmarker          = new MarkerWithLabel({

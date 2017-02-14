@@ -3,7 +3,7 @@
 	  <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
 	  <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
 	  <ReferencePath>C:\Users\virtu\Desktop\Virtual-Dev\VirtualUniverse\bin\</ReferencePath>
-	  <LastOpenVersion>12.0.31101</LastOpenVersion>
+	  <LastOpenVersion>9.0.30729</LastOpenVersion>
 	  <ProjectView>ProjectFiles</ProjectView>
 	  <ProjectTrust>0</ProjectTrust>
 	</PropertyGroup>

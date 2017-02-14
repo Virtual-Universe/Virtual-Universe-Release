@@ -32,51 +32,55 @@ using Universe.Framework.SceneInfo;
 
 namespace Universe.Framework.Modules
 {
-    public interface ITerrainChannel
-    {
-        int Height { get; }
-        float this[int x, int y] { get; set; }
-        int Width { get; }
-        IScene Scene { get; set; }
+	public interface ITerrainChannel
+	{
+		int Height { get; }
 
-        /// <summary>
-        ///     Squash the entire heightmap into a single dimensioned array
-        /// </summary>
-        /// <returns></returns>
-        short[] GetSerialized();
+		float this [int x, int y] { get; set; }
 
-        bool Tainted(int x, int y);
-        ITerrainChannel MakeCopy();
+		int Width { get; }
 
-        /// <summary>
-        ///     Gets the average height of the area +2 in both the X and Y directions from the given position
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <returns></returns>
-        float GetNormalizedGroundHeight(int x, int y);
+		IScene Scene { get; set; }
 
-        /// <summary>
-        /// Gets the average height of land above the waterline at the specified point.
-        /// </summary>
-        /// <returns>The normalized land height.</returns>
-        /// <param name="x">The x coordinate.</param>
-        /// <param name="y">The y coordinate.</param>
-        float GetNormalizedLandHeight (int x, int y);
+		/// <summary>
+		///     Squash the entire heightmap into a single dimensioned array
+		/// </summary>
+		/// <returns></returns>
+		short[] GetSerialized ();
 
-        /// <summary>
-        /// Generates  new terrain based upon supplied parameters.
-        /// </summary>
-        /// <param name="landType">Land type.</param>
-        /// <param name="min">Minimum.</param>
-        /// <param name="max">Max.</param>
-        /// <param name="smoothing">Smoothing.</param>
-        /// <param name="scene">Scene.</param>
-        void GenerateTerrain(string terrainType, float min, float max, int smoothing, IScene scene);
+		bool Tainted (int x, int y);
 
-        /// <summary>
-        /// Recalculates land area.
-        /// </summary>
-        void ReCalcLandArea ();
-    }
+		ITerrainChannel MakeCopy ();
+
+		/// <summary>
+		///     Gets the average height of the area +2 in both the X and Y directions from the given position
+		/// </summary>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <returns></returns>
+		float GetNormalizedGroundHeight (int x, int y);
+
+		/// <summary>
+		/// Gets the average height of land above the waterline at the specified point.
+		/// </summary>
+		/// <returns>The normalized land height.</returns>
+		/// <param name="x">The x coordinate.</param>
+		/// <param name="y">The y coordinate.</param>
+		float GetNormalizedLandHeight (int x, int y);
+
+		/// <summary>
+		/// Generates  new terrain based upon supplied parameters.
+		/// </summary>
+		/// <param name="landType">Land type.</param>
+		/// <param name="min">Minimum.</param>
+		/// <param name="max">Max.</param>
+		/// <param name="smoothing">Smoothing.</param>
+		/// <param name="scene">Scene.</param>
+		void GenerateTerrain (string terrainType, float min, float max, int smoothing, IScene scene);
+
+		/// <summary>
+		/// Recalculates land area.
+		/// </summary>
+		void ReCalcLandArea ();
+	}
 }

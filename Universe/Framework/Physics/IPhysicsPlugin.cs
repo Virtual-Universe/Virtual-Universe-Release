@@ -29,11 +29,14 @@
 
 namespace Universe.Framework.Physics
 {
-    public interface IPhysicsPlugin
-    {
-        bool Init();
-        PhysicsScene GetScene();
-        string GetName();
-        void Dispose();
-    }
+	public interface IPhysicsPlugin
+	{
+		bool Init ();
+
+		PhysicsScene GetScene ();
+
+		string GetName ();
+
+		void Dispose ();
+	}
 }

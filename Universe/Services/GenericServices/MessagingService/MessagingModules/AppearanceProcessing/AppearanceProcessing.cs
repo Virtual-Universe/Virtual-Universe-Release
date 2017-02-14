@@ -37,59 +37,59 @@ using Universe.Framework.Services;
 
 namespace Universe.Services
 {
-    public class AppearanceProcessing : IService
-    {
-        #region Declares
+	public class AppearanceProcessing : IService
+	{
+		#region Declares
 
-        protected IRegistryCore m_registry;
+		protected IRegistryCore m_registry;
 
-        #endregion
+		#endregion
 
-        #region IService Members
+		#region IService Members
 
-        public void Initialize (IConfigSource config, IRegistryCore registry)
-        {
-            m_registry = registry;
-        }
+		public void Initialize (IConfigSource config, IRegistryCore registry)
+		{
+			m_registry = registry;
+		}
 
-        public void Start (IConfigSource config, IRegistryCore registry)
-        {
-        }
+		public void Start (IConfigSource config, IRegistryCore registry)
+		{
+		}
 
-        public void FinishedStartup ()
-        {
-            //Also look for incoming messages to display
-            m_registry.RequestModuleInterface<ISyncMessageRecievedService> ().OnMessageReceived += OnMessageReceived;
-        }
+		public void FinishedStartup ()
+		{
+			//Also look for incoming messages to display
+			m_registry.RequestModuleInterface<ISyncMessageRecievedService> ().OnMessageReceived += OnMessageReceived;
+		}
 
-        #endregion
+		#endregion
 
-        /// <summary>
-        ///     Region side
-        /// </summary>
-        /// <param name="message"></param>
-        /// <returns></returns>
-        protected OSDMap OnMessageReceived (OSDMap message)
-        {
-            //We need to check and see if this is an AgentStatusChange
-            if (message.ContainsKey ("Method") && message ["Method"] == "UpdateAvatarAppearance") {
-                var appearance = new AvatarAppearance (message ["AgentID"], (OSDMap)message ["Appearance"]);
-                ISceneManager manager = m_registry.RequestModuleInterface<ISceneManager> ();
-                if (manager != null) {
-                    foreach (IScene scene in manager.Scenes) {
-                        IScenePresence sp = scene.GetScenePresence (appearance.Owner);
-                        if (sp != null && !sp.IsChildAgent) {
-                            var avappmodule = sp.RequestModuleInterface<IAvatarAppearanceModule> ();
-                            if (avappmodule != null) {
-                                avappmodule.Appearance = appearance;
-                                avappmodule.SendAppearanceToAgent (sp);
-                                avappmodule.SendAppearanceToAllOtherAgents ();
-                            }
-                        }
-                    }
-                }
-            }
-            return null;
-        }
-    }
+		/// <summary>
+		///     Region side
+		/// </summary>
+		/// <param name="message"></param>
+		/// <returns></returns>
+		protected OSDMap OnMessageReceived (OSDMap message)
+		{
+			//We need to check and see if this is an AgentStatusChange
+			if (message.ContainsKey ("Method") && message ["Method"] == "UpdateAvatarAppearance") {
+				var appearance = new AvatarAppearance (message ["AgentID"], (OSDMap)message ["Appearance"]);
+				ISceneManager manager = m_registry.RequestModuleInterface<ISceneManager> ();
+				if (manager != null) {
+					foreach (IScene scene in manager.Scenes) {
+						IScenePresence sp = scene.GetScenePresence (appearance.Owner);
+						if (sp != null && !sp.IsChildAgent) {
+							var avappmodule = sp.RequestModuleInterface<IAvatarAppearanceModule> ();
+							if (avappmodule != null) {
+								avappmodule.Appearance = appearance;
+								avappmodule.SendAppearanceToAgent (sp);
+								avappmodule.SendAppearanceToAllOtherAgents ();
+							}
+						}
+					}
+				}
+			}
+			return null;
+		}
+	}
 }

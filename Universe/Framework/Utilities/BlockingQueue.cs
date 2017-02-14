@@ -32,99 +32,89 @@ using System.Threading;
 
 namespace Universe.Framework.Utilities
 {
-    public class BlockingQueue<T>
-    {
-        private readonly Queue<T> m_pqueue = new Queue<T>();
-        private readonly Queue<T> m_queue = new Queue<T>();
-        private readonly object m_queueSync = new object();
+	public class BlockingQueue<T>
+	{
+		private readonly Queue<T> m_pqueue = new Queue<T> ();
+		private readonly Queue<T> m_queue = new Queue<T> ();
+		private readonly object m_queueSync = new object ();
 
-        public void PriorityEnqueue(T value)
-        {
-            lock (m_queueSync)
-            {
-                m_pqueue.Enqueue(value);
-                Monitor.Pulse(m_queueSync);
-            }
-        }
+		public void PriorityEnqueue (T value)
+		{
+			lock (m_queueSync) {
+				m_pqueue.Enqueue (value);
+				Monitor.Pulse (m_queueSync);
+			}
+		}
 
-        public void Enqueue(T value)
-        {
-            lock (m_queueSync)
-            {
-                m_queue.Enqueue(value);
-                Monitor.Pulse(m_queueSync);
-            }
-        }
+		public void Enqueue (T value)
+		{
+			lock (m_queueSync) {
+				m_queue.Enqueue (value);
+				Monitor.Pulse (m_queueSync);
+			}
+		}
 
-        public T Dequeue()
-        {
-            lock (m_queueSync)
-            {
-                if (m_queue.Count < 1 && m_pqueue.Count < 1)
-                {
-                    Monitor.Wait(m_queueSync);
-                }
+		public T Dequeue ()
+		{
+			lock (m_queueSync) {
+				if (m_queue.Count < 1 && m_pqueue.Count < 1) {
+					Monitor.Wait (m_queueSync);
+				}
 
-                if (m_pqueue.Count > 0)
-                    return m_pqueue.Dequeue();
+				if (m_pqueue.Count > 0)
+					return m_pqueue.Dequeue ();
 
-                if (m_queue.Count > 0)
-                    return m_queue.Dequeue();
-                return default(T);
-            }
-        }
+				if (m_queue.Count > 0)
+					return m_queue.Dequeue ();
+				return default(T);
+			}
+		}
 
-        public T Dequeue(int msTimeout)
-        {
-            lock (m_queueSync)
-            {
-                if (m_queue.Count < 1 && m_pqueue.Count < 1)
-                {
-                    Monitor.Wait(m_queueSync, msTimeout);
-                }
+		public T Dequeue (int msTimeout)
+		{
+			lock (m_queueSync) {
+				if (m_queue.Count < 1 && m_pqueue.Count < 1) {
+					Monitor.Wait (m_queueSync, msTimeout);
+				}
 
-                if (m_pqueue.Count > 0)
-                    return m_pqueue.Dequeue();
-                if (m_queue.Count > 0)
-                    return m_queue.Dequeue();
-                return default(T);
-            }
-        }
+				if (m_pqueue.Count > 0)
+					return m_pqueue.Dequeue ();
+				if (m_queue.Count > 0)
+					return m_queue.Dequeue ();
+				return default(T);
+			}
+		}
 
-        public bool Contains(T item)
-        {
-            lock (m_queueSync)
-            {
-                if (m_pqueue.Contains(item))
-                    return true;
-                return m_queue.Contains(item);
-            }
-        }
+		public bool Contains (T item)
+		{
+			lock (m_queueSync) {
+				if (m_pqueue.Contains (item))
+					return true;
+				return m_queue.Contains (item);
+			}
+		}
 
-        public int Count()
-        {
-            lock (m_queueSync)
-            {
-                return m_queue.Count + m_pqueue.Count;
-            }
-        }
+		public int Count ()
+		{
+			lock (m_queueSync) {
+				return m_queue.Count + m_pqueue.Count;
+			}
+		}
 
-        public T[] GetQueueArray()
-        {
-            lock (m_queueSync)
-            {
-                return m_queue.ToArray();
-            }
-        }
+		public T[] GetQueueArray ()
+		{
+			lock (m_queueSync) {
+				return m_queue.ToArray ();
+			}
+		}
 
-        public void Clear()
-        {
-            lock (m_queueSync)
-            {
-                m_pqueue.Clear();
-                m_queue.Clear();
-                Monitor.Pulse(m_queueSync);
-            }
-        }
-    }
+		public void Clear ()
+		{
+			lock (m_queueSync) {
+				m_pqueue.Clear ();
+				m_queue.Clear ();
+				Monitor.Pulse (m_queueSync);
+			}
+		}
+	}
 }

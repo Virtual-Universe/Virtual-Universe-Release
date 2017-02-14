@@ -32,14 +32,14 @@ using OpenMetaverse;
 
 namespace Universe.Framework.ClientInterfaces
 {
-    public class LandStatReportItem
-    {
-        public Vector3 Location;
-        public string OwnerName;
-        public float Score;
-        public UUID TaskID;
-        public uint TaskLocalID;
-        public string TaskName;
-        public DateTime TimeModified;
-    }
+	public class LandStatReportItem
+	{
+		public Vector3 Location;
+		public string OwnerName;
+		public float Score;
+		public UUID TaskID;
+		public uint TaskLocalID;
+		public string TaskName;
+		public DateTime TimeModified;
+	}
 }

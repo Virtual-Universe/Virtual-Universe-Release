@@ -27,92 +27,90 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-//Downloaded from
-//Visual C# Kicks - http://www.vcskicks.com/
-
 using System.Drawing;
 using System.Drawing.Imaging;
 
 namespace Universe.Framework.Utilities
 {
-    //From http://www.vcskicks.com/fast-image-processing2.php
-    public unsafe class FastBitmap
-    {
-        readonly Bitmap workingBitmap;
-        BitmapData bitmapData;
-        byte* pBase = null;
-        PixelData* pixelData = null;
-        int width;
+	//From http://www.vcskicks.com/fast-image-processing2.php
+	public unsafe class FastBitmap
+	{
+		readonly Bitmap workingBitmap;
+		BitmapData bitmapData;
+		byte* pBase = null;
+		PixelData* pixelData = null;
+		int width;
 
-        public FastBitmap(Bitmap inputBitmap)
-        {
-            workingBitmap = inputBitmap;
-        }
+		public FastBitmap (Bitmap inputBitmap)
+		{
+			workingBitmap = inputBitmap;
+		}
 
-        public void LockBitmap()
-        {
-            Rectangle bounds = new Rectangle(Point.Empty, workingBitmap.Size);
+		public void LockBitmap ()
+		{
+			Rectangle bounds = new Rectangle (Point.Empty, workingBitmap.Size);
 
-            width = (bounds.Width * sizeof(PixelData));
-            if (width % 4 != 0)
-                width = 4 * (width / 4 + 1);
+			width = (bounds.Width * sizeof(PixelData));
+			if (width % 4 != 0)
+				width = 4 * (width / 4 + 1);
 
-            //Lock Image
-            bitmapData = workingBitmap.LockBits(bounds, ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
-            pBase = (byte*) bitmapData.Scan0.ToPointer();
-        }
+			//Lock Image
+			bitmapData = workingBitmap.LockBits (bounds, ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
+			pBase = (byte*)bitmapData.Scan0.ToPointer ();
+		}
 
-        public Color GetPixel(int x, int y)
-        {
-            pixelData = (PixelData*)(pBase + y * width + x * sizeof(PixelData));
-            return Color.FromArgb (pixelData->alpha, pixelData->red, pixelData->green, pixelData->blue);
-        }
+		public Color GetPixel (int x, int y)
+		{
+			pixelData = (PixelData*)(pBase + y * width + x * sizeof(PixelData));
+			return Color.FromArgb (pixelData->alpha, pixelData->red, pixelData->green, pixelData->blue);
+		}
 
-        public Color GetPixelNext()
-        {
-            pixelData++;
-            return Color.FromArgb(pixelData->alpha, pixelData->red, pixelData->green, pixelData->blue);
-        }
+		public Color GetPixelNext ()
+		{
+			pixelData++;
+			return Color.FromArgb (pixelData->alpha, pixelData->red, pixelData->green, pixelData->blue);
+		}
 
-        public void SetPixel(int x, int y, Color color)
-        {
-            PixelData* data = (PixelData*)(pBase + y * width + x * sizeof(PixelData));
-            try {
-                data->alpha = color.A;
-                data->red = color.R;
-                data->green = color.G;
-                data->blue = color.B;
-            } catch {
-            }
-        }
+		public void SetPixel (int x, int y, Color color)
+		{
+			PixelData* data = (PixelData*)(pBase + y * width + x * sizeof(PixelData));
+			try {
+				data->alpha = color.A;
+				data->red = color.R;
+				data->green = color.G;
+				data->blue = color.B;
+			} catch {
+			}
+		}
 
-        public void UnlockBitmap()
-        {
-            workingBitmap.UnlockBits(bitmapData);
-            bitmapData = null;
-            pBase = null;
-        }
+		public void UnlockBitmap ()
+		{
+			workingBitmap.UnlockBits (bitmapData);
+			bitmapData = null;
+			pBase = null;
+		}
 
-        public Bitmap Bitmap()
-        {
-            return workingBitmap;
-        }
+		public Bitmap Bitmap ()
+		{
+			return workingBitmap;
+		}
 
-        #region Nested type: PixelData
+		#region Nested type: PixelData
 
-        struct PixelData
-        {
-            public byte alpha;
-            public byte blue;
-            public byte green;
-            public byte red;
+		struct PixelData
+		{
+			public byte alpha;
+			public byte blue;
+			public byte green;
+			public byte red;
 
-            public override string ToString()
-            {
-                return "(" + alpha + ", " + red + ", " + green + ", " + blue + ")";
-            }
-        }
+			public override string ToString ()
+			{
+				return "(" + alpha + ", " + red + ", " + green + ", " + blue +
+				")";
+			}
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

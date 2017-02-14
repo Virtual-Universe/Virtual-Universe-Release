@@ -34,43 +34,55 @@ using Universe.Framework.SceneInfo.Entities;
 
 namespace Universe.Framework.Modules
 {
-    public interface IPrimCountModule
-    {
-        void TaintPrimCount(ILandObject land);
-        void TaintPrimCount(int x, int y);
-        void TaintPrimCount();
+	public interface IPrimCountModule
+	{
+		void TaintPrimCount (ILandObject land);
 
-        IPrimCounts GetPrimCounts(UUID parcelID);
+		void TaintPrimCount (int x, int y);
 
-        int GetParcelMaxPrimCount(ILandObject thisObject);
-    }
+		void TaintPrimCount ();
 
-    public interface IPrimCounts
-    {
-        int Owner { get; }
-        int Group { get; }
-        int Others { get; }
-        int Simulator { get; }
-        int Selected { get; }
-        int Temporary { get; }
-        int Total { get; }
-        List<ISceneEntity> Objects { get; }
-        IUserPrimCounts Users { get; }
+		IPrimCounts GetPrimCounts (UUID parcelID);
 
-        Dictionary<UUID, int> GetAllUserCounts();
-    }
+		int GetParcelMaxPrimCount (ILandObject thisObject);
+	}
 
-    public interface IUserPrimCounts
-    {
-        int this[UUID agentID] { get; }
-    }
+	public interface IPrimCounts
+	{
+		int Owner { get; }
 
-    public interface IEntityCountModule
-    {
-        int RootAgents { get; }
-        int ChildAgents { get; }
+		int Group { get; }
 
-        int Objects { get; }
-        int ActiveObjects { get; }
-    }
+		int Others { get; }
+
+		int Simulator { get; }
+
+		int Selected { get; }
+
+		int Temporary { get; }
+
+		int Total { get; }
+
+		List<ISceneEntity> Objects { get; }
+
+		IUserPrimCounts Users { get; }
+
+		Dictionary<UUID, int> GetAllUserCounts ();
+	}
+
+	public interface IUserPrimCounts
+	{
+		int this [UUID agentID] { get; }
+	}
+
+	public interface IEntityCountModule
+	{
+		int RootAgents { get; }
+
+		int ChildAgents { get; }
+
+		int Objects { get; }
+
+		int ActiveObjects { get; }
+	}
 }

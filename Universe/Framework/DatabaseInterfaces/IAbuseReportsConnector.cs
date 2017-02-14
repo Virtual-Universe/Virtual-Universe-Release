@@ -32,60 +32,60 @@ using Universe.Framework.Services;
 
 namespace Universe.Framework.DatabaseInterfaces
 {
-    public interface IAbuseReportsConnector : IUniverseDataPlugin
-    {
-        /// <summary>
-        /// Abuse reports connector is enabled.
-        /// </summary>
-        bool Enabled();
+	public interface IAbuseReportsConnector : IUniverseDataPlugin
+	{
+		/// <summary>
+		/// Abuse reports connector is enabled.
+		/// </summary>
+		bool Enabled ();
 
-        /// <summary>
-        /// Gets the number of Abuse reports.
-        /// </summary>
-        /// <returns>The report count.</returns>
-        int AbuseReportCount();
+		/// <summary>
+		/// Gets the number of Abuse reports.
+		/// </summary>
+		/// <returns>The report count.</returns>
+		int AbuseReportCount ();
 
-        /// <summary>
-        ///     Gets the abuse report associated with the number and uses the pass to authenticate.
-        /// </summary>
-        /// <param name="Number"></param>
-        /// <param name="Password"></param>
-        /// <returns></returns>
-        AbuseReport GetAbuseReport(int Number, string Password);
+		/// <summary>
+		///     Gets the abuse report associated with the number and uses the pass to authenticate.
+		/// </summary>
+		/// <param name="Number"></param>
+		/// <param name="Password"></param>
+		/// <returns></returns>
+		AbuseReport GetAbuseReport (int Number, string Password);
 
-        /// <summary>
-        ///     Gets the abuse report associated with the number without authentication
-        /// </summary>
-        /// <param name="Number"></param>
-        /// <returns></returns>
-        AbuseReport GetAbuseReport(int Number);
+		/// <summary>
+		///     Gets the abuse report associated with the number without authentication
+		/// </summary>
+		/// <param name="Number"></param>
+		/// <returns></returns>
+		AbuseReport GetAbuseReport (int Number);
 
-        /// <summary>
-        ///     Adds a new abuse report to the database
-        /// </summary>
-        /// <param name="report"></param>
-        void AddAbuseReport(AbuseReport report);
+		/// <summary>
+		///     Adds a new abuse report to the database
+		/// </summary>
+		/// <param name="report"></param>
+		void AddAbuseReport (AbuseReport report);
 
-        /// <summary>
-        ///     Updates an abuse report and authenticates with the password.
-        /// </summary>
-        /// <param name="report"></param>
-        /// <param name="Password"></param>
-        void UpdateAbuseReport(AbuseReport report, string Password);
+		/// <summary>
+		///     Updates an abuse report and authenticates with the password.
+		/// </summary>
+		/// <param name="report"></param>
+		/// <param name="Password"></param>
+		void UpdateAbuseReport (AbuseReport report, string Password);
 
-        /// <summary>
-        ///     Updates an abuse report without authentication
-        /// </summary>
-        /// <param name="report"></param>
-        void UpdateAbuseReport(AbuseReport report);
+		/// <summary>
+		///     Updates an abuse report without authentication
+		/// </summary>
+		/// <param name="report"></param>
+		void UpdateAbuseReport (AbuseReport report);
 
-        /// <summary>
-        ///     returns a collection of abuse reports
-        /// </summary>
-        /// <param name="start"></param>
-        /// <param name="count"></param>
-        /// <param name="active"></param>
-        /// <returns></returns>
-        List<AbuseReport> GetAbuseReports(int start, int count, bool active);
-    }
+		/// <summary>
+		///     returns a collection of abuse reports
+		/// </summary>
+		/// <param name="start"></param>
+		/// <param name="count"></param>
+		/// <param name="active"></param>
+		/// <returns></returns>
+		List<AbuseReport> GetAbuseReports (int start, int count, bool active);
+	}
 }

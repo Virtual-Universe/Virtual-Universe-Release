@@ -33,151 +33,151 @@ using Universe.Framework.SceneInfo;
 
 namespace Universe.Modules.Monitoring.Monitors
 {
-    public class NetworkMonitor : INetworkMonitor
-    {
-        readonly object _packetLock = new object ();
+	public class NetworkMonitor : INetworkMonitor
+	{
+		readonly object _packetLock = new object ();
 
-        volatile float inPacketsPerSecond;
-        volatile float outPacketsPerSecond;
-        volatile float pendingDownloads;
-        volatile float pendingUploads;
-        volatile float unackedBytes;
+		volatile float inPacketsPerSecond;
+		volatile float outPacketsPerSecond;
+		volatile float pendingDownloads;
+		volatile float pendingUploads;
+		volatile float unackedBytes;
 
-        public NetworkMonitor (IScene scene)
-        {
-            scene.EventManager.OnNewClient += OnNewClient;
-            scene.EventManager.OnClosingClient += OnClosingClient;
-        }
+		public NetworkMonitor (IScene scene)
+		{
+			scene.EventManager.OnNewClient += OnNewClient;
+			scene.EventManager.OnClosingClient += OnClosingClient;
+		}
 
-        #region IMonitor Members
+		#region IMonitor Members
 
-        public void ResetStats ()
-        {
-            inPacketsPerSecond = 0;
-            outPacketsPerSecond = 0;
-            unackedBytes = 0;
-            pendingDownloads = 0;
-            pendingUploads = 0;
-        }
+		public void ResetStats ()
+		{
+			inPacketsPerSecond = 0;
+			outPacketsPerSecond = 0;
+			unackedBytes = 0;
+			pendingDownloads = 0;
+			pendingUploads = 0;
+		}
 
-        #endregion
+		#endregion
 
-        #region Implementation of IMonitor
+		#region Implementation of IMonitor
 
-        public double GetValue ()
-        {
-            return 0;
-        }
+		public double GetValue ()
+		{
+			return 0;
+		}
 
-        public string GetName ()
-        {
-            return "Network Monitor";
-        }
+		public string GetName ()
+		{
+			return "Network Monitor";
+		}
 
-        public string GetInterfaceName ()
-        {
-            return "INetworkMonitor";
-        }
+		public string GetInterfaceName ()
+		{
+			return "INetworkMonitor";
+		}
 
-        public string GetFriendlyValue ()
-        {
-            return "InPackets: " + inPacketsPerSecond + " p/sec \n"
-                   + "OutPackets: " + outPacketsPerSecond + " p/sec \n"
-                   + "UnackedBytes: " + unackedBytes + " bytes \n"
-                   + "PendingDownloads: " + pendingDownloads + " \n"
-                   + "PendingUploads: " + pendingUploads + " \n";
-        }
+		public string GetFriendlyValue ()
+		{
+			return "InPackets: " + inPacketsPerSecond + " p/sec \n"
+			+ "OutPackets: " + outPacketsPerSecond + " p/sec \n"
+			+ "UnackedBytes: " + unackedBytes + " bytes \n"
+			+ "PendingDownloads: " + pendingDownloads + " \n"
+			+ "PendingUploads: " + pendingUploads + " \n";
+		}
 
-        #endregion
+		#endregion
 
-        #region Client Handling
+		#region Client Handling
 
-        protected void OnNewClient (IClientAPI client)
-        {
-            client.OnNetworkStatsUpdate += AddPacketsStats;
-        }
+		protected void OnNewClient (IClientAPI client)
+		{
+			client.OnNetworkStatsUpdate += AddPacketsStats;
+		}
 
-        protected void OnClosingClient (IClientAPI client)
-        {
-            client.OnNetworkStatsUpdate -= AddPacketsStats;
-        }
+		protected void OnClosingClient (IClientAPI client)
+		{
+			client.OnNetworkStatsUpdate -= AddPacketsStats;
+		}
 
-        #endregion
+		#endregion
 
-        #region INetworkMonitor Members
+		#region INetworkMonitor Members
 
-        public float InPacketsPerSecond {
-            get {
-                lock (_packetLock)
-                    return inPacketsPerSecond;
-            }
-        }
+		public float InPacketsPerSecond {
+			get {
+				lock (_packetLock)
+					return inPacketsPerSecond;
+			}
+		}
 
-        public float OutPacketsPerSecond {
-            get {
-                lock (_packetLock)
-                    return outPacketsPerSecond;
-            }
-        }
+		public float OutPacketsPerSecond {
+			get {
+				lock (_packetLock)
+					return outPacketsPerSecond;
+			}
+		}
 
-        public float UnackedBytes {
-            get {
-                lock (_packetLock)
-                    return unackedBytes;
-            }
-        }
+		public float UnackedBytes {
+			get {
+				lock (_packetLock)
+					return unackedBytes;
+			}
+		}
 
-        public float PendingDownloads {
-            get {
-                lock (_packetLock)
-                    return pendingDownloads;
-            }
-        }
+		public float PendingDownloads {
+			get {
+				lock (_packetLock)
+					return pendingDownloads;
+			}
+		}
 
-        public float PendingUploads {
-            get {
-                lock (_packetLock)
-                    return pendingUploads;
-            }
-        }
+		public float PendingUploads {
+			get {
+				lock (_packetLock)
+					return pendingUploads;
+			}
+		}
 
-        public void AddInPackets (int numPackets)
-        {
-            lock (_packetLock)
-                inPacketsPerSecond += numPackets;
-        }
+		public void AddInPackets (int numPackets)
+		{
+			lock (_packetLock)
+				inPacketsPerSecond += numPackets;
+		}
 
-        public void AddOutPackets (int numPackets)
-        {
-            lock (_packetLock)
-                outPacketsPerSecond += numPackets;
-        }
+		public void AddOutPackets (int numPackets)
+		{
+			lock (_packetLock)
+				outPacketsPerSecond += numPackets;
+		}
 
-        public void AddUnackedBytes (int numBytes)
-        {
-            lock (_packetLock)
-                unackedBytes += numBytes;
-        }
+		public void AddUnackedBytes (int numBytes)
+		{
+			lock (_packetLock)
+				unackedBytes += numBytes;
+		}
 
-        public void AddPendingDownloads (int count)
-        {
-            lock (_packetLock)
-                pendingDownloads += count;
-        }
+		public void AddPendingDownloads (int count)
+		{
+			lock (_packetLock)
+				pendingDownloads += count;
+		}
 
-        public void AddPendingUploads (int count)
-        {
-            lock (_packetLock)
-                pendingUploads += count;
-        }
+		public void AddPendingUploads (int count)
+		{
+			lock (_packetLock)
+				pendingUploads += count;
+		}
 
-        #endregion
+		#endregion
 
-        public void AddPacketsStats (int inPackets, int outPackets, int unAckedBytes)
-        {
-            AddInPackets (inPackets);
-            AddOutPackets (outPackets);
-            AddUnackedBytes (unAckedBytes);
-        }
-    }
+		public void AddPacketsStats (int inPackets, int outPackets, int unAckedBytes)
+		{
+			AddInPackets (inPackets);
+			AddOutPackets (outPackets);
+			AddUnackedBytes (unAckedBytes);
+		}
+	}
 }

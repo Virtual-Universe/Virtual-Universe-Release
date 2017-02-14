@@ -32,41 +32,42 @@ using Universe.Framework.Modules;
 
 namespace Universe.Framework.ConsoleFramework
 {
-    /// <summary>
-    ///     This is a Fake console that's used when setting up the Scene in Unit Tests
-    ///     Don't use this except for Unit Testing or you're in for a world of hurt when the
-    ///     sim gets to ReadLine
-    /// </summary>
-    public class MockConsole : CommandConsole
-    {
-        public override void Initialize (IConfigSource source, ISimulationBase simBase)
-        {
-            if (source.Configs ["Console"] == null ||
-                source.Configs ["Console"].GetString ("Console", string.Empty) != "MockConsole") {
-                return;
-            }
+	/// <summary>
+	///     This is a Fake console that's used when setting up the Scene in Unit Tests
+	///     Don't use this except for Unit Testing or you're in for a world of hurt when the
+	///     sim gets to ReadLine
+	/// </summary>
+	public class MockConsole : CommandConsole
+	{
+		public override void Initialize (IConfigSource source, ISimulationBase simBase)
+		{
+			if (source.Configs ["Console"] == null ||
+			             source.Configs ["Console"].GetString ("Console", string.Empty) != "MockConsole") {
+				return;
+			}
 
-            simBase.ApplicationRegistry.RegisterModuleInterface<ICommandConsole> (this);
-            MainConsole.Instance = this;
+			simBase.ApplicationRegistry.RegisterModuleInterface<ICommandConsole> (this);
+			MainConsole.Instance = this;
 
-            m_Commands.AddCommand ("help", "help", "Get a general command list", Help, false, true);
-        }
+			m_Commands.AddCommand ("help", "help", "Get a general command list", Help, false, true);
+		}
 
-        public override void Output (string text, Level level)
-        {
-        }
+		public override void Output (string text, Level level)
+		{
+		}
 
-        public override string ReadLine (string p, bool isCommand, bool e)
-        {
-            return string.Empty;
-        }
+		public override string ReadLine (string p, bool isCommand, bool e)
+		{
+			//Thread.CurrentThread.Join(1000);
+			return string.Empty;
+		}
 
-        public override void UnlockOutput ()
-        {
-        }
+		public override void UnlockOutput ()
+		{
+		}
 
-        public override void LockOutput ()
-        {
-        }
-    }
+		public override void LockOutput ()
+		{
+		}
+	}
 }

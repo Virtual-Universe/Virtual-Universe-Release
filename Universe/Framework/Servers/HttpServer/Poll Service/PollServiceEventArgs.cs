@@ -33,27 +33,30 @@ using Universe.Framework.Servers.HttpServer.Implementation;
 
 namespace Universe.Framework.Servers.HttpServer
 {
-    public delegate void RequestMethod (UUID requestID, OSHttpRequest request);
-    public delegate bool HasEventsMethod (UUID requestID, UUID pId);
-    public delegate byte [] GetEventsMethod (UUID requestID, UUID pId, string request, OSHttpResponse response);
-    public delegate byte [] NoEventsMethod (UUID requestID, UUID pId, OSHttpResponse response);
+	public delegate void RequestMethod (UUID requestID, OSHttpRequest request);
 
-    public class PollServiceEventArgs : EventArgs
-    {
-        public GetEventsMethod GetEvents;
-        public HasEventsMethod HasEvents;
-        public UUID Id;
-        public NoEventsMethod NoEvents;
-        public RequestMethod Request;
+	public delegate bool HasEventsMethod (UUID requestID, UUID pId);
 
-        public PollServiceEventArgs (RequestMethod pRequest, HasEventsMethod pHasEvents, GetEventsMethod pGetEvents,
-                                    NoEventsMethod pNoEvents, UUID pId)
-        {
-            Request = pRequest;
-            HasEvents = pHasEvents;
-            GetEvents = pGetEvents;
-            NoEvents = pNoEvents;
-            Id = pId;
-        }
-    }
+	public delegate byte[] GetEventsMethod (UUID requestID, UUID pId, string request, OSHttpResponse response);
+
+	public delegate byte[] NoEventsMethod (UUID requestID, UUID pId, OSHttpResponse response);
+
+	public class PollServiceEventArgs : EventArgs
+	{
+		public GetEventsMethod GetEvents;
+		public HasEventsMethod HasEvents;
+		public UUID Id;
+		public NoEventsMethod NoEvents;
+		public RequestMethod Request;
+
+		public PollServiceEventArgs (RequestMethod pRequest, HasEventsMethod pHasEvents, GetEventsMethod pGetEvents,
+		                                   NoEventsMethod pNoEvents, UUID pId)
+		{
+			Request = pRequest;
+			HasEvents = pHasEvents;
+			GetEvents = pGetEvents;
+			NoEvents = pNoEvents;
+			Id = pId;
+		}
+	}
 }

@@ -28,140 +28,139 @@
  */
 
 using System;
-
 using Universe.Framework.Modules;
 
 namespace Universe.Modules.Monitoring.Monitors
 {
-    public class LoginMonitor : ILoginMonitor
-    {
-        #region Declares
+	public class LoginMonitor : ILoginMonitor
+	{
+		#region Declares
 
-        DateTime StartTime = DateTime.Now;
-        long abnormalClientThreadTerminations;
-        int logoutsToday;
-        int logoutsTotal;
-        int logoutsYesterday;
-        int successfulLoginsToday;
-        int successfulLoginsTotal;
-        int successfulLoginsYesterday;
+		DateTime StartTime = DateTime.Now;
+		long abnormalClientThreadTerminations;
+		int logoutsToday;
+		int logoutsTotal;
+		int logoutsYesterday;
+		int successfulLoginsToday;
+		int successfulLoginsTotal;
+		int successfulLoginsYesterday;
 
-        /// <summary>
-        ///     Number of times that a client thread terminated because of an exception
-        /// </summary>
-        public long AbnormalClientThreadTerminations {
-            get { return abnormalClientThreadTerminations; }
-        }
+		/// <summary>
+		///     Number of times that a client thread terminated because of an exception
+		/// </summary>
+		public long AbnormalClientThreadTerminations {
+			get { return abnormalClientThreadTerminations; }
+		}
 
-        public int SuccessfulLoginsTotal {
-            get { return successfulLoginsTotal; }
-        }
+		public int SuccessfulLoginsTotal {
+			get { return successfulLoginsTotal; }
+		}
 
-        public int SuccessfulLoginsToday {
-            get {
-                if (DateTime.Now.AddDays (1) < StartTime) {
-                    StartTime = DateTime.Now;
-                    successfulLoginsYesterday = successfulLoginsToday;
-                    successfulLoginsToday = 0;
-                }
-                return successfulLoginsToday;
-            }
-        }
+		public int SuccessfulLoginsToday {
+			get {
+				if (DateTime.Now.AddDays (1) < StartTime) {
+					StartTime = DateTime.Now;
+					successfulLoginsYesterday = successfulLoginsToday;
+					successfulLoginsToday = 0;
+				}
+				return successfulLoginsToday;
+			}
+		}
 
-        public int SuccessfulLoginsYesterday {
-            get { return successfulLoginsYesterday; }
-        }
+		public int SuccessfulLoginsYesterday {
+			get { return successfulLoginsYesterday; }
+		}
 
-        public int LogoutsTotal {
-            get { return logoutsTotal; }
-        }
+		public int LogoutsTotal {
+			get { return logoutsTotal; }
+		}
 
-        public int LogoutsToday {
-            get {
-                if (DateTime.Now.AddDays (1) < StartTime) {
-                    StartTime = DateTime.Now;
-                    logoutsYesterday = logoutsToday;
-                    logoutsToday = 0;
-                }
-                return logoutsToday;
-            }
-        }
+		public int LogoutsToday {
+			get {
+				if (DateTime.Now.AddDays (1) < StartTime) {
+					StartTime = DateTime.Now;
+					logoutsYesterday = logoutsToday;
+					logoutsToday = 0;
+				}
+				return logoutsToday;
+			}
+		}
 
-        public int LogoutsYesterday {
-            get { return logoutsYesterday; }
-        }
+		public int LogoutsYesterday {
+			get { return logoutsYesterday; }
+		}
 
-        #endregion
+		#endregion
 
-        #region Implementation of IMonitor
+		#region Implementation of IMonitor
 
-        #region ILoginMonitor Members
+		#region ILoginMonitor Members
 
-        public void AddAbnormalClientThreadTermination ()
-        {
-            abnormalClientThreadTerminations++;
-        }
+		public void AddAbnormalClientThreadTermination ()
+		{
+			abnormalClientThreadTerminations++;
+		}
 
-        public void AddSuccessfulLogin ()
-        {
-            successfulLoginsTotal++;
-            successfulLoginsToday++;
-        }
+		public void AddSuccessfulLogin ()
+		{
+			successfulLoginsTotal++;
+			successfulLoginsToday++;
+		}
 
-        public void AddLogout ()
-        {
-            logoutsTotal++;
-            logoutsToday++;
-        }
+		public void AddLogout ()
+		{
+			logoutsTotal++;
+			logoutsToday++;
+		}
 
-        #endregion
+		#endregion
 
-        #region IMonitor Members
+		#region IMonitor Members
 
-        public double GetValue ()
-        {
-            return 0;
-        }
+		public double GetValue ()
+		{
+			return 0;
+		}
 
-        public string GetName ()
-        {
-            return "LoginMonitor";
-        }
+		public string GetName ()
+		{
+			return "LoginMonitor";
+		}
 
-        public string GetInterfaceName ()
-        {
-            return "ILoginMonitor";
-        }
+		public string GetInterfaceName ()
+		{
+			return "ILoginMonitor";
+		}
 
-        public string GetFriendlyValue ()
-        {
-            string Value = "";
-            Value += "CONNECTION STATISTICS" + "\n";
-            Value +=
+		public string GetFriendlyValue ()
+		{
+			string Value = "";
+			Value += "CONNECTION STATISTICS" + "\n";
+			Value +=
                 string.Format (
-                    @"Successful logins Total: {0}
+				@"Successful logins Total: {0}
 Successful logins Today: {1}
 Successful logins Yesterday: {2}
 Logouts Total: {3}
 Logouts Today: {4}
 Logouts Yesterday: {5} 
 Abnormal client thread terminations: {6}",
-                    SuccessfulLoginsTotal,
-                    SuccessfulLoginsToday,
-                    SuccessfulLoginsYesterday,
-                    LogoutsTotal,
-                    LogoutsToday,
-                    LogoutsYesterday,
-                    abnormalClientThreadTerminations);
-            return Value;
-        }
+				SuccessfulLoginsTotal,
+				SuccessfulLoginsToday,
+				SuccessfulLoginsYesterday,
+				LogoutsTotal,
+				LogoutsToday,
+				LogoutsYesterday,
+				abnormalClientThreadTerminations);
+			return Value;
+		}
 
-        public void ResetStats ()
-        {
-        }
+		public void ResetStats ()
+		{
+		}
 
-        #endregion
+		#endregion
 
-        #endregion
-    }
+		#endregion
+	}
 }

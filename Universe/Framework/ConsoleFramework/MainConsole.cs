@@ -31,21 +31,22 @@ using Universe.Framework.Modules;
 
 namespace Universe.Framework.ConsoleFramework
 {
-    public class MainConsole
-    {
-        #region Delegates
+	public class MainConsole
+	{
+		#region Delegates
 
-        public delegate void IncomingLogWrite (string level, string text);
+		public delegate void IncomingLogWrite (string level, string text);
 
-        #endregion
+		#endregion
 
-        public static ICommandConsole Instance { get; set; }
-        public static event IncomingLogWrite OnIncomingLogWrite;
+		public static ICommandConsole Instance { get; set; }
 
-        public static void TriggerLog (string level, string text)
-        {
-            if (OnIncomingLogWrite != null)
-                OnIncomingLogWrite (level, text);
-        }
-    }
+		public static event IncomingLogWrite OnIncomingLogWrite;
+
+		public static void TriggerLog (string level, string text)
+		{
+			if (OnIncomingLogWrite != null)
+				OnIncomingLogWrite (level, text);
+		}
+	}
 }

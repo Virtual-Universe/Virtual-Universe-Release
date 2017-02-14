@@ -43,22 +43,22 @@ namespace Universe.Framework.SceneInfo
     /// </summary>
     /// This class is not thread safe.  Callers must synchronize on Dictionary methods or Clone() this object before
     /// iterating over it.
-    [Serializable, ProtoContract()]
+    [Serializable, ProtoContract]
     public class TaskInventoryDictionary : Dictionary<UUID, TaskInventoryItem>, ICloneable, IXmlSerializable
     {
-        private static readonly XmlSerializer tiiSerializer = new XmlSerializer(typeof (TaskInventoryItem));
+        static readonly XmlSerializer tiiSerializer = new XmlSerializer(typeof(TaskInventoryItem));
 
         #region ICloneable Members
 
-        public Object Clone()
+        public object Clone()
         {
-            TaskInventoryDictionary clone = new TaskInventoryDictionary();
+            var clone = new TaskInventoryDictionary();
 
             lock (this)
             {
                 foreach (UUID uuid in Keys)
                 {
-                    clone.Add(uuid, (TaskInventoryItem) this[uuid].Clone());
+                    clone.Add(uuid, (TaskInventoryItem)this[uuid].Clone());
                 }
             }
 
@@ -84,7 +84,7 @@ namespace Universe.Framework.SceneInfo
                 reader.Read();
                 while (tiiSerializer.CanDeserialize(reader))
                 {
-                    TaskInventoryItem item = (TaskInventoryItem) tiiSerializer.Deserialize(reader);
+                    var item = (TaskInventoryItem)tiiSerializer.Deserialize(reader);
                     Add(item.ItemID, item);
 
                     //MainConsole.Instance.DebugFormat("[Task Inventory]: Instantiated prim item {0}, {1} from xml", item.Name, item.ItemID);
@@ -120,11 +120,11 @@ namespace Universe.Framework.SceneInfo
 
         public List<TaskInventoryItem> Clone2List()
         {
-            List<TaskInventoryItem> clone = new List<TaskInventoryItem>();
+            var clone = new List<TaskInventoryItem>();
 
             lock (this)
             {
-                clone.AddRange(Keys.Select(uuid => (TaskInventoryItem) this[uuid].Clone()));
+                clone.AddRange(Keys.Select(uuid => (TaskInventoryItem)this[uuid].Clone()));
             }
 
             return clone;
@@ -134,7 +134,11 @@ namespace Universe.Framework.SceneInfo
         public List<TaskInventoryItem> Items
         {
             get { return Clone2List(); }
-            set { foreach (TaskInventoryItem itm in value) this.Add(itm.ItemID, itm); }
+            set
+            {
+                foreach (TaskInventoryItem itm in value)
+                    Add(itm.ItemID, itm);
+            }
         }
 
         // see ICloneable

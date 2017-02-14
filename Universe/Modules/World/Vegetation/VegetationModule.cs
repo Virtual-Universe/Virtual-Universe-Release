@@ -38,125 +38,119 @@ using Universe.Framework.SceneInfo.Entities;
 
 namespace Universe.Modules.Vegetation
 {
-    public class VegetationModule : INonSharedRegionModule, IVegetationModule
-    {
-        protected static readonly PCode[] creationCapabilities = new[] {PCode.Grass, PCode.NewTree, PCode.Tree};
-        protected IScene m_scene;
+	public class VegetationModule : INonSharedRegionModule, IVegetationModule
+	{
+		protected static readonly PCode[] creationCapabilities = new[] { PCode.Grass, PCode.NewTree, PCode.Tree };
+		protected IScene m_scene;
 
-        #region INonSharedRegionModule Members
+		#region INonSharedRegionModule Members
 
-        public void Initialize(IConfigSource source)
-        {
-        }
+		public void Initialize (IConfigSource source)
+		{
+		}
 
-        public void AddRegion(IScene scene)
-        {
-            m_scene = scene;
-            m_scene.RegisterModuleInterface<IVegetationModule>(this);
-            m_scene.SceneGraph.RegisterEntityCreatorModule(this);
-        }
+		public void AddRegion (IScene scene)
+		{
+			m_scene = scene;
+			m_scene.RegisterModuleInterface<IVegetationModule> (this);
+			m_scene.SceneGraph.RegisterEntityCreatorModule (this);
+		}
 
-        public void RemoveRegion(IScene scene)
-        {
-        }
+		public void RemoveRegion (IScene scene)
+		{
+		}
 
-        public void RegionLoaded(IScene scene)
-        {
-        }
+		public void RegionLoaded (IScene scene)
+		{
+		}
 
-        public Type ReplaceableInterface
-        {
-            get { return null; }
-        }
+		public Type ReplaceableInterface {
+			get { return null; }
+		}
 
-        public void Close()
-        {
-        }
+		public void Close ()
+		{
+		}
 
-        public string Name
-        {
-            get { return "Vegetation Module"; }
-        }
+		public string Name {
+			get { return "Vegetation Module"; }
+		}
 
-        #endregion
+		#endregion
 
-        #region IVegetationModule Members
+		#region IVegetationModule Members
 
-        public PCode[] CreationCapabilities
-        {
-            get { return creationCapabilities; }
-        }
+		public PCode[] CreationCapabilities {
+			get { return creationCapabilities; }
+		}
 
-        public ISceneEntity AddTree(
-            UUID uuid, UUID groupID, Vector3 scale, Quaternion rotation, Vector3 position, Tree treeType, bool newTree)
-        {
-            PrimitiveBaseShape treeShape = new PrimitiveBaseShape
-                                               {
-                                                   PathCurve = 16,
-                                                   PathEnd = 49900,
-                                                   PCode = newTree ? (byte) PCode.NewTree : (byte) PCode.Tree,
-                                                   Scale = scale,
-                                                   State = (byte) treeType
-                                               };
+		public ISceneEntity AddTree (
+			UUID uuid, UUID groupID, Vector3 scale, Quaternion rotation, Vector3 position, Tree treeType, bool newTree)
+		{
+			PrimitiveBaseShape treeShape = new PrimitiveBaseShape {
+				PathCurve = 16,
+				PathEnd = 49900,
+				PCode = newTree ? (byte)PCode.NewTree : (byte)PCode.Tree,
+				Scale = scale,
+				State = (byte)treeType
+			};
 
-            return m_scene.SceneGraph.AddNewPrim(uuid, groupID, position, rotation, treeShape);
-        }
+			return m_scene.SceneGraph.AddNewPrim (uuid, groupID, position, rotation, treeShape);
+		}
 
-        public ISceneEntity CreateEntity(
-            ISceneEntity baseEntity, UUID ownerID, UUID groupID, Vector3 pos, Quaternion rot, PrimitiveBaseShape shape)
-        {
-            if (Array.IndexOf(creationCapabilities, (PCode) shape.PCode) < 0)
-            {
-                MainConsole.Instance.DebugFormat("[VEGETATION]: PCode {0} not handled by {1}", shape.PCode, Name);
-                return null;
-            }
+		public ISceneEntity CreateEntity (
+			ISceneEntity baseEntity, UUID ownerID, UUID groupID, Vector3 pos, Quaternion rot, PrimitiveBaseShape shape)
+		{
+			if (Array.IndexOf (creationCapabilities, (PCode)shape.PCode) < 0) {
+				MainConsole.Instance.DebugFormat ("[VEGETATION]: PCode {0} not handled by {1}", shape.PCode, Name);
+				return null;
+			}
 
-            ISceneChildEntity rootPart = baseEntity.GetChildPart(baseEntity.UUID);
+			ISceneChildEntity rootPart = baseEntity.GetChildPart (baseEntity.UUID);
 
-            // if grass or tree, make phantom
-            //rootPart.TrimPermissions();
-            rootPart.AddFlag(PrimFlags.Phantom);
-            if (rootPart.Shape.PCode != (byte) PCode.Grass)
-                AdaptTree(ref shape);
+			// if grass or tree, make phantom
+			//rootPart.TrimPermissions();
+			rootPart.AddFlag (PrimFlags.Phantom);
+			if (rootPart.Shape.PCode != (byte)PCode.Grass)
+				AdaptTree (ref shape);
 
-            m_scene.SceneGraph.AddPrimToScene(baseEntity);
-            baseEntity.SetGroup(groupID, ownerID, true);
-            baseEntity.ScheduleGroupUpdate(PrimUpdateFlags.ForcedFullUpdate);
+			m_scene.SceneGraph.AddPrimToScene (baseEntity);
+			baseEntity.SetGroup (groupID, ownerID, true);
+			baseEntity.ScheduleGroupUpdate (PrimUpdateFlags.ForcedFullUpdate);
 
-            return baseEntity;
-        }
+			return baseEntity;
+		}
 
-        #endregion
+		#endregion
 
-        protected void AdaptTree(ref PrimitiveBaseShape tree)
-        {
-            // Tree size has to be adapted depending on its type
-            switch ((Tree) tree.State)
-            {
-                case Tree.Cypress1:
-                case Tree.Cypress2:
-                case Tree.Palm1:
-                case Tree.Palm2:
-                case Tree.WinterAspen:
-                    tree.Scale = new Vector3(4, 4, 10);
-                    break;
-                case Tree.WinterPine1:
-                case Tree.WinterPine2:
-                    tree.Scale = new Vector3(4, 4, 20);
-                    break;
+		protected void AdaptTree (ref PrimitiveBaseShape tree)
+		{
+			// Tree size has to be adapted depending on its type
+			switch ((Tree)tree.State) {
+			case Tree.Cypress1:
+			case Tree.Cypress2:
+			case Tree.Palm1:
+			case Tree.Palm2:
+			case Tree.WinterAspen:
+				tree.Scale = new Vector3 (4, 4, 10);
+				break;
+			case Tree.WinterPine1:
+			case Tree.WinterPine2:
+				tree.Scale = new Vector3 (4, 4, 20);
+				break;
 
-                case Tree.Dogwood:
-                    tree.Scale = new Vector3(6.5f, 6.5f, 6.5f);
-                    break;
+			case Tree.Dogwood:
+				tree.Scale = new Vector3 (6.5f, 6.5f, 6.5f);
+				break;
 
-                    // case... other tree types
-                    // tree.Scale = new Vector3(?, ?, ?);
-                    // break;
+			// case... other tree types
+			// tree.Scale = new Vector3(?, ?, ?);
+			// break;
 
-                default:
-                    tree.Scale = new Vector3(4, 4, 4);
-                    break;
-            }
-        }
-    }
+			default:
+				tree.Scale = new Vector3 (4, 4, 4);
+				break;
+			}
+		}
+	}
 }

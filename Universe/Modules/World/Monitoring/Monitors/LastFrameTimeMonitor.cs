@@ -33,53 +33,53 @@ using Universe.Framework.Utilities;
 
 namespace Universe.Modules.Monitoring.Monitors
 {
-    public class LastFrameTimeMonitor : IMonitor, ILastFrameTimeMonitor
-    {
-        int MonitorLastFrameTick;
+	public class LastFrameTimeMonitor : IMonitor, ILastFrameTimeMonitor
+	{
+		int MonitorLastFrameTick;
 
-        public LastFrameTimeMonitor (IScene scene)
-        {
-        }
+		public LastFrameTimeMonitor (IScene scene)
+		{
+		}
 
-        #region Implementation of IMonitor
+		#region Implementation of IMonitor
 
-        #region IMonitor Members
+		#region IMonitor Members
 
-        public double GetValue ()
-        {
-            return Util.EnvironmentTickCountSubtract (MonitorLastFrameTick);
-        }
+		public double GetValue ()
+		{
+			return Util.EnvironmentTickCountSubtract (MonitorLastFrameTick);
+		}
 
-        public string GetName ()
-        {
-            return "Last Completed Frame At";
-        }
+		public string GetName ()
+		{
+			return "Last Completed Frame At";
+		}
 
-        public string GetInterfaceName ()
-        {
-            return "ILastFrameTimeMonitor";
-        }
+		public string GetInterfaceName ()
+		{
+			return "ILastFrameTimeMonitor";
+		}
 
-        public string GetFriendlyValue ()
-        {
-            return (int)GetValue () + "ms ago";
-        }
+		public string GetFriendlyValue ()
+		{
+			return (int)GetValue () + "ms ago";
+		}
 
-        public void ResetStats ()
-        {
-        }
+		public void ResetStats ()
+		{
+		}
 
-        #endregion
+		#endregion
 
-        #region ISetMonitor Members
+		#region ISetMonitor Members
 
-        public void SetValue (int value)
-        {
-            MonitorLastFrameTick = value;
-        }
+		public void SetValue (int value)
+		{
+			MonitorLastFrameTick = value;
+		}
 
-        #endregion
+		#endregion
 
-        #endregion
-    }
+		#endregion
+	}
 }
