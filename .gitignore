@@ -67,10 +67,16 @@ VirtualUniverse/bin/Universe.exe
 # This is dependant upon x86/x64 and created at runtime
 VirtualUniverse/bin/ode.dll
 
+# 20170322 - Exclude LibOMV libraries that are now included in the build process
+VirtualUniverse/bin/CSJ2K.dll
+VirtualUniverse/bin/OpenMetaverse.dll
+VirtualUniverse/bin/OpenMetaverse.StructuredData.dll
+VirtualUniverse/bin/OpenMetaverseTypes.dll
+
 # Data files
 
 VirtualUniverse/Data/AssetCache/*
-VIrtualUniverse/Data/AvatarArchives/*
+VirtualUniverse/Data/AvatarArchives/*
 VirtualUniverse/Data/Banker.txt
 VirtualUniverse/Data/FileAssets/*
 VirtualUniverse/Data/Governor.txt
