@@ -83,6 +83,23 @@ Second Galaxy and Virtual Universe Google + community is for both Second Galaxy 
 
 ## NOTES
 
+*NOTES:
+
+*- As of March 22, 2017, the LibOMV libraries are included as a submodule of the Virtual Universe repositories. When cloning, ensure that the submodules are included.*
+
+`git clone --recursive https://github.com/Virtual-Universe/Virtual-LibOMV.git`
+
+To update an existing repository that does not have the LibOMV submodule
+
+	cd <your Virtual Universe repository>
+	git submodule init
+	git submodule update
+
+*If you do not know what submodules are, or you are not using git from the command line, PLEASE make sure to fetch the submodules too.*
+
+**If you download the repo using the zip file option, you will also need to download the Virtual-LibOMV submodule and extract it in your local Virtual Universe repo.**
+`https://github.com/Virtual-Universe/Virtual-LibOMV`
+
 *NOTE:
  As of Version 1.0.2, it's advised to Linux users to use a Mono version higher then 4.2.3.4, following a report about  GC.Collect() not cleaning up memory correctly. The most current version of Mono is 4.6.1.3 (Released 1st August 2016)*
  Attention Arch Linux Users: by default your Mono version is 4.4.1.0 and is customized to work on Arch Linux.  YOu should not experience any problems.
