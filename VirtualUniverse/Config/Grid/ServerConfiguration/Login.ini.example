@@ -1,4 +1,5 @@
-;;  These settings are used when a login from a viewer client is received
+;;  This file is used as a template when the configurator is run for a grid setup
+;;  ##  You DO NOT need to change anything here  ##
 
 [LoginService]
 ;; This sets the message when a user logs in.
@@ -24,7 +25,7 @@ FileNameOfTOS = ToS.txt
 ;; Alternatively, an html formatted version of the Terms of Service  may be specified. 
 ;;  The 'ToS.html' file should also be located in the 'Data/html' folder
 ;; Comment the previous setting and uncomment below
-;;    'ServersHostname' will be replaced with the local grid URL
+;;    'ServersHostname' will be replaced with the local grid URL   
 ; FileNameOfTOS = http://ServersHostname:8002/local/ToS.html
 
 ;; Allow users to login anonymously and have a new account created automatically? 
