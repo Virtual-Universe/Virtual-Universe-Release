@@ -32,81 +32,82 @@ using OpenMetaverse;
 
 namespace Universe.Framework.Utilities
 {
-	public interface BaseCacheAccount
-	{
-		UUID PrincipalID { get; set; }
+    public interface BaseCacheAccount
+    {
+        UUID PrincipalID { get; set; }
+        string Name { get; set; }
+    }
 
-		string Name { get; set; }
-	}
+    public class GenericAccountCache<T> where T : BaseCacheAccount
+    {
+        private double CACHE_EXPIRATION_SECONDS = 6*60*1000;
+        // 6 hour cache on user accounts, since they should not change
 
-	public class GenericAccountCache<T> where T : BaseCacheAccount
-	{
-		private double CACHE_EXPIRATION_SECONDS = 6 * 60 * 1000;
-		// 6 hour cache on user accounts, since they should not change
+        private bool m_allowNullCaching = true;
+        private readonly ExpiringCache<string, UUID> m_NameCache;
+        private readonly ExpiringCache<UUID, T> m_UUIDCache;
+        private readonly Dictionary<UUID, int> m_nullCacheTimes = new Dictionary<UUID, int>();
 
-		private bool m_allowNullCaching = true;
-		private readonly ExpiringCache<string, UUID> m_NameCache;
-		private readonly ExpiringCache<UUID, T> m_UUIDCache;
-		private readonly Dictionary<UUID, int> m_nullCacheTimes = new Dictionary<UUID, int> ();
+        public GenericAccountCache()
+        {
+            m_UUIDCache = new ExpiringCache<UUID, T>();
+            m_NameCache = new ExpiringCache<string, UUID>();
+        }
 
-		public GenericAccountCache ()
-		{
-			m_UUIDCache = new ExpiringCache<UUID, T> ();
-			m_NameCache = new ExpiringCache<string, UUID> ();
-		}
+        public GenericAccountCache(double expirationTime)
+        {
+            CACHE_EXPIRATION_SECONDS = expirationTime;
+            m_UUIDCache = new ExpiringCache<UUID, T>();
+            m_NameCache = new ExpiringCache<string, UUID>();
+        }
 
-		public GenericAccountCache (double expirationTime)
-		{
-			CACHE_EXPIRATION_SECONDS = expirationTime;
-			m_UUIDCache = new ExpiringCache<UUID, T> ();
-			m_NameCache = new ExpiringCache<string, UUID> ();
-		}
+        public void Cache(UUID userID, T account)
+        {
+            if (!m_allowNullCaching && account == null)
+                return;
+            if (account == null)
+            {
+                if (!m_nullCacheTimes.ContainsKey(userID))
+                    m_nullCacheTimes[userID] = 0;
+                else
+                    m_nullCacheTimes[userID]++;
+                if (m_nullCacheTimes[userID] < 5)
+                    return;
+            }
+            else if (m_nullCacheTimes.ContainsKey(userID))
+                m_nullCacheTimes.Remove(userID);
+            // Cache even null accounts
+            m_UUIDCache.AddOrUpdate(userID, account, CACHE_EXPIRATION_SECONDS);
+            if (account != null && !string.IsNullOrEmpty(account.Name))
+                m_NameCache.AddOrUpdate(account.Name, account.PrincipalID, CACHE_EXPIRATION_SECONDS);
 
-		public void Cache (UUID userID, T account)
-		{
-			if (!m_allowNullCaching && account == null)
-				return;
-			if (account == null) {
-				if (!m_nullCacheTimes.ContainsKey (userID))
-					m_nullCacheTimes [userID] = 0;
-				else
-					m_nullCacheTimes [userID]++;
-				if (m_nullCacheTimes [userID] < 5)
-					return;
-			} else if (m_nullCacheTimes.ContainsKey (userID))
-				m_nullCacheTimes.Remove (userID);
-			// Cache even null accounts
-			m_UUIDCache.AddOrUpdate (userID, account, CACHE_EXPIRATION_SECONDS);
-			if (account != null && !string.IsNullOrEmpty (account.Name))
-				m_NameCache.AddOrUpdate (account.Name, account.PrincipalID, CACHE_EXPIRATION_SECONDS);
+            //MainConsole.Instance.DebugFormat("[USER CACHE]: cached user {0}", userID);
+        }
 
-			//MainConsole.Instance.DebugFormat("[USER CACHE]: cached user {0}", userID);
-		}
+        public void Remove(UUID userID, string name)
+        {
+            m_UUIDCache.Remove(userID);
+            m_NameCache.Remove(name);
+        }
 
-		public void Remove (UUID userID, string name)
-		{
-			m_UUIDCache.Remove (userID);
-			m_NameCache.Remove (name);
-		}
+        public bool Get(UUID userID, out T account)
+        {
+            if (m_UUIDCache.TryGetValue(userID, out account))
+                return true;
 
-		public bool Get (UUID userID, out T account)
-		{
-			if (m_UUIDCache.TryGetValue (userID, out account))
-				return true;
+            return false;
+        }
 
-			return false;
-		}
+        public bool Get(string name, out T account)
+        {
+            account = default(T);
 
-		public bool Get (string name, out T account)
-		{
-			account = default(T);
+            UUID uuid = UUID.Zero;
+            if (m_NameCache.TryGetValue(name, out uuid))
+                if (m_UUIDCache.TryGetValue(uuid, out account))
+                    return true;
 
-			UUID uuid = UUID.Zero;
-			if (m_NameCache.TryGetValue (name, out uuid))
-			if (m_UUIDCache.TryGetValue (uuid, out account))
-				return true;
-
-			return false;
-		}
-	}
+            return false;
+        }
+    }
 }

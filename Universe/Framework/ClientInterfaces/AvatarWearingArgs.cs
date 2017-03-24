@@ -33,31 +33,31 @@ using OpenMetaverse;
 
 namespace Universe.Framework.ClientInterfaces
 {
-	public class AvatarWearingArgs : EventArgs
-	{
-		private List<Wearable> m_nowWearing = new List<Wearable> ();
+    public class AvatarWearingArgs : EventArgs
+    {
+        List<Wearable> m_nowWearing = new List<Wearable> ();
 
-		/// <summary>
-		/// </summary>
-		public List<Wearable> NowWearing {
-			get { return m_nowWearing; }
-			set { m_nowWearing = value; }
-		}
+        /// <summary>
+        /// </summary>
+        public List<Wearable> NowWearing {
+            get { return m_nowWearing; }
+            set { m_nowWearing = value; }
+        }
 
-		#region Nested type: Wearable
+        #region Nested type: Wearable
 
-		public class Wearable
-		{
-			public UUID ItemID = new UUID ("00000000-0000-0000-0000-000000000000");
-			public byte Type;
+        public class Wearable
+        {
+            public UUID ItemID = new UUID ("00000000-0000-0000-0000-000000000000");
+            public byte Type;
 
-			public Wearable (UUID itemId, byte type)
-			{
-				ItemID = itemId;
-				Type = type;
-			}
-		}
+            public Wearable (UUID itemId, byte type)
+            {
+                ItemID = itemId;
+                Type = type;
+            }
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

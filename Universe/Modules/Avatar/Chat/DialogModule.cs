@@ -51,21 +51,44 @@ namespace Universe.Modules.Chat
 
 		#region IDialogModule Members
 
+
+		/// <summary>
+		/// Sends an alert to user.
+		/// </summary>
+		/// <param name="client">Client.</param>
+		/// <param name="message">Message.</param>
 		public void SendAlertToUser (IClientAPI client, string message)
 		{
 			SendAlertToUser (client, message, false);
 		}
 
+		/// <summary>
+		/// Sends an alert to user.
+		/// </summary>
+		/// <param name="client">Client.</param>
+		/// <param name="message">Message.</param>
+		/// <param name="modal">If set to <c>true</c> modal.</param>
 		public void SendAlertToUser (IClientAPI client, string message, bool modal)
 		{
 			client.SendAgentAlertMessage (message, modal);
 		}
 
+		/// <summary>
+		/// Sends an alert to user.
+		/// </summary>
+		/// <param name="agentID">Agent identifier.</param>
+		/// <param name="message">Message.</param>
 		public void SendAlertToUser (UUID agentID, string message)
 		{
 			SendAlertToUser (agentID, message, false);
 		}
 
+		/// <summary>
+		/// Sends an alert to user.
+		/// </summary>
+		/// <param name="agentID">Agent identifier.</param>
+		/// <param name="message">Message.</param>
+		/// <param name="modal">If set to <c>true</c> modal.</param>
 		public void SendAlertToUser (UUID agentID, string message, bool modal)
 		{
 			IScenePresence sp = m_scene.GetScenePresence (agentID);
@@ -74,6 +97,12 @@ namespace Universe.Modules.Chat
 				sp.ControllingClient.SendAgentAlertMessage (message, modal);
 		}
 
+		/// <summary>
+		/// Sends an alert to user.
+		/// </summary>
+		/// <param name="Name">Name.</param>
+		/// <param name="message">Message.</param>
+		/// <param name="modal">If set to <c>true</c> modal.</param>
 		public void SendAlertToUser (string Name, string message, bool modal)
 		{
 			IScenePresence presence = m_scene.SceneGraph.GetScenePresence (Name);
@@ -81,6 +110,10 @@ namespace Universe.Modules.Chat
 				presence.ControllingClient.SendAgentAlertMessage (message, modal);
 		}
 
+		/// <summary>
+		/// Sends a general alert.
+		/// </summary>
+		/// <param name="message">Message.</param>
 		public void SendGeneralAlert (string message)
 		{
 			m_scene.ForEachScenePresence (delegate (IScenePresence presence) {
@@ -89,9 +122,19 @@ namespace Universe.Modules.Chat
 			});
 		}
 
-		public void SendDialogToUser (
-			UUID avatarID, string objectName, UUID objectID, UUID ownerID,
-			string message, UUID textureID, int ch, string[] buttonlabels)
+		/// <summary>
+		/// Sends the dialog to user.
+		/// </summary>
+		/// <param name="avatarID">Avatar identifier.</param>
+		/// <param name="objectName">Object name.</param>
+		/// <param name="objectID">Object identifier.</param>
+		/// <param name="ownerID">Owner identifier.</param>
+		/// <param name="message">Message.</param>
+		/// <param name="textureID">Texture identifier.</param>
+		/// <param name="ch">Ch.</param>
+		/// <param name="buttonlabels">Buttonlabels.</param>
+		public void SendDialogToUser (UUID avatarID, string objectName, UUID objectID, UUID ownerID,
+		                              string message, UUID textureID, int ch, string [] buttonlabels)
 		{
 			UserAccount account = m_scene.UserAccountService.GetUserAccount (m_scene.RegionInfo.AllScopeIDs, ownerID);
 			string ownerFirstName, ownerLastName;
@@ -100,7 +143,7 @@ namespace Universe.Modules.Chat
 				ownerLastName = account.LastName;
 			} else {
 				ownerFirstName = "(unknown";
-				ownerLastName = "user)";
+				ownerLastName = " owner)";
 			}
 
 			//If the user is muted, we do NOT send them dialog boxes
@@ -126,8 +169,18 @@ namespace Universe.Modules.Chat
 					buttonlabels);
 		}
 
-		public void SendUrlToUser (
-			UUID avatarID, string objectName, UUID objectID, UUID ownerID, bool groupOwned, string message, string url)
+		/// <summary>
+		/// Sends a URL to user.
+		/// </summary>
+		/// <param name="avatarID">Avatar identifier.</param>
+		/// <param name="objectName">Object name.</param>
+		/// <param name="objectID">Object identifier.</param>
+		/// <param name="ownerID">Owner identifier.</param>
+		/// <param name="groupOwned">If set to <c>true</c> group owned.</param>
+		/// <param name="message">Message.</param>
+		/// <param name="url">URL.</param>
+		public void SendUrlToUser (UUID avatarID, string objectName, UUID objectID,
+		                           UUID ownerID, bool groupOwned, string message, string url)
 		{
 			IScenePresence sp = m_scene.GetScenePresence (avatarID);
 
@@ -143,8 +196,17 @@ namespace Universe.Modules.Chat
 				sp.ControllingClient.SendLoadURL (objectName, objectID, ownerID, groupOwned, message, url);
 		}
 
-		public void SendTextBoxToUser (UUID avatarID, string message, int chatChannel, string name, UUID objectID,
-		                                     UUID ownerID)
+		/// <summary>
+		/// Sends a text box to user.
+		/// </summary>
+		/// <param name="avatarID">Avatar identifier.</param>
+		/// <param name="message">Message.</param>
+		/// <param name="chatChannel">Chat channel.</param>
+		/// <param name="name">Name.</param>
+		/// <param name="objectID">Object identifier.</param>
+		/// <param name="ownerID">Owner identifier.</param>
+		public void SendTextBoxToUser (UUID avatarID, string message, int chatChannel, 
+		                               string name, UUID objectID, UUID ownerID)
 		{
 			IScenePresence sp = m_scene.GetScenePresence (avatarID);
 
@@ -178,6 +240,12 @@ namespace Universe.Modules.Chat
 			}
 		}
 
+		/// <summary>
+		/// Sends a notification to users in region.
+		/// </summary>
+		/// <param name="fromAvatarID">From avatar identifier.</param>
+		/// <param name="fromAvatarName">From avatar name.</param>
+		/// <param name="message">Message.</param>
 		public void SendNotificationToUsersInRegion (
 			UUID fromAvatarID, string fromAvatarName, string message)
 		{
@@ -260,7 +328,7 @@ namespace Universe.Modules.Chat
 		///     Handle an alert command from the console.
 		/// </summary>
 		/// <param name="cmdparams"></param>
-		protected void HandleAlertConsoleCommand (IScene scene, string[] cmdparams)
+		protected void HandleAlertConsoleCommand (IScene scene, string [] cmdparams)
 		{
 			string message = "";
 			string userName = "";

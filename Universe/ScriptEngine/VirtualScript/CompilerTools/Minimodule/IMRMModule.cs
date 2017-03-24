@@ -31,12 +31,10 @@ using OpenMetaverse;
 
 namespace Universe.ScriptEngine.VirtualScript.MiniModule
 {
-	public interface IMRMModule
-	{
-		void RegisterExtension<T> (T instance);
-
-		void InitializeMRM (MRMBase mmb, uint localID, UUID itemID);
-
-		void GetGlobalEnvironment (uint localID, out IWorld world, out IHost host);
-	}
+    public interface IMRMModule
+    {
+        void RegisterExtension<T>(T instance);
+        void InitializeMRM(MRMBase mmb, uint localID, UUID itemID);
+        void GetGlobalEnvironment(uint localID, out IWorld world, out IHost host);
+    }
 }

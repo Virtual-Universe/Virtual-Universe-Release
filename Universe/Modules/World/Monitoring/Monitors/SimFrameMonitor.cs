@@ -32,91 +32,87 @@ using Universe.Framework.SceneInfo;
 
 namespace Universe.Modules.Monitoring.Monitors
 {
-	public class SimFrameMonitor : ISimFrameMonitor
-	{
-		#region Declares
+    public class SimFrameMonitor : ISimFrameMonitor
+    {
+        #region Declares
+        readonly object _simLock = new object ();
 
-		readonly object _simLock = new object ();
+        // saved last reported value so there is something available for llGetRegionFPS 
+        volatile float lastReportedSimFPS;
+        volatile float simFPS;
 
-		// saved last reported value so there is something available for llGetRegionFPS
-		volatile float lastReportedSimFPS;
-		volatile float simFPS;
+        public float LastReportedSimFPS {
+            get {
+                lock (_simLock)
+                    return lastReportedSimFPS;
+            }
+            set {
+                lock (_simLock)
+                    lastReportedSimFPS = value;
+            }
+        }
 
-		public float LastReportedSimFPS {
-			get {
-				lock (_simLock)
-					return lastReportedSimFPS;
-			}
-			set {
-				lock (_simLock)
-					lastReportedSimFPS = value;
-			}
-		}
+        public float SimFPS {
+            get { lock (_simLock) return simFPS; }
+        }
 
-		public float SimFPS {
-			get {
-				lock (_simLock)
-					return simFPS;
-			}
-		}
+        #endregion
 
-		#endregion
+        #region Constructor
 
-		#region Constructor
+        public SimFrameMonitor (IScene scene)
+        {
+        }
 
-		public SimFrameMonitor (IScene scene)
-		{
-		}
+        #endregion
 
-		#endregion
+        #region Implementation of IMonitor
 
-		#region Implementation of IMonitor
+        public double GetValue ()
+        {
+            lock (_simLock)
+                return LastReportedSimFPS;
+        }
 
-		public double GetValue ()
-		{
-			lock (_simLock)
-				return LastReportedSimFPS;
-		}
+        public string GetName ()
+        {
+            return "SimFrameStats";
+        }
 
-		public string GetName ()
-		{
-			return "SimFrameStats";
-		}
+        public string GetInterfaceName ()
+        {
+            return "ISimFrameMonitor";
+        }
 
-		public string GetInterfaceName ()
-		{
-			return "ISimFrameMonitor";
-		}
+        public string GetFriendlyValue ()
+        {
+            return GetValue () + " frames/second";
+        }
 
-		public string GetFriendlyValue ()
-		{
-			return GetValue () + " frames/second";
-		}
+        #endregion
 
-		#endregion
+        #region Other Methods
 
-		#region Other Methods
+        #region IMonitor Members
 
-		#region IMonitor Members
+        public void ResetStats ()
+        {
+            lock (_simLock)
+                simFPS = 0;
+        }
 
-		public void ResetStats ()
-		{
-			lock (_simLock)
-				simFPS = 0;
-		}
+        #endregion
 
-		#endregion
+        #region ISimFrameMonitor Members
 
-		#region ISimFrameMonitor Members
+        public void AddFPS (int fps)
+        {
+            lock (_simLock)
+                simFPS += fps;
+        }
 
-		public void AddFPS (int fps)
-		{
-			lock (_simLock)
-				simFPS += fps;
-		}
+        #endregion
 
-		#endregion
-
-		#endregion
-	}
+        #endregion
+    }
 }

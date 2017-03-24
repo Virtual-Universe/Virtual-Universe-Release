@@ -29,12 +29,10 @@
 
 namespace Universe.ScriptEngine.VirtualScript.MiniModule
 {
-	public interface IParcel
-	{
-		string Name { get; set; }
-
-		string Description { get; set; }
-
-		ISocialEntity Owner { get; set; }
-	}
+    public interface IParcel
+    {
+        string Name { get; set; }
+        string Description { get; set; }
+        ISocialEntity Owner { get; set; }
+    }
 }

@@ -27,192 +27,198 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections;
-using System.Net;
-using Nini.Config;
-using Nwc.XmlRpc;
-using OpenMetaverse;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.Servers.HttpServer.Interfaces;
 using Universe.Framework.Services;
 using Universe.Framework.Utilities;
+using Nini.Config;
+using Nwc.XmlRpc;
+using OpenMetaverse;
+using System;
+using System.Collections;
+using System.Net;
 
 namespace Universe.Services
 {
-	public class LLLoginServiceInConnector : IService
-	{
-		private ILoginService m_loginService;
-		private bool m_Proxy;
+    public class LLLoginServiceInConnector : IService
+    {
+        private ILoginService m_loginService;
+        private bool m_Proxy;
 
-		public string Name {
-			get { return GetType ().Name; }
-		}
+        public string Name
+        {
+            get { return GetType().Name; }
+        }
 
-		#region IService Members
+        #region IService Members
 
-		public void Initialize (IConfigSource config, IRegistryCore registry)
-		{
-		}
+        public void Initialize(IConfigSource config, IRegistryCore registry)
+        {
+        }
 
-		public void Start (IConfigSource config, IRegistryCore registry)
-		{
-			IConfig handlerConfig = config.Configs ["Handlers"];
-			if (handlerConfig.GetString ("LLLoginHandler", "") != Name)
-				return;
+        public void Start(IConfigSource config, IRegistryCore registry)
+        {
+            IConfig handlerConfig = config.Configs["Handlers"];
+            if (handlerConfig.GetString("LLLoginHandler", "") != Name)
+                return;
 
-			IHttpServer server =
-				registry.RequestModuleInterface<ISimulationBase> ().GetHttpServer (
-					(uint)handlerConfig.GetInt ("LLLoginHandlerPort"));
-			MainConsole.Instance.Debug ("[LLLOGIN IN CONNECTOR]: Starting...");
-			ReadLocalServiceFromConfig (config);
-			m_loginService = registry.RequestModuleInterface<ILoginService> ();
+            IHttpServer server =
+                registry.RequestModuleInterface<ISimulationBase>().GetHttpServer(
+                    (uint) handlerConfig.GetInt("LLLoginHandlerPort"));
+            MainConsole.Instance.Debug("[LLLOGIN IN CONNECTOR]: Starting...");
+            ReadLocalServiceFromConfig(config);
+            m_loginService = registry.RequestModuleInterface<ILoginService>();
 
-			InitializeHandlers (server);
-		}
+            InitializeHandlers(server);
+        }
 
-		public void FinishedStartup ()
-		{
-		}
+        public void FinishedStartup()
+        {
+        }
 
-		#endregion
+        #endregion
 
-		private void ReadLocalServiceFromConfig (IConfigSource config)
-		{
-			IConfig serverConfig = config.Configs ["LoginService"];
-			if (serverConfig == null)
-				throw new Exception (String.Format ("No section LoginService in config file"));
+        private void ReadLocalServiceFromConfig(IConfigSource config)
+        {
+            IConfig serverConfig = config.Configs["LoginService"];
+            if (serverConfig == null)
+                throw new Exception(String.Format("No section LoginService in config file"));
 
-			m_Proxy = serverConfig.GetBoolean ("HasProxy", false);
-		}
+            m_Proxy = serverConfig.GetBoolean("HasProxy", false);
+        }
 
-		private void InitializeHandlers (IHttpServer server)
-		{
-			server.AddXmlRPCHandler ("login_to_simulator", HandleXMLRPCLogin);
-			server.AddXmlRPCHandler ("/", HandleXMLRPCLogin);
-			server.AddXmlRPCHandler ("set_login_level", HandleXMLRPCSetLoginLevel);
-		}
+        private void InitializeHandlers(IHttpServer server)
+        {
+            server.AddXmlRPCHandler("login_to_simulator", HandleXMLRPCLogin);
+            server.AddXmlRPCHandler("/", HandleXMLRPCLogin);
+            server.AddXmlRPCHandler("set_login_level", HandleXMLRPCSetLoginLevel);
+        }
 
-		public XmlRpcResponse HandleXMLRPCLogin (XmlRpcRequest request, IPEndPoint remoteClient)
-		{
-			Hashtable requestData = (Hashtable)request.Params [0];
-			if (m_Proxy && request.Params [3] != null) {
-				IPEndPoint ep = NetworkUtils.GetClientIPFromXFF ((string)request.Params [3]);
-				if (ep != null)
+        public XmlRpcResponse HandleXMLRPCLogin(XmlRpcRequest request, IPEndPoint remoteClient)
+        {
+            Hashtable requestData = (Hashtable) request.Params[0];
+            if (m_Proxy && request.Params[3] != null)
+            {
+                IPEndPoint ep = NetworkUtils.GetClientIPFromXFF((string) request.Params[3]);
+                if (ep != null)
                     // Bang!
                     remoteClient = ep;
-			}
+            }
 
-			if (requestData != null) {
-				if (((requestData.ContainsKey ("first") && requestData ["first"] != null &&
-				                requestData.ContainsKey ("last") && requestData ["last"] != null) ||
-				                requestData.ContainsKey ("username") && requestData ["username"] != null) &&
-				                ((requestData.ContainsKey ("passwd") && requestData ["passwd"] != null) ||
-				                (requestData.ContainsKey ("web_login_key") && requestData ["web_login_key"] != null))) {
-					string first = requestData.ContainsKey ("first") ? requestData ["first"].ToString () : "";
-					string last = requestData.ContainsKey ("last") ? requestData ["last"].ToString () : "";
-					string name = requestData.ContainsKey ("username") ? requestData ["username"].ToString () : "";
-					string passwd = "";
-					if (!requestData.ContainsKey ("web_login_key"))
-						passwd = requestData ["passwd"].ToString ();
-					else
-						passwd = requestData ["web_login_key"].ToString ();
+            if (requestData != null)
+            {
+                if (((requestData.ContainsKey("first") && requestData["first"] != null &&
+                      requestData.ContainsKey("last") && requestData["last"] != null) ||
+                     requestData.ContainsKey("username") && requestData["username"] != null) &&
+                    ((requestData.ContainsKey("passwd") && requestData["passwd"] != null) ||
+                     (requestData.ContainsKey("web_login_key") && requestData["web_login_key"] != null)))
+                {
+                    string first = requestData.ContainsKey("first") ? requestData["first"].ToString() : "";
+                    string last = requestData.ContainsKey("last") ? requestData["last"].ToString() : "";
+                    string name = requestData.ContainsKey("username") ? requestData["username"].ToString() : "";
+                    string passwd = "";
+                    if (!requestData.ContainsKey("web_login_key"))
+                        passwd = requestData["passwd"].ToString();
+                    else
+                        passwd = requestData["web_login_key"].ToString();
 
-					string startLocation = string.Empty;
-					if (requestData.ContainsKey ("start"))
-						startLocation = requestData ["start"].ToString ();
+                    string startLocation = string.Empty;
+                    if (requestData.ContainsKey("start"))
+                        startLocation = requestData["start"].ToString();
 
-					string clientVersion = "Unknown";
-					if (requestData.Contains ("version") && requestData ["version"] != null)
-						clientVersion = requestData ["version"].ToString ();
+                    string clientVersion = "Unknown";
+                    if (requestData.Contains("version") && requestData["version"] != null)
+                        clientVersion = requestData["version"].ToString();
 
-					//MAC BANNING START
-					string mac = (string)requestData ["mac"];
-					if (mac == "")
-						return FailedXMLRPCResponse ("Bad Viewer Connection.");
+                    //MAC BANNING START
+                    string mac = (string) requestData["mac"];
+                    if (mac == "")
+                        return FailedXMLRPCResponse("Bad Viewer Connection.");
 
-					string channel = "Unknown";
-					if (requestData.Contains ("channel") && requestData ["channel"] != null)
-						channel = requestData ["channel"].ToString ();
+                    string channel = "Unknown";
+                    if (requestData.Contains("channel") && requestData["channel"] != null)
+                        channel = requestData["channel"].ToString();
 
-					if (channel == "")
-						return FailedXMLRPCResponse ("Bad Viewer Connection.");
+                    if (channel == "")
+                        return FailedXMLRPCResponse("Bad Viewer Connection.");
 
-					string id0 = "Unknown";
-					if (requestData.Contains ("id0") && requestData ["id0"] != null)
-						id0 = requestData ["id0"].ToString ();
+                    string id0 = "Unknown";
+                    if (requestData.Contains("id0") && requestData["id0"] != null)
+                        id0 = requestData["id0"].ToString();
 
-					LoginResponse reply = null;
+                    LoginResponse reply = null;
 
 
-					string loginName = (name == "" || name == null) ? first + " " + last : name;
-					reply = m_loginService.Login (UUID.Zero, loginName, "UserAccount", passwd, startLocation,
-						clientVersion, channel,
-						mac, id0, remoteClient, requestData);
-					XmlRpcResponse response = new XmlRpcResponse { Value = reply.ToHashtable () };
-					return response;
-				}
-			}
+                    string loginName = (name == "" || name == null) ? first + " " + last : name;
+                    reply = m_loginService.Login(UUID.Zero, loginName, "UserAccount", passwd, startLocation,
+                                                 clientVersion, channel,
+                                                 mac, id0, remoteClient, requestData);
+                    XmlRpcResponse response = new XmlRpcResponse {Value = reply.ToHashtable()};
+                    return response;
+                }
+            }
 
-			return FailedXMLRPCResponse ();
-		}
+            return FailedXMLRPCResponse();
+        }
 
-		public XmlRpcResponse HandleXMLRPCSetLoginLevel (XmlRpcRequest request, IPEndPoint remoteClient)
-		{
-			Hashtable requestData = (Hashtable)request.Params [0];
+        public XmlRpcResponse HandleXMLRPCSetLoginLevel(XmlRpcRequest request, IPEndPoint remoteClient)
+        {
+            Hashtable requestData = (Hashtable) request.Params[0];
 
-			if (requestData != null) {
-				if (requestData.ContainsKey ("first") && requestData ["first"] != null &&
-				                requestData.ContainsKey ("last") && requestData ["last"] != null &&
-				                requestData.ContainsKey ("level") && requestData ["level"] != null &&
-				                requestData.ContainsKey ("passwd") && requestData ["passwd"] != null) {
-					string first = requestData ["first"].ToString ();
-					string last = requestData ["last"].ToString ();
-					string passwd = requestData ["passwd"].ToString ();
-					int level = Int32.Parse (requestData ["level"].ToString ());
+            if (requestData != null)
+            {
+                if (requestData.ContainsKey("first") && requestData["first"] != null &&
+                    requestData.ContainsKey("last") && requestData["last"] != null &&
+                    requestData.ContainsKey("level") && requestData["level"] != null &&
+                    requestData.ContainsKey("passwd") && requestData["passwd"] != null)
+                {
+                    string first = requestData["first"].ToString();
+                    string last = requestData["last"].ToString();
+                    string passwd = requestData["passwd"].ToString();
+                    int level = Int32.Parse(requestData["level"].ToString());
 
-					MainConsole.Instance.InfoFormat ("[LOGIN]: XMLRPC Set Level to {2} Requested by {0} {1}", first, last,
-						level);
+                    MainConsole.Instance.InfoFormat("[LOGIN]: XMLRPC Set Level to {2} Requested by {0} {1}", first, last,
+                                                    level);
 
-					Hashtable reply = m_loginService.SetLevel (first, last, passwd, level, remoteClient);
+                    Hashtable reply = m_loginService.SetLevel(first, last, passwd, level, remoteClient);
 
-					XmlRpcResponse response = new XmlRpcResponse { Value = reply };
+                    XmlRpcResponse response = new XmlRpcResponse {Value = reply};
 
-					return response;
-				}
-			}
+                    return response;
+                }
+            }
 
-			XmlRpcResponse failResponse = new XmlRpcResponse ();
-			Hashtable failHash = new Hashtable ();
-			failHash ["success"] = "false";
-			failResponse.Value = failHash;
+            XmlRpcResponse failResponse = new XmlRpcResponse();
+            Hashtable failHash = new Hashtable();
+            failHash["success"] = "false";
+            failResponse.Value = failHash;
 
-			return failResponse;
-		}
+            return failResponse;
+        }
 
-		private XmlRpcResponse FailedXMLRPCResponse ()
-		{
-			Hashtable hash = new Hashtable ();
-			hash ["reason"] = "key";
-			hash ["message"] = "Incomplete login credentials. Check your username and password.";
-			hash ["login"] = "false";
+        private XmlRpcResponse FailedXMLRPCResponse()
+        {
+            Hashtable hash = new Hashtable();
+            hash["reason"] = "key";
+            hash["message"] = "Incomplete login credentials. Check your username and password.";
+            hash["login"] = "false";
 
-			XmlRpcResponse response = new XmlRpcResponse { Value = hash };
+            XmlRpcResponse response = new XmlRpcResponse {Value = hash};
 
-			return response;
-		}
+            return response;
+        }
 
-		private XmlRpcResponse FailedXMLRPCResponse (string message)
-		{
-			Hashtable hash = new Hashtable ();
-			hash ["reason"] = "key";
-			hash ["message"] = message;
-			hash ["login"] = "false";
+        private XmlRpcResponse FailedXMLRPCResponse(string message)
+        {
+            Hashtable hash = new Hashtable();
+            hash["reason"] = "key";
+            hash["message"] = message;
+            hash["login"] = "false";
 
-			XmlRpcResponse response = new XmlRpcResponse { Value = hash };
+            XmlRpcResponse response = new XmlRpcResponse {Value = hash};
 
-			return response;
-		}
-	}
+            return response;
+        }
+    }
 }

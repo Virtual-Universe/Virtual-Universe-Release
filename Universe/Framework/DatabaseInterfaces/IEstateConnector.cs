@@ -34,147 +34,148 @@ using Universe.Framework.Services;
 
 namespace Universe.Framework.DatabaseInterfaces
 {
-	public interface IEstateConnector : IUniverseDataPlugin
-	{
-		/// <summary>
-		/// Are we doing local or remote calls.
-		/// </summary>
-		bool RemoteCalls ();
+    public interface IEstateConnector : IUniverseDataPlugin
+    {
+        /// <summary>
+        /// Are we doing local or remote calls.
+        /// </summary>
+        bool RemoteCalls();
 
-		/// <summary>
-		///     Loads the estate data for the given region
-		/// </summary>
-		/// <param name="regionID"></param>
-		/// <returns></returns>
-		EstateSettings GetEstateSettings (UUID regionID);
+        /// <summary>
+        ///     Loads the estate data for the given region
+        /// </summary>
+        /// <param name="regionID"></param>
+        /// <returns></returns>
+        EstateSettings GetRegionEstateSettings(UUID regionID);
 
-		/// <summary>
-		///     Loads the estate data for the specified estateID
-		/// </summary>
-		/// <param name="estateID"></param>
-		/// <returns></returns>
-		EstateSettings GetEstateSettings (int estateID);
+        /// <summary>
+        ///     Loads the estate data for the specified estateID
+        /// </summary>
+        /// <param name="estateID"></param>
+        /// <returns></returns>
+        EstateSettings GetEstateIDSettings(int estateID);
 
-		/// <summary>
-		///     Loads the estate data for the specified estate name (local only)
-		/// </summary>
-		/// <param name="name"></param>
-		/// <returns></returns>
-		EstateSettings GetEstateSettings (string name);
+        /// <summary>
+        ///     Loads the estate data for the specified estate name (local only)
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        EstateSettings GetEstateSettings(string name);
 
-		/// <summary>
-		/// Creates new estate.
-		/// </summary>
-		/// <returns>The the estateID</returns>
-		/// <param name="es">Es.</param>
-		int CreateNewEstate (EstateSettings es);
+        /// <summary>
+        /// Creates new estate.
+        /// </summary>
+        /// <returns>The the estateID</returns>
+        /// <param name="es">Es.</param>
+        int CreateNewEstate (EstateSettings es);
 
-		/// <summary>
-		///     Creates a new estate from the given info, and link to a region
-		/// </summary>
-		/// <param name="ES"></param>
-		/// <param name="regionID"></param>
-		/// <returns>0 if the estate could not be created, otherwise, the estateID</returns>
-		int CreateNewEstate (EstateSettings ES, UUID regionID);
+        /// <summary>
+        ///     Creates a new estate from the given info, and link to a region
+        /// </summary>
+        /// <param name="ES"></param>
+        /// <param name="regionID"></param>
+        /// <returns>0 if the estate could not be created, otherwise, the estateID</returns>
+        int CreateNewEstate(EstateSettings ES, UUID regionID);
 
-		/// <summary>
-		///     Updates the given Estate data in the database
-		/// </summary>
-		/// <param name="es"></param>
-		void SaveEstateSettings (EstateSettings es);
+        /// <summary>
+        ///     Updates the given Estate data in the database
+        /// </summary>
+        /// <param name="es"></param>
+        void SaveEstateSettings(EstateSettings es);
 
-		/// <summary>
-		///     Gets the estateID for the given name
-		/// </summary>
-		/// <param name="name"></param>
-		/// <returns>The EstateID</returns>
-		int GetEstateID (string name);
+        /// <summary>
+        ///     Gets the estateID for the given name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns>The EstateID</returns>
+        int GetEstateID(string name);
 
-		/// <summary>
-		///     Gets the estates that have the given name and owner
-		/// </summary>
-		/// <param name="ownerID"></param>
-		/// <param name="name"></param>
-		/// <returns></returns>
-		int GetEstate (UUID ownerID, string name);
+        /// <summary>
+        ///     Gets the estates that have the given name and owner
+        /// </summary>
+        /// <param name="ownerID"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        int GetEstate(UUID ownerID, string name);
 
-		/// <summary>
-		///     Get all regions in the current estate
-		/// </summary>
-		/// <param name="estateID"></param>
-		/// <returns></returns>
-		List<UUID> GetRegions (int estateID);
+        /// <summary>
+        ///     Get all regions in the current estate
+        /// </summary>
+        /// <param name="estateID"></param>
+        /// <returns></returns>
+        List<UUID> GetRegions(int estateID);
 
-		/// <summary>
-		///     Gets all available estates
-		/// </summary>
-		/// <returns>List of estates</returns>
-		List<string> GetEstateNames ();
+        /// <summary>
+        ///     Gets all available estates
+        /// </summary>
+        /// <returns>List of estates</returns>
+        List<string> GetEstateNames();
 
-		/// <summary>
-		///     Gets all user estates
-		/// </summary>
-		/// <param name="ownerID"></param>
-		/// <returns>List of estates</returns>
-		List<string> GetEstateNames (UUID ownerId);
+        /// <summary>
+        ///     Gets all user estates
+        /// </summary>
+        /// <param name="ownerID"></param>
+        /// <returns>List of estates</returns>
+        List<string> GetEstateNames (UUID ownerId);
 
-		/// <summary>
-		///     Gets the estates that have the given owner
-		/// </summary>
-		/// <param name="ownerID"></param>
-		/// <returns></returns>
-		List<EstateSettings> GetEstates (UUID ownerID);
+        /// <summary>
+        ///     Gets the estates that have the given owner
+        /// </summary>
+        /// <param name="ownerID"></param>
+        /// <returns></returns>
+        List<EstateSettings> GetEstates(UUID ownerID);
 
-		/// <summary>
-		///     Gets the estates that have the specified owner, with optional filters.
-		/// </summary>
-		/// <param name="OwnerID"></param>
-		/// <param name="boolFields"></param>
-		/// <returns></returns>
-		List<EstateSettings> GetEstates (UUID OwnerID, Dictionary<string, bool> boolFields);
+        /// <summary>
+        ///     Gets the estates that have the specified owner, with optional filters.
+        /// </summary>
+        /// <param name="OwnerID"></param>
+        /// <param name="boolFields"></param>
+        /// <returns></returns>
+        List<EstateSettings> GetEstates(UUID OwnerID, Dictionary<string, bool> boolFields);
 
-		/// <summary>
-		///     Gets the EstateID for the specified RegionID
-		/// </summary>
-		/// <param name="regionID"></param>
-		/// <returns></returns>
-		int GetEstateID (UUID regionID);
+        /// <summary>
+        ///     Gets the EstateID for the specified RegionID
+        /// </summary>
+        /// <param name="regionID"></param>
+        /// <returns></returns>
+        int GetRegionEstateID(UUID regionID);
 
-		/// <summary>
-		///     Add a new region to the estate, authenticates with the password
-		/// </summary>
-		/// <param name="regionID"></param>
-		/// <param name="estateID"></param>
-		/// <returns></returns>
-		bool LinkRegion (UUID regionID, int estateID);
+        /// <summary>
+        ///     Add a new region to the estate, authenticates with the password
+        /// </summary>
+        /// <param name="regionID"></param>
+        /// <param name="estateID"></param>
+        /// <returns></returns>
+        bool LinkRegion(UUID regionID, int estateID);
 
-		/// <summary>
-		///     Remove an existing region from the estate
-		/// </summary>
-		/// <param name="regionID"></param>
-		/// <returns></returns>
-		bool DelinkRegion (UUID regionID);
+        /// <summary>
+        ///     Remove an existing region from the estate
+        /// </summary>
+        /// <param name="regionID"></param>
+        /// <returns></returns>
+        bool DelinkRegion(UUID regionID);
 
-		/// <summary>
-		///     Deletes the given estate by its estate ID
-		/// </summary>
-		/// <param name="estateID"></param>
-		/// <returns></returns>
-		bool DeleteEstate (int estateID);
+        /// <summary>
+        ///     Deletes the given estate by its estate ID
+        /// </summary>
+        /// <param name="estateID"></param>
+        /// <returns></returns>
+        bool DeleteEstate(int estateID);
 
-		/// <summary>
-		///  Check to see if Estate exists.
-		/// </summary>
-		/// <returns><c>true</c>, if exists, <c>false</c> otherwise.</returns>
-		/// <param name="name">Name.</param>
-		bool EstateExists (string name);
+        /// <summary>
+        ///  Check to see if Estate exists.
+        /// </summary>
+        /// <returns><c>true</c>, if exists, <c>false</c> otherwise.</returns>
+        /// <param name="name">Name.</param>
+        bool EstateExists (string name);
 
-		/// <summary>
-		/// Cheks to see if region is part of an estate.
-		/// </summary>
-		/// <returns><c>true</c>, if region is part of estate, <c>false</c> otherwise.</returns>
-		/// <param name="estateID">Estate ID</param>
-		/// <param name="regionID">Region ID</param>
-		bool EstateRegionExists (int estateID, UUID regionID);
-	}
+        /// <summary>
+        /// Cheks to see if region is part of an estate.
+        /// </summary>
+        /// <returns><c>true</c>, if region is part of estate, <c>false</c> otherwise.</returns>
+        /// <param name="estateID">Estate ID</param>
+        /// <param name="regionID">Region ID</param>
+        bool EstateRegionExists(int estateID, UUID regionID);
+
+    }
 }

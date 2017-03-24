@@ -32,52 +32,53 @@ using Universe.Framework.Servers.HttpServer.Implementation;
 
 namespace Universe.Modules.Web
 {
-	public class HelpdMain : IWebInterfacePage
-	{
-		public string [] FilePath {
-			get {
-				return new [] {
-					"html/help.html"
-				};
-			}
-		}
+    public class HelpdMain : IWebInterfacePage
+    {
+        public string [] FilePath {
+            get {
+                return new []
+                           {
+                               "html/help.html"
+                           };
+            }
+        }
 
-		public bool RequiresAuthentication {
-			get { return false; }
-		}
+        public bool RequiresAuthentication {
+            get { return false; }
+        }
 
-		public bool RequiresAdminAuthentication {
-			get { return false; }
-		}
+        public bool RequiresAdminAuthentication {
+            get { return false; }
+        }
 
-		public Dictionary<string, object> Fill (WebInterface webInterface, string filename, OSHttpRequest httpRequest,
-		                                              OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
-		                                              ITranslator translator, out string response)
-		{
-			response = null;
-			var vars = new Dictionary<string, object> ();
-			var clientloginuri = webInterface.LoginURL.Replace ("http", "secondlife");
+        public Dictionary<string, object> Fill (WebInterface webInterface, string filename, OSHttpRequest httpRequest,
+                                               OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
+                                               ITranslator translator, out string response)
+        {
+            response = null;
+            var vars = new Dictionary<string, object> ();
+            var clientloginuri = webInterface.LoginURL.Replace ("http", "secondlife");
 
-			vars.Add ("Login", translator.GetTranslatedString ("Login"));
-			vars.Add ("ClientLoginURI", clientloginuri);
-			vars.Add ("HelpText", translator.GetTranslatedString ("HelpText"));
-			vars.Add ("HelpViewersConfigText", translator.GetTranslatedString ("HelpViewersConfigText"));
-			vars.Add ("Alchemy", "Alchemy");
-			vars.Add ("Firestorm", "Firestorm");
-			vars.Add ("Kokua", "Kokua");
-			vars.Add ("Singularity", "Singularity");
-			vars.Add ("Lumiya", "Lumiya (Android)");
-			vars.Add ("PocketMetaverse", "Pocket Metaverse (iPhone/iPad)");
-			vars.Add ("Radegast", "Radegast");
-			vars.Add ("MobileGridClient", "MobileGridClient (Android)");
-			vars.Add ("MoreInfo", translator.GetTranslatedString ("MoreInfo"));
-			return vars;
-		}
+            vars.Add ("Login", translator.GetTranslatedString ("Login"));
+            vars.Add ("ClientLoginURI", clientloginuri);
+            vars.Add ("HelpText", translator.GetTranslatedString ("HelpText"));
+            vars.Add ("HelpViewersConfigText", translator.GetTranslatedString ("HelpViewersConfigText"));
+            vars.Add ("Alchemy", "Alchemy");
+            vars.Add ("Firestorm", "Firestorm");
+            vars.Add ("Kokua", "Kokua");
+            vars.Add ("Singularity", "Singularity");
+            vars.Add ("Lumiya", "Lumiya (Android)");
+            vars.Add ("PocketMetaverse", "Pocket Metaverse (iPhone/iPad)");
+            vars.Add ("Radegast", "Radegast");
+            vars.Add ("MobileGridClient", "MobileGridClient (Android)");
+            vars.Add ("MoreInfo", translator.GetTranslatedString ("MoreInfo"));
+            return vars;
+        }
 
-		public bool AttemptFindPage (string filename, ref OSHttpResponse httpResponse, out string text)
-		{
-			text = "";
-			return false;
-		}
-	}
+        public bool AttemptFindPage (string filename, ref OSHttpResponse httpResponse, out string text)
+        {
+            text = "";
+            return false;
+        }
+    }
 }

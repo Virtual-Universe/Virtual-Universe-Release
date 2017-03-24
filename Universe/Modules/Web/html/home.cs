@@ -35,116 +35,117 @@ using Universe.Framework.Services;
 
 namespace Universe.Modules.Web
 {
-	public class HomeMain : IWebInterfacePage
-	{
-		public string [] FilePath {
-			get {
-				return new [] {
-					"html/home.html"
-				};
-			}
-		}
+    public class HomeMain : IWebInterfacePage
+    {
+        public string [] FilePath {
+            get {
+                return new []
+                           {
+                               "html/home.html"
+                           };
+            }
+        }
 
-		public bool RequiresAuthentication {
-			get { return false; }
-		}
+        public bool RequiresAuthentication {
+            get { return false; }
+        }
 
-		public bool RequiresAdminAuthentication {
-			get { return false; }
-		}
+        public bool RequiresAdminAuthentication {
+            get { return false; }
+        }
 
-		public Dictionary<string, object> Fill (WebInterface webInterface, string filename, OSHttpRequest httpRequest,
-		                                              OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
-		                                              ITranslator translator, out string response)
-		{
-			response = null;
-			var vars = new Dictionary<string, object> ();
+        public Dictionary<string, object> Fill (WebInterface webInterface, string filename, OSHttpRequest httpRequest,
+                                               OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
+                                               ITranslator translator, out string response)
+        {
+            response = null;
+            var vars = new Dictionary<string, object> ();
 
-			// homescreen login
-			string error = "";
-			if (requestParameters.ContainsKey ("username") && requestParameters.ContainsKey ("password")) {
-				string username = requestParameters ["username"].ToString ();
-				string password = requestParameters ["password"].ToString ();
+            // homescreen login
+            string error = "";
+            if (requestParameters.ContainsKey ("username") && requestParameters.ContainsKey ("password")) {
+                string username = requestParameters ["username"].ToString ();
+                string password = requestParameters ["password"].ToString ();
 
-				ILoginService loginService = webInterface.Registry.RequestModuleInterface<ILoginService> ();
-				if (loginService.VerifyClient (UUID.Zero, username, "UserAccount", password)) {
-					UUID sessionID = UUID.Random ();
-					UserAccount account =
-						webInterface.Registry.RequestModuleInterface<IUserAccountService> ()
+                ILoginService loginService = webInterface.Registry.RequestModuleInterface<ILoginService> ();
+                if (loginService.VerifyClient (UUID.Zero, username, "UserAccount", password)) {
+                    UUID sessionID = UUID.Random ();
+                    UserAccount account =
+                        webInterface.Registry.RequestModuleInterface<IUserAccountService> ()
                             .GetUserAccount (null, username);
-					Authenticator.AddAuthentication (sessionID, account);
-					if (account.UserLevel > 0)
-						Authenticator.AddAdminAuthentication (sessionID, account);
-					httpResponse.AddCookie (new System.Web.HttpCookie ("SessionID", sessionID.ToString ()) {
-						Expires = DateTime.MinValue,
-						Path = ""
-					});
+                    Authenticator.AddAuthentication (sessionID, account);
+                    if (account.UserLevel > 0)
+                        Authenticator.AddAdminAuthentication (sessionID, account);
+                    httpResponse.AddCookie (new System.Web.HttpCookie ("SessionID", sessionID.ToString ()) {
+                        Expires = DateTime.MinValue,
+                        Path = ""
+                    });
 
-					response = "<h3>Successfully logged in</h3>" +
-					"<script language=\"javascript\">" +
-					"setTimeout(function() {window.location.href = \"index.html\";}, 0);" +
-					"</script>";
-				} else
-					response = "<h3>Failed to verify user name and password</h3>";
-				return null;
-			}
+                    response = "<h3>Successfully logged in</h3>" +
+                        "<script language=\"javascript\">" +
+                        "setTimeout(function() {window.location.href = \"index.html\";}, 0);" +
+                        "</script>";
+                } else
+                    response = "<h3>Failed to verify user name and password</h3>";
+                return null;
+            }
 
-			// Tooltips Urls
-			vars.Add ("TooltipsWelcomeScreen", translator.GetTranslatedString ("TooltipsWelcomeScreen"));
-			vars.Add ("TooltipsWorldMap", translator.GetTranslatedString ("TooltipsWorldMap"));
+            // Tooltips Urls
+            vars.Add ("TooltipsWelcomeScreen", translator.GetTranslatedString ("TooltipsWelcomeScreen"));
+            vars.Add ("TooltipsWorldMap", translator.GetTranslatedString ("TooltipsWorldMap"));
 
-			// Index Page
-			vars.Add ("HomeText", translator.GetTranslatedString ("HomeText"));
-			vars.Add ("HomeTextWelcome", translator.GetTranslatedString ("HomeTextWelcome"));
-			vars.Add ("HomeTextTips", translator.GetTranslatedString ("HomeTextTips"));
-			vars.Add ("WelcomeScreen", translator.GetTranslatedString ("WelcomeScreen"));
-			vars.Add ("WelcomeToText", translator.GetTranslatedString ("WelcomeToText"));
+            // Index Page
+            vars.Add ("HomeText", translator.GetTranslatedString ("HomeText"));
+            vars.Add ("HomeTextWelcome", translator.GetTranslatedString ("HomeTextWelcome"));
+            vars.Add ("HomeTextTips", translator.GetTranslatedString ("HomeTextTips"));
+            vars.Add ("WelcomeScreen", translator.GetTranslatedString ("WelcomeScreen"));
+            vars.Add ("WelcomeToText", translator.GetTranslatedString ("WelcomeToText"));
 
-			// login
-			vars.Add ("UserLogin", !Authenticator.CheckAuthentication (httpRequest));
-			vars.Add ("ErrorMessage", error);
-			vars.Add ("Login", translator.GetTranslatedString ("Login"));
-			vars.Add ("UserNameText", translator.GetTranslatedString ("UserName"));
-			vars.Add ("PasswordText", translator.GetTranslatedString ("Password"));
-			vars.Add ("ForgotPassword", translator.GetTranslatedString ("ForgotPassword"));
-			vars.Add ("Submit", translator.GetTranslatedString ("Login"));
+            // login
+            vars.Add ("UserLogin", !Authenticator.CheckAuthentication (httpRequest));
+            vars.Add ("ErrorMessage", error);
+            vars.Add ("Login", translator.GetTranslatedString ("Login"));
+            vars.Add ("UserNameText", translator.GetTranslatedString ("UserName"));
+            vars.Add ("PasswordText", translator.GetTranslatedString ("Password"));
+            vars.Add ("ForgotPassword", translator.GetTranslatedString ("ForgotPassword"));
+            vars.Add ("Submit", translator.GetTranslatedString ("Login"));
 
-			// greythane - 20160826 - do menu and setting updates
-			var settings = webInterface.GetWebUISettings ();
+            // greythane - 20160826 - do menu and setting updates
+            var settings = webInterface.GetWebUISettings ();
 
-			if (PagesMigrator.RequiresUpdate () &&
-			             PagesMigrator.CheckWhetherIgnoredVersionUpdate (settings.LastPagesVersionUpdateIgnored))
-				vars.Add ("PagesUpdateRequired",
-					translator.GetTranslatedString ("Pages") + " " +
-					translator.GetTranslatedString ("UpdateRequired"));
-			else
-				vars.Add ("PagesUpdateRequired", "");
-			if (SettingsMigrator.RequiresUpdate () &&
-			             SettingsMigrator.CheckWhetherIgnoredVersionUpdate (settings.LastSettingsVersionUpdateIgnored))
-				vars.Add ("SettingsUpdateRequired",
-					translator.GetTranslatedString ("Settings") + " " +
-					translator.GetTranslatedString ("UpdateRequired"));
-			else
-				vars.Add ("SettingsUpdateRequired", "");
+            if (PagesMigrator.RequiresUpdate () &&
+                PagesMigrator.CheckWhetherIgnoredVersionUpdate (settings.LastPagesVersionUpdateIgnored))
+                vars.Add ("PagesUpdateRequired",
+                         translator.GetTranslatedString ("Pages") + " " +
+                         translator.GetTranslatedString ("UpdateRequired"));
+            else
+                vars.Add ("PagesUpdateRequired", "");
+            if (SettingsMigrator.RequiresUpdate () &&
+                SettingsMigrator.CheckWhetherIgnoredVersionUpdate (settings.LastSettingsVersionUpdateIgnored))
+                vars.Add ("SettingsUpdateRequired",
+                         translator.GetTranslatedString ("Settings") + " " +
+                         translator.GetTranslatedString ("UpdateRequired"));
+            else
+                vars.Add ("SettingsUpdateRequired", "");
 
-			vars.Add ("ShowSlideshowBar", !settings.HideSlideshowBar);
+            vars.Add ("ShowSlideshowBar", !settings.HideSlideshowBar);
 
-			// user setup news inclusion
-			if (settings.LocalFrontPage == "") {
-				vars.Add ("LocalPage", false);
-				vars.Add ("LocalFrontPage", "");
-			} else {
-				vars.Add ("LocalPage", true);
-				vars.Add ("LocalFrontPage", settings.LocalFrontPage);
-			}
+            // user setup news inclusion
+            if (settings.LocalFrontPage == "") {
+                vars.Add ("LocalPage", false);
+                vars.Add ("LocalFrontPage", "");
+            } else {
+                vars.Add ("LocalPage", true);
+                vars.Add ("LocalFrontPage", settings.LocalFrontPage);
+            }
 
-			return vars;
-		}
+            return vars;
+        }
 
-		public bool AttemptFindPage (string filename, ref OSHttpResponse httpResponse, out string text)
-		{
-			text = "";
-			return false;
-		}
-	}
+        public bool AttemptFindPage (string filename, ref OSHttpResponse httpResponse, out string text)
+        {
+            text = "";
+            return false;
+        }
+    }
 }

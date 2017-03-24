@@ -34,190 +34,213 @@ using OpenMetaverse;
 
 namespace Universe.Framework.ClientInterfaces
 {
-	[Serializable]
-	public class AnimationSet
-	{
-		public static AvatarAnimations Animations = new AvatarAnimations ();
+    [Serializable]
+    public class AnimationSet
+    {
+        public static AvatarAnimations Animations = new AvatarAnimations();
 
-		readonly List<Animation> m_animations = new List<Animation> ();
-		Animation m_implicitDefaultAnimation = new Animation ();
-		Animation m_defaultAnimation = new Animation ();
-		readonly Dictionary<string, UUID> m_defaultAnimationOverrides = new Dictionary<string,UUID> ();
-		readonly Dictionary<string, string> m_defaultAnimationOverridesName = new Dictionary<string, string> ();
+        readonly List<Animation> m_animations = new List<Animation>();
+        Animation m_implicitDefaultAnimation = new Animation();
+        Animation m_defaultAnimation = new Animation();
+        readonly Dictionary<string, UUID> m_defaultAnimationOverrides = new Dictionary<string,UUID>();
+        readonly Dictionary<string, string> m_defaultAnimationOverridesName = new Dictionary<string, string>();
 
-		public AnimationSet (AvatarAnimations animations)
-		{
-			Animations = animations;
-			ResetDefaultAnimation ();
-		}
+        public AnimationSet(AvatarAnimations animations)
+        {
+            Animations = animations;
+            ResetDefaultAnimation();
+        }
 
-		public Animation ImplicitDefaultAnimation {
-			get { return m_implicitDefaultAnimation; }
-		}
+        public Animation ImplicitDefaultAnimation
+        {
+            get { return m_implicitDefaultAnimation; }
+        }
 
-		public bool HasAnimation (UUID animID)
-		{
-			if (m_defaultAnimation.AnimID == animID)
-				return true;
+        public bool HasAnimation(UUID animID)
+        {
+            if (m_defaultAnimation.AnimID == animID)
+                return true;
 
-			return m_animations.Any (t => t.AnimID == animID);
-		}
+            return m_animations.Any(t => t.AnimID == animID);
+        }
 
-		public bool Add (UUID animID, int sequenceNum, UUID objectID)
-		{
-			lock (m_animations) {
-				if (!HasAnimation (animID)) {
-					m_animations.Add (new Animation (animID, sequenceNum, objectID));
-					return true;
-				}
-			}
-			return false;
-		}
+        public bool Add(UUID animID, int sequenceNum, UUID objectID)
+        {
+            lock (m_animations)
+            {
+                if (!HasAnimation(animID))
+                {
+                    m_animations.Add(new Animation(animID, sequenceNum, objectID));
+                    return true;
+                }
+            }
+            return false;
+        }
 
-		public bool Remove (UUID animID)
-		{
-			lock (m_animations) {
-				if (m_defaultAnimation.AnimID == animID) {
-					ResetDefaultAnimation ();
-				} else if (HasAnimation (animID)) {
-					for (int i = 0; i < m_animations.Count; i++) {
-						if (m_animations [i].AnimID == animID) {
-							m_animations.RemoveAt (i);
-							return true;
-						}
-					}
-				}
-			}
-			return false;
-		}
+        public bool Remove(UUID animID)
+        {
+            lock (m_animations)
+            {
+                if (m_defaultAnimation.AnimID == animID)
+                {
+                    ResetDefaultAnimation();
+                }
+                else if (HasAnimation(animID))
+                {
+                    for (int i = 0; i < m_animations.Count; i++)
+                    {
+                        if (m_animations[i].AnimID == animID)
+                        {
+                            m_animations.RemoveAt(i);
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
 
-		public void Clear ()
-		{
-			ResetDefaultAnimation ();
-			lock (m_animations) {
-				m_animations.Clear ();
-			}
-		}
+        public void Clear()
+        {
+            ResetDefaultAnimation();
+            lock (m_animations) {
+                m_animations.Clear ();
+            }
+        }
 
-		/// <summary>
-		///     The default animation is reserved for "main" animations
-		///     that are mutually exclusive, e.g. flying and sitting.
-		/// </summary>
-		public bool SetDefaultAnimation (UUID animID, int sequenceNum, UUID objectID)
-		{
-			if (m_defaultAnimation.AnimID != animID) {
-				m_defaultAnimation = new Animation (animID, sequenceNum, objectID);
-				m_implicitDefaultAnimation = m_defaultAnimation;
-				return true;
-			}
-			return false;
-		}
+        /// <summary>
+        ///     The default animation is reserved for "main" animations
+        ///     that are mutually exclusive, e.g. flying and sitting.
+        /// </summary>
+        public bool SetDefaultAnimation(UUID animID, int sequenceNum, UUID objectID)
+        {
+            if (m_defaultAnimation.AnimID != animID)
+            {
+                m_defaultAnimation = new Animation(animID, sequenceNum, objectID);
+                m_implicitDefaultAnimation = m_defaultAnimation;
+                return true;
+            }
+            return false;
+        }
 
-		protected bool ResetDefaultAnimation ()
-		{
-			return TrySetDefaultAnimation ("STAND", 1, UUID.Zero);
-		}
+        protected bool ResetDefaultAnimation()
+        {
+            return TrySetDefaultAnimation("STAND", 1, UUID.Zero);
+        }
 
-		/// <summary>
-		///     Set the animation as the default animation if it's known
-		/// </summary>
-		public bool TrySetDefaultAnimation (string anim, int sequenceNum, UUID objectID)
-		{
-			UUID uuid;
-			if (m_defaultAnimationOverrides.TryGetValue (anim, out uuid) ||
-			             Animations.AnimsUUID.TryGetValue (anim, out uuid)) {
-				return SetDefaultAnimation (uuid, sequenceNum, objectID);
-			}
-			return false;
-		}
+        /// <summary>
+        ///     Set the animation as the default animation if it's known
+        /// </summary>
+        public bool TrySetDefaultAnimation(string anim, int sequenceNum, UUID objectID)
+        {
+            UUID uuid;
+            if (m_defaultAnimationOverrides.TryGetValue(anim, out uuid) ||
+                Animations.AnimsUUID.TryGetValue(anim, out uuid))
+            {
+                return SetDefaultAnimation(uuid, sequenceNum, objectID);
+            }
+            return false;
+        }
 
-		public void SetDefaultAnimationOverride (string anim_state, UUID animID, string animation)
-		{
-			m_defaultAnimationOverrides [anim_state] = animID;
-			m_defaultAnimationOverridesName [anim_state] = animation;
-		}
+        public void SetDefaultAnimationOverride(string anim_state, UUID animID, string animation)
+        {
+            m_defaultAnimationOverrides[anim_state] = animID;
+            m_defaultAnimationOverridesName[anim_state] = animation;
+        }
 
-		public void ResetDefaultAnimationOverride (string anim_state)
-		{
-			if (anim_state == "ALL") {
-				m_defaultAnimationOverrides.Clear ();
-				m_defaultAnimationOverridesName.Clear ();
-			} else {
-				m_defaultAnimationOverrides.Remove (anim_state);
-				m_defaultAnimationOverridesName.Remove (anim_state);
-			}
-		}
+        public void ResetDefaultAnimationOverride(string anim_state)
+        {
+            if (anim_state == "ALL")
+            {
+                m_defaultAnimationOverrides.Clear();
+                m_defaultAnimationOverridesName.Clear();
+            }
+            else
+            {
+                m_defaultAnimationOverrides.Remove(anim_state);
+                m_defaultAnimationOverridesName.Remove(anim_state);
+            }
+        }
 
-		public string GetDefaultAnimationOverride (string anim_state)
-		{
-			string anim = "";
-			if (!m_defaultAnimationOverridesName.TryGetValue (anim_state, out anim)) {
-				UUID animID;
-				if (!Animations.AnimsUUID.TryGetValue (anim_state, out animID))
-					anim = "";
-				else
-					return anim_state;
-			}
-			return anim;
-		}
+        public string GetDefaultAnimationOverride(string anim_state)
+        {
+            string anim = "";
+            if (!m_defaultAnimationOverridesName.TryGetValue(anim_state, out anim))
+            {
+                UUID animID;
+                if (!Animations.AnimsUUID.TryGetValue(anim_state, out animID))
+                    anim = "";
+                else
+                    return anim_state;
+            }
+            return anim;
+        }
 
-		public void GetArrays (out UUID[] animIDs, out int[] sequenceNums, out UUID[] objectIDs)
-		{
-			lock (m_animations) {
-				int defaultSize = 0;
-				if (m_defaultAnimation.AnimID != UUID.Zero) {
-					defaultSize++;
-				} else if (m_animations.Count == 0) {
-					defaultSize++;
-				}
+        public void GetArrays(out UUID[] animIDs, out int[] sequenceNums, out UUID[] objectIDs)
+        {
+            lock (m_animations)
+            {
+                int defaultSize = 0;
+                if (m_defaultAnimation.AnimID != UUID.Zero)
+                {
+                    defaultSize++;
+                }
+                else if (m_animations.Count == 0)
+                {
+                    defaultSize++;
+                }
 
-				animIDs = new UUID[m_animations.Count + defaultSize];
-				sequenceNums = new int[m_animations.Count + defaultSize];
-				objectIDs = new UUID[m_animations.Count + defaultSize];
+                animIDs = new UUID[m_animations.Count + defaultSize];
+                sequenceNums = new int[m_animations.Count + defaultSize];
+                objectIDs = new UUID[m_animations.Count + defaultSize];
 
-				if (m_defaultAnimation.AnimID != UUID.Zero) {
-					animIDs [0] = m_defaultAnimation.AnimID;
-					sequenceNums [0] = m_defaultAnimation.SequenceNum;
-					objectIDs [0] = m_defaultAnimation.ObjectID;
-				} else if (m_animations.Count == 0) {
-					animIDs [0] = m_implicitDefaultAnimation.AnimID;
-					sequenceNums [0] = m_implicitDefaultAnimation.SequenceNum;
-					objectIDs [0] = m_implicitDefaultAnimation.ObjectID;
-				}
+                if (m_defaultAnimation.AnimID != UUID.Zero)
+                {
+                    animIDs[0] = m_defaultAnimation.AnimID;
+                    sequenceNums[0] = m_defaultAnimation.SequenceNum;
+                    objectIDs[0] = m_defaultAnimation.ObjectID;
+                }
+                else if (m_animations.Count == 0)
+                {
+                    animIDs[0] = m_implicitDefaultAnimation.AnimID;
+                    sequenceNums[0] = m_implicitDefaultAnimation.SequenceNum;
+                    objectIDs[0] = m_implicitDefaultAnimation.ObjectID;
+                }
 
-				for (int i = 0; i < m_animations.Count; ++i) {
-					animIDs [i + 1] = m_animations [i].AnimID;
-					sequenceNums [i + 1] = m_animations [i].SequenceNum;
-					objectIDs [i + 1] = m_animations [i].ObjectID;
-				}
-			}
-		}
+                for (int i = 0; i < m_animations.Count; ++i)
+                {
+                    animIDs[i + 1] = m_animations[i].AnimID;
+                    sequenceNums[i + 1] = m_animations[i].SequenceNum;
+                    objectIDs[i + 1] = m_animations[i].ObjectID;
+                }
+            }
+        }
 
-		public Animation[] ToArray ()
-		{
-			lock (m_animations) {
-				Animation[] theArray = new Animation [m_animations.Count];
-				uint i = 0;
-				try {
-					foreach (Animation anim in m_animations)
-						theArray [i++] = anim;
-				} catch {
-					/* S%^t happens. Ignore. */
-				}
+        public Animation[] ToArray()
+        {
+            lock (m_animations) {
+                Animation [] theArray = new Animation [m_animations.Count];
+                uint i = 0;
+                try {
+                    foreach (Animation anim in m_animations)
+                        theArray [i++] = anim;
+                } catch {
+                    /* S%^t happens. Ignore. */
+                }
 
-				return theArray;
-			}
-		}
+                return theArray;
+            }
+        }
 
-		public void FromArray (Animation[] theArray)
-		{
-			if (theArray == null)
-				return;
+        public void FromArray(Animation[] theArray)
+        {
+            if (theArray == null)
+                return;
    
-			lock (m_animations) {
-				foreach (Animation anim in theArray)
-					m_animations.Add (anim);
-			}
-		}
-	}
+            lock (m_animations) {
+                foreach (Animation anim in theArray)
+                    m_animations.Add (anim);
+            }
+        }
+    }
 }

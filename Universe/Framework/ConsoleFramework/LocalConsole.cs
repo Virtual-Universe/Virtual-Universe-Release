@@ -38,13 +38,14 @@ using Universe.Framework.Utilities;
 
 namespace Universe.Framework.ConsoleFramework
 {
-	/// <summary>
-	///     A console that uses cursor control and color
-	/// </summary>
-	public class LocalConsole : CommandConsole
-	{
-		static readonly object _cmdlock = new object ();
-		static readonly ConsoleColor[] Colors = {
+    /// <summary>
+    ///     A console that uses cursor control and color
+    /// </summary>
+    public class LocalConsole : CommandConsole
+    {
+        static readonly object _cmdlock = new object ();
+        static readonly ConsoleColor [] Colors =
+            {
                 // the dark colors don't seem to be visible on some black background terminals like putty :(
                 //ConsoleColor.DarkBlue,
                 //ConsoleColor.DarkGreen,

@@ -32,5 +32,5 @@ using Nwc.XmlRpc;
 
 namespace Universe.Framework.Servers.HttpServer
 {
-	public delegate XmlRpcResponse XmlRpcMethod (XmlRpcRequest request, IPEndPoint client);
+    public delegate XmlRpcResponse XmlRpcMethod(XmlRpcRequest request, IPEndPoint client);
 }

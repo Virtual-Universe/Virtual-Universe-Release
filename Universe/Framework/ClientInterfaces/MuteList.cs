@@ -27,40 +27,40 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using Universe.Framework.Modules;
 using OpenMetaverse;
 using OpenMetaverse.StructuredData;
-using Universe.Framework.Modules;
 
 namespace Universe.Framework.ClientInterfaces
 {
-	public class MuteList : IDataTransferable
-	{
-		/// <summary>
-		///     UUID of the person muted
-		/// </summary>
-		public UUID MuteID;
+    public class MuteList : IDataTransferable
+    {
+        /// <summary>
+        ///     UUID of the person muted
+        /// </summary>
+        public UUID MuteID;
 
-		/// <summary>
-		///     Name of the person muted
-		/// </summary>
-		public string MuteName;
+        /// <summary>
+        ///     Name of the person muted
+        /// </summary>
+        public string MuteName;
 
-		/// <summary>
-		///     Are they an object, person, group?
-		/// </summary>
-		public string MuteType;
+        /// <summary>
+        ///     Are they an object, person, group?
+        /// </summary>
+        public string MuteType;
 
-		public override void FromOSD (OSDMap map)
-		{
-			MuteName = map ["MuteName"].AsString ();
-			MuteID = map ["MuteID"].AsUUID ();
-			MuteType = map ["MuteType"].AsString ();
-		}
+        public override void FromOSD(OSDMap map)
+        {
+            MuteName = map["MuteName"].AsString();
+            MuteID = map["MuteID"].AsUUID();
+            MuteType = map["MuteType"].AsString();
+        }
 
-		public override OSDMap ToOSD ()
-		{
-			OSDMap map = new OSDMap { { "MuteName", MuteName }, { "MuteID", MuteID }, { "MuteType", MuteType } };
-			return map;
-		}
-	}
+        public override OSDMap ToOSD()
+        {
+            OSDMap map = new OSDMap {{"MuteName", MuteName}, {"MuteID", MuteID}, {"MuteType", MuteType}};
+            return map;
+        }
+    }
 }

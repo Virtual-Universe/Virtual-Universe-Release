@@ -36,90 +36,98 @@ using Universe.Framework.SceneInfo;
 
 namespace Universe.ScriptEngine.VirtualScript.Plugins
 {
-	public class ListenerPlugin : IScriptPlugin
-	{
-		readonly List<IWorldComm> m_modules = new List<IWorldComm> ();
-		public ScriptEngine m_ScriptEngine;
+    public class ListenerPlugin : IScriptPlugin
+    {
+        readonly List<IWorldComm> m_modules = new List<IWorldComm>();
+        public ScriptEngine m_ScriptEngine;
 
-		#region IScriptPlugin Members
+        #region IScriptPlugin Members
 
-		public bool RemoveOnStateChange {
-			get { return true; }
-		}
+        public bool RemoveOnStateChange
+        {
+            get { return true; }
+        }
 
-		public void Initialize (ScriptEngine engine)
-		{
-			m_ScriptEngine = engine;
-		}
+        public void Initialize(ScriptEngine engine)
+        {
+            m_ScriptEngine = engine;
+        }
 
-		public void AddRegion (IScene scene)
-		{
-			m_modules.Add (scene.RequestModuleInterface<IWorldComm> ());
-		}
+        public void AddRegion(IScene scene)
+        {
+            m_modules.Add(scene.RequestModuleInterface<IWorldComm>());
+        }
 
-		public bool Check ()
-		{
-			bool needToContinue = false;
-			foreach (IWorldComm comms in m_modules) {
-				if (!needToContinue)
-					needToContinue = comms.HasListeners ();
-				if (comms.HasMessages ()) {
-					while (comms.HasMessages ()) {
-						IWorldCommListenerInfo lInfo = comms.GetNextMessage ();
+        public bool Check()
+        {
+            bool needToContinue = false;
+            foreach (IWorldComm comms in m_modules)
+            {
+                if (!needToContinue)
+                    needToContinue = comms.HasListeners();
+                if (comms.HasMessages())
+                {
+                    while (comms.HasMessages())
+                    {
+                        IWorldCommListenerInfo lInfo = comms.GetNextMessage();
 
-						//Deliver data to prim's listen handler
-						object[] resobj = {
-							new LSL_Types.LSLInteger (lInfo.GetChannel ()),
-							new LSL_Types.LSLString (lInfo.GetName ()),
-							new LSL_Types.LSLString (lInfo.GetID ().ToString ()),
-							new LSL_Types.LSLString (lInfo.GetMessage ())
-						};
+                        //Deliver data to prim's listen handler
+                        object[] resobj = {
+                            new LSL_Types.LSLInteger(lInfo.GetChannel()),
+                            new LSL_Types.LSLString(lInfo.GetName()),
+                            new LSL_Types.LSLString(lInfo.GetID().ToString()),
+                            new LSL_Types.LSLString(lInfo.GetMessage())
+                        };
 
-						m_ScriptEngine.PostScriptEvent (
-							lInfo.GetItemID (), lInfo.GetHostID (), new EventParams (
-							"listen", resobj,
-							new DetectParams[0]), EventPriority.Suspended);
-					}
-				}
-			}
-			return needToContinue;
-		}
+                        m_ScriptEngine.PostScriptEvent(
+                            lInfo.GetItemID(), lInfo.GetHostID(), new EventParams(
+                                                                      "listen", resobj,
+                                                                      new DetectParams[0]), EventPriority.Suspended);
+                    }
+                }
+            }
+            return needToContinue;
+        }
 
-		public OSD GetSerializationData (UUID itemID, UUID primID)
-		{
-			foreach (
-                OSD r in m_modules.Select(comms => comms.GetSerializationData(itemID, primID)).Where(r => r != null)) {
-				return r;
-			}
-			return new OSDMap ();
-		}
+        public OSD GetSerializationData(UUID itemID, UUID primID)
+        {
+            foreach (
+                OSD r in m_modules.Select(comms => comms.GetSerializationData(itemID, primID)).Where(r => r != null))
+            {
+                return r;
+            }
+            return new OSDMap();
+        }
 
-		public void CreateFromData (UUID itemID, UUID hostID,
-		                                 OSD data)
-		{
-			foreach (IWorldComm comms in m_modules) {
-				comms.CreateFromData (itemID, hostID, data);
-			}
+        public void CreateFromData(UUID itemID, UUID hostID,
+                                   OSD data)
+        {
+            foreach (IWorldComm comms in m_modules)
+            {
+                comms.CreateFromData(itemID, hostID, data);
+            }
 
-			//Make sure that the cmd handler thread is running
-			m_ScriptEngine.MaintenanceThread.PokeThreads (itemID);
-		}
+            //Make sure that the cmd handler thread is running
+            m_ScriptEngine.MaintenanceThread.PokeThreads(itemID);
+        }
 
-		public string Name {
-			get { return "Listener"; }
-		}
+        public string Name
+        {
+            get { return "Listener"; }
+        }
 
-		public void RemoveScript (UUID primID, UUID itemID)
-		{
-			foreach (IWorldComm comms in m_modules) {
-				comms.DeleteListener (itemID);
-			}
-		}
+        public void RemoveScript(UUID primID, UUID itemID)
+        {
+            foreach (IWorldComm comms in m_modules)
+            {
+                comms.DeleteListener(itemID);
+            }
+        }
 
-		#endregion
+        #endregion
 
-		public void Dispose ()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

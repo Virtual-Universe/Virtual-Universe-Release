@@ -32,123 +32,132 @@ using System.Text;
 
 namespace Universe.Framework.Servers.HttpServer.Implementation
 {
-	/// <summary>
-	///     OSHttpResponse is the Universe representation of an HTTP
-	///     response.
-	/// </summary>
-	public class OSHttpResponse
-	{
-		/// <summary>
-		///     Content type property.
-		/// </summary>
-		/// <remarks>
-		///     Setting this property will also set IsContentTypeSet to
-		///     true.
-		/// </remarks>
-		public virtual string ContentType {
-			get { return _httpResponse.ContentType; }
+    /// <summary>
+    ///     OSHttpResponse is the Universe representation of an HTTP
+    ///     response.
+    /// </summary>
+    public class OSHttpResponse
+    {
+        /// <summary>
+        ///     Content type property.
+        /// </summary>
+        /// <remarks>
+        ///     Setting this property will also set IsContentTypeSet to
+        ///     true.
+        /// </remarks>
+        public virtual string ContentType
+        {
+            get { return _httpResponse.ContentType; }
 
-			set { _httpResponse.ContentType = value; }
-		}
+            set { _httpResponse.ContentType = value; }
+        }
 
-		/// <summary>
-		///     Encoding of the body content.
-		/// </summary>
-		public Encoding ContentEncoding {
-			get { return _httpResponse.ContentEncoding; }
+        /// <summary>
+        ///     Encoding of the body content.
+        /// </summary>
+        public Encoding ContentEncoding
+        {
+            get { return _httpResponse.ContentEncoding; }
 
-			set { _httpResponse.ContentEncoding = value; }
-		}
+            set { _httpResponse.ContentEncoding = value; }
+        }
 
-		public bool KeepAlive {
-			get { return _httpResponse.KeepAlive; }
+        public bool KeepAlive
+        {
+            get { return _httpResponse.KeepAlive; }
 
-			set { _httpResponse.KeepAlive = value; }
-		}
+            set { _httpResponse.KeepAlive = value; }
+        }
 
-		/// <summary>
-		///     Set a redirect location.
-		/// </summary>
-		public string RedirectLocation {
+        /// <summary>
+        ///     Set a redirect location.
+        /// </summary>
+        public string RedirectLocation
+        {
             // get { return _redirectLocation; }
-			set { _httpResponse.Redirect (value); }
-		}
+            set { _httpResponse.Redirect(value); }
+        }
 
-		/// <summary>
-		///     Chunk transfers.
-		/// </summary>
-		public bool SendChunked {
-			get { return _httpResponse.SendChunked; }
+        /// <summary>
+        ///     Chunk transfers.
+        /// </summary>
+        public bool SendChunked
+        {
+            get { return _httpResponse.SendChunked; }
 
-			set { _httpResponse.SendChunked = value; }
-		}
+            set { _httpResponse.SendChunked = value; }
+        }
 
-		/// <summary>
-		///     HTTP status code.
-		/// </summary>
-		public virtual int StatusCode {
-			get { return _httpResponse.StatusCode; }
+        /// <summary>
+        ///     HTTP status code.
+        /// </summary>
+        public virtual int StatusCode
+        {
+            get { return _httpResponse.StatusCode; }
 
-			set { _httpResponse.StatusCode = value; }
-		}
+            set { _httpResponse.StatusCode = value; }
+        }
 
 
-		/// <summary>
-		///     HTTP status description.
-		/// </summary>
-		public string StatusDescription {
-			get { return _httpResponse.StatusDescription; }
+        /// <summary>
+        ///     HTTP status description.
+        /// </summary>
+        public string StatusDescription
+        {
+            get { return _httpResponse.StatusDescription; }
 
-			set { _httpResponse.StatusDescription = value; }
-		}
+            set { _httpResponse.StatusDescription = value; }
+        }
 
-		public System.Web.HttpCookieCollection Cookies {
-			get {
-				var cookies = _httpResponse.Cookies;
-				System.Web.HttpCookieCollection httpCookies = new System.Web.HttpCookieCollection ();
-				foreach (Cookie cookie in cookies)
-					httpCookies.Add (new System.Web.HttpCookie (cookie.Name, cookie.Value));
-				return httpCookies;
-			}
-		}
+        public System.Web.HttpCookieCollection Cookies
+        {
+            get
+            {
+                var cookies = _httpResponse.Cookies;
+                System.Web.HttpCookieCollection httpCookies = new System.Web.HttpCookieCollection();
+                foreach (Cookie cookie in cookies)
+                    httpCookies.Add(new System.Web.HttpCookie(cookie.Name, cookie.Value));
+                return httpCookies;
+            }
+        }
 
-		public void AddCookie (System.Web.HttpCookie cookie)
-		{
-			try {
-				_httpResponse.Cookies.Add (new Cookie (cookie.Name, cookie.Value, cookie.Path, cookie.Domain) {
-					Expires = cookie.Expires
-				});
-			} catch {
-			}
-		}
+        public void AddCookie(System.Web.HttpCookie cookie)
+        {
+            try {
+                _httpResponse.Cookies.Add (new Cookie (cookie.Name, cookie.Value, cookie.Path, cookie.Domain) {
+                    Expires = cookie.Expires
+                });
+            } catch {
+            }
+        }
 
-		protected HttpListenerResponse _httpResponse;
+        protected HttpListenerResponse _httpResponse;
 
-		public OSHttpResponse (HttpListenerContext context)
-		{
-			try {
-				_httpResponse = context.Response;
-			} catch {
-			}
-		}
+        public OSHttpResponse(HttpListenerContext context)
+        {
+            try {
+                _httpResponse = context.Response;
+            }catch{
+            }
+        }
 
-		/// <summary>
-		///     Add a header field and content to the response.
-		/// </summary>
-		/// <param name="key">
-		///     string containing the header field
-		///     name
-		/// </param>
-		/// <param name="value">
-		///     string containing the header field
-		///     value
-		/// </param>
-		public void AddHeader (string key, string value)
-		{
-			try {
-				_httpResponse.AddHeader (key, value);
-			} catch {
-			}
-		}
-	}
+        /// <summary>
+        ///     Add a header field and content to the response.
+        /// </summary>
+        /// <param name="key">
+        ///     string containing the header field
+        ///     name
+        /// </param>
+        /// <param name="value">
+        ///     string containing the header field
+        ///     value
+        /// </param>
+        public void AddHeader(string key, string value)
+        {
+            try {
+                _httpResponse.AddHeader (key, value);
+            } catch {
+            }
+        }
+    }
 }

@@ -33,38 +33,38 @@ using Universe.Framework.Services;
 
 namespace Universe.Framework.DatabaseInterfaces
 {
-	public interface IRegionInfoConnector : IUniverseDataPlugin
-	{
-		/// <summary>
-		///     Gets RegionInfos for the database region connector
-		/// </summary>
-		/// <returns></returns>
-		RegionInfo[] GetRegionInfos (bool nonDisabledOnly);
+    public interface IRegionInfoConnector : IUniverseDataPlugin
+    {
+        /// <summary>
+        ///     Gets RegionInfos for the database region connector
+        /// </summary>
+        /// <returns></returns>
+        RegionInfo[] GetRegionInfos(bool nonDisabledOnly);
 
-		/// <summary>
-		///     Gets a specific region info for the given region ID
-		/// </summary>
-		/// <param name="regionID"></param>
-		/// <returns></returns>
-		RegionInfo GetRegionInfo (UUID regionID);
+        /// <summary>
+        ///     Gets a specific region info for the given region ID
+        /// </summary>
+        /// <param name="regionID"></param>
+        /// <returns></returns>
+        RegionInfo GetRegionInfo(UUID regionID);
 
-		/// <summary>
-		///     Gets a specific region info for the given region name
-		/// </summary>
-		/// <param name="regionName"></param>
-		/// <returns></returns>
-		RegionInfo GetRegionInfo (string regionName);
+        /// <summary>
+        ///     Gets a specific region info for the given region name
+        /// </summary>
+        /// <param name="regionName"></param>
+        /// <returns></returns>
+        RegionInfo GetRegionInfo(string regionName);
 
-		/// <summary>
-		///     Updates the region info for the given region
-		/// </summary>
-		/// <param name="region"></param>
-		void UpdateRegionInfo (RegionInfo region);
+        /// <summary>
+        ///     Updates the region info for the given region
+        /// </summary>
+        /// <param name="region"></param>
+        void UpdateRegionInfo(RegionInfo region);
 
-		/// <summary>
-		///     Delete the region from the loader
-		/// </summary>
-		/// <param name="regionInfo"></param>
-		void Delete (RegionInfo regionInfo);
-	}
+        /// <summary>
+        ///     Delete the region from the loader
+        /// </summary>
+        /// <param name="regionInfo"></param>
+        void Delete(RegionInfo regionInfo);
+    }
 }

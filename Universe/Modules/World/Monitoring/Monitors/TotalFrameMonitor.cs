@@ -32,50 +32,50 @@ using Universe.Framework.SceneInfo;
 
 namespace Universe.Modules.Monitoring.Monitors
 {
-	public class TotalFrameMonitor : ITotalFrameTimeMonitor
-	{
-		int MonitorFrameTime;
+    public class TotalFrameMonitor : ITotalFrameTimeMonitor
+    {
+        int MonitorFrameTime;
 
-		public TotalFrameMonitor (IScene scene)
-		{
-		}
+        public TotalFrameMonitor (IScene scene)
+        {
+        }
 
-		#region Implementation of IMonitor
+        #region Implementation of IMonitor
 
-		public double GetValue ()
-		{
-			return MonitorFrameTime;
-		}
+        public double GetValue ()
+        {
+            return MonitorFrameTime;
+        }
 
-		public string GetName ()
-		{
-			return "Total Frame Time";
-		}
+        public string GetName ()
+        {
+            return "Total Frame Time";
+        }
 
-		public string GetInterfaceName ()
-		{
-			return "ITotalFrameTimeMonitor";
-		}
+        public string GetInterfaceName ()
+        {
+            return "ITotalFrameTimeMonitor";
+        }
 
-		public string GetFriendlyValue ()
-		{
-			return (int)GetValue () + "ms";
-		}
+        public string GetFriendlyValue ()
+        {
+            return (int)GetValue () + "ms";
+        }
 
-		#endregion
+        #endregion
 
-		#region ITotalFrameTimeMonitor Members
+        #region ITotalFrameTimeMonitor Members
 
-		public void AddFrameTime (int time)
-		{
-			MonitorFrameTime += time;
-		}
+        public void AddFrameTime (int time)
+        {
+            MonitorFrameTime += time;
+        }
 
-		public void ResetStats ()
-		{
-			MonitorFrameTime = 0;
-		}
+        public void ResetStats ()
+        {
+            MonitorFrameTime = 0;
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

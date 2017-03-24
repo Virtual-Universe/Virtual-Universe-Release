@@ -43,72 +43,74 @@ using Universe.Framework.Utilities;
 
 namespace Universe.Modules.Entities.PhysicsMaterials
 {
-	public class PhysicsMaterialsModule : INonSharedRegionModule
-	{
-		IScene m_scene;
+    public class PhysicsMaterialsModule : INonSharedRegionModule
+    {
+        IScene m_scene;
 
-		#region INonSharedRegionModule Members
+        #region INonSharedRegionModule Members
 
-		public void Initialize (IConfigSource pSource)
-		{
-		}
+        public void Initialize(IConfigSource pSource)
+        {
+        }
 
-		public void AddRegion (IScene scene)
-		{
-			m_scene = scene;
-			m_scene.EventManager.OnRegisterCaps += RegisterCaps;
-		}
+        public void AddRegion(IScene scene)
+        {
+            m_scene = scene;
+            m_scene.EventManager.OnRegisterCaps += RegisterCaps;
+        }
 
-		public void RemoveRegion (IScene scene)
-		{
-			m_scene.EventManager.OnRegisterCaps -= RegisterCaps;
-		}
+        public void RemoveRegion(IScene scene)
+        {
+            m_scene.EventManager.OnRegisterCaps -= RegisterCaps;
+        }
 
-		public void RegionLoaded (IScene scene)
-		{
-		}
+        public void RegionLoaded(IScene scene)
+        {
+        }
 
-		public Type ReplaceableInterface {
-			get { return null; }
-		}
+        public Type ReplaceableInterface
+        {
+            get { return null; }
+        }
 
-		public string Name {
-			get { return "PhysicsMaterialsModule"; }
-		}
+        public string Name
+        {
+            get { return "PhysicsMaterialsModule"; }
+        }
 
-		public void Close ()
-		{
-		}
+        public void Close()
+        {
+        }
 
-		#endregion
+        #endregion
 
-		public OSDMap RegisterCaps (UUID agentID, IHttpServer server)
-		{
-			OSDMap retVal = new OSDMap ();
-			retVal ["GetObjectPhysicsData"] = CapsUtil.CreateCAPS ("GetObjectPhysicsData", "");
+        public OSDMap RegisterCaps(UUID agentID, IHttpServer server)
+        {
+            OSDMap retVal = new OSDMap();
+            retVal["GetObjectPhysicsData"] = CapsUtil.CreateCAPS("GetObjectPhysicsData", "");
 
-			server.AddStreamHandler (new GenericStreamHandler ("POST", retVal ["GetObjectPhysicsData"],
-				delegate(string path, Stream request,
-				                                                                  OSHttpRequest httpRequest,
-				                                                                  OSHttpResponse httpResponse) {
-					return GetObjectPhysicsData (agentID, request);
-				}));
-			return retVal;
-		}
+            server.AddStreamHandler(new GenericStreamHandler("POST", retVal["GetObjectPhysicsData"],
+                                                             delegate(string path, Stream request,
+                                                                      OSHttpRequest httpRequest,
+                                                                      OSHttpResponse httpResponse)
+                                                                 { return GetObjectPhysicsData(agentID, request); }));
+            return retVal;
+        }
 
-		byte[] GetObjectPhysicsData (UUID agentID, Stream request)
-		{
-			OSDMap rm = (OSDMap)OSDParser.DeserializeLLSDXml (HttpServerHandlerHelpers.ReadFully (request));
+        byte[] GetObjectPhysicsData(UUID agentID, Stream request)
+        {
+            OSDMap rm = (OSDMap) OSDParser.DeserializeLLSDXml(HttpServerHandlerHelpers.ReadFully(request));
 
-			OSDArray keys = (OSDArray)rm ["object_ids"];
+            OSDArray keys = (OSDArray) rm["object_ids"];
 
-			IEventQueueService eqs = m_scene.RequestModuleInterface<IEventQueueService> ();
-			if (eqs != null) {
-				eqs.ObjectPhysicsProperties (keys.Select (key => m_scene.GetSceneObjectPart (key.AsUUID ())).ToArray (),
-					agentID, m_scene.RegionInfo.RegionID);
-			}
-			//Send back data
-			return new byte[0];
-		}
-	}
+            IEventQueueService eqs = m_scene.RequestModuleInterface<IEventQueueService>();
+            if (eqs != null)
+            {
+                eqs.ObjectPhysicsProperties(keys.Select(key => m_scene.GetSceneObjectPart(key.AsUUID())).ToArray(),
+                                            agentID, m_scene.RegionInfo.RegionID);
+            }
+            //Send back data
+            return new byte[0];
+        }
+    }
 }

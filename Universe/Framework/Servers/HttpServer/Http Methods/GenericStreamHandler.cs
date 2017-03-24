@@ -34,102 +34,106 @@ using Universe.Framework.Servers.HttpServer.Implementation;
 
 namespace Universe.Framework.Servers.HttpServer
 {
-	public delegate byte[] HttpServerHandle (string path, Stream request,
+    public delegate byte[] HttpServerHandle(string path, Stream request,
                                             OSHttpRequest httpRequest, OSHttpResponse httpResponse);
 
-	public class GenericStreamHandler : BaseRequestHandler
-	{
-		HttpServerHandle _method;
+    public class GenericStreamHandler : BaseRequestHandler
+    {
+        HttpServerHandle _method;
 
-		public GenericStreamHandler (string httpMethod, string path, HttpServerHandle method)
-			: base (httpMethod, path)
-		{
-			_method = method;
-		}
+        public GenericStreamHandler(string httpMethod, string path, HttpServerHandle method)
+            : base(httpMethod, path)
+        {
+            _method = method;
+        }
 
-		public override byte[] Handle (string path, Stream request, OSHttpRequest httpRequest,
-		                                    OSHttpResponse httpResponse)
-		{
-			return _method (path, request, httpRequest, httpResponse);
-		}
-	}
+        public override byte[] Handle(string path, Stream request, OSHttpRequest httpRequest,
+                                      OSHttpResponse httpResponse)
+        {
+            return _method(path, request, httpRequest, httpResponse);
+        }
+    }
 
-	public class HttpServerHandlerHelpers
-	{
-		public const int CHUNK_SIZE = 8192;
+    public class HttpServerHandlerHelpers
+    {
+        public const int CHUNK_SIZE = 8192;
+        public static byte[] ReadFully(Stream stream)
+        {
+            byte[] buffer = new byte[CHUNK_SIZE];
+            using (MemoryStream ms = new MemoryStream())
+            {
+                while (true)
+                {
+                    int read = stream.Read(buffer, 0, buffer.Length);
 
-		public static byte[] ReadFully (Stream stream)
-		{
-			byte[] buffer = new byte[CHUNK_SIZE];
-			using (MemoryStream ms = new MemoryStream ()) {
-				while (true) {
-					int read = stream.Read (buffer, 0, buffer.Length);
+                    if (read <= 0)
+                        return ms.ToArray();
 
-					if (read <= 0)
-						return ms.ToArray ();
+                    ms.Write(buffer, 0, read);
+                }
+            }
+        }
 
-					ms.Write (buffer, 0, read);
-				}
-			}
-		}
+        public static void WriteChunked(Stream stream, byte[] content)
+        {
+            int count = content.Length;
+            int pos = 0;
+            while (count > 0)
+            {
+                stream.Write(content, pos, Math.Min(CHUNK_SIZE, count)); //Send it
+                count -= CHUNK_SIZE;
+                pos += CHUNK_SIZE;
+            }
+            //Finish writing
+            stream.Flush();
+        }
 
-		public static void WriteChunked (Stream stream, byte[] content)
-		{
-			int count = content.Length;
-			int pos = 0;
-			while (count > 0) {
-				stream.Write (content, pos, Math.Min (CHUNK_SIZE, count)); //Send it
-				count -= CHUNK_SIZE;
-				pos += CHUNK_SIZE;
-			}
-			//Finish writing
-			stream.Flush ();
-		}
+        public static void WriteNonChunked(Stream stream, byte[] content)
+        {
+            stream.Write(content, 0, content.Length); //Send it
+            //Finish writing
+            stream.Flush();
+        }
 
-		public static void WriteNonChunked (Stream stream, byte[] content)
-		{
-			stream.Write (content, 0, content.Length); //Send it
-			//Finish writing
-			stream.Flush ();
-		}
+        public static string ReadString(Stream stream)
+        {
+            StringBuilder sb = new StringBuilder();
+            byte[] buf = new byte[CHUNK_SIZE];
+            int count = 0;
+            do
+            {
+                count = stream.Read(buf, 0, CHUNK_SIZE);
+                if (count != 0)
+                    sb.Append(Encoding.UTF8.GetString(buf, 0, count));
 
-		public static string ReadString (Stream stream)
-		{
-			StringBuilder sb = new StringBuilder ();
-			byte[] buf = new byte[CHUNK_SIZE];
-			int count = 0;
-			do {
-				count = stream.Read (buf, 0, CHUNK_SIZE);
-				if (count != 0)
-					sb.Append (Encoding.UTF8.GetString (buf, 0, count));
+            } while (count > 0);
+            return sb.ToString();
+        }
 
-			} while (count > 0);
-			return sb.ToString ();
-		}
+        public static byte[] ReadBytes(Stream stream)
+        {
+            MemoryStream memStream = new MemoryStream();
+            byte[] buf = new byte[CHUNK_SIZE];
+            int count = 0;
+            do
+            {
+                count = stream.Read(buf, 0, CHUNK_SIZE);
+                if (count != 0)
+                    memStream.Write(buf, 0, count);
 
-		public static byte[] ReadBytes (Stream stream)
-		{
-			MemoryStream memStream = new MemoryStream ();
-			byte[] buf = new byte[CHUNK_SIZE];
-			int count = 0;
-			do {
-				count = stream.Read (buf, 0, CHUNK_SIZE);
-				if (count != 0)
-					memStream.Write (buf, 0, count);
+            } while (count > 0);
+            return memStream.ToArray();
+        }
+    }
 
-			} while (count > 0);
-			return memStream.ToArray ();
-		}
-	}
-
-	public static class MyExtensions
-	{
-		public static string ReadUntilEnd (this Stream stream)
-		{
-			StreamReader rdr = new StreamReader (stream);
-			string str = rdr.ReadToEnd ();
-			rdr.Close ();
-			return str;
-		}
-	}
+    public static class MyExtensions
+    {
+        public static string ReadUntilEnd(this Stream stream)
+        {
+            StreamReader rdr = new StreamReader(stream);
+            string str = rdr.ReadToEnd();
+            rdr.Close();
+            return str;
+        }
+    }
 }

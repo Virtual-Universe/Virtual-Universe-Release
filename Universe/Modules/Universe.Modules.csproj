@@ -103,11 +103,6 @@
 	  <PlatformTarget>x86</PlatformTarget>
 	</PropertyGroup>
 	<ItemGroup>
-	  <Reference Include="CSJ2K" >
-		  <Name>CSJ2K</Name>
-		<HintPath>..\..\VirtualUniverse\bin\CSJ2K.dll</HintPath>
-		<Private>False</Private>
-	  </Reference>
 	  <Reference Include="GlynnTucker.Cache" >
 		  <Name>GlynnTucker.Cache</Name>
 		<HintPath>..\..\VirtualUniverse\bin\GlynnTucker.Cache.dll</HintPath>
@@ -116,21 +111,6 @@
 	  <Reference Include="Nini" >
 		  <Name>Nini</Name>
 		<HintPath>..\..\VirtualUniverse\bin\Nini.dll</HintPath>
-		<Private>False</Private>
-	  </Reference>
-	  <Reference Include="OpenMetaverse" >
-		  <Name>OpenMetaverse</Name>
-		<HintPath>..\..\VirtualUniverse\bin\OpenMetaverse.dll</HintPath>
-		<Private>False</Private>
-	  </Reference>
-	  <Reference Include="OpenMetaverse.StructuredData" >
-		  <Name>OpenMetaverse.StructuredData</Name>
-		<HintPath>..\..\VirtualUniverse\bin\OpenMetaverse.StructuredData.dll</HintPath>
-		<Private>False</Private>
-	  </Reference>
-	  <Reference Include="OpenMetaverseTypes" >
-		  <Name>OpenMetaverseTypes</Name>
-		<HintPath>..\..\VirtualUniverse\bin\OpenMetaverseTypes.dll</HintPath>
 		<Private>False</Private>
 	  </Reference>
 	  <Reference Include="protobuf-net.dll" >
@@ -183,6 +163,30 @@
 	  </Reference>
 	</ItemGroup>
 	<ItemGroup>
+	  <ProjectReference Include="..\..\Virtual-LibOMV\CSJ2K\CSJ2K.csproj">
+		<Name>CSJ2K</Name>
+		<Project>{C276743B-0000-0000-0000-000000000000}</Project>
+		<Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
+		<Private>False</Private>
+	  </ProjectReference>
+	  <ProjectReference Include="..\..\Virtual-LibOMV\OpenMetaverse\OpenMetaverse.csproj">
+		<Name>OpenMetaverse</Name>
+		<Project>{8B693884-0000-0000-0000-000000000000}</Project>
+		<Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
+		<Private>False</Private>
+	  </ProjectReference>
+	  <ProjectReference Include="..\..\Virtual-LibOMV\OpenMetaverse.StructuredData\OpenMetaverse.StructuredData.csproj">
+		<Name>OpenMetaverse.StructuredData</Name>
+		<Project>{C2C78869-0000-0000-0000-000000000000}</Project>
+		<Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
+		<Private>False</Private>
+	  </ProjectReference>
+	  <ProjectReference Include="..\..\Virtual-LibOMV\OpenMetaverseTypes\OpenMetaverseTypes.csproj">
+		<Name>OpenMetaverseTypes</Name>
+		<Project>{6C8DAE41-0000-0000-0000-000000000000}</Project>
+		<Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
+		<Private>False</Private>
+	  </ProjectReference>
 	  <ProjectReference Include="..\DataManager\Universe.DataManager.csproj">
 		<Name>Universe.DataManager</Name>
 		<Project>{E87F42E0-0000-0000-0000-000000000000}</Project>
@@ -239,9 +243,6 @@
 	  <Compile Include="Archivers\Inventory\OspResolver.cs">
 		<SubType>Code</SubType>
 	  </Compile>
-	  <Compile Include="Archivers\Region\Archiver.cs">
-		<SubType>Code</SubType>
-	  </Compile>
 	  <Compile Include="Archivers\Region\ArchiveReadRequest.cs">
 		<SubType>Code</SubType>
 	  </Compile>
@@ -264,6 +265,9 @@
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="Archivers\Region\SerializerModule.cs">
+		<SubType>Code</SubType>
+	  </Compile>
+	  <Compile Include="Archivers\Region\UniverseArchiver.cs">
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="Avatar\AbuseReports\AbuseReportsModule.cs">
@@ -590,7 +594,7 @@
 	  <Compile Include="Web\html\admin\welcomescreen_manager.cs">
 		<SubType>Code</SubType>
 	  </Compile>
-	  <Compile Include="Web\html\classifieds\index.cs">
+	  <Compile Include="Web\html\classifieds\classifieds.cs">
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="Web\html\css\index.cs">
@@ -695,10 +699,13 @@
 	  <Compile Include="Web\Translators\RussianTranslation.cs">
 		<SubType>Code</SubType>
 	  </Compile>
-	  <Compile Include="Web\Translators\SpanishTranslation.cs">
+	  <Compile Include="Web\Translators\Serialization.cs">
 		<SubType>Code</SubType>
 	  </Compile>
-	  <Compile Include="WebUiPHP\WebUiPHP.cs">
+	  <Compile Include="Web\Translators\SkeletonTranslation.cs">
+		<SubType>Code</SubType>
+	  </Compile>
+	  <Compile Include="Web\Translators\SpanishTranslation.cs">
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="World\ActivitiyDetectors\ActivityDetector.cs">
@@ -717,12 +724,6 @@
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="World\BannedViewersModule\PresenceInfo.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="World\BannedViewersModule\PresenceInfoMigrator_2.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="World\BannedViewersModule\PresenceInfoMigrator_3.cs">
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="World\DefaultInventoryIARLoader\DefaultInventoryIARLoader.cs">
@@ -756,24 +757,6 @@
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="World\Estate\EstateTerrainXferHandler.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="World\GlobalEnvironment\CloudModule.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="World\GlobalEnvironment\EnvironmentSettingsModule.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="World\GlobalEnvironment\SunModule.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="World\GlobalEnvironment\WindModule.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="World\GlobalEnvironment\Plugins\ConfigurableWind.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="World\GlobalEnvironment\Plugins\SimpleRandomWind.cs">
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="World\InventoryAccess\InventoryAccessModule.cs">
@@ -1023,7 +1006,22 @@
 	  <Compile Include="World\VisitorLogger\VisitorLogger.cs">
 		<SubType>Code</SubType>
 	  </Compile>
-	  <Compile Include="World\WindLightSettings\EnvironmentSettingsModule.cs">
+	  <Compile Include="World\Wind\CloudModule.cs">
+		<SubType>Code</SubType>
+	  </Compile>
+	  <Compile Include="World\Wind\EnvironmentSettingsModule.cs">
+		<SubType>Code</SubType>
+	  </Compile>
+	  <Compile Include="World\Wind\SunModule.cs">
+		<SubType>Code</SubType>
+	  </Compile>
+	  <Compile Include="World\Wind\WindModule.cs">
+		<SubType>Code</SubType>
+	  </Compile>
+	  <Compile Include="World\Wind\Plugins\ConfigurableWind.cs">
+		<SubType>Code</SubType>
+	  </Compile>
+	  <Compile Include="World\Wind\Plugins\SimpleRandomWind.cs">
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="World\WorldMap\MapImageModule.cs">

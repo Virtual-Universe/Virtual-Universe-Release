@@ -33,25 +33,25 @@ using Universe.Framework.SceneInfo;
 
 namespace Universe.Modules.Terrain.FloodBrushes
 {
-	public class NoiseArea : ITerrainFloodEffect
-	{
-		#region ITerrainFloodEffect Members
+    public class NoiseArea : ITerrainFloodEffect
+    {
+        #region ITerrainFloodEffect Members
 
-		public void FloodEffect (ITerrainChannel map, UUID userID, float north,
-		                               float west, float south, float east, float strength)
-		{
-			for (int x = (int)west; x < (int)east; x++) {
-				for (int y = (int)south; y < (int)north; y++) {
-					if (!map.Scene.Permissions.CanTerraformLand (userID, new Vector3 (x, y, 0)))
-						continue;
-					float noise = TerrainUtil.PerlinNoise2D (x / map.Scene.RegionInfo.RegionSizeX,
-						                             y / map.Scene.RegionInfo.RegionSizeY, 8, 1);
+        public void FloodEffect (ITerrainChannel map, UUID userID, float north,
+                                float west, float south, float east, float strength)
+        {
+            for (int x = (int)west; x < (int)east; x++) {
+                for (int y = (int)south; y < (int)north; y++) {
+                    if (!map.Scene.Permissions.CanTerraformLand (userID, new Vector3 (x, y, 0)))
+                        continue;
+                    float noise = TerrainUtil.PerlinNoise2D (x / map.Scene.RegionInfo.RegionSizeX,
+                                                            y / map.Scene.RegionInfo.RegionSizeY, 8, 1);
 
-					map [x, y] += noise * strength;
-				}
-			}
-		}
+                    map [x, y] += noise * strength;
+                }
+            }
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

@@ -122,8 +122,7 @@ namespace Universe.ScriptEngine.VirtualScript.Runtime
             // Fill in the events for this state, cache the results in the map
             foreach (KeyValuePair<string, scriptEvents> kvp in m_eventFlagsMap)
             {
-                try
-                {
+                try {
                     MethodInfo ev = null;
                     string evname = state == "" ? "" : state + "_event_";
                     evname += kvp.Key;
@@ -134,22 +133,17 @@ namespace Universe.ScriptEngine.VirtualScript.Runtime
                         //MainConsole.Instance.Debug("Found handler for " + kvp.Key);
                         eventFlags |= kvp.Value;
                 }
-                catch (Exception e)
-                {
-                    MainConsole.Instance.Debug("Exception in GetMethod for state: " + state + "\n" + e);
+                catch (Exception e) {
+                    MainConsole.Instance.Debug("Exception in GetMethod for state: " + state +"\n"+e);
                 }
             }
 
             // Save the flags we just computed and return the result
-            if (eventFlags != 0)
-            {
-                try
-                {
-                    m_stateEvents.Add(state, eventFlags);
-                }
-                catch (Exception e)
-                {
-                    MainConsole.Instance.Debug("Exception adding state event for state: " + state + "\n" + e);
+            if (eventFlags != 0) {
+                try {
+                    m_stateEvents.Add (state, eventFlags);
+                } catch (Exception e) {
+                    MainConsole.Instance.Debug("Exception adding state event for state: " + state + "\n"+e);
                 }
             }
 
@@ -161,7 +155,7 @@ namespace Universe.ScriptEngine.VirtualScript.Runtime
         {
             TimeSliceEnd = Start == null
                                ? Util.EnvironmentTickCountAdd(MaxTimeSlice)
-                               : Util.EnvironmentTickCountAdd(MaxTimeSlice / 2);
+                               : Util.EnvironmentTickCountAdd(MaxTimeSlice/2);
             InTimeSlice = true;
         }
 
@@ -210,6 +204,7 @@ namespace Universe.ScriptEngine.VirtualScript.Runtime
                 // invocation termination due to a state change.
                 // DO NOT THROW JUST THE INNER EXCEPTION!
                 // FriendlyErrors depends on getting the whole exception!
+                //
                 if (!(tie is EventAbortException) &&
                     !(tie is MinEventDelayException) &&
                     !(tie.InnerException != null &&
@@ -223,7 +218,6 @@ namespace Universe.ScriptEngine.VirtualScript.Runtime
                         m_enumerators.Remove(Start.Key);
                     }
                 }
-
                 CloseTimeSlice();
                 return null;
             }
@@ -232,7 +226,7 @@ namespace Universe.ScriptEngine.VirtualScript.Runtime
             {
                 if (Start == null)
                 {
-                    Start = new EnumeratorInfo { Key = UUID.Random().Guid };
+                    Start = new EnumeratorInfo {Key = UUID.Random().Guid};
                 }
                 lock (m_enumerators)
                 {
@@ -240,17 +234,16 @@ namespace Universe.ScriptEngine.VirtualScript.Runtime
                 }
 
                 if (thread.Current is DateTime)
-                    Start.SleepTo = (DateTime)thread.Current;
+                    Start.SleepTo = (DateTime) thread.Current;
                 else if (thread.Current is string)
                 {
-                    ex = new Exception((string)thread.Current);
+                    ex = new Exception((string) thread.Current);
                     running = false;
                     lock (m_enumerators)
                     {
                         m_enumerators.Remove(Start.Key);
                     }
                 }
-
                 CloseTimeSlice();
                 return Start;
             }
@@ -264,11 +257,11 @@ namespace Universe.ScriptEngine.VirtualScript.Runtime
                         m_enumerators.Remove(Start.Key);
                     }
                 }
-
                 CloseTimeSlice();
                 return null;
             }
         }
+
 
         protected void initEventFlags()
         {
@@ -299,7 +292,7 @@ namespace Universe.ScriptEngine.VirtualScript.Runtime
             m_eventFlagsMap.Add("not_at_rot_target", scriptEvents.not_at_rot_target);
             m_eventFlagsMap.Add("not_at_target", scriptEvents.not_at_target);
             m_eventFlagsMap.Add("no_sensor", scriptEvents.no_sensor);
-            m_eventFlagsMap.Add("object_rez", scriptEvents.object_rez);
+            m_eventFlagsMap.Add("object_rez", scriptEvents.object_rez);            
             m_eventFlagsMap.Add("on_rez", scriptEvents.on_rez);
             m_eventFlagsMap.Add("remote_data", scriptEvents.remote_data);
             m_eventFlagsMap.Add("run_time_permissions", scriptEvents.run_time_permissions);

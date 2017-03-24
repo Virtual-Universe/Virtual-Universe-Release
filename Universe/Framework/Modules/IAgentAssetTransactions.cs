@@ -34,18 +34,18 @@ using Universe.Framework.Services.ClassHelpers.Inventory;
 
 namespace Universe.Framework.Modules
 {
-	public interface IAgentAssetTransactions
-	{
-		void HandleItemUpdateFromTransaction (IClientAPI remoteClient, UUID transactionID,
-		                                           InventoryItemBase item);
+    public interface IAgentAssetTransactions
+    {
+        void HandleItemUpdateFromTransaction(IClientAPI remoteClient, UUID transactionID,
+                                             InventoryItemBase item);
 
-		void HandleItemCreationFromTransaction (IClientAPI remoteClient, UUID transactionID, UUID folderID,
-		                                             uint callbackID, string description, string name, sbyte invType,
-		                                             sbyte type, byte wearableType, uint nextOwnerMask);
+        void HandleItemCreationFromTransaction(IClientAPI remoteClient, UUID transactionID, UUID folderID,
+                                               uint callbackID, string description, string name, sbyte invType,
+                                               sbyte type, byte wearableType, uint nextOwnerMask);
 
-		void HandleTaskItemUpdateFromTransaction (
-			IClientAPI remoteClient, ISceneChildEntity part, UUID transactionID, TaskInventoryItem item);
+        void HandleTaskItemUpdateFromTransaction(
+            IClientAPI remoteClient, ISceneChildEntity part, UUID transactionID, TaskInventoryItem item);
 
-		void RemoveAgentAssetTransactions (UUID userID);
-	}
+        void RemoveAgentAssetTransactions(UUID userID);
+    }
 }

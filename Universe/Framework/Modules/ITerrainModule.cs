@@ -27,71 +27,59 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using OpenMetaverse;
 using System;
 using System.IO;
-using OpenMetaverse;
 
 namespace Universe.Framework.Modules
 {
-	public interface ITerrainModule
-	{
-		ITerrainChannel TerrainMap { get; set; }
+    public interface ITerrainModule
+    {
+        ITerrainChannel TerrainMap { get; set; }
+        ITerrainChannel TerrainRevertMap { get; set; }
 
-		ITerrainChannel TerrainRevertMap { get; set; }
+        ITerrainChannel TerrainWaterMap { get; set; }
+        ITerrainChannel TerrainWaterRevertMap { get; set; }
+        void LoadFromFile(string filename, int offsetX, int offsetY);
+        void SaveToFile(string filename);
+        void ModifyTerrain(UUID user, Vector3 pos, byte size, byte action, UUID agentId);
 
-		ITerrainChannel TerrainWaterMap { get; set; }
+        /// <summary>
+        ///     Taint the terrain. This will lead to sending the terrain data to the clients again.
+        ///     Use this if you change terrain data outside of the terrain module (e.g. in osTerrainSetHeight)
+        /// </summary>
+        void TaintTerrain();
 
-		ITerrainChannel TerrainWaterRevertMap { get; set; }
+        /// <summary>
+        ///     Load a terrain from a stream.
+        /// </summary>
+        /// <param name="filename">
+        ///     Only required here to identify the image type.  Not otherwise used in the loading itself.
+        /// </param>
+        /// <param name="stream"></param>
+        void LoadFromStream(string filename, Stream stream);
 
-		void LoadFromFile (string filename, int offsetX, int offsetY);
+        void LoadFromStream(string filename, Uri pathToTerrainHeightmap);
+        void LoadFromStream(string filename, Stream stream, int offsetX, int offsetY);
+        void LoadRevertMapFromStream(string filename, Stream stream, int offsetX, int offsetY);
+        void LoadWaterFromStream(string filename, Stream stream, int offsetX, int offsetY);
+        void LoadWaterRevertMapFromStream(string filename, Stream stream, int offsetX, int offsetY);
 
-		void SaveToFile (string filename);
+        /// <summary>
+        ///     Save a terrain to a stream.
+        /// </summary>
+        /// <param name="channel"></param>
+        /// <param name="filename">
+        ///     Only required here to identify the image type.  Not otherwise used in the saving itself.
+        /// </param>
+        /// <param name="stream"></param>
+        void SaveToStream(ITerrainChannel channel, string filename, Stream stream);
 
-		void ModifyTerrain (UUID user, Vector3 pos, byte size, byte action, UUID agentId);
+        void UndoTerrain(ITerrainChannel channel);
 
-		/// <summary>
-		///     Taint the terrain. This will lead to sending the terrain data to the clients again.
-		///     Use this if you change terrain data outside of the terrain module (e.g. in osTerrainSetHeight)
-		/// </summary>
-		void TaintTerrain ();
-
-		/// <summary>
-		///     Load a terrain from a stream.
-		/// </summary>
-		/// <param name="filename">
-		///     Only required here to identify the image type.  Not otherwise used in the loading itself.
-		/// </param>
-		/// <param name="stream"></param>
-		void LoadFromStream (string filename, Stream stream);
-
-		void LoadFromStream (string filename, Uri pathToTerrainHeightmap);
-
-		void LoadFromStream (string filename, Stream stream, int offsetX, int offsetY);
-
-		void LoadRevertMapFromStream (string filename, Stream stream, int offsetX, int offsetY);
-
-		void LoadWaterFromStream (string filename, Stream stream, int offsetX, int offsetY);
-
-		void LoadWaterRevertMapFromStream (string filename, Stream stream, int offsetX, int offsetY);
-
-		/// <summary>
-		///     Save a terrain to a stream.
-		/// </summary>
-		/// <param name="channel"></param>
-		/// <param name="filename">
-		///     Only required here to identify the image type.  Not otherwise used in the saving itself.
-		/// </param>
-		/// <param name="stream"></param>
-		void SaveToStream (ITerrainChannel channel, string filename, Stream stream);
-
-		void UndoTerrain (ITerrainChannel channel);
-
-		void LoadRevertMap ();
-
-		void LoadWorldHeightmap ();
-
-		void ResetTerrain ();
-
-		void UpdateWaterHeight (double height);
-	}
+        void LoadRevertMap();
+        void LoadWorldHeightmap();
+        void ResetTerrain();
+        void UpdateWaterHeight(double height);
+    }
 }

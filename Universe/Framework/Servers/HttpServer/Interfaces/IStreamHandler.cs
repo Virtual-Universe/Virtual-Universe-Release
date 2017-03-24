@@ -32,18 +32,18 @@ using Universe.Framework.Servers.HttpServer.Implementation;
 
 namespace Universe.Framework.Servers.HttpServer.Interfaces
 {
-	public interface IStreamedRequestHandler
-	{
-		// Return response content type
-		string ContentType { get; }
+    public interface IStreamedRequestHandler
+    {
+        // Return response content type
+        string ContentType { get; }
 
-		// Return required http method
-		string HttpMethod { get; }
+        // Return required http method
+        string HttpMethod { get; }
 
-		// Return path
-		string Path { get; }
+        // Return path
+        string Path { get; }
 
-		// Handle request stream, return byte array
-		byte[] Handle (string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse);
-	}
+        // Handle request stream, return byte array
+        byte[] Handle(string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse);
+    }
 }

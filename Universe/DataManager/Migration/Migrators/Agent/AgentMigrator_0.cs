@@ -29,101 +29,104 @@
 
 using System;
 using System.Collections.Generic;
-using Universe.Framework.Services;
 using Universe.Framework.Utilities;
 
 namespace Universe.DataManager.Migration.Migrators.Agent
 {
-	public class AgentMigrator_0 : Migrator
-	{
-		public AgentMigrator_0 ()
-		{
-			Version = new Version (0, 0, 0);
-			MigrationName = "Agent";
+    public class AgentMigrator_0 : Migrator
+    {
+        public AgentMigrator_0()
+        {
+            Version = new Version(0, 0, 0);
+            MigrationName = "Agent";
 
-			Schema = new List<SchemaDefinition> ();
+            Schema = new List<SchemaDefinition>();
 
-			AddSchema ("user_profile", ColDefs (
-				ColDef ("ID", ColumnTypes.String45),
-				ColDef ("Key", ColumnTypes.String50),
-				ColDef ("Value", ColumnTypes.Text)
-			), IndexDefs (
-				IndexDef (new string[2] { "ID", "Key" }, IndexType.Primary)
-			));
+            // Change summary:
+            //   Change ID type fields to type UUID
+            AddSchema("user_profile", ColDefs(
+                ColDef("ID", ColumnTypes.UUID),
+                ColDef("Key", ColumnTypes.String50),
+                ColDef("Value", ColumnTypes.Text)
+            ), IndexDefs(
+                IndexDef(new string[2] { "ID", "Key" }, IndexType.Primary)
+            ));
 
-			AddSchema ("user_classifieds", ColDefs (
-				ColDef ("Name", ColumnTypes.String50),
-				ColDef ("Category", ColumnTypes.String50),
-				ColDef ("SimName", ColumnTypes.String50),
-				ColDef ("OwnerUUID", ColumnTypes.String50),
-				new ColumnDefinition {
-					Name = "ScopeID",
-					Type = new ColumnTypeDef {
-						Type = ColumnType.UUID,
-						defaultValue = OpenMetaverse.UUID.Zero.ToString ()
-					}
-				},
-				ColDef ("ClassifiedUUID", ColumnTypes.String50),
-				ColDef ("Classified", ColumnTypes.String8196),
-				new ColumnDefinition {
-					Name = "Price",
-					Type = new ColumnTypeDef {
-						Type = ColumnType.Integer,
-						Size = 11,
-						defaultValue = "0"
-					}
-				},
-				new ColumnDefinition {
-					Name = "Keyword",
-					Type = new ColumnTypeDef {
-						Type = ColumnType.String,
-						Size = 512,
-						defaultValue = ""
-					}
-				}
-			), IndexDefs (
-				IndexDef (new string[1] { "ClassifiedUUID" }, IndexType.Primary),
-				IndexDef (new string[2] { "Name", "Category" }, IndexType.Index),
-				IndexDef (new string[1] { "OwnerUUID" }, IndexType.Index),
-				IndexDef (new string[1] { "Keyword" }, IndexType.Index, 255)
-			));
+            AddSchema("user_classifieds", ColDefs(
+                ColDef("Name", ColumnTypes.String50),
+                ColDef("Category", ColumnTypes.String50),
+                ColDef("SimName", ColumnTypes.String50),
+                ColDef("OwnerUUID", ColumnTypes.UUID),
+                new ColumnDefinition
+            {
+                Name = "ScopeID",
+                Type = new ColumnTypeDef
+                {
+                    Type = ColumnType.UUID,
+                    defaultValue = OpenMetaverse.UUID.Zero.ToString()
+                }
+            },
+                ColDef("ClassifiedUUID", ColumnTypes.UUID),
+                ColDef("Classified", ColumnTypes.String8196),
+                new ColumnDefinition
+            {
+                Name = "Price",
+                Type = new ColumnTypeDef
+                {
+                    Type = ColumnType.Integer,
+                    Size = 11,
+                    defaultValue = "0"
+                }
+            },
+                new ColumnDefinition
+            {
+                Name = "Keyword",
+                Type = new ColumnTypeDef
+                {
+                    Type = ColumnType.String,
+                    Size = 512,
+                    defaultValue = ""
+                }
+            }
+            ), IndexDefs(
+                IndexDef(new string[1] { "ClassifiedUUID" }, IndexType.Primary),
+                IndexDef(new string[2] { "Name", "Category" }, IndexType.Index),
+                IndexDef(new string[1] { "OwnerUUID" }, IndexType.Index),
+                IndexDef(new string[1] { "Keyword" }, IndexType.Index, 255)
+            ));
 
-			AddSchema ("user_picks", ColDefs (
-				ColDef ("Name", ColumnTypes.String50),
-				ColDef ("SimName", ColumnTypes.String50),
-				ColDef ("OwnerUUID", ColumnTypes.String50),
-				ColDef ("PickUUID", ColumnTypes.String50),
-				ColDef ("Pick", ColumnTypes.String8196)
-			), IndexDefs (
-				IndexDef (new string[1] { "PickUUID" }, IndexType.Primary),
-				IndexDef (new string[1] { "OwnerUUID" }, IndexType.Index)
-			));
-		}
+            AddSchema("user_picks", ColDefs(
+                ColDef("Name", ColumnTypes.String50),
+                ColDef("SimName", ColumnTypes.String50),
+                ColDef("OwnerUUID", ColumnTypes.UUID),
+                ColDef("PickUUID", ColumnTypes.UUID),
+                ColDef("Pick", ColumnTypes.String8196)
+            ), IndexDefs(
+                IndexDef(new string[1] { "PickUUID" }, IndexType.Primary),
+                IndexDef(new string[1] { "OwnerUUID" }, IndexType.Index)
+            ));
 
-		protected override void DoCreateDefaults (IDataConnector genericData)
-		{
-			EnsureAllTablesInSchemaExist (genericData);
-		}
+        }
 
-		protected override bool DoValidate (IDataConnector genericData)
-		{
-			return TestThatAllTablesValidate (genericData);
-		}
+        protected override void DoCreateDefaults(IDataConnector genericData)
+        {
+            EnsureAllTablesInSchemaExist(genericData);
+        }
 
-		protected override void DoMigrate (IDataConnector genericData)
-		{
-			DoCreateDefaults (genericData);
-		}
+        protected override bool DoValidate(IDataConnector genericData)
+        {
+            return TestThatAllTablesValidate(genericData);
+        }
 
-		protected override void DoPrepareRestorePoint (IDataConnector genericData)
-		{
-			CopyAllTablesToTempVersions (genericData);
-		}
+        protected override void DoMigrate(IDataConnector genericData)
+        {
+            DoCreateDefaults(genericData);
+        }
 
-		public override void FinishedMigration (IDataConnector genericData)
-		{
-			genericData.DropTable ("macban");
-			genericData.DropTable ("bannedviewers");
-		}
-	}
+        protected override void DoPrepareRestorePoint(IDataConnector genericData)
+        {
+            CopyAllTablesToTempVersions(genericData);
+        }
+
+    }
 }

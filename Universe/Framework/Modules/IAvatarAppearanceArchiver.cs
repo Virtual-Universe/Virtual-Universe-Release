@@ -33,35 +33,36 @@ using Universe.Framework.ClientInterfaces;
 
 namespace Universe.Framework.Modules
 {
-	public interface IAvatarAppearanceArchiver
-	{
-		AvatarArchive LoadAvatarArchive (string FileName, UUID principalID);
+    public interface IAvatarAppearanceArchiver
+    {
+        AvatarArchive LoadAvatarArchive(string FileName, UUID principalID);
 
-		bool SaveAvatarArchive (string fileName, UUID principalID, string folderName,
-		                             UUID snapshotUUID, bool isPublic, bool isPortable);
+        bool SaveAvatarArchive(string fileName, UUID principalID, string folderName,
+            UUID snapshotUUID, bool isPublic, bool isPortable);
 
-		/// <summary>
-		/// Gets all public avatar archives
-		/// </summary>
-		/// <returns></returns>
-		List<AvatarArchive> GetAvatarArchives ();
+        /// <summary>
+        /// Gets all public avatar archives
+        /// </summary>
+        /// <returns></returns>
+        List<AvatarArchive> GetAvatarArchives();
 
-		/// <summary>
-		/// Gets the avatar archive filenames.
-		/// </summary>
-		/// <returns>The avatar archive filenames without extension.</returns>
-		List<string> GetAvatarArchiveFilenames ();
+        /// <summary>
+        /// Gets the avatar archive filenames.
+        /// </summary>
+        /// <returns>The avatar archive filenames without extension.</returns>
+        List<string> GetAvatarArchiveFilenames ();
 
-		/// <summary>
-		/// Gets the avatar archive filenames.
-		/// </summary>
-		/// <returns>The avatar archive filenames.</returns>
-		List<string> GetAvatarArchiveFilenames (bool fullName);
+        /// <summary>
+        /// Gets the avatar archive filenames.
+        /// </summary>
+        /// <returns>The avatar archive filenames.</returns>
+        List<string> GetAvatarArchiveFilenames (bool fullName);
 
-		/// <summary>
-		/// Gets a list of available avatar archive images.
-		/// </summary>
-		/// <returns>The avatar archive images.</returns>
-		List<string> GetAvatarArchiveImages ();
-	}
+        /// <summary>
+        /// Gets a list of available avatar archive images.
+        /// </summary>
+        /// <returns>The avatar archive images.</returns>
+        List<string> GetAvatarArchiveImages ();
+
+    }
 }

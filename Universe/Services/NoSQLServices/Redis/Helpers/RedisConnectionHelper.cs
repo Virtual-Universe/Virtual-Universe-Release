@@ -32,57 +32,60 @@ using System.Collections.Generic;
 
 namespace Universe.RedisServices.ConnectionHelpers
 {
-	public class Pool<T>
-	{
-		readonly List<T> items = new List<T> ();
-		readonly Queue<T> freeItems = new Queue<T> ();
-		volatile object _lock = new object ();
-		readonly Func<T> createItemAction;
+    public class Pool<T>
+    {
+        readonly List<T> items = new List<T>();
+        readonly Queue<T> freeItems = new Queue<T>();
+        volatile object _lock = new object();
+        readonly Func<T> createItemAction;
 
-		public Pool (Func<T> createItemAction)
-		{
-			this.createItemAction = createItemAction;
-		}
+        public Pool(Func<T> createItemAction)
+        {
+            this.createItemAction = createItemAction;
+        }
 
-		public void FlagFreeItem (T item)
-		{
-			lock (_lock)
-				freeItems.Enqueue (item);
-		}
+        public void FlagFreeItem(T item)
+        {
+            lock (_lock)
+                freeItems.Enqueue(item);
+        }
 
-		public void DestroyItem (T item)
-		{
-			lock (_lock)
-				items.Remove (item);
-		}
+        public void DestroyItem(T item)
+        {
+            lock (_lock)
+                items.Remove(item);
+        }
 
-		public T GetFreeItem ()
-		{
-			lock (_lock) {
-				if (freeItems.Count == 0) {
-					T item = createItemAction ();
-					items.Add (item);
+        public T GetFreeItem()
+        {
+            lock (_lock)
+            {
+                if (freeItems.Count == 0)
+                {
+                    T item = createItemAction();
+                    items.Add(item);
 
-					return item;
-				}
+                    return item;
+                }
 
-				return freeItems.Dequeue ();
-			}
-		}
+                return freeItems.Dequeue();
+            }
+        }
 
-		public List<T> Items {
-			get {
-				lock (_lock)
-					return items;
-			}
-		}
+        public List<T> Items
+        {
+            get {
+                lock (_lock)
+                    return items; }
+        }
 
-		public void Clear ()
-		{
-			lock (_lock) {
-				items.Clear ();
-				freeItems.Clear ();
-			}
-		}
-	}
+        public void Clear()
+        {
+            lock (_lock)
+            {
+                items.Clear ();
+                freeItems.Clear ();
+            }
+        }
+    }
 }

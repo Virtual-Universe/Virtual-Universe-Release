@@ -35,64 +35,47 @@ using Universe.Framework.SceneInfo.Entities;
 
 namespace Universe.Framework.SceneInfo
 {
-	public interface ILandObject
-	{
-		LandData LandData { get; set; }
+    public interface ILandObject
+    {
+        LandData LandData { get; set; }
+        UUID RegionUUID { get; }
+        bool ContainsPoint(int x, int y);
+        ILandObject Copy();
 
-		UUID RegionUUID { get; }
+        void SendLandUpdateToAvatarsOverMe();
 
-		bool ContainsPoint (int x, int y);
+        void SendLandProperties(int sequence_id, bool snap_selection, int request_result, IClientAPI remote_client);
+        void UpdateLandProperties(LandUpdateArgs args, IClientAPI remote_client);
+        bool IsEitherBannedOrRestricted(UUID avatar);
+        bool IsBannedFromLand(UUID avatar);
+        bool IsRestrictedFromLand(UUID avatar);
+        void SendLandUpdateToClient(IClientAPI remote_client);
+        void SendLandUpdateToClient(bool snap_selection, IClientAPI remote_client);
+        List<List<UUID>> CreateAccessListArrayByFlag(AccessList flag);
+        void SendAccessList(UUID agentID, UUID sessionID, uint flags, int sequenceID, IClientAPI remote_client);
+        void UpdateAccessList(uint flags, List<ParcelManager.ParcelAccessEntry> entries, IClientAPI remote_client);
+        void ForceUpdateLandInfo();
 
-		ILandObject Copy ();
+        void SendForceObjectSelect(int local_id, int request_type, List<UUID> returnIDs, IClientAPI remote_client);
+        void SendLandObjectOwners(IClientAPI remote_client);
+        void ReturnLandObjects(uint type, UUID[] owners, UUID[] tasks, IClientAPI remote_client);
+        void DisableLandObjects(uint type, UUID[] owners, UUID[] tasks, IClientAPI remote_client);
+        void UpdateLandSold(UUID avatarID, UUID groupID, bool groupOwned, uint AuctionID, int claimprice, int area);
 
-		void SendLandUpdateToAvatarsOverMe ();
+        void DeedToGroup(UUID groupID);
 
-		void SendLandProperties (int sequence_id, bool snap_selection, int request_result, IClientAPI remote_client);
+        /// <summary>
+        ///     Set the media url for this land parcel
+        /// </summary>
+        /// <param name="url"></param>
+        void SetMediaUrl(string url);
 
-		void UpdateLandProperties (LandUpdateArgs args, IClientAPI remote_client);
+        /// <summary>
+        ///     Set the music url for this land parcel
+        /// </summary>
+        /// <param name="url"></param>
+        void SetMusicUrl(string url);
 
-		bool IsEitherBannedOrRestricted (UUID avatar);
-
-		bool IsBannedFromLand (UUID avatar);
-
-		bool IsRestrictedFromLand (UUID avatar);
-
-		void SendLandUpdateToClient (IClientAPI remote_client);
-
-		void SendLandUpdateToClient (bool snap_selection, IClientAPI remote_client);
-
-		List<List<UUID>> CreateAccessListArrayByFlag (AccessList flag);
-
-		void SendAccessList (UUID agentID, UUID sessionID, uint flags, int sequenceID, IClientAPI remote_client);
-
-		void UpdateAccessList (uint flags, List<ParcelManager.ParcelAccessEntry> entries, IClientAPI remote_client);
-
-		void ForceUpdateLandInfo ();
-
-		void SendForceObjectSelect (int local_id, int request_type, List<UUID> returnIDs, IClientAPI remote_client);
-
-		void SendLandObjectOwners (IClientAPI remote_client);
-
-		void ReturnLandObjects (uint type, UUID[] owners, UUID[] tasks, IClientAPI remote_client);
-
-		void DisableLandObjects (uint type, UUID[] owners, UUID[] tasks, IClientAPI remote_client);
-
-		void UpdateLandSold (UUID avatarID, UUID groupID, bool groupOwned, uint AuctionID, int claimprice, int area);
-
-		void DeedToGroup (UUID groupID);
-
-		/// <summary>
-		///     Set the media url for this land parcel
-		/// </summary>
-		/// <param name="url"></param>
-		void SetMediaUrl (string url);
-
-		/// <summary>
-		///     Set the music url for this land parcel
-		/// </summary>
-		/// <param name="url"></param>
-		void SetMusicUrl (string url);
-
-		List<ISceneEntity> GetPrimsOverByOwner (UUID targetID, int flags);
-	}
+        List<ISceneEntity> GetPrimsOverByOwner(UUID targetID, int flags);
+    }
 }

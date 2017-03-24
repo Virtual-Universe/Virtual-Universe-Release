@@ -33,472 +33,491 @@ using OMV = OpenMetaverse;
 
 namespace Universe.Physics.BulletSPlugin
 {
-	// A BSPrim can get individual information about its linkedness attached
-	//    to it through an instance of a subclass of LinksetInfo.
-	// Each type of linkset will define the information needed for its type.
-	public abstract class BSLinksetInfo
-	{
-		public virtual void Clear ()
-		{
-		}
-	}
+    // A BSPrim can get individual information about its linkedness attached
+    //    to it through an instance of a subclass of LinksetInfo.
+    // Each type of linkset will define the information needed for its type.
+    public abstract class BSLinksetInfo
+    {
+        public virtual void Clear()
+        {
+        }
+    }
 
-	public abstract class BSLinkset
-	{
-		// private static string LogHeader = "[BULLETSIM LINKSET]";
+    public abstract class BSLinkset
+    {
+        // private static string LogHeader = "[BULLETSIM LINKSET]";
 
-		public enum LinksetImplementation
-		{
-			Constraint = 0,
-			// linkset tied together with constraints
-			Compound = 1,
-			// linkset tied together as a compound object
-			Manual = 2
-			// linkset tied together manually (code moves all the pieces)
-		}
+        public enum LinksetImplementation
+        {
+            Constraint = 0, // linkset tied together with constraints
+            Compound = 1,   // linkset tied together as a compound object
+            Manual = 2      // linkset tied together manually (code moves all the pieces)
+        }
 
-		// Create the correct type of linkset for this child
-		public static BSLinkset Factory (BSScene physScene, BSPrimLinkable parent)
-		{
-			BSLinkset ret = null;
+        // Create the correct type of linkset for this child
+        public static BSLinkset Factory(BSScene physScene, BSPrimLinkable parent)
+        {
+            BSLinkset ret = null;
 
-			switch (parent.LinksetType) {
-			case LinksetImplementation.Constraint:
-				ret = new BSLinksetConstraints (physScene, parent);
-				break;
-			case LinksetImplementation.Compound:
-				ret = new BSLinksetCompound (physScene, parent);
-				break;
-			case LinksetImplementation.Manual:
+            switch (parent.LinksetType)
+            {
+                case LinksetImplementation.Constraint:
+                    ret = new BSLinksetConstraints(physScene, parent);
+                    break;
+                case LinksetImplementation.Compound:
+                    ret = new BSLinksetCompound(physScene, parent);
+                    break;
+                case LinksetImplementation.Manual:
                     // ret = new BSLinksetManual(physScene, parent);
-				break;
-			default:
-				ret = new BSLinksetCompound (physScene, parent);
-				break;
-			}
-			if (ret == null) {
-				physScene.Logger.ErrorFormat (
-					"[BULLETSIM LINKSET] Factory could not create linkset. Parent name={1}, ID={2}", parent.Name,
-					parent.LocalID);
-			}
-			return ret;
-		}
+                    break;
+                default:
+                    ret = new BSLinksetCompound(physScene, parent);
+                    break;
+            }
+            if (ret == null)
+            {
+                physScene.Logger.ErrorFormat(
+                    "[BULLETSIM LINKSET] Factory could not create linkset. Parent name={1}, ID={2}", parent.Name,
+                    parent.LocalID);
+            }
+            return ret;
+        }
 
-		public class BSLinkInfo
-		{
-			public BSPrimLinkable member;
+        public class BSLinkInfo
+        {
+            public BSPrimLinkable member;
+            public BSLinkInfo(BSPrimLinkable pMember)
+            {
+                member = pMember;
+            }
+            public virtual void ResetLink() { }
+            public virtual void SetLinkParameters(BSConstraint constrain) { }
+            // Returns 'true' if physical property updates from the child should be reported to the simulator
+            public virtual bool ShouldUpdateChildProperties() { return false; }
+        }
 
-			public BSLinkInfo (BSPrimLinkable pMember)
-			{
-				member = pMember;
-			}
+        public LinksetImplementation LinksetImpl { get; protected set; }
 
-			public virtual void ResetLink ()
-			{
-			}
+        public BSPrimLinkable LinksetRoot { get; protected set; }
 
-			public virtual void SetLinkParameters (BSConstraint constrain)
-			{
-			}
-			// Returns 'true' if physical property updates from the child should be reported to the simulator
-			public virtual bool ShouldUpdateChildProperties ()
-			{
-				return false;
-			}
-		}
+        public BSScene PhysicsScene { get; private set; }
 
-		public LinksetImplementation LinksetImpl { get; protected set; }
+        static int m_nextLinksetID = 1;
+        public int LinksetID { get; private set; }
 
-		public BSPrimLinkable LinksetRoot { get; protected set; }
+        // The children under the root in this linkset.
+        //protected HashSet<BSPrimLinkable> m_children;
+        protected Dictionary<BSPrimLinkable, BSLinkInfo> m_children;
 
-		public BSScene PhysicsScene { get; private set; }
+        // We lock the diddling of linkset classes to prevent any badness.
+        // This locks the modification of the instances of this class. Changes
+        //    to the physical representation is done via the tainting mechenism.
+        protected object m_linksetActivityLock = new Object();
 
-		static int m_nextLinksetID = 1;
+        // Some linksets have a preferred physical shape.
+        // Returns SHAPE_UNKNOWN if there is no preference. Causes the correct shape to be selected.
+        public virtual BSPhysicsShapeType PreferredPhysicalShape(BSPrimLinkable requestor)
+        {
+            return BSPhysicsShapeType.SHAPE_UNKNOWN;
+        }
 
-		public int LinksetID { get; private set; }
+        // We keep the prim's mass in the linkset structure since it could be dependent on other prims
+        public float LinksetMass { get; protected set; }
 
-		// The children under the root in this linkset.
-		//protected HashSet<BSPrimLinkable> m_children;
-		protected Dictionary<BSPrimLinkable, BSLinkInfo> m_children;
+        public virtual bool LinksetIsColliding
+        {
+            get { return false; }
+        }
 
-		// We lock the diddling of linkset classes to prevent any badness.
-		// This locks the modification of the instances of this class. Changes
-		//    to the physical representation is done via the tainting mechenism.
-		protected object m_linksetActivityLock = new Object ();
+        public OMV.Vector3 CenterOfMass
+        {
+            get { return ComputeLinksetCenterOfMass(); }
+        }
 
-		// Some linksets have a preferred physical shape.
-		// Returns SHAPE_UNKNOWN if there is no preference. Causes the correct shape to be selected.
-		public virtual BSPhysicsShapeType PreferredPhysicalShape (BSPrimLinkable requestor)
-		{
-			return BSPhysicsShapeType.SHAPE_UNKNOWN;
-		}
+        public OMV.Vector3 GeometricCenter
+        {
+            get { return ComputeLinksetGeometricCenter(); }
+        }
 
-		// We keep the prim's mass in the linkset structure since it could be dependent on other prims
-		public float LinksetMass { get; protected set; }
+        protected BSLinkset(BSScene scene, BSPrimLinkable parent)
+        {
+            // A simple linkset of one (no children)
+            LinksetID = m_nextLinksetID++;
+            // We create LOTS of linksets.
+            if (m_nextLinksetID <= 0)
+                m_nextLinksetID = 1;
+            PhysicsScene = scene;
+            LinksetRoot = parent;
+            //m_children = new HashSet<BSPrimLinkable>();
+            m_children = new Dictionary<BSPrimLinkable, BSLinkInfo>();
+            LinksetMass = parent.RawMass;
+            Rebuilding = false;
+            RebuildScheduled = false;
 
-		public virtual bool LinksetIsColliding {
-			get { return false; }
-		}
+            parent.ClearDisplacement();
+        }
 
-		public OMV.Vector3 CenterOfMass {
-			get { return ComputeLinksetCenterOfMass (); }
-		}
+        // Link to a linkset where the child knows the parent.
+        // Parent changing should not happen so do some sanity checking.
+        // We return the parent's linkset so the child can track its membership.
+        // Called at runtime.
+        public BSLinkset AddMeToLinkset(BSPrimLinkable child)
+        {
+            lock (m_linksetActivityLock)
+            {
+                // Don't add the root to its own linkset
+                if (!IsRoot(child))
+                    AddChildToLinkset(child);
+                LinksetMass = ComputeLinksetMass();
+            }
+            return this;
+        }
 
-		public OMV.Vector3 GeometricCenter {
-			get { return ComputeLinksetGeometricCenter (); }
-		}
+        // Remove a child from a linkset.
+        // Returns a new linkset for the child which is a linkset of one (just the
+        //    orphened child).
+        // Called at runtime.
+        public BSLinkset RemoveMeFromLinkset(BSPrimLinkable child, bool inTaintTime)
+        {
+            lock (m_linksetActivityLock)
+            {
+                if (IsRoot(child))
+                {
+                    // Cannot remove the root from a linkset.
+                    return this;
+                }
+            }
 
-		protected BSLinkset (BSScene scene, BSPrimLinkable parent)
-		{
-			// A simple linkset of one (no children)
-			LinksetID = m_nextLinksetID++;
-			// We create LOTS of linksets.
-			if (m_nextLinksetID <= 0)
-				m_nextLinksetID = 1;
-			PhysicsScene = scene;
-			LinksetRoot = parent;
-			//m_children = new HashSet<BSPrimLinkable>();
-			m_children = new Dictionary<BSPrimLinkable, BSLinkInfo> ();
-			LinksetMass = parent.RawMass;
-			Rebuilding = false;
-			RebuildScheduled = false;
-
-			parent.ClearDisplacement ();
-		}
-
-		// Link to a linkset where the child knows the parent.
-		// Parent changing should not happen so do some sanity checking.
-		// We return the parent's linkset so the child can track its membership.
-		// Called at runtime.
-		public BSLinkset AddMeToLinkset (BSPrimLinkable child)
-		{
-			lock (m_linksetActivityLock) {
-				// Don't add the root to its own linkset
-				if (!IsRoot (child))
-					AddChildToLinkset (child);
-				LinksetMass = ComputeLinksetMass ();
-			}
-			return this;
-		}
-
-		// Remove a child from a linkset.
-		// Returns a new linkset for the child which is a linkset of one (just the
-		//    orphened child).
-		// Called at runtime.
-		public BSLinkset RemoveMeFromLinkset (BSPrimLinkable child, bool inTaintTime)
-		{
-			lock (m_linksetActivityLock) {
-				if (IsRoot (child)) {
-					// Cannot remove the root from a linkset.
-					return this;
-				}
-			}
-
-			RemoveChildFromLinkset (child, inTaintTime);         // this establishes it's own lock
-			LinksetMass = ComputeLinksetMass ();
+            RemoveChildFromLinkset(child, inTaintTime);         // this establishes it's own lock
+            LinksetMass = ComputeLinksetMass();
  
-			// The child is down to a linkset of just itself
-			return BSLinkset.Factory (PhysicsScene, child);
-		}
+            // The child is down to a linkset of just itself
+            return BSLinkset.Factory(PhysicsScene, child);
+        }
 
-		// Return 'true' if the passed object is the root object of this linkset
-		public bool IsRoot (BSPrimLinkable requestor)
-		{
-			return (requestor.LocalID == LinksetRoot.LocalID);
-		}
+        // Return 'true' if the passed object is the root object of this linkset
+        public bool IsRoot(BSPrimLinkable requestor)
+        {
+            return (requestor.LocalID == LinksetRoot.LocalID);
+        }
 
-		public int NumberOfChildren {
-			get { return m_children.Count; }
-		}
+        public int NumberOfChildren
+        {
+            get { return m_children.Count; }
+        }
 
-		// Return 'true' if this linkset has any children (more than the root member)
-		public bool HasAnyChildren {
-			get { return (m_children.Count > 0); }
-		}
+        // Return 'true' if this linkset has any children (more than the root member)
+        public bool HasAnyChildren
+        {
+            get { return (m_children.Count > 0); }
+        }
 
-		// Return 'true' if this child is in this linkset
-		public bool HasChild (BSPrimLinkable child)
-		{
-			bool ret;
-			lock (m_linksetActivityLock) {
-				ret = m_children.ContainsKey (child);
-			}
-			return ret;
-		}
+        // Return 'true' if this child is in this linkset
+        public bool HasChild(BSPrimLinkable child)
+        {
+            bool ret;
+            lock (m_linksetActivityLock)
+            {
+                ret = m_children.ContainsKey(child);
+            }
+            return ret;
+        }
 
-		// Perform an action on each member of the linkset including root prim.
-		// Depends on the action on whether this should be done at taint time.
-		public delegate bool ForEachMemberAction (BSPrimLinkable obj);
+        // Perform an action on each member of the linkset including root prim.
+        // Depends on the action on whether this should be done at taint time.
+        public delegate bool ForEachMemberAction(BSPrimLinkable obj);
 
-		public virtual bool ForEachMember (ForEachMemberAction action)
-		{
-			bool ret = false;
-			lock (m_linksetActivityLock) {
-				action (LinksetRoot);
-				foreach (BSPrimLinkable po in m_children.Keys) {
-					if (action (po))
-						break;
-				}
-			}
-			return ret;
-		}
+        public virtual bool ForEachMember(ForEachMemberAction action)
+        {
+            bool ret = false;
+            lock (m_linksetActivityLock)
+            {
+                action(LinksetRoot);
+                foreach (BSPrimLinkable po in m_children.Keys)
+                {
+                    if (action(po))
+                        break;
+                }
+            }
+            return ret;
+        }
 
-		// TODO!!! public bool TryGetLinkInfo
+        // TODO!!! public bool TryGetLinkInfo
 
-		public delegate bool ForEachLinkInfoAction (BSLinkInfo obj);
+        public delegate bool ForEachLinkInfoAction(BSLinkInfo obj);
+        public virtual bool ForEachLinkInfo(ForEachLinkInfoAction action)
+        {
+            bool ret = false;
+            lock (m_linksetActivityLock)
+            {
+                foreach (BSLinkInfo po in m_children.Values)
+                {
+                    if (action(po)) break;
+                }
+            }
+            return ret;
+        }
 
-		public virtual bool ForEachLinkInfo (ForEachLinkInfoAction action)
-		{
-			bool ret = false;
-			lock (m_linksetActivityLock) {
-				foreach (BSLinkInfo po in m_children.Values) {
-					if (action (po))
-						break;
-				}
-			}
-			return ret;
-		}
-
-		// TODO!!! public virtual bool ShouldReportPropertyUpdates
+        // TODO!!! public virtual bool ShouldReportPropertyUpdates
         
-		// Called after a simulation step to post a collision with this object.
-		// Return 'true' if linkset processed the collision. 'false' says the linkset didn't have
-		//     anything to add for the collision and it should be passed through normal processing.
-		// Default processing for a linkset.
-		public virtual bool HandleCollide (uint collidingWith, BSPhysObject collidee,
-		                                        OMV.Vector3 contactPoint, OMV.Vector3 contactNormal, float pentrationDepth)
-		{
-			bool ret = false;
+        // Called after a simulation step to post a collision with this object.
+        // Return 'true' if linkset processed the collision. 'false' says the linkset didn't have
+        //     anything to add for the collision and it should be passed through normal processing.
+        // Default processing for a linkset.
+        public virtual bool HandleCollide(uint collidingWith, BSPhysObject collidee,
+                                    OMV.Vector3 contactPoint, OMV.Vector3 contactNormal, float pentrationDepth)
+        {
+            bool ret = false;
 
-			// prims in the same linkset cannot collide with each other
-			BSPrimLinkable convCollidee = collidee as BSPrimLinkable;
-			if (convCollidee != null && (LinksetID == convCollidee.Linkset.LinksetID)) {
-				// By returning 'true', we tell the caller the collision has been 'handled' so it won't
-				//     do anything about this collision and thus, effectivily, ignoring the collision.
-				ret = true;
-			} else {
-				// Not a collision between members of the linkset. Must be a real collision.
-				// So the linkset root can know if there is a collision anywhere in the linkset.
-				LinksetRoot.SomeCollisionSimulationStep = PhysicsScene.SimulationStep;
-			}
+            // prims in the same linkset cannot collide with each other
+            BSPrimLinkable convCollidee = collidee as BSPrimLinkable;
+            if (convCollidee != null && (LinksetID == convCollidee.Linkset.LinksetID))
+            {
+                // By returning 'true', we tell the caller the collision has been 'handled' so it won't
+                //     do anything about this collision and thus, effectivily, ignoring the collision.
+                ret = true;
+            }
+            else
+            {
+                // Not a collision between members of the linkset. Must be a real collision.
+                // So the linkset root can know if there is a collision anywhere in the linkset.
+                LinksetRoot.SomeCollisionSimulationStep = PhysicsScene.SimulationStep;
+            }
 
-			return ret;
-		}
+            return ret;
+        }
 
-		// I am the root of a linkset and a new child is being added
-		// Called while LinkActivity is locked.
-		protected abstract void AddChildToLinkset (BSPrimLinkable child);
+        // I am the root of a linkset and a new child is being added
+        // Called while LinkActivity is locked.
+        protected abstract void AddChildToLinkset(BSPrimLinkable child);
 
-		// I am the root of a linkset and one of my children is being removed.
-		// Safe to call even if the child is not really in my linkset.
-		protected abstract void RemoveChildFromLinkset (BSPrimLinkable child, bool inTaintTime);
+        // I am the root of a linkset and one of my children is being removed.
+        // Safe to call even if the child is not really in my linkset.
+        protected abstract void RemoveChildFromLinkset(BSPrimLinkable child, bool inTaintTime);
 
-		protected abstract void ScheduleRebuild (BSPrimLinkable requestor);
+        protected abstract void ScheduleRebuild(BSPrimLinkable requestor);
 
-		// When physical properties are changed the linkset needs to recalculate
-		//   its internal properties.
-		// May be called at runtime or taint-time.
-		public virtual void Refresh (BSPrimLinkable requestor)
-		{
-			LinksetMass = ComputeLinksetMass ();
-		}
+        // When physical properties are changed the linkset needs to recalculate
+        //   its internal properties.
+        // May be called at runtime or taint-time.
+        public virtual void Refresh(BSPrimLinkable requestor)
+        {
+            LinksetMass = ComputeLinksetMass();
+        }
 
-		// Flag denoting the linkset is in the process of being rebuilt.
-		// Used to know not the schedule a rebuild in the middle of a rebuild.
-		protected bool Rebuilding { get; set; }
+        // Flag denoting the linkset is in the process of being rebuilt.
+        // Used to know not the schedule a rebuild in the middle of a rebuild.
+        protected bool Rebuilding { get; set; }
 
-		// Flag saying a linkset rebuild has been scheduled.
-		// This is turned on when the rebuld is requested and turned off when
-		//      the rebuild is complete. Used to limit modifications to the
-		//      linkset parameters while the linkset is in an intermediate state.
-		// Protected by a "lock(m_linksetActivityLock)" on the BSLinkset object
-		public bool RebuildScheduled { get; protected set; }
+        // Flag saying a linkset rebuild has been scheduled.
+        // This is turned on when the rebuld is requested and turned off when
+        //      the rebuild is complete. Used to limit modifications to the
+        //      linkset parameters while the linkset is in an intermediate state.
+        // Protected by a "lock(m_linksetActivityLock)" on the BSLinkset object
+        public bool RebuildScheduled { get; protected set; }
 
-		// The object is going dynamic (physical). Do any setup necessary
-		//     for a dynamic linkset.
-		// Only the state of the passed object can be modified. The rest of the linkset
-		//     has not yet been fully constructed.
-		// Return 'true' if any properties updated on the passed object.
-		// Called at taint-time!
-		public abstract bool MakeDynamic (BSPrimLinkable child);
+        // The object is going dynamic (physical). Do any setup necessary
+        //     for a dynamic linkset.
+        // Only the state of the passed object can be modified. The rest of the linkset
+        //     has not yet been fully constructed.
+        // Return 'true' if any properties updated on the passed object.
+        // Called at taint-time!
+        public abstract bool MakeDynamic(BSPrimLinkable child);
 
-		public virtual bool AllPartsComplete {
-			get {
-				bool ret = true;
-				ForEachMember ((member) => {
-					if ((!member.IsInitialized) || member.IsIncomplete ||
-					                   member.PrimAssetState == BSPhysObject.PrimAssetCondition.Waiting) {
-						ret = false;
-						return true;    // exit loop
-					}
-					return false;   // continue loop
-				});
-				return ret;
-			}
-		}
+        public virtual bool AllPartsComplete
+        {
+            get
+            {
+                bool ret = true;
+                ForEachMember((member) =>
+                {
+                    if ((!member.IsInitialized) || member.IsIncomplete ||
+                        member.PrimAssetState == BSPhysObject.PrimAssetCondition.Waiting)
+                    {
+                        ret = false;
+                        return true;    // exit loop
+                    }
+                    return false;   // continue loop
+                });
+                return ret;
+            }
+        }
 
-		// The object is going static (non-physical). Do any setup necessary
-		//     for a static linkset.
-		// Return 'true' if any properties updated on the passed object.
-		// Called at taint-time!
-		public abstract bool MakeStatic (BSPrimLinkable child);
+        // The object is going static (non-physical). Do any setup necessary
+        //     for a static linkset.
+        // Return 'true' if any properties updated on the passed object.
+        // Called at taint-time!
+        public abstract bool MakeStatic(BSPrimLinkable child);
 
-		// Called when a parameter update comes from the physics engine for any object
-		//      of the linkset is received.
-		// Passed flag is update came from physics engine (true) or the user (false).
-		// Called at taint-time!!
-		public abstract void UpdateProperties (UpdatedProperties whichUpdated, BSPrimLinkable physObject);
+        // Called when a parameter update comes from the physics engine for any object
+        //      of the linkset is received.
+        // Passed flag is update came from physics engine (true) or the user (false).
+        // Called at taint-time!!
+        public abstract void UpdateProperties(UpdatedProperties whichUpdated, BSPrimLinkable physObject);
 
-		// TODO!!! rename to RemoveDependencies
-		// Routine used when rebuilding the body of the root of the linkset
-		// Destroy all the constraints have have been made to root.
-		// This is called when the root body is changing.
-		// Returns 'true' of something was actually removed and would need restoring
-		// Called at taint-time!!
-		public abstract bool RemoveBodyDependencies (BSPrimLinkable child);
+        // TODO!!! rename to RemoveDependencies
+        // Routine used when rebuilding the body of the root of the linkset
+        // Destroy all the constraints have have been made to root.
+        // This is called when the root body is changing.
+        // Returns 'true' of something was actually removed and would need restoring
+        // Called at taint-time!!
+        public abstract bool RemoveBodyDependencies(BSPrimLinkable child);
 
-		// ================================================================
-		public virtual void SetPhysicalFriction (float friction)
-		{
-			ForEachMember ((member) => {
-				if (member.PhysBody.HasPhysicalBody)
-					PhysicsScene.PE.SetFriction (member.PhysBody, friction);
-				return false;   // 'false' says to continue looping
-			}
-			);
-		}
+        // ================================================================
+        public virtual void SetPhysicalFriction(float friction)
+        {
+            ForEachMember((member) =>
+                {
+                    if (member.PhysBody.HasPhysicalBody)
+                        PhysicsScene.PE.SetFriction(member.PhysBody, friction);
+                    return false;   // 'false' says to continue looping
+                }
+            );
+        }
 
-		public virtual void SetPhysicalRestitution (float restitution)
-		{
-			ForEachMember ((member) => {
-				if (member.PhysBody.HasPhysicalBody)
-					PhysicsScene.PE.SetRestitution (member.PhysBody, restitution);
-				return false;   // 'false' says to continue looping
-			}
-			);
-		}
+        public virtual void SetPhysicalRestitution(float restitution)
+        {
+            ForEachMember((member) =>
+                {
+                    if (member.PhysBody.HasPhysicalBody)
+                        PhysicsScene.PE.SetRestitution(member.PhysBody, restitution);
+                    return false;   // 'false' says to continue looping
+                }
+            );
+        }
 
-		public virtual void SetPhysicalGravity (OMV.Vector3 gravity)
-		{
-			ForEachMember ((member) => {
-				if (member.PhysBody.HasPhysicalBody)
-					PhysicsScene.PE.SetGravity (member.PhysBody, gravity);
-				return false;   // 'false' says to continue looping
-			}
-			);
-		}
+        public virtual void SetPhysicalGravity(OMV.Vector3 gravity)
+        {
+            ForEachMember((member) =>
+                {
+                    if (member.PhysBody.HasPhysicalBody)
+                        PhysicsScene.PE.SetGravity(member.PhysBody, gravity);
+                    return false;   // 'false' says to continue looping
+                }
+            );
+        }
 
-		public virtual void ComputeAndSetLocalInertia (OMV.Vector3 inertiaFactor, float linksetMass)
-		{
-			ForEachMember ((member) => {
-				if (member.PhysBody.HasPhysicalBody) {
-					OMV.Vector3 inertia = PhysicsScene.PE.CalculateLocalInertia (member.PhysShape.physShapeInfo, linksetMass);
-					member.Inertia = inertia * inertiaFactor;
-					PhysicsScene.PE.SetMassProps (member.PhysBody, linksetMass, member.Inertia);
-					PhysicsScene.PE.UpdateInertiaTensor (member.PhysBody);
-					DetailLog ("{0},BSLinkset.ComputeAndSetLocalInertia,m.mass={1}, inertia={2}", member.LocalID, linksetMass, member.Inertia);
+        public virtual void ComputeAndSetLocalInertia(OMV.Vector3 inertiaFactor, float linksetMass)
+        {
+            ForEachMember((member) =>
+                {
+                    if (member.PhysBody.HasPhysicalBody)
+                    {
+                        OMV.Vector3 inertia = PhysicsScene.PE.CalculateLocalInertia(member.PhysShape.physShapeInfo, linksetMass);
+                        member.Inertia = inertia * inertiaFactor;
+                        PhysicsScene.PE.SetMassProps(member.PhysBody, linksetMass, member.Inertia);
+                        PhysicsScene.PE.UpdateInertiaTensor(member.PhysBody);
+                        DetailLog("{0},BSLinkset.ComputeAndSetLocalInertia,m.mass={1}, inertia={2}", member.LocalID, linksetMass, member.Inertia);
 
-				}
-				return false;   // 'false' says to continue looping
-			}
-			);
-		}
+                    }
+                    return false;   // 'false' says to continue looping
+                }
+            );
+        }
 
-		public virtual void SetPhysicalCollisionFlags (CollisionFlags collFlags)
-		{
-			ForEachMember ((member) => {
-				if (member.PhysBody.HasPhysicalBody)
-					PhysicsScene.PE.SetCollisionFlags (member.PhysBody, collFlags);
-				return false;   // 'false' says to continue looping
-			}
-			);
-		}
+        public virtual void SetPhysicalCollisionFlags(CollisionFlags collFlags)
+        {
+            ForEachMember((member) =>
+                {
+                    if (member.PhysBody.HasPhysicalBody)
+                        PhysicsScene.PE.SetCollisionFlags(member.PhysBody, collFlags);
+                    return false;   // 'false' says to continue looping
+                }
+            );
+        }
 
-		public virtual void AddToPhysicalCollisionFlags (CollisionFlags collFlags)
-		{
-			ForEachMember ((member) => {
-				if (member.PhysBody.HasPhysicalBody)
-					PhysicsScene.PE.AddToCollisionFlags (member.PhysBody, collFlags);
-				return false;   // 'false' says to continue looping
-			}
-			);
-		}
+        public virtual void AddToPhysicalCollisionFlags(CollisionFlags collFlags)
+        {
+            ForEachMember((member) =>
+                {
+                    if (member.PhysBody.HasPhysicalBody)
+                        PhysicsScene.PE.AddToCollisionFlags(member.PhysBody, collFlags);
+                    return false;   // 'false' says to continue looping
+                }
+            );
+        }
 
-		public virtual void RemoveFromPhysicalCollisionFlags (CollisionFlags collFlags)
-		{
-			ForEachMember ((member) => {
-				if (member.PhysBody.HasPhysicalBody)
-					PhysicsScene.PE.RemoveFromCollisionFlags (member.PhysBody, collFlags);
-				return false;   // 'false' says to continue looping
-			}
-			);
-		}
-		// ================================================================
+        public virtual void RemoveFromPhysicalCollisionFlags(CollisionFlags collFlags)
+        {
+            ForEachMember((member) =>
+                {
+                    if (member.PhysBody.HasPhysicalBody)
+                        PhysicsScene.PE.RemoveFromCollisionFlags(member.PhysBody, collFlags);
+                    return false;   // 'false' says to continue looping
+                }
+            );
+        }
+        // ================================================================
 
-		protected virtual float ComputeLinksetMass ()
-		{
-			float mass = LinksetRoot.RawMass;
-			if (HasAnyChildren) {
-				lock (m_linksetActivityLock) {
-					foreach (BSPrimLinkable bp in m_children.Keys) {
-						mass += bp.RawMass;
-					}
-				}
-			}
-			return mass;
-		}
+        protected virtual float ComputeLinksetMass()
+        {
+            float mass = LinksetRoot.RawMass;
+            if (HasAnyChildren)
+            {
+                lock (m_linksetActivityLock)
+                {
+                    foreach (BSPrimLinkable bp in m_children.Keys)
+                    {
+                        mass += bp.RawMass;
+                    }
+                }
+            }
+            return mass;
+        }
 
-		// Computes linkset's center of mass in world coordinates.
-		protected virtual OMV.Vector3 ComputeLinksetCenterOfMass ()
-		{
-			OMV.Vector3 com;
-			lock (m_linksetActivityLock) {
-				com = LinksetRoot.Position * LinksetRoot.RawMass;
-				float totalMass = LinksetRoot.RawMass;
+        // Computes linkset's center of mass in world coordinates.
+        protected virtual OMV.Vector3 ComputeLinksetCenterOfMass()
+        {
+            OMV.Vector3 com;
+            lock (m_linksetActivityLock)
+            {
+                com = LinksetRoot.Position * LinksetRoot.RawMass;
+                float totalMass = LinksetRoot.RawMass;
 
-				foreach (BSPrimLinkable bp in m_children.Keys) {
-					com += bp.Position * bp.RawMass;
-					totalMass += bp.RawMass;
-				}
-				if (totalMass != 0f)
-					com /= totalMass;
-			}
+                foreach (BSPrimLinkable bp in m_children.Keys)
+                {
+                    com += bp.Position * bp.RawMass;
+                    totalMass += bp.RawMass;
+                }
+                if (totalMass != 0f)
+                    com /= totalMass;
+            }
 
-			return com;
-		}
+            return com;
+        }
 
-		protected virtual OMV.Vector3 ComputeLinksetGeometricCenter ()
-		{
-			OMV.Vector3 com;
-			lock (m_linksetActivityLock) {
-				com = LinksetRoot.Position;
+        protected virtual OMV.Vector3 ComputeLinksetGeometricCenter()
+        {
+            OMV.Vector3 com;
+            lock (m_linksetActivityLock)
+            {
+                com = LinksetRoot.Position;
 
-				foreach (BSPrimLinkable bp in m_children.Keys) {
-					com += bp.Position;
-				}
-				com /= (m_children.Count + 1);
-			}
+                foreach (BSPrimLinkable bp in m_children.Keys)
+                {
+                    com += bp.Position;
+                }
+                com /= (m_children.Count + 1);
+            }
 
-			return com;
-		}
+            return com;
+        }
 
-		#region Extension
+        #region Extension
+        public virtual object Extension(string pFunct, params object[] pParams)
+        {
+            return null;
+        }
+        #endregion // Extension
 
-		public virtual object Extension (string pFunct, params object[] pParams)
-		{
-			return null;
-		}
-
-		#endregion // Extension
-
-		// Invoke the detailed logger and output something if it's enabled.
-		protected void DetailLog (string msg, params Object[] args)
-		{
-			// => new integration of logging here! <=
-			//if (PhysicsScene.PhysicsLogging.Enabled)
-			//    PhysicsScene.DetailLog(msg, args);
-			// commented out by fine (logspam at the console)
-			//MainConsole.Instance.InfoFormat("[BSLINKSET]: " + msg, args);
-		}
-	}
+        // Invoke the detailed logger and output something if it's enabled.
+        protected void DetailLog(string msg, params Object[] args)
+        {
+            // => new integration of logging here! <=
+            //if (PhysicsScene.PhysicsLogging.Enabled)
+            //    PhysicsScene.DetailLog(msg, args);
+            // commented out by fine (logspam at the console)
+            //MainConsole.Instance.InfoFormat("[BSLINKSET]: " + msg, args);
+        }
+    }
 }

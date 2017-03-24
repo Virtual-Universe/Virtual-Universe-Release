@@ -27,15 +27,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Nini.Config;
 using Universe.Framework.Modules;
+using Nini.Config;
 
 namespace Universe.Framework.Physics
 {
-	public interface IMeshingPlugin
-	{
-		string GetName ();
-
-		IMesher GetMesher (IConfigSource config, IRegistryCore registry);
-	}
+    public interface IMeshingPlugin
+    {
+        string GetName();
+        IMesher GetMesher(IConfigSource config, IRegistryCore registry);
+    }
 }

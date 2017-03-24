@@ -39,227 +39,249 @@ using Universe.Framework.Utilities;
 
 namespace Universe.Modules.Archivers
 {
-	/// <summary>
-	///     Encapsulate the asynchronous requests for the assets required for an archive operation
-	/// </summary>
-	class AssetsRequest
-	{
-		/// <value>
-		///     Timeout threshold if we still need assets or missing asset notifications but have stopped receiving them
-		///     from the asset service
-		/// </value>
-		protected const int TIMEOUT = 60 * 1000;
+    /// <summary>
+    ///     Encapsulate the asynchronous requests for the assets required for an archive operation
+    /// </summary>
+    class AssetsRequest
+    {
+        /// <value>
+        ///     Timeout threshold if we still need assets or missing asset notifications but have stopped receiving them
+        ///     from the asset service
+        /// </value>
+        protected const int TIMEOUT = 60*1000;
 
-		/// <value>
-		///     If a timeout does occur, limit the amount of UUID information put to the console.
-		/// </value>
-		protected const int MAX_UUID_DISPLAY_ON_TIMEOUT = 3;
+        /// <value>
+        ///     If a timeout does occur, limit the amount of UUID information put to the console.
+        /// </value>
+        protected const int MAX_UUID_DISPLAY_ON_TIMEOUT = 3;
 
-		/// <value>
-		///     Record the number of asset replies required so we know when we've finished
-		/// </value>
-		readonly int m_repliesRequired;
+        /// <value>
+        ///     Record the number of asset replies required so we know when we've finished
+        /// </value>
+        readonly int m_repliesRequired;
 
-		/// <value>
-		///     Asset service used to request the assets
-		/// </value>
-		protected IAssetService m_assetService;
+        /// <value>
+        ///     Asset service used to request the assets
+        /// </value>
+        protected IAssetService m_assetService;
 
-		protected AssetsArchiver m_assetsArchiver;
+        protected AssetsArchiver m_assetsArchiver;
 
-		/// <value>
-		///     Callback used when all the assets requested have been received.
-		/// </value>
-		protected AssetsRequestCallback m_assetsRequestCallback;
+        /// <value>
+        ///     Callback used when all the assets requested have been received.
+        /// </value>
+        protected AssetsRequestCallback m_assetsRequestCallback;
 
-		/// <value>
-		///     List of assets that were found.  This will be passed back to the requester.
-		/// </value>
-		protected List<UUID> m_foundAssetUuids = new List<UUID> ();
+        /// <value>
+        ///     List of assets that were found.  This will be passed back to the requester.
+        /// </value>
+        protected List<UUID> m_foundAssetUuids = new List<UUID>();
 
-		/// <value>
-		///     Maintain a list of assets that could not be found.  This will be passed back to the requester.
-		/// </value>
-		protected List<UUID> m_notFoundAssetUuids = new List<UUID> ();
+        /// <value>
+        ///     Maintain a list of assets that could not be found.  This will be passed back to the requester.
+        /// </value>
+        protected List<UUID> m_notFoundAssetUuids = new List<UUID>();
 
-		protected Timer m_requestCallbackTimer;
+        protected Timer m_requestCallbackTimer;
 
-		/// <value>
-		///     State of this request
-		/// </value>
-		RequestState m_requestState = RequestState.Initial;
+        /// <value>
+        ///     State of this request
+        /// </value>
+        RequestState m_requestState = RequestState.Initial;
 
-		/// <value>
-		///     uuids to request
-		/// </value>
-		protected IDictionary<UUID, AssetType> m_uuids;
+        /// <value>
+        ///     uuids to request
+        /// </value>
+        protected IDictionary<UUID, AssetType> m_uuids;
 
-		protected internal AssetsRequest (
-			AssetsArchiver assetsArchiver, IDictionary<UUID, AssetType> uuids,
-			IAssetService assetService, AssetsRequestCallback assetsRequestCallback)
-		{
-			m_assetsArchiver = assetsArchiver;
-			m_uuids = uuids;
-			m_assetsRequestCallback = assetsRequestCallback;
-			m_assetService = assetService;
-			m_repliesRequired = uuids.Count;
+        protected internal AssetsRequest(
+            AssetsArchiver assetsArchiver, IDictionary<UUID, AssetType> uuids,
+            IAssetService assetService, AssetsRequestCallback assetsRequestCallback)
+        {
+            m_assetsArchiver = assetsArchiver;
+            m_uuids = uuids;
+            m_assetsRequestCallback = assetsRequestCallback;
+            m_assetService = assetService;
+            m_repliesRequired = uuids.Count;
 
-			m_requestCallbackTimer = new Timer (TIMEOUT) { AutoReset = false };
-			m_requestCallbackTimer.Elapsed += OnRequestCallbackTimeout;
-		}
+            m_requestCallbackTimer = new Timer(TIMEOUT) {AutoReset = false};
+            m_requestCallbackTimer.Elapsed += OnRequestCallbackTimeout;
+        }
 
-		protected internal void Execute ()
-		{
-			lock (this) {
-				m_requestState = RequestState.Running;
+        protected internal void Execute()
+        {
+            lock(this) {
+                m_requestState = RequestState.Running;
 
-				MainConsole.Instance.DebugFormat ("[Archiver]: AssetsRequest executed looking for {0} assets",
-					m_repliesRequired);
+                MainConsole.Instance.DebugFormat ("[Archiver]: AssetsRequest executed looking for {0} assets",
+                                                 m_repliesRequired);
 
-				// We can stop here if there are no assets to fetch
-				if (m_repliesRequired == 0) {
-					m_requestState = RequestState.Completed;
-					PerformAssetsRequestCallback (null);
-					return;
-				}
+                // We can stop here if there are no assets to fetch
+                if (m_repliesRequired == 0) {
+                    m_requestState = RequestState.Completed;
+                    PerformAssetsRequestCallback (null);
+                    return;
+                }
 
-				foreach (KeyValuePair<UUID, AssetType> kvp in m_uuids) {
-					m_assetService.Get (kvp.Key.ToString (), kvp.Value, PreAssetRequestCallback);
-				}
+                foreach (KeyValuePair<UUID, AssetType> kvp in m_uuids) {
+                    m_assetService.Get (kvp.Key.ToString (), kvp.Value, PreAssetRequestCallback);
+                }
 
-				m_requestCallbackTimer.Enabled = true;
-			}
-		}
+                m_requestCallbackTimer.Enabled = true;
+            }
+        }
 
-		protected void OnRequestCallbackTimeout (object source, ElapsedEventArgs args)
-		{
-			try {
-				lock (this) {
-					// Take care of the possibility that this thread started but was paused just outside the lock before
-					// the final request came in (assuming that such a thing is possible)
-					if (m_requestState == RequestState.Completed)
-						return;
+        protected void OnRequestCallbackTimeout(object source, ElapsedEventArgs args)
+        {
+            try
+            {
+                lock (this)
+                {
+                    // Take care of the possibility that this thread started but was paused just outside the lock before
+                    // the final request came in (assuming that such a thing is possible)
+                    if (m_requestState == RequestState.Completed)
+                        return;
 
-					m_requestState = RequestState.Aborted;
-				}
+                    m_requestState = RequestState.Aborted;
+                }
 
-				// Calculate which uuids were not found.  This is an expensive way of doing it, but this is a failure
-				// case anyway.
-				List<UUID> uuids = m_uuids.Keys.ToList ();
+                // Calculate which uuids were not found.  This is an expensive way of doing it, but this is a failure
+                // case anyway.
+                List<UUID> uuids = m_uuids.Keys.ToList();
 
-				foreach (UUID uuid in m_foundAssetUuids)
-					uuids.Remove (uuid);
+                foreach (UUID uuid in m_foundAssetUuids)
+                    uuids.Remove(uuid);
 
-				foreach (UUID uuid in m_notFoundAssetUuids)
-					uuids.Remove (uuid);
+                foreach (UUID uuid in m_notFoundAssetUuids)
+                    uuids.Remove(uuid);
 
-				MainConsole.Instance.ErrorFormat (
-					"[Archiver]: Asset service failed to return information about {0} requested assets", uuids.Count);
+                MainConsole.Instance.ErrorFormat(
+                    "[Archiver]: Asset service failed to return information about {0} requested assets", uuids.Count);
 
-				int i = 0;
-				foreach (UUID uuid in uuids) {
-					MainConsole.Instance.ErrorFormat ("[Archiver]: No information about asset {0} received", uuid);
+                int i = 0;
+                foreach (UUID uuid in uuids)
+                {
+                    MainConsole.Instance.ErrorFormat("[Archiver]: No information about asset {0} received", uuid);
 
-					if (++i >= MAX_UUID_DISPLAY_ON_TIMEOUT)
-						break;
-				}
+                    if (++i >= MAX_UUID_DISPLAY_ON_TIMEOUT)
+                        break;
+                }
 
-				if (uuids.Count > MAX_UUID_DISPLAY_ON_TIMEOUT)
-					MainConsole.Instance.ErrorFormat (
-						"[Archiver]: (... {0} more not shown)", uuids.Count - MAX_UUID_DISPLAY_ON_TIMEOUT);
+                if (uuids.Count > MAX_UUID_DISPLAY_ON_TIMEOUT)
+                    MainConsole.Instance.ErrorFormat(
+                        "[Archiver]: (... {0} more not shown)", uuids.Count - MAX_UUID_DISPLAY_ON_TIMEOUT);
 
-				MainConsole.Instance.Error ("[Archiver]: Asset save aborted.");
-			} catch (Exception e) {
-				MainConsole.Instance.ErrorFormat ("[Archiver]: Timeout handler exception {0}", e);
-			} finally {
-				m_assetsArchiver.ForceClose ();
-			}
-		}
+                MainConsole.Instance.Error("[Archiver]: Asset save aborted.");
+            }
+            catch (Exception e)
+            {
+                MainConsole.Instance.ErrorFormat("[Archiver]: Timeout handler exception {0}", e);
+            }
+            finally
+            {
+                m_assetsArchiver.ForceClose();
+            }
+        }
 
-		protected void PreAssetRequestCallback (string fetchedAssetID, object assetType, AssetBase fetchedAsset)
-		{
-			// Check for broken asset types and fix them with the AssetType gleaned by UuidGatherer
-			if (fetchedAsset != null && fetchedAsset.Type == (sbyte)AssetType.Unknown) {
-				AssetType type = (AssetType)assetType;
-				MainConsole.Instance.InfoFormat ("[Archiver]: Rewriting broken asset type for {0} to {1}",
-					fetchedAsset.ID, type);
-				fetchedAsset.Type = (sbyte)type;
-			}
+        protected void PreAssetRequestCallback(string fetchedAssetID, object assetType, AssetBase fetchedAsset)
+        {
+            // Check for broken asset types and fix them with the AssetType gleaned by UuidGatherer
+            if (fetchedAsset != null && fetchedAsset.Type == (sbyte) AssetType.Unknown)
+            {
+                AssetType type = (AssetType) assetType;
+                MainConsole.Instance.InfoFormat("[Archiver]: Rewriting broken asset type for {0} to {1}",
+                                                fetchedAsset.ID, type);
+                fetchedAsset.Type = (sbyte) type;
+            }
 
-			AssetRequestCallback (fetchedAssetID, this, fetchedAsset);
-		}
+            AssetRequestCallback(fetchedAssetID, this, fetchedAsset);
+        }
 
-		/// <summary>
-		///     Called back by the asset cache when it has the asset
-		/// </summary>
-		/// <param name="assetID"></param>
-		/// <param name="sender"></param>
-		/// <param name="asset"></param>
-		public void AssetRequestCallback (string assetID, object sender, AssetBase asset)
-		{
-			try {
-				lock (this) {
-					//MainConsole.Instance.DebugFormat("[Archiver]: Received callback for asset {0}", id);
+        /// <summary>
+        ///     Called back by the asset cache when it has the asset
+        /// </summary>
+        /// <param name="assetID"></param>
+        /// <param name="sender"></param>
+        /// <param name="asset"></param>
+        public void AssetRequestCallback(string assetID, object sender, AssetBase asset)
+        {
+            try
+            {
+                lock (this)
+                {
+                    //MainConsole.Instance.DebugFormat("[Archiver]: Received callback for asset {0}", id);
 
-					m_requestCallbackTimer.Stop ();
+                    m_requestCallbackTimer.Stop();
 
-					if (m_requestState == RequestState.Aborted) {
-						MainConsole.Instance.WarnFormat (
-							"[Archiver]: Received information about asset {0} after archive save abortion.  Ignoring.",
-							assetID);
+                    if (m_requestState == RequestState.Aborted)
+                    {
+                        MainConsole.Instance.WarnFormat(
+                            "[Archiver]: Received information about asset {0} after archive save abortion.  Ignoring.",
+                            assetID);
 
-						return;
-					}
+                        return;
+                    }
 
-					if (asset != null) {
-						//MainConsole.Instance.DebugFormat("[Archiver]: Writing asset {0}", id);
-						m_foundAssetUuids.Add (asset.ID);
-						m_assetsArchiver.WriteAsset (asset);
-					} else {
-						//MainConsole.Instance.DebugFormat("[Archiver]: Recording asset {0} as not found", id);
-						m_notFoundAssetUuids.Add (new UUID (assetID));
-					}
+                    if (asset != null)
+                    {
+                        //MainConsole.Instance.DebugFormat("[Archiver]: Writing asset {0}", id);
+                        m_foundAssetUuids.Add(asset.ID);
+                        m_assetsArchiver.WriteAsset(asset);
+                    }
+                    else
+                    {
+                        //MainConsole.Instance.DebugFormat("[Archiver]: Recording asset {0} as not found", id);
+                        m_notFoundAssetUuids.Add(new UUID(assetID));
+                    }
 
-					if (m_foundAssetUuids.Count + m_notFoundAssetUuids.Count == m_repliesRequired) {
-						m_requestState = RequestState.Completed;
+                    if (m_foundAssetUuids.Count + m_notFoundAssetUuids.Count == m_repliesRequired)
+                    {
+                        m_requestState = RequestState.Completed;
 
-						MainConsole.Instance.InfoFormat (
-							"[Archiver]: Successfully added {0} assets ({1} assets notified missing)",
-							m_foundAssetUuids.Count, m_notFoundAssetUuids.Count);
+                        MainConsole.Instance.InfoFormat(
+                            "[Archiver]: Successfully added {0} assets ({1} assets notified missing)",
+                            m_foundAssetUuids.Count, m_notFoundAssetUuids.Count);
 
-						// We want to stop using the asset cache thread asap 
-						// as we now need to do the work of producing the rest of the archive
-						Util.FireAndForget (PerformAssetsRequestCallback);
-					} else
-						m_requestCallbackTimer.Start ();
-				}
-			} catch (Exception e) {
-				MainConsole.Instance.ErrorFormat ("[Archiver]: AssetRequestCallback failed with {0}", e);
-			}
-		}
+                        // We want to stop using the asset cache thread asap 
+                        // as we now need to do the work of producing the rest of the archive
+                        Util.FireAndForget(PerformAssetsRequestCallback);
+                    }
+                    else
+                        m_requestCallbackTimer.Start();
+                }
+            }
+            catch (Exception e)
+            {
+                MainConsole.Instance.ErrorFormat("[Archiver]: AssetRequestCallback failed with {0}", e);
+            }
+        }
 
-		/// <summary>
-		///     Perform the callback on the original requester of the assets
-		/// </summary>
-		protected void PerformAssetsRequestCallback (object o)
-		{
-			try {
-				m_assetsRequestCallback (m_foundAssetUuids, m_notFoundAssetUuids);
-			} catch (Exception e) {
-				MainConsole.Instance.ErrorFormat (
-					"[Archiver]: Terminating archive creation since asset requster callback failed with {0}", e);
-			}
-		}
+        /// <summary>
+        ///     Perform the callback on the original requester of the assets
+        /// </summary>
+        protected void PerformAssetsRequestCallback(object o)
+        {
+            try
+            {
+                m_assetsRequestCallback(m_foundAssetUuids, m_notFoundAssetUuids);
+            }
+            catch (Exception e)
+            {
+                MainConsole.Instance.ErrorFormat(
+                    "[Archiver]: Terminating archive creation since asset requster callback failed with {0}", e);
+            }
+        }
 
-		#region Nested type: RequestState
+        #region Nested type: RequestState
 
-		enum RequestState
-		{
-			Initial,
-			Running,
-			Completed,
-			Aborted};
+        enum RequestState
+        {
+            Initial,
+            Running,
+            Completed,
+            Aborted
+        };
 
-		#endregion
-	}
+        #endregion
+    }
 }

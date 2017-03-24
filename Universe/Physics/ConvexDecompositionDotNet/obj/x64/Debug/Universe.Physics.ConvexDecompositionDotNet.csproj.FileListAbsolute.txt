@@ -1,8 +1,3 @@
-C:\Users\virtu\Desktop\Universe-Dev\VirtualUniverse\bin\Physics\Universe.Physics.ConvexDecompositionDotNet.dll
-C:\Users\virtu\Desktop\Universe-Dev\VirtualUniverse\bin\Physics\Universe.Physics.ConvexDecompositionDotNet.pdb
-C:\Users\virtu\Desktop\Universe-Dev\Universe\Physics\ConvexDecompositionDotNet\obj\x64\Debug\Universe.Physics.ConvexDecompositionDotNet.csprojResolveAssemblyReference.cache
-C:\Users\virtu\Desktop\Universe-Dev\Universe\Physics\ConvexDecompositionDotNet\obj\x64\Debug\Universe.Physics.ConvexDecompositionDotNet.dll
-C:\Users\virtu\Desktop\Universe-Dev\Universe\Physics\ConvexDecompositionDotNet\obj\x64\Debug\Universe.Physics.ConvexDecompositionDotNet.pdb
 C:\Users\virtu\Desktop\Virtual-Dev\VirtualUniverse\bin\Physics\Universe.Physics.ConvexDecompositionDotNet.dll
 C:\Users\virtu\Desktop\Virtual-Dev\VirtualUniverse\bin\Physics\Universe.Physics.ConvexDecompositionDotNet.pdb
 C:\Users\virtu\Desktop\Virtual-Dev\Universe\Physics\ConvexDecompositionDotNet\obj\x64\Debug\Universe.Physics.ConvexDecompositionDotNet.dll

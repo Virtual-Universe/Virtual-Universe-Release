@@ -39,144 +39,144 @@ using Universe.Framework.Services;
 
 namespace Universe.Modules.Chat
 {
-	public class InstantMessageModule : INonSharedRegionModule
-	{
-		IScene m_Scene;
+    public class InstantMessageModule : INonSharedRegionModule
+    {
+        IScene m_Scene;
 
-		IMessageTransferModule m_TransferModule;
+        IMessageTransferModule m_TransferModule;
 
-		/// <value>
-		///     Is this module enabled?
-		/// </value>
-		bool m_enabled;
+        /// <value>
+        ///     Is this module enabled?
+        /// </value>
+        bool m_enabled;
 
-		#region INonSharedRegionModule Members
+        #region INonSharedRegionModule Members
 
-		public void Initialize (IConfigSource config)
-		{
-			if (config.Configs ["Messaging"] != null) {
-				m_enabled = (config.Configs ["Messaging"].GetString ("InstantMessageModule", Name) == Name);
-			}
-		}
+        public void Initialize (IConfigSource config)
+        {
+            if (config.Configs ["Messaging"] != null) {
+                m_enabled = (config.Configs ["Messaging"].GetString ("InstantMessageModule", Name) == Name);
+            }
+        }
 
-		public void AddRegion (IScene scene)
-		{
-			if (!m_enabled)
-				return;
+        public void AddRegion (IScene scene)
+        {
+            if (!m_enabled)
+                return;
 
-			m_Scene = scene;
-			scene.EventManager.OnNewClient += EventManager_OnNewClient;
-			scene.EventManager.OnClosingClient += EventManager_OnClosingClient;
-			scene.EventManager.OnIncomingInstantMessage += OnGridInstantMessage;
-		}
+            m_Scene = scene;
+            scene.EventManager.OnNewClient += EventManager_OnNewClient;
+            scene.EventManager.OnClosingClient += EventManager_OnClosingClient;
+            scene.EventManager.OnIncomingInstantMessage += OnGridInstantMessage;
+        }
 
-		public void RegionLoaded (IScene scene)
-		{
-			if (!m_enabled)
-				return;
+        public void RegionLoaded (IScene scene)
+        {
+            if (!m_enabled)
+                return;
 
-			if (m_TransferModule == null) {
-				m_TransferModule = scene.RequestModuleInterface<IMessageTransferModule> ();
+            if (m_TransferModule == null) {
+                m_TransferModule = scene.RequestModuleInterface<IMessageTransferModule> ();
 
-				if (m_TransferModule == null) {
-					MainConsole.Instance.Error ("[Instant Message]: No message transfer module, IM will not work!");
-					scene.EventManager.OnNewClient -= EventManager_OnNewClient;
-					scene.EventManager.OnClosingClient -= EventManager_OnClosingClient;
-					scene.EventManager.OnIncomingInstantMessage -= OnGridInstantMessage;
+                if (m_TransferModule == null) {
+                    MainConsole.Instance.Error ("[Instant message]: No message transfer module, IM will not work!");
+                    scene.EventManager.OnNewClient -= EventManager_OnNewClient;
+                    scene.EventManager.OnClosingClient -= EventManager_OnClosingClient;
+                    scene.EventManager.OnIncomingInstantMessage -= OnGridInstantMessage;
 
-					m_Scene = null;
-					m_enabled = false;
-				}
-			}
-		}
+                    m_Scene = null;
+                    m_enabled = false;
+                }
+            }
+        }
 
-		public void RemoveRegion (IScene scene)
-		{
-			if (!m_enabled)
-				return;
+        public void RemoveRegion (IScene scene)
+        {
+            if (!m_enabled)
+                return;
 
-			m_Scene = null;
-		}
+            m_Scene = null;
+        }
 
-		public void Close ()
-		{
-		}
+        public void Close ()
+        {
+        }
 
-		public string Name {
-			get { return "InstantMessageModule"; }
-		}
+        public string Name {
+            get { return "InstantMessageModule"; }
+        }
 
-		public Type ReplaceableInterface {
-			get { return null; }
-		}
+        public Type ReplaceableInterface {
+            get { return null; }
+        }
 
-		#endregion
+        #endregion
 
-		void EventManager_OnClosingClient (IClientAPI client)
-		{
-			//client.OnInstantMessage -= OnInstantMessage;
-		}
+        void EventManager_OnClosingClient (IClientAPI client)
+        {
+            //client.OnInstantMessage -= OnInstantMessage;
+        }
 
-		void EventManager_OnNewClient (IClientAPI client)
-		{
-			client.OnInstantMessage += OnInstantMessage;
-		}
+        void EventManager_OnNewClient (IClientAPI client)
+        {
+            client.OnInstantMessage += OnInstantMessage;
+        }
 
-		public void OnInstantMessage (IClientAPI client, GridInstantMessage im)
-		{
-			byte dialog = im.Dialog;
+        public void OnInstantMessage (IClientAPI client, GridInstantMessage im)
+        {
+            byte dialog = im.Dialog;
 
-			if (dialog != (byte)InstantMessageDialog.MessageFromAgent
-			             && dialog != (byte)InstantMessageDialog.StartTyping
-			             && dialog != (byte)InstantMessageDialog.StopTyping
-			             && dialog != (byte)InstantMessageDialog.BusyAutoResponse
-			             && dialog != (byte)InstantMessageDialog.MessageFromObject) {
-				return;
-			}
+            if (dialog != (byte)InstantMessageDialog.MessageFromAgent
+                && dialog != (byte)InstantMessageDialog.StartTyping
+                && dialog != (byte)InstantMessageDialog.StopTyping
+                && dialog != (byte)InstantMessageDialog.BusyAutoResponse
+                && dialog != (byte)InstantMessageDialog.MessageFromObject) {
+                return;
+            }
 
-			if (m_TransferModule != null) {
-				if (client == null) {
-					UserAccount account = m_Scene.UserAccountService.GetUserAccount (m_Scene.RegionInfo.AllScopeIDs,
-						                                     im.FromAgentID);
-					if (account != null)
-						im.FromAgentName = account.Name;
-					else
-						im.FromAgentName = im.FromAgentName + "(No account found for this user)";
-				} else
-					im.FromAgentName = client.Name;
+            if (m_TransferModule != null) {
+                if (client == null) {
+                    UserAccount account = m_Scene.UserAccountService.GetUserAccount (m_Scene.RegionInfo.AllScopeIDs,
+                                                                                    im.FromAgentID);
+                    if (account != null)
+                        im.FromAgentName = account.Name;
+                    else
+                        im.FromAgentName = im.FromAgentName + "(No account found for this user)";
+                } else
+                    im.FromAgentName = client.Name;
 
-				m_TransferModule.SendInstantMessage (im);
-			}
-		}
+                m_TransferModule.SendInstantMessage (im);
+            }
+        }
 
-		/// <summary>
-		/// </summary>
-		/// <param name="msg"></param>
-		void OnGridInstantMessage (GridInstantMessage msg)
-		{
-			byte dialog = msg.Dialog;
+        /// <summary>
+        /// </summary>
+        /// <param name="msg"></param>
+        void OnGridInstantMessage (GridInstantMessage msg)
+        {
+            byte dialog = msg.Dialog;
 
-			if (dialog != (byte)InstantMessageDialog.MessageFromAgent
-			             && dialog != (byte)InstantMessageDialog.StartTyping
-			             && dialog != (byte)InstantMessageDialog.StopTyping
-			             && dialog != (byte)InstantMessageDialog.MessageFromObject) {
-				return;
-			}
+            if (dialog != (byte)InstantMessageDialog.MessageFromAgent
+                && dialog != (byte)InstantMessageDialog.StartTyping
+                && dialog != (byte)InstantMessageDialog.StopTyping
+                && dialog != (byte)InstantMessageDialog.MessageFromObject) {
+                return;
+            }
 
-			if (m_TransferModule != null) {
-				UserAccount account = m_Scene.UserAccountService.GetUserAccount (m_Scene.RegionInfo.AllScopeIDs,
-					                                  msg.FromAgentID);
-				if (account != null)
-					msg.FromAgentName = account.Name;
-				else
-					msg.FromAgentName = msg.FromAgentName + "(No account found for this user)";
+            if (m_TransferModule != null) {
+                UserAccount account = m_Scene.UserAccountService.GetUserAccount (m_Scene.RegionInfo.AllScopeIDs,
+                                                                                msg.FromAgentID);
+                if (account != null)
+                    msg.FromAgentName = account.Name;
+                else
+                    msg.FromAgentName = msg.FromAgentName + "(No account found for this user)";
 
-				IScenePresence presence = null;
-				if (m_Scene.TryGetScenePresence (msg.ToAgentID, out presence)) {
-					presence.ControllingClient.SendInstantMessage (msg);
-					return;
-				}
-			}
-		}
-	}
+                IScenePresence presence = null;
+                if (m_Scene.TryGetScenePresence (msg.ToAgentID, out presence)) {
+                    presence.ControllingClient.SendInstantMessage (msg);
+                    return;
+                }
+            }
+        }
+    }
 }

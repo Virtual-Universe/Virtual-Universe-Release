@@ -38,55 +38,55 @@ using Universe.Framework.Utilities;
 
 namespace Universe.Modules.Currency
 {
-	public class GroupPayments : IService
-	{
-		#region Declares
+    public class GroupPayments : IService
+    {
+        #region Declares
 
-		public IRegistryCore m_registry;
+        public IRegistryCore m_registry;
 
-		#endregion
+        #endregion
 
-		#region IService Members
+        #region IService Members
 
-		public void Initialize (IConfigSource config, IRegistryCore registry)
-		{
-			m_registry = registry;
-		}
+        public void Initialize(IConfigSource config, IRegistryCore registry)
+        {
+            m_registry = registry;
+        }
 
-		public void Start (IConfigSource config, IRegistryCore registry)
-		{
-		}
+        public void Start(IConfigSource config, IRegistryCore registry)
+        {
+        }
 
-		public void FinishedStartup ()
-		{
-			IMoneyModule moneyModule = m_registry.RequestModuleInterface<IMoneyModule> ();
-			if (moneyModule != null) { //Only register if money is enabled
-				// Register the GroupPayments Engine
-			}
-		}
+        public void FinishedStartup()
+        {
+            IMoneyModule moneyModule = m_registry.RequestModuleInterface<IMoneyModule>();
+            if (moneyModule != null) //Only register if money is enabled
+            {
+                // Register the GroupPayments Engine
+            }
+        }
+        #endregion
 
-		#endregion
+        #region IGroupMoneyModule Members
 
-		#region IGroupMoneyModule Members
+        // Functions:
+        //
+        // * Group Liability
+        // - Check if the group has parcels
+        // - Are the parcels in Search ?
+        // - Yes, make a GroupLiability Task for each of the Parcels (Amount comes out of INI -> PriceDirectoryFee)
+        // - Check if there's money in the Group
+        // - If there's money already there, subtract the money by calling the Tasks
+        // - If there's no money, check which users have the "Accountability" role task and pull money from their accounts
+        // into the group so the payments can be done
 
-		// Functions:
-		//
-		// * Group Liability
-		// - Check if the group has parcels
-		// - Are the parcels in Search ?
-		// - Yes, make a GroupLiability Task for each of the Parcels (Amount comes out of INI -> PriceDirectoryFee)
-		// - Check if there's money in the Group
-		// - If there's money already there, subtract the money by calling the Tasks
-		// - If there's no money, check which users have the "Accountability" role task and pull money from their accounts
-		// into the group so the payments can be done
+        // * Group Payments
+        // - If there's money in the group it will have to be divided by the people that have the "Accountability" role task
+        // - Check how many users there are with that role task
+        // - Divide the amount of money by the amount of users (make sure the amount is a whole number)
+        // - Create Task for each user to be payed
+        // - If there is a remaining amount of money, leave it in the group balance for the next week
 
-		// * Group Payments
-		// - If there's money in the group it will have to be divided by the people that have the "Accountability" role task
-		// - Check how many users there are with that role task
-		// - Divide the amount of money by the amount of users (make sure the amount is a whole number)
-		// - Create Task for each user to be payed
-		// - If there is a remaining amount of money, leave it in the group balance for the next week
-
-		#endregion
-	}
+        #endregion
+    }
 }

@@ -39,128 +39,134 @@ using Universe.Framework.Utilities;
 
 namespace Universe.Services.DataService
 {
-	public class LocalAgentConnector : ConnectorBase, IAgentConnector
-	{
-		IGenericData GD;
-		GenericAccountCache<IAgentInfo> m_cache = new GenericAccountCache<IAgentInfo> ();
-		string m_userProfileTable = "user_profile";
+    public class LocalAgentConnector : ConnectorBase, IAgentConnector
+    {
+        IGenericData GD;
+        GenericAccountCache<IAgentInfo> m_cache = new GenericAccountCache<IAgentInfo>();
+        string m_userProfileTable = "user_profile";
 
-		#region IAgentConnector Members
+        #region IAgentConnector Members
 
-		public void Initialize (IGenericData GenericData, IConfigSource source, IRegistryCore simBase,
-		                             string defaultConnectionString)
-		{
-			GD = GenericData;
+        public void Initialize(IGenericData GenericData, IConfigSource source, IRegistryCore simBase,
+                               string defaultConnectionString)
+        {
+            GD = GenericData;
 
-			if (source.Configs [Name] != null)
-				defaultConnectionString = source.Configs [Name].GetString ("ConnectionString", defaultConnectionString);
+            if (source.Configs[Name] != null)
+                defaultConnectionString = source.Configs[Name].GetString("ConnectionString", defaultConnectionString);
 
-			if (GD != null)
-				GD.ConnectToDatabase (defaultConnectionString, "Agent",
-					source.Configs ["UniverseConnectors"].GetBoolean ("ValidateTables", true));
-			Framework.Utilities.DataManager.RegisterPlugin (Name + "Local", this);
+            if (GD != null)
+                GD.ConnectToDatabase(defaultConnectionString, "Agent",
+                                     source.Configs["UniverseConnectors"].GetBoolean("ValidateTables", true));
+            Framework.Utilities.DataManager.RegisterPlugin(Name + "Local", this);
 
-			if (source.Configs ["UniverseConnectors"].GetString ("AgentConnector", "LocalConnector") == "LocalConnector") {
-				Framework.Utilities.DataManager.RegisterPlugin (this);
-			}
+            if (source.Configs["UniverseConnectors"].GetString("AgentConnector", "LocalConnector") == "LocalConnector")
+            {
+                Framework.Utilities.DataManager.RegisterPlugin(this);
+            }
 
-			Init (simBase, Name);
-		}
+            Init(simBase, Name);
+        }
 
-		public string Name {
-			get { return "IAgentConnector"; }
-		}
+        public string Name
+        {
+            get { return "IAgentConnector"; }
+        }
 
-		/// <summary>
-		///     Gets the info about the agent (TOS data, maturity info, language, etc)
-		/// </summary>
-		/// <param name="agentID"></param>
-		/// <returns></returns>
-		[CanBeReflected (ThreatLevel = ThreatLevel.Low)]
-		public IAgentInfo GetAgent (UUID agentID)
-		{
-			IAgentInfo agent = new IAgentInfo ();
-			if (m_cache.Get (agentID, out agent))
-				return agent;
+        /// <summary>
+        ///     Gets the info about the agent (TOS data, maturity info, language, etc)
+        /// </summary>
+        /// <param name="agentID"></param>
+        /// <returns></returns>
+        [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
+        public IAgentInfo GetAgent(UUID agentID)
+        {
+            IAgentInfo agent = new IAgentInfo();
+            if (m_cache.Get(agentID, out agent))
+                return agent;
             
-			agent = new IAgentInfo ();
+            agent = new IAgentInfo();
 
-			if (m_doRemoteOnly) {
-				object remoteValue = DoRemote (agentID);
-				if (remoteValue != null) {
-					m_cache.Cache (agentID, (IAgentInfo)remoteValue);
-					return (IAgentInfo)remoteValue;
-				}
-				return null;
-			}
+            if (m_doRemoteOnly) {
+                object remoteValue = DoRemote(agentID);
+                if (remoteValue != null) {
+                    m_cache.Cache (agentID, (IAgentInfo)remoteValue);
+                    return (IAgentInfo)remoteValue;
+                }
+                return null;
+            }
 
-			List<string> query = null;
-			try {
-				QueryFilter filter = new QueryFilter ();
-				filter.andFilters ["ID"] = agentID;
-				filter.andFilters ["`Key`"] = "AgentInfo";
-				query = GD.Query (new string[] { "`Value`" }, m_userProfileTable, filter, null, null, null);
-			} catch {
-			}
+            List<string> query = null;
+            try
+            {
+                QueryFilter filter = new QueryFilter();
+                filter.andFilters["ID"] = agentID;
+                filter.andFilters["`Key`"] = "AgentInfo";
+                query = GD.Query(new string[] {"`Value`"}, m_userProfileTable, filter, null, null, null);
+            }
+            catch
+            {
+            }
 
-			if (query == null || query.Count == 0) {
-				m_cache.Cache (agentID, null);
-				return null; //Couldn't find it, return null then.
-			}
+            if (query == null || query.Count == 0)
+            {
+                m_cache.Cache(agentID, null);
+                return null; //Couldn't find it, return null then.
+            }
 
-			OSDMap agentInfo = (OSDMap)OSDParser.DeserializeLLSDXml (query [0]);
+            OSDMap agentInfo = (OSDMap) OSDParser.DeserializeLLSDXml(query[0]);
 
-			agent.FromOSD (agentInfo);
-			agent.PrincipalID = agentID;
-			m_cache.Cache (agentID, agent);
-			return agent;
-		}
+            agent.FromOSD(agentInfo);
+            agent.PrincipalID = agentID;
+            m_cache.Cache(agentID, agent);
+            return agent;
+        }
 
-		/// <summary>
-		///     Updates the language and maturity params of the agent.
-		///     Note: we only allow for this on the grid side
-		/// </summary>
-		/// <param name="agent"></param>
-		//[CanBeReflected(ThreatLevel = ThreatLevel.Full)]
-		public void UpdateAgent (IAgentInfo agent)
-		{
-			CacheAgent (agent);
-			/*object remoteValue = DoRemoteForUser(agent.PrincipalID, agent.ToOSD());
+        /// <summary>
+        ///     Updates the language and maturity params of the agent.
+        ///     Note: we only allow for this on the grid side
+        /// </summary>
+        /// <param name="agent"></param>
+        //[CanBeReflected(ThreatLevel = ThreatLevel.Full)]
+        public void UpdateAgent(IAgentInfo agent)
+        {
+            CacheAgent(agent);
+            /*object remoteValue = DoRemoteForUser(agent.PrincipalID, agent.ToOSD());
             if (remoteValue != null || m_doRemoteOnly)
                 return;*/
 
-			Dictionary<string, object> values = new Dictionary<string, object> (1);
-			values ["Value"] = OSDParser.SerializeLLSDXmlString (agent.ToOSD ());
+            Dictionary<string, object> values = new Dictionary<string, object>(1);
+            values["Value"] = OSDParser.SerializeLLSDXmlString(agent.ToOSD());
 
-			QueryFilter filter = new QueryFilter ();
-			filter.andFilters ["ID"] = agent.PrincipalID;
-			filter.andFilters ["`Key`"] = "AgentInfo";
+            QueryFilter filter = new QueryFilter();
+            filter.andFilters["ID"] = agent.PrincipalID;
+            filter.andFilters["`Key`"] = "AgentInfo";
 
-			GD.Update (m_userProfileTable, values, null, filter, null, null);
-		}
+            GD.Update(m_userProfileTable, values, null, filter, null, null);
+        }
 
-		public void CacheAgent (IAgentInfo agent)
-		{
-			m_cache.Cache (agent.PrincipalID, agent);
-		}
+        public void CacheAgent(IAgentInfo agent)
+        {
+            m_cache.Cache(agent.PrincipalID, agent);
+        }
 
-		/// <summary>
-		///     Creates a new database entry for the agent.
-		///     Note: we only allow for this on the grid side
-		/// </summary>
-		/// <param name="agentID"></param>
-		public void CreateNewAgent (UUID agentID)
-		{
-			List<object> values = new List<object> { agentID, "AgentInfo" };
-			IAgentInfo info = new IAgentInfo { PrincipalID = agentID };
-			values.Add (OSDParser.SerializeLLSDXmlString (info.ToOSD ())); //Value which is a default Profile
-			GD.Insert (m_userProfileTable, values.ToArray ());
-		}
+        /// <summary>
+        ///     Creates a new database entry for the agent.
+        ///     Note: we only allow for this on the grid side
+        /// </summary>
+        /// <param name="agentID"></param>
+        public void CreateNewAgent(UUID agentID)
+        {
+            List<object> values = new List<object> {agentID, "AgentInfo"};
+            IAgentInfo info = new IAgentInfo {PrincipalID = agentID};
+            values.Add(OSDParser.SerializeLLSDXmlString(info.ToOSD())); //Value which is a default Profile
+            GD.Insert(m_userProfileTable, values.ToArray());
+        }
 
-		#endregion
+        #endregion
 
-		public void Dispose ()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

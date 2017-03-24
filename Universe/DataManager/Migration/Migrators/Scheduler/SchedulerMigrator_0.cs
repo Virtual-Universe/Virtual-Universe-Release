@@ -33,74 +33,78 @@ using Universe.Framework.Utilities;
 
 namespace Universe.DataManager.Migration.Migrators.Scheduler
 {
-	public class SchedulerMigrator_0 : Migrator
-	{
-		public SchedulerMigrator_0 ()
-		{
-			Version = new Version (0, 0, 0);
-			MigrationName = "Scheduler";
+    public class SchedulerMigrator_0 : Migrator
+    {
+        public SchedulerMigrator_0()
+        {
+            Version = new Version(0, 0, 0);
+            MigrationName = "Scheduler";
 
-			Schema = new List<SchemaDefinition> ();
+            Schema = new List<SchemaDefinition>();
 
-			AddSchema ("scheduler", ColDefs (
-				ColDef ("id", ColumnTypes.String36),
-				ColDef ("fire_function", ColumnTypes.String128),
-				ColDef ("fire_params", ColumnTypes.String1024),
-				ColDef ("run_once", ColumnTypes.TinyInt1),
-				ColDef ("run_every", ColumnTypes.Integer30),
-				ColDef ("runs_next", ColumnTypes.DateTime),
-				ColDef ("keep_history", ColumnTypes.TinyInt1),
-				ColDef ("require_reciept", ColumnTypes.TinyInt1),
-				ColDef ("last_history_id", ColumnTypes.String36),
-				ColDef ("create_time", ColumnTypes.DateTime),
-				ColDef ("start_time", ColumnTypes.DateTime),
-				ColDef ("run_every_type", ColumnTypes.Integer30),
-				ColDef ("enabled", ColumnTypes.TinyInt1),
-				new ColumnDefinition {
-					Name = "schedule_for",
-					Type = new ColumnTypeDef {
-						Type = ColumnType.String,
-						Size = 36,
-						defaultValue = OpenMetaverse.UUID.Zero.ToString ()
-					}
-				}
-			), IndexDefs (
-				IndexDef (new[] { "id" }, IndexType.Primary),
-				IndexDef (new[] { "runs_next", "enabled" }, IndexType.Index),
-				IndexDef (new[] { "schedule_for", "fire_function" }, IndexType.Index)
-			));
+            // Change summary:
+            //   Change ID type fields to type UUID
+            AddSchema("scheduler", ColDefs(
+                ColDef("id", ColumnTypes.UUID),
+                ColDef("fire_function", ColumnTypes.String128),
+                ColDef("fire_params", ColumnTypes.String1024),
+                ColDef("run_once", ColumnTypes.TinyInt1),
+                ColDef("run_every", ColumnTypes.Integer30),
+                ColDef("runs_next", ColumnTypes.DateTime),
+                ColDef("keep_history", ColumnTypes.TinyInt1),
+                ColDef("require_reciept", ColumnTypes.TinyInt1),
+                ColDef("last_history_id", ColumnTypes.UUID),
+                ColDef("create_time", ColumnTypes.DateTime),
+                ColDef("start_time", ColumnTypes.DateTime),
+                ColDef("run_every_type", ColumnTypes.Integer30),
+                ColDef("enabled", ColumnTypes.TinyInt1),
+                new ColumnDefinition
+            {
+                Name = "schedule_for",
+                Type = new ColumnTypeDef
+                {
+                    Type = ColumnType.String,
+                    Size = 36,
+                    defaultValue = OpenMetaverse.UUID.Zero.ToString()
+                }
+            }
+            ), IndexDefs(
+                IndexDef(new[] {"id"}, IndexType.Primary),
+                IndexDef(new[] {"runs_next", "enabled"}, IndexType.Index),
+                IndexDef(new[] {"schedule_for", "fire_function"}, IndexType.Index)
+            ));
 
-			AddSchema ("scheduler_history", ColDefs (
-				ColDef ("id", ColumnTypes.String36),
-				ColDef ("scheduler_id", ColumnTypes.String36),
-				ColDef ("ran_time", ColumnTypes.DateTime),
-				ColDef ("run_time", ColumnTypes.DateTime),
-				ColDef ("reciept", ColumnTypes.String1024),
-				ColDef ("is_complete", ColumnTypes.TinyInt1),
-				ColDef ("complete_time", ColumnTypes.DateTime)
-			), IndexDefs (
-				IndexDef (new string[2] { "id", "scheduler_id" }, IndexType.Primary)
-			));
-		}
+            AddSchema("scheduler_history", ColDefs(
+                ColDef("id", ColumnTypes.UUID),
+                ColDef("scheduler_id", ColumnTypes.UUID),
+                ColDef("ran_time", ColumnTypes.DateTime),
+                ColDef("run_time", ColumnTypes.DateTime),
+                ColDef("reciept", ColumnTypes.String1024),
+                ColDef("is_complete", ColumnTypes.TinyInt1),
+                ColDef("complete_time", ColumnTypes.DateTime)
+            ), IndexDefs(
+                IndexDef(new string[2] {"id", "scheduler_id"}, IndexType.Primary)
+            ));
+        }
 
-		protected override void DoCreateDefaults (IDataConnector genericData)
-		{
-			EnsureAllTablesInSchemaExist (genericData);
-		}
+        protected override void DoCreateDefaults(IDataConnector genericData)
+        {
+            EnsureAllTablesInSchemaExist(genericData);
+        }
 
-		protected override bool DoValidate (IDataConnector genericData)
-		{
-			return TestThatAllTablesValidate (genericData);
-		}
+        protected override bool DoValidate(IDataConnector genericData)
+        {
+            return TestThatAllTablesValidate(genericData);
+        }
 
-		protected override void DoMigrate (IDataConnector genericData)
-		{
-			DoCreateDefaults (genericData);
-		}
+        protected override void DoMigrate(IDataConnector genericData)
+        {
+            DoCreateDefaults(genericData);
+        }
 
-		protected override void DoPrepareRestorePoint (IDataConnector genericData)
-		{
-			CopyAllTablesToTempVersions (genericData);
-		}
-	}
+        protected override void DoPrepareRestorePoint(IDataConnector genericData)
+        {
+            CopyAllTablesToTempVersions(genericData);
+        }
+    }
 }

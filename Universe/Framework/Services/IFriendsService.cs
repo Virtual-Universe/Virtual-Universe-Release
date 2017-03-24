@@ -27,98 +27,98 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System.Collections.Generic;
-using OpenMetaverse;
 using Universe.Framework.Modules;
+using OpenMetaverse;
+using System.Collections.Generic;
 
 namespace Universe.Framework.Services
 {
-	public class FriendInfo : IDataTransferable
-	{
-		/// <summary>
-		///     The friend of PrincipalID
-		/// </summary>
-		public string Friend;
+    public class FriendInfo : IDataTransferable
+    {
+        /// <summary>
+        ///     The friend of PrincipalID
+        /// </summary>
+        public string Friend;
 
-		/// <summary>
-		///     The flags that PrincipalID has given to Friend
-		/// </summary>
-		public int MyFlags;
+        /// <summary>
+        ///     The flags that PrincipalID has given to Friend
+        /// </summary>
+        public int MyFlags;
 
-		/// <summary>
-		///     The user who is a friend of "Friend"
-		/// </summary>
-		public UUID PrincipalID;
+        /// <summary>
+        ///     The user who is a friend of "Friend"
+        /// </summary>
+        public UUID PrincipalID;
 
-		/// <summary>
-		///     The flags Friend has given to PrincipalID
-		/// </summary>
-		public int TheirFlags;
+        /// <summary>
+        ///     The flags Friend has given to PrincipalID
+        /// </summary>
+        public int TheirFlags;
 
-		public FriendInfo ()
-		{
-		}
+        public FriendInfo()
+        {
+        }
 
-		public override void FromOSD (OpenMetaverse.StructuredData.OSDMap map)
-		{
-			PrincipalID = map ["PrincipalID"];
-			Friend = map ["Friend"];
-			MyFlags = map ["MyFlags"];
-			TheirFlags = map ["TheirFlags"];
-		}
+        public override void FromOSD(OpenMetaverse.StructuredData.OSDMap map)
+        {
+            PrincipalID = map["PrincipalID"];
+            Friend = map["Friend"];
+            MyFlags = map["MyFlags"];
+            TheirFlags = map["TheirFlags"];
+        }
 
-		public override OpenMetaverse.StructuredData.OSDMap ToOSD ()
-		{
-			OpenMetaverse.StructuredData.OSDMap result = new OpenMetaverse.StructuredData.OSDMap ();
-			result ["PrincipalID"] = PrincipalID;
-			result ["Friend"] = Friend;
-			result ["MyFlags"] = MyFlags;
-			result ["TheirFlags"] = TheirFlags;
+        public override OpenMetaverse.StructuredData.OSDMap ToOSD()
+        {
+            OpenMetaverse.StructuredData.OSDMap result = new OpenMetaverse.StructuredData.OSDMap();
+            result["PrincipalID"] = PrincipalID;
+            result["Friend"] = Friend;
+            result["MyFlags"] = MyFlags;
+            result["TheirFlags"] = TheirFlags;
 
-			return result;
-		}
-	}
+            return result;
+        }
+    }
 
-	public interface IFriendsService
-	{
-		/// <summary>
-		///     The local service (if possible)
-		/// </summary>
-		IFriendsService InnerService { get; }
+    public interface IFriendsService
+    {
+        /// <summary>
+        ///     The local service (if possible)
+        /// </summary>
+        IFriendsService InnerService { get; }
 
-		/// <summary>
-		///     Get all friends of the given user
-		/// </summary>
-		/// <param name="principalID"></param>
-		/// <returns></returns>
-		List<FriendInfo> GetFriends (UUID principalID);
+        /// <summary>
+        ///     Get all friends of the given user
+        /// </summary>
+        /// <param name="principalID"></param>
+        /// <returns></returns>
+        List<FriendInfo> GetFriends(UUID principalID);
 
-		/// <summary>
-		///     Get all friends requests of the given user
-		/// </summary>
-		/// <param name="principalID"></param>
-		/// <returns></returns>
-		List<FriendInfo> GetFriendsRequest (UUID principalID);
+        /// <summary>
+        ///     Get all friends requests of the given user
+        /// </summary>
+        /// <param name="principalID"></param>
+        /// <returns></returns>
+        List<FriendInfo> GetFriendsRequest(UUID principalID);
 
-		/// <summary>
-		///     Store the changes of the friend of PrincipalID
-		/// </summary>
-		/// <param name="principalID"></param>
-		/// <param name="friend"></param>
-		/// <param name="flags"></param>
-		/// <returns></returns>
-		bool StoreFriend (UUID principalID, string friend, int flags);
+        /// <summary>
+        ///     Store the changes of the friend of PrincipalID
+        /// </summary>
+        /// <param name="principalID"></param>
+        /// <param name="friend"></param>
+        /// <param name="flags"></param>
+        /// <returns></returns>
+        bool StoreFriend(UUID principalID, string friend, int flags);
 
-		/// <summary>
-		///     Delete the friendship between the two users
-		/// </summary>
-		/// <param name="principalID"></param>
-		/// <param name="friend"></param>
-		/// <returns></returns>
-		bool Delete (UUID principalID, string friend);
+        /// <summary>
+        ///     Delete the friendship between the two users
+        /// </summary>
+        /// <param name="principalID"></param>
+        /// <param name="friend"></param>
+        /// <returns></returns>
+        bool Delete(UUID principalID, string friend);
 
-		List<UUID> GetFriendOnlineStatuses (UUID user, bool online);
+        List<UUID> GetFriendOnlineStatuses(UUID user, bool online);
 
-		void SendFriendOnlineStatuses (UUID user, bool online);
-	}
+        void SendFriendOnlineStatuses(UUID user, bool online);
+    }
 }

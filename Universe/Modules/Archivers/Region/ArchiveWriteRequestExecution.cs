@@ -41,142 +41,149 @@ using Universe.Framework.Serialization.External;
 
 namespace Universe.Modules.Archivers
 {
-	/// <summary>
-	///     Method called when all the necessary assets for an archive request have been received.
-	/// </summary>
-    public delegate void AssetsRequestCallback (
+    /// <summary>
+    ///     Method called when all the necessary assets for an archive request have been received.
+    /// </summary>
+    public delegate void AssetsRequestCallback(
         ICollection<UUID> assetsFoundUuids, ICollection<UUID> assetsNotFoundUuids);
 
-	/// <summary>
-	///     Execute the write of an archive once we have received all the necessary data
-	/// </summary>
-	public class ArchiveWriteRequestExecution
-	{
-		protected TarArchiveWriter m_archiveWriter;
-		protected Guid m_requestId;
-		protected IScene m_scene;
-		protected List<ISceneEntity> m_sceneObjects;
-		protected IRegionSerializerModule m_serializer;
-		protected ITerrainModule m_terrainModule;
+    /// <summary>
+    ///     Execute the write of an archive once we have received all the necessary data
+    /// </summary>
+    public class ArchiveWriteRequestExecution
+    {
+        protected TarArchiveWriter m_archiveWriter;
+        protected Guid m_requestId;
+        protected IScene m_scene;
+        protected List<ISceneEntity> m_sceneObjects;
+        protected IRegionSerializerModule m_serializer;
+        protected ITerrainModule m_terrainModule;
 
-		public ArchiveWriteRequestExecution (
-			List<ISceneEntity> sceneObjects,
-			ITerrainModule terrainModule,
-			IRegionSerializerModule serializer,
-			IScene scene,
-			TarArchiveWriter archiveWriter,
-			Guid requestId)
-		{
-			m_sceneObjects = sceneObjects;
-			m_terrainModule = terrainModule;
-			m_serializer = serializer;
-			m_scene = scene;
-			m_archiveWriter = archiveWriter;
-			m_requestId = requestId;
-		}
+        public ArchiveWriteRequestExecution(
+            List<ISceneEntity> sceneObjects,
+            ITerrainModule terrainModule,
+            IRegionSerializerModule serializer,
+            IScene scene,
+            TarArchiveWriter archiveWriter,
+            Guid requestId)
+        {
+            m_sceneObjects = sceneObjects;
+            m_terrainModule = terrainModule;
+            m_serializer = serializer;
+            m_scene = scene;
+            m_archiveWriter = archiveWriter;
+            m_requestId = requestId;
+        }
 
-		protected internal void ReceivedAllAssets (
-			ICollection<UUID> assetsFoundUuids, ICollection<UUID> assetsNotFoundUuids)
-		{
-			try {
-				Save (assetsFoundUuids, assetsNotFoundUuids);
-			} finally {
-				m_archiveWriter.Close ();
-			}
+        protected internal void ReceivedAllAssets(
+            ICollection<UUID> assetsFoundUuids, ICollection<UUID> assetsNotFoundUuids)
+        {
+            try
+            {
+                Save(assetsFoundUuids, assetsNotFoundUuids);
+            }
+            finally
+            {
+                m_archiveWriter.Close();
+            }
 
-			MainConsole.Instance.InfoFormat ("[Archiver]: Finished writing out OAR for {0}",
-				m_scene.RegionInfo.RegionName);
+            MainConsole.Instance.InfoFormat("[Archiver]: Finished writing out OAR for {0}",
+                                            m_scene.RegionInfo.RegionName);
 
-			m_scene.EventManager.TriggerOarFileSaved (m_requestId, string.Empty);
-		}
+            m_scene.EventManager.TriggerOarFileSaved(m_requestId, string.Empty);
+        }
 
-		protected internal void Save (ICollection<UUID> assetsFoundUuids, ICollection<UUID> assetsNotFoundUuids)
-		{
-			foreach (UUID uuid in assetsNotFoundUuids) {
-				MainConsole.Instance.DebugFormat ("[Archiver]: Could not find asset {0}", uuid);
-			}
+        protected internal void Save(ICollection<UUID> assetsFoundUuids, ICollection<UUID> assetsNotFoundUuids)
+        {
+            foreach (UUID uuid in assetsNotFoundUuids)
+            {
+                MainConsole.Instance.DebugFormat("[Archiver]: Could not find asset {0}", uuid);
+            }
             
-			//MainConsole.Instance.InfoFormat(
-			//    "[Archiver]: Received {0} of {1} assets requested", assetsFoundUuids.Count, assetsFoundUuids.Count + assetsNotFoundUuids.Count);
+            //MainConsole.Instance.InfoFormat(
+            //    "[Archiver]: Received {0} of {1} assets requested", assetsFoundUuids.Count, assetsFoundUuids.Count + assetsNotFoundUuids.Count);
 
-			MainConsole.Instance.InfoFormat ("[Archiver]: Creating archive file.  This may take some time.");
+            MainConsole.Instance.InfoFormat("[Archiver]: Creating archive file.  This may take some time.");
 
-			// Write out control file
-			m_archiveWriter.WriteFile (ArchiveConstants.CONTROL_FILE_PATH, Create0p2ControlFile ());
-			MainConsole.Instance.InfoFormat ("[Archiver]: Added control file to archive.");
+            // Write out control file
+            m_archiveWriter.WriteFile(ArchiveConstants.CONTROL_FILE_PATH, Create0p2ControlFile());
+            MainConsole.Instance.InfoFormat("[Archiver]: Added control file to archive.");
 
-			// Write out region settings
-			string settingsPath
-                = string.Format ("{0}{1}.xml", ArchiveConstants.SETTINGS_PATH, m_scene.RegionInfo.RegionName);
-			m_archiveWriter.WriteFile (settingsPath,
-				RegionSettingsSerializer.Serialize (m_scene.RegionInfo.RegionSettings));
+            // Write out region settings
+            string settingsPath
+                = string.Format("{0}{1}.xml", ArchiveConstants.SETTINGS_PATH, m_scene.RegionInfo.RegionName);
+            m_archiveWriter.WriteFile(settingsPath,
+                                      RegionSettingsSerializer.Serialize(m_scene.RegionInfo.RegionSettings));
 
-			MainConsole.Instance.InfoFormat ("[Archiver]: Added region settings to archive.");
+            MainConsole.Instance.InfoFormat("[Archiver]: Added region settings to archive.");
 
-			// Write out land data (aka parcel) settings
-			IParcelManagementModule parcelManagement = m_scene.RequestModuleInterface<IParcelManagementModule> ();
-			if (parcelManagement != null) {
-				List<ILandObject> landObjects = parcelManagement.AllParcels ();
-				foreach (ILandObject lo in landObjects) {
-					LandData landData = lo.LandData;
-					string landDataPath = string.Format ("{0}{1}.xml", ArchiveConstants.LANDDATA_PATH, landData.GlobalID);
-					m_archiveWriter.WriteFile (landDataPath, LandDataSerializer.Serialize (landData));
-				}
-			}
+            // Write out land data (aka parcel) settings
+            IParcelManagementModule parcelManagement = m_scene.RequestModuleInterface<IParcelManagementModule>();
+            if (parcelManagement != null)
+            {
+                List<ILandObject> landObjects = parcelManagement.AllParcels();
+                foreach (ILandObject lo in landObjects)
+                {
+                    LandData landData = lo.LandData;
+                    string landDataPath = string.Format("{0}{1}.xml", ArchiveConstants.LANDDATA_PATH, landData.GlobalID);
+                    m_archiveWriter.WriteFile(landDataPath, LandDataSerializer.Serialize(landData));
+                }
+            }
 
-			MainConsole.Instance.InfoFormat ("[Archiver]: Added parcel settings to archive.");
+            MainConsole.Instance.InfoFormat("[Archiver]: Added parcel settings to archive.");
 
-			// Write out terrain
-			string terrainPath
-                = string.Format ("{0}{1}.r32", ArchiveConstants.TERRAINS_PATH, m_scene.RegionInfo.RegionName);
+            // Write out terrain
+            string terrainPath
+                = string.Format("{0}{1}.r32", ArchiveConstants.TERRAINS_PATH, m_scene.RegionInfo.RegionName);
 
-			MemoryStream ms = new MemoryStream ();
-			m_terrainModule.SaveToStream (m_terrainModule.TerrainMap, terrainPath, ms);
-			m_archiveWriter.WriteFile (terrainPath, ms.ToArray ());
-			ms.Close ();
+            MemoryStream ms = new MemoryStream();
+            m_terrainModule.SaveToStream(m_terrainModule.TerrainMap, terrainPath, ms);
+            m_archiveWriter.WriteFile(terrainPath, ms.ToArray());
+            ms.Close();
 
-			MainConsole.Instance.InfoFormat ("[Archiver]: Added terrain information to archive.");
+            MainConsole.Instance.InfoFormat("[Archiver]: Added terrain information to archive.");
 
-			// Write out scene object metadata
-			foreach (ISceneEntity sceneObject in m_sceneObjects) {
-				//MainConsole.Instance.DebugFormat("[Archiver]: Saving {0} {1}, {2}", entity.Name, entity.UUID, entity.GetType());
+            // Write out scene object metadata
+            foreach (ISceneEntity sceneObject in m_sceneObjects)
+            {
+                //MainConsole.Instance.DebugFormat("[Archiver]: Saving {0} {1}, {2}", entity.Name, entity.UUID, entity.GetType());
 
-				string serializedObject = m_serializer.SerializeGroupToXml2 (sceneObject);
-				if (serializedObject != null)
-					m_archiveWriter.WriteFile (ArchiveHelpers.CreateObjectPath (sceneObject), serializedObject);
-			}
+                string serializedObject = m_serializer.SerializeGroupToXml2(sceneObject);
+                if (serializedObject != null)
+                    m_archiveWriter.WriteFile(ArchiveHelpers.CreateObjectPath(sceneObject), serializedObject);
+            }
 
-			MainConsole.Instance.InfoFormat ("[Archiver]: Added scene objects to archive.");
-		}
+            MainConsole.Instance.InfoFormat("[Archiver]: Added scene objects to archive.");
+        }
 
-		/// <summary>
-		///     Create the control file for a 0.8 version archive
-		/// </summary>
-		/// <returns></returns>
-		public static string Create0p2ControlFile ()
-		{
-			StringWriter sw = new StringWriter ();
-			XmlTextWriter xtw = new XmlTextWriter (sw) { Formatting = Formatting.Indented };
-			xtw.WriteStartDocument ();
-			xtw.WriteStartElement ("archive");
-			xtw.WriteAttributeString ("major_version", "0");
-			xtw.WriteAttributeString ("minor_version", "8");
+        /// <summary>
+        ///     Create the control file for a 0.8 version archive
+        /// </summary>
+        /// <returns></returns>
+        public static string Create0p2ControlFile()
+        {
+            StringWriter sw = new StringWriter();
+            XmlTextWriter xtw = new XmlTextWriter(sw) {Formatting = Formatting.Indented};
+            xtw.WriteStartDocument();
+            xtw.WriteStartElement("archive");
+            xtw.WriteAttributeString("major_version", "0");
+            xtw.WriteAttributeString("minor_version", "8");
 
-			xtw.WriteStartElement ("creation_info");
-			DateTime now = DateTime.UtcNow;
-			TimeSpan t = now - new DateTime (1970, 1, 1);
-			xtw.WriteElementString ("datetime", ((int)t.TotalSeconds).ToString ());
-			xtw.WriteElementString ("id", UUID.Random ().ToString ());
-			xtw.WriteEndElement ();
-			xtw.WriteEndElement ();
+            xtw.WriteStartElement("creation_info");
+            DateTime now = DateTime.UtcNow;
+            TimeSpan t = now - new DateTime(1970, 1, 1);
+            xtw.WriteElementString("datetime", ((int) t.TotalSeconds).ToString());
+            xtw.WriteElementString("id", UUID.Random().ToString());
+            xtw.WriteEndElement();
+            xtw.WriteEndElement();
 
-			xtw.Flush ();
-			xtw.Close ();
+            xtw.Flush();
+            xtw.Close();
 
-			string s = sw.ToString ();
-			sw.Close ();
+            string s = sw.ToString();
+            sw.Close();
 
-			return s;
-		}
-	}
+            return s;
+        }
+    }
 }

@@ -43,7 +43,7 @@ namespace Universe.Framework.SceneInfo
         /// <summary>
         ///     Inventory types
         /// </summary>
-        public static string[] InvTypes = {
+        public static string [] InvTypes = {
             "texture",
             "sound",
             "calling_card",
@@ -80,7 +80,7 @@ namespace Universe.Framework.SceneInfo
         /// <summary>
         ///     Asset types
         /// </summary>
-        public static string[] Types = {
+        public static string [] Types = {
             "texture",
             "sound",
             "callcard",
@@ -118,7 +118,7 @@ namespace Universe.Framework.SceneInfo
         /// <summary>
         ///     Asset types
         /// </summary>
-        public static string[] SaleTypes = {
+        public static string [] SaleTypes = {
             "not",
             "original",
             "copy",
@@ -154,19 +154,17 @@ namespace Universe.Framework.SceneInfo
 
         public TaskInventoryItem()
         {
-            CreationDate = (uint)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
+            CreationDate = (uint) (DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
         }
 
-        [ProtoMember(1)]
-        public UUID AssetID
-        {
+        [ProtoMember (1)]
+        public UUID AssetID {
             get { return _assetID; }
             set { _assetID = value; }
         }
 
-        [ProtoMember(2)]
-        public uint BasePermissions
-        {
+        [ProtoMember (2)]
+        public uint BasePermissions {
             get { return _baseMask; }
             set { _baseMask = value; }
         }
@@ -174,9 +172,8 @@ namespace Universe.Framework.SceneInfo
         [ProtoMember(3)]
         public uint CreationDate { get; set; }
 
-        [ProtoMember(4)]
-        public UUID CreatorID
-        {
+        [ProtoMember (4)]
+        public UUID CreatorID {
             get { return _creatorID; }
             set { _creatorID = value; }
         }
@@ -193,19 +190,15 @@ namespace Universe.Framework.SceneInfo
         ///     The identification can either be a simple UUID or a string of the form
         ///     uuid[;profile_url[;name]]
         /// </summary>
-        [ProtoMember(6)]
-        public string CreatorIdentification
-        {
-            get
-            {
-                if (!string.IsNullOrEmpty(_creatorData))
-                    return _creatorID.ToString() + ';' + _creatorData;
-                return _creatorID.ToString();
+        [ProtoMember (6)]
+        public string CreatorIdentification {
+            get {
+                if (!string.IsNullOrEmpty (_creatorData))
+                    return _creatorID.ToString () + ';' + _creatorData;
+                return _creatorID.ToString ();
             }
-            set
-            {
-                if ((value == null) || (value != null && value == string.Empty))
-                {
+            set {
+                if ((value == null) || (value != null && value == string.Empty)) {
                     _creatorData = string.Empty;
                     return;
                 }
@@ -215,13 +208,10 @@ namespace Universe.Framework.SceneInfo
                     UUID uuid = UUID.Zero;
                     UUID.TryParse(value, out uuid);
                     _creatorID = uuid;
-                }
-                else
-                {
+                } else { // <uuid>[;<endpoint>[;name]]
                     string name = "Unknown User";
-                    string[] parts = value.Split(';');
-                    if (parts.Length >= 1)
-                    {
+                    string [] parts = value.Split (';');
+                    if (parts.Length >= 1) {
                         UUID uuid = UUID.Zero;
                         UUID.TryParse(parts[0], out uuid);
                         _creatorID = uuid;
@@ -236,16 +226,14 @@ namespace Universe.Framework.SceneInfo
             }
         }
 
-        [ProtoMember(7)]
-        public string Description
-        {
+        [ProtoMember (7)]
+        public string Description {
             get { return _description; }
             set { _description = value; }
         }
 
-        [ProtoMember(8)]
-        public uint EveryonePermissions
-        {
+        [ProtoMember (8)]
+        public uint EveryonePermissions {
             get { return _everyoneMask; }
             set { _everyoneMask = value; }
         }
@@ -253,16 +241,14 @@ namespace Universe.Framework.SceneInfo
         [ProtoMember(9)]
         public uint Flags { get; set; }
 
-        [ProtoMember(10)]
-        public UUID GroupID
-        {
+        [ProtoMember (10)]
+        public UUID GroupID {
             get { return _groupID; }
             set { _groupID = value; }
         }
 
-        [ProtoMember(11)]
-        public uint GroupPermissions
-        {
+        [ProtoMember (11)]
+        public uint GroupPermissions {
             get { return _groupMask; }
             set { _groupMask = value; }
         }
@@ -270,69 +256,59 @@ namespace Universe.Framework.SceneInfo
         [ProtoMember(12)]
         public int InvType { get; set; }
 
-        [ProtoMember(13)]
-        public UUID ItemID
-        {
+        [ProtoMember (13)]
+        public UUID ItemID {
             get { return _itemID; }
             set { _itemID = value; }
         }
 
-        [ProtoMember(14)]
-        public UUID OldItemID
-        {
+        [ProtoMember (14)]
+        public UUID OldItemID {
             get { return _oldID; }
-            set
-            {
+            set {
                 if (_oldID == UUID.Zero)
                     _oldID = value;
             }
         }
 
-        [ProtoMember(15)]
-        public UUID LastOwnerID
-        {
+        [ProtoMember (15)]
+        public UUID LastOwnerID {
             get { return _lastOwnerID; }
             set { _lastOwnerID = value; }
         }
 
-        [ProtoMember(16)]
-        public string Name
-        {
+        [ProtoMember (16)]
+        public string Name {
             get { return _name; }
             set { _name = value; }
         }
 
-        [ProtoMember(17)]
-        public uint NextPermissions
-        {
+        [ProtoMember (17)]
+        public uint NextPermissions {
             get { return _nextOwnerMask; }
             set { _nextOwnerMask = value; }
         }
 
-        [ProtoMember(18)]
-        public UUID OwnerID
-        {
+        [ProtoMember (18)]
+        public UUID OwnerID {
             get { return _ownerID; }
             set { _ownerID = value; }
         }
 
-        [ProtoMember(19)]
-        public uint CurrentPermissions
-        {
+        [ProtoMember (19)]
+        public uint CurrentPermissions {
             get { return _ownerMask; }
             set { _ownerMask = value; }
         }
 
-        [ProtoMember(20)]
-        public UUID ParentID
-        {
+        [ProtoMember (20)]
+        public UUID ParentID {
             get { return _parentID; }
             set { _parentID = value; }
         }
 
-        [ProtoMember(21)]
-        public UUID ParentPartID
-        {
+        [ProtoMember (21)]
+        public UUID ParentPartID {
             get { return _parentPartID; }
             set { _parentPartID = value; }
         }
@@ -359,7 +335,7 @@ namespace Universe.Framework.SceneInfo
 
         #region ICloneable Members
 
-        public object Clone()
+        public object Clone ()
         {
             return MemberwiseClone();
         }

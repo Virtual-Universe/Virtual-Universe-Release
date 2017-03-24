@@ -33,51 +33,53 @@ using Universe.Framework.Utilities;
 
 namespace Universe.DataManager.Migration.Migrators.Region
 {
-	public class RegionMigrator_0 : Migrator
-	{
-		public RegionMigrator_0 ()
-		{
-			Version = new Version (0, 0, 0);
-			MigrationName = "Region";
+    public class RegionMigrator_0 : Migrator
+    {
+        public RegionMigrator_0()
+        {
+            Version = new Version(0, 0, 0);
+            MigrationName = "Region";
 
-			Schema = new List<SchemaDefinition> ();
+            Schema = new List<SchemaDefinition>();
 
-			AddSchema ("telehubs", ColDefs (
-				ColDef ("RegionID", ColumnTypes.String50),
-				ColDef ("RegionLocX", ColumnTypes.String50),
-				ColDef ("RegionLocY", ColumnTypes.String50),
-				ColDef ("TelehubLocX", ColumnTypes.String50),
-				ColDef ("TelehubLocY", ColumnTypes.String50),
-				ColDef ("TelehubLocZ", ColumnTypes.String50),
-				ColDef ("TelehubRotX", ColumnTypes.String50),
-				ColDef ("TelehubRotY", ColumnTypes.String50),
-				ColDef ("TelehubRotZ", ColumnTypes.String50),
-				ColDef ("Spawns", ColumnTypes.String1024),
-				ColDef ("ObjectUUID", ColumnTypes.String50),
-				ColDef ("Name", ColumnTypes.String50)
-			), IndexDefs (
-				IndexDef (new string[1] { "RegionID" }, IndexType.Primary)
-			));
-		}
+            // Change summary:
+            //   Change ID type fields to type UUID
+            AddSchema("telehubs", ColDefs(
+                ColDef("RegionID", ColumnTypes.UUID),
+                ColDef("RegionLocX", ColumnTypes.String50),             // TODO:  Location sizes seem a bit excessive
+                ColDef("RegionLocY", ColumnTypes.String50),
+                ColDef("TelehubLocX", ColumnTypes.String50),
+                ColDef("TelehubLocY", ColumnTypes.String50),
+                ColDef("TelehubLocZ", ColumnTypes.String50),
+                ColDef("TelehubRotX", ColumnTypes.String50),
+                ColDef("TelehubRotY", ColumnTypes.String50),
+                ColDef("TelehubRotZ", ColumnTypes.String50),
+                ColDef("Spawns", ColumnTypes.String1024),
+                ColDef("ObjectUUID", ColumnTypes.UUID),
+                ColDef("Name", ColumnTypes.String50)
+            ), IndexDefs(
+                IndexDef(new string[1] {"RegionID"}, IndexType.Primary)
+            ));
+        }
 
-		protected override void DoCreateDefaults (IDataConnector genericData)
-		{
-			EnsureAllTablesInSchemaExist (genericData);
-		}
+        protected override void DoCreateDefaults(IDataConnector genericData)
+        {
+            EnsureAllTablesInSchemaExist(genericData);
+        }
 
-		protected override bool DoValidate (IDataConnector genericData)
-		{
-			return TestThatAllTablesValidate (genericData);
-		}
+        protected override bool DoValidate(IDataConnector genericData)
+        {
+            return TestThatAllTablesValidate(genericData);
+        }
 
-		protected override void DoMigrate (IDataConnector genericData)
-		{
-			DoCreateDefaults (genericData);
-		}
+        protected override void DoMigrate(IDataConnector genericData)
+        {
+            DoCreateDefaults(genericData);
+        }
 
-		protected override void DoPrepareRestorePoint (IDataConnector genericData)
-		{
-			CopyAllTablesToTempVersions (genericData);
-		}
-	}
+        protected override void DoPrepareRestorePoint(IDataConnector genericData)
+        {
+            CopyAllTablesToTempVersions(genericData);
+        }
+    }
 }

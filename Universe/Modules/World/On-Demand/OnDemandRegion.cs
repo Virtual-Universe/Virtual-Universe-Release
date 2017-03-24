@@ -35,159 +35,170 @@ using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 
+
 namespace Universe.Modules.OnDemand
 {
-	/// <summary>
-	///     Some notes on this module, this module just modifies when/where the startup code is executed
-	///     This module has a few different settings for the region to startup with,
-	///     Soft, Medium, and Normal (no change)
-	///     -- Soft --
-	///     Disables the heartbeats (not scripts, as its instance-wide)
-	///     Only loads land and parcels, no prims
-	///     -- Medium --
-	///     Same as Soft, except it loads prims (same as normal, but no threads)
-	///     -- Normal --
-	///     Same as always
-	/// </summary>
-	public class OnDemandRegionModule : INonSharedRegionModule
-	{
-		#region Declares
+    /// <summary>
+    ///     Some notes on this module, this module just modifies when/where the startup code is executed
+    ///     This module has a few different settings for the region to startup with,
+    ///     Soft, Medium, and Normal (no change)
+    ///     -- Soft --
+    ///     Disables the heartbeats (not scripts, as its instance-wide)
+    ///     Only loads land and parcels, no prims
+    ///     -- Medium --
+    ///     Same as Soft, except it loads prims (same as normal, but no threads)
+    ///     -- Normal --
+    ///     Same as always
+    /// </summary>
+    public class OnDemandRegionModule : INonSharedRegionModule
+    {
+        #region Declares
 
-		readonly List<UUID> m_zombieAgents = new List<UUID> ();
-		bool m_isRunning;
-		bool m_isShuttingDown;
-		bool m_isStartingUp;
-		IScene m_scene;
+        readonly List<UUID> m_zombieAgents = new List<UUID>();
+        bool m_isRunning;
+        bool m_isShuttingDown;
+        bool m_isStartingUp;
+        IScene m_scene;
 
-		#endregion
+        #endregion
 
-		#region INonSharedRegionModule Members
+        #region INonSharedRegionModule Members
 
-		public void Initialize (IConfigSource source)
-		{
-		}
+        public void Initialize(IConfigSource source)
+        {
+        }
 
-		public void AddRegion (IScene scene)
-		{
-			if (scene.RegionInfo.Startup != StartupType.Normal) {
-				m_scene = scene;
-				//Disable the heartbeat for this region
-				scene.ShouldRunHeartbeat = false;
+        public void AddRegion(IScene scene)
+        {
+            if (scene.RegionInfo.Startup != StartupType.Normal)
+            {
+                m_scene = scene;
+                //Disable the heartbeat for this region
+                scene.ShouldRunHeartbeat = false;
 
-				scene.EventManager.OnRemovePresence += OnRemovePresence;
-				scene.UniverseEventManager.RegisterEventHandler ("NewUserConnection", OnGenericEvent);
-				scene.UniverseEventManager.RegisterEventHandler ("AgentIsAZombie", OnGenericEvent);
-			}
-		}
+                scene.EventManager.OnRemovePresence += OnRemovePresence;
+                scene.UniverseEventManager.RegisterEventHandler("NewUserConnection", OnGenericEvent);
+                scene.UniverseEventManager.RegisterEventHandler("AgentIsAZombie", OnGenericEvent);
+            }
+        }
 
-		public void RegionLoaded (IScene scene)
-		{
-		}
+        public void RegionLoaded(IScene scene)
+        {
+        }
 
-		public void RemoveRegion (IScene scene)
-		{
-		}
+        public void RemoveRegion(IScene scene)
+        {
+        }
 
-		public void Close ()
-		{
-		}
+        public void Close()
+        {
+        }
 
-		public string Name {
-			get { return "OnDemandRegionModule"; }
-		}
+        public string Name
+        {
+            get { return "OnDemandRegionModule"; }
+        }
 
-		public Type ReplaceableInterface {
-			get { return null; }
-		}
+        public Type ReplaceableInterface
+        {
+            get { return null; }
+        }
 
-		#endregion
+        #endregion
 
-		#region Private Events
+        #region Private Events
 
-		object OnGenericEvent (string FunctionName, object parameters)
-		{
-			if (FunctionName == "NewUserConnection") {
-				if (!m_isRunning) {
-					m_isRunning = true;
-					if (m_scene.RegionInfo.Startup == StartupType.Medium) {
-						m_scene.UniverseEventManager.FireGenericEventHandler ("MediumStartup", m_scene);
-						MediumStartup ();
-					}
-				}
-			} else if (FunctionName == "AgentIsAZombie")
-				m_zombieAgents.Add ((UUID)parameters);
-			return null;
-		}
+        object OnGenericEvent(string FunctionName, object parameters)
+        {
+            if (FunctionName == "NewUserConnection")
+            {
+                if (!m_isRunning)
+                {
+                    m_isRunning = true;
+                    if (m_scene.RegionInfo.Startup == StartupType.Medium)
+                    {
+                        m_scene.UniverseEventManager.FireGenericEventHandler("MediumStartup", m_scene);
+                        MediumStartup();
+                    }
+                }
+            }
+            else if (FunctionName == "AgentIsAZombie")
+                m_zombieAgents.Add((UUID) parameters);
+            return null;
+        }
 
-		void OnRemovePresence (IScenePresence presence)
-		{
-			if (m_scene.GetScenePresences ().Count == 1) { //This presence hasn't been removed yet, so we check against one
-				if (m_zombieAgents.Contains (presence.UUID)) {
-					m_zombieAgents.Remove (presence.UUID);
-					return; //It'll be reading an agent, don't kill the sim immediately
-				}
-				//If all clients are out of the region, we can close it again
-				if (m_scene.RegionInfo.Startup == StartupType.Medium) {
-					m_scene.UniverseEventManager.FireGenericEventHandler ("MediumShutdown", m_scene);
-					MediumShutdown ();
-				}
-				m_isRunning = false;
-			}
-		}
+        void OnRemovePresence(IScenePresence presence)
+        {
+            if (m_scene.GetScenePresences().Count == 1) //This presence hasn't been removed yet, so we check against one
+            {
+                if (m_zombieAgents.Contains(presence.UUID))
+                {
+                    m_zombieAgents.Remove(presence.UUID);
+                    return; //It'll be reading an agent, don't kill the sim immediately
+                }
+                //If all clients are out of the region, we can close it again
+                if (m_scene.RegionInfo.Startup == StartupType.Medium)
+                {
+                    m_scene.UniverseEventManager.FireGenericEventHandler("MediumShutdown", m_scene);
+                    MediumShutdown();
+                }
+                m_isRunning = false;
+            }
+        }
 
-		#endregion
+        #endregion
 
-		#region Private Shutdown Methods
+        #region Private Shutdown Methods
 
-		void MediumShutdown ()
-		{
-			//Only shut down one at a time
-			if (m_isShuttingDown)
-				return;
-			m_isShuttingDown = true;
-			GenericShutdown ();
-			m_isShuttingDown = false;
-		}
+        void MediumShutdown()
+        {
+            //Only shut down one at a time
+            if (m_isShuttingDown)
+                return;
+            m_isShuttingDown = true;
+            GenericShutdown();
+            m_isShuttingDown = false;
+        }
 
-		/// <summary>
-		///     This shuts down the heartbeats so that everything is dead again
-		/// </summary>
-		void GenericShutdown ()
-		{
-			//After the next iteration, the threads will kill themselves
-			m_scene.ShouldRunHeartbeat = false;
-		}
+        /// <summary>
+        ///     This shuts down the heartbeats so that everything is dead again
+        /// </summary>
+        void GenericShutdown()
+        {
+            //After the next iteration, the threads will kill themselves
+            m_scene.ShouldRunHeartbeat = false;
+        }
 
-		#endregion
+        #endregion
 
-		#region Private Startup Methods
+        #region Private Startup Methods
 
-		/// <summary>
-		///     We've already loaded prims/parcels/land earlier,
-		///     we don't have anything else to load,
-		///     so we just need to get the heartbeats back on track
-		/// </summary>
-		void MediumStartup ()
-		{
-			//Only start up one at a time
-			if (m_isStartingUp)
-				return;
-			m_isStartingUp = true;
+        /// <summary>
+        ///     We've already loaded prims/parcels/land earlier,
+        ///     we don't have anything else to load,
+        ///     so we just need to get the heartbeats back on track
+        /// </summary>
+        void MediumStartup()
+        {
+            //Only start up one at a time
+            if (m_isStartingUp)
+                return;
+            m_isStartingUp = true;
 
-			GenericStartup ();
+            GenericStartup();
 
-			m_isStartingUp = false;
-		}
+            m_isStartingUp = false;
+        }
 
-		/// <summary>
-		///     This sets up the heartbeats so that they are running again, which is needed
-		/// </summary>
-		void GenericStartup ()
-		{
-			m_scene.ShouldRunHeartbeat = true;
-			m_scene.StartHeartbeat ();
-		}
+        /// <summary>
+        ///     This sets up the heartbeats so that they are running again, which is needed
+        /// </summary>
+        void GenericStartup()
+        {
+            m_scene.ShouldRunHeartbeat = true;
+            m_scene.StartHeartbeat();
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

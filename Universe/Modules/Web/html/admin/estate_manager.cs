@@ -35,82 +35,84 @@ using Universe.Framework.Services;
 
 namespace Universe.Modules.Web
 {
-	public class EstateManagerPage : IWebInterfacePage
-	{
-		public string [] FilePath {
-			get {
-				return new [] {
-					"html/admin/estate_manager.html"
-				};
-			}
-		}
+    public class EstateManagerPage : IWebInterfacePage
+    {
+        public string [] FilePath {
+            get {
+                return new []
+                           {
+                               "html/admin/estate_manager.html"
+                           };
+            }
+        }
 
-		public bool RequiresAuthentication {
-			get { return true; }
-		}
+        public bool RequiresAuthentication {
+            get { return true; }
+        }
 
-		public bool RequiresAdminAuthentication {
-			get { return true; }
-		}
+        public bool RequiresAdminAuthentication {
+            get { return true; }
+        }
 
-		public Dictionary<string, object> Fill (WebInterface webInterface, string filename, OSHttpRequest httpRequest,
-		                                              OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
-		                                              ITranslator translator, out string response)
-		{
-			response = null;
-			var vars = new Dictionary<string, object> ();
-			var estateListVars = new List<Dictionary<string, object>> ();
-			var estateConnector = Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ();
-			var accountService = webInterface.Registry.RequestModuleInterface<IUserAccountService> ();
+        public Dictionary<string, object> Fill (WebInterface webInterface, string filename, OSHttpRequest httpRequest,
+                                               OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
+                                               ITranslator translator, out string response)
+        {
+            response = null;
+            var vars = new Dictionary<string, object> ();
+            var estateListVars = new List<Dictionary<string, object>> ();
+            var estateConnector = Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ();
+            var accountService = webInterface.Registry.RequestModuleInterface<IUserAccountService> ();
 
-			var estates = estateConnector.GetEstateNames ();
+            var estates = estateConnector.GetEstateNames ();
 
-			if (estates.Count > 0) {
+            if (estates.Count > 0) {
 
-				foreach (var estate in estates) {
-					var estateID = estateConnector.GetEstateID (estate);
-					EstateSettings ES = estateConnector.GetEstateSettings (estateID);
+                foreach (var estate in estates) {
+                    var estateID = estateConnector.GetEstateID (estate);
+                    EstateSettings ES = estateConnector.GetEstateIDSettings (estateID);
 
-					if (ES != null) {
-						var estateOwner = accountService.GetUserAccount (null, ES.EstateOwner);
-						var regions = estateConnector.GetRegions ((int)ES.EstateID);
+                    if (ES != null) {
+                        var estateOwner = accountService.GetUserAccount (null, ES.EstateOwner);
+                        var regions = estateConnector.GetRegions ((int)ES.EstateID);
 
-						estateListVars.Add (new Dictionary<string, object> {
-							{ "EstateID", ES.EstateID.ToString () },
-							{ "EstateName", ES.EstateName },
-							{ "EstateOwner", estateOwner.Name },
-							{ "PublicAccess", WebHelpers.YesNo (translator, ES.PublicAccess) },
-							{ "AllowVoice", WebHelpers.YesNo (translator, ES.AllowVoice) },
-							{ "TaxFree", WebHelpers.YesNo (translator, ES.TaxFree) },
-							{ "AllowDirectTeleport", WebHelpers.YesNo (translator, ES.AllowDirectTeleport) },
-							{ "RegionCount", regions.Count.ToString () }
-						});
-					}
-				}
-			}
+                        estateListVars.Add (new Dictionary<string, object> {
+                            {"EstateID", ES.EstateID.ToString()},
+                            {"EstateName", ES.EstateName},
+                            {"EstateOwner", estateOwner.Name},
+                            {"PublicAccess", WebHelpers.YesNo(translator, ES.PublicAccess)},
+                            {"AllowVoice", WebHelpers.YesNo(translator, ES.AllowVoice)},
+                            {"TaxFree", WebHelpers.YesNo(translator, ES.TaxFree)},
+                            {"AllowDirectTeleport", WebHelpers.YesNo (translator, ES.AllowDirectTeleport)},
+                            {"RegionCount", regions.Count.ToString()}
+                        });
+                    }
+                }
+            }
 
-			vars.Add ("EstateList", estateListVars);
+            vars.Add ("EstateList", estateListVars);
 
-			// labels
-			vars.Add ("EstateManagerText", translator.GetTranslatedString ("MenuEstateManager"));
-			vars.Add ("AddEstateText", translator.GetTranslatedString ("AddEstateText"));
-			vars.Add ("EditEstateText", translator.GetTranslatedString ("EditText"));
-			vars.Add ("EstateListText", translator.GetTranslatedString ("EstatesText"));
-			vars.Add ("EstateText", translator.GetTranslatedString ("EstateText"));
-			vars.Add ("EstateOwnerText", translator.GetTranslatedString ("MenuOwnerTitle"));
-			vars.Add ("PublicAccessText", translator.GetTranslatedString ("PublicAccessText"));
-			vars.Add ("AllowVoiceText", translator.GetTranslatedString ("AllowVoiceText"));
-			vars.Add ("TaxFreeText", translator.GetTranslatedString ("TaxFreeText"));
-			vars.Add ("AllowDirectTeleportText", translator.GetTranslatedString ("AllowDirectTeleportText"));
-			vars.Add ("RegionsText", translator.GetTranslatedString ("MenuRegionsTitle"));
+            // labels
+            vars.Add ("EstateManagerText", translator.GetTranslatedString ("MenuEstateManager"));
+            vars.Add ("AddEstateText", translator.GetTranslatedString ("AddEstateText"));
+            vars.Add ("EditEstateText", translator.GetTranslatedString ("EditText"));
+            vars.Add ("EstateListText", translator.GetTranslatedString ("EstatesText"));
+            vars.Add ("EstateText", translator.GetTranslatedString ("EstateText"));
+            vars.Add ("EstateOwnerText", translator.GetTranslatedString ("MenuOwnerTitle"));
+            vars.Add ("PublicAccessText", translator.GetTranslatedString ("PublicAccessText"));
+            vars.Add ("AllowVoiceText", translator.GetTranslatedString ("AllowVoiceText"));
+            vars.Add ("TaxFreeText", translator.GetTranslatedString ("TaxFreeText"));
+            vars.Add ("AllowDirectTeleportText", translator.GetTranslatedString ("AllowDirectTeleportText"));
+            vars.Add ("RegionsText", translator.GetTranslatedString ("MenuRegionsTitle"));
 
-			return vars;
-		}
+            return vars;
+        }
 
-		public bool AttemptFindPage (string filename, ref OSHttpResponse httpResponse, out string text)
-		{
-			text = "";
-			return false;
-		}
-	}
+        public bool AttemptFindPage (string filename, ref OSHttpResponse httpResponse, out string text)
+        {
+            text = "";
+            return false;
+        }
+    }
+
 }

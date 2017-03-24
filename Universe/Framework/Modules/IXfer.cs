@@ -29,8 +29,8 @@
 
 namespace Universe.Framework.Modules
 {
-	public interface IXfer
-	{
-		bool AddNewFile (string fileName, byte[] data);
-	}
+    public interface IXfer
+    {
+        bool AddNewFile(string fileName, byte[] data);
+    }
 }

@@ -41,290 +41,311 @@ using GridRegion = Universe.Framework.Services.GridRegion;
 
 namespace Universe.Modules.Startup
 {
-	public class RegisterRegionWithGridModule : ISharedRegionStartupModule, IGridRegisterModule
-	{
-		#region Declares
+    public class RegisterRegionWithGridModule : ISharedRegionStartupModule, IGridRegisterModule
+    {
+        #region Declares
 
-		readonly Dictionary<UUID, List<GridRegion>> m_knownNeighbors = new Dictionary<UUID, List<GridRegion>> ();
-		IScene m_scene;
-		IConfigSource m_config;
-		string m_RegisterRegionPassword = "";
-		bool m_markRegionsAsOffline = true;
+        readonly Dictionary<UUID, List<GridRegion>> m_knownNeighbors = new Dictionary<UUID, List<GridRegion>> ();
+        IScene m_scene;
+        IConfigSource m_config;
+        string m_RegisterRegionPassword = "";
+        bool m_markRegionsAsOffline = true;
 
-		#endregion
+        #endregion
 
-		#region IGridRegisterModule Members
+        #region IGridRegisterModule Members
 
-		/// <summary>
-		///     Update the grid server with new info about this region
-		/// </summary>
-		/// <param name="scene"></param>
-		public void UpdateGridRegion (IScene scene)
-		{
-			scene.GridService.UpdateMap (new GridRegion (scene.RegionInfo), true);
-		}
+        /// <summary>
+        ///     Update the grid server with new info about this region
+        /// </summary>
+        /// <param name="scene"></param>
+        public void UpdateGridRegion (IScene scene)
+        {
+            scene.GridService.UpdateMap (new GridRegion (scene.RegionInfo), true);
+        }
 
-		/// <summary>
-		///     Register this region with the grid service
-		/// </summary>
-		/// <param name="scene"></param>
-		/// <param name="returnResponseFirstTime">Should we try to walk the user through what went wrong?</param>
-		/// <param name="continueTrying"> </param>
-		/// <param name="password"> </param>
-		public bool RegisterRegionWithGrid (IScene scene, bool returnResponseFirstTime, bool continueTrying,
-		                                          string password)
-		{
-			if (password == null)
-				password = m_RegisterRegionPassword;
+        /// <summary>
+        ///     Register this region with the grid service
+        /// </summary>
+        /// <param name="scene"></param>
+        /// <param name="returnResponseFirstTime">Should we try to walk the user through what went wrong?</param>
+        /// <param name="continueTrying"> </param>
+        /// <param name="password"> </param>
+        public bool RegisterRegionWithGrid (IScene scene, bool returnResponseFirstTime, bool continueTrying,
+                                           string password)
+        {
+            if (password == null)
+                password = m_RegisterRegionPassword;
 
-			GridRegion region = new GridRegion (scene.RegionInfo);
+            GridRegion region = new GridRegion (scene.RegionInfo);
 
-			IGridService GridService = scene.RequestModuleInterface<IGridService> ();
+            IGridService GridService = scene.RequestModuleInterface<IGridService> ();
 
-			scene.RequestModuleInterface<ISimulationBase> ()
+            scene.RequestModuleInterface<ISimulationBase> ()
                  .EventManager.FireGenericEventHandler ("PreRegisterRegion", region);
 
-			//Tell the grid service about us
-			RegisterRegion error = GridService.RegisterRegion (region, scene.RegionInfo.GridSecureSessionID, password,
-				                                ProtocolVersion.MAJOR_PROTOCOL_VERSION,
-				                                ProtocolVersion.MINOR_PROTOCOL_VERSION);
-			if (error.Error == String.Empty) {
-				//If it registered ok, we save the sessionID to the database and tell the neighbor service about it
-				scene.RegionInfo.GridSecureSessionID = error.SessionID;
-				//Update our local copy of what our region flags are
-				scene.RegionInfo.RegionFlags = error.RegionFlags;
-				scene.RegionInfo.ScopeID = error.Region.ScopeID;
-				scene.RegionInfo.AllScopeIDs = error.Region.AllScopeIDs;
-				scene.RequestModuleInterface<IConfigurationService> ().SetURIs (error.URIs);
-				m_knownNeighbors [scene.RegionInfo.RegionID] = error.Neighbors;
-				return true; //Success
-			}
-			if (returnResponseFirstTime && !continueTrying) {
-				MainConsole.Instance.Error (
-					"[RegisterRegionWithGrid]: Registration of region with grid failed again - " + error.Error);
-				return false;
-			}
+            //Tell the grid service about us
+            RegisterRegion error = GridService.RegisterRegion (region, scene.RegionInfo.GridSecureSessionID, password,
+                                       ProtocolVersion.MAJOR_PROTOCOL_VERSION,
+                                       ProtocolVersion.MINOR_PROTOCOL_VERSION);
+            if (error.Error == String.Empty)
+            {
+                //If it registered ok, we save the sessionID to the database and tell the neighbor service about it
+                scene.RegionInfo.GridSecureSessionID = error.SessionID;
+                //Update our local copy of what our region flags are
+                scene.RegionInfo.RegionFlags = error.RegionFlags;
+                scene.RegionInfo.ScopeID = error.Region.ScopeID;
+                scene.RegionInfo.AllScopeIDs = error.Region.AllScopeIDs;
+                scene.RequestModuleInterface<IConfigurationService> ().SetURIs (error.URIs);
+                m_knownNeighbors [scene.RegionInfo.RegionID] = error.Neighbors;
+                return true; //Success
+            }
+            if (returnResponseFirstTime && !continueTrying)
+            {
+                MainConsole.Instance.Error (
+                    "[RegisterRegionWithGrid]: Registration of region with grid failed again - " + error.Error);
+                return false;
+            }
 
-			//Parse the error and try to do something about it if at all possible
-			if (error.Error == "Region location is reserved") {
-				var simbase = scene.RequestModuleInterface<ISimulationBase> ();
+            //Parse the error and try to do something about it if at all possible
+            if (error.Error == "Region location is reserved")
+            {
+                var simbase = scene.RequestModuleInterface<ISimulationBase> ();
 
-				MainConsole.Instance.Error (
-					"[RegisterRegionWithGrid]: Registration of region with grid failed - The region location you specified is reserved. You must move your region.");
-				int X;
-				int Y;
-				int.TryParse (MainConsole.Instance.Prompt ("New Region Location X", simbase.MapCenterX.ToString ()), out X);
-				int.TryParse (MainConsole.Instance.Prompt ("New Region Location Y", simbase.MapCenterY.ToString ()), out Y);
+                MainConsole.Instance.Error (
+                    "[RegisterRegionWithGrid]: Registration of region with grid failed - The region location you specified is reserved. You must move your region.");
+                int X;
+                int Y;
+                int.TryParse (MainConsole.Instance.Prompt ("New Region Location X", simbase.MapCenterX.ToString()), out X);
+                int.TryParse (MainConsole.Instance.Prompt ("New Region Location Y", simbase.MapCenterY.ToString()), out Y);
 
-				scene.RegionInfo.RegionLocX = X * Constants.RegionSize;
-				scene.RegionInfo.RegionLocY = Y * Constants.RegionSize;
+                scene.RegionInfo.RegionLocX = X * Constants.RegionSize;
+                scene.RegionInfo.RegionLocY = Y * Constants.RegionSize;
 
-			} else if (error.Error == "Region overlaps another region") {
-				MainConsole.Instance.Error ("[RegisterRegionWithGrid]: Registration of region " +
-				scene.RegionInfo.RegionName +
-				" with the grid failed - The region location you specified is already in use. You must move your region.");
-				int X;
-				int Y;
-				int.TryParse (
-					MainConsole.Instance.Prompt ("New Region Location X",
-						(scene.RegionInfo.RegionLocX / Constants.RegionSize).ToString ()), out X);
-				int.TryParse (
-					MainConsole.Instance.Prompt ("New Region Location Y",
-						(scene.RegionInfo.RegionLocY / Constants.RegionSize).ToString ()), out Y);
+            } else if (error.Error == "Region overlaps another region")
+            {
+                MainConsole.Instance.Error ("[RegisterRegionWithGrid]: Registration of region " +
+                    scene.RegionInfo.RegionName +
+                    " with the grid failed - The region location you specified is already in use. You must move your region.");
+                int X;
+                int Y;
+                int.TryParse (
+                    MainConsole.Instance.Prompt ("New Region Location X",
+                        (scene.RegionInfo.RegionLocX / Constants.RegionSize).ToString ()), out X);
+                int.TryParse (
+                    MainConsole.Instance.Prompt ("New Region Location Y",
+                        (scene.RegionInfo.RegionLocY  / Constants.RegionSize).ToString ()), out Y);
 
-				scene.RegionInfo.RegionLocX = X * Constants.RegionSize;
-				scene.RegionInfo.RegionLocY = Y * Constants.RegionSize;
+                scene.RegionInfo.RegionLocX = X * Constants.RegionSize;
+                scene.RegionInfo.RegionLocY = Y * Constants.RegionSize;
 
-			} else if (error.Error.Contains ("Can't move this region")) {
-				MainConsole.Instance.Error ("[RegisterRegionWithGrid]: Registration of region " +
-				scene.RegionInfo.RegionName +
-				" with the grid failed - You can not move this region. Moving it back to its original position.");
-				//Opensim Grid Servers don't have this functionality.
-				try {
-					string[] position = error.Error.Split (',');
+            } else if (error.Error.Contains ("Can't move this region"))
+            {
+                MainConsole.Instance.Error ("[RegisterRegionWithGrid]: Registration of region " +
+                    scene.RegionInfo.RegionName +
+                    " with the grid failed - You can not move this region. Moving it back to its original position.");
+                //Opensim Grid Servers don't have this functionality.
+                try
+                {
+                    string[] position = error.Error.Split (',');
 
-					scene.RegionInfo.RegionLocX = int.Parse (position [1]) * Constants.RegionSize;
-					scene.RegionInfo.RegionLocY = int.Parse (position [2]) * Constants.RegionSize;
-				} catch (Exception) {
-					MainConsole.Instance.Error ("Unable to move the region back to its original position, is this an Opensim server? Please manually move the region back.");
-					throw;
-				}
+                    scene.RegionInfo.RegionLocX = int.Parse (position [1]) * Constants.RegionSize;
+                    scene.RegionInfo.RegionLocY = int.Parse (position [2]) * Constants.RegionSize;
+                } catch (Exception)
+                {
+                    MainConsole.Instance.Error ("Unable to move the region back to its original position, is this an Opensim server? Please manually move the region back.");
+                    throw;
+                }
 
-			} else if (error.Error == "Duplicate region name") {
-				MainConsole.Instance.Error ("[RegisterRegionWithGrid]: Registration of region " +
-				scene.RegionInfo.RegionName +
-				" with the grid failed - The region name you specified is already in use. Please change the name.");
-				scene.RegionInfo.RegionName = MainConsole.Instance.Prompt ("New Region Name", "");
+            } else if (error.Error == "Duplicate region name")
+            {
+                MainConsole.Instance.Error ("[RegisterRegionWithGrid]: Registration of region " +
+                    scene.RegionInfo.RegionName +
+                    " with the grid failed - The region name you specified is already in use. Please change the name.");
+                scene.RegionInfo.RegionName = MainConsole.Instance.Prompt ("New Region Name", "");
 
-			} else if (error.Error == "Region locked out") {
-				MainConsole.Instance.Error ("[RegisterRegionWithGrid]: Registration of region " +
-				scene.RegionInfo.RegionName +
-				" with the grid the failed - The region you are attempting to join has been blocked from connecting. Please connect another region.");
-				MainConsole.Instance.Prompt ("Press enter when you are ready to exit");
-				Environment.Exit (0);
+            } else if (error.Error == "Region locked out")
+            {
+                MainConsole.Instance.Error ("[RegisterRegionWithGrid]: Registration of region " +
+                    scene.RegionInfo.RegionName +
+                    " with the grid the failed - The region you are attempting to join has been blocked from connecting. Please connect another region.");
+                MainConsole.Instance.Prompt ("Press enter when you are ready to exit");
+                Environment.Exit (0);
 
-			} else if (error.Error == "Could not reach grid service") {
-				MainConsole.Instance.Error ("[RegisterRegionWithGrid]: Registration of region " +
-				scene.RegionInfo.RegionName +
-				" with the grid failed - The grid service can not be found! Please make sure that you can connect to the grid server and that the grid server is on.");
-				MainConsole.Instance.Error (
-					"You should also make sure you've provided the correct address and port of the grid service.");
-				string input =
-					MainConsole.Instance.Prompt (
-						"Press enter when you are ready to proceed, or type cancel to exit");
-				if (input == "cancel") {
-					Environment.Exit (0);
-				}
+            } else if (error.Error == "Could not reach grid service")
+            {
+                MainConsole.Instance.Error ("[RegisterRegionWithGrid]: Registration of region " +
+                    scene.RegionInfo.RegionName +
+                    " with the grid failed - The grid service can not be found! Please make sure that you can connect to the grid server and that the grid server is on.");
+                MainConsole.Instance.Error (
+                    "You should also make sure you've provided the correct address and port of the grid service.");
+                string input =
+                    MainConsole.Instance.Prompt (
+                        "Press enter when you are ready to proceed, or type cancel to exit");
+                if (input == "cancel")
+                {
+                    Environment.Exit (0);
+                }
 
-			} else if (error.Error == "Wrong Session ID") {
-				MainConsole.Instance.Error ("[RegisterRegionWithGrid]: Registration of region " +
-				scene.RegionInfo.RegionName +
-				" with the grid failed - Wrong Session ID for this region!");
-				MainConsole.Instance.Error (
-					"This means that this region has failed to connect to the grid server and needs removed from it before it can connect again.");
-				MainConsole.Instance.Error (
-					"If you are running the Universe.Server instance this region is connecting to, type \"grid clear region <RegionName>\" and then press enter on this console and it will work");
-				MainConsole.Instance.Error (
-					"If you are not running the Universe.Server instance this region is connecting to, please contact your grid operator so that he can fix it");
+            } else if (error.Error == "Wrong Session ID")
+            {
+                MainConsole.Instance.Error ("[RegisterRegionWithGrid]: Registration of region " +
+                    scene.RegionInfo.RegionName +
+                    " with the grid failed - Wrong Session ID for this region!");
+                MainConsole.Instance.Error (
+                    "This means that this region has failed to connect to the grid server and needs removed from it before it can connect again.");
+                MainConsole.Instance.Error (
+                    "If you are running the Universe.Server instance this region is connecting to, type \"grid clear region <RegionName>\" and then press enter on this console and it will work");
+                MainConsole.Instance.Error (
+                    "If you are not running the Universe.Server instance this region is connecting to, please contact your grid operator so that he can fix it");
 
-				string input =
-					MainConsole.Instance.Prompt (
-						"Press enter when you are ready to proceed, or type cancel to exit");
-				if (input == "cancel")
-					Environment.Exit (0);
+                string input =
+                    MainConsole.Instance.Prompt (
+                        "Press enter when you are ready to proceed, or type cancel to exit");
+                if (input == "cancel")
+                    Environment.Exit (0);
                 
-			} else if (error.Error == "Grid is not fully ready yet, please try again shortly") {
-				MainConsole.Instance.Error ("[RegisterRegionWithGrid]: Registration of region " +
-				scene.RegionInfo.RegionName +
-				" with the grid failed - " + error.Error + ", retrying... ");
-				System.Threading.Thread.Sleep (3000);   //Sleep for a bit and try again
-			} else {
-				MainConsole.Instance.Error ("[RegisterRegionWithGrid]: Registration of region " +
-				scene.RegionInfo.RegionName +
-				" with the grid failed - " + error.Error + "!");
-				string input =
-					MainConsole.Instance.Prompt (
-						"Press enter when you are ready to proceed, or type cancel to exit");
-				if (input == "cancel")
-					Environment.Exit (0);
-			}
+            } else if (error.Error == "Grid is not fully ready yet, please try again shortly")
+            {
+                MainConsole.Instance.Error ("[RegisterRegionWithGrid]: Registration of region " +
+                    scene.RegionInfo.RegionName +
+                    " with the grid failed - " + error.Error + ", retrying... ");
+                System.Threading.Thread.Sleep (3000);   //Sleep for a bit and try again
+            } else
+            {
+                MainConsole.Instance.Error ("[RegisterRegionWithGrid]: Registration of region " +
+                    scene.RegionInfo.RegionName +
+                    " with the grid failed - " + error.Error + "!");
+                string input =
+                    MainConsole.Instance.Prompt (
+                        "Press enter when you are ready to proceed, or type cancel to exit");
+                if (input == "cancel")
+                    Environment.Exit (0);
+            }
 
-			return RegisterRegionWithGrid (scene, true, continueTrying, password);
-		}
+            return RegisterRegionWithGrid (scene, true, continueTrying, password);
+        }
 
-		public List<GridRegion> GetNeighbors (IScene scene)
-		{
-			if (!m_knownNeighbors.ContainsKey (scene.RegionInfo.RegionID))
-				return new List<GridRegion> ();
-			return new List<GridRegion> (m_knownNeighbors [scene.RegionInfo.RegionID]);
-		}
+        public List<GridRegion> GetNeighbors (IScene scene)
+        {
+            if (!m_knownNeighbors.ContainsKey (scene.RegionInfo.RegionID))
+                return new List<GridRegion> ();
+            return new List<GridRegion> (m_knownNeighbors [scene.RegionInfo.RegionID]);
+        }
 
-		#endregion
+        #endregion
 
-		#region ISharedRegionStartupModule Members
+        #region ISharedRegionStartupModule Members
 
-		public void Initialize (IScene scene, IConfigSource source, ISimulationBase simBase)
-		{
-			m_scene = scene;
-			//Register the interface
-			m_config = source;
-			scene.RegisterModuleInterface<IGridRegisterModule> (this);
+        public void Initialize (IScene scene, IConfigSource source, ISimulationBase simBase)
+        {
+            m_scene = scene;
+            //Register the interface
+            m_config = source;
+            scene.RegisterModuleInterface<IGridRegisterModule> (this);
 
-			IConfig gridConfig = m_config.Configs ["Configuration"];
-			if (gridConfig != null) {
-				m_RegisterRegionPassword =
+            IConfig gridConfig = m_config.Configs ["Configuration"];
+            if (gridConfig != null)
+            {
+                m_RegisterRegionPassword =
                     Util.Md5Hash (gridConfig.GetString ("RegisterRegionPassword", m_RegisterRegionPassword));
-				m_markRegionsAsOffline = gridConfig.GetBoolean ("MarkRegionsAsOffline", true);
-			}
+                m_markRegionsAsOffline = gridConfig.GetBoolean ("MarkRegionsAsOffline", true);
+            }
 
-			//Now register our region with the grid
-			RegisterRegionWithGrid (scene, false, true, m_RegisterRegionPassword);
-		}
+            //Now register our region with the grid
+            RegisterRegionWithGrid (scene, false, true, m_RegisterRegionPassword);
+        }
 
-		public void PostInitialize (IScene scene, IConfigSource source, ISimulationBase simBase)
-		{
-		}
+        public void PostInitialize (IScene scene, IConfigSource source, ISimulationBase simBase)
+        {
+        }
 
-		public void FinishStartup (IScene scene, IConfigSource source, ISimulationBase simBase)
-		{
-		}
+        public void FinishStartup (IScene scene, IConfigSource source, ISimulationBase simBase)
+        {
+        }
 
-		public void PostFinishStartup (IScene scene, IConfigSource source, ISimulationBase simBase)
-		{
-			scene.RequestModuleInterface<ISyncMessageRecievedService> ().OnMessageReceived +=
+        public void PostFinishStartup (IScene scene, IConfigSource source, ISimulationBase simBase)
+        {
+            scene.RequestModuleInterface<ISyncMessageRecievedService> ().OnMessageReceived +=
                 RegisterRegionWithGridModule_OnMessageReceived;
-		}
+        }
 
-		public void StartupComplete ()
-		{
-		}
+        public void StartupComplete ()
+        {
+        }
 
-		public void Close (IScene scene)
-		{
-			//Deregister the interface
-			scene.UnregisterModuleInterface<IGridRegisterModule> (this);
-			m_scene = null;
+        public void Close (IScene scene)
+        {
+            //Deregister the interface
+            scene.UnregisterModuleInterface<IGridRegisterModule> (this);
+            m_scene = null;
 
-			MainConsole.Instance.InfoFormat (
-				"[RegisterRegionWithGrid]: Deregistering region {0} at {1}, {2} from the grid...",
-				scene.RegionInfo.RegionName,
-				scene.RegionInfo.RegionLocX / Constants.RegionSize,
-				scene.RegionInfo.RegionLocY / Constants.RegionSize
-			);
+            MainConsole.Instance.InfoFormat (
+                "[RegisterRegionWithGrid]: Deregistering region {0} at {1}, {2} from the grid...",
+                scene.RegionInfo.RegionName,
+                scene.RegionInfo.RegionLocX / Constants.RegionSize,
+                scene.RegionInfo.RegionLocY / Constants.RegionSize
+            );
 
-			//Deregister from the grid server
-			GridRegion r = new GridRegion (scene.RegionInfo);
-			r.IsOnline = false;
-			string error = "";
-			if (scene.RegionInfo.HasBeenDeleted || !m_markRegionsAsOffline)
-				scene.GridService.DeregisterRegion (r);
-			else if ((error = scene.GridService.UpdateMap (r, false)) != "")
-				MainConsole.Instance.WarnFormat (
-					"[RegisterRegionWithGrid]: Deregister from grid failed for region {0}, {1}",
-					scene.RegionInfo.RegionName, error);
-		}
+            //Deregister from the grid server
+            GridRegion r = new GridRegion (scene.RegionInfo);
+            r.IsOnline = false;
+            string error = "";
+            if (scene.RegionInfo.HasBeenDeleted || !m_markRegionsAsOffline)
+                scene.GridService.DeregisterRegion (r);
+            else if ((error = scene.GridService.UpdateMap (r, false)) != "")
+                MainConsole.Instance.WarnFormat (
+                    "[RegisterRegionWithGrid]: Deregister from grid failed for region {0}, {1}",
+                    scene.RegionInfo.RegionName, error);
+        }
 
-		public void DeleteRegion (IScene scene)
-		{
-			if (!scene.GridService.DeregisterRegion (new GridRegion (scene.RegionInfo)))
-				MainConsole.Instance.WarnFormat ("[RegisterRegionWithGrid]: Deregister from grid failed for region {0}",
-					scene.RegionInfo.RegionName);
-		}
+        public void DeleteRegion (IScene scene)
+        {
+            if (!scene.GridService.DeregisterRegion (new GridRegion (scene.RegionInfo)))
+                MainConsole.Instance.WarnFormat ("[RegisterRegionWithGrid]: Deregister from grid failed for region {0}",
+                    scene.RegionInfo.RegionName);
+        }
 
-		#endregion
+        #endregion
 
-		OSDMap RegisterRegionWithGridModule_OnMessageReceived (OSDMap message)
-		{
-			if (!message.ContainsKey ("Method"))
-				return null;
+        OSDMap RegisterRegionWithGridModule_OnMessageReceived (OSDMap message)
+        {
+            if (!message.ContainsKey ("Method"))
+                return null;
 
-			if (message ["Method"] == "NeighborChange") {
-				OSDMap innerMessage = (OSDMap)message ["Message"];
-				bool down = innerMessage ["Down"].AsBoolean ();
-				UUID regionID = innerMessage ["Region"].AsUUID ();
-				UUID targetregionID = innerMessage ["TargetRegion"].AsUUID ();
+            if (message ["Method"] == "NeighborChange")
+            {
+                OSDMap innerMessage = (OSDMap)message ["Message"];
+                bool down = innerMessage ["Down"].AsBoolean ();
+                UUID regionID = innerMessage ["Region"].AsUUID ();
+                UUID targetregionID = innerMessage ["TargetRegion"].AsUUID ();
 
-				if (m_knownNeighbors.ContainsKey (targetregionID)) {
-					if (down) {
-						//Remove it
-						m_knownNeighbors [targetregionID].RemoveAll (delegate(GridRegion r) {
-							if (r.RegionID == regionID)
-								return true;
-							return false;
-						});
-					} else {
-						//Add it if it doesn't already exist
-						if (m_knownNeighbors [targetregionID].Find (delegate(GridRegion rr) {
-							if (rr.RegionID == regionID)
-								return true;
-							return false;
-						}) == null)
-							m_knownNeighbors [targetregionID].Add (m_scene.GridService.GetRegionByUUID (null,
-								regionID));
-					}
-				}
-			}
-			return null;
-		}
-	}
+                if (m_knownNeighbors.ContainsKey (targetregionID))
+                {
+                    if (down)
+                    {
+                        //Remove it
+                        m_knownNeighbors [targetregionID].RemoveAll (delegate(GridRegion r)
+                        {
+                            if (r.RegionID == regionID)
+                                return true;
+                            return false;
+                        });
+                    } else
+                    {
+                        //Add it if it doesn't already exist
+                        if (m_knownNeighbors [targetregionID].Find (delegate(GridRegion rr)
+                        {
+                            if (rr.RegionID == regionID)
+                                return true;
+                            return false;
+                        }) == null)
+                            m_knownNeighbors [targetregionID].Add (m_scene.GridService.GetRegionByUUID (null,
+                                regionID));
+                    }
+                }
+            }
+            return null;
+        }
+    }
 }

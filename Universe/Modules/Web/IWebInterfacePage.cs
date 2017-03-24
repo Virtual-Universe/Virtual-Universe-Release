@@ -32,18 +32,16 @@ using Universe.Framework.Servers.HttpServer.Implementation;
 
 namespace Universe.Modules.Web
 {
-	public interface IWebInterfacePage
-	{
-		string [] FilePath { get; }
+    public interface IWebInterfacePage
+    {
+        string [] FilePath { get; }
+        bool RequiresAuthentication { get; }
+        bool RequiresAdminAuthentication { get; }
 
-		bool RequiresAuthentication { get; }
+        Dictionary<string, object> Fill (WebInterface webInterface, string filename, OSHttpRequest request,
+                                        OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
+                                        ITranslator translation, out string response);
 
-		bool RequiresAdminAuthentication { get; }
-
-		Dictionary<string, object> Fill (WebInterface webInterface, string filename, OSHttpRequest request,
-		                                       OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
-		                                       ITranslator translation, out string response);
-
-		bool AttemptFindPage (string filename, ref OSHttpResponse httpResponse, out string text);
-	}
+        bool AttemptFindPage (string filename, ref OSHttpResponse httpResponse, out string text);
+    }
 }

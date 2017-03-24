@@ -32,41 +32,41 @@ using Universe.Framework.SceneInfo;
 
 namespace Universe.Modules.Monitoring.Monitors
 {
-	class AgentCountMonitor : IMonitor
-	{
-		readonly IScene m_scene;
+    class AgentCountMonitor : IMonitor
+    {
+        readonly IScene m_scene;
 
-		public AgentCountMonitor (IScene scene)
-		{
-			m_scene = scene;
-		}
+        public AgentCountMonitor (IScene scene)
+        {
+            m_scene = scene;
+        }
 
-		#region Implementation of IMonitor
+        #region Implementation of IMonitor
 
-		public double GetValue ()
-		{
-			return m_scene.RequestModuleInterface<IEntityCountModule> ().RootAgents;
-		}
+        public double GetValue ()
+        {
+            return m_scene.RequestModuleInterface<IEntityCountModule> ().RootAgents;
+        }
 
-		public string GetName ()
-		{
-			return "Root Agent Count";
-		}
+        public string GetName ()
+        {
+            return "Root Agent Count";
+        }
 
-		public string GetInterfaceName ()
-		{
-			return "";
-		}
+        public string GetInterfaceName ()
+        {
+            return "";
+        }
 
-		public string GetFriendlyValue ()
-		{
-			return m_scene.RequestModuleInterface<IEntityCountModule> ().RootAgents + " agent(s)";
-		}
+        public string GetFriendlyValue ()
+        {
+            return m_scene.RequestModuleInterface<IEntityCountModule> ().RootAgents + " agent(s)";
+        }
 
-		public void ResetStats ()
-		{
-		}
+        public void ResetStats ()
+        {
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

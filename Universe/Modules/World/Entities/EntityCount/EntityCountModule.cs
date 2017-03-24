@@ -67,10 +67,8 @@ namespace Universe.Modules.Entities.EntityCount
 
         public int Objects
         {
-            get
-            {
-                lock (m_objectsLock)
-                {
+            get {
+                lock (m_objectsLock) {
                     return m_objects;
                 }
             }
@@ -78,10 +76,8 @@ namespace Universe.Modules.Entities.EntityCount
 
         public int ActiveObjects
         {
-            get
-            {
-                lock (m_objectsLock)
-                {
+            get {
+                lock (m_objectsLock) {
                     return m_activeObjects;
                 }
             }
@@ -169,7 +165,7 @@ namespace Universe.Modules.Entities.EntityCount
             m_childAgents++;
         }
 
-        private void OnRemovePresence(IScenePresence presence)
+        void OnRemovePresence(IScenePresence presence)
         {
             // Do not count bots
             if (presence.IsNpcAgent)
@@ -247,7 +243,7 @@ namespace Universe.Modules.Entities.EntityCount
             //If the object changes physical status, we need to make sure to update the active objects count
             if (FunctionName == "ObjectChangedPhysicalStatus")
             {
-                OnObjectBeingAddedToScene((ISceneEntity)parameters);
+                OnObjectBeingAddedToScene((ISceneEntity) parameters);
             }
             return null;
         }

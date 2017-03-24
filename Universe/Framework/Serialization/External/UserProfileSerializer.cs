@@ -33,37 +33,37 @@ using OpenMetaverse;
 
 namespace Universe.Framework.Serialization.External
 {
-	/// <summary>
-	///     Serialize and deserialize region settings as an external format.
-	/// </summary>
-	public class UserProfileSerializer
-	{
-		public const int MAJOR_VERSION = 0;
-		public const int MINOR_VERSION = 1;
+    /// <summary>
+    ///     Serialize and deserialize region settings as an external format.
+    /// </summary>
+    public class UserProfileSerializer
+    {
+        public const int MAJOR_VERSION = 0;
+        public const int MINOR_VERSION = 1;
 
-		public static string Serialize (UUID userID, string firstName, string lastName)
-		{
-			StringWriter sw = new StringWriter ();
-			XmlTextWriter xtw = new XmlTextWriter (sw) { Formatting = Formatting.Indented };
-			xtw.WriteStartDocument ();
+        public static string Serialize (UUID userID, string firstName, string lastName)
+        {
+            StringWriter sw = new StringWriter ();
+            XmlTextWriter xtw = new XmlTextWriter (sw) { Formatting = Formatting.Indented };
+            xtw.WriteStartDocument ();
 
-			xtw.WriteStartElement ("user_profile");
-			xtw.WriteAttributeString ("major_version", MAJOR_VERSION.ToString ());
-			xtw.WriteAttributeString ("minor_version", MINOR_VERSION.ToString ());
+            xtw.WriteStartElement ("user_profile");
+            xtw.WriteAttributeString ("major_version", MAJOR_VERSION.ToString ());
+            xtw.WriteAttributeString ("minor_version", MINOR_VERSION.ToString ());
 
-			xtw.WriteElementString ("name", firstName + " " + lastName);
-			xtw.WriteElementString ("id", userID.ToString ());
-			xtw.WriteElementString ("about", "");
+            xtw.WriteElementString ("name", firstName + " " + lastName);
+            xtw.WriteElementString ("id", userID.ToString ());
+            xtw.WriteElementString ("about", "");
 
-			// Not sure if we're storing this yet, need to take a look
-			//            xtw.WriteElementString("Url", profile.Url);
-			// or, indeed, interests
+            // Not sure if we're storing this yet, need to take a look
+            //            xtw.WriteElementString("Url", profile.Url);
+            // or, indeed, interests
 
-			xtw.WriteEndElement ();
+            xtw.WriteEndElement ();
 
-			xtw.Close ();
+            xtw.Close ();
 
-			return sw.ToString ();
-		}
-	}
+            return sw.ToString ();
+        }
+    }
 }

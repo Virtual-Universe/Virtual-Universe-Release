@@ -32,41 +32,41 @@ using System.Collections.Generic;
 
 namespace Universe.Physics.ConvexDecompositionDotNet
 {
-	public class VertexPool
-	{
-		private List<float3> mVertices = new List<float3> ();
-		private Dictionary<float3, int> mIndices = new Dictionary<float3, int> ();
+    public class VertexPool
+    {
+        private List<float3> mVertices = new List<float3>();
+        private Dictionary<float3, int> mIndices = new Dictionary<float3, int>();
 
-		public int getIndex (float3 vtx)
-		{
-			int idx;
-			if (mIndices.TryGetValue (vtx, out idx))
-				return idx;
+        public int getIndex(float3 vtx)
+        {
+            int idx;
+            if (mIndices.TryGetValue(vtx, out idx))
+                return idx;
 
-			idx = mVertices.Count;
-			mVertices.Add (vtx);
-			mIndices.Add (vtx, idx);
-			return idx;
-		}
+            idx = mVertices.Count;
+            mVertices.Add(vtx);
+            mIndices.Add(vtx, idx);
+            return idx;
+        }
 
-		public float3 Get (int idx)
-		{
-			return mVertices [idx];
-		}
+        public float3 Get(int idx)
+        {
+            return mVertices[idx];
+        }
 
-		public int GetSize ()
-		{
-			return mVertices.Count;
-		}
+        public int GetSize()
+        {
+            return mVertices.Count;
+        }
 
-		public List<float3> GetVertices ()
-		{
-			return mVertices;
-		}
+        public List<float3> GetVertices()
+        {
+            return mVertices;
+        }
 
-		public void Clear ()
-		{
-			mVertices.Clear ();
-		}
-	}
+        public void Clear()
+        {
+            mVertices.Clear();
+        }
+    }
 }

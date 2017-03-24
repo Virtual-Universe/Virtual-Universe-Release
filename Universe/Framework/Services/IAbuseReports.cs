@@ -34,140 +34,138 @@ using Universe.Framework.Modules;
 
 namespace Universe.Framework.Services
 {
-	public class AbuseReport : IDataTransferable
-	{
-		public string AbuseDetails;
-		public string AbuseLocation;
-		public string AbuseSummary;
-		public string AbuserName;
-		public bool Active;
-		public string AssignedTo;
-		public object Category;
-		public bool Checked;
-		public string Notes;
-		public int Number;
-		public string ObjectName;
-		public string ObjectPosition;
-		public UUID ObjectUUID;
-		public string RegionName;
-		public string ReporterName;
-		public UUID ScreenshotID;
-		public string SystemType;
-		public string Priority;
+    public class AbuseReport : IDataTransferable
+    {
+        public string AbuseDetails;
+        public string AbuseLocation;
+        public string AbuseSummary;
+        public string AbuserName;
+        public bool Active;
+        public string AssignedTo;
+        public object Category;
+        public bool Checked;
+        public string Notes;
+        public int Number;
+        public string ObjectName;
+        public string ObjectPosition;
+        public UUID ObjectUUID;
+        public string RegionName;
+        public string ReporterName;
+        public UUID ScreenshotID;
+        public string SystemType;
+        public string Priority;
+        public AbuseReport()
+        {
+            AbuseDetails = "";
+            AbuseLocation = "";
+            AbuseSummary = "";
+            AbuserName = "";
+            Active = false;;
+            AssignedTo = "";
+            Category = null;
+            Checked = false;
+            Notes = "";
+            Number = 0;
+            ObjectName = "";
+            ObjectPosition = "";
+            ObjectUUID = UUID.Zero;
+            RegionName = "";
+            ReporterName = "";
+            ScreenshotID = UUID.Zero;
+            SystemType = "Abuse";
+            Priority = "Medium";
+        }
 
-		public AbuseReport ()
-		{
-			AbuseDetails = "";
-			AbuseLocation = "";
-			AbuseSummary = "";
-			AbuserName = "";
-			Active = false;
-			;
-			AssignedTo = "";
-			Category = null;
-			Checked = false;
-			Notes = "";
-			Number = 0;
-			ObjectName = "";
-			ObjectPosition = "";
-			ObjectUUID = UUID.Zero;
-			RegionName = "";
-			ReporterName = "";
-			ScreenshotID = UUID.Zero;
-			SystemType = "Abuse";
-			Priority = "Medium";
-		}
+        public override void FromOSD(OSDMap DicCol)
+        {
+            AbuseDetails = DicCol["AbuseDetails"].AsString();
+            AbuseLocation = DicCol["AbuseLocation"].AsString();
+            AbuserName = DicCol["AbuserName"].AsString();
+            AbuseSummary = DicCol["AbuseSummary"].AsString();
+            Active = DicCol["Active"].AsBoolean();
+            AssignedTo = DicCol["AssignedTo"].AsString();
+            Category = DicCol["Category"].AsString();
+            Checked = DicCol["Checked"].AsBoolean();
+            Notes = DicCol["Notes"].AsString();
+            Number = DicCol["Number"].AsInteger();
+            ObjectName = DicCol["ObjectName"].AsString();
+            ObjectPosition = DicCol["ObjectPosition"].AsString();
+            ObjectUUID = DicCol["ObjectUUID"].AsUUID();
+            RegionName = DicCol["RegionName"].AsString();
+            ReporterName = DicCol["ReporterName"].AsString();
+            ScreenshotID = DicCol["ScreenshotID"].AsUUID();
+            SystemType = "Abuse";
+            Priority = "Medium";
+        }
 
-		public override void FromOSD (OSDMap DicCol)
-		{
-			AbuseDetails = DicCol ["AbuseDetails"].AsString ();
-			AbuseLocation = DicCol ["AbuseLocation"].AsString ();
-			AbuserName = DicCol ["AbuserName"].AsString ();
-			AbuseSummary = DicCol ["AbuseSummary"].AsString ();
-			Active = DicCol ["Active"].AsBoolean ();
-			AssignedTo = DicCol ["AssignedTo"].AsString ();
-			Category = DicCol ["Category"].AsString ();
-			Checked = DicCol ["Checked"].AsBoolean ();
-			Notes = DicCol ["Notes"].AsString ();
-			Number = DicCol ["Number"].AsInteger ();
-			ObjectName = DicCol ["ObjectName"].AsString ();
-			ObjectPosition = DicCol ["ObjectPosition"].AsString ();
-			ObjectUUID = DicCol ["ObjectUUID"].AsUUID ();
-			RegionName = DicCol ["RegionName"].AsString ();
-			ReporterName = DicCol ["ReporterName"].AsString ();
-			ScreenshotID = DicCol ["ScreenshotID"].AsUUID ();
-			SystemType = "Abuse";
-			Priority = "Medium";
-		}
+        public override OSDMap ToOSD()
+        {
+            OSDMap NewDicCol = new OSDMap();
+            NewDicCol["AbuseDetails"] = AbuseDetails;
+            NewDicCol["AbuseLocation"] = AbuseLocation;
+            NewDicCol["AbuserName"] = AbuserName;
+            NewDicCol["AbuseSummary"] = AbuseSummary;
+            NewDicCol["Active"] = Active;
+            NewDicCol["AssignedTo"] = AssignedTo;
+            NewDicCol["Category"] = Category.ToString();
+            NewDicCol["Checked"] = Checked;
+            NewDicCol["Notes"] = Notes;
+            NewDicCol["Number"] = Number;
+            NewDicCol["ObjectName"] = ObjectName;
+            NewDicCol["ObjectPosition"] = ObjectPosition;
+            NewDicCol["ObjectUUID"] = ObjectUUID;
+            NewDicCol["RegionName"] = RegionName;
+            NewDicCol["ReporterName"] = ReporterName;
+            NewDicCol["ScreenshotID"] = ScreenshotID;
+            NewDicCol["SystemType"] = "Abuse";
+            NewDicCol["Priority"] = "Medium";
+            return NewDicCol;
+        }
+    }
 
-		public override OSDMap ToOSD ()
-		{
-			OSDMap NewDicCol = new OSDMap ();
-			NewDicCol ["AbuseDetails"] = AbuseDetails;
-			NewDicCol ["AbuseLocation"] = AbuseLocation;
-			NewDicCol ["AbuserName"] = AbuserName;
-			NewDicCol ["AbuseSummary"] = AbuseSummary;
-			NewDicCol ["Active"] = Active;
-			NewDicCol ["AssignedTo"] = AssignedTo;
-			NewDicCol ["Category"] = Category.ToString ();
-			NewDicCol ["Checked"] = Checked;
-			NewDicCol ["Notes"] = Notes;
-			NewDicCol ["Number"] = Number;
-			NewDicCol ["ObjectName"] = ObjectName;
-			NewDicCol ["ObjectPosition"] = ObjectPosition;
-			NewDicCol ["ObjectUUID"] = ObjectUUID;
-			NewDicCol ["RegionName"] = RegionName;
-			NewDicCol ["ReporterName"] = ReporterName;
-			NewDicCol ["ScreenshotID"] = ScreenshotID;
-			NewDicCol ["SystemType"] = "Abuse";
-			NewDicCol ["Priority"] = "Medium";
-			return NewDicCol;
-		}
-	}
+    public interface IAbuseReports
+    {
+        /// <summary>
+        ///     Gets the abuse report associated with the number and uses the pass to authenticate.
+        /// </summary>
+        /// <param name="Number"></param>
+        /// <param name="Password"></param>
+        /// <returns></returns>
+        AbuseReport GetAbuseReport(int Number, string Password);
 
-	public interface IAbuseReports
-	{
-		/// <summary>
-		///     Gets the abuse report associated with the number and uses the pass to authenticate.
-		/// </summary>
-		/// <param name="Number"></param>
-		/// <param name="Password"></param>
-		/// <returns></returns>
-		AbuseReport GetAbuseReport (int Number, string Password);
+        /// <summary>
+        ///     Gets the abuse report associated with the number without authentication
+        /// </summary>
+        /// <param name="Number"></param>
+        /// <returns></returns>
+        AbuseReport GetAbuseReport(int Number);
 
-		/// <summary>
-		///     Gets the abuse report associated with the number without authentication
-		/// </summary>
-		/// <param name="Number"></param>
-		/// <returns></returns>
-		AbuseReport GetAbuseReport (int Number);
+        /// <summary>
+        ///     Adds a new abuse report to the database
+        /// </summary>
+        /// <param name="report"></param>
+        void AddAbuseReport(AbuseReport report);
 
-		/// <summary>
-		///     Adds a new abuse report to the database
-		/// </summary>
-		/// <param name="report"></param>
-		void AddAbuseReport (AbuseReport report);
+        /// <summary>
+        ///     Updates an abuse report and authenticates with the password.
+        /// </summary>
+        /// <param name="report"></param>
+        /// <param name="Password"></param>
+        void UpdateAbuseReport(AbuseReport report, string Password);
 
-		/// <summary>
-		///     Updates an abuse report and authenticates with the password.
-		/// </summary>
-		/// <param name="report"></param>
-		/// <param name="Password"></param>
-		void UpdateAbuseReport (AbuseReport report, string Password);
+        /// <summary>
+        ///     Updates an abuse report without authentication
+        /// </summary>
+        /// <param name="report"></param>
+        void UpdateAbuseReport(AbuseReport report);
 
-		/// <summary>
-		///     Updates an abuse report without authentication
-		/// </summary>
-		/// <param name="report"></param>
-		void UpdateAbuseReport (AbuseReport report);
-
-		/// <summary>
-		///     Gets a collection of abuse reports
-		/// </summary>
-		/// <param name="start"></param>
-		/// <param name="count"></param>
-		/// <param name="active"></param>
-		/// <returns></returns>
-		List<AbuseReport> GetAbuseReports (int start, int count, bool active);
-	}
+        /// <summary>
+        ///     Gets a collection of abuse reports
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="count"></param>
+        /// <param name="active"></param>
+        /// <returns></returns>
+        List<AbuseReport> GetAbuseReports(int start, int count, bool active);
+    }
 }

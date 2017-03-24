@@ -30,478 +30,468 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using OpenMetaverse;
-using OpenMetaverse.Packets;
-using OpenMetaverse.StructuredData;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.Physics;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo.Entities;
+using OpenMetaverse;
+using OpenMetaverse.Packets;
+using OpenMetaverse.StructuredData;
 
 namespace Universe.Framework.SceneInfo
 {
 
-	#region Enumerations
-
-	public enum PIDHoverType
-	{
-		Ground,
-		GroundAndWater,
-		Water,
-		Absolute
-	}
-
-	/// <summary>
-	///     Only used internally to schedule client updates.
-	/// </summary>
-	public enum InternalUpdateFlags : byte
-	{
-		/// <summary>
-		///     no update is scheduled
-		/// </summary>
-		NoUpdate = 0,
-
-		/// <summary>
-		///     terse update scheduled
-		/// </summary>
-		TerseUpdate = 1,
-
-		/// <summary>
-		///     full update scheduled
-		/// </summary>
-		FullUpdate = 2
-	}
-
-	[Flags]
-	public enum Changed : uint
-	{
-		INVENTORY = 1,
-		COLOR = 2,
-		SHAPE = 4,
-		SCALE = 8,
-		TEXTURE = 16,
-		LINK = 32,
-		ALLOWED_DROP = 64,
-		OWNER = 128,
-		REGION = 256,
-		TELEPORT = 512,
-		REGION_RESTART = 1024,
-		MEDIA = 2048,
-		ANIMATION = 16384,
-		STATE = 32768
-	}
-
-	// I don't really know where to put this except here.
-	// Can't access the ScriptEngine.Common.LSL_BaseClass.Changed constants
-	[Flags]
-	public enum ExtraParamType
-	{
-		Something1 = 1,
-		Something2 = 2,
-		Something3 = 4,
-		Something4 = 8,
-		Flexible = 16,
-		Light = 32,
-		Sculpt = 48,
-		Something5 = 64,
-		Something6 = 128
-	}
+    #region Enumerations
+
+    public enum PIDHoverType
+    {
+        Ground,
+        GroundAndWater,
+        Water,
+        Absolute
+    }
+
+    /// <summary>
+    ///     Only used internally to schedule client updates.
+    /// </summary>
+    public enum InternalUpdateFlags : byte
+    {
+        /// <summary>
+        ///     no update is scheduled
+        /// </summary>
+        NoUpdate = 0,
+
+        /// <summary>
+        ///     terse update scheduled
+        /// </summary>
+        TerseUpdate = 1,
+
+        /// <summary>
+        ///     full update scheduled
+        /// </summary>
+        FullUpdate = 2
+    }
+
+    [Flags]
+    public enum Changed : uint
+    {
+        INVENTORY = 1,
+        COLOR = 2,
+        SHAPE = 4,
+        SCALE = 8,
+        TEXTURE = 16,
+        LINK = 32,
+        ALLOWED_DROP = 64,
+        OWNER = 128,
+        REGION = 256,
+        TELEPORT = 512,
+        REGION_RESTART = 1024,
+        MEDIA = 2048,
+        ANIMATION = 16384,
+        STATE = 32768
+    }
+
+    // I don't really know where to put this except here.
+    // Can't access the ScriptEngine.Common.LSL_BaseClass.Changed constants
+    [Flags]
+    public enum ExtraParamType
+    {
+        Something1 = 1,
+        Something2 = 2,
+        Something3 = 4,
+        Something4 = 8,
+        Flexible = 16,
+        Light = 32,
+        Sculpt = 48,
+        Something5 = 64,
+        Something6 = 128
+    }
 
-	[Flags]
-	public enum TextureAnimFlags : byte
-	{
-		NONE = 0x00,
-		ANIM_ON = 0x01,
-		LOOP = 0x02,
-		REVERSE = 0x04,
-		PING_PONG = 0x08,
-		SMOOTH = 0x10,
-		ROTATE = 0x20,
-		SCALE = 0x40
-	}
+    [Flags]
+    public enum TextureAnimFlags : byte
+    {
+        NONE = 0x00,
+        ANIM_ON = 0x01,
+        LOOP = 0x02,
+        REVERSE = 0x04,
+        PING_PONG = 0x08,
+        SMOOTH = 0x10,
+        ROTATE = 0x20,
+        SCALE = 0x40
+    }
 
-	public enum PrimType
-	{
-		BOX = 0,
-		CYLINDER = 1,
-		PRISM = 2,
-		SPHERE = 3,
-		TORUS = 4,
-		TUBE = 5,
-		RING = 6,
-		SCULPT = 7
-	}
+    public enum PrimType
+    {
+        BOX = 0,
+        CYLINDER = 1,
+        PRISM = 2,
+        SPHERE = 3,
+        TORUS = 4,
+        TUBE = 5,
+        RING = 6,
+        SCULPT = 7
+    }
 
-	#endregion Enumerations
+    #endregion Enumerations
 
-	public interface ISceneChildEntity : IEntity
-	{
-		event AddPhysics OnAddPhysics;
-		event RemovePhysics OnRemovePhysics;
+    public interface ISceneChildEntity : IEntity
+    {
+        event AddPhysics OnAddPhysics;
+        event RemovePhysics OnRemovePhysics;
+        ISceneEntity ParentEntity { get; }
+        IEntityInventory Inventory { get; }
+        void ResetEntityIDs();
 
-		ISceneEntity ParentEntity { get; }
+        PrimFlags Flags { get; set; }
 
-		IEntityInventory Inventory { get; }
+        int UseSoundQueue { get; set; }
 
-		void ResetEntityIDs ();
+        UUID OwnerID { get; set; }
+        UUID LastOwnerID { get; set; }
 
-		PrimFlags Flags { get; set; }
+        bool VolumeDetectActive { get; set; }
 
-		int UseSoundQueue { get; set; }
+        UUID GroupID { get; set; }
 
-		UUID OwnerID { get; set; }
+        UUID CreatorID { get; set; }
 
-		UUID LastOwnerID { get; set; }
+        string CreatorData { get; set; }
 
-		bool VolumeDetectActive { get; set; }
+        Quaternion GetWorldRotation();
 
-		UUID GroupID { get; set; }
+        PhysicsActor PhysActor { get; set; }
 
-		UUID CreatorID { get; set; }
+        TaskInventoryDictionary TaskInventory { get; set; }
 
-		string CreatorData { get; set; }
+        Vector3 GetWorldPosition();
 
-		Quaternion GetWorldRotation ();
+        void RemoveAvatarOnSitTarget(UUID UUID);
 
-		PhysicsActor PhysActor { get; set; }
+        UUID ParentUUID { get; set; }
 
-		TaskInventoryDictionary TaskInventory { get; set; }
+        float GetMass();
 
-		Vector3 GetWorldPosition ();
+        int AttachmentPoint { get; set; }
 
-		void RemoveAvatarOnSitTarget (UUID UUID);
+        bool CreateSelected { get; set; }
 
-		UUID ParentUUID { get; set; }
+        bool IsAttachment { get; set; }
 
-		float GetMass ();
+        void ApplyImpulse(Vector3 applied_linear_impulse, bool p);
 
-		int AttachmentPoint { get; set; }
+        string Description { get; set; }
 
-		bool CreateSelected { get; set; }
+        Quaternion RotationOffset { get; set; }
 
-		bool IsAttachment { get; set; }
+        void ScheduleUpdate(PrimUpdateFlags primUpdateFlags);
 
-		void ApplyImpulse (Vector3 applied_linear_impulse, bool p);
+        string SitAnimation { get; set; }
 
-		string Description { get; set; }
+        Vector3 SitTargetPosition { get; set; }
 
-		Quaternion RotationOffset { get; set; }
+        Quaternion SitTargetOrientation { get; set; }
 
-		void ScheduleUpdate (PrimUpdateFlags primUpdateFlags);
+        void SetAvatarOnSitTarget(UUID UUID);
 
-		string SitAnimation { get; set; }
+        PrimType GetPrimType();
 
-		Vector3 SitTargetPosition { get; set; }
+        Vector3 CameraAtOffset { get; set; }
 
-		Quaternion SitTargetOrientation { get; set; }
+        Vector3 CameraEyeOffset { get; set; }
 
-		void SetAvatarOnSitTarget (UUID UUID);
+        bool ForceMouselook { get; set; }
 
-		PrimType GetPrimType ();
+        Vector3 Scale { get; set; }
 
-		Vector3 CameraAtOffset { get; set; }
+        uint GetEffectiveObjectFlags();
 
-		Vector3 CameraEyeOffset { get; set; }
+        int GetNumberOfSides();
 
-		bool ForceMouselook { get; set; }
+        string Text { get; set; }
 
-		Vector3 Scale { get; set; }
+        Color4 GetTextColor();
 
-		uint GetEffectiveObjectFlags ();
+        PrimitiveBaseShape Shape { get; set; }
 
-		int GetNumberOfSides ();
+        uint ParentID { get; set; }
 
-		string Text { get; set; }
+        int Material { get; set; }
 
-		Color4 GetTextColor ();
+        UUID AttachedAvatar { get; set; }
 
-		PrimitiveBaseShape Shape { get; set; }
+        uint OwnerMask { get; set; }
 
-		uint ParentID { get; set; }
+        uint GroupMask { get; set; }
 
-		int Material { get; set; }
+        uint EveryoneMask { get; set; }
 
-		UUID AttachedAvatar { get; set; }
+        void SetScriptEvents(UUID ItemID, long events);
 
-		uint OwnerMask { get; set; }
+        UUID FromUserInventoryItemID { get; set; }
 
-		uint GroupMask { get; set; }
+        UUID FromUserInventoryAssetID { get; set; }
 
-		uint EveryoneMask { get; set; }
+        Vector3 AngularVelocity { get; set; }
 
-		void SetScriptEvents (UUID ItemID, long events);
+        Vector3 OmegaAxis { get; set; }
 
-		UUID FromUserInventoryItemID { get; set; }
+        double OmegaSpinRate { get; set; }
 
-		UUID FromUserInventoryAssetID { get; set; }
+        double OmegaGain { get; set; }
 
-		Vector3 AngularVelocity { get; set; }
+        void SetParentLocalId(uint p);
 
-		Vector3 OmegaAxis { get; set; }
+        void SetParent(ISceneEntity grp);
 
-		double OmegaSpinRate { get; set; }
+        Vector3 OffsetPosition { get; set; }
 
-		double OmegaGain { get; set; }
+        Vector3 AttachedPos { get; set; }
 
-		void SetParentLocalId (uint p);
+        bool IsRoot { get; }
 
-		void SetParent (ISceneEntity grp);
+        void SetConeOfSilence(double p);
 
-		Vector3 OffsetPosition { get; set; }
+        byte SoundFlags { get; set; }
 
-		Vector3 AttachedPos { get; set; }
+        double SoundGain { get; set; }
 
-		bool IsRoot { get; }
+        UUID Sound { get; set; }
 
-		void SetConeOfSilence (double p);
+        double SoundRadius { get; set; }
 
-		byte SoundFlags { get; set; }
+        void SendSound(string sound, double volume, bool triggered, byte flags, float radius);
 
-		double SoundGain { get; set; }
+        void PreloadSound(string sound);
 
-		UUID Sound { get; set; }
+        void SetBuoyancy(float p);
 
-		double SoundRadius { get; set; }
+        void SetHoverHeight(float p, PIDHoverType hoverType, float p_2);
 
-		void SendSound (string sound, double volume, bool triggered, byte flags, float radius);
+        void ScheduleTerseUpdate();
 
-		void PreloadSound (string sound);
+        void StopLookAt();
 
-		void SetBuoyancy (float p);
+        void RotLookAt(Quaternion rot, float p, float p_2);
 
-		void SetHoverHeight (float p, PIDHoverType hoverType, float p_2);
+        void startLookAt(Quaternion rotation, float p, float p_2);
 
-		void ScheduleTerseUpdate ();
+        Vector3 Acceleration { get; set; }
+        Vector3 RelativePosition { get; }
 
-		void StopLookAt ();
+        void SetAngularImpulse(Vector3 vector3, bool p);
 
-		void RotLookAt (Quaternion rot, float p, float p_2);
+        void ApplyAngularImpulse(Vector3 vector3, bool p);
 
-		void startLookAt (Quaternion rotation, float p, float p_2);
+        void MoveToTarget(Vector3 vector3, float p);
 
-		Vector3 Acceleration { get; set; }
+        void StopMoveToTarget();
 
-		Vector3 RelativePosition { get; }
+        void unregisterRotTargetWaypoint(int number);
 
-		void SetAngularImpulse (Vector3 vector3, bool p);
+        int registerRotTargetWaypoint(Quaternion quaternion, float p);
 
-		void ApplyAngularImpulse (Vector3 vector3, bool p);
+        Vector3 GetForce();
 
-		void MoveToTarget (Vector3 vector3, float p);
+        bool AddFlag(PrimFlags primFlags);
 
-		void StopMoveToTarget ();
+        void AdjustSoundGain(double volume);
 
-		void unregisterRotTargetWaypoint (int number);
+        uint BaseMask { get; set; }
 
-		int registerRotTargetWaypoint (Quaternion quaternion, float p);
+        byte ClickAction { get; set; }
 
-		Vector3 GetForce ();
+        UUID CollisionSound { get; set; }
 
-		bool AddFlag (PrimFlags primFlags);
+        float CollisionSoundVolume { get; set; }
 
-		void AdjustSoundGain (double volume);
+        UUID CollisionSprite { get; set; }
 
-		uint BaseMask { get; set; }
+        int GetAxisRotation(int p);
 
-		byte ClickAction { get; set; }
+        bool GetDieAtEdge();
 
-		UUID CollisionSound { get; set; }
+        Vector3 GetGeometricCenter();
 
-		float CollisionSoundVolume { get; set; }
+        bool GetReturnAtEdge();
 
-		UUID CollisionSprite { get; set; }
+        bool GetStatusSandbox();
 
-		int GetAxisRotation (int p);
+        uint NextOwnerMask { get; set; }
 
-		bool GetDieAtEdge ();
+        void SetVehicleType(int type);
 
-		Vector3 GetGeometricCenter ();
+        void SetVehicleVectorParam(int param, Vector3 vector3);
 
-		bool GetReturnAtEdge ();
+        void SetVehicleRotationParam(int param, Quaternion quaternion);
 
-		bool GetStatusSandbox ();
+        void SetVehicleFlags(int flags, bool p);
 
-		uint NextOwnerMask { get; set; }
+        void ScriptSetVolumeDetect(bool p);
 
-		void SetVehicleType (int type);
+        void SetForce(Vector3 vector3);
 
-		void SetVehicleVectorParam (int param, Vector3 vector3);
+        int PassCollisions { get; set; }
 
-		void SetVehicleRotationParam (int param, Quaternion quaternion);
+        int PassTouch { get; set; }
 
-		void SetVehicleFlags (int flags, bool p);
+        int registerTargetWaypoint(Vector3 vector3, float p);
 
-		void ScriptSetVolumeDetect (bool p);
+        void unregisterTargetWaypoint(int number);
 
-		void SetForce (Vector3 vector3);
+        void ScriptSetPhantomStatus(bool p);
 
-		int PassCollisions { get; set; }
+        bool AllowedDrop { get; set; }
 
-		int PassTouch { get; set; }
+        void aggregateScriptEvents();
 
-		int registerTargetWaypoint (Vector3 vector3, float p);
+        int[] PayPrice { get; }
 
-		void unregisterTargetWaypoint (int number);
+        void SetAxisRotation(int statusrotationaxis, int value);
 
-		void ScriptSetPhantomStatus (bool p);
+        void SetStatusSandbox(bool p);
 
-		bool AllowedDrop { get; set; }
+        void SetDieAtEdge(bool p);
 
-		void aggregateScriptEvents ();
+        void SetReturnAtEdge(bool p);
 
-		int[] PayPrice { get; }
+        void SetBlockGrab(bool block, bool wholeObject);
 
-		void SetAxisRotation (int statusrotationaxis, int value);
+        void SetVehicleFloatParam(int param, float p);
 
-		void SetStatusSandbox (bool p);
+        void SetFaceColor(Vector3 vector3, int face);
 
-		void SetDieAtEdge (bool p);
+        void SetSoundQueueing(int queue);
 
-		void SetReturnAtEdge (bool p);
+        void Resize(Vector3 size);
 
-		void SetBlockGrab (bool block, bool wholeObject);
+        void FixOffsetPosition(Vector3 vector3, bool p);
 
-		void SetVehicleFloatParam (int param, float p);
+        void UpdateOffSet(Vector3 vector3);
 
-		void SetFaceColor (Vector3 vector3, int face);
+        void UpdateRotation(Quaternion rot);
 
-		void SetSoundQueueing (int queue);
+        void AddTextureAnimation(Primitive.TextureAnimation pTexAnim);
 
-		void Resize (Vector3 size);
+        void RemoveParticleSystem();
 
-		void FixOffsetPosition (Vector3 vector3, bool p);
+        void AddNewParticleSystem(Primitive.ParticleSystem prules);
 
-		void UpdateOffSet (Vector3 vector3);
+        string SitName { get; set; }
 
-		void UpdateRotation (Quaternion rot);
+        string TouchName { get; set; }
 
-		void AddTextureAnimation (Primitive.TextureAnimation pTexAnim);
+        int ScriptAccessPin { get; set; }
 
-		void RemoveParticleSystem ();
+        void SetFloatOnWater(int floatYN);
 
-		void AddNewParticleSystem (Primitive.ParticleSystem prules);
+        void UpdateTexture(Primitive.TextureEntry tex, bool sendChangedEvent);
 
-		string SitName { get; set; }
+        void SetText(string text, Vector3 av3, double p);
 
-		string TouchName { get; set; }
+        bool UpdatePrimFlags(bool UsePhysics, bool IsTemporary, bool IsPhantom, bool IsVolumeDetect,
+                             ObjectFlagUpdatePacket.ExtraPhysicsBlock[] blocks);
 
-		int ScriptAccessPin { get; set; }
+        List<UUID> SitTargetAvatar { get; set; }
+        Dictionary<int, string> CollisionFilter { get; }
+        OSDArray RenderMaterials { get; set; }
 
-		void SetFloatOnWater (int floatYN);
+        bool GetBlockGrab(bool wholeObjectBlock);
 
-		void UpdateTexture (Primitive.TextureEntry tex, bool sendChangedEvent);
+        bool RemFlag(PrimFlags primFlags);
 
-		void SetText (string text, Vector3 av3, double p);
+        void GetProperties(IClientAPI iClientAPI);
 
-		bool UpdatePrimFlags (bool UsePhysics, bool IsTemporary, bool IsPhantom, bool IsVolumeDetect,
-		                           ObjectFlagUpdatePacket.ExtraPhysicsBlock[] blocks);
+        string MediaUrl { get; set; }
 
-		List<UUID> SitTargetAvatar { get; set; }
+        void TriggerScriptChangedEvent(Changed changed);
 
-		Dictionary<int, string> CollisionFilter { get; }
+        int SavedAttachmentPoint { get; set; }
 
-		OSDArray RenderMaterials { get; set; }
+        Vector3 SavedAttachedPos { get; set; }
 
-		bool GetBlockGrab (bool wholeObjectBlock);
+        DateTime Rezzed { get; set; }
 
-		bool RemFlag (PrimFlags primFlags);
+        byte ObjectSaleType { get; set; }
 
-		void GetProperties (IClientAPI iClientAPI);
+        int SalePrice { get; set; }
 
-		string MediaUrl { get; set; }
+        void ApplyNextOwnerPermissions();
 
-		void TriggerScriptChangedEvent (Changed changed);
+        void StoreUndoState();
 
-		int SavedAttachmentPoint { get; set; }
+        EntityIntersection TestIntersectionOBB(Ray NewRay, Quaternion quaternion, bool frontFacesOnly, bool CopyCenters);
 
-		Vector3 SavedAttachedPos { get; set; }
+        void UpdateShape(ObjectShapePacket.ObjectDataBlock shapeBlock);
 
-		DateTime Rezzed { get; set; }
+        void Undo();
 
-		byte ObjectSaleType { get; set; }
+        void Redo();
 
-		int SalePrice { get; set; }
+        void FinishedSerializingGenericProperties();
 
-		void ApplyNextOwnerPermissions ();
+        DateTime Expires { get; set; }
 
-		void StoreUndoState ();
+        uint CRC { get; set; }
 
-		EntityIntersection TestIntersectionOBB (Ray NewRay, Quaternion quaternion, bool frontFacesOnly, bool CopyCenters);
+        byte[] ParticleSystem { get; set; }
 
-		void UpdateShape (ObjectShapePacket.ObjectDataBlock shapeBlock);
+        int CreationDate { get; set; }
 
-		void Undo ();
+        bool DIE_AT_EDGE { get; set; }
+        bool RETURN_AT_EDGE { get; set; }
 
-		void Redo ();
+        byte[] TextureAnimation { get; set; }
 
-		void FinishedSerializingGenericProperties ();
+        Dictionary<UUID, StateSave> StateSaves { get; set; }
 
-		DateTime Expires { get; set; }
+        Vector3 GroupPosition { get; }
+        Vector3 GetGroupPosition();
 
-		uint CRC { get; set; }
+        Color Color { get; set; }
 
-		byte[] ParticleSystem { get; set; }
+        void TrimPermissions();
 
-		int CreationDate { get; set; }
+        byte PhysicsType { get; set; }
 
-		bool DIE_AT_EDGE { get; set; }
+        float Density { get; set; }
 
-		bool RETURN_AT_EDGE { get; set; }
+        float Friction { get; set; }
 
-		byte[] TextureAnimation { get; set; }
+        float Restitution { get; set; }
 
-		Dictionary<UUID, StateSave> StateSaves { get; set; }
+        float GravityMultiplier { get; set; }
 
-		Vector3 GroupPosition { get; }
+        float PIDTau { get; set; }
 
-		Vector3 GetGroupPosition ();
+        Vector3 PIDTarget { get; set; }
 
-		Color Color { get; set; }
+        bool PIDActive { get; set; }
 
-		void TrimPermissions ();
+        float PIDHoverTau { get; set; }
 
-		byte PhysicsType { get; set; }
+        float PIDHoverHeight { get; set; }
 
-		float Density { get; set; }
+        bool PIDHoverActive { get; set; }
 
-		float Friction { get; set; }
+        PIDHoverType PIDHoverType { get; set; }
 
-		float Restitution { get; set; }
+        void GenerateRotationalVelocityFromOmega();
 
-		float GravityMultiplier { get; set; }
+        void ScriptSetTemporaryStatus(bool tempOnRez);
 
-		float PIDTau { get; set; }
+        uint InventorySerial { get; set; }
+        void UpdateShape(ObjectShapePacket.ObjectDataBlock shapeBlock, bool b);
 
-		Vector3 PIDTarget { get; set; }
+        Quaternion GetRotationOffset();
 
-		bool PIDActive { get; set; }
+        string CurrentMediaVersion { get; set; }
 
-		float PIDHoverTau { get; set; }
+        void SetRotationOffset(bool p1, Quaternion Rotation, bool p2);
 
-		float PIDHoverHeight { get; set; }
+        bool Undoing { get; set; }
 
-		bool PIDHoverActive { get; set; }
+        bool IsLoading { get; set; }
 
-		PIDHoverType PIDHoverType { get; set; }
-
-		void GenerateRotationalVelocityFromOmega ();
-
-		void ScriptSetTemporaryStatus (bool tempOnRez);
-
-		uint InventorySerial { get; set; }
-
-		void UpdateShape (ObjectShapePacket.ObjectDataBlock shapeBlock, bool b);
-
-		Quaternion GetRotationOffset ();
-
-		string CurrentMediaVersion { get; set; }
-
-		void SetRotationOffset (bool p1, Quaternion Rotation, bool p2);
-
-		bool Undoing { get; set; }
-
-		bool IsLoading { get; set; }
-
-		void UpdateMaterial (int mat);
-	}
+        void UpdateMaterial(int mat);
+    }
 }

@@ -1,8 +1,3 @@
-C:\Users\virtu\Desktop\Universe-Dev\VirtualUniverse\bin\Universe.DataManager.dll
-C:\Users\virtu\Desktop\Universe-Dev\VirtualUniverse\bin\Universe.DataManager.pdb
-C:\Users\virtu\Desktop\Universe-Dev\Universe\DataManager\obj\x64\Debug\Universe.DataManager.csprojResolveAssemblyReference.cache
-C:\Users\virtu\Desktop\Universe-Dev\Universe\DataManager\obj\x64\Debug\Universe.DataManager.dll
-C:\Users\virtu\Desktop\Universe-Dev\Universe\DataManager\obj\x64\Debug\Universe.DataManager.pdb
 C:\Users\virtu\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.DataManager.dll
 C:\Users\virtu\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.DataManager.pdb
 C:\Users\virtu\Desktop\Virtual-Dev\Universe\DataManager\obj\x64\Debug\Universe.DataManager.csprojResolveAssemblyReference.cache

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  * For an explanation of the license of each contributor and the content it 
@@ -41,7 +41,16 @@ namespace Universe.DataManager.Migration.Migrators.AbuseReports
 			MigrationName = "AbuseReports";
 
 			Schema = new List<SchemaDefinition> ();
-
+			AddSchema ("abusereplies", ColDefs (
+				ColDef ("ticket_number", ColumnTypes.Integer30),
+				ColDef ("message", ColumnTypes.String1024),
+				ColDef ("user", ColumnTypes.String100),
+				ColDef ("written_at", ColumnTypes.DateTime)
+			),
+				IndexDefs (
+					IndexDef (new string[1] { "ticket_number" }, IndexType.Primary)
+				)
+			);
 			AddSchema ("abusereports", ColDefs (
 				ColDef ("Category", ColumnTypes.String100),
 				ColDef ("ReporterName", ColumnTypes.String100),
@@ -58,7 +67,9 @@ namespace Universe.DataManager.Migration.Migrators.AbuseReports
 				ColDef ("AssignedTo", ColumnTypes.String100),
 				ColDef ("Active", ColumnTypes.String100),
 				ColDef ("Checked", ColumnTypes.String100),
-				ColDef ("Notes", ColumnTypes.String1024)
+				ColDef ("Notes", ColumnTypes.String1024),
+				ColDef ("SystemType", ColumnTypes.String100),
+				ColDef ("Priority", ColumnTypes.String100)
 			),
 				IndexDefs (
 					IndexDef (new string[1] { "Number" }, IndexType.Primary)

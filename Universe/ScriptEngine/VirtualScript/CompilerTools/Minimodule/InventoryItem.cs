@@ -35,80 +35,82 @@ using Universe.Framework.Services.ClassHelpers.Assets;
 
 namespace Universe.ScriptEngine.VirtualScript.MiniModule
 {
-	public class InventoryItem : IInventoryItem
-	{
-		readonly TaskInventoryItem m_privateItem;
-		readonly IScene m_rootScene;
+    public class InventoryItem : IInventoryItem
+    {
+        readonly TaskInventoryItem m_privateItem;
+        readonly IScene m_rootScene;
 
-		public InventoryItem (IScene rootScene, TaskInventoryItem internalItem)
-		{
-			m_rootScene = rootScene;
-			m_privateItem = internalItem;
-		}
+        public InventoryItem(IScene rootScene, TaskInventoryItem internalItem)
+        {
+            m_rootScene = rootScene;
+            m_privateItem = internalItem;
+        }
 
-		// Marked internal, to prevent scripts from accessing the internal type
+        // Marked internal, to prevent scripts from accessing the internal type
 
-		#region IInventoryItem Members
+        #region IInventoryItem Members
 
-		public int Type {
-			get { return m_privateItem.Type; }
-		}
+        public int Type
+        {
+            get { return m_privateItem.Type; }
+        }
 
-		public UUID AssetID {
-			get { return m_privateItem.AssetID; }
-		}
+        public UUID AssetID
+        {
+            get { return m_privateItem.AssetID; }
+        }
 
-		// This method exposes OpenSim/OpenMetaverse internals and needs to be replaced with a IAsset specific to MRM.
-		public T RetrieveAsset<T> () where T : Asset, new()
-		{
-			AssetBase asset = m_rootScene.AssetService.Get (AssetID.ToString ());
-			if (asset == null)
-				return null;
+        // This method exposes OpenSim/OpenMetaverse internals and needs to be replaced with a IAsset specific to MRM.
+        public T RetrieveAsset<T> () where T : Asset, new()
+        {
+            AssetBase asset = m_rootScene.AssetService.Get (AssetID.ToString ());
+            if (asset == null)
+                return null;
         
-			T result = new T ();
+            T result = new T();
 
-			if ((sbyte)result.AssetType != asset.Type) {
-				MainConsole.Instance.Error ("[MRM] The supplied asset class does not match the found asset");
-				asset.Dispose ();
-				return null;
-			}
+            if ((sbyte)result.AssetType != asset.Type) {
+                MainConsole.Instance.Error ("[MRM] The supplied asset class does not match the found asset");
+                asset.Dispose ();
+                return null;
+            }
 
-			var assetData = new byte [asset.Data.Length];
-			asset.Data.CopyTo (assetData, 0);
-			asset.Dispose ();
+            var assetData = new byte [asset.Data.Length];
+            asset.Data.CopyTo (assetData, 0);
+            asset.Dispose ();
 
-			result.AssetData = assetData;
-			result.Decode ();
-			return result;
-		}
+            result.AssetData = assetData;
+            result.Decode();
+            return result;
+        }
 
-		#endregion
+        #endregion
 
-		internal TaskInventoryItem ToTaskInventoryItem ()
-		{
-			return m_privateItem;
-		}
+        internal TaskInventoryItem ToTaskInventoryItem()
+        {
+            return m_privateItem;
+        }
 
-		/// <summary>
-		///     This will attempt to convert from an IInventoryItem to an InventoryItem object
-		/// </summary>
-		/// <description>
-		///     In order for this to work the object which implements IInventoryItem must inherit from InventoryItem, otherwise
-		///     an exception is thrown.
-		/// </description>
-		/// <param name="i">
-		///     The interface to upcast <see cref="IInventoryItem" />
-		/// </param>
-		/// <returns>
-		///     The object backing the interface implementation <see cref="InventoryItem" />
-		/// </returns>
-		internal static InventoryItem FromInterface (IInventoryItem i)
-		{
-			if (typeof(InventoryItem).IsAssignableFrom (i.GetType ())) {
-				return (InventoryItem)i;
-			}
-			MainConsole.Instance.Error ("[MRM] There is no legal conversion from IInventoryItem to InventoryItem");
-			return null;
-		}
-	}
+        /// <summary>
+        ///     This will attempt to convert from an IInventoryItem to an InventoryItem object
+        /// </summary>
+        /// <description>
+        ///     In order for this to work the object which implements IInventoryItem must inherit from InventoryItem, otherwise
+        ///     an exception is thrown.
+        /// </description>
+        /// <param name="i">
+        ///     The interface to upcast <see cref="IInventoryItem" />
+        /// </param>
+        /// <returns>
+        ///     The object backing the interface implementation <see cref="InventoryItem" />
+        /// </returns>
+        internal static InventoryItem FromInterface (IInventoryItem i)
+        {
+            if (typeof (InventoryItem).IsAssignableFrom (i.GetType ())) {
+                return (InventoryItem)i;
+            }
+            MainConsole.Instance.Error ("[MRM] There is no legal conversion from IInventoryItem to InventoryItem");
+            return null;
+        }
+    }
 }

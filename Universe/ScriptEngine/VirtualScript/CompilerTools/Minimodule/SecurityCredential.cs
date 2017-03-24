@@ -32,33 +32,34 @@ using Universe.Framework.SceneInfo;
 
 namespace Universe.ScriptEngine.VirtualScript.MiniModule
 {
-	class SecurityCredential : ISecurityCredential
-	{
-		readonly ISocialEntity m_owner;
-		readonly IScene m_scene;
+    class SecurityCredential : ISecurityCredential
+    {
+        readonly ISocialEntity m_owner;
+        readonly IScene m_scene;
 
-		public SecurityCredential (ISocialEntity m_owner, IScene m_scene)
-		{
-			this.m_owner = m_owner;
-			this.m_scene = m_scene;
-		}
+        public SecurityCredential(ISocialEntity m_owner, IScene m_scene)
+        {
+            this.m_owner = m_owner;
+            this.m_scene = m_scene;
+        }
 
-		#region ISecurityCredential Members
+        #region ISecurityCredential Members
 
-		public ISocialEntity owner {
-			get { return m_owner; }
-		}
+        public ISocialEntity owner
+        {
+            get { return m_owner; }
+        }
 
-		public bool CanEditObject (IObject target)
-		{
-			return m_scene.Permissions.CanEditObject (target.GlobalID, m_owner.GlobalID);
-		}
+        public bool CanEditObject(IObject target)
+        {
+            return m_scene.Permissions.CanEditObject(target.GlobalID, m_owner.GlobalID);
+        }
 
-		public bool CanEditTerrain (int x, int y)
-		{
-			return m_scene.Permissions.CanTerraformLand (m_owner.GlobalID, new Vector3 (x, y, 0));
-		}
+        public bool CanEditTerrain(int x, int y)
+        {
+            return m_scene.Permissions.CanTerraformLand(m_owner.GlobalID, new Vector3(x, y, 0));
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

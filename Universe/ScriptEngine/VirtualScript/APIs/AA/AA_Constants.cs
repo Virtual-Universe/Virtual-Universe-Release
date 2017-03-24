@@ -29,32 +29,32 @@
 
 namespace Universe.ScriptEngine.VirtualScript.Runtime
 {
-	public partial class ScriptBaseClass
-	{
-		// AA CONSTANTS
-		public static readonly LSL_Types.LSLString ENABLE_GRAVITY = "enable_gravity";
-		public static readonly LSL_Types.LSLString GRAVITY_FORCE_X = "gravity_force_x";
-		public static readonly LSL_Types.LSLString GRAVITY_FORCE_Y = "gravity_force_y";
-		public static readonly LSL_Types.LSLString GRAVITY_FORCE_Z = "gravity_force_z";
-		public static readonly LSL_Types.LSLString ADD_GRAVITY_POINT = "add_gravity_point";
-		public static readonly LSL_Types.LSLString ADD_GRAVITY_FORCE = "add_gravity_force";
+    public partial class ScriptBaseClass
+    {
+        // AA CONSTANTS
+        public static readonly LSL_Types.LSLString ENABLE_GRAVITY = "enable_gravity";
+        public static readonly LSL_Types.LSLString GRAVITY_FORCE_X = "gravity_force_x";
+        public static readonly LSL_Types.LSLString GRAVITY_FORCE_Y = "gravity_force_y";
+        public static readonly LSL_Types.LSLString GRAVITY_FORCE_Z = "gravity_force_z";
+        public static readonly LSL_Types.LSLString ADD_GRAVITY_POINT = "add_gravity_point";
+        public static readonly LSL_Types.LSLString ADD_GRAVITY_FORCE = "add_gravity_force";
 
-		public static readonly LSL_Types.LSLString START_TIME_REVERSAL_SAVING = "start_time_reversal_saving";
-		public static readonly LSL_Types.LSLString STOP_TIME_REVERSAL_SAVING = "stop_time_reversal_saving";
-		public static readonly LSL_Types.LSLString START_TIME_REVERSAL = "start_time_reversal";
-		public static readonly LSL_Types.LSLString STOP_TIME_REVERSAL = "stop_time_reversal";
+        public static readonly LSL_Types.LSLString START_TIME_REVERSAL_SAVING = "start_time_reversal_saving";
+        public static readonly LSL_Types.LSLString STOP_TIME_REVERSAL_SAVING = "stop_time_reversal_saving";
+        public static readonly LSL_Types.LSLString START_TIME_REVERSAL = "start_time_reversal";
+        public static readonly LSL_Types.LSLString STOP_TIME_REVERSAL = "stop_time_reversal";
 
-		public static readonly LSL_Types.LSLInteger BOT_FOLLOW_FLAG_NONE = 0;
-		public static readonly LSL_Types.LSLInteger BOT_FOLLOW_FLAG_INDEFINITELY = 1;
-		public static readonly LSL_Types.LSLInteger BOT_FOLLOW_FLAG_FORCEDIRECTPATH = 4;
+        public static readonly LSL_Types.LSLInteger BOT_FOLLOW_FLAG_NONE = 0;
+        public static readonly LSL_Types.LSLInteger BOT_FOLLOW_FLAG_INDEFINITELY = 1;
+        public static readonly LSL_Types.LSLInteger BOT_FOLLOW_FLAG_FORCEDIRECTPATH = 4;
 
-		public static readonly LSL_Types.LSLString BOT_TAG_FIND_ALL = "AllBots";
+        public static readonly LSL_Types.LSLString BOT_TAG_FIND_ALL = "AllBots";
 
-		public static readonly LSL_Types.LSLInteger BOT_FOLLOW_WALK = 0;
-		public static readonly LSL_Types.LSLInteger BOT_FOLLOW_RUN = 1;
-		public static readonly LSL_Types.LSLInteger BOT_FOLLOW_FLY = 2;
-		public static readonly LSL_Types.LSLInteger BOT_FOLLOW_TELEPORT = 3;
-		public static readonly LSL_Types.LSLInteger BOT_FOLLOW_WAIT = 4;
-		public static readonly LSL_Types.LSLInteger BOT_FOLLOW_TRIGGER_HERE_EVENT = 1;
-	}
+        public static readonly LSL_Types.LSLInteger BOT_FOLLOW_WALK = 0;
+        public static readonly LSL_Types.LSLInteger BOT_FOLLOW_RUN = 1;
+        public static readonly LSL_Types.LSLInteger BOT_FOLLOW_FLY = 2;
+        public static readonly LSL_Types.LSLInteger BOT_FOLLOW_TELEPORT = 3;
+        public static readonly LSL_Types.LSLInteger BOT_FOLLOW_WAIT = 4;
+        public static readonly LSL_Types.LSLInteger BOT_FOLLOW_TRIGGER_HERE_EVENT = 1;
+    }
 }

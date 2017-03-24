@@ -34,16 +34,13 @@ using Universe.Framework.Services;
 
 namespace Universe.Framework.Modules
 {
-	public delegate void NextEmail (Email email);
+    public delegate void NextEmail(Email email);
 
-	public interface IEmailModule : IService
-	{
-		bool LocalOnly ();
-
-		void SendEmail (UUID objectID, string address, string subject, string body, IScene scene);
-
-		Email GetNextEmail (UUID objectID, string sender, string subject, IScene scene);
-
-		void GetNextEmailAsync (UUID objectID, string sender, string subject, NextEmail eventHandler, IScene scene);
-	}
+    public interface IEmailModule : IService
+    {
+        bool LocalOnly();
+        void SendEmail(UUID objectID, string address, string subject, string body, IScene scene);
+        Email GetNextEmail(UUID objectID, string sender, string subject, IScene scene);
+        void GetNextEmailAsync(UUID objectID, string sender, string subject, NextEmail eventHandler, IScene scene);
+    }
 }

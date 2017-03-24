@@ -37,117 +37,126 @@ using Universe.Framework.Utilities;
 
 namespace Universe.Modules.Web
 {
-	public class AgentRegionsPage : IWebInterfacePage
-	{
-		public string[] FilePath {
-			get {
-				return new[] {
-					"html/webprofile/regions.html"
-				};
-			}
-		}
+    public class AgentRegionsPage : IWebInterfacePage
+    {
+        public string[] FilePath
+        {
+            get
+            {
+                return new[]
+                           {
+                               "html/webprofile/regions.html"
+                           };
+            }
+        }
 
-		public bool RequiresAuthentication {
-			get { return false; }
-		}
+        public bool RequiresAuthentication
+        {
+            get { return false; }
+        }
 
-		public bool RequiresAdminAuthentication {
-			get { return false; }
-		}
+        public bool RequiresAdminAuthentication
+        {
+            get { return false; }
+        }
 
-		public Dictionary<string, object> Fill (WebInterface webInterface, string filename, OSHttpRequest httpRequest,
-		                                             OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
-		                                             ITranslator translator, out string response)
-		{
-			response = null;
-			var vars = new Dictionary<string, object> ();
-			var regionslist = new List<Dictionary<string, object>> ();
-			UserAccount account = null;
+        public Dictionary<string, object> Fill(WebInterface webInterface, string filename, OSHttpRequest httpRequest,
+                                               OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
+                                               ITranslator translator, out string response)
+        {
+            response = null;
+            var vars = new Dictionary<string, object>();
+            var regionslist = new List<Dictionary<string, object>>();
+            UserAccount account = null;
 
-			// future use // uint amountPerQuery = 10;
-			string noDetails = translator.GetTranslatedString ("NoDetailsText");
+            // future use // uint amountPerQuery = 10;
+            string noDetails = translator.GetTranslatedString ("NoDetailsText");
 
-			if (httpRequest.Query.ContainsKey ("userid")) {
-				List <UUID> scopeUUID = new List<UUID> ();
-				string userid = httpRequest.Query ["userid"].ToString ();
-				UUID userUUID = UUID.Parse (userid);
-				scopeUUID.Add (userUUID);
+            if (httpRequest.Query.ContainsKey("userid"))
+            {
+                List <UUID> scopeUUID = new List<UUID>();
+                string userid = httpRequest.Query["userid"].ToString();
+                UUID userUUID = UUID.Parse (userid);
+                scopeUUID.Add (userUUID);
                   
-				account = webInterface.Registry.RequestModuleInterface<IUserAccountService> ().
-                    GetUserAccount (null, userUUID);
+                account = webInterface.Registry.RequestModuleInterface<IUserAccountService>().
+                    GetUserAccount(null, userUUID);
 
-				IGridService gridService = webInterface.Registry.RequestModuleInterface<IGridService> ();
-				IWebHttpTextureService webTextureService = webInterface.Registry.RequestModuleInterface<IWebHttpTextureService> ();
+                IGridService gridService = webInterface.Registry.RequestModuleInterface<IGridService>();
+                IWebHttpTextureService webTextureService = webInterface.Registry.RequestModuleInterface<IWebHttpTextureService>();
 
-				var regions = gridService.GetRegionsByName (scopeUUID, "", null, null);
-				// TODO: Searching using the user UUID scope does not appear to work  -greythane- 20141020
-				if (regions != null) {
-					noDetails = "";
+                var regions = gridService.GetRegionsByName(scopeUUID, "", null, null);
+                // TODO: Searching using the user UUID scope does not appear to work  -greythane- 20141020
+                if (regions != null)
+                {
+                    noDetails = "";
 
-					foreach (var region in regions) {
-						if (region.EstateOwner != userUUID)         // not this one...
+                    foreach (var region in regions)
+                    {
+                        if (region.EstateOwner != userUUID)         // not this one...
                             continue;
 
-						string info;
-						info = (region.RegionArea < 1000000) ? region.RegionArea + " m2" : (region.RegionArea / 1000000) + " km2";
-						info = info + ", " + region.RegionTerrain;
+                        string info;
+                        info = (region.RegionArea < 1000000) ? region.RegionArea + " m2" : (region.RegionArea / 1000000) + " km2";
+                        info = info + ", " + region.RegionTerrain;
 
-						var regionData = new Dictionary<string, object> ();
-						regionData.Add ("RegionName", region.RegionName);
-						regionData.Add ("RegionLocX", region.RegionLocX / Constants.RegionSize);
-						regionData.Add ("RegionLocY", region.RegionLocY / Constants.RegionSize);
-						regionData.Add ("RegionInfo", info);
-						regionData.Add ("RegionStatus", region.IsOnline ? "yes" : "no");
-						regionData.Add ("RegionID", region.RegionID);
+                        var regionData = new Dictionary<string, object> ();
+                        regionData.Add("RegionName", region.RegionName);
+                        regionData.Add("RegionLocX", region.RegionLocX / Constants.RegionSize);
+                        regionData.Add("RegionLocY", region.RegionLocY / Constants.RegionSize);
+                        regionData.Add("RegionInfo", info);
+                        regionData.Add("RegionStatus", region.IsOnline ? "yes" : "no");
+                        regionData.Add("RegionID", region.RegionID);
 
-						if (webTextureService != null && region.TerrainMapImage != UUID.Zero)
-							regionData.Add ("RegionImageURL", webTextureService.GetTextureURL (region.TerrainMapImage));
-						else
-							regionData.Add ("RegionImageURL", "../images/icons/no_terrain.jpg");
+                        if (webTextureService != null && region.TerrainMapImage != UUID.Zero)
+                            regionData.Add("RegionImageURL", webTextureService.GetTextureURL(region.TerrainMapImage));
+                        else
+                            regionData.Add("RegionImageURL", "../images/icons/no_terrain.jpg");
 
-						regionslist.Add (regionData);
-					}
-				} 
-			}
+                        regionslist.Add (regionData);
+                    }
+                } 
+            }
 
-			// provide something..
-			if (regionslist.Count == 0) {
-				regionslist.Add (new Dictionary<string, object> {
-					{ "RegionName", translator.GetTranslatedString ("NoDetailsText") },
-					{ "RegionLocX", "" },
-					{ "RegionLocY", "" },
-					{ "RegionInfo", "" },
-					{ "RegionStatus", "" },
-					{ "RegionID", "" },
-					{ "RegionImageURL", "../images/icons/no_terrain.jpg" }
-				});
-			}
+            // provide something..
+            if (regionslist.Count == 0)
+            {
+                regionslist.Add (new Dictionary<string, object> {
+                    {"RegionName", translator.GetTranslatedString ("NoDetailsText")},
+                    {"RegionLocX", ""},
+                    {"RegionLocY", ""},
+                    {"RegionInfo", ""},
+                    {"RegionStatus", ""},
+                    {"RegionID", ""},
+                    {"RegionImageURL", "../images/icons/no_terrain.jpg"}
+                    });
+             }
 
-			vars.Add ("NoDetailsText", noDetails);
-			if (account != null)
-				vars.Add ("UserName", account.Name);
-			else
-				vars.Add ("UserName", "");
+            vars.Add("NoDetailsText", noDetails);
+            if (account != null)
+                vars.Add ("UserName", account.Name);
+            else
+                vars.Add ("UserName", "");
             
-			vars.Add ("RegionListText", translator.GetTranslatedString ("RegionListText"));
-			vars.Add ("RegionList", regionslist);
-			vars.Add ("RegionNameText", translator.GetTranslatedString ("RegionNameText"));
-			vars.Add ("RegionText", translator.GetTranslatedString ("Region"));
-			vars.Add ("RegionLocXText", translator.GetTranslatedString ("RegionLocXText"));
-			vars.Add ("RegionLocYText", translator.GetTranslatedString ("RegionLocYText"));
-			vars.Add ("RegionOnlineText", translator.GetTranslatedString ("Online"));
-			vars.Add ("RegionMoreInfo", translator.GetTranslatedString ("RegionMoreInfo"));
-			vars.Add ("MoreInfoText", translator.GetTranslatedString ("MoreInfoText"));
+            vars.Add ("RegionListText", translator.GetTranslatedString ("RegionListText"));
+            vars.Add ("RegionList", regionslist);
+            vars.Add ("RegionNameText", translator.GetTranslatedString ("RegionNameText"));
+            vars.Add ("RegionText", translator.GetTranslatedString ("Region"));
+            vars.Add ("RegionLocXText", translator.GetTranslatedString ("RegionLocXText"));
+            vars.Add ("RegionLocYText", translator.GetTranslatedString ("RegionLocYText"));
+            vars.Add ("RegionOnlineText", translator.GetTranslatedString ("Online"));
+            vars.Add ("RegionMoreInfo", translator.GetTranslatedString ("RegionMoreInfo"));
+            vars.Add ("MoreInfoText", translator.GetTranslatedString ("MoreInfoText"));
 
-			return vars;
-		}
+            return vars;
+        }
 
-		public bool AttemptFindPage (string filename, ref OSHttpResponse httpResponse, out string text)
-		{
-			httpResponse.ContentType = "text/html";
-			//text = "";
-			text = File.ReadAllText ("html/webprofile/index.html");
-			return false;
-		}
-	}
+        public bool AttemptFindPage(string filename, ref OSHttpResponse httpResponse, out string text)
+        {
+            httpResponse.ContentType = "text/html";
+            //text = "";
+            text = File.ReadAllText("html/webprofile/index.html");
+                      return false;
+        }
+    }
 }

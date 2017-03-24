@@ -27,19 +27,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Nini.Config;
 using Universe.Framework.Modules;
+using Nini.Config;
 
 namespace Universe.Framework.Services
 {
-	public interface IDefaultLibraryLoader
-	{
-		/// <summary>
-		///     Load any default inventory folders and items from this module into the main ILibraryService
-		/// </summary>
-		/// <param name="service"></param>
-		/// <param name="source"></param>
-		/// <param name="registry"></param>
-		void LoadLibrary (ILibraryService service, IConfigSource source, IRegistryCore registry);
-	}
+    public interface IDefaultLibraryLoader
+    {
+        /// <summary>
+        ///     Load any default inventory folders and items from this module into the main ILibraryService
+        /// </summary>
+        /// <param name="service"></param>
+        /// <param name="source"></param>
+        /// <param name="registry"></param>
+        void LoadLibrary(ILibraryService service, IConfigSource source, IRegistryCore registry);
+    }
 }

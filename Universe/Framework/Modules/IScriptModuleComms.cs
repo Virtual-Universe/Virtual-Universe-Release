@@ -32,43 +32,39 @@ using OpenMetaverse;
 
 namespace Universe.Framework.Modules
 {
-	public delegate void ScriptCommand (UUID script, string id, string module, string command, string k);
+    public delegate void ScriptCommand(UUID script, string id, string module, string command, string k);
 
-	/// <summary>
-	///     Interface for communication between modules and in-world scripts
-	/// </summary>
-	/// See Region.ScriptEngine.Shared.Api.MOD_Api.modSendCommand() for information on receiving messages
-	/// from scripts in modules.
-	public interface IScriptModuleComms
-	{
-		/// <summary>
-		///     Modules can subscribe to this event to receive command invocations from in-world scripts
-		/// </summary>
-		event ScriptCommand OnScriptCommand;
+    /// <summary>
+    ///     Interface for communication between modules and in-world scripts
+    /// </summary>
+    /// See Region.ScriptEngine.Shared.Api.MOD_Api.modSendCommand() for information on receiving messages
+    /// from scripts in modules.
+    public interface IScriptModuleComms
+    {
+        /// <summary>
+        ///     Modules can subscribe to this event to receive command invocations from in-world scripts
+        /// </summary>
+        event ScriptCommand OnScriptCommand;
 
-		/// <summary>
-		///     Send a link_message event to an in-world script
-		/// </summary>
-		/// <param name="scriptId"></param>
-		/// <param name="primID"></param>
-		/// <param name="code"></param>
-		/// <param name="text"></param>
-		/// <param name="key"></param>
-		void DispatchReply (UUID scriptId, UUID primID, int code, string text, string key);
+        /// <summary>
+        ///     Send a link_message event to an in-world script
+        /// </summary>
+        /// <param name="scriptId"></param>
+        /// <param name="primID"></param>
+        /// <param name="code"></param>
+        /// <param name="text"></param>
+        /// <param name="key"></param>
+        void DispatchReply(UUID scriptId, UUID primID, int code, string text, string key);
 
-		// For use ONLY by the script API
-		void RaiseEvent (UUID script, string id, string module, string command, string key);
-	}
+        // For use ONLY by the script API
+        void RaiseEvent(UUID script, string id, string module, string command, string key);
+    }
+	
+	[AttributeUsage(AttributeTargets.Method)]
+    public class ScriptInvocationAttribute : Attribute
+    { }
 
-	[AttributeUsage (AttributeTargets.Method)]
-	public class ScriptInvocationAttribute : Attribute
-	{
-
-	}
-
-	[AttributeUsage (AttributeTargets.Field)]
-	public class ScriptConstantAttribute : Attribute
-	{
-
-	}
+    [AttributeUsage(AttributeTargets.Field)]
+    public class ScriptConstantAttribute : Attribute
+    { }
 }

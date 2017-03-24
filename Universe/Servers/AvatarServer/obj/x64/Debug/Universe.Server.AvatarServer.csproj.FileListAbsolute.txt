@@ -1,7 +1,3 @@
-C:\Users\virtu\Desktop\Universe-Dev\VirtualUniverse\bin\Universe.Server.AvatarServer.exe
-C:\Users\virtu\Desktop\Universe-Dev\VirtualUniverse\bin\Universe.Server.AvatarServer.pdb
-C:\Users\virtu\Desktop\Universe-Dev\Universe\Servers\AvatarServer\obj\x64\Debug\Universe.Server.AvatarServer.exe
-C:\Users\virtu\Desktop\Universe-Dev\Universe\Servers\AvatarServer\obj\x64\Debug\Universe.Server.AvatarServer.pdb
 C:\Users\virtu\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.Server.AvatarServer.exe
 C:\Users\virtu\Desktop\Virtual-Dev\VirtualUniverse\bin\Universe.Server.AvatarServer.pdb
 C:\Users\virtu\Desktop\Virtual-Dev\Universe\Servers\AvatarServer\obj\x64\Debug\Universe.Server.AvatarServer.csprojResolveAssemblyReference.cache

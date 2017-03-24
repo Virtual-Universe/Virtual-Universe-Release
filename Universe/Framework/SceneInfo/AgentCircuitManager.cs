@@ -30,68 +30,74 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using OpenMetaverse;
 using Universe.Framework.PresenceInfo;
+using OpenMetaverse;
 
 namespace Universe.Framework.SceneInfo
 {
-	/// <summary>
-	///     Manage client circuits
-	/// </summary>
-	public class AgentCircuitManager
-	{
-		public Dictionary<uint, AgentCircuitData> AgentCircuits = new Dictionary<uint, AgentCircuitData> ();
+    /// <summary>
+    ///     Manage client circuits
+    /// </summary>
+    public class AgentCircuitManager
+    {
+        public Dictionary<uint, AgentCircuitData> AgentCircuits = new Dictionary<uint, AgentCircuitData>();
 
-		public virtual AgentCircuitData AuthenticateSession (UUID sessionID, UUID agentID, uint circuitcode,
-		                                                          IPEndPoint IP)
-		{
-			AgentCircuitData validcircuit = null;
-			if (AgentCircuits.ContainsKey (circuitcode)) {
-				validcircuit = AgentCircuits [circuitcode];
-			}
-			//User never logged in... they shouldn't be attempting to connect
-			if (validcircuit == null) {
-				//don't have this circuit code in our list
-				return null;
-			}
+        public virtual AgentCircuitData AuthenticateSession(UUID sessionID, UUID agentID, uint circuitcode,
+                                                            IPEndPoint IP)
+        {
+            AgentCircuitData validcircuit = null;
+            if (AgentCircuits.ContainsKey(circuitcode))
+            {
+                validcircuit = AgentCircuits[circuitcode];
+            }
+            //User never logged in... they shouldn't be attempting to connect
+            if (validcircuit == null)
+            {
+                //don't have this circuit code in our list
+                return null;
+            }
 
-			//There is a session found... just is the sessionID right
-			if ((sessionID == validcircuit.SessionID) && (agentID == validcircuit.AgentID)) {
-				return validcircuit;
-			}
+            //There is a session found... just is the sessionID right
+            if ((sessionID == validcircuit.SessionID) && (agentID == validcircuit.AgentID))
+            {
+                return validcircuit;
+            }
 
-			return null;
-		}
+            return null;
+        }
 
-		/// <summary>
-		///     Add information about a new circuit so that later on we can authenticate a new client session.
-		/// </summary>
-		/// <param name="circuitCode"></param>
-		/// <param name="agentData"></param>
-		public virtual void AddNewCircuit (uint circuitCode, AgentCircuitData agentData)
-		{
-			lock (AgentCircuits) {
-				AgentCircuits [circuitCode] = agentData;
-			}
-		}
+        /// <summary>
+        ///     Add information about a new circuit so that later on we can authenticate a new client session.
+        /// </summary>
+        /// <param name="circuitCode"></param>
+        /// <param name="agentData"></param>
+        public virtual void AddNewCircuit(uint circuitCode, AgentCircuitData agentData)
+        {
+            lock (AgentCircuits)
+            {
+                AgentCircuits[circuitCode] = agentData;
+            }
+        }
 
-		public virtual void RemoveCircuit (UUID agentID)
-		{
-			lock (AgentCircuits) {
-				foreach (
+        public virtual void RemoveCircuit(UUID agentID)
+        {
+            lock (AgentCircuits)
+            {
+                foreach (
                     AgentCircuitData circuitData in
                         new List<AgentCircuitData>(AgentCircuits.Values).Where(
-                            circuitData => circuitData.AgentID == agentID)) {
-					AgentCircuits.Remove (circuitData.CircuitCode);
-				}
-			}
-		}
+                            circuitData => circuitData.AgentID == agentID))
+                {
+                    AgentCircuits.Remove(circuitData.CircuitCode);
+                }
+            }
+        }
 
-		public AgentCircuitData GetAgentCircuitData (UUID agentID)
-		{
-			return
-                new List<AgentCircuitData> (AgentCircuits.Values).FirstOrDefault (
-				circuitData => circuitData.AgentID == agentID);
-		}
-	}
+        public AgentCircuitData GetAgentCircuitData(UUID agentID)
+        {
+            return
+                new List<AgentCircuitData>(AgentCircuits.Values).FirstOrDefault(
+                    circuitData => circuitData.AgentID == agentID);
+        }
+    }
 }

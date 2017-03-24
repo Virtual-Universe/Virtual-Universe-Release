@@ -34,86 +34,91 @@ using Universe.Framework.Utilities;
 
 namespace Universe.Modules.Web
 {
-	public class UserRegionManagerPage : IWebInterfacePage
-	{
-		public string [] FilePath {
-			get {
-				return new [] {
-					"html/user/region_manager.html"
-				};
-			}
-		}
+    public class UserRegionManagerPage : IWebInterfacePage
+    {
+        public string [] FilePath {
+            get {
+                return new []
+                           {
+                               "html/user/region_manager.html"
+                           };
+            }
+        }
 
-		public bool RequiresAuthentication {
-			get { return true; }
-		}
+        public bool RequiresAuthentication {
+            get { return true; }
+        }
 
-		public bool RequiresAdminAuthentication {
-			get { return false; }
-		}
+        public bool RequiresAdminAuthentication {
+            get { return false; }
+        }
 
-		public Dictionary<string, object> Fill (WebInterface webInterface, string filename, OSHttpRequest httpRequest,
-		                                              OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
-		                                              ITranslator translator, out string response)
-		{
-			response = null;
-			var vars = new Dictionary<string, object> ();
+        public Dictionary<string, object> Fill (WebInterface webInterface, string filename, OSHttpRequest httpRequest,
+                                               OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
+                                               ITranslator translator, out string response)
+        {
+            response = null;
+            var vars = new Dictionary<string, object> ();
 
-			var regionListVars = new List<Dictionary<string, object>> ();
-			var user = Authenticator.GetAuthentication (httpRequest);
+            var regionListVars = new List<Dictionary<string, object>> ();
+            var user = Authenticator.GetAuthentication (httpRequest);
 
 
-			var regionData = Framework.Utilities.DataManager.RequestPlugin<IRegionData> ();
-			var regions = regionData.GetOwnerRegions (user.PrincipalID);
-			if (regions.Count > 0) {
-				foreach (var region in regions) {
-					string info;
-					info = (region.RegionArea < 1000000) ? region.RegionArea + " m2" : (region.RegionArea / 1000000) + " km2";
-					info = info + ", " + region.RegionTerrain;
+            var regionData = Framework.Utilities.DataManager.RequestPlugin<IRegionData> ();
+            var regions = regionData.GetOwnerRegions (user.PrincipalID);
+            if (regions.Count > 0) {
+                foreach (var region in regions) {
+                    string info;
+                    info = (region.RegionArea < 1000000) ? region.RegionArea + " m2" : (region.RegionArea / 1000000) + " km2";
+                    info = info + ", " + region.RegionTerrain;
 
-					regionListVars.Add (new Dictionary<string, object> {
-						{ "RegionLocX", region.RegionLocX / Constants.RegionSize },
-						{ "RegionLocY", region.RegionLocY / Constants.RegionSize },
-						{ "RegionName", region.RegionName },
-						{ "RegionInfo", info },
-						{ "RegionStatus", WebHelpers.YesNo (translator, region.IsOnline) },
-						{ "RegionID", region.RegionID },
-						{ "RegionURI", region.RegionURI }
-					});
-				}
-			} else {
-				regionListVars.Add (new Dictionary<string, object> {
-					{ "RegionLocX", "" },
-					{ "RegionLocY", "" },
-					{ "RegionName", "" },
-					{ "RegionInfo", translator.GetTranslatedString ("NoDetailsText") },
-					{ "RegionStatus", "" },
-					{ "RegionID", "" },
-					{ "RegionURI", "" }
-				});
-			}
+                    regionListVars.Add (new Dictionary<string, object> {
+                        { "RegionLocX", region.RegionLocX / Constants.RegionSize },
+                        { "RegionLocY", region.RegionLocY / Constants.RegionSize },
+                        { "RegionName", region.RegionName },
+                        { "RegionInfo", info},
+                        { "RegionStatus", WebHelpers.YesNo(translator, region.IsOnline)},
+                        { "RegionID", region.RegionID },
+                        { "RegionURI", region.RegionURI }
+                    });
+                }
+            } else {
+                regionListVars.Add (new Dictionary<string, object> {
+                    { "RegionLocX", "" },
+                    { "RegionLocY", "" },
+                    { "RegionName", "" },
+                    { "RegionInfo", translator.GetTranslatedString("NoDetailsText")},
+                    { "RegionStatus", ""},
+                    { "RegionID", "" },
+                    { "RegionURI", "" }
+                });
 
-			vars.Add ("RegionList", regionListVars);
+            }
 
-			// labels
-			vars.Add ("UserName", user.Name);
-			vars.Add ("RegionsText", translator.GetTranslatedString ("MenuRegionsTitle"));
-			vars.Add ("AddRegionText", translator.GetTranslatedString ("AddRegionText"));
-			vars.Add ("EditRegionText", translator.GetTranslatedString ("EditText"));
-			vars.Add ("RegionListText", translator.GetTranslatedString ("RegionListText"));
-			vars.Add ("RegionText", translator.GetTranslatedString ("Region"));
-			vars.Add ("RegionNameText", translator.GetTranslatedString ("RegionNameText"));
-			vars.Add ("RegionLocXText", translator.GetTranslatedString ("RegionLocXText"));
-			vars.Add ("RegionLocYText", translator.GetTranslatedString ("RegionLocYText"));
-			vars.Add ("RegionOnlineText", translator.GetTranslatedString ("Online"));
+            vars.Add ("RegionList", regionListVars);
 
-			return vars;
-		}
+            // labels
+            vars.Add ("UserName", user.Name);
+            vars.Add ("RegionsText", translator.GetTranslatedString ("MenuRegionsTitle"));
+            vars.Add ("AddRegionText", translator.GetTranslatedString ("AddRegionText"));
+            vars.Add ("EditRegionText", translator.GetTranslatedString ("EditText"));
+            vars.Add ("RegionListText", translator.GetTranslatedString ("RegionListText"));
+            vars.Add ("RegionText", translator.GetTranslatedString ("Region"));
 
-		public bool AttemptFindPage (string filename, ref OSHttpResponse httpResponse, out string text)
-		{
-			text = "";
-			return false;
-		}
-	}
+
+            vars.Add ("RegionNameText", translator.GetTranslatedString ("RegionNameText"));
+            vars.Add ("RegionLocXText", translator.GetTranslatedString ("RegionLocXText"));
+            vars.Add ("RegionLocYText", translator.GetTranslatedString ("RegionLocYText"));
+            vars.Add ("RegionOnlineText", translator.GetTranslatedString ("Online"));
+            //vars.Add ("MainServerURL", webInterface.GridURL);
+
+            return vars;
+        }
+
+        public bool AttemptFindPage (string filename, ref OSHttpResponse httpResponse, out string text)
+        {
+            text = "";
+            return false;
+        }
+    }
 }

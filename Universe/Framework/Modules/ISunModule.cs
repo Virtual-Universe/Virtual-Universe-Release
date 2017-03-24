@@ -31,14 +31,14 @@ using Universe.Framework.SceneInfo;
 
 namespace Universe.Framework.Modules
 {
-	public interface ISunModule : INonSharedRegionModule
-	{
-		double GetSunParameter (string param);
+    public interface ISunModule : INonSharedRegionModule
+    {
+        double GetSunParameter(string param);
 
-		void SetSunParameter (IScene scene, string param, double value);
+        void SetSunParameter(IScene scene, string param, double value);
 
-		float GetCurrentSunHour ();
+        float GetCurrentSunHour();
 
-		float GetCurrentTimeAsLindenSunHour ();
-	}
+        float GetCurrentTimeAsLindenSunHour();
+    }
 }

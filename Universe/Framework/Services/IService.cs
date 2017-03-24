@@ -27,37 +27,37 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Nini.Config;
 using Universe.Framework.Modules;
+using Nini.Config;
 
 namespace Universe.Framework.Services
 {
-	/// <summary>
-	///     IService is a module that loads up by default and is loaded on every startup by either Universe.exe or Universe.Server.exe
-	///     It loads modules including IAssetService and others
-	/// </summary>
-	public interface IService
-	{
-		/// <summary>
-		///     Set up and register the module
-		///     NOTE: Do NOT load module interfaces from this method, wait until PostInit runs
-		///     NOTE: This is normally used to set up the 'base' services, ones that should be used in standalone or Universe.Server
-		/// </summary>
-		/// <param name="config">Config file</param>
-		/// <param name="registry">Place to register the modules into</param>
-		void Initialize (IConfigSource config, IRegistryCore registry);
+    /// <summary>
+    ///     IService is a module that loads up by default and is loaded on every startup by either Universe.exe or Universe.Server.exe
+    ///     It loads modules including IAssetService and others
+    /// </summary>
+    public interface IService
+    {
+        /// <summary>
+        ///     Set up and register the module
+        ///     NOTE: Do NOT load module interfaces from this method, wait until PostInit runs
+        ///     NOTE: This is normally used to set up the 'base' services, ones that should be used in standalone or Universe.Server
+        /// </summary>
+        /// <param name="config">Config file</param>
+        /// <param name="registry">Place to register the modules into</param>
+        void Initialize(IConfigSource config, IRegistryCore registry);
 
-		/// <summary>
-		///     Load other IService modules now that this is set up
-		///     NOTE: This is normally used to load remote connectors for remote grid mode
-		/// </summary>
-		/// <param name="config">Config file</param>
-		/// <param name="registry">Place to register and retrieve module interfaces</param>
-		void Start (IConfigSource config, IRegistryCore registry);
+        /// <summary>
+        ///     Load other IService modules now that this is set up
+        ///     NOTE: This is normally used to load remote connectors for remote grid mode
+        /// </summary>
+        /// <param name="config">Config file</param>
+        /// <param name="registry">Place to register and retrieve module interfaces</param>
+        void Start(IConfigSource config, IRegistryCore registry);
 
-		/// <summary>
-		///     All modules have started up and it is ready to run
-		/// </summary>
-		void FinishedStartup ();
-	}
+        /// <summary>
+        ///     All modules have started up and it is ready to run
+        /// </summary>
+        void FinishedStartup();
+    }
 }

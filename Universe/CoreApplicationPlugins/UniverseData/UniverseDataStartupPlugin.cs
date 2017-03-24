@@ -34,48 +34,49 @@ using Universe.Services.DataService;
 
 namespace Universe.CoreApplicationPlugins.UniverseData
 {
-	public class UniverseDataStartupPlugin : IApplicationPlugin
-	{
-		#region IApplicationPlugin Members
+    public class UniverseDataStartupPlugin : IApplicationPlugin
+    {
+        #region IApplicationPlugin Members
 
-		public void PreStartup (ISimulationBase simBase)
-		{
-		}
+        public void PreStartup(ISimulationBase simBase)
+        {
+        }
 
-		public void Initialize (ISimulationBase simBase)
-		{
-			LocalDataService service = new LocalDataService ();
-			service.Initialize (simBase.ConfigSource, simBase.ApplicationRegistry);
-		}
+        public void Initialize(ISimulationBase simBase)
+        {
+            LocalDataService service = new LocalDataService();
+            service.Initialize(simBase.ConfigSource, simBase.ApplicationRegistry);
+        }
 
-		public void PostInitialize ()
-		{
-		}
+        public void PostInitialize()
+        {
+        }
 
-		public void Start ()
-		{
-		}
+        public void Start()
+        {
+        }
 
-		public void PostStart ()
-		{
-		}
+        public void PostStart()
+        {
+        }
 
-		public void Close ()
-		{
-		}
+        public void Close()
+        {
+        }
 
-		public void ReloadConfiguration (IConfigSource m_config)
-		{
-		}
+        public void ReloadConfiguration(IConfigSource m_config)
+        {
+        }
 
-		public string Name {
-			get { return GetType ().Name; }
-		}
+        public string Name
+        {
+            get { return GetType().Name; }
+        }
 
-		#endregion
+        #endregion
 
-		public void Dispose ()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

@@ -108,7 +108,7 @@ namespace Universe.Framework.Services.ClassHelpers.Profile
         ///     Other information can be stored in here.
         ///     For ex, temporary ban info for this user
         /// </summary>
-        public OSDMap OtherAgentInformation = new OSDMap();
+        public OSDMap OtherAgentInformation = new OSDMap ();
 
         /// <summary>
         ///     The ID value for this user
@@ -120,7 +120,7 @@ namespace Universe.Framework.Services.ClassHelpers.Profile
         /// </summary>
         public string Name { get; set; }
 
-        public override OSDMap ToOSD()
+        public override OSDMap ToOSD ()
         {
             OSDMap map = new OSDMap {
                 { "PrincipalID", OSD.FromUUID (PrincipalID) },
@@ -142,21 +142,21 @@ namespace Universe.Framework.Services.ClassHelpers.Profile
             return map;
         }
 
-        public override void FromOSD(OSDMap map)
+        public override void FromOSD (OSDMap map)
         {
-            PrincipalID = map["PrincipalID"].AsUUID();
-            Flags = (IAgentFlags)map["Flags"].AsInteger();
-            AcceptTOS = map["AcceptTOS"].AsBoolean();
-            MaturityRating = Convert.ToInt32(map["MaturityRating"].AsInteger());
-            MaxMaturity = Convert.ToInt32(map["MaxMaturity"].AsInteger());
-            HoverHeight = map["HoverHeight"].AsReal();
-            Language = map["Language"].AsString();
-            LanguageIsPublic = map["LanguageIsPublic"].AsBoolean();
-            PermEveryone = Convert.ToInt32(map["PermEveryone"].AsInteger());
-            PermGroup = Convert.ToInt32(map["PermGroup"].AsInteger());
-            PermNextOwner = Convert.ToInt32(map["PermNextOwner"].AsInteger());
-            if (map.ContainsKey("OtherAgentInformation"))
-                OtherAgentInformation = (OSDMap)OSDParser.DeserializeLLSDXml(map["OtherAgentInformation"].AsString());
+            PrincipalID = map ["PrincipalID"].AsUUID ();
+            Flags = (IAgentFlags)map ["Flags"].AsInteger ();
+            AcceptTOS = map ["AcceptTOS"].AsBoolean ();
+            MaturityRating = Convert.ToInt32 (map ["MaturityRating"].AsInteger ());
+            MaxMaturity = Convert.ToInt32 (map ["MaxMaturity"].AsInteger ());
+            HoverHeight = map ["HoverHeight"].AsReal ();
+            Language = map ["Language"].AsString ();
+            LanguageIsPublic = map ["LanguageIsPublic"].AsBoolean ();
+            PermEveryone = Convert.ToInt32 (map ["PermEveryone"].AsInteger ());
+            PermGroup = Convert.ToInt32 (map ["PermGroup"].AsInteger ());
+            PermNextOwner = Convert.ToInt32 (map ["PermNextOwner"].AsInteger ());
+            if (map.ContainsKey ("OtherAgentInformation"))
+                OtherAgentInformation = (OSDMap)OSDParser.DeserializeLLSDXml (map ["OtherAgentInformation"].AsString ());
         }
     }
 
@@ -192,7 +192,7 @@ namespace Universe.Framework.Services.ClassHelpers.Profile
         /// <summary>
         ///     A UNIX Timestamp (seconds since epoch) for the users creation
         /// </summary>
-        public int Created = Util.UnixTimeSinceEpoch();
+        public int Created = Util.UnixTimeSinceEpoch ();
 
         /// <summary>
         ///     The type of the user
@@ -207,8 +207,8 @@ namespace Universe.Framework.Services.ClassHelpers.Profile
         /// <summary>
         /// When the display name was last updated.
         /// </summary>
-        public DateTime DisplayNameUpdated = DateTime.ParseExact("1970-01-01 00:00:00 +0", "yyyy-MM-dd hh:mm:ss z",
-                                                                  DateTimeFormatInfo.InvariantInfo).ToUniversalTime();
+        public DateTime DisplayNameUpdated = DateTime.ParseExact ("1970-01-01 00:00:00 +0", "yyyy-MM-dd hh:mm:ss z",
+                                                                  DateTimeFormatInfo.InvariantInfo).ToUniversalTime ();
 
         /// <summary>
         ///     The first life about text listed in a users profile
@@ -233,7 +233,7 @@ namespace Universe.Framework.Services.ClassHelpers.Profile
         /// <summary>
         ///     The interests of the user
         /// </summary>
-        public ProfileInterests Interests = new ProfileInterests();
+        public ProfileInterests Interests = new ProfileInterests ();
 
         /// <summary>
         ///     Is the user a new user?
@@ -255,7 +255,7 @@ namespace Universe.Framework.Services.ClassHelpers.Profile
         /// </summary>
         /// UUID - target agent
         /// string - notes
-        public OSDMap Notes = new OSDMap();
+        public OSDMap Notes = new OSDMap ();
 
         /// <summary>
         ///     The partner of this user
@@ -277,9 +277,9 @@ namespace Universe.Framework.Services.ClassHelpers.Profile
         /// </summary>
         public string WebURL = string.Empty;
 
-        public override OSDMap ToOSD()
+        public override OSDMap ToOSD ()
         {
-            return ToOSD(true);
+            return ToOSD (true);
         }
 
         /// <summary>
@@ -289,7 +289,7 @@ namespace Universe.Framework.Services.ClassHelpers.Profile
         /// </summary>
         /// <param name="trusted"></param>
         /// <returns></returns>
-        public OSDMap ToOSD(bool trusted)
+        public OSDMap ToOSD (bool trusted)
         {
             OSDMap map = new OSDMap {
                 { "PrincipalID", OSD.FromUUID (PrincipalID) },
@@ -312,60 +312,54 @@ namespace Universe.Framework.Services.ClassHelpers.Profile
                 { "Visible", OSD.FromBoolean (Visible) },
                 { "CustomType", OSD.FromString (CustomType) }
             };
-
-            if (trusted)
-            {
-                map.Add("AArchiveName", OSD.FromString(AArchiveName));
-                map.Add("IMViaEmail", OSD.FromBoolean(IMViaEmail));
-                map.Add("IsNewUser", OSD.FromBoolean(IsNewUser));
-                map.Add("MembershipGroup", OSD.FromString(MembershipGroup));
+            if (trusted) {
+                map.Add ("AArchiveName", OSD.FromString (AArchiveName));
+                map.Add ("IMViaEmail", OSD.FromBoolean (IMViaEmail));
+                map.Add ("IsNewUser", OSD.FromBoolean (IsNewUser));
+                map.Add ("MembershipGroup", OSD.FromString (MembershipGroup));
             }
 
-            map.Add("Notes", OSD.FromString(OSDParser.SerializeJsonString(Notes)));
+            map.Add ("Notes", OSD.FromString (OSDParser.SerializeJsonString (Notes)));
             return map;
         }
 
-        public override void FromOSD(OSDMap map)
+        public override void FromOSD (OSDMap map)
         {
-            PrincipalID = map["PrincipalID"].AsUUID();
-            AllowPublish = map["AllowPublish"].AsBoolean();
-            MaturePublish = map["MaturePublish"].AsBoolean();
+            PrincipalID = map ["PrincipalID"].AsUUID ();
+            AllowPublish = map ["AllowPublish"].AsBoolean ();
+            MaturePublish = map ["MaturePublish"].AsBoolean ();
 
             //Interests
-            Interests = new ProfileInterests
-            {
-                WantToMask = map["WantToMask"].AsUInteger(),
-                WantToText = map["WantToText"].AsString(),
-                CanDoMask = map["CanDoMask"].AsUInteger(),
-                CanDoText = map["CanDoText"].AsString(),
-                Languages = map["Languages"].AsString()
+            Interests = new ProfileInterests {
+                WantToMask = map ["WantToMask"].AsUInteger (),
+                WantToText = map ["WantToText"].AsString (),
+                CanDoMask = map ["CanDoMask"].AsUInteger (),
+                CanDoText = map ["CanDoText"].AsString (),
+                Languages = map ["Languages"].AsString ()
             };
             //End interests
 
-            try
-            {
-                if (map.ContainsKey("Notes"))
-                    Notes = (OSDMap)OSDParser.DeserializeJson(map["Notes"].AsString());
-            }
-            catch
-            {
+            try {
+                if (map.ContainsKey ("Notes"))
+                    Notes = (OSDMap)OSDParser.DeserializeJson (map ["Notes"].AsString ());
+            } catch {
             }
 
-            AboutText = map["AboutText"].AsString();
-            FirstLifeImage = map["FirstLifeImage"].AsUUID();
-            FirstLifeAboutText = map["FirstLifeAboutText"].AsString();
-            Image = map["Image"].AsUUID();
-            WebURL = map["WebURL"].AsString();
-            Created = map["Created"].AsInteger();
-            DisplayName = map["DisplayName"].AsString();
-            DisplayNameUpdated = map["DisplayNameUpdated"].AsDate();
-            Partner = map["Partner"].AsUUID();
-            Visible = map["Visible"].AsBoolean();
-            AArchiveName = map["AArchiveName"].AsString();
-            CustomType = map["CustomType"].AsString();
-            IMViaEmail = map["IMViaEmail"].AsBoolean();
-            IsNewUser = map["IsNewUser"].AsBoolean();
-            MembershipGroup = map["MembershipGroup"].AsString();
+            AboutText = map ["AboutText"].AsString ();
+            FirstLifeImage = map ["FirstLifeImage"].AsUUID ();
+            FirstLifeAboutText = map ["FirstLifeAboutText"].AsString ();
+            Image = map ["Image"].AsUUID ();
+            WebURL = map ["WebURL"].AsString ();
+            Created = map ["Created"].AsInteger ();
+            DisplayName = map ["DisplayName"].AsString ();
+            DisplayNameUpdated = map ["DisplayNameUpdated"].AsDate ();
+            Partner = map ["Partner"].AsUUID ();
+            Visible = map ["Visible"].AsBoolean ();
+            AArchiveName = map ["AArchiveName"].AsString ();
+            CustomType = map ["CustomType"].AsString ();
+            IMViaEmail = map ["IMViaEmail"].AsBoolean ();
+            IsNewUser = map ["IsNewUser"].AsBoolean ();
+            MembershipGroup = map ["MembershipGroup"].AsString ();
         }
     }
 
@@ -397,7 +391,7 @@ namespace Universe.Framework.Services.ClassHelpers.Profile
         public string SimName;
         public UUID SnapshotUUID;
 
-        public override OSDMap ToOSD()
+        public override OSDMap ToOSD ()
         {
             OSDMap Classified = new OSDMap {
                 { "ClassifiedUUID", OSD.FromUUID (ClassifiedUUID) },
@@ -412,7 +406,7 @@ namespace Universe.Framework.Services.ClassHelpers.Profile
                 { "SnapshotUUID", OSD.FromUUID (SnapshotUUID) },
                 { "ScopeID", OSD.FromUUID (ScopeID) },
                 { "SimName", OSD.FromString (SimName) },
-                //  broken for non en_US locales      {"GlobalPos", OSD.FromVector3(GlobalPos)},
+                //  broken for non en_US locales                                        {"GlobalPos", OSD.FromVector3(GlobalPos)},
                 { "GPosX", OSD.FromReal (GlobalPos.X).ToString () },
                 { "GPosY", OSD.FromReal (GlobalPos.Y).ToString () },
                 { "GPosZ", OSD.FromReal (GlobalPos.Z).ToString () },
@@ -420,41 +414,36 @@ namespace Universe.Framework.Services.ClassHelpers.Profile
                 { "ClassifiedFlags", OSD.FromInteger (ClassifiedFlags) },
                 { "PriceForListing", OSD.FromInteger (PriceForListing) }
             };
-
             return Classified;
         }
 
-        public override void FromOSD(OSDMap map)
+        public override void FromOSD (OSDMap map)
         {
-            ClassifiedUUID = map["ClassifiedUUID"].AsUUID();
-            CreatorUUID = map["CreatorUUID"].AsUUID();
-            CreationDate = map["CreationDate"].AsUInteger();
-            ExpirationDate = map["ExpirationDate"].AsUInteger();
-            Category = map["Category"].AsUInteger();
-            Name = map["Name"].AsString();
-            Description = map["Description"].AsString();
-            ParcelUUID = map["ParcelUUID"].AsUUID();
-            ParentEstate = map["ParentEstate"].AsUInteger();
-            SnapshotUUID = map["SnapshotUUID"].AsUUID();
-            ScopeID = map["ScopeID"].AsUUID();
-            SimName = map["SimName"].AsString();
-
-            if (map.ContainsKey("GlobalPos"))
-            {
-                GlobalPos = map["GlobalPos"].AsVector3();
+            ClassifiedUUID = map ["ClassifiedUUID"].AsUUID ();
+            CreatorUUID = map ["CreatorUUID"].AsUUID ();
+            CreationDate = map ["CreationDate"].AsUInteger ();
+            ExpirationDate = map ["ExpirationDate"].AsUInteger ();
+            Category = map ["Category"].AsUInteger ();
+            Name = map ["Name"].AsString ();
+            Description = map ["Description"].AsString ();
+            ParcelUUID = map ["ParcelUUID"].AsUUID ();
+            ParentEstate = map ["ParentEstate"].AsUInteger ();
+            SnapshotUUID = map ["SnapshotUUID"].AsUUID ();
+            ScopeID = map ["ScopeID"].AsUUID ();
+            SimName = map ["SimName"].AsString ();
+            //            GlobalPos = map["GlobalPos"].AsVector3();
+            if (map.ContainsKey ("GlobalPos")) {
+                GlobalPos = map ["GlobalPos"].AsVector3 ();
+            } else {
+                GlobalPos.X = (float)Convert.ToDecimal (map ["GPosX"].AsString (), Culture.NumberFormatInfo);
+                GlobalPos.Y = (float)Convert.ToDecimal (map ["GPosY"].AsString (), Culture.NumberFormatInfo);
+                GlobalPos.Z = (float)Convert.ToDecimal (map ["GPosZ"].AsString (), Culture.NumberFormatInfo);
             }
-            else
-            {
-                GlobalPos.X = (float)Convert.ToDecimal(map["GPosX"].AsString(), Culture.NumberFormatInfo);
-                GlobalPos.Y = (float)Convert.ToDecimal(map["GPosY"].AsString(), Culture.NumberFormatInfo);
-                GlobalPos.Z = (float)Convert.ToDecimal(map["GPosZ"].AsString(), Culture.NumberFormatInfo);
-            }
-
-            ParcelName = map["ParcelName"].AsString();
-            ClassifiedFlags = (byte)map["ClassifiedFlags"].AsInteger();
+            ParcelName = map ["ParcelName"].AsString ();
+            ClassifiedFlags = (byte)map ["ClassifiedFlags"].AsInteger ();
             if (ClassifiedFlags == 0)
                 ClassifiedFlags = (byte)DirectoryManager.ClassifiedQueryFlags.PG;
-            PriceForListing = map["PriceForListing"].AsInteger();
+            PriceForListing = map ["PriceForListing"].AsInteger ();
         }
     }
 
@@ -474,7 +463,7 @@ namespace Universe.Framework.Services.ClassHelpers.Profile
         public int TopPick;
         public string User;
 
-        public override OSDMap ToOSD()
+        public override OSDMap ToOSD ()
         {
             OSDMap Pick = new OSDMap {
                 { "PickUUID", OSD.FromUUID (PickUUID) },
@@ -494,36 +483,32 @@ namespace Universe.Framework.Services.ClassHelpers.Profile
                 { "SortOrder", OSD.FromInteger (SortOrder) },
                 { "Enabled", OSD.FromInteger (Enabled) }
             };
-
             return Pick;
         }
 
-        public override void FromOSD(OSDMap map)
+        public override void FromOSD (OSDMap map)
         {
-            PickUUID = map["PickUUID"].AsUUID();
-            CreatorUUID = map["CreatorUUID"].AsUUID();
-            TopPick = map["TopPick"].AsInteger();
-            ParcelUUID = map["AsString"].AsUUID();
-            Name = map["Name"].AsString();
-            Description = map["Description"].AsString();
-            SnapshotUUID = map["SnapshotUUID"].AsUUID();
-            User = map["User"].AsString();
-            OriginalName = map["OriginalName"].AsString();
-            SimName = map["SimName"].AsString();
+            PickUUID = map ["PickUUID"].AsUUID ();
+            CreatorUUID = map ["CreatorUUID"].AsUUID ();
+            TopPick = map ["TopPick"].AsInteger ();
+            ParcelUUID = map ["AsString"].AsUUID ();
+            Name = map ["Name"].AsString ();
+            Description = map ["Description"].AsString ();
+            SnapshotUUID = map ["SnapshotUUID"].AsUUID ();
+            User = map ["User"].AsString ();
+            OriginalName = map ["OriginalName"].AsString ();
+            SimName = map ["SimName"].AsString ();
 
-            if (map.ContainsKey("GlobalPos"))
-            {
-                GlobalPos = map["GlobalPos"].AsVector3();
+            if (map.ContainsKey ("GlobalPos")) {
+                GlobalPos = map ["GlobalPos"].AsVector3 ();
+            } else {
+                GlobalPos.X = (float)Convert.ToDecimal (map ["GPosX"].AsString (), Culture.NumberFormatInfo);
+                GlobalPos.Y = (float)Convert.ToDecimal (map ["GPosY"].AsString (), Culture.NumberFormatInfo);
+                GlobalPos.Z = (float)Convert.ToDecimal (map ["GPosZ"].AsString (), Culture.NumberFormatInfo);
             }
-            else
-            {
-                GlobalPos.X = (float)Convert.ToDecimal(map["GPosX"].AsString(), Culture.NumberFormatInfo);
-                GlobalPos.Y = (float)Convert.ToDecimal(map["GPosY"].AsString(), Culture.NumberFormatInfo);
-                GlobalPos.Z = (float)Convert.ToDecimal(map["GPosZ"].AsString(), Culture.NumberFormatInfo);
-            }
+            SortOrder = map ["SortOrder"].AsInteger ();
+            Enabled = map ["Enabled"].AsInteger ();
 
-            SortOrder = map["SortOrder"].AsInteger();
-            Enabled = map["Enabled"].AsInteger();
         }
     }
 }

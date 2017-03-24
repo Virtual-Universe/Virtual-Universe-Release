@@ -28,54 +28,56 @@
  */
 
 using System.Collections.Generic;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
 using Universe.Framework.Modules;
 using Universe.Framework.Utilities;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
 
 namespace Universe.Framework.Services.ClassHelpers.Inventory
 {
-	/// <summary>
-	///     Used to serialize a whole inventory for transfer over the network.
-	/// </summary>
-	public class InventoryCollection : IDataTransferable
-	{
-		public List<InventoryFolderBase> Folders;
-		public List<InventoryItemBase> Items;
-		public UUID UserID;
-		public UUID FolderID;
+    /// <summary>
+    ///     Used to serialize a whole inventory for transfer over the network.
+    /// </summary>
+    public class InventoryCollection : IDataTransferable
+    {
+        public List<InventoryFolderBase> Folders;
+        public List<InventoryItemBase> Items;
+        public UUID UserID;
+        public UUID FolderID;
 
-		public override OSDMap ToOSD ()
-		{
-			OSDMap map = new OSDMap ();
+        public override OSDMap ToOSD()
+        {
+            OSDMap map = new OSDMap();
 
-			map ["Items"] = new OSDArray (Items.ConvertAll<OSD> ((item) => item.ToOSD ()));
-			map ["Folders"] = new OSDArray (Folders.ConvertAll<OSD> ((folder) => folder.ToOSD ()));
-			map ["UserID"] = UserID;
-			map ["FolderID"] = FolderID;
+            map["Items"] = new OSDArray(Items.ConvertAll<OSD>((item) => item.ToOSD()));
+            map["Folders"] = new OSDArray(Folders.ConvertAll<OSD>((folder) => folder.ToOSD()));
+            map["UserID"] = UserID;
+            map["FolderID"] = FolderID;
 
-			return map;
-		}
+            return map;
+        }
 
-		public override void FromOSD (OSDMap map)
-		{
-			OSDArray items = (OSDArray)map ["Items"];
-			Items = items.ConvertAll<InventoryItemBase> ((osd) => {
-				InventoryItemBase item = new InventoryItemBase ();
-				item.FromOSD ((OSDMap)osd);
-				return item;
-			}
-			);
-			OSDArray folders = (OSDArray)map ["Folders"];
-			Folders = folders.ConvertAll<InventoryFolderBase> ((osd) => {
-				InventoryFolderBase folder =
-					new InventoryFolderBase ();
-				folder.FromOSD ((OSDMap)osd);
-				return folder;
-			}
-			);
-			UserID = map ["UserID"];
-			FolderID = map ["FolderID"];
-		}
-	}
+        public override void FromOSD(OSDMap map)
+        {
+            OSDArray items = (OSDArray) map["Items"];
+            Items = items.ConvertAll<InventoryItemBase>((osd) =>
+                                                            {
+                                                                InventoryItemBase item = new InventoryItemBase();
+                                                                item.FromOSD((OSDMap) osd);
+                                                                return item;
+                                                            }
+                );
+            OSDArray folders = (OSDArray) map["Folders"];
+            Folders = folders.ConvertAll<InventoryFolderBase>((osd) =>
+                                                                  {
+                                                                      InventoryFolderBase folder =
+                                                                          new InventoryFolderBase();
+                                                                      folder.FromOSD((OSDMap) osd);
+                                                                      return folder;
+                                                                  }
+                );
+            UserID = map["UserID"];
+            FolderID = map["FolderID"];
+        }
+    }
 }

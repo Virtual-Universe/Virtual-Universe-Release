@@ -41,195 +41,207 @@ using Universe.Framework.Serialization;
 
 namespace Universe.Modules.Archivers
 {
-	/// <summary>
-	///     Prepare to write out an archive.
-	/// </summary>
-	public class ArchiveWriteRequestPreparation
-	{
-		protected string m_checkPermissions;
-		protected Guid m_requestId;
-		protected Stream m_saveStream;
-		protected IScene m_scene;
+    /// <summary>
+    ///     Prepare to write out an archive.
+    /// </summary>
+    public class ArchiveWriteRequestPreparation
+    {
+        protected string m_checkPermissions;
+        protected Guid m_requestId;
+        protected Stream m_saveStream;
+        protected IScene m_scene;
 
-		/// <summary>
-		///     Constructor
-		/// </summary>
-		/// <param name="scene"></param>
-		/// <param name="savePath">The path to which to save data.</param>
-		/// <param name="requestId">The id associated with this request</param>
-		/// <param name="checkPermissions"></param>
-		/// <exception cref="System.IO.IOException">
-		///     If there was a problem opening a stream for the file specified by the savePath
-		/// </exception>
-		public ArchiveWriteRequestPreparation (IScene scene, string savePath, Guid requestId, string checkPermissions)
-		{
-			m_scene = scene;
+        /// <summary>
+        ///     Constructor
+        /// </summary>
+        /// <param name="scene"></param>
+        /// <param name="savePath">The path to which to save data.</param>
+        /// <param name="requestId">The id associated with this request</param>
+        /// <param name="checkPermissions"></param>
+        /// <exception cref="System.IO.IOException">
+        ///     If there was a problem opening a stream for the file specified by the savePath
+        /// </exception>
+        public ArchiveWriteRequestPreparation(IScene scene, string savePath, Guid requestId, string checkPermissions)
+        {
+            m_scene = scene;
 
-			try {
-				m_saveStream = new GZipStream (new FileStream (savePath, FileMode.Create), CompressionMode.Compress);
-			} catch (EntryPointNotFoundException e) {
-				MainConsole.Instance.ErrorFormat (
-					"[Archiver]: Mismatch between Mono and zlib1g library version when trying to create compression stream."
-					+ "If you've manually installed Mono, have you appropriately updated zlib1g as well?");
-				MainConsole.Instance.Error (e);
-			}
+            try
+            {
+                m_saveStream = new GZipStream(new FileStream(savePath, FileMode.Create), CompressionMode.Compress);
+            }
+            catch (EntryPointNotFoundException e)
+            {
+                MainConsole.Instance.ErrorFormat(
+                    "[Archiver]: Mismatch between Mono and zlib1g library version when trying to create compression stream."
+                    + "If you've manually installed Mono, have you appropriately updated zlib1g as well?");
+                MainConsole.Instance.Error(e);
+            }
 
-			m_requestId = requestId;
-			m_checkPermissions = checkPermissions;
-		}
+            m_requestId = requestId;
+            m_checkPermissions = checkPermissions;
+        }
 
-		/// <summary>
-		///     Constructor.
-		/// </summary>
-		/// <param name="scene"></param>
-		/// <param name="saveStream">The stream to which to save data.</param>
-		/// <param name="requestId">The id associated with this request</param>
-		public ArchiveWriteRequestPreparation (IScene scene, Stream saveStream, Guid requestId)
-		{
-			m_scene = scene;
-			m_saveStream = saveStream;
-			m_requestId = requestId;
-		}
+        /// <summary>
+        ///     Constructor.
+        /// </summary>
+        /// <param name="scene"></param>
+        /// <param name="saveStream">The stream to which to save data.</param>
+        /// <param name="requestId">The id associated with this request</param>
+        public ArchiveWriteRequestPreparation(IScene scene, Stream saveStream, Guid requestId)
+        {
+            m_scene = scene;
+            m_saveStream = saveStream;
+            m_requestId = requestId;
+        }
 
-		/// <summary>
-		///     Archive the region requested.
-		/// </summary>
-		/// <exception cref="System.IO.IOException">if there was an io problem with creating the file</exception>
-		public void ArchiveRegion ()
-		{
-			Dictionary<UUID, AssetType> assetUuids = new Dictionary<UUID, AssetType> ();
+        /// <summary>
+        ///     Archive the region requested.
+        /// </summary>
+        /// <exception cref="System.IO.IOException">if there was an io problem with creating the file</exception>
+        public void ArchiveRegion()
+        {
+            Dictionary<UUID, AssetType> assetUuids = new Dictionary<UUID, AssetType>();
 
-			ISceneEntity[] entities = m_scene.Entities.GetEntities ();
-			List<ISceneEntity> sceneObjects = new List<ISceneEntity> ();
-			int numObjectsSkippedPermissions = 0;
+            ISceneEntity[] entities = m_scene.Entities.GetEntities();
+            List<ISceneEntity> sceneObjects = new List<ISceneEntity>();
+            int numObjectsSkippedPermissions = 0;
 
-			// Filter entities so that we only have scene objects.
-			// FIXME: Would be nicer to have this as a proper list in SceneGraph, since lots of methods
-			// end up having to do this
-			foreach (ISceneEntity entity in entities.Where(entity => !entity.IsDeleted && !entity.IsAttachment)) {
-				if (!CanUserArchiveObject (m_scene.RegionInfo.EstateSettings.EstateOwner, entity, m_checkPermissions))
+            // Filter entities so that we only have scene objects.
+            // FIXME: Would be nicer to have this as a proper list in SceneGraph, since lots of methods
+            // end up having to do this
+            foreach (ISceneEntity entity in entities.Where(entity => !entity.IsDeleted && !entity.IsAttachment))
+            {
+                if (!CanUserArchiveObject(m_scene.RegionInfo.EstateSettings.EstateOwner, entity, m_checkPermissions))
                     // The user isn't allowed to copy/transfer this object, so it will not be included in the OAR.
                     ++numObjectsSkippedPermissions;
-				else
-					sceneObjects.Add (entity);
-			}
+                else
+                    sceneObjects.Add(entity);
+            }
 
-			UuidGatherer assetGatherer = new UuidGatherer (m_scene.AssetService);
+            UuidGatherer assetGatherer = new UuidGatherer(m_scene.AssetService);
 
-			foreach (ISceneEntity sceneObject in sceneObjects) {
-				assetGatherer.GatherAssetUuids (sceneObject, assetUuids);
-			}
+            foreach (ISceneEntity sceneObject in sceneObjects)
+            {
+                assetGatherer.GatherAssetUuids(sceneObject, assetUuids);
+            }
 
-			MainConsole.Instance.InfoFormat (
-				"[Archiver]: {0} scene objects to serialize requiring save of {1} assets",
-				sceneObjects.Count, assetUuids.Count);
+            MainConsole.Instance.InfoFormat(
+                "[Archiver]: {0} scene objects to serialize requiring save of {1} assets",
+                sceneObjects.Count, assetUuids.Count);
 
-			if (numObjectsSkippedPermissions > 0) {
-				MainConsole.Instance.DebugFormat (
-					"[Archiver]: {0} scene objects skipped due to lack of permissions",
-					numObjectsSkippedPermissions);
-			}
+            if (numObjectsSkippedPermissions > 0)
+            {
+                MainConsole.Instance.DebugFormat(
+                    "[Archiver]: {0} scene objects skipped due to lack of permissions",
+                    numObjectsSkippedPermissions);
+            }
 
-			// Make sure that we also request terrain texture assets
-			RegionSettings regionSettings = m_scene.RegionInfo.RegionSettings;
+            // Make sure that we also request terrain texture assets
+            RegionSettings regionSettings = m_scene.RegionInfo.RegionSettings;
 
-			if (regionSettings.TerrainTexture1 != RegionSettings.DEFAULT_TERRAIN_TEXTURE_1)
-				assetUuids [regionSettings.TerrainTexture1] = AssetType.Texture;
+            if (regionSettings.TerrainTexture1 != RegionSettings.DEFAULT_TERRAIN_TEXTURE_1)
+                assetUuids[regionSettings.TerrainTexture1] = AssetType.Texture;
 
-			if (regionSettings.TerrainTexture2 != RegionSettings.DEFAULT_TERRAIN_TEXTURE_2)
-				assetUuids [regionSettings.TerrainTexture2] = AssetType.Texture;
+            if (regionSettings.TerrainTexture2 != RegionSettings.DEFAULT_TERRAIN_TEXTURE_2)
+                assetUuids[regionSettings.TerrainTexture2] = AssetType.Texture;
 
-			if (regionSettings.TerrainTexture3 != RegionSettings.DEFAULT_TERRAIN_TEXTURE_3)
-				assetUuids [regionSettings.TerrainTexture3] = AssetType.Texture;
+            if (regionSettings.TerrainTexture3 != RegionSettings.DEFAULT_TERRAIN_TEXTURE_3)
+                assetUuids[regionSettings.TerrainTexture3] = AssetType.Texture;
 
-			if (regionSettings.TerrainTexture4 != RegionSettings.DEFAULT_TERRAIN_TEXTURE_4)
-				assetUuids [regionSettings.TerrainTexture4] = AssetType.Texture;
+            if (regionSettings.TerrainTexture4 != RegionSettings.DEFAULT_TERRAIN_TEXTURE_4)
+                assetUuids[regionSettings.TerrainTexture4] = AssetType.Texture;
 
-			TarArchiveWriter archiveWriter = new TarArchiveWriter (m_saveStream);
+            TarArchiveWriter archiveWriter = new TarArchiveWriter(m_saveStream);
 
-			// Asynchronously request all the assets required to perform this archive operation
-			ArchiveWriteRequestExecution awre
-                = new ArchiveWriteRequestExecution (
-				               sceneObjects,
-				               m_scene.RequestModuleInterface<ITerrainModule> (),
-				               m_scene.RequestModuleInterface<IRegionSerializerModule> (),
-				               m_scene,
-				               archiveWriter,
-				               m_requestId);
+            // Asynchronously request all the assets required to perform this archive operation
+            ArchiveWriteRequestExecution awre
+                = new ArchiveWriteRequestExecution(
+                    sceneObjects,
+                    m_scene.RequestModuleInterface<ITerrainModule>(),
+                    m_scene.RequestModuleInterface<IRegionSerializerModule>(),
+                    m_scene,
+                    archiveWriter,
+                    m_requestId);
 
-			new AssetsRequest (
-				new AssetsArchiver (archiveWriter), assetUuids,
-				m_scene.AssetService, awre.ReceivedAllAssets).Execute ();
-		}
+            new AssetsRequest(
+                new AssetsArchiver(archiveWriter), assetUuids,
+                m_scene.AssetService, awre.ReceivedAllAssets).Execute();
+        }
 
-		/// <summary>
-		///     Checks whether the user has permission to export an object group to an OAR.
-		/// </summary>
-		/// <param name="user">The user</param>
-		/// <param name="objGroup">The object group</param>
-		/// <param name="checkPermissions">Which permissions to check: "C" = Copy, "T" = Transfer</param>
-		/// <returns>Whether the user is allowed to export the object to an OAR</returns>
-		private bool CanUserArchiveObject (UUID user, ISceneEntity objGroup, string checkPermissions)
-		{
-			if (checkPermissions == null)
-				return true;
+        /// <summary>
+        ///     Checks whether the user has permission to export an object group to an OAR.
+        /// </summary>
+        /// <param name="user">The user</param>
+        /// <param name="objGroup">The object group</param>
+        /// <param name="checkPermissions">Which permissions to check: "C" = Copy, "T" = Transfer</param>
+        /// <returns>Whether the user is allowed to export the object to an OAR</returns>
+        private bool CanUserArchiveObject(UUID user, ISceneEntity objGroup, string checkPermissions)
+        {
+            if (checkPermissions == null)
+                return true;
 
-			IPermissionsModule module = m_scene.RequestModuleInterface<IPermissionsModule> ();
-			if (module == null)
-				return true; // this shouldn't happen
+            IPermissionsModule module = m_scene.RequestModuleInterface<IPermissionsModule>();
+            if (module == null)
+                return true; // this shouldn't happen
 
-			// Check whether the user is permitted to export all of the parts in the SOG. If any
-			// part can't be exported then the entire SOG can't be exported.
+            // Check whether the user is permitted to export all of the parts in the SOG. If any
+            // part can't be exported then the entire SOG can't be exported.
 
-			bool permitted = true;
-			//int primNumber = 1;
+            bool permitted = true;
+            //int primNumber = 1;
 
-			foreach (ISceneChildEntity obj in objGroup.ChildrenEntities()) {
-				uint perm;
-				PermissionClass permissionClass = module.GetPermissionClass (user, obj);
-				switch (permissionClass) {
-				case PermissionClass.Owner:
-					perm = obj.BaseMask;
-					break;
-				case PermissionClass.Group:
-					perm = obj.GroupMask | obj.EveryoneMask;
-					break;
-				case PermissionClass.Everyone:
-				default:
-					perm = obj.EveryoneMask;
-					break;
-				}
+            foreach (ISceneChildEntity obj in objGroup.ChildrenEntities())
+            {
+                uint perm;
+                PermissionClass permissionClass = module.GetPermissionClass(user, obj);
+                switch (permissionClass)
+                {
+                    case PermissionClass.Owner:
+                        perm = obj.BaseMask;
+                        break;
+                    case PermissionClass.Group:
+                        perm = obj.GroupMask | obj.EveryoneMask;
+                        break;
+                    case PermissionClass.Everyone:
+                    default:
+                        perm = obj.EveryoneMask;
+                        break;
+                }
 
-				bool canCopy = (perm & (uint)PermissionMask.Copy) != 0;
-				bool canTransfer = (perm & (uint)PermissionMask.Transfer) != 0;
+                bool canCopy = (perm & (uint) PermissionMask.Copy) != 0;
+                bool canTransfer = (perm & (uint) PermissionMask.Transfer) != 0;
 
-				// Special case: if Everyone can copy the object then this implies it can also be
-				// Transferred.
-				// However, if the user is the Owner then we don't check EveryoneMask, because it seems that the mask
-				// always (incorrectly) includes the Copy bit set in this case. But that's a mistake: the viewer
-				// does NOT show that the object has Everyone-Copy permissions, and doesn't allow it to be copied.
-				if (permissionClass != PermissionClass.Owner) {
-					canTransfer |= (obj.EveryoneMask & (uint)PermissionMask.Copy) != 0;
-				}
+                // Special case: if Everyone can copy the object then this implies it can also be
+                // Transferred.
+                // However, if the user is the Owner then we don't check EveryoneMask, because it seems that the mask
+                // always (incorrectly) includes the Copy bit set in this case. But that's a mistake: the viewer
+                // does NOT show that the object has Everyone-Copy permissions, and doesn't allow it to be copied.
+                if (permissionClass != PermissionClass.Owner)
+                {
+                    canTransfer |= (obj.EveryoneMask & (uint) PermissionMask.Copy) != 0;
+                }
 
-				bool partPermitted = true;
-				if (checkPermissions.Contains ("C") && !canCopy)
-					partPermitted = false;
-				if (checkPermissions.Contains ("T") && !canTransfer)
-					partPermitted = false;
+                bool partPermitted = true;
+                if (checkPermissions.Contains("C") && !canCopy)
+                    partPermitted = false;
+                if (checkPermissions.Contains("T") && !canTransfer)
+                    partPermitted = false;
 
-				//string name = (objGroup.PrimCount == 1) ? objGroup.Name : string.Format("{0} ({1}/{2})", obj.Name, primNumber, objGroup.PrimCount);
-				//MainConsole.Instance.DebugFormat("[Archiver]: Object permissions: {0}: Base={1:X4}, Owner={2:X4}, Everyone={3:X4}, permissionClass={4}, checkPermissions={5}, canCopy={6}, canTransfer={7}, permitted={8}",
-				//    name, obj.BaseMask, obj.OwnerMask, obj.EveryoneMask,
-				//    permissionClass, checkPermissions, canCopy, canTransfer, permitted);
+                //string name = (objGroup.PrimCount == 1) ? objGroup.Name : string.Format("{0} ({1}/{2})", obj.Name, primNumber, objGroup.PrimCount);
+                //MainConsole.Instance.DebugFormat("[Archiver]: Object permissions: {0}: Base={1:X4}, Owner={2:X4}, Everyone={3:X4}, permissionClass={4}, checkPermissions={5}, canCopy={6}, canTransfer={7}, permitted={8}",
+                //    name, obj.BaseMask, obj.OwnerMask, obj.EveryoneMask,
+                //    permissionClass, checkPermissions, canCopy, canTransfer, permitted);
 
-				if (!partPermitted) {
-					permitted = false;
-					break;
-				}
-			}
+                if (!partPermitted)
+                {
+                    permitted = false;
+                    break;
+                }
 
-			return permitted;
-		}
-	}
+                //++primNumber;
+            }
+
+            return permitted;
+        }
+    }
 }

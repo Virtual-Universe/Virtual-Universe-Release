@@ -42,79 +42,83 @@ using Universe.Framework.Utilities;
 
 namespace Universe.Services
 {
-	public class GroupMemberDataCAPS : ICapsServiceConnector
-	{
-		protected IGroupsServiceConnector m_groupService;
-		protected IRegionClientCapsService m_service;
+    public class GroupMemberDataCAPS : ICapsServiceConnector
+    {
+        protected IGroupsServiceConnector m_groupService;
+        protected IRegionClientCapsService m_service;
 
-		public void RegisterCaps (IRegionClientCapsService service)
-		{
-			m_service = service;
-			m_groupService = Framework.Utilities.DataManager.RequestPlugin<IGroupsServiceConnector> ();
+        public void RegisterCaps (IRegionClientCapsService service)
+        {
+            m_service = service;
+            m_groupService = Framework.Utilities.DataManager.RequestPlugin<IGroupsServiceConnector> ();
 
-			service.AddStreamHandler ("GroupMemberData",
-				new GenericStreamHandler ("POST", service.CreateCAPS ("GroupMemberData", ""), GroupMemberData));
-		}
+            service.AddStreamHandler ("GroupMemberData",
+                new GenericStreamHandler ("POST", service.CreateCAPS ("GroupMemberData", ""), GroupMemberData));
+        }
 
-		public void EnteringRegion ()
-		{
-		}
+        public void EnteringRegion ()
+        {
+        }
 
-		public void DeregisterCaps ()
-		{
-			m_service.RemoveStreamHandler ("GroupMemberData", "POST");
-		}
+        public void DeregisterCaps ()
+        {
+            m_service.RemoveStreamHandler ("GroupMemberData", "POST");
+        }
 
-		#region Group Members
+        #region Group Members
 
-		public byte[] GroupMemberData (string path, Stream request, OSHttpRequest httpRequest,
-		                                     OSHttpResponse httpResponse)
-		{
-			try {
-				OSDMap rm = (OSDMap)OSDParser.DeserializeLLSDXml (HttpServerHandlerHelpers.ReadFully (request));
-				UUID groupID = rm ["group_id"].AsUUID ();
+        public byte[] GroupMemberData (string path, Stream request, OSHttpRequest httpRequest,
+                                      OSHttpResponse httpResponse)
+        {
+            try
+            {
+                OSDMap rm = (OSDMap)OSDParser.DeserializeLLSDXml (HttpServerHandlerHelpers.ReadFully (request));
+                UUID groupID = rm ["group_id"].AsUUID ();
 
-				OSDMap defaults = new OSDMap ();
-				ulong EveryonePowers = (ulong)(GroupPowers.Accountable |
-				                                   GroupPowers.AllowSetHome |
-				                                   GroupPowers.ReceiveNotices |
-				                                   GroupPowers.JoinChat |
-				                                   GroupPowers.AllowVoiceChat);
-				defaults ["default_powers"] = EveryonePowers;
+                OSDMap defaults = new OSDMap ();
+                ulong EveryonePowers = (ulong)(GroupPowers.Accountable |
+                                       GroupPowers.AllowSetHome |
+                                       GroupPowers.ReceiveNotices |
+                                       GroupPowers.JoinChat |
+                                       GroupPowers.AllowVoiceChat);
+                defaults ["default_powers"] = EveryonePowers;
 
-				List<string> titles = new List<string> ();
-				OSDMap members = new OSDMap ();
-				int count = 0;
-				foreach (GroupMembersData gmd in m_groupService.GetGroupMembers(m_service.AgentID, groupID)) {
-					OSDMap member = new OSDMap ();
-					member ["donated_square_meters"] = gmd.Contribution;
-					member ["owner"] = (gmd.IsOwner ? "Y" : "N");
-					member ["last_login"] = gmd.OnlineStatus;
-					if (titles.Contains (gmd.Title)) {
-						member ["title"] = titles.FindIndex ((s) => s == gmd.Title);
-					} else {
-						titles.Add (gmd.Title);
-						member ["title"] = titles.Count - 1;
-					}
-					member ["powers"] = gmd.AgentPowers;
-					count++;
-					members [gmd.AgentID.ToString ()] = member;
-				}
+                List<string> titles = new List<string> ();
+                OSDMap members = new OSDMap ();
+                int count = 0;
+                foreach (GroupMembersData gmd in m_groupService.GetGroupMembers(m_service.AgentID, groupID))
+                {
+                    OSDMap member = new OSDMap ();
+                    member ["donated_square_meters"] = gmd.Contribution;
+                    member ["owner"] = (gmd.IsOwner ? "Y" : "N");
+                    member ["last_login"] = gmd.OnlineStatus;
+                    if (titles.Contains (gmd.Title))
+                    {
+                        member ["title"] = titles.FindIndex ((s) => s == gmd.Title);
+                    } else
+                    {
+                        titles.Add (gmd.Title);
+                        member ["title"] = titles.Count - 1;
+                    }
+                    member ["powers"] = gmd.AgentPowers;
+                    count++;
+                    members [gmd.AgentID.ToString ()] = member;
+                }
 
-				OSDMap map = new OSDMap ();
-				map ["member_count"] = count;
-				map ["group_id"] = groupID;
-				map ["defaults"] = defaults;
-				map ["titles"] = titles.ToOSDArray ();
-				map ["members"] = members;
-				return OSDParser.SerializeLLSDXmlBytes (map);
-			} catch (Exception e) {
-				MainConsole.Instance.Error ("[CAPS]: " + e);
-			}
+                OSDMap map = new OSDMap ();
+                map ["member_count"] = count;
+                map ["group_id"] = groupID;
+                map ["defaults"] = defaults;
+                map ["titles"] = titles.ToOSDArray ();
+                map ["members"] = members;
+                return OSDParser.SerializeLLSDXmlBytes (map);
+            } catch (Exception e)
+            {
+                MainConsole.Instance.Error ("[CAPS]: " + e);
+            }
 
-			return null;
-		}
-
-		#endregion
-	}
+            return null;
+        }
+        #endregion
+    }
 }

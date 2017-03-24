@@ -31,37 +31,35 @@ using OpenMetaverse;
 
 namespace Universe.Framework.Modules
 {
-	public delegate void ChangeDelegate (UUID regionID);
+    public delegate void ChangeDelegate(UUID regionID);
 
-	public delegate void MessageDelegate (UUID regionID, UUID fromID, string fromName, string message);
+    public delegate void MessageDelegate(UUID regionID, UUID fromID, string fromName, string message);
 
-	public interface IEstateModule : INonSharedRegionModule
-	{
-		event ChangeDelegate OnRegionInfoChange;
-		event ChangeDelegate OnEstateInfoChange;
-		event MessageDelegate OnEstateMessage;
+    public interface IEstateModule : INonSharedRegionModule
+    {
+        event ChangeDelegate OnRegionInfoChange;
+        event ChangeDelegate OnEstateInfoChange;
+        event MessageDelegate OnEstateMessage;
 
-		ulong GetRegionFlags ();
+        ulong GetRegionFlags();
+        bool IsManager(UUID avatarID);
 
-		bool IsManager (UUID avatarID);
+        /// <summary>
+        ///     Tell all clients about the current state of the region (terrain textures, water height, etc.).
+        /// </summary>
+        void sendRegionHandshakeToAll();
 
-		/// <summary>
-		///     Tell all clients about the current state of the region (terrain textures, water height, etc.).
-		/// </summary>
-		void sendRegionHandshakeToAll ();
+        void setEstateTerrainBaseTexture(int level, UUID texture);
+        void setEstateTerrainTextureHeights(int corner, float lowValue, float highValue);
 
-		void setEstateTerrainBaseTexture (int level, UUID texture);
+        void TriggerEstateSunUpdate();
 
-		void setEstateTerrainTextureHeights (int corner, float lowValue, float highValue);
-
-		void TriggerEstateSunUpdate ();
-
-		/// <summary>
-		///     Disable/Enable the scripting engine, the collision events, and the physics engine
-		/// </summary>
-		/// <param name="ScriptEngine"></param>
-		/// <param name="CollisionEvents"></param>
-		/// <param name="PhysicsEngine"></param>
-		void SetSceneCoreDebug (bool ScriptEngine, bool CollisionEvents, bool PhysicsEngine);
-	}
+        /// <summary>
+        ///     Disable/Enable the scripting engine, the collision events, and the physics engine
+        /// </summary>
+        /// <param name="ScriptEngine"></param>
+        /// <param name="CollisionEvents"></param>
+        /// <param name="PhysicsEngine"></param>
+        void SetSceneCoreDebug(bool ScriptEngine, bool CollisionEvents, bool PhysicsEngine);
+    }
 }

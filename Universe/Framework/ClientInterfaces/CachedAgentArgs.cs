@@ -31,9 +31,9 @@ using OpenMetaverse;
 
 namespace Universe.Framework.ClientInterfaces
 {
-	public class CachedAgentArgs
-	{
-		public UUID ID;
-		public byte TextureIndex;
-	}
+    public class CachedAgentArgs
+    {
+        public UUID ID;
+        public byte TextureIndex;
+    }
 }

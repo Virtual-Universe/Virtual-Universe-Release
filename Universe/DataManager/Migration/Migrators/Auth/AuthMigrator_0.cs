@@ -33,52 +33,56 @@ using Universe.Framework.Utilities;
 
 namespace Universe.DataManager.Migration.Migrators.Auth
 {
-	public class AuthMigrator_0 : Migrator
-	{
-		public AuthMigrator_0 ()
-		{
-			Version = new Version (0, 0, 0);
-			MigrationName = "Auth";
+    public class AuthMigrator_0 : Migrator
+    {
+        public AuthMigrator_0()
+        {
+            Version = new Version(0, 0, 0);
+            MigrationName = "Auth";
 
-			Schema = new List<SchemaDefinition> ();
+            Schema = new List<SchemaDefinition>();
 
-			AddSchema ("auth", ColDefs (
-				ColDef ("UUID", ColumnTypes.Char36),
-				ColDef ("passwordHash", ColumnTypes.String512),
-				ColDef ("passwordSalt", ColumnTypes.String512),
-				ColDef ("accountType", ColumnTypes.Char32)
-			), IndexDefs (
-				IndexDef (new string[2] { "UUID", "accountType" }, IndexType.Primary),
-				IndexDef (new string[1] { "passwordHash" }, IndexType.Index, 255)
-			));
+            // Change summary:
+            //   Change ID type fields to type UUID
+            AddSchema("auth", ColDefs(
+                ColDef("UUID", ColumnTypes.UUID),
+                ColDef("passwordHash", ColumnTypes.String512),
+                ColDef("passwordSalt", ColumnTypes.String512),
+                ColDef("accountType", ColumnTypes.Char32)
+            ), IndexDefs(
+                IndexDef(new string[2] {"UUID", "accountType"}, IndexType.Primary),
+                IndexDef(new string[1] {"passwordHash"}, IndexType.Index, 255)
+            ));
 
-			AddSchema ("tokens", ColDefs (
-				ColDef ("UUID", ColumnTypes.Char36),
-				ColDef ("token", ColumnTypes.String255),
-				ColDef ("validity", ColumnTypes.Integer11)
-			), IndexDefs (
-				IndexDef (new string[2] { "UUID", "token" }, IndexType.Primary)
-			));
-		}
+            RemoveSchema("tokens");
 
-		protected override void DoCreateDefaults (IDataConnector genericData)
-		{
-			EnsureAllTablesInSchemaExist (genericData);
-		}
+            AddSchema("tokens", ColDefs(
+                ColDef("UUID", ColumnTypes.UUID),
+                ColDef("token", ColumnTypes.String255),
+                ColDef("validity", ColumnTypes.Integer11)
+            ), IndexDefs(
+                IndexDef(new string[2] {"UUID", "token"}, IndexType.Primary)
+            ));
+        }
 
-		protected override bool DoValidate (IDataConnector genericData)
-		{
-			return TestThatAllTablesValidate (genericData);
-		}
+        protected override void DoCreateDefaults(IDataConnector genericData)
+        {
+            EnsureAllTablesInSchemaExist(genericData);
+        }
 
-		protected override void DoMigrate (IDataConnector genericData)
-		{
-			DoCreateDefaults (genericData);
-		}
+        protected override bool DoValidate(IDataConnector genericData)
+        {
+            return TestThatAllTablesValidate(genericData);
+        }
 
-		protected override void DoPrepareRestorePoint (IDataConnector genericData)
-		{
-			CopyAllTablesToTempVersions (genericData);
-		}
-	}
+        protected override void DoMigrate(IDataConnector genericData)
+        {
+            DoCreateDefaults(genericData);
+        }
+
+        protected override void DoPrepareRestorePoint(IDataConnector genericData)
+        {
+            CopyAllTablesToTempVersions(genericData);
+        }
+    }
 }

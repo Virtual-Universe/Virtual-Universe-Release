@@ -45,13 +45,13 @@ namespace Universe.ClientStack
         const int IMAGE_PACKET_SIZE = 1000;
         const int FIRST_PACKET_SIZE = 600;
 
-        byte[] m_asset;
+        byte [] m_asset;
         bool m_assetRequested;
         uint m_currentPacket;
         bool m_decodeRequested;
         bool m_sentInfo;
         uint m_stopPacket;
-
+  
         public UUID AgentID;
         public IAssetService AssetService;
         public sbyte DiscardLevel;
@@ -94,7 +94,6 @@ namespace Universe.ClientStack
                     ++m_currentPacket;
                     ++packetsSent;
                 }
-
                 if (m_currentPacket < 2)
                 {
                     m_currentPacket = 2;
@@ -169,7 +168,8 @@ namespace Universe.ClientStack
                         // This shouldn't happen, but if it does, we really can't proceed
                         if (Layers == null)
                         {
-                            MainConsole.Instance.Warn("[J2K Image]: RunUpdate() called with missing Layers. Canceling texture transfer");
+                            MainConsole.Instance.Warn(
+                                "[J2K Image]: RunUpdate() called with missing Layers. Canceling texture transfer");
                             m_currentPacket = m_stopPacket;
                             return;
                         }
@@ -178,15 +178,16 @@ namespace Universe.ClientStack
 
                         // Treat initial texture downloads with a DiscardLevel of -1 a request for the highest DiscardLevel
                         if (DiscardLevel < 0 && m_stopPacket == 0)
-                            DiscardLevel = (sbyte)maxDiscardLevel;
+                            DiscardLevel = (sbyte) maxDiscardLevel;
 
                         // Clamp at the highest discard level
-                        DiscardLevel = (sbyte)Math.Min(DiscardLevel, maxDiscardLevel);
+                        DiscardLevel = (sbyte) Math.Min(DiscardLevel, maxDiscardLevel);
 
                         //Calculate the m_stopPacket
                         if (Layers.Length > 0)
                         {
-                            m_stopPacket = (uint)GetPacketForBytePosition(Layers[(Layers.Length - 1) - DiscardLevel].End);
+                            m_stopPacket =
+                                (uint) GetPacketForBytePosition(Layers[(Layers.Length - 1) - DiscardLevel].End);
                             //I don't know why, but the viewer seems to expect the final packet if the file
                             //is just one packet bigger.
                             if (TexturePacketCount() == m_stopPacket + 1)
@@ -216,15 +217,13 @@ namespace Universe.ClientStack
                 client.SendImageNotFound(TextureID);
                 return true;
             }
-
             if (m_asset.Length <= FIRST_PACKET_SIZE)
             {
                 // We have less then one packet's worth of data
-                client.SendImageFirstPart(1, TextureID, (uint)m_asset.Length, m_asset, 2);
+                client.SendImageFirstPart(1, TextureID, (uint) m_asset.Length, m_asset, 2);
                 m_stopPacket = 0;
                 return true;
             }
-
             // This is going to be a multi-packet texture download
             byte[] firstImageData = new byte[FIRST_PACKET_SIZE];
 
@@ -235,11 +234,13 @@ namespace Universe.ClientStack
             catch (Exception)
             {
                 MainConsole.Instance.ErrorFormat(
-                    "[J2K Image]: Texture block copy for the first packet failed. textureid={0}, assetlength={1}", TextureID, m_asset.Length);
+                    "[J2K Image]: Texture block copy for the first packet failed. textureid={0}, assetlength={1}",
+                    TextureID, m_asset.Length);
                 return true;
             }
 
-            client.SendImageFirstPart(TexturePacketCount(), TextureID, (uint)m_asset.Length, firstImageData, (byte)ImageCodec.J2C);
+            client.SendImageFirstPart(TexturePacketCount(), TextureID, (uint) m_asset.Length, firstImageData,
+                                      (byte) ImageCodec.J2C);
             return false;
         }
 
@@ -249,7 +250,7 @@ namespace Universe.ClientStack
                 return false;
 
             bool complete = false;
-            int imagePacketSize = ((int)m_currentPacket == (TexturePacketCount()))
+            int imagePacketSize = ((int) m_currentPacket == (TexturePacketCount()))
                                       ? LastPacketSize()
                                       : IMAGE_PACKET_SIZE;
 
@@ -287,7 +288,7 @@ namespace Universe.ClientStack
                     }
 
                     //Send the packet
-                    client.SendImageNextPart((ushort)(m_currentPacket - 1), TextureID, imageData);
+                    client.SendImageNextPart((ushort) (m_currentPacket - 1), TextureID, imageData);
                 }
 
                 return !complete;
@@ -309,27 +310,24 @@ namespace Universe.ClientStack
             if (m_asset.Length <= FIRST_PACKET_SIZE)
                 return 1;
 
-            return (ushort)(((m_asset.Length - FIRST_PACKET_SIZE + IMAGE_PACKET_SIZE - 1) / IMAGE_PACKET_SIZE) + 1);
+            return (ushort) (((m_asset.Length - FIRST_PACKET_SIZE + IMAGE_PACKET_SIZE - 1)/IMAGE_PACKET_SIZE) + 1);
         }
 
         int GetPacketForBytePosition(int bytePosition)
         {
-            return ((bytePosition - FIRST_PACKET_SIZE + IMAGE_PACKET_SIZE - 1) / IMAGE_PACKET_SIZE) + 1;
+            return ((bytePosition - FIRST_PACKET_SIZE + IMAGE_PACKET_SIZE - 1)/IMAGE_PACKET_SIZE) + 1;
         }
 
         int LastPacketSize()
         {
             if (m_currentPacket == 1)
                 return m_asset.Length;
-
-            int lastsize = (m_asset.Length - FIRST_PACKET_SIZE) % IMAGE_PACKET_SIZE;
-            
+            int lastsize = (m_asset.Length - FIRST_PACKET_SIZE)%IMAGE_PACKET_SIZE;
             //If the last packet size is zero, it's really cImagePacketSize, it sits on the boundary
             if (lastsize == 0)
             {
                 lastsize = IMAGE_PACKET_SIZE;
             }
-
             return lastsize;
         }
 
@@ -337,17 +335,14 @@ namespace Universe.ClientStack
         {
             if (m_currentPacket == 0)
                 return 0;
-
             if (m_currentPacket == 1)
                 return FIRST_PACKET_SIZE;
 
-            int result = FIRST_PACKET_SIZE + ((int)m_currentPacket - 2) * IMAGE_PACKET_SIZE;
-
+            int result = FIRST_PACKET_SIZE + ((int) m_currentPacket - 2)*IMAGE_PACKET_SIZE;
             if (result < 0)
             {
                 result = FIRST_PACKET_SIZE;
             }
-
             return result;
         }
 
@@ -358,29 +353,24 @@ namespace Universe.ClientStack
             RunUpdate();
         }
 
-        void AssetDataCallback(UUID AssetID, AssetBase asset)
+        void AssetDataCallback (UUID AssetID, AssetBase asset)
         {
             HasAsset = true;
 
-            if (asset == null || asset.Data == null)
-            {
-                if (MissingImage != null)
-                {
+            //if (asset == null || asset.Data == null || asset.Type == (int) AssetType.Mesh)
+            if (asset == null || asset.Data == null) {
+                if (MissingImage != null) {
                     m_asset = MissingImage.Data;
-                }
-                else
-                {
+                } else {
                     m_asset = null;
                     IsDecoded = true;
                 }
-            }
-            else
-            {
+            } else {
                 m_asset = asset.Data;
                 asset = null;
             }
 
-            RunUpdate();
+            RunUpdate ();
         }
 
         void AssetReceived(string id, object sender, AssetBase asset)

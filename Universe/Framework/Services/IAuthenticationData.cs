@@ -31,29 +31,29 @@ using OpenMetaverse;
 
 namespace Universe.Framework.Services
 {
-	public class AuthData
-	{
-		public string AccountType;
-		public string PasswordHash;
-		public string PasswordSalt;
-		public UUID PrincipalID;
-	}
+    public class AuthData
+    {
+        public string AccountType;
+        public string PasswordHash;
+        public string PasswordSalt;
+        public UUID PrincipalID;
+    }
 
-	/// <summary>
-	///     An interface for connecting to the authentication data-store
-	/// </summary>
-	public interface IAuthenticationData : IUniverseDataPlugin
-	{
-		AuthData Get (UUID principalID, string authType);
+    /// <summary>
+    ///     An interface for connecting to the authentication data-store
+    /// </summary>
+    public interface IAuthenticationData : IUniverseDataPlugin
+    {
+        AuthData Get(UUID principalID, string authType);
 
-		bool Store (AuthData data);
+        bool Store(AuthData data);
 
-		bool SetDataItem (UUID principalID, string item, string value);
+        bool SetDataItem(UUID principalID, string item, string value);
 
-		bool SetToken (UUID principalID, string token, int lifetime);
+        bool SetToken(UUID principalID, string token, int lifetime);
 
-		bool CheckToken (UUID principalID, string token, int lifetime);
+        bool CheckToken(UUID principalID, string token, int lifetime);
 
-		bool Delete (UUID principalID, string authType);
-	}
+        bool Delete(UUID principalID, string authType);
+    }
 }

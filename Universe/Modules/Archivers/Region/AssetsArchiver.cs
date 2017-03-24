@@ -33,39 +33,39 @@ using Universe.Framework.Services.ClassHelpers.Assets;
 
 namespace Universe.Modules.Archivers
 {
-	/// <summary>
-	///     Archives assets
-	/// </summary>
-	public class AssetsArchiver
-	{
-		/// <value>
-		///     Post a message to the log every x assets as a progress bar
-		/// </value>
-		protected static int LOG_ASSET_LOAD_NOTIFICATION_INTERVAL = 50;
+    /// <summary>
+    ///     Archives assets
+    /// </summary>
+    public class AssetsArchiver
+    {
+        /// <value>
+        ///     Post a message to the log every x assets as a progress bar
+        /// </value>
+        protected static int LOG_ASSET_LOAD_NOTIFICATION_INTERVAL = 50;
 
-		protected TarArchiveWriter m_archiveWriter;
+        protected TarArchiveWriter m_archiveWriter;
 
-		/// <value>
-		///     Keep a count of the number of assets written so that we can provide status updates
-		/// </value>
-		protected int m_assetsWritten;
+        /// <value>
+        ///     Keep a count of the number of assets written so that we can provide status updates
+        /// </value>
+        protected int m_assetsWritten;
 
-		public AssetsArchiver (TarArchiveWriter archiveWriter)
-		{
-			m_archiveWriter = archiveWriter;
-		}
+        public AssetsArchiver(TarArchiveWriter archiveWriter)
+        {
+            m_archiveWriter = archiveWriter;
+        }
 
-		/// <summary>
-		///     Archive the assets given to this archiver to the given archive.
-		/// </summary>
-		/// <param name="asset"></param>
-		public void WriteAsset (AssetBase asset)
-		{
-			//WriteMetadata(archive);
-			WriteData (asset);
-		}
+        /// <summary>
+        ///     Archive the assets given to this archiver to the given archive.
+        /// </summary>
+        /// <param name="asset"></param>
+        public void WriteAsset(AssetBase asset)
+        {
+            //WriteMetadata(archive);
+            WriteData(asset);
+        }
 
-		/*
+        /*
         protected void WriteMetadata(TarArchiveWriter archive)
         {
             StringWriter sw = new StringWriter();
@@ -108,43 +108,46 @@ namespace Universe.Modules.Archivers
             archive.WriteFile("assets.xml", sw.ToString());
         } */
 
-		/// <summary>
-		///     Write asset data files to the given archive
-		/// </summary>
-		/// <param name="asset"></param>
-		protected void WriteData (AssetBase asset)
-		{
-			// It appears that gtar, at least, doesn't need the intermediate directory entries in the tar
-			//archive.AddDir("assets");
+        /// <summary>
+        ///     Write asset data files to the given archive
+        /// </summary>
+        /// <param name="asset"></param>
+        protected void WriteData(AssetBase asset)
+        {
+            // It appears that gtar, at least, doesn't need the intermediate directory entries in the tar
+            //archive.AddDir("assets");
 
-			string extension = string.Empty;
+            string extension = string.Empty;
 
-			if (ArchiveConstants.ASSET_TYPE_TO_EXTENSION.ContainsKey ((sbyte)asset.TypeAsset)) {
-				extension = ArchiveConstants.ASSET_TYPE_TO_EXTENSION [(sbyte)asset.TypeAsset];
-			} else {
-				MainConsole.Instance.ErrorFormat (
-					"[Archiver]: Unrecognized asset type {0} with uuid {1}.  This asset will be saved but not reloaded",
-					asset.Type, asset.ID);
-			}
+            if (ArchiveConstants.ASSET_TYPE_TO_EXTENSION.ContainsKey((sbyte) asset.TypeAsset))
+            {
+                extension = ArchiveConstants.ASSET_TYPE_TO_EXTENSION[(sbyte) asset.TypeAsset];
+            }
+            else
+            {
+                MainConsole.Instance.ErrorFormat(
+                    "[Archiver]: Unrecognized asset type {0} with uuid {1}.  This asset will be saved but not reloaded",
+                    asset.Type, asset.ID);
+            }
 
-			m_archiveWriter.WriteFile (
-				ArchiveConstants.ASSETS_PATH + asset.ID.ToString () + extension,
-				asset.Data);
+            m_archiveWriter.WriteFile(
+                ArchiveConstants.ASSETS_PATH + asset.ID.ToString() + extension,
+                asset.Data);
 
-			m_assetsWritten++;
+            m_assetsWritten++;
 
-			//MainConsole.Instance.DebugFormat("[Archiver]: Added asset {0}", m_assetsWritten);
+            //MainConsole.Instance.DebugFormat("[Archiver]: Added asset {0}", m_assetsWritten);
 
-			if (m_assetsWritten % LOG_ASSET_LOAD_NOTIFICATION_INTERVAL == 0)
-				MainConsole.Instance.InfoFormat ("[Archiver]: Added {0} assets to archive", m_assetsWritten);
-		}
+            if (m_assetsWritten%LOG_ASSET_LOAD_NOTIFICATION_INTERVAL == 0)
+                MainConsole.Instance.InfoFormat("[Archiver]: Added {0} assets to archive", m_assetsWritten);
+        }
 
-		/// <summary>
-		///     Only call this if you need to force a close on the underlying writer.
-		/// </summary>
-		public void ForceClose ()
-		{
-			m_archiveWriter.Close ();
-		}
-	}
+        /// <summary>
+        ///     Only call this if you need to force a close on the underlying writer.
+        /// </summary>
+        public void ForceClose()
+        {
+            m_archiveWriter.Close();
+        }
+    }
 }

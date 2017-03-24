@@ -32,81 +32,80 @@ using Universe.Framework.SceneInfo;
 
 namespace Universe.Modules.Monitoring.Monitors
 {
-	public class ObjectUpdateMonitor : IObjectUpdateMonitor
-	{
-		#region Declares
+    public class ObjectUpdateMonitor : IObjectUpdateMonitor
+    {
+        #region Declares
+        readonly object _primLock = new object ();
 
-		readonly object _primLock = new object ();
+        float LastPrimsLimited;
+        volatile float primsLimited;
 
-		float LastPrimsLimited;
-		volatile float primsLimited;
+        public float PrimsLimited {
+            get {
+                lock (_primLock)
+                    return LastPrimsLimited;
+            }
+        }
 
-		public float PrimsLimited {
-			get {
-				lock (_primLock)
-					return LastPrimsLimited;
-			}
-		}
+        #endregion
 
-		#endregion
+        #region Constructor
 
-		#region Constructor
+        public ObjectUpdateMonitor (IScene scene)
+        {
+        }
 
-		public ObjectUpdateMonitor (IScene scene)
-		{
-		}
+        #endregion
 
-		#endregion
+        #region Implementation of IMonitor
 
-		#region Implementation of IMonitor
+        public double GetValue ()
+        {
+            lock (_primLock)
+                return LastPrimsLimited / 10;
+        }
 
-		public double GetValue ()
-		{
-			lock (_primLock)
-				return LastPrimsLimited / 10;
-		}
+        public string GetName ()
+        {
+            return "PrimUpdates";
+        }
 
-		public string GetName ()
-		{
-			return "PrimUpdates";
-		}
+        public string GetInterfaceName ()
+        {
+            return "IObjectUpdateMonitor";
+        }
 
-		public string GetInterfaceName ()
-		{
-			return "IObjectUpdateMonitor";
-		}
+        public string GetFriendlyValue ()
+        {
+            return GetValue () + " prim updates limited/second";
+        }
 
-		public string GetFriendlyValue ()
-		{
-			return GetValue () + " prim updates limited/second";
-		}
+        #endregion
 
-		#endregion
+        #region Other Methods
 
-		#region Other Methods
+        #region IMonitor Members
 
-		#region IMonitor Members
+        public void ResetStats ()
+        {
+            lock (_primLock) {
+                LastPrimsLimited = primsLimited;
+                primsLimited = 0;
+            }
+        }
 
-		public void ResetStats ()
-		{
-			lock (_primLock) {
-				LastPrimsLimited = primsLimited;
-				primsLimited = 0;
-			}
-		}
+        #endregion
 
-		#endregion
+        #region IObjectUpdateMonitor Members
 
-		#region IObjectUpdateMonitor Members
+        public void AddLimitedPrims (int prims)
+        {
+            lock (_primLock)
+                primsLimited += prims;
+        }
 
-		public void AddLimitedPrims (int prims)
-		{
-			lock (_primLock)
-				primsLimited += prims;
-		}
+        #endregion
 
-		#endregion
-
-		#endregion
-	}
+        #endregion
+    }
 }

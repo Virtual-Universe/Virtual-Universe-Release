@@ -40,172 +40,191 @@ using Universe.Framework.Utilities;
 
 namespace Universe.Modules.Web
 {
-	public class AgentInfoPage : IWebInterfacePage
-	{
-		public string[] FilePath {
-			get {
-				return new[] {
-					"html/webprofile/index.html",
-					"html/webprofile/base.html",
-					"html/webprofile/"
-				};
-			}
-		}
+    public class AgentInfoPage : IWebInterfacePage
+    {
+        public string[] FilePath
+        {
+            get
+            {
+                return new[]
+                           {
+                               "html/webprofile/index.html",
+                               "html/webprofile/base.html",
+                               "html/webprofile/"
+                           };
+            }
+        }
 
-		public bool RequiresAuthentication {
-			get { return false; }
-		}
+        public bool RequiresAuthentication
+        {
+            get { return false; }
+        }
 
-		public bool RequiresAdminAuthentication {
-			get { return false; }
-		}
+        public bool RequiresAdminAuthentication
+        {
+            get { return false; }
+        }
 
-		public Dictionary<string, object> Fill (WebInterface webInterface, string filename, OSHttpRequest httpRequest,
-		                                             OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
-		                                             ITranslator translator, out string response)
-		{
-			response = null;
-			var vars = new Dictionary<string, object> ();
+        public Dictionary<string, object> Fill(WebInterface webInterface, string filename, OSHttpRequest httpRequest,
+                                               OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
+                                               ITranslator translator, out string response)
+        {
+            response = null;
+            var vars = new Dictionary<string, object>();
 
-			string username = filename.Split ('/').LastOrDefault ();
-			UserAccount account = null;
-			if (httpRequest.Query.ContainsKey ("userid")) {
-				string userid = httpRequest.Query ["userid"].ToString ();
+            string username = filename.Split('/').LastOrDefault();
+            UserAccount account = null;
+            if (httpRequest.Query.ContainsKey("userid"))
+            {
+                string userid = httpRequest.Query["userid"].ToString();
 
-				account = webInterface.Registry.RequestModuleInterface<IUserAccountService> ().
-                                       GetUserAccount (null, UUID.Parse (userid));
-			} else if (httpRequest.Query.ContainsKey ("name")) {
-				string name = httpRequest.Query.ContainsKey ("name") ? httpRequest.Query ["name"].ToString () : username;
-				name = name.Replace ('.', ' ');
-				name = name.Replace ("%20", " ");
-				account = webInterface.Registry.RequestModuleInterface<IUserAccountService> ().
-                                       GetUserAccount (null, name);
-			} else {
-				username = username.Replace ("%20", " ");
-				webInterface.Redirect (httpResponse, "/webprofile/?name=" + username);
-				return vars;
-			}
+                account = webInterface.Registry.RequestModuleInterface<IUserAccountService>().
+                                       GetUserAccount(null, UUID.Parse(userid));
+            }
+            else if (httpRequest.Query.ContainsKey("name"))
+            {
+                string name = httpRequest.Query.ContainsKey("name") ? httpRequest.Query["name"].ToString() : username;
+                name = name.Replace('.', ' ');
+                name = name.Replace("%20", " ");
+                account = webInterface.Registry.RequestModuleInterface<IUserAccountService>().
+                                       GetUserAccount(null, name);
+            }
+            else
+            {
+                username = username.Replace("%20", " ");
+                webInterface.Redirect(httpResponse, "/webprofile/?name=" + username);
+                return vars;
+            }
 
-			if (account == null)
-				return vars;
+            if (account == null)
+                return vars;
 
 			/* Allow access to the system user info - needed for Estate owner Profiles of regions
             if ( Utilities.IsSystemUser(account.PrincipalID) )
 				return vars;
             */
 
-			vars.Add ("UserName", account.Name);
-			//  TODO: User Profile inworld shows this as the standard mm/dd/yyyy
-			//  Do we want this to be localised into the users Localisation or keep it as standard ?
-			//
-			//  vars.Add("UserBorn", Culture.LocaleDate(Util.ToDateTime(account.Created)));
-			vars.Add ("UserBorn", Util.ToDateTime (account.Created).ToShortDateString ());
+            vars.Add("UserName", account.Name);
+            //  TODO: User Profile inworld shows this as the standard mm/dd/yyyy
+            //  Do we want this to be localised into the users Localisation or keep it as standard ?
+            //
+            //  vars.Add("UserBorn", Culture.LocaleDate(Util.ToDateTime(account.Created)));
+            vars.Add("UserBorn", Util.ToDateTime(account.Created).ToShortDateString());
 
-			IUserProfileInfo profile = Framework.Utilities.DataManager.RequestPlugin<IProfileConnector> ().
-                                              GetUserProfile (account.PrincipalID);
-			string picUrl = "../images/icons/no_avatar.jpg";
-			if (profile != null) {
-				vars.Add ("UserType", profile.MembershipGroup == "" ? "Resident" : profile.MembershipGroup);
+            IUserProfileInfo profile = Framework.Utilities.DataManager.RequestPlugin<IProfileConnector>().
+                                              GetUserProfile(account.PrincipalID);
+            string picUrl = "../images/icons/no_avatar.jpg";
+            if (profile != null)
+            {
+                vars.Add ("UserType", profile.MembershipGroup == "" ? "Resident" : profile.MembershipGroup);
 
-				if (profile.Partner != UUID.Zero) {
-					account = webInterface.Registry.RequestModuleInterface<IUserAccountService> ().
+                if (profile.Partner != UUID.Zero)
+                {
+                    account = webInterface.Registry.RequestModuleInterface<IUserAccountService> ().
                                            GetUserAccount (null, profile.Partner);
-					vars.Add ("UserPartner", account.Name);
-				} else
-					vars.Add ("UserPartner", "No partner");
-				vars.Add ("UserAboutMe", profile.AboutText == "" ? "Nothing here" : profile.AboutText);
-				IWebHttpTextureService webhttpService =
-					webInterface.Registry.RequestModuleInterface<IWebHttpTextureService> ();
-				if (webhttpService != null && profile.Image != UUID.Zero)
-					picUrl = webhttpService.GetTextureURL (profile.Image);
-			} else {
-				// no profile yet
-				vars.Add ("UserType", "Resident");
-				vars.Add ("UserPartner", "Not specified yet");
-				vars.Add ("UserAboutMe", "Nothing here yet");
+                    vars.Add ("UserPartner", account.Name);
+                } else
+                    vars.Add ("UserPartner", "No partner");
+                vars.Add ("UserAboutMe", profile.AboutText == "" ? "Nothing here" : profile.AboutText);
+                IWebHttpTextureService webhttpService =
+                    webInterface.Registry.RequestModuleInterface<IWebHttpTextureService> ();
+                if (webhttpService != null && profile.Image != UUID.Zero)
+                    picUrl = webhttpService.GetTextureURL (profile.Image);
+            } else
+            {
+                // no profile yet
+                vars.Add ("UserType", "Guest");
+                vars.Add ("UserPartner", "Not specified yet");
+                vars.Add ("UserAboutMe", "Nothing here yet");
 
-			}
-			vars.Add ("UserPictureURL", picUrl);
+            }
+            vars.Add ("UserPictureURL", picUrl);
 
-			// TODO:  This is only showing online status if you are logged in ??
-			UserAccount ourAccount = Authenticator.GetAuthentication (httpRequest);
-			if (ourAccount != null) {
-				IFriendsService friendsService = webInterface.Registry.RequestModuleInterface<IFriendsService> ();
-				var friends = friendsService.GetFriends (account.PrincipalID);
-				UUID friendID = UUID.Zero;
-				if (friends.Any (f => UUID.TryParse (f.Friend, out friendID) && friendID == ourAccount.PrincipalID)) {
-					IAgentInfoService agentInfoService =
-						webInterface.Registry.RequestModuleInterface<IAgentInfoService> ();
-					IGridService gridService = webInterface.Registry.RequestModuleInterface<IGridService> ();
-					UserInfo ourInfo = agentInfoService.GetUserInfo (account.PrincipalID.ToString ());
-					if (ourInfo != null && ourInfo.IsOnline)
-						vars.Add ("OnlineLocation", gridService.GetRegionByUUID (null, ourInfo.CurrentRegionID).RegionName);
-					vars.Add ("UserIsOnline", ourInfo != null && ourInfo.IsOnline);
-					vars.Add ("IsOnline",
-						ourInfo != null && ourInfo.IsOnline
-                                 ? translator.GetTranslatedString ("Online")
-                                 : translator.GetTranslatedString ("Offline"));
-				} else {
-					vars.Add ("OnlineLocation", "");
-					vars.Add ("UserIsOnline", false);
-					vars.Add ("IsOnline", translator.GetTranslatedString ("Offline"));
-				}
-			} else {
-				vars.Add ("OnlineLocation", "");
-				vars.Add ("UserIsOnline", false);
-				vars.Add ("IsOnline", translator.GetTranslatedString ("Offline"));
-			}
+            // TODO:  This is only showing online status if you are logged in ??
+            UserAccount ourAccount = Authenticator.GetAuthentication(httpRequest);
+            if (ourAccount != null)
+            {
+                IFriendsService friendsService = webInterface.Registry.RequestModuleInterface<IFriendsService>();
+                var friends = friendsService.GetFriends(account.PrincipalID);
+                UUID friendID = UUID.Zero;
+                if (friends.Any(f => UUID.TryParse(f.Friend, out friendID) && friendID == ourAccount.PrincipalID))
+                {
+                    IAgentInfoService agentInfoService =
+                        webInterface.Registry.RequestModuleInterface<IAgentInfoService>();
+                    IGridService gridService = webInterface.Registry.RequestModuleInterface<IGridService>();
+                    UserInfo ourInfo = agentInfoService.GetUserInfo(account.PrincipalID.ToString());
+                    if (ourInfo != null && ourInfo.IsOnline)
+                        vars.Add("OnlineLocation", gridService.GetRegionByUUID(null, ourInfo.CurrentRegionID).RegionName);
+                    vars.Add("UserIsOnline", ourInfo != null && ourInfo.IsOnline);
+                    vars.Add("IsOnline",
+                             ourInfo != null && ourInfo.IsOnline
+                                 ? translator.GetTranslatedString("Online")
+                                 : translator.GetTranslatedString("Offline"));
+                }
+                else
+                {
+                    vars.Add("OnlineLocation", "");
+                    vars.Add("UserIsOnline", false);
+                    vars.Add("IsOnline", translator.GetTranslatedString("Offline"));
+                }
+            }
+            else
+            {
+                vars.Add("OnlineLocation", "");
+                vars.Add("UserIsOnline", false);
+                vars.Add("IsOnline", translator.GetTranslatedString("Offline"));
+            }
 
-			// Menus
-			vars.Add ("MenuProfileTitle", translator.GetTranslatedString ("MenuProfileTitle"));
-			vars.Add ("TooltipsMenuProfile", translator.GetTranslatedString ("TooltipsMenuProfile"));
-			vars.Add ("MenuGroupTitle", translator.GetTranslatedString ("MenuGroupTitle"));
-			vars.Add ("TooltipsMenuGroups", translator.GetTranslatedString ("TooltipsMenuGroups"));
-			vars.Add ("MenuPicksTitle", translator.GetTranslatedString ("MenuPicksTitle"));
-			vars.Add ("TooltipsMenuPicks", translator.GetTranslatedString ("TooltipsMenuPicks"));
-			vars.Add ("MenuRegionsTitle", translator.GetTranslatedString ("MenuRegionsTitle"));
-			vars.Add ("TooltipsMenuRegions", translator.GetTranslatedString ("TooltipsMenuRegions"));
+            // Menus
+            vars.Add("MenuProfileTitle", translator.GetTranslatedString("MenuProfileTitle"));
+            vars.Add("TooltipsMenuProfile", translator.GetTranslatedString("TooltipsMenuProfile"));
+            vars.Add("MenuGroupTitle", translator.GetTranslatedString("MenuGroupTitle"));
+            vars.Add("TooltipsMenuGroups", translator.GetTranslatedString("TooltipsMenuGroups"));
+            vars.Add("MenuPicksTitle", translator.GetTranslatedString("MenuPicksTitle"));
+            vars.Add("TooltipsMenuPicks", translator.GetTranslatedString("TooltipsMenuPicks"));
+            vars.Add("MenuRegionsTitle", translator.GetTranslatedString("MenuRegionsTitle"));
+            vars.Add("TooltipsMenuRegions", translator.GetTranslatedString("TooltipsMenuRegions"));
 
-			// User data
-			vars.Add ("UserProfileFor", translator.GetTranslatedString ("UserProfileFor"));
-			vars.Add ("ResidentSince", translator.GetTranslatedString ("ResidentSince"));
-			vars.Add ("AccountType", translator.GetTranslatedString ("AccountType"));
-			vars.Add ("PartnersName", translator.GetTranslatedString ("PartnersName"));
-			vars.Add ("AboutMe", translator.GetTranslatedString ("AboutMe"));
-			vars.Add ("IsOnlineText", translator.GetTranslatedString ("IsOnlineText"));
-			vars.Add ("OnlineLocationText", translator.GetTranslatedString ("OnlineLocationText"));
+            // User data
+            vars.Add("UserProfileFor", translator.GetTranslatedString("UserProfileFor"));
+            vars.Add("ResidentSince", translator.GetTranslatedString("ResidentSince"));
+            vars.Add("AccountType", translator.GetTranslatedString("AccountType"));
+            vars.Add("PartnersName", translator.GetTranslatedString("PartnersName"));
+            vars.Add("AboutMe", translator.GetTranslatedString("AboutMe"));
+            vars.Add("IsOnlineText", translator.GetTranslatedString("IsOnlineText"));
+            vars.Add("OnlineLocationText", translator.GetTranslatedString("OnlineLocationText"));
 
-			// Style Switcher
-			vars.Add ("styles1", translator.GetTranslatedString ("styles1"));
-			vars.Add ("styles2", translator.GetTranslatedString ("styles2"));
-			vars.Add ("styles3", translator.GetTranslatedString ("styles3"));
-			vars.Add ("styles4", translator.GetTranslatedString ("styles4"));
-			vars.Add ("styles5", translator.GetTranslatedString ("styles5"));
+            // Style Switcher
+            vars.Add("styles1", translator.GetTranslatedString("styles1"));
+            vars.Add("styles2", translator.GetTranslatedString("styles2"));
+            vars.Add("styles3", translator.GetTranslatedString("styles3"));
+            vars.Add("styles4", translator.GetTranslatedString("styles4"));
+            vars.Add("styles5", translator.GetTranslatedString("styles5"));
 
-			vars.Add ("StyleSwitcherStylesText", translator.GetTranslatedString ("StyleSwitcherStylesText"));
-			vars.Add ("StyleSwitcherLanguagesText", translator.GetTranslatedString ("StyleSwitcherLanguagesText"));
-			vars.Add ("StyleSwitcherChoiceText", translator.GetTranslatedString ("StyleSwitcherChoiceText"));
+            vars.Add("StyleSwitcherStylesText", translator.GetTranslatedString("StyleSwitcherStylesText"));
+            vars.Add("StyleSwitcherLanguagesText", translator.GetTranslatedString("StyleSwitcherLanguagesText"));
+            vars.Add("StyleSwitcherChoiceText", translator.GetTranslatedString("StyleSwitcherChoiceText"));
 
-			// Language Switcher
-			vars.Add ("en", translator.GetTranslatedString ("en"));
-			vars.Add ("fr", translator.GetTranslatedString ("fr"));
-			vars.Add ("de", translator.GetTranslatedString ("de"));
-			vars.Add ("it", translator.GetTranslatedString ("it"));
-			vars.Add ("es", translator.GetTranslatedString ("es"));
-			vars.Add ("nl", translator.GetTranslatedString ("nl"));
+            // Language Switcher
+            vars.Add("en", translator.GetTranslatedString("en"));
+            vars.Add("fr", translator.GetTranslatedString("fr"));
+            vars.Add("de", translator.GetTranslatedString("de"));
+            vars.Add("it", translator.GetTranslatedString("it"));
+            vars.Add("es", translator.GetTranslatedString("es"));
+            vars.Add("nl", translator.GetTranslatedString("nl"));
 
-			var settings = webInterface.GetWebUISettings ();
-			vars.Add ("ShowLanguageTranslatorBar", !settings.HideLanguageTranslatorBar);
-			vars.Add ("ShowStyleBar", !settings.HideStyleBar);
+            var settings = webInterface.GetWebUISettings ();
+            vars.Add("ShowLanguageTranslatorBar", !settings.HideLanguageTranslatorBar);
+            vars.Add("ShowStyleBar", !settings.HideStyleBar);
 
-			return vars;
-		}
+            return vars;
+        }
 
-		public bool AttemptFindPage (string filename, ref OSHttpResponse httpResponse, out string text)
-		{
-			httpResponse.ContentType = "text/html";
-			text = File.ReadAllText ("html/webprofile/index.html");
-			return true;
-		}
-	}
+        public bool AttemptFindPage(string filename, ref OSHttpResponse httpResponse, out string text)
+        {
+            httpResponse.ContentType = "text/html";
+            text = File.ReadAllText("html/webprofile/index.html");
+            return true;
+        }
+    }
 }

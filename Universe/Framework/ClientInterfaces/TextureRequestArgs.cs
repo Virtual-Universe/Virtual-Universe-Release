@@ -32,52 +32,53 @@ using OpenMetaverse;
 
 namespace Universe.Framework.ClientInterfaces
 {
-	public class TextureRequestArgs : EventArgs
-	{
-		sbyte m_discardLevel;
-		uint m_packetNumber;
-		float m_priority;
-		int m_requestType;
-		protected UUID m_requestedAssetID;
+    public class TextureRequestArgs : EventArgs
+    {
+        sbyte m_discardLevel;
+        uint m_packetNumber;
+        float m_priority;
+        int m_requestType;
+        protected UUID m_requestedAssetID;
 
-		public float Priority {     // 20160427 - greythane - Why is this a float?  Does it provide fractional priotities?
-			get { return m_priority; }
-			set { m_priority = value; }
-		}
+        public float Priority     // 20160427 - greythane - Why is this a float?  Does it provide fractional priotities?
+        {
+            get { return m_priority; }
+            set { m_priority = value; }
+        }
 
-		/// <summary>
-		/// </summary>
-		public uint PacketNumber {
-			get { return m_packetNumber; }
-			set { m_packetNumber = value; }
-		}
+        /// <summary>
+        /// </summary>
+        public uint PacketNumber {
+            get { return m_packetNumber; }
+            set { m_packetNumber = value; }
+        }
 
-		public uint requestSequence { get; set; }
+        public uint requestSequence { get; set; }
 
-		/// <summary>
-		/// </summary>
-		public sbyte DiscardLevel {
-			get { return m_discardLevel; }
-			set { m_discardLevel = value; }
-		}
+        /// <summary>
+        /// </summary>
+        public sbyte DiscardLevel {
+            get { return m_discardLevel; }
+            set { m_discardLevel = value; }
+        }
 
-		/// <summary>
-		/// </summary>
-		public UUID RequestedAssetID {
-			get { return m_requestedAssetID; }
-			set { m_requestedAssetID = value; }
-		}
+        /// <summary>
+        /// </summary>
+        public UUID RequestedAssetID {
+            get { return m_requestedAssetID; }
+            set { m_requestedAssetID = value; }
+        }
 
-		public int RequestType {
-			get { return m_requestType; }
-			set { m_requestType = value; }
-		}
+        public int RequestType {
+            get { return m_requestType; }
+            set { m_requestType = value; }
+        }
 
-		public override string ToString ()
-		{
-			return String.Format ("DiscardLevel: {0}, Priority: {1}, PacketNumber: {2}, AssetId:{3}, RequestType:{4}",
-				m_discardLevel,
-				m_priority, m_packetNumber, m_requestedAssetID, m_requestType);
-		}
-	}
+        public override string ToString ()
+        {
+            return String.Format ("DiscardLevel: {0}, Priority: {1}, PacketNumber: {2}, AssetId:{3}, RequestType:{4}",
+                                 m_discardLevel,
+                                 m_priority, m_packetNumber, m_requestedAssetID, m_requestType);
+        }
+    }
 }

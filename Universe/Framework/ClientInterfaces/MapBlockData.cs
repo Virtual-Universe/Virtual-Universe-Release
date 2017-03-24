@@ -33,34 +33,34 @@ using OpenMetaverse.StructuredData;
 
 namespace Universe.Framework.ClientInterfaces
 {
-	public class MapBlockData
-	{
-		public byte Access;
-		public byte Agents;
-		public UUID MapImageID;
-		public String Name;
-		public uint RegionFlags;
-		public ushort SizeX;
-		public ushort SizeY;
-		public byte WaterHeight;
+    public class MapBlockData
+    {
+        public byte Access;
+        public byte Agents;
+        public UUID MapImageID;
+        public String Name;
+        public uint RegionFlags;
+        public ushort SizeX;
+        public ushort SizeY;
+        public byte WaterHeight;
 
-		//NOTE:  These are uint16 values so the current max location limitation is 63466, 63466 !!ß
-		public ushort X;
-		public ushort Y;
+        //NOTE:  These are uint16 values so the current max location limitation is 63466, 63466 !!ß
+        public ushort X;
+        public ushort Y;
 
-		public OSDMap ToOSD ()
-		{
-			OSDMap map = new OSDMap ();
-			map ["X"] = X;
-			map ["Y"] = Y;
-			map ["SizeX"] = SizeX;
-			map ["SizeY"] = SizeY;
-			map ["Name"] = Name;
-			map ["Access"] = Access;
-			map ["RegionFlags"] = RegionFlags;
-			map ["WaterHeight"] = WaterHeight;
-			map ["MapImageID"] = MapImageID;
-			return map;
-		}
-	}
+        public OSDMap ToOSD()
+        {
+            OSDMap map = new OSDMap();
+            map["X"] = X;
+            map["Y"] = Y;
+            map["SizeX"] = SizeX;
+            map["SizeY"] = SizeY;
+            map["Name"] = Name;
+            map["Access"] = Access;
+            map["RegionFlags"] = RegionFlags;
+            map["WaterHeight"] = WaterHeight;
+            map["MapImageID"] = MapImageID;
+            return map;
+        }
+    }
 }

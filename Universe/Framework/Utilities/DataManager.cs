@@ -32,69 +32,71 @@ using Universe.Framework.Services;
 
 namespace Universe.Framework.Utilities
 {
-	/// <summary>
-	///     Plugin manager that deals with retrieving IDataPlugins
-	/// </summary>
-	public static class DataManager
-	{
-		private static readonly Dictionary<string, IUniverseDataPlugin> Plugins =
-			new Dictionary<string, IUniverseDataPlugin> ();
+    /// <summary>
+    ///     Plugin manager that deals with retrieving IDataPlugins
+    /// </summary>
+    public static class DataManager
+    {
+        private static readonly Dictionary<string, IUniverseDataPlugin> Plugins =
+            new Dictionary<string, IUniverseDataPlugin>();
 
-		public static List<IUniverseDataPlugin> GetPlugins ()
-		{
-			return new List<IUniverseDataPlugin> (Plugins.Values);
-		}
+        public static List<IUniverseDataPlugin> GetPlugins()
+        {
+            return new List<IUniverseDataPlugin>(Plugins.Values);
+        }
 
-		/// <summary>
-		///     Request a data plugin from the registry
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <returns></returns>
-		public static T RequestPlugin<T> () where T : IUniverseDataPlugin
-		{
-			if (Plugins.ContainsKey (typeof(T).Name)) {
-				IUniverseDataPlugin Plugin;
-				Plugins.TryGetValue (typeof(T).Name, out Plugin);
-				return (T)Plugin;
-			}
-			//Return null if we can't find it
-			return default(T);
-		}
+        /// <summary>
+        ///     Request a data plugin from the registry
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static T RequestPlugin<T>() where T : IUniverseDataPlugin
+        {
+            if (Plugins.ContainsKey(typeof (T).Name))
+            {
+                IUniverseDataPlugin Plugin;
+                Plugins.TryGetValue(typeof (T).Name, out Plugin);
+                return (T) Plugin;
+            }
+            //Return null if we can't find it
+            return default(T);
+        }
 
-		/// <summary>
-		///     Request a data plugin from the registry
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <returns></returns>
-		public static T RequestPlugin<T> (string name) where T : IUniverseDataPlugin
-		{
-			if (Plugins.ContainsKey (name)) {
-				IUniverseDataPlugin Plugin;
-				Plugins.TryGetValue (name, out Plugin);
-				return (T)Plugin;
-			}
-			//Return null if we can't find it
-			return default(T);
-		}
+        /// <summary>
+        ///     Request a data plugin from the registry
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static T RequestPlugin<T>(string name) where T : IUniverseDataPlugin
+        {
+            if (Plugins.ContainsKey(name))
+            {
+                IUniverseDataPlugin Plugin;
+                Plugins.TryGetValue(name, out Plugin);
+                return (T) Plugin;
+            }
+            //Return null if we can't find it
+            return default(T);
+        }
 
-		/// <summary>
-		///     Register a new plugin to the registry
-		/// </summary>
-		/// <param name="plugin"></param>
-		public static void RegisterPlugin (IUniverseDataPlugin plugin)
-		{
-			RegisterPlugin (plugin.Name, plugin);
-		}
+        /// <summary>
+        ///     Register a new plugin to the registry
+        /// </summary>
+        /// <param name="plugin"></param>
+        public static void RegisterPlugin(IUniverseDataPlugin plugin)
+        {
+            RegisterPlugin(plugin.Name, plugin);
+        }
 
-		/// <summary>
-		///     Register a new plugin to the registry
-		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="plugin"></param>
-		public static void RegisterPlugin (string name, IUniverseDataPlugin plugin)
-		{
-			if (!Plugins.ContainsKey (name))
-				Plugins.Add (name, plugin);
-		}
-	}
+        /// <summary>
+        ///     Register a new plugin to the registry
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="plugin"></param>
+        public static void RegisterPlugin(string name, IUniverseDataPlugin plugin)
+        {
+            if (!Plugins.ContainsKey(name))
+                Plugins.Add(name, plugin);
+        }
+    }
 }

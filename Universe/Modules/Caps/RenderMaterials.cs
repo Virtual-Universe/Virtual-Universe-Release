@@ -48,394 +48,448 @@ using ZLibNet;
 
 namespace Universe.Modules.Caps
 {
-	public class RenderMaterials : INonSharedRegionModule
-	{
-		static readonly object _lock = new object ();
+    public class RenderMaterials : INonSharedRegionModule
+    {
+        static readonly object _lock = new object ();
 
-		IScene m_scene;
-		bool m_enabled;
-		public Dictionary<UUID, OSDMap> m_knownMaterials = new Dictionary<UUID, OSDMap> ();
+        IScene m_scene;
+        bool m_enabled;
+        public Dictionary<UUID, OSDMap> m_knownMaterials = new Dictionary<UUID, OSDMap> ();
 
-		#region INonSharedRegionModule Members
+        #region INonSharedRegionModule Members
 
-		public void Initialize (IConfigSource source)
-		{
-			var cfg = source.Configs ["MaterialsModule"];
-			if (cfg != null)
-				m_enabled = cfg.GetBoolean ("Enabled", false);
-			if (!m_enabled)
-				return;
+        public void Initialize (IConfigSource source)
+        {
+            var cfg = source.Configs ["MaterialsModule"];
+            if (cfg != null)
+                m_enabled = cfg.GetBoolean ("Enabled", false);
+            if (!m_enabled)
+                return;
 
-			MainConsole.Instance.Info ("[Materials]: Initializing module");
-		}
+            MainConsole.Instance.Info ("[Materials]: Initializing module");
+        }
 
-		public void AddRegion (IScene scene)
-		{
-			if (!m_enabled)
-				return;
+        public void AddRegion (IScene scene)
+        {
+            if (!m_enabled)
+                return;
 
-			m_scene = scene;
-			m_scene.EventManager.OnRegisterCaps += RegisterCaps;
-		}
+            m_scene = scene;
+            m_scene.EventManager.OnRegisterCaps += RegisterCaps;
+        }
 
-		public void RemoveRegion (IScene scene)
-		{
-			if (!m_enabled)
-				return;
+        public void RemoveRegion (IScene scene)
+        {
+            if (!m_enabled)
+                return;
 
-			m_scene.EventManager.OnRegisterCaps -= RegisterCaps;
-			m_scene = null;
-		}
+            m_scene.EventManager.OnRegisterCaps -= RegisterCaps;
+            m_scene = null;
+        }
 
-		public void RegionLoaded (IScene scene)
-		{
-		}
+        public void RegionLoaded (IScene scene)
+        {
+        }
 
-		public Type ReplaceableInterface {
-			get { return null; }
-		}
+        public Type ReplaceableInterface
+        {
+            get { return null; }
+        }
 
-		public void Close ()
-		{
-		}
+        public void Close ()
+        {
+        }
 
-		public string Name {
-			get { return "RenderMaterials"; }
-		}
+        public string Name
+        {
+            get { return "RenderMaterials"; }
+        }
 
-		#endregion
+        #endregion
 
-		public OSDMap RegisterCaps (UUID agentID, IHttpServer server)
-		{
-			OSDMap retVal = new OSDMap ();
-			retVal ["RenderMaterials"] = CapsUtil.CreateCAPS ("RenderMaterials", "");
-			server.AddStreamHandler (new GenericStreamHandler ("POST", retVal ["RenderMaterials"],
-				RenderMaterialsPostCap));
-			server.AddStreamHandler (new GenericStreamHandler ("GET", retVal ["RenderMaterials"],
-				RenderMaterialsGetCap));
-			server.AddStreamHandler (new GenericStreamHandler ("PUT", retVal ["RenderMaterials"],
-				RenderMaterialsPostCap));
-			return retVal;
-		}
+        public OSDMap RegisterCaps (UUID agentID, IHttpServer server)
+        {
+            OSDMap retVal = new OSDMap ();
+            retVal ["RenderMaterials"] = CapsUtil.CreateCAPS ("RenderMaterials", "");
+            server.AddStreamHandler (new GenericStreamHandler ("POST", retVal ["RenderMaterials"],
+                RenderMaterialsPostCap));
+            server.AddStreamHandler (new GenericStreamHandler ("GET", retVal ["RenderMaterials"],
+                RenderMaterialsGetCap));
+            server.AddStreamHandler (new GenericStreamHandler ("PUT", retVal ["RenderMaterials"],
+                RenderMaterialsPostCap));
+            return retVal;
+        }
 
-		public byte[] RenderMaterialsPostCap (string path, Stream request,
-		                                      OSHttpRequest httpRequest, OSHttpResponse httpResponse)
-		{
-			MainConsole.Instance.Debug ("[Materials]: POST cap handler");
+        public byte[] RenderMaterialsPostCap (string path, Stream request,
+                                             OSHttpRequest httpRequest, OSHttpResponse httpResponse)
+        {
+            MainConsole.Instance.Debug ("[Materials]: POST cap handler");
 
-			OSDMap req = (OSDMap)OSDParser.DeserializeLLSDXml (request);
-			OSDMap resp = new OSDMap ();
+            OSDMap req = (OSDMap)OSDParser.DeserializeLLSDXml (request);
+            OSDMap resp = new OSDMap ();
 
-			OSDMap materialsFromViewer = null;
+            OSDMap materialsFromViewer = null;
 
-			OSDArray respArr = new OSDArray ();
+            OSDArray respArr = new OSDArray ();
 
-			if (req.ContainsKey ("Zipped")) {
-				OSD osd;
+            if (req.ContainsKey ("Zipped"))
+            {
+                OSD osd;
 
-				byte[] inBytes = req ["Zipped"].AsBinary ();
+                byte[] inBytes = req ["Zipped"].AsBinary ();
 
-				try {
-					osd = ZDecompressBytesToOsd (inBytes);
+                try
+                {
+                    osd = ZDecompressBytesToOsd (inBytes);
 
-					if (osd != null) {
-						if (osd is OSDArray) { // assume array of MaterialIDs designating requested material entries
-							foreach (OSD elem in (OSDArray)osd) {
+                    if (osd != null)
+                    {
+                        if (osd is OSDArray) // assume array of MaterialIDs designating requested material entries
+                        {
+                            foreach (OSD elem in (OSDArray)osd)
+                            {
 
-								AssetBase materialAsset = null;
-								try {
-									UUID id = new UUID (elem.AsBinary (), 0);
-									if (m_knownMaterials.ContainsKey (id)) {
-										MainConsole.Instance.Info ("[Materials]: request for known material ID: " + id);
-										OSDMap matMap = new OSDMap ();
-										matMap ["ID"] = elem.AsBinary ();
+                                AssetBase materialAsset = null;
+                                try
+                                {
+                                    UUID id = new UUID (elem.AsBinary (), 0);
+                                     if (m_knownMaterials.ContainsKey (id))
+                                    {
+                                        MainConsole.Instance.Info ("[Materials]: request for known material ID: " + id);
+                                        OSDMap matMap = new OSDMap ();
+                                        matMap ["ID"] = elem.AsBinary ();
 
-										matMap ["Material"] = m_knownMaterials [id];
-										respArr.Add (matMap);
-									} else if ((materialAsset = m_scene.AssetService.Get (id.ToString ())) != null) {
-										MainConsole.Instance.Info ("[Materials]: request for stored material ID: " + id);
-										OSDMap matMap = new OSDMap ();
-										matMap ["ID"] = elem.AsBinary ();
+                                        matMap ["Material"] = m_knownMaterials [id];
+                                        respArr.Add (matMap);
+                                    } else if ((materialAsset = m_scene.AssetService.Get (id.ToString ())) != null)
+                                    {
+                                        MainConsole.Instance.Info ("[Materials]: request for stored material ID: " + id);
+                                        OSDMap matMap = new OSDMap ();
+                                        matMap ["ID"] = elem.AsBinary ();
 
-										matMap ["Material"] = OSDParser.DeserializeJson (Encoding.UTF8.GetString (materialAsset.Data));
-										respArr.Add (matMap);
-									} else
-										MainConsole.Instance.Info ("[Materials]: request for UNKNOWN material ID: " + id);
+                                        matMap ["Material"] = OSDParser.DeserializeJson (Encoding.UTF8.GetString (materialAsset.Data));
+                                        respArr.Add (matMap);
+                                    } else
+                                        MainConsole.Instance.Info ("[Materials]: request for UNKNOWN material ID: " + id);
                                     
-									if (materialAsset != null)
-										materialAsset.Dispose ();
-								} catch (Exception) {
-									// report something here?
-									if (materialAsset != null)
-										materialAsset.Dispose ();                                       
-									continue;
-								}
-							}
-						} else if (osd is OSDMap) { // request to assign a material
-							materialsFromViewer = osd as OSDMap;
+                                    if (materialAsset != null)
+                                        materialAsset.Dispose ();
+                                } catch (Exception)
+                                {
+                                    // report something here?
+                                    if (materialAsset != null)
+                                        materialAsset.Dispose ();                                       
+                                    continue;
+                                }
+                            }
+                        } else if (osd is OSDMap) // request to assign a material
+                        {
+                            materialsFromViewer = osd as OSDMap;
 
-							if (materialsFromViewer.ContainsKey ("FullMaterialsPerFace")) {
-								OSD matsOsd = materialsFromViewer ["FullMaterialsPerFace"];
-								if (matsOsd is OSDArray) {
-									OSDArray matsArr = matsOsd as OSDArray;
+                            if (materialsFromViewer.ContainsKey ("FullMaterialsPerFace"))
+                            {
+                                OSD matsOsd = materialsFromViewer ["FullMaterialsPerFace"];
+                                if (matsOsd is OSDArray)
+                                {
+                                    OSDArray matsArr = matsOsd as OSDArray;
 
-									try {
-										foreach (OSDMap matsMap in matsArr) {
-											// MainConsole.Instance.Debug("[Materials]: processing matsMap: " + OSDParser.SerializeJsonString(matsMap));
+                                    try
+                                    {
+                                        foreach (OSDMap matsMap in matsArr)
+                                        {
+                                            // MainConsole.Instance.Debug("[Materials]: processing matsMap: " + OSDParser.SerializeJsonString(matsMap));
 
-											uint matLocalID = 0;
-											try {
-												matLocalID = matsMap ["ID"].AsUInteger ();
-											} catch (Exception e) {
-												MainConsole.Instance.Warn ("[Materials]: cannot decode \"ID\" from matsMap: " + e.Message);
-											}
-											// MainConsole.Instance.Debug("[Materials]: matLocalId: " + matLocalID);
-
-
-											OSDMap mat = null;
-											if (matsMap.ContainsKey ("Material")) {
-												try {
-													mat = matsMap ["Material"] as OSDMap; 
-
-												} catch (Exception e) { 
-													MainConsole.Instance.Warn ("[MaterialsDemoModule]: cannot decode \"Material\" from matsMap: " + e.Message); 
-													continue;
-												}
-											}
-
-											if (mat == null)
-												continue;
-
-											// MainConsole.Instance.Debug("[Materials]: mat: " + OSDParser.SerializeJsonString(mat));
-											UUID id = HashOsd (mat);
-											m_knownMaterials [id] = mat;
-
-											var sop = m_scene.GetSceneObjectPart (matLocalID);
-											if (sop == null)
-												MainConsole.Instance.Debug ("[Materials]: null SOP for localId: " + matLocalID);
-											else {
-												//var te = sop.Shape.Textures;
-												var te = new Primitive.TextureEntry (sop.Shape.TextureEntry, 0, sop.Shape.TextureEntry.Length);
-
-												if (te == null) {
-													MainConsole.Instance.Debug ("[Materials]: null TextureEntry for localId: " + matLocalID);
-												} else {
-													int face = -1;
-
-													if (matsMap.ContainsKey ("Face")) {
-														face = matsMap ["Face"].AsInteger ();
-														if (te.FaceTextures == null) { // && face == 0)
-															if (te.DefaultTexture == null)
-																MainConsole.Instance.Debug ("[Materials]: te.DefaultTexture is null");
-															else {
-																te.DefaultTexture.MaterialID = id;
-															}
-														} else {
-															if (te.FaceTextures.Length >= face - 1) {
-																if (te.FaceTextures [face] == null)
-																	te.DefaultTexture.MaterialID = id;
-																else
-																	te.FaceTextures [face].MaterialID = id;
-															}
-														}
-													} else {
-														if (te.DefaultTexture != null)
-															te.DefaultTexture.MaterialID = id;
-													}
-
-													MainConsole.Instance.Debug ("[Materials]: setting material ID for face " + face + " to " + id);
-
-													//we cant use sop.UpdateTextureEntry(te); because it filters so do it manually
-
-													if (sop.ParentEntity != null) {
-														sop.Shape.TextureEntry = te.GetBytes ();
-														sop.TriggerScriptChangedEvent (Changed.TEXTURE);
-														sop.ParentEntity.HasGroupChanged = true;
-
-														sop.ScheduleUpdate (PrimUpdateFlags.FullUpdate);
-
-														AssetBase asset = new AssetBase (id, "RenderMaterial",
-															                  AssetType.Texture, sop.OwnerID) {
-															Data = Encoding.UTF8.GetBytes (
-																OSDParser.SerializeJsonString (mat))
-														};
-														m_scene.AssetService.Store (asset);
-
-														StoreMaterialsForPart (sop);
-													}
-												}
-											}
-										}
-									} catch (Exception e) {
-										MainConsole.Instance.Warn ("[Materials]: exception processing received material: " + e);
-									}
-								}
-							}
-						}
-					}
-
-				} catch (Exception e) {
-					MainConsole.Instance.Warn ("[Materials]: exception decoding zipped CAP payload: " + e);
-					//return "";
-				}
-				MainConsole.Instance.Debug ("[Materials]: knownMaterials.Count: " + m_knownMaterials.Count);
-			}
+                                            uint matLocalID = 0;
+                                            try
+                                            {
+                                                matLocalID = matsMap ["ID"].AsUInteger ();
+                                            } catch (Exception e)
+                                            {
+                                                MainConsole.Instance.Warn ("[Materials]: cannot decode \"ID\" from matsMap: " + e.Message);
+                                            }
+                                            // MainConsole.Instance.Debug("[Materials]: matLocalId: " + matLocalID);
 
 
-			resp ["Zipped"] = ZCompressOSD (respArr, false);
-			string response = OSDParser.SerializeLLSDXmlString (resp);
+                                            OSDMap mat = null;
+                                            if (matsMap.ContainsKey ("Material"))
+                                            {
+                                                try
+                                                {
+                                                    mat = matsMap ["Material"] as OSDMap; 
 
-			//MainConsole.Instance.Debug("[Materials]: cap request: " + request);
-			MainConsole.Instance.Debug ("[Materials]: cap request (zipped portion): " + ZippedOsdBytesToString (req ["Zipped"].AsBinary ()));
-			MainConsole.Instance.Debug ("[Materials]: cap response: " + response);
-			return OSDParser.SerializeLLSDBinary (resp);
-		}
+                                                } catch (Exception e)
+                                                { 
+                                                    MainConsole.Instance.Warn ("[MaterialsDemoModule]: cannot decode \"Material\" from matsMap: " + e.Message); 
+                                                    continue;
+                                                }
+                                            }
 
-		void StoreMaterialsForPart (ISceneChildEntity part)
-		{
-			try {
-				if (part == null || part.Shape == null)
-					return;
+                                            if (mat == null)
+                                                continue;
 
-				Dictionary<UUID, OSDMap> mats = new Dictionary<UUID, OSDMap> ();
+                                            // MainConsole.Instance.Debug("[Materials]: mat: " + OSDParser.SerializeJsonString(mat));
+                                            UUID id = HashOsd (mat);
+                                            m_knownMaterials [id] = mat;
 
-				Primitive.TextureEntry te = part.Shape.Textures;
+                                            var sop = m_scene.GetSceneObjectPart (matLocalID);
+                                            if (sop == null)
+                                                MainConsole.Instance.Debug ("[Materials]: null SOP for localId: " + matLocalID);
+                                            else
+                                            {
+                                                //var te = sop.Shape.Textures;
+                                                var te = new Primitive.TextureEntry (sop.Shape.TextureEntry, 0, sop.Shape.TextureEntry.Length);
 
-				if (te.DefaultTexture != null) {
-					if (m_knownMaterials.ContainsKey (te.DefaultTexture.MaterialID))
-						mats [te.DefaultTexture.MaterialID] = m_knownMaterials [te.DefaultTexture.MaterialID];
-				}
+                                                if (te == null)
+                                                {
+                                                    MainConsole.Instance.Debug ("[Materials]: null TextureEntry for localId: " + matLocalID);
+                                                } else
+                                                {
+                                                    int face = -1;
 
-				if (te.FaceTextures != null) {
-					foreach (var face in te.FaceTextures) {
-						if (face != null) {
-							if (m_knownMaterials.ContainsKey (face.MaterialID))
-								mats [face.MaterialID] = m_knownMaterials [face.MaterialID];
-						}
-					}
-				}
-				if (mats.Count == 0)
-					return;
+                                                    if (matsMap.ContainsKey ("Face"))
+                                                    {
+                                                        face = matsMap ["Face"].AsInteger ();
+                                                        if (te.FaceTextures == null) // && face == 0)
+                                                        {
+                                                            if (te.DefaultTexture == null)
+                                                                MainConsole.Instance.Debug ("[Materials]: te.DefaultTexture is null");
+                                                            else
+                                                            {
+//## FixMe ##
+// comparison always results in 'False'                                   if (te.DefaultTexture.MaterialID == null)
+//                                                                    MainConsole.Instance.Debug("[MaterialsDemoModule]: te.DefaultTexture.MaterialID is null");
+//                                                                else
+//                                                                {
+                                                                te.DefaultTexture.MaterialID = id;
+//                                                                }
+                                                            }
+                                                        } else
+                                                        {
+                                                            if (te.FaceTextures.Length >= face - 1)
+                                                            {
+                                                                if (te.FaceTextures [face] == null)
+                                                                    te.DefaultTexture.MaterialID = id;
+                                                                else
+                                                                    te.FaceTextures [face].MaterialID = id;
+                                                            }
+                                                        }
+                                                    } else
+                                                    {
+                                                        if (te.DefaultTexture != null)
+                                                            te.DefaultTexture.MaterialID = id;
+                                                    }
 
-				OSDArray matsArr = new OSDArray ();
-				foreach (KeyValuePair<UUID, OSDMap> kvp in mats) {
-					OSDMap matOsd = new OSDMap ();
-					matOsd ["ID"] = OSD.FromUUID (kvp.Key);
-					matOsd ["Material"] = kvp.Value;
-					matsArr.Add (matOsd);
-				}
+                                                    MainConsole.Instance.Debug ("[Materials]: setting material ID for face " + face + " to " + id);
 
-				lock (_lock)
-					part.RenderMaterials = matsArr;
-			} catch (Exception e) {
-				MainConsole.Instance.Warn ("[Materials]: exception in StoreMaterialsForPart(): " + e);
-			}
-		}
+                                                    //we cant use sop.UpdateTextureEntry(te); because it filters so do it manually
+
+                                                    if (sop.ParentEntity != null)
+                                                    {
+                                                        sop.Shape.TextureEntry = te.GetBytes ();
+                                                        sop.TriggerScriptChangedEvent (Changed.TEXTURE);
+                                                        sop.ParentEntity.HasGroupChanged = true;
+
+                                                        sop.ScheduleUpdate (PrimUpdateFlags.FullUpdate);
+
+                                                        AssetBase asset = new AssetBase (id, "RenderMaterial",
+                                                                              AssetType.Texture, sop.OwnerID) {
+                                                            Data = Encoding.UTF8.GetBytes (
+                                                                OSDParser.SerializeJsonString (mat))
+                                                        };
+                                                        m_scene.AssetService.Store (asset);
+
+                                                        StoreMaterialsForPart (sop);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    } catch (Exception e)
+                                    {
+                                        MainConsole.Instance.Warn ("[Materials]: exception processing received material: " + e);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                } catch (Exception e)
+                {
+                    MainConsole.Instance.Warn ("[Materials]: exception decoding zipped CAP payload: " + e);
+                    //return "";
+                }
+                MainConsole.Instance.Debug ("[Materials]: knownMaterials.Count: " + m_knownMaterials.Count);
+            }
 
 
-		public byte[] RenderMaterialsGetCap (string path, Stream request,
-		                                     OSHttpRequest httpRequest, OSHttpResponse httpResponse)
-		{
-			MainConsole.Instance.Debug ("[Materials]: GET cap handler");
+            resp ["Zipped"] = ZCompressOSD (respArr, false);
+            string response = OSDParser.SerializeLLSDXmlString (resp);
 
-			OSDMap resp = new OSDMap ();
+            //MainConsole.Instance.Debug("[Materials]: cap request: " + request);
+            MainConsole.Instance.Debug ("[Materials]: cap request (zipped portion): " + ZippedOsdBytesToString (req ["Zipped"].AsBinary ()));
+            MainConsole.Instance.Debug ("[Materials]: cap response: " + response);
+            return OSDParser.SerializeLLSDBinary (resp);
+        }
+
+        void StoreMaterialsForPart (ISceneChildEntity part)
+        {
+            try
+            {
+                if (part == null || part.Shape == null)
+                    return;
+
+                Dictionary<UUID, OSDMap> mats = new Dictionary<UUID, OSDMap> ();
+
+                Primitive.TextureEntry te = part.Shape.Textures;
+
+                if (te.DefaultTexture != null)
+                {
+                    if (m_knownMaterials.ContainsKey (te.DefaultTexture.MaterialID))
+                        mats [te.DefaultTexture.MaterialID] = m_knownMaterials [te.DefaultTexture.MaterialID];
+                }
+
+                if (te.FaceTextures != null)
+                {
+                    foreach (var face in te.FaceTextures)
+                    {
+                        if (face != null)
+                        {
+                            if (m_knownMaterials.ContainsKey (face.MaterialID))
+                                mats [face.MaterialID] = m_knownMaterials [face.MaterialID];
+                        }
+                    }
+                }
+                if (mats.Count == 0)
+                    return;
+
+                OSDArray matsArr = new OSDArray ();
+                foreach (KeyValuePair<UUID, OSDMap> kvp in mats)
+                {
+                    OSDMap matOsd = new OSDMap ();
+                    matOsd ["ID"] = OSD.FromUUID (kvp.Key);
+                    matOsd ["Material"] = kvp.Value;
+                    matsArr.Add (matOsd);
+                }
+
+                lock (_lock)
+                    part.RenderMaterials = matsArr;
+            } catch (Exception e)
+            {
+                MainConsole.Instance.Warn ("[Materials]: exception in StoreMaterialsForPart(): " + e);
+            }
+        }
 
 
-			int matsCount = 0;
+        public byte[] RenderMaterialsGetCap (string path, Stream request,
+                                            OSHttpRequest httpRequest, OSHttpResponse httpResponse)
+        {
+            MainConsole.Instance.Debug ("[Materials]: GET cap handler");
 
-			OSDArray allOsd = new OSDArray ();
-
-			foreach (KeyValuePair<UUID, OSDMap> kvp in m_knownMaterials) {
-				OSDMap matMap = new OSDMap ();
-
-				matMap ["ID"] = OSD.FromBinary (kvp.Key.GetBytes ());
-
-				matMap ["Material"] = kvp.Value;
-				allOsd.Add (matMap);
-				matsCount++;
-			}
+            OSDMap resp = new OSDMap ();
 
 
-			resp ["Zipped"] = ZCompressOSD (allOsd, false);
-			MainConsole.Instance.Debug ("[Materials]: matsCount: " + matsCount);
+            int matsCount = 0;
 
-			return OSDParser.SerializeLLSDBinary (resp);
-		}
+            OSDArray allOsd = new OSDArray ();
 
-		static string ZippedOsdBytesToString (byte[] bytes)
-		{
-			try {
-				return OSDParser.SerializeJsonString (ZDecompressBytesToOsd (bytes));
-			} catch (Exception e) {
-				return "ZippedOsdBytesToString caught an exception: " + e;
-			}
-		}
+            foreach (KeyValuePair<UUID, OSDMap> kvp in m_knownMaterials)
+            {
+                OSDMap matMap = new OSDMap ();
 
-		/// <summary>
-		/// computes a UUID by hashing a OSD object
-		/// </summary>
-		/// <param name="osd"></param>
-		/// <returns></returns>
-		static UUID HashOsd (OSD osd)
-		{
-			using (var md5 = MD5.Create ())
-			using (MemoryStream ms = new MemoryStream (OSDParser.SerializeLLSDBinary (osd, false)))
-				return new UUID (md5.ComputeHash (ms), 0);
-		}
+                matMap ["ID"] = OSD.FromBinary (kvp.Key.GetBytes ());
 
-		/// <summary>
-		/// Compress an OSD.
-		/// </summary>
-		/// <returns>The compressed OSD</returns>
-		/// <param name="inOsd">In osd.</param>
-		/// <param name="useHeader">If set to <c>true</c> use header.</param>
-		public static OSD ZCompressOSD (OSD inOsd, bool useHeader)
-		{
-			OSD osd;
+                matMap ["Material"] = kvp.Value;
+                allOsd.Add (matMap);
+                matsCount++;
+            }
 
-			using (MemoryStream msSinkCompressed = new MemoryStream ()) {
-				using (ZOutputStream zOut = new ZOutputStream (msSinkCompressed, zlibConst.Z_DEFAULT_COMPRESSION)) {
-					CopyStream (new MemoryStream (OSDParser.SerializeLLSDBinary (inOsd, useHeader)), zOut);
-					zOut.finish ();
 
-					osd = OSD.FromBinary (msSinkCompressed.ToArray ());
-				}
-			}
+            resp ["Zipped"] = ZCompressOSD (allOsd, false);
+            MainConsole.Instance.Debug ("[Materials]: matsCount: " + matsCount);
 
-			return osd;
-		}
+            return OSDParser.SerializeLLSDBinary (resp);
+        }
 
-		/// <summary>
-		/// Decompress bytes to osd.
-		/// </summary>
-		/// <returns>The decompressed osd.</returns>
-		/// <param name="input">Input.</param>
-		public static OSD ZDecompressBytesToOsd (byte[] input)
-		{
-			OSD osd;
+        static string ZippedOsdBytesToString (byte[] bytes)
+        {
+            try
+            {
+                return OSDParser.SerializeJsonString (ZDecompressBytesToOsd (bytes));
+            } catch (Exception e)
+            {
+                return "ZippedOsdBytesToString caught an exception: " + e;
+            }
+        }
 
-			using (MemoryStream msSinkUnCompressed = new MemoryStream ()) {
-				using (ZOutputStream zOut = new ZOutputStream (msSinkUnCompressed)) {
-					using (Stream inMs = new MemoryStream (input)) {
-						CopyStream (inMs, zOut);
-						zOut.finish ();
+        /// <summary>
+        /// computes a UUID by hashing a OSD object
+        /// </summary>
+        /// <param name="osd"></param>
+        /// <returns></returns>
+        static UUID HashOsd (OSD osd)
+        {
+            using (var md5 = MD5.Create ())
+            using (MemoryStream ms = new MemoryStream (OSDParser.SerializeLLSDBinary (osd, false)))
+                return new UUID (md5.ComputeHash (ms), 0);
+        }
 
-						osd = OSDParser.DeserializeLLSDBinary (msSinkUnCompressed.ToArray ());
-					}
-				}
-			}
+        /// <summary>
+        /// Compress an OSD.
+        /// </summary>
+        /// <returns>The compressed OSD</returns>
+        /// <param name="inOsd">In osd.</param>
+        /// <param name="useHeader">If set to <c>true</c> use header.</param>
+        public static OSD ZCompressOSD (OSD inOsd, bool useHeader)
+        {
+            OSD osd;
 
-			return osd;
-		}
+            using (MemoryStream msSinkCompressed = new MemoryStream ())
+            {
+                using (ZOutputStream zOut = new ZOutputStream (msSinkCompressed, zlibConst.Z_DEFAULT_COMPRESSION))
+                {
+                    CopyStream (new MemoryStream (OSDParser.SerializeLLSDBinary (inOsd, useHeader)), zOut);
+                    zOut.finish ();
 
-		static void CopyStream (Stream input, Stream output)
-		{
-			byte[] buffer = new byte[2000];
-			int length;
-			while ((length = input.Read (buffer, 0, 2000)) > 0)
-				output.Write (buffer, 0, length);
+                    osd = OSD.FromBinary (msSinkCompressed.ToArray ());
+                }
+            }
 
-			output.Flush ();
-		}
-	}
+            return osd;
+        }
+
+        /// <summary>
+        /// Decompress bytes to osd.
+        /// </summary>
+        /// <returns>The decompressed osd.</returns>
+        /// <param name="input">Input.</param>
+        public static OSD ZDecompressBytesToOsd (byte[] input)
+        {
+            OSD osd;
+
+            using (MemoryStream msSinkUnCompressed = new MemoryStream ())
+            {
+                using (ZOutputStream zOut = new ZOutputStream (msSinkUnCompressed))
+                {
+                    using (Stream inMs = new MemoryStream (input))
+                    {
+                        CopyStream (inMs, zOut);
+                        zOut.finish ();
+
+                        osd = OSDParser.DeserializeLLSDBinary (msSinkUnCompressed.ToArray ());
+                    }
+                }
+            }
+
+            return osd;
+        }
+ 
+        static void CopyStream (Stream input, Stream output)
+        {
+            byte[] buffer = new byte[2000];
+            int length;
+            while ((length = input.Read (buffer, 0, 2000)) > 0)
+                output.Write (buffer, 0, length);
+
+            output.Flush ();
+        }
+    }
 }

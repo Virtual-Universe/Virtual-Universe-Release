@@ -32,54 +32,54 @@ using Universe.Framework.SceneInfo;
 
 namespace Universe.Modules.Monitoring.Monitors
 {
-	public class OtherFrameMonitor : IMonitor, IOtherFrameMonitor
-	{
-		int MonitorOtherFrameTime;
+    public class OtherFrameMonitor : IMonitor, IOtherFrameMonitor
+    {
+        int MonitorOtherFrameTime;
 
-		public OtherFrameMonitor (IScene scene)
-		{
-		}
+        public OtherFrameMonitor (IScene scene)
+        {
+        }
 
-		#region Implementation of IMonitor
+        #region Implementation of IMonitor
 
-		public double GetValue ()
-		{
-			return MonitorOtherFrameTime;
-		}
+        public double GetValue ()
+        {
+            return MonitorOtherFrameTime;
+        }
 
-		public string GetName ()
-		{
-			return "Other Frame Time";
-		}
+        public string GetName ()
+        {
+            return "Other Frame Time";
+        }
 
-		public string GetInterfaceName ()
-		{
-			return "IOtherFrameMonitor";
-		}
+        public string GetInterfaceName ()
+        {
+            return "IOtherFrameMonitor";
+        }
 
-		public string GetFriendlyValue ()
-		{
-			return (int)GetValue () + "ms";
-		}
+        public string GetFriendlyValue ()
+        {
+            return (int)GetValue () + "ms";
+        }
 
-		#endregion
+        #endregion
 
-		#region IMonitor Members
+        #region IMonitor Members
 
-		public void ResetStats ()
-		{
-			MonitorOtherFrameTime = 0;
-		}
+        public void ResetStats ()
+        {
+            MonitorOtherFrameTime = 0;
+        }
 
-		#endregion
+        #endregion
 
-		#region ITimeMonitor Members
+        #region ITimeMonitor Members
 
-		public void AddTime (int time)
-		{
-			MonitorOtherFrameTime += time;
-		}
+        public void AddTime (int time)
+        {
+            MonitorOtherFrameTime += time;
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

@@ -37,114 +37,127 @@ using Universe.Framework.Utilities;
 
 namespace Universe.Modules.Web
 {
-	public class UserTransactionsPage : IWebInterfacePage
-	{
-		public string [] FilePath {
-			get {
-				return new [] {
-					"html/user/user_transactions.html"
-				};
-			}
-		}
+    public class UserTransactionsPage : IWebInterfacePage
+    {
+        public string [] FilePath {
+            get {
+                return new []
+                           {
+                               "html/user/user_transactions.html"
+                           };
+            }
+        }
 
-		public bool RequiresAuthentication {
-			get { return true; }
-		}
+        public bool RequiresAuthentication {
+            get { return true; }
+        }
 
-		public bool RequiresAdminAuthentication {
-			get { return false; }
-		}
+        public bool RequiresAdminAuthentication {
+            get { return false; }
+        }
 
-		public Dictionary<string, object> Fill (WebInterface webInterface, string filename, OSHttpRequest httpRequest,
-		                                              OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
-		                                              ITranslator translator, out string response)
-		{
-			response = null;
-			var vars = new Dictionary<string, object> ();
-			var transactionsList = new List<Dictionary<string, object>> ();
+        public Dictionary<string, object> Fill (WebInterface webInterface, string filename, OSHttpRequest httpRequest,
+                                                OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
+                                                ITranslator translator, out string response)
+        {
+            response = null;
+            var vars = new Dictionary<string, object> ();
+            var transactionsList = new List<Dictionary<string, object>> ();
 
-			var today = DateTime.Now;
-			var fromDays = today.AddDays (-7);
-			string DateStart = fromDays.ToShortDateString ();
-			string DateEnd = today.ToShortDateString ();
+            var today = DateTime.Now;
+            var fromDays = today.AddDays (-7);
+            string DateStart = fromDays.ToShortDateString ();
+            string DateEnd = today.ToShortDateString ();
 
-			IMoneyModule moneyModule = webInterface.Registry.RequestModuleInterface<IMoneyModule> ();
-			string noDetails = translator.GetTranslatedString ("NoTransactionsText");
+            IMoneyModule moneyModule = webInterface.Registry.RequestModuleInterface<IMoneyModule> ();
+            string noDetails = translator.GetTranslatedString ("NoTransactionsText");
 
-			// Check if we're looking at the standard page or the submitted one
-			if (requestParameters.ContainsKey ("Submit")) {
-				if (requestParameters.ContainsKey ("date_start"))
-					DateStart = requestParameters ["date_start"].ToString ();
-				if (requestParameters.ContainsKey ("date_end"))
-					DateEnd = requestParameters ["date_end"].ToString ();
-			}
+            // Check if we're looking at the standard page or the submitted one
+            if (requestParameters.ContainsKey ("Submit")) {
+                if (requestParameters.ContainsKey ("date_start"))
+                    DateStart = requestParameters ["date_start"].ToString ();
+                if (requestParameters.ContainsKey ("date_end"))
+                    DateEnd = requestParameters ["date_end"].ToString ();
+            }
 
-			UserAccount user = Authenticator.GetAuthentication (httpRequest);
+            UserAccount user = Authenticator.GetAuthentication (httpRequest);
+            if (user == null) {
+                response = "<h3>Error validating user details</h3>" +
+                    "<script language=\"javascript\">" +
+                    "setTimeout(function() {window.location.href = \"/?page=user_transactions\";}, 1000);" +
+                    "</script>";
 
-			// Transaction Logs
-			var timeNow = DateTime.Now.ToString ("HH:mm:ss");
-			var dateFrom = DateTime.Parse (DateStart + " " + timeNow);
-			var dateTo = DateTime.Parse (DateEnd + " " + timeNow);
-			TimeSpan period = dateTo.Subtract (dateFrom);
+                return null;
+            }
 
-			var transactions = new List<AgentTransfer> ();
-			if (user != null && moneyModule != null)
-				transactions = moneyModule.GetTransactionHistory (user.PrincipalID, UUID.Zero, dateFrom, dateTo, null, null);
+            // Transaction Logs
+            var timeNow = DateTime.Now.ToString ("HH:mm:ss");
+            var dateFrom = DateTime.Parse (DateStart + " " + timeNow);
+            var dateTo = DateTime.Parse (DateEnd + " " + timeNow);
+            TimeSpan period = dateTo.Subtract (dateFrom);
 
-			// data
-			if (transactions.Count > 0) {
-				noDetails = "";
+            var transactions = new List<AgentTransfer> ();
+            if (user != null && moneyModule != null)
+                transactions = moneyModule.GetTransactionHistory (user.PrincipalID, UUID.Zero, dateFrom, dateTo, null, null);
 
-				foreach (var transaction in transactions) {
-					transactionsList.Add (new Dictionary<string, object> {
-						{ "Date", Culture.LocaleDate (transaction.TransferDate.ToLocalTime (), "MMM dd, hh:mm:ss tt") },
-						{ "ToAgent", transaction.ToAgentName },
-						{ "FromAgent", transaction.FromAgentName },
-						{ "Description", transaction.Description },
-						{ "Amount",transaction.Amount },
-						{ "ToBalance",transaction.ToBalance }
-					});
-				}
-			}
+            // data
+            if (transactions.Count > 0) {
+                noDetails = "";
 
-			if (transactionsList.Count == 0) {
-				transactionsList.Add (new Dictionary<string, object> {
-					{ "Date", "" },                   //Culture.LocaleDate(today,"MMM dd, hh:mm:ss")},
-					{ "ToAgent", "" },
-					{ "FromAgent", "" },
-					{ "Description", translator.GetTranslatedString ("NoTransactionsText") },
-					{ "Amount","" },
-					{ "ToBalance","" }
-				});
-			}
+                foreach (var transaction in transactions) {
+                    transactionsList.Add (new Dictionary<string, object> {
+                        { "Date", Culture.LocaleDate (transaction.TransferDate.ToLocalTime(), "MMM dd, hh:mm:ss tt") },
+                        { "ToAgent", transaction.ToAgentName },
+                        { "FromAgent", transaction.FromAgentName },
+                        { "Description", transaction.Description },
+                        { "Amount",transaction.Amount },
+                        { "ToBalance",transaction.ToBalance }
 
-			// always required data
-			vars.Add ("DateStart", DateStart);
-			vars.Add ("DateEnd", DateEnd);
-			vars.Add ("Period", period.TotalDays + " " + translator.GetTranslatedString ("DaysText"));
-			vars.Add ("TransactionsList", transactionsList);
-			vars.Add ("NoTransactionsText", noDetails);
+                    });
+                }
+            }
 
-			// labels
-			vars.Add ("UserName", user.Name);
-			vars.Add ("TransactionsText", translator.GetTranslatedString ("TransactionsText"));
-			vars.Add ("DateInfoText", translator.GetTranslatedString ("DateInfoText"));
-			vars.Add ("DateStartText", translator.GetTranslatedString ("DateStartText"));
-			vars.Add ("DateEndText", translator.GetTranslatedString ("DateEndText"));
-			vars.Add ("TransactionDateText", translator.GetTranslatedString ("TransactionDateText"));
-			vars.Add ("TransactionToAgentText", translator.GetTranslatedString ("TransactionToAgentText"));
-			vars.Add ("TransactionFromAgentText", translator.GetTranslatedString ("TransactionFromAgentText"));
-			vars.Add ("TransactionDetailText", translator.GetTranslatedString ("TransactionDetailText"));
-			vars.Add ("TransactionAmountText", translator.GetTranslatedString ("TransactionAmountText"));
-			vars.Add ("TransactionBalanceText", translator.GetTranslatedString ("TransactionBalanceText"));
+            if (transactionsList.Count == 0) {
+                transactionsList.Add (new Dictionary<string, object> {
+                    {"Date", ""},                   //Culture.LocaleDate(today,"MMM dd, hh:mm:ss")},
+                    {"ToAgent", ""},
+                    {"FromAgent", ""},
+                    {"Description", translator.GetTranslatedString ("NoTransactionsText")},
+                    {"Amount",""},
+                    {"ToBalance",""}
 
-			return vars;
-		}
+                });
+            }
 
-		public bool AttemptFindPage (string filename, ref OSHttpResponse httpResponse, out string text)
-		{
-			text = "";
-			return false;
-		}
-	}
+            // always required data
+            vars.Add ("DateStart", DateStart);
+            vars.Add ("DateEnd", DateEnd);
+            vars.Add ("Period", period.TotalDays + " " + translator.GetTranslatedString ("DaysText"));
+            vars.Add ("TransactionsList", transactionsList);
+            vars.Add ("NoTransactionsText", noDetails);
+
+            // labels
+            vars.Add ("UserName", user.Name);
+            vars.Add ("TransactionsText", translator.GetTranslatedString ("TransactionsText"));
+            vars.Add ("DateInfoText", translator.GetTranslatedString ("DateInfoText"));
+            vars.Add ("DateStartText", translator.GetTranslatedString ("DateStartText"));
+            vars.Add ("DateEndText", translator.GetTranslatedString ("DateEndText"));
+
+            vars.Add ("TransactionDateText", translator.GetTranslatedString ("TransactionDateText"));
+            vars.Add ("TransactionToAgentText", translator.GetTranslatedString ("TransactionToAgentText"));
+            vars.Add ("TransactionFromAgentText", translator.GetTranslatedString ("TransactionFromAgentText"));
+            //vars.Add("TransactionTimeText", translator.GetTranslatedString("Time"));
+            vars.Add ("TransactionDetailText", translator.GetTranslatedString ("TransactionDetailText"));
+            vars.Add ("TransactionAmountText", translator.GetTranslatedString ("TransactionAmountText"));
+            vars.Add ("TransactionBalanceText", translator.GetTranslatedString ("TransactionBalanceText"));
+
+            return vars;
+        }
+
+        public bool AttemptFindPage (string filename, ref OSHttpResponse httpResponse, out string text)
+        {
+            text = "";
+            return false;
+        }
+    }
 }

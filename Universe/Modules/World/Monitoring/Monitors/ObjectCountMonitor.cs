@@ -32,42 +32,42 @@ using Universe.Framework.SceneInfo;
 
 namespace Universe.Modules.Monitoring.Monitors
 {
-	class ObjectCountMonitor : IMonitor
-	{
-		readonly IScene m_scene;
+    class ObjectCountMonitor : IMonitor
+    {
+        readonly IScene m_scene;
 
-		public ObjectCountMonitor (IScene scene)
-		{
-			m_scene = scene;
-		}
+        public ObjectCountMonitor (IScene scene)
+        {
+            m_scene = scene;
+        }
 
-		#region Implementation of IMonitor
+        #region Implementation of IMonitor
 
-		public double GetValue ()
-		{
-			return m_scene.RequestModuleInterface<IEntityCountModule> ().Objects;
-		}
+        public double GetValue ()
+        {
+            return m_scene.RequestModuleInterface<IEntityCountModule> ().Objects;
+        }
 
-		public string GetName ()
-		{
-			return "Total Objects Count";
-		}
+        public string GetName ()
+        {
+            return "Total Objects Count";
+        }
 
-		public string GetInterfaceName ()
-		{
-			return "";
-		}
+        public string GetInterfaceName ()
+        {
+            return "";
+        }
 
-		public string GetFriendlyValue ()
-		{
-			return m_scene.RequestModuleInterface<IEntityCountModule> ().Objects + " Object(s), " +
-			m_scene.RequestModuleInterface<IEntityCountModule> ().ActiveObjects + " active Object(s)";
-		}
+        public string GetFriendlyValue ()
+        {
+            return m_scene.RequestModuleInterface<IEntityCountModule> ().Objects + " Object(s), " +
+                   m_scene.RequestModuleInterface<IEntityCountModule> ().ActiveObjects + " active Object(s)";
+        }
 
-		public void ResetStats ()
-		{
-		}
+        public void ResetStats ()
+        {
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

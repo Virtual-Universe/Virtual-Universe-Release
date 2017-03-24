@@ -38,52 +38,52 @@ using Universe.Framework.Services.ClassHelpers.Profile;
 
 namespace Universe.Services
 {
-	public class MeshUploadFlag : ICapsServiceConnector
-	{
-		IProfileConnector m_profileConnector;
-		IRegionClientCapsService m_service;
+    public class MeshUploadFlag : ICapsServiceConnector
+    {
+        IProfileConnector m_profileConnector;
+        IRegionClientCapsService m_service;
 
-		#region ICapsServiceConnector Members
+        #region ICapsServiceConnector Members
 
-		public void RegisterCaps (IRegionClientCapsService service)
-		{
-			m_service = service;
-			m_profileConnector = Framework.Utilities.DataManager.RequestPlugin<IProfileConnector> ();
-			m_service.AddStreamHandler ("MeshUploadFlag",
-				new GenericStreamHandler ("GET", m_service.CreateCAPS ("MeshUploadFlag", ""), MeshUploadFlagCAP));
-		}
+        public void RegisterCaps (IRegionClientCapsService service)
+        {
+            m_service = service;
+            m_profileConnector = Framework.Utilities.DataManager.RequestPlugin<IProfileConnector> ();
+            m_service.AddStreamHandler ("MeshUploadFlag",
+                new GenericStreamHandler ("GET", m_service.CreateCAPS ("MeshUploadFlag", ""), MeshUploadFlagCAP));
+        }
 
-		public void DeregisterCaps ()
-		{
-			m_service.RemoveStreamHandler ("MeshUploadFlag", "GET");
-		}
+        public void DeregisterCaps ()
+        {
+            m_service.RemoveStreamHandler ("MeshUploadFlag", "GET");
+        }
 
-		public void EnteringRegion ()
-		{
-		}
+        public void EnteringRegion ()
+        {
+        }
 
-		#endregion
+        #endregion
 
-		byte[] MeshUploadFlagCAP (string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse)
-		{
-			OSDMap data = new OSDMap ();
-			IUserProfileInfo info = m_profileConnector.GetUserProfile (m_service.AgentID);
+        byte[] MeshUploadFlagCAP (string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse)
+        {
+            OSDMap data = new OSDMap ();
+            IUserProfileInfo info = m_profileConnector.GetUserProfile (m_service.AgentID);
 
-			data ["id"] = m_service.AgentID;
-			data ["username"] = m_service.ClientCaps.AccountInfo.Name;
-			data ["display_name"] = info.DisplayName;
-			data ["display_name_next_update"] = Utils.UnixTimeToDateTime (0);
-			data ["legacy_first_name"] = m_service.ClientCaps.AccountInfo.FirstName;
-			data ["legacy_last_name"] = m_service.ClientCaps.AccountInfo.LastName;
-			data ["mesh_upload_status"] = "valid"; // add if account has ability to upload mesh?
-			bool isDisplayNameNDefault = (info.DisplayName == m_service.ClientCaps.AccountInfo.Name) ||
-			                                      (info.DisplayName ==
-			                                      m_service.ClientCaps.AccountInfo.FirstName + "." +
-			                                      m_service.ClientCaps.AccountInfo.LastName);
-			data ["is_display_name_default"] = isDisplayNameNDefault;
+            data ["id"] = m_service.AgentID;
+            data ["username"] = m_service.ClientCaps.AccountInfo.Name;
+            data ["display_name"] = info.DisplayName;
+            data ["display_name_next_update"] = Utils.UnixTimeToDateTime (0);
+            data ["legacy_first_name"] = m_service.ClientCaps.AccountInfo.FirstName;
+            data ["legacy_last_name"] = m_service.ClientCaps.AccountInfo.LastName;
+            data ["mesh_upload_status"] = "valid"; // add if account has ability to upload mesh?
+            bool isDisplayNameNDefault = (info.DisplayName == m_service.ClientCaps.AccountInfo.Name) ||
+                                         (info.DisplayName ==
+                                         m_service.ClientCaps.AccountInfo.FirstName + "." +
+                                         m_service.ClientCaps.AccountInfo.LastName);
+            data ["is_display_name_default"] = isDisplayNameNDefault;
 
-			//Send back data
-			return OSDParser.SerializeLLSDXmlBytes (data);
-		}
-	}
+            //Send back data
+            return OSDParser.SerializeLLSDXmlBytes (data);
+        }
+    }
 }

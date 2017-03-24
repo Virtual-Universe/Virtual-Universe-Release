@@ -1,4 +1,4 @@
-/*/*
+/*
  * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  * For an explanation of the license of each contributor and the content it 
@@ -53,20 +53,20 @@ namespace Universe.Framework.ClientInterfaces
 
         public static readonly int VISUALPARAM_COUNT = 218;
         public static readonly int TEXTURE_COUNT = 21;
-        public static readonly byte[] BAKE_INDICES = new byte[] { 8, 9, 10, 11, 19, 20 };
-
+        public static readonly byte[] BAKE_INDICES = new byte[] {8, 9, 10, 11, 19, 20};
+        
         int m_serial = 0;
         byte[] m_visualparams;
         Primitive.TextureEntry m_texture;
         AvatarWearable[] m_wearables;
-        Dictionary<int, List<AvatarAttachment>> m_attachments;
+        Dictionary<int, List<AvatarAttachment>> m_attachments;        
         UUID m_owner;
         Dictionary<string, UUID> m_wearableCache = new Dictionary<string, UUID>();
 
         float m_avatarHeight = 0;
         float m_avatarFeetOffset = 0;
-        Vector3 m_avatarSize = new Vector3(0.45f, 0.6f, 1.9f); // sl Z cloud value
-        Vector3 m_avatarBoxSize = new Vector3(0.45f, 0.6f, 1.9f);
+        Vector3 m_avatarSize = new Vector3 (0.45f, 0.6f, 1.9f); // sl Z cloud value
+        Vector3 m_avatarBoxSize = new Vector3 (0.45f, 0.6f, 1.9f);
 
         public int Serial
         {
@@ -98,20 +98,18 @@ namespace Universe.Framework.ClientInterfaces
             set { m_avatarHeight = value; }
         }
 
-        public Vector3 AvatarSize
-        {
+        public Vector3 AvatarSize {
             get { return m_avatarSize; }
             set { m_avatarSize = value; }
         }
 
-        public float AvatarFeetOffset
-        {
-            get
-            {
-                return m_avatarFeetOffset;   // should be m_avatarFeetOffset + m_avatarAnimOffset epending if Animoffset is even used??
+        public float AvatarFeetOffset {
+            get {
+                return m_avatarFeetOffset;   // should be m_avatarFeetOffset +m_avatarAnimOffset epending if Animoffset is even used??
             }
             set { m_avatarFeetOffset = value; }
         }
+                
 
         public Dictionary<string, UUID> WearableCache
         {
@@ -124,15 +122,14 @@ namespace Universe.Framework.ClientInterfaces
             set { m_owner = value; }
         }
 
-        static readonly object _attachmentslock = new object();
+        static readonly object _attachmentslock = new object ();
         public Dictionary<int, List<AvatarAttachment>> Attachments
         {
-            get { lock (_attachmentslock) { return m_attachments; } }
-            set { lock (_attachmentslock) { m_attachments = value; } }
+            get { lock (_attachmentslock) { return m_attachments; }}
+            set { lock (_attachmentslock) { m_attachments = value; }}
         }
 
-        public AvatarAppearance()
-            : this(UUID.Zero)
+        public AvatarAppearance() : this(UUID.Zero)
         {
         }
 
@@ -144,7 +141,8 @@ namespace Universe.Framework.ClientInterfaces
             SetDefaultWearables();
             SetDefaultTexture();
             SetDefaultParams();
-            SetSize(m_avatarSize);
+            //SetHeight();
+            SetSize (m_avatarSize);
 
             m_attachments = new Dictionary<int, List<AvatarAttachment>>();
         }
@@ -155,9 +153,10 @@ namespace Universe.Framework.ClientInterfaces
             Unpack(map);
         }
 
-        public AvatarAppearance(UUID avatarID, AvatarWearable[] wearables, Primitive.TextureEntry textureEntry, byte[] visualParams)
+        public AvatarAppearance(UUID avatarID, AvatarWearable[] wearables, Primitive.TextureEntry textureEntry,
+                                byte[] visualParams)
         {
-            //MainConsole.Instance.WarnFormat("[Avatar Appearance] create initialized appearance for {0}",avatarID);
+            //            MainConsole.Instance.WarnFormat("[Avatar Appearance] create initialized appearance for {0}",avatarID);
 
             m_serial = 0;
             m_owner = avatarID;
@@ -177,7 +176,8 @@ namespace Universe.Framework.ClientInterfaces
             else
                 SetDefaultParams();
 
-            SetSize(m_avatarSize);
+            //SetHeight();
+            SetSize (m_avatarSize);
 
             m_attachments = new Dictionary<int, List<AvatarAttachment>>();
         }
@@ -189,7 +189,7 @@ namespace Universe.Framework.ClientInterfaces
 
         public AvatarAppearance(AvatarAppearance appearance, bool copyWearables)
         {
-            //MainConsole.Instance.WarnFormat("[Avatar Appearance] create from an existing appearance");
+            //            MainConsole.Instance.WarnFormat("[Avatar Appearance] create from an existing appearance");
 
             if (appearance == null)
             {
@@ -199,7 +199,8 @@ namespace Universe.Framework.ClientInterfaces
                 SetDefaultWearables();
                 SetDefaultTexture();
                 SetDefaultParams();
-                SetSize(m_avatarSize);
+                //SetHeight();
+                SetSize (m_avatarSize);
 
                 m_attachments = new Dictionary<int, List<AvatarAttachment>>();
 
@@ -227,11 +228,12 @@ namespace Universe.Framework.ClientInterfaces
 
             m_visualparams = null;
             if (appearance.VisualParams != null)
-                m_visualparams = (byte[])appearance.VisualParams.Clone();
+                m_visualparams = (byte [])appearance.VisualParams.Clone ();
             else
-                SetDefaultParams();    // we need something to work with
+                SetDefaultParams ();    // we need something to work with
 
-            SetSize(appearance.AvatarSize);
+            //SetHeight ();
+            SetSize (appearance.AvatarSize);
 
             // Copy the attachment, force append mode since that ensures consistency
             m_attachments = new Dictionary<int, List<AvatarAttachment>>();
@@ -264,10 +266,10 @@ namespace Universe.Framework.ClientInterfaces
         {
             m_wearables = AvatarWearable.DefaultWearables;
         }
-
+        
         public void ResetAppearance()
         {
-            m_serial = 0;
+        	m_serial = 0;
             SetDefaultTexture();
         }
 
@@ -275,22 +277,22 @@ namespace Universe.Framework.ClientInterfaces
         {
             // Initial parameters for Ruth
             // Superseded by the new Avatar details
-            /*
+        	/*
             m_visualparams = new byte[] {
-                33, 61, 85, 23, 58, 127, 63, 85, 63, 42, 0, 85, 63, 36, 85, 95, 153, 63, 34, 0, 63,
-                109, 88, 132, 63, 136, 81, 85, 103, 136, 127, 0, 150, 150, 150, 127, 0, 0, 0, 0, 0,
-                127, 0, 0, 255, 127, 114, 127, 99, 63, 127, 140, 127, 127, 0, 0, 0, 191, 0, 104, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 145, 216, 133, 0, 127, 0, 127, 170, 0, 0, 127, 127, 109, 85,
-                127, 127, 63, 85, 42, 150, 150, 150, 150, 150, 150, 150, 25, 150, 150, 150, 0, 127, 0, 
-                0, 144, 85, 127, 132, 127, 85, 0, 127, 127, 127, 127, 127, 127, 59, 127, 85, 127, 127,
-                106, 47, 79, 127, 127, 204, 2, 141, 66, 0, 0, 127, 127, 0, 0, 0, 0, 127, 0, 159, 0,
-                0, 178, 127, 36, 85, 131, 127, 127, 127, 153, 95, 0, 140, 75, 27, 127, 127, 0, 150,
-                150, 198, 0, 0, 63, 30, 127, 165, 209, 198, 127, 127, 153, 204, 51, 51, 255, 255, 255,
-                204, 0, 255, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 0, 150, 150, 150, 150,
-                150, 0, 127, 127, 150, 150, 150, 150, 150, 150, 150, 150, 0, 0, 150, 51, 132, 150, 150,
-                150
-            };
-             */
+        		33, 61, 85, 23, 58, 127, 63, 85, 63, 42, 0, 85, 63, 36, 85, 95, 153, 63, 34, 0, 63,
+        		109, 88, 132, 63, 136, 81, 85, 103, 136, 127, 0, 150, 150, 150, 127, 0, 0, 0, 0, 0,
+        		127, 0, 0, 255, 127, 114, 127, 99, 63, 127, 140, 127, 127, 0, 0, 0, 191, 0, 104, 0,
+        		0, 0, 0, 0, 0, 0, 0, 0, 145, 216, 133, 0, 127, 0, 127, 170, 0, 0, 127, 127, 109, 85,
+        		127, 127, 63, 85, 42, 150, 150, 150, 150, 150, 150, 150, 25, 150, 150, 150, 0, 127, 0, 
+        		0, 144, 85, 127, 132, 127, 85, 0, 127, 127, 127, 127, 127, 127, 59, 127, 85, 127, 127,
+        		106, 47, 79, 127, 127, 204, 2, 141, 66, 0, 0, 127, 127, 0, 0, 0, 0, 127, 0, 159, 0,
+        		0, 178, 127, 36, 85, 131, 127, 127, 127, 153, 95, 0, 140, 75, 27, 127, 127, 0, 150,
+        		150, 198, 0, 0, 63, 30, 127, 165, 209, 198, 127, 127, 153, 204, 51, 51, 255, 255, 255,
+        		204, 0, 255, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 0, 150, 150, 150, 150,
+        		150, 0, 127, 127, 150, 150, 150, 150, 150, 150, 150, 150, 0, 0, 150, 51, 132, 150, 150,
+        		150
+        	};
+        	 */
             // female params
             m_visualparams = new byte[] {
                 33, 37, 56, 62, 25, 204, 12, 114, 66, 25, 37, 178, 102, 53, 139, 38, 114, 30, 0, 127,
@@ -353,8 +355,8 @@ namespace Universe.Framework.ClientInterfaces
                         if (!ChangedTextures.Contains(oldface.TextureID))
                             ChangedTextures.Add(oldface.TextureID);
 
-                    //if (newface != null)
-                    //    MainConsole.Instance.WarnFormat("[Avatar Appearance]: index {0}, new texture id {1}",i,newface.TextureID);
+                    //                if (newface != null)
+                    //                    MainConsole.Instance.WarnFormat("[Avatar Appearance]: index {0}, new texture id {1}",i,newface.TextureID);
                 }
             }
 
@@ -376,9 +378,9 @@ namespace Universe.Framework.ClientInterfaces
             // made. We determine if any of the visual parameters actually
             // changed to know if the appearance should be saved later
             bool changed = false;
-
+            
             int newsize = visualParams.Length;
-
+            
             if (newsize != m_visualparams.Length)
             {
                 changed = true;
@@ -386,7 +388,7 @@ namespace Universe.Framework.ClientInterfaces
             }
             else
             {
-                for (int i = 0; i < newsize; i++)
+            	for (int i = 0; i < newsize; i++)
                 {
                     if (visualParams[i] != m_visualparams[i])
                     {
@@ -397,6 +399,9 @@ namespace Universe.Framework.ClientInterfaces
             }
 
             // Reset the height if the visual parameters actually changed
+            //if (changed)
+            //    SetHeight();
+
             return changed;
         }
 
@@ -409,33 +414,33 @@ namespace Universe.Framework.ClientInterfaces
 
         public void SetHeight()
         {
-
+            
             m_avatarHeight = 1.26077f // Shortest possible avatar height
-                             + 0.506945f * m_visualparams[(int)VPElement.SHAPE_HEIGHT] / 255.0f // Body height
-                             + 0.072514f * m_visualparams[(int)VPElement.SHAPE_HEAD_SIZE] / 255.0f // Head size
-                             + 0.3836f * m_visualparams[(int)VPElement.SHAPE_LEG_LENGTH] / 255.0f // Leg length
-                             + 0.08f * m_visualparams[(int)VPElement.SHOES_PLATFORM_HEIGHT] / 255.0f
-                // Shoe platform height
-                             + 0.07f * m_visualparams[(int)VPElement.SHOES_HEEL_HEIGHT] / 255.0f // Shoe heel height
-                             + 0.076f * m_visualparams[(int)VPElement.SHAPE_NECK_LENGTH] / 255.0f; // Neck length
-
+                             + 0.506945f*m_visualparams[(int) VPElement.SHAPE_HEIGHT]/255.0f // Body height
+                             + 0.072514f*m_visualparams[(int) VPElement.SHAPE_HEAD_SIZE]/255.0f // Head size
+                             + 0.3836f*m_visualparams[(int) VPElement.SHAPE_LEG_LENGTH]/255.0f // Leg length
+                             + 0.08f*m_visualparams[(int) VPElement.SHOES_PLATFORM_HEIGHT]/255.0f
+                             // Shoe platform height
+                             + 0.07f*m_visualparams[(int) VPElement.SHOES_HEEL_HEIGHT]/255.0f // Shoe heel height
+                             + 0.076f*m_visualparams[(int) VPElement.SHAPE_NECK_LENGTH]/255.0f; // Neck length
+            
         }
 
-        public void SetSize(Vector3 avSize)
+        public void SetSize (Vector3 avSize)
         {
-            avSize.X = Util.Clamp(avSize.X, 0.1f, 32f);
-            avSize.Y = Util.Clamp(avSize.Y, 0.1f, 32f);
-            avSize.Z = Util.Clamp(avSize.Z, 0.1f, 32f);
+            avSize.X = Util.Clamp (avSize.X, 0.1f, 32f);
+            avSize.Y = Util.Clamp (avSize.Y, 0.1f, 32f);
+            avSize.Z = Util.Clamp (avSize.Z, 0.1f, 32f);
 
             m_avatarSize = avSize;
             m_avatarBoxSize = avSize;
             m_avatarBoxSize.Z += AVBOXAJUST;
 
-            m_avatarBoxSize.X = Util.Clamp(m_avatarBoxSize.X, AVBOXMINX, 32f);
-            m_avatarBoxSize.Y = Util.Clamp(m_avatarBoxSize.Y, AVBOXMINY, 32f);
-            m_avatarBoxSize.Z = Util.Clamp(m_avatarBoxSize.Z, AVBOXMINZ, 32f);
+            m_avatarBoxSize.X = Util.Clamp (m_avatarBoxSize.X, AVBOXMINX, 32f);
+            m_avatarBoxSize.Y = Util.Clamp (m_avatarBoxSize.Y, AVBOXMINY, 32f);
+            m_avatarBoxSize.Z = Util.Clamp (m_avatarBoxSize.Z, AVBOXMINZ, 32f);
             m_avatarHeight = m_avatarSize.Z;
-            SetHeight();
+            SetHeight ();
         }
 
         public void SetWearable(int wearableId, AvatarWearable wearable)
@@ -525,8 +530,7 @@ namespace Universe.Framework.ClientInterfaces
                     if (m_attachments[attach.AttachPoint].Contains(attach))
                         result = false;
                 }
-
-                m_attachments[attach.AttachPoint] = new List<AvatarAttachment> { attach };
+                m_attachments[attach.AttachPoint] = new List<AvatarAttachment> {attach};
                 return result;
             }
         }
@@ -550,7 +554,6 @@ namespace Universe.Framework.ClientInterfaces
                     if (m_attachments.ContainsKey(attachpoint))
                         m_attachments.Remove(attachpoint);
                 }
-
                 return true;
             }
 
@@ -581,7 +584,6 @@ namespace Universe.Framework.ClientInterfaces
         {
             if ((attPnt & 0x80) > 0)
                 return true;
-
             lock (_attachmentslock)
             {
                 if (m_attachments.ContainsKey(attPnt))
@@ -592,7 +594,6 @@ namespace Universe.Framework.ClientInterfaces
                     }
                 }
             }
-
             return true;
         }
 
@@ -603,7 +604,8 @@ namespace Universe.Framework.ClientInterfaces
             {
                 if (e.RootChild.FromUserInventoryItemID == UUID.Zero)
                     continue;
-                AvatarAttachment a = new AvatarAttachment(e.GetAttachmentPoint(), e.RootChild.FromUserInventoryItemID, e.RootChild.FromUserInventoryAssetID);
+                AvatarAttachment a = new AvatarAttachment(e.GetAttachmentPoint(), e.RootChild.FromUserInventoryItemID,
+                                                          e.RootChild.FromUserInventoryAssetID);
                 lock (_attachmentslock)
                 {
                     if (!m_attachments.ContainsKey(e.GetAttachmentPoint()))
@@ -619,7 +621,7 @@ namespace Universe.Framework.ClientInterfaces
             {
                 return (m_attachments.Select(
                     kvp =>
-                    new { kvp, index = kvp.Value.FindIndex(delegate(AvatarAttachment a) { return a.ItemID == itemID; }) })
+                    new {kvp, index = kvp.Value.FindIndex(delegate(AvatarAttachment a) { return a.ItemID == itemID; })})
                                      .
                                       Where(@t => @t.index >= 0).Select(@t => @t.kvp.Key)).FirstOrDefault();
             }
@@ -644,7 +646,6 @@ namespace Universe.Framework.ClientInterfaces
                         return true;
                     }
                 }
-
                 return false;
             }
         }
@@ -696,7 +697,6 @@ namespace Universe.Framework.ClientInterfaces
                                  ? OSD.FromUUID(m_texture.FaceTextures[i].TextureID)
                                  : OSD.FromUUID(AppearanceManager.DEFAULT_AVATAR_TEXTURE));
             }
-
             data["textures"] = textures;
 
             // Visual Parameters
@@ -705,15 +705,14 @@ namespace Universe.Framework.ClientInterfaces
 
             // Attachments
             int attachCount;
-            lock (_attachmentslock)
-            {
+            lock (_attachmentslock) {
                 attachCount = m_attachments.Count;
             }
+            OSDArray attachs = new OSDArray (attachCount);
+            foreach (AvatarAttachment attach in GetAttachments ())
+                attachs.Add (attach.Pack ());
+            data ["attachments"] = attachs;
 
-            OSDArray attachs = new OSDArray(attachCount);
-            foreach (AvatarAttachment attach in GetAttachments())
-                attachs.Add(attach.Pack());
-            data["attachments"] = attachs;
             data["wearableCache"] = m_wearableCache.ToOSDMap();
 
             return data;
@@ -733,6 +732,7 @@ namespace Universe.Framework.ClientInterfaces
             if ((data != null) && (data["serial"] != null))
                 m_serial = data["serial"].AsInteger();
 
+
             if ((data != null) && (data["owner"] != null))
                 m_owner = data["owner"].AsUUID();
             try
@@ -741,10 +741,10 @@ namespace Universe.Framework.ClientInterfaces
                 SetDefaultWearables();
                 if ((data != null) && (data["wearables"] != null) && (data["wearables"]).Type == OSDType.Array)
                 {
-                    OSDArray wears = (OSDArray)(data["wearables"]);
+                    OSDArray wears = (OSDArray) (data["wearables"]);
                     for (int i = 0; i < wears.Count; i++)
-                        if (wears[i] is OSDArray)
-                            m_wearables[i] = new AvatarWearable((OSDArray)wears[i]);
+                        if(wears[i] is OSDArray)
+                            m_wearables[i] = new AvatarWearable((OSDArray) wears[i]);
                 }
                 else
                 {
@@ -755,14 +755,14 @@ namespace Universe.Framework.ClientInterfaces
                 SetDefaultTexture();
                 if ((data != null) && (data["textures"] != null) && (data["textures"]).Type == OSDType.Array)
                 {
-                    OSDArray textures = (OSDArray)(data["textures"]);
+                    OSDArray textures = (OSDArray) (data["textures"]);
                     for (int i = 0; i < TEXTURE_COUNT && i < textures.Count; i++)
                     {
                         UUID textureID = AppearanceManager.DEFAULT_AVATAR_TEXTURE;
                         if (textures[i] != null)
                             textureID = textures[i].AsUUID();
                         if (textureID != AppearanceManager.DEFAULT_AVATAR_TEXTURE)
-                            m_texture.CreateFace((uint)i).TextureID = new UUID(textureID);
+                            m_texture.CreateFace((uint) i).TextureID = new UUID(textureID);
                     }
                 }
                 else
@@ -786,16 +786,17 @@ namespace Universe.Framework.ClientInterfaces
                 m_attachments = new Dictionary<int, List<AvatarAttachment>>();
                 if ((data != null) && (data["attachments"] != null) && (data["attachments"]).Type == OSDType.Array)
                 {
-                    OSDArray attachs = (OSDArray)(data["attachments"]);
+                    OSDArray attachs = (OSDArray) (data["attachments"]);
                     foreach (OSD t in attachs)
-                        AppendAttachment(new AvatarAttachment((OSDMap)t));
+                        AppendAttachment(new AvatarAttachment((OSDMap) t));
                 }
-
                 if (data != null && data["wearableCache"] != null && data["wearableCache"] is OSDMap)
                     m_wearableCache = ((OSDMap)data["wearableCache"]).ConvertMap<UUID>((o) => o);
 
-                if ((data != null) && (data["height"] != null))
-                    SetSize(new Vector3(0.45f, 0.6f, (float)data["height"].AsReal()));
+                //SetHeight();
+                if ((data != null) && (data ["height"] != null))
+                    //m_avatarHeight = (float) data["height"].AsReal();
+                    SetSize (new Vector3 (0.45f, 0.6f, (float)data ["height"].AsReal ()));
 
             }
             catch (Exception e)
@@ -1766,7 +1767,7 @@ namespace Universe.Framework.ClientInterfaces
             BREAST_PHYSICS_INOUT_SPRING = 226,
             BREAST_PHYSICS_INOUT_GAIN = 227,
             BREAST_PHYSICS_INOUT_DAMPING = 228,
-
+            
             /// <summary>
             /// Belly
             /// </summary>
@@ -1792,16 +1793,15 @@ namespace Universe.Framework.ClientInterfaces
             BUTT_PHYSICS_LEFTRIGHT_SPRING = 244,
             BUTT_PHYSICS_LEFTRIGHT_GAIN = 245,
             BUTT_PHYSICS_LEFTRIGHT_DAMPING = 246,
-
+            
             /// <summary>
             /// Breast Part 2
             /// </summary>
             BREAST_PHYSICS_LEFTRIGHT_MAX_EFFECT = 247,
-            BREAST_PHYSICS_LEFTRIGHT_SPRING = 248,
+            BREAST_PHYSICS_LEFTRIGHT_SPRING= 248,
             BREAST_PHYSICS_LEFTRIGHT_GAIN = 249,
             BREAST_PHYSICS_LEFTRIGHT_DAMPING = 250
         }
-
         #endregion
     }
 }

@@ -43,279 +43,278 @@ using Universe.Framework.Utilities;
 
 namespace Universe.Modules.Entities.BuySell
 {
-	public class BuySellModule : IBuySellModule, INonSharedRegionModule
-	{
-		protected IDialogModule m_dialogModule;
-		protected IScene m_scene;
+    public class BuySellModule : IBuySellModule, INonSharedRegionModule
+    {
+        protected IDialogModule m_dialogModule;
+        protected IScene m_scene;
 
-		#region IBuySellModule Members
+        #region IBuySellModule Members
 
-		public bool BuyObject (IClientAPI remoteClient, UUID categoryID, uint localID, byte saleType)
-		{
-			ISceneChildEntity part = m_scene.GetSceneObjectPart (localID);
+        public bool BuyObject (IClientAPI remoteClient, UUID categoryID, uint localID, byte saleType)
+        {
+            ISceneChildEntity part = m_scene.GetSceneObjectPart (localID);
 
-			if (part == null)
-				return false;
+            if (part == null)
+                return false;
 
-			if (part.ParentEntity == null)
-				return false;
+            if (part.ParentEntity == null)
+                return false;
 
-			ISceneEntity group = part.ParentEntity;
-			ILLClientInventory inventoryModule = m_scene.RequestModuleInterface<ILLClientInventory> ();
+            ISceneEntity group = part.ParentEntity;
+            ILLClientInventory inventoryModule = m_scene.RequestModuleInterface<ILLClientInventory> ();
 
-			switch (saleType) {
-			case 1: // Sell as original (in-place sale)
-				uint effectivePerms = group.GetEffectivePermissions ();
+            switch (saleType) {
+            case 1: // Sell as original (in-place sale)
+                uint effectivePerms = group.GetEffectivePermissions ();
 
-				if ((effectivePerms & (uint)PermissionMask.Transfer) == 0) {
-					if (m_dialogModule != null)
-						m_dialogModule.SendAlertToUser (remoteClient, "This item doesn't appear to be for sale");
-					return false;
-				}
+                if ((effectivePerms & (uint)PermissionMask.Transfer) == 0) {
+                    if (m_dialogModule != null)
+                        m_dialogModule.SendAlertToUser (remoteClient, "This item doesn't appear to be for sale");
+                    return false;
+                }
 
-				group.SetOwnerId (remoteClient.AgentId);
-				group.SetRootPartOwner (part, remoteClient.AgentId, remoteClient.ActiveGroupId);
+                group.SetOwnerId (remoteClient.AgentId);
+                group.SetRootPartOwner (part, remoteClient.AgentId, remoteClient.ActiveGroupId);
 
-				if (m_scene.Permissions.PropagatePermissions ()) {
-					foreach (ISceneChildEntity child in group.ChildrenEntities ()) {
-						child.Inventory.ChangeInventoryOwner (remoteClient.AgentId);
-						child.TriggerScriptChangedEvent (Changed.OWNER);
-						child.ApplyNextOwnerPermissions ();
-					}
-				}
+                if (m_scene.Permissions.PropagatePermissions ()) {
+                    foreach (ISceneChildEntity child in group.ChildrenEntities ()) {
+                        child.Inventory.ChangeInventoryOwner (remoteClient.AgentId);
+                        child.TriggerScriptChangedEvent (Changed.OWNER);
+                        child.ApplyNextOwnerPermissions ();
+                    }
+                }
 
-				part.ObjectSaleType = 0;
-				part.SalePrice = 10;
+                part.ObjectSaleType = 0;
+                part.SalePrice = 10;
 
-				group.HasGroupChanged = true;
-				part.GetProperties (remoteClient);
-				part.TriggerScriptChangedEvent (Changed.OWNER);
-				group.ResumeScripts ();
-				part.ScheduleUpdate (PrimUpdateFlags.ForcedFullUpdate);
+                group.HasGroupChanged = true;
+                part.GetProperties (remoteClient);
+                part.TriggerScriptChangedEvent (Changed.OWNER);
+                group.ResumeScripts ();
+                part.ScheduleUpdate (PrimUpdateFlags.ForcedFullUpdate);
 
-				break;
+                break;
 
-			case 2: // Sell a copy
-				Vector3 inventoryStoredPosition = new Vector3 (
-					                                              (group.AbsolutePosition.X > m_scene.RegionInfo.RegionSizeX)
+            case 2: // Sell a copy
+                Vector3 inventoryStoredPosition = new Vector3(
+                    (group.AbsolutePosition.X > m_scene.RegionInfo.RegionSizeX)
                         ? m_scene.RegionInfo.RegionSizeX - 1
                         : group.AbsolutePosition.X
                     ,
-					                                              (group.AbsolutePosition.X > m_scene.RegionInfo.RegionSizeY)
+                    (group.AbsolutePosition.X > m_scene.RegionInfo.RegionSizeY)
                         ? m_scene.RegionInfo.RegionSizeY - 1
                         : group.AbsolutePosition.X
                     ,
-					                                              group.AbsolutePosition.Z
-				                                              );
+                    group.AbsolutePosition.Z
+                );
 
-				Vector3 originalPosition = group.AbsolutePosition;
+                Vector3 originalPosition = group.AbsolutePosition;
 
-				group.AbsolutePosition = inventoryStoredPosition;
+                group.AbsolutePosition = inventoryStoredPosition;
 
-				string sceneObjectXml = SceneEntitySerializer.SceneObjectSerializer.ToOriginalXmlFormat (group);
-				group.AbsolutePosition = originalPosition;
+                string sceneObjectXml = SceneEntitySerializer.SceneObjectSerializer.ToOriginalXmlFormat (group);
+                group.AbsolutePosition = originalPosition;
 
-				uint perms = group.GetEffectivePermissions ();
+                uint perms = group.GetEffectivePermissions ();
 
-				if ((perms & (uint)PermissionMask.Transfer) == 0) {
-					if (m_dialogModule != null)
-						m_dialogModule.SendAlertToUser (remoteClient, "This item doesn't appear to be for sale");
-					return false;
-				}
+                if ((perms & (uint)PermissionMask.Transfer) == 0) {
+                    if (m_dialogModule != null)
+                        m_dialogModule.SendAlertToUser (remoteClient, "This item doesn't appear to be for sale");
+                    return false;
+                }
 
-				AssetBase asset = new AssetBase (UUID.Random (), part.Name,
-					                              AssetType.Object, group.OwnerID) {
-					Description = part.Description,
-					Data = Utils.StringToBytes (sceneObjectXml)
-				};
-				asset.ID = m_scene.AssetService.Store (asset);
+                AssetBase asset = new AssetBase (UUID.Random (), part.Name,
+                                                AssetType.Object, group.OwnerID) { Description = part.Description, Data = Utils.StringToBytes (sceneObjectXml) };
+                asset.ID = m_scene.AssetService.Store (asset);
 
-				InventoryItemBase item = new InventoryItemBase {
-					CreatorId = part.CreatorID.ToString (),
-					CreatorData = part.CreatorData,
-					ID = UUID.Random (),
-					Owner = remoteClient.AgentId,
-					AssetID = asset.ID,
-					Description = asset.Description,
-					Name = asset.Name,
-					AssetType = asset.Type,
-					InvType = (int)InventoryType.Object,
-					Folder = categoryID
-				};
+                InventoryItemBase item = new InventoryItemBase {
+                    CreatorId = part.CreatorID.ToString (),
+                    CreatorData = part.CreatorData,
+                    ID = UUID.Random (),
+                    Owner = remoteClient.AgentId,
+                    AssetID = asset.ID,
+                    Description = asset.Description,
+                    Name = asset.Name,
+                    AssetType = asset.Type,
+                    InvType = (int)InventoryType.Object,
+                    Folder = categoryID
+                };
 
-				uint nextPerms = (perms & 7) << 13;
-				if ((nextPerms & (uint)PermissionMask.Copy) == 0)
-					perms &= ~(uint)PermissionMask.Copy;
-				if ((nextPerms & (uint)PermissionMask.Transfer) == 0)
-					perms &= ~(uint)PermissionMask.Transfer;
-				if ((nextPerms & (uint)PermissionMask.Modify) == 0)
-					perms &= ~(uint)PermissionMask.Modify;
 
-				item.BasePermissions = perms & part.NextOwnerMask;
-				item.CurrentPermissions = perms & part.NextOwnerMask;
-				item.NextPermissions = part.NextOwnerMask;
-				item.EveryOnePermissions = part.EveryoneMask & part.NextOwnerMask;
-				item.GroupPermissions = part.GroupMask & part.NextOwnerMask;
-				item.CurrentPermissions |= 16; // Slam!
-				item.CreationDate = Util.UnixTimeSinceEpoch ();
+                uint nextPerms = (perms & 7) << 13;
+                if ((nextPerms & (uint)PermissionMask.Copy) == 0)
+                    perms &= ~(uint)PermissionMask.Copy;
+                if ((nextPerms & (uint)PermissionMask.Transfer) == 0)
+                    perms &= ~(uint)PermissionMask.Transfer;
+                if ((nextPerms & (uint)PermissionMask.Modify) == 0)
+                    perms &= ~(uint)PermissionMask.Modify;
 
-				m_scene.InventoryService.AddItemAsync (item,
-					(itm) => remoteClient.SendInventoryItemCreateUpdate (itm, 0));
-				break;
+                item.BasePermissions = perms & part.NextOwnerMask;
+                item.CurrentPermissions = perms & part.NextOwnerMask;
+                item.NextPermissions = part.NextOwnerMask;
+                item.EveryOnePermissions = part.EveryoneMask & part.NextOwnerMask;
+                item.GroupPermissions = part.GroupMask & part.NextOwnerMask;
+                item.CurrentPermissions |= 16; // Slam!
+                item.CreationDate = Util.UnixTimeSinceEpoch ();
 
-			case 3: // Sell contents
-				List<UUID> invList = part.Inventory.GetInventoryList ();
+                m_scene.InventoryService.AddItemAsync (item,
+                                                      (itm) => remoteClient.SendInventoryItemCreateUpdate (itm, 0));
+                break;
 
-				bool okToSell =
-					invList.Select (invID => part.Inventory.GetInventoryItem (invID))
+            case 3: // Sell contents
+                List<UUID> invList = part.Inventory.GetInventoryList ();
+
+                bool okToSell =
+                    invList.Select (invID => part.Inventory.GetInventoryItem (invID))
                            .All (item1 => (item1.CurrentPermissions & (uint)PermissionMask.Transfer) != 0);
 
-				if (!okToSell) {
-					if (m_dialogModule != null)
-						m_dialogModule.SendAlertToUser (
-							remoteClient, "This item's inventory doesn't appear to be for sale");
-					return false;
-				}
+                if (!okToSell) {
+                    if (m_dialogModule != null)
+                        m_dialogModule.SendAlertToUser (
+                            remoteClient, "This item's inventory doesn't appear to be for sale");
+                    return false;
+                }
 
-				if (invList.Count > 0) {
-					if (inventoryModule != null)
-						inventoryModule.MoveTaskInventoryItemsToUserInventory (remoteClient.AgentId, part.Name, part, invList);
-				}
-				break;
-			}
+                if (invList.Count > 0) {
+                    if (inventoryModule != null)
+                        inventoryModule.MoveTaskInventoryItemsToUserInventory (remoteClient.AgentId, part.Name, part,
+                                                                              invList);
+                }
+                break;
+            }
 
-			return true;
-		}
+            return true;
+        }
 
-		#endregion
+        #endregion
 
-		#region INonSharedRegionModule Members
+        #region INonSharedRegionModule Members
 
-		public string Name {
-			get { return "Object BuySell Module"; }
-		}
+        public string Name {
+            get { return "Object BuySell Module"; }
+        }
 
-		public Type ReplaceableInterface {
-			get { return null; }
-		}
+        public Type ReplaceableInterface {
+            get { return null; }
+        }
 
-		public void Initialize (IConfigSource source)
-		{
-		}
+        public void Initialize (IConfigSource source)
+        {
+        }
 
-		public void AddRegion (IScene scene)
-		{
-			m_scene = scene;
-			m_scene.RegisterModuleInterface<IBuySellModule> (this);
-			m_scene.EventManager.OnNewClient += SubscribeToClientEvents;
-			m_scene.EventManager.OnClosingClient += UnsubscribeFromClientEvents;
-		}
+        public void AddRegion (IScene scene)
+        {
+            m_scene = scene;
+            m_scene.RegisterModuleInterface<IBuySellModule> (this);
+            m_scene.EventManager.OnNewClient += SubscribeToClientEvents;
+            m_scene.EventManager.OnClosingClient += UnsubscribeFromClientEvents;
+        }
 
-		public void RemoveRegion (IScene scene)
-		{
-			m_scene.EventManager.OnNewClient -= SubscribeToClientEvents;
-			m_scene.EventManager.OnClosingClient -= UnsubscribeFromClientEvents;
-		}
+        public void RemoveRegion (IScene scene)
+        {
+            m_scene.EventManager.OnNewClient -= SubscribeToClientEvents;
+            m_scene.EventManager.OnClosingClient -= UnsubscribeFromClientEvents;
+        }
 
-		public void RegionLoaded (IScene scene)
-		{
-			m_dialogModule = scene.RequestModuleInterface<IDialogModule> ();
-		}
+        public void RegionLoaded (IScene scene)
+        {
+            m_dialogModule = scene.RequestModuleInterface<IDialogModule> ();
+        }
 
-		public void Close ()
-		{
-			RemoveRegion (m_scene);
-		}
+        public void Close ()
+        {
+            RemoveRegion (m_scene);
+        }
 
-		#endregion
+        #endregion
 
-		public void SubscribeToClientEvents (IClientAPI client)
-		{
-			client.OnObjectSaleInfo += ObjectSaleInfo;
-			client.OnObjectBuy += ObjectBuy;
-			client.OnRequestPayPrice += ObjectRequestPayPrice;
-		}
+        public void SubscribeToClientEvents (IClientAPI client)
+        {
+            client.OnObjectSaleInfo += ObjectSaleInfo;
+            client.OnObjectBuy += ObjectBuy;
+            client.OnRequestPayPrice += ObjectRequestPayPrice;
+        }
 
-		public void UnsubscribeFromClientEvents (IClientAPI client)
-		{
-			client.OnObjectSaleInfo -= ObjectSaleInfo;
-			client.OnObjectBuy -= ObjectBuy;
-			client.OnRequestPayPrice -= ObjectRequestPayPrice;
-		}
+        public void UnsubscribeFromClientEvents (IClientAPI client)
+        {
+            client.OnObjectSaleInfo -= ObjectSaleInfo;
+            client.OnObjectBuy -= ObjectBuy;
+            client.OnRequestPayPrice -= ObjectRequestPayPrice;
+        }
 
-		protected void ObjectRequestPayPrice (IClientAPI client, UUID objectID)
-		{
-			ISceneChildEntity task = client.Scene.GetSceneObjectPart (objectID);
-			if (task == null)
-				return;
+        protected void ObjectRequestPayPrice (IClientAPI client, UUID objectID)
+        {
+            ISceneChildEntity task = client.Scene.GetSceneObjectPart (objectID);
+            if (task == null)
+                return;
 
-			client.SendPayPrice (objectID, task.ParentEntity.RootChild.PayPrice);
-		}
+            client.SendPayPrice (objectID, task.ParentEntity.RootChild.PayPrice);
+        }
 
-		protected void ObjectSaleInfo (
-			IClientAPI client, UUID sessionID, uint localID, byte saleType, int salePrice)
-		{
-			ISceneChildEntity part = m_scene.GetSceneObjectPart (localID);
-			if (part == null || part.ParentEntity == null)
-				return;
+        protected void ObjectSaleInfo (
+            IClientAPI client, UUID sessionID, uint localID, byte saleType, int salePrice)
+        {
+            ISceneChildEntity part = m_scene.GetSceneObjectPart (localID);
+            if (part == null || part.ParentEntity == null)
+                return;
 
-			if (part.ParentEntity.IsDeleted)
-				return;
+            if (part.ParentEntity.IsDeleted)
+                return;
 
-			if (part.OwnerID != client.AgentId && (!m_scene.Permissions.IsGod (client.AgentId)))
-				return;
+            if (part.OwnerID != client.AgentId && (!m_scene.Permissions.IsGod (client.AgentId)))
+                return;
 
-			part = part.ParentEntity.RootChild;
+            part = part.ParentEntity.RootChild;
 
-			part.ObjectSaleType = saleType;
-			part.SalePrice = salePrice;
+            part.ObjectSaleType = saleType;
+            part.SalePrice = salePrice;
 
-			part.ParentEntity.HasGroupChanged = true;
+            part.ParentEntity.HasGroupChanged = true;
 
-			part.GetProperties (client);
-		}
+            part.GetProperties (client);
+        }
 
-		protected void ObjectBuy (IClientAPI remoteClient,
-		                                UUID sessionID, UUID groupID, UUID categoryID,
-		                                uint localID, byte saleType, int salePrice)
-		{
-			// We're actually validating that the client is sending the data
-			// that it should.   In theory, the client should already know what to send here because it'll see it when it
-			// gets the object data.   If the data sent by the client doesn't match the object, the viewer probably has an 
-			// old idea of what the object properties are.   Viewer developer Hazim informed us that the base module 
-			// didn't check the client sent data against the object do any.   Since the base modules are the 
-			// 'crowning glory' examples of good practice..
+        protected void ObjectBuy (IClientAPI remoteClient,
+                                 UUID sessionID, UUID groupID, UUID categoryID,
+                                 uint localID, byte saleType, int salePrice)
+        {
+            // We're actually validating that the client is sending the data
+            // that it should.   In theory, the client should already know what to send here because it'll see it when it
+            // gets the object data.   If the data sent by the client doesn't match the object, the viewer probably has an 
+            // old idea of what the object properties are.   Viewer developer Hazim informed us that the base module 
+            // didn't check the client sent data against the object do any.   Since the base modules are the 
+            // 'crowning glory' examples of good practice..
 
-			ISceneChildEntity part = remoteClient.Scene.GetSceneObjectPart (localID);
-			if (part == null) {
-				remoteClient.SendAgentAlertMessage ("Unable to buy now. The object was not found.", false);
-				return;
-			}
+            ISceneChildEntity part = remoteClient.Scene.GetSceneObjectPart (localID);
+            if (part == null) {
+                remoteClient.SendAgentAlertMessage ("Unable to buy now. The object was not found.", false);
+                return;
+            }
 
-			// Validate that the client sent the price that the object is being sold for 
-			if (part.SalePrice != salePrice) {
-				remoteClient.SendAgentAlertMessage (
-					"Cannot buy at this price. Buy Failed. If you continue to get this error, please restart your viewer.", false);
-				return;
-			}
+            // Validate that the client sent the price that the object is being sold for 
+            if (part.SalePrice != salePrice) {
+                remoteClient.SendAgentAlertMessage (
+                    "Cannot buy at this price. Buy Failed. If you continue to get this error, please restart your viewer.", false);
+                return;
+            }
 
-			// Validate that the client sent the proper sale type the object has set 
-			if (part.ObjectSaleType != saleType) {
-				remoteClient.SendAgentAlertMessage (
-					"Cannot buy this way. Buy Failed. If you continue to get this this error, please restart your viewer", false);
-				return;
-			}
+            // Validate that the client sent the proper sale type the object has set 
+            if (part.ObjectSaleType != saleType) {
+                remoteClient.SendAgentAlertMessage (
+                    "Cannot buy this way. Buy Failed. If you continue to get this this error, please restart your viewer", false);
+                return;
+            }
 
-			IMoneyModule moneyMod = remoteClient.Scene.RequestModuleInterface<IMoneyModule> ();
-			if (moneyMod != null) {
-				if (!moneyMod.Transfer (part.OwnerID, remoteClient.AgentId, part.ParentUUID, part.Name, UUID.Zero, "", part.SalePrice,
-					                "Object Purchase", TransactionType.ObjectSale)) {
-					remoteClient.SendAgentAlertMessage ("You do not have enough money to buy this object.", false);
-					return;
-				}
-			}
+            IMoneyModule moneyMod = remoteClient.Scene.RequestModuleInterface<IMoneyModule> ();
+            if (moneyMod != null) {
+                if (!moneyMod.Transfer (part.OwnerID, remoteClient.AgentId, part.ParentUUID, part.Name, UUID.Zero, "", part.SalePrice,
+                                       "Object Purchase", TransactionType.ObjectSale)) {
+                    remoteClient.SendAgentAlertMessage ("You do not have enough money to buy this object.", false);
+                    return;
+                }
+            }
 
-			BuyObject (remoteClient, categoryID, localID, saleType);
-		}
-	}
+            BuyObject (remoteClient, categoryID, localID, saleType);
+        }
+    }
 }

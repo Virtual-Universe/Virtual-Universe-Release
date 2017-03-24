@@ -29,31 +29,31 @@
 
 namespace Universe.Framework.Utilities
 {
-	public static class ProtocolVersion
-	{
-		/// <summary>
-		///     The current major protocol version of this version of Universe
-		/// </summary>
-		public const int MAJOR_PROTOCOL_VERSION = 1;
+    public static class ProtocolVersion
+    {
+        /// <summary>
+        ///     The current major protocol version of this version of Universe
+        /// </summary>
+        public const int MAJOR_PROTOCOL_VERSION = 1;
 
-		/// <summary>
-		///     The current minor protocol version of this version of Universe
-		/// </summary>
-		public const int MINOR_PROTOCOL_VERSION = 4;
+        /// <summary>
+        ///     The current minor protocol version of this version of Universe
+        /// </summary>
+        public const int MINOR_PROTOCOL_VERSION = 4;
 
-		/// <summary>
-		///     The minimum major protocol version allowed to connect to this version of Universe
-		/// </summary>
-		public const int MINIMUM_MAJOR_PROTOCOL_VERSION = 1;
+        /// <summary>
+        ///     The minimum major protocol version allowed to connect to this version of Universe
+        /// </summary>
+        public const int MINIMUM_MAJOR_PROTOCOL_VERSION = 1;
 
-		/// <summary>
-		///     The minimum minor protocol version allowed to connect to this version of Universe
-		/// </summary>
-		public const int MINIMUM_MINOR_PROTOCOL_VERSION = 4;
-	}
-	/// Changes:
-	/// Major 1
-	///   Minor 1 - Initial bump
-	///   Minor 2 - Added sending of URIs back to the region on registration
-	///   Minor 3 - Logical change that will lead up to IWC / HG
+        /// <summary>
+        ///     The minimum minor protocol version allowed to connect to this version of Universe
+        /// </summary>
+        public const int MINIMUM_MINOR_PROTOCOL_VERSION = 4;
+    }
+    /// Changes:
+    /// Major 1
+    ///   Minor 1 - Initial bump
+    ///   Minor 2 - Added sending of URIs back to the region on registration
+    ///   Minor 3 - Logical change that will lead up to IWC / HG
 }

@@ -31,31 +31,35 @@ using OpenMetaverse;
 
 namespace Universe.Framework.Services
 {
-	public interface ILibraryService
-	{
-		/// <summary>
-		///     The root folderID of the default library
-		/// </summary>
-		UUID LibraryRootFolderID { get; }
+    public interface ILibraryService
+    {
+    	
+       
+        /// <summary>
+        ///     The root folderID of the default library
+        /// </summary>
+        UUID LibraryRootFolderID { get; }
 
         /// <summary>
-        ///     The library owner's UUID
+        /// Gets the library owner's UUID.
         /// </summary>
+        /// <value>The library owner.</value>
         UUID LibraryOwnerUUID { get; }
 
-		/// <summary>
-		///     The owner of the library's name
-		/// </summary>
-		string LibraryOwnerName { get; }
+        /// <summary>
+        /// Gets the name of the library owner.
+        /// </summary>
+        /// <value>The name of the library owner.</value>
+        string LibraryOwnerName { get; }
 
-		/// <summary>
-		///     The name of the library that will show up in the client
-		/// </summary>
-		string LibraryName { get; }
+        /// <summary>
+        ///     The name of the library that will show up in the client
+        /// </summary>
+        string LibraryName { get; }
 
-		/// <summary>
-		///     Clears out all current folders and items from the default inventory
-		/// </summary>
-		void ClearDefaultInventory ();
-	}
+        /// <summary>
+        ///     Clears out all current folders and items from the default inventory
+        /// </summary>
+        void ClearDefaultInventory();
+    }
 }

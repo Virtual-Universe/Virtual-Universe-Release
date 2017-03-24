@@ -33,131 +33,150 @@ using Universe.Framework.Utilities;
 
 namespace Universe.DataManager.Migration.Migrators.Directory
 {
-	public class DirectoryMigrator_0 : Migrator
-	{
-		public DirectoryMigrator_0 ()
-		{
-			Version = new Version (0, 0, 0);
-			MigrationName = "Directory";
+    public class DirectoryMigrator_0 : Migrator
+    {
+        public DirectoryMigrator_0()
+        {
+            Version = new Version(0, 0, 0);
+            MigrationName = "Directory";
 
-			Schema = new List<SchemaDefinition> ();
+            Schema = new List<SchemaDefinition>();
 
-			AddSchema ("search_parcel", ColDefs (
-				ColDef ("RegionID", ColumnTypes.Char36),
-				ColDef ("ParcelID", ColumnTypes.String50),
-				ColDef ("LocalID", ColumnTypes.String50),
-				ColDef ("LandingX", ColumnTypes.String50),
-				ColDef ("LandingY", ColumnTypes.String50),
-				ColDef ("LandingZ", ColumnTypes.String50),
-				ColDef ("Name", ColumnTypes.String50),
-				ColDef ("Description", ColumnTypes.String255),
-				ColDef ("Flags", ColumnTypes.String50),
-				ColDef ("Dwell", ColumnTypes.String50),
-				ColDef ("InfoUUID", ColumnTypes.String50),
-				ColDef ("ForSale", ColumnTypes.String50),
-				ColDef ("SalePrice", ColumnTypes.String50),
-				ColDef ("Auction", ColumnTypes.String50),
-				ColDef ("Area", ColumnTypes.String50),
-				ColDef ("EstateID", ColumnTypes.String50),
-				ColDef ("Maturity", ColumnTypes.String50),
-				ColDef ("OwnerID", ColumnTypes.String50),
-				ColDef ("GroupID", ColumnTypes.String50),
-				ColDef ("ShowInSearch", ColumnTypes.String50),
-				ColDef ("SnapshotID", ColumnTypes.String50),
-				ColDef ("Bitmap", ColumnTypes.LongText),
-				ColDef ("Category", ColumnTypes.String50),
-				new ColumnDefinition {
-					Name = "ScopeID",
-					Type = new ColumnTypeDef {
-						Type = ColumnType.UUID,
-						defaultValue = OpenMetaverse.UUID.Zero.ToString ()
-					}
-				}
-			), IndexDefs (
-				IndexDef (new string[1] { "ParcelID" }, IndexType.Primary),
-				IndexDef (new string[4] { "RegionID", "OwnerID", "Flags", "Category" },
-					IndexType.Index),
-				IndexDef (new string[2] { "RegionID", "Name" }, IndexType.Index),
-				IndexDef (new string[1] { "OwnerID" }, IndexType.Index),
-				IndexDef (new string[3] { "ForSale", "SalePrice", "Area" }, IndexType.Index)
-			));
+            //
+            // Change summary:  April 1 2016
+            //
+            //   Change ID type fields to type UUID
+            //
 
-			AddSchema ("event_information", ColDefs (
-				ColDef ("EID", ColumnTypes.Integer11),
-				new ColumnDefinition {
-					Name = "creator",
-					Type = new ColumnTypeDef {
-						Type = ColumnType.UUID
-					}
-				},
-				new ColumnDefinition {
-					Name = "region",
-					Type = new ColumnTypeDef {
-						Type = ColumnType.UUID
-					}
-				},
-				new ColumnDefinition {
-					Name = "parcel",
-					Type = new ColumnTypeDef {
-						Type = ColumnType.UUID
-					}
-				},
-				ColDef ("date", ColumnTypes.DateTime),
-				ColDef ("cover", ColumnTypes.Integer11),
-				ColDef ("maturity", ColumnTypes.TinyInt4),
-				ColDef ("flags", ColumnTypes.Integer11),
-				ColDef ("duration", ColumnTypes.Integer11),
-				ColDef ("localPosX", ColumnTypes.Float),
-				ColDef ("localPosY", ColumnTypes.Float),
-				ColDef ("localPosZ", ColumnTypes.Float),
-				ColDef ("name", ColumnTypes.String50),
-				ColDef ("description", ColumnTypes.String255),
-				ColDef ("category", ColumnTypes.String50),
-				new ColumnDefinition {
-					Name = "scopeID",
-					Type = new ColumnTypeDef {
-						Type = ColumnType.UUID,
-						defaultValue = OpenMetaverse.UUID.Zero.ToString ()
-					}
-				}
-			), IndexDefs (
-				IndexDef (new string[1] { "EID" }, IndexType.Primary),
-				IndexDef (new string[1] { "name" }, IndexType.Index),
-				IndexDef (new string[2] { "date", "flags" }, IndexType.Index),
-				IndexDef (new string[2] { "region", "maturity" }, IndexType.Index)
-			));
+            AddSchema("search_parcel", ColDefs(
+                ColDef("RegionID", ColumnTypes.UUID),
+                ColDef("ParcelID", ColumnTypes.UUID),
+                ColDef("LocalID", ColumnTypes.String50),
+                ColDef("LandingX", ColumnTypes.String50),
+                ColDef("LandingY", ColumnTypes.String50),
+                ColDef("LandingZ", ColumnTypes.String50),
+                ColDef("Name", ColumnTypes.String50),
+                ColDef("Description", ColumnTypes.String255),
+                ColDef("Flags", ColumnTypes.String50),
+                ColDef("Dwell", ColumnTypes.String50),
+                ColDef("InfoUUID", ColumnTypes.UUID),
+                ColDef("ForSale", ColumnTypes.String50),
+                ColDef("SalePrice", ColumnTypes.String50),
+                ColDef("Auction", ColumnTypes.String50),
+                ColDef("Area", ColumnTypes.String50),
+                ColDef("EstateID", ColumnTypes.String50),
+                ColDef("Maturity", ColumnTypes.String50),
+                ColDef("OwnerID", ColumnTypes.UUID),
+                ColDef("GroupID", ColumnTypes.UUID),
+                ColDef("ShowInSearch", ColumnTypes.String50),
+                ColDef("SnapshotID", ColumnTypes.UUID),
+                ColDef("Bitmap", ColumnTypes.LongText),
+                ColDef("Category", ColumnTypes.String50),
+                new ColumnDefinition
+            {
+                Name = "ScopeID",
+                Type = new ColumnTypeDef
+                {
+                    Type = ColumnType.UUID,
+                    defaultValue = OpenMetaverse.UUID.Zero.ToString()
+                }
+            }
+            ), IndexDefs(
+                IndexDef(new string[1] { "ParcelID" }, IndexType.Primary),
+                IndexDef(new string[4] { "RegionID", "OwnerID", "Flags", "Category" },
+                    IndexType.Index),
+                IndexDef(new string[2] { "RegionID", "Name" }, IndexType.Index),
+                IndexDef(new string[1] { "OwnerID" }, IndexType.Index),
+                IndexDef(new string[3] { "ForSale", "SalePrice", "Area" }, IndexType.Index)
+            ));
 
-			AddSchema ("event_notifications", ColDefs (
-				new ColumnDefinition {
-					Name = "UserID",
-					Type = new ColumnTypeDef {
-						Type = ColumnType.UUID
-					}
-				},
-				ColDef ("EventID", ColumnTypes.Integer11)
-			), IndexDefs (
-				IndexDef (new string[1] { "UserID" }, IndexType.Primary)
-			));
-		}
 
-		protected override void DoCreateDefaults (IDataConnector genericData)
-		{
-			EnsureAllTablesInSchemaExist (genericData);
-		}
+            AddSchema("event_information", ColDefs(
+                ColDef("EID", ColumnTypes.Integer11),
+                new ColumnDefinition
+            {
+                Name = "creator",
+                Type = new ColumnTypeDef
+                {
+                    Type = ColumnType.UUID
+                }
+            },
+                new ColumnDefinition
+            {
+                Name = "region",
+                Type = new ColumnTypeDef
+                {
+                    Type = ColumnType.UUID
+                }
+            },
+                new ColumnDefinition
+            {
+                Name = "parcel",
+                Type = new ColumnTypeDef
+                {
+                    Type = ColumnType.UUID
+                }
+            },
+                ColDef("date", ColumnTypes.DateTime),
+                ColDef("cover", ColumnTypes.Integer11),
+                ColDef("maturity", ColumnTypes.TinyInt4),
+                ColDef("flags", ColumnTypes.Integer11),
+                ColDef("duration", ColumnTypes.Integer11),
+                ColDef("localPosX", ColumnTypes.Float),
+                ColDef("localPosY", ColumnTypes.Float),
+                ColDef("localPosZ", ColumnTypes.Float),
+                ColDef("name", ColumnTypes.String50),
+                ColDef("description", ColumnTypes.String255),
+                ColDef("category", ColumnTypes.String50),
+                new ColumnDefinition
+            {
+                Name = "scopeID",
+                Type = new ColumnTypeDef
+                {
+                    Type = ColumnType.UUID,
+                    defaultValue = OpenMetaverse.UUID.Zero.ToString()
+                }
+            }
+            ), IndexDefs(
+                IndexDef(new string[1] { "EID" }, IndexType.Primary),
+                IndexDef(new string[1] { "name" }, IndexType.Index),
+                IndexDef(new string[2] { "date", "flags" }, IndexType.Index),
+                IndexDef(new string[2] { "region", "maturity" }, IndexType.Index)
+            ));
 
-		protected override bool DoValidate (IDataConnector genericData)
-		{
-			return TestThatAllTablesValidate (genericData);
-		}
+            AddSchema("event_notifications", ColDefs(
+                new ColumnDefinition
+            {
+                Name = "UserID",
+                Type = new ColumnTypeDef
+                {
+                    Type = ColumnType.UUID
+                }
+            },
+                ColDef("EventID", ColumnTypes.Integer11)
+            ), IndexDefs(
+                IndexDef(new string[1] { "UserID" }, IndexType.Primary)
+            ));
+        }
 
-		protected override void DoMigrate (IDataConnector genericData)
-		{
-			DoCreateDefaults (genericData);
-		}
+        protected override void DoCreateDefaults(IDataConnector genericData)
+        {
+            EnsureAllTablesInSchemaExist(genericData);
+        }
 
-		protected override void DoPrepareRestorePoint (IDataConnector genericData)
-		{
-			CopyAllTablesToTempVersions (genericData);
-		}
-	}
+        protected override bool DoValidate(IDataConnector genericData)
+        {
+            return TestThatAllTablesValidate(genericData);
+        }
+
+        protected override void DoMigrate(IDataConnector genericData)
+        {
+            DoCreateDefaults(genericData);
+        }
+
+        protected override void DoPrepareRestorePoint(IDataConnector genericData)
+        {
+            CopyAllTablesToTempVersions(genericData);
+        }
+    }
 }

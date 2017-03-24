@@ -36,101 +36,101 @@ using Universe.Framework.Utilities;
 
 namespace Universe.Services
 {
-	public class AbuseReportsService : ConnectorBase, IAbuseReports, IService
-	{
-		public string Name {
-			get { return GetType ().Name; }
-		}
+    public class AbuseReportsService : ConnectorBase, IAbuseReports, IService
+    {
+        public string Name {
+            get { return GetType ().Name; }
+        }
 
-		#region IAbuseReports Members
+        #region IAbuseReports Members
 
-		[CanBeReflected (ThreatLevel = ThreatLevel.Low)]
-		public void AddAbuseReport (AbuseReport abuse_report)
-		{
-			if (m_doRemoteOnly) {
-				DoRemote (abuse_report);
-				return;
-			}
+        [CanBeReflected (ThreatLevel = ThreatLevel.Low)]
+        public void AddAbuseReport (AbuseReport abuse_report)
+        {
+            if (m_doRemoteOnly) {
+                DoRemote (abuse_report);
+                return;
+            }
 
-			IAbuseReportsConnector conn = Framework.Utilities.DataManager.RequestPlugin<IAbuseReportsConnector> ();
-			if (conn != null)
-				conn.AddAbuseReport (abuse_report);
-		}
+            IAbuseReportsConnector conn = Framework.Utilities.DataManager.RequestPlugin<IAbuseReportsConnector> ();
+            if (conn != null)
+                conn.AddAbuseReport (abuse_report);
+        }
 
-		//[CanBeReflected(ThreatLevel = ThreatLevel.Full)]
-		public AbuseReport GetAbuseReport (int Number, string Password)
-		{
-			/*object remoteValue = DoRemote(Number, Password);
+        //[CanBeReflected(ThreatLevel = ThreatLevel.Full)]
+        public AbuseReport GetAbuseReport (int Number, string Password)
+        {
+            /*object remoteValue = DoRemote(Number, Password);
             if (remoteValue != null || m_doRemoteOnly)
                 return (AbuseReport)remoteValue;*/
 
-			IAbuseReportsConnector conn = Framework.Utilities.DataManager.RequestPlugin<IAbuseReportsConnector> ();
-			return (conn != null) ? conn.GetAbuseReport (Number, Password) : null;
-		}
+            IAbuseReportsConnector conn = Framework.Utilities.DataManager.RequestPlugin<IAbuseReportsConnector> ();
+            return (conn != null) ? conn.GetAbuseReport (Number, Password) : null;
+        }
 
-		/// <summary>
-		///     Cannot be reflected on purpose, so it can only be used locally.
-		///     Gets the abuse report associated with the number without authentication.
-		/// </summary>
-		/// <param name="Number"></param>
-		/// <returns></returns>
-		public AbuseReport GetAbuseReport (int Number)
-		{
-			IAbuseReportsConnector conn = Framework.Utilities.DataManager.RequestPlugin<IAbuseReportsConnector> ();
-			return (conn != null) ? conn.GetAbuseReport (Number) : null;
-		}
+        /// <summary>
+        ///     Cannot be reflected on purpose, so it can only be used locally.
+        ///     Gets the abuse report associated with the number without authentication.
+        /// </summary>
+        /// <param name="Number"></param>
+        /// <returns></returns>
+        public AbuseReport GetAbuseReport (int Number)
+        {
+            IAbuseReportsConnector conn = Framework.Utilities.DataManager.RequestPlugin<IAbuseReportsConnector> ();
+            return (conn != null) ? conn.GetAbuseReport (Number) : null;
+        }
 
-		//[CanBeReflected(ThreatLevel = ThreatLevel.Full)]
-		public void UpdateAbuseReport (AbuseReport report, string Password)
-		{
-			/*object remoteValue = DoRemote(report, Password);
+        //[CanBeReflected(ThreatLevel = ThreatLevel.Full)]
+        public void UpdateAbuseReport (AbuseReport report, string Password)
+        {
+            /*object remoteValue = DoRemote(report, Password);
             if (remoteValue != null || m_doRemoteOnly)
                 return;*/
 
-			IAbuseReportsConnector conn = Framework.Utilities.DataManager.RequestPlugin<IAbuseReportsConnector> ();
-			if (conn != null)
-				conn.UpdateAbuseReport (report, Password);
-		}
+            IAbuseReportsConnector conn = Framework.Utilities.DataManager.RequestPlugin<IAbuseReportsConnector> ();
+            if (conn != null)
+                conn.UpdateAbuseReport (report, Password);
+        }
 
-		public List<AbuseReport> GetAbuseReports (int start, int count, bool active)
-		{
-			if (m_doRemoteOnly) {
-				object remoteValue = DoRemote (start, count, active);
-				return remoteValue != null ? (List<AbuseReport>)remoteValue : null;
-			}
+        public List<AbuseReport> GetAbuseReports (int start, int count, bool active)
+        {
+            if (m_doRemoteOnly) {
+                object remoteValue = DoRemote (start, count, active);
+                return remoteValue != null ? (List<AbuseReport>)remoteValue : null;
+            }
 
-			IAbuseReportsConnector conn = Framework.Utilities.DataManager.RequestPlugin<IAbuseReportsConnector> ();
-			if (conn != null)
-				return conn.GetAbuseReports (start, count, active);
+            IAbuseReportsConnector conn = Framework.Utilities.DataManager.RequestPlugin<IAbuseReportsConnector> ();
+            if (conn != null)
+                return conn.GetAbuseReports (start, count, active);
 
-			return null;
-		}
+            return null;
+        }
 
-		public void UpdateAbuseReport (AbuseReport report)
-		{
-			IAbuseReportsConnector conn = Framework.Utilities.DataManager.RequestPlugin<IAbuseReportsConnector> ();
-			if (conn != null)
-				conn.UpdateAbuseReport (report);
-		}
+        public void UpdateAbuseReport (AbuseReport report)
+        {
+            IAbuseReportsConnector conn = Framework.Utilities.DataManager.RequestPlugin<IAbuseReportsConnector> ();
+            if (conn != null)
+                conn.UpdateAbuseReport (report);
+        }
 
-		#endregion
+        #endregion
 
-		#region IService Members
+        #region IService Members
 
-		public void Initialize (IConfigSource config, IRegistryCore registry)
-		{
-			registry.RegisterModuleInterface<IAbuseReports> (this);
-			Init (registry, Name);
-		}
+        public void Initialize (IConfigSource config, IRegistryCore registry)
+        {
+            registry.RegisterModuleInterface<IAbuseReports> (this);
+            Init (registry, Name);
+        }
 
-		public void Start (IConfigSource config, IRegistryCore registry)
-		{
-		}
+        public void Start (IConfigSource config, IRegistryCore registry)
+        {
+        }
 
-		public void FinishedStartup ()
-		{
-		}
+        public void FinishedStartup ()
+        {
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

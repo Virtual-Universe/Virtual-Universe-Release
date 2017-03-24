@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) Contributors, http://virtual-planets.org/
  * See CONTRIBUTORS.TXT for a full list of copyright holders.
  * For an explanation of the license of each contributor and the content it 
@@ -29,14 +29,14 @@
 
 using System;
 using System.Collections.Generic;
-using Universe.Framework.Modules;
 using Universe.Framework.Services;
 using Universe.Simulation.Base;
+using Universe.Framework.Modules;
 
 namespace Universe.Servers.AssetServer
 {
     /// <summary>
-    ///     This is the starting class for the Virtual Universe Server
+    ///     Starting class for the Virtual Universe Server
     /// </summary>
     public class Application
     {
@@ -44,8 +44,8 @@ namespace Universe.Servers.AssetServer
         {
             BaseApplication.BaseMain(args, "Universe.AssetServer.ini",
                                      new MinimalSimulationBase("Universe.AssetServer ",
-                                                               new List<Type> { typeof(IAssetDataPlugin) },
-                                                               new List<Type>
+                                                               new List<Type> {typeof (IAssetDataPlugin)},
+                                                               new List<Type> 
                                                                {
                                                                     typeof (IAssetService),
                                                                     typeof (ISyncMessagePosterService),

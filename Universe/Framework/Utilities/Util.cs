@@ -59,515 +59,514 @@ using ReaderWriterLockSlim = System.Threading.ReaderWriterLockSlim;
 
 namespace Universe.Framework.Utilities
 {
-	/// <summary>
-	///     The method used by Util.FireAndForget for asynchronously firing events
-	/// </summary>
-	public enum FireAndForgetMethod
-	{
-		UnsafeQueueUserWorkItem,
-		QueueUserWorkItem,
-		BeginInvoke,
-		SmartThreadPool,
-		Thread
-	}
 
-	public enum RuntimeEnvironment
-	{
-		NET,
-		WinMono,
-		Mono
-	}
+    /// <summary>
+    ///     The method used by Util.FireAndForget for asynchronously firing events
+    /// </summary>
+    public enum FireAndForgetMethod
+    {
+        UnsafeQueueUserWorkItem,
+        QueueUserWorkItem,
+        BeginInvoke,
+        SmartThreadPool,
+        Thread
+    }
 
-	/// <summary>
-	///     Miscellaneous utility functions
-	/// </summary>
-	public static class Util
-	{
-        public static double TimeStampClockPeriodMS;
-		static uint nextXferID = 5000;
-		static readonly Random randomClass = new ThreadSafeRandom ();
+    public enum RuntimeEnvironment
+    {
+        NET,
+        WinMono,
+        Mono
+    }
 
-		// Get a list of invalid file characters (OS dependent)
-		static readonly string regexInvalidFileChars = "[" + new string (Path.GetInvalidFileNameChars ()) + "]";
-		static readonly string regexInvalidPathChars = "[" + new string (Path.GetInvalidPathChars ()) + "]";
-		static readonly object XferLock = new object ();
+    /// <summary>
+    ///     Miscellaneous utility functions
+    /// </summary>
+    public static class Util
+    {    	
+    	public static double TimeStampClockPeriodMS;
+    	
+        static uint nextXferID = 5000;
+        static readonly Random randomClass = new ThreadSafeRandom ();
 
-		/// <summary>
-		///     Thread pool used for Util.FireAndForget if
-		///     FireAndForgetMethod.SmartThreadPool is used
-		/// </summary>
-		static SmartThreadPool m_ThreadPool;
+        // Get a list of invalid file characters (OS dependent)
+        static readonly string regexInvalidFileChars = "[" + new string (Path.GetInvalidFileNameChars ()) + "]";
+        static readonly string regexInvalidPathChars = "[" + new string (Path.GetInvalidPathChars ()) + "]";
+        static readonly object XferLock = new object ();
 
-		static volatile bool m_threadPoolRunning;
+        /// <summary>
+        ///     Thread pool used for Util.FireAndForget if
+        ///     FireAndForgetMethod.SmartThreadPool is used
+        /// </summary>
+        static SmartThreadPool m_ThreadPool;
 
-		// Unix-epoch starts at January 1st 1970, 00:00:00 UTC. And all our times in the server are (or at least should be) in UTC.
-		public static readonly DateTime UnixEpoch =
-			DateTime.ParseExact ("1970-01-01 00:00:00 +0", "yyyy-MM-dd hh:mm:ss z", DateTimeFormatInfo.InvariantInfo).
+        static volatile bool m_threadPoolRunning;
+
+        // Unix-epoch starts at January 1st 1970, 00:00:00 UTC. And all our times in the server are (or at least should be) in UTC.
+        public static readonly DateTime UnixEpoch =
+            DateTime.ParseExact ("1970-01-01 00:00:00 +0", "yyyy-MM-dd hh:mm:ss z", DateTimeFormatInfo.InvariantInfo).
                      ToUniversalTime ();
 
-		public static readonly Regex UUIDPattern
+        public static readonly Regex UUIDPattern
             = new Regex ("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
 
-		public static FireAndForgetMethod FireAndForgetMethod = FireAndForgetMethod.SmartThreadPool;
+        public static FireAndForgetMethod FireAndForgetMethod = FireAndForgetMethod.SmartThreadPool;
 
-		static Util ()
-		{
-			RuntimeTypeModel.Default.Add (typeof(UUID), false)
-                            .SetSurrogate (typeof(UUIDSurrogate));
-			RuntimeTypeModel.Default.Add (typeof(IPEndPoint), false)
-                            .SetSurrogate (typeof(IPEndPointSurrogate));
-			RuntimeTypeModel.Default.Add (typeof(OSD), false)
-                            .SetSurrogate (typeof(OSDSurrogate));
-			RuntimeTypeModel.Default.Add (typeof(OSDArray), false)
-                            .SetSurrogate (typeof(OSDArraySurrogate));
-			RuntimeTypeModel.Default.Add (typeof(OSDMap), false)
-                            .SetSurrogate (typeof(OSDMapSurrogate));
-			RuntimeTypeModel.Default.Add (typeof(Vector3), false)
-                            .SetSurrogate (typeof(Vector3Surrogate));
-			RuntimeTypeModel.Default.Add (typeof(Quaternion), false)
-                            .SetSurrogate (typeof(QuaternionSurrogate));
-			RuntimeTypeModel.Default.Add (typeof(ParcelManager.ParcelAccessEntry), false)
-                            .SetSurrogate (typeof(ParcelAccessEntrySurrogate));
-			RuntimeTypeModel.Default.Add (typeof(MediaEntry), false)
-                            .SetSurrogate (typeof(MediaEntrySurrogate));
-			RuntimeTypeModel.Default.Add (typeof(System.Drawing.Color), false)
-                            .SetSurrogate (typeof(ColorSurrogate));
-
+        static Util ()
+        {
+            RuntimeTypeModel.Default.Add (typeof (UUID), false)
+                            .SetSurrogate (typeof (UUIDSurrogate));
+            RuntimeTypeModel.Default.Add (typeof (IPEndPoint), false)
+                            .SetSurrogate (typeof (IPEndPointSurrogate));
+            RuntimeTypeModel.Default.Add (typeof (OSD), false)
+                            .SetSurrogate (typeof (OSDSurrogate));
+            RuntimeTypeModel.Default.Add (typeof (OSDArray), false)
+                            .SetSurrogate (typeof (OSDArraySurrogate));
+            RuntimeTypeModel.Default.Add (typeof (OSDMap), false)
+                            .SetSurrogate (typeof (OSDMapSurrogate));
+            RuntimeTypeModel.Default.Add (typeof (Vector3), false)
+                            .SetSurrogate (typeof (Vector3Surrogate));
+            RuntimeTypeModel.Default.Add (typeof (Quaternion), false)
+                            .SetSurrogate (typeof (QuaternionSurrogate));
+            RuntimeTypeModel.Default.Add (typeof (ParcelManager.ParcelAccessEntry), false)
+                            .SetSurrogate (typeof (ParcelAccessEntrySurrogate));
+            RuntimeTypeModel.Default.Add (typeof (MediaEntry), false)
+                            .SetSurrogate (typeof (MediaEntrySurrogate));
+            RuntimeTypeModel.Default.Add (typeof (System.Drawing.Color), false)
+                            .SetSurrogate (typeof (ColorSurrogate));
+            
             // Time related changes
             TimeStampClockPeriodMS = 1000.0D / (double)Stopwatch.Frequency;
-		}
+        }
 
-		#region Protobuf helpers
+        #region Protobuf helpers
 
-		[ProtoContract]
-		class UUIDSurrogate
-		{
-			[ProtoMember (1)]
-			public string ID;
-			// protobuf-net wants an implicit or explicit operator between the types
-			public static implicit operator UUID (UUIDSurrogate value)
-			{
-				return UUID.Parse (value.ID);
-			}
+        [ProtoContract]
+        class UUIDSurrogate
+        {
+            [ProtoMember (1)]
+            public string ID;
+            // protobuf-net wants an implicit or explicit operator between the types
+            public static implicit operator UUID (UUIDSurrogate value)
+            {
+                return UUID.Parse (value.ID);
+            }
 
-			public static implicit operator UUIDSurrogate (UUID value)
-			{
-				return new UUIDSurrogate {
-					ID = value.ToString ()
-				};
-			}
-		}
+            public static implicit operator UUIDSurrogate (UUID value)
+            {
+                return new UUIDSurrogate {
+                    ID = value.ToString ()
+                };
+            }
+        }
 
-		[ProtoContract]
-		class Vector3Surrogate
-		{
-			[ProtoMember (1)]
-			public float X;
-			[ProtoMember (2)]
-			public float Y;
-			[ProtoMember (3)]
-			public float Z;
+        [ProtoContract]
+        class Vector3Surrogate
+        {
+            [ProtoMember (1)]
+            public float X;
+            [ProtoMember (2)]
+            public float Y;
+            [ProtoMember (3)]
+            public float Z;
 
-			// protobuf-net wants an implicit or explicit operator between the types
-			public static implicit operator Vector3 (Vector3Surrogate value)
-			{
-				return new Vector3 (value.X, value.Y, value.Z);
-			}
+            // protobuf-net wants an implicit or explicit operator between the types
+            public static implicit operator Vector3 (Vector3Surrogate value)
+            {
+                return new Vector3 (value.X, value.Y, value.Z);
+            }
 
-			public static implicit operator Vector3Surrogate (Vector3 value)
-			{
-				return new Vector3Surrogate () {
-					X = value.X,
-					Y = value.Y,
-					Z = value.Z
-				};
-			}
-		}
+            public static implicit operator Vector3Surrogate (Vector3 value)
+            {
+                return new Vector3Surrogate () {
+                    X = value.X,
+                    Y = value.Y,
+                    Z = value.Z
+                };
+            }
+        }
 
-		[ProtoContract]
-		class QuaternionSurrogate
-		{
-			[ProtoMember (1)]
-			public float X;
-			[ProtoMember (2)]
-			public float Y;
-			[ProtoMember (3)]
-			public float Z;
-			[ProtoMember (4)]
-			public float W;
-			// protobuf-net wants an implicit or explicit operator between the types
-			public static implicit operator Quaternion (QuaternionSurrogate value)
-			{
-				return new Quaternion (value.X, value.Y, value.Z, value.W);
-			}
+        [ProtoContract]
+        class QuaternionSurrogate
+        {
+            [ProtoMember (1)]
+            public float X;
+            [ProtoMember (2)]
+            public float Y;
+            [ProtoMember (3)]
+            public float Z;
+            [ProtoMember (4)]
+            public float W;
+            // protobuf-net wants an implicit or explicit operator between the types
+            public static implicit operator Quaternion (QuaternionSurrogate value)
+            {
+                return new Quaternion (value.X, value.Y, value.Z, value.W);
+            }
 
-			public static implicit operator QuaternionSurrogate (Quaternion value)
-			{
-				return new QuaternionSurrogate () {
-					X = value.X,
-					Y = value.Y,
-					Z = value.Z,
-					W = value.W
-				};
-			}
-		}
+            public static implicit operator QuaternionSurrogate (Quaternion value)
+            {
+                return new QuaternionSurrogate () {
+                    X = value.X,
+                    Y = value.Y,
+                    Z = value.Z,
+                    W = value.W
+                };
+            }
+        }
 
-		[ProtoContract]
-		class IPEndPointSurrogate
-		{
-			[ProtoMember (1)]
-			public string IPAddr;
-			[ProtoMember (2)]
-			public int Port;
-			// protobuf-net wants an implicit or explicit operator between the types
-			public static implicit operator IPEndPoint (IPEndPointSurrogate value)
-			{
-				return value == null ? null : new IPEndPoint (IPAddress.Parse (value.IPAddr), value.Port);
-			}
+        [ProtoContract]
+        class IPEndPointSurrogate
+        {
+            [ProtoMember (1)]
+            public string IPAddr;
+            [ProtoMember (2)]
+            public int Port;
+            // protobuf-net wants an implicit or explicit operator between the types
+            public static implicit operator IPEndPoint (IPEndPointSurrogate value)
+            {
+                return value == null ? null : new IPEndPoint (IPAddress.Parse (value.IPAddr), value.Port);
+            }
 
-			public static implicit operator IPEndPointSurrogate (IPEndPoint value)
-			{
-				return value == null
+            public static implicit operator IPEndPointSurrogate (IPEndPoint value)
+            {
+                return value == null
                            ? null
                            : new IPEndPointSurrogate {
-					IPAddr = value.Address.ToString (),
-					Port = value.Port
-				};
-			}
-		}
+                               IPAddr = value.Address.ToString (),
+                               Port = value.Port
+                           };
+            }
+        }
 
-		[ProtoContract]
-		class OSDSurrogate
-		{
-			[ProtoMember (1)]
-			public string str;
-			// protobuf-net wants an implicit or explicit operator between the types
-			public static implicit operator OSD (OSDSurrogate value)
-			{
-				return value.str == "" ? null : OSDParser.DeserializeJson (value.str);
-			}
+        [ProtoContract]
+        class OSDSurrogate
+        {
+            [ProtoMember (1)]
+            public string str;
+            // protobuf-net wants an implicit or explicit operator between the types
+            public static implicit operator OSD (OSDSurrogate value)
+            {
+                return value.str == "" ? null : OSDParser.DeserializeJson (value.str);
+            }
 
-			public static implicit operator OSDSurrogate (OSD value)
-			{
-				return new OSDSurrogate {
-					str = value == null ? "" : OSDParser.SerializeJsonString (value)
-				};
-			}
-		}
+            public static implicit operator OSDSurrogate (OSD value)
+            {
+                return new OSDSurrogate {
+                    str = value == null ? "" : OSDParser.SerializeJsonString (value)
+                };
+            }
+        }
 
-		[ProtoContract]
-		class OSDMapSurrogate
-		{
-			[ProtoMember (1)]
-			public string str;
-			// protobuf-net wants an implicit or explicit operator between the types
-			public static implicit operator OSDMap (OSDMapSurrogate value)
-			{
-				return value.str == "" ? null : (OSDMap)OSDParser.DeserializeJson (value.str);
-			}
+        [ProtoContract]
+        class OSDMapSurrogate
+        {
+            [ProtoMember (1)]
+            public string str;
+            // protobuf-net wants an implicit or explicit operator between the types
+            public static implicit operator OSDMap (OSDMapSurrogate value)
+            {
+                return value.str == "" ? null : (OSDMap)OSDParser.DeserializeJson (value.str);
+            }
 
-			public static implicit operator OSDMapSurrogate (OSDMap value)
-			{
-				return new OSDMapSurrogate {
-					str = value == null ? "" : OSDParser.SerializeJsonString (value)
-				};
-			}
-		}
+            public static implicit operator OSDMapSurrogate (OSDMap value)
+            {
+                return new OSDMapSurrogate {
+                    str = value == null ? "" : OSDParser.SerializeJsonString (value)
+                };
+            }
+        }
 
-		[ProtoContract]
-		class OSDArraySurrogate
-		{
-			[ProtoMember (1)]
-			public string str;
-			// protobuf-net wants an implicit or explicit operator between the types
-			public static implicit operator OSDArray (OSDArraySurrogate value)
-			{
-				return value.str == "" ? null : (OSDArray)OSDParser.DeserializeJson (value.str);
-			}
+        [ProtoContract]
+        class OSDArraySurrogate
+        {
+            [ProtoMember (1)]
+            public string str;
+            // protobuf-net wants an implicit or explicit operator between the types
+            public static implicit operator OSDArray (OSDArraySurrogate value)
+            {
+                return value.str == "" ? null : (OSDArray)OSDParser.DeserializeJson (value.str);
+            }
 
-			public static implicit operator OSDArraySurrogate (OSDArray value)
-			{
-				return new OSDArraySurrogate {
-					str = value == null ? "" : OSDParser.SerializeJsonString (value)
-				};
-			}
-		}
+            public static implicit operator OSDArraySurrogate (OSDArray value)
+            {
+                return new OSDArraySurrogate {
+                    str = value == null ? "" : OSDParser.SerializeJsonString (value)
+                };
+            }
+        }
 
-		[ProtoContract]
-		class ParcelAccessEntrySurrogate
-		{
-			[ProtoMember (1)]
-			public UUID AgentID;
-			[ProtoMember (2)]
-			public AccessList Flags;
-			[ProtoMember (3)]
-			public DateTime Time;
+        [ProtoContract]
+        class ParcelAccessEntrySurrogate
+        {
+            [ProtoMember (1)]
+            public UUID AgentID;
+            [ProtoMember (2)]
+            public AccessList Flags;
+            [ProtoMember (3)]
+            public DateTime Time;
 
-			// protobuf-net wants an implicit or explicit operator between the types
-			public static implicit operator ParcelManager.ParcelAccessEntry (ParcelAccessEntrySurrogate value)
-			{
-				return new ParcelManager.ParcelAccessEntry () {
-					AgentID = value.AgentID,
-					Flags = value.Flags,
-					Time = value.Time
-				};
-			}
+            // protobuf-net wants an implicit or explicit operator between the types
+            public static implicit operator ParcelManager.ParcelAccessEntry (ParcelAccessEntrySurrogate value)
+            {
+                return new ParcelManager.ParcelAccessEntry () {
+                    AgentID = value.AgentID,
+                    Flags = value.Flags,
+                    Time = value.Time
+                };
+            }
 
-			public static implicit operator ParcelAccessEntrySurrogate (ParcelManager.ParcelAccessEntry value)
-			{
-				return new ParcelAccessEntrySurrogate {
-					AgentID = value.AgentID,
-					Flags = value.Flags,
-					Time = value.Time
-				};
-			}
-		}
+            public static implicit operator ParcelAccessEntrySurrogate (ParcelManager.ParcelAccessEntry value)
+            {
+                return new ParcelAccessEntrySurrogate {
+                    AgentID = value.AgentID,
+                    Flags = value.Flags,
+                    Time = value.Time
+                };
+            }
+        }
 
-		[ProtoContract]
-		class MediaEntrySurrogate
-		{
-			[ProtoMember (1)]
-			public OSD info;
+        [ProtoContract]
+        class MediaEntrySurrogate
+        {
+            [ProtoMember (1)]
+            public OSD info;
 
-			// protobuf-net wants an implicit or explicit operator between the types
-			public static implicit operator MediaEntry (MediaEntrySurrogate value)
-			{
-				return value.info == null ? null : MediaEntry.FromOSD (value.info);
-			}
+            // protobuf-net wants an implicit or explicit operator between the types
+            public static implicit operator MediaEntry (MediaEntrySurrogate value)
+            {
+                return value.info == null ? null : MediaEntry.FromOSD (value.info);
+            }
 
-			public static implicit operator MediaEntrySurrogate (MediaEntry value)
-			{
-				return new MediaEntrySurrogate {
-					info = value == null ? null : value.GetOSD ()
-				};
-			}
-		}
+            public static implicit operator MediaEntrySurrogate (MediaEntry value)
+            {
+                return new MediaEntrySurrogate {
+                    info = value == null ? null : value.GetOSD ()
+                };
+            }
+        }
 
-		[ProtoContract]
-		class ColorSurrogate
-		{
-			[ProtoMember (1)]
-			public int A;
-			[ProtoMember (2)]
-			public int R;
-			[ProtoMember (3)]
-			public int G;
-			[ProtoMember (4)]
-			public int B;
+        [ProtoContract]
+        class ColorSurrogate
+        {
+            [ProtoMember (1)]
+            public int A;
+            [ProtoMember (2)]
+            public int R;
+            [ProtoMember (3)]
+            public int G;
+            [ProtoMember (4)]
+            public int B;
 
-			// protobuf-net wants an implicit or explicit operator between the types
-			public static implicit operator System.Drawing.Color (ColorSurrogate value)
-			{
-				return System.Drawing.Color.FromArgb (value.A, value.R, value.G, value.B);
-			}
+            // protobuf-net wants an implicit or explicit operator between the types
+            public static implicit operator System.Drawing.Color (ColorSurrogate value)
+            {
+                return System.Drawing.Color.FromArgb (value.A, value.R, value.G, value.B);
+            }
 
-			public static implicit operator ColorSurrogate (System.Drawing.Color value)
-			{
-				return new ColorSurrogate {
-					A = value.A,
-					R = value.R,
-					G = value.G,
-					B = value.B
-				};
-			}
-		}
+            public static implicit operator ColorSurrogate (System.Drawing.Color value)
+            {
+                return new ColorSurrogate {
+                    A = value.A,
+                    R = value.R,
+                    G = value.G,
+                    B = value.B
+                };
+            }
+        }
 
-		#endregion
+        #endregion
 
-		public static string ConvertToString (List<string> list)
-		{
-			StringBuilder builder = new StringBuilder ();
-			foreach (string val in list) {
-				builder.Append (val + ",");
-			}
-			return builder.ToString ();
-		}
+        public static string ConvertToString (List<string> list)
+        {
+            StringBuilder builder = new StringBuilder ();
+            foreach (string val in list) {
+                builder.Append (val + ",");
+            }
+            return builder.ToString ();
+        }
 
-		public static string ConvertToString (Dictionary<string, object> list)
-		{
-			StringBuilder builder = new StringBuilder ();
-			foreach (var val in list) {
-				builder.Append (val.Key + "=" + val.Value + ",");
-			}
-			return builder.ToString ();
-		}
+        public static string ConvertToString (Dictionary<string, object> list)
+        {
+            StringBuilder builder = new StringBuilder ();
+            foreach (var val in list) {
+                builder.Append (val.Key + "=" + val.Value + ",");
+            }
+            return builder.ToString ();
+        }
 
-		//wab - Added for debugging ease
-		public static string ConvertToString (OSDMap values, string lineStart)
-		{
-			if (string.IsNullOrEmpty (lineStart))
-				lineStart = "\t";
-			StringBuilder builder = new StringBuilder ();
-			String[] keys = new String [values.Count];
-			values.Keys.CopyTo (keys, 0);
-			foreach (String key in keys) {
-				Object val = values [key];
-				if (val == null)
-					builder.AppendFormat ("{0}{1}=null\n", lineStart, key);
-				else if (val is OSDMap)
-					builder.AppendFormat ("{0}{1}=...\n{2}", lineStart, key, ConvertToString ((OSDMap)val, "\t\t"));
-				else
-					builder.AppendFormat ("{0}{1}={2}\n", lineStart, key, val);
-			}
-			return builder.ToString ();
-		}
+        //wab - Added for debugging ease
+        public static string ConvertToString (OSDMap values, string lineStart)
+        {
+            if (string.IsNullOrEmpty (lineStart)) lineStart = "\t";
+            StringBuilder builder = new StringBuilder ();
+            String [] keys = new String [values.Count];
+            values.Keys.CopyTo (keys, 0);
+            foreach (String key in keys) {
+                Object val = values [key];
+                if (val == null)
+                    builder.AppendFormat ("{0}{1}=null\n", lineStart, key);
+                else if (val is OSDMap)
+                    builder.AppendFormat ("{0}{1}=...\n{2}", lineStart, key, ConvertToString ((OSDMap)val, "\t\t"));
+                else
+                    builder.AppendFormat ("{0}{1}={2}\n", lineStart, key, val);
+            }
+            return builder.ToString ();
+        }
 
-		public static List<string> ConvertToList (string listAsString, bool splitSpaces)
-		{
-			if (listAsString == null)
-				return new List<string> ();
-			//Do both , and " " so that it removes any annoying spaces in the string added by users
-			List<string> value =
-				new List<string> (listAsString.Split ((splitSpaces ? new [] { ",", " " } : new [] { "," }), StringSplitOptions.RemoveEmptyEntries));
-			return value;
-		}
+        public static List<string> ConvertToList (string listAsString, bool splitSpaces)
+        {
+            if (listAsString == null) return new List<string> ();
+            //Do both , and " " so that it removes any annoying spaces in the string added by users
+            List<string> value =
+                new List<string> (listAsString.Split ((splitSpaces ? new [] { ",", " " } : new [] { "," }), StringSplitOptions.RemoveEmptyEntries));
+            return value;
+        }
 
-		public static Dictionary<string, string> ConvertToDictionary (string listAsString)
-		{
-			//Do both , and " " so that it removes any annoying spaces in the string added by users
-			List<string> value =
-				new List<string> (listAsString.Split (new [] { "," }, StringSplitOptions.RemoveEmptyEntries));
-			Dictionary<string, string> dict = new Dictionary<string, string> ();
-			foreach (var v in value) {
-				var split = v.Split ('=');
-				dict.Add (split [0], split [1]);
-			}
-			return dict;
-		}
+        public static Dictionary<string, string> ConvertToDictionary (string listAsString)
+        {
+            //Do both , and " " so that it removes any annoying spaces in the string added by users
+            List<string> value =
+                new List<string> (listAsString.Split (new [] { "," }, StringSplitOptions.RemoveEmptyEntries));
+            Dictionary<string, string> dict = new Dictionary<string, string> ();
+            foreach (var v in value) {
+                var split = v.Split ('=');
+                dict.Add (split [0], split [1]);
+            }
+            return dict;
+        }
 
-		public static string BuildYMDDateString (DateTime time)
-		{
-			return time.ToString ("yyyy-MM-dd");
-		}
+        public static string BuildYMDDateString (DateTime time)
+        {
+            return time.ToString ("yyyy-MM-dd");
+        }
 
-		/// <summary>
-		///     Gets the name of the directory where the current running executable
-		///     is located
-		/// </summary>
-		/// <returns>
-		///     File system path to the directory containing the current
-		///     executable
-		/// </returns>
-		public static string ExecutingDirectory ()
-		{
-			return Path.GetDirectoryName (Assembly.GetExecutingAssembly ().Location);
-		}
+        /// <summary>
+        ///     Gets the name of the directory where the current running executable
+        ///     is located
+        /// </summary>
+        /// <returns>
+        ///     File system path to the directory containing the current
+        ///     executable
+        /// </returns>
+        public static string ExecutingDirectory ()
+        {
+            return Path.GetDirectoryName (Assembly.GetExecutingAssembly ().Location);
+        }
 
-		/// <summary>
-		///     Copy data from one stream to another, leaving the read position of both streams at the beginning.
-		/// </summary>
-		/// <param name='inputStream'>
-		///     Input stream.  Must be seek-able.
-		/// </param>
-		/// <exception cref='ArgumentException'>
-		///     Thrown if the input stream is not seek-able.
-		/// </exception>
-		public static Stream Copy (Stream inputStream)
-		{
-			if (!inputStream.CanSeek)
-				throw new ArgumentException ("Util.Copy(Stream inputStream) must receive an inputStream that can seek");
+        /// <summary>
+        ///     Copy data from one stream to another, leaving the read position of both streams at the beginning.
+        /// </summary>
+        /// <param name='inputStream'>
+        ///     Input stream.  Must be seek-able.
+        /// </param>
+        /// <exception cref='ArgumentException'>
+        ///     Thrown if the input stream is not seek-able.
+        /// </exception>
+        public static Stream Copy (Stream inputStream)
+        {
+            if (!inputStream.CanSeek)
+                throw new ArgumentException ("Util.Copy(Stream inputStream) must receive an inputStream that can seek");
 
-			const int readSize = 256;
-			byte[] buffer = new byte [readSize];
-			MemoryStream ms = new MemoryStream ();
+            const int readSize = 256;
+            byte [] buffer = new byte [readSize];
+            MemoryStream ms = new MemoryStream ();
 
-			int count = inputStream.Read (buffer, 0, readSize);
+            int count = inputStream.Read (buffer, 0, readSize);
 
-			while (count > 0) {
-				ms.Write (buffer, 0, count);
-				count = inputStream.Read (buffer, 0, readSize);
-			}
+            while (count > 0) {
+                ms.Write (buffer, 0, count);
+                count = inputStream.Read (buffer, 0, readSize);
+            }
 
-			ms.Position = 0;
-			inputStream.Position = 0;
+            ms.Position = 0;
+            inputStream.Position = 0;
 
-			return ms;
-		}
+            return ms;
+        }
 
-		/// <summary>
-		///     Linear interpolates B&lt;-&gt;C using percent A
-		/// </summary>
-		/// <param name="a"></param>
-		/// <param name="b"></param>
-		/// <param name="c"></param>
-		/// <returns></returns>
-		public static double lerp (double a, double b, double c)
-		{
-			return (b * a) + (c * (1 - a));
-		}
+        /// <summary>
+        ///     Linear interpolates B&lt;-&gt;C using percent A
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="c"></param>
+        /// <returns></returns>
+        public static double lerp (double a, double b, double c)
+        {
+            return (b * a) + (c * (1 - a));
+        }
 
-		/// <summary>
-		///     Bilinear Interpolate, see Lerp but for 2D using 'percents' X & Y.
-		///     Layout:
-		///     A B
-		///     C D
-		///     A&lt;-&gt;C = Y
-		///     C&lt;-&gt;D = X
-		/// </summary>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="a"></param>
-		/// <param name="b"></param>
-		/// <param name="c"></param>
-		/// <param name="d"></param>
-		/// <returns></returns>
-		public static double lerp2D (double x, double y, double a, double b, double c, double d)
-		{
-			return lerp (y, lerp (x, a, b), lerp (x, c, d));
-		}
+        /// <summary>
+        ///     Bilinear Interpolate, see Lerp but for 2D using 'percents' X & Y.
+        ///     Layout:
+        ///     A B
+        ///     C D
+        ///     A&lt;-&gt;C = Y
+        ///     C&lt;-&gt;D = X
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="c"></param>
+        /// <param name="d"></param>
+        /// <returns></returns>
+        public static double lerp2D (double x, double y, double a, double b, double c, double d)
+        {
+            return lerp (y, lerp (x, a, b), lerp (x, c, d));
+        }
 
 
-		public static Encoding UTF8 = Encoding.UTF8;
+        public static Encoding UTF8 = Encoding.UTF8;
 
-		/// <value>
-		///     Well known UUID for the blank texture used in the Linden SL viewer version 1.20 (and hopefully onwards)
-		/// </value>
-		public static UUID BLANK_TEXTURE_UUID = new UUID ("5748decc-f629-461c-9a36-a35a221fe21f");
+        /// <value>
+        ///     Well known UUID for the blank texture used in the Linden SL viewer version 1.20 (and hopefully onwards)
+        /// </value>
+        public static UUID BLANK_TEXTURE_UUID = new UUID ("5748decc-f629-461c-9a36-a35a221fe21f");
 
-		#region General maths helpers
+        #region General maths helpers
+        /// <summary>
+        /// Values are equal within float variation.
+        /// </summary>
+        /// <returns>The equals.</returns>
+        /// <param name="valA">Value a.</param>
+        /// <param name="valB">Value b.</param>
+        public static bool ApproxEqual (float valA, float valB)
+        {
+            return Math.Abs (valA - valB) <= Constants.FloatDifference;
+        }
 
-		/// <summary>
-		/// Values are equal within float variation.
-		/// </summary>
-		/// <returns>The equals.</returns>
-		/// <param name="valA">Value a.</param>
-		/// <param name="valB">Value b.</param>
-		public static bool ApproxEqual (float valA, float valB)
-		{
-			return Math.Abs (valA - valB) <= Constants.FloatDifference;
-		}
+        /// <summary>
+        /// Value is approximately zero (within float difference).
+        /// </summary>
+        /// <returns>The zero.</returns>
+        /// <param name="valA">Value a.</param>
+        public static bool ApproxZero (float valA)
+        {
+            return Math.Abs (valA) <= Constants.FloatDifference;
+        }
 
-		/// <summary>
-		/// Value is approximately zero (within float difference).
-		/// </summary>
-		/// <returns>The zero.</returns>
-		/// <param name="valA">Value a.</param>
-		public static bool ApproxZero (float valA)
-		{
-			return Math.Abs (valA) <= Constants.FloatDifference;
-		}
+        // double variations
 
-		// double variations
+        /// <summary>
+        /// Values are equal within float variation.
+        /// </summary>
+        /// <returns>The equals.</returns>
+        /// <param name="valA">Value a.</param>
+        /// <param name="valB">Value b.</param>
+        public static bool ApproxEqual (double valA, double valB)
+        {
+            return Math.Abs (valA - valB) <= Constants.FloatDifference;
+        }
 
-		/// <summary>
-		/// Values are equal within float variation.
-		/// </summary>
-		/// <returns>The equals.</returns>
-		/// <param name="valA">Value a.</param>
-		/// <param name="valB">Value b.</param>
-		public static bool ApproxEqual (double valA, double valB)
-		{
-			return Math.Abs (valA - valB) <= Constants.FloatDifference;
-		}
-
-		/// <summary>
-		/// Value is approximately zero (within float difference).
-		/// </summary>
-		/// <returns>The zero.</returns>
-		/// <param name="valA">Value a.</param>
-		public static bool ApproxZero (double valA)
-		{
-			return Math.Abs (valA) <= Constants.FloatDifference;
+        /// <summary>
+        /// Value is approximately zero (within float difference).
+        /// </summary>
+        /// <returns>The zero.</returns>
+        /// <param name="valA">Value a.</param>
+        public static bool ApproxZero (double valA)
+        {
+            return Math.Abs (valA) <= Constants.FloatDifference;
         }
 
         /// <summary>
@@ -575,762 +574,761 @@ namespace Universe.Framework.Utilities
         /// </summary>
         /// <returns><c>true</c>, if greater than float difference, <c>false</c> otherwise.</returns>
         /// <param name="valA">Value a.</param>
-        public static bool NotZero(double valA)
+        public static bool NotZero (double valA)
         {
             return Math.Abs (valA) >= Constants.FloatDifference;
         }
 
-    #endregion
+        #endregion
 
-    #region Vector Equations
+        #region Vector Equations
 
-    /// <summary>
-    ///     Get the distance between two 3d vectors
-    /// </summary>
-    /// <param name="a">A 3d vector</param>
-    /// <param name="b">A 3d vector</param>
-    /// <returns>The distance between the two vectors</returns>
-    public static double GetDistanceTo (Vector3 a, Vector3 b)
-		{
-			float dx = a.X - b.X;
-			float dy = a.Y - b.Y;
-			float dz = a.Z - b.Z;
-			return Math.Sqrt (dx * dx + dy * dy + dz * dz);
-		}
+        /// <summary>
+        ///     Get the distance between two 3d vectors
+        /// </summary>
+        /// <param name="a">A 3d vector</param>
+        /// <param name="b">A 3d vector</param>
+        /// <returns>The distance between the two vectors</returns>
+        public static double GetDistanceTo (Vector3 a, Vector3 b)
+        {
+            float dx = a.X - b.X;
+            float dy = a.Y - b.Y;
+            float dz = a.Z - b.Z;
+            return Math.Sqrt (dx * dx + dy * dy + dz * dz);
+        }
 
-		/// <summary>
-		///     Get the distance between two 3d vectors (excluding Z)
-		/// </summary>
-		/// <param name="a">A 3d vector</param>
-		/// <param name="b">A 3d vector</param>
-		/// <returns>The distance between the two vectors</returns>
-		public static double GetFlatDistanceTo (Vector3 a, Vector3 b)
-		{
-			float dx = a.X - b.X;
-			float dy = a.Y - b.Y;
-			return Math.Sqrt (dx * dx + dy * dy);
-		}
+        /// <summary>
+        ///     Get the distance between two 3d vectors (excluding Z)
+        /// </summary>
+        /// <param name="a">A 3d vector</param>
+        /// <param name="b">A 3d vector</param>
+        /// <returns>The distance between the two vectors</returns>
+        public static double GetFlatDistanceTo (Vector3 a, Vector3 b)
+        {
+            float dx = a.X - b.X;
+            float dy = a.Y - b.Y;
+            return Math.Sqrt (dx * dx + dy * dy);
+        }
 
-		/// <summary>
-		///     Returns true if the distance between A and B is less than amount. Significantly faster than GetDistanceTo since it eliminates the Sqrt.
-		/// </summary>
-		/// <param name="a"></param>
-		/// <param name="b"></param>
-		/// <param name="amount"></param>
-		/// <returns></returns>
-		public static bool DistanceLessThan (Vector3 a, Vector3 b, double amount)
-		{
-			float dx = a.X - b.X;
-			float dy = a.Y - b.Y;
-			float dz = a.Z - b.Z;
-			return (dx * dx + dy * dy + dz * dz) < (amount * amount);
-		}
+        /// <summary>
+        ///     Returns true if the distance between A and B is less than amount. Significantly faster than GetDistanceTo since it eliminates the Sqrt.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="amount"></param>
+        /// <returns></returns>
+        public static bool DistanceLessThan (Vector3 a, Vector3 b, double amount)
+        {
+            float dx = a.X - b.X;
+            float dy = a.Y - b.Y;
+            float dz = a.Z - b.Z;
+            return (dx * dx + dy * dy + dz * dz) < (amount * amount);
+        }
 
-		/// <summary>
-		///     Get the magnitude of a 3d vector
-		/// </summary>
-		/// <param name="a">A 3d vector</param>
-		/// <returns>The magnitude of the vector</returns>
-		public static double GetMagnitude (Vector3 a)
-		{
-			return Math.Sqrt ((a.X * a.X) + (a.Y * a.Y) + (a.Z * a.Z));
-		}
+        /// <summary>
+        ///     Get the magnitude of a 3d vector
+        /// </summary>
+        /// <param name="a">A 3d vector</param>
+        /// <returns>The magnitude of the vector</returns>
+        public static double GetMagnitude (Vector3 a)
+        {
+            return Math.Sqrt ((a.X * a.X) + (a.Y * a.Y) + (a.Z * a.Z));
+        }
 
-		/// <summary>
-		///     Get a normalized form of a 3d vector
-		///     The vector parameter cannot be &lt;0,0,0&gt;
-		/// </summary>
-		/// <param name="a">A 3d vector</param>
-		/// <returns>A new vector which is normalized form of the vector</returns>
-		public static Vector3 GetNormalizedVector (Vector3 a)
-		{
-			if (IsZeroVector (a))
-				throw new ArgumentException ("Vector parameter cannot be a zero vector.");
+        /// <summary>
+        ///     Get a normalized form of a 3d vector
+        ///     The vector parameter cannot be &lt;0,0,0&gt;
+        /// </summary>
+        /// <param name="a">A 3d vector</param>
+        /// <returns>A new vector which is normalized form of the vector</returns>
+        public static Vector3 GetNormalizedVector (Vector3 a)
+        {
+            if (IsZeroVector (a))
+                throw new ArgumentException ("Vector parameter cannot be a zero vector.");
 
-			float Mag = (float)GetMagnitude (a);
-			return new Vector3 (a.X / Mag, a.Y / Mag, a.Z / Mag);
-		}
+            float Mag = (float)GetMagnitude (a);
+            return new Vector3 (a.X / Mag, a.Y / Mag, a.Z / Mag);
+        }
 
-		/// <summary>
-		///     Returns if a vector is a zero vector (has all zero components)
-		/// </summary>
-		/// <returns></returns>
-		public static bool IsZeroVector (Vector3 v)
-		{
-			//if (v.X == 0 && v.Y == 0 && v.Z == 0)
-			if (v.X < Constants.FloatDifference &&
-			             v.Y < Constants.FloatDifference &&
-			             v.Z < Constants.FloatDifference) {
-				return true;
-			}
+        /// <summary>
+        ///     Returns if a vector is a zero vector (has all zero components)
+        /// </summary>
+        /// <returns></returns>
+        public static bool IsZeroVector (Vector3 v)
+        {
+            //if (v.X == 0 && v.Y == 0 && v.Z == 0)
+            if (v.X < Constants.FloatDifference &&
+                v.Y < Constants.FloatDifference &&
+                v.Z < Constants.FloatDifference) {
+                return true;
+            }
 
-			return false;
-		}
+            return false;
+        }
 
-		#endregion
+        #endregion
+       
+        #region Quaternion Equations
+        public static Quaternion Axes2Rot (Vector3 fwd, Vector3 left, Vector3 up)
+        {
+            float s;
+            float tr = (float)(fwd.X + left.Y + up.Z + 1.0);
 
-		#region Quaternion Equations
+            if (tr >= 1.0) {
+                s = (float)(0.5 / Math.Sqrt (tr));
+                return new Quaternion (
+                    (left.Z - up.Y) * s,
+                    (up.X - fwd.Z) * s,
+                    (fwd.Y - left.X) * s,
+                    (float)0.25 / s);
+            } else {
+                float max = (left.Y > up.Z) ? left.Y : up.Z;
 
-		public static Quaternion Axes2Rot (Vector3 fwd, Vector3 left, Vector3 up)
-		{
-			float s;
-			float tr = (float)(fwd.X + left.Y + up.Z + 1.0);
+                if (max < fwd.X) {
+                    s = (float)(Math.Sqrt (fwd.X - (left.Y + up.Z) + 1.0));
+                    float x = (float)(s * 0.5);
+                    s = (float)(0.5 / s);
+                    return new Quaternion (
+                        x,
+                        (fwd.Y + left.X) * s,
+                        (up.X + fwd.Z) * s,
+                        (left.Z - up.Y) * s);
+                }
+                if (max == left.Y) {
+                    s = (float)(Math.Sqrt (left.Y - (up.Z + fwd.X) + 1.0));
+                    float y = (float)(s * 0.5);
+                    s = (float)(0.5 / s);
+                    return new Quaternion (
+                        (fwd.Y + left.X) * s,
+                        y,
+                        (left.Z + up.Y) * s,
+                        (up.X - fwd.Z) * s);
+                } 
 
-			if (tr >= 1.0) {
-				s = (float)(0.5 / Math.Sqrt (tr));
-				return new Quaternion (
-					(left.Z - up.Y) * s,
-					(up.X - fwd.Z) * s,
-					(fwd.Y - left.X) * s,
-					(float)0.25 / s);
-			} else {
-				float max = (left.Y > up.Z) ? left.Y : up.Z;
-
-				if (max < fwd.X) {
-					s = (float)(Math.Sqrt (fwd.X - (left.Y + up.Z) + 1.0));
-					float x = (float)(s * 0.5);
-					s = (float)(0.5 / s);
-					return new Quaternion (
-						x,
-						(fwd.Y + left.X) * s,
-						(up.X + fwd.Z) * s,
-						(left.Z - up.Y) * s);
-				}
-				if (max == left.Y) {
-					s = (float)(Math.Sqrt (left.Y - (up.Z + fwd.X) + 1.0));
-					float y = (float)(s * 0.5);
-					s = (float)(0.5 / s);
-					return new Quaternion (
-						(fwd.Y + left.X) * s,
-						y,
-						(left.Z + up.Y) * s,
-						(up.X - fwd.Z) * s);
-				} 
-
-				s = (float)(Math.Sqrt (up.Z - (fwd.X + left.Y) + 1.0));
-				float z = (float)(s * 0.5);
-				s = (float)(0.5 / s);
-				return new Quaternion (
-					(up.X + fwd.Z) * s,
-					(left.Z + up.Y) * s,
-					z,
-					(fwd.Y - left.X) * s);
+                s = (float)(Math.Sqrt (up.Z - (fwd.X + left.Y) + 1.0));
+                float z = (float)(s * 0.5);
+                s = (float)(0.5 / s);
+                return new Quaternion (
+                    (up.X + fwd.Z) * s,
+                    (left.Z + up.Y) * s,
+                    z,
+                    (fwd.Y - left.X) * s);
                 
-			}
-		}
+            }
+        }
 
-		#endregion
+        #endregion
 
-		public static Random RandomClass {
-			get { return randomClass; }
-		}
+        public static Random RandomClass {
+            get { return randomClass; }
+        }
 
-		public static T Clamp<T> (T x, T min, T max)
+        public static T Clamp<T> (T x, T min, T max)
             where T : IComparable<T>
-		{
-			return x.CompareTo (max) > 0
+        {
+            return x.CompareTo (max) > 0
                        ? max
                        : x.CompareTo (min) < 0
                              ? min
                              : x;
-		}
+        }
 
-		public static uint GetNextXferID ()
-		{
-			uint id = 0;
-			lock (XferLock) {
-				id = nextXferID;
-				nextXferID++;
-			}
-			return id;
-		}
+        public static uint GetNextXferID ()
+        {
+            uint id = 0;
+            lock (XferLock) {
+                id = nextXferID;
+                nextXferID++;
+            }
+            return id;
+        }
 
-		/// <summary>
-		///     Debug utility function to convert unbroken strings of XML into something human readable for occasional debugging purposes.
-		///     Please don't delete me even if I appear currently unused!
-		/// </summary>
-		/// <param name="rawXml"></param>
-		/// <returns></returns>
-		public static string GetFormattedXml (string rawXml)
-		{
-			XmlDocument xd = new XmlDocument ();
-			xd.LoadXml (rawXml);
+        /// <summary>
+        ///     Debug utility function to convert unbroken strings of XML into something human readable for occasional debugging purposes.
+        ///     Please don't delete me even if I appear currently unused!
+        /// </summary>
+        /// <param name="rawXml"></param>
+        /// <returns></returns>
+        public static string GetFormattedXml (string rawXml)
+        {
+            XmlDocument xd = new XmlDocument ();
+            xd.LoadXml (rawXml);
 
-			StringBuilder sb = new StringBuilder ();
-			StringWriter sw = new StringWriter (sb);
+            StringBuilder sb = new StringBuilder ();
+            StringWriter sw = new StringWriter (sb);
 
-			XmlTextWriter xtw = new XmlTextWriter (sw) { Formatting = Formatting.Indented };
+            XmlTextWriter xtw = new XmlTextWriter (sw) { Formatting = Formatting.Indented };
 
-			try {
-				xd.WriteTo (xtw);
-			} finally {
-				xtw.Close ();
-			}
+            try {
+                xd.WriteTo (xtw);
+            } finally {
+                xtw.Close ();
+            }
 
-			return sb.ToString ();
-		}
+            return sb.ToString ();
+        }
 
-		public static bool IsEnvironmentSupported (ref string reason)
-		{
-			// Must have .NET 2.0 (Generics / libsl)
-			if (Environment.Version.Major < 2) {
-				reason = ".NET 1.0/1.1 lacks components that are used by Universe";
-				return false;
-			}
+        public static bool IsEnvironmentSupported (ref string reason)
+        {
+            // Must have .NET 2.0 (Generics / libsl)
+            if (Environment.Version.Major < 2) {
+                reason = ".NET 1.0/1.1 lacks components that are used by Universe";
+                return false;
+            }
 
-			// Windows 95/98/ME are unsupported
-			if (Environment.OSVersion.Platform == PlatformID.Win32Windows ||
-			             Environment.OSVersion.Platform == PlatformID.Win32S ||
-			             Environment.OSVersion.Platform == PlatformID.WinCE) {
-				reason = "Windows 95/98/ME will not run Universe";
-				return false;
-			}
+            // Windows 95/98/ME are unsupported
+            if (Environment.OSVersion.Platform == PlatformID.Win32Windows ||
+                Environment.OSVersion.Platform == PlatformID.Win32S ||
+                Environment.OSVersion.Platform == PlatformID.WinCE) {
+                reason = "Windows 95/98/ME will not run Universe";
+                return false;
+            }
 
-			// Windows 2000 / Pre-SP2 XP
-			if (Environment.OSVersion.Platform == PlatformID.Win32NT &&
-			             Environment.OSVersion.Version.Major == 5 &&
-			             Environment.OSVersion.Version.Minor == 0) {
-				reason = "Please update to Windows XP Service Pack 2 or Server 2003 with .NET 3.5 installed";
-				return false;
-			}
+            // Windows 2000 / Pre-SP2 XP
+            if (Environment.OSVersion.Platform == PlatformID.Win32NT &&
+                Environment.OSVersion.Version.Major == 5 &&
+                Environment.OSVersion.Version.Minor == 0) {
+                reason = "Please update to Windows XP Service Pack 2 or Server 2003 with .NET 3.5 installed";
+                return false;
+            }
 
-			if (Environment.OSVersion.Platform == PlatformID.Win32NT &&
-			             Environment.Version.Major < 4 &&
-			             Environment.Version.Build < 50727) { //.net 3.5
-				reason = ".NET versions before 3.5 lack components that are used by Universe";
-				return false;
-			}
+            if (Environment.OSVersion.Platform == PlatformID.Win32NT &&
+                Environment.Version.Major < 4 &&
+                Environment.Version.Build < 50727) //.net 3.5
+            {
+                reason = ".NET versions before 3.5 lack components that are used by Universe";
+                return false;
+            }
 
-			return true;
-		}
+            return true;
+        }
 
-		public static bool IsLinux {
-			get {
-				int p = (int)Environment.OSVersion.Platform;
-				return (p == 4) || (p == 6) || (p == 128);
-			}
-		}
+        public static bool IsLinux {
+            get {
+                int p = (int)Environment.OSVersion.Platform;
+                return (p == 4) || (p == 6) || (p == 128);
+            }
+        }
 
-		/// <summary>
-		/// Is the platform Windows?
-		/// </summary>
-		/// <returns>true if so, false otherwise</returns>
-		public static bool IsWindows ()
-		{
-			PlatformID platformId = Environment.OSVersion.Platform;
+        /// <summary>
+        /// Is the platform Windows?
+        /// </summary>
+        /// <returns>true if so, false otherwise</returns>
+        public static bool IsWindows ()
+        {
+            PlatformID platformId = Environment.OSVersion.Platform;
 
-			return (platformId == PlatformID.Win32NT
-			|| platformId == PlatformID.Win32S
-			|| platformId == PlatformID.Win32Windows
-			|| platformId == PlatformID.WinCE);
-		}
+            return (platformId == PlatformID.Win32NT
+                || platformId == PlatformID.Win32S
+                || platformId == PlatformID.Win32Windows
+                || platformId == PlatformID.WinCE);
+        }
 
-		public static bool LoadArchSpecificWindowsDll (string libraryName)
-		{
-			// We do this so that Universe on Windows loads the correct native library depending on whether
-			// it's running as a 32-bit process or a 64-bit one.  By invoking LoadLibary here, later DLLImports
-			// will find it already loaded later on.
-			//
-			// This isn't necessary for other platforms (e.g. Mac OSX and Linux) since the DLL used can be
-			// controlled in config files.
-			string nativeLibraryPath;
+        public static bool LoadArchSpecificWindowsDll (string libraryName)
+        {
+            // We do this so that Universe on Windows loads the correct native library depending on whether
+            // it's running as a 32-bit process or a 64-bit one.  By invoking LoadLibary here, later DLLImports
+            // will find it already loaded later on.
+            //
+            // This isn't necessary for other platforms (e.g. Mac OSX and Linux) since the DLL used can be
+            // controlled in config files.
+            string nativeLibraryPath;
 
-			if (Is64BitProcess ())
-				nativeLibraryPath = "lib64/" + libraryName;
-			else
-				nativeLibraryPath = "lib32/" + libraryName;
+            if (Is64BitProcess ())
+                nativeLibraryPath = "lib64/" + libraryName;
+            else
+                nativeLibraryPath = "lib32/" + libraryName;
 
-			MainConsole.Instance.DebugFormat ("[Util]: Loading native Windows library at {0}", nativeLibraryPath);
+            MainConsole.Instance.DebugFormat ("[Util]: Loading native Windows library at {0}", nativeLibraryPath);
 
-			if (LoadLibrary (nativeLibraryPath) == IntPtr.Zero) {
-				MainConsole.Instance.ErrorFormat (
-					"[Util]: Couldn't find native Windows library at {0}", nativeLibraryPath);
+            if (LoadLibrary (nativeLibraryPath) == IntPtr.Zero) {
+                MainConsole.Instance.ErrorFormat (
+                    "[Util]: Couldn't find native Windows library at {0}", nativeLibraryPath);
 
-				return false;
-			}
+                return false;
+            }
 
-			return true;
+            return true;
 
-		}
+        }
 
-		/// <summary>
-		/// Used to trigger an early library load on Windows systems.
-		/// </summary>
-		/// <remarks>
-		/// Required to get 32-bit and 64-bit processes to automatically use the
-		/// appropriate native library.
-		/// </remarks>
-		/// <param name="dllToLoad"></param>
-		/// <returns></returns>
-		[DllImport ("kernel32.dll", CharSet = CharSet.Unicode)]
-		static extern IntPtr LoadLibrary (string dllToLoad);
+        /// <summary>
+        /// Used to trigger an early library load on Windows systems.
+        /// </summary>
+        /// <remarks>
+        /// Required to get 32-bit and 64-bit processes to automatically use the
+        /// appropriate native library.
+        /// </remarks>
+        /// <param name="dllToLoad"></param>
+        /// <returns></returns>
+        [DllImport ("kernel32.dll", CharSet = CharSet.Unicode)]
+        static extern IntPtr LoadLibrary (string dllToLoad);
 
-		/// <summary>
-		/// Determine whether the current process is 64 bit
-		/// </summary>
-		/// <returns>true if so, false if not</returns>
-		public static bool Is64BitProcess ()
-		{
-			return IntPtr.Size == 8;
-		}
+        /// <summary>
+        /// Determine whether the current process is 64 bit
+        /// </summary>
+        /// <returns>true if so, false if not</returns>
+        public static bool Is64BitProcess ()
+        {
+            return IntPtr.Size == 8;
+        }
 
-		public static int UnixTimeSinceEpoch ()
-		{
-			return ToUnixTime (DateTime.UtcNow);
-		}
+        public static int UnixTimeSinceEpoch ()
+        {
+            return ToUnixTime (DateTime.UtcNow);
+        }
 
-		public static int ToUnixTime (DateTime stamp)
-		{
-			TimeSpan t = stamp.ToUniversalTime () - UnixEpoch;
-			return (int)t.TotalSeconds;
-		}
+        public static int ToUnixTime (DateTime stamp)
+        {
+            TimeSpan t = stamp.ToUniversalTime () - UnixEpoch;
+            return (int)t.TotalSeconds;
+        }
 
-		public static DateTime ToDateTime (ulong seconds)
-		{
-			DateTime epoch = UnixEpoch;
-			return epoch.AddSeconds (seconds);
-		}
+        public static DateTime ToDateTime (ulong seconds)
+        {
+            DateTime epoch = UnixEpoch;
+            return epoch.AddSeconds (seconds);
+        }
 
-		public static DateTime ToDateTime (int seconds)
-		{
-			DateTime epoch = UnixEpoch;
-			return epoch.AddSeconds (seconds);
-		}
+        public static DateTime ToDateTime (int seconds)
+        {
+            DateTime epoch = UnixEpoch;
+            return epoch.AddSeconds (seconds);
+        }
 
-		/// <summary>
-		///     Return an md5 hash of the given string
-		/// </summary>
-		/// <param name="data"></param>
-		/// <returns></returns>
-		public static string Md5Hash (string data)
-		{
-			byte[] dataMd5 = ComputeMD5Hash (data);
-			StringBuilder sb = new StringBuilder ();
-			foreach (byte t in dataMd5)
-				sb.AppendFormat ("{0:x2}", t);
-			return sb.ToString ();
-		}
+        /// <summary>
+        ///     Return an md5 hash of the given string
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public static string Md5Hash (string data)
+        {
+            byte [] dataMd5 = ComputeMD5Hash (data);
+            StringBuilder sb = new StringBuilder ();
+            foreach (byte t in dataMd5)
+                sb.AppendFormat ("{0:x2}", t);
+            return sb.ToString ();
+        }
 
-		static byte [] ComputeMD5Hash (string data)
-		{
-			MD5 md5 = MD5.Create ();
-			return md5.ComputeHash (Encoding.Default.GetBytes (data));
-		}
+        static byte [] ComputeMD5Hash (string data)
+        {
+            MD5 md5 = MD5.Create ();
+            return md5.ComputeHash (Encoding.Default.GetBytes (data));
+        }
 
-		/// <summary>
-		///     Return an SHA1 hash of the given string
-		/// </summary>
-		/// <param name="data"></param>
-		/// <returns></returns>
-		public static string SHA1Hash (string data)
-		{
-			byte[] hash = ComputeSHA1Hash (data);
-			return BitConverter.ToString (hash).Replace ("-", string.Empty);
-		}
+        /// <summary>
+        ///     Return an SHA1 hash of the given string
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public static string SHA1Hash (string data)
+        {
+            byte [] hash = ComputeSHA1Hash (data);
+            return BitConverter.ToString (hash).Replace ("-", string.Empty);
+        }
 
-		static byte [] ComputeSHA1Hash (string src)
-		{
-			SHA1CryptoServiceProvider SHA1 = new SHA1CryptoServiceProvider ();
-			var hash = SHA1.ComputeHash (Encoding.Default.GetBytes (src));
-			SHA1.Dispose ();
-			return hash;
-		}
+        static byte [] ComputeSHA1Hash (string src)
+        {
+            SHA1CryptoServiceProvider SHA1 = new SHA1CryptoServiceProvider ();
+            var hash = SHA1.ComputeHash (Encoding.Default.GetBytes (src));
+            SHA1.Dispose ();
+            return hash;
+        }
 
-		public static int fast_distance2d (int x, int y)
-		{
-			x = Math.Abs (x);
-			y = Math.Abs (y);
+        public static int fast_distance2d (int x, int y)
+        {
+            x = Math.Abs (x);
+            y = Math.Abs (y);
 
-			int min = Math.Min (x, y);
+            int min = Math.Min (x, y);
 
-			return (x + y - (min >> 1) - (min >> 2) + (min >> 4));
-		}
+            return (x + y - (min >> 1) - (min >> 2) + (min >> 4));
+        }
 
-		// Inclusive, within range test (true if equal to the endpoints)
-		public static bool InRange<T> (T x, T min, T max)
+        // Inclusive, within range test (true if equal to the endpoints)
+        public static bool InRange<T> (T x, T min, T max)
             where T : IComparable<T>
-		{
-			return x.CompareTo (max) <= 0 && x.CompareTo (min) >= 0;
-		}
+        {
+            return x.CompareTo (max) <= 0 && x.CompareTo (min) >= 0;
+        }
 
-		// Clamp the maximum magnitude of a vector
-		public static Vector3 ClampV (Vector3 x, float max)
-		{
-			float lenSq = x.LengthSquared ();
-			if (lenSq > (max * max)) {
-				x = x / x.Length () * max;
-			}
-			return x;
-		}
+        // Clamp the maximum magnitude of a vector
+        public static Vector3 ClampV (Vector3 x, float max)
+        {
+            float lenSq = x.LengthSquared ();
+            if (lenSq > (max * max)) {
+                x = x / x.Length () * max;
+            }
+            return x;
+        }
 
-		public static string FieldToString (byte[] bytes)
-		{
-			return FieldToString (bytes, string.Empty);
-		}
+        public static string FieldToString (byte [] bytes)
+        {
+            return FieldToString (bytes, string.Empty);
+        }
 
-		/// <summary>
-		///     Convert a variable length field (byte array) to a string, with a
-		///     field name prepended to each line of the output
-		/// </summary>
-		/// <remarks>
-		///     If the byte array has unprintable characters in it, a
-		///     hex dump will be put in the string instead
-		/// </remarks>
-		/// <param name="bytes">The byte array to convert to a string</param>
-		/// <param name="fieldName">A field name to prepend to each line of output</param>
-		/// <returns>
-		///     An ASCII string or a string containing a hex dump, minus
-		///     the null terminator
-		/// </returns>
-		public static string FieldToString (byte[] bytes, string fieldName)
-		{
-			// Check for a common case
-			if (bytes.Length == 0)
-				return string.Empty;
+        /// <summary>
+        ///     Convert a variable length field (byte array) to a string, with a
+        ///     field name prepended to each line of the output
+        /// </summary>
+        /// <remarks>
+        ///     If the byte array has unprintable characters in it, a
+        ///     hex dump will be put in the string instead
+        /// </remarks>
+        /// <param name="bytes">The byte array to convert to a string</param>
+        /// <param name="fieldName">A field name to prepend to each line of output</param>
+        /// <returns>
+        ///     An ASCII string or a string containing a hex dump, minus
+        ///     the null terminator
+        /// </returns>
+        public static string FieldToString (byte [] bytes, string fieldName)
+        {
+            // Check for a common case
+            if (bytes.Length == 0) return string.Empty;
 
-			StringBuilder output = new StringBuilder ();
+            StringBuilder output = new StringBuilder ();
 
-			bool printable = bytes.All (t => (t >= 0x20 && t <= 0x7E) || t == 0x09 || t == 0x0D || t == 0x0A || t == 0x00);
+            bool printable = bytes.All (t => (t >= 0x20 && t <= 0x7E) || t == 0x09 || t == 0x0D || t == 0x0A || t == 0x00);
 
-			if (printable) {
-				if (fieldName.Length > 0) {
-					output.Append (fieldName);
-					output.Append (": ");
-				}
+            if (printable) {
+                if (fieldName.Length > 0) {
+                    output.Append (fieldName);
+                    output.Append (": ");
+                }
 
-				output.Append (CleanString (UTF8.GetString (bytes, 0, bytes.Length - 1)));
-			} else {
-				for (int i = 0; i < bytes.Length; i += 16) {
-					if (i != 0)
-						output.Append (Environment.NewLine);
-					if (fieldName.Length > 0) {
-						output.Append (fieldName);
-						output.Append (": ");
-					}
+                output.Append (CleanString (UTF8.GetString (bytes, 0, bytes.Length - 1)));
+            } else {
+                for (int i = 0; i < bytes.Length; i += 16) {
+                    if (i != 0)
+                        output.Append (Environment.NewLine);
+                    if (fieldName.Length > 0) {
+                        output.Append (fieldName);
+                        output.Append (": ");
+                    }
 
-					for (int j = 0; j < 16; j++) {
-						output.Append ((i + j) < bytes.Length ? string.Format ("{0:X2} ", bytes [i + j]) : "   ");
-					}
+                    for (int j = 0; j < 16; j++) {
+                        output.Append ((i + j) < bytes.Length ? string.Format ("{0:X2} ", bytes [i + j]) : "   ");
+                    }
 
-					for (int j = 0; j < 16 && (i + j) < bytes.Length; j++) {
-						if (bytes [i + j] >= 0x20 && bytes [i + j] < 0x7E)
-							output.Append ((char)bytes [i + j]);
-						else
-							output.Append (".");
-					}
-				}
-			}
+                    for (int j = 0; j < 16 && (i + j) < bytes.Length; j++) {
+                        if (bytes [i + j] >= 0x20 && bytes [i + j] < 0x7E)
+                            output.Append ((char)bytes [i + j]);
+                        else
+                            output.Append (".");
+                    }
+                }
+            }
 
-			return output.ToString ();
-		}
+            return output.ToString ();
+        }
 
-		/// <summary>
-		///     Removes all invalid path chars (OS dependent)
-		/// </summary>
-		/// <param name="path">path</param>
-		/// <returns>safe path</returns>
-		public static string safePath (string path)
-		{
-			return Regex.Replace (path, regexInvalidPathChars, string.Empty);
-		}
+        /// <summary>
+        ///     Removes all invalid path chars (OS dependent)
+        /// </summary>
+        /// <param name="path">path</param>
+        /// <returns>safe path</returns>
+        public static string safePath (string path)
+        {
+            return Regex.Replace (path, regexInvalidPathChars, string.Empty);
+        }
 
-		/// <summary>
-		///     Removes all invalid filename chars (OS dependent)
-		/// </summary>
-		/// <param name="filename">filename</param>
-		/// <returns>safe filename</returns>
-		public static string safeFileName (string filename)
-		{
-			return Regex.Replace (filename, regexInvalidFileChars, string.Empty);
-		}
+        /// <summary>
+        ///     Removes all invalid filename chars (OS dependent)
+        /// </summary>
+        /// <param name="filename">filename</param>
+        /// <returns>safe filename</returns>
+        public static string safeFileName (string filename)
+        {
+            return Regex.Replace (filename, regexInvalidFileChars, string.Empty);
+        }
 
-		//
-		// directory locations
-		//
+        //
+        // directory locations
+        //
 
-		public static string homeDir ()
-		{
-			string temp;
-			//            string personal=(Environment.GetFolderPath(Environment.SpecialFolder.Personal));
-			//            temp = Path.Combine(personal,".Universe");
-			temp = ".";
-			return temp;
-		}
+        public static string homeDir ()
+        {
+            string temp;
+            //            string personal=(Environment.GetFolderPath(Environment.SpecialFolder.Personal));
+            //            temp = Path.Combine(personal,".Universe");
+            temp = ".";
+            return temp;
+        }
 
-		public static string configDir ()
-		{
-			return ".";
-		}
+        public static string configDir ()
+        {
+            return ".";
+        }
 
-		public static string dataDir ()
-		{
-			return ".";
-		}
+        public static string dataDir ()
+        {
+            return ".";
+        }
 
-		public static string logDir ()
-		{
-			return ".";
-		}
+        public static string logDir ()
+        {
+            return ".";
+        }
 
-		// From: http://coercedcode.blogspot.com/2008/03/c-generate-unique-filenames-within.html
-		public static string GetUniqueFilename (string FileName)
-		{
-			int count = 0;
-			string Name;
+        // From: http://coercedcode.blogspot.com/2008/03/c-generate-unique-filenames-within.html
+        public static string GetUniqueFilename (string FileName)
+        {
+            int count = 0;
+            string Name;
 
-			if (File.Exists (FileName)) {
-				FileInfo f = new FileInfo (FileName);
+            if (File.Exists (FileName)) {
+                FileInfo f = new FileInfo (FileName);
 
-				Name = !string.IsNullOrEmpty (f.Extension)
+                Name = !string.IsNullOrEmpty (f.Extension)
                            ? f.FullName.Substring (0, f.FullName.LastIndexOf ('.'))
                            : f.FullName;
 
-				while (File.Exists (FileName)) {
-					count++;
-					FileName = Name + count + f.Extension;
-				}
-			}
-			return FileName;
-		}
+                while (File.Exists (FileName)) {
+                    count++;
+                    FileName = Name + count + f.Extension;
+                }
+            }
+            return FileName;
+        }
 
-		// Nini (config) related Methods
-		public static IConfigSource ConvertDataRowToXMLConfig (DataRow row, string fileName)
-		{
-			if (!File.Exists (fileName)) {
-				//create new file
-			}
-			XmlConfigSource config = new XmlConfigSource (fileName);
-			AddDataRowToConfig (config, row);
-			config.Save ();
+        // Nini (config) related Methods
+        public static IConfigSource ConvertDataRowToXMLConfig (DataRow row, string fileName)
+        {
+            if (!File.Exists (fileName)) {
+                //create new file
+            }
+            XmlConfigSource config = new XmlConfigSource (fileName);
+            AddDataRowToConfig (config, row);
+            config.Save ();
 
-			return config;
-		}
+            return config;
+        }
 
-		public static void AddDataRowToConfig (IConfigSource config, DataRow row)
-		{
-			config.Configs.Add ((string)row [0]);
-			for (int i = 0; i < row.Table.Columns.Count; i++) {
-				config.Configs [(string)row [0]].Set (row.Table.Columns [i].ColumnName, row [i]);
-			}
-		}
+        public static void AddDataRowToConfig (IConfigSource config, DataRow row)
+        {
+            config.Configs.Add ((string)row [0]);
+            for (int i = 0; i < row.Table.Columns.Count; i++) {
+                config.Configs [(string)row [0]].Set (row.Table.Columns [i].ColumnName, row [i]);
+            }
+        }
 
-		public static float Clip (float x, float min, float max)
-		{
-			return Math.Min (Math.Max (x, min), max);
-		}
+        public static float Clip (float x, float min, float max)
+        {
+            return Math.Min (Math.Max (x, min), max);
+        }
 
-		public static int Clip (int x, int min, int max)
-		{
-			return Math.Min (Math.Max (x, min), max);
-		}
+        public static int Clip (int x, int min, int max)
+        {
+            return Math.Min (Math.Max (x, min), max);
+        }
 
-		/// <summary>
-		///     Convert an UUID to a raw uuid string.  Right now this is a string without hyphens.
-		/// </summary>
-		/// <param name="UUID"></param>
-		/// <returns></returns>
-		public static string ToRawUuidString (UUID UUID)
-		{
-			return UUID.Guid.ToString ("n");
-		}
+        /// <summary>
+        ///     Convert an UUID to a raw uuid string.  Right now this is a string without hyphens.
+        /// </summary>
+        /// <param name="UUID"></param>
+        /// <returns></returns>
+        public static string ToRawUuidString (UUID UUID)
+        {
+            return UUID.Guid.ToString ("n");
+        }
 
-		public static string CleanString (string input)
-		{
-			if (input.Length == 0)
-				return input;
+        public static string CleanString (string input)
+        {
+            if (input.Length == 0)
+                return input;
 
-			int clip = input.Length;
+            int clip = input.Length;
 
-			// Test for ++ string terminator
-			int pos = input.IndexOf ("\0");
-			if (pos != -1 && pos < clip)
-				clip = pos;
+            // Test for ++ string terminator
+            int pos = input.IndexOf ("\0");
+            if (pos != -1 && pos < clip)
+                clip = pos;
 
-			// Test for CR
-			pos = input.IndexOf ("\r");
-			if (pos != -1 && pos < clip)
-				clip = pos;
+            // Test for CR
+            pos = input.IndexOf ("\r");
+            if (pos != -1 && pos < clip)
+                clip = pos;
 
-			// Test for LF
-			pos = input.IndexOf ("\n");
-			if (pos != -1 && pos < clip)
-				clip = pos;
+            // Test for LF
+            pos = input.IndexOf ("\n");
+            if (pos != -1 && pos < clip)
+                clip = pos;
 
-			// Truncate string before first end-of-line character found
-			return input.Substring (0, clip);
-		}
+            // Truncate string before first end-of-line character found
+            return input.Substring (0, clip);
+        }
 
-		/// <summary>
-		///     returns the contents of /etc/issue on Unix Systems
-		///     Use this for where it's absolutely necessary to implement platform specific stuff
-		/// </summary>
-		/// <returns></returns>
-		public static string ReadEtcIssue ()
-		{
-			StreamReader sr = null;
-			try {
-				sr = new StreamReader ("/etc/issue.net");
-				string issue = sr.ReadToEnd ();
-				sr.Close ();
-				return issue;
-			} catch (Exception) {
-				if (sr != null)
-					sr.Close ();
-				return "";
-			}
-		}
+        /// <summary>
+        ///     returns the contents of /etc/issue on Unix Systems
+        ///     Use this for where it's absolutely necessary to implement platform specific stuff
+        /// </summary>
+        /// <returns></returns>
+        public static string ReadEtcIssue ()
+        {
+            StreamReader sr = null;
+            try {
+                sr = new StreamReader ("/etc/issue.net");
+                string issue = sr.ReadToEnd ();
+                sr.Close ();
+                return issue;
+            } catch (Exception) {
+                if (sr != null)
+                    sr.Close ();
+                return "";
+            }
+        }
 
-		public static void Compress7ZipFile (string path, string destination)
-		{
-			ProcessStartInfo p = new ProcessStartInfo ();
-			string pa = Path.GetDirectoryName (Assembly.GetAssembly (typeof(Util)).CodeBase);
-			if (pa != null) {
-				p.FileName = Path.Combine (pa, "7za.exe");
-				p.Arguments = "a -y -tgzip \"" + destination + "\" \"" + path + "\" -mx=9";
-				p.WindowStyle = ProcessWindowStyle.Hidden;
-				Process x = Process.Start (p);
-				x.WaitForExit ();
-			}
-		}
+        public static void Compress7ZipFile (string path, string destination)
+        {
+            ProcessStartInfo p = new ProcessStartInfo ();
+            string pa = Path.GetDirectoryName (Assembly.GetAssembly (typeof (Util)).CodeBase);
+            if (pa != null) {
+                p.FileName = Path.Combine (pa, "7za.exe");
+                p.Arguments = "a -y -tgzip \"" + destination + "\" \"" + path + "\" -mx=9";
+                p.WindowStyle = ProcessWindowStyle.Hidden;
+                Process x = Process.Start (p);
+                x.WaitForExit ();
+            }
+        }
 
-		public static void UnCompress7ZipFile (string path, string destination)
-		{
-			ProcessStartInfo p = new ProcessStartInfo ();
-			string pa = Path.GetDirectoryName (Assembly.GetAssembly (typeof(Util)).CodeBase);
-			if (pa != null) {
-				p.FileName = Path.Combine (pa, "7za.exe");
-				p.Arguments = "e -y \"" + path + "\" -o\"" + destination + "\" -mx=9";
-				p.WindowStyle = ProcessWindowStyle.Hidden;
-				Process x = Process.Start (p);
-				x.WaitForExit ();
-			}
-		}
+        public static void UnCompress7ZipFile (string path, string destination)
+        {
+            ProcessStartInfo p = new ProcessStartInfo ();
+            string pa = Path.GetDirectoryName (Assembly.GetAssembly (typeof (Util)).CodeBase);
+            if (pa != null) {
+                p.FileName = Path.Combine (pa, "7za.exe");
+                p.Arguments = "e -y \"" + path + "\" -o\"" + destination + "\" -mx=9";
+                p.WindowStyle = ProcessWindowStyle.Hidden;
+                Process x = Process.Start (p);
+                x.WaitForExit ();
+            }
+        }
 
-		public static string Compress (string text)
-		{
-			byte[] buffer = UTF8.GetBytes (text);
-			MemoryStream memory = new MemoryStream ();
-			using (GZipStream compressor = new GZipStream (memory, CompressionMode.Compress, true)) {
-				compressor.Write (buffer, 0, buffer.Length);
-			}
+        public static string Compress (string text)
+        {
+            byte [] buffer = UTF8.GetBytes (text);
+            MemoryStream memory = new MemoryStream ();
+            using (GZipStream compressor = new GZipStream (memory, CompressionMode.Compress, true)) {
+                compressor.Write (buffer, 0, buffer.Length);
+            }
 
-			memory.Position = 0;
+            memory.Position = 0;
 
-			byte[] compressed = new byte [memory.Length];
-			memory.Read (compressed, 0, compressed.Length);
+            byte [] compressed = new byte [memory.Length];
+            memory.Read (compressed, 0, compressed.Length);
 
-			byte[] compressedBuffer = new byte [compressed.Length + 4];
-			Buffer.BlockCopy (compressed, 0, compressedBuffer, 4, compressed.Length);
-			Buffer.BlockCopy (BitConverter.GetBytes (buffer.Length), 0, compressedBuffer, 0, 4);
-			return Convert.ToBase64String (compressedBuffer);
-		}
+            byte [] compressedBuffer = new byte [compressed.Length + 4];
+            Buffer.BlockCopy (compressed, 0, compressedBuffer, 4, compressed.Length);
+            Buffer.BlockCopy (BitConverter.GetBytes (buffer.Length), 0, compressedBuffer, 0, 4);
+            return Convert.ToBase64String (compressedBuffer);
+        }
 
-		public static byte [] CompressBytes (byte[] buffer)
-		{
-			MemoryStream memory = new MemoryStream ();
-			using (GZipStream compressor = new GZipStream (memory, CompressionMode.Compress, true)) {
-				compressor.Write (buffer, 0, buffer.Length);
-			}
+        public static byte [] CompressBytes (byte [] buffer)
+        {
+            MemoryStream memory = new MemoryStream ();
+            using (GZipStream compressor = new GZipStream (memory, CompressionMode.Compress, true)) {
+                compressor.Write (buffer, 0, buffer.Length);
+            }
 
-			memory.Position = 0;
+            memory.Position = 0;
 
-			byte[] compressed = new byte [memory.Length];
-			memory.Read (compressed, 0, compressed.Length);
+            byte [] compressed = new byte [memory.Length];
+            memory.Read (compressed, 0, compressed.Length);
 
-			byte[] compressedBuffer = new byte [compressed.Length + 4];
-			Buffer.BlockCopy (compressed, 0, compressedBuffer, 4, compressed.Length);
-			Buffer.BlockCopy (BitConverter.GetBytes (buffer.Length), 0, compressedBuffer, 0, 4);
-			return compressedBuffer;
-		}
+            byte [] compressedBuffer = new byte [compressed.Length + 4];
+            Buffer.BlockCopy (compressed, 0, compressedBuffer, 4, compressed.Length);
+            Buffer.BlockCopy (BitConverter.GetBytes (buffer.Length), 0, compressedBuffer, 0, 4);
+            return compressedBuffer;
+        }
 
-		public static string Decompress (string compressedText)
-		{
-			byte[] compressedBuffer = Convert.FromBase64String (compressedText);
-			using (MemoryStream memory = new MemoryStream ()) {
-				int msgLength = BitConverter.ToInt32 (compressedBuffer, 0);
-				memory.Write (compressedBuffer, 4, compressedBuffer.Length - 4);
+        public static string Decompress (string compressedText)
+        {
+            byte [] compressedBuffer = Convert.FromBase64String (compressedText);
+            using (MemoryStream memory = new MemoryStream ()) {
+                int msgLength = BitConverter.ToInt32 (compressedBuffer, 0);
+                memory.Write (compressedBuffer, 4, compressedBuffer.Length - 4);
 
-				byte[] buffer = new byte [msgLength];
+                byte [] buffer = new byte [msgLength];
 
-				memory.Position = 0;
-				using (GZipStream decompressor = new GZipStream (memory, CompressionMode.Decompress)) {
-					decompressor.Read (buffer, 0, buffer.Length);
-				}
+                memory.Position = 0;
+                using (GZipStream decompressor = new GZipStream (memory, CompressionMode.Decompress)) {
+                    decompressor.Read (buffer, 0, buffer.Length);
+                }
 
-				return UTF8.GetString (buffer);
-			}
-		}
+                return UTF8.GetString (buffer);
+            }
+        }
 
-		public static Stream DecompressStream (Stream compressedStream)
-		{
-			byte[] compressedBuffer = ReadToEnd (compressedStream);
-			using (MemoryStream memory = new MemoryStream ()) {
-				int msgLength = BitConverter.ToInt32 (compressedBuffer, 0);
-				memory.Write (compressedBuffer, 4, compressedBuffer.Length - 4);
+        public static Stream DecompressStream (Stream compressedStream)
+        {
+            byte [] compressedBuffer = ReadToEnd (compressedStream);
+            using (MemoryStream memory = new MemoryStream ()) {
+                int msgLength = BitConverter.ToInt32 (compressedBuffer, 0);
+                memory.Write (compressedBuffer, 4, compressedBuffer.Length - 4);
 
-				byte[] buffer = new byte [msgLength];
+                byte [] buffer = new byte [msgLength];
 
-				memory.Position = 0;
-				using (GZipStream decompressor = new GZipStream (memory, CompressionMode.Decompress)) {
-					decompressor.Read (buffer, 0, buffer.Length);
-				}
+                memory.Position = 0;
+                using (GZipStream decompressor = new GZipStream (memory, CompressionMode.Decompress)) {
+                    decompressor.Read (buffer, 0, buffer.Length);
+                }
 
-				return new MemoryStream (buffer);
-			}
-		}
+                return new MemoryStream (buffer);
+            }
+        }
 
-		public static byte [] ReadToEnd (Stream stream)
-		{
-			byte[] readBuffer = new byte [4096];
+        public static byte [] ReadToEnd (Stream stream)
+        {
+            byte [] readBuffer = new byte [4096];
 
-			int totalBytesRead = 0;
-			int bytesRead;
+            int totalBytesRead = 0;
+            int bytesRead;
 
-			while ((bytesRead = stream.Read (readBuffer, totalBytesRead, readBuffer.Length - totalBytesRead)) > 0) {
-				totalBytesRead += bytesRead;
+            while ((bytesRead = stream.Read (readBuffer, totalBytesRead, readBuffer.Length - totalBytesRead)) > 0) {
+                totalBytesRead += bytesRead;
 
-				if (totalBytesRead == readBuffer.Length) {
-					int nextByte = stream.ReadByte ();
-					if (nextByte != -1) {
-						byte[] temp = new byte [readBuffer.Length * 2];
-						Buffer.BlockCopy (readBuffer, 0, temp, 0, readBuffer.Length);
-						Buffer.SetByte (temp, totalBytesRead, (byte)nextByte);
-						readBuffer = temp;
-						totalBytesRead++;
-					}
-				}
-			}
+                if (totalBytesRead == readBuffer.Length) {
+                    int nextByte = stream.ReadByte ();
+                    if (nextByte != -1) {
+                        byte [] temp = new byte [readBuffer.Length * 2];
+                        Buffer.BlockCopy (readBuffer, 0, temp, 0, readBuffer.Length);
+                        Buffer.SetByte (temp, totalBytesRead, (byte)nextByte);
+                        readBuffer = temp;
+                        totalBytesRead++;
+                    }
+                }
+            }
 
-			byte[] buffer = readBuffer;
-			if (readBuffer.Length != totalBytesRead) {
-				buffer = new byte [totalBytesRead];
-				Buffer.BlockCopy (readBuffer, 0, buffer, 0, totalBytesRead);
-			}
-			return buffer;
-		}
+            byte [] buffer = readBuffer;
+            if (readBuffer.Length != totalBytesRead) {
+                buffer = new byte [totalBytesRead];
+                Buffer.BlockCopy (readBuffer, 0, buffer, 0, totalBytesRead);
+            }
+            return buffer;
+        }
 
-		/// <summary>
-		///     Converts a byte array in big endian order into an ulong.
-		/// </summary>
-		/// <param name="bytes">
-		///     The array of bytes
-		/// </param>
-		/// <returns>
-		///     The extracted ulong
-		/// </returns>
-		public static ulong BytesToUInt64Big (byte[] bytes)
-		{
-			if (bytes.Length < 8)
-				return 0;
-			return ((ulong)bytes [0] << 56) | ((ulong)bytes [1] << 48) | ((ulong)bytes [2] << 40) |
-			((ulong)bytes [3] << 32) |
-			((ulong)bytes [4] << 24) | ((ulong)bytes [5] << 16) | ((ulong)bytes [6] << 8) | bytes [7];
-		}
+        /// <summary>
+        ///     Converts a byte array in big endian order into an ulong.
+        /// </summary>
+        /// <param name="bytes">
+        ///     The array of bytes
+        /// </param>
+        /// <returns>
+        ///     The extracted ulong
+        /// </returns>
+        public static ulong BytesToUInt64Big (byte [] bytes)
+        {
+            if (bytes.Length < 8) return 0;
+            return ((ulong)bytes [0] << 56) | ((ulong)bytes [1] << 48) | ((ulong)bytes [2] << 40) |
+                   ((ulong)bytes [3] << 32) |
+                   ((ulong)bytes [4] << 24) | ((ulong)bytes [5] << 16) | ((ulong)bytes [6] << 8) | bytes [7];
+        }
 
-		// used for RemoteParcelRequest (for "About Landmark")
-		public static UUID BuildFakeParcelID (ulong regionHandle, uint x, uint y)
-		{
-			byte[] bytes = {
+        // used for RemoteParcelRequest (for "About Landmark")
+        public static UUID BuildFakeParcelID (ulong regionHandle, uint x, uint y)
+        {
+            byte [] bytes =
+                {
                     (byte) regionHandle, (byte) (regionHandle >> 8), (byte) (regionHandle >> 16),
                     (byte) (regionHandle >> 24),
                     (byte) (regionHandle >> 32), (byte) (regionHandle >> 40), (byte) (regionHandle >> 48),
@@ -1704,7 +1702,7 @@ namespace Universe.Framework.Utilities
 
             return paths.SelectMany (p => Directory.GetFiles (p, endFind)).ToArray ();
         }
-
+        
         // Returns a timestamp using the time resolution 
         // available to StopWatch in ms as double
         public static double GetTimeStampMS()
@@ -2880,6 +2878,7 @@ namespace Universe.Framework.Utilities
             else
                 EmitBoxIfNeeded (il, method.ReturnType);
             il.Emit (OpCodes.Ret);
+
             return dynamicMethod.Invoke (null, new object [] { invokeClass, invokeParameters });
             /*FastInvokeHandler invoder =
               (FastInvokeHandler)dynamicMethod.CreateDelegate(

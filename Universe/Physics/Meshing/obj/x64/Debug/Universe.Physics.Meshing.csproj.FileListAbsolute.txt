@@ -1,10 +1,5 @@
-C:\Users\virtu\Desktop\Universe-Dev\VirtualUniverse\bin\Physics\Universe.Physics.Meshing.dll
-C:\Users\virtu\Desktop\Universe-Dev\VirtualUniverse\bin\Physics\Universe.Physics.Meshing.pdb
-C:\Users\virtu\Desktop\Universe-Dev\Universe\Physics\Meshing\obj\x64\Debug\Universe.Physics.Meshing.csprojResolveAssemblyReference.cache
-C:\Users\virtu\Desktop\Universe-Dev\Universe\Physics\Meshing\obj\x64\Debug\Universe.Physics.Meshing.dll
-C:\Users\virtu\Desktop\Universe-Dev\Universe\Physics\Meshing\obj\x64\Debug\Universe.Physics.Meshing.pdb
 C:\Users\virtu\Desktop\Virtual-Dev\VirtualUniverse\bin\Physics\Universe.Physics.Meshing.dll
 C:\Users\virtu\Desktop\Virtual-Dev\VirtualUniverse\bin\Physics\Universe.Physics.Meshing.pdb
-C:\Users\virtu\Desktop\Virtual-Dev\Universe\Physics\Meshing\obj\x64\Debug\Universe.Physics.Meshing.csprojResolveAssemblyReference.cache
 C:\Users\virtu\Desktop\Virtual-Dev\Universe\Physics\Meshing\obj\x64\Debug\Universe.Physics.Meshing.dll
 C:\Users\virtu\Desktop\Virtual-Dev\Universe\Physics\Meshing\obj\x64\Debug\Universe.Physics.Meshing.pdb
+C:\Users\virtu\Desktop\Virtual-Dev\Universe\Physics\Meshing\obj\x64\Debug\Universe.Physics.Meshing.csprojResolveAssemblyReference.cache

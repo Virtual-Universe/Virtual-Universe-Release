@@ -28,17 +28,17 @@
  */
 
 using System.Collections.Generic;
-using OpenMetaverse;
 using Universe.Framework.SceneInfo.Entities;
+using OpenMetaverse;
 
 namespace Universe.Framework.SceneInfo
 {
-	public struct ReturnInfo
-	{
-		public List<ISceneEntity> Groups;
-		public int count;
-		public Vector3 location;
-		public string objectName;
-		public string reason;
-	}
+    public struct ReturnInfo
+    {
+        public List<ISceneEntity> Groups;
+        public int count;
+        public Vector3 location;
+        public string objectName;
+        public string reason;
+    }
 }

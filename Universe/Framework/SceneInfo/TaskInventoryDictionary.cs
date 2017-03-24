@@ -44,21 +44,20 @@ namespace Universe.Framework.SceneInfo
     /// This class is not thread safe.  Callers must synchronize on Dictionary methods or Clone() this object before
     /// iterating over it.
     [Serializable, ProtoContract]
-    public class TaskInventoryDictionary : Dictionary<UUID, TaskInventoryItem>, ICloneable, IXmlSerializable
+    public class TaskInventoryDictionary : Dictionary<UUID, TaskInventoryItem>,
+                                           ICloneable, IXmlSerializable
     {
-        static readonly XmlSerializer tiiSerializer = new XmlSerializer(typeof(TaskInventoryItem));
+        static readonly XmlSerializer tiiSerializer = new XmlSerializer (typeof (TaskInventoryItem));
 
         #region ICloneable Members
 
-        public object Clone()
+        public object Clone ()
         {
-            var clone = new TaskInventoryDictionary();
+            var clone = new TaskInventoryDictionary ();
 
-            lock (this)
-            {
-                foreach (UUID uuid in Keys)
-                {
-                    clone.Add(uuid, (TaskInventoryItem)this[uuid].Clone());
+            lock (this) {
+                foreach (UUID uuid in Keys) {
+                    clone.Add (uuid, (TaskInventoryItem)this [uuid].Clone ());
                 }
             }
 
@@ -77,67 +76,62 @@ namespace Universe.Framework.SceneInfo
         // see IXmlSerializable
         public void ReadXml(XmlReader reader)
         {
-            // MainConsole.Instance.DebugFormat("[Task Inventory]: ReadXml current node before actions, {0}", reader.Name);
+            // MainConsole.Instance.DebugFormat("[TASK INVENTORY]: ReadXml current node before actions, {0}", reader.Name);
 
-            if (!reader.IsEmptyElement)
-            {
-                reader.Read();
-                while (tiiSerializer.CanDeserialize(reader))
-                {
-                    var item = (TaskInventoryItem)tiiSerializer.Deserialize(reader);
-                    Add(item.ItemID, item);
+            if (!reader.IsEmptyElement) {
+                reader.Read ();
+                while (tiiSerializer.CanDeserialize (reader)) {
+                    var item = (TaskInventoryItem)tiiSerializer.Deserialize (reader);
+                    Add (item.ItemID, item);
 
-                    //MainConsole.Instance.DebugFormat("[Task Inventory]: Instantiated prim item {0}, {1} from xml", item.Name, item.ItemID);
+                    //MainConsole.Instance.DebugFormat("[TASK INVENTORY]: Instantiated prim item {0}, {1} from xml", item.Name, item.ItemID);
                 }
 
-                // MainConsole.Instance.DebugFormat("[Task Inventory]: Instantiated {0} prim items in total from xml", Count);
+                // MainConsole.Instance.DebugFormat("[TASK INVENTORY]: Instantiated {0} prim items in total from xml", Count);
             }
             // else
             // {
-            //     MainConsole.Instance.DebugFormat("[Task Inventory]: Skipping empty element {0}", reader.Name);
+            //     MainConsole.Instance.DebugFormat("[TASK INVENTORY]: Skipping empty element {0}", reader.Name);
             // }
 
             // For some .net implementations, this last read is necessary so that we advance beyond the end tag
             // of the element wrapping this object so that the rest of the serialization can complete normally.
             reader.Read();
 
-            // MainConsole.Instance.DebugFormat("[Task Inventory]: ReadXml current node after actions, {0}", reader.Name);
+            // MainConsole.Instance.DebugFormat("[TASK INVENTORY]: ReadXml current node after actions, {0}", reader.Name);
         }
 
         // see IXmlSerializable
         public void WriteXml(XmlWriter writer)
         {
-            lock (this)
-            {
-                foreach (TaskInventoryItem item in Values)
-                {
-                    tiiSerializer.Serialize(writer, item);
+            lock (this) {
+                foreach (TaskInventoryItem item in Values) {
+                    tiiSerializer.Serialize (writer, item);
                 }
             }
+
+            //tiiSerializer.Serialize(writer, Values);
         }
 
         #endregion
 
         public List<TaskInventoryItem> Clone2List()
         {
-            var clone = new List<TaskInventoryItem>();
+            var clone = new List<TaskInventoryItem> ();
 
-            lock (this)
-            {
-                clone.AddRange(Keys.Select(uuid => (TaskInventoryItem)this[uuid].Clone()));
+            lock (this) {
+                clone.AddRange (Keys.Select (uuid => (TaskInventoryItem)this [uuid].Clone ()));
             }
 
             return clone;
         }
 
         [XmlIgnore]
-        public List<TaskInventoryItem> Items
-        {
-            get { return Clone2List(); }
-            set
-            {
+        public List<TaskInventoryItem> Items {
+            get { return Clone2List (); }
+            set { 
                 foreach (TaskInventoryItem itm in value)
-                    Add(itm.ItemID, itm);
+                    Add (itm.ItemID, itm); 
             }
         }
 

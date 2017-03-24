@@ -34,65 +34,70 @@ using Universe.Framework.Servers.HttpServer.Interfaces;
 
 namespace Universe.Framework.Servers.HttpServer
 {
-	public abstract class BaseRequestHandler : IStreamedRequestHandler
-	{
-		protected readonly string m_httpMethod;
+    public abstract class BaseRequestHandler : IStreamedRequestHandler
+    {
+        protected readonly string m_httpMethod;
 
-		protected readonly string m_path;
+        protected readonly string m_path;
 
-		protected BaseRequestHandler (string httpMethod, string path)
-		{
-			m_httpMethod = httpMethod;
-			m_path = path;
-		}
+        protected BaseRequestHandler(string httpMethod, string path)
+        {
+            m_httpMethod = httpMethod;
+            m_path = path;
+        }
 
-		public virtual string ContentType {
-			get { return "application/xml"; }
-		}
+        public virtual string ContentType
+        {
+            get { return "application/xml"; }
+        }
 
-		public virtual string HttpMethod {
-			get { return m_httpMethod; }
-		}
+        public virtual string HttpMethod
+        {
+            get { return m_httpMethod; }
+        }
 
-		public virtual string Path {
-			get { return m_path; }
-		}
+        public virtual string Path
+        {
+            get { return m_path; }
+        }
 
-		public string GetBodyAsString (Stream request)
-		{
-			StreamReader sr = new StreamReader (request);
-			string body = sr.ReadToEnd ();
-			sr.Close ();
-			body = body.Trim ();
-			return body;
-		}
+        public string GetBodyAsString(Stream request)
+        {
+            StreamReader sr = new StreamReader(request);
+            string body = sr.ReadToEnd();
+            sr.Close();
+            body = body.Trim();
+            return body;
+        }
 
-		protected string GetParam (string path)
-		{
-			if (CheckParam (path)) {
-				return path.Substring (m_path.Length);
-			}
+        protected string GetParam(string path)
+        {
+            if (CheckParam(path))
+            {
+                return path.Substring(m_path.Length);
+            }
 
-			return String.Empty;
-		}
+            return String.Empty;
+        }
 
-		protected bool CheckParam (string path)
-		{
-			if (String.IsNullOrEmpty (path)) {
-				return false;
-			}
+        protected bool CheckParam(string path)
+        {
+            if (String.IsNullOrEmpty(path))
+            {
+                return false;
+            }
 
-			return path.StartsWith (Path);
-		}
+            return path.StartsWith(Path);
+        }
 
-		protected string[] SplitParams (string path)
-		{
-			string param = GetParam (path);
+        protected string[] SplitParams(string path)
+        {
+            string param = GetParam(path);
 
-			return param.Split (new char[] { '/', '?', '&' }, StringSplitOptions.RemoveEmptyEntries);
-		}
+            return param.Split(new char[] {'/', '?', '&'}, StringSplitOptions.RemoveEmptyEntries);
+        }
 
-		public abstract byte[] Handle (string path, Stream request,
-		                                    OSHttpRequest httpRequest, OSHttpResponse httpResponse);
-	}
+        public abstract byte[] Handle(string path, Stream request,
+                                      OSHttpRequest httpRequest, OSHttpResponse httpResponse);
+    }
 }

@@ -31,72 +31,71 @@ using System;
 
 namespace Universe.Physics.ConvexDecompositionDotNet
 {
-	public class Plane
-	{
-		public float3 normal = new float3 ();
-		public float dist;
-		// distance below origin - the D from plane equasion Ax+By+Cz+D=0
+    public class Plane
+    {
+        public float3 normal = new float3();
+        public float dist; // distance below origin - the D from plane equasion Ax+By+Cz+D=0
 
-		public Plane (float3 n, float d)
-		{
-			normal = new float3 (n);
-			dist = d;
-		}
+        public Plane(float3 n, float d)
+        {
+            normal = new float3(n);
+            dist = d;
+        }
 
-		public Plane (Plane p)
-		{
-			normal = new float3 (p.normal);
-			dist = p.dist;
-		}
+        public Plane(Plane p)
+        {
+            normal = new float3(p.normal);
+            dist = p.dist;
+        }
 
-		public Plane ()
-		{
-			dist = 0;
-		}
+        public Plane()
+        {
+            dist = 0;
+        }
 
-		public void Transform (float3 position, Quaternion orientation)
-		{
-			//   Transforms the plane to the space defined by the
-			//   given position/orientation
-			float3 newNormal = Quaternion.Inverse (orientation) * normal;
-			float3 origin = Quaternion.Inverse (orientation) * (-normal * dist - position);
+        public void Transform(float3 position, Quaternion orientation)
+        {
+            //   Transforms the plane to the space defined by the
+            //   given position/orientation
+            float3 newNormal = Quaternion.Inverse(orientation) * normal;
+            float3 origin = Quaternion.Inverse(orientation) * (-normal * dist - position);
 
-			normal = newNormal;
-			dist = -float3.dot (newNormal, origin);
-		}
+            normal = newNormal;
+            dist = -float3.dot(newNormal, origin);
+        }
 
-		public override int GetHashCode ()
-		{
-			return normal.GetHashCode () ^ dist.GetHashCode ();
-		}
+        public override int GetHashCode()
+        {
+            return normal.GetHashCode() ^ dist.GetHashCode();
+        }
 
-		public override bool Equals (object obj)
-		{
-			Plane p = obj as Plane;
-			if (p == null)
-				return false;
+        public override bool Equals(object obj)
+        {
+            Plane p = obj as Plane;
+            if (p == null)
+                return false;
 
-			return this == p;
-		}
+            return this == p;
+        }
 
-		public static bool operator == (Plane a, Plane b)
-		{
-			return (a.normal == b.normal && a.dist == b.dist);
-		}
+        public static bool operator ==(Plane a, Plane b)
+        {
+            return (a.normal == b.normal && a.dist == b.dist);
+        }
 
-		public static bool operator != (Plane a, Plane b)
-		{
-			return !(a == b);
-		}
+        public static bool operator !=(Plane a, Plane b)
+        {
+            return !(a == b);
+        }
 
-		public static Plane PlaneFlip (Plane plane)
-		{
-			return new Plane (-plane.normal, -plane.dist);
-		}
+        public static Plane PlaneFlip(Plane plane)
+        {
+            return new Plane(-plane.normal, -plane.dist);
+        }
 
-		public static bool coplanar (Plane a, Plane b)
-		{
-			return (a == b || a == PlaneFlip (b));
-		}
-	}
+        public static bool coplanar(Plane a, Plane b)
+        {
+            return (a == b || a == PlaneFlip(b));
+        }
+    }
 }

@@ -102,14 +102,14 @@ namespace Universe.Region.Serialization
                 doc.LoadXml(xmlData);
                 parts = doc.GetElementsByTagName("RootPart");
 
-                IScene m_sceneForGroup = scene is IScene ? (IScene)scene : null;
+                IScene m_sceneForGroup = scene is IScene ? (IScene) scene : null;
                 ISceneEntity sceneObject;
                 if (parts.Count == 0)
                 {
                     sceneObject = FromXml2Format(xmlData, m_sceneForGroup);
                     if (sceneObject == null)
                         return null;
-
+                    
                     return sceneObject;
                 }
 
@@ -422,7 +422,7 @@ namespace Universe.Region.Serialization
             m_SOPXmlProcessors.Add("PayPrice4", ProcessPayPrice4);
             m_SOPXmlProcessors.Add("FromUserInventoryAssetID", ProcessFromUserInventoryAssetID);
             m_SOPXmlProcessors.Add("FromUserInventoryItemID", ProcessFromUserInventoryItemID);
-            Type sopType = typeof(SceneObjectPart);
+            Type sopType = typeof (SceneObjectPart);
             m_SOPXmlProcessors.Add("RETURN_AT_EDGE", ((sop, xml) => GenericBool(sop, xml, "RETURN_AT_EDGE", sopType)));
             m_SOPXmlProcessors.Add("BlockGrab", ((sop, xml) => GenericBool(sop, xml, "BlockGrab", sopType)));
             m_SOPXmlProcessors.Add("BlockGrabObject", ((sop, xml) => GenericBool(sop, xml, "BlockGrabObject", sopType)));
@@ -591,11 +591,11 @@ namespace Universe.Region.Serialization
             SOPToXml2(writer, sog.RootPart, options);
             writer.WriteStartElement(string.Empty, "OtherParts", string.Empty);
 
-            sog.ForEachPart(delegate (SceneObjectPart sop)
-            {
-                if (sop.UUID != sog.RootPart.UUID)
-                    SOPToXml2(writer, sop, options);
-            });
+            sog.ForEachPart(delegate(SceneObjectPart sop)
+                                {
+                                    if (sop.UUID != sog.RootPart.UUID)
+                                        SOPToXml2(writer, sop, options);
+                                });
 
             writer.WriteEndElement();
             writer.WriteEndElement();
@@ -650,7 +650,7 @@ namespace Universe.Region.Serialization
             WriteShape(writer, sop.Shape, options);
 
             WriteVector(writer, "Scale", sop.Scale);
-            writer.WriteElementString("UpdateFlag", ((byte)0).ToString());
+            writer.WriteElementString("UpdateFlag", ((byte) 0).ToString());
             WriteQuaternion(writer, "SitTargetOrientation", sop.SitTargetOrientation);
             WriteVector(writer, "SitTargetPosition", sop.SitTargetPosition);
             writer.WriteElementString("ParentID", sop.ParentID.ToString());
@@ -761,12 +761,12 @@ namespace Universe.Region.Serialization
             }
             writer.WriteEndElement();// StateSaveXML
 
-            using (MemoryStream stream = new MemoryStream())
+            using(MemoryStream stream = new MemoryStream())
             {
                 ProtoBuf.Serializer.Serialize<KeyframeAnimation>(stream, sop.KeyframeAnimation);
                 writer.WriteElementString("KeyframeAnimation", Convert.ToBase64String(stream.ToArray()));
             }
-
+             
             //Write the generic elements last
             foreach (KeyValuePair<string, Serialization> kvp in m_genericSerializers)
             {
@@ -953,9 +953,9 @@ namespace Universe.Region.Serialization
         {
             // flags & parameters need a character prefix to the element number to conform to xml specs
             writer.WriteStartElement("Vehicle");
-            writer.WriteElementString("VehicleType", sop.VehicleType.ToString());
+            writer.WriteElementString("VehicleType", sop.VehicleType.ToString ());
 
-            if (sop.VehicleType > 0)
+            if(sop.VehicleType > 0)
             {
                 writer.WriteStartElement("VehicleSettings");
                 writer.WriteStartElement("VehicleFlags");
@@ -963,24 +963,22 @@ namespace Universe.Region.Serialization
                 int elem = 0;
                 foreach (int flag in sop.VehicleFlags)
                 {
-                    writer.WriteElementString("F" + elem, flag.ToString());
+                    writer.WriteElementString("F"+elem, flag.ToString());
                     elem++;
                 }
-                writer.WriteEndElement();
+                writer.WriteEndElement ();
 
                 writer.WriteStartElement("VehicleParameters");
-                foreach (KeyValuePair<string, OSD> param in sop.VehicleParameters)
-                {
-                    if (param.Value.Type == OSDType.Array)
-                    {
+                foreach (KeyValuePair<string, OSD> param in sop.VehicleParameters) {
+                    if(param.Value.Type == OSDType.Array) {
                         OSDArray a = (OSDArray)param.Value;
-                        if (a.Count == 3)
-                            WriteVector(writer, "P" + param.Key, param.Value.AsVector3());
+                        if(a.Count == 3)
+                            WriteVector(writer, "P"+param.Key, param.Value.AsVector3());
                         else
-                            WriteQuaternion(writer, "P" + param.Key, param.Value.AsQuaternion());
+                            WriteQuaternion(writer, "P"+param.Key, param.Value.AsQuaternion());
                     }
                     else
-                        writer.WriteElementString("P" + param.Key, param.Value.ToString());
+                        writer.WriteElementString("P"+param.Key, param.Value.ToString ());
                 }
                 writer.WriteEndElement();
                 writer.WriteEndElement();
@@ -1086,7 +1084,7 @@ namespace Universe.Region.Serialization
                 {
                     if (!property.CanRead || !property.CanWrite)
                         continue;
-                    var data = property.GetCustomAttributes(typeof(ProtoBuf.ProtoMemberAttribute), false);
+                    var data = property.GetCustomAttributes(typeof (ProtoBuf.ProtoMemberAttribute), false);
                     if (data.Length == 0)
                         continue;
                     var initialPropValue = property.GetValue(initial, null);
@@ -1096,11 +1094,11 @@ namespace Universe.Region.Serialization
                     {
                         if (initialPropValue != null && resultPropValue != null)
                         {
-                            Array initialArray = (Array)initialPropValue;
-                            Array resultArray = (Array)resultPropValue;
+                            Array initialArray = (Array) initialPropValue;
+                            Array resultArray = (Array) resultPropValue;
                             for (int i = 0; i < initialArray.Length; i++)
                             {
-                                if (!Equals(initialArray.GetValue(i),
+                                if (!Equals (initialArray.GetValue(i),
                                                    resultArray.GetValue(i)))
                                 {
                                     MainConsole.Instance.WarnFormat("Failed to verify {0}, {1} != {2}", property.Name,
@@ -1225,7 +1223,6 @@ namespace Universe.Region.Serialization
                             reader.Name, e);
                     }
                 }
-
                 reader.ReadEndElement(); // TaskInventoryItem
 
                 tinv.Add(item.ItemID, item);
@@ -1271,7 +1268,7 @@ namespace Universe.Region.Serialization
                 }
                 else
                 {
-                    // MainConsole.Instance.DebugFormat("[Scene Object Serializer]: caught unknown element in Shape {0}", reader.Name);
+                    // MainConsole.Instance.DebugFormat("[SceneObjectSerializer]: caught unknown element in Shape {0}", reader.Name);
                     reader.ReadOuterXml();
                 }
             }
@@ -1284,7 +1281,7 @@ namespace Universe.Region.Serialization
         void ReadVehicleSettings(SceneObjectPart obj, XmlTextReader reader)
         {
             reader.ReadStartElement("Vehicle");
-            obj.VehicleType = reader.ReadElementContentAsInt("VehicleType", string.Empty);
+            obj.VehicleType = reader.ReadElementContentAsInt ("VehicleType", string.Empty);
 
             if (obj.VehicleType > 0)
             {
@@ -1292,13 +1289,12 @@ namespace Universe.Region.Serialization
                 reader.ReadStartElement("VehicleFlags", string.Empty);
 
                 int nodeName = 0;
-                OSDArray partFlags = new OSDArray();
+                OSDArray partFlags = new OSDArray ();
                 while (reader.NodeType != XmlNodeType.EndElement)
                 {
-                    partFlags.Add(reader.ReadElementContentAsInt("F" + nodeName, string.Empty));
+                    partFlags.Add(reader.ReadElementContentAsInt("F"+nodeName, string.Empty));
                     nodeName++;
                 }
-
                 obj.VehicleFlags = partFlags;
                 reader.ReadEndElement(); // VehicleFlags
 
@@ -1308,30 +1304,30 @@ namespace Universe.Region.Serialization
                     int key = int.Parse(reader.Name.Substring(1));
                     switch (key)
                     {
-                        case 44:            // REFERENCE_FRAME
-                        case 46:            // ROLL_FRAME
-                            obj.SetVehicleRotationParam(key, ReadQuaternion(reader, reader.Name));
-                            break;
-                        case 16:    // LINEAR_FRICTION_TIMESCALE:
-                        case 17:    // ANGULAR_FRICTION_TIMESCALE:
-                        case 18:    // LINEAR_MOTOR_DIRECTION:
-                        case 19:    // ANGULAR_MOTOR_DIRECTION:
-                        case 20:    // LINEAR_MOTOR_OFFSET:
-                        case 45:    // BLOCK_EXIT:
-                            obj.SetVehicleVectorParam(key, ReadVector(reader, reader.Name));
-                            break;
-                        default:
-                            obj.SetVehicleFloatParam(key, reader.ReadElementContentAsFloat(reader.Name, string.Empty));
-                            break;
+                    case 44:            // REFERENCE_FRAME
+                    case 46:            // ROLL_FRAME
+                        obj.SetVehicleRotationParam(key, ReadQuaternion(reader,reader.Name));
+                        break;
+                    case 16:    // LINEAR_FRICTION_TIMESCALE:
+                    case 17:    // ANGULAR_FRICTION_TIMESCALE:
+                    case 18:    // LINEAR_MOTOR_DIRECTION:
+                    case 19:    // ANGULAR_MOTOR_DIRECTION:
+                    case 20:    // LINEAR_MOTOR_OFFSET:
+                    case 45:    // BLOCK_EXIT:
+                        obj.SetVehicleVectorParam(key, ReadVector(reader,reader.Name));
+                        break;
+                    default:
+                        obj.SetVehicleFloatParam(key, reader.ReadElementContentAsFloat(reader.Name, string.Empty));
+                        break;
                     }
                 }
-
                 reader.ReadEndElement(); //VehicleParameters
                 reader.ReadEndElement(); //VehicleSettings
             }
-
             reader.ReadEndElement(); //Vehicle
         }
+
+
 
         #region SOPXmlProcessors
 
@@ -1367,7 +1363,7 @@ namespace Universe.Region.Serialization
 
         void ProcessLocalId(SceneObjectPart obj, XmlTextReader reader)
         {
-            obj.LocalId = (uint)reader.ReadElementContentAsLong("LocalId", string.Empty);
+            obj.LocalId = (uint) reader.ReadElementContentAsLong("LocalId", string.Empty);
         }
 
         void ProcessName(SceneObjectPart obj, XmlTextReader reader)
@@ -1377,7 +1373,7 @@ namespace Universe.Region.Serialization
 
         void ProcessMaterial(SceneObjectPart obj, XmlTextReader reader)
         {
-            obj.Material = (byte)reader.ReadElementContentAsInt("Material", string.Empty);
+            obj.Material = (byte) reader.ReadElementContentAsInt("Material", string.Empty);
         }
 
         void ProcessPassCollisions(SceneObjectPart obj, XmlTextReader reader)
@@ -1439,7 +1435,7 @@ namespace Universe.Region.Serialization
                 float g = reader.ReadElementContentAsFloat("G", string.Empty);
                 float b = reader.ReadElementContentAsFloat("B", string.Empty);
                 float a = reader.ReadElementContentAsFloat("A", string.Empty);
-                obj.Color = Color.FromArgb((int)a, (int)r, (int)g, (int)b);
+                obj.Color = Color.FromArgb((int) a, (int) r, (int) g, (int) b);
                 reader.ReadEndElement();
             }
         }
@@ -1466,7 +1462,7 @@ namespace Universe.Region.Serialization
 
         void ProcessClickAction(SceneObjectPart obj, XmlTextReader reader)
         {
-            obj.ClickAction = (byte)reader.ReadElementContentAsInt("ClickAction", string.Empty);
+            obj.ClickAction = (byte) reader.ReadElementContentAsInt("ClickAction", string.Empty);
         }
 
         void ProcessShape(SceneObjectPart obj, XmlTextReader reader)
@@ -1482,6 +1478,7 @@ namespace Universe.Region.Serialization
         void ProcessUpdateFlag(SceneObjectPart obj, XmlTextReader reader)
         {
             reader.Read();
+            //InternalUpdateFlags flags = (InternalUpdateFlags)(byte)reader.ReadElementContentAsInt("UpdateFlag", String.Empty);
         }
 
         void ProcessSitTargetOrientation(SceneObjectPart obj, XmlTextReader reader)
@@ -1517,7 +1514,7 @@ namespace Universe.Region.Serialization
 
         void ProcessObjectSaleType(SceneObjectPart obj, XmlTextReader reader)
         {
-            obj.ObjectSaleType = (byte)reader.ReadElementContentAsInt("ObjectSaleType", string.Empty);
+            obj.ObjectSaleType = (byte) reader.ReadElementContentAsInt("ObjectSaleType", string.Empty);
         }
 
         void ProcessOwnershipCost(SceneObjectPart obj, XmlTextReader reader)
@@ -1571,7 +1568,7 @@ namespace Universe.Region.Serialization
             // !!!!! to deal with flags without commas
             if (value.Contains(" ") && !value.Contains(","))
                 value = value.Replace(" ", ", ");
-            obj.Flags = (PrimFlags)Enum.Parse(typeof(PrimFlags), value);
+            obj.Flags = (PrimFlags) Enum.Parse(typeof (PrimFlags), value);
         }
 
         void ProcessCollisionSound(SceneObjectPart obj, XmlTextReader reader)
@@ -1753,9 +1750,8 @@ namespace Universe.Region.Serialization
 
                 reader.ReadEndElement();
             }
-
             if (reader.NodeType == XmlNodeType.EndElement)
-                reader.Read();
+                reader.Read ();
 
             obj.StateSaves = states;
         }
@@ -1843,6 +1839,7 @@ namespace Universe.Region.Serialization
         void ProcessTIOldItemID(TaskInventoryItem item, XmlTextReader reader)
         {
             //Disable this, if we are rezzing from inventory, we want to get a new ItemID for next time
+            //item.OldItemID = ReadUUID (reader, "OldItemID");
             ReadUUID(reader, "OldItemID");
         }
 
@@ -1907,7 +1904,7 @@ namespace Universe.Region.Serialization
 
         void ProcessShpProfileCurve(PrimitiveBaseShape shp, XmlTextReader reader)
         {
-            shp.ProfileCurve = (byte)reader.ReadElementContentAsInt("ProfileCurve", string.Empty);
+            shp.ProfileCurve = (byte) reader.ReadElementContentAsInt("ProfileCurve", string.Empty);
         }
 
         void ProcessShpTextureEntry(PrimitiveBaseShape shp, XmlTextReader reader)
@@ -1923,92 +1920,92 @@ namespace Universe.Region.Serialization
 
         void ProcessShpPathBegin(PrimitiveBaseShape shp, XmlTextReader reader)
         {
-            shp.PathBegin = (ushort)reader.ReadElementContentAsInt("PathBegin", string.Empty);
+            shp.PathBegin = (ushort) reader.ReadElementContentAsInt("PathBegin", string.Empty);
         }
 
         void ProcessShpPathCurve(PrimitiveBaseShape shp, XmlTextReader reader)
         {
-            shp.PathCurve = (byte)reader.ReadElementContentAsInt("PathCurve", string.Empty);
+            shp.PathCurve = (byte) reader.ReadElementContentAsInt("PathCurve", string.Empty);
         }
 
         void ProcessShpPathEnd(PrimitiveBaseShape shp, XmlTextReader reader)
         {
-            shp.PathEnd = (ushort)reader.ReadElementContentAsInt("PathEnd", string.Empty);
+            shp.PathEnd = (ushort) reader.ReadElementContentAsInt("PathEnd", string.Empty);
         }
 
         void ProcessShpPathRadiusOffset(PrimitiveBaseShape shp, XmlTextReader reader)
         {
-            shp.PathRadiusOffset = (sbyte)reader.ReadElementContentAsInt("PathRadiusOffset", string.Empty);
+            shp.PathRadiusOffset = (sbyte) reader.ReadElementContentAsInt("PathRadiusOffset", string.Empty);
         }
 
         void ProcessShpPathRevolutions(PrimitiveBaseShape shp, XmlTextReader reader)
         {
-            shp.PathRevolutions = (byte)reader.ReadElementContentAsInt("PathRevolutions", string.Empty);
+            shp.PathRevolutions = (byte) reader.ReadElementContentAsInt("PathRevolutions", string.Empty);
         }
 
         void ProcessShpPathScaleX(PrimitiveBaseShape shp, XmlTextReader reader)
         {
-            shp.PathScaleX = (byte)reader.ReadElementContentAsInt("PathScaleX", string.Empty);
+            shp.PathScaleX = (byte) reader.ReadElementContentAsInt("PathScaleX", string.Empty);
         }
 
         void ProcessShpPathScaleY(PrimitiveBaseShape shp, XmlTextReader reader)
         {
-            shp.PathScaleY = (byte)reader.ReadElementContentAsInt("PathScaleY", string.Empty);
+            shp.PathScaleY = (byte) reader.ReadElementContentAsInt("PathScaleY", string.Empty);
         }
 
         void ProcessShpPathShearX(PrimitiveBaseShape shp, XmlTextReader reader)
         {
-            shp.PathShearX = (byte)reader.ReadElementContentAsInt("PathShearX", string.Empty);
+            shp.PathShearX = (byte) reader.ReadElementContentAsInt("PathShearX", string.Empty);
         }
 
         void ProcessShpPathShearY(PrimitiveBaseShape shp, XmlTextReader reader)
         {
-            shp.PathShearY = (byte)reader.ReadElementContentAsInt("PathShearY", string.Empty);
+            shp.PathShearY = (byte) reader.ReadElementContentAsInt("PathShearY", string.Empty);
         }
 
         void ProcessShpPathSkew(PrimitiveBaseShape shp, XmlTextReader reader)
         {
-            shp.PathSkew = (sbyte)reader.ReadElementContentAsInt("PathSkew", string.Empty);
+            shp.PathSkew = (sbyte) reader.ReadElementContentAsInt("PathSkew", string.Empty);
         }
 
         void ProcessShpPathTaperX(PrimitiveBaseShape shp, XmlTextReader reader)
         {
-            shp.PathTaperX = (sbyte)reader.ReadElementContentAsInt("PathTaperX", string.Empty);
+            shp.PathTaperX = (sbyte) reader.ReadElementContentAsInt("PathTaperX", string.Empty);
         }
 
         void ProcessShpPathTaperY(PrimitiveBaseShape shp, XmlTextReader reader)
         {
-            shp.PathTaperY = (sbyte)reader.ReadElementContentAsInt("PathTaperY", string.Empty);
+            shp.PathTaperY = (sbyte) reader.ReadElementContentAsInt("PathTaperY", string.Empty);
         }
 
         void ProcessShpPathTwist(PrimitiveBaseShape shp, XmlTextReader reader)
         {
-            shp.PathTwist = (sbyte)reader.ReadElementContentAsInt("PathTwist", string.Empty);
+            shp.PathTwist = (sbyte) reader.ReadElementContentAsInt("PathTwist", string.Empty);
         }
 
         void ProcessShpPathTwistBegin(PrimitiveBaseShape shp, XmlTextReader reader)
         {
-            shp.PathTwistBegin = (sbyte)reader.ReadElementContentAsInt("PathTwistBegin", string.Empty);
+            shp.PathTwistBegin = (sbyte) reader.ReadElementContentAsInt("PathTwistBegin", string.Empty);
         }
 
         void ProcessShpPCode(PrimitiveBaseShape shp, XmlTextReader reader)
         {
-            shp.PCode = (byte)reader.ReadElementContentAsInt("PCode", string.Empty);
+            shp.PCode = (byte) reader.ReadElementContentAsInt("PCode", string.Empty);
         }
 
         void ProcessShpProfileBegin(PrimitiveBaseShape shp, XmlTextReader reader)
         {
-            shp.ProfileBegin = (ushort)reader.ReadElementContentAsInt("ProfileBegin", string.Empty);
+            shp.ProfileBegin = (ushort) reader.ReadElementContentAsInt("ProfileBegin", string.Empty);
         }
 
         void ProcessShpProfileEnd(PrimitiveBaseShape shp, XmlTextReader reader)
         {
-            shp.ProfileEnd = (ushort)reader.ReadElementContentAsInt("ProfileEnd", string.Empty);
+            shp.ProfileEnd = (ushort) reader.ReadElementContentAsInt("ProfileEnd", string.Empty);
         }
 
         void ProcessShpProfileHollow(PrimitiveBaseShape shp, XmlTextReader reader)
         {
-            shp.ProfileHollow = (ushort)reader.ReadElementContentAsInt("ProfileHollow", string.Empty);
+            shp.ProfileHollow = (ushort) reader.ReadElementContentAsInt("ProfileHollow", string.Empty);
         }
 
         void ProcessShpScale(PrimitiveBaseShape shp, XmlTextReader reader)
@@ -2018,7 +2015,7 @@ namespace Universe.Region.Serialization
 
         void ProcessShpState(PrimitiveBaseShape shp, XmlTextReader reader)
         {
-            shp.State = (byte)reader.ReadElementContentAsInt("State", string.Empty);
+            shp.State = (byte) reader.ReadElementContentAsInt("State", string.Empty);
         }
 
         void ProcessShpProfileShape(PrimitiveBaseShape shp, XmlTextReader reader)
@@ -2027,7 +2024,7 @@ namespace Universe.Region.Serialization
             // !!!!! to deal with flags without commas
             if (value.Contains(" ") && !value.Contains(","))
                 value = value.Replace(" ", ", ");
-            shp.ProfileShape = (ProfileShape)Enum.Parse(typeof(ProfileShape), value);
+            shp.ProfileShape = (ProfileShape) Enum.Parse(typeof (ProfileShape), value);
         }
 
         void ProcessShpHollowShape(PrimitiveBaseShape shp, XmlTextReader reader)
@@ -2036,7 +2033,7 @@ namespace Universe.Region.Serialization
             // !!!!! to deal with flags without commas
             if (value.Contains(" ") && !value.Contains(","))
                 value = value.Replace(" ", ", ");
-            shp.HollowShape = (HollowShape)Enum.Parse(typeof(HollowShape), value);
+            shp.HollowShape = (HollowShape) Enum.Parse(typeof (HollowShape), value);
         }
 
         void ProcessShpSculptTexture(PrimitiveBaseShape shp, XmlTextReader reader)
@@ -2046,7 +2043,7 @@ namespace Universe.Region.Serialization
 
         void ProcessShpSculptType(PrimitiveBaseShape shp, XmlTextReader reader)
         {
-            shp.SculptType = (byte)reader.ReadElementContentAsInt("SculptType", string.Empty);
+            shp.SculptType = (byte) reader.ReadElementContentAsInt("SculptType", string.Empty);
         }
 
         void ProcessShpSculptData(PrimitiveBaseShape shp, XmlTextReader reader)
@@ -2154,6 +2151,7 @@ namespace Universe.Region.Serialization
             string value = reader.ReadElementContentAsString("Media", string.Empty);
             shp.Media = PrimitiveBaseShape.MediaList.FromXml(value);
         }
+
 
         #endregion
 

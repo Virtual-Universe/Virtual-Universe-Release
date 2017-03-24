@@ -46,648 +46,691 @@ using GridRegion = Universe.Framework.Services.GridRegion;
 
 namespace Universe.Modules.Search
 {
-	public class SearchModule : INonSharedRegionModule
-	{
-		#region Declares
+    public class SearchModule : INonSharedRegionModule
+    {
+        #region Declares
 
-		IScene m_Scene;
-		IGroupsModule GroupsModule;
-		IProfileConnector ProfileFrontend;
-		IDirectoryServiceConnector DirectoryService;
-		bool m_SearchEnabled;
+        IScene m_Scene;
+        IGroupsModule GroupsModule;
+        IProfileConnector ProfileFrontend;
+        IDirectoryServiceConnector DirectoryService;
+        bool m_SearchEnabled;
 
-		#endregion
+        #endregion
 
-		#region Client
+        #region Client
 
-		public void NewClient (IClientAPI client)
-		{
-			// Subscribe to messages
-			client.OnDirPlacesQuery += DirPlacesQuery;
-			client.OnDirFindQuery += DirFindQuery;
-			client.OnDirPopularQuery += DirPopularQuery;
-			client.OnDirLandQuery += DirLandQuery;
-			client.OnDirClassifiedQuery += DirClassifiedQuery;
-			// Response after Directory Queries
-			client.OnEventInfoRequest += EventInfoRequest;
-			client.OnMapItemRequest += HandleMapItemRequest;
-			client.OnPlacesQuery += OnPlacesQueryRequest;
-			client.OnAvatarPickerRequest += ProcessAvatarPickerRequest;
-			client.OnEventNotificationAddRequest += client_OnEventNotificationAddRequest;
-			client.OnEventNotificationRemoveRequest += client_OnEventNotificationRemoveRequest;
-		}
+        public void NewClient (IClientAPI client)
+        {
+            // Subscribe to messages
+            client.OnDirPlacesQuery += DirPlacesQuery;
+            client.OnDirFindQuery += DirFindQuery;
+            client.OnDirPopularQuery += DirPopularQuery;
+            client.OnDirLandQuery += DirLandQuery;
+            client.OnDirClassifiedQuery += DirClassifiedQuery;
+            // Response after Directory Queries
+            client.OnEventInfoRequest += EventInfoRequest;
+            client.OnMapItemRequest += HandleMapItemRequest;
+            client.OnPlacesQuery += OnPlacesQueryRequest;
+            client.OnAvatarPickerRequest += ProcessAvatarPickerRequest;
+            client.OnEventNotificationAddRequest += client_OnEventNotificationAddRequest;
+            client.OnEventNotificationRemoveRequest += client_OnEventNotificationRemoveRequest;
+        }
 
-		void OnClosingClient (IClientAPI client)
-		{
-			client.OnDirPlacesQuery -= DirPlacesQuery;
-			client.OnDirFindQuery -= DirFindQuery;
-			client.OnDirPopularQuery -= DirPopularQuery;
-			client.OnDirLandQuery -= DirLandQuery;
-			client.OnDirClassifiedQuery -= DirClassifiedQuery;
-			// Response after Directory Queries
-			client.OnEventInfoRequest -= EventInfoRequest;
-			client.OnMapItemRequest -= HandleMapItemRequest;
-			client.OnPlacesQuery -= OnPlacesQueryRequest;
-			client.OnAvatarPickerRequest -= ProcessAvatarPickerRequest;
-			client.OnEventNotificationAddRequest -= client_OnEventNotificationAddRequest;
-			client.OnEventNotificationRemoveRequest -= client_OnEventNotificationRemoveRequest;
-		}
+        void OnClosingClient (IClientAPI client)
+        {
+            client.OnDirPlacesQuery -= DirPlacesQuery;
+            client.OnDirFindQuery -= DirFindQuery;
+            client.OnDirPopularQuery -= DirPopularQuery;
+            client.OnDirLandQuery -= DirLandQuery;
+            client.OnDirClassifiedQuery -= DirClassifiedQuery;
+            // Response after Directory Queries
+            client.OnEventInfoRequest -= EventInfoRequest;
+            client.OnMapItemRequest -= HandleMapItemRequest;
+            client.OnPlacesQuery -= OnPlacesQueryRequest;
+            client.OnAvatarPickerRequest -= ProcessAvatarPickerRequest;
+            client.OnEventNotificationAddRequest -= client_OnEventNotificationAddRequest;
+            client.OnEventNotificationRemoveRequest -= client_OnEventNotificationRemoveRequest;
+        }
 
-		#endregion
+        #endregion
 
-		#region Search Module
+        #region Search Module
 
-		#region Delegates
+        #region Delegates
 
-		public delegate void SendPacket<T> (T[] data);
+        public delegate void SendPacket<T> (T[] data);
 
-		#endregion
+        #endregion
 
-		/// <summary>
-		///     Parcel request
-		/// </summary>
-		/// <param name="remoteClient"></param>
-		/// <param name="queryID"></param>
-		/// <param name="queryText">The thing to search for</param>
-		/// <param name="queryFlags"></param>
-		/// <param name="category"></param>
-		/// <param name="simName"></param>
-		/// <param name="queryStart"></param>
-		protected void DirPlacesQuery (IClientAPI remoteClient, UUID queryID,
-		                                     string queryText, int queryFlags, int category, string simName,
-		                                     int queryStart)
-		{
-			List<DirPlacesReplyData> ReturnValues =
-				DirectoryService.FindLand (queryText.Trim (), category.ToString (), queryStart,
-					(uint)queryFlags, remoteClient.ScopeID);
+        /// <summary>
+        ///     Parcel request
+        /// </summary>
+        /// <param name="remoteClient"></param>
+        /// <param name="queryID"></param>
+        /// <param name="queryText">The thing to search for</param>
+        /// <param name="queryFlags"></param>
+        /// <param name="category"></param>
+        /// <param name="simName"></param>
+        /// <param name="queryStart"></param>
+        protected void DirPlacesQuery (IClientAPI remoteClient, UUID queryID,
+                                      string queryText, int queryFlags, int category, string simName,
+                                      int queryStart)
+        {
+            List<DirPlacesReplyData> ReturnValues =
+                DirectoryService.FindLand (queryText.Trim (), category.ToString (), queryStart,
+                    (uint)queryFlags, remoteClient.ScopeID);
 
-			SplitPackets (ReturnValues,
-				data => remoteClient.SendDirPlacesReply (queryID, data));
-		}
+            SplitPackets (ReturnValues,
+                data => remoteClient.SendDirPlacesReply (queryID, data));
+        }
 
-		/// <summary>
-		///     Popular places based on traffic
-		/// </summary>
-		/// <param name="remoteClient"></param>
-		/// <param name="queryID"></param>
-		/// <param name="queryFlags"></param>
-		public void DirPopularQuery (IClientAPI remoteClient, UUID queryID, uint queryFlags)
-		{
-			List<DirPopularReplyData> ReturnValues =
-				DirectoryService.FindPopularPlaces (queryFlags, remoteClient.ScopeID);
+        /// <summary>
+        ///     Popular places based on traffic
+        /// </summary>
+        /// <param name="remoteClient"></param>
+        /// <param name="queryID"></param>
+        /// <param name="queryFlags"></param>
+        public void DirPopularQuery (IClientAPI remoteClient, UUID queryID, uint queryFlags)
+        {
+            List<DirPopularReplyData> ReturnValues =
+                DirectoryService.FindPopularPlaces (queryFlags, remoteClient.ScopeID);
 
-			remoteClient.SendDirPopularReply (queryID, ReturnValues.ToArray ());
-		}
+            remoteClient.SendDirPopularReply (queryID, ReturnValues.ToArray ());
+        }
 
-		/// <summary>
-		///     Land for sale request
-		/// </summary>
-		/// <param name="remoteClient"></param>
-		/// <param name="queryID"></param>
-		/// <param name="queryFlags"></param>
-		/// <param name="searchType"></param>
-		/// <param name="price"></param>
-		/// <param name="area"></param>
-		/// <param name="queryStart"></param>
-		public void DirLandQuery (IClientAPI remoteClient, UUID queryID, uint queryFlags, uint searchType, uint price,
-		                                uint area, int queryStart)
-		{
-			List<DirLandReplyData> ReturnValues =
-				new List<DirLandReplyData> (DirectoryService.FindLandForSale (searchType.ToString (), price, area,
-					queryStart, queryFlags, remoteClient.ScopeID));
+        /// <summary>
+        ///     Land for sale request
+        /// </summary>
+        /// <param name="remoteClient"></param>
+        /// <param name="queryID"></param>
+        /// <param name="queryFlags"></param>
+        /// <param name="searchType"></param>
+        /// <param name="price"></param>
+        /// <param name="area"></param>
+        /// <param name="queryStart"></param>
+        public void DirLandQuery (IClientAPI remoteClient, UUID queryID, uint queryFlags, uint searchType, uint price,
+                                 uint area, int queryStart)
+        {
+            List<DirLandReplyData> ReturnValues =
+                new List<DirLandReplyData> (DirectoryService.FindLandForSale (searchType.ToString (), price, area,
+                    queryStart, queryFlags, remoteClient.ScopeID));
 
-			SplitPackets (ReturnValues,
-				data => remoteClient.SendDirLandReply (queryID, data));
-		}
+            SplitPackets (ReturnValues,
+                data => remoteClient.SendDirLandReply (queryID, data));
+        }
 
-		/// <summary>
-		///     Finds either people or events
-		/// </summary>
-		/// <param name="remoteClient"></param>
-		/// <param name="queryID">Just a UUID to send back to the client</param>
-		/// <param name="queryText">The term to search for</param>
-		/// <param name="queryFlags">Flags like maturity, etc</param>
-		/// <param name="queryStart">Where in the search should we start? 0, 10, 20, etc</param>
-		public void DirFindQuery (IClientAPI remoteClient, UUID queryID,
-		                                string queryText, uint queryFlags, int queryStart)
-		{
-			if ((queryFlags & 1) != 0) { //People query
-				DirPeopleQuery (remoteClient, queryID, queryText, queryFlags, queryStart);
-			} else if ((queryFlags & 32) != 0) { //Events query
-				DirEventsQuery (remoteClient, queryID, queryText, queryFlags, queryStart);
-			}
-		}
+        /// <summary>
+        ///     Finds either people or events
+        /// </summary>
+        /// <param name="remoteClient"></param>
+        /// <param name="queryID">Just a UUID to send back to the client</param>
+        /// <param name="queryText">The term to search for</param>
+        /// <param name="queryFlags">Flags like maturity, etc</param>
+        /// <param name="queryStart">Where in the search should we start? 0, 10, 20, etc</param>
+        public void DirFindQuery (IClientAPI remoteClient, UUID queryID,
+                                 string queryText, uint queryFlags, int queryStart)
+        {
+            if ((queryFlags & 1) != 0) //People query
+            {
+                DirPeopleQuery (remoteClient, queryID, queryText, queryFlags, queryStart);
+            } else if ((queryFlags & 32) != 0) //Events query
+            {
+                DirEventsQuery (remoteClient, queryID, queryText, queryFlags, queryStart);
+            }
+        }
 
-		//TODO: Flagged to optimize
-		public void DirPeopleQuery (IClientAPI remoteClient, UUID queryID,
-		                                  string queryText, uint queryFlags, int queryStart)
-		{
-			//Find the user accounts
-			List<UserAccount> accounts = m_Scene.UserAccountService.GetUserAccounts (remoteClient.AllScopeIDs,
-				                                      queryText.Trim ());
-			List<DirPeopleReplyData> ReturnValues = new List<DirPeopleReplyData> ();
+        //TODO: Flagged to optimize
+        public void DirPeopleQuery (IClientAPI remoteClient, UUID queryID,
+                                   string queryText, uint queryFlags, int queryStart)
+        {
+            //Find the user accounts
+            List<UserAccount> accounts = m_Scene.UserAccountService.GetUserAccounts (remoteClient.AllScopeIDs,
+                                             queryText.Trim ());
+            List<DirPeopleReplyData> ReturnValues = new List<DirPeopleReplyData> ();
 
-			foreach (UserAccount item in accounts) {
-				//This is really bad, we should not be searching for all of these people again in the Profile service
-				IUserProfileInfo UserProfile = ProfileFrontend.GetUserProfile (item.PrincipalID);
-				if (UserProfile == null) {
-					DirPeopleReplyData person = new DirPeopleReplyData {
-						agentID = item.PrincipalID,
-						firstName = item.FirstName,
-						lastName = item.LastName
-					};
-					if (GroupsModule == null)
-						person.group = "";
-					else {
-						person.group = "";
-						GroupMembershipData[] memberships = GroupsModule.GetMembershipData (item.PrincipalID);
-						foreach (GroupMembershipData membership in memberships.Where(membership => membership.Active)) {
-							person.group = membership.GroupName;
-						}
-					}
-					//Then we have to pull the GUI to see if the user is online or not
-					UserInfo Pinfo =
-						m_Scene.RequestModuleInterface<IAgentInfoService> ().GetUserInfo (item.PrincipalID.ToString ());
-					if (Pinfo != null && Pinfo.IsOnline) //If it is null, they are offline
+            foreach (UserAccount item in accounts)
+            {
+                //This is really bad, we should not be searching for all of these people again in the Profile service
+                IUserProfileInfo UserProfile = ProfileFrontend.GetUserProfile (item.PrincipalID);
+                if (UserProfile == null)
+                {
+                    DirPeopleReplyData person = new DirPeopleReplyData {
+                        agentID = item.PrincipalID,
+                        firstName = item.FirstName,
+                        lastName = item.LastName
+                    };
+                    if (GroupsModule == null)
+                        person.group = "";
+                    else
+                    {
+                        person.group = "";
+                        GroupMembershipData[] memberships = GroupsModule.GetMembershipData (item.PrincipalID);
+                        foreach (GroupMembershipData membership in memberships.Where(membership => membership.Active))
+                        {
+                            person.group = membership.GroupName;
+                        }
+                    }
+                    //Then we have to pull the GUI to see if the user is online or not
+                    UserInfo Pinfo =
+                        m_Scene.RequestModuleInterface<IAgentInfoService> ().GetUserInfo (item.PrincipalID.ToString ());
+                    if (Pinfo != null && Pinfo.IsOnline) //If it is null, they are offline
                         person.online = true;
-					person.reputation = 0;
-					ReturnValues.Add (person);
-				} else if (UserProfile.AllowPublish) { //Check whether they want to be in search or not
-					DirPeopleReplyData person = new DirPeopleReplyData {
-						agentID = item.PrincipalID,
-						firstName = item.FirstName,
-						lastName = item.LastName
-					};
-					if (GroupsModule == null)
-						person.group = "";
-					else {
-						person.group = "";
-						//Check what group they have set
-						GroupMembershipData[] memberships = GroupsModule.GetMembershipData (item.PrincipalID);
-						foreach (GroupMembershipData membership in memberships.Where(membership => membership.Active)) {
-							person.group = membership.GroupName;
-						}
-					}
-					//Then we have to pull the GUI to see if the user is online or not
-					UserInfo Pinfo =
-						m_Scene.RequestModuleInterface<IAgentInfoService> ().GetUserInfo (item.PrincipalID.ToString ());
-					if (Pinfo != null && Pinfo.IsOnline)
-						person.online = true;
-					person.reputation = 0;
-					ReturnValues.Add (person);
-				}
-			}
+                    person.reputation = 0;
+                    ReturnValues.Add (person);
+                } else if (UserProfile.AllowPublish) //Check whether they want to be in search or not
+                {
+                    DirPeopleReplyData person = new DirPeopleReplyData {
+                        agentID = item.PrincipalID,
+                        firstName = item.FirstName,
+                        lastName = item.LastName
+                    };
+                    if (GroupsModule == null)
+                        person.group = "";
+                    else
+                    {
+                        person.group = "";
+                        //Check what group they have set
+                        GroupMembershipData[] memberships = GroupsModule.GetMembershipData (item.PrincipalID);
+                        foreach (GroupMembershipData membership in memberships.Where(membership => membership.Active))
+                        {
+                            person.group = membership.GroupName;
+                        }
+                    }
+                    //Then we have to pull the GUI to see if the user is online or not
+                    UserInfo Pinfo =
+                        m_Scene.RequestModuleInterface<IAgentInfoService> ().GetUserInfo (item.PrincipalID.ToString ());
+                    if (Pinfo != null && Pinfo.IsOnline)
+                        person.online = true;
+                    person.reputation = 0;
+                    ReturnValues.Add (person);
+                }
+            }
 
-			SplitPackets (ReturnValues,
-				data => remoteClient.SendDirPeopleReply (queryID, data));
-		}
+            SplitPackets (ReturnValues,
+                data => remoteClient.SendDirPeopleReply (queryID, data));
+        }
 
-		/// <summary>
-		///     Find Events
-		/// </summary>
-		/// <param name="remoteClient"></param>
-		/// <param name="queryID"></param>
-		/// <param name="queryText"></param>
-		/// <param name="queryFlags"></param>
-		/// <param name="queryStart"></param>
-		public void DirEventsQuery (IClientAPI remoteClient, UUID queryID, string queryText, uint queryFlags,
-		                                  int queryStart)
-		{
-			List<DirEventsReplyData> ReturnValues =
-				new List<DirEventsReplyData> (DirectoryService.FindEvents (queryText.Trim (), queryFlags, queryStart,
-					remoteClient.ScopeID));
+        /// <summary>
+        ///     Find Events
+        /// </summary>
+        /// <param name="remoteClient"></param>
+        /// <param name="queryID"></param>
+        /// <param name="queryText"></param>
+        /// <param name="queryFlags"></param>
+        /// <param name="queryStart"></param>
+        public void DirEventsQuery (IClientAPI remoteClient, UUID queryID, string queryText, uint queryFlags,
+                                   int queryStart)
+        {
+            List<DirEventsReplyData> ReturnValues =
+                new List<DirEventsReplyData> (DirectoryService.FindEvents (queryText.Trim (), queryFlags, queryStart,
+                    remoteClient.ScopeID));
 
-			SplitPackets (ReturnValues, data => remoteClient.SendDirEventsReply (queryID, data));
-		}
+            SplitPackets (ReturnValues, data => remoteClient.SendDirEventsReply (queryID, data));
+        }
 
-		/// <summary>
-		///     Find Classifieds
-		/// </summary>
-		/// <param name="remoteClient"></param>
-		/// <param name="queryID"></param>
-		/// <param name="queryText"></param>
-		/// <param name="queryFlags"></param>
-		/// <param name="category"></param>
-		/// <param name="queryStart"></param>
-		public void DirClassifiedQuery (IClientAPI remoteClient, UUID queryID, string queryText, uint queryFlags,
-		                                      uint category, int queryStart)
-		{
-			List<DirClassifiedReplyData> ReturnValues =
-				new List<DirClassifiedReplyData> (DirectoryService.FindClassifieds (queryText.Trim (), category.ToString (),
-					queryFlags, queryStart,
-					remoteClient.ScopeID));
+        /// <summary>
+        ///     Find Classifieds
+        /// </summary>
+        /// <param name="remoteClient"></param>
+        /// <param name="queryID"></param>
+        /// <param name="queryText"></param>
+        /// <param name="queryFlags"></param>
+        /// <param name="category"></param>
+        /// <param name="queryStart"></param>
+        public void DirClassifiedQuery (IClientAPI remoteClient, UUID queryID, string queryText, uint queryFlags,
+                                       uint category, int queryStart)
+        {
+            List<DirClassifiedReplyData> ReturnValues =
+                new List<DirClassifiedReplyData> (DirectoryService.FindClassifieds (queryText.Trim (), category.ToString (),
+                    queryFlags, queryStart,
+                    remoteClient.ScopeID));
 
-			SplitPackets (ReturnValues,
-				data => remoteClient.SendDirClassifiedReply (queryID, data));
-		}
+            SplitPackets (ReturnValues,
+                data => remoteClient.SendDirClassifiedReply (queryID, data));
+        }
 
-		public void SplitPackets<T> (List<T> packets, SendPacket<T> send)
-		{
-			if (packets.Count == 0) {
-				send (new T[0]);
-				return;
-			}
+        public void SplitPackets<T> (List<T> packets, SendPacket<T> send)
+        {
+            if (packets.Count == 0)
+            {
+                send (new T[0]);
+                return;
+            }
 
-			//Split into sets of 10 packets
-			int count = Math.Min (10, packets.Count);
-			int i = 0;
-			while (i < packets.Count) {
-				// check for remaining range
-				if ((i + count) > packets.Count)
-					count = packets.Count - i;
+            //Split into sets of 10 packets
+            int count = Math.Min (10, packets.Count);
+            int i = 0;
+            while (i < packets.Count)
+            {
+                // check for remaining range
+                if ((i + count) > packets.Count)
+                    count = packets.Count - i;
                 
-				T[] data = packets.GetRange (i, count).ToArray ();
-				i += count;
-				if (data.Length != 0)
-					send (data);
-			}
-		}
+                T[] data = packets.GetRange (i, count).ToArray ();
+                i += count;
+                if (data.Length != 0)
+                    send (data);
+            }
+        }
 
-		/// <summary>
-		///     Tell the client about Event X
-		/// </summary>
-		/// <param name="remoteClient"></param>
-		/// <param name="queryEventID">ID of the event</param>
-		public void EventInfoRequest (IClientAPI remoteClient, uint queryEventID)
-		{
-			//Find the event
-			EventData data = DirectoryService.GetEventInfo (queryEventID);
-			if (data == null)
-				return;
-			//Send the event
-			remoteClient.SendEventInfoReply (data);
-		}
+        /// <summary>
+        ///     Tell the client about Event X
+        /// </summary>
+        /// <param name="remoteClient"></param>
+        /// <param name="queryEventID">ID of the event</param>
+        public void EventInfoRequest (IClientAPI remoteClient, uint queryEventID)
+        {
+            //Find the event
+            EventData data = DirectoryService.GetEventInfo (queryEventID);
+            if (data == null)
+                return;
+            //Send the event
+            remoteClient.SendEventInfoReply (data);
+        }
 
-		public virtual void HandleMapItemRequest (IClientAPI remoteClient, uint flags,
-		                                                uint EstateID, bool godlike, uint itemtype, ulong regionhandle)
-		{
-			//All the parts are in for this, except for popular places and those are not in as they are not requested anymore.
+        public virtual void HandleMapItemRequest (IClientAPI remoteClient, uint flags,
+                                                 uint EstateID, bool godlike, uint itemtype, ulong regionhandle)
+        {
+            //All the parts are in for this, except for popular places and those are not in as they are not requested anymore.
 
-			List<mapItemReply> mapitems = new List<mapItemReply> ();
-			mapItemReply mapitem = new mapItemReply ();
-			uint xstart = 0;
-			uint ystart = 0;
-			Utils.LongToUInts (remoteClient.Scene.RegionInfo.RegionHandle, out xstart, out ystart);
-			GridRegion GR;
+            List<mapItemReply> mapitems = new List<mapItemReply> ();
+            mapItemReply mapitem = new mapItemReply ();
+            uint xstart = 0;
+            uint ystart = 0;
+            Utils.LongToUInts (remoteClient.Scene.RegionInfo.RegionHandle, out xstart, out ystart);
+            GridRegion GR;
 
-			GR = regionhandle == 0
+            GR = regionhandle == 0
                      ? new GridRegion (remoteClient.Scene.RegionInfo)
                      : m_Scene.GridService.GetRegionByPosition (remoteClient.AllScopeIDs, (int)xstart, (int)ystart);
-			if (GR == null) {
-				//No region???
-				return;
-			}
+            if (GR == null)
+            {
+                //No region???
+                return;
+            }
 
-			#region Telehub
+            #region Telehub
 
-			if (itemtype == (uint)GridItemType.Telehub) {
-				IRegionConnector GF = Framework.Utilities.DataManager.RequestPlugin<IRegionConnector> ();
-				if (GF == null)
-					return;
+            if (itemtype == (uint)GridItemType.Telehub)
+            {
+                IRegionConnector GF = Framework.Utilities.DataManager.RequestPlugin<IRegionConnector> ();
+                if (GF == null)
+                    return;
 
-				int tc = Environment.TickCount;
-				//Find the telehub
-				Telehub telehub = GF.FindTelehub (GR.RegionID, GR.RegionHandle);
-				if (telehub != null) {
-					mapitem = new mapItemReply {
-						x = (uint)(GR.RegionLocX + telehub.TelehubLocX),
-						y = (uint)(GR.RegionLocY + telehub.TelehubLocY),
-						id = GR.RegionID,
-						name = Util.Md5Hash (GR.RegionName + tc.ToString ()),
-						Extra = 1,
-						Extra2 = 0
-					};
-					//The position is in GLOBAL coordinates (in meters)
-					//This is how the name is sent, go figure
-					//Not sure, but this is what gets sent
+                int tc = Environment.TickCount;
+                //Find the telehub
+                Telehub telehub = GF.FindTelehub (GR.RegionID, GR.RegionHandle);
+                if (telehub != null)
+                {
+                    mapitem = new mapItemReply {
+                        x = (uint)(GR.RegionLocX + telehub.TelehubLocX),
+                        y = (uint)(GR.RegionLocY + telehub.TelehubLocY),
+                        id = GR.RegionID,
+                        name = Util.Md5Hash (GR.RegionName + tc.ToString ()),
+                        Extra = 1,
+                        Extra2 = 0
+                    };
+                    //The position is in GLOBAL coordinates (in meters)
+                    //This is how the name is sent, go figure
+                    //Not sure, but this is what gets sent
 
-					mapitems.Add (mapitem);
-					remoteClient.SendMapItemReply (mapitems.ToArray (), itemtype, flags);
-					mapitems.Clear ();
-				}
-			}
+                    mapitems.Add (mapitem);
+                    remoteClient.SendMapItemReply (mapitems.ToArray (), itemtype, flags);
+                    mapitems.Clear ();
+                }
+            }
 
-			#endregion
+            #endregion
 
-			#region Land for sale
+            #region Land for sale
 
-			//PG land that is for sale
-			if (itemtype == (uint)GridItemType.LandForSale) {
-				if (DirectoryService == null)
-					return;
-				//Find all the land, use "0" for the flags so we get all land for sale, no price or area checking
-				List<DirLandReplyData> Landdata = DirectoryService.FindLandForSaleInRegion (
-					                                              "0", uint.MaxValue, 0, 0, 0, GR.RegionID);
+            //PG land that is for sale
+            if (itemtype == (uint)GridItemType.LandForSale)
+            {
+                if (DirectoryService == null)
+                    return;
+                //Find all the land, use "0" for the flags so we get all land for sale, no price or area checking
+                List<DirLandReplyData> Landdata = DirectoryService.FindLandForSaleInRegion (
+                    "0", uint.MaxValue, 0, 0, 0, GR.RegionID);
 
-				int locX = 0;
-				int locY = 0;
-				foreach (DirLandReplyData landDir in Landdata) {
-					if (landDir == null)
-						continue;
-					LandData landdata = DirectoryService.GetParcelInfo (landDir.parcelID);
-					if (landdata == null || landdata.Maturity != 0)
-						continue; //Not a PG land 
-					if (m_Scene.RegionInfo.RegionID == landdata.RegionID) {
-						//Global coordinates, so add the meters
-						locX = m_Scene.RegionInfo.RegionLocX;
-						locY = m_Scene.RegionInfo.RegionLocY;
-					} else {
-						//Ask the grid service for the coordinates if the region is not local
-						GridRegion r = m_Scene.GridService.GetRegionByUUID (remoteClient.AllScopeIDs, landdata.RegionID);
-						if (r != null) {
-							locX = r.RegionLocX;
-							locY = r.RegionLocY;
-						}
-					}
-					if (locY == 0 && locX == 0) //Couldn't find the region, don't send
+                int locX = 0;
+                int locY = 0;
+                foreach (DirLandReplyData landDir in Landdata)
+                {
+                    if (landDir == null)
+                        continue;
+                    LandData landdata = DirectoryService.GetParcelInfo (landDir.parcelID);
+                    if (landdata == null || landdata.Maturity != 0)
+                        continue; //Not a PG land 
+                    if (m_Scene.RegionInfo.RegionID == landdata.RegionID)
+                    {
+                        //Global coordinates, so add the meters
+                        locX = m_Scene.RegionInfo.RegionLocX;
+                        locY = m_Scene.RegionInfo.RegionLocY;
+                    } else
+                    {
+                        //Ask the grid service for the coordinates if the region is not local
+                        GridRegion r = m_Scene.GridService.GetRegionByUUID (remoteClient.AllScopeIDs, landdata.RegionID);
+                        if (r != null)
+                        {
+                            locX = r.RegionLocX;
+                            locY = r.RegionLocY;
+                        }
+                    }
+                    if (locY == 0 && locX == 0) //Couldn't find the region, don't send
                         continue;
 
-					mapitem = new mapItemReply {
-						x = (uint)(locX + landdata.UserLocation.X),
-						y = (uint)(locY + landdata.UserLocation.Y),
-						id = landDir.parcelID,
-						name = landDir.name,
-						Extra = landDir.actualArea,
-						Extra2 = landDir.salePrice
-					};
-					//Global coordinates, so make sure its in meters
-					mapitems.Add (mapitem);
-				}
-				//Send all the map items
-				if (mapitems.Count != 0) {
-					remoteClient.SendMapItemReply (mapitems.ToArray (), itemtype, flags);
-					mapitems.Clear ();
-				}
-			}
+                    mapitem = new mapItemReply {
+                        x = (uint)(locX + landdata.UserLocation.X),
+                        y = (uint)(locY + landdata.UserLocation.Y),
+                        id = landDir.parcelID,
+                        name = landDir.name,
+                        Extra = landDir.actualArea,
+                        Extra2 = landDir.salePrice
+                    };
+                    //Global coordinates, so make sure its in meters
+                    mapitems.Add (mapitem);
+                }
+                //Send all the map items
+                if (mapitems.Count != 0)
+                {
+                    remoteClient.SendMapItemReply (mapitems.ToArray (), itemtype, flags);
+                    mapitems.Clear ();
+                }
+            }
 
-			//Adult or mature land that is for sale
-			if (itemtype == (uint)GridItemType.AdultLandForSale) {
-				if (DirectoryService == null)
-					return;
-				//Find all the land, use "0" for the flags so we get all land for sale, no price or area checking
-				List<DirLandReplyData> Landdata = DirectoryService.FindLandForSale (
-					                                              "0", uint.MaxValue, 0, 0, 0, remoteClient.ScopeID);
+            //Adult or mature land that is for sale
+            if (itemtype == (uint)GridItemType.AdultLandForSale)
+            {
+                if (DirectoryService == null)
+                    return;
+                //Find all the land, use "0" for the flags so we get all land for sale, no price or area checking
+                List<DirLandReplyData> Landdata = DirectoryService.FindLandForSale (
+                    "0", uint.MaxValue, 0, 0, 0, remoteClient.ScopeID);
 
-				int locX = 0;
-				int locY = 0;
-				foreach (DirLandReplyData landDir in Landdata) {
-					LandData landdata = DirectoryService.GetParcelInfo (landDir.parcelID);
-					if (landdata == null || landdata.Maturity == 0)
-						continue; //Its PG
+                int locX = 0;
+                int locY = 0;
+                foreach (DirLandReplyData landDir in Landdata)
+                {
+                    LandData landdata = DirectoryService.GetParcelInfo (landDir.parcelID);
+                    if (landdata == null || landdata.Maturity == 0)
+                        continue; //Its PG
 
-					if (m_Scene.RegionInfo.RegionID == landdata.RegionID) {
-						locX = m_Scene.RegionInfo.RegionLocX;
-						locY = m_Scene.RegionInfo.RegionLocY;
-					} else {
-						//Ask the grid service for the coordinates if the region is not local
-						GridRegion r = m_Scene.GridService.GetRegionByUUID (remoteClient.AllScopeIDs, landdata.RegionID);
-						if (r != null) {
-							locX = r.RegionLocX;
-							locY = r.RegionLocY;
-						}
-					}
-					if (locY == 0 && locX == 0) //Couldn't find the region, don't send
+                    if (m_Scene.RegionInfo.RegionID == landdata.RegionID)
+                    {
+                        locX = m_Scene.RegionInfo.RegionLocX;
+                        locY = m_Scene.RegionInfo.RegionLocY;
+                    } else
+                    {
+                        //Ask the grid service for the coordinates if the region is not local
+                        GridRegion r = m_Scene.GridService.GetRegionByUUID (remoteClient.AllScopeIDs, landdata.RegionID);
+                        if (r != null)
+                        {
+                            locX = r.RegionLocX;
+                            locY = r.RegionLocY;
+                        }
+                    }
+                    if (locY == 0 && locX == 0) //Couldn't find the region, don't send
                         continue;
 
-					mapitem = new mapItemReply {
-						x = (uint)(locX + landdata.UserLocation.X),
-						y = (uint)(locY + landdata.UserLocation.Y),
-						id = landDir.parcelID,
-						name = landDir.name,
-						Extra = landDir.actualArea,
-						Extra2 = landDir.salePrice
-					};
-					//Global coordinates, so make sure its in meters
+                    mapitem = new mapItemReply {
+                        x = (uint)(locX + landdata.UserLocation.X),
+                        y = (uint)(locY + landdata.UserLocation.Y),
+                        id = landDir.parcelID,
+                        name = landDir.name,
+                        Extra = landDir.actualArea,
+                        Extra2 = landDir.salePrice
+                    };
+                    //Global coordinates, so make sure its in meters
 
-					mapitems.Add (mapitem);
-				}
-				//Send the results if we have any
-				if (mapitems.Count != 0) {
-					remoteClient.SendMapItemReply (mapitems.ToArray (), itemtype, flags);
-					mapitems.Clear ();
-				}
-			}
+                    mapitems.Add (mapitem);
+                }
+                //Send the results if we have any
+                if (mapitems.Count != 0)
+                {
+                    remoteClient.SendMapItemReply (mapitems.ToArray (), itemtype, flags);
+                    mapitems.Clear ();
+                }
+            }
 
-			#endregion
+            #endregion
 
-			#region Events
+            #region Events
 
-			if (itemtype == (uint)GridItemType.PgEvent ||
-			             itemtype == (uint)GridItemType.MatureEvent ||
-			             itemtype == (uint)GridItemType.AdultEvent) {
-				if (DirectoryService == null)
-					return;
+            if (itemtype == (uint)GridItemType.PgEvent ||
+                itemtype == (uint)GridItemType.MatureEvent ||
+                itemtype == (uint)GridItemType.AdultEvent)
+            {
+                if (DirectoryService == null)
+                    return;
 
-				int maturity =
-					itemtype == (uint)GridItemType.PgEvent
+                int maturity =
+                    itemtype == (uint)GridItemType.PgEvent
                                                   ? Util.ConvertEventMaturityToDBMaturity (DirectoryManager.EventFlags.PG)
                                                   : (itemtype == (uint)GridItemType.MatureEvent)
                                                   ? Util.ConvertEventMaturityToDBMaturity (DirectoryManager.EventFlags.Mature)
                                                   : Util.ConvertEventMaturityToDBMaturity (DirectoryManager.EventFlags.Adult);
 
-				//Gets all the events occurring in the given region by maturity level
-				List<DirEventsReplyData> Eventdata = DirectoryService.FindAllEventsInRegion (GR.RegionName, maturity);
+                //Gets all the events occurring in the given region by maturity level
+                List<DirEventsReplyData> Eventdata = DirectoryService.FindAllEventsInRegion (GR.RegionName, maturity);
 
-				foreach (DirEventsReplyData eventData in Eventdata) {
-					//Get more info on the event
-					EventData eventdata = DirectoryService.GetEventInfo (eventData.eventID);
-					if (eventdata == null)
-						continue; //Can't do anything about it
-					Vector3 globalPos = eventdata.globalPos;
-					mapitem = new mapItemReply {
-						x = (uint)globalPos.X,
-						y = (uint)globalPos.Y,
-						id = UUID.Random (),
-						name = eventData.name,
-						Extra = (int)eventdata.dateUTC,
-						Extra2 = (int)eventdata.eventID
-					};
+                foreach (DirEventsReplyData eventData in Eventdata)
+                {
+                    //Get more info on the event
+                    EventData eventdata = DirectoryService.GetEventInfo (eventData.eventID);
+                    if (eventdata == null)
+                        continue; //Can't do anything about it
+                    Vector3 globalPos = eventdata.globalPos;
+                    mapitem = new mapItemReply {
+                        x = (uint)globalPos.X,
+                        y = (uint)globalPos.Y,
+                        id = UUID.Random (),
+                        name = eventData.name,
+                        Extra = (int)eventdata.dateUTC,
+                        Extra2 = (int)eventdata.eventID
+                    };
 
-					//Use global position plus half the region so that it doesn't always appear in the bottom corner
+                    //Use global position plus half the region so that it doesn't always appear in the bottom corner
 
-					mapitems.Add (mapitem);
-				}
-				//Send if we have any
-				if (mapitems.Count != 0) {
-					remoteClient.SendMapItemReply (mapitems.ToArray (), itemtype, flags);
-					mapitems.Clear ();
-				}
-			}
+                    mapitems.Add (mapitem);
+                }
+                //Send if we have any
+                if (mapitems.Count != 0)
+                {
+                    remoteClient.SendMapItemReply (mapitems.ToArray (), itemtype, flags);
+                    mapitems.Clear ();
+                }
+            }
 
-			#endregion
+            #endregion
 
-			#region Classified
+            #region Classified
 
-			if (itemtype == (uint)GridItemType.Classified) {
-				if (DirectoryService == null)
-					return;
-				//Get all the classifieds in this region
-				List<Classified> Classifieds = DirectoryService.GetClassifiedsInRegion (GR.RegionName);
-				foreach (Classified classified in Classifieds) {
-					//Get the region so we have its position
-					GridRegion region = m_Scene.GridService.GetRegionByName (remoteClient.AllScopeIDs, classified.SimName);
-					if (region != null) {
-						mapitem = new mapItemReply {
-							x = (uint)(region.RegionLocX + classified.GlobalPos.X + (remoteClient.Scene.RegionInfo.RegionSizeX / 2)),
-							y = (uint)(region.RegionLocY + classified.GlobalPos.Y + (remoteClient.Scene.RegionInfo.RegionSizeY / 2)),
-							id = classified.CreatorUUID,
-							name = classified.Name,
-							Extra = 0,
-							Extra2 = 0
-						};
+            if (itemtype == (uint)GridItemType.Classified)
+            {
+                if (DirectoryService == null)
+                    return;
+                //Get all the classifieds in this region
+                List<Classified> Classifieds = DirectoryService.GetClassifiedsInRegion (GR.RegionName);
+                foreach (Classified classified in Classifieds)
+                {
+                    //Get the region so we have its position
+                    GridRegion region = m_Scene.GridService.GetRegionByName (remoteClient.AllScopeIDs, classified.SimName);
+                    if (region != null) {
+                        mapitem = new mapItemReply {
+                            x = (uint)(region.RegionLocX + classified.GlobalPos.X + (remoteClient.Scene.RegionInfo.RegionSizeX / 2)),
+                            y = (uint)(region.RegionLocY + classified.GlobalPos.Y + (remoteClient.Scene.RegionInfo.RegionSizeY / 2)),
+                            id = classified.CreatorUUID,
+                            name = classified.Name,
+                            Extra = 0,
+                            Extra2 = 0
+                        };
 
-						//Use global position plus half the sim so that all classifieds are not in the bottom corner
-						mapitems.Add (mapitem);
-					}
-				}
-				//Send the events, if we have any
-				if (mapitems.Count != 0) {
-					remoteClient.SendMapItemReply (mapitems.ToArray (), itemtype, flags);
-					mapitems.Clear ();
-				}
-			}
+                        //Use global position plus half the sim so that all classifieds are not in the bottom corner
+                        mapitems.Add (mapitem);
+                    }
+                }
+                //Send the events, if we have any
+                if (mapitems.Count != 0)
+                {
+                    remoteClient.SendMapItemReply (mapitems.ToArray (), itemtype, flags);
+                    mapitems.Clear ();
+                }
+            }
 
-			#endregion
-		}
+            #endregion
+        }
 
-		public void OnPlacesQueryRequest (UUID QueryID, UUID TransactionID, string QueryText, uint QueryFlags,
-		                                        byte Category, string SimName, IClientAPI client)
-		{
-			if (QueryFlags == 64) { //Agent Owned
-				//Find all the user owned land
-				List<ExtendedLandData> parcels = DirectoryService.GetParcelByOwner (client.AgentId);
+        public void OnPlacesQueryRequest (UUID QueryID, UUID TransactionID, string QueryText, uint QueryFlags,
+                                         byte Category, string SimName, IClientAPI client)
+        {
+            if (QueryFlags == 64) //Agent Owned
+            {
+                //Find all the user owned land
+                List<ExtendedLandData> parcels = DirectoryService.GetParcelByOwner (client.AgentId);
             	
-				//Get all the parcels
-				client.SendPlacesQuery (parcels.ToArray (), QueryID, TransactionID);
-			} else if (QueryFlags == 256) { //Group Owned
-				//Find all the group owned land
-				List<ExtendedLandData> parcels = DirectoryService.GetParcelByOwner (QueryID);
+                //Get all the parcels
+                client.SendPlacesQuery (parcels.ToArray (), QueryID, TransactionID);
+            }
+            else if (QueryFlags == 256) //Group Owned
+            {
+                //Find all the group owned land
+                List<ExtendedLandData> parcels = DirectoryService.GetParcelByOwner (QueryID);
                 
-				// Send all group owned parcels
-				client.SendPlacesQuery (parcels.ToArray (), QueryID, TransactionID);
-			}
-		}
+                // Send all group owned parcels
+                client.SendPlacesQuery (parcels.ToArray (), QueryID, TransactionID);
+            }
+        }
 
-		public void ProcessAvatarPickerRequest (IClientAPI client, UUID avatarID, UUID RequestID, string query)
-		{
-			IScene scene = client.Scene;
-			List<UserAccount> accounts = scene.UserAccountService.GetUserAccounts (scene.RegionInfo.AllScopeIDs, query);
+        public void ProcessAvatarPickerRequest (IClientAPI client, UUID avatarID, UUID RequestID, string query)
+        {
+            IScene scene = client.Scene;
+            List<UserAccount> accounts = scene.UserAccountService.GetUserAccounts (scene.RegionInfo.AllScopeIDs, query);
 
-			if (accounts == null)
-				accounts = new List<UserAccount> (0);
+            if (accounts == null)
+                accounts = new List<UserAccount> (0);
 
-			AvatarPickerReplyPacket replyPacket =
-				(AvatarPickerReplyPacket)PacketPool.Instance.GetPacket (PacketType.AvatarPickerReply);
-			// TODO: don't create new blocks if recycling an old packet
+            AvatarPickerReplyPacket replyPacket =
+                (AvatarPickerReplyPacket)PacketPool.Instance.GetPacket (PacketType.AvatarPickerReply);
+            // TODO: don't create new blocks if recycling an old packet
 
-			AvatarPickerReplyPacket.DataBlock[] searchData =
-				new AvatarPickerReplyPacket.DataBlock[accounts.Count];
-			AvatarPickerReplyPacket.AgentDataBlock agentData = new AvatarPickerReplyPacket.AgentDataBlock
+            AvatarPickerReplyPacket.DataBlock[] searchData =
+                new AvatarPickerReplyPacket.DataBlock[accounts.Count];
+            AvatarPickerReplyPacket.AgentDataBlock agentData = new AvatarPickerReplyPacket.AgentDataBlock
                                                                    { AgentID = avatarID, QueryID = RequestID };
 
-			replyPacket.AgentData = agentData;
+            replyPacket.AgentData = agentData;
 
-			int i = 0;
-			foreach (UserAccount item in accounts) {
-				UUID translatedIDtem = item.PrincipalID;
-				searchData [i] = new AvatarPickerReplyPacket.DataBlock {
-					AvatarID = translatedIDtem,
-					FirstName = Utils.StringToBytes (item.FirstName),
-					LastName = Utils.StringToBytes (item.LastName)
-				};
-				i++;
-			}
-			if (accounts.Count == 0) {
-				searchData = new AvatarPickerReplyPacket.DataBlock[0];
-			}
-			replyPacket.Data = searchData;
+            int i = 0;
+            foreach (UserAccount item in accounts)
+            {
+                UUID translatedIDtem = item.PrincipalID;
+                searchData [i] = new AvatarPickerReplyPacket.DataBlock {
+                    AvatarID = translatedIDtem,
+                    FirstName = Utils.StringToBytes (item.FirstName),
+                    LastName = Utils.StringToBytes (item.LastName)
+                };
+                i++;
+            }
+            if (accounts.Count == 0)
+            {
+                searchData = new AvatarPickerReplyPacket.DataBlock[0];
+            }
+            replyPacket.Data = searchData;
 
-			AvatarPickerReplyAgentDataArgs agent_data = new AvatarPickerReplyAgentDataArgs {
-				AgentID = replyPacket.AgentData.AgentID,
-				QueryID = replyPacket.AgentData.QueryID
-			};
+            AvatarPickerReplyAgentDataArgs agent_data = new AvatarPickerReplyAgentDataArgs {
+                AgentID = replyPacket.AgentData.AgentID,
+                QueryID = replyPacket.AgentData.QueryID
+            };
 
-			List<AvatarPickerReplyDataArgs> data_args = new List<AvatarPickerReplyDataArgs> ();
-			for (i = 0; i < replyPacket.Data.Length; i++) {
-				AvatarPickerReplyDataArgs data_arg = new AvatarPickerReplyDataArgs {
-					AvatarID = replyPacket.Data [i].AvatarID,
-					FirstName = replyPacket.Data [i].FirstName,
-					LastName = replyPacket.Data [i].LastName
-				};
-				data_args.Add (data_arg);
-			}
-			client.SendAvatarPickerReply (agent_data, data_args);
-		}
+            List<AvatarPickerReplyDataArgs> data_args = new List<AvatarPickerReplyDataArgs> ();
+            for (i = 0; i < replyPacket.Data.Length; i++)
+            {
+                AvatarPickerReplyDataArgs data_arg = new AvatarPickerReplyDataArgs {
+                    AvatarID = replyPacket.Data [i].AvatarID,
+                    FirstName = replyPacket.Data [i].FirstName,
+                    LastName = replyPacket.Data [i].LastName
+                };
+                data_args.Add (data_arg);
+            }
+            client.SendAvatarPickerReply (agent_data, data_args);
+        }
 
-		void client_OnEventNotificationRemoveRequest (uint EventID, IClientAPI client)
-		{
-			DirectoryService.RemoveEventNofication (client.AgentId, EventID);
-		}
+        void client_OnEventNotificationRemoveRequest (uint EventID, IClientAPI client)
+        {
+            DirectoryService.RemoveEventNofication (client.AgentId, EventID);
+        }
 
-		void client_OnEventNotificationAddRequest (uint EventID, IClientAPI client)
-		{
-			DirectoryService.AddEventNofication (client.AgentId, EventID);
-		}
+        void client_OnEventNotificationAddRequest (uint EventID, IClientAPI client)
+        {
+            DirectoryService.AddEventNofication (client.AgentId, EventID);
+        }
 
-		#endregion
+        #endregion
 
-		#region INonSharedRegionModule Members
+        #region INonSharedRegionModule Members
 
-		public void Initialize (IConfigSource config)
-		{
-			IConfig searchConfig = config.Configs ["Search"];
-			if (searchConfig != null) { //Check whether we are enabled
-				if (searchConfig.GetString ("SearchModule", Name) == Name)
-					m_SearchEnabled = true;
-				MainConsole.Instance.Info ("[Search] Search Services are enabled");
-			} else {
-				m_SearchEnabled = false;
-				MainConsole.Instance.Info ("[Search] Not configured, disabling");
-			}
-		}
+        public void Initialize (IConfigSource config)
+        {
+            IConfig searchConfig = config.Configs ["Search"];
+            if (searchConfig != null) //Check whether we are enabled
+            {
+                if (searchConfig.GetString ("SearchModule", Name) == Name)
+                m_SearchEnabled = true;
+            	MainConsole.Instance.Info ("[Search] Search Services are enabled");
+            }
+            else
+            {
+            	m_SearchEnabled = false;
+            	MainConsole.Instance.Info ("[Search] Not configured, disabling");
+            }
+        }
 
-		public void AddRegion (IScene scene)
-		{
-			if (!m_SearchEnabled)
-				return;
+        public void AddRegion (IScene scene)
+        {
+            if (!m_SearchEnabled)
+                return;
 
-			m_Scene = scene;
-			scene.EventManager.OnNewClient += NewClient;
-			scene.EventManager.OnClosingClient += OnClosingClient;
-		}
+            m_Scene = scene;
+            scene.EventManager.OnNewClient += NewClient;
+            scene.EventManager.OnClosingClient += OnClosingClient;
+        }
 
-		public void RemoveRegion (IScene scene)
-		{
-			if (!m_SearchEnabled)
-				return;
+        public void RemoveRegion (IScene scene)
+        {
+            if (!m_SearchEnabled)
+                return;
 
-			m_Scene = null;
-			scene.EventManager.OnNewClient -= NewClient;
-			scene.EventManager.OnClosingClient -= OnClosingClient;
-		}
+            m_Scene = null;
+            scene.EventManager.OnNewClient -= NewClient;
+            scene.EventManager.OnClosingClient -= OnClosingClient;
+        }
 
-		public void RegionLoaded (IScene scene)
-		{
-			if (!m_SearchEnabled)
-				return;
-			//Pull in the services we need
-			ProfileFrontend = Framework.Utilities.DataManager.RequestPlugin<IProfileConnector> ();
-			DirectoryService = Framework.Utilities.DataManager.RequestPlugin<IDirectoryServiceConnector> ();
-			GroupsModule = scene.RequestModuleInterface<IGroupsModule> ();
-		}
+        public void RegionLoaded (IScene scene)
+        {
+            if (!m_SearchEnabled)
+                return;
+            //Pull in the services we need
+            ProfileFrontend = Framework.Utilities.DataManager.RequestPlugin<IProfileConnector> ();
+            DirectoryService = Framework.Utilities.DataManager.RequestPlugin<IDirectoryServiceConnector> ();
+            GroupsModule = scene.RequestModuleInterface<IGroupsModule> ();
+        }
 
-		public Type ReplaceableInterface {
-			get { return null; }
-		}
+        public Type ReplaceableInterface
+        {
+            get { return null; }
+        }
 
-		public void Close ()
-		{
-		}
+        public void Close ()
+        {
+        }
 
-		public string Name {
-			get { return "SearchModule"; }
-		}
+        public string Name
+        {
+            get { return "SearchModule"; }
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

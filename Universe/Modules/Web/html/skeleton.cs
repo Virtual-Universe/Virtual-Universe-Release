@@ -32,41 +32,49 @@ using Universe.Framework.Servers.HttpServer.Implementation;
 
 namespace Universe.Modules.Web
 {
-	class SkeletonPage : IWebInterfacePage
-	{
-		public string[] FilePath {
-			get {
-				return new[] {
-					"html/skeleton.html"
-				};
-			}
-		}
+    class SkeletonPage : IWebInterfacePage
+    {
+        public string[] FilePath
+        {
+            get
+            {
+                return new[]
+                           {
+                               "html/skeleton.html"
+                           };
+            }
+        }
 
-		public bool RequiresAuthentication {
-			get { return true; }
-		}
+        public bool RequiresAuthentication
+        {
+            get { return true; }
+        }
 
-		public bool RequiresAdminAuthentication {
-			get { return false; }
-		}
+        public bool RequiresAdminAuthentication
+        {
+            get { return false; }
+        }
 
-		public Dictionary<string, object> Fill (WebInterface webInterface, string filename, OSHttpRequest request, 
-		                                             OSHttpResponse httpResponse, Dictionary<string, object> requestParameters, ITranslator translation, out string response)
-		{
-			response = null;
-			var vars = new Dictionary<string, object> ();
+        public Dictionary<string, object> Fill(WebInterface webInterface, string filename, OSHttpRequest request, 
+            OSHttpResponse httpResponse, Dictionary<string, object> requestParameters, ITranslator translation, out string response)
+        {
+            response = null;
+            var vars = new Dictionary<string, object>();
 
-			// Check if we're looking at the standard page or the submitted one
-			if (requestParameters.ContainsKey ("Submit")) {
-			} else {
-			}
-			return vars;
-		}
+            // Check if we're looking at the standard page or the submitted one
+            if (requestParameters.ContainsKey("Submit"))
+            {
+            }
+            else
+            {
+            }
+            return vars;
+        }
 
-		public bool AttemptFindPage (string filename, ref OSHttpResponse httpResponse, out string text)
-		{
-			text = "";
-			return false;
-		}
-	}
+        public bool AttemptFindPage(string filename, ref OSHttpResponse httpResponse, out string text)
+        {
+            text = "";
+            return false;
+        }
+    }
 }

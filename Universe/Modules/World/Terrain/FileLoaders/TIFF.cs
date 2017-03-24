@@ -30,41 +30,40 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-
 using Universe.Framework.Modules;
 
 namespace Universe.Modules.Terrain.FileLoaders
 {
-	class TIFF : GenericSystemDrawing
-	{
-		public override void SaveFile (string filename, ITerrainChannel map)
-		{
-			Bitmap colours = CreateGrayscaleBitmapFromMap (map);
-			try {
-				colours.Save (filename, ImageFormat.Tiff);
-			} catch {
-			}
-			colours.Dispose ();
-		}
+    class TIFF : GenericSystemDrawing
+    {
+		public override void SaveFile(string filename, ITerrainChannel map)
+        {
+            Bitmap colours = CreateGrayscaleBitmapFromMap(map);
+            try {
+                colours.Save (filename, ImageFormat.Tiff);
+            } catch {
+            }
+            colours.Dispose ();
+        }
 
-		/// <summary>
-		///     Exports a stream using a System.Drawing exporter.
-		/// </summary>
-		/// <param name="stream">The target stream</param>
-		/// <param name="map">The terrain channel being saved</param>
-		public override void SaveStream (Stream stream, ITerrainChannel map)
-		{
-			Bitmap colours = CreateGrayscaleBitmapFromMap (map);
-			try {
-				colours.Save (stream, ImageFormat.Tiff);
-			} catch {
-			}
-			colours.Dispose ();
-		}
+        /// <summary>
+        ///     Exports a stream using a System.Drawing exporter.
+        /// </summary>
+        /// <param name="stream">The target stream</param>
+        /// <param name="map">The terrain channel being saved</param>
+        public override void SaveStream(Stream stream, ITerrainChannel map)
+        {
+            Bitmap colours = CreateGrayscaleBitmapFromMap(map);
+            try {
+                colours.Save (stream, ImageFormat.Tiff);
+            } catch {
+            }
+            colours.Dispose ();
+        }
 
-		public override string ToString ()
-		{
-			return "TIFF";
-		}
-	}
+        public override string ToString()
+        {
+            return "TIFF";
+        }
+    }
 }

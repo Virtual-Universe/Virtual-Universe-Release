@@ -33,163 +33,163 @@ using Universe.Framework.SceneInfo.Entities;
 
 namespace Universe.Framework.SceneInfo
 {
-	public interface ISimulationDataStore
-	{
-		/// <summary>
-		///     The name of the plugin
-		/// </summary>
-		string Name { get; }
+    public interface ISimulationDataStore
+    {
+        /// <summary>
+        ///     The name of the plugin
+        /// </summary>
+        string Name { get; }
 
-		/// <summary>
-		///     A new map tile needs generated
-		/// </summary>
-		bool MapTileNeedsGenerated { get; set; }
+        /// <summary>
+        ///     A new map tile needs generated
+        /// </summary>
+        bool MapTileNeedsGenerated { get; set; }
 
-		/// <summary>
-		///     Whether we should save backups currently or not
-		/// </summary>
-		bool SaveBackups { get; set; }
+        /// <summary>
+        ///     Whether we should save backups currently or not
+        /// </summary>
+        bool SaveBackups { get; set; }
 
-		/// <summary>
-		/// Gets or sets the backup filename.
-		/// </summary>
-		/// <value>The backup file.</value>
-		string BackupFile { get; set; }
+        /// <summary>
+        /// Gets or sets the backup filename.
+        /// </summary>
+        /// <value>The backup file.</value>
+        string BackupFile { get; set; }
 
-		/// <summary>
-		///     Initializes the data storage engine
-		/// </summary>
-		void Initialize ();
+        /// <summary>
+        ///     Initializes the data storage engine
+        /// </summary>
+        void Initialize();
 
-		/// <summary>
-		///     Entirely removes the region, this includes everything about the region
-		/// </summary>
-		/// <returns></returns>
-		void RemoveRegion ();
+        /// <summary>
+        ///     Entirely removes the region, this includes everything about the region
+        /// </summary>
+        /// <returns></returns>
+        void RemoveRegion();
 
-		/// <summary>
-		///     Something has changed in the region, just alerting us to the change if we need to do anything
-		/// </summary>
-		void Tainted ();
+        /// <summary>
+        ///     Something has changed in the region, just alerting us to the change if we need to do anything
+        /// </summary>
+        void Tainted();
 
-		/// <summary>
-		///     Load persisted objects from region storage.
-		/// </summary>
-		/// <returns>List of loaded groups</returns>
-		List<ISceneEntity> LoadObjects ();
+        /// <summary>
+        ///     Load persisted objects from region storage.
+        /// </summary>
+        /// <returns>List of loaded groups</returns>
+        List<ISceneEntity> LoadObjects();
 
-		/// <summary>
-		///     Load the latest terrain revision from region storage
-		/// </summary>
-		/// <param name="RevertMap"></param>
-		/// <param name="RegionSizeX"></param>
-		/// <param name="RegionSizeY"></param>
-		/// <returns>Heightfield data</returns>
-		void LoadTerrain (bool RevertMap, int RegionSizeX, int RegionSizeY);
+        /// <summary>
+        ///     Load the latest terrain revision from region storage
+        /// </summary>
+        /// <param name="RevertMap"></param>
+        /// <param name="RegionSizeX"></param>
+        /// <param name="RegionSizeY"></param>
+        /// <returns>Heightfield data</returns>
+        void LoadTerrain(bool RevertMap, int RegionSizeX, int RegionSizeY);
 
-		/// <summary>
-		///     Load the latest water revision from region storage
-		/// </summary>
-		/// <param name="RevertMap"></param>
-		/// <param name="RegionSizeX"></param>
-		/// <param name="RegionSizeY"></param>
-		/// <returns>Heightfield data</returns>
-		void LoadWater (bool RevertMap, int RegionSizeX, int RegionSizeY);
+        /// <summary>
+        ///     Load the latest water revision from region storage
+        /// </summary>
+        /// <param name="RevertMap"></param>
+        /// <param name="RegionSizeX"></param>
+        /// <param name="RegionSizeY"></param>
+        /// <returns>Heightfield data</returns>
+        void LoadWater(bool RevertMap, int RegionSizeX, int RegionSizeY);
 
-		/// <summary>
-		///     Load all parcels from the database
-		/// </summary>
-		/// <returns></returns>
-		List<LandData> LoadLandObjects ();
+        /// <summary>
+        ///     Load all parcels from the database
+        /// </summary>
+        /// <returns></returns>
+        List<LandData> LoadLandObjects();
 
-		/// <summary>
-		///     Shutdown and exit the module
-		/// </summary>
-		void Shutdown ();
+        /// <summary>
+        ///     Shutdown and exit the module
+        /// </summary>
+        void Shutdown();
 
-		/// <summary>
-		///     Clears out all references of the backup stream and dumps local caches
-		/// </summary>
-		void CacheDispose ();
+        /// <summary>
+        ///     Clears out all references of the backup stream and dumps local caches
+        /// </summary>
+        void CacheDispose();
 
-		/// <summary>
-		/// Finds all available regions to load
-		/// </summary>
-		/// <param name="newRegion"></param>
-		/// <returns></returns>
-		List<string> FindRegionInfos (out bool newRegion, ISimulationBase simBase);
+        /// <summary>
+        /// Finds all available regions to load
+        /// </summary>
+        /// <param name="newRegion"></param>
+        /// <returns></returns>
+		List<string> FindRegionInfos(out bool newRegion, ISimulationBase simBase);
 
-		/// <summary>
-		/// Creates a new region
-		/// </summary>
-		/// <returns></returns>
-		RegionInfo CreateNewRegion (ISimulationBase simBase, Dictionary<string, int> currentInfo);
+        /// <summary>
+        /// Creates a new region
+        /// </summary>
+        /// <returns></returns>
+        RegionInfo CreateNewRegion(ISimulationBase simBase, Dictionary<string, int> currentInfo);
 
-		/// <summary>
-		/// Creates a new region with the passed name
-		/// </summary>
-		/// <returns></returns>
-		RegionInfo CreateNewRegion (ISimulationBase simBase, string regionName, Dictionary<string, int> currentInfo);
+        /// <summary>
+        /// Creates a new region with the passed name
+        /// </summary>
+        /// <returns></returns>
+        RegionInfo CreateNewRegion(ISimulationBase simBase, string regionName, Dictionary<string, int> currentInfo);
 
-		/// <summary>
-		/// Creates a new region using the passed regInfo object
-		/// </summary>
-		/// <returns></returns>
-		RegionInfo CreateNewRegion (ISimulationBase simBase, RegionInfo regionInfo, Dictionary<string, int> currentInfo);
+        /// <summary>
+        /// Creates a new region using the passed regInfo object
+        /// </summary>
+        /// <returns></returns>
+        RegionInfo CreateNewRegion(ISimulationBase simBase, RegionInfo regionInfo, Dictionary<string, int> currentInfo);
 
-		/// <summary>
-		///     Load all region info available
-		/// </summary>
-		/// <param name="simBase"></param>
-		/// <param name="newRegion"></param>
-		/// <returns></returns>
-		RegionInfo LoadRegionInfo (string fileName, ISimulationBase simBase);
+        /// <summary>
+        ///     Load all region info available
+        /// </summary>
+        /// <param name="simBase"></param>
+        /// <param name="newRegion"></param>
+        /// <returns></returns>
+        RegionInfo LoadRegionInfo(string fileName, ISimulationBase simBase);
 
-		/// <summary>
-		///     Load the region info for a specified region
-		/// </summary>
-		/// <param name="simBase"></param>
-		/// <param name="newRegion"></param>
-		/// <returns></returns>
-		RegionInfo LoadRegionNameInfo (string regionName, ISimulationBase simBase);
+        /// <summary>
+        ///     Load the region info for a specified region
+        /// </summary>
+        /// <param name="simBase"></param>
+        /// <param name="newRegion"></param>
+        /// <returns></returns>
+        RegionInfo LoadRegionNameInfo(string regionName, ISimulationBase simBase);
 
-		/// <summary>
-		///     Set the region ref
-		/// </summary>
-		/// <param name="scene"></param>
-		void SetRegion (IScene scene);
+        /// <summary>
+        ///     Set the region ref
+        /// </summary>
+        /// <param name="scene"></param>
+        void SetRegion(IScene scene);
 
-		/// <summary>
-		///     Forces the data-store to backup the region
-		/// </summary>
-		void ForceBackup ();
+        /// <summary>
+        ///     Forces the data-store to backup the region
+        /// </summary>
+        void ForceBackup();
 
-		/// <summary>
-		/// Gets the  filename of the last region backup file.
-		/// </summary>
-		/// <returns>The last backup file name.</returns>
-		/// <param name="regionName">Region name.</param>
-		string GetLastBackupFileName (string regionName);
+        /// <summary>
+        /// Gets the  filename of the last region backup file.
+        /// </summary>
+        /// <returns>The last backup file name.</returns>
+        /// <param name="regionName">Region name.</param>
+        string GetLastBackupFileName (string regionName);
 
-		/// <summary>
-		/// Restores the last backup.
-		/// </summary>
-		/// <returns><c>true</c>, if last backup was restored, <c>false</c> otherwise.</returns>
-		/// <param name="regionName">Region name.</param>
-		bool RestoreLastBackup (string regionName);
+        /// <summary>
+        /// Restores the last backup.
+        /// </summary>
+        /// <returns><c>true</c>, if last backup was restored, <c>false</c> otherwise.</returns>
+        /// <param name="regionName">Region name.</param>
+        bool RestoreLastBackup (string regionName);
 
-		/// <summary>
-		/// Restores a backup file to a region.
-		/// </summary>
-		/// <returns><c>true</c>, if backup file was restored, <c>false</c> otherwise.</returns>
-		/// <param name="fileName">File name.</param>
-		/// <param name="regionName">Region name.</param>
-		bool RestoreBackupFile (string fileName, string regionName);
+        /// <summary>
+        /// Restores a backup file to a region.
+        /// </summary>
+        /// <returns><c>true</c>, if backup file was restored, <c>false</c> otherwise.</returns>
+        /// <param name="fileName">File name.</param>
+        /// <param name="regionName">Region name.</param>
+        bool RestoreBackupFile (string fileName, string regionName);
 
-		/// <summary>
-		/// Copies the instance
-		/// </summary>
-		/// <returns></returns>
-		ISimulationDataStore Copy ();
-	}
+        /// <summary>
+        /// Copies the instance
+        /// </summary>
+        /// <returns></returns>
+        ISimulationDataStore Copy();
+    }
 }

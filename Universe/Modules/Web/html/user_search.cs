@@ -35,112 +35,116 @@ using Universe.Framework.Utilities;
 
 namespace Universe.Modules.Web
 {
-	public class UserSearchPage : IWebInterfacePage
-	{
-		public string [] FilePath {
-			get {
-				return new [] {
-					"html/user_search.html"
-				};
-			}
-		}
+    public class UserSearchPage : IWebInterfacePage
+    {
+        public string [] FilePath {
+            get {
+                return new []
+                           {
+                               "html/user_search.html"
+                           };
+            }
+        }
 
-		public bool RequiresAuthentication {
-			get { return true; }
-		}
+        public bool RequiresAuthentication {
+            get { return true; }
+        }
 
-		public bool RequiresAdminAuthentication {
-			get { return false; }
-		}
+        public bool RequiresAdminAuthentication {
+            get { return false; }
+        }
 
-		public Dictionary<string, object> Fill (WebInterface webInterface, string filename, OSHttpRequest httpRequest,
-		                                              OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
-		                                              ITranslator translator, out string response)
-		{
-			response = null;
-			var vars = new Dictionary<string, object> ();
-			var usersList = new List<Dictionary<string, object>> ();
-			var IsAdmin = Authenticator.CheckAdminAuthentication (httpRequest);
+        public Dictionary<string, object> Fill (WebInterface webInterface, string filename, OSHttpRequest httpRequest,
+                                               OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
+                                               ITranslator translator, out string response)
+        {
+            response = null;
+            var vars = new Dictionary<string, object> ();
+            var usersList = new List<Dictionary<string, object>> ();
+            var IsAdmin = Authenticator.CheckAdminAuthentication (httpRequest);
 
-			string noDetails = translator.GetTranslatedString ("NoDetailsText");
+            string noDetails = translator.GetTranslatedString ("NoDetailsText");
 
-			if (requestParameters.ContainsKey ("Submit")) {
-				IUserAccountService accountService = webInterface.Registry.RequestModuleInterface<IUserAccountService> ();
+            if (requestParameters.ContainsKey ("Submit")) {
+                IUserAccountService accountService = webInterface.Registry.RequestModuleInterface<IUserAccountService> ();
 
-				string userName = requestParameters ["username"].ToString ();
-				// allow '*' wildcards
-				var username = userName.Replace ('*', '%');
+                string userName = requestParameters ["username"].ToString ();
+                // allow '*' wildcards
+                var username = userName.Replace ('*', '%');
 
-				// check for admin wildcard search
-				if ((username.Trim ().Length > 0) || IsAdmin) {
-					var users = accountService.GetUserAccounts (null, username, null, null);
-					var searchUsersList = new List<UUID> ();
+                // check for admin wildcard search
+                if ((username.Trim ().Length > 0) || IsAdmin) {
+                    var users = accountService.GetUserAccounts (null, username, null, null);
+                    var searchUsersList = new List<UUID> ();
 
-					if (IsAdmin) {        // display all users
-						foreach (var user in users) {
-							searchUsersList.Add (user.PrincipalID);
-						}
+                    if (IsAdmin)        // display all users
+                    {
+                        foreach (var user in users) {
+                            searchUsersList.Add (user.PrincipalID);
+                        }
 
-					} else {             // only show the users friends
+                    } else             // only show the users friends
+                    {
 
-						UserAccount ourAccount = Authenticator.GetAuthentication (httpRequest);
-						if (ourAccount != null) {
-							IFriendsService friendsService = webInterface.Registry.RequestModuleInterface<IFriendsService> ();
-							var friends = friendsService.GetFriends (ourAccount.PrincipalID);
-							foreach (var friend in friends) {
-								UUID friendID = UUID.Zero;
-								UUID.TryParse (friend.Friend, out friendID);
+                        UserAccount ourAccount = Authenticator.GetAuthentication (httpRequest);
+                        if (ourAccount != null) {
+                            IFriendsService friendsService = webInterface.Registry.RequestModuleInterface<IFriendsService> ();
+                            var friends = friendsService.GetFriends (ourAccount.PrincipalID);
+                            foreach (var friend in friends) {
+                                UUID friendID = UUID.Zero;
+                                UUID.TryParse (friend.Friend, out friendID);
 
-								if (friendID != UUID.Zero)
-									searchUsersList.Add (friendID);
-							}
-						}
-					}
-					if (searchUsersList.Count > 0) {
-						noDetails = "";
+                                if (friendID != UUID.Zero)
+                                    searchUsersList.Add (friendID);
+                            }
+                        }
+                    }
+                    if (searchUsersList.Count > 0) {
+                        noDetails = "";
 
-						foreach (var user in users) {
-							if (!searchUsersList.Contains (user.PrincipalID))
-								continue;
+                        foreach (var user in users) {
+                            if (!searchUsersList.Contains (user.PrincipalID))
+                                continue;
 
-							if (Utilities.IsSystemUser (user.PrincipalID))
-								continue;
+                            if (Utilities.IsSystemUser (user.PrincipalID))
+                                continue;
 
-							usersList.Add (new Dictionary<string, object> {
-								{ "UserName", user.Name },
-								{ "UserID", user.PrincipalID },
-								{ "CanEdit", IsAdmin }
-							});
-						}
-					}
+                            usersList.Add (new Dictionary<string, object> {
+                                { "UserName", user.Name },
+                                { "UserID", user.PrincipalID },
+                                { "CanEdit", IsAdmin }
+                            });
+                        }
+                    }
 
-					if (usersList.Count == 0) {
-						usersList.Add (new Dictionary<string, object> {
-							{ "UserName", translator.GetTranslatedString ("NoDetailsText") },
-							{ "UserID", "" },
-							{ "CanEdit", false }
-						});
-					}
-				}
-			}
-				
-			vars.Add ("NoDetailsText", noDetails);
-			vars.Add ("UsersList", usersList);
-			vars.Add ("UserSearchText", translator.GetTranslatedString ("UserSearchText") + (IsAdmin ? "" : " (Friends)"));
-			vars.Add ("SearchForUserText", translator.GetTranslatedString ("SearchForUserText"));
-			vars.Add ("UserNameText", translator.GetTranslatedString ("UserNameText"));
-			vars.Add ("Search", translator.GetTranslatedString ("Search"));
-			vars.Add ("SearchResultForUserText", translator.GetTranslatedString ("SearchResultForUserText"));
-			vars.Add ("EditText", translator.GetTranslatedString ("EditText"));
-			vars.Add ("EditUserAccountText", translator.GetTranslatedString ("EditUserAccountText"));
+                    if (usersList.Count == 0) {
+                        usersList.Add (new Dictionary<string, object> {
+                            { "UserName", translator.GetTranslatedString ("NoDetailsText") },
+                            { "UserID", "" },
+                            { "CanEdit", false }
+                        });
+                    }
+                }
+            }
 
-			return vars;
-		}
 
-		public bool AttemptFindPage (string filename, ref OSHttpResponse httpResponse, out string text)
-		{
-			text = "";
-			return false;
-		}
-	}
+            vars.Add ("NoDetailsText", noDetails);
+            vars.Add ("UsersList", usersList);
+            vars.Add ("UserSearchText", translator.GetTranslatedString ("UserSearchText") + (IsAdmin ? "" : " (Friends)"));
+            vars.Add ("SearchForUserText", translator.GetTranslatedString ("SearchForUserText"));
+            vars.Add ("UserNameText", translator.GetTranslatedString ("UserNameText"));
+            vars.Add ("Search", translator.GetTranslatedString ("Search"));
+            vars.Add ("SearchResultForUserText", translator.GetTranslatedString ("SearchResultForUserText"));
+            vars.Add ("EditText", translator.GetTranslatedString ("EditText"));
+            vars.Add ("EditUserAccountText", translator.GetTranslatedString ("EditUserAccountText"));
+
+            return vars;
+        }
+
+        public bool AttemptFindPage (string filename, ref OSHttpResponse httpResponse, out string text)
+        {
+            text = "";
+            return false;
+        }
+    }
 }

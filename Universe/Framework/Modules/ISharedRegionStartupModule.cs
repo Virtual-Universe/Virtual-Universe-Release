@@ -27,62 +27,62 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Nini.Config;
 using Universe.Framework.SceneInfo;
+using Nini.Config;
 
 namespace Universe.Framework.Modules
 {
-	public interface ISharedRegionStartupModule
-	{
-		/// <summary>
-		///     Initialize and load the configuration of the module
-		///     This is used by IServices, DO NOT USE ANYTHING THAT REQUIRES IService here!
-		/// </summary>
-		/// <param name="scene"></param>
-		/// <param name="source"></param>
-		/// <param name="simBase"></param>
-		void Initialize (IScene scene, IConfigSource source, ISimulationBase simBase);
+    public interface ISharedRegionStartupModule
+    {
+        /// <summary>
+        ///     Initialize and load the configuration of the module
+        ///     This is used by IServices, DO NOT USE ANYTHING THAT REQUIRES IService here!
+        /// </summary>
+        /// <param name="scene"></param>
+        /// <param name="source"></param>
+        /// <param name="simBase"></param>
+        void Initialize(IScene scene, IConfigSource source, ISimulationBase simBase);
 
-		/// <summary>
-		///     PostInitialize the module
-		///     This is used by IServices, DO NOT USE ANYTHING THAT REQUIRES IService here!
-		/// </summary>
-		/// <param name="scene"></param>
-		/// <param name="source"></param>
-		/// <param name="simBase"></param>
-		void PostInitialize (IScene scene, IConfigSource source, ISimulationBase simBase);
+        /// <summary>
+        ///     PostInitialize the module
+        ///     This is used by IServices, DO NOT USE ANYTHING THAT REQUIRES IService here!
+        /// </summary>
+        /// <param name="scene"></param>
+        /// <param name="source"></param>
+        /// <param name="simBase"></param>
+        void PostInitialize(IScene scene, IConfigSource source, ISimulationBase simBase);
 
-		/// <summary>
-		///     Do the functions of the module and set up any necessary functions
-		/// </summary>
-		/// <param name="scene"></param>
-		/// <param name="source"></param>
-		/// <param name="simBase"></param>
-		void FinishStartup (IScene scene, IConfigSource source, ISimulationBase simBase);
+        /// <summary>
+        ///     Do the functions of the module and set up any necessary functions
+        /// </summary>
+        /// <param name="scene"></param>
+        /// <param name="source"></param>
+        /// <param name="simBase"></param>
+        void FinishStartup(IScene scene, IConfigSource source, ISimulationBase simBase);
 
-		/// <summary>
-		///     Do the functions of the module and set up any necessary functions
-		/// </summary>
-		/// <param name="scene"></param>
-		/// <param name="source"></param>
-		/// <param name="simBase"></param>
-		void PostFinishStartup (IScene scene, IConfigSource source, ISimulationBase simBase);
+        /// <summary>
+        ///     Do the functions of the module and set up any necessary functions
+        /// </summary>
+        /// <param name="scene"></param>
+        /// <param name="source"></param>
+        /// <param name="simBase"></param>
+        void PostFinishStartup(IScene scene, IConfigSource source, ISimulationBase simBase);
 
-		/// <summary>
-		///     Close the module and remove all references to it
-		/// </summary>
-		/// <param name="scene"></param>
-		void Close (IScene scene);
+        /// <summary>
+        ///     Close the module and remove all references to it
+        /// </summary>
+        /// <param name="scene"></param>
+        void Close(IScene scene);
 
-		/// <summary>
-		///     Close the module and remove all references to it
-		/// </summary>
-		/// <param name="scene"></param>
-		void DeleteRegion (IScene scene);
+        /// <summary>
+        ///     Close the module and remove all references to it
+        /// </summary>
+        /// <param name="scene"></param>
+        void DeleteRegion(IScene scene);
 
-		/// <summary>
-		///     Fired once when the entire instance is fully started up
-		/// </summary>
-		void StartupComplete ();
-	}
+        /// <summary>
+        ///     Fired once when the entire instance is fully started up
+        /// </summary>
+        void StartupComplete();
+    }
 }

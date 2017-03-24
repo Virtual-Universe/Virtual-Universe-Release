@@ -55,8 +55,8 @@ namespace Universe.Region
 
 		static SceneManager ()
 		{
-			Universe.Framework.Serialization.SceneEntitySerializer.SceneObjectSerializer =
-                new Universe.Region.Serialization.SceneObjectSerializer ();
+			Framework.Serialization.SceneEntitySerializer.SceneObjectSerializer =
+				new Serialization.SceneObjectSerializer ();
 		}
 
 		#endregion
@@ -113,8 +113,8 @@ namespace Universe.Region
 				name = simConfig.GetString ("DatabaseLoaderName", "FileBasedDatabase");
 			}
 
-			ISimulationDataStore[] stores = UniverseModuleLoader.PickupModules<ISimulationDataStore> ().ToArray ();
-            
+			ISimulationDataStore [] stores = UniverseModuleLoader.PickupModules<ISimulationDataStore> ().ToArray ();
+
 			List<string> storeNames = new List<string> ();
 			foreach (ISimulationDataStore store in stores) {
 				if (store.Name.ToLower () == name.ToLower ()) {
@@ -126,7 +126,7 @@ namespace Universe.Region
 
 			if (m_selectedDataService == null) {
 				MainConsole.Instance.ErrorFormat (
-					"[Scene Manager]: FAILED TO LOAD THE SIMULATION SERVICE AT '{0}', ONLY OPTIONS ARE {1}, QUITING...",
+					"[SceneManager]: FAILED TO LOAD THE SIMULATION SERVICE AT '{0}', ONLY OPTIONS ARE {1}, QUITING...",
 					name, string.Join (", ", storeNames.ToArray ()));
 				Console.Read (); //Wait till they see
 				Environment.Exit (0);
@@ -165,7 +165,8 @@ namespace Universe.Region
 			bool newRegion = false;
 			StartRegions (out newRegion);
 			SetRegionPrompt ("root");
-			if (newRegion) { //Save the new info
+			if (newRegion) //Save the new info
+			{
 				foreach (ISimulationDataStore store in m_simulationDataServices)
 					store.ForceBackup ();
 			}
@@ -183,7 +184,7 @@ namespace Universe.Region
 		{
 			if (m_scenes.Count == 0)
 				return;
-			foreach (IScene scene in new List<IScene>(m_scenes))
+			foreach (IScene scene in new List<IScene> (m_scenes))
 				CloseRegion (scene, ShutdownType.Immediate, 0, true);
 		}
 
@@ -205,11 +206,11 @@ namespace Universe.Region
 			TimeSpan timeTaken;
 			if (m_startupTime == m_SimBase.StartupTime)
 				timeTaken = DateTime.Now - m_SimBase.StartupTime;    // this is the time since the sim started
-            else
+			else
 				timeTaken = DateTime.Now - m_startupTime;            // time for a restart etc
 
 			MainConsole.Instance.InfoFormat (
-				"[Scene Manager]: Startup Complete. This took {0}m {1}.{2}s",
+				"[SceneManager]: Startup Complete. This took {0}m {1}.{2}s",
 				timeTaken.Minutes, timeTaken.Seconds, timeTaken.Milliseconds);
 
 			m_startupTime = m_SimBase.StartupTime;                  // finished this timing period
@@ -238,7 +239,7 @@ namespace Universe.Region
 			} else {
 				foreach (string fileName in regionFiles) {
 					ISimulationDataStore store = m_selectedDataService.Copy ();
-					regions.Add (new KeyValuePair<ISimulationDataStore, RegionInfo> (store, 
+					regions.Add (new KeyValuePair<ISimulationDataStore, RegionInfo> (store,
 						store.LoadRegionInfo (fileName, m_SimBase)));
 				}
 			}
@@ -249,11 +250,11 @@ namespace Universe.Region
 
 		public void StartRegion (ISimulationDataStore simData, RegionInfo regionInfo)
 		{
-			MainConsole.Instance.InfoFormat ("[Scene Manager]: Starting region \"{0}\" at @ {1},{2}",
+			MainConsole.Instance.InfoFormat ("[SceneManager]: Starting region \"{0}\" at @ {1},{2}",
 				regionInfo.RegionName,
 				regionInfo.RegionLocX / Constants.RegionSize,
 				regionInfo.RegionLocY / Constants.RegionSize);
-            
+
 			ISceneLoader sceneLoader = m_SimBase.ApplicationRegistry.RequestModuleInterface<ISceneLoader> ();
 			if (sceneLoader == null)
 				throw new Exception ("No Scene Loader Interface!");
@@ -294,7 +295,7 @@ namespace Universe.Region
 			ITerrainModule module = scene.RequestModuleInterface<ITerrainModule> ();
 			if (module != null)
 				module.ResetTerrain (); //Then remove the terrain
-			//Then reset the textures
+										//Then reset the textures
 			scene.RegionInfo.RegionSettings.TerrainTexture1 = RegionSettings.DEFAULT_TERRAIN_TEXTURE_1;
 			scene.RegionInfo.RegionSettings.TerrainTexture2 = RegionSettings.DEFAULT_TERRAIN_TEXTURE_2;
 			scene.RegionInfo.RegionSettings.TerrainTexture3 = RegionSettings.DEFAULT_TERRAIN_TEXTURE_3;
@@ -323,11 +324,11 @@ namespace Universe.Region
 			IGridRegisterModule gridRegisterModule = scene.RequestModuleInterface<IGridRegisterModule> ();
 			gridRegisterModule.DeleteRegion (scene);
 
-			MainConsole.Instance.Warn ("[Scene Manager]: Region " + scene.RegionInfo.RegionName + " was removed\n" +
-			"To ensure all data is correct, you should consider restarting the simulator");
+			MainConsole.Instance.Warn ("[SceneManager]: Region " + scene.RegionInfo.RegionName + " was removed\n" +
+				"To ensure all data is correct, you should consider restarting the simulator");
 
-			if (MainConsole.Instance.Prompt ("[Scene Manager]: Do you wish to shutdown the system? (yes/no)", "no") == "yes") {
-				MainConsole.Instance.Warn ("[Scene Manager]: Shutting down in 5 seconds");
+			if (MainConsole.Instance.Prompt ("[SceneManager]: Do you wish to shutdown the system? (yes/no)", "no") == "yes") {
+				MainConsole.Instance.Warn ("[SceneManager]: Shutting down in 5 seconds");
 				System.Threading.Thread.Sleep (5000);
 				Environment.Exit (0);
 			}
@@ -356,10 +357,10 @@ namespace Universe.Region
 				RegionInfo region = m_selectedDataService.LoadRegionNameInfo (regionName, m_SimBase);
 
 				StartRegion (m_selectedDataService, region);
-				MainConsole.Instance.Info ("[Scene Manager]: " + regionName + " has been restarted");
+				MainConsole.Instance.Info ("[SceneManager]: " + regionName + " has been restarted");
 			} else {
 				//Kill us now
-				MainConsole.Instance.Warn ("[Scene Manager]: Shutting down as per [Startup] configuration");
+				MainConsole.Instance.Warn ("[SceneManager]: Shutting down as per [Startup] configuration");
 				m_SimBase.Shutdown (true);
 			}
 		}
@@ -367,14 +368,15 @@ namespace Universe.Region
 		#endregion
 
 		#region Shutdown regions
-
 		Timer closeRegionTimer;
 
 		/// <summary>
 		///     Shuts down a region and removes it from all running modules
 		/// </summary>
-		/// <param name="type"></param>
-		/// <param name="seconds"></param>
+		/// <param name="scene"></param>
+		/// <param name="type">Immediate or Delayed</param>
+		/// <param name="delaySecs">Delay seconds</param>
+		/// <param name="killAgents"> Kill any agents in the scene</param>
 		/// <returns></returns>
 		public void CloseRegion (IScene scene, ShutdownType type, int delaySecs, bool killAgents)
 		{
@@ -402,7 +404,6 @@ namespace Universe.Region
 		#endregion
 
 		#region Create Region
-
 		/// <summary>
 		/// Creates and adds a region from supplied regioninfo.
 		/// </summary>
@@ -413,19 +414,19 @@ namespace Universe.Region
 				return false;
 
 			if (RegionNameExists (regionInfo.RegionName)) {
-				MainConsole.Instance.InfoFormat ("[Scene Manager]: A region already exists with the name '{0}'",
+				MainConsole.Instance.InfoFormat ("[SceneManager]: A region already exists with the name '{0}'",
 					regionInfo.RegionName);
 				return false;
 			}
 
 			if (RegionAtLocationExists (regionInfo.RegionLocX, regionInfo.RegionLocY)) {
-				MainConsole.Instance.InfoFormat ("[Scene Manager]: A region at @ {0},{1} already exists",
+				MainConsole.Instance.InfoFormat ("[SceneManager]: A region at @ {0},{1} already exists",
 					regionInfo.RegionLocX / Constants.RegionSize, regionInfo.RegionLocY / Constants.RegionSize);
 				return false;
 			}
 
 			// we should be ok..
-			MainConsole.Instance.InfoFormat ("[Scene Manager]: Creating new region \"{0}\" at @ {1},{2}",
+			MainConsole.Instance.InfoFormat ("[SceneManager]: Creating new region \"{0}\" at @ {1},{2}",
 				regionInfo.RegionName, regionInfo.RegionLocX / Constants.RegionSize, regionInfo.RegionLocY / Constants.RegionSize);
 
 			var currentInfo = FindCurrentRegionInfo ();
@@ -437,7 +438,6 @@ namespace Universe.Region
 
 			return true;
 		}
-
 		#endregion
 
 		#region ISharedRegionStartupModule plugins
@@ -476,7 +476,7 @@ namespace Universe.Region
 				try {
 					module.StartupComplete ();
 				} catch (Exception ex) {
-					MainConsole.Instance.Warn ("[Scene Manager]: Exception running StartupComplete, " + ex);
+					MainConsole.Instance.Warn ("[SceneManager]: Exception running StartupComplete, " + ex);
 				}
 			}
 		}
@@ -526,7 +526,7 @@ namespace Universe.Region
 				HandleForceUpdate, true, false);
 
 			MainConsole.Instance.Commands.AddCommand (
-				"debug packet level", 
+				"debug packet level",
 				"debug packet level [level]",
 				"Turn on packet debugging",
 				Debug, true, false);
@@ -572,11 +572,11 @@ namespace Universe.Region
 				"<OAR filename> The file name (and optional path) to use when saveing the archive." +
 				"  If this is not given then the oar is saved to the 'region name' in the 'Data/Region/OarFiles' folder." + Environment.NewLine +
 				"--perm stops objects with insufficient permissions from being saved to the OAR." + Environment.NewLine +
-				"  <permissions> can contain one or more of these characters: \"C\" = Copy, \"T\" = Transfer" + Environment.NewLine,
+				"  <permissions> can contain one or more of these characters: 'C' = Copy, 'T' = Transfer" + Environment.NewLine,
 				HandleSaveOar, true, true);
 
 			MainConsole.Instance.Commands.AddCommand (
-				"kick user", 
+				"kick user",
 				"kick user [all]",
 				"Kick a user off the simulator",
 				KickUserCommand, true, true);
@@ -604,7 +604,7 @@ namespace Universe.Region
 				"modules unload [module]",
 				"Unload the given simulator module",
 				HandleModulesUnload, true, false);
-            
+
 			MainConsole.Instance.Commands.AddCommand (
 				"change region",
 				"change region [region name]",
@@ -624,31 +624,31 @@ namespace Universe.Region
 				HandleResetRegion, false, true);
 
 			MainConsole.Instance.Commands.AddCommand (
-				"remove region", 
+				"remove region",
 				"remove region [RegionName]",
 				"Remove region from the grid, and delete all info associated with it",
 				HandleDeleteRegion, false, true);
 
 			MainConsole.Instance.Commands.AddCommand (
-				"load region backup", 
+				"load region backup",
 				"load region backup [FileName]",
 				"load a region from a previous backup file",
 				HandleReloadRegion, false, true);
 
 			MainConsole.Instance.Commands.AddCommand (
-				"delete region", 
+				"delete region",
 				"delete region  [RegionName] (alias for 'remove region')",
 				"Remove region from the grid, and delete all info associated with it",
 				HandleDeleteRegion, false, true);
 
 			MainConsole.Instance.Commands.AddCommand (
-				"create region", 
+				"create region",
 				"create region <Region Name>  <--config=filename>",
 				"Creates a new region to start\n" +
 				"<Region Name> - Use this name for the new region\n" +
 				"--config='filename' - Use this file for region configuration",
 				HandleCreateNewRegion, false, true);
-			
+
 			MainConsole.Instance.Commands.AddCommand (
 				"save region config",
 				"save region config <filename>",
@@ -658,13 +658,13 @@ namespace Universe.Region
 
 			MainConsole.Instance.Commands.AddCommand ("resize object",
 				"resize object <name> <x> <y> <z>",
-				"Change the scale of a named object by x,y,z", 
+				"Change the scale of a named object by x,y,z",
 				HandleResizeObject, true, true);
 
 			MainConsole.Instance.Commands.AddCommand (
 				"show objects",
-				"show object [name]",
-				"shows region objects or if object name is supplied, object info", 
+				"show objects [name]",
+				"shows region objects or if object name is supplied, object info",
 				HandleShowObjects, true, true);
 
 			MainConsole.Instance.Commands.AddCommand (
@@ -690,26 +690,26 @@ namespace Universe.Region
 			MainConsole.Instance.Commands.AddCommand (
 				"set region capacity",
 				"set region capacity [prims]",
-				"sets the region maximum prim count", 
+				"sets the region maximum prim count",
 				HandleSetRegionCapacity, true, true);
 
 			MainConsole.Instance.Commands.AddCommand (
 				"set region startup",
 				"set region startup [normal/delayed]",
 				"set the startup mode of scripts in the region.\n" +
-				"   normal - scripts run continuously; delayed - scripts are started when an avatar enters", 
+				"   normal - scripts run continuously; delayed - scripts are started when an avatar enters",
 				HandleSetRegionStartup, true, true);
 
 			MainConsole.Instance.Commands.AddCommand (
 				"set region infinite",
 				"set region infinite [yes/no]",
-				"sets the region type as 'infinite':  If 'infinite' this allows an avatar to fly out of the region", 
+				"sets the region type as 'infinite':  If 'infinite' this allows an avatar to fly out of the region",
 				HandleSetRegionInfinite, true, true);
 
 			MainConsole.Instance.Commands.AddCommand (
 				"set region visibility",
 				"set region visibility [yes/no]",
-				"sets whether neighboring regions can 'see into' this region", 
+				"sets whether neighboring regions can 'see into' this region",
 				HandleSetRegionVisibility, true, true);
 
 		}
@@ -759,7 +759,7 @@ namespace Universe.Region
 			bool retVal = false;
 			foreach (IScene scene in Scenes) {
 				if (scene.RegionInfo.RegionLocX == regionX &&
-				                scene.RegionInfo.RegionLocY == regionY) {
+					scene.RegionInfo.RegionLocY == regionY) {
 					retVal = true;
 					break;
 				}
@@ -774,7 +774,7 @@ namespace Universe.Region
 		/// <returns>The current region info.</returns>
 		public Dictionary<string, int> FindCurrentRegionInfo ()
 		{
-			var rInfo = new Dictionary<string, int > ();
+			var rInfo = new Dictionary<string, int> ();
 
 			rInfo ["minX"] = 0;
 			rInfo ["minY"] = 0;
@@ -804,7 +804,7 @@ namespace Universe.Region
 		/// </summary>
 		/// <param name="scene">Scene.</param>
 		/// <param name="cmd">Cmd.</param>
-		void HandleCreateNewRegion (IScene scene, string[] cmd)
+		void HandleCreateNewRegion (IScene scene, string [] cmd)
 		{
 			// get some current details
 			var currentInfo = FindCurrentRegionInfo ();
@@ -854,7 +854,7 @@ namespace Universe.Region
 		/// </summary>
 		/// <param name="scene">Scene.</param>
 		/// <param name="cmd">Cmd.</param>
-		void CreateNewRegionExtended (IScene scene, string[] cmd)
+		void CreateNewRegionExtended (IScene scene, string [] cmd)
 		{
 
 			string defaultDir = "";
@@ -889,13 +889,13 @@ namespace Universe.Region
 				return;
 
 			// let's do it...
-			MainConsole.Instance.Info ("[Scene Manager]: Loading region definition....");
+			MainConsole.Instance.Info ("[SceneManager]: Loading region definition....");
 			RegionInfo loadRegion = new RegionInfo ();
 			loadRegion.LoadRegionConfig (regionFile);
 
 			if (loadRegion.RegionName != regionName) {
 				if (MainConsole.Instance.Prompt ("You have specified a different name than what is specified in the configuration file\n" +
-				                "Do you wish to rename the region to '" + regionName + "'? (yes/no): ") == "yes") {
+					"Do you wish to rename the region to '" + regionName + "'? (yes/no): ") == "yes") {
 					loadRegion.RegionName = regionName;
 				}
 			}
@@ -934,9 +934,9 @@ namespace Universe.Region
 		/// </summary>
 		/// <param name="scene">Scene.</param>
 		/// <param name="cmd">Cmd.</param>
-		void HandleSaveRegionConfig (IScene scene, string[] cmd)
+		void HandleSaveRegionConfig (IScene scene, string [] cmd)
 		{
- 
+
 			if (scene == null)
 				return;
 
@@ -947,7 +947,7 @@ namespace Universe.Region
 			IConfig config = m_config.Configs ["FileBasedSimulationData"];
 			if (config != null)
 				regionsDir = PathHelpers.ComputeFullPath (config.GetString ("StoreBackupDirectory", "Regions"));
-                 
+
 			if (cmd.Count () > 4) {
 				regionFile = cmd [3];
 				regionFile = PathHelpers.VerifyWriteFile (regionFile, ".xml", regionsDir, false);
@@ -955,9 +955,9 @@ namespace Universe.Region
 
 			// let's do it
 			if (regionFile != "") {
-//                regionFile = Path.Combine( regionsDir, scene.RegionInfo.RegionName + ".xml");
+				//                regionFile = Path.Combine( regionsDir, scene.RegionInfo.RegionName + ".xml");
 
-				MainConsole.Instance.InfoFormat ("[Scene Manager]: Saving region configuration for {0} to {1} ...", 
+				MainConsole.Instance.InfoFormat ("[SceneManager]: Saving region configuration for {0} to {1} ...",
 					scene.RegionInfo.RegionName, regionFile);
 				scene.RegionInfo.SaveRegionConfig (regionFile);
 			}
@@ -968,7 +968,7 @@ namespace Universe.Region
 		///     Kicks users off the region
 		/// </summary>
 		/// <param name="cmdparams">name of avatar to kick</param>
-		void KickUserCommand (IScene scene, string[] cmdparams)
+		void KickUserCommand (IScene scene, string [] cmdparams)
 		{
 			IList agents = new List<IScenePresence> (scene.GetScenePresences ());
 
@@ -978,7 +978,7 @@ namespace Universe.Region
 					RegionInfo regionInfo = presence.Scene.RegionInfo;
 
 					MainConsole.Instance.Info (string.Format ("Kicking user: {0,-16}{1,-37} in region: {2,-16}",
-						presence.Name, presence.UUID, regionInfo.RegionName));
+															presence.Name, presence.UUID, regionInfo.RegionName));
 
 					// kick client...
 					presence.ControllingClient.Kick (alert ?? "\nThe Universe manager kicked you out.\n");
@@ -997,7 +997,7 @@ namespace Universe.Region
 				foreach (IScenePresence presence in agents) {
 					if (presence.Name.ToLower ().Contains (username.ToLower ())) {
 						MainConsole.Instance.Info (string.Format ("Kicking user: {0} in region: {1}",
-							presence.Name, presence.Scene.RegionInfo.RegionName));
+																presence.Name, presence.Scene.RegionInfo.RegionName));
 
 						// kick client...
 						presence.ControllingClient.Kick (alert ?? "\nThe Universe manager kicked you out.\n");
@@ -1016,18 +1016,18 @@ namespace Universe.Region
 		///     Force resending of all updates to all clients in active region(s)
 		/// </summary>
 		/// <param name="args"></param>
-		void HandleForceUpdate (IScene scene, string[] args)
+		void HandleForceUpdate (IScene scene, string [] args)
 		{
 			MainConsole.Instance.Info ("Updating all clients");
-			ISceneEntity[] EntityList = scene.Entities.GetEntities ();
+			ISceneEntity [] EntityList = scene.Entities.GetEntities ();
 
-			foreach (SceneObjectGroup ent in EntityList.OfType<SceneObjectGroup>()) {
+			foreach (SceneObjectGroup ent in EntityList.OfType<SceneObjectGroup> ()) {
 				(ent).ScheduleGroupUpdate (
 					PrimUpdateFlags.ForcedFullUpdate);
 			}
 			List<IScenePresence> presences = scene.Entities.GetPresences ();
 
-			foreach (IScenePresence presence in presences.Where(presence => !presence.IsChildAgent)) {
+			foreach (IScenePresence presence in presences.Where (presence => !presence.IsChildAgent)) {
 				IScenePresence presence1 = presence;
 				scene.ForEachClient (
 					client => client.SendAvatarDataImmediate (presence1));
@@ -1038,11 +1038,11 @@ namespace Universe.Region
 		///     Load, Unload, and list Region modules in use
 		/// </summary>
 		/// <param name="cmd"></param>
-		void HandleModulesUnload (IScene scene, string[] cmd)
+		void HandleModulesUnload (IScene scene, string [] cmd)
 		{
 			List<string> args = new List<string> (cmd);
 			args.RemoveAt (0);
-			string[] cmdparams = args.ToArray ();
+			string [] cmdparams = args.ToArray ();
 
 			IRegionModulesController controller =
 				m_SimBase.ApplicationRegistry.RequestModuleInterface<IRegionModulesController> ();
@@ -1061,7 +1061,7 @@ namespace Universe.Region
 		///     Load, Unload, and list Region modules in use
 		/// </summary>
 		/// <param name="cmd"></param>
-		void HandleModulesList (IScene scene, string[] cmd)
+		void HandleModulesList (IScene scene, string [] cmd)
 		{
 			List<string> args = new List<string> (cmd);
 			args.RemoveAt (0);
@@ -1073,7 +1073,7 @@ namespace Universe.Region
 					MainConsole.Instance.Info (string.Format ("Nonshared region module: {0}", irm.Name));
 				else
 					MainConsole.Instance.Info (string.Format ("Unknown type " + irm.GetType () + " region module: {0}",
-						irm.Name));
+															irm.Name));
 			}
 		}
 
@@ -1081,16 +1081,16 @@ namespace Universe.Region
 		///     Runs commands issued by the server console from the operator
 		/// </summary>
 		/// <param name="cmdparams">Additional arguments passed to the command</param>
-		void RunCommand (IScene scene, string[] cmdparams)
+		void RunCommand (IScene scene, string [] cmdparams)
 		{
 			// TODO: Fix this so that additional commandline details can be passed
 			if ((MainConsole.Instance.ConsoleScene == null) &&
-			             (m_scenes.IndexOf (scene) == 0)) {
-				MainConsole.Instance.Info ("[Scene Manager]: Operating on the 'root' scene will run this command for all regions");
+				(m_scenes.IndexOf (scene) == 0)) {
+				MainConsole.Instance.Info ("[SceneManager]: Operating on the 'root' scene will run this command for all regions");
 				//    if (MainConsole.Instance.Prompt ("Are you sure you want to do this? (yes/no)", "no") != "yes")
 				//    return;
 			}
-           
+
 			var regionName = scene.RegionInfo.RegionName;
 			List<string> args = new List<string> (cmdparams);
 			if (args.Count < 1)
@@ -1104,31 +1104,31 @@ namespace Universe.Region
 			switch (command) {
 			case "reset":
 				if (cmdparams.Length > 0)
-				if (cmdparams [0] == "region") {
-					if (MainConsole.Instance.Prompt ("Are you sure you want to reset " + regionName + "? (yes/no)", "no") !=
-					                   "yes")
-						return;
-					ResetRegion (scene);
-				}
+					if (cmdparams [0] == "region") {
+						if (MainConsole.Instance.Prompt ("Are you sure you want to reset " + regionName + "? (yes/no)", "no") !=
+									"yes")
+							return;
+						ResetRegion (scene);
+					}
 				break;
 			case "clear":
 				if (cmdparams.Length > 0)
-				if (cmdparams [0] == "region") {
-					if (MainConsole.Instance.Prompt ("Are you sure you want to clear all " + regionName + " objects? (yes/no)", "no") !=
-					                   "yes")
-						return;
-					ClearRegion (scene);
-				}
+					if (cmdparams [0] == "region") {
+						if (MainConsole.Instance.Prompt ("Are you sure you want to clear all " + regionName + " objects? (yes/no)", "no") !=
+								"yes")
+							return;
+						ClearRegion (scene);
+					}
 				break;
 			case "remove":
 			case "delete":
 				if (cmdparams.Length > 0)
-				if (cmdparams [0] == "region") {
-					if (MainConsole.Instance.Prompt ("Are you sure you want to remove " + regionName + "? (yes/no)", "no") !=
-					                   "yes")
-						return;
-					RemoveRegion (scene);
-				}
+					if (cmdparams [0] == "region") {
+						if (MainConsole.Instance.Prompt ("Are you sure you want to remove " + regionName + "? (yes/no)", "no") !=
+									"yes")
+							return;
+						RemoveRegion (scene);
+					}
 				break;
 			case "command-script":
 				if (cmdparams.Length > 0) {
@@ -1137,7 +1137,7 @@ namespace Universe.Region
 				break;
 
 			case "restart-instance":
-                    //This kills the instance and restarts it
+				//This kills the instance and restarts it
 				IRestartModule restartModule = scene.RequestModuleInterface<IRestartModule> ();
 				if (restartModule != null)
 					restartModule.RestartScene ();
@@ -1149,7 +1149,7 @@ namespace Universe.Region
 		///     Turn on some debugging values for Universe.
 		/// </summary>
 		/// <param name="args"></param>
-		protected void Debug (IScene scene, string[] args)
+		protected void Debug (IScene scene, string [] args)
 		{
 			if (args.Length != 4)
 				return;
@@ -1195,8 +1195,7 @@ namespace Universe.Region
 		void SetDebugPacketLevel (IScene scene, int newDebug)
 		{
 			scene.ForEachScenePresence (scenePresence => {
-				if (scenePresence.IsChildAgent)
-					return;
+				if (scenePresence.IsChildAgent) return;
 				MainConsole.Instance.DebugFormat (
 					"Packet debug for {0} set to {1}",
 					scenePresence.Name,
@@ -1211,12 +1210,13 @@ namespace Universe.Region
 		///     Set the debug packet level on the current scene.  This level governs which packets are printed out to the
 		///     console.
 		/// </summary>
-		/// <param name="newDebug"></param>
+		/// <param name="scene">Scene.</param>
+		/// <param name="name">Name.</param>
+		/// <param name="remove">If set to <c>true</c> remove.</param>
 		void SetDebugPacketName (IScene scene, string name, bool remove)
 		{
 			scene.ForEachScenePresence (scenePresence => {
-				if (scenePresence.IsChildAgent)
-					return;
+				if (scenePresence.IsChildAgent) return;
 				MainConsole.Instance.DebugFormat (
 					"Packet debug for {0} {2} to {1}",
 					scenePresence.Name,
@@ -1231,7 +1231,7 @@ namespace Universe.Region
 		/// </summary>
 		/// <param name="scene">Scene.</param>
 		/// <param name="cmd">Cmd.</param>
-		void HandleChangeRegion (IScene scene, string[] cmd)
+		void HandleChangeRegion (IScene scene, string [] cmd)
 		{
 			string regionName;
 			if (cmd.Length < 3) {
@@ -1266,7 +1266,7 @@ namespace Universe.Region
 				} else {
 					MainConsole.Instance.ConsoleScene = newScene;
 					rName = newScene.RegionInfo.RegionName;
-					MainConsole.Instance.Info ("[Scene Manager]: Changed to region " + rName);
+					MainConsole.Instance.Info ("[SceneManager]: Changed to region " + rName);
 				}
 			}
 			SetRegionPrompt (rName);
@@ -1277,11 +1277,11 @@ namespace Universe.Region
 		/// </summary>
 		/// <param name="scene">Scene.</param>
 		/// <param name="cmd">Cmd.</param>
-		void HandleShowUsers (IScene scene, string[] cmd)
+		void HandleShowUsers (IScene scene, string [] cmd)
 		{
 			List<string> args = new List<string> (cmd);
 			args.RemoveAt (0);
-			string[] showParams = args.ToArray ();
+			string [] showParams = args.ToArray ();
 
 			List<IScenePresence> agents = new List<IScenePresence> ();
 			agents.AddRange (scene.GetScenePresences ());
@@ -1289,12 +1289,12 @@ namespace Universe.Region
 				agents.RemoveAll (sp => sp.IsChildAgent);
 
 			MainConsole.Instance.Info (string.Format ("\n" + scene.RegionInfo.RegionName + ": " +
-			(agents.Count == 0 ? "No" : agents.Count.ToString ()) + " Agents connected\n"));
+				(agents.Count == 0 ? "No" : agents.Count.ToString ()) + " Agents connected\n"));
 			if (agents.Count == 0)
 				return;
 
 			// we have some details to show...
-			MainConsole.Instance.CleanInfo (string.Format ("{0,-16}{1,-37}{2,-14}{3,-20}{4,-30}", 
+			MainConsole.Instance.CleanInfo (string.Format ("{0,-16}{1,-37}{2,-14}{3,-20}{4,-30}",
 				"Username", "Agent ID", "Root/Child", "Region", "Position"));
 
 			foreach (IScenePresence presence in agents) {
@@ -1303,8 +1303,8 @@ namespace Universe.Region
 				string regionName = regionInfo == null ? "Unresolvable" : regionInfo.RegionName;
 
 				MainConsole.Instance.CleanInfo (string.Format ("{0,-16}{1,-37}{2,-14}{3,-20}{4,-30}", presence.Name,
-					presence.UUID, presence.IsChildAgent ? "Child" : "Root",
-					regionName, presence.AbsolutePosition.ToString ()));
+													presence.UUID, presence.IsChildAgent ? "Child" : "Root",
+													regionName, presence.AbsolutePosition.ToString ()));
 			}
 
 			MainConsole.Instance.CleanInfo (string.Empty);
@@ -1316,19 +1316,19 @@ namespace Universe.Region
 		/// </summary>
 		/// <param name="scene">Scene.</param>
 		/// <param name="cmd">Cmd.</param>
-		void HandleShowRegions (IScene scene, string[] cmd)
+		void HandleShowRegions (IScene scene, string [] cmd)
 		{
 
 			string sceneInfo;
-            var regInfo = scene.RegionInfo;
+			var regInfo = scene.RegionInfo;
             var ownerName = "Unknown";
-            var estateOwner = scene.UserAccountService.GetUserAccount(null, regInfo.EstateSettings.EstateOwner);
-
+			var estateOwner = scene.UserAccountService.GetUserAccount (null, regInfo.EstateSettings.EstateOwner);
             if (estateOwner != null)
                 ownerName = estateOwner.Name;
+                
 
-            if ((MainConsole.Instance.ConsoleScene == null) &&
-			             (m_scenes.IndexOf (scene) == 0)) {
+			if ((MainConsole.Instance.ConsoleScene == null) &&
+				(m_scenes.IndexOf (scene) == 0)) {
 				sceneInfo = string.Format ("{0, -20}", "Region");
 				sceneInfo += string.Format ("{0, -14}", "Startup");
 				sceneInfo += string.Format ("{0, -16}", "Location");
@@ -1360,7 +1360,7 @@ namespace Universe.Region
 		/// </summary>
 		/// <param name="scene">Scene.</param>
 		/// <param name="cmd">Cmd.</param>
-		void HandleShowMaturity (IScene scene, string[] cmd)
+		void HandleShowMaturity (IScene scene, string [] cmd)
 		{
 			string rating = "";
 			if (scene.RegionInfo.RegionSettings.Maturity == 1) {
@@ -1371,7 +1371,7 @@ namespace Universe.Region
 				rating = "PG";
 			}
 			MainConsole.Instance.Info (string.Format ("Region Name: {0}, Region Rating {1}", scene.RegionInfo.RegionName,
-				rating));
+													rating));
 		}
 
 		public List<string> GetOARFilenames ()
@@ -1392,7 +1392,7 @@ namespace Universe.Region
 		///     Load a whole region from an opensimulator archive.
 		/// </summary>
 		/// <param name="cmdparams"></param>
-		protected void HandleLoadOar (IScene scene, string[] cmdparams)
+		protected void HandleLoadOar (IScene scene, string [] cmdparams)
 		{
 			string fileName;
 
@@ -1433,15 +1433,15 @@ namespace Universe.Region
 			var defaultOarPath = Path.Combine (m_SimBase.DefaultDataPath, Constants.DEFAULT_OARARCHIVE_DIR);
 			fileName = PathHelpers.VerifyReadFile (fileName, new List<string> () { "oar", "tgz" }, defaultOarPath);
 			if (fileName == "")                 // something wrong...
-                return;
+				return;
 			cmdparams [2] = fileName;           // reset passed filename
 
 			// should be good to go...
 			string regionName = scene.RegionInfo.RegionName;
 			if (MainConsole.Instance.ConsoleScene == null) {
 				if (m_scenes.IndexOf (scene) == 0)
-					MainConsole.Instance.Warn ("[Scene Manager]: Operating on the 'root' will load the OAR into all regions");
-				if (MainConsole.Instance.Prompt ("[Scene Manager]: Do you wish to load this OAR into " + regionName + "? (yes/no)", "no") != "yes")
+					MainConsole.Instance.Warn ("[SceneManager]: Operating on the 'root' will load the OAR into all regions");
+				if (MainConsole.Instance.Prompt ("[SceneManager]: Do you wish to load this OAR into " + regionName + "? (yes/no)", "no") != "yes")
 					return;
 			}
 
@@ -1456,7 +1456,7 @@ namespace Universe.Region
 						success = simStore.RestoreLastBackup (scene.RegionInfo.RegionName);
 						if (success) {
 							scene.RegionInfo = m_selectedDataService.LoadRegionNameInfo (regionName, m_SimBase);
-							MainConsole.Instance.Warn ("[Scene Manager]: Region has been reloaded from the previous backup");
+							MainConsole.Instance.Warn ("[SceneManager]: Region has been reloaded from the previous backup");
 						}
 					}
 
@@ -1474,12 +1474,12 @@ namespace Universe.Region
 		///     Save a region to a file, including all the assets needed to restore it.
 		/// </summary>
 		/// <param name="cmdparams"></param>
-		protected void HandleSaveOar (IScene scene, string[] cmdparams)
+		protected void HandleSaveOar (IScene scene, string [] cmdparams)
 		{
 			string fileName;
 
 			if (MainConsole.Instance.ConsoleScene == null) {
-				MainConsole.Instance.Info ("[Scene Manager]: This command requires a region to be selected\n          Please change to a region first");
+				MainConsole.Instance.Info ("[SceneManager]: This command requires a region to be selected\n          Please change to a region first");
 				return;
 			}
 
@@ -1489,17 +1489,18 @@ namespace Universe.Region
 				if (fileName == "")
 					return;
 
+
 				// need to add this to the cmdparams
 				var newParams = new List<string> (cmdparams);
 				newParams.Add (fileName);
 				cmdparams = newParams.ToArray ();
 			} else
 				fileName = cmdparams [2];
-
-			var defaultOarPath = Path.Combine (m_SimBase.DefaultDataPath, Constants.DEFAULT_OARARCHIVE_DIR);
+        
+            var defaultOarPath = Path.Combine (m_SimBase.DefaultDataPath, Constants.DEFAULT_OARARCHIVE_DIR);
 			fileName = PathHelpers.VerifyWriteFile (fileName, ".oar", defaultOarPath, true);
 			if (fileName == "")                 // something wrong...
-                return;
+				return;
 			cmdparams [2] = fileName;           // reset passed filename
 
 			// should be good to go...
@@ -1513,7 +1514,7 @@ namespace Universe.Region
 		/// </summary>
 		/// <param name="scene">Scene.</param>
 		/// <param name="cmdparams">Cmdparams.</param>
-		void HandleResizeObject (IScene scene, string[] cmdparams)
+		void HandleResizeObject (IScene scene, string [] cmdparams)
 		{
 			if (cmdparams.Length < 4) {
 				MainConsole.Instance.Info ("usage: resize object <prim name> <x> <y> <z>");
@@ -1537,7 +1538,7 @@ namespace Universe.Region
 
 			//MainConsole.Instance.DebugFormat("Searching for Object: '{0}'", primName);
 
-			ISceneEntity[] entityList = scene.Entities.GetEntities ();
+			ISceneEntity [] entityList = scene.Entities.GetEntities ();
 			foreach (ISceneEntity ent in entityList) {
 				if (ent is SceneObjectGroup && (ent.Name == primName)) {
 					MainConsole.Instance.InfoFormat ("Object: " + primName + " found, resizing...");
@@ -1557,7 +1558,7 @@ namespace Universe.Region
 				}
 			}
 			MainConsole.Instance.WarnFormat ("Sorry.. could not find '{0}'", primName);
-       
+
 		}
 
 		/// <summary>
@@ -1565,40 +1566,43 @@ namespace Universe.Region
 		/// </summary>
 		/// <param name="scene">Scene.</param>
 		/// <param name="cmdparams">Cmdparams.</param>
-		void HandleShowObjects (IScene scene, string[] cmdparams)
+		void HandleShowObjects (IScene scene, string [] cmdparams)
 		{
 			string objectName = null;
 			bool found = false;
 
 			if (cmdparams.Length > 2) {
 				objectName = Util.CombineParams (cmdparams, 2); // in case of spaces in the name e.g. Steam Island
+				objectName = objectName.ToLower ();
 			}
 
-			ISceneEntity[] entityList = scene.Entities.GetEntities ();
+			ISceneEntity [] entityList = scene.Entities.GetEntities ();
 			foreach (ISceneEntity ent in entityList) {
 				if (ent is SceneObjectGroup) {
-					if (objectName == null || (ent.Name.Substring (0, objectName.Length) == objectName)) {
-						found = true;
+					if (objectName != null) {
+						if (!ent.Name.ToLower ().Contains (objectName))
+							continue;
+					}
+					found = true;
 
-						var entParts = ent.ChildrenEntities ();
-						MainConsole.Instance.Info ("Object: " + ent.Name + " at position " + ent.AbsolutePosition + ", comprised of " + entParts.Count + " parts");
+					var entParts = ent.ChildrenEntities ();
+					MainConsole.Instance.Info ("Object: " + ent.Name + " at position " + ent.AbsolutePosition + ", comprised of " + entParts.Count + " parts");
 
-						// specific object requested?
-						if (objectName != null) {
-							foreach (ISceneChildEntity enp in entParts) {
-								if (enp != null) {
-									MainConsole.Instance.Info ("    " + enp.Name + (enp.IsRoot ? "  [ Root prim ]" : ""));
-								}
+					// specific object requested?
+					if (objectName != null) {
+						foreach (ISceneChildEntity enp in entParts) {
+							if (enp != null) {
+								MainConsole.Instance.Info ("    " + enp.Name + (enp.IsRoot ? "  [ Root prim ]" : ""));
 							}
 						}
 					}
 				}
 			}
 			if (!found)
-			if (objectName == null)
-				MainConsole.Instance.Warn (" There does not appear to be any objects in this region");
-			else
-				MainConsole.Instance.WarnFormat ("Sorry.. could not find '{0}'", objectName);
+				if (objectName == null)
+					MainConsole.Instance.Warn (" There does not appear to be any objects in this region");
+				else
+					MainConsole.Instance.WarnFormat ("Sorry.. could not find '{0}'", objectName);
 
 		}
 
@@ -1607,10 +1611,10 @@ namespace Universe.Region
 		/// </summary>
 		/// <param name="scene">Scene.</param>
 		/// <param name="cmdparams">Cmdparams.</param>
-		void HandleRotateScene (IScene scene, string[] cmdparams)
+		void HandleRotateScene (IScene scene, string [] cmdparams)
 		{
 			var usage = "Usage: rotate scene objects <angle in degrees> [centerX centerY]\n" +
-			                     "(centerX and centerY are optional and default to the center of the region";
+				"(centerX and centerY are optional and default to the center of the region";
 
 			if (cmdparams.Length < 4) {
 				MainConsole.Instance.Info (usage);
@@ -1635,7 +1639,7 @@ namespace Universe.Region
 				centerY = Convert.ToSingle (cmdparams [5]);
 
 			var center = new Vector3 (centerX, centerY, 0.0f);
-			ISceneEntity[] entitlList = scene.Entities.GetEntities ();
+			ISceneEntity [] entitlList = scene.Entities.GetEntities ();
 
 			foreach (ISceneEntity ent in entitlList) {
 				if (!ent.IsAttachment) {
@@ -1654,7 +1658,7 @@ namespace Universe.Region
 		/// </summary>
 		/// <param name="scene">Scene.</param>
 		/// <param name="cmdparams">Cmdparams.</param>
-		void HandleScaleScene (IScene scene, string[] cmdparams)
+		void HandleScaleScene (IScene scene, string [] cmdparams)
 		{
 			string usage = "Usage: scale region objects <factor>";
 
@@ -1675,7 +1679,7 @@ namespace Universe.Region
 
 			var center = new Vector3 (centerX, centerY, 0.0f);
 			ITerrainChannel heightmap = scene.RequestModuleInterface<ITerrainChannel> ();
-			ISceneEntity[] entitlList = scene.Entities.GetEntities ();
+			ISceneEntity [] entitlList = scene.Entities.GetEntities ();
 
 			// let' do some resizing
 			foreach (ISceneEntity ent in entitlList) {
@@ -1685,7 +1689,7 @@ namespace Universe.Region
 					var offsetZ = ent.AbsolutePosition.Z - heightmap.GetNormalizedGroundHeight ((int)ent.AbsolutePosition.X, (int)ent.AbsolutePosition.Y);
 
 					offsetPos.Z = offsetZ;          // only scale the height offset 
-					offsetPos *= factor;    
+					offsetPos *= factor;
 
 					var entParts = ent.ChildrenEntities ();
 					foreach (ISceneChildEntity enp in entParts) {
@@ -1713,7 +1717,7 @@ namespace Universe.Region
 		/// </summary>
 		/// <param name="scene">Scene.</param>
 		/// <param name="cmdparams">Cmdparams.</param>
-		void HandleTranslateScene (IScene scene, string[] cmdparams)
+		void HandleTranslateScene (IScene scene, string [] cmdparams)
 		{
 			if (cmdparams.Length < 6) {
 				MainConsole.Instance.Info ("Usage: translate scene objects <xOffset> <yOffset> <zOffset>");
@@ -1725,7 +1729,7 @@ namespace Universe.Region
 			var zOffset = Convert.ToSingle (cmdparams [5]);
 
 			var offset = new Vector3 (xOffset, yOffset, zOffset);
-			ISceneEntity[] entitlList = scene.Entities.GetEntities ();
+			ISceneEntity [] entitlList = scene.Entities.GetEntities ();
 
 			foreach (ISceneEntity ent in entitlList) {
 				if (!ent.IsAttachment) {
@@ -1751,7 +1755,7 @@ namespace Universe.Region
 		/// </summary>
 		/// <param name="scene">Scene.</param>
 		/// <param name="cmd">Cmd.</param>
-		void HandleDeleteRegion (IScene scene, string[] cmd)
+		void HandleDeleteRegion (IScene scene, string [] cmd)
 		{
 			// command is delete/remove region [regionname]
 			string regionName;
@@ -1766,7 +1770,7 @@ namespace Universe.Region
 			IScene delScene = m_scenes.Find ((s) => s.RegionInfo.RegionName.ToLower () == regionName);
 
 			if (delScene == null) {
-				MainConsole.Instance.WarnFormat ("[Scene Manager]: Sorry, {0} was not found", regionName);
+				MainConsole.Instance.WarnFormat ("[SceneManager]: Sorry, {0} was not found", regionName);
 				return;
 			}
 
@@ -1784,7 +1788,7 @@ namespace Universe.Region
 		/// </summary>
 		/// <param name="scene">Scene.</param>
 		/// <param name="cmd">Cmd.</param>
-		void HandleResetRegion (IScene scene, string[] cmd)
+		void HandleResetRegion (IScene scene, string [] cmd)
 		{
 			string regionName;
 			if (cmd.Length < 3) {
@@ -1798,7 +1802,7 @@ namespace Universe.Region
 			IScene resetScene = m_scenes.Find ((s) => s.RegionInfo.RegionName.ToLower () == regionName);
 
 			if (resetScene == null) {
-				MainConsole.Instance.WarnFormat ("[Scene Manager]: Sorry, {0} was not found", regionName);
+				MainConsole.Instance.WarnFormat ("[SceneManager]: Sorry, {0} was not found", regionName);
 				return;
 			}
 
@@ -1815,7 +1819,7 @@ namespace Universe.Region
 		/// </summary>
 		/// <param name="scene">Scene.</param>
 		/// <param name="cmd">Cmd.</param>
-		void HandleClearRegion (IScene scene, string[] cmd)
+		void HandleClearRegion (IScene scene, string [] cmd)
 		{
 			string regionName;
 			if (cmd.Length < 3) {
@@ -1829,7 +1833,7 @@ namespace Universe.Region
 			IScene clearScene = m_scenes.Find ((s) => s.RegionInfo.RegionName.ToLower () == regionName);
 
 			if (clearScene == null) {
-				MainConsole.Instance.WarnFormat ("[Scene Manager]: Sorry, {0} was not found", regionName);
+				MainConsole.Instance.WarnFormat ("[SceneManager]: Sorry, {0} was not found", regionName);
 				return;
 			}
 
@@ -1855,7 +1859,7 @@ namespace Universe.Region
 		/// </summary>
 		/// <param name="scene">Scene.</param>
 		/// <param name="cmd">Cmd.</param>
-		void HandleReloadRegion (IScene scene, string[] cmd)
+		void HandleReloadRegion (IScene scene, string [] cmd)
 		{
 			IScene loadScene = scene;
 			string regionName;
@@ -1869,7 +1873,7 @@ namespace Universe.Region
 				loadScene = m_scenes.Find ((s) => s.RegionInfo.RegionName.ToLower () == regionName);
 
 				if (loadScene == null) {
-					MainConsole.Instance.WarnFormat ("[Scene Manager]: Sorry, {0} was not found", regionName);
+					MainConsole.Instance.WarnFormat ("[SceneManager]: Sorry, {0} was not found", regionName);
 					return;
 				}
 
@@ -1890,12 +1894,12 @@ namespace Universe.Region
 				ISimulationDataStore simStore = loadScene.SimulationDataService;
 				backupFileName = simStore.GetLastBackupFileName (regionName);
 				if (backupFileName == "") {
-					MainConsole.Instance.Warn ("[Scene Manager]: Sorry, unable to find any backups for " + regionName);
+					MainConsole.Instance.Warn ("[SceneManager]: Sorry, unable to find any backups for " + regionName);
 					return;
 				}
 			} else {
-				if (!backupFileName.ToLower ().StartsWith (regionName)) {
-					MainConsole.Instance.Warn ("[Scene Manager]: Only backups from the same region should be restored!");
+				if (!backupFileName.StartsWith (regionName, StringComparison.CurrentCultureIgnoreCase)) {
+					MainConsole.Instance.Warn ("[SceneManager]: Only backups from the same region should be restored!");
 					return;
 				}
 			}
@@ -1906,7 +1910,7 @@ namespace Universe.Region
 
 			//we have verified what we need so... last chance
 			if (MainConsole.Instance.Prompt ("Are you sure you want load " + regionName +
-			             " from " + Path.GetFileName (backupFileName) + "? (yes/no)", "no") != "yes")
+				" from " + Path.GetFileName (backupFileName) + "? (yes/no)", "no") != "yes")
 				return;
 
 			// let's do it.. 
@@ -1918,7 +1922,7 @@ namespace Universe.Region
 				RegionInfo region = m_selectedDataService.LoadRegionNameInfo (regionName, m_SimBase);
 
 				StartRegion (m_selectedDataService, region);
-				MainConsole.Instance.WarnFormat ("[Scene Manager]: {0} has been reloaded from the backup", regionName);
+				MainConsole.Instance.WarnFormat ("[SceneManager]: {0} has been reloaded from the backup", regionName);
 			}
 		}
 
@@ -1928,14 +1932,14 @@ namespace Universe.Region
 		/// </summary>
 		/// <param name="scene">Scene.</param>
 		/// <param name="cmd">Cmd.</param>
-		void HandleSetRegionCapacity (IScene scene, string[] cmd)
+		void HandleSetRegionCapacity (IScene scene, string [] cmd)
 		{
 			int regionCapacity = scene.RegionInfo.ObjectCapacity;
 			int newCapacity;
 			string regionName = scene.RegionInfo.RegionName;
 
 			if (cmd.Length < 4) {
-				var response = MainConsole.Instance.Prompt ("[Scene Manager]: New prim capacity for " + regionName + "(-1 to cancel)", regionCapacity.ToString ());
+				var response = MainConsole.Instance.Prompt ("[SceneManager]: New prim capacity for " + regionName + "(-1 to cancel)", regionCapacity.ToString ());
 				int.TryParse (response, out newCapacity);
 				if (newCapacity == -1)
 					return;
@@ -1946,12 +1950,12 @@ namespace Universe.Region
 			bool setCapacity = true;
 			if (newCapacity == 0) {
 				var response = MainConsole.Instance.Prompt ("Set region prims to zero. Are you sure? (yes/no)", "no");
-				setCapacity = response.ToLower ().StartsWith ("y");
+				setCapacity = response.StartsWith ("y", StringComparison.CurrentCultureIgnoreCase);
 			}
 
 			if (setCapacity) {
 				scene.RegionInfo.ObjectCapacity = newCapacity;
-				MainConsole.Instance.InfoFormat ("[Scene Manager]: New prim capacity for {0} set to {1}", regionName, newCapacity); 
+				MainConsole.Instance.InfoFormat ("[SceneManager]: New prim capacity for {0} set to {1}", regionName, newCapacity);
 				scene.SimulationDataService.ForceBackup ();
 			}
 		}
@@ -1961,22 +1965,21 @@ namespace Universe.Region
 		/// </summary>
 		/// <param name="scene">Scene.</param>
 		/// <param name="cmd">Cmd.</param>
-		void HandleSetRegionStartup (IScene scene, string[] cmd)
+		void HandleSetRegionStartup (IScene scene, string [] cmd)
 		{
 
 			string regionName = scene.RegionInfo.RegionName;
 			string response = "No";
 
 			if (cmd.Length < 4)
-				response = MainConsole.Instance.Prompt ("[Scene Manager]: Delay " + regionName + " script startup? (yes/no)", response);
+				response = MainConsole.Instance.Prompt ("[SceneManager]: Delay " + regionName + " script startup? (yes/no)", response);
 			else
 				response = cmd [3];
 
-			response = response.ToLower ();
-			scene.RegionInfo.Startup = response.StartsWith ("n") ? StartupType.Normal : StartupType.Medium;
+			scene.RegionInfo.Startup = response.StartsWith ("n", StringComparison.CurrentCultureIgnoreCase) ? StartupType.Normal : StartupType.Medium;
 
-			MainConsole.Instance.InfoFormat ("[Scene Manager]: Region has been set for {0} script startup.",
-				(scene.RegionInfo.Startup == StartupType.Normal) ? "Normal" : "Delayed"); 
+			MainConsole.Instance.InfoFormat ("[SceneManager]: Region has been set for {0} script startup.",
+				(scene.RegionInfo.Startup == StartupType.Normal) ? "Normal" : "Delayed");
 			scene.SimulationDataService.ForceBackup ();
 		}
 
@@ -1986,21 +1989,20 @@ namespace Universe.Region
 		/// </summary>
 		/// <param name="scene">Scene.</param>
 		/// <param name="cmd">Cmd.</param>
-		void HandleSetRegionInfinite (IScene scene, string[] cmd)
+		void HandleSetRegionInfinite (IScene scene, string [] cmd)
 		{
 			string regionName = scene.RegionInfo.RegionName;
 			string response = "No";
 
 			if (cmd.Length < 4)
-				response = MainConsole.Instance.Prompt ("[Scene Manager]: Set " + regionName + " as infinite? (yes/no)", response);
+				response = MainConsole.Instance.Prompt ("[SceneManager]: Set " + regionName + " as infinite? (yes/no)", response);
 			else
 				response = cmd [3];
 
-			response = response.ToLower ();
-			scene.RegionInfo.InfiniteRegion = response.StartsWith ("y");
+			scene.RegionInfo.InfiniteRegion = response.StartsWith ("y", StringComparison.CurrentCultureIgnoreCase);
 
-			MainConsole.Instance.Info ("[Scene Manager]: Region has been set as " +
-			(scene.RegionInfo.InfiniteRegion ? "Infinite" : "Finite")); 
+			MainConsole.Instance.Info ("[SceneManager]: Region has been set as " +
+				(scene.RegionInfo.InfiniteRegion ? "Infinite" : "Finite"));
 
 			scene.SimulationDataService.ForceBackup ();
 		}
@@ -2010,21 +2012,20 @@ namespace Universe.Region
 		/// </summary>
 		/// <param name="scene">Scene.</param>
 		/// <param name="cmd">Cmd.</param>
-		void HandleSetRegionVisibility (IScene scene, string[] cmd)
+		void HandleSetRegionVisibility (IScene scene, string [] cmd)
 		{
 			string regionName = scene.RegionInfo.RegionName;
 			string response = "Yes";
 
 			if (cmd.Length < 4)
-				response = MainConsole.Instance.Prompt ("[Scene Manager]: Allow neighbors to see into " + regionName + "(yes/no)", response);
+				response = MainConsole.Instance.Prompt ("[SceneManager]: Allow neighbors to see into " + regionName + "(yes/no)", response);
 			else
 				response = cmd [3];
 
-			response = response.ToLower ();
-			scene.RegionInfo.SeeIntoThisSimFromNeighbor = response.StartsWith ("y");
+			scene.RegionInfo.SeeIntoThisSimFromNeighbor = response.StartsWith ("y", StringComparison.CurrentCultureIgnoreCase);
 
-			MainConsole.Instance.InfoFormat ("[Scene Manager]: Region has been set to {0} visibility from neighbors.",
-				scene.RegionInfo.SeeIntoThisSimFromNeighbor ? " Allow" : "Disallow"); 
+			MainConsole.Instance.InfoFormat ("[SceneManager]: Region has been set to {0} visibility from neighbors.",
+				scene.RegionInfo.SeeIntoThisSimFromNeighbor ? " Allow" : "Disallow");
 
 			scene.SimulationDataService.ForceBackup ();
 		}

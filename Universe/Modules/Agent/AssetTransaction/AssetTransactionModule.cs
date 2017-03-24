@@ -38,269 +38,283 @@ using Universe.Framework.Services.ClassHelpers.Inventory;
 
 namespace Universe.Modules.Agent.AssetTransaction
 {
-	public class AssetTransactionModule : INonSharedRegionModule, IAgentAssetTransactions
-	{
-		/// <summary>
-		///     Each agent has its own singleton collection of transactions
-		/// </summary>
-		readonly Dictionary<UUID, AgentAssetTransactions> AgentTransactions =
-			new Dictionary<UUID, AgentAssetTransactions> ();
+    public class AssetTransactionModule : INonSharedRegionModule, IAgentAssetTransactions
+    {
+        /// <summary>
+        ///     Each agent has its own singleton collection of transactions
+        /// </summary>
+        readonly Dictionary<UUID, AgentAssetTransactions> AgentTransactions =
+            new Dictionary<UUID, AgentAssetTransactions> ();
 
-		IScene m_scene;
+        IScene m_scene;
 
-		//[Obsolete] //As long as this is being used to get objects that are not region specific, this is fine to use
-		public IScene MyScene {
-			get { return m_scene; }
-		}
+        //[Obsolete] //As long as this is being used to get objects that are not region specific, this is fine to use
+        public IScene MyScene
+        {
+            get { return m_scene; }
+        }
 
-		#region INonSharedRegionModule Members
+        #region INonSharedRegionModule Members
 
-		public void Initialize (IConfigSource config)
-		{
-		}
+        public void Initialize(IConfigSource config)
+        {
+        }
 
-		public void AddRegion (IScene scene)
-		{
-			scene.RegisterModuleInterface<IAgentAssetTransactions> (this);
+        public void AddRegion(IScene scene)
+        {
+            scene.RegisterModuleInterface<IAgentAssetTransactions>(this);
 
-			scene.EventManager.OnNewClient += NewClient;
-			scene.EventManager.OnClosingClient += OnClosingClient;
-			scene.EventManager.OnRemovePresence += OnRemovePresence;
+            scene.EventManager.OnNewClient += NewClient;
+            scene.EventManager.OnClosingClient += OnClosingClient;
+            scene.EventManager.OnRemovePresence += OnRemovePresence;
 
-			m_scene = scene;
-		}
+            m_scene = scene;
+        }
 
-		public void RemoveRegion (IScene scene)
-		{
-			scene.UnregisterModuleInterface<IAgentAssetTransactions> (this);
+        public void RemoveRegion(IScene scene)
+        {
+            scene.UnregisterModuleInterface<IAgentAssetTransactions>(this);
 
-			scene.EventManager.OnNewClient -= NewClient;
-			scene.EventManager.OnClosingClient -= OnClosingClient;
-			scene.EventManager.OnRemovePresence -= OnRemovePresence;
+            scene.EventManager.OnNewClient -= NewClient;
+            scene.EventManager.OnClosingClient -= OnClosingClient;
+            scene.EventManager.OnRemovePresence -= OnRemovePresence;
 
-			m_scene = null;
-		}
+            m_scene = null;
+        }
 
-		public void RegionLoaded (IScene scene)
-		{
-		}
+        public void RegionLoaded(IScene scene)
+        {
+        }
 
-		public Type ReplaceableInterface {
-			get { return null; }
-		}
+        public Type ReplaceableInterface
+        {
+            get { return null; }
+        }
 
-		public void Close ()
-		{
-		}
+        public void Close()
+        {
+        }
 
-		public string Name {
-			get { return "AgentTransactionModule"; }
-		}
+        public string Name
+        {
+            get { return "AgentTransactionModule"; }
+        }
 
-		#endregion
+        #endregion
 
-		public void NewClient (IClientAPI client)
-		{
-			client.OnAssetUploadRequest += HandleUDPUploadRequest;
-			client.OnXferReceive += HandleXfer;
-		}
+        public void NewClient(IClientAPI client)
+        {
+            client.OnAssetUploadRequest += HandleUDPUploadRequest;
+            client.OnXferReceive += HandleXfer;
+        }
 
-		void OnClosingClient (IClientAPI client)
-		{
-			client.OnAssetUploadRequest -= HandleUDPUploadRequest;
-			client.OnXferReceive -= HandleXfer;
-		}
+        void OnClosingClient (IClientAPI client)
+        {
+            client.OnAssetUploadRequest -= HandleUDPUploadRequest;
+            client.OnXferReceive -= HandleXfer;
+        }
 
-		void OnRemovePresence (IScenePresence SP)
-		{
-			if (SP != null && !SP.IsChildAgent)
-				RemoveAgentAssetTransactions (SP.UUID);
-		}
+        void OnRemovePresence (IScenePresence SP)
+        {
+            if (SP != null && !SP.IsChildAgent)
+                RemoveAgentAssetTransactions(SP.UUID);
+        }
 
-		#region AgentAssetTransactions
+        #region AgentAssetTransactions
 
-		/// <summary>
-		///     Remove the given agent asset transactions.  This should be called when a client is departing
-		///     from a scene (and hence won't be making any more transactions here).
-		/// </summary>
-		/// <param name="userID"></param>
-		public void RemoveAgentAssetTransactions (UUID userID)
-		{
-			// MainConsole.Instance.DebugFormat("Removing agent asset transactions structure for agent {0}", userID);
+        /// <summary>
+        ///     Remove the given agent asset transactions.  This should be called when a client is departing
+        ///     from a scene (and hence won't be making any more transactions here).
+        /// </summary>
+        /// <param name="userID"></param>
+        public void RemoveAgentAssetTransactions(UUID userID)
+        {
+            // MainConsole.Instance.DebugFormat("Removing agent asset transactions structure for agent {0}", userID);
 
-			lock (AgentTransactions) {
-				AgentTransactions.Remove (userID);
-			}
-		}
+            lock (AgentTransactions)
+            {
+                AgentTransactions.Remove(userID);
+            }
+        }
 
-		/// <summary>
-		///     Create an inventory item from data that has been received through a transaction.
-		///     This is called when new clothing or body parts are created.  It may also be called in other
-		///     situations.
-		/// </summary>
-		/// <param name="remoteClient"></param>
-		/// <param name="transactionID"></param>
-		/// <param name="folderID"></param>
-		/// <param name="callbackID"></param>
-		/// <param name="description"></param>
-		/// <param name="name"></param>
-		/// <param name="invType"></param>
-		/// <param name="type"></param>
-		/// <param name="wearableType"></param>
-		/// <param name="nextOwnerMask"></param>
-		public void HandleItemCreationFromTransaction (IClientAPI remoteClient, UUID transactionID, UUID folderID,
-		                                                    uint callbackID, string description, string name, sbyte invType,
-		                                                    sbyte type, byte wearableType, uint nextOwnerMask)
-		{
-			//            MainConsole.Instance.DebugFormat(
-			//                "[TRANSACTIONS MANAGER] Called HandleItemCreationFromTransaction with item {0}", name);
+        /// <summary>
+        ///     Create an inventory item from data that has been received through a transaction.
+        ///     This is called when new clothing or body parts are created.  It may also be called in other
+        ///     situations.
+        /// </summary>
+        /// <param name="remoteClient"></param>
+        /// <param name="transactionID"></param>
+        /// <param name="folderID"></param>
+        /// <param name="callbackID"></param>
+        /// <param name="description"></param>
+        /// <param name="name"></param>
+        /// <param name="invType"></param>
+        /// <param name="type"></param>
+        /// <param name="wearableType"></param>
+        /// <param name="nextOwnerMask"></param>
+        public void HandleItemCreationFromTransaction(IClientAPI remoteClient, UUID transactionID, UUID folderID,
+                                                      uint callbackID, string description, string name, sbyte invType,
+                                                      sbyte type, byte wearableType, uint nextOwnerMask)
+        {
+            //            MainConsole.Instance.DebugFormat(
+            //                "[TRANSACTIONS MANAGER] Called HandleItemCreationFromTransaction with item {0}", name);
 
-			AgentAssetTransactions transactions = GetUserTransactions (remoteClient.AgentId);
+            AgentAssetTransactions transactions = GetUserTransactions(remoteClient.AgentId);
 
-			IMonitorModule monitorModule = m_scene.RequestModuleInterface<IMonitorModule> ();
-			if (monitorModule != null) {
-				INetworkMonitor networkMonitor = monitorModule.GetMonitor<INetworkMonitor> (m_scene);
-				networkMonitor.AddPendingUploads (1);
-			}
+            IMonitorModule monitorModule = m_scene.RequestModuleInterface<IMonitorModule>();
+            if (monitorModule != null)
+            {
+                INetworkMonitor networkMonitor = monitorModule.GetMonitor<INetworkMonitor>(m_scene);
+                networkMonitor.AddPendingUploads(1);
+            }
 
-			transactions.RequestCreateInventoryItem (
-				remoteClient, transactionID, folderID, callbackID, description,
-				name, invType, type, wearableType, nextOwnerMask);
-		}
+            transactions.RequestCreateInventoryItem(
+                remoteClient, transactionID, folderID, callbackID, description,
+                name, invType, type, wearableType, nextOwnerMask);
+        }
 
-		/// <summary>
-		///     Update an inventory item with data that has been received through a transaction.
-		///     This is called when clothing or body parts are updated (for instance, with new textures or
-		///     colors).  It may also be called in other situations.
-		/// </summary>
-		/// <param name="remoteClient"></param>
-		/// <param name="transactionID"></param>
-		/// <param name="item"></param>
-		public void HandleItemUpdateFromTransaction (IClientAPI remoteClient, UUID transactionID,
-		                                                  InventoryItemBase item)
-		{
-			//            MainConsole.Instance.DebugFormat(
-			//                "[TRANSACTIONS MANAGER] Called HandleItemUpdateFromTransaction with item {0}",
-			//                item.Name);
+        /// <summary>
+        ///     Update an inventory item with data that has been received through a transaction.
+        ///     This is called when clothing or body parts are updated (for instance, with new textures or
+        ///     colors).  It may also be called in other situations.
+        /// </summary>
+        /// <param name="remoteClient"></param>
+        /// <param name="transactionID"></param>
+        /// <param name="item"></param>
+        public void HandleItemUpdateFromTransaction(IClientAPI remoteClient, UUID transactionID,
+                                                    InventoryItemBase item)
+        {
+            //            MainConsole.Instance.DebugFormat(
+            //                "[TRANSACTIONS MANAGER] Called HandleItemUpdateFromTransaction with item {0}",
+            //                item.Name);
 
-			AgentAssetTransactions transactions = GetUserTransactions (remoteClient.AgentId);
+            AgentAssetTransactions transactions = GetUserTransactions(remoteClient.AgentId);
 
-			IMonitorModule monitorModule = m_scene.RequestModuleInterface<IMonitorModule> ();
-			if (monitorModule != null) {
-				INetworkMonitor networkMonitor = monitorModule.GetMonitor<INetworkMonitor> (m_scene);
-				networkMonitor.AddPendingUploads (1);
-			}
+            IMonitorModule monitorModule = m_scene.RequestModuleInterface<IMonitorModule>();
+            if (monitorModule != null)
+            {
+                INetworkMonitor networkMonitor = monitorModule.GetMonitor<INetworkMonitor>(m_scene);
+                networkMonitor.AddPendingUploads(1);
+            }
 
-			transactions.RequestUpdateInventoryItem (remoteClient, transactionID, item);
-		}
+            transactions.RequestUpdateInventoryItem(remoteClient, transactionID, item);
+        }
 
-		/// <summary>
-		///     Update a task inventory item with data that has been received through a transaction.
-		///     This is currently called when, for instance, a notecard in a prim is saved.  The data is sent
-		///     up through a single AssetUploadRequest.  A subsequent UpdateTaskInventory then references the transaction
-		///     and comes through this method.
-		/// </summary>
-		/// <param name="remoteClient"></param>
-		/// <param name="part"></param>
-		/// <param name="transactionID"></param>
-		/// <param name="item"></param>
-		public void HandleTaskItemUpdateFromTransaction (
-			IClientAPI remoteClient, ISceneChildEntity part, UUID transactionID, TaskInventoryItem item)
-		{
-			//            MainConsole.Instance.DebugFormat(
-			//                "[TRANSACTIONS MANAGER] Called HandleTaskItemUpdateFromTransaction with item {0}",
-			//                item.Name);
+        /// <summary>
+        ///     Update a task inventory item with data that has been received through a transaction.
+        ///     This is currently called when, for instance, a notecard in a prim is saved.  The data is sent
+        ///     up through a single AssetUploadRequest.  A subsequent UpdateTaskInventory then references the transaction
+        ///     and comes through this method.
+        /// </summary>
+        /// <param name="remoteClient"></param>
+        /// <param name="part"></param>
+        /// <param name="transactionID"></param>
+        /// <param name="item"></param>
+        public void HandleTaskItemUpdateFromTransaction(
+            IClientAPI remoteClient, ISceneChildEntity part, UUID transactionID, TaskInventoryItem item)
+        {
+            //            MainConsole.Instance.DebugFormat(
+            //                "[TRANSACTIONS MANAGER] Called HandleTaskItemUpdateFromTransaction with item {0}",
+            //                item.Name);
 
-			AgentAssetTransactions transactions = GetUserTransactions (remoteClient.AgentId);
+            AgentAssetTransactions transactions = GetUserTransactions(remoteClient.AgentId);
 
-			IMonitorModule monitorModule = m_scene.RequestModuleInterface<IMonitorModule> ();
-			if (monitorModule != null) {
-				INetworkMonitor networkMonitor = monitorModule.GetMonitor<INetworkMonitor> (m_scene);
-				networkMonitor.AddPendingUploads (1);
-			}
+            IMonitorModule monitorModule = m_scene.RequestModuleInterface<IMonitorModule>();
+            if (monitorModule != null)
+            {
+                INetworkMonitor networkMonitor = monitorModule.GetMonitor<INetworkMonitor>(m_scene);
+                networkMonitor.AddPendingUploads(1);
+            }
 
-			transactions.RequestUpdateTaskInventoryItem (remoteClient, part, transactionID, item);
-		}
+            transactions.RequestUpdateTaskInventoryItem(remoteClient, part, transactionID, item);
+        }
 
-		/// <summary>
-		///     Get the collection of asset transactions for the given user.  If one does not already exist, it
-		///     is created.
-		/// </summary>
-		/// <param name="userID"></param>
-		/// <returns></returns>
-		AgentAssetTransactions GetUserTransactions (UUID userID)
-		{
-			lock (AgentTransactions) {
-				if (!AgentTransactions.ContainsKey (userID)) {
-					AgentAssetTransactions transactions = new AgentAssetTransactions (userID, m_scene, false);
-					AgentTransactions.Add (userID, transactions);
-				}
+        /// <summary>
+        ///     Get the collection of asset transactions for the given user.  If one does not already exist, it
+        ///     is created.
+        /// </summary>
+        /// <param name="userID"></param>
+        /// <returns></returns>
+        AgentAssetTransactions GetUserTransactions (UUID userID)
+        {
+            lock (AgentTransactions)
+            {
+                if (!AgentTransactions.ContainsKey(userID))
+                {
+                    AgentAssetTransactions transactions = new AgentAssetTransactions(userID, m_scene, false);
+                    AgentTransactions.Add(userID, transactions);
+                }
 
-				return AgentTransactions [userID];
-			}
-		}
+                return AgentTransactions[userID];
+            }
+        }
 
-		/// <summary>
-		///     Request that a client (agent) begin an asset transfer.
-		/// </summary>
-		/// <param name="remoteClient"></param>
-		/// <param name="assetID"></param>
-		/// <param name="transaction"></param>
-		/// <param name="type"></param>
-		/// <param name="data"></param>
-		/// <param name="storeLocal"></param>
-		/// <param name="tempFile"></param>
-		public void HandleUDPUploadRequest (IClientAPI remoteClient, UUID assetID, UUID transaction, sbyte type,
-		                                         byte[] data, bool storeLocal, bool tempFile)
-		{
+        /// <summary>
+        ///     Request that a client (agent) begin an asset transfer.
+        /// </summary>
+        /// <param name="remoteClient"></param>
+        /// <param name="assetID"></param>
+        /// <param name="transaction"></param>
+        /// <param name="type"></param>
+        /// <param name="data"></param>
+        /// <param name="storeLocal"></param>
+        /// <param name="tempFile"></param>
+        public void HandleUDPUploadRequest(IClientAPI remoteClient, UUID assetID, UUID transaction, sbyte type,
+                                           byte[] data, bool storeLocal, bool tempFile)
+        {
 //            MainConsole.Instance.Debug("HandleUDPUploadRequest - assetID: " + assetID.ToString() + " transaction: " + transaction.ToString() + " type: " + type.ToString() + " storelocal: " + storeLocal + " tempFile: " + tempFile);
 
-			if (((AssetType)type == AssetType.Texture ||
-			             (AssetType)type == AssetType.Sound ||
-			             (AssetType)type == AssetType.TextureTGA ||
-			             (AssetType)type == AssetType.Animation) &&
-			             !tempFile) {
-				IScene scene = remoteClient.Scene;
-				IMoneyModule mm = scene.RequestModuleInterface<IMoneyModule> ();
+            if (((AssetType)type == AssetType.Texture ||
+                (AssetType)type == AssetType.Sound ||
+                (AssetType)type == AssetType.TextureTGA ||
+                (AssetType)type == AssetType.Animation) &&
+                !tempFile)
+            {
+                IScene scene = remoteClient.Scene;
+                IMoneyModule mm = scene.RequestModuleInterface<IMoneyModule>();
 
-				if (mm != null) {
-					if (!mm.Charge (remoteClient.AgentId, mm.UploadCharge, "Upload asset", TransactionType.UploadCharge)) {
-						remoteClient.SendAgentAlertMessage ("Unable to upload asset. Insufficient funds.", false);
-						return;
-					}
-				}
-			}
+                if (mm != null)
+                {
+                    if (!mm.Charge (remoteClient.AgentId, mm.UploadCharge, "Upload asset", TransactionType.UploadCharge))
+                    {
+                        remoteClient.SendAgentAlertMessage("Unable to upload asset. Insufficient funds.", false);
+                        return;
+                    }
+                }
+            }
 
-			AgentAssetTransactions transactions = GetUserTransactions (remoteClient.AgentId);
+            AgentAssetTransactions transactions = GetUserTransactions(remoteClient.AgentId);
 
-			AssetXferUploader uploader = transactions.RequestXferUploader (transaction);
-			if (uploader != null) {
-				uploader.StartUpload (remoteClient, assetID, transaction, type, data, storeLocal, tempFile);
-			}
-		}
+            AssetXferUploader uploader = transactions.RequestXferUploader(transaction);
+            if (uploader != null)
+            {
+                uploader.StartUpload(remoteClient, assetID, transaction, type, data, storeLocal, tempFile);
+            }
+        }
 
-		/// <summary>
-		///     Handle asset transfer data packets received in response to the asset upload request in
-		///     HandleUDPUploadRequest()
-		/// </summary>
-		/// <param name="remoteClient"></param>
-		/// <param name="xferID"></param>
-		/// <param name="packetID"></param>
-		/// <param name="data"></param>
-		public void HandleXfer (IClientAPI remoteClient, ulong xferID, uint packetID, byte[] data)
-		{
-			//MainConsole.Instance.Debug("xferID: " + xferID + "  packetID: " + packetID + "  data!");
-			AgentAssetTransactions transactions = GetUserTransactions (remoteClient.AgentId);
+        /// <summary>
+        ///     Handle asset transfer data packets received in response to the asset upload request in
+        ///     HandleUDPUploadRequest()
+        /// </summary>
+        /// <param name="remoteClient"></param>
+        /// <param name="xferID"></param>
+        /// <param name="packetID"></param>
+        /// <param name="data"></param>
+        public void HandleXfer(IClientAPI remoteClient, ulong xferID, uint packetID, byte[] data)
+        {
+            //MainConsole.Instance.Debug("xferID: " + xferID + "  packetID: " + packetID + "  data!");
+            AgentAssetTransactions transactions = GetUserTransactions(remoteClient.AgentId);
 
-			IMonitorModule monitorModule = m_scene.RequestModuleInterface<IMonitorModule> ();
-			if (monitorModule != null) {
-				INetworkMonitor networkMonitor = monitorModule.GetMonitor<INetworkMonitor> (m_scene);
-				networkMonitor.AddPendingUploads (1);
-			}
+            IMonitorModule monitorModule = m_scene.RequestModuleInterface<IMonitorModule>();
+            if (monitorModule != null)
+            {
+                INetworkMonitor networkMonitor = monitorModule.GetMonitor<INetworkMonitor>(m_scene);
+                networkMonitor.AddPendingUploads(1);
+            }
 
-			transactions.HandleXfer (remoteClient, xferID, packetID, data);
-		}
+            transactions.HandleXfer(remoteClient, xferID, packetID, data);
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

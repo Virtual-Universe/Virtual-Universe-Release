@@ -32,34 +32,34 @@ using Universe.Framework.Modules;
 
 namespace Universe.Modules.Monitoring.Monitors
 {
-	class ThreadCountMonitor : IMonitor
-	{
-		#region Implementation of IMonitor
+    class ThreadCountMonitor : IMonitor
+    {
+        #region Implementation of IMonitor
 
-		public double GetValue ()
-		{
-			return Process.GetCurrentProcess ().Threads.Count;
-		}
+        public double GetValue ()
+        {
+            return Process.GetCurrentProcess ().Threads.Count;
+        }
 
-		public string GetName ()
-		{
-			return "Total Threads";
-		}
+        public string GetName ()
+        {
+            return "Total Threads";
+        }
 
-		public string GetInterfaceName ()
-		{
-			return "";
-		}
+        public string GetInterfaceName ()
+        {
+            return "";
+        }
 
-		public string GetFriendlyValue ()
-		{
-			return (int)GetValue () + " Thread(s) (Global)";
-		}
+        public string GetFriendlyValue ()
+        {
+            return (int)GetValue () + " Thread(s) (Global)";
+        }
 
-		public void ResetStats ()
-		{
-		}
+        public void ResetStats ()
+        {
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

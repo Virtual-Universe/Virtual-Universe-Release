@@ -28,82 +28,86 @@
  */
 
 using System.Collections.Generic;
+using Universe.Framework.Modules;
 using OpenMetaverse;
 using OpenMetaverse.StructuredData;
-using Universe.Framework.Modules;
 
 namespace Universe.Framework.ClientInterfaces
 {
-	public class multipleMapItemReply : IDataTransferable
-	{
-		public Dictionary<ulong, List<mapItemReply>> items = new Dictionary<ulong, List<mapItemReply>> ();
+    public class multipleMapItemReply : IDataTransferable
+    {
+        public Dictionary<ulong, List<mapItemReply>> items = new Dictionary<ulong, List<mapItemReply>>();
 
-		public multipleMapItemReply ()
-		{
-		}
+        public multipleMapItemReply()
+        {
+        }
 
-		public override OSDMap ToOSD ()
-		{
-			OSDMap result = new OSDMap ();
-			foreach (KeyValuePair<ulong, List<mapItemReply>> kvp in items) {
-				OSDArray array = new OSDArray ();
-				foreach (mapItemReply item in kvp.Value) {
-					array.Add (item.ToOSD ());
-				}
-				result [kvp.Key.ToString ()] = array;
-			}
-			return result;
-		}
+        public override OSDMap ToOSD()
+        {
+            OSDMap result = new OSDMap();
+            foreach (KeyValuePair<ulong, List<mapItemReply>> kvp in items)
+            {
+                OSDArray array = new OSDArray();
+                foreach (mapItemReply item in kvp.Value)
+                {
+                    array.Add(item.ToOSD());
+                }
+                result[kvp.Key.ToString()] = array;
+            }
+            return result;
+        }
 
-		public override void FromOSD (OSDMap map)
-		{
-			foreach (KeyValuePair<string, OSD> kvp in map) {
-				ulong regionHandle = ulong.Parse (kvp.Key);
-				OSDArray array = (OSDArray)kvp.Value;
-				List<mapItemReply> replies = new List<mapItemReply> ();
-				foreach (OSD o in array) {
-					mapItemReply r = new mapItemReply ();
-					r.FromOSD ((OSDMap)o);
-					replies.Add (r);
-				}
-				items [regionHandle] = replies;
-			}
-		}
-	}
+        public override void FromOSD(OSDMap map)
+        {
+            foreach (KeyValuePair<string, OSD> kvp in map)
+            {
+                ulong regionHandle = ulong.Parse(kvp.Key);
+                OSDArray array = (OSDArray) kvp.Value;
+                List<mapItemReply> replies = new List<mapItemReply>();
+                foreach (OSD o in array)
+                {
+                    mapItemReply r = new mapItemReply();
+                    r.FromOSD((OSDMap) o);
+                    replies.Add(r);
+                }
+                items[regionHandle] = replies;
+            }
+        }
+    }
 
-	public class mapItemReply : IDataTransferable
-	{
-		public int Extra;
-		public int Extra2;
-		public UUID id;
-		public string name;
-		public uint x;
-		public uint y;
+    public class mapItemReply : IDataTransferable
+    {
+        public int Extra;
+        public int Extra2;
+        public UUID id;
+        public string name;
+        public uint x;
+        public uint y;
 
-		public mapItemReply ()
-		{
-		}
+        public mapItemReply()
+        {
+        }
 
-		public override OSDMap ToOSD ()
-		{
-			OSDMap map = new OSDMap ();
-			map ["X"] = (int)x;
-			map ["Y"] = (int)y;
-			map ["ID"] = id;
-			map ["Extra"] = Extra;
-			map ["Extra2"] = Extra2;
-			map ["Name"] = name;
-			return map;
-		}
+        public override OSDMap ToOSD()
+        {
+            OSDMap map = new OSDMap();
+            map["X"] = (int) x;
+            map["Y"] = (int) y;
+            map["ID"] = id;
+            map["Extra"] = Extra;
+            map["Extra2"] = Extra2;
+            map["Name"] = name;
+            return map;
+        }
 
-		public override void FromOSD (OSDMap map)
-		{
-			x = (uint)(int)map ["X"];
-			y = (uint)(int)map ["Y"];
-			id = map ["ID"];
-			Extra = map ["Extra"];
-			Extra2 = map ["Extra2"];
-			name = map ["Name"];
-		}
-	}
+        public override void FromOSD(OSDMap map)
+        {
+            x = (uint) (int) map["X"];
+            y = (uint) (int) map["Y"];
+            id = map["ID"];
+            Extra = map["Extra"];
+            Extra2 = map["Extra2"];
+            name = map["Name"];
+        }
+    }
 }

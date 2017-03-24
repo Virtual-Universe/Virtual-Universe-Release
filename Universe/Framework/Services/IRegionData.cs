@@ -27,115 +27,89 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using OpenMetaverse;
 using System;
 using System.Collections.Generic;
-using OpenMetaverse;
 
 namespace Universe.Framework.Services
 {
-	/// <summary>
-	///     An interface for connecting to the authentication data-store
-	/// </summary>
-	public interface IRegionData : IUniverseDataPlugin
-	{
-		GridRegion Get (UUID regionID, List<UUID> scopeIDs);
+    /// <summary>
+    ///     An interface for connecting to the authentication data-store
+    /// </summary>
+    public interface IRegionData : IUniverseDataPlugin
+    {
+        GridRegion Get(UUID regionID, List<UUID> scopeIDs);
+        List<GridRegion> Get(string regionName, List<UUID> scopeIDs, uint? start, uint? count);
+        uint GetCount(string regionName, List<UUID> scopeIDs);
+        GridRegion GetZero(int x, int y, List<UUID> scopeIDs);
+        List<GridRegion> Get(int x, int y, List<UUID> scopeIDs);
+        List<GridRegion> Get(RegionFlags regionFlags);
+        List<GridRegion> Get(int xStart, int yStart, int xEnd, int yEnd, List<UUID> scopeIDs);
+        List<GridRegion> Get(RegionFlags flags, Dictionary<string, bool> sort);
+        List<GridRegion> Get(uint start, uint count, uint EstateID, RegionFlags flags, Dictionary<string, bool> sort);
 
-		List<GridRegion> Get (string regionName, List<UUID> scopeIDs, uint? start, uint? count);
+        List<GridRegion> Get(RegionFlags includeFlags, RegionFlags excludeFlags, uint? start, uint? count,
+                             Dictionary<string, bool> sort);
 
-		uint GetCount (string regionName, List<UUID> scopeIDs);
+        /// <summary>
+        ///     Gets the number of regions matching the specified flags
+        /// </summary>
+        /// <param name="includeFlags"></param>
+        /// <param name="excludeFlags"></param>
+        /// <returns></returns>
+        uint Count(RegionFlags includeFlags, RegionFlags excludeFlags);
 
-		GridRegion GetZero (int x, int y, List<UUID> scopeIDs);
+        /// <summary>
+        ///     Gets the neighboring regions, taking into account variable-sized regions
+        /// </summary>
+        /// <param name="regionID"></param>
+        /// <param name="scopeIDs"></param>
+        /// <param name="squareRangeFromCenterInMeters">because calculating circular radii would be a complex.</param>
+        /// <returns>If the return result is of zero length the region does not exist.</returns>
+        List<GridRegion> GetNeighbours(UUID regionID, List<UUID> scopeIDs, uint squareRangeFromCenterInMeters);
 
-		List<GridRegion> Get (int x, int y, List<UUID> scopeIDs);
+        /// <summary>
+        ///     Gets all regions within squareRangeFromCenterInMeters meters of centerX and centerY
+        /// </summary>
+        /// <param name="scopeIDs"></param>
+        /// <param name="excludeRegion"></param>
+        /// <param name="centerX"></param>
+        /// <param name="centerY"></param>
+        /// <param name="squareRangeFromCenterInMeters"></param>
+        /// <returns></returns>
+        List<GridRegion> Get(List<UUID> scopeIDs, UUID excludeRegion, float centerX, float centerY,
+                             uint squareRangeFromCenterInMeters);
 
-		List<GridRegion> Get (RegionFlags regionFlags);
+        uint Count(uint estateID, RegionFlags flags);
 
-		List<GridRegion> Get (int xStart, int yStart, int xEnd, int yEnd, List<UUID> scopeIDs);
+        bool Store(GridRegion data);
 
-		List<GridRegion> Get (RegionFlags flags, Dictionary<string, bool> sort);
+        bool Delete(UUID regionID);
+        bool DeleteAll(string[] criteriaKey, object[] criteriaValue);
 
-		List<GridRegion> Get (uint start, uint count, uint EstateID, RegionFlags flags, Dictionary<string, bool> sort);
+        List<GridRegion> GetDefaultRegions(List<UUID> scopeIDs);
+        List<GridRegion> GetFallbackRegions(List<UUID> scopeIDs, int x, int y);
+        List<GridRegion> GetSafeRegions(List<UUID> scopeIDs, int x, int y);
+        List<GridRegion> GetOwnerRegions (UUID owner);
 
-		List<GridRegion> Get (RegionFlags includeFlags, RegionFlags excludeFlags, uint? start, uint? count,
-		                           Dictionary<string, bool> sort);
+    }
 
-		/// <summary>
-		///     Gets the number of regions matching the specified flags
-		/// </summary>
-		/// <param name="includeFlags"></param>
-		/// <param name="excludeFlags"></param>
-		/// <returns></returns>
-		uint Count (RegionFlags includeFlags, RegionFlags excludeFlags);
-
-		/// <summary>
-		///     Gets the neighboring regions, taking into account variable-sized regions
-		/// </summary>
-		/// <param name="regionID"></param>
-		/// <param name="scopeIDs"></param>
-		/// <param name="squareRangeFromCenterInMeters">because calculating circular radii would be a complex.</param>
-		/// <returns>If the return result is of zero length the region does not exist.</returns>
-		List<GridRegion> GetNeighbours (UUID regionID, List<UUID> scopeIDs, uint squareRangeFromCenterInMeters);
-
-		/// <summary>
-		///     Gets all regions within squareRangeFromCenterInMeters meters of centerX and centerY
-		/// </summary>
-		/// <param name="scopeIDs"></param>
-		/// <param name="excludeRegion"></param>
-		/// <param name="centerX"></param>
-		/// <param name="centerY"></param>
-		/// <param name="squareRangeFromCenterInMeters"></param>
-		/// <returns></returns>
-		List<GridRegion> Get (List<UUID> scopeIDs, UUID excludeRegion, float centerX, float centerY,
-		                           uint squareRangeFromCenterInMeters);
-
-		uint Count (uint estateID, RegionFlags flags);
-
-		bool Store (GridRegion data);
-
-		bool Delete (UUID regionID);
-
-		bool DeleteAll (string[] criteriaKey, object[] criteriaValue);
-
-		List<GridRegion> GetDefaultRegions (List<UUID> scopeIDs);
-
-		List<GridRegion> GetFallbackRegions (List<UUID> scopeIDs, int x, int y);
-
-		List<GridRegion> GetSafeRegions (List<UUID> scopeIDs, int x, int y);
-
-		List<GridRegion> GetOwnerRegions (UUID owner);
-
-	}
-
-	[Flags]
-	public enum RegionFlags
-	{
-		DefaultRegion = 1,
-		// Used for new Rez. Random if multiple defined
-		FallbackRegion = 2,
-		// Regions we redirect to when the destination is down
-		RegionOnline = 4,
-		// Set when a region comes online, unset when it un-registers and DeleteOnUnregister is false
-		NoDirectLogin = 8,
-		// Region unavailable for direct logins (by name)
-		Persistent = 16,
-		// Don't remove on un-register
-		LockedOut = 32,
-		// Don't allow registration
-		NoMove = 64,
-		// Don't allow moving this region
-		Reservation = 128,
-		// This is an inactive reservation
-		Authenticate = 256,
-		// Require authentication
-		Hyperlink = 512,
-		// Record represents a HG link
-		Hidden = 1024,
-		//Hides the sim except for those on the access list
-		Safe = 2048,
-		//Safe to login agents to
-		Prelude = 4096,
-		//Starting region that you can only go to once
-		Foreign = 8192
-		//Region is not in this grid
-	}
+    [Flags]
+    public enum RegionFlags
+    {
+        DefaultRegion = 1, // Used for new Rez. Random if multiple defined
+        FallbackRegion = 2, // Regions we redirect to when the destination is down
+        RegionOnline = 4, // Set when a region comes online, unset when it un-registers and DeleteOnUnregister is false
+        NoDirectLogin = 8, // Region unavailable for direct logins (by name)
+        Persistent = 16, // Don't remove on un-register
+        LockedOut = 32, // Don't allow registration
+        NoMove = 64, // Don't allow moving this region
+        Reservation = 128, // This is an inactive reservation
+        Authenticate = 256, // Require authentication
+        Hyperlink = 512, // Record represents a HG link
+        Hidden = 1024, //Hides the sim except for those on the access list
+        Safe = 2048, //Safe to login agents to
+        Prelude = 4096, //Starting region that you can only go to once
+        Foreign = 8192 //Region is not in this grid
+    }
 }

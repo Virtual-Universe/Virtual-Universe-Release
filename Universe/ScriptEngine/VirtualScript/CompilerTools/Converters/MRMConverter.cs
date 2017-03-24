@@ -39,138 +39,148 @@ using Universe.ScriptEngine.VirtualScript.MiniModule;
 
 namespace Universe.ScriptEngine.VirtualScript.CompilerTools
 {
-	public class MRMConverter : IScriptConverter
-	{
-		readonly CSharpCodeProvider CScodeProvider = new CSharpCodeProvider ();
+    public class MRMConverter : IScriptConverter
+    {
+        readonly CSharpCodeProvider CScodeProvider = new CSharpCodeProvider();
 
-		#region IScriptConverter Members
+        #region IScriptConverter Members
 
-		public string DefaultState {
-			get { return ""; }
-		}
+        public string DefaultState
+        {
+            get { return ""; }
+        }
 
-		public void Initialize (Compiler compiler)
-		{
-		}
+        public void Initialize(Compiler compiler)
+        {
+        }
 
-		public void Convert (string Script, out string CompiledScript,
-		                          out object PositionMap)
-		{
-			CompiledScript = CreateCompilerScript (Script);
-			PositionMap = null;
-		}
+        public void Convert(string Script, out string CompiledScript,
+                            out object PositionMap)
+        {
+            CompiledScript = CreateCompilerScript(Script);
+            PositionMap = null;
+        }
 
-		public string Name {
-			get { return "MRM:C#"; }
-		}
+        public string Name
+        {
+            get { return "MRM:C#"; }
+        }
 
-		public CompilerResults Compile (CompilerParameters parameters, bool isFile, string Script)
-		{
-			string[] lines = Script.Split (new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
-			List<string> libraries = new List<string> ();
-			foreach (string s in lines)
-				if (s.StartsWith ("//@DEPENDS:", StringComparison.Ordinal))
-					libraries.Add (s.Replace ("//@DEPENDS:", ""));
+        public CompilerResults Compile(CompilerParameters parameters, bool isFile, string Script)
+        {
+            string[] lines = Script.Split(new[] {"\n"}, StringSplitOptions.RemoveEmptyEntries);
+            List<string> libraries = new List<string>();
+            foreach (string s in lines)
+                if (s.StartsWith ("//@DEPENDS:", StringComparison.Ordinal))
+                    libraries.Add(s.Replace("//@DEPENDS:", ""));
 
-			string rootPath =
-				Path.GetDirectoryName (AppDomain.CurrentDomain.BaseDirectory);
-			foreach (string library in libraries) {
-				if (rootPath != null)
-					parameters.ReferencedAssemblies.Add (Path.Combine (rootPath, library));
-			}
+            string rootPath =
+                Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory);
+            foreach (string library in libraries)
+            {
+                if (rootPath != null) parameters.ReferencedAssemblies.Add(Path.Combine(rootPath, library));
+            }
 
-			libraries.Add ("OpenMetaverseTypes.dll");
+            libraries.Add("OpenMetaverseTypes.dll");
 
 
-			bool complete = false;
-			bool retried = false;
+            bool complete = false;
+            bool retried = false;
 
-			CompilerResults results;
-			do {
-				lock (CScodeProvider) {
-					if (isFile)
-						results = CScodeProvider.CompileAssemblyFromFile (
-							parameters, Script);
-					else
-						results = CScodeProvider.CompileAssemblyFromSource (
-							parameters, Script);
-				}
-				// Deal with an occasional segv in the compiler.
-				// Rarely, if ever, occurs twice in succession.
-				// Line # == 0 and no file name are indications that
-				// this is a native stack trace rather than a normal
-				// error log.
-				if (results.Errors.Count > 0) {
-					if (!retried && string.IsNullOrEmpty (results.Errors [0].FileName) &&
-					                   results.Errors [0].Line == 0) {
-						// System.Console.WriteLine("retrying failed compilation");
-						retried = true;
-					} else {
-						complete = true;
-					}
-				} else {
-					complete = true;
-				}
-			} while (!complete);
-			return results;
-		}
+            CompilerResults results;
+            do
+            {
+                lock (CScodeProvider)
+                {
+                    if (isFile)
+                        results = CScodeProvider.CompileAssemblyFromFile(
+                            parameters, Script);
+                    else
+                        results = CScodeProvider.CompileAssemblyFromSource(
+                            parameters, Script);
+                }
+                // Deal with an occasional segv in the compiler.
+                // Rarely, if ever, occurs twice in succession.
+                // Line # == 0 and no file name are indications that
+                // this is a native stack trace rather than a normal
+                // error log.
+                if (results.Errors.Count > 0)
+                {
+                    if (!retried && string.IsNullOrEmpty(results.Errors[0].FileName) &&
+                        results.Errors[0].Line == 0)
+                    {
+                        // System.Console.WriteLine("retrying failed compilation");
+                        retried = true;
+                    }
+                    else
+                    {
+                        complete = true;
+                    }
+                }
+                else
+                {
+                    complete = true;
+                }
+            } while (!complete);
+            return results;
+        }
 
-		public void FinishCompile (IScriptModulePlugin plugin, ScriptData data, IScript Script)
-		{
-			MRMBase mmb = (MRMBase)Script;
-			if (mmb == null)
-				return;
+        public void FinishCompile(IScriptModulePlugin plugin, ScriptData data, IScript Script)
+        {
+            MRMBase mmb = (MRMBase) Script;
+            if (mmb == null)
+                return;
 
-			InitializeMRM (plugin, data, mmb, data.Part.LocalId, data.ItemID);
-			mmb.Start ();
-		}
+            InitializeMRM(plugin, data, mmb, data.Part.LocalId, data.ItemID);
+            mmb.Start();
+        }
 
-		public void FindErrorLine (CompilerError CompErr, object PositionMap, string script, out int LineN, out int CharN)
-		{
-			LineN = CompErr.Line;
-			CharN = CompErr.Column;
-		}
+        public void FindErrorLine(CompilerError CompErr, object PositionMap, string script, out int LineN, out int CharN)
+        {
+            LineN = CompErr.Line;
+            CharN = CompErr.Column;
+        }
 
-		#endregion
+        #endregion
 
-		public void Dispose ()
-		{
-		}
+        public void Dispose()
+        {
+        }
 
-		string CreateCompilerScript (string compileScript)
-		{
-			return ConvertMRMKeywords (compileScript);
-		}
+        string CreateCompilerScript(string compileScript)
+        {
+            return ConvertMRMKeywords(compileScript);
+        }
 
-		string ConvertMRMKeywords (string script)
-		{
-			script = script.Replace ("microthreaded void", "IEnumerable");
-			script = script.Replace ("relax;", "yield return null;");
+        string ConvertMRMKeywords(string script)
+        {
+            script = script.Replace("microthreaded void", "IEnumerable");
+            script = script.Replace("relax;", "yield return null;");
 
-			return script;
-		}
+            return script;
+        }
 
-		public void GetGlobalEnvironment (IScriptModulePlugin plugin, ScriptData data, uint localID, out IWorld world,
-		                                       out IHost host)
-		{
-			// UUID should be changed to object owner.
-			UUID owner = data.World.RegionInfo.EstateSettings.EstateOwner;
-			SEUser securityUser = new SEUser (owner, "Name Unassigned");
-			SecurityCredential creds = new SecurityCredential (securityUser, data.World);
+        public void GetGlobalEnvironment(IScriptModulePlugin plugin, ScriptData data, uint localID, out IWorld world,
+                                         out IHost host)
+        {
+            // UUID should be changed to object owner.
+            UUID owner = data.World.RegionInfo.EstateSettings.EstateOwner;
+            SEUser securityUser = new SEUser(owner, "Name Unassigned");
+            SecurityCredential creds = new SecurityCredential(securityUser, data.World);
 
-			world = new World (data.World, creds);
-			host = new Host (new SOPObject (data.World, localID, creds), data.World,
-				new ExtensionHandler (plugin.Extensions));
-		}
+            world = new World(data.World, creds);
+            host = new Host(new SOPObject(data.World, localID, creds), data.World,
+                            new ExtensionHandler(plugin.Extensions));
+        }
 
-		public void InitializeMRM (IScriptModulePlugin plugin, ScriptData data, MRMBase mmb, uint localID, UUID itemID)
-		{
-			IWorld world;
-			IHost host;
+        public void InitializeMRM(IScriptModulePlugin plugin, ScriptData data, MRMBase mmb, uint localID, UUID itemID)
+        {
+            IWorld world;
+            IHost host;
 
-			GetGlobalEnvironment (plugin, data, localID, out world, out host);
+            GetGlobalEnvironment(plugin, data, localID, out world, out host);
 
-			mmb.InitMiniModule (world, host, itemID);
-		}
-	}
+            mmb.InitMiniModule(world, host, itemID);
+        }
+    }
 }

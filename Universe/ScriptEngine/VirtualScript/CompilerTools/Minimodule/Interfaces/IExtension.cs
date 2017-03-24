@@ -29,12 +29,10 @@
 
 namespace Universe.ScriptEngine.VirtualScript.MiniModule
 {
-	public interface IExtension
-	{
-		T Get<T> ();
-
-		bool TryGet<T> (out T extension);
-
-		bool Has<T> ();
-	}
+    public interface IExtension
+    {
+        T Get<T>();
+        bool TryGet<T>(out T extension);
+        bool Has<T>();
+    }
 }

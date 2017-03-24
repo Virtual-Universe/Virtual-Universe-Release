@@ -49,14 +49,14 @@ namespace Universe.Modules.Web
 		public bool RequiresAdminAuthentication {
 			get { return false; }
 		}
-
-		public Dictionary<string, object> Fill (WebInterface webInterface, string filename, OSHttpRequest httpRequest,
-		                                       OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
-		                                       ITranslator translator, out string response)
+        
+		public Dictionary<string, object> Fill(WebInterface webInterface, string filename, OSHttpRequest httpRequest,
+			OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
+			ITranslator translator, out string response)
 		{
 			response = null;
         	
-			var vars = new Dictionary<string, object> ();
+			var vars = new Dictionary<string, object>();
         	
 			// This page should show if a user already has a partner and show the ability to cancel the Partnership (with a payment defined in Economy.ini)
 			// 
@@ -65,8 +65,8 @@ namespace Universe.Modules.Web
 			
 			return vars;
 		}
-
-		public bool AttemptFindPage (string filename, ref OSHttpResponse httpResponse, out string text)
+        
+		public bool AttemptFindPage(string filename, ref OSHttpResponse httpResponse, out string text)
 		{
 			text = "";
 			return false;

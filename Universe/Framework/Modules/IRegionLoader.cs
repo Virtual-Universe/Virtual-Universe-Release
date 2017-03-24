@@ -27,83 +27,83 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Nini.Config;
 using Universe.Framework.SceneInfo;
+using Nini.Config;
 
 namespace Universe.Framework.Modules
 {
-	/// <summary>
-	///     Loads regions from all IRegionLoaderPlugins and returns them to the SceneManager (normally)
-	/// </summary>
-	public interface IRegionLoader
-	{
-		/// <summary>
-		///     Returns the plugin name
-		/// </summary>
-		/// <returns></returns>
-		string Name { get; }
+    /// <summary>
+    ///     Loads regions from all IRegionLoaderPlugins and returns them to the SceneManager (normally)
+    /// </summary>
+    public interface IRegionLoader
+    {
+        /// <summary>
+        ///     Returns the plugin name
+        /// </summary>
+        /// <returns></returns>
+        string Name { get; }
 
-		/// <summary>
-		///     This determines whether this plugin will be loaded
-		/// </summary>
-		bool Enabled { get; }
+        /// <summary>
+        ///     This determines whether this plugin will be loaded
+        /// </summary>
+        bool Enabled { get; }
 
-		/// <summary>
-		///     This determines whether this plugin will be used for dealing with creating regions and other things
-		/// </summary>
-		bool Default { get; }
+        /// <summary>
+        ///     This determines whether this plugin will be used for dealing with creating regions and other things
+        /// </summary>
+        bool Default { get; }
 
-		/// <summary>
-		///     Starts up the module and loads configuration
-		/// </summary>
-		/// <param name="configSource"></param>
-		/// <param name="simBase"></param>
-		void Initialize (IConfigSource configSource, ISimulationBase simBase);
+        /// <summary>
+        ///     Starts up the module and loads configuration
+        /// </summary>
+        /// <param name="configSource"></param>
+        /// <param name="simBase"></param>
+        void Initialize(IConfigSource configSource, ISimulationBase simBase);
 
-		/// <summary>
-		///     Loads the region from all enabled plugins
-		/// </summary>
-		/// <returns>All regionInfos loaded</returns>
-		RegionInfo LoadRegion ();
+        /// <summary>
+        ///     Loads the region from all enabled plugins
+        /// </summary>
+        /// <returns>All regionInfos loaded</returns>
+        RegionInfo LoadRegion();
 
-		/// <summary>
-		///     This updates a Regions info given by the parameter 'oldName' to the new region info given
-		/// </summary>
-		/// <param name="oldName"></param>
-		/// <param name="regionInfo"></param>
-		void UpdateRegionInfo (string oldName, RegionInfo regionInfo);
+        /// <summary>
+        ///     This updates a Regions info given by the parameter 'oldName' to the new region info given
+        /// </summary>
+        /// <param name="oldName"></param>
+        /// <param name="regionInfo"></param>
+        void UpdateRegionInfo(string oldName, RegionInfo regionInfo);
 
-		/// <summary>
-		///     Delete the given region from the loader
-		/// </summary>
-		/// <param name="regionInfo"></param>
-		void DeleteRegion (RegionInfo regionInfo);
+        /// <summary>
+        ///     Delete the given region from the loader
+        /// </summary>
+        /// <param name="regionInfo"></param>
+        void DeleteRegion(RegionInfo regionInfo);
 
-		/// <summary>
-		///     The region loader failed to start this loader's regions, deal with the side effects
-		/// </summary>
-		/// <returns></returns>
-		bool FailedToStartRegions (string reason);
+        /// <summary>
+        ///     The region loader failed to start this loader's regions, deal with the side effects
+        /// </summary>
+        /// <returns></returns>
+        bool FailedToStartRegions(string reason);
 
-		/// <summary>
-		///     Create a new region from the user's input
-		/// </summary>
-		void CreateRegion ();
-	}
+        /// <summary>
+        ///     Create a new region from the user's input
+        /// </summary>
+        void CreateRegion();
+    }
 
-	public interface ISceneLoader
-	{
-		/// <summary>
-		///     Returns the plugin name
-		/// </summary>
-		/// <returns></returns>
-		string Name { get; }
+    public interface ISceneLoader
+    {
+        /// <summary>
+        ///     Returns the plugin name
+        /// </summary>
+        /// <returns></returns>
+        string Name { get; }
 
-		/// <summary>
-		///     Create a basic IScene reference with the given RegionInfo
-		/// </summary>
-		/// <param name="regionInfo"></param>
-		/// <returns></returns>
-		IScene CreateScene (ISimulationDataStore dataStore, RegionInfo regionInfo);
-	}
+        /// <summary>
+        ///     Create a basic IScene reference with the given RegionInfo
+        /// </summary>
+        /// <param name="regionInfo"></param>
+        /// <returns></returns>
+        IScene CreateScene(ISimulationDataStore dataStore, RegionInfo regionInfo);
+    }
 }

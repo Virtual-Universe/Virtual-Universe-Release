@@ -31,95 +31,95 @@ using System;
 
 namespace Universe.Framework.ConsoleFramework
 {
-	public delegate void ConsoleCommand (string[] comParams);
+    public delegate void ConsoleCommand (string [] comParams);
 
-	/// <summary>
-	///     Holder object for a new console plugin command
-	///     Override the methods like Run and IsHelpfull (but the defaults might work ok.)
-	/// </summary>
-	public class ConsolePluginCommand
-	{
-		/// <summary>
-		///     command in the form of "showme new commands"
-		/// </summary>
-		readonly string[] m_cmdText;
+    /// <summary>
+    ///     Holder object for a new console plugin command
+    ///     Override the methods like Run and IsHelpfull (but the defaults might work ok.)
+    /// </summary>
+    public class ConsolePluginCommand
+    {
+        /// <summary>
+        ///     command in the form of "showme new commands"
+        /// </summary>
+        readonly string [] m_cmdText;
 
-		/// <summary>
-		///     command delegate used in running
-		/// </summary>
-		readonly ConsoleCommand m_commandDelegate;
+        /// <summary>
+        ///     command delegate used in running
+        /// </summary>
+        readonly ConsoleCommand m_commandDelegate;
 
-		/// <summary>
-		///     help text displayed
-		/// </summary>
-		readonly string m_helpText;
+        /// <summary>
+        ///     help text displayed
+        /// </summary>
+        readonly string m_helpText;
 
-		/// <summary>
-		///     Construct a new ConsolePluginCommand
-		///     for use with RegisterConsolePluginCommand(myCmd);
-		/// </summary>
-		/// <param name="command">in the form of "showme new commands"</param>
-		/// <param name="dlg">command delegate used in running</param>
-		/// <param name="help">the text displayed in "help showme new commands"</param>
-		public ConsolePluginCommand (string command, ConsoleCommand dlg, string help)
-		{
-			m_cmdText = command.Split (new [] { ' ' });
-			m_commandDelegate = dlg;
-			m_helpText = help;
-		}
+        /// <summary>
+        ///     Construct a new ConsolePluginCommand
+        ///     for use with RegisterConsolePluginCommand(myCmd);
+        /// </summary>
+        /// <param name="command">in the form of "showme new commands"</param>
+        /// <param name="dlg">command delegate used in running</param>
+        /// <param name="help">the text displayed in "help showme new commands"</param>
+        public ConsolePluginCommand (string command, ConsoleCommand dlg, string help)
+        {
+            m_cmdText = command.Split (new [] { ' ' });
+            m_commandDelegate = dlg;
+            m_helpText = help;
+        }
 
-		/// <summary>
-		///     Returns the match length this command has upon the 'cmdWithParams'
-		///     At least a higher number for "show plugin status" then "show" would return
-		///     This is used to have multi length command verbs
-		///     @see OopenSim.RunPluginCommands
-		///     It will only run the one with the highest number
-		/// </summary>
-		public int matchLength (string cmdWithParams)
-		{
-			// case insensitive matching
-			cmdWithParams = cmdWithParams.ToLower ().Trim ();
-			string matchText = string.Join (" ", m_cmdText).ToLower ().Trim ();
-			if (cmdWithParams.StartsWith (matchText, StringComparison.Ordinal)) {
-				// QUESTION Instead return cmdText.Length; ?
-				return matchText.Length;
-			}
-			return 0;
-		}
+        /// <summary>
+        ///     Returns the match length this command has upon the 'cmdWithParams'
+        ///     At least a higher number for "show plugin status" then "show" would return
+        ///     This is used to have multi length command verbs
+        ///     @see OopenSim.RunPluginCommands
+        ///     It will only run the one with the highest number
+        /// </summary>
+        public int matchLength (string cmdWithParams)
+        {
+            // case insensitive matching
+            cmdWithParams = cmdWithParams.ToLower ().Trim ();
+            string matchText = string.Join (" ", m_cmdText).ToLower ().Trim ();
+            if (cmdWithParams.StartsWith (matchText, StringComparison.Ordinal)) {
+                // QUESTION Instead return cmdText.Length; ?
+                return matchText.Length;
+            }
+            return 0;
+        }
 
-		/// <summary>
-		///     Run the delegate the incoming string may contain the command, if so, it is chopped off the cmdParams[]
-		/// </summary>
-		public void Run (string cmd, string[] cmdParams)
-		{
-			int skipParams = 0;
-			if (m_cmdText.Length > 1) {
-				int currentParam = 1;
-				while (currentParam < m_cmdText.Length) {
-					if (cmdParams [skipParams].ToLower ().Equals (m_cmdText [currentParam].ToLower ())) {
-						skipParams++;
-					}
-					currentParam++;
-				}
-			}
-			string[] sendCmdParams = cmdParams;
-			if (skipParams > 0) {
-				sendCmdParams = new string [cmdParams.Length - skipParams];
-				for (int i = 0; i < sendCmdParams.Length; i++) {
-					sendCmdParams [i] = cmdParams [skipParams++];
-				}
-			}
-			m_commandDelegate (sendCmdParams);
-		}
+        /// <summary>
+        ///     Run the delegate the incoming string may contain the command, if so, it is chopped off the cmdParams[]
+        /// </summary>
+        public void Run (string cmd, string [] cmdParams)
+        {
+            int skipParams = 0;
+            if (m_cmdText.Length > 1) {
+                int currentParam = 1;
+                while (currentParam < m_cmdText.Length) {
+                    if (cmdParams [skipParams].ToLower ().Equals (m_cmdText [currentParam].ToLower ())) {
+                        skipParams++;
+                    }
+                    currentParam++;
+                }
+            }
+            string [] sendCmdParams = cmdParams;
+            if (skipParams > 0) {
+                sendCmdParams = new string [cmdParams.Length - skipParams];
+                for (int i = 0; i < sendCmdParams.Length; i++) {
+                    sendCmdParams [i] = cmdParams [skipParams++];
+                }
+            }
+            m_commandDelegate (sendCmdParams);
+        }
 
-		/// <summary>
-		///     return true if the ShowHelp(..) method might be helpful
-		/// </summary>
-		public bool IsHelpfull (string cmdWithParams)
-		{
-			cmdWithParams = cmdWithParams.ToLower ();
-			return cmdWithParams.Contains (string.Join (" ", m_cmdText).ToLower ()) ||
-			m_helpText.ToLower ().Contains (cmdWithParams);
-		}
-	}
+        /// <summary>
+        ///     return true if the ShowHelp(..) method might be helpful
+        /// </summary>
+        public bool IsHelpfull (string cmdWithParams)
+        {
+            cmdWithParams = cmdWithParams.ToLower ();
+            return cmdWithParams.Contains (string.Join (" ", m_cmdText).ToLower ()) ||
+                   m_helpText.ToLower ().Contains (cmdWithParams);
+        }
+    }
 }

@@ -34,87 +34,96 @@ using Universe.Framework.Services;
 
 namespace Universe.Modules.Web
 {
-	public class AdminUserAbuseListPage : IWebInterfacePage
-	{
-		public string[] FilePath {
-			get {
-				return new[] {
-					"html/admin/abuse_list.html"
-				};
-			}
-		}
+    public class AdminUserAbuseListPage : IWebInterfacePage
+    {
+        public string[] FilePath
+        {
+            get {
+                return new[] {
+                    "html/admin/abuse_list.html"
+                };
+            }
+        }
 
-		public bool RequiresAuthentication {
-			get { return true; }
-		}
+        public bool RequiresAuthentication
+        {
+            get { return true; }
+        }
 
-		public bool RequiresAdminAuthentication {
-			get { return true; }
-		}
+        public bool RequiresAdminAuthentication
+        {
+            get { return true; }
+        }
 
-		public Dictionary<string, object> Fill (WebInterface webInterface, string filename, OSHttpRequest httpRequest,
-		                                        OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
-		                                        ITranslator translator, out string response)
-		{
-			response = null;
-			var vars = new Dictionary<string, object> ();
-			var abuseReportsList = new List<Dictionary<string, object>> ();
+        public Dictionary<string, object> Fill (WebInterface webInterface, string filename, OSHttpRequest httpRequest,
+                                               OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
+                                               ITranslator translator, out string response)
+        {
+            response = null;
+            var vars = new Dictionary<string, object> ();
+            var abuseReportsList = new List<Dictionary<string, object>> ();
 
-			IAbuseReportsConnector abuseModule = Framework.Utilities.DataManager.RequestPlugin<IAbuseReportsConnector> ();
+            IAbuseReportsConnector abuseModule = Framework.Utilities.DataManager.RequestPlugin<IAbuseReportsConnector> ();
 
-			string noDetails = translator.GetTranslatedString ("NoDetailsText");
-			List<AbuseReport> abuseReports;
+            string noDetails = translator.GetTranslatedString ("NoDetailsText");
+            List<AbuseReport> abuseReports;
 
-			abuseReports = abuseModule.GetAbuseReports (0, 0, true);
+            abuseReports = abuseModule.GetAbuseReports (0, 0, true);
 
-			if (abuseReports.Count > 0) {
-				noDetails = "";
+            if (abuseReports.Count > 0)
+            {
+                noDetails = "";
 
-				foreach (var rpt in abuseReports) {
-					abuseReportsList.Add (new Dictionary<string, object> {
-						//{ "Date", Culture.LocaleDate (transaction.TransferDate.ToLocalTime(), "MMM dd, hh:mm:ss tt") },
-						{ "Category", rpt.Category },
-						{ "ReporterName", rpt.ReporterName },
-						{ "Abusername", rpt.AbuserName },
-						{ "Summary", rpt.AbuseSummary },
-						{ "AssignedTo", rpt.AssignedTo },
-						{ "Active", rpt.Active ? "Yes" : "No" },
-						{ "CardNumber", rpt.Number.ToString () }
-					});
-				}
-			}
+                foreach (var rpt in abuseReports)
+                {
+                    abuseReportsList.Add (new Dictionary<string, object> {
+                        //{ "Date", Culture.LocaleDate (transaction.TransferDate.ToLocalTime(), "MMM dd, hh:mm:ss tt") },
+                        { "Category", rpt.Category },
+                        { "ReporterName", rpt.ReporterName },
+                        { "Abusername", rpt.AbuserName },
+                        { "Summary", rpt.AbuseSummary },
+                        { "AssignedTo", rpt.AssignedTo },
+                        { "Active", rpt.Active ? "Yes" : "No" },
+                        { "CardNumber", rpt.Number.ToString () }
+                    });
+                }
+            }
 
-			if (abuseReports == null) {
-				abuseReportsList.Add (new Dictionary<string, object> {
-					{ "Category", "" },
-					{ "ReporterName", "" },
-					{ "Abusername", "" },
-					{ "Summary", "No abuse reports available" },
-					{ "AssignedTo", "" },
-					{ "Active", "" },
-					{ "CardNumber", "" }
-				});
-			}
+            if (abuseReports == null)
+            {
+                abuseReportsList.Add (new Dictionary<string, object> {
+                    { "Category", "" },
+                    { "ReporterName", "" },
+                    { "Abusername", "" },
+                    { "Summary", "No abuse reports available" },
+                    { "AssignedTo", "" },
+                    { "Active", "" },
+                    { "CardNumber", "" }
+                });
+            }
 
-			// always required data
-			vars.Add ("AbuseReportsList", abuseReportsList);
-			vars.Add ("NoDetailsText", noDetails);
-			vars.Add ("AbuseReportText", translator.GetTranslatedString ("MenuAbuse"));
-			vars.Add ("CategoryText", translator.GetTranslatedString ("CategoryText"));
-			vars.Add ("AbuseReporterNameText", translator.GetTranslatedString ("AbuseReporterNameText"));
-			vars.Add ("AbuserNameText", translator.GetTranslatedString ("AbuserNameText"));
-			vars.Add ("SummaryText", translator.GetTranslatedString ("SummaryText"));
-			vars.Add ("AssignedToText", translator.GetTranslatedString ("AssignedToText"));
-			vars.Add ("ActiveText", translator.GetTranslatedString ("ActiveText"));
-			vars.Add ("MoreInfoText", translator.GetTranslatedString ("MoreInfoText"));
+            // always required data
+            vars.Add ("AbuseReportsList", abuseReportsList);
+            vars.Add ("NoDetailsText", noDetails);
+            vars.Add ("AbuseReportText", translator.GetTranslatedString ("MenuAbuse"));
 
-			return vars;
-		}
+//            vars.Add("DateText", translator.GetTranslatedString("DateText"));
+            vars.Add ("CategoryText", translator.GetTranslatedString ("CategoryText"));
+            vars.Add ("AbuseReporterNameText", translator.GetTranslatedString ("AbuseReporterNameText"));
+            vars.Add ("AbuserNameText", translator.GetTranslatedString ("AbuserNameText"));
+            vars.Add ("SummaryText", translator.GetTranslatedString ("SummaryText"));
+            vars.Add ("AssignedToText", translator.GetTranslatedString ("AssignedToText"));
+            vars.Add ("ActiveText", translator.GetTranslatedString ("ActiveText"));
+            vars.Add ("MoreInfoText", translator.GetTranslatedString ("MoreInfoText"));
 
-		public bool AttemptFindPage (string filename, ref OSHttpResponse httpResponse, out string text)
-		{
-			text = "";
-			return false;
-		}
-	}
+            return vars;
+        }
+
+        public bool AttemptFindPage (string filename, ref OSHttpResponse httpResponse, out string text)
+        {
+            text = "";
+            return false;
+        }
+    }
 }
+

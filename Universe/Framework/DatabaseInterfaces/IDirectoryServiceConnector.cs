@@ -38,320 +38,319 @@ using Universe.Framework.Services.ClassHelpers.Profile;
 
 namespace Universe.Framework.DatabaseInterfaces
 {
-	public interface IDirectoryServiceConnector : IUniverseDataPlugin
-	{
-		#region Regions
+    public interface IDirectoryServiceConnector : IUniverseDataPlugin
+    {
+        #region Regions
 
-		/// <summary>
-		///     Adds a region into search
-		/// </summary>
-		/// <param name="args"></param>
-		void AddRegion (List<LandData> args);
+        /// <summary>
+        ///     Adds a region into search
+        /// </summary>
+        /// <param name="args"></param>
+        void AddRegion(List<LandData> args);
 
-		/// <summary>
-		///     Removes a region from search
-		/// </summary>
-		/// <param name="regionID"></param>
-		void ClearRegion (UUID regionID);
+        /// <summary>
+        ///     Removes a region from search
+        /// </summary>
+        /// <param name="regionID"></param>
+        void ClearRegion(UUID regionID);
 
-		#endregion
+        #endregion
 
-		#region Parcels
+        #region Parcels
 
-		/// <summary>
-		///     Gets a parcel from the search database by ParcelID (GlobalID)
-		/// </summary>
-		/// <param name="ParcelID"></param>
-		/// <returns></returns>
-		LandData GetParcelInfo (UUID ParcelID);
+        /// <summary>
+        ///     Gets a parcel from the search database by ParcelID (GlobalID)
+        /// </summary>
+        /// <param name="ParcelID"></param>
+        /// <returns></returns>
+        LandData GetParcelInfo(UUID ParcelID);
 
-		/// <summary>
-		///     Gets the first parcel from the search database in the specified region with the specified name
-		/// </summary>
-		/// <param name="RegionID"></param>
-		/// <param name="ParcelName"></param>
-		/// <returns></returns>
-		LandData GetParcelInfo (UUID RegionID, string ParcelName);
+        /// <summary>
+        ///     Gets the first parcel from the search database in the specified region with the specified name
+        /// </summary>
+        /// <param name="RegionID"></param>
+        /// <param name="ParcelName"></param>
+        /// <returns></returns>
+        LandData GetParcelInfo(UUID RegionID, string ParcelName);
 
-		/// <summary>
-		///     Gets a parcel from the search database by region and location in the region
-		/// </summary>
-		/// <param name="regionID"></param>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <returns></returns>
-		LandData GetParcelInfo (UUID regionID, int x, int y);
+        /// <summary>
+        ///     Gets a parcel from the search database by region and location in the region
+        /// </summary>
+        /// <param name="regionID"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        LandData GetParcelInfo(UUID regionID, int x, int y);
 
-		/// <summary>
-		///     Gets all parcels owned by the given user
-		/// </summary>
-		/// <param name="OwnerID"></param>
-		/// <returns></returns>
-		List<ExtendedLandData> GetParcelByOwner (UUID OwnerID);
+        /// <summary>
+        ///     Gets all parcels owned by the given user
+        /// </summary>
+        /// <param name="OwnerID"></param>
+        /// <returns></returns>
+        List<ExtendedLandData> GetParcelByOwner(UUID OwnerID);
 
-		/// <summary>
-		///     Gets all parcels in a region, optionally filtering by owner, parcel flags and category.
-		/// </summary>
-		/// <param name="start"></param>
-		/// <param name="count"></param>
-		/// <param name="RegionID"></param>
-		/// <param name="owner"></param>
-		/// <param name="flags"></param>
-		/// <param name="category"></param>
-		/// <returns></returns>
-		List<LandData> GetParcelsByRegion (uint start, uint count, UUID RegionID, UUID owner, ParcelFlags flags,
-		                                        ParcelCategory category);
+        /// <summary>
+        ///     Gets all parcels in a region, optionally filtering by owner, parcel flags and category.
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="count"></param>
+        /// <param name="RegionID"></param>
+        /// <param name="owner"></param>
+        /// <param name="flags"></param>
+        /// <param name="category"></param>
+        /// <returns></returns>
+        List<LandData> GetParcelsByRegion(uint start, uint count, UUID RegionID, UUID owner, ParcelFlags flags,
+                                          ParcelCategory category);
 
-		/// <summary>
-		///     Get the number of parcels in the specified region that match the specified filters.
-		/// </summary>
-		/// <param name="RegionID"></param>
-		/// <param name="owner"></param>
-		/// <param name="flags"></param>
-		/// <param name="category"></param>
-		/// <returns></returns>
-		uint GetNumberOfParcelsByRegion (UUID RegionID, UUID owner, ParcelFlags flags, ParcelCategory category);
+        /// <summary>
+        ///     Get the number of parcels in the specified region that match the specified filters.
+        /// </summary>
+        /// <param name="RegionID"></param>
+        /// <param name="owner"></param>
+        /// <param name="flags"></param>
+        /// <param name="category"></param>
+        /// <returns></returns>
+        uint GetNumberOfParcelsByRegion(UUID RegionID, UUID owner, ParcelFlags flags, ParcelCategory category);
 
-		/// <summary>
-		///     Get a list of parcels in a region with the specified name.
-		/// </summary>
-		/// <param name="start"></param>
-		/// <param name="count"></param>
-		/// <param name="RegionID"></param>
-		/// <param name="name"></param>
-		/// <returns></returns>
-		List<LandData> GetParcelsWithNameByRegion (uint start, uint count, UUID RegionID, string name);
+        /// <summary>
+        ///     Get a list of parcels in a region with the specified name.
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="count"></param>
+        /// <param name="RegionID"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        List<LandData> GetParcelsWithNameByRegion(uint start, uint count, UUID RegionID, string name);
 
-		/// <summary>
-		///     Get the number of parcels in the specified region with the specified name
-		/// </summary>
-		/// <param name="RegionID"></param>
-		/// <param name="name"></param>
-		/// <returns></returns>
-		uint GetNumberOfParcelsWithNameByRegion (UUID RegionID, string name);
+        /// <summary>
+        ///     Get the number of parcels in the specified region with the specified name
+        /// </summary>
+        /// <param name="RegionID"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        uint GetNumberOfParcelsWithNameByRegion(UUID RegionID, string name);
 
-		/// <summary>
-		///     Searches for parcels around the grid
-		/// </summary>
-		/// <param name="queryText"></param>
-		/// <param name="category"></param>
-		/// <param name="StartQuery"></param>
-		/// <param name="Flags"></param>
-		/// <param name="scopeID"></param>
-		/// <returns></returns>
-		List<DirPlacesReplyData> FindLand (string queryText, string category, int StartQuery, uint Flags, UUID scopeID);
+        /// <summary>
+        ///     Searches for parcels around the grid
+        /// </summary>
+        /// <param name="queryText"></param>
+        /// <param name="category"></param>
+        /// <param name="StartQuery"></param>
+        /// <param name="Flags"></param>
+        /// <param name="scopeID"></param>
+        /// <returns></returns>
+        List<DirPlacesReplyData> FindLand(string queryText, string category, int StartQuery, uint Flags, UUID scopeID);
 
-		/// <summary>
-		///     Searches for parcels for sale around the grid
-		/// </summary>
-		/// <param name="searchType"></param>
-		/// <param name="price"></param>
-		/// <param name="area"></param>
-		/// <param name="StartQuery"></param>
-		/// <param name="Flags"></param>
-		/// <param name="scopeID"></param>
-		/// <returns></returns>
-		List<DirLandReplyData> FindLandForSale (string searchType, uint price, uint area, int StartQuery, uint Flags,
-		                                             UUID scopeID);
+        /// <summary>
+        ///     Searches for parcels for sale around the grid
+        /// </summary>
+        /// <param name="searchType"></param>
+        /// <param name="price"></param>
+        /// <param name="area"></param>
+        /// <param name="StartQuery"></param>
+        /// <param name="Flags"></param>
+        /// <param name="scopeID"></param>
+        /// <returns></returns>
+        List<DirLandReplyData> FindLandForSale(string searchType, uint price, uint area, int StartQuery, uint Flags,
+                                               UUID scopeID);
 
-		/// <summary>
-		///     Searches for parcels for sale around the grid
-		/// </summary>
-		/// <param name="searchType"></param>
-		/// <param name="price"></param>
-		/// <param name="area"></param>
-		/// <param name="StartQuery"></param>
-		/// <param name="Flags"></param>
-		/// <param name="regionID"></param>
-		/// <returns></returns>
-		List<DirLandReplyData> FindLandForSaleInRegion (string searchType, uint price, uint area, int StartQuery,
-		                                                     uint Flags, UUID regionID);
+        /// <summary>
+        ///     Searches for parcels for sale around the grid
+        /// </summary>
+        /// <param name="searchType"></param>
+        /// <param name="price"></param>
+        /// <param name="area"></param>
+        /// <param name="StartQuery"></param>
+        /// <param name="Flags"></param>
+        /// <param name="regionID"></param>
+        /// <returns></returns>
+        List<DirLandReplyData> FindLandForSaleInRegion(string searchType, uint price, uint area, int StartQuery,
+                                                       uint Flags, UUID regionID);
 
-		/// <summary>
-		///     Searches for the most popular places around the grid
-		/// </summary>
-		/// <param name="queryFlags"></param>
-		/// <param name="scopeID"></param>
-		/// <returns></returns>
-		List<DirPopularReplyData> FindPopularPlaces (uint queryFlags, UUID scopeID);
+        /// <summary>
+        ///     Searches for the most popular places around the grid
+        /// </summary>
+        /// <param name="queryFlags"></param>
+        /// <param name="scopeID"></param>
+        /// <returns></returns>
+        List<DirPopularReplyData> FindPopularPlaces(uint queryFlags, UUID scopeID);
 
-		#endregion
+        #endregion
 
-		#region Classifieds
+        #region Classifieds
 
-		/// <summary>
-		///     Searches for classifieds
-		/// </summary>
-		/// <param name="queryText"></param>
-		/// <param name="category"></param>
-		/// <param name="queryFlags"></param>
-		/// <param name="StartQuery"></param>
-		/// <param name="scopeID"></param>
-		/// <returns></returns>
-		List<DirClassifiedReplyData> FindClassifieds (string queryText, string category, uint queryFlags, int StartQuery,
-		                                                   UUID scopeID);
+        /// <summary>
+        ///     Searches for classifieds
+        /// </summary>
+        /// <param name="queryText"></param>
+        /// <param name="category"></param>
+        /// <param name="queryFlags"></param>
+        /// <param name="StartQuery"></param>
+        /// <param name="scopeID"></param>
+        /// <returns></returns>
+        List<DirClassifiedReplyData> FindClassifieds(string queryText, string category, uint queryFlags, int StartQuery,
+                                                     UUID scopeID);
+        /// <summary>
+        /// Gets a lost of all classifieds.
+        /// </summary>
+        /// <returns>The classifieds.</returns>
+        /// <param name="category">Category.</param>
+        /// <param name="classifiedFlags">Classified maturity flags.</param>
+        List<Classified> GetAllClassifieds (int category, uint classifiedFlags);
 
-		/// <summary>
-		/// Gets a lost of all classifieds.
-		/// </summary>
-		/// <returns>The classifieds.</returns>
-		/// <param name="category">Category.</param>
-		/// <param name="classifiedFlags">Classified maturity flags.</param>
-		List<Classified> GetAllClassifieds (int category, uint classifiedFlags);
+        /// <summary>
+        ///     Gets all classifieds in the given region
+        /// </summary>
+        /// <param name="regionName"></param>
+        /// <returns></returns>
+        List<Classified> GetClassifiedsInRegion(string regionName);
 
-		/// <summary>
-		///     Gets all classifieds in the given region
-		/// </summary>
-		/// <param name="regionName"></param>
-		/// <returns></returns>
-		List<Classified> GetClassifiedsInRegion (string regionName);
+        /// <summary>
+        /// Gets the classified by identifier.
+        /// </summary>
+        /// <returns>The classified by identifier.</returns>
+        /// <param name="id">Identifier.</param>
+        Classified GetClassifiedByID(UUID id);
 
-		/// <summary>
-		/// Gets the classified by identifier.
-		/// </summary>
-		/// <returns>The classified by identifier.</returns>
-		/// <param name="id">Identifier.</param>
-		Classified GetClassifiedByID (UUID id);
+        #endregion
 
-		#endregion
+        #region Events
 
-		#region Events
+        /// <summary>
+        ///     Searches for events with the given parameters
+        /// </summary>
+        /// <param name="queryText"></param>
+        /// <param name="flags"></param>
+        /// <param name="StartQuery"></param>
+        /// <param name="scopeID"></param>
+        /// <returns></returns>
+        List<DirEventsReplyData> FindEvents(string queryText, uint flags, int StartQuery, UUID scopeID);
 
-		/// <summary>
-		///     Searches for events with the given parameters
-		/// </summary>
-		/// <param name="queryText"></param>
-		/// <param name="flags"></param>
-		/// <param name="StartQuery"></param>
-		/// <param name="scopeID"></param>
-		/// <returns></returns>
-		List<DirEventsReplyData> FindEvents (string queryText, uint flags, int StartQuery, UUID scopeID);
+        /// <summary>
+        /// Gets all events.
+        /// </summary>
+        /// <returns>The all events.</returns>
+        /// <param name="queryHours">Query hours.</param>
+        /// <param name="category">Category.</param>
+        /// <param name="maturityLevel">Maturity level.</param>
+        List<EventData> GetAllEvents (int queryHours, int category, int maturityLevel);
 
-		/// <summary>
-		/// Gets all events.
-		/// </summary>
-		/// <returns>The all events.</returns>
-		/// <param name="queryHours">Query hours.</param>
-		/// <param name="category">Category.</param>
-		/// <param name="maturityLevel">Maturity level.</param>
-		List<EventData> GetAllEvents (int queryHours, int category, int maturityLevel);
+        /// <summary>
+        /// Gets the user events.
+        /// </summary>
+        /// <returns>The user events.</returns>
+        /// <param name="userId">User identifier.</param>
+        /// <param name="queryHours">Query hours.</param>
+        /// <param name="category">Category.</param>
+        /// <param name="maturityLevel">Maturity level.</param>
+        List<EventData> GetUserEvents (string userId, int queryHours, int category, int maturityLevel);
 
-		/// <summary>
-		/// Gets the user events.
-		/// </summary>
-		/// <returns>The user events.</returns>
-		/// <param name="userId">User identifier.</param>
-		/// <param name="queryHours">Query hours.</param>
-		/// <param name="category">Category.</param>
-		/// <param name="maturityLevel">Maturity level.</param>
-		List<EventData> GetUserEvents (string userId, int queryHours, int category, int maturityLevel);
+        /// <summary>
+        /// Gets all events.
+        /// </summary>
+        /// <returns>The all events.</returns>
+        /// <param name="userId">Creator ID.(Ignored if null)</param>
+        /// <param name="queryHours">Next nn hours.</param>
+        /// <param name="maturityLevel">Event flags.</param>
+        List<EventData> GetEventsList (string userId, int queryHours, int categoriy, int maturityLevel);
 
-		/// <summary>
-		/// Gets all events.
-		/// </summary>
-		/// <returns>The all events.</returns>
-		/// <param name="userId">Creator ID.(Ignored if null)</param>
-		/// <param name="queryHours">Next nn hours.</param>
-		/// <param name="maturityLevel">Event flags.</param>
-		List<EventData> GetEventsList (string userId, int queryHours, int categoriy, int maturityLevel);
+        /// <summary>
+        ///     Retrieves all events in the given region by their maturity level
+        /// </summary>
+        /// <param name="regionName"></param>
+        /// <param name="maturity">Uses DirectoryManager.EventFlags to determine the maturity requested</param>
+        /// <returns></returns>
+        List<DirEventsReplyData> FindAllEventsInRegion(string regionName, int maturity);
 
-		/// <summary>
-		///     Retrieves all events in the given region by their maturity level
-		/// </summary>
-		/// <param name="regionName"></param>
-		/// <param name="maturity">Uses DirectoryManager.EventFlags to determine the maturity requested</param>
-		/// <returns></returns>
-		List<DirEventsReplyData> FindAllEventsInRegion (string regionName, int maturity);
-
-		/// <summary>
-		///     Gets more info about the event by the events unique event ID
-		/// </summary>
-		/// <param name="EventID"></param>
-		/// <returns></returns>
-		EventData GetEventInfo (uint EventID);
+        /// <summary>
+        ///     Gets more info about the event by the events unique event ID
+        /// </summary>
+        /// <param name="EventID"></param>
+        /// <returns></returns>
+        EventData GetEventInfo(uint EventID);
 
 
-		/// <summary>
-		///     creates an event
-		/// </summary>
-		/// <param name="creator"></param>
-		/// <param name="region"></param>
-		/// <param name="parcel"></param>
-		/// <param name="date"></param>
-		/// <param name="cover"></param>
-		/// <param name="maturity"></param>
-		/// <param name="flags"></param>
-		/// <param name="duration"></param>
-		/// <param name="localPos"></param>
-		/// <param name="name"></param>
-		/// <param name="description"></param>
-		/// <param name="category"></param>
-		/// <returns></returns>
-		EventData CreateEvent (UUID creator, UUID region, UUID parcel, DateTime date, uint cover,
-		                            DirectoryManager.EventFlags maturity, uint flags, uint duration, Vector3 localPos,
-		                            string name, string description, string category);
+        /// <summary>
+        ///     creates an event
+        /// </summary>
+        /// <param name="creator"></param>
+        /// <param name="region"></param>
+        /// <param name="parcel"></param>
+        /// <param name="date"></param>
+        /// <param name="cover"></param>
+        /// <param name="maturity"></param>
+        /// <param name="flags"></param>
+        /// <param name="duration"></param>
+        /// <param name="localPos"></param>
+        /// <param name="name"></param>
+        /// <param name="description"></param>
+        /// <param name="category"></param>
+        /// <returns></returns>
+        EventData CreateEvent(UUID creator, UUID region, UUID parcel, DateTime date, uint cover,
+                              DirectoryManager.EventFlags maturity, uint flags, uint duration, Vector3 localPos,
+                              string name, string description, string category);
 
-		/// <summary>
-		/// Updates or adds an event.
-		/// </summary>
-		/// <returns><c>true</c>, if add event was updated, <c>false</c> otherwise.</returns>
-		/// <param name="eventData">Event data.</param>
-		/// <param name="regionId">Region identifier.</param>
-		/// <param name="parcelId">Parcel identifier.</param>
-		bool UpdateAddEvent (EventData eventData);
+        /// <summary>
+        /// Updates or adds an event.
+        /// </summary>
+        /// <returns><c>true</c>, if add event was updated, <c>false</c> otherwise.</returns>
+        /// <param name="eventData">Event data.</param>
+        /// <param name="regionId">Region identifier.</param>
+        /// <param name="parcelId">Parcel identifier.</param>
+        bool UpdateAddEvent (EventData eventData);
 
-		/// <summary>
-		/// Deletes an event.
-		/// </summary>
-		/// <returns><c>true</c>, if event was deleted, <c>false</c> otherwise.</returns>
-		/// <param name="eventId">Event identifier.</param>
-		bool DeleteEvent (string eventId);
+        /// <summary>
+        /// Deletes an event.
+        /// </summary>
+        /// <returns><c>true</c>, if event was deleted, <c>false</c> otherwise.</returns>
+        /// <param name="eventId">Event identifier.</param>
+        bool DeleteEvent (string eventId);
 
-		/// <summary>
-		///     Gets a list of events with optional filters
-		/// </summary>
-		/// <param name="start"></param>
-		/// <param name="count"></param>
-		/// <param name="sort"></param>
-		/// <param name="filter"></param>
-		/// <returns></returns>
-		List<EventData> GetEvents (uint start, uint count, Dictionary<string, bool> sort,
-		                                Dictionary<string, object> filter);
+        /// <summary>
+        ///     Gets a list of events with optional filters
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="count"></param>
+        /// <param name="sort"></param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        List<EventData> GetEvents(uint start, uint count, Dictionary<string, bool> sort,
+                                  Dictionary<string, object> filter);
 
-		/// <summary>
-		///     Get the number of events matching the specified filters
-		/// </summary>
-		/// <param name="filter"></param>
-		/// <returns></returns>
-		uint GetNumberOfEvents (Dictionary<string, object> filter);
+        /// <summary>
+        ///     Get the number of events matching the specified filters
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        uint GetNumberOfEvents(Dictionary<string, object> filter);
 
-		/// <summary>
-		///     Gets the highest event ID
-		/// </summary>
-		/// <returns></returns>
-		uint GetMaxEventID ();
+        /// <summary>
+        ///     Gets the highest event ID
+        /// </summary>
+        /// <returns></returns>
+        uint GetMaxEventID();
 
-		/// <summary>
-		///     Adds a notification for the user on login that events are going to occur
-		/// </summary>
-		/// <param name="user"></param>
-		/// <param name="EventID"></param>
-		void AddEventNofication (UUID user, uint EventID);
+        /// <summary>
+        ///     Adds a notification for the user on login that events are going to occur
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="EventID"></param>
+        void AddEventNofication(UUID user, uint EventID);
 
-		/// <summary>
-		///     Removes a notification for the user on login that events are going to occur
-		/// </summary>
-		/// <param name="user"></param>
-		/// <param name="EventID"></param>
-		void RemoveEventNofication (UUID user, uint EventID);
+        /// <summary>
+        ///     Removes a notification for the user on login that events are going to occur
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="EventID"></param>
+        void RemoveEventNofication(UUID user, uint EventID);
 
-		/// <summary>
-		///     Get all event notifications for the user
-		/// </summary>
-		/// <param name="user"></param>
-		/// <returns></returns>
-		List<EventData> GetEventNotifications (UUID user);
+        /// <summary>
+        ///     Get all event notifications for the user
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        List<EventData> GetEventNotifications(UUID user);
 
-		#endregion
-	}
+        #endregion
+    }
 }

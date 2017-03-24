@@ -27,139 +27,149 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System.Collections.Generic;
-using OpenMetaverse;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Services.ClassHelpers.Inventory;
+using OpenMetaverse;
+using System.Collections.Generic;
 
 namespace Universe.Modules.Agent.AssetTransaction
 {
-	/// <summary>
-	///     Manage asset transactions for a single agent.
-	/// </summary>
-	public class AgentAssetTransactions
-	{
-		// Fields
-		private bool m_dumpAssetsToFile;
-		private IScene m_Scene;
-		private Dictionary<UUID, AssetXferUploader> XferUploaders = new Dictionary<UUID, AssetXferUploader> ();
+    /// <summary>
+    ///     Manage asset transactions for a single agent.
+    /// </summary>
+    public class AgentAssetTransactions
+    {
+        // Fields
+        private bool m_dumpAssetsToFile;
+        private IScene m_Scene;
+        private Dictionary<UUID, AssetXferUploader> XferUploaders = new Dictionary<UUID, AssetXferUploader>();
 
-		// Methods
-		public AgentAssetTransactions (UUID agentID, IScene scene,
-		                                    bool dumpAssetsToFile)
-		{
-			m_Scene = scene;
-			m_dumpAssetsToFile = dumpAssetsToFile;
-		}
+        // Methods
+        public AgentAssetTransactions(UUID agentID, IScene scene,
+                                      bool dumpAssetsToFile)
+        {
+            m_Scene = scene;
+            m_dumpAssetsToFile = dumpAssetsToFile;
+        }
 
-		/// <summary>
-		///     Return the xfer uploader for the given transaction.
-		/// </summary>
-		/// <remarks>
-		///     If an uploader does not already exist for this transaction then it is created, otherwise the existing
-		///     uploader is returned.
-		/// </remarks>
-		/// <param name="transactionID"></param>
-		/// <returns>The asset xfer uploader</returns>
-		public AssetXferUploader RequestXferUploader (UUID transactionID)
-		{
-			AssetXferUploader uploader;
+        /// <summary>
+        ///     Return the xfer uploader for the given transaction.
+        /// </summary>
+        /// <remarks>
+        ///     If an uploader does not already exist for this transaction then it is created, otherwise the existing
+        ///     uploader is returned.
+        /// </remarks>
+        /// <param name="transactionID"></param>
+        /// <returns>The asset xfer uploader</returns>
+        public AssetXferUploader RequestXferUploader(UUID transactionID)
+        {
+            AssetXferUploader uploader;
 
-			lock (XferUploaders) {
-				if (!XferUploaders.ContainsKey (transactionID)) {
-					uploader = new AssetXferUploader (this, m_Scene, transactionID, m_dumpAssetsToFile);
+            lock (XferUploaders)
+            {
+                if (!XferUploaders.ContainsKey(transactionID))
+                {
+                    uploader = new AssetXferUploader(this, m_Scene, transactionID, m_dumpAssetsToFile);
 
-					//                    MainConsole.Instance.DebugFormat(
-					//                        "[AGENT ASSETS TRANSACTIONS]: Adding asset xfer uploader {0} since it didn't previously exist", transactionID);
+                    //                    MainConsole.Instance.DebugFormat(
+                    //                        "[AGENT ASSETS TRANSACTIONS]: Adding asset xfer uploader {0} since it didn't previously exist", transactionID);
 
-					XferUploaders.Add (transactionID, uploader);
-				} else {
-					uploader = XferUploaders [transactionID];
-				}
-			}
+                    XferUploaders.Add(transactionID, uploader);
+                }
+                else
+                {
+                    uploader = XferUploaders[transactionID];
+                }
+            }
 
-			IMonitorModule monitorModule = m_Scene.RequestModuleInterface<IMonitorModule> ();
-			if (monitorModule != null) {
-				INetworkMonitor networkMonitor = monitorModule.GetMonitor<INetworkMonitor> (m_Scene);
-				networkMonitor.AddPendingUploads (1);
-			}
+            IMonitorModule monitorModule = m_Scene.RequestModuleInterface<IMonitorModule>();
+            if (monitorModule != null)
+            {
+                INetworkMonitor networkMonitor = monitorModule.GetMonitor<INetworkMonitor>(m_Scene);
+                networkMonitor.AddPendingUploads(1);
+            }
 
-			return uploader;
-		}
+            return uploader;
+        }
 
-		public void HandleXfer (IClientAPI client, ulong xferID, uint packetID, byte[] data)
-		{
-			AssetXferUploader foundUploader = null;
+        public void HandleXfer(IClientAPI client, ulong xferID, uint packetID, byte[] data)
+        {
+            AssetXferUploader foundUploader = null;
 
-			lock (XferUploaders) {
-				foreach (AssetXferUploader uploader in XferUploaders.Values) {
-					//                    MainConsole.Instance.DebugFormat(
-					//                        "[AGENT ASSETS TRANSACTIONS]: In HandleXfer, inspect xfer upload with xfer id {0}",
-					//                        uploader.XferID);
+            lock (XferUploaders)
+            {
+                foreach (AssetXferUploader uploader in XferUploaders.Values)
+                {
+                    //                    MainConsole.Instance.DebugFormat(
+                    //                        "[AGENT ASSETS TRANSACTIONS]: In HandleXfer, inspect xfer upload with xfer id {0}",
+                    //                        uploader.XferID);
 
-					if (uploader.XferID == xferID) {
-						foundUploader = uploader;
-						break;
-					}
-				}
-			}
+                    if (uploader.XferID == xferID)
+                    {
+                        foundUploader = uploader;
+                        break;
+                    }
+                }
+            }
 
-			if (foundUploader != null) {
-				//                MainConsole.Instance.DebugFormat(
-				//                    "[AGENT ASSETS TRANSACTIONS]: Found xfer uploader for xfer id {0}, packet id {1}, data length {2}",
-				//                    xferID, packetID, data.Length);
+            if (foundUploader != null)
+            {
+                //                MainConsole.Instance.DebugFormat(
+                //                    "[AGENT ASSETS TRANSACTIONS]: Found xfer uploader for xfer id {0}, packet id {1}, data length {2}",
+                //                    xferID, packetID, data.Length);
 
-				foundUploader.HandleXferPacket (xferID, packetID, data);
-			}
-		}
+                foundUploader.HandleXferPacket(xferID, packetID, data);
+            }
+        }
 
-		public bool RemoveXferUploader (UUID transactionID)
-		{
-			lock (XferUploaders) {
-				bool removed = XferUploaders.Remove (transactionID);
+        public bool RemoveXferUploader(UUID transactionID)
+        {
+            lock (XferUploaders)
+            {
+                bool removed = XferUploaders.Remove(transactionID);
 
-				if (!removed)
-					MainConsole.Instance.WarnFormat (
-						"[AGENT ASSET TRANSACTIONS]: Received request to remove xfer uploader with transaction ID {0} but none found",
-						transactionID);
-				//else
-				//  MainConsole.Instance.DebugFormat(
-				//      "[AGENT ASSET TRANSACTIONS]: Removed xfer uploader with transaction ID {0}", transactionID);
+                if (!removed)
+                    MainConsole.Instance.WarnFormat(
+                        "[AGENT ASSET TRANSACTIONS]: Received request to remove xfer uploader with transaction ID {0} but none found",
+                        transactionID);
+                //                else
+                //                    MainConsole.Instance.DebugFormat(
+                //                        "[AGENT ASSET TRANSACTIONS]: Removed xfer uploader with transaction ID {0}", transactionID);
 
-				return removed;
-			}
-		}
+                return removed;
+            }
+        }
 
-		public void RequestCreateInventoryItem (IClientAPI remoteClient,
-		                                             UUID transactionID, UUID folderID, uint callbackID,
-		                                             string description, string name, sbyte invType,
-		                                             sbyte type, byte wearableType, uint nextOwnerMask)
-		{
-			AssetXferUploader uploader = RequestXferUploader (transactionID);
+        public void RequestCreateInventoryItem(IClientAPI remoteClient,
+                                               UUID transactionID, UUID folderID, uint callbackID,
+                                               string description, string name, sbyte invType,
+                                               sbyte type, byte wearableType, uint nextOwnerMask)
+        {
+            AssetXferUploader uploader = RequestXferUploader(transactionID);
 
-			uploader.RequestCreateInventoryItem (
-				remoteClient, folderID, callbackID,
-				description, name, invType, type, wearableType, nextOwnerMask);
-		}
+            uploader.RequestCreateInventoryItem(
+                remoteClient, folderID, callbackID,
+                description, name, invType, type, wearableType, nextOwnerMask);
+        }
 
-		public void RequestUpdateTaskInventoryItem (IClientAPI remoteClient,
-		                                                 ISceneChildEntity part, UUID transactionID,
-		                                                 TaskInventoryItem item)
-		{
-			AssetXferUploader uploader = RequestXferUploader (transactionID);
+        public void RequestUpdateTaskInventoryItem(IClientAPI remoteClient,
+                                                   ISceneChildEntity part, UUID transactionID,
+                                                   TaskInventoryItem item)
+        {
+            AssetXferUploader uploader = RequestXferUploader(transactionID);
 
-			uploader.RequestUpdateTaskInventoryItem (remoteClient, item);
-		}
+            uploader.RequestUpdateTaskInventoryItem(remoteClient, item);
+        }
 
-		public void RequestUpdateInventoryItem (IClientAPI remoteClient,
-		                                             UUID transactionID, InventoryItemBase item)
-		{
-			AssetXferUploader uploader = RequestXferUploader (transactionID);
+        public void RequestUpdateInventoryItem(IClientAPI remoteClient,
+                                               UUID transactionID, InventoryItemBase item)
+        {
+            AssetXferUploader uploader = RequestXferUploader(transactionID);
 
-			uploader.RequestUpdateInventoryItem (remoteClient, item);
-		}
-	}
+            uploader.RequestUpdateInventoryItem(remoteClient, item);
+        }
+    }
 }

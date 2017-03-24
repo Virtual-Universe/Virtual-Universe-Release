@@ -50,61 +50,59 @@ namespace Universe.Services.SQLServices.AssetService
 
         #region IService Members
 
-        public virtual string Name
-        {
-            get { return GetType().Name; }
+        public virtual string Name {
+            get { return GetType ().Name; }
         }
 
-        public virtual void Initialize(IConfigSource config, IRegistryCore registry)
+        public virtual void Initialize (IConfigSource config, IRegistryCore registry)
         {
-            IConfig handlerConfig = config.Configs["Handlers"];
-            if (handlerConfig.GetString("AssetHandler", "") != Name)
+            IConfig handlerConfig = config.Configs ["Handlers"];
+            if (handlerConfig.GetString ("AssetHandler", "") != Name)
                 return;
-            Configure(config, registry);
-            Init(registry, Name, serverPath: "/asset/", serverHandlerName: "AssetServerURI");
+            Configure (config, registry);
+            Init (registry, Name, serverPath: "/asset/", serverHandlerName: "AssetServerURI");
         }
 
-        public virtual void Configure(IConfigSource config, IRegistryCore registry)
+        public virtual void Configure (IConfigSource config, IRegistryCore registry)
         {
             m_registry = registry;
 
-            m_database = Framework.Utilities.DataManager.RequestPlugin<IAssetDataPlugin>();
+            m_database = Framework.Utilities.DataManager.RequestPlugin<IAssetDataPlugin> ();
 
-            registry.RegisterModuleInterface<IAssetService>(this);
+            registry.RegisterModuleInterface<IAssetService> (this);
 
-            IConfig handlers = config.Configs["Handlers"];
+            IConfig handlers = config.Configs ["Handlers"];
             if (handlers != null)
-                doDatabaseCaching = handlers.GetBoolean("AssetHandlerUseCache", false);
+                doDatabaseCaching = handlers.GetBoolean ("AssetHandlerUseCache", false);
 
-            if (IsLocalConnector && (MainConsole.Instance != null))
-            {
-                MainConsole.Instance.Commands.AddCommand(
+            if (IsLocalConnector && (MainConsole.Instance != null)) {
+                MainConsole.Instance.Commands.AddCommand (
                     "show digest",
                     "show digest <ID>",
                     "Show asset digest",
                     CmdShowDigest, false, true);
 
-                MainConsole.Instance.Commands.AddCommand(
+                MainConsole.Instance.Commands.AddCommand (
                     "delete asset",
                     "delete asset <ID>",
                     "Delete asset from database",
                     CmdDeleteAsset, false, true);
 
-                MainConsole.Instance.Commands.AddCommand("get asset",
+                MainConsole.Instance.Commands.AddCommand ("get asset",
                     "get asset <ID>",
                     "Gets info about asset from database",
                     CmdGetAsset, false, true);
 
             }
 
-            MainConsole.Instance.Debug("[Asset service]: Local asset service enabled");
+            MainConsole.Instance.Debug ("[Asset service]: Local asset service enabled");
         }
 
-        public virtual void Start(IConfigSource config, IRegistryCore registry)
+        public virtual void Start (IConfigSource config, IRegistryCore registry)
         {
         }
 
-        public virtual void FinishedStartup()
+        public virtual void FinishedStartup ()
         {
         }
 
@@ -112,167 +110,152 @@ namespace Universe.Services.SQLServices.AssetService
 
         #region IAssetService Members
 
-        public IAssetService InnerService
-        {
+        public IAssetService InnerService {
             get { return this; }
         }
 
-        [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
-        public virtual AssetBase GetMesh(string id)
+        [CanBeReflected (ThreatLevel = ThreatLevel.Low)]
+        public virtual AssetBase GetMesh (string id)
         {
-            return Get(id);
+            return Get (id);
         }
 
-        [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
-        public virtual AssetBase Get(string id)
+        [CanBeReflected (ThreatLevel = ThreatLevel.Low)]
+        public virtual AssetBase Get (string id)
         {
-            return Get(id, true);
+            return Get (id, true);
         }
 
-        [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
-        public virtual AssetBase Get(string id, bool showWarnings)
+        [CanBeReflected (ThreatLevel = ThreatLevel.Low)]
+        public virtual AssetBase Get (string id, bool showWarnings)
         {
-            if (id == UUID.Zero.ToString()) return null;
+            if (id == UUID.Zero.ToString ()) return null;
 
-            var cache = m_registry.RequestModuleInterface<IImprovedAssetCache>();
-            if (doDatabaseCaching && cache != null)
-            {
+            var cache = m_registry.RequestModuleInterface<IImprovedAssetCache> ();
+            if (doDatabaseCaching && cache != null) {
                 bool found;
-                AssetBase cachedAsset = cache.Get(id, out found);
-                if (found)
-                {
+                AssetBase cachedAsset = cache.Get (id, out found);
+                if (found) {
                     if (cachedAsset != null && cachedAsset.Data != null)
                         return cachedAsset;
                 }
             }
 
-            if (m_doRemoteOnly)
-            {
-                var remoteValue = DoRemoteByURL("AssetServerURI", id, showWarnings);
-                if (remoteValue != null)
-                {
+            if (m_doRemoteOnly) {
+                var remoteValue = DoRemoteByURL ("AssetServerURI", id, showWarnings);
+                if (remoteValue != null) {
                     if (doDatabaseCaching && cache != null)
-                        cache.Cache(id, (AssetBase)remoteValue);
+                        cache.Cache (id, (AssetBase)remoteValue);
                     return (AssetBase)remoteValue;
                 }
                 return null;
             }
 
-            var asset = m_database.GetAsset(UUID.Parse(id), showWarnings);
+            var asset = m_database.GetAsset (UUID.Parse (id), showWarnings);
             if (doDatabaseCaching && cache != null)
-                cache.Cache(id, asset);
+                cache.Cache (id, asset);
             return asset;
         }
 
-        [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
-        public virtual AssetBase GetCached(string id)
+        [CanBeReflected (ThreatLevel = ThreatLevel.Low)]
+        public virtual AssetBase GetCached (string id)
         {
-            var cache = m_registry.RequestModuleInterface<IImprovedAssetCache>();
+            var cache = m_registry.RequestModuleInterface<IImprovedAssetCache> ();
             if (doDatabaseCaching && cache != null)
-                return cache.Get(id);
+                return cache.Get (id);
             return null;
         }
 
-        [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
-        public virtual byte[] GetData(string id)
+        [CanBeReflected (ThreatLevel = ThreatLevel.Low)]
+        public virtual byte [] GetData (string id)
         {
-            return GetData(id, true);
+            return GetData (id, true);
         }
 
-        [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
-        public virtual byte[] GetData(string id, bool showWarnings)
+        [CanBeReflected (ThreatLevel = ThreatLevel.Low)]
+        public virtual byte [] GetData (string id, bool showWarnings)
         {
-            var cache = m_registry.RequestModuleInterface<IImprovedAssetCache>();
-            if (doDatabaseCaching && cache != null)
-            {
+            var cache = m_registry.RequestModuleInterface<IImprovedAssetCache> ();
+            if (doDatabaseCaching && cache != null) {
                 bool found;
-                byte[] cachedAsset = cache.GetData(id, out found);
+                byte [] cachedAsset = cache.GetData (id, out found);
                 if (found)
                     return cachedAsset;
             }
 
-            if (m_doRemoteOnly)
-            {
-                var remoteValue = DoRemoteByURL("AssetServerURI", id, showWarnings);
-                if (remoteValue != null)
-                {
-                    byte[] data = (byte[])remoteValue;
+            if (m_doRemoteOnly) {
+                var remoteValue = DoRemoteByURL ("AssetServerURI", id, showWarnings);
+                if (remoteValue != null) {
+                    byte [] data = (byte [])remoteValue;
                     if (doDatabaseCaching && cache != null && data != null)
-                        cache.CacheData(id, data);
+                        cache.CacheData (id, data);
                     return data;
                 }
                 return null;
             }
 
-            AssetBase asset = m_database.GetAsset(UUID.Parse(id), showWarnings);
+            AssetBase asset = m_database.GetAsset (UUID.Parse (id), showWarnings);
             if (doDatabaseCaching && cache != null)
-                cache.Cache(id, asset);
+                cache.Cache (id, asset);
 
             // An empty array byte [] is NOT null and a lot of tests depend on the null test still - greythane -
             if (asset == null)
                 return null;
 
-            var assetData = new byte[asset.Data.Length];
-            asset.Data.CopyTo(assetData, 0);
-            asset.Dispose();
+            var assetData = new byte [asset.Data.Length];
+            asset.Data.CopyTo (assetData, 0);
+            asset.Dispose ();
             return assetData;
         }
 
-        [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
-        public virtual bool GetExists(string id)
+        [CanBeReflected (ThreatLevel = ThreatLevel.Low)]
+        public virtual bool GetExists (string id)
         {
-            if (m_doRemoteOnly)
-            {
-                object remoteValue = DoRemoteByURL("AssetServerURI", id);
+            if (m_doRemoteOnly) {
+                object remoteValue = DoRemoteByURL ("AssetServerURI", id);
                 return remoteValue != null ? (bool)remoteValue : false;
             }
 
-            return m_database.ExistsAsset(UUID.Parse(id));
+            return m_database.ExistsAsset (UUID.Parse (id));
         }
 
-        [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
-        public virtual void Get(string id, object sender, AssetRetrieved handler)
+        [CanBeReflected (ThreatLevel = ThreatLevel.Low)]
+        public virtual void Get (string id, object sender, AssetRetrieved handler)
         {
-            var asset = Get(id);
-            if (asset != null)
-            {
-                Util.FireAndForget((o) => { handler(id, sender, asset); });
+            var asset = Get (id);
+            if (asset != null) {
+                Util.FireAndForget ((o) => { handler (id, sender, asset); });
                 // asset.Dispose ();
             }
         }
 
-        [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
-        public virtual UUID Store(AssetBase asset)
+        [CanBeReflected (ThreatLevel = ThreatLevel.Low)]
+        public virtual UUID Store (AssetBase asset)
         {
             // this should never happen but...
-            if (asset != null)
-            {
+            if (asset != null) {
 
-                if (m_doRemoteOnly)
-                {
-                    var remoteValue = DoRemoteByURL("AssetServerURI", asset);
+                if (m_doRemoteOnly) {
+                    var remoteValue = DoRemoteByURL ("AssetServerURI", asset);
                     if (remoteValue != null)
                         asset.ID = (UUID)remoteValue;
                     else
                         return UUID.Zero;
-                }
-                else
-                    asset.ID = m_database.Store(asset);
+                } else
+                    asset.ID = m_database.Store (asset);
 
-                if (doDatabaseCaching)
-                {
-                    var cache = m_registry.RequestModuleInterface<IImprovedAssetCache>();
-                    if (cache != null && asset.Data.Length != 0)
-                    {
-                        cache.Expire(asset.ID.ToString());
-                        cache.Cache(asset.ID.ToString(), asset);
+                if (doDatabaseCaching) {
+                    var cache = m_registry.RequestModuleInterface<IImprovedAssetCache> ();
+                    if (cache != null && asset.Data.Length != 0) {
+                        cache.Expire (asset.ID.ToString ());
+                        cache.Cache (asset.ID.ToString (), asset);
                     }
                 }
 
                 return asset.ID;
             }
 
-            MainConsole.Instance.Error("[Asset service]: Trying to store a null asset!");
+            MainConsole.Instance.Error ("[Asset service]: Trying to store a null asset!");
             return UUID.Zero;
         }
 
@@ -280,15 +263,14 @@ namespace Universe.Services.SQLServices.AssetService
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
         public virtual UUID UpdateContent(UUID id, byte[] data)
         {
-            if (m_doRemoteOnly)
-            {
-                var remoteValue = DoRemoteByURL("AssetServerURI", id, data);
+            if (m_doRemoteOnly) {
+                var remoteValue = DoRemoteByURL ("AssetServerURI", id, data);
                 return remoteValue != null ? (UUID)remoteValue : UUID.Zero;
             }
 
             UUID newID;
-            m_database.UpdateContent(id, data, out newID);
-            var cache = m_registry.RequestModuleInterface<IImprovedAssetCache>();
+            m_database.UpdateContent (id, data, out newID);
+            var cache = m_registry.RequestModuleInterface<IImprovedAssetCache> ();
             if (doDatabaseCaching && cache != null)
                 cache.Expire(id.ToString());
             return newID;
@@ -297,9 +279,8 @@ namespace Universe.Services.SQLServices.AssetService
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
         public virtual bool Delete(UUID id)
         {
-            if (m_doRemoteOnly)
-            {
-                var remoteValue = DoRemoteByURL("AssetServerURI", id);
+            if (m_doRemoteOnly) {
+                var remoteValue = DoRemoteByURL ("AssetServerURI", id);
                 return remoteValue != null ? (bool)remoteValue : false;
             }
 
@@ -315,25 +296,22 @@ namespace Universe.Services.SQLServices.AssetService
         /// </summary>
         /// <param name="scene">Scene.</param>
         /// <param name="args">Arguments.</param>
-        void CmdShowDigest(IScene scene, string[] args)
+        void CmdShowDigest (IScene scene, string [] args)
         {
-            if (args.Length < 3)
-            {
-                MainConsole.Instance.Info("Asset ID required - Syntax: show digest <ID>");
+            if (args.Length < 3) {
+                MainConsole.Instance.Info ("Asset ID required - Syntax: show digest <ID>");
                 return;
             }
 
             AssetBase asset = Get(args[2]);
 
-            if (asset == null)
-            {
-                MainConsole.Instance.Warn("Asset not found");
+            if (asset == null) {
+                MainConsole.Instance.Warn ("Asset not found");
                 return;
             }
-            if (asset.Data.Length == 0)
-            {
-                MainConsole.Instance.Warn("Asset has no data");
-                asset.Dispose();
+            if (asset.Data.Length == 0) {
+                MainConsole.Instance.Warn ("Asset has no data");
+                asset.Dispose ();
                 return;
             }
 
@@ -345,8 +323,7 @@ namespace Universe.Services.SQLServices.AssetService
             MainConsole.Instance.InfoFormat("Content-type: {0}", asset.TypeAsset);
             MainConsole.Instance.InfoFormat("Flags: {0}", asset.Flags);
 
-            for (i = 0; i < 5; i++)
-            {
+            for (i = 0; i < 5; i++) {
                 int off = i * 16;
                 if (asset.Data.Length <= off)
                     break;
@@ -357,10 +334,10 @@ namespace Universe.Services.SQLServices.AssetService
                 byte[] line = new byte[len];
                 Array.Copy(asset.Data, off, line, 0, len);
 
-                var text = BitConverter.ToString(line);
-                MainConsole.Instance.Info(string.Format("{0:x4}: {1}", off, text));
+                var text = BitConverter.ToString (line);
+                MainConsole.Instance.Info (string.Format ("{0:x4}: {1}", off, text));
             }
-            asset.Dispose();
+            asset.Dispose ();
         }
 
         /// <summary>
@@ -368,23 +345,21 @@ namespace Universe.Services.SQLServices.AssetService
         /// </summary>
         /// <param name="scene">Scene.</param>
         /// <param name="args">Arguments.</param>
-        void CmdDeleteAsset(IScene scene, string[] args)
+        void CmdDeleteAsset (IScene scene, string [] args)
         {
-            if (args.Length < 3)
-            {
-                MainConsole.Instance.Info("Asset ID required - Syntax: delete asset <ID>");
+            if (args.Length < 3) {
+                MainConsole.Instance.Info ("Asset ID required - Syntax: delete asset <ID>");
                 return;
             }
 
             AssetBase asset = Get(args[2]);
 
-            if (asset == null)
-            {
-                MainConsole.Instance.Info("Asset not found");
+            if (asset == null) {
+                MainConsole.Instance.Info ("Asset not found");
                 return;
             }
 
-            asset.Dispose();
+            asset.Dispose ();
             Delete(UUID.Parse(args[2]));
 
             MainConsole.Instance.Info("Asset deleted");
@@ -395,57 +370,51 @@ namespace Universe.Services.SQLServices.AssetService
         /// </summary>
         /// <param name="scene">Scene.</param>
         /// <param name="args">Arguments.</param>
-        void CmdGetAsset(IScene scene, string[] args)
+        void CmdGetAsset (IScene scene, string [] args)
         {
-            if (args.Length < 3)
-            {
-                MainConsole.Instance.Info("Asset ID required - Syntax: get asset <ID>");
+            if (args.Length < 3) {
+                MainConsole.Instance.Info ("Asset ID required - Syntax: get asset <ID>");
                 return;
             }
 
             AssetBase asset = Get(args[2]);
 
-            if (asset == null)
-            {
-                MainConsole.Instance.Info("Asset not found");
+            if (asset == null) {
+                MainConsole.Instance.Info ("Asset not found");
                 return;
             }
 
             string creatorName = "Unknown";
             if (asset.CreatorID == UUID.Zero)
                 creatorName = "System";
-            else
-            {
-                var accountService = m_registry.RequestModuleInterface<IUserAccountService>();
-                if (accountService != null)
-                {
+            else {
+                var accountService = m_registry.RequestModuleInterface<IUserAccountService> ();
+                if (accountService != null) {
                     UserAccount account = null;
-                    try
-                    {
-                        account = accountService.GetUserAccount(null, asset.CreatorID);
-                    }
-                    catch (Exception e)
-                    {
-                        MainConsole.Instance.Info("Exception during retrieval of asset creator account\n" + e);
+                    try {
+                        account = accountService.GetUserAccount (null, asset.CreatorID);
+                    } catch (Exception e) {
+                        MainConsole.Instance.Info ("Exception during retrieval of asset creator account\n" + e);
                     }
                     if (account != null)
                         creatorName = account.Name;
                 }
             }
 
-            MainConsole.Instance.InfoFormat("{0} - {1}",
+            MainConsole.Instance.InfoFormat ("{0} - {1}",
                 asset.Name == "" ? "(No name)" : asset.Name,
                 asset.Description == "" ? "(No description)" : asset.Description
             );
 
-            MainConsole.Instance.CleanInfoFormat("{0} created by {1} on {2}",
+            MainConsole.Instance.CleanInfoFormat ("{0} created by {1} on {2}",
                 asset.AssetTypeInfo(),
                 creatorName,
                 asset.CreationDate.ToShortDateString()
             );
 
-            asset.Dispose();
+            asset.Dispose ();
         }
+
 
         #endregion
     }

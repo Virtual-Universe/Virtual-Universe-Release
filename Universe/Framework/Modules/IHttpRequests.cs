@@ -32,41 +32,35 @@ using OpenMetaverse;
 
 namespace Universe.Framework.Modules
 {
-	public enum HttpRequestConstants
-	{
-		HTTP_METHOD = 0,
-		HTTP_MIMETYPE = 1,
-		HTTP_BODY_MAXLENGTH = 2,
-		HTTP_VERIFY_CERT = 3,
-		HTTP_VERBOSE_THROTTLE = 4,
-		HTTP_CUSTOM_HEADER = 5,
-		HTTP_PRAGMA_NO_CACHE = 6
-	}
+    public enum HttpRequestConstants
+    {
+        HTTP_METHOD = 0,
+        HTTP_MIMETYPE = 1,
+        HTTP_BODY_MAXLENGTH = 2,
+        HTTP_VERIFY_CERT = 3,
+        HTTP_VERBOSE_THROTTLE = 4,
+        HTTP_CUSTOM_HEADER = 5,
+        HTTP_PRAGMA_NO_CACHE = 6
+    }
 
-	public interface IHttpRequestModule
-	{
-		UUID MakeHttpRequest (string url, string parameters, string body);
+    public interface IHttpRequestModule
+    {
+        UUID MakeHttpRequest(string url, string parameters, string body);
 
-		UUID StartHttpRequest (UUID primID, UUID itemID, string url, List<string> parameters,
-		                            Dictionary<string, string> headers, string body);
+        UUID StartHttpRequest(UUID primID, UUID itemID, string url, List<string> parameters,
+                              Dictionary<string, string> headers, string body);
 
-		void StopHttpRequest (UUID m_primID, UUID m_itemID);
+        void StopHttpRequest(UUID m_primID, UUID m_itemID);
+        IServiceRequest GetNextCompletedRequest();
+        int GetRequestCount();
+        void RemoveCompletedRequest(IServiceRequest id);
+    }
 
-		IServiceRequest GetNextCompletedRequest ();
-
-		int GetRequestCount ();
-
-		void RemoveCompletedRequest (IServiceRequest id);
-	}
-
-	public interface IHttpRequestClass : IServiceRequest
-	{
-		object[] Metadata { get; set; }
-
-		int Status { get; set; }
-
-		string ResponseBody { get; set; }
-
-		bool VerbroseThrottle { get; set; }
-	}
+    public interface IHttpRequestClass : IServiceRequest
+    {
+        object[] Metadata { get; set; }
+        int Status { get; set; }
+        string ResponseBody { get; set; }
+        bool VerbroseThrottle { get; set; }
+    }
 }

@@ -38,100 +38,100 @@ using Universe.Framework.Utilities;
 
 namespace Universe.Modules.Web
 {
-	public class AdminUserPurchasesPage : IWebInterfacePage
-	{
-		public string [] FilePath {
-			get {
-				return new [] {
-					"html/admin/purchases.html"
-				};
-			}
-		}
+    public class AdminUserPurchasesPage : IWebInterfacePage
+    {
+        public string [] FilePath {
+            get {
+                return new []
+                           {
+                               "html/admin/purchases.html"
+                           };
+            }
+        }
 
-		public bool RequiresAuthentication {
-			get { return true; }
-		}
+        public bool RequiresAuthentication {
+            get { return true; }
+        }
 
-		public bool RequiresAdminAuthentication {
-			get { return true; }
-		}
+        public bool RequiresAdminAuthentication {
+            get { return true; }
+        }
 
-		public Dictionary<string, object> Fill (WebInterface webInterface, string filename, OSHttpRequest httpRequest,
-		                                        OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
-		                                        ITranslator translator, out string response)
-		{
-			response = null;
-			IConfig gridInfo = webInterface.Registry.RequestModuleInterface<ISimulationBase> ().ConfigSource.Configs ["GridInfoService"];
-			var InWorldCurrency = gridInfo.GetString ("CurrencySymbol", string.Empty) + " ";
-			var RealCurrency = gridInfo.GetString ("RealCurrencySymbol", string.Empty) + " ";
+        public Dictionary<string, object> Fill (WebInterface webInterface, string filename, OSHttpRequest httpRequest,
+                                                OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
+                                                ITranslator translator, out string response)
+        {
+            response = null;
+            IConfig gridInfo = webInterface.Registry.RequestModuleInterface<ISimulationBase> ().ConfigSource.Configs ["GridInfoService"];
+            var InWorldCurrency = gridInfo.GetString ("CurrencySymbol", string.Empty) + " ";
+            var RealCurrency = gridInfo.GetString ("RealCurrencySymbol", string.Empty) + " ";
 
-			var vars = new Dictionary<string, object> ();
-			var purchasesList = new List<Dictionary<string, object>> ();
+            var vars = new Dictionary<string, object> ();
+            var purchasesList = new List<Dictionary<string, object>> ();
 
-			var today = DateTime.Now;
-			var thirtyDays = today.AddDays (-30);
-			string DateStart = thirtyDays.ToShortDateString ();
-			string DateEnd = today.ToShortDateString ();
-			string UserName = "";
-			UUID UserID = UUID.Zero;
+            var today = DateTime.Now;
+            var thirtyDays = today.AddDays (-30);
+            string DateStart = thirtyDays.ToShortDateString ();
+            string DateEnd = today.ToShortDateString ();
+            string UserName = "";
+            UUID UserID = UUID.Zero;
 
-			IMoneyModule moneyModule = webInterface.Registry.RequestModuleInterface<IMoneyModule> ();
-			string noDetails = translator.GetTranslatedString ("NoPurchasesText");
-			if (moneyModule != null) {
+            IMoneyModule moneyModule = webInterface.Registry.RequestModuleInterface<IMoneyModule> ();
+            string noDetails = translator.GetTranslatedString ("NoPurchasesText");
+            if (moneyModule != null) {
 
-				// Check if we're looking at the standard page or the submitted one
-				if (requestParameters.ContainsKey ("Submit")) {
-					if (requestParameters.ContainsKey ("date_start"))
-						DateStart = requestParameters ["date_start"].ToString ();
-					if (requestParameters.ContainsKey ("date_end"))
-						DateEnd = requestParameters ["date_end"].ToString ();
-					if (requestParameters.ContainsKey ("user_name"))
-						UserName = requestParameters ["user_name"].ToString ();
+                // Check if we're looking at the standard page or the submitted one
+                if (requestParameters.ContainsKey ("Submit")) {
+                    if (requestParameters.ContainsKey ("date_start"))
+                        DateStart = requestParameters ["date_start"].ToString ();
+                    if (requestParameters.ContainsKey ("date_end"))
+                        DateEnd = requestParameters ["date_end"].ToString ();
+                    if (requestParameters.ContainsKey ("user_name"))
+                        UserName = requestParameters ["user_name"].ToString ();
 
-					IUserAccountService accountService = webInterface.Registry.RequestModuleInterface<IUserAccountService> ();
+                    IUserAccountService accountService = webInterface.Registry.RequestModuleInterface<IUserAccountService> ();
 
-					if (UserName != "") {
-						UserID = (UUID)Constants.LibraryOwnerUUID;         // This user should hopefully never have transactions
+                    if (UserName != "") {
+                        UserID = (UUID)Constants.LibraryOwnerUUID;         // This user should hopefully never have transactions
 
-						if (UserName.Split (' ').Length == 2) {
-							var userAccount = accountService.GetUserAccount (null, UserName);
-							if (userAccount != null)
-								UserID = userAccount.PrincipalID;
-						}
-					}
+                        if (UserName.Split (' ').Length == 2) {
+                            var userAccount = accountService.GetUserAccount (null, UserName);
+                            if (userAccount != null)
+                                UserID = userAccount.PrincipalID;
+                        }
+                    }
 
-					// Purchases Logs
-					var timeNow = DateTime.Now.ToString ("HH:mm:ss");
-					var dateFrom = DateTime.Parse (DateStart + " " + timeNow);
-					var dateTo = DateTime.Parse (DateEnd + " " + timeNow);
-					var purchases = new List<AgentPurchase> ();
+                    // Purchases Logs
+                    var timeNow = DateTime.Now.ToString ("HH:mm:ss");
+                    var dateFrom = DateTime.Parse (DateStart + " " + timeNow);
+                    var dateTo = DateTime.Parse (DateEnd + " " + timeNow);
+                    var purchases = new List<AgentPurchase> ();
 
-					if (UserID != UUID.Zero)
-						purchases = moneyModule.GetPurchaseHistory (UserID, dateFrom, dateTo, null, null);
-					else
-						purchases = moneyModule.GetPurchaseHistory (dateFrom, dateTo, null, null);
+                    if (UserID != UUID.Zero)
+                        purchases = moneyModule.GetPurchaseHistory (UserID, dateFrom, dateTo, null, null);
+                    else
+                        purchases = moneyModule.GetPurchaseHistory (dateFrom, dateTo, null, null);
 
-					// data
-					if (purchases != null && purchases.Count > 0) {
-						noDetails = "";
+                    // data
+                    if (purchases != null && purchases.Count > 0) {
+                        noDetails = "";
 
-						foreach (var purchase in purchases) {
-							var account = accountService.GetUserAccount (null, purchase.AgentID);
-							string AgentName = "";
-							if (account != null)
-								AgentName = account.Name;
+                        foreach (var purchase in purchases) {
+                            var account = accountService.GetUserAccount (null, purchase.AgentID);
+                            string AgentName = "";
+                            if (account != null)
+                                AgentName = account.Name;
 
-							purchasesList.Add (new Dictionary<string, object> {
-								{ "ID", purchase.ID },
-								{ "AgentID", purchase.AgentID },
-								{ "AgentName", AgentName },
-								{ "LoggedIP", purchase.IP },
-								{ "Description", "Purchase" },
-								{ "Amount",purchase.Amount },
-								{ "RealAmount",((float)purchase.RealAmount / 100).ToString ("0.00") }, {
-									"PurchaseDate",
-									Culture.LocaleDate (purchase.PurchaseDate.ToLocalTime (), "MMM dd, hh:mm:ss tt")
-								}, { "UpdateDate", Culture.LocaleDate (purchase.UpdateDate.ToLocalTime(), "MMM dd, hh:mm:ss tt") }
+                            purchasesList.Add (new Dictionary<string, object> {
+                            { "ID", purchase.ID },
+                            { "AgentID", purchase.AgentID },
+                            { "AgentName", AgentName },
+                            { "LoggedIP", purchase.IP },
+                            { "Description", "Purchase" },
+                            { "Amount",purchase.Amount },
+                            { "RealAmount",((float) purchase.RealAmount/100).ToString("0.00") },
+                            { "PurchaseDate", Culture.LocaleDate (purchase.PurchaseDate.ToLocalTime(), "MMM dd, hh:mm:ss tt") },
+                            { "UpdateDate", Culture.LocaleDate (purchase.UpdateDate.ToLocalTime(), "MMM dd, hh:mm:ss tt") }
 
                         });
                         }
@@ -166,13 +166,16 @@ namespace Universe.Modules.Web
             vars.Add ("DateStartText", translator.GetTranslatedString ("DateStartText"));
             vars.Add ("DateEndText", translator.GetTranslatedString ("DateEndText"));
             vars.Add ("SearchUserText", translator.GetTranslatedString ("AvatarNameText"));
+
             vars.Add ("PurchaseAgentText", translator.GetTranslatedString ("TransactionToAgentText"));
             vars.Add ("PurchaseDateText", translator.GetTranslatedString ("TransactionDateText"));
             vars.Add ("PurchaseUpdateDateText", translator.GetTranslatedString ("TransactionDateText"));
+            //vars.Add("PurchaseTimeText", translator.GetTranslatedString("Time"));
             vars.Add ("PurchaseDetailText", translator.GetTranslatedString ("TransactionDetailText"));
             vars.Add ("LoggedIPText", translator.GetTranslatedString ("LoggedIPText"));
             vars.Add ("PurchaseAmountText", InWorldCurrency + translator.GetTranslatedString ("TransactionAmountText"));
             vars.Add ("PurchaseRealAmountText", RealCurrency + translator.GetTranslatedString ("PurchaseCostText"));
+
             vars.Add ("FirstText", translator.GetTranslatedString ("FirstText"));
             vars.Add ("BackText", translator.GetTranslatedString ("BackText"));
             vars.Add ("NextText", translator.GetTranslatedString ("NextText"));

@@ -1,8 +1,3 @@
-C:\Users\virtu\Desktop\Universe-Dev\VirtualUniverse\bin\Physics\Universe.Physics.BulletSPlugin.dll
-C:\Users\virtu\Desktop\Universe-Dev\VirtualUniverse\bin\Physics\Universe.Physics.BulletSPlugin.pdb
-C:\Users\virtu\Desktop\Universe-Dev\Universe\Physics\BulletSPlugin\obj\x64\Debug\Universe.Physics.BulletSPlugin.csprojResolveAssemblyReference.cache
-C:\Users\virtu\Desktop\Universe-Dev\Universe\Physics\BulletSPlugin\obj\x64\Debug\Universe.Physics.BulletSPlugin.dll
-C:\Users\virtu\Desktop\Universe-Dev\Universe\Physics\BulletSPlugin\obj\x64\Debug\Universe.Physics.BulletSPlugin.pdb
 C:\Users\virtu\Desktop\Virtual-Dev\VirtualUniverse\bin\Physics\Universe.Physics.BulletSPlugin.dll
 C:\Users\virtu\Desktop\Virtual-Dev\VirtualUniverse\bin\Physics\Universe.Physics.BulletSPlugin.pdb
 C:\Users\virtu\Desktop\Virtual-Dev\Universe\Physics\BulletSPlugin\obj\x64\Debug\Universe.Physics.BulletSPlugin.csprojResolveAssemblyReference.cache

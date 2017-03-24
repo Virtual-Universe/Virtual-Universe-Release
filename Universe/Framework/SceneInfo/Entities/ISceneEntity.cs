@@ -39,302 +39,276 @@ using Universe.Framework.Services.ClassHelpers.Inventory;
 
 namespace Universe.Framework.SceneInfo.Entities
 {
-	public delegate void BlankHandler ();
-
-	public enum StateSource
-	{
-		NewRez = 0,
-		PrimCrossing = 1,
-		ScriptedRez = 2,
-		AttachedRez = 3,
-		RegionStart = 4
-	}
-
-	[Serializable, ProtoContract ()]
-	public class KeyframeAnimation : IDataTransferable
-	{
-		public enum Modes
-		{
-			Loop = 4,
-			Forward = 16,
-			Reverse = 8,
-			PingPong = 32
-		}
-
-		public enum Commands
-		{
-			Pause = 2048,
-			Play = 1024,
-			Stop = 512
-		}
-
-		public enum Data
-		{
-			Translation = 64,
-			Rotation = 128,
-			Both = 192
-		}
-
-		[ProtoMember (1)]
-		public int CurrentAnimationPosition = 0;
-		[ProtoMember (2)]
-		public bool PingPongForwardMotion = true;
-		[ProtoMember (3)]
-		public Modes CurrentMode = Modes.Forward;
-		[ProtoMember (4)]
-		public int CurrentFrame = 0;
-		[ProtoMember (5)]
-		public float[] TimeList = new float [0];
-		[ProtoMember (6)]
-		public Vector3 InitialPosition = Vector3.Zero;
-		[ProtoMember (7)]
-		public Vector3[] PositionList = new Vector3 [0];
-		[ProtoMember (8)]
-		public Quaternion InitialRotation = Quaternion.Identity;
-		[ProtoMember (9)]
-		public Quaternion[] RotationList = new Quaternion [0];
+    public delegate void BlankHandler ();
+
+    public enum StateSource
+    {
+        NewRez = 0,
+        PrimCrossing = 1,
+        ScriptedRez = 2,
+        AttachedRez = 3,
+        RegionStart = 4
+    }
+
+    [Serializable, ProtoContract ()]
+    public class KeyframeAnimation : IDataTransferable
+    {
+        public enum Modes
+        {
+            Loop = 4,
+            Forward = 16,
+            Reverse = 8,
+            PingPong = 32
+        }
+
+        public enum Commands
+        {
+            Pause = 2048,
+            Play = 1024,
+            Stop = 512
+        }
+
+        public enum Data
+        {
+            Translation = 64,
+            Rotation = 128,
+            Both = 192
+        }
+
+        [ProtoMember (1)]
+        public int CurrentAnimationPosition = 0;
+        [ProtoMember (2)]
+        public bool PingPongForwardMotion = true;
+        [ProtoMember (3)]
+        public Modes CurrentMode = Modes.Forward;
+        [ProtoMember (4)]
+        public int CurrentFrame = 0;
+        [ProtoMember (5)]
+        public float [] TimeList = new float [0];
+        [ProtoMember (6)]
+        public Vector3 InitialPosition = Vector3.Zero;
+        [ProtoMember (7)]
+        public Vector3 [] PositionList = new Vector3 [0];
+        [ProtoMember (8)]
+        public Quaternion InitialRotation = Quaternion.Identity;
+        [ProtoMember (9)]
+        public Quaternion [] RotationList = new Quaternion [0];
+
+        public override OSDMap ToOSD ()
+        {
+            OSDMap map = new OSDMap ();
+            map ["CurrentAnimationPosition"] = CurrentAnimationPosition;
+            map ["CurrentMode"] = (int)CurrentMode;
+
+            OSDArray times = new OSDArray ();
+            foreach (float time in TimeList)
+                times.Add (time);
+            map ["TimeList"] = times;
+
+            OSDArray positions = new OSDArray ();
+            foreach (Vector3 v in PositionList)
+                positions.Add (v);
+            map ["PositionList"] = positions;
+
+            OSDArray rotations = new OSDArray ();
+            foreach (Quaternion v in RotationList)
+                rotations.Add (v);
+            map ["RotationList"] = rotations;
+
+            return map;
+        }
+
+        public override void FromOSD (OSDMap map)
+        {
+            CurrentAnimationPosition = map ["CurrentAnimationPosition"];
+            CurrentMode = (Modes)(int)map ["CurrentMode"];
+
+            OSDArray positions = (OSDArray)map ["PositionList"];
+            List<Vector3> pos = new List<Vector3> ();
+            foreach (OSD o in positions)
+                pos.Add (o);
+            PositionList = pos.ToArray ();
+            OSDArray rotations = (OSDArray)map ["RotationList"];
+
+            List<Quaternion> rot = new List<Quaternion> ();
+            foreach (OSD o in rotations)
+                rot.Add (o);
+            RotationList = rot.ToArray ();
+
+            OSDArray times = (OSDArray)map ["TimeList"];
+            List<float> time = new List<float> ();
+            foreach (OSD o in times)
+                time.Add (o);
+            TimeList = time.ToArray ();
+        }
+    }
 
-		public override OSDMap ToOSD ()
-		{
-			OSDMap map = new OSDMap ();
-			map ["CurrentAnimationPosition"] = CurrentAnimationPosition;
-			map ["CurrentMode"] = (int)CurrentMode;
+    public interface ISceneEntity : IEntity
+    {
+        #region Get/Set
 
-			OSDArray times = new OSDArray ();
-			foreach (float time in TimeList)
-				times.Add (time);
-			map ["TimeList"] = times;
+        IScene Scene { get; set; }
+        UUID LastParcelUUID { get; set; }
+        Vector3 LastSignificantPosition { get; }
+        bool IsDeleted { get; set; }
+        Vector3 GroupScale ();
+        Quaternion GroupRotation { get; }
+        UUID OwnerID { get; set; }
+        float Damage { get; set; }
+        int PrimCount { get; }
+        bool HasGroupChanged { get; set; }
+        bool IsAttachment { get; }
+        UUID GroupID { get; set; }
+        bool IsSelected { get; set; }
+        UUID LoopSoundMasterPrim { get; set; }
+        List<UUID> LoopSoundSlavePrims { get; set; }
+        Vector3 OOBsize { get; }
 
-			OSDArray positions = new OSDArray ();
-			foreach (Vector3 v in PositionList)
-				positions.Add (v);
-			map ["PositionList"] = positions;
+        #endregion
 
-			OSDArray rotations = new OSDArray ();
-			foreach (Quaternion v in RotationList)
-				rotations.Add (v);
-			map ["RotationList"] = rotations;
+        #region Children
 
-			return map;
-		}
+        ISceneChildEntity RootChild { get; set; }
+        List<ISceneChildEntity> ChildrenEntities ();
+        void ClearChildren ();
+        bool AddChild (ISceneChildEntity child, int linkNum);
+        bool LinkChild (ISceneChildEntity child);
+        bool RemoveChild (ISceneChildEntity child);
+        bool GetChildPrim (uint LocalID, out ISceneChildEntity entity);
+        bool GetChildPrim (UUID UUID, out ISceneChildEntity entity);
+        ISceneChildEntity GetChildPart (UUID objectID);
+        ISceneChildEntity GetChildPart (uint childkey);
+        void LinkToGroup (ISceneEntity childPrim);
+        IEntity GetLinkNumPart (int linkType);
 
-		public override void FromOSD (OSDMap map)
-		{
-			CurrentAnimationPosition = map ["CurrentAnimationPosition"];
-			CurrentMode = (Modes)(int)map ["CurrentMode"];
+        #endregion
 
-			OSDArray positions = (OSDArray)map ["PositionList"];
-			List<Vector3> pos = new List<Vector3> ();
-			foreach (OSD o in positions)
-				pos.Add (o);
-			PositionList = pos.ToArray ();
-			OSDArray rotations = (OSDArray)map ["RotationList"];
+        #region XML
 
-			List<Quaternion> rot = new List<Quaternion> ();
-			foreach (OSD o in rotations)
-				rot.Add (o);
-			RotationList = rot.ToArray ();
+        /// <summary>
+        ///     Returns an XML based document that represents this object
+        /// </summary>
+        /// <returns></returns>
+        string ToXml2 ();
 
-			OSDArray times = (OSDArray)map ["TimeList"];
-			List<float> time = new List<float> ();
-			foreach (OSD o in times)
-				time.Add (o);
-			TimeList = time.ToArray ();
-		}
-	}
+        /// <summary>
+        ///     Returns an XML based document that represents this object
+        /// </summary>
+        /// <returns></returns>
+        byte [] ToBinaryXml2 ();
 
-	public interface ISceneEntity : IEntity
-	{
-		#region Get/Set
+        #endregion
 
-		IScene Scene { get; set; }
+        Vector3 GetTorque ();
 
-		UUID LastParcelUUID { get; set; }
+        event BlankHandler OnFinishedPhysicalRepresentationBuilding;
 
-		Vector3 LastSignificantPosition { get; }
+        List<UUID> SitTargetAvatar { get; }
 
-		bool IsDeleted { get; set; }
+        void ClearUndoState ();
 
-		Vector3 GroupScale ();
+        void AttachToScene (IScene m_parentScene);
 
-		Quaternion GroupRotation { get; }
+        ISceneEntity Copy (bool copyPhysicsRepresentation);
 
-		UUID OwnerID { get; set; }
+        void ForcePersistence ();
 
-		float Damage { get; set; }
+        void RebuildPhysicalRepresentation (bool keepSelectedStatus, Action actionToDoWhilePhysActorNull);
 
-		int PrimCount { get; }
+        void ScheduleGroupTerseUpdate ();
 
-		bool HasGroupChanged { get; set; }
+        void TriggerScriptChangedEvent (Changed changed);
 
-		bool IsAttachment { get; }
+        void ScheduleGroupUpdate (PrimUpdateFlags primUpdateFlags);
 
-		UUID GroupID { get; set; }
+        void GetProperties (IClientAPI client);
 
-		bool IsSelected { get; set; }
+        ISceneEntity DelinkFromGroup (ISceneChildEntity part, bool p);
 
-		UUID LoopSoundMasterPrim { get; set; }
+        void UpdateGroupPosition (Vector3 vector3, bool p);
 
-		List<UUID> LoopSoundSlavePrims { get; set; }
+        void ResetChildPrimPhysicsPositions ();
 
-		Vector3 OOBsize { get; }
+        Vector3 GetAttachmentPos ();
 
-		#endregion
+        byte GetAttachmentPoint ();
 
-		#region Children
+        byte GetSavedAttachmentPoint ();
 
-		ISceneChildEntity RootChild { get; set; }
+        void SetAttachmentPoint (byte p);
 
-		List<ISceneChildEntity> ChildrenEntities ();
+        void CreateScriptInstances (int p, bool p_2, StateSource stateSource, UUID rezzedFrom, bool clearStateSaves);
 
-		void ClearChildren ();
+        void ResumeScripts ();
 
-		bool AddChild (ISceneChildEntity child, int linkNum);
+        void SetFromItemID (UUID itemID, UUID assetID);
 
-		bool LinkChild (ISceneChildEntity child);
+        void FireAttachmentCollisionEvents (EventArgs e);
 
-		bool RemoveChild (ISceneChildEntity child);
+        void DetachToInventoryPrep ();
 
-		bool GetChildPrim (uint LocalID, out ISceneChildEntity entity);
+        TaskInventoryItem GetInventoryItem (uint localID, UUID itemID);
 
-		bool GetChildPrim (UUID UUID, out ISceneChildEntity entity);
+        int RemoveInventoryItem (uint localID, UUID itemID);
 
-		ISceneChildEntity GetChildPart (UUID objectID);
+        bool AddInventoryItem (IClientAPI remoteClient, uint primLocalID, InventoryItemBase item, UUID copyID);
 
-		ISceneChildEntity GetChildPart (uint childkey);
+        void ScheduleGroupUpdateToAvatar (IScenePresence SP, PrimUpdateFlags primUpdateFlags);
 
-		void LinkToGroup (ISceneEntity childPrim);
+        void SetOwnerId (UUID uUID);
 
-		IEntity GetLinkNumPart (int linkType);
+        uint GetEffectivePermissions ();
 
-		#endregion
+        void SetRootPartOwner (ISceneChildEntity part, UUID uUID, UUID uUID_2);
 
-		#region XML
+        void SetGroup (UUID groupID, UUID attemptingUser, bool needsPropertyUpdateForuser);
 
-		/// <summary>
-		///     Returns an XML based document that represents this object
-		/// </summary>
-		/// <returns></returns>
-		string ToXml2 ();
+        void ApplyNextOwnerPermissions ();
 
-		/// <summary>
-		///     Returns an XML based document that represents this object
-		/// </summary>
-		/// <returns></returns>
-		byte [] ToBinaryXml2 ();
+        bool UpdateInventoryItem (TaskInventoryItem item);
 
-		#endregion
+        void DetachToGround (Vector3 forcedPos, Quaternion forcedRotation);
 
-		Vector3 GetTorque ();
+        void UpdatePermissions (UUID agentID, byte field, uint localId, uint mask, byte set);
 
-		event BlankHandler OnFinishedPhysicalRepresentationBuilding;
+        float BSphereRadiusSQ { get; }
 
-		List<UUID> SitTargetAvatar { get; }
+        /// <summary>
+        ///     Prepares the object to be serialized
+        /// </summary>
+        void BackupPreparation ();
 
-		void ClearUndoState ();
+        void RemoveScriptInstances (bool p);
 
-		void AttachToScene (IScene m_parentScene);
+        float GetMass ();
 
-		ISceneEntity Copy (bool copyPhysicsRepresentation);
+        void AddKeyframedMotion (KeyframeAnimation animation, KeyframeAnimation.Commands command);
 
-		void ForcePersistence ();
+        void UpdateRootPosition (Vector3 pos);
 
-		void RebuildPhysicalRepresentation (bool keepSelectedStatus, Action actionToDoWhilePhysActorNull);
+        void GeneratedMesh (ISceneChildEntity _parent_entity, IMesh _mesh);
 
-		void ScheduleGroupTerseUpdate ();
+        void FinishedSerializingGenericProperties ();
 
-		void TriggerScriptChangedEvent (Changed changed);
+        void OffsetForNewRegion (Vector3 oldGroupPosition);
 
-		void ScheduleGroupUpdate (PrimUpdateFlags primUpdateFlags);
+        void SetAbsolutePosition (bool p, Vector3 attemptedPos);
 
-		void GetProperties (IClientAPI client);
+        bool IsInTransit { get; set; }
 
-		ISceneEntity DelinkFromGroup (ISceneChildEntity part, bool p);
+        void ScriptSetPhysicsStatus (bool p);
 
-		void UpdateGroupPosition (Vector3 vector3, bool p);
+        Vector3 GetAxisAlignedBoundingBox (out float offsetHeight);
 
-		void ResetChildPrimPhysicsPositions ();
+        void ClearPartAttachmentData ();
 
-		Vector3 GetAttachmentPos ();
+        void UpdateGroupRotationR (Quaternion rot);
 
-		byte GetAttachmentPoint ();
+        void ApplyPermissions (uint p);
 
-		byte GetSavedAttachmentPoint ();
+        EntityIntersection TestIntersection (Ray hRay, bool frontFacesOnly, bool faceCenters);
 
-		void SetAttachmentPoint (byte p);
-
-		void CreateScriptInstances (int p, bool p_2, StateSource stateSource, UUID rezzedFrom, bool clearStateSaves);
-
-		void ResumeScripts ();
-
-		void SetFromItemID (UUID itemID, UUID assetID);
-
-		void FireAttachmentCollisionEvents (EventArgs e);
-
-		void DetachToInventoryPrep ();
-
-		TaskInventoryItem GetInventoryItem (uint localID, UUID itemID);
-
-		int RemoveInventoryItem (uint localID, UUID itemID);
-
-		bool AddInventoryItem (IClientAPI remoteClient, uint primLocalID, InventoryItemBase item, UUID copyID);
-
-		void ScheduleGroupUpdateToAvatar (IScenePresence SP, PrimUpdateFlags primUpdateFlags);
-
-		void SetOwnerId (UUID uUID);
-
-		uint GetEffectivePermissions ();
-
-		void SetRootPartOwner (ISceneChildEntity part, UUID uUID, UUID uUID_2);
-
-		void SetGroup (UUID groupID, UUID attemptingUser, bool needsPropertyUpdateForuser);
-
-		void ApplyNextOwnerPermissions ();
-
-		bool UpdateInventoryItem (TaskInventoryItem item);
-
-		void DetachToGround (Vector3 forcedPos, Quaternion forcedRotation);
-
-		void UpdatePermissions (UUID agentID, byte field, uint localId, uint mask, byte set);
-
-		float BSphereRadiusSQ { get; }
-
-		/// <summary>
-		///     Prepares the object to be serialized
-		/// </summary>
-		void BackupPreparation ();
-
-		void RemoveScriptInstances (bool p);
-
-		float GetMass ();
-
-		void AddKeyframedMotion (KeyframeAnimation animation, KeyframeAnimation.Commands command);
-
-		void UpdateRootPosition (Vector3 pos);
-
-		void GeneratedMesh (ISceneChildEntity _parent_entity, IMesh _mesh);
-
-		void FinishedSerializingGenericProperties ();
-
-		void OffsetForNewRegion (Vector3 oldGroupPosition);
-
-		void SetAbsolutePosition (bool p, Vector3 attemptedPos);
-
-		bool IsInTransit { get; set; }
-
-		void ScriptSetPhysicsStatus (bool p);
-
-		Vector3 GetAxisAlignedBoundingBox (out float offsetHeight);
-
-		void ClearPartAttachmentData ();
-
-		void UpdateGroupRotationR (Quaternion rot);
-
-		void ApplyPermissions (uint p);
-
-		EntityIntersection TestIntersection (Ray hRay, bool frontFacesOnly, bool faceCenters);
-
-		void GetAxisAlignedBoundingBoxRaw (out float minX, out float maxX, out float minY, out float maxY,
-			out float minZ, out float maxZ);
-	}
+        void GetAxisAlignedBoundingBoxRaw (out float minX, out float maxX, out float minY, out float maxY,
+                                                 out float minZ, out float maxZ);
+    }
 }

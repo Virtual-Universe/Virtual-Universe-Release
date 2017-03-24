@@ -27,92 +27,92 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System.Collections.Generic;
-using OpenMetaverse;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Services.ClassHelpers.Inventory;
+using OpenMetaverse;
+using System.Collections.Generic;
 
 namespace Universe.Framework.Modules
 {
-	public interface ILLClientInventory
-	{
-		/// <summary>
-		///     The default LSL script that will be added when a client creates
-		///     a new script in inventory or in the task object inventory
-		/// </summary>
-		string DefaultLSLScript { get; set; }
+    public interface ILLClientInventory
+    {
+        /// <summary>
+        ///     The default LSL script that will be added when a client creates
+        ///     a new script in inventory or in the task object inventory
+        /// </summary>
+        string DefaultLSLScript { get; set; }
 
-		/// <summary>
-		///     Add the given inventory item to a user's inventory asynchronously.
-		/// </summary>
-		/// <param name="item">The item to add</param>
-		void AddInventoryItemAsync (InventoryItemBase item);
+        /// <summary>
+        ///     Add the given inventory item to a user's inventory asynchronously.
+        /// </summary>
+        /// <param name="item">The item to add</param>
+        void AddInventoryItemAsync(InventoryItemBase item);
 
-		/// <summary>
-		///     Add the given inventory item to a user's inventory.
-		/// </summary>
-		/// <param name="item">The item to add</param>
-		void AddInventoryItem (InventoryItemBase item);
+        /// <summary>
+        ///     Add the given inventory item to a user's inventory.
+        /// </summary>
+        /// <param name="item">The item to add</param>
+        void AddInventoryItem(InventoryItemBase item);
 
-		/// <summary>
-		///     Add an inventory item to an avatar's inventory.
-		/// </summary>
-		/// <param name="remoteClient">The remote client controlling the avatar</param>
-		/// <param name="item">
-		///     The item.  This structure contains all the item metadata, including the folder
-		///     in which the item is to be placed.
-		/// </param>
-		void AddInventoryItemAsync (IClientAPI remoteClient, InventoryItemBase item);
+        /// <summary>
+        ///     Add an inventory item to an avatar's inventory.
+        /// </summary>
+        /// <param name="remoteClient">The remote client controlling the avatar</param>
+        /// <param name="item">
+        ///     The item.  This structure contains all the item metadata, including the folder
+        ///     in which the item is to be placed.
+        /// </param>
+        void AddInventoryItemAsync(IClientAPI remoteClient, InventoryItemBase item);
 
-		/// <summary>
-		///     Return the given objects to the agent given
-		/// </summary>
-		/// <param name="sceneObjectGroup">The objects to return</param>
-		/// <param name="uuid">The agent UUID that will get the inventory items for these objects</param>
-		/// <returns></returns>
-		bool ReturnObjects (ISceneEntity[] sceneObjectGroup, UUID uuid);
+        /// <summary>
+        ///     Return the given objects to the agent given
+        /// </summary>
+        /// <param name="sceneObjectGroup">The objects to return</param>
+        /// <param name="uuid">The agent UUID that will get the inventory items for these objects</param>
+        /// <returns></returns>
+        bool ReturnObjects(ISceneEntity[] sceneObjectGroup, UUID uuid);
 
-		/// <summary>
-		///     Move the given item from the object task inventory to the agent's inventory
-		/// </summary>
-		/// <param name="destID"></param>
-		/// <param name="uuid"></param>
-		/// <param name="m_host"></param>
-		/// <param name="objID"></param>
-		/// <param name="checkPermissions"></param>
-		InventoryItemBase MoveTaskInventoryItemToUserInventory (UUID destID, UUID uuid, ISceneChildEntity m_host,
-		                                                             UUID objID, bool checkPermissions);
+        /// <summary>
+        ///     Move the given item from the object task inventory to the agent's inventory
+        /// </summary>
+        /// <param name="destID"></param>
+        /// <param name="uuid"></param>
+        /// <param name="m_host"></param>
+        /// <param name="objID"></param>
+        /// <param name="checkPermissions"></param>
+        InventoryItemBase MoveTaskInventoryItemToUserInventory(UUID destID, UUID uuid, ISceneChildEntity m_host,
+                                                               UUID objID, bool checkPermissions);
 
-		/// <summary>
-		///     Move the given items from the object task inventory to the agent's inventory
-		/// </summary>
-		/// <param name="uuid"></param>
-		/// <param name="p"></param>
-		/// <param name="part"></param>
-		/// <param name="invList"></param>
-		/// <returns></returns>
-		UUID MoveTaskInventoryItemsToUserInventory (UUID uuid, string p, ISceneChildEntity part, List<UUID> invList);
+        /// <summary>
+        ///     Move the given items from the object task inventory to the agent's inventory
+        /// </summary>
+        /// <param name="uuid"></param>
+        /// <param name="p"></param>
+        /// <param name="part"></param>
+        /// <param name="invList"></param>
+        /// <returns></returns>
+        UUID MoveTaskInventoryItemsToUserInventory(UUID uuid, string p, ISceneChildEntity part, List<UUID> invList);
 
-		/// <summary>
-		///     Copy a task (prim) inventory item to another task (prim)
-		/// </summary>
-		/// <param name="destId"></param>
-		/// <param name="m_host"></param>
-		/// <param name="objId"></param>
-		void MoveTaskInventoryItemToObject (UUID destId, ISceneChildEntity m_host, UUID objId);
+        /// <summary>
+        ///     Copy a task (prim) inventory item to another task (prim)
+        /// </summary>
+        /// <param name="destId"></param>
+        /// <param name="m_host"></param>
+        /// <param name="objId"></param>
+        void MoveTaskInventoryItemToObject(UUID destId, ISceneChildEntity m_host, UUID objId);
 
-		/// <summary>
-		///     Rez a script into a prim's inventory from another prim
-		///     This is used for the LSL function llRemoteLoadScriptPin and requires a valid pin to be used
-		/// </summary>
-		/// <param name="srcId">The UUID of the script that is going to be copied</param>
-		/// <param name="m_host">The prim that the script that is going to be copied from</param>
-		/// <param name="destId">The UUID of the prim that the </param>
-		/// <param name="pin">The ScriptAccessPin of the prim</param>
-		/// <param name="running">Whether the script should be running when it is started</param>
-		/// <param name="start_param">The start parameter to pass to the script</param>
-		void RezScript (UUID srcId, ISceneChildEntity m_host, UUID destId, int pin, int running, int start_param);
-	}
+        /// <summary>
+        ///     Rez a script into a prim's inventory from another prim
+        ///     This is used for the LSL function llRemoteLoadScriptPin and requires a valid pin to be used
+        /// </summary>
+        /// <param name="srcId">The UUID of the script that is going to be copied</param>
+        /// <param name="m_host">The prim that the script that is going to be copied from</param>
+        /// <param name="destId">The UUID of the prim that the </param>
+        /// <param name="pin">The ScriptAccessPin of the prim</param>
+        /// <param name="running">Whether the script should be running when it is started</param>
+        /// <param name="start_param">The start parameter to pass to the script</param>
+        void RezScript(UUID srcId, ISceneChildEntity m_host, UUID destId, int pin, int running, int start_param);
+    }
 }

@@ -31,41 +31,41 @@ using Universe.Framework.Physics;
 
 namespace Universe.Physics.BulletSPlugin
 {
-	/// <summary>
-	/// Entry for a port of Bullet (http://bulletphysics.org/) to Universe.
-	/// This module interfaces to an unmanaged C++ library which makes the
-	/// actual calls into the Bullet physics engine.
-	/// The unmanaged library is found in opensim-libs::trunk/unmanaged/BulletSim/.
-	/// The unmanaged library is compiled and linked statically with Bullet
-	/// to create BulletSim.dll and libBulletSim.so (for both 32 and 64 bit).
-	/// </summary>
-	public class BSPlugin : IPhysicsPlugin
-	{
-		BSScene _mScene;
+    /// <summary>
+    /// Entry for a port of Bullet (http://bulletphysics.org/) to Universe.
+    /// This module interfaces to an unmanaged C++ library which makes the
+    /// actual calls into the Bullet physics engine.
+    /// The unmanaged library is found in opensim-libs::trunk/unmanaged/BulletSim/.
+    /// The unmanaged library is compiled and linked statically with Bullet
+    /// to create BulletSim.dll and libBulletSim.so (for both 32 and 64 bit).
+    /// </summary>
+    public class BSPlugin : IPhysicsPlugin
+    {
+        BSScene _mScene;
 
-		public BSPlugin ()
-		{
-		}
+        public BSPlugin()
+        {
+        }
 
-		public bool Init ()
-		{
-			return true;
-		}
+        public bool Init()
+        {
+            return true;
+        }
 
-		public PhysicsScene GetScene ()
-		{
-			if (_mScene == null)
-				_mScene = new BSScene ();
-			return (_mScene);
-		}
+        public PhysicsScene GetScene()
+        {
+            if (_mScene == null)
+                _mScene = new BSScene();
+            return (_mScene);
+        }
 
-		public string GetName ()
-		{
-			return ("BulletSim");
-		}
+        public string GetName()
+        {
+            return ("BulletSim");
+        }
 
-		public void Dispose ()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

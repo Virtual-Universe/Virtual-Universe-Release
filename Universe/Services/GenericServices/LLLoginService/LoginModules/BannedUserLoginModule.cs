@@ -41,132 +41,134 @@ using Universe.Framework.Utilities;
 
 namespace Universe.Services
 {
-	public class BannedUserLoginModule : ILoginModule
-	{
-		protected IAuthenticationService m_AuthenticationService;
-		protected ILoginService m_LoginService;
-		protected bool m_UseTOS = false;
-		protected string m_TOSLocation = "";
+    public class BannedUserLoginModule : ILoginModule
+    {
+        protected IAuthenticationService m_AuthenticationService;
+        protected ILoginService m_LoginService;
+        protected bool m_UseTOS = false;
+        protected string m_TOSLocation = "";
 
-		public string Name {
-			get { return GetType ().Name; }
-		}
+        public string Name {
+            get { return GetType ().Name; }
+        }
 
-		public void Initialize (ILoginService service, IConfigSource config, IRegistryCore registry)
-		{
-			IConfig loginServerConfig = config.Configs ["LoginService"];
-			if (loginServerConfig != null) {
-				m_UseTOS = loginServerConfig.GetBoolean ("UseTermsOfServiceOnFirstLogin", false);
-				m_TOSLocation = loginServerConfig.GetString ("FileNameOfTOS", "");
+        public void Initialize (ILoginService service, IConfigSource config, IRegistryCore registry)
+        {
+            IConfig loginServerConfig = config.Configs ["LoginService"];
+            if (loginServerConfig != null) {
+                m_UseTOS = loginServerConfig.GetBoolean ("UseTermsOfServiceOnFirstLogin", false);
+                m_TOSLocation = loginServerConfig.GetString ("FileNameOfTOS", "");
 
-				if (m_TOSLocation.Length > 0) {
-					if (m_TOSLocation.ToLower ().StartsWith ("http://", StringComparison.Ordinal))
-						m_TOSLocation = m_TOSLocation.Replace ("ServersHostname", MainServer.Instance.HostName);
-					else {
-						var simBase = registry.RequestModuleInterface<ISimulationBase> ();
-						var TOSFileName = PathHelpers.VerifyReadFile (m_TOSLocation, ".txt", simBase.DefaultDataPath + "/html");
-						if (TOSFileName == "") {
-							m_UseTOS = false;
-							MainConsole.Instance.ErrorFormat ("Unable to locate the Terms of Service file : '{0}'", m_TOSLocation);
-							MainConsole.Instance.Error (" Displaying 'Terms of Service' for a new user login is disabled!");
-						} else
-							m_TOSLocation = TOSFileName;
-					}
-				} else
-					m_UseTOS = false;
+                if (m_TOSLocation.Length > 0) {
+                    if (m_TOSLocation.ToLower ().StartsWith ("http://", StringComparison.Ordinal))
+                        m_TOSLocation = m_TOSLocation.Replace ("ServersHostname", MainServer.Instance.HostName);
+                    else {
+                        var simBase = registry.RequestModuleInterface<ISimulationBase> ();
+                        var TOSFileName = PathHelpers.VerifyReadFile (m_TOSLocation, ".txt", simBase.DefaultDataPath + "/html");
+                        if (TOSFileName == "") {
+                            m_UseTOS = false;
+                            MainConsole.Instance.ErrorFormat ("Unable to locate the Terms of Service file : '{0}'", m_TOSLocation);
+                            MainConsole.Instance.Error ("Displaying 'Terms of Service' for a new user login is disabled!");
+                        } else
+                            m_TOSLocation = TOSFileName;
+                    }
+                } else
+                    m_UseTOS = false;
+            }
 
-			}
+            m_AuthenticationService = registry.RequestModuleInterface<IAuthenticationService> ();
+            m_LoginService = service;
+        }
 
-			m_AuthenticationService = registry.RequestModuleInterface<IAuthenticationService> ();
-			m_LoginService = service;
-		}
+        public LoginResponse Login (Hashtable request, UserAccount account, IAgentInfo agentInfo, string authType,
+                                   string password, out object data)
+        {
+            IAgentConnector agentData = Framework.Utilities.DataManager.RequestPlugin<IAgentConnector> ();
+            data = null;
 
-		public LoginResponse Login (Hashtable request, UserAccount account, IAgentInfo agentInfo, string authType, string password, out object data)
-		{
-			IAgentConnector agentData = Framework.Utilities.DataManager.RequestPlugin<IAgentConnector> ();
-			data = null;
+            if (request == null)
+                return null;
+            //If its null, its just a verification request, allow them to see things even if they are banned
 
-			if (request == null)
-				return null;
-			//If its null, its just a verification request, allow them to see things even if they are banned
+            bool tosExists = false;
+            string tosAccepted = "";
+            if (request.ContainsKey ("agree_to_tos")) {
+                tosExists = true;
+                tosAccepted = request ["agree_to_tos"].ToString ();
+            }
 
-			bool tosExists = false;
-			string tosAccepted = "";
-			if (request.ContainsKey ("agree_to_tos")) {
-				tosExists = true;
-				tosAccepted = request ["agree_to_tos"].ToString ();
-			}
+            //MAC BANNING START
+            var mac = (string)request ["mac"];
+            if (mac == "") {
+                data = "Bad Viewer Connection";
+                return new LLFailedLoginResponse (LoginResponseEnum.Indeterminant, data.ToString (), false);
+            }
 
-			//MAC BANNING START
-			var mac = (string)request ["mac"];
-			if (mac == "") {
-				data = "Bad Viewer Connection";
-				return new LLFailedLoginResponse (LoginResponseEnum.Indeterminant, data.ToString (), false);
-			}
-
-			// TODO: Some TPV's now send their version in the Channel
-			/*
+            // TODO: Some TPV's now send their version in the Channel
+            /*
             string channel = "Unknown";
             if (request.Contains("channel") && request["channel"] != null)
                 channel = request["channel"].ToString();
             */
 
-			bool AcceptedNewTOS = false;
-			//This gets if the viewer has accepted the new TOS
-			if (!agentInfo.AcceptTOS && tosExists) {
-				if (tosAccepted == "0")
-					AcceptedNewTOS = false;
-				else if (tosAccepted == "1")
-					AcceptedNewTOS = true;
-				else
-					AcceptedNewTOS = bool.Parse (tosAccepted);
+            bool AcceptedNewTOS = false;
+            //This gets if the viewer has accepted the new TOS
+            if (!agentInfo.AcceptTOS && tosExists) {
+                if (tosAccepted == "0")
+                    AcceptedNewTOS = false;
+                else if (tosAccepted == "1")
+                    AcceptedNewTOS = true;
+                else
+                    AcceptedNewTOS = bool.Parse (tosAccepted);
 
-				if (agentInfo.AcceptTOS != AcceptedNewTOS) {
-					agentInfo.AcceptTOS = AcceptedNewTOS;
-					agentData.UpdateAgent (agentInfo);
-				}
-			}
+                if (agentInfo.AcceptTOS != AcceptedNewTOS) {
+                    agentInfo.AcceptTOS = AcceptedNewTOS;
+                    agentData.UpdateAgent (agentInfo);
+                }
+            }
+            if (!AcceptedNewTOS && !agentInfo.AcceptTOS && m_UseTOS) {
+                data = "TOS not accepted";
+                if (m_TOSLocation.ToLower ().StartsWith ("http://", StringComparison.Ordinal))
+                    return new LLFailedLoginResponse (LoginResponseEnum.ToSNeedsSent, m_TOSLocation, false);
 
-			if (!AcceptedNewTOS && !agentInfo.AcceptTOS && m_UseTOS) {
-				data = "TOS not accepted";
-				if (m_TOSLocation.ToLower ().StartsWith ("http://", StringComparison.Ordinal))
-					return new LLFailedLoginResponse (LoginResponseEnum.ToSNeedsSent, m_TOSLocation, false);
+                // text file
+                var ToSText = File.ReadAllText (Path.Combine (Environment.CurrentDirectory, m_TOSLocation));
+                return new LLFailedLoginResponse (LoginResponseEnum.ToSNeedsSent, ToSText, false);
+            }
+            if ((agentInfo.Flags & IAgentFlags.PermBan) == IAgentFlags.PermBan) {
+                MainConsole.Instance.InfoFormat (
+                    "[Login service]: Login failed for user {0}, reason: user is permanently banned.", account.Name);
+                data = "Permanently banned";
+                return LLFailedLoginResponse.PermanentBannedProblem;
+            }
 
-				// text file
-				var ToSText = File.ReadAllText (Path.Combine (Environment.CurrentDirectory, m_TOSLocation));
-				return new LLFailedLoginResponse (LoginResponseEnum.ToSNeedsSent, ToSText, false);
-			}
+            if ((agentInfo.Flags & IAgentFlags.TempBan) == IAgentFlags.TempBan) {
+                bool IsBanned = true;
+                string until = "";
 
-			if ((agentInfo.Flags & IAgentFlags.PermBan) == IAgentFlags.PermBan) {
-				MainConsole.Instance.InfoFormat ("[Login Service]: Login failed for user {0}, reason: user is permanently banned.", account.Name);
-				data = "Permanently banned";
-				return LLFailedLoginResponse.PermanentBannedProblem;
-			}
+                if (agentInfo.OtherAgentInformation.ContainsKey ("TemporaryBanInfo")) {
+                    DateTime bannedTime = agentInfo.OtherAgentInformation ["TemporaryBanInfo"].AsDate ();
+                    until = string.Format (" until {0} {1}",
+                                           bannedTime.ToLocalTime ().ToShortDateString (),
+                                           bannedTime.ToLocalTime ().ToLongTimeString ());
 
-			if ((agentInfo.Flags & IAgentFlags.TempBan) == IAgentFlags.TempBan) {
-				bool IsBanned = true;
-				string until = "";
+                    //Check to make sure the time hasn't expired
+                    if (bannedTime.Ticks < DateTime.Now.ToUniversalTime ().Ticks) {
+                        //The banned time is less than now, let the user in.
+                        IsBanned = false;
+                    }
+                }
 
-				if (agentInfo.OtherAgentInformation.ContainsKey ("TemporaryBanInfo")) {
-					DateTime bannedTime = agentInfo.OtherAgentInformation ["TemporaryBanInfo"].AsDate ();
-					until = string.Format (" until {0} {1}", bannedTime.ToLocalTime ().ToShortDateString (),
-						bannedTime.ToLocalTime ().ToLongTimeString ());
+                if (IsBanned) {
+                    MainConsole.Instance.InfoFormat (
+                        "[Login service]: Login failed for user {0}, reason: user is temporarily banned {1}.",
+                        account.Name, until);
+                    data = string.Format ("You are blocked from connecting to this service{0}.", until);
+                    return new LLFailedLoginResponse (LoginResponseEnum.Indeterminant, data.ToString (), false);
+                }
+            }
 
-					//Check to make sure the time hasn't expired
-					if (bannedTime.Ticks < DateTime.Now.ToUniversalTime ().Ticks) {
-						//The banned time is less than now, let the user in.
-						IsBanned = false;
-					}
-				}
-
-				if (IsBanned) {
-					MainConsole.Instance.InfoFormat ("[Login Service]: Login failed for user {0}, reason: user is temporarily banned {1}.", account.Name, until);
-					data = string.Format ("You are blocked from connecting to this service{0}.", until);
-					return new LLFailedLoginResponse (LoginResponseEnum.Indeterminant, data.ToString (), false);
-				}
-			}
-
-			return null;
-		}
-	}
+            return null;
+        }
+    }
 }

@@ -28,62 +28,62 @@
  */
 
 using System.Collections.Generic;
+using Universe.Framework.SceneInfo;
 using Nini.Config;
 using OpenMetaverse;
-using Universe.Framework.SceneInfo;
 
 namespace Universe.Framework.Modules
 {
-	public interface IWindModelPlugin
-	{
-		/// <summary>
-		///     Brief description of this Wind model plugin
-		/// </summary>
-		string Description { get; }
+    public interface IWindModelPlugin
+    {
+        /// <summary>
+        ///     Brief description of this Wind model plugin
+        /// </summary>
+        string Description { get; }
 
-		/// <summary>
-		///     Returns the plugin name
-		/// </summary>
-		/// <returns></returns>
-		string Name { get; }
+        /// <summary>
+        ///     Returns the plugin name
+        /// </summary>
+        /// <returns></returns>
+        string Name { get; }
 
-		/// <summary>
-		///     Provides access to the wind configuration, if any.
-		/// </summary>
-		void WindConfig (IScene scene, IConfig windConfig);
+        /// <summary>
+        ///     Provides access to the wind configuration, if any.
+        /// </summary>
+        void WindConfig(IScene scene, IConfig windConfig);
 
-		/// <summary>
-		///     Update wind.
-		/// </summary>
-		void WindUpdate (uint frame);
+        /// <summary>
+        ///     Update wind.
+        /// </summary>
+        void WindUpdate(uint frame);
 
-		/// <summary>
-		///     Returns the wind vector at the given local region coordinates.
-		/// </summary>
-		Vector3 WindSpeed (float x, float y, float z);
+        /// <summary>
+        ///     Returns the wind vector at the given local region coordinates.
+        /// </summary>
+        Vector3 WindSpeed(float x, float y, float z);
 
-		/// <summary>
-		///     Generate a 16 x 16 Vector2 array of wind speeds for LL* based viewers
-		/// </summary>
-		/// <returns>Must return a Vector2[256]</returns>
-		Vector2[] WindLLClientArray ();
+        /// <summary>
+        ///     Generate a 16 x 16 Vector2 array of wind speeds for LL* based viewers
+        /// </summary>
+        /// <returns>Must return a Vector2[256]</returns>
+        Vector2[] WindLLClientArray();
 
-		/// <summary>
-		///     Retrieve a list of parameter/description pairs.
-		/// </summary>
-		/// <returns></returns>
-		Dictionary<string, string> WindParams ();
+        /// <summary>
+        ///     Retrieve a list of parameter/description pairs.
+        /// </summary>
+        /// <returns></returns>
+        Dictionary<string, string> WindParams();
 
-		/// <summary>
-		///     Set the specified parameter
-		/// </summary>
-		void WindParamSet (string param, float value);
+        /// <summary>
+        ///     Set the specified parameter
+        /// </summary>
+        void WindParamSet(string param, float value);
 
-		/// <summary>
-		///     Get the specified parameter
-		/// </summary>
-		float WindParamGet (string param);
+        /// <summary>
+        ///     Get the specified parameter
+        /// </summary>
+        float WindParamGet(string param);
 
-		void Initialize ();
-	}
+        void Initialize();
+    }
 }

@@ -34,158 +34,158 @@ using Universe.Framework.PresenceInfo;
 
 namespace Universe.Framework.SceneInfo
 {
-	public class UndoState
-	{
-		public Vector3 Position = Vector3.Zero;
-		public Quaternion Rotation = Quaternion.Identity;
-		public Vector3 Scale = Vector3.Zero;
+    public class UndoState
+    {
+        public Vector3 Position = Vector3.Zero;
+        public Quaternion Rotation = Quaternion.Identity;
+        public Vector3 Scale = Vector3.Zero;
 
-		public UndoState (ISceneChildEntity part)
-		{
-			if (part != null) {
-				if (part.UUID == part.ParentEntity.UUID) {
-					Position = part.ParentEntity.AbsolutePosition;
-					Rotation = part.GetRotationOffset ();
-					Scale = part.Shape.Scale;
-				} else {
-					Position = part.OffsetPosition;
-					Rotation = part.GetRotationOffset ();
-					Scale = part.Shape.Scale;
-				}
-			}
-		}
+        public UndoState (ISceneChildEntity part)
+        {
+            if (part != null) {
+                if (part.UUID == part.ParentEntity.UUID) {
+                    Position = part.ParentEntity.AbsolutePosition;
+                    Rotation = part.GetRotationOffset ();
+                    Scale = part.Shape.Scale;
+                } else {
+                    Position = part.OffsetPosition;
+                    Rotation = part.GetRotationOffset ();
+                    Scale = part.Shape.Scale;
+                }
+            }
+        }
 
-		public bool Compare (ISceneChildEntity part)
-		{
-			if (part != null) {
-				if (part.UUID == part.ParentEntity.UUID) {
-					if (Position == part.AbsolutePosition && Rotation == part.GetRotationOffset () &&
-					                   Scale == part.Shape.Scale)
-						return true;
-					return false;
-				}
-				if (Position == part.OffsetPosition && Rotation == part.GetRotationOffset () &&
-				                Scale == part.Shape.Scale)
-					return true;
-				return false;
-			}
-			return false;
-		}
+        public bool Compare (ISceneChildEntity part)
+        {
+            if (part != null) {
+                if (part.UUID == part.ParentEntity.UUID) {
+                    if (Position == part.AbsolutePosition && Rotation == part.GetRotationOffset () &&
+                        Scale == part.Shape.Scale)
+                        return true;
+                    return false;
+                }
+                if (Position == part.OffsetPosition && Rotation == part.GetRotationOffset () &&
+                    Scale == part.Shape.Scale)
+                    return true;
+                return false;
+            }
+            return false;
+        }
 
-		public void PlaybackState (ISceneChildEntity part)
-		{
-			if (part != null) {
-				part.Undoing = true;
+        public void PlaybackState (ISceneChildEntity part)
+        {
+            if (part != null) {
+                part.Undoing = true;
 
-				bool ChangedScale = false;
-				bool ChangedPos = false;
+                bool ChangedScale = false;
+                bool ChangedPos = false;
 
-				if (part.UUID == part.ParentEntity.UUID) {
-					if (Position != Vector3.Zero) {
-						ChangedPos = true;
-						part.ParentEntity.AbsolutePosition = Position;
-					}
-					part.SetRotationOffset (true, Rotation, true);
-					if (Scale != Vector3.Zero) {
-						ChangedScale = true;
-						part.Scale = Scale;
-					}
+                if (part.UUID == part.ParentEntity.UUID) {
+                    if (Position != Vector3.Zero) {
+                        ChangedPos = true;
+                        part.ParentEntity.AbsolutePosition = Position;
+                    }
+                    part.SetRotationOffset (true, Rotation, true);
+                    if (Scale != Vector3.Zero) {
+                        ChangedScale = true;
+                        part.Scale = Scale;
+                    }
 
-					foreach (
+                    foreach (
                         ISceneChildEntity child in
                             part.ParentEntity.ChildrenEntities ().Where (child => child.UUID != part.UUID)) {
-						child.Undo (); //No updates here, child undo will do it on their own
-					}
-				} else {
-					if (Position != Vector3.Zero) {
-						ChangedPos = true;
-						part.FixOffsetPosition (Position, false);
-					}
-					part.UpdateRotation (Rotation);
-					if (Scale != Vector3.Zero) {
-						ChangedScale = true;
-						part.Resize (Scale);
-					}
-				}
-				part.Undoing = false;
-				var updateFlags =
-					(ChangedScale ? PrimUpdateFlags.Shape : PrimUpdateFlags.None) |
-					(ChangedPos ? PrimUpdateFlags.Position : PrimUpdateFlags.None) |
-					PrimUpdateFlags.Rotation;
+                        child.Undo (); //No updates here, child undo will do it on their own
+                    }
+                } else {
+                    if (Position != Vector3.Zero) {
+                        ChangedPos = true;
+                        part.FixOffsetPosition (Position, false);
+                    }
+                    part.UpdateRotation (Rotation);
+                    if (Scale != Vector3.Zero) {
+                        ChangedScale = true;
+                        part.Resize (Scale);
+                    }
+                }
+                part.Undoing = false;
+                var updateFlags =
+                    (ChangedScale ? PrimUpdateFlags.Shape : PrimUpdateFlags.None) |
+                    (ChangedPos ? PrimUpdateFlags.Position : PrimUpdateFlags.None) |
+                    PrimUpdateFlags.Rotation;
 
-				part.ScheduleUpdate (updateFlags);
-			}
-		}
+                part.ScheduleUpdate (updateFlags);
+            }
+        }
 
-		public void PlayfwdState (ISceneChildEntity part)
-		{
-			if (part != null) {
-				bool ChangedScale = false;
-				bool ChangedRot = false;
-				bool ChangedPos = false;
-				part.Undoing = true;
+        public void PlayfwdState (ISceneChildEntity part)
+        {
+            if (part != null) {
+                bool ChangedScale = false;
+                bool ChangedRot = false;
+                bool ChangedPos = false;
+                part.Undoing = true;
 
-				if (part.UUID == part.ParentEntity.UUID) {
-					if (Position != Vector3.Zero) {
-						ChangedPos = true;
-						part.ParentEntity.AbsolutePosition = Position;
-					}
-					if (Rotation != Quaternion.Identity) {
-						ChangedRot = true;
-						part.UpdateRotation (Rotation);
-					}
-					if (Scale != Vector3.Zero) {
-						ChangedScale = true;
-						part.Resize (Scale);
-					}
+                if (part.UUID == part.ParentEntity.UUID) {
+                    if (Position != Vector3.Zero) {
+                        ChangedPos = true;
+                        part.ParentEntity.AbsolutePosition = Position;
+                    }
+                    if (Rotation != Quaternion.Identity) {
+                        ChangedRot = true;
+                        part.UpdateRotation (Rotation);
+                    }
+                    if (Scale != Vector3.Zero) {
+                        ChangedScale = true;
+                        part.Resize (Scale);
+                    }
 
-					foreach (
+                    foreach (
                         ISceneChildEntity child in
                             part.ParentEntity.ChildrenEntities ().Where (child => child.UUID != part.UUID)) {
-						child.Redo (); //No updates here, child redo will do it on their own
-					}
-				} else {
-					if (Position != Vector3.Zero) {
-						ChangedPos = true;
-						part.FixOffsetPosition (Position, false);
-					}
-					if (Rotation != Quaternion.Identity) {
-						ChangedRot = true;
-						part.ParentEntity.Rotation = (Rotation);
-					}
-					if (Scale != Vector3.Zero) {
-						ChangedScale = true;
-						part.Resize (Scale);
-					}
-				}
+                        child.Redo (); //No updates here, child redo will do it on their own
+                    }
+                } else {
+                    if (Position != Vector3.Zero) {
+                        ChangedPos = true;
+                        part.FixOffsetPosition (Position, false);
+                    }
+                    if (Rotation != Quaternion.Identity) {
+                        ChangedRot = true;
+                        part.ParentEntity.Rotation = (Rotation);
+                    }
+                    if (Scale != Vector3.Zero) {
+                        ChangedScale = true;
+                        part.Resize (Scale);
+                    }
+                }
 
-				part.ScheduleUpdate ((ChangedScale ? PrimUpdateFlags.Shape : PrimUpdateFlags.None) |
-				(ChangedPos ? PrimUpdateFlags.Position : PrimUpdateFlags.None) |
-				(ChangedRot ? PrimUpdateFlags.Rotation : PrimUpdateFlags.None));
-				part.Undoing = false;
-			}
-		}
-	}
+                part.ScheduleUpdate ((ChangedScale ? PrimUpdateFlags.Shape : PrimUpdateFlags.None) |
+                                    (ChangedPos ? PrimUpdateFlags.Position : PrimUpdateFlags.None) |
+                                    (ChangedRot ? PrimUpdateFlags.Rotation : PrimUpdateFlags.None));
+                part.Undoing = false;
+            }
+        }
+    }
 
-	public class LandUndoState
-	{
-		public ITerrainChannel m_terrainChannel;
-		public ITerrainModule m_terrainModule;
+    public class LandUndoState
+    {
+        public ITerrainChannel m_terrainChannel;
+        public ITerrainModule m_terrainModule;
 
-		public LandUndoState (ITerrainModule terrainModule, ITerrainChannel terrainChannel)
-		{
-			m_terrainModule = terrainModule;
-			m_terrainChannel = terrainChannel;
-		}
+        public LandUndoState (ITerrainModule terrainModule, ITerrainChannel terrainChannel)
+        {
+            m_terrainModule = terrainModule;
+            m_terrainChannel = terrainChannel;
+        }
 
-		public bool Compare (ITerrainChannel terrainChannel)
-		{
-			return m_terrainChannel == terrainChannel;
-		}
+        public bool Compare (ITerrainChannel terrainChannel)
+        {
+            return m_terrainChannel == terrainChannel;
+        }
 
-		public void PlaybackState ()
-		{
-			m_terrainModule.UndoTerrain (m_terrainChannel);
-		}
-	}
+        public void PlaybackState ()
+        {
+            m_terrainModule.UndoTerrain (m_terrainChannel);
+        }
+    }
 }

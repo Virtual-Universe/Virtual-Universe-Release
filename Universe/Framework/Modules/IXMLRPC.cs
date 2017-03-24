@@ -31,72 +31,45 @@ using OpenMetaverse;
 
 namespace Universe.Framework.Modules
 {
-	public interface IXmlRpcRequestInfo
-	{
-		bool IsProcessed ();
+    public interface IXmlRpcRequestInfo
+    {
+        bool IsProcessed();
+        UUID GetChannelKey();
+        void SetProcessed(bool processed);
+        void SetStrRetval(string resp);
+        string GetStrRetval();
+        void SetIntRetval(int resp);
+        int GetIntRetval();
+        UUID GetPrimID();
+        UUID GetItemID();
+        string GetStrVal();
+        int GetIntValue();
+        UUID GetMessageID();
+    }
 
-		UUID GetChannelKey ();
+    public interface ISendRemoteDataRequest : IServiceRequest
+    {
+        UUID GetReqID();
+        string Channel { get; set; }
+        int Idata { get; set; }
+        string Sdata { get; set; }
+    }
 
-		void SetProcessed (bool processed);
-
-		void SetStrRetval (string resp);
-
-		string GetStrRetval ();
-
-		void SetIntRetval (int resp);
-
-		int GetIntRetval ();
-
-		UUID GetPrimID ();
-
-		UUID GetItemID ();
-
-		string GetStrVal ();
-
-		int GetIntValue ();
-
-		UUID GetMessageID ();
-	}
-
-	public interface ISendRemoteDataRequest : IServiceRequest
-	{
-		UUID GetReqID ();
-
-		string Channel { get; set; }
-
-		int Idata { get; set; }
-
-		string Sdata { get; set; }
-	}
-
-	public interface IXMLRPC
-	{
-		int Port { get; }
-
-		bool ServerStarted ();
-
-		UUID OpenXMLRPCChannel (UUID primID, UUID itemID, UUID channelID);
-
-		void CloseXMLRPCChannel (UUID channelKey);
-
-		bool hasRequests ();
-
-		void RemoteDataReply (string channel, string message_id, string sdata, int idata);
-
-		bool IsEnabled ();
-
-		IXmlRpcRequestInfo GetNextCompletedRequest ();
-
-		void RemoveCompletedRequest (UUID id);
-
-		void DeleteChannels (UUID itemID);
-
-		UUID SendRemoteData (UUID primID, UUID itemID, string channel, string dest, int idata, string sdata);
-
-		IServiceRequest GetNextCompletedSRDRequest ();
-
-		void RemoveCompletedSRDRequest (UUID id);
-
-		void CancelSRDRequests (UUID itemID);
-	}
+    public interface IXMLRPC
+    {
+        int Port { get; }
+        bool ServerStarted ();
+        UUID OpenXMLRPCChannel(UUID primID, UUID itemID, UUID channelID);
+        void CloseXMLRPCChannel(UUID channelKey);
+        bool hasRequests();
+        void RemoteDataReply(string channel, string message_id, string sdata, int idata);
+        bool IsEnabled();
+        IXmlRpcRequestInfo GetNextCompletedRequest();
+        void RemoveCompletedRequest(UUID id);
+        void DeleteChannels(UUID itemID);
+        UUID SendRemoteData(UUID primID, UUID itemID, string channel, string dest, int idata, string sdata);
+        IServiceRequest GetNextCompletedSRDRequest();
+        void RemoveCompletedSRDRequest(UUID id);
+        void CancelSRDRequests(UUID itemID);
+    }
 }

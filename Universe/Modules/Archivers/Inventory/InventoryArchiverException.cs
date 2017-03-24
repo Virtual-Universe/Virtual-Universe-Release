@@ -31,18 +31,18 @@ using System;
 
 namespace Universe.Modules.Archivers
 {
-	/// <summary>
-	///     Signals an inventory archiving problem
-	/// </summary>
-	[Serializable]
-	public class InventoryArchiverException : Exception
-	{
-		public InventoryArchiverException (string message) : base (message)
-		{
-		}
+    /// <summary>
+    ///     Signals an inventory archiving problem
+    /// </summary>
+    [Serializable]
+    public class InventoryArchiverException : Exception
+    {
+        public InventoryArchiverException(string message) : base(message)
+        {
+        }
 
-		public InventoryArchiverException (string message, Exception e) : base (message, e)
-		{
-		}
-	}
+        public InventoryArchiverException(string message, Exception e) : base(message, e)
+        {
+        }
+    }
 }

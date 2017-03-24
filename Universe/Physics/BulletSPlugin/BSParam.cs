@@ -33,405 +33,269 @@ using OpenMetaverse;
 
 namespace Universe.Physics.BulletSPlugin
 {
-	public static class BSParam
-	{
-		static string LogHeader = "[BULLETSIM PARAMETERS]";
-
-		// Tuning notes:
-		// From: http://bulletphysics.org/Bullet/phpBB3/viewtopic.php?t=6575
-		//    Contact points can be added even if the distance is positive. The constraint solver can deal with
-		//    contacts with positive distances as well as negative (penetration). Contact points are discarded
-		//    if the distance exceeds a certain threshold.
-		//    Bullet has a contact processing threshold and a contact breaking threshold.
-		//    If the distance is larger than the contact breaking threshold, it will be removed after one frame.
-		//    If the distance is larger than the contact processing threshold, the constraint solver will ignore it.
-
-		//    This is separate/independent from the collision margin. The collision margin increases the object a bit
-		//    to improve collision detection performance and accuracy.
-		// ===================
-		// From:
-
-		/// <summary>
-		/// Set whether physics is active or not.
-		/// </summary>
-		/// <remarks>
-		/// Can be enabled and disabled to start and stop physics.
-		/// </remarks>
-		public static bool Active { get; private set; }
-
-		public static bool UseSeparatePhysicsThread { get; private set; }
-
-		public static float PhysicsTimeStep { get; private set; }
-		// Level of Detail values kept as float because that's what the Meshmerizer wants
-		public static float MeshLOD { get; private set; }
-
-		public static float MeshCircularLOD { get; private set; }
-
-		public static float MeshMegaPrimLOD { get; private set; }
-
-		public static float MeshMegaPrimThreshold { get; private set; }
-
-		public static float SculptLOD { get; private set; }
-
-		public static int CrossingFailuresBeforeOutOfBounds { get; private set; }
-
-		public static float UpdateVelocityChangeThreshold { get; private set; }
-
-		public static float MinimumObjectMass { get; private set; }
-
-		public static float MaximumObjectMass { get; private set; }
-
-		public static float MaxLinearVelocity { get; private set; }
-
-		public static float MaxLinearVelocitySquared { get; private set; }
-
-		public static float MaxAngularVelocity { get; private set; }
-
-		public static float MaxAngularVelocitySquared { get; private set; }
-
-		public static float MaxAddForceMagnitude { get; private set; }
-
-		public static float MaxAddForceMagnitudeSquared { get; private set; }
-
-		public static float DensityScaleFactor { get; private set; }
-
-		public static float LinearDamping { get; private set; }
-
-		public static float AngularDamping { get; private set; }
-
-		public static float DeactivationTime { get; private set; }
-
-		public static float LinearSleepingThreshold { get; private set; }
-
-		public static float AngularSleepingThreshold { get; private set; }
-
-		public static float CcdMotionThreshold { get; private set; }
-
-		public static float CcdSweptSphereRadius { get; private set; }
-
-		public static float ContactProcessingThreshold { get; private set; }
-
-		public static bool ShouldMeshSculptedPrim { get; private set; }
-		// cause scuplted prims to get meshed
-		public static bool ShouldForceSimplePrimMeshing { get; private set; }
-		// if a cube or sphere, let Bullet do internal shapes
-		public static bool ShouldUseHullsForPhysicalObjects { get; private set; }
-		// 'true' if should create hulls for physical objects
-		public static bool ShouldRemoveZeroWidthTriangles { get; private set; }
-
-		public static bool ShouldUseBulletHACD { get; set; }
-
-		public static bool ShouldUseSingleConvexHullForPrims { get; set; }
-
-		public static bool ShouldUseGImpactShapeForPrims { get; set; }
-
-		public static bool ShouldUseAssetHulls { get; set; }
-
-		public static float TerrainImplementation { get; private set; }
-
-		public static int TerrainMeshMagnification { get; private set; }
-
-		public static float TerrainGroundPlane { get; private set; }
-
-		public static float TerrainFriction { get; private set; }
-
-		public static float TerrainHitFraction { get; private set; }
-
-		public static float TerrainRestitution { get; private set; }
-
-		public static float TerrainContactProcessingThreshold { get; private set; }
-
-		public static float TerrainCollisionMargin { get; private set; }
-
-		public static float DefaultFriction { get; private set; }
-
-		public static float DefaultDensity { get; private set; }
-
-		public static float DefaultRestitution { get; private set; }
-
-		public static float CollisionMargin { get; private set; }
-
-		public static float Gravity { get; private set; }
-
-		// Physics Engine operation
-		public static float MaxPersistantManifoldPoolSize { get; private set; }
-
-		public static float MaxCollisionAlgorithmPoolSize { get; private set; }
-
-		public static bool ShouldDisableContactPoolDynamicAllocation { get; private set; }
-
-		public static bool ShouldForceUpdateAllAabbs { get; private set; }
-
-		public static bool ShouldRandomizeSolverOrder { get; private set; }
-
-		public static bool ShouldSplitSimulationIslands { get; private set; }
-
-		public static bool ShouldEnableFrictionCaching { get; private set; }
-
-		public static float NumberOfSolverIterations { get; private set; }
-
-		public static bool UseSingleSidedMeshes { get; private set; }
-
-		public static float GlobalContactBreakingThreshold { get; private set; }
-
-		public static float PhysicsUnmanLoggingFrames { get; private set; }
-
-		// Avatar parameters
-		public static bool AvatarToAvatarCollisionsByDefault { get; private set; }
-
-		public static float AvatarFriction { get; private set; }
-
-		public static float AvatarStandingFriction { get; private set; }
-
-		public static float AvatarAlwaysRunFactor { get; private set; }
-
-		public static float AvatarDensity { get; private set; }
-
-		public static float AvatarRestitution { get; private set; }
-
-		public static int AvatarShape { get; private set; }
-
-		public static float AvatarCapsuleWidth { get; private set; }
-
-		public static float AvatarCapsuleDepth { get; private set; }
-
-		public static float AvatarCapsuleHeight { get; private set; }
-
-		public static float AvatarHeightLowFudge { get; private set; }
-
-		public static float AvatarHeightMidFudge { get; private set; }
-
-		public static float AvatarHeightHighFudge { get; private set; }
-
-		public static float AvatarFlyingGroundMargin { get; private set; }
-
-		public static float AvatarFlyingGroundUpForce { get; private set; }
-
-		public static float AvatarTerminalVelocity { get; private set; }
-
-		public static float AvatarContactProcessingThreshold { get; private set; }
-
-		public static float AvatarStopZeroThreshold { get; private set; }
-
-		public static int AvatarJumpFrames { get; private set; }
-
-		public static float AvatarBelowGroundUpCorrectionMeters { get; private set; }
-
-		public static float AvatarStepHeight { get; private set; }
-
-		public static float AvatarStepAngle { get; private set; }
-
-		public static float AvatarStepGroundFudge { get; private set; }
-
-		public static float AvatarStepApproachFactor { get; private set; }
-
-		public static float AvatarStepForceFactor { get; private set; }
-
-		public static float AvatarStepUpCorrectionFactor { get; private set; }
-
-		public static int AvatarStepSmoothingSteps { get; private set; }
-
-		// Vehicle parameters
-		public static float VehicleMaxLinearVelocity { get; private set; }
-
-		public static float VehicleMaxLinearVelocitySquared { get; private set; }
-
-		public static float VehicleMinLinearVelocity { get; private set; }
-
-		public static float VehicleMinLinearVelocitySquared { get; private set; }
-
-		public static float VehicleMaxAngularVelocity { get; private set; }
-
-		public static float VehicleMaxAngularVelocitySq { get; private set; }
-
-		public static float VehicleAngularDamping { get; private set; }
-
-		public static float VehicleFriction { get; private set; }
-
-		public static float VehicleRestitution { get; private set; }
-
-		public static Vector3 VehicleLinearFactor { get; private set; }
-
-		public static Vector3 VehicleAngularFactor { get; private set; }
-
-		public static Vector3 VehicleInertiaFactor { get; private set; }
-
-		public static float VehicleGroundGravityFudge { get; private set; }
-
-		public static float VehicleAngularBankingTimescaleFudge { get; private set; }
-
-		public static bool VehicleEnableLinearDeflection { get; private set; }
-
-		public static bool VehicleLinearDeflectionNotCollidingNoZ { get; private set; }
-
-		public static bool VehicleEnableAngularVerticalAttraction { get; private set; }
-
-		public static int VehicleAngularVerticalAttractionAlgorithm { get; private set; }
-
-		public static bool VehicleEnableAngularDeflection { get; private set; }
-
-		public static bool VehicleEnableAngularBanking { get; private set; }
-
-		public static bool VehicleDebuggingEnabled { get; private set; }
-
-		// Convex Hulls
-		public static int CSHullMaxDepthSplit { get; private set; }
-
-		public static int CSHullMaxDepthSplitForSimpleShapes { get; private set; }
-
-		public static float CSHullConcavityThresholdPercent { get; private set; }
-
-		public static float CSHullVolumeConservationThresholdPercent { get; private set; }
-
-		public static int CSHullMaxVertices { get; private set; }
-
-		public static float CSHullMaxSkinWidth { get; private set; }
-
-		public static float BHullMaxVerticesPerHull { get; private set; }
-		// 100
-		public static float BHullMinClusters { get; private set; }
-		// 2
-		public static float BHullCompacityWeight { get; private set; }
-		// 0.1
-		public static float BHullVolumeWeight { get; private set; }
-		// 0.0
-		public static float BHullConcavity { get; private set; }
-		// 100
-		public static bool BHullAddExtraDistPoints { get; private set; }
-		// false
-		public static bool BHullAddNeighboursDistPoints { get; private set; }
-		// false
-		public static bool BHullAddFacesPoints { get; private set; }
-		// false
-		public static bool BHullShouldAdjustCollisionMargin { get; private set; }
-		// false
-		public static float WhichHACD { get; private set; }
-		// zero if Bullet HACD, non-zero says VHACD
-		// Parameters for VHACD 2.0: http://code.google.com/p/v-hacd
-		// To enable, set both ShouldUseBulletHACD=true and WhichHACD=1
-		// http://kmamou.blogspot.ca/2014/12/v-hacd-20-parameters-description.html
-		public static float VHACDresolution { get; private set; }
-		// 100,000 max number of voxels generated during voxelization stage
-		public static float VHACDdepth { get; private set; }
-		// 20 max number of clipping stages
-		public static float VHACDconcavity { get; private set; }
-		// 0.0025 maximum concavity
-		public static float VHACDplaneDownsampling { get; private set; }
-		// 4 granularity of search for best clipping plane
-		public static float VHACDconvexHullDownsampling { get; private set; }
-		// 4 precision of hull gen process
-		public static float VHACDalpha { get; private set; }
-		// 0.05 bias toward clipping along symmetry planes
-		public static float VHACDbeta { get; private set; }
-		// 0.05 bias toward clipping along revolution axis
-		public static float VHACDgamma { get; private set; }
-		// 0.00125 max concavity when merging
-		public static float VHACDpca { get; private set; }
-		// 0 on/off normalizing mesh before decomp
-		public static float VHACDmode { get; private set; }
-		// 0 0:voxel based, 1: tetrahedron based
-		public static float VHACDmaxNumVerticesPerCH { get; private set; }
-		// 64 max triangles per convex hull
-		public static float VHACDminVolumePerCH { get; private set; }
-		// 0.0001 sampling of generated convex hulls
-
-		// Linkset implementation parameters
-		public static float LinksetImplementation { get; private set; }
-
-		public static bool LinksetOffsetCenterOfMass { get; private set; }
-
-		public static bool LinkConstraintUseFrameOffset { get; private set; }
-
-		public static bool LinkConstraintEnableTransMotor { get; private set; }
-
-		public static float LinkConstraintTransMotorMaxVel { get; private set; }
-
-		public static float LinkConstraintTransMotorMaxForce { get; private set; }
-
-		public static float LinkConstraintERP { get; private set; }
-
-		public static float LinkConstraintCFM { get; private set; }
-
-		public static float LinkConstraintSolverIterations { get; private set; }
-
-		public static float PID_D { get; private set; }
-		// derivative
-		public static float PID_P { get; private set; }
-		// proportional
-
-		// Various constants that come from that other virtual world that shall not be named.
-		public const float MinGravityZ = -1f;
-		public const float MaxGravityZ = 28f;
-		public const float MinFriction = 0f;
-		public const float MaxFriction = 255f;
-		public const float MinDensity = 0.01f;
-		public const float MaxDensity = 22587f;
-		public const float MinRestitution = 0f;
-		public const float MaxRestitution = 1f;
-
-		// =====================================================================================
-		// =====================================================================================
-
-		// Base parameter definition that gets and sets parameter values via a string
-		public abstract class ParameterDefnBase
-		{
-			public string name;
-			// string name of the parameter
-			public string desc;
-			// a short description of what the parameter means
-
-			public ParameterDefnBase (string pName, string pDesc)
-			{
-				name = pName;
-				desc = pDesc;
-			}
-
-			// Set the parameter value to the default
-			public abstract void AssignDefault (BSScene s);
-			// Get the value as a string
-			public abstract string GetValue (BSScene s);
-			// Set the value to this string value
-			public abstract void SetValue (BSScene s, string valAsString);
-			// set the value on a particular object (usually sets in physics engine)
-			public abstract void SetOnObject (BSScene s, BSPhysObject obj);
-
-			public abstract bool HasSetOnObject { get; }
-		}
-
-		// Specific parameter definition for a parameter of a specific type.
-		public delegate T PGetValue<T> (BSScene s);
-
-		public delegate void PSetValue<T> (BSScene s, T val);
-
-		public delegate void PSetOnObject<T> (BSScene scene, BSPhysObject obj);
-
-		public sealed class ParameterDefn<T> : ParameterDefnBase
-		{
-			T defaultValue;
-			PSetValue<T> setter;
-			PGetValue<T> getter;
-			PSetOnObject<T> objectSet;
-
-			public ParameterDefn (string pName, string pDesc, T pDefault, PGetValue<T> pGetter, PSetValue<T> pSetter)
-				: base (pName, pDesc)
-			{
-				defaultValue = pDefault;
-				setter = pSetter;
-				getter = pGetter;
-				objectSet = null;
-			}
-
-			public ParameterDefn (string pName, string pDesc, T pDefault, PGetValue<T> pGetter, PSetValue<T> pSetter,
-			                              PSetOnObject<T> pObjSetter)
-				: base (pName, pDesc)
-			{
-				defaultValue = pDefault;
-				setter = pSetter;
-				getter = pGetter;
-				objectSet = pObjSetter;
-			}
-
-			/* Wish I could simplify using this definition but CLR doesn't store references so closure around delegates of references won't work
+    public static class BSParam
+    {
+        static string LogHeader = "[BULLETSIM PARAMETERS]";
+
+        // Tuning notes:
+        // From: http://bulletphysics.org/Bullet/phpBB3/viewtopic.php?t=6575
+        //    Contact points can be added even if the distance is positive. The constraint solver can deal with
+        //    contacts with positive distances as well as negative (penetration). Contact points are discarded
+        //    if the distance exceeds a certain threshold.
+        //    Bullet has a contact processing threshold and a contact breaking threshold.
+        //    If the distance is larger than the contact breaking threshold, it will be removed after one frame.
+        //    If the distance is larger than the contact processing threshold, the constraint solver will ignore it.
+
+        //    This is separate/independent from the collision margin. The collision margin increases the object a bit
+        //    to improve collision detection performance and accuracy.
+        // ===================
+        // From: 
+
+        /// <summary>
+        /// Set whether physics is active or not.
+        /// </summary>
+        /// <remarks>
+        /// Can be enabled and disabled to start and stop physics.
+        /// </remarks>
+        public static bool Active { get; private set; }
+
+        public static bool UseSeparatePhysicsThread { get; private set; }
+        public static float PhysicsTimeStep { get; private set; }
+        // Level of Detail values kept as float because that's what the Meshmerizer wants
+        public static float MeshLOD { get; private set; }
+        public static float MeshCircularLOD { get; private set; }
+        public static float MeshMegaPrimLOD { get; private set; }
+        public static float MeshMegaPrimThreshold { get; private set; }
+        public static float SculptLOD { get; private set; }
+
+        public static int CrossingFailuresBeforeOutOfBounds { get; private set; }
+        public static float UpdateVelocityChangeThreshold { get; private set; }
+
+        public static float MinimumObjectMass { get; private set; }
+        public static float MaximumObjectMass { get; private set; }
+        public static float MaxLinearVelocity { get; private set; }
+        public static float MaxLinearVelocitySquared { get; private set; }
+        public static float MaxAngularVelocity { get; private set; }
+        public static float MaxAngularVelocitySquared { get; private set; }
+        public static float MaxAddForceMagnitude { get; private set; }
+        public static float MaxAddForceMagnitudeSquared { get; private set; }
+        public static float DensityScaleFactor { get; private set; }
+
+        public static float LinearDamping { get; private set; }
+        public static float AngularDamping { get; private set; }
+        public static float DeactivationTime { get; private set; }
+        public static float LinearSleepingThreshold { get; private set; }
+        public static float AngularSleepingThreshold { get; private set; }
+        public static float CcdMotionThreshold { get; private set; }
+        public static float CcdSweptSphereRadius { get; private set; }
+        public static float ContactProcessingThreshold { get; private set; }
+
+        public static bool ShouldMeshSculptedPrim { get; private set; }             // cause scuplted prims to get meshed
+        public static bool ShouldForceSimplePrimMeshing { get; private set; }       // if a cube or sphere, let Bullet do internal shapes
+        public static bool ShouldUseHullsForPhysicalObjects { get; private set; }   // 'true' if should create hulls for physical objects
+        public static bool ShouldRemoveZeroWidthTriangles { get; private set; }
+        public static bool ShouldUseBulletHACD { get; set; }
+        public static bool ShouldUseSingleConvexHullForPrims { get; set; }
+        public static bool ShouldUseGImpactShapeForPrims { get; set; }
+        public static bool ShouldUseAssetHulls { get; set; }
+
+        public static float TerrainImplementation { get; private set; }
+        public static int TerrainMeshMagnification { get; private set; }
+        public static float TerrainGroundPlane { get; private set; }
+        public static float TerrainFriction { get; private set; }
+        public static float TerrainHitFraction { get; private set; }
+        public static float TerrainRestitution { get; private set; }
+        public static float TerrainContactProcessingThreshold { get; private set; }
+        public static float TerrainCollisionMargin { get; private set; }
+
+        public static float DefaultFriction { get; private set; }
+        public static float DefaultDensity { get; private set; }
+        public static float DefaultRestitution { get; private set; }
+        public static float CollisionMargin { get; private set; }
+        public static float Gravity { get; private set; }
+
+        // Physics Engine operation
+        public static float MaxPersistantManifoldPoolSize { get; private set; }
+        public static float MaxCollisionAlgorithmPoolSize { get; private set; }
+        public static bool ShouldDisableContactPoolDynamicAllocation { get; private set; }
+        public static bool ShouldForceUpdateAllAabbs { get; private set; }
+        public static bool ShouldRandomizeSolverOrder { get; private set; }
+        public static bool ShouldSplitSimulationIslands { get; private set; }
+        public static bool ShouldEnableFrictionCaching { get; private set; }
+        public static float NumberOfSolverIterations { get; private set; }
+        public static bool UseSingleSidedMeshes { get; private set; }
+        public static float GlobalContactBreakingThreshold { get; private set; }
+        public static float PhysicsUnmanLoggingFrames { get; private set; }
+
+        // Avatar parameters
+        public static bool AvatarToAvatarCollisionsByDefault { get; private set; }
+        public static float AvatarFriction { get; private set; }
+        public static float AvatarStandingFriction { get; private set; }
+        public static float AvatarAlwaysRunFactor { get; private set; }
+        public static float AvatarDensity { get; private set; }
+        public static float AvatarRestitution { get; private set; }
+        public static int AvatarShape { get; private set; }
+        public static float AvatarCapsuleWidth { get; private set; }
+        public static float AvatarCapsuleDepth { get; private set; }
+        public static float AvatarCapsuleHeight { get; private set; }
+        public static float AvatarHeightLowFudge { get; private set; }
+        public static float AvatarHeightMidFudge { get; private set; }
+        public static float AvatarHeightHighFudge { get; private set; }
+        public static float AvatarFlyingGroundMargin { get; private set; }
+        public static float AvatarFlyingGroundUpForce { get; private set; }
+        public static float AvatarTerminalVelocity { get; private set; }
+        public static float AvatarContactProcessingThreshold { get; private set; }
+        public static float AvatarStopZeroThreshold { get; private set; }
+	    public static int AvatarJumpFrames { get; private set; }
+        public static float AvatarBelowGroundUpCorrectionMeters { get; private set; }
+        public static float AvatarStepHeight { get; private set; }
+	    public static float AvatarStepAngle { get; private set; }
+	    public static float AvatarStepGroundFudge { get; private set; }
+        public static float AvatarStepApproachFactor { get; private set; }
+        public static float AvatarStepForceFactor { get; private set; }
+	    public static float AvatarStepUpCorrectionFactor { get; private set; }
+	    public static int AvatarStepSmoothingSteps { get; private set; }
+
+        // Vehicle parameters
+        public static float VehicleMaxLinearVelocity { get; private set; }
+        public static float VehicleMaxLinearVelocitySquared { get; private set; }
+        public static float VehicleMinLinearVelocity { get; private set; }
+        public static float VehicleMinLinearVelocitySquared { get; private set; }
+        public static float VehicleMaxAngularVelocity { get; private set; }
+        public static float VehicleMaxAngularVelocitySq { get; private set; }
+        public static float VehicleAngularDamping { get; private set; }
+        public static float VehicleFriction { get; private set; }
+        public static float VehicleRestitution { get; private set; }
+        public static Vector3 VehicleLinearFactor { get; private set; }
+        public static Vector3 VehicleAngularFactor { get; private set; }
+        public static Vector3 VehicleInertiaFactor { get; private set; }
+        public static float VehicleGroundGravityFudge { get; private set; }
+        public static float VehicleAngularBankingTimescaleFudge { get; private set; }
+        public static bool VehicleEnableLinearDeflection { get; private set; }
+        public static bool VehicleLinearDeflectionNotCollidingNoZ { get; private set; }
+        public static bool VehicleEnableAngularVerticalAttraction { get; private set; }
+        public static int VehicleAngularVerticalAttractionAlgorithm { get; private set; }
+        public static bool VehicleEnableAngularDeflection { get; private set; }
+        public static bool VehicleEnableAngularBanking { get; private set; }
+        public static bool VehicleDebuggingEnabled { get; private set; }
+
+        // Convex Hulls
+        public static int CSHullMaxDepthSplit { get; private set; }
+        public static int CSHullMaxDepthSplitForSimpleShapes { get; private set; }
+        public static float CSHullConcavityThresholdPercent { get; private set; }
+        public static float CSHullVolumeConservationThresholdPercent { get; private set; }
+        public static int CSHullMaxVertices { get; private set; }
+        public static float CSHullMaxSkinWidth { get; private set; }
+    	public static float BHullMaxVerticesPerHull { get; private set; }		// 100
+    	public static float BHullMinClusters { get; private set; }				// 2
+    	public static float BHullCompacityWeight { get; private set; }			// 0.1
+    	public static float BHullVolumeWeight { get; private set; }				// 0.0
+    	public static float BHullConcavity { get; private set; }				    // 100
+    	public static bool BHullAddExtraDistPoints { get; private set; }		// false
+    	public static bool BHullAddNeighboursDistPoints { get; private set; }	// false
+    	public static bool BHullAddFacesPoints { get; private set; }			// false
+    	public static bool BHullShouldAdjustCollisionMargin { get; private set; }	// false
+    	public static float WhichHACD { get; private set; }				    // zero if Bullet HACD, non-zero says VHACD
+        // Parameters for VHACD 2.0: http://code.google.com/p/v-hacd
+        // To enable, set both ShouldUseBulletHACD=true and WhichHACD=1
+    	// http://kmamou.blogspot.ca/2014/12/v-hacd-20-parameters-description.html
+    	public static float VHACDresolution { get; private set; }			// 100,000 max number of voxels generated during voxelization stage
+    	public static float VHACDdepth { get; private set; }				// 20 max number of clipping stages
+    	public static float VHACDconcavity { get; private set; }			// 0.0025 maximum concavity
+    	public static float VHACDplaneDownsampling { get; private set; }	// 4 granularity of search for best clipping plane
+    	public static float VHACDconvexHullDownsampling { get; private set; }	// 4 precision of hull gen process
+    	public static float VHACDalpha { get; private set; }				// 0.05 bias toward clipping along symmetry planes
+    	public static float VHACDbeta { get; private set; }				    // 0.05 bias toward clipping along revolution axis
+    	public static float VHACDgamma { get; private set; }				// 0.00125 max concavity when merging
+    	public static float VHACDpca { get; private set; }					// 0 on/off normalizing mesh before decomp
+    	public static float VHACDmode { get; private set; }				    // 0 0:voxel based, 1: tetrahedron based
+    	public static float VHACDmaxNumVerticesPerCH { get; private set; }	// 64 max triangles per convex hull
+    	public static float VHACDminVolumePerCH { get; private set; }		// 0.0001 sampling of generated convex hulls
+
+        // Linkset implementation parameters
+        public static float LinksetImplementation { get; private set; }
+        public static bool LinksetOffsetCenterOfMass { get; private set; }
+        public static bool LinkConstraintUseFrameOffset { get; private set; }
+        public static bool LinkConstraintEnableTransMotor { get; private set; }
+        public static float LinkConstraintTransMotorMaxVel { get; private set; }
+        public static float LinkConstraintTransMotorMaxForce { get; private set; }
+        public static float LinkConstraintERP { get; private set; }
+        public static float LinkConstraintCFM { get; private set; }
+        public static float LinkConstraintSolverIterations { get; private set; }
+
+        public static float PID_D { get; private set; } // derivative
+        public static float PID_P { get; private set; } // proportional
+
+        // Various constants that come from that other virtual world that shall not be named.
+        public const float MinGravityZ = -1f;
+        public const float MaxGravityZ = 28f;
+        public const float MinFriction = 0f;
+        public const float MaxFriction = 255f;
+        public const float MinDensity = 0.01f;
+        public const float MaxDensity = 22587f;
+        public const float MinRestitution = 0f;
+        public const float MaxRestitution = 1f;
+
+        // =====================================================================================
+        // =====================================================================================
+
+        // Base parameter definition that gets and sets parameter values via a string
+        public abstract class ParameterDefnBase
+        {
+            public string name; // string name of the parameter
+            public string desc; // a short description of what the parameter means
+
+            public ParameterDefnBase(string pName, string pDesc)
+            {
+                name = pName;
+                desc = pDesc;
+            }
+
+            // Set the parameter value to the default
+            public abstract void AssignDefault(BSScene s);
+            // Get the value as a string
+            public abstract string GetValue(BSScene s);
+            // Set the value to this string value
+            public abstract void SetValue(BSScene s, string valAsString);
+            // set the value on a particular object (usually sets in physics engine)
+            public abstract void SetOnObject(BSScene s, BSPhysObject obj);
+            public abstract bool HasSetOnObject { get; }
+        }
+
+        // Specific parameter definition for a parameter of a specific type.
+        public delegate T PGetValue<T>(BSScene s);
+
+        public delegate void PSetValue<T>(BSScene s, T val);
+
+        public delegate void PSetOnObject<T>(BSScene scene, BSPhysObject obj);
+
+        public sealed class ParameterDefn<T> : ParameterDefnBase
+        {
+            T defaultValue;
+            PSetValue<T> setter;
+            PGetValue<T> getter;
+            PSetOnObject<T> objectSet;
+
+            public ParameterDefn(string pName, string pDesc, T pDefault, PGetValue<T> pGetter, PSetValue<T> pSetter)
+                : base(pName, pDesc)
+            {
+                defaultValue = pDefault;
+                setter = pSetter;
+                getter = pGetter;
+                objectSet = null;
+            }
+
+            public ParameterDefn(string pName, string pDesc, T pDefault, PGetValue<T> pGetter, PSetValue<T> pSetter,
+                PSetOnObject<T> pObjSetter)
+                : base(pName, pDesc)
+            {
+                defaultValue = pDefault;
+                setter = pSetter;
+                getter = pGetter;
+                objectSet = pObjSetter;
+            }
+
+            /* Wish I could simplify using this definition but CLR doesn't store references so closure around delegates of references won't work
         public ParameterDefn(string pName, string pDesc, T pDefault, ref T loc)
             : base(pName, pDesc)
         {
@@ -442,76 +306,87 @@ namespace Universe.Physics.BulletSPlugin
         }
          */
 
-			public override void AssignDefault (BSScene s)
-			{
-				setter (s, defaultValue);
-			}
+            public override void AssignDefault(BSScene s)
+            {
+                setter(s, defaultValue);
+            }
 
-			public override string GetValue (BSScene s)
-			{
-				return getter (s).ToString ();
-			}
+            public override string GetValue(BSScene s)
+            {
+                return getter(s).ToString();
+            }
 
-			public override void SetValue (BSScene s, string valAsString)
-			{
-				// Get the generic type of the setter
-				Type genericType = setter.GetType ().GetGenericArguments () [0];
-				// Find the 'Parse' method on that type
-				System.Reflection.MethodInfo parser = null;
-				try {
-					parser = genericType.GetMethod ("Parse", new Type[] { typeof(String) });
-				} catch (Exception e) {
-					s.Logger.ErrorFormat ("{0} Exception getting parser for type '{1}': {2}", LogHeader, genericType, e);
-					parser = null;
-				}
-				if (parser != null) {
-					// Parse the input string
-					try {
-						T setValue = (T)parser.Invoke (genericType, new Object[] { valAsString });
-						// Store the parsed value
-						setter (s, setValue);
-						// s.Logger.DebugFormat("{0} Parameter {1} = {2}", LogHeader, name, setValue);
-					} catch {
-						s.Logger.ErrorFormat ("{0} Failed parsing parameter value '{1}' as type '{2}'", LogHeader,
-							valAsString, genericType);
-					}
-				} else {
-					s.Logger.ErrorFormat ("{0} Could not find parameter parser for type '{1}'", LogHeader, genericType);
-				}
-			}
+            public override void SetValue(BSScene s, string valAsString)
+            {
+                // Get the generic type of the setter
+                Type genericType = setter.GetType().GetGenericArguments()[0];
+                // Find the 'Parse' method on that type
+                System.Reflection.MethodInfo parser = null;
+                try
+                {
+                    parser = genericType.GetMethod("Parse", new Type[] { typeof(String) });
+                }
+                catch (Exception e)
+                {
+                    s.Logger.ErrorFormat("{0} Exception getting parser for type '{1}': {2}", LogHeader, genericType, e);
+                    parser = null;
+                }
+                if (parser != null)
+                {
+                    // Parse the input string
+                    try
+                    {
+                        T setValue = (T)parser.Invoke(genericType, new Object[] { valAsString });
+                        // Store the parsed value
+                        setter(s, setValue);
+                        // s.Logger.DebugFormat("{0} Parameter {1} = {2}", LogHeader, name, setValue);
+                    }
+                    catch
+                    {
+                        s.Logger.ErrorFormat("{0} Failed parsing parameter value '{1}' as type '{2}'", LogHeader,
+                            valAsString, genericType);
+                    }
+                }
+                else
+                {
+                    s.Logger.ErrorFormat("{0} Could not find parameter parser for type '{1}'", LogHeader, genericType);
+                }
+            }
 
-			public override bool HasSetOnObject {
-				get { return objectSet != null; }
-			}
+            public override bool HasSetOnObject
+            {
+                get { return objectSet != null; }
+            }
 
-			public override void SetOnObject (BSScene s, BSPhysObject obj)
-			{
-				if (objectSet != null)
-					objectSet (s, obj);
-			}
-		}
+            public override void SetOnObject(BSScene s, BSPhysObject obj)
+            {
+                if (objectSet != null)
+                    objectSet(s, obj);
+            }
+        }
 
-		// List of all of the externally visible parameters.
-		// For each parameter, this table maps a text name to getter and setters.
-		// To add a new externally referencable/settable parameter, add the paramter storage
-		//    location somewhere in the program and make an entry in this table with the
-		//    getters and setters.
-		// It is easiest to find an existing definition and copy it.
-		//
-		// A ParameterDefn<T>() takes the following parameters:
-		//    -- the text name of the parameter. This is used for console input and ini file.
-		//    -- a short text description of the parameter. This shows up in the console listing.
-		//    -- a default value
-		//    -- a delegate for getting the value
-		//    -- a delegate for setting the value
-		//    -- an optional delegate to update the value in the world. Most often used to
-		//          push the new value to an in-world object.
-		//
-		// The single letter parameters for the delegates are:
-		//    s = BSScene
-		//    o = BSPhysObject
-		//    v = value (appropriate type)
-		static ParameterDefnBase[] ParameterDefinitions = {
+        // List of all of the externally visible parameters.
+        // For each parameter, this table maps a text name to getter and setters.
+        // To add a new externally referencable/settable parameter, add the paramter storage
+        //    location somewhere in the program and make an entry in this table with the
+        //    getters and setters.
+        // It is easiest to find an existing definition and copy it.
+        //
+        // A ParameterDefn<T>() takes the following parameters:
+        //    -- the text name of the parameter. This is used for console input and ini file.
+        //    -- a short text description of the parameter. This shows up in the console listing.
+        //    -- a default value
+        //    -- a delegate for getting the value
+        //    -- a delegate for setting the value
+        //    -- an optional delegate to update the value in the world. Most often used to
+        //          push the new value to an in-world object.
+        //
+        // The single letter parameters for the delegates are:
+        //    s = BSScene
+        //    o = BSPhysObject
+        //    v = value (appropriate type)
+        static ParameterDefnBase[] ParameterDefinitions =
+        {
             new ParameterDefn<bool>("Active", "If 'true', false then physics is not active",
                 false,
                 (s) => { return Active; },

@@ -34,48 +34,44 @@ using System.Text;
 
 namespace Universe.Framework.Utilities
 {
-	/// <summary>
-	/// A thread-safe Random since the .NET version is not.
-	/// See http://msdn.microsoft.com/en-us/library/system.random%28v=vs.100%29.aspx
-	/// </summary>
-	public class ThreadSafeRandom : Random
-	{
-		public ThreadSafeRandom () : base ()
-		{
-		}
+    /// <summary>
+    /// A thread-safe Random since the .NET version is not.
+    /// See http://msdn.microsoft.com/en-us/library/system.random%28v=vs.100%29.aspx
+    /// </summary>
+    public class ThreadSafeRandom : Random
+    {
+        public ThreadSafeRandom() : base() { }
 
-		public ThreadSafeRandom (int seed) : base (seed)
-		{
-		}
+        public ThreadSafeRandom(int seed) : base(seed) { }
 
-		public override int Next ()
-		{
-			lock (this)
-				return base.Next ();
-		}
+        public override int Next()
+        {
+            lock (this)
+                return base.Next();
+        }
 
-		public override int Next (int maxValue)
-		{
-			lock (this)
-				return base.Next (maxValue);
-		}
+        public override int Next(int maxValue)
+        {
+            lock (this)
+                return base.Next(maxValue);
+        }
 
-		public override int Next (int minValue, int maxValue)
-		{
-			lock (this)
-				return base.Next (minValue, maxValue);
-		}
+        public override int Next(int minValue, int maxValue)
+        {
+            lock (this)
+                return base.Next(minValue, maxValue);
+        }
 
-		public override void NextBytes (byte[] buffer)
-		{
-			lock (this)
-				base.NextBytes (buffer);
-		}
+        public override void NextBytes(byte[] buffer)
+        {
+            lock (this)
+                base.NextBytes(buffer);
+        }
 
-		public override double NextDouble ()
-		{
-			lock (this)
-				return base.NextDouble ();
-		}
-	}
+        public override double NextDouble()
+        {
+            lock (this)
+                return base.NextDouble();
+        }
+    }
 }

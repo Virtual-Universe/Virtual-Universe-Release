@@ -35,7 +35,7 @@ using OMV = OpenMetaverse;
 
 namespace Universe.Physics.BulletSPlugin
 {
-	/*
+    /*
      //This functionality appers to have been incorporated directly in SceneObjectPart.UpdateLookAt()
      
     public class BSActorHover : BSActor

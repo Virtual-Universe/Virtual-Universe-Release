@@ -27,88 +27,91 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.IO;
-using System.Xml;
-using Nini.Config;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Serialization;
+using Nini.Config;
+using System;
+using System.IO;
+using System.Xml;
 
 namespace Universe.Modules.Archivers
 {
-	public class SerializerModule : INonSharedRegionModule, IRegionSerializerModule
-	{
-		#region IRegionSerializerModule Members
+    public class SerializerModule : INonSharedRegionModule, IRegionSerializerModule
+    {
+        #region IRegionSerializerModule Members
 
-		public ISceneEntity DeserializeGroupFromXml2 (string xmlString, IScene scene)
-		{
-			XmlDocument doc = new XmlDocument ();
+        public ISceneEntity DeserializeGroupFromXml2(string xmlString, IScene scene)
+        {
+            XmlDocument doc = new XmlDocument();
 
-			XmlTextReader reader = new XmlTextReader (new StringReader (xmlString)) {
-				WhitespaceHandling =
+            XmlTextReader reader = new XmlTextReader(new StringReader(xmlString))
+                                       {
+                                           WhitespaceHandling =
                                                WhitespaceHandling.None
-			};
-			doc.Load (reader);
-			reader.Close ();
-			XmlNode rootNode = doc.FirstChild;
+                                       };
+            doc.Load(reader);
+            reader.Close();
+            XmlNode rootNode = doc.FirstChild;
 
-			return SceneEntitySerializer.SceneObjectSerializer.FromXml2Format (rootNode.OuterXml, scene);
-		}
+            return SceneEntitySerializer.SceneObjectSerializer.FromXml2Format(rootNode.OuterXml, scene);
+        }
 
-		public ISceneEntity DeserializeGroupFromXml2 (byte[] xml, IScene scene)
-		{
-			XmlDocument doc = new XmlDocument ();
+        public ISceneEntity DeserializeGroupFromXml2(byte[] xml, IScene scene)
+        {
+            XmlDocument doc = new XmlDocument();
 
-			MemoryStream stream = new MemoryStream (xml);
-			XmlTextReader reader = new XmlTextReader (stream) { WhitespaceHandling = WhitespaceHandling.None };
-			doc.Load (reader);
-			reader.Close ();
-			XmlNode rootNode = doc.FirstChild;
+            MemoryStream stream = new MemoryStream(xml);
+            XmlTextReader reader = new XmlTextReader(stream) {WhitespaceHandling = WhitespaceHandling.None};
+            doc.Load(reader);
+            reader.Close();
+            XmlNode rootNode = doc.FirstChild;
 
-			return SceneEntitySerializer.SceneObjectSerializer.FromXml2Format (rootNode.OuterXml, scene);
-		}
+            return SceneEntitySerializer.SceneObjectSerializer.FromXml2Format(rootNode.OuterXml, scene);
+        }
 
-		public string SerializeGroupToXml2 (ISceneEntity grp)
-		{
-			return SceneEntitySerializer.SceneObjectSerializer.ToXml2Format (grp);
-		}
+        public string SerializeGroupToXml2(ISceneEntity grp)
+        {
+            return SceneEntitySerializer.SceneObjectSerializer.ToXml2Format(grp);
+        }
 
-		#endregion
+        #endregion
 
-		#region INonSharedRegionModule Members
+        #region INonSharedRegionModule Members
 
-		public Type ReplaceableInterface {
-			get { return null; }
-		}
+        public Type ReplaceableInterface
+        {
+            get { return null; }
+        }
 
-		public void Initialize (IConfigSource source)
-		{
-		}
+        public void Initialize(IConfigSource source)
+        {
+        }
 
-		public void AddRegion (IScene scene)
-		{
-			scene.RegisterModuleInterface<IRegionSerializerModule> (this);
-		}
+        public void AddRegion(IScene scene)
+        {
+            scene.RegisterModuleInterface<IRegionSerializerModule>(this);
+        }
 
-		public void RegionLoaded (IScene scene)
-		{
-		}
+        public void RegionLoaded(IScene scene)
+        {
+        }
 
-		public void RemoveRegion (IScene scene)
-		{
-			scene.UnregisterModuleInterface<IRegionSerializerModule> (this);
-		}
+        public void RemoveRegion(IScene scene)
+        {
+            scene.UnregisterModuleInterface<IRegionSerializerModule>(this);
+        }
 
-		public void Close ()
-		{
-		}
+        public void Close()
+        {
+        }
 
-		public string Name {
-			get { return "ExportSerialisationModule"; }
-		}
+        public string Name
+        {
+            get { return "ExportSerialisationModule"; }
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

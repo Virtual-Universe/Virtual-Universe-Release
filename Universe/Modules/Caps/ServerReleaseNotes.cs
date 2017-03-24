@@ -27,77 +27,79 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.IO;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Servers.HttpServer;
 using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Servers.HttpServer.Interfaces;
 using Universe.Framework.Utilities;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
+using System;
+using System.IO;
+
 
 namespace Universe.Modules.Caps
 {
-	public class ServerReleaseNotes : INonSharedRegionModule
-	{
-		private IScene m_scene;
+    public class ServerReleaseNotes : INonSharedRegionModule
+    {
+        private IScene m_scene;
 
-		#region INonSharedRegionModule Members
+        #region INonSharedRegionModule Members
 
-		public void Initialize (IConfigSource pSource)
-		{
-		}
+        public void Initialize(IConfigSource pSource)
+        {
+        }
 
-		public void AddRegion (IScene scene)
-		{
-			m_scene = scene;
-			m_scene.EventManager.OnRegisterCaps += RegisterCaps;
-		}
+        public void AddRegion(IScene scene)
+        {
+            m_scene = scene;
+            m_scene.EventManager.OnRegisterCaps += RegisterCaps;
+        }
 
-		public void RemoveRegion (IScene scene)
-		{
-		}
+        public void RemoveRegion(IScene scene)
+        {
+        }
 
-		public void RegionLoaded (IScene scene)
-		{
-		}
+        public void RegionLoaded(IScene scene)
+        {
+        }
 
-		public Type ReplaceableInterface {
-			get { return null; }
-		}
+        public Type ReplaceableInterface
+        {
+            get { return null; }
+        }
 
-		public void Close ()
-		{
-		}
+        public void Close()
+        {
+        }
 
-		public string Name {
-			get { return "ServerReleaseNotesModule"; }
-		}
+        public string Name
+        {
+            get { return "ServerReleaseNotesModule"; }
+        }
 
-		#endregion
+        #endregion
 
-		public OSDMap RegisterCaps (UUID agentID, IHttpServer server)
-		{
-			OSDMap retVal = new OSDMap ();
-			retVal ["ServerReleaseNotes"] = CapsUtil.CreateCAPS ("ServerReleaseNotes", "");
+        public OSDMap RegisterCaps(UUID agentID, IHttpServer server)
+        {
+            OSDMap retVal = new OSDMap();
+            retVal["ServerReleaseNotes"] = CapsUtil.CreateCAPS("ServerReleaseNotes", "");
 
-			server.AddStreamHandler (new GenericStreamHandler ("POST", retVal ["ServerReleaseNotes"],
-				delegate(string path, Stream request,
-				                                                                  OSHttpRequest httpRequest,
-				                                                                  OSHttpResponse httpResponse) {
-					return ProcessServerReleaseNotes (agentID);
-				}));
+            server.AddStreamHandler(new GenericStreamHandler("POST", retVal["ServerReleaseNotes"],
+                                                             delegate(string path, Stream request,
+                                                                      OSHttpRequest httpRequest,
+                                                                      OSHttpResponse httpResponse)
+                                                             { return ProcessServerReleaseNotes(agentID); }));
 
-			return retVal;
-		}
-
-		private byte[] ProcessServerReleaseNotes (UUID agentID)
-		{
-			OSDMap osd = new OSDMap { { "ServerReleaseNotes", new OSDString (Utilities.GetServerReleaseNotesURL ()) } };
-			return OSDParser.SerializeLLSDXmlBytes (osd);
-		}
-	}
+            return retVal;
+        }
+        
+        private byte[] ProcessServerReleaseNotes(UUID agentID)
+        {
+            OSDMap osd = new OSDMap { { "ServerReleaseNotes", new OSDString(Utilities.GetServerReleaseNotesURL()) } };
+            return OSDParser.SerializeLLSDXmlBytes(osd);
+        }
+    }
 }

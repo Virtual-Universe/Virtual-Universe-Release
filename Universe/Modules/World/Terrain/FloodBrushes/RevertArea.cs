@@ -32,39 +32,39 @@ using Universe.Framework.Modules;
 
 namespace Universe.Modules.Terrain.FloodBrushes
 {
-	public class RevertArea : ITerrainFloodEffect
-	{
-		readonly ITerrainModule m_module;
+    public class RevertArea : ITerrainFloodEffect
+    {
+        readonly ITerrainModule m_module;
 
-		public RevertArea (ITerrainModule module)
-		{
-			m_module = module;
-		}
+        public RevertArea (ITerrainModule module)
+        {
+            m_module = module;
+        }
 
-		#region ITerrainFloodEffect Members
+        #region ITerrainFloodEffect Members
 
-		/// <summary>
-		///     Reverts an area of the map to the heightfield stored in the revertmap
-		/// </summary>
-		/// <param name="map">The current heightmap</param>
-		/// <param name="userID"></param>
-		/// <param name="north"></param>
-		/// <param name="west"></param>
-		/// <param name="south"></param>
-		/// <param name="east"></param>
-		/// <param name="strength">unused</param>
-		public void FloodEffect (ITerrainChannel map, UUID userID, float north,
-		                               float west, float south, float east, float strength)
-		{
-			for (int x = (int)west; x < (int)east; x++) {
-				for (int y = (int)south; y < (int)north; y++) {
-					if (!map.Scene.Permissions.CanTerraformLand (userID, new Vector3 (x, y, 0)))
-						continue;
-					map [x, y] = m_module.TerrainRevertMap [x, y];
-				}
-			}
-		}
+        /// <summary>
+        ///     Reverts an area of the map to the heightfield stored in the revertmap
+        /// </summary>
+        /// <param name="map">The current heightmap</param>
+        /// <param name="userID"></param>
+        /// <param name="north"></param>
+        /// <param name="west"></param>
+        /// <param name="south"></param>
+        /// <param name="east"></param>
+        /// <param name="strength">unused</param>
+        public void FloodEffect (ITerrainChannel map, UUID userID, float north,
+                                float west, float south, float east, float strength)
+        {
+            for (int x = (int)west; x < (int)east; x++) {
+                for (int y = (int)south; y < (int)north; y++) {
+                    if (!map.Scene.Permissions.CanTerraformLand (userID, new Vector3 (x, y, 0)))
+                        continue;
+                    map [x, y] = m_module.TerrainRevertMap [x, y];
+                }
+            }
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

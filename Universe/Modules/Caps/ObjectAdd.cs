@@ -27,12 +27,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.IO;
-using System.Text;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.StructuredData;
 using Universe.Framework.Modules;
 using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
@@ -42,284 +36,307 @@ using Universe.Framework.Servers.HttpServer;
 using Universe.Framework.Servers.HttpServer.Implementation;
 using Universe.Framework.Servers.HttpServer.Interfaces;
 using Universe.Framework.Utilities;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.StructuredData;
+using System;
+using System.IO;
+using System.Text;
 
 namespace Universe.Modules.Caps
 {
-	public class ObjectAdd : INonSharedRegionModule
-	{
-		private IScene m_scene;
+    public class ObjectAdd : INonSharedRegionModule
+    {
+        private IScene m_scene;
 
-		#region INonSharedRegionModule Members
+        #region INonSharedRegionModule Members
 
-		public void Initialize (IConfigSource pSource)
-		{
-		}
+        public void Initialize(IConfigSource pSource)
+        {
+        }
 
-		public void AddRegion (IScene scene)
-		{
-			m_scene = scene;
-			m_scene.EventManager.OnRegisterCaps += RegisterCaps;
-		}
+        public void AddRegion(IScene scene)
+        {
+            m_scene = scene;
+            m_scene.EventManager.OnRegisterCaps += RegisterCaps;
+        }
 
-		public void RemoveRegion (IScene scene)
-		{
-		}
+        public void RemoveRegion(IScene scene)
+        {
+        }
 
-		public void RegionLoaded (IScene scene)
-		{
-		}
+        public void RegionLoaded(IScene scene)
+        {
+        }
 
-		public Type ReplaceableInterface {
-			get { return null; }
-		}
+        public Type ReplaceableInterface
+        {
+            get { return null; }
+        }
 
-		public void Close ()
-		{
-		}
+        public void Close()
+        {
+        }
 
-		public string Name {
-			get { return "ObjectAddModule"; }
-		}
+        public string Name
+        {
+            get { return "ObjectAddModule"; }
+        }
 
-		#endregion
+        #endregion
 
-		public OSDMap RegisterCaps (UUID agentID, IHttpServer server)
-		{
-			OSDMap retVal = new OSDMap ();
-			retVal ["ObjectAdd"] = CapsUtil.CreateCAPS ("ObjectAdd", "");
-			server.AddStreamHandler (new GenericStreamHandler ("POST", retVal ["ObjectAdd"],
-				delegate(string path, Stream request,
-				                                                                  OSHttpRequest httpRequest,
-				                                                                  OSHttpResponse httpResponse) {
-					return ProcessAdd (request, agentID);
-				}));
-			return retVal;
-		}
+        public OSDMap RegisterCaps(UUID agentID, IHttpServer server)
+        {
+            OSDMap retVal = new OSDMap();
+            retVal["ObjectAdd"] = CapsUtil.CreateCAPS("ObjectAdd", "");
+            server.AddStreamHandler(new GenericStreamHandler("POST", retVal["ObjectAdd"],
+                                                             delegate(string path, Stream request,
+                                                                      OSHttpRequest httpRequest,
+                                                                      OSHttpResponse httpResponse)
+                                                                 { return ProcessAdd(request, agentID); }));
+            return retVal;
+        }
 
-		public byte[] ProcessAdd (Stream request, UUID AgentId)
-		{
-			IScenePresence avatar;
+        public byte[] ProcessAdd(Stream request, UUID AgentId)
+        {
+            IScenePresence avatar;
 
-			if (!m_scene.TryGetScenePresence (AgentId, out avatar))
-				return MainServer.BadRequest;
-
-
-			OSD r = OSDParser.DeserializeLLSDXml (HttpServerHandlerHelpers.ReadFully (request));
-			//UUID session_id = UUID.Zero;
-			bool bypass_raycast = false;
-			uint everyone_mask = 0;
-			uint group_mask = 0;
-			uint next_owner_mask = 0;
-			uint flags = 0;
-			UUID group_id = UUID.Zero;
-			int hollow = 0;
-			int material = 0;
-			int p_code = 0;
-			int path_begin = 0;
-			int path_curve = 0;
-			int path_end = 0;
-			int path_radius_offset = 0;
-			int path_revolutions = 0;
-			int path_scale_x = 0;
-			int path_scale_y = 0;
-			int path_shear_x = 0;
-			int path_shear_y = 0;
-			int path_skew = 0;
-			int path_taper_x = 0;
-			int path_taper_y = 0;
-			int path_twist = 0;
-			int path_twist_begin = 0;
-			int profile_begin = 0;
-			int profile_curve = 0;
-			int profile_end = 0;
-			Vector3 ray_end = Vector3.Zero;
-			bool ray_end_is_intersection = false;
-			Vector3 ray_start = Vector3.Zero;
-			UUID ray_target_id = UUID.Zero;
-			Quaternion rotation = Quaternion.Identity;
-			Vector3 scale = Vector3.Zero;
-			int state = 0;
-
-			if (r.Type != OSDType.Map) // not a proper request
+            if (!m_scene.TryGetScenePresence(AgentId, out avatar))
                 return MainServer.BadRequest;
 
-			OSDMap rm = (OSDMap)r;
 
-			if (rm.ContainsKey ("ObjectData")) { //v2
-				if (rm ["ObjectData"].Type != OSDType.Map)
-					return Encoding.UTF8.GetBytes ("Has ObjectData key, but data not in expected format");
+            OSD r = OSDParser.DeserializeLLSDXml(HttpServerHandlerHelpers.ReadFully(request));
+            //UUID session_id = UUID.Zero;
+            bool bypass_raycast = false;
+            uint everyone_mask = 0;
+            uint group_mask = 0;
+            uint next_owner_mask = 0;
+            uint flags = 0;
+            UUID group_id = UUID.Zero;
+            int hollow = 0;
+            int material = 0;
+            int p_code = 0;
+            int path_begin = 0;
+            int path_curve = 0;
+            int path_end = 0;
+            int path_radius_offset = 0;
+            int path_revolutions = 0;
+            int path_scale_x = 0;
+            int path_scale_y = 0;
+            int path_shear_x = 0;
+            int path_shear_y = 0;
+            int path_skew = 0;
+            int path_taper_x = 0;
+            int path_taper_y = 0;
+            int path_twist = 0;
+            int path_twist_begin = 0;
+            int profile_begin = 0;
+            int profile_curve = 0;
+            int profile_end = 0;
+            Vector3 ray_end = Vector3.Zero;
+            bool ray_end_is_intersection = false;
+            Vector3 ray_start = Vector3.Zero;
+            UUID ray_target_id = UUID.Zero;
+            Quaternion rotation = Quaternion.Identity;
+            Vector3 scale = Vector3.Zero;
+            int state = 0;
 
-				OSDMap ObjMap = (OSDMap)rm ["ObjectData"];
+            if (r.Type != OSDType.Map) // not a proper request
+                return MainServer.BadRequest;
 
-				bypass_raycast = ObjMap ["BypassRaycast"].AsBoolean ();
-				everyone_mask = ObjMap ["EveryoneMask"];
-				flags = ObjMap ["Flags"];
-				group_mask = ObjMap ["GroupMask"];
-				material = ObjMap ["Material"].AsInteger ();
-				next_owner_mask = ObjMap ["NextOwnerMask"];
-				p_code = ObjMap ["PCode"].AsInteger ();
+            OSDMap rm = (OSDMap) r;
 
-				if (ObjMap.ContainsKey ("Path")) {
-					if (ObjMap ["Path"].Type != OSDType.Map)
-						return Encoding.UTF8.GetBytes ("Has Path key, but data not in expected format");
+            if (rm.ContainsKey("ObjectData")) //v2
+            {
+                if (rm["ObjectData"].Type != OSDType.Map)
+                    return Encoding.UTF8.GetBytes("Has ObjectData key, but data not in expected format");
 
-					OSDMap PathMap = (OSDMap)ObjMap ["Path"];
-					path_begin = PathMap ["Begin"].AsInteger ();
-					path_curve = PathMap ["Curve"].AsInteger ();
-					path_end = PathMap ["End"].AsInteger ();
-					path_radius_offset = PathMap ["RadiusOffset"].AsInteger ();
-					path_revolutions = PathMap ["Revolutions"].AsInteger ();
-					path_scale_x = PathMap ["ScaleX"].AsInteger ();
-					path_scale_y = PathMap ["ScaleY"].AsInteger ();
-					path_shear_x = PathMap ["ShearX"].AsInteger ();
-					path_shear_y = PathMap ["ShearY"].AsInteger ();
-					path_skew = PathMap ["Skew"].AsInteger ();
-					path_taper_x = PathMap ["TaperX"].AsInteger ();
-					path_taper_y = PathMap ["TaperY"].AsInteger ();
-					path_twist = PathMap ["Twist"].AsInteger ();
-					path_twist_begin = PathMap ["TwistBegin"].AsInteger ();
-				}
+                OSDMap ObjMap = (OSDMap) rm["ObjectData"];
 
-				if (ObjMap.ContainsKey ("Profile")) {
-					if (ObjMap ["Profile"].Type != OSDType.Map)
-						return Encoding.UTF8.GetBytes ("Has Profile key, but data not in expected format");
+                bypass_raycast = ObjMap["BypassRaycast"].AsBoolean();
+                everyone_mask = ObjMap["EveryoneMask"];
+                flags = ObjMap["Flags"];
+                group_mask = ObjMap["GroupMask"];
+                material = ObjMap["Material"].AsInteger();
+                next_owner_mask = ObjMap["NextOwnerMask"];
+                p_code = ObjMap["PCode"].AsInteger();
 
-					OSDMap ProfileMap = (OSDMap)ObjMap ["Profile"];
+                if (ObjMap.ContainsKey("Path"))
+                {
+                    if (ObjMap["Path"].Type != OSDType.Map)
+                        return Encoding.UTF8.GetBytes("Has Path key, but data not in expected format");
 
-					profile_begin = ProfileMap ["Begin"].AsInteger ();
-					profile_curve = ProfileMap ["Curve"].AsInteger ();
-					profile_end = ProfileMap ["End"].AsInteger ();
-					hollow = ProfileMap ["Hollow"].AsInteger ();
-				}
-				ray_end_is_intersection = ObjMap ["RayEndIsIntersection"].AsBoolean ();
+                    OSDMap PathMap = (OSDMap) ObjMap["Path"];
+                    path_begin = PathMap["Begin"].AsInteger();
+                    path_curve = PathMap["Curve"].AsInteger();
+                    path_end = PathMap["End"].AsInteger();
+                    path_radius_offset = PathMap["RadiusOffset"].AsInteger();
+                    path_revolutions = PathMap["Revolutions"].AsInteger();
+                    path_scale_x = PathMap["ScaleX"].AsInteger();
+                    path_scale_y = PathMap["ScaleY"].AsInteger();
+                    path_shear_x = PathMap["ShearX"].AsInteger();
+                    path_shear_y = PathMap["ShearY"].AsInteger();
+                    path_skew = PathMap["Skew"].AsInteger();
+                    path_taper_x = PathMap["TaperX"].AsInteger();
+                    path_taper_y = PathMap["TaperY"].AsInteger();
+                    path_twist = PathMap["Twist"].AsInteger();
+                    path_twist_begin = PathMap["TwistBegin"].AsInteger();
+                }
 
-				ray_target_id = ObjMap ["RayTargetId"].AsUUID ();
-				state = ObjMap ["State"].AsInteger ();
-				try {
-					ray_end = (ObjMap ["RayEnd"]).AsVector3 ();
-					ray_start = (ObjMap ["RayStart"]).AsVector3 ();
-					scale = (ObjMap ["Scale"]).AsVector3 ();
-					rotation = (ObjMap ["Rotation"]).AsQuaternion ();
-				} catch (Exception) {
-					return Encoding.UTF8.GetBytes ("RayEnd, RayStart, Scale or Rotation wasn't in the expected format");
-				}
+                if (ObjMap.ContainsKey("Profile"))
+                {
+                    if (ObjMap["Profile"].Type != OSDType.Map)
+                        return Encoding.UTF8.GetBytes("Has Profile key, but data not in expected format");
 
-				if (rm.ContainsKey ("AgentData")) {
-					if (rm ["AgentData"].Type != OSDType.Map) {
-						return Encoding.UTF8.GetBytes ("Has AgentData key, but data not in expected format");
-					}
+                    OSDMap ProfileMap = (OSDMap) ObjMap["Profile"];
 
-					OSDMap AgentDataMap = (OSDMap)rm ["AgentData"];
+                    profile_begin = ProfileMap["Begin"].AsInteger();
+                    profile_curve = ProfileMap["Curve"].AsInteger();
+                    profile_end = ProfileMap["End"].AsInteger();
+                    hollow = ProfileMap["Hollow"].AsInteger();
+                }
+                ray_end_is_intersection = ObjMap["RayEndIsIntersection"].AsBoolean();
 
-					//session_id = AgentDataMap["SessionId"].AsUUID();
-					group_id = AgentDataMap ["GroupId"].AsUUID ();
-				}
-			} else {
-				//v1
-				bypass_raycast = rm ["bypass_raycast"].AsBoolean ();
+                ray_target_id = ObjMap["RayTargetId"].AsUUID();
+                state = ObjMap["State"].AsInteger();
+                try
+                {
+                    ray_end = (ObjMap["RayEnd"]).AsVector3();
+                    ray_start = (ObjMap["RayStart"]).AsVector3();
+                    scale = (ObjMap["Scale"]).AsVector3();
+                    rotation = (ObjMap["Rotation"]).AsQuaternion();
+                }
+                catch (Exception)
+                {
+                    return Encoding.UTF8.GetBytes("RayEnd, RayStart, Scale or Rotation wasn't in the expected format");
+                }
 
-				everyone_mask = rm ["everyone_mask"];
-				flags = rm ["flags"];
-				group_id = rm ["group_id"].AsUUID ();
-				group_mask = rm ["group_mask"];
-				hollow = rm ["hollow"].AsInteger ();
-				material = rm ["material"].AsInteger ();
-				next_owner_mask = rm ["next_owner_mask"];
-				hollow = rm ["hollow"].AsInteger ();
-				p_code = rm ["p_code"].AsInteger ();
-				path_begin = rm ["path_begin"].AsInteger ();
-				path_curve = rm ["path_curve"].AsInteger ();
-				path_end = rm ["path_end"].AsInteger ();
-				path_radius_offset = rm ["path_radius_offset"].AsInteger ();
-				path_revolutions = rm ["path_revolutions"].AsInteger ();
-				path_scale_x = rm ["path_scale_x"].AsInteger ();
-				path_scale_y = rm ["path_scale_y"].AsInteger ();
-				path_shear_x = rm ["path_shear_x"].AsInteger ();
-				path_shear_y = rm ["path_shear_y"].AsInteger ();
-				path_skew = rm ["path_skew"].AsInteger ();
-				path_taper_x = rm ["path_taper_x"].AsInteger ();
-				path_taper_y = rm ["path_taper_y"].AsInteger ();
-				path_twist = rm ["path_twist"].AsInteger ();
-				path_twist_begin = rm ["path_twist_begin"].AsInteger ();
-				profile_begin = rm ["profile_begin"].AsInteger ();
-				profile_curve = rm ["profile_curve"].AsInteger ();
-				profile_end = rm ["profile_end"].AsInteger ();
+                if (rm.ContainsKey("AgentData"))
+                {
+                    if (rm["AgentData"].Type != OSDType.Map)
+                    {
+                        return Encoding.UTF8.GetBytes("Has AgentData key, but data not in expected format");
+                    }
 
-				ray_end_is_intersection = rm ["ray_end_is_intersection"].AsBoolean ();
+                    OSDMap AgentDataMap = (OSDMap) rm["AgentData"];
 
-				ray_target_id = rm ["ray_target_id"].AsUUID ();
+                    //session_id = AgentDataMap["SessionId"].AsUUID();
+                    group_id = AgentDataMap["GroupId"].AsUUID();
+                }
+            }
+            else
+            {
+                //v1
+                bypass_raycast = rm["bypass_raycast"].AsBoolean();
 
+                everyone_mask = rm["everyone_mask"];
+                flags = rm["flags"];
+                group_id = rm["group_id"].AsUUID();
+                group_mask = rm["group_mask"];
+                hollow = rm["hollow"].AsInteger();
+                material = rm["material"].AsInteger();
+                next_owner_mask = rm["next_owner_mask"];
+                hollow = rm["hollow"].AsInteger();
+                p_code = rm["p_code"].AsInteger();
+                path_begin = rm["path_begin"].AsInteger();
+                path_curve = rm["path_curve"].AsInteger();
+                path_end = rm["path_end"].AsInteger();
+                path_radius_offset = rm["path_radius_offset"].AsInteger();
+                path_revolutions = rm["path_revolutions"].AsInteger();
+                path_scale_x = rm["path_scale_x"].AsInteger();
+                path_scale_y = rm["path_scale_y"].AsInteger();
+                path_shear_x = rm["path_shear_x"].AsInteger();
+                path_shear_y = rm["path_shear_y"].AsInteger();
+                path_skew = rm["path_skew"].AsInteger();
+                path_taper_x = rm["path_taper_x"].AsInteger();
+                path_taper_y = rm["path_taper_y"].AsInteger();
+                path_twist = rm["path_twist"].AsInteger();
+                path_twist_begin = rm["path_twist_begin"].AsInteger();
+                profile_begin = rm["profile_begin"].AsInteger();
+                profile_curve = rm["profile_curve"].AsInteger();
+                profile_end = rm["profile_end"].AsInteger();
 
-				//session_id = rm["session_id"].AsUUID();
-				state = rm ["state"].AsInteger ();
-				try {
-					ray_end = (rm ["ray_end"]).AsVector3 ();
-					ray_start = (rm ["ray_start"]).AsVector3 ();
-					rotation = (rm ["rotation"]).AsQuaternion ();
-					scale = (rm ["scale"]).AsVector3 ();
-				} catch (Exception) {
-					return Encoding.UTF8.GetBytes ("RayEnd, RayStart, Scale or Rotation wasn't in the expected format");
-				}
-			}
+                ray_end_is_intersection = rm["ray_end_is_intersection"].AsBoolean();
 
-
-			Vector3 pos = m_scene.SceneGraph.GetNewRezLocation (ray_start, ray_end, ray_target_id, rotation,
-				                       (bypass_raycast) ? (byte)1 : (byte)0,
-				                       (ray_end_is_intersection) ? (byte)1 : (byte)0, true,
-				                       scale, false);
-
-			PrimitiveBaseShape pbs = PrimitiveBaseShape.CreateBox ();
-
-			pbs.PathBegin = (ushort)path_begin;
-			pbs.PathCurve = (byte)path_curve;
-			pbs.PathEnd = (ushort)path_end;
-			pbs.PathRadiusOffset = (sbyte)path_radius_offset;
-			pbs.PathRevolutions = (byte)path_revolutions;
-			pbs.PathScaleX = (byte)path_scale_x;
-			pbs.PathScaleY = (byte)path_scale_y;
-			pbs.PathShearX = (byte)path_shear_x;
-			pbs.PathShearY = (byte)path_shear_y;
-			pbs.PathSkew = (sbyte)path_skew;
-			pbs.PathTaperX = (sbyte)path_taper_x;
-			pbs.PathTaperY = (sbyte)path_taper_y;
-			pbs.PathTwist = (sbyte)path_twist;
-			pbs.PathTwistBegin = (sbyte)path_twist_begin;
-			pbs.HollowShape = (HollowShape)hollow;
-			pbs.PCode = (byte)p_code;
-			pbs.ProfileBegin = (ushort)profile_begin;
-			pbs.ProfileCurve = (byte)profile_curve;
-			pbs.ProfileEnd = (ushort)profile_end;
-			pbs.Scale = scale;
-			pbs.State = (byte)state;
-
-			ISceneEntity obj = null;
-
-			string reason;
-			if (m_scene.Permissions.CanRezObject (1, avatar.UUID, pos, out reason)) {
-				// rez ON the ground, not IN the ground
-				// pos.Z += 0.25F;
-
-				obj = m_scene.SceneGraph.AddNewPrim (avatar.UUID, group_id, pos, rotation, pbs);
-			} else {
-				avatar.ControllingClient.SendAlertMessage ("You do not have permission to rez objects here: " + reason);
-			}
+                ray_target_id = rm["ray_target_id"].AsUUID();
 
 
-			if (obj == null)
-				return MainServer.BadRequest;
+                //session_id = rm["session_id"].AsUUID();
+                state = rm["state"].AsInteger();
+                try
+                {
+                    ray_end = (rm["ray_end"]).AsVector3();
+                    ray_start = (rm["ray_start"]).AsVector3();
+                    rotation = (rm["rotation"]).AsQuaternion();
+                    scale = (rm["scale"]).AsVector3();
+                }
+                catch (Exception)
+                {
+                    return Encoding.UTF8.GetBytes("RayEnd, RayStart, Scale or Rotation wasn't in the expected format");
+                }
+            }
 
-			ISceneChildEntity rootpart = obj.RootChild;
-			rootpart.Shape = pbs;
-			rootpart.Flags |= (PrimFlags)flags;
-			rootpart.EveryoneMask = everyone_mask;
-			rootpart.GroupID = group_id;
-			rootpart.GroupMask = group_mask;
-			rootpart.NextOwnerMask = next_owner_mask;
-			rootpart.UpdateMaterial (material);
 
-			OSDMap map = new OSDMap ();
-			map ["local_id"] = obj.LocalId;
-			return OSDParser.SerializeLLSDXmlBytes (map);
-		}
-	}
+            Vector3 pos = m_scene.SceneGraph.GetNewRezLocation(ray_start, ray_end, ray_target_id, rotation,
+                                                               (bypass_raycast) ? (byte) 1 : (byte) 0,
+                                                               (ray_end_is_intersection) ? (byte) 1 : (byte) 0, true,
+                                                               scale, false);
+
+            PrimitiveBaseShape pbs = PrimitiveBaseShape.CreateBox();
+
+            pbs.PathBegin = (ushort) path_begin;
+            pbs.PathCurve = (byte) path_curve;
+            pbs.PathEnd = (ushort) path_end;
+            pbs.PathRadiusOffset = (sbyte) path_radius_offset;
+            pbs.PathRevolutions = (byte) path_revolutions;
+            pbs.PathScaleX = (byte) path_scale_x;
+            pbs.PathScaleY = (byte) path_scale_y;
+            pbs.PathShearX = (byte) path_shear_x;
+            pbs.PathShearY = (byte) path_shear_y;
+            pbs.PathSkew = (sbyte) path_skew;
+            pbs.PathTaperX = (sbyte) path_taper_x;
+            pbs.PathTaperY = (sbyte) path_taper_y;
+            pbs.PathTwist = (sbyte) path_twist;
+            pbs.PathTwistBegin = (sbyte) path_twist_begin;
+            pbs.HollowShape = (HollowShape) hollow;
+            pbs.PCode = (byte) p_code;
+            pbs.ProfileBegin = (ushort) profile_begin;
+            pbs.ProfileCurve = (byte) profile_curve;
+            pbs.ProfileEnd = (ushort) profile_end;
+            pbs.Scale = scale;
+            pbs.State = (byte) state;
+
+            ISceneEntity obj = null;
+
+            string reason;
+            if (m_scene.Permissions.CanRezObject(1, avatar.UUID, pos, out reason))
+            {
+                // rez ON the ground, not IN the ground
+                // pos.Z += 0.25F;
+
+                obj = m_scene.SceneGraph.AddNewPrim(avatar.UUID, group_id, pos, rotation, pbs);
+            }
+            else
+            {
+                avatar.ControllingClient.SendAlertMessage("You do not have permission to rez objects here: " + reason);
+            }
+
+
+            if (obj == null)
+                return MainServer.BadRequest;
+
+            ISceneChildEntity rootpart = obj.RootChild;
+            rootpart.Shape = pbs;
+            rootpart.Flags |= (PrimFlags) flags;
+            rootpart.EveryoneMask = everyone_mask;
+            rootpart.GroupID = group_id;
+            rootpart.GroupMask = group_mask;
+            rootpart.NextOwnerMask = next_owner_mask;
+            rootpart.UpdateMaterial(material);
+
+            OSDMap map = new OSDMap();
+            map["local_id"] = obj.LocalId;
+            return OSDParser.SerializeLLSDXmlBytes(map);
+        }
+    }
 }

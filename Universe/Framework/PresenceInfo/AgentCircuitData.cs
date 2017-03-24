@@ -31,150 +31,153 @@ using System;
 using Universe.Framework.Modules;
 using OpenMetaverse;
 using OpenMetaverse.StructuredData;
-using ProtoBuf;
 using Universe.Framework.Services;
+using ProtoBuf;
 
 namespace Universe.Framework.PresenceInfo
 {
-	/// <summary>
-	///     Circuit data for an agent.  Connection information shared between
-	///     regions that accept UDP connections from a client
-	/// </summary>
-	[ProtoContract (UseProtoMembersOnly = true)]
-	public class AgentCircuitData : IDataTransferable
-	{
-		#region Variables
+    /// <summary>
+    ///     Circuit data for an agent.  Connection information shared between
+    ///     regions that accept UDP connections from a client
+    /// </summary>
+    [ProtoContract(UseProtoMembersOnly = true)]
+    public class AgentCircuitData : IDataTransferable
+    {
+        #region Variables
 
-		/// <summary>
-		///     Avatar Unique Agent Identifier
-		/// </summary>
-		[ProtoMember (1)]
-		public UUID AgentID;
+        /// <summary>
+        ///     Avatar Unique Agent Identifier
+        /// </summary>
+        [ProtoMember(1)]
+        public UUID AgentID;
 
-		/// <summary>
-		///     The client's IP address, as captured by the login service
-		/// </summary>
-		[ProtoMember (2)]
-		public string IPAddress;
+        /// <summary>
+        ///     The client's IP address, as captured by the login service
+        /// </summary>
+        [ProtoMember(2)]
+        public string IPAddress;
 
-		/// <summary>
-		///     Other unknown info
-		/// </summary>
-		[ProtoMember (3)]
-		public CachedUserInfo CachedUserInfo = null;
+        /// <summary>
+        ///     Other unknown info
+        /// </summary>
+        [ProtoMember(3)]
+        public CachedUserInfo CachedUserInfo = null;
 
-		/// <summary>
-		///     IntenalUseOnly - Kept by the server to tell the rest of the server what port to call the region on
-		/// </summary>
-		[ProtoMember (4)]
-		public int RegionUDPPort;
+        /// <summary>
+        ///     IntenalUseOnly - Kept by the server to tell the rest of the server what port to call the region on
+        /// </summary>
+        [ProtoMember(4)]
+        public int RegionUDPPort;
 
-		/// <summary>
-		///     Random Unique GUID for this session.  Client gets this at login and it's
-		///     only supposed to be disclosed over secure channels
-		/// </summary>
-		[ProtoMember (5)]
-		public UUID SecureSessionID;
+        /// <summary>
+        ///     Random Unique GUID for this session.  Client gets this at login and it's
+        ///     only supposed to be disclosed over secure channels
+        /// </summary>
+        [ProtoMember(5)]
+        public UUID SecureSessionID;
 
-		/// <summary>
-		///     Non secure Session ID
-		/// </summary>
-		[ProtoMember (6)]
-		public UUID SessionID;
+        /// <summary>
+        ///     Non secure Session ID
+        /// </summary>
+        [ProtoMember(6)]
+        public UUID SessionID;
 
-		/// <summary>
-		///     Number given to the client when they log-in that they provide
-		///     as credentials to the UDP server
-		/// </summary>
-		[ProtoMember (7)]
-		public uint CircuitCode;
+        /// <summary>
+        ///     Number given to the client when they log-in that they provide
+        ///     as credentials to the UDP server
+        /// </summary>
+        [ProtoMember(7)]
+        public uint CircuitCode;
 
-		/// <summary>
-		///     The real child Boolean, OpenSim always sends false, so we read this for Universe regions
-		/// </summary>
-		[ProtoMember (8)]
-		public bool IsChildAgent;
+        /// <summary>
+        ///     The real child Boolean, OpenSim always sends false, so we read this for Universe regions
+        /// </summary>
+        [ProtoMember(8)]
+        public bool IsChildAgent;
 
-		/// <summary>
-		///     Position the Agent's Avatar starts in the region
-		/// </summary>
-		[ProtoMember (9)]
-		public Vector3 StartingPosition;
+        /// <summary>
+        ///     Position the Agent's Avatar starts in the region
+        /// </summary>
+        [ProtoMember(9)]
+        public Vector3 StartingPosition;
 
-		/// <summary>
-		///     How this agent got here
-		/// </summary>
-		[ProtoMember (10)]
-		public uint TeleportFlags;
+        /// <summary>
+        ///     How this agent got here
+        /// </summary>
+        [ProtoMember(10)]
+        public uint TeleportFlags;
 
-		#endregion
+        #endregion
 
-		#region IDataTransferable
+        #region IDataTransferable
 
-		/// <summary>
-		///     Serialize the module to OSD
-		/// </summary>
-		/// <returns></returns>
-		public override OSDMap ToOSD ()
-		{
-			OSDMap args = new OSDMap ();
-			args ["AgentID"] = AgentID;
-			args ["IsChildAgent"] = IsChildAgent;
-			args ["CircuitCode"] = CircuitCode;
-			args ["SessionID"] = SessionID;
-			args ["SecureSessionID"] = SecureSessionID;
-			args ["StartingPosition"] = StartingPosition;
-			args ["IPAddress"] = IPAddress;
-			if (CachedUserInfo != null)
-				args ["CachedUserInfo"] = CachedUserInfo.ToOSD ();
-			args ["TeleportFlags"] = OSD.FromUInteger (TeleportFlags);
-			args ["RegionUDPPort"] = RegionUDPPort;
+        /// <summary>
+        ///     Serialize the module to OSD
+        /// </summary>
+        /// <returns></returns>
+        public override OSDMap ToOSD()
+        {
+            OSDMap args = new OSDMap();
+            args["AgentID"] = AgentID;
+            args["IsChildAgent"] = IsChildAgent;
+            args["CircuitCode"] = CircuitCode;
+            args["SessionID"] = SessionID;
+            args["SecureSessionID"] = SecureSessionID;
+            args["StartingPosition"] = StartingPosition;
+            args["IPAddress"] = IPAddress;
+            if (CachedUserInfo != null)
+                args["CachedUserInfo"] = CachedUserInfo.ToOSD();
+            args["TeleportFlags"] = OSD.FromUInteger(TeleportFlags);
+            args["RegionUDPPort"] = RegionUDPPort;
 
-			return args;
-		}
+            return args;
+        }
 
-		/// <summary>
-		///     Deserialize the module from OSD
-		/// </summary>
-		/// <param name="map"></param>
-		public override void FromOSD (OSDMap map)
-		{
-			AgentID = map ["AgentID"];
-			IsChildAgent = map ["IsChildAgent"];
-			CircuitCode = map ["CircuitCode"];
-			SecureSessionID = map ["SecureSessionID"];
-			SessionID = map ["SessionID"];
-			IPAddress = map ["IPAddress"];
-			RegionUDPPort = map ["RegionUDPPort"];
-			StartingPosition = map ["StartingPosition"];
-			TeleportFlags = map ["TeleportFlags"];
-			if (map.ContainsKey ("CachedUserInfo")) {
-				CachedUserInfo = new CachedUserInfo ();
-				CachedUserInfo.FromOSD ((OSDMap)map ["CachedUserInfo"]);
-			}
-		}
+        /// <summary>
+        ///     Deserialize the module from OSD
+        /// </summary>
+        /// <param name="map"></param>
+        public override void FromOSD(OSDMap map)
+        {
+            AgentID = map["AgentID"];
+            IsChildAgent = map["IsChildAgent"];
+            CircuitCode = map["CircuitCode"];
+            SecureSessionID = map["SecureSessionID"];
+            SessionID = map["SessionID"];
+            IPAddress = map["IPAddress"];
+            RegionUDPPort = map["RegionUDPPort"];
+            StartingPosition = map["StartingPosition"];
+            TeleportFlags = map["TeleportFlags"];
+            if (map.ContainsKey("CachedUserInfo"))
+            {
+                CachedUserInfo = new CachedUserInfo();
+                CachedUserInfo.FromOSD((OSDMap)map["CachedUserInfo"]);
+            }
+        }
 
-		#region oldFunctions
+        #region oldFunctions
 
-		public virtual AgentCircuitData Copy ()
-		{
-			AgentCircuitData Copy = new AgentCircuitData {
-				AgentID = AgentID,
-				IsChildAgent = IsChildAgent,
-				CircuitCode = CircuitCode,
-				IPAddress = IPAddress,
-				SecureSessionID = SecureSessionID,
-				SessionID = SessionID,
-				StartingPosition = StartingPosition,
-				TeleportFlags = TeleportFlags,
-				CachedUserInfo = CachedUserInfo
-			};
+        public virtual AgentCircuitData Copy()
+        {
+            AgentCircuitData Copy = new AgentCircuitData
+            {
+                AgentID = AgentID,
+                IsChildAgent = IsChildAgent,
+                CircuitCode = CircuitCode,
+                IPAddress = IPAddress,
+                SecureSessionID = SecureSessionID,
+                SessionID = SessionID,
+                StartingPosition = StartingPosition,
+                TeleportFlags = TeleportFlags,
+                CachedUserInfo = CachedUserInfo
+            };
 
-			return Copy;
-		}
 
-		#endregion
+            return Copy;
+        }
 
-		#endregion
-	}
+        #endregion
+
+        #endregion
+    }
 }

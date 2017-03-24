@@ -31,12 +31,10 @@ using OpenMetaverse;
 
 namespace Universe.ScriptEngine.VirtualScript.MiniModule
 {
-	public interface ISocialEntity
-	{
-		UUID GlobalID { get; }
-
-		string Name { get; }
-
-		bool IsUser { get; }
-	}
+    public interface ISocialEntity
+    {
+        UUID GlobalID { get; }
+        string Name { get; }
+        bool IsUser { get; }
+    }
 }

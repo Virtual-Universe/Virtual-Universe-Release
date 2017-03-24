@@ -28,44 +28,37 @@
  */
 
 using System;
-using OpenMetaverse;
 using Universe.Framework.SceneInfo;
+using OpenMetaverse;
 
 namespace Universe.Framework.Physics
 {
-	public interface IMesher
-	{
-		IMesh CreateMesh (String primName, PrimitiveBaseShape primShape, Vector3 size, float lod, bool isPhysical, bool shouldCache);
-	}
+    public interface IMesher
+    {
+        IMesh CreateMesh(String primName, PrimitiveBaseShape primShape, Vector3 size, float lod, bool isPhysical, bool shouldCache);
+    }
 
-	public enum LevelOfDetail
-	{
-		High = 32,
-		Medium = 16,
-		Low = 8,
-		VeryLow = 4
-	}
+    public enum LevelOfDetail
+    {
+        High = 32,
+        Medium = 16,
+        Low = 8,
+        VeryLow = 4
+    }
 
-	public interface IMesh
-	{
-		bool WasCached { get; set; }
+    public interface IMesh
+    {
+        bool WasCached { get; set; }
+        ulong Key { get; }
+        void getIndexListAsPtrToIntArray(out IntPtr indices, out int triStride, out int indexCount);
+        void getVertexListAsPtrToFloatArray(out IntPtr vertexList, out int vertexStride, out int vertexCount);
+        void releaseSourceMeshData();
+        void releasePinned();
+        Vector3 GetCentroid();
 
-		ulong Key { get; }
+        OpenMetaverse.StructuredData.OSD Serialize();
 
-		void getIndexListAsPtrToIntArray (out IntPtr indices, out int triStride, out int indexCount);
-
-		void getVertexListAsPtrToFloatArray (out IntPtr vertexList, out int vertexStride, out int vertexCount);
-
-		void releaseSourceMeshData ();
-
-		void releasePinned ();
-
-		Vector3 GetCentroid ();
-
-		OpenMetaverse.StructuredData.OSD Serialize ();
-
-		int[] getIndexListAsInt ();
-
-		float[] getVertexListAsFloat ();
-	}
+        int[] getIndexListAsInt();
+        float[] getVertexListAsFloat();
+    }
 }

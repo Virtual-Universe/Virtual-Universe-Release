@@ -34,37 +34,27 @@ using Universe.Framework.SceneInfo.Entities;
 
 namespace Universe.Framework.Modules
 {
-	public interface ICombatPresence
-	{
-		string Team { get; set; }
+    public interface ICombatPresence
+    {
+        string Team { get; set; }
+        float Health { get; set; }
+        bool HasLeftCombat { get; set; }
+        void LeaveCombat();
+        void JoinCombat();
+        List<UUID> GetTeammates();
 
-		float Health { get; set; }
+        void IncurDamage(IScenePresence killingAvatar, double damage);
+        void IncurDamage(IScenePresence killingAvatar, double damage, string RegionName, Vector3 pos, Vector3 lookat);
+        void IncurHealing(double healing);
 
-		bool HasLeftCombat { get; set; }
+        void SetStat(string StatName, float statValue);
+    }
 
-		void LeaveCombat ();
-
-		void JoinCombat ();
-
-		List<UUID> GetTeammates ();
-
-		void IncurDamage (IScenePresence killingAvatar, double damage);
-
-		void IncurDamage (IScenePresence killingAvatar, double damage, string RegionName, Vector3 pos, Vector3 lookat);
-
-		void IncurHealing (double healing);
-
-		void SetStat (string StatName, float statValue);
-	}
-
-	public interface ICombatModule
-	{
-		void AddCombatPermission (UUID AgentID);
-
-		bool CheckCombatPermission (UUID AgentID);
-
-		List<UUID> GetTeammates (string Team);
-
-		void AddDamageToPrim (ISceneEntity entity);
-	}
+    public interface ICombatModule
+    {
+        void AddCombatPermission(UUID AgentID);
+        bool CheckCombatPermission(UUID AgentID);
+        List<UUID> GetTeammates(string Team);
+        void AddDamageToPrim(ISceneEntity entity);
+    }
 }

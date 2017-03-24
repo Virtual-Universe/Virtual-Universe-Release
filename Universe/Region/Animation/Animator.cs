@@ -37,6 +37,7 @@ using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Utilities;
 
+
 namespace Universe.Region.Animation
 {
     /// <summary>
@@ -64,64 +65,59 @@ namespace Universe.Region.Animation
 
         public bool NeedsAnimationResent { get; set; }
 
-        public Animator(IScenePresence sp)
+        public Animator (IScenePresence sp)
         {
             m_scenePresence = sp;
-            IConfig animationConfig = sp.Scene.Config.Configs["Animations"];
-            if (animationConfig != null)
-            {
-                SLOWFLY_DELAY = animationConfig.GetInt("SlowFlyDelay", SLOWFLY_DELAY);
-                m_useSplatAnimation = animationConfig.GetBoolean("enableSplatAnimation", m_useSplatAnimation);
+            IConfig animationConfig = sp.Scene.Config.Configs ["Animations"];
+            if (animationConfig != null) {
+                SLOWFLY_DELAY = animationConfig.GetInt ("SlowFlyDelay", SLOWFLY_DELAY);
+                m_useSplatAnimation = animationConfig.GetBoolean ("enableSplatAnimation", m_useSplatAnimation);
             }
             //This step makes sure that we don't waste almost 2.5! seconds on incoming agents
-            m_animations = new AnimationSet(DefaultAnimations);
+            m_animations = new AnimationSet (DefaultAnimations);
         }
 
-        public static AvatarAnimations DefaultAnimations
-        {
-            get
-            {
+        public static AvatarAnimations DefaultAnimations {
+            get {
                 if (m_defaultAnimations == null)
-                    m_defaultAnimations = new AvatarAnimations();
+                    m_defaultAnimations = new AvatarAnimations ();
                 return m_defaultAnimations;
             }
         }
 
         #region IAnimator Members
 
-        public AnimationSet Animations
-        {
+        public AnimationSet Animations {
             get { return m_animations; }
         }
 
         /// <value>
         ///     The current movement animation
         /// </value>
-        public string CurrentMovementAnimation
-        {
+        public string CurrentMovementAnimation {
             get { return m_movementAnimation; }
         }
 
-        public void AddAnimation(UUID animID, UUID objectID)
+        public void AddAnimation (UUID animID, UUID objectID)
         {
             if (m_scenePresence.IsChildAgent)
                 return;
 
-            if (m_animations.Add(animID, m_scenePresence.ControllingClient.NextAnimationSequenceNumber, objectID))
-                SendAnimPack();
+            if (m_animations.Add (animID, m_scenePresence.ControllingClient.NextAnimationSequenceNumber, objectID))
+                SendAnimPack ();
         }
 
         // Called from scripts
-        public bool AddAnimation(string name, UUID objectID)
+        public bool AddAnimation (string name, UUID objectID)
         {
             if (m_scenePresence.IsChildAgent)
                 return false;
 
-            UUID animID = m_scenePresence.ControllingClient.GetDefaultAnimation(name);
+            UUID animID = m_scenePresence.ControllingClient.GetDefaultAnimation (name);
             if (animID == UUID.Zero)
                 return false;
 
-            AddAnimation(animID, objectID);
+            AddAnimation (animID, objectID);
             return true;
         }
 
@@ -129,86 +125,82 @@ namespace Universe.Region.Animation
         ///     Remove the given animation from the list of current animations
         /// </summary>
         /// <param name="animID"></param>
-        public void RemoveAnimation(UUID animID)
+        public void RemoveAnimation (UUID animID)
         {
             if (m_scenePresence.IsChildAgent)
                 return;
 
-            if (m_animations.Remove(animID))
-                SendAnimPack();
+            if (m_animations.Remove (animID))
+                SendAnimPack ();
         }
 
         /// <summary>
         ///     Remove the given animation from the list of current animations
         /// </summary>
         /// <param name="name"></param>
-        public bool RemoveAnimation(string name)
+        public bool RemoveAnimation (string name)
         {
             if (m_scenePresence.IsChildAgent)
                 return false;
 
-            UUID animID = m_scenePresence.ControllingClient.GetDefaultAnimation(name);
-            if (animID == UUID.Zero)
-            {
-                if (DefaultAnimations.AnimsUUID.ContainsKey(name.ToUpper()))
-                    animID = DefaultAnimations.AnimsUUID[name.ToUpper()];
+            UUID animID = m_scenePresence.ControllingClient.GetDefaultAnimation (name);
+            if (animID == UUID.Zero) {
+                if (DefaultAnimations.AnimsUUID.ContainsKey (name.ToUpper ()))
+                    animID = DefaultAnimations.AnimsUUID [name.ToUpper ()];
                 else
                     return false;
             }
 
-            RemoveAnimation(animID);
+            RemoveAnimation (animID);
             return true;
         }
 
         /// <summary>
         ///     Clear out all animations
         /// </summary>
-        public void ResetAnimations()
+        public void ResetAnimations ()
         {
-            m_animations.Clear();
+            m_animations.Clear ();
         }
 
         /// <summary>
         ///     The movement animation is reserved for "main" animations
         ///     that are mutually exclusive, e.g. flying and sitting.
         /// </summary>
-        public void TrySetMovementAnimation(string anim)
+        public void TrySetMovementAnimation (string anim)
         {
-            TrySetMovementAnimation(anim, false);
+            TrySetMovementAnimation (anim, false);
         }
 
         /// <summary>
         ///     The movement animation is reserved for "main" animations
         ///     that are mutually exclusive, e.g. flying and sitting.
         /// </summary>
-        public void TrySetMovementAnimation(string anim, bool sendTerseUpdateIfNotSending)
+        public void TrySetMovementAnimation (string anim, bool sendTerseUpdateIfNotSending)
         {
             //MainConsole.Instance.DebugFormat("Updating movement animation to {0}", anim);
 
             if (!m_useSplatAnimation && anim == "STANDUP")
                 anim = "LAND";
 
-            if (!m_scenePresence.IsChildAgent)
-            {
-                if (m_animations.TrySetDefaultAnimation(
-                    anim, m_scenePresence.ControllingClient.NextAnimationSequenceNumber, m_scenePresence.UUID))
-                {
+            if (!m_scenePresence.IsChildAgent) {
+                if (m_animations.TrySetDefaultAnimation (
+                    anim, m_scenePresence.ControllingClient.NextAnimationSequenceNumber, m_scenePresence.UUID)) {
                     // 16384 is CHANGED_ANIMATION
-                    IAttachmentsModule attMod = m_scenePresence.Scene.RequestModuleInterface<IAttachmentsModule>();
+                    IAttachmentsModule attMod = m_scenePresence.Scene.RequestModuleInterface<IAttachmentsModule> ();
                     if (attMod != null)
-                        attMod.SendScriptEventToAttachments(m_scenePresence.UUID, "changed",
-                                                            new object[] { (int)Changed.ANIMATION });
-                    SendAnimPack();
-                }
-                else if (sendTerseUpdateIfNotSending)
-                    m_scenePresence.SendTerseUpdateToAllClients(); //Send the terse update alone then
+                        attMod.SendScriptEventToAttachments (m_scenePresence.UUID, "changed",
+                                                            new object [] { (int)Changed.ANIMATION });
+                    SendAnimPack ();
+                } else if (sendTerseUpdateIfNotSending)
+                    m_scenePresence.SendTerseUpdateToAllClients (); //Send the terse update alone then
             }
         }
 
         /// <summary>
         ///     This method determines the proper movement related animation
         /// </summary>
-        public string GetMovementAnimation()
+        public string GetMovementAnimation ()
         {
             const float STANDUP_TIME = 2f;
             const float BRUSH_TIME = 3.5f;
@@ -217,11 +209,9 @@ namespace Universe.Region.Animation
 
             #region Inputs
 
-            if (m_scenePresence.SitGround)
-            {
+            if (m_scenePresence.SitGround) {
                 return "SIT_GROUND_CONSTRAINED";
             }
-
             var controlFlags = (AgentManager.ControlFlags)m_scenePresence.AgentControlFlags;
             PhysicsActor actor = m_scenePresence.PhysicsActor;
 
@@ -258,37 +248,26 @@ namespace Universe.Region.Animation
 
             // Direction in which the avatar is trying to move
             Vector3 move = Vector3.Zero;
-            if (heldForward)
-            {
+            if (heldForward) {
                 move.X += fwd.X;
                 move.Y += fwd.Y;
             }
-
-            if (heldBack)
-            {
+            if (heldBack) {
                 move.X -= fwd.X;
                 move.Y -= fwd.Y;
             }
-
-            if (heldLeft)
-            {
+            if (heldLeft) {
                 move.X += left.X;
                 move.Y += left.Y;
             }
-
-            if (heldRight)
-            {
+            if (heldRight) {
                 move.X -= left.X;
                 move.Y -= left.Y;
             }
-
-            if (heldUp)
-            {
+            if (heldUp) {
                 move.Z += 1;
             }
-
-            if (heldDown)
-            {
+            if (heldDown) {
                 move.Z -= 1;
             }
 
@@ -297,18 +276,15 @@ namespace Universe.Region.Animation
             if (heldTurnLeft && yawPos && !heldForward &&
                 !heldBack && actor != null && !actor.IsJumping &&
                 !actor.Flying && Util.ApproxZero(move.Z) &&
-                Util.ApproxZero(fallVelocity) && !heldUp &&
-                !heldDown && move.CompareTo(Vector3.Zero) == 0)
-            {
+                Util.ApproxZero (fallVelocity) && !heldUp &&
+                !heldDown && move.CompareTo (Vector3.Zero) == 0) {
                 return "TURNLEFT";
             }
-
             if (heldTurnRight && yawNeg && !heldForward &&
                 !heldBack && actor != null && !actor.IsJumping &&
-                !actor.Flying && Util.ApproxZero(move.Z) &&
-                Util.ApproxZero(fallVelocity) && !heldUp &&
-                !heldDown && move.CompareTo(Vector3.Zero) == 0)
-            {
+                !actor.Flying && Util.ApproxZero (move.Z) &&
+                Util.ApproxZero (fallVelocity) && !heldUp &&
+                !heldDown && move.CompareTo (Vector3.Zero) == 0) {
                 return "TURNRIGHT";
             }
 
@@ -319,10 +295,9 @@ namespace Universe.Region.Animation
 
             #region Standup
 
-            float standupElapsed = (Util.EnvironmentTickCount() - m_animTickStandup) / 1000f;
+            float standupElapsed = (Util.EnvironmentTickCount () - m_animTickStandup) / 1000f;
             if (m_scenePresence.PhysicsActor != null && standupElapsed < STANDUP_TIME &&
-                m_useSplatAnimation)
-            {
+                m_useSplatAnimation) {
                 // Falling long enough to trigger the animation
                 m_scenePresence.FallenStandUp = true;
                 m_scenePresence.PhysicsActor.Velocity = Vector3.Zero;
@@ -330,14 +305,12 @@ namespace Universe.Region.Animation
             }
 
             // need the brush off?
-            if (standupElapsed < BRUSH_TIME && m_useSplatAnimation)
-            {
+            if (standupElapsed < BRUSH_TIME && m_useSplatAnimation) {
                 m_scenePresence.FallenStandUp = true;
                 return "BRUSH";
             }
 
-            if (Util.NotZero(m_animTickStandup) || m_scenePresence.FallenStandUp)
-            {
+            if (Util.NotZero(m_animTickStandup) || m_scenePresence.FallenStandUp) {
                 m_scenePresence.FallenStandUp = false;
                 m_animTickStandup = 0;
             }
@@ -348,34 +321,29 @@ namespace Universe.Region.Animation
 
             if (actor != null &&
                 (m_scenePresence.AgentControlFlags & (uint)AgentManager.ControlFlags.AGENT_CONTROL_FLY) ==
-                (uint)AgentManager.ControlFlags.AGENT_CONTROL_FLY || m_scenePresence.ForceFly)
-            {
+                (uint)AgentManager.ControlFlags.AGENT_CONTROL_FLY || m_scenePresence.ForceFly) {
                 m_animTickWalk = 0;
                 m_animTickFall = 0;
-                if (Util.NotZero(move.X) || Util.NotZero(move.Y))
-                {
+                if (Util.NotZero(move.X) || Util.NotZero(move.Y)) {
                     // level?
-                    if (Util.NotZero(move.Z))
-                    {
+                    if (Util.NotZero(move.Z)) {
                         if (m_scenePresence.Scene.PhysicsScene.UseUnderWaterPhysics &&
-                            actor.Position.Z < m_scenePresence.Scene.RegionInfo.RegionSettings.WaterHeight)
-                        {
+                            actor.Position.Z < m_scenePresence.Scene.RegionInfo.RegionSettings.WaterHeight) {
                             return "SWIM_FORWARD";
                         }
 
                         // must be flying then
-                        if (m_timesBeforeSlowFlyIsOff < SLOWFLY_DELAY)
-                        {
+                        if (m_timesBeforeSlowFlyIsOff < SLOWFLY_DELAY) {
                             m_timesBeforeSlowFlyIsOff++;
                             return "FLYSLOW";
                         }
 
                         return "FLY";
+
                     }
 
                     // going up then...
-                    if (move.Z > 0)
-                    {
+                    if (move.Z > 0) {
                         if (m_scenePresence.Scene.PhysicsScene.UseUnderWaterPhysics &&
                             actor.Position.Z < m_scenePresence.Scene.RegionInfo.RegionSettings.WaterHeight)
                             return "SWIM_UP";
@@ -383,7 +351,6 @@ namespace Universe.Region.Animation
                         // easy does it
                         return "FLYSLOW";
                     }
-
                     if (m_scenePresence.Scene.PhysicsScene.UseUnderWaterPhysics &&
                         actor.Position.Z < m_scenePresence.Scene.RegionInfo.RegionSettings.WaterHeight)
                         return "SWIM_DOWN";
@@ -393,8 +360,7 @@ namespace Universe.Region.Animation
                 }
 
                 // moving left/right but going up as well?
-                if (move.Z > 0f)
-                {
+                if (move.Z > 0f) {
                     //This is for the slow fly timer
                     m_timesBeforeSlowFlyIsOff = 0;
                     if (m_scenePresence.Scene.PhysicsScene.UseUnderWaterPhysics &&
@@ -406,30 +372,29 @@ namespace Universe.Region.Animation
                 }
 
                 // mabye moving down then?
-                if (move.Z < 0f)
-                {
+                if (move.Z < 0f) {
                     wasLastFlying = true;
                     //This is for the slow fly timer
                     m_timesBeforeSlowFlyIsOff = 0;
                     if (m_scenePresence.Scene.PhysicsScene.UseUnderWaterPhysics &&
                         actor.Position.Z < m_scenePresence.Scene.RegionInfo.RegionSettings.WaterHeight)
                         return "SWIM_DOWN";
-
-                    ITerrainChannel channel = m_scenePresence.Scene.RequestModuleInterface<ITerrainChannel>();
-                    if (channel != null)
-                    {
+                    
+                    ITerrainChannel channel = m_scenePresence.Scene.RequestModuleInterface<ITerrainChannel> ();
+                    if (channel != null) {
                         float groundHeight =
-                            channel.GetNormalizedGroundHeight((int)m_scenePresence.AbsolutePosition.X,
+                            channel.GetNormalizedGroundHeight ((int)m_scenePresence.AbsolutePosition.X,
                                                               (int)m_scenePresence.AbsolutePosition.Y);
                         if (actor != null && (m_scenePresence.AbsolutePosition.Z - groundHeight) < 2)
                             return "LAND";
 
-                        return "HOVER_DOWN";
-                    }
+                            return "HOVER_DOWN";
+                        }
 
                     // no ground here...
                     return "HOVER_DOWN";
                 }
+
 
                 //This is for the slow fly timer
                 m_timesBeforeSlowFlyIsOff = 0;
@@ -446,13 +411,11 @@ namespace Universe.Region.Animation
 
             #region Jumping
 
-            if (actor != null && actor.IsJumping)
-            {
+            if (actor != null && actor.IsJumping) {
                 return "JUMP";
             }
 
-            if (actor != null && actor.IsPreJumping)
-            {
+            if (actor != null && actor.IsPreJumping) {
                 return "PREJUMP";
             }
 
@@ -460,13 +423,13 @@ namespace Universe.Region.Animation
 
             #region Falling/Floating/Landing
 
-            float walkElapsed = (Util.EnvironmentTickCount() - m_animTickWalk) / 1000f;
+            float walkElapsed = (Util.EnvironmentTickCount () - m_animTickWalk) / 1000f;
             if (actor != null && actor.IsPhysical && !actor.IsJumping && (!actor.IsColliding) && !actor.Flying && actor.TargetVelocity != Vector3.Zero/* && actor.Velocity.Z < -2*/ &&
                 (walkElapsed > FALL_AFTER_MOVE_TIME || Util.ApproxZero(m_animTickWalk)))//For if they user is walking off something, or they are falling
             {
                 //Always return falldown immediately as there shouldn't be a waiting period
                 if (Util.ApproxZero(m_animTickFall))
-                    m_animTickFall = Util.EnvironmentTickCount();
+                    m_animTickFall = Util.EnvironmentTickCount ();
                 return "FALLDOWN";
             }
 
@@ -474,13 +437,11 @@ namespace Universe.Region.Animation
 
             #region Ground Movement
 
-            if (m_movementAnimation == "FALLDOWN")
-            {
-                float fallElapsed = (Util.EnvironmentTickCount() - m_animTickFall) / 1000f;
+            if (m_movementAnimation == "FALLDOWN") {
+                float fallElapsed = (Util.EnvironmentTickCount () - m_animTickFall) / 1000f;
                 // soft landing?
-                if (fallElapsed < 0.75)
-                {
-                    m_animTickFall = Util.EnvironmentTickCount();
+                if (fallElapsed < 0.75) {
+                    m_animTickFall = Util.EnvironmentTickCount ();
 
                     return "SOFT_LAND";
                 }
@@ -488,21 +449,19 @@ namespace Universe.Region.Animation
                 // a bit harder then?
                 if (actor != null &&
                     (fallElapsed < 1.1 ||
-                     (Math.Abs(actor.Velocity.X) > 1 &&
-                      Math.Abs(actor.Velocity.Y) > 1 &&
+                     (Math.Abs (actor.Velocity.X) > 1 &&
+                      Math.Abs (actor.Velocity.Y) > 1 &&
                       actor.Velocity.Z < 3)
                     )
-                   )
-                {
-                    m_animTickFall = Util.EnvironmentTickCount();
+                   ) {
+                    m_animTickFall = Util.EnvironmentTickCount ();
 
                     return "LAND";
                 }
 
                 // maybe a hard one...
-                if (m_useSplatAnimation)
-                {
-                    m_animTickStandup = Util.EnvironmentTickCount();
+                if (m_useSplatAnimation) {
+                    m_animTickStandup = Util.EnvironmentTickCount ();
                     return "STANDUP";
                 }
 
@@ -511,10 +470,8 @@ namespace Universe.Region.Animation
             }
 
             // landing then
-            if (m_movementAnimation == "LAND")
-            {
-                if (actor != null && actor.Velocity.Z < 0)
-                {
+            if (m_movementAnimation == "LAND") {
+                if (actor != null && actor.Velocity.Z < 0) {
                     if (actor.Velocity.Z < SOFTLAND_FORCE)
                         return "LAND";
                     return "SOFT_LAND";
@@ -524,17 +481,15 @@ namespace Universe.Region.Animation
 
             m_animTickFall = 0;
 
-            if (move.Z <= 0f)
-            {
-                if (actor != null &&
-                    (Util.NotZero(move.X) || Util.NotZero(move.Y) ||
+            if (move.Z <= 0f) {
+                if (actor != null && 
+                    (Util.NotZero(move.X) || Util.NotZero(move.Y) || 
                      (Util.NotZero(actor.Velocity.X) && Util.NotZero(actor.Velocity.Y))
                     )
-                   )
-                {
+                   ) {
                     wasLastFlying = false;
                     if (actor.IsColliding)
-                        m_animTickWalk = Util.EnvironmentTickCount();
+                        m_animTickWalk = Util.EnvironmentTickCount ();
 
                     // Walking / crouchwalking / running
                     if (move.Z < 0f)
@@ -564,14 +519,13 @@ namespace Universe.Region.Animation
         /// <summary>
         ///     Update the movement animation of this avatar according to its current state
         /// </summary>
-        public void UpdateMovementAnimations(bool sendTerseUpdate)
+        public void UpdateMovementAnimations (bool sendTerseUpdate)
         {
             string oldanimation = m_movementAnimation;
-            m_movementAnimation = GetMovementAnimation();
-            if (NeedsAnimationResent || oldanimation != m_movementAnimation || sendTerseUpdate)
-            {
+            m_movementAnimation = GetMovementAnimation ();
+            if (NeedsAnimationResent || oldanimation != m_movementAnimation || sendTerseUpdate) {
                 NeedsAnimationResent = false;
-                TrySetMovementAnimation(m_movementAnimation, sendTerseUpdate);
+                TrySetMovementAnimation (m_movementAnimation, sendTerseUpdate);
             }
         }
 
@@ -579,12 +533,12 @@ namespace Universe.Region.Animation
         ///     Gets a list of the animations that are currently in use by this avatar
         /// </summary>
         /// <returns></returns>
-        public UUID[] GetAnimationArray()
+        public UUID [] GetAnimationArray ()
         {
-            UUID[] animIDs;
-            int[] sequenceNums;
-            UUID[] objectIDs;
-            m_animations.GetArrays(out animIDs, out sequenceNums, out objectIDs);
+            UUID [] animIDs;
+            int [] sequenceNums;
+            UUID [] objectIDs;
+            m_animations.GetArrays (out animIDs, out sequenceNums, out objectIDs);
             return animIDs;
         }
 
@@ -594,88 +548,87 @@ namespace Universe.Region.Animation
         /// <param name="animations"></param>
         /// <param name="sequenceNums"></param>
         /// <param name="objectIDs"></param>
-        public void SendAnimPack(UUID[] animations, int[] sequenceNums, UUID[] objectIDs)
+        public void SendAnimPack (UUID [] animations, int [] sequenceNums, UUID [] objectIDs)
         {
             if (m_scenePresence.IsChildAgent)
                 return;
 
-            var anims = new AnimationGroup
-            {
+            var anims = new AnimationGroup {
                 Animations = animations,
                 SequenceNums = sequenceNums,
                 ObjectIDs = objectIDs,
                 AvatarID = m_scenePresence.UUID
             };
 
-            m_scenePresence.Scene.ForEachScenePresence(presence => presence.SceneViewer.QueuePresenceForAnimationUpdate(presence, anims));
+            m_scenePresence.Scene.ForEachScenePresence (
+                presence => presence.SceneViewer.QueuePresenceForAnimationUpdate (presence, anims));
         }
 
         /// <summary>
         ///     Send an animation update to the given client
         /// </summary>
         /// <param name="client"></param>
-        public void SendAnimPackToClient(IClientAPI client)
+        public void SendAnimPackToClient (IClientAPI client)
         {
             if (m_scenePresence.IsChildAgent)
                 return;
 
-            UUID[] animations;
-            int[] sequenceNums;
-            UUID[] objectIDs;
+            UUID [] animations;
+            int [] sequenceNums;
+            UUID [] objectIDs;
 
-            m_animations.GetArrays(out animations, out sequenceNums, out objectIDs);
-            var anims = new AnimationGroup
-            {
+            m_animations.GetArrays (out animations, out sequenceNums, out objectIDs);
+            var anims = new AnimationGroup {
                 Animations = animations,
                 SequenceNums = sequenceNums,
                 ObjectIDs = objectIDs,
                 AvatarID = m_scenePresence.ControllingClient.AgentId
             };
-
-            m_scenePresence.Scene.GetScenePresence(client.AgentId).SceneViewer.QueuePresenceForAnimationUpdate(m_scenePresence, anims);
+            m_scenePresence.Scene.GetScenePresence (client.AgentId).SceneViewer.QueuePresenceForAnimationUpdate (
+                m_scenePresence, anims);
         }
 
         /// <summary>
         ///     Send animation information about this avatar to all clients.
         /// </summary>
-        public void SendAnimPack()
+        public void SendAnimPack ()
         {
             //MainConsole.Instance.Debug("Sending animation pack to all");
 
             if (m_scenePresence.IsChildAgent)
                 return;
 
-            UUID[] animIDs;
-            int[] sequenceNums;
-            UUID[] objectIDs;
+            UUID [] animIDs;
+            int [] sequenceNums;
+            UUID [] objectIDs;
 
-            m_animations.GetArrays(out animIDs, out sequenceNums, out objectIDs);
+            m_animations.GetArrays (out animIDs, out sequenceNums, out objectIDs);
 
-            SendAnimPack(animIDs, sequenceNums, objectIDs);
+            SendAnimPack (animIDs, sequenceNums, objectIDs);
         }
 
         /// <summary>
         ///     Close out and remove any current data
         /// </summary>
-        public void Close()
+        public void Close ()
         {
             m_animations = null;
             m_scenePresence = null;
         }
 
-        public void ResetDefaultAnimationOverride(string anim_state)
+        public void ResetDefaultAnimationOverride (string anim_state)
         {
-            m_animations.ResetDefaultAnimationOverride(anim_state);
+            m_animations.ResetDefaultAnimationOverride (anim_state);
         }
 
-        public void SetDefaultAnimationOverride(string anim_state, UUID animID, string animation)
+        public void SetDefaultAnimationOverride (string anim_state, UUID animID, string animation)
         {
-            m_animations.SetDefaultAnimationOverride(anim_state, animID, animation);
+            m_animations.SetDefaultAnimationOverride (anim_state, animID, animation);
         }
 
-        public string GetDefaultAnimationOverride(string anim_state)
+        public string GetDefaultAnimationOverride (string anim_state)
         {
-            return m_animations.GetDefaultAnimationOverride(anim_state);
+            return m_animations.GetDefaultAnimationOverride (anim_state);
         }
 
         #endregion

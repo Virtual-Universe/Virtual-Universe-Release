@@ -35,49 +35,43 @@ using Universe.Framework.Services.ClassHelpers.Profile;
 
 namespace Universe.Framework.DatabaseInterfaces
 {
-	public interface IRemoteProfileConnector : IProfileConnector
-	{
-		void Init (string remoteURL, IRegistryCore registry);
-	}
+    public interface IRemoteProfileConnector : IProfileConnector
+    {
+        void Init(string remoteURL, IRegistryCore registry);
+    }
 
-	public interface IProfileConnector : IUniverseDataPlugin
-	{
-		/// <summary>
-		///     Gets the profile for an agent
-		/// </summary>
-		/// <param name="agentID"></param>
-		/// <returns></returns>
-		IUserProfileInfo GetUserProfile (UUID agentID);
+    public interface IProfileConnector : IUniverseDataPlugin
+    {
+        /// <summary>
+        ///     Gets the profile for an agent
+        /// </summary>
+        /// <param name="agentID"></param>
+        /// <returns></returns>
+        IUserProfileInfo GetUserProfile(UUID agentID);
 
-		/// <summary>
-		///     Updates the user's profile (Note: the user must already have a profile created)
-		/// </summary>
-		/// <param name="Profile"></param>
-		/// <returns></returns>
-		bool UpdateUserProfile (IUserProfileInfo Profile);
+        /// <summary>
+        ///     Updates the user's profile (Note: the user must already have a profile created)
+        /// </summary>
+        /// <param name="Profile"></param>
+        /// <returns></returns>
+        bool UpdateUserProfile(IUserProfileInfo Profile);
 
-		/// <summary>
-		///     Creates an new profile for the user
-		/// </summary>
-		/// <param name="UUID"></param>
-		void CreateNewProfile (UUID UUID);
+        /// <summary>
+        ///     Creates an new profile for the user
+        /// </summary>
+        /// <param name="UUID"></param>
+        void CreateNewProfile(UUID UUID);
 
-		bool AddClassified (Classified classified);
+        bool AddClassified(Classified classified);
+        Classified GetClassified(UUID queryClassifiedID);
+        List<Classified> GetClassifieds(UUID ownerID);
+        void RemoveClassified(UUID queryClassifiedID);
 
-		Classified GetClassified (UUID queryClassifiedID);
+        bool AddPick(ProfilePickInfo pick);
+        ProfilePickInfo GetPick(UUID queryPickID);
+        List<ProfilePickInfo> GetPicks(UUID ownerID);
+        void RemovePick(UUID queryPickID);
 
-		List<Classified> GetClassifieds (UUID ownerID);
-
-		void RemoveClassified (UUID queryClassifiedID);
-
-		bool AddPick (ProfilePickInfo pick);
-
-		ProfilePickInfo GetPick (UUID queryPickID);
-
-		List<ProfilePickInfo> GetPicks (UUID ownerID);
-
-		void RemovePick (UUID queryPickID);
-
-		void ClearCache (UUID agentID);
-	}
+        void ClearCache(UUID agentID);
+    }
 }

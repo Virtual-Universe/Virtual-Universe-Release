@@ -27,90 +27,91 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System.Collections.Generic;
-using System.Linq;
-using Nini.Config;
 using Universe.Framework.Modules;
 using Universe.Framework.Servers;
 using Universe.Framework.Services;
+using Nini.Config;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Universe.Services
 {
-	/// <summary>
-	///     This is an application plugin so that it loads as it is used by many things (IService modules especially)
-	/// </summary>
-	public class ConfigurationService : IConfigurationService, IService
-	{
-		#region Declares
+    /// <summary>
+    ///     This is an application plugin so that it loads as it is used by many things (IService modules especially)
+    /// </summary>
+    public class ConfigurationService : IConfigurationService, IService
+    {
+        #region Declares
 
-		protected Dictionary<string, string> m_urls = new Dictionary<string, string> ();
-		protected IConfigSource m_config;
+        protected Dictionary<string, string> m_urls = new Dictionary<string, string>();
+        protected IConfigSource m_config;
 
-		#endregion
+        #endregion
 
-		public virtual string Name {
-			get { return GetType ().Name; }
-		}
+        public virtual string Name
+        {
+            get { return GetType().Name; }
+        }
 
-		#region IConfigurationService Members
+        #region IConfigurationService Members
 
-		public string FindValueOf (string key)
-		{
-			if (m_urls.ContainsKey (key))
-				return m_urls [key];
-			return "";
-		}
+        public string FindValueOf(string key)
+        {
+            if(m_urls.ContainsKey(key))
+                return m_urls[key];
+             return "";
+        }
 
-		public Dictionary<string, string> GetURIs ()
-		{
-			return new Dictionary<string, string> (m_urls);
-		}
+        public Dictionary<string, string> GetURIs()
+        {
+            return new Dictionary<string, string>(m_urls);
+        }
 
-		public void SetURIs (Dictionary<string, List<string>> uris)
-		{
-			m_urls = new Dictionary<string,string> ();
-			if (uris == null)
-				return;
-			foreach (KeyValuePair<string, List<string>> kvp in uris)
-				m_urls.Add (kvp.Key, kvp.Value [0]);
-		}
+        public void SetURIs(Dictionary<string, List<string>> uris)
+        {
+            m_urls = new Dictionary<string,string>();
+            if (uris == null)
+                return;
+            foreach(KeyValuePair<string, List<string>> kvp in uris)
+                m_urls.Add(kvp.Key, kvp.Value[0]);
+        }
 
-		#endregion
+        #endregion
 
-		public void Dispose ()
-		{
-		}
+        public void Dispose()
+        {
+        }
 
-		protected void FindConfiguration (IConfig autoConfig)
-		{
-			if (autoConfig == null)
-				return;
+        protected void FindConfiguration(IConfig autoConfig)
+        {
+            if (autoConfig == null)
+                return;
 
-			//Get the urls from the config
-			foreach (string key in m_config.Configs["Configuration"].GetKeys().Where((k) => k.EndsWith("URI")))
-				m_urls [key] = m_config.Configs ["Configuration"].GetString (key).Replace ("ServersHostname", MainServer.Instance.HostName);
-		}
+            //Get the urls from the config
+            foreach (string key in m_config.Configs["Configuration"].GetKeys().Where((k) => k.EndsWith("URI")))
+                m_urls[key] = m_config.Configs["Configuration"].GetString(key).Replace("ServersHostname", MainServer.Instance.HostName);
+        }
 
-		public void Initialize (IConfigSource config, IRegistryCore registry)
-		{
-			m_config = config;
+        public void Initialize(IConfigSource config, IRegistryCore registry)
+        {
+            m_config = config;
 
-			IConfig handlerConfig = m_config.Configs ["Handlers"];
-			if (handlerConfig.GetString ("ConfigurationHandler", "") != Name)
-				return;
+            IConfig handlerConfig = m_config.Configs["Handlers"];
+            if (handlerConfig.GetString("ConfigurationHandler", "") != Name)
+                return;
 
-			//Register us
-			registry.RegisterModuleInterface<IConfigurationService> (this);
+            //Register us
+            registry.RegisterModuleInterface<IConfigurationService>(this);
 
-			FindConfiguration (m_config.Configs ["Configuration"]);
-		}
+            FindConfiguration(m_config.Configs["Configuration"]);
+        }
 
-		public void Start (IConfigSource config, IRegistryCore registry)
-		{
-		}
+        public void Start(IConfigSource config, IRegistryCore registry)
+        {
+        }
 
-		public void FinishedStartup ()
-		{
-		}
-	}
+        public void FinishedStartup()
+        {
+        }
+    }
 }

@@ -32,50 +32,50 @@ using Universe.Framework.SceneInfo;
 
 namespace Universe.Modules.Monitoring.Monitors
 {
-	public class SleepFrameMonitor : ISleepFrameMonitor
-	{
-		int SleepFrame;
+    public class SleepFrameMonitor : ISleepFrameMonitor
+    {
+        int SleepFrame;
 
-		public SleepFrameMonitor (IScene scene)
-		{
-		}
+        public SleepFrameMonitor (IScene scene)
+        {
+        }
 
-		#region Implementation of IMonitor
+        #region Implementation of IMonitor
 
-		public double GetValue ()
-		{
-			return SleepFrame;
-		}
+        public double GetValue ()
+        {
+            return SleepFrame;
+        }
 
-		public string GetName ()
-		{
-			return "Sleep Frame Time";
-		}
+        public string GetName ()
+        {
+            return "Sleep Frame Time";
+        }
 
-		public string GetInterfaceName ()
-		{
-			return "ISleepFrameMonitor";
-		}
+        public string GetInterfaceName ()
+        {
+            return "ISleepFrameMonitor";
+        }
 
-		public string GetFriendlyValue ()
-		{
-			return GetValue () + "ms";
-		}
+        public string GetFriendlyValue ()
+        {
+            return GetValue () + "ms";
+        }
 
-		#endregion
+        #endregion
 
-		#region ITimeMonitor Members
+        #region ITimeMonitor Members
 
-		public void AddTime (int value)
-		{
-			SleepFrame += value;
-		}
+        public void AddTime (int value)
+        {
+            SleepFrame += value;
+        }
 
-		public void ResetStats ()
-		{
-			SleepFrame = 0;
-		}
+        public void ResetStats ()
+        {
+            SleepFrame = 0;
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

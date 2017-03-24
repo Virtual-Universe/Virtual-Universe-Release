@@ -32,39 +32,39 @@ using Universe.Framework.Modules;
 
 namespace Universe.Modules.Terrain.FloodBrushes
 {
-	public class FlattenArea : ITerrainFloodEffect
-	{
-		#region ITerrainFloodEffect Members
+    public class FlattenArea : ITerrainFloodEffect
+    {
+        #region ITerrainFloodEffect Members
 
-		public void FloodEffect (ITerrainChannel map, UUID userID, float north,
-		                               float west, float south, float east, float strength)
-		{
-			float sum = 0;
-			float steps = 0;
+        public void FloodEffect (ITerrainChannel map, UUID userID, float north,
+                                float west, float south, float east, float strength)
+        {
+            float sum = 0;
+            float steps = 0;
 
-			int x, y;
-			for (x = (int)west; x < (int)east; x++) {
-				for (y = (int)south; y < (int)north; y++) {
-					if (!map.Scene.Permissions.CanTerraformLand (userID, new Vector3 (x, y, 0)))
-						continue;
-					sum += map [x, y];
-					steps += 1;
-				}
-			}
+            int x, y;
+            for (x = (int)west; x < (int)east; x++) {
+                for (y = (int)south; y < (int)north; y++) {
+                    if (!map.Scene.Permissions.CanTerraformLand (userID, new Vector3 (x, y, 0)))
+                        continue;
+                    sum += map [x, y];
+                    steps += 1;
+                }
+            }
 
-			float avg = sum / steps;
+            float avg = sum / steps;
 
-			float str = 0.1f * strength; // == 0.2 in the default client
+            float str = 0.1f * strength; // == 0.2 in the default client
 
-			for (x = (int)west; x < (int)east; x++) {
-				for (y = (int)south; y < (int)north; y++) {
-					if (!map.Scene.Permissions.CanTerraformLand (userID, new Vector3 (x, y, 0)))
-						continue;
-					map [x, y] = (map [x, y] * (1 - str)) + (avg * str);
-				}
-			}
-		}
+            for (x = (int)west; x < (int)east; x++) {
+                for (y = (int)south; y < (int)north; y++) {
+                    if (!map.Scene.Permissions.CanTerraformLand (userID, new Vector3 (x, y, 0)))
+                        continue;
+                    map [x, y] = (map [x, y] * (1 - str)) + (avg * str);
+                }
+            }
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

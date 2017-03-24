@@ -31,12 +31,11 @@ using Universe.Framework.ClientInterfaces;
 
 namespace Universe.Framework.Modules
 {
-	public interface IEnvironmentSettingsModule
-	{
-		WindlightDayCycle GetCurrentDayCycle ();
+    public interface IEnvironmentSettingsModule
+    {
+        WindlightDayCycle GetCurrentDayCycle();
+        void TriggerWindlightUpdate(int interpolate);
 
-		void TriggerWindlightUpdate (int interpolate);
-
-		void SetDayCycle (WindlightDayCycle cycle);
-	}
+        void SetDayCycle(WindlightDayCycle cycle);
+    }
 }

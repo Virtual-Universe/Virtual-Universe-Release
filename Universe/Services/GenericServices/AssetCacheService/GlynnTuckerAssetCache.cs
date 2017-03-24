@@ -37,127 +37,131 @@ using Universe.Framework.Services.ClassHelpers.Assets;
 
 namespace Universe.Services
 {
-	public class GlynnTuckerAssetCache : IService, IImprovedAssetCache
-	{
-		#region Declares
+    public class GlynnTuckerAssetCache : IService, IImprovedAssetCache
+    {
+        #region Declares
 
-		ICache m_Cache;
-		uint m_DebugRate;
-		ulong m_Hits;
-		ulong m_Requests;
+        ICache m_Cache;
+        uint m_DebugRate;
+        ulong m_Hits;
+        ulong m_Requests;
 
-		// Instrumentation
+        // Instrumentation
 
-		public string Name {
-			get { return "GlynnTuckerAssetCache"; }
-		}
+        public string Name
+        {
+            get { return "GlynnTuckerAssetCache"; }
+        }
 
-		#endregion
+        #endregion
 
-		#region IService Members
+        #region IService Members
 
-		public void Initialize (IConfigSource config, IRegistryCore registry)
-		{
-			IConfig moduleConfig = config.Configs ["Modules"];
+        public void Initialize(IConfigSource config, IRegistryCore registry)
+        {
+            IConfig moduleConfig = config.Configs["Modules"];
 
-			if (moduleConfig != null) {
-				string name = moduleConfig.GetString ("AssetCaching");
-				//MainConsole.Instance.DebugFormat("[ASSET CACHE] name = {0} (this module's name: {1}). Sync? ", name, Name, m_Cache.IsSynchronized);
+            if (moduleConfig != null)
+            {
+                string name = moduleConfig.GetString("AssetCaching");
+                //MainConsole.Instance.DebugFormat("[ASSET CACHE] name = {0} (this module's name: {1}). Sync? ", name, Name, m_Cache.IsSynchronized);
 
-				if (name == Name) {
-					m_Cache = new SimpleMemoryCache ();
+                if (name == Name)
+                {
+                    m_Cache = new SimpleMemoryCache();
 
-					MainConsole.Instance.Info ("[ASSET CACHE]: GlynnTucker asset cache enabled");
+                    MainConsole.Instance.Info("[ASSET CACHE]: GlynnTucker asset cache enabled");
 
-					// Instrumentation
-					IConfig cacheConfig = config.Configs ["AssetCache"];
-					if (cacheConfig != null)
-						m_DebugRate = (uint)cacheConfig.GetInt ("DebugRate", 0);
-					registry.RegisterModuleInterface<IImprovedAssetCache> (this);
-				}
-			}
-		}
+                    // Instrumentation
+                    IConfig cacheConfig = config.Configs["AssetCache"];
+                    if (cacheConfig != null)
+                        m_DebugRate = (uint) cacheConfig.GetInt("DebugRate", 0);
+                    registry.RegisterModuleInterface<IImprovedAssetCache>(this);
+                }
+            }
+        }
 
-		public void Start (IConfigSource config, IRegistryCore registry)
-		{
-		}
+        public void Start(IConfigSource config, IRegistryCore registry)
+        {
+        }
 
-		public void FinishedStartup ()
-		{
-		}
+        public void FinishedStartup()
+        {
+        }
 
-		#endregion
+        #endregion
 
-		#region IImprovedAssetCache
+        #region IImprovedAssetCache
 
-		////////////////////////////////////////////////////////////
-		// IImprovedAssetCache
-		//
+        ////////////////////////////////////////////////////////////
+        // IImprovedAssetCache
+        //
 
-		public void Cache (string assetID, AssetBase asset)
-		{
-			if (asset != null)
-				m_Cache.AddOrUpdate (asset.IDString, asset);
-		}
+        public void Cache(string assetID, AssetBase asset)
+        {
+            if (asset != null)
+                m_Cache.AddOrUpdate(asset.IDString, asset);
+        }
 
-		public void CacheData (string assetID, byte[] asset)
-		{
-		}
+        public void CacheData(string assetID, byte[] asset)
+        {
+        }
 
-		public AssetBase Get (string id)
-		{
-			bool found;
-			return Get (id, out found);
-		}
+        public AssetBase Get(string id)
+        {
+            bool found;
+            return Get(id, out found);
+        }
 
-		public AssetBase Get (string id, out bool found)
-		{
-			Object asset = null;
-			m_Cache.TryGet (id, out asset);
-			found = asset != null;
-			Debug (asset);
+        public AssetBase Get(string id, out bool found)
+        {
+            Object asset = null;
+            m_Cache.TryGet(id, out asset);
+            found = asset != null;
+            Debug(asset);
 
-			return (AssetBase)asset;
-		}
+            return (AssetBase) asset;
+        }
 
-		public byte[] GetData (string id, out bool found)
-		{
-			found = false;
-			return null;
-		}
+        public byte[] GetData(string id, out bool found)
+        {
+            found = false;
+            return null;
+        }
 
-		public void Expire (string id)
-		{
-			Object asset = null;
-			if (m_Cache.TryGet (id, out asset))
-				m_Cache.Remove (id);
-		}
+        public void Expire(string id)
+        {
+            Object asset = null;
+            if (m_Cache.TryGet(id, out asset))
+                m_Cache.Remove(id);
+        }
 
-		public void Clear ()
-		{
-			m_Cache.Clear ();
-		}
+        public void Clear()
+        {
+            m_Cache.Clear();
+        }
 
-		public bool Contains (string id)
-		{
-			return m_Cache.Contains (id);
-		}
+        public bool Contains(string id)
+        {
+            return m_Cache.Contains(id);
+        }
 
-		private void Debug (Object asset)
-		{
-			// Temporary instrumentation to measure the hit/miss rate
-			if (m_DebugRate > 0) {
-				++m_Requests;
-				if (asset != null)
-					++m_Hits;
+        private void Debug(Object asset)
+        {
+            // Temporary instrumentation to measure the hit/miss rate
+            if (m_DebugRate > 0)
+            {
+                ++m_Requests;
+                if (asset != null)
+                    ++m_Hits;
 
-				if ((m_Requests % m_DebugRate) == 0)
-					MainConsole.Instance.DebugFormat ("[ASSET CACHE]: Hit Rate {0} / {1} == {2}%", m_Hits, m_Requests,
-						(m_Hits / (float)m_Requests) * 100.0f);
-			}
-			// End instrumentation
-		}
+                if ((m_Requests%m_DebugRate) == 0)
+                    MainConsole.Instance.DebugFormat("[ASSET CACHE]: Hit Rate {0} / {1} == {2}%", m_Hits, m_Requests,
+                                                     (m_Hits/(float) m_Requests)*100.0f);
+            }
+            // End instrumentation
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

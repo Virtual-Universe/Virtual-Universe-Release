@@ -32,27 +32,27 @@ using OpenMetaverse;
 
 namespace Universe.Framework.ClientInterfaces
 {
-	public class OfflineMessage
-	{
-		public string Message;
-		public UUID ToUUID;
+    public class OfflineMessage
+    {
+        public string Message;
+        public UUID ToUUID;
 
-		public OfflineMessage ()
-		{
-		}
+        public OfflineMessage()
+        {
+        }
 
-		public OfflineMessage (Dictionary<string, object> KVP)
-		{
-			ToUUID = new UUID (KVP ["ToUUID"].ToString ());
-			Message = KVP ["Message"].ToString ();
-		}
+        public OfflineMessage(Dictionary<string, object> KVP)
+        {
+            ToUUID = new UUID(KVP["ToUUID"].ToString());
+            Message = KVP["Message"].ToString();
+        }
 
-		public Dictionary<string, object> ToKeyValuePairs ()
-		{
-			Dictionary<string, object> RetVal = new Dictionary<string, object> ();
-			RetVal ["Message"] = Message;
-			RetVal ["ToUUID"] = ToUUID;
-			return RetVal;
-		}
-	}
+        public Dictionary<string, object> ToKeyValuePairs()
+        {
+            Dictionary<string, object> RetVal = new Dictionary<string, object>();
+            RetVal["Message"] = Message;
+            RetVal["ToUUID"] = ToUUID;
+            return RetVal;
+        }
+    }
 }

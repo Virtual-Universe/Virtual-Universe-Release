@@ -28,15 +28,14 @@
  */
 
 using System.Drawing;
-using Nini.Config;
 using Universe.Framework.SceneInfo;
+using Nini.Config;
 
 namespace Universe.Framework.Modules
 {
-	public interface IMapTileTerrainRenderer
-	{
-		void Initialize (IScene scene, IConfigSource config);
-
-		Bitmap TerrainToBitmap (Bitmap mapbmp);
-	}
+    public interface IMapTileTerrainRenderer
+    {
+        void Initialize(IScene scene, IConfigSource config);
+        Bitmap TerrainToBitmap(Bitmap mapbmp);
+    }
 }

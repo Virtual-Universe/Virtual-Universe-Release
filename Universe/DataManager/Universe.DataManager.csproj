@@ -108,21 +108,6 @@
 		<HintPath>..\..\VirtualUniverse\bin\Nini.dll</HintPath>
 		<Private>False</Private>
 	  </Reference>
-	  <Reference Include="OpenMetaverse" >
-		  <Name>OpenMetaverse</Name>
-		<HintPath>..\..\VirtualUniverse\bin\OpenMetaverse.dll</HintPath>
-		<Private>False</Private>
-	  </Reference>
-	  <Reference Include="OpenMetaverse.StructuredData" >
-		  <Name>OpenMetaverse.StructuredData</Name>
-		<HintPath>..\..\VirtualUniverse\bin\OpenMetaverse.StructuredData.dll</HintPath>
-		<Private>False</Private>
-	  </Reference>
-	  <Reference Include="OpenMetaverseTypes" >
-		  <Name>OpenMetaverseTypes</Name>
-		<HintPath>..\..\VirtualUniverse\bin\OpenMetaverseTypes.dll</HintPath>
-		<Private>False</Private>
-	  </Reference>
 	  <Reference Include="System" >
 		  <Name>System</Name>
 		<Private>False</Private>
@@ -141,6 +126,24 @@
 	  </Reference>
 	</ItemGroup>
 	<ItemGroup>
+	  <ProjectReference Include="..\..\Virtual-LibOMV\OpenMetaverse\OpenMetaverse.csproj">
+		<Name>OpenMetaverse</Name>
+		<Project>{8B693884-0000-0000-0000-000000000000}</Project>
+		<Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
+		<Private>False</Private>
+	  </ProjectReference>
+	  <ProjectReference Include="..\..\Virtual-LibOMV\OpenMetaverse.StructuredData\OpenMetaverse.StructuredData.csproj">
+		<Name>OpenMetaverse.StructuredData</Name>
+		<Project>{C2C78869-0000-0000-0000-000000000000}</Project>
+		<Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
+		<Private>False</Private>
+	  </ProjectReference>
+	  <ProjectReference Include="..\..\Virtual-LibOMV\OpenMetaverseTypes\OpenMetaverseTypes.csproj">
+		<Name>OpenMetaverseTypes</Name>
+		<Project>{6C8DAE41-0000-0000-0000-000000000000}</Project>
+		<Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
+		<Private>False</Private>
+	  </ProjectReference>
 	  <ProjectReference Include="..\Framework\Universe.Framework.csproj">
 		<Name>Universe.Framework</Name>
 		<Project>{4042F657-0000-0000-0000-000000000000}</Project>
@@ -173,12 +176,6 @@
 	  <Compile Include="Migration\Migrators\AbuseReports\AbuseReportsMigrator_0.cs">
 		<SubType>Code</SubType>
 	  </Compile>
-	  <Compile Include="Migration\Migrators\AbuseReports\AbuseReportsMigrator_1.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="Migration\Migrators\AbuseReports\AbuseReportsMigrator_2.cs">
-		<SubType>Code</SubType>
-	  </Compile>
 	  <Compile Include="Migration\Migrators\Agent\AgentMigrator_0.cs">
 		<SubType>Code</SubType>
 	  </Compile>
@@ -206,9 +203,6 @@
 	  <Compile Include="Migration\Migrators\Generics\GenericsMigrator_0.cs">
 		<SubType>Code</SubType>
 	  </Compile>
-	  <Compile Include="Migration\Migrators\GridPlanet\GridPlanetMigrator_0.cs">
-		<SubType>Code</SubType>
-	  </Compile>
 	  <Compile Include="Migration\Migrators\GridRegion\GridRegionMigrator_0.cs">
 		<SubType>Code</SubType>
 	  </Compile>
@@ -221,7 +215,7 @@
 	  <Compile Include="Migration\Migrators\Parcel\ParcelMigrator_0.cs">
 		<SubType>Code</SubType>
 	  </Compile>
-	  <Compile Include="Migration\Migrators\Planet\PlanetMigrator_0.cs">
+	  <Compile Include="Migration\Migrators\PresenceInfo\PresenceInfoMigrator_0.cs">
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="Migration\Migrators\Region\RegionMigrator_0.cs">
@@ -230,16 +224,13 @@
 	  <Compile Include="Migration\Migrators\Scheduler\SchedulerMigrator_0.cs">
 		<SubType>Code</SubType>
 	  </Compile>
-	  <Compile Include="Migration\Migrators\SolarSystem\SolarSystemMigrator_0.cs">
-		<SubType>Code</SubType>
-	  </Compile>
 	  <Compile Include="Migration\Migrators\Stats\StatsMigrator_0.cs">
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="Migration\Migrators\UserAccounts\UserAccountsMigrator_0.cs">
 		<SubType>Code</SubType>
 	  </Compile>
-	  <Compile Include="Migration\Migrators\UserInfo\UserInfoMigrator_0.cs">
+	  <Compile Include="Migration\Migrators\UserInfo\UserInfosMigrator_0.cs">
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="Properties\AssemblyInfo.cs">

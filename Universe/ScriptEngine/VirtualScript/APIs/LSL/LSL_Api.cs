@@ -75,9 +75,9 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
     public class LSL_Api : MarshalByRefObject, IScriptApi
     {
         const double DoubleDifference = .0000005;
-        static bool FloatAlmostEqual(LSL_Float valA, LSL_Float valB)
+        static bool FloatAlmostEqual (LSL_Float valA, LSL_Float valB)
         {
-            return Math.Abs(valA - valB) <= DoubleDifference;
+            return Math.Abs (valA - valB) <= DoubleDifference;
         }
 
         protected IScriptModulePlugin m_ScriptEngine;
@@ -294,9 +294,9 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
         /// </summary>
         public void llResetScript()
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
-
+            
             if (m_UrlModule != null)
             {
                 m_UrlModule.ScriptRemoved(m_itemID);
@@ -306,9 +306,9 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llResetOtherScript(string name)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
-
+            
             UUID item;
             if ((item = ScriptByName(name)) != UUID.Zero)
                 m_ScriptEngine.ResetScript(m_host.UUID, item, false);
@@ -321,7 +321,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
         {
             if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
                 return new LSL_Integer();
-
+            
             UUID item;
             if ((item = ScriptByName(name)) != UUID.Zero)
             {
@@ -346,7 +346,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llSetScriptState(string name, int run)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             // These functions are supposed to be robust,
@@ -479,7 +479,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             IEntity target = m_host.ParentEntity.GetLinkNumPart(linkType);
             if (target == null)
                 return new List<IEntity>();
-
+            
             ret = new List<IEntity> { target };
 
             return ret;
@@ -618,7 +618,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
         {
             if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
                 return new LSL_Integer();
-
+    
             // changed to replicate LSL behaviour whereby minimum int value is returned untouched.
             if (i == int.MinValue)
                 return i;
@@ -637,7 +637,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
         {
             if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
                 return new LSL_Float();
-
+            
             return Util.RandomClass.NextDouble() * mag;
         }
 
@@ -714,7 +714,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             double m = (t.x + t.y + t.z + t.s);
             if (FloatAlmostEqual(m, 0))
                 return new LSL_Vector();
-
+            
             double n = 2 * (r.y * r.s + r.x * r.z);
             double p = m * m - n * n;
             if (p > 0)
@@ -822,7 +822,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                     (up.x + fwd.z) * s,
                     (left.z - up.y) * s);
             }
-            if (FloatAlmostEqual(max, left.y))
+            if (FloatAlmostEqual(max,left.y))
             {
                 s = Math.Sqrt(left.y - (up.z + fwd.x) + 1.0);
                 double y = s * 0.5;
@@ -977,7 +977,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                     rotBetween.s = rotBetween.s / mag;
                     // Check for undefined values and set zero rotation if any found. This code might not actually be required
                     // any longer since zero vectors are checked for at the top.
-                    if (double.IsNaN(rotBetween.x) || double.IsNaN(rotBetween.y) ||
+                    if (double.IsNaN(rotBetween.x) || double.IsNaN(rotBetween.y) || 
                         double.IsNaN(rotBetween.z) || double.IsNaN(rotBetween.s))
                     {
                         rotBetween = new LSL_Rotation(0.0f, 0.0f, 0.0f, 1.0f);
@@ -1007,7 +1007,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llSay(int channelID, object m_text)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             string text = m_text.ToString();
@@ -1034,7 +1034,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llShout(int channelID, string text)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             if (text.Length > 1023)
@@ -1051,15 +1051,15 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llRegionSay(int channelID, string text)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
-
+            
             if (text.Length > 1023)
                 text = text.Substring(0, 1023);
 
             if (channelID == 0) //0 isn't normally allowed, so check against a higher threat level
-                if (!ScriptProtection.CheckThreatLevel(ThreatLevel.Moderate, "LSL", m_host, "LSL", m_itemID))
-                    return;
+                if (!ScriptProtection.CheckThreatLevel(ThreatLevel.Moderate, "LSL", m_host, "LSL", m_itemID)) 
+                return;
 
             IChatModule chatModule = World.RequestModuleInterface<IChatModule>();
             if (chatModule != null)
@@ -1111,7 +1111,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llListenControl(int number, int active)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             if (m_comms != null)
@@ -1120,7 +1120,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llListenRemove(int number)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             if (m_comms != null)
@@ -1129,7 +1129,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llSensor(string name, string id, int type, double range, double arc)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             UUID keyID = UUID.Zero;
@@ -1140,7 +1140,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llSensorRepeat(string name, string id, int type, double range, double arc, double rate)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             UUID keyID = UUID.Zero;
@@ -1152,7 +1152,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llSensorRemove()
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             SensorRepeatPlugin sensorPlugin = (SensorRepeatPlugin)m_ScriptEngine.GetScriptPlugin("SensorRepeat");
@@ -1387,7 +1387,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public virtual void llDie()
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             throw new SelfDeleteException();
@@ -1625,7 +1625,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llSetScale(LSL_Vector scale)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             SetScale(m_host, scale);
@@ -1691,7 +1691,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llSetClickAction(int action)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             m_host.ClickAction = (byte)action;
@@ -1700,7 +1700,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llSetColor(LSL_Vector color, int face)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             m_host.SetFaceColor(new Vector3((float)color.x, (float)color.y, (float)color.z), face);
@@ -1859,7 +1859,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llSetAlpha(double alpha, int face)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
 
@@ -1868,7 +1868,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llSetLinkAlpha(int linknumber, double alpha, int face)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
 
@@ -1985,22 +1985,22 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                 if (part.Shape.LightEntry != true)
                     same = false;
                 part.Shape.LightEntry = true;
-                if (!FloatAlmostEqual(part.Shape.LightColorR, Util.Clip((float)color.x, 0.0f, 1.0f)))
+                if (!FloatAlmostEqual (part.Shape.LightColorR, Util.Clip((float)color.x, 0.0f, 1.0f)))
                     same = false;
                 part.Shape.LightColorR = Util.Clip((float)color.x, 0.0f, 1.0f);
-                if (!FloatAlmostEqual(part.Shape.LightColorG, Util.Clip((float)color.y, 0.0f, 1.0f)))
+                if (!FloatAlmostEqual (part.Shape.LightColorG, Util.Clip((float)color.y, 0.0f, 1.0f)))
                     same = false;
                 part.Shape.LightColorG = Util.Clip((float)color.y, 0.0f, 1.0f);
-                if (!FloatAlmostEqual(part.Shape.LightColorB, Util.Clip((float)color.z, 0.0f, 1.0f)))
+                if (!FloatAlmostEqual (part.Shape.LightColorB, Util.Clip((float)color.z, 0.0f, 1.0f)))
                     same = false;
                 part.Shape.LightColorB = Util.Clip((float)color.z, 0.0f, 1.0f);
-                if (!FloatAlmostEqual(part.Shape.LightIntensity, intensity))
+                if (!FloatAlmostEqual (part.Shape.LightIntensity, intensity))
                     same = false;
                 part.Shape.LightIntensity = intensity;
                 if (!FloatAlmostEqual(part.Shape.LightRadius, radius))
                     same = false;
                 part.Shape.LightRadius = radius;
-                if (!FloatAlmostEqual(part.Shape.LightFalloff, falloff))
+                if (!FloatAlmostEqual (part.Shape.LightFalloff, falloff))
                     same = false;
                 part.Shape.LightFalloff = falloff;
             }
@@ -2493,7 +2493,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llSetForce(LSL_Vector force, int local)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             if (m_host.ParentEntity != null)
@@ -2531,7 +2531,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_Integer llTarget(LSL_Vector position, LSL_Float range)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return 0;
 
             return m_host.registerTargetWaypoint(
@@ -2540,7 +2540,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llTargetRemove(int number)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             m_host.unregisterTargetWaypoint(number);
@@ -2548,7 +2548,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_Integer llRotTarget(LSL_Rotation rot, double error)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return 0;
 
             return
@@ -2558,7 +2558,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llRotTargetRemove(int number)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             m_host.unregisterRotTargetWaypoint(number);
@@ -2566,7 +2566,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llMoveToTarget(LSL_Vector target, double tau)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             m_host.MoveToTarget(new Vector3((float)target.x, (float)target.y, (float)target.z), (float)tau);
@@ -2574,7 +2574,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llStopMoveToTarget()
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             m_host.StopMoveToTarget();
@@ -2582,7 +2582,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llApplyImpulse(LSL_Vector force, int local)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             //No energy force yet
@@ -2598,7 +2598,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llApplyRotationalImpulse(LSL_Vector force, int local)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             m_host.ApplyAngularImpulse(new Vector3((float)force.x, (float)force.y, (float)force.z), local != 0);
@@ -2606,7 +2606,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llSetTorque(LSL_Vector torque, int local)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             m_host.SetAngularImpulse(new Vector3((float)torque.x, (float)torque.y, (float)torque.z), local != 0);
@@ -2623,7 +2623,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llSetForceAndTorque(LSL_Vector force, LSL_Vector torque, int local)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             llSetForce(force, local);
@@ -2642,7 +2642,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llSetVelocity(LSL_Vector force, LSL_Integer local)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
             Vector3 velocity = new Vector3((float)force.x, (float)force.y, (float)force.z);
             if (local == 1)
@@ -2660,7 +2660,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llSetAngularVelocity(LSL_Vector force, LSL_Integer local)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
             Vector3 rotvelocity = new Vector3((float)force.x, (float)force.y, (float)force.z);
             if (local == 1)
@@ -2719,7 +2719,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llResetTime()
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             m_timer = Util.GetTimeStampMS();
@@ -2738,7 +2738,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llSound(string sound, double volume, int queue, int loop)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             // This function has been deprecated
@@ -2755,7 +2755,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
         // 20080530 Updated to remove code duplication
         public void llPlaySound(string sound, double volume)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
 
@@ -2773,7 +2773,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
         // 20080530 Stop sound if there is one, otherwise volume only changes don't work
         public void llLoopSound(string sound, double volume)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             if (m_host.Sound == KeyOrName(sound, AssetType.Sound, true))
@@ -2793,7 +2793,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llLoopSoundMaster(string sound, double volume)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             lock (m_host.ParentEntity.LoopSoundSlavePrims)
@@ -2829,7 +2829,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llLoopSoundSlave(string sound, double volume)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             lock (m_host.ParentEntity.LoopSoundSlavePrims)
@@ -2842,7 +2842,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llPlaySoundSlave(string sound, double volume)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
 
@@ -2862,7 +2862,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                             m_host.OwnerID,
                             (float)(FloatAlmostEqual(m_host.SoundGain, 0) ? 1.0 : m_host.SoundGain),
                             (byte)(SoundFlags.Queue | SoundFlags.SyncMaster));
-
+                        
                         sp.ControllingClient.SendPlayAttachedSound(
                             part.Sound,
                             part.UUID,
@@ -2880,7 +2880,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llTriggerSound(string sound, double volume)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             // send the sound, once, to all clients in range
@@ -2890,7 +2890,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
         // Xantor 20080528: Clear prim data of sound instead
         public void llStopSound()
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             m_host.AdjustSoundGain(0);
@@ -3311,29 +3311,26 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                                                            m_host.UUID, isRezAtRoot);
                         if (new_group == null)
                             continue;
-
-                        new_group.OnFinishedPhysicalRepresentationBuilding +=
-                            delegate ()
-                            {
-                                //Do this after the physics engine has built the prim
-                                float groupmass = new_group.GetMass();
-                                //Recoil to the av
-                                if (m_host.IsAttachment &&
-                                    doRecoil &&
-                                    (new_group.RootChild.Flags & PrimFlags.Physics) == PrimFlags.Physics)
-                                {
-                                    IScenePresence SP = m_host.ParentEntity.Scene.GetScenePresence(m_host.OwnerID);
-                                    if (SP != null)
-                                    {
-                                        //Push the av backwards (For every action, there is an equal, but opposite reaction)
-                                        Vector3 impulse = llvel * groupmass;
-                                        impulse.X = impulse.X < 1 ? impulse.X : impulse.X > -1 ? impulse.X : -1;
-                                        impulse.Y = impulse.Y < 1 ? impulse.Y : impulse.Y > -1 ? impulse.Y : -1;
-                                        impulse.Z = impulse.Z < 1 ? impulse.Z : impulse.Z > -1 ? impulse.Z : -1;
-                                        SP.PushForce(impulse);
-                                    }
+                        
+                        new_group.OnFinishedPhysicalRepresentationBuilding += 
+                            delegate() {
+                            //Do this after the physics engine has built the prim
+                            float groupmass = new_group.GetMass();
+                            //Recoil to the av
+                            if (m_host.IsAttachment && 
+                                doRecoil && 
+                                (new_group.RootChild.Flags & PrimFlags.Physics) == PrimFlags.Physics) {
+                                IScenePresence SP = m_host.ParentEntity.Scene.GetScenePresence(m_host.OwnerID);
+                                if (SP != null) {
+                                    //Push the av backwards (For every action, there is an equal, but opposite reaction)
+                                    Vector3 impulse = llvel * groupmass;
+                                    impulse.X = impulse.X < 1 ? impulse.X : impulse.X > -1 ? impulse.X : -1;
+                                    impulse.Y = impulse.Y < 1 ? impulse.Y : impulse.Y > -1 ? impulse.Y : -1;
+                                    impulse.Z = impulse.Z < 1 ? impulse.Z : impulse.Z > -1 ? impulse.Z : -1;
+                                    SP.PushForce(impulse);
                                 }
-                            };
+                            }
+                        };
 
                         // If there was an unknown error.
                         if (new_group.RootChild == null)
@@ -3468,20 +3465,19 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                     World.SceneGraph.AddPrimToScene(group);
                     if ((group.RootChild.Flags & PrimFlags.Physics) == PrimFlags.Physics)
                     {
-                        group.RootChild.PhysActor.OnPhysicalRepresentationChanged +=
-                            delegate
-                            {
-                                float groupmass = group.GetMass();
-                                //Apply the velocity to the object
-                                //llApplyImpulse(new LSL_Vector(llvel.X * groupmass, llvel.Y * groupmass, llvel.Z * groupmass), 0);
-                                // @Above: Err.... no. Read http://lslwiki.net/lslwiki/wakka.php?wakka=llRezObject
-                                //    Notice the "Creates ("rezzes") object's inventory object centered at position pos (in region coordinates) with velocity vel"
-                                //    This means SET the velocity to X, not just temperarily add it!
-                                //   -- Revolution Smythe
-                                llSetForce(new LSL_Vector(vel * groupmass), 0);
-                                group.RootChild.PhysActor.ForceSetVelocity(vel * groupmass);
-                                group.RootChild.PhysActor.Velocity = vel * groupmass;
-                            };
+                        group.RootChild.PhysActor.OnPhysicalRepresentationChanged += 
+                            delegate {
+                            float groupmass = group.GetMass();
+                            //Apply the velocity to the object
+                            //llApplyImpulse(new LSL_Vector(llvel.X * groupmass, llvel.Y * groupmass, llvel.Z * groupmass), 0);
+                            // @Above: Err.... no. Read http://lslwiki.net/lslwiki/wakka.php?wakka=llRezObject
+                            //    Notice the "Creates ("rezzes") object's inventory object centered at position pos (in region coordinates) with velocity vel"
+                            //    This means SET the velocity to X, not just temperarily add it!
+                            //   -- Revolution Smythe
+                            llSetForce( new LSL_Vector(vel * groupmass), 0);
+                            group.RootChild.PhysActor.ForceSetVelocity(vel * groupmass);
+                            group.RootChild.PhysActor.Velocity = vel * groupmass;
+                        };
                     }
 
                     group.CreateScriptInstances(param, true, StateSource.ScriptedRez, RezzedFrom, false);
@@ -3508,7 +3504,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llLookAt(LSL_Vector target, double strength, double damping)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             LookAt(target, strength, damping, m_host);
@@ -3518,7 +3514,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
         // This function is unknown on the SL Wiki
         public void llLinkLookAt(LSL_Integer link, LSL_Vector target, double strength, double damping)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             List<ISceneChildEntity> parts = GetLinkParts(link);
@@ -3531,34 +3527,34 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
         {
             // Determine where we are looking from
             LSL_Vector from = new LSL_Vector(obj.GetWorldPosition());
-
-            // The following code bit was written by Dahlia 
-            // from the Opensimulator Core Team. Thank you for fixing this issue
-
-            // normalized direction to target
+			
+			// The following code bit was written by Dahlia 
+			// from the Opensimulator Core Team. Thank you for fixing this issue
+			
+			// normalized direction to target
             LSL_Vector dir = llVecNorm(target - from);
-
-            // use vertical to help compute left axis
+            
+			// use vertical to help compute left axis
             LSL_Vector up = new LSL_Vector(0.0, 0.0, 1.0);
-
-            // find normalized left axis parallel to horizon
+            
+			// find normalized left axis parallel to horizon
             LSL_Vector left = llVecNorm(LSL_Vector.Cross(up, dir));
-
-            // make up orthogonal to left and direction
+            
+			// make up orthogonal to left and direction
             up = LSL_Vector.Cross(dir, left);
-
-            // compute rotation based on orthogonal axes
+            
+			// compute rotation based on orthogonal axes
             LSL_Rotation rot = new LSL_Rotation(0.0, 0.707107, 0.0, 0.707107) * llAxes2Rot(dir, left, up);
-
-            // End codebit
-
+			
+			// End codebit
+            	
             //If the strength is 0, or we are non-physical, set the rotation
             if (FloatAlmostEqual(strength, 0) || obj.PhysActor == null || !obj.PhysActor.IsPhysical)
                 SetLinkRot(obj, rot);
             else
                 obj.startLookAt(Rot2Quaternion(rot), (float)strength, (float)damping);
         }
-
+        
         public void llRotLookAt(LSL_Rotation target, double strength, double damping)
         {
             if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
@@ -3584,7 +3580,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llStopLookAt()
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             m_host.StopLookAt();
@@ -3625,8 +3621,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                         return obj.GetMass();
                     // the object is null so the key is for an avatar
                     IScenePresence avatar = World.GetScenePresence(key);
-                    if (avatar != null)
-                    {
+                    if (avatar != null) {
                         if (avatar.IsChildAgent)
                             // reference http://www.lslwiki.net/lslwiki/wakka.php?wakka=llGetObjectMass
                             // child agents have a mass of 1.0
@@ -3673,7 +3668,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
         {
             if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
                 return;
-
+            
             TaskInventoryItem item;
 
             lock (m_host.TaskInventory)
@@ -3701,9 +3696,9 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llReleaseControls()
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
-
+            
             TaskInventoryItem item;
 
             lock (m_host.TaskInventory)
@@ -3735,7 +3730,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llReleaseURL(string url)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             if (m_UrlModule != null)
@@ -3753,7 +3748,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             if (attachmentsModule != null)
                 return attachmentsModule.AttachObjectFromInworldObject(m_localID, presence.ControllingClient,
                                                                        m_host.ParentEntity, attachmentPoint, temp);
-
+            
             return false;
         }
 
@@ -3779,7 +3774,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llAttachToAvatarTemp(int attachmentPoint)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             if (m_host.ParentEntity.RootChild.AttachmentPoint != 0)
@@ -3811,7 +3806,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llAttachToAvatar(int attachmentPoint)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
 
@@ -3838,7 +3833,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llDetachFromAvatar()
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             if (m_host.ParentEntity.RootChild.AttachmentPoint == 0)
@@ -3862,7 +3857,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llTakeCamera(string avatar)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             Deprecated("llTakeCamera", "Use llSetCameraParams instead");
@@ -3870,7 +3865,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llReleaseCamera(string avatar)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             Deprecated("llReleaseCamera", "Use llClearCameraParams instead");
@@ -3899,13 +3894,13 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             UUID friendTransactionID = UUID.Random();
 
             GridInstantMessage msg = new GridInstantMessage
-            {
-                FromAgentID = m_host.UUID,
-                ToAgentID = UUID.Parse(user),
-                SessionID = friendTransactionID,
-                FromAgentName = m_host.Name,
-                RegionID = m_host.ParentEntity.Scene.RegionInfo.RegionID
-            };
+                                         {
+                                             FromAgentID = m_host.UUID,
+                                             ToAgentID = UUID.Parse(user),
+                                             SessionID = friendTransactionID,
+                                             FromAgentName = m_host.Name,
+                                             RegionID = m_host.ParentEntity.Scene.RegionInfo.RegionID
+                                         };
 
             // This is the item we're mucking with here
 
@@ -3967,8 +3962,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                 m_host.UUID,
                 address,
                 subject,
-                email =>
-                {
+                email => {
                     if (email == null)
                         return;
 
@@ -4074,7 +4068,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llStartAnimation(string anim)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
 
@@ -4122,7 +4116,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llStopAnimation(string anim)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
 
@@ -4180,15 +4174,17 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llPointAt(LSL_Vector pos)
         {
+            Deprecated("The function llPointAt, has been depreciated!");
         }
 
         public void llStopPointAt()
         {
+            Deprecated("The function llStopPointAt, has been depreciated!");
         }
 
         public void llTargetOmega(LSL_Vector axis, LSL_Float spinrate, LSL_Float gain)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             m_host.OmegaAxis = new Vector3((float)axis.x, (float)axis.y, (float)axis.z);
@@ -4205,7 +4201,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_Integer llGetStartParameter()
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return 0;
 
             return m_ScriptEngine.GetStartParameter(m_itemID, m_host.UUID);
@@ -4223,7 +4219,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                     byte[] asset = World.AssetService.GetData(inventory);
                     if (asset == null)
                         return;
-
+                    
                     ISceneEntity group
                         = SceneEntitySerializer.SceneObjectSerializer.FromOriginalXmlFormat(UUID.Zero,
                                                                                             Utils.BytesToString(asset),
@@ -4263,7 +4259,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llRequestPermissions(string agent, int perm)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
             UUID agentID = new UUID();
 
@@ -4292,8 +4288,8 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                 m_ScriptEngine.PostScriptEvent(
                     m_itemID,
                     m_host.UUID,
-                    new EventParams("run_time_permissions",
-                                    new object[] { new LSL_Integer(0) },
+                    new EventParams( "run_time_permissions",
+                                    new object[] { new LSL_Integer (0) },
                                     new DetectParams[0]),
                     EventPriority.FirstStart
                 );
@@ -4325,8 +4321,8 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                     m_ScriptEngine.PostScriptEvent(
                         m_itemID,
                         m_host.UUID,
-                        new EventParams("run_time_permissions",
-                                        new object[] { new LSL_Integer(perm) },
+                        new EventParams( "run_time_permissions",
+                                        new object[]{new LSL_Integer(perm)},
                                         new DetectParams[0]),
                         EventPriority.FirstStart
                     );
@@ -4354,7 +4350,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                         m_itemID,
                         m_host.UUID,
                         new EventParams("run_time_permissions",
-                                        new object[] { new LSL_Integer(perm) },
+                                        new object[]{new LSL_Integer(perm)},
                                         new DetectParams[0]),
                         EventPriority.FirstStart
                     );
@@ -4373,29 +4369,25 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
                 // If permissions are being requested from an NPC bot and were not implicitly granted above then
                 // auto grant all requested permissions if the script is owned by the NPC or the NPCs owner
-                var botMgr = World.RequestModuleInterface<IBotManager>();
-                if (botMgr != null && botMgr.IsNpcAgent(agentID))
-                {
-                    if (botMgr.CheckPermission(agentID, m_host.OwnerID))
-                    {
-
-                        lock (m_host.TaskInventory)
-                        {
-                            m_host.TaskInventory[invItemID].PermsGranter = agentID;
-                            m_host.TaskInventory[invItemID].PermsMask = 0;
+                var botMgr = World.RequestModuleInterface<IBotManager> ();
+                if (botMgr != null && botMgr.IsNpcAgent (agentID)) {
+                    if (botMgr.CheckPermission (agentID, m_host.OwnerID)) {
+                        
+                        lock (m_host.TaskInventory) {
+                            m_host.TaskInventory [invItemID].PermsGranter = agentID;
+                            m_host.TaskInventory [invItemID].PermsMask = 0;
                         }
 
-                        m_ScriptEngine.PostScriptEvent(
-                        m_itemID,
-                        m_host.UUID,
-                        new EventParams(
-                        "run_time_permissions",
-                        new object[] { new LSL_Integer(perm) },
-                        new DetectParams[0]),
-                        EventPriority.FirstStart
-                                                );
+                        m_ScriptEngine.PostScriptEvent (
+                            m_itemID,
+                            m_host.UUID,
+                            new EventParams (
+                                "run_time_permissions",
+                                new object [] { new LSL_Integer (perm) },
+                                new DetectParams [0]),
+                                EventPriority.FirstStart
+                        );
                     }
-
                     // it is an NPC, exit even if the permissions werent granted above, they are not going to answer
                     // the question!
                     return;
@@ -4427,7 +4419,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                 m_itemID,
                 m_host.UUID,
                 new EventParams("run_time_permissions",
-                                new object[] { new LSL_Integer(0) },
+                                new object[]{new LSL_Integer(0)},
                                 new DetectParams[0]),
                 EventPriority.FirstStart
             );
@@ -4458,7 +4450,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                 m_itemID
                 , m_host.UUID,
                 new EventParams("run_time_permissions",
-                                new object[] { new LSL_Integer(answer) },
+                                new object[]{new LSL_Integer(answer)},
                                 new DetectParams[0]),
                 EventPriority.FirstStart
             );
@@ -4518,7 +4510,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llSetLinkColor(int linknumber, LSL_Vector color, int face)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             List<ISceneChildEntity> parts = GetLinkParts(linknumber);
@@ -4590,7 +4582,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llBreakLink(int linknum)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             UUID invItemID = InventorySelf();
@@ -4681,7 +4673,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llBreakAllLinks()
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             ISceneEntity parentPrim = m_host.ParentEntity;
@@ -4702,7 +4694,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_String llGetLinkKey(int linknum)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return "";
 
             IEntity target = m_host.ParentEntity.GetLinkNumPart(linknum);
@@ -4739,7 +4731,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
         /// </summary>
         public LSL_String llGetLinkName(int linknum)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return "";
 
 
@@ -4784,7 +4776,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_String llGetInventoryName(int type, int number)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return "";
 
             ArrayList keys = new ArrayList();
@@ -4878,20 +4870,20 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                 Array.Copy(objBytes, 0, bucket, 1, 16);
 
                 GridInstantMessage msg = new GridInstantMessage()
-                {
-                    FromAgentID = m_host.UUID,
-                    FromAgentName = m_host.Name + ", an object owned by " +
+                    {
+                        FromAgentID = m_host.UUID,
+                        FromAgentName = m_host.Name + ", an object owned by " +
                                                                               resolveName(m_host.OwnerID) + ",",
-                    ToAgentID = destId,
-                    Dialog = (byte)InstantMessageDialog.InventoryOffered,
-                    Message = objName + "'\n'" + m_host.Name + "' is located at " + m_host.AbsolutePosition +
+                        ToAgentID = destId,
+                        Dialog = (byte)InstantMessageDialog.InventoryOffered,
+                        Message = objName + "'\n'" + m_host.Name + "' is located at " + m_host.AbsolutePosition + 
                                                            " in '" + World.RegionInfo.RegionName,
-                    SessionID = agentItem.ID,
-                    Offline = 1,
-                    Position = m_host.AbsolutePosition,
-                    BinaryBucket = bucket,
-                    RegionID = m_host.ParentEntity.Scene.RegionInfo.RegionID
-                };
+                        SessionID = agentItem.ID,
+                        Offline = 1,
+                        Position = m_host.AbsolutePosition,
+                        BinaryBucket = bucket,
+                        RegionID = m_host.ParentEntity.Scene.RegionInfo.RegionID
+                    };
 
                 if (m_TransferModule != null)
                     m_TransferModule.SendInstantMessage(msg);
@@ -4908,7 +4900,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llRemoveInventory(string name)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
 
@@ -4950,7 +4942,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llPassTouches(int pass)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             m_host.PassTouch = pass;
@@ -4958,7 +4950,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_Key llRequestAgentData(string id, int data)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return "";
 
             UUID uuid = (UUID)id;
@@ -5044,7 +5036,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_Key llRequestInventoryData(string name)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return "";
 
 
@@ -5066,7 +5058,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                         0);
 
                     World.AssetService.Get(item.AssetID.ToString(), this,
-                                           delegate (string i, object sender, AssetBase a)
+                                           delegate(string i, object sender, AssetBase a)
                                            {
                                                AssetLandmark lm = new AssetLandmark(a);
 
@@ -5089,7 +5081,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llSetDamage(double damage)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             m_host.ParentEntity.Damage = (float)damage;
@@ -5162,7 +5154,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llModifyLand(int action, int brush)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             ITerrainModule tm = World.RequestModuleInterface<ITerrainModule>();
@@ -5174,7 +5166,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llCollisionSound(string impact_sound, double impact_volume)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             m_host.CollisionSound = KeyOrName(impact_sound, AssetType.Sound, true);
@@ -5183,7 +5175,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llCollisionSprite(string impact_sprite)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             // Since this is broken in SL, we can do this however we want, until they fix it.
@@ -5193,7 +5185,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
         public LSL_String llGetAnimation(string id)
         {
             // This should only return a value if the avatar is in the same region
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return "";
 
             UUID avatar = (UUID)id;
@@ -5216,7 +5208,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llMessageLinked(int linknumber, int num, string msg, string id)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
 
@@ -5240,7 +5232,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llPushObject(string target, LSL_Vector impulse, LSL_Vector ang_impulse, int local)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             bool pushAllowed = false;
@@ -5402,7 +5394,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llPassCollisions(int pass)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             m_host.PassCollisions = pass;
@@ -5412,7 +5404,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
         {
             string result = string.Empty;
 
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return "";
 
 
@@ -5433,7 +5425,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_Integer llGetNumberOfSides()
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return 0;
 
 
@@ -5621,7 +5613,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llAllowInventoryDrop(int add)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
 
@@ -5715,15 +5707,15 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_Integer llSubStringIndex(string source, string pattern)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return 0;
 
-            return source.IndexOf(pattern, StringComparison.Ordinal);
+            return source.IndexOf (pattern, StringComparison.Ordinal);
         }
 
         public LSL_String llGetOwnerKey(string id)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return "";
 
             UUID key = new UUID();
@@ -5768,7 +5760,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_Integer llGetListLength(LSL_List src)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return 0;
 
 
@@ -5781,7 +5773,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_Integer llList2Integer(LSL_List src, int index)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return 0;
 
             if (index < 0)
@@ -5845,7 +5837,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_String llList2String(LSL_List src, int index)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return "";
 
             if (index < 0)
@@ -5930,7 +5922,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_Integer llGetListEntryType(LSL_List src, int index)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return 0;
 
             if (index < 0)
@@ -5975,7 +5967,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             string ret = string.Empty;
             int x = 0;
 
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return "";
 
 
@@ -6212,13 +6204,13 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_Integer llGetRegionAgentCount()
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return 0;
-
+            
             IEntityCountModule entityCountModule = World.RequestModuleInterface<IEntityCountModule>();
             if (entityCountModule != null)
                 return new LSL_Integer(entityCountModule.RootAgents);
-
+            
             return new LSL_Integer(0);
         }
 
@@ -6280,7 +6272,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             int index = -1;
             int length = src.Length - test.Length + 1;
 
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return 0;
 
             // If either list is empty, do not match
@@ -6309,7 +6301,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_String llGetObjectName()
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return "";
 
             return m_host.Name ?? string.Empty;
@@ -6317,7 +6309,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llSetObjectName(string name)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             m_host.Name = name ?? string.Empty;
@@ -6325,7 +6317,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_String llGetDate()
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return "";
 
             DateTime date = DateTime.Now.ToUniversalTime();
@@ -6335,9 +6327,9 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_Integer llEdgeOfWorld(LSL_Vector pos, LSL_Vector dir)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return 0;
-
+            
             // edge will be used to pass the Region Coordinates offset
             // we want to check for a neighboring sim
             LSL_Vector edge = new LSL_Vector(0, 0, 0);
@@ -6402,12 +6394,12 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
         /// </summary>
         public LSL_Integer llGetAgentInfo(string id)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return 0;
 
 
             UUID key = new UUID();
-            if (!UUID.TryParse(id, out key))
+            if (!UUID.TryParse (id, out key))
                 return 0;
 
             int flags = 0;
@@ -6422,7 +6414,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             // note: in OpenSim, sitting seems to cancel AGENT_ALWAYS_RUN, unlike SL
             if (agent.SetAlwaysRun)
                 flags |= ScriptBaseClass.AGENT_ALWAYS_RUN;
-
+            
             IAttachmentsModule attachMod = World.RequestModuleInterface<IAttachmentsModule>();
             if (attachMod != null)
             {
@@ -6496,7 +6488,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_String llGetAgentLanguage(string id)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return "";
 
             IAgentConnector agentFrontend = Framework.Utilities.DataManager.RequestPlugin<IAgentConnector>();
@@ -6563,26 +6555,19 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             }
 
             World.ForEachScenePresence(
-                delegate (IScenePresence ssp)
-                {
+                delegate(IScenePresence ssp) {
                     // Gods are not listed in SL
-                    if (!ssp.IsDeleted && FloatAlmostEqual(ssp.GodLevel, 0.0) && !ssp.IsChildAgent)
-                    {
-                        if (!regionWide)
-                        {
+                    if (!ssp.IsDeleted && FloatAlmostEqual(ssp.GodLevel, 0.0) && !ssp.IsChildAgent) {
+                        if (!regionWide) {
                             pos = ssp.AbsolutePosition;
                             IParcelManagementModule parcelManagement = World.RequestModuleInterface<IParcelManagementModule>();
                             ILandObject land = parcelManagement.GetLandObject(pos.X, pos.Y);
-                            if (land != null)
-                            {
-                                if (parcelOwned && land.LandData.OwnerID == id || parcel && land.LandData.GlobalID == id)
-                                {
+                            if (land != null) {
+                                if (parcelOwned && land.LandData.OwnerID == id || parcel && land.LandData.GlobalID == id) {
                                     result.Add(ssp.UUID.ToString());
                                 }
                             }
-                        }
-                        else
-                        {
+                        } else {
                             result.Add(ssp.UUID.ToString());
                         }
                     }
@@ -6608,7 +6593,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llSetSoundQueueing(int queue)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             m_host.SetSoundQueueing(queue);
@@ -6616,7 +6601,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llSetSoundRadius(double radius)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             m_host.SoundRadius = radius;
@@ -6624,7 +6609,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_String llGetDisplayName(string id)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return "";
 
             UUID key = new UUID();
@@ -6644,7 +6629,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_String llGetUsername(string id)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return "";
 
             UUID key = new UUID();
@@ -6660,7 +6645,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_String llKey2Name(string id)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return "";
 
             UUID key = new UUID();
@@ -6682,7 +6667,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llSetTextureAnim(int mode, int face, int sizex, int sizey, double start, double length, double rate)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
 
@@ -6703,8 +6688,8 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
         private void SetTextureAnim(ISceneChildEntity part, int mode, int face, int sizex, int sizey, double start,
                                     double length, double rate)
         {
-            Primitive.TextureAnimation pTexAnim =
-                new Primitive.TextureAnimation { Flags = (Primitive.TextureAnimMode)mode };
+            Primitive.TextureAnimation pTexAnim = 
+                new Primitive.TextureAnimation { Flags = (Primitive.TextureAnimMode) mode };
 
             //ALL_SIDES
             if (face == ScriptBaseClass.ALL_SIDES)
@@ -6724,7 +6709,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
         public void llTriggerSoundLimited(string sound, double volume, LSL_Vector top_north_east,
                                           LSL_Vector bottom_south_west)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             double radius1 = (float)llVecDist(llGetPos(), top_north_east);
@@ -6804,7 +6789,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_String llGetLandOwnerAt(LSL_Vector pos)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return "";
 
             IParcelManagementModule parcelManagement = World.RequestModuleInterface<IParcelManagementModule>();
@@ -6862,7 +6847,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llUnSit(string id)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
 
@@ -6919,11 +6904,11 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             //Plug the x,y coordinates of the slope normal into the equation of the plane to get
             //the height of that point on the plane.  The resulting vector gives the slope.
             Vector3 vsl = new Vector3
-            {
-                X = (float)vsn.x,
-                Y = (float)vsn.y,
-                Z = (float)(((vsn.x * vsn.x) + (vsn.y * vsn.y)) / (-1 * vsn.z))
-            };
+                              {
+                                  X = (float)vsn.x,
+                                  Y = (float)vsn.y,
+                                  Z = (float)(((vsn.x * vsn.x) + (vsn.y * vsn.y)) / (-1 * vsn.z))
+                              };
             vsl.Normalize();
             //Normalization might be overkill here
 
@@ -6975,11 +6960,11 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
             //Find the cross product of the vectors (the slope normal).
             Vector3 vsn = new Vector3
-            {
-                X = (v0.Y * v1.Z) - (v0.Z * v1.Y),
-                Y = (v0.Z * v1.X) - (v0.X * v1.Z),
-                Z = (v0.X * v1.Y) - (v0.Y * v1.X)
-            };
+                              {
+                                  X = (v0.Y * v1.Z) - (v0.Z * v1.Y),
+                                  Y = (v0.Z * v1.X) - (v0.X * v1.Z),
+                                  Z = (v0.X * v1.Y) - (v0.Y * v1.X)
+                              };
             vsn.Normalize();
             //I believe the crossproduct of two normalized vectors is a normalized vector so
             //this normalization may be overkill
@@ -7004,33 +6989,33 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
             return m_host.ParentEntity.RootChild.AttachmentPoint;
         }
-
+        
         public LSL_List llGetAttachedList(string id)
         {
             if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
                 return new LSL_List();
-
+            
             IScenePresence av = World.GetScenePresence((UUID)id);
-
+            
             if (av == null || av.IsDeleted)
-                return new LSL_List("NOT FOUND");
+            	return new LSL_List("NOT FOUND");
             if (av.IsChildAgent || av.IsInTransit)
-                return new LSL_List("NOT ON REGION");
-
+            	return new LSL_List("NOT ON REGION");
+            
             LSL_List AttachmentsList = new LSL_List();
-
+            
             IAttachmentsModule attachMod = World.RequestModuleInterface<IAttachmentsModule>();
             if (attachMod != null)
             {
                 ISceneEntity[] Attachments = attachMod.GetAttachmentsForAvatar(av.UUID);
                 foreach (ISceneEntity Attachment in Attachments)
                 {
-                    AttachmentsList.Add(new LSL_Key(Attachment.UUID.ToString()));
+                	AttachmentsList.Add(new LSL_Key(Attachment.UUID.ToString()));
                 }
             }
             return AttachmentsList;
         }
-
+        
         public LSL_Integer llGetFreeMemory()
         {
             if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
@@ -7166,23 +7151,23 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
         protected Primitive.ParticleSystem getNewParticleSystemWithSLDefaultValues()
         {
             Primitive.ParticleSystem ps = new Primitive.ParticleSystem
-            {
-                PartStartColor = new Color4(1.0f, 1.0f, 1.0f, 1.0f),
-                PartEndColor = new Color4(1.0f, 1.0f, 1.0f, 1.0f),
-                PartStartScaleX = 1.0f,
-                PartStartScaleY = 1.0f,
-                PartEndScaleX = 1.0f,
-                PartEndScaleY = 1.0f,
-                BurstSpeedMin = 1.0f,
-                BurstSpeedMax = 1.0f,
-                BurstRate = 0.1f,
-                PartMaxAge = 10.0f,
-                BurstPartCount = 1,
-                BlendFuncSource = (byte)((int)ScriptBaseClass.PSYS_PART_BF_SOURCE_ALPHA),
-                BlendFuncDest = (byte)((int)ScriptBaseClass.PSYS_PART_BF_ONE_MINUS_SOURCE_ALPHA),
-                PartStartGlow = 0.0f,
-                PartEndGlow = 0.0f
-            };
+                                              {
+                                                  PartStartColor = new Color4(1.0f, 1.0f, 1.0f, 1.0f),
+                                                  PartEndColor = new Color4(1.0f, 1.0f, 1.0f, 1.0f),
+                                                  PartStartScaleX = 1.0f,
+                                                  PartStartScaleY = 1.0f,
+                                                  PartEndScaleX = 1.0f,
+                                                  PartEndScaleY = 1.0f,
+                                                  BurstSpeedMin = 1.0f,
+                                                  BurstSpeedMax = 1.0f,
+                                                  BurstRate = 0.1f,
+                                                  PartMaxAge = 10.0f,
+                                                  BurstPartCount = 1,
+                                                  BlendFuncSource = (byte)((int)ScriptBaseClass.PSYS_PART_BF_SOURCE_ALPHA),
+                                                  BlendFuncDest = (byte)((int)ScriptBaseClass.PSYS_PART_BF_ONE_MINUS_SOURCE_ALPHA),
+                                                  PartStartGlow = 0.0f,
+                                                  PartEndGlow = 0.0f
+                                              };
 
             // TODO find out about the other defaults and add them here
             return ps;
@@ -7190,7 +7175,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llLinkParticleSystem(int linknumber, LSL_List rules)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
 
@@ -7204,7 +7189,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llParticleSystem(LSL_List rules)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             SetParticleSystem(m_host, rules);
@@ -7225,185 +7210,185 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
                 for (int i = 0; i < rules.Length; i += 2)
                 {
-                    LSL_Integer rule = rules.GetLSLIntegerItem(i);
-                    if (rule == (int)ScriptBaseClass.PSYS_PART_FLAGS)
-                    {
-                        prules.PartDataFlags =
-                            (Primitive.ParticleSystem.ParticleDataFlags)(uint)rules.GetLSLIntegerItem(i + 1);
-                    }
+                        LSL_Integer rule = rules.GetLSLIntegerItem(i);
+                        if (rule == (int)ScriptBaseClass.PSYS_PART_FLAGS)
+                        {
+                            prules.PartDataFlags =
+                                (Primitive.ParticleSystem.ParticleDataFlags)(uint)rules.GetLSLIntegerItem(i + 1);
+                        }
 
-                    else if (rule == (int)ScriptBaseClass.PSYS_PART_START_COLOR)
-                    {
-                        tempv = rules.GetVector3Item(i + 1);
-                        prules.PartStartColor.R = (float)tempv.x;
-                        prules.PartStartColor.G = (float)tempv.y;
-                        prules.PartStartColor.B = (float)tempv.z;
-                    }
+                        else if (rule == (int)ScriptBaseClass.PSYS_PART_START_COLOR)
+                        {
+                            tempv = rules.GetVector3Item(i + 1);
+                            prules.PartStartColor.R = (float)tempv.x;
+                            prules.PartStartColor.G = (float)tempv.y;
+                            prules.PartStartColor.B = (float)tempv.z;
+                        }
 
-                    else if (rule == (int)ScriptBaseClass.PSYS_PART_START_ALPHA)
-                    {
-                        tempf = (float)rules.GetLSLFloatItem(i + 1);
-                        prules.PartStartColor.A = tempf;
-                    }
+                        else if (rule == (int)ScriptBaseClass.PSYS_PART_START_ALPHA)
+                        {
+                            tempf = (float)rules.GetLSLFloatItem(i + 1);
+                            prules.PartStartColor.A = tempf;
+                        }
 
-                    else if (rule == (int)ScriptBaseClass.PSYS_PART_END_COLOR)
-                    {
-                        tempv = rules.GetVector3Item(i + 1);
-                        prules.PartEndColor.R = (float)tempv.x;
-                        prules.PartEndColor.G = (float)tempv.y;
-                        prules.PartEndColor.B = (float)tempv.z;
-                    }
+                        else if (rule == (int)ScriptBaseClass.PSYS_PART_END_COLOR)
+                        {
+                            tempv = rules.GetVector3Item(i + 1);
+                            prules.PartEndColor.R = (float)tempv.x;
+                            prules.PartEndColor.G = (float)tempv.y;
+                            prules.PartEndColor.B = (float)tempv.z;
+                        }
 
-                    else if (rule == (int)ScriptBaseClass.PSYS_PART_END_ALPHA)
-                    {
-                        tempf = (float)rules.GetLSLFloatItem(i + 1);
-                        prules.PartEndColor.A = tempf;
-                    }
+                        else if (rule == (int)ScriptBaseClass.PSYS_PART_END_ALPHA)
+                        {
+                            tempf = (float)rules.GetLSLFloatItem(i + 1);
+                            prules.PartEndColor.A = tempf;
+                        }
 
-                    else if (rule == (int)ScriptBaseClass.PSYS_PART_START_SCALE)
-                    {
-                        tempv = rules.GetVector3Item(i + 1);
-                        prules.PartStartScaleX = (float)tempv.x;
-                        prules.PartStartScaleY = (float)tempv.y;
-                    }
+                        else if (rule == (int)ScriptBaseClass.PSYS_PART_START_SCALE)
+                        {
+                            tempv = rules.GetVector3Item(i + 1);
+                            prules.PartStartScaleX = (float)tempv.x;
+                            prules.PartStartScaleY = (float)tempv.y;
+                        }
 
-                    else if (rule == (int)ScriptBaseClass.PSYS_PART_END_SCALE)
-                    {
-                        tempv = rules.GetVector3Item(i + 1);
-                        prules.PartEndScaleX = (float)tempv.x;
-                        prules.PartEndScaleY = (float)tempv.y;
-                    }
+                        else if (rule == (int)ScriptBaseClass.PSYS_PART_END_SCALE)
+                        {
+                            tempv = rules.GetVector3Item(i + 1);
+                            prules.PartEndScaleX = (float)tempv.x;
+                            prules.PartEndScaleY = (float)tempv.y;
+                        }
 
-                    else if (rule == (int)ScriptBaseClass.PSYS_PART_MAX_AGE)
-                    {
-                        tempf = (float)rules.GetLSLFloatItem(i + 1);
-                        prules.PartMaxAge = tempf;
-                    }
+                        else if (rule == (int)ScriptBaseClass.PSYS_PART_MAX_AGE)
+                        {
+                            tempf = (float)rules.GetLSLFloatItem(i + 1);
+                            prules.PartMaxAge = tempf;
+                        }
 
-                    else if (rule == (int)ScriptBaseClass.PSYS_SRC_ACCEL)
-                    {
-                        tempv = rules.GetVector3Item(i + 1);
-                        prules.PartAcceleration.X = (float)tempv.x;
-                        prules.PartAcceleration.Y = (float)tempv.y;
-                        prules.PartAcceleration.Z = (float)tempv.z;
-                    }
+                        else if (rule == (int)ScriptBaseClass.PSYS_SRC_ACCEL)
+                        {
+                            tempv = rules.GetVector3Item(i + 1);
+                            prules.PartAcceleration.X = (float)tempv.x;
+                            prules.PartAcceleration.Y = (float)tempv.y;
+                            prules.PartAcceleration.Z = (float)tempv.z;
+                        }
 
-                    else if (rule == (int)ScriptBaseClass.PSYS_SRC_PATTERN)
-                    {
-                        tmpi = rules.GetLSLIntegerItem(i + 1);
-                        prules.Pattern = (Primitive.ParticleSystem.SourcePattern)tmpi;
-                    }
+                        else if (rule == (int)ScriptBaseClass.PSYS_SRC_PATTERN)
+                        {
+                            tmpi = rules.GetLSLIntegerItem(i + 1);
+                            prules.Pattern = (Primitive.ParticleSystem.SourcePattern)tmpi;
+                        }
 
-                    // PSYS_SRC_INNERANGLE and PSYS_SRC_ANGLE_BEGIN use the same variables. The
-                    // PSYS_SRC_OUTERANGLE and PSYS_SRC_ANGLE_END also use the same variable. The
-                    // client tells the difference between the two by looking at the 0x02 bit in
-                    // the PartFlags variable.
-                    else if (rule == (int)ScriptBaseClass.PSYS_SRC_INNERANGLE)
-                    {
-                        tempf = (float)rules.GetLSLFloatItem(i + 1);
-                        prules.InnerAngle = tempf;
-                        prules.PartFlags &= 0xFFFFFFFD; // Make sure new angle format is off.
-                    }
+                            // PSYS_SRC_INNERANGLE and PSYS_SRC_ANGLE_BEGIN use the same variables. The
+                        // PSYS_SRC_OUTERANGLE and PSYS_SRC_ANGLE_END also use the same variable. The
+                        // client tells the difference between the two by looking at the 0x02 bit in
+                        // the PartFlags variable.
+                        else if (rule == (int)ScriptBaseClass.PSYS_SRC_INNERANGLE)
+                        {
+                            tempf = (float)rules.GetLSLFloatItem(i + 1);
+                            prules.InnerAngle = tempf;
+                            prules.PartFlags &= 0xFFFFFFFD; // Make sure new angle format is off.
+                        }
 
-                    else if (rule == (int)ScriptBaseClass.PSYS_SRC_OUTERANGLE)
-                    {
-                        tempf = (float)rules.GetLSLFloatItem(i + 1);
-                        prules.OuterAngle = tempf;
-                        prules.PartFlags &= 0xFFFFFFFD; // Make sure new angle format is off.
-                    }
+                        else if (rule == (int)ScriptBaseClass.PSYS_SRC_OUTERANGLE)
+                        {
+                            tempf = (float)rules.GetLSLFloatItem(i + 1);
+                            prules.OuterAngle = tempf;
+                            prules.PartFlags &= 0xFFFFFFFD; // Make sure new angle format is off.
+                        }
 
-                    else if (rule == (int)ScriptBaseClass.PSYS_PART_BLEND_FUNC_SOURCE)
-                    {
-                        tmpi = rules.GetLSLIntegerItem(i + 1);
-                        prules.BlendFuncSource = (byte)tmpi;
-                    }
+                        else if (rule == (int)ScriptBaseClass.PSYS_PART_BLEND_FUNC_SOURCE)
+                        {
+                            tmpi = rules.GetLSLIntegerItem(i + 1);
+                            prules.BlendFuncSource = (byte)tmpi;
+                        }
 
-                    else if (rule == (int)ScriptBaseClass.PSYS_PART_BLEND_FUNC_DEST)
-                    {
-                        tmpi = rules.GetLSLIntegerItem(i + 1);
-                        prules.BlendFuncDest = (byte)tmpi;
-                    }
+                        else if (rule == (int)ScriptBaseClass.PSYS_PART_BLEND_FUNC_DEST)
+                        {
+                            tmpi = rules.GetLSLIntegerItem(i + 1);
+                            prules.BlendFuncDest = (byte)tmpi;
+                        }
 
-                    else if (rule == (int)ScriptBaseClass.PSYS_PART_START_GLOW)
-                    {
-                        tempf = (float)rules.GetLSLFloatItem(i + 1);
-                        prules.PartStartGlow = tempf;
-                    }
+                        else if (rule == (int)ScriptBaseClass.PSYS_PART_START_GLOW)
+                        {
+                            tempf = (float)rules.GetLSLFloatItem(i + 1);
+                            prules.PartStartGlow = tempf;
+                        }
 
-                    else if (rule == (int)ScriptBaseClass.PSYS_PART_END_GLOW)
-                    {
-                        tempf = (float)rules.GetLSLFloatItem(i + 1);
-                        prules.PartEndGlow = tempf;
-                    }
+                        else if (rule == (int)ScriptBaseClass.PSYS_PART_END_GLOW)
+                        {
+                            tempf = (float)rules.GetLSLFloatItem(i + 1);
+                            prules.PartEndGlow = tempf;
+                        }
 
-                    else if (rule == (int)ScriptBaseClass.PSYS_SRC_TEXTURE)
-                    {
-                        prules.Texture = KeyOrName(rules.GetLSLStringItem(i + 1), AssetType.Texture, false);
-                    }
+                        else if (rule == (int)ScriptBaseClass.PSYS_SRC_TEXTURE)
+                        {
+                            prules.Texture = KeyOrName(rules.GetLSLStringItem(i + 1), AssetType.Texture, false);
+                        }
 
-                    else if (rule == (int)ScriptBaseClass.PSYS_SRC_BURST_RATE)
-                    {
-                        tempf = (float)rules.GetLSLFloatItem(i + 1);
-                        prules.BurstRate = tempf;
-                    }
+                        else if (rule == (int)ScriptBaseClass.PSYS_SRC_BURST_RATE)
+                        {
+                            tempf = (float)rules.GetLSLFloatItem(i + 1);
+                            prules.BurstRate = tempf;
+                        }
 
-                    else if (rule == (int)ScriptBaseClass.PSYS_SRC_BURST_PART_COUNT)
-                    {
-                        prules.BurstPartCount = (byte)(int)rules.GetLSLIntegerItem(i + 1);
-                    }
+                        else if (rule == (int)ScriptBaseClass.PSYS_SRC_BURST_PART_COUNT)
+                        {
+                            prules.BurstPartCount = (byte)(int)rules.GetLSLIntegerItem(i + 1);
+                        }
 
-                    else if (rule == (int)ScriptBaseClass.PSYS_SRC_BURST_RADIUS)
-                    {
-                        tempf = (float)rules.GetLSLFloatItem(i + 1);
-                        prules.BurstRadius = tempf;
-                    }
+                        else if (rule == (int)ScriptBaseClass.PSYS_SRC_BURST_RADIUS)
+                        {
+                            tempf = (float)rules.GetLSLFloatItem(i + 1);
+                            prules.BurstRadius = tempf;
+                        }
 
-                    else if (rule == (int)ScriptBaseClass.PSYS_SRC_BURST_SPEED_MIN)
-                    {
-                        tempf = (float)rules.GetLSLFloatItem(i + 1);
-                        prules.BurstSpeedMin = tempf;
-                    }
+                        else if (rule == (int)ScriptBaseClass.PSYS_SRC_BURST_SPEED_MIN)
+                        {
+                            tempf = (float)rules.GetLSLFloatItem(i + 1);
+                            prules.BurstSpeedMin = tempf;
+                        }
 
-                    else if (rule == (int)ScriptBaseClass.PSYS_SRC_BURST_SPEED_MAX)
-                    {
-                        tempf = (float)rules.GetLSLFloatItem(i + 1);
-                        prules.BurstSpeedMax = tempf;
-                    }
+                        else if (rule == (int)ScriptBaseClass.PSYS_SRC_BURST_SPEED_MAX)
+                        {
+                            tempf = (float)rules.GetLSLFloatItem(i + 1);
+                            prules.BurstSpeedMax = tempf;
+                        }
 
-                    else if (rule == (int)ScriptBaseClass.PSYS_SRC_MAX_AGE)
-                    {
-                        tempf = (float)rules.GetLSLFloatItem(i + 1);
-                        prules.MaxAge = tempf;
-                    }
+                        else if (rule == (int)ScriptBaseClass.PSYS_SRC_MAX_AGE)
+                        {
+                            tempf = (float)rules.GetLSLFloatItem(i + 1);
+                            prules.MaxAge = tempf;
+                        }
 
-                    else if (rule == (int)ScriptBaseClass.PSYS_SRC_TARGET_KEY)
-                    {
-                        UUID key = UUID.Zero;
-                        prules.Target = UUID.TryParse(rules.Data[i + 1].ToString(), out key) ? key : part.UUID;
-                    }
+                        else if (rule == (int)ScriptBaseClass.PSYS_SRC_TARGET_KEY)
+                        {
+                            UUID key = UUID.Zero;
+                            prules.Target = UUID.TryParse(rules.Data[i + 1].ToString(), out key) ? key : part.UUID;
+                        }
 
-                    else if (rule == (int)ScriptBaseClass.PSYS_SRC_OMEGA)
-                    {
-                        // AL: This is an assumption, since it is the only thing that would match.
-                        tempv = rules.GetVector3Item(i + 1);
-                        prules.AngularVelocity.X = (float)tempv.x;
-                        prules.AngularVelocity.Y = (float)tempv.y;
-                        prules.AngularVelocity.Z = (float)tempv.z;
-                    }
+                        else if (rule == (int)ScriptBaseClass.PSYS_SRC_OMEGA)
+                        {
+                            // AL: This is an assumption, since it is the only thing that would match.
+                            tempv = rules.GetVector3Item(i + 1);
+                            prules.AngularVelocity.X = (float)tempv.x;
+                            prules.AngularVelocity.Y = (float)tempv.y;
+                            prules.AngularVelocity.Z = (float)tempv.z;
+                        }
 
-                    else if (rule == (int)ScriptBaseClass.PSYS_SRC_ANGLE_BEGIN)
-                    {
-                        tempf = (float)rules.GetLSLFloatItem(i + 1);
-                        prules.InnerAngle = tempf;
-                        prules.PartFlags |= 0x02; // Set new angle format.
-                    }
+                        else if (rule == (int)ScriptBaseClass.PSYS_SRC_ANGLE_BEGIN)
+                        {
+                            tempf = (float)rules.GetLSLFloatItem(i + 1);
+                            prules.InnerAngle = tempf;
+                            prules.PartFlags |= 0x02; // Set new angle format.
+                        }
 
-                    else if (rule == (int)ScriptBaseClass.PSYS_SRC_ANGLE_END)
-                    {
-                        tempf = (float)rules.GetLSLFloatItem(i + 1);
-                        prules.OuterAngle = tempf;
-                        prules.PartFlags |= 0x02; // Set new angle format.
-                    }
+                        else if (rule == (int)ScriptBaseClass.PSYS_SRC_ANGLE_END)
+                        {
+                            tempf = (float)rules.GetLSLFloatItem(i + 1);
+                            prules.OuterAngle = tempf;
+                            prules.PartFlags |= 0x02; // Set new angle format.
+                        }
                 }
                 prules.CRC = 1;
 
@@ -7414,7 +7399,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llGroundRepel(double height, int water, double tau)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             if (m_host.PhysActor != null)
@@ -7455,7 +7440,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llGiveInventoryList(string destination, string category, LSL_List inventory)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
 
@@ -7496,21 +7481,21 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             Array.Copy(objBytes, 0, bucket, 1, 16);
 
             GridInstantMessage msg = new GridInstantMessage()
-            {
-                FromAgentID = m_host.UUID,
-                FromAgentName = m_host.Name + ", an object owned by " +
+                {
+                    FromAgentID = m_host.UUID,
+                    FromAgentName = m_host.Name + ", an object owned by " +
                                                                          resolveName(m_host.OwnerID) + ",",
-                ToAgentID = destID,
-                Dialog = (byte)InstantMessageDialog.InventoryOffered,
-                Message = category + "\n" + m_host.Name + " is located at " +
+                    ToAgentID = destID,
+                    Dialog = (byte)InstantMessageDialog.InventoryOffered,
+                    Message = category + "\n" + m_host.Name + " is located at " +
                                                                    World.RegionInfo.RegionName + " " +
                                                                    m_host.AbsolutePosition,
-                SessionID = folderID,
-                Offline = 1,
-                Position = m_host.AbsolutePosition,
-                BinaryBucket = bucket,
-                RegionID = m_host.ParentEntity.Scene.RegionInfo.RegionID
-            };
+                    SessionID = folderID,
+                    Offline = 1,
+                    Position = m_host.AbsolutePosition,
+                    BinaryBucket = bucket,
+                    RegionID = m_host.ParentEntity.Scene.RegionInfo.RegionID
+                };
 
             if (m_TransferModule != null)
                 m_TransferModule.SendInstantMessage(msg);
@@ -7518,7 +7503,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llSetVehicleType(int type)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
             if (m_host.ParentEntity != null)
             {
@@ -7531,7 +7516,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llSetVehicleFloatParam(int param, LSL_Float value)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
 
@@ -7546,7 +7531,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llSetVehicleVectorParam(int param, LSL_Vector vec)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             if (m_host.ParentEntity != null)
@@ -7562,21 +7547,21 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llSetVehicleRotationParam(int param, LSL_Rotation rot)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             if (m_host.ParentEntity != null)
             {
                 if (!m_host.ParentEntity.IsDeleted)
                 {
-                    m_host.ParentEntity.RootChild.SetVehicleRotationParam(param, Rot2Quaternion(rot));
+                    m_host.ParentEntity.RootChild.SetVehicleRotationParam(param,Rot2Quaternion(rot));
                 }
             }
         }
 
         public void llSetVehicleFlags(int flags)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             if (m_host.ParentEntity != null)
@@ -7602,49 +7587,47 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             }
         }
 
-        protected void SitTarget(ISceneChildEntity part, LSL_Vector offset, LSL_Rotation rot)
+        protected void SitTarget (ISceneChildEntity part, LSL_Vector offset, LSL_Rotation rot)
         {
             // LSL quaternions can normalize to 0, normal Quaternions can't.
-            if (FloatAlmostEqual(rot.s, 0) &&
-                FloatAlmostEqual(rot.x, 0) &&
-                FloatAlmostEqual(rot.y, 0) &&
-                FloatAlmostEqual(rot.z, 0))
+            if (FloatAlmostEqual (rot.s, 0) &&
+                FloatAlmostEqual (rot.x, 0) &&
+                FloatAlmostEqual (rot.y, 0) &&
+                FloatAlmostEqual (rot.z, 0))
                 rot.z = 1; // ZERO_ROTATION = 0,0,0,1
 
-            part.SitTargetPosition = new Vector3((float)offset.x, (float)offset.y, (float)offset.z); ;
-            part.SitTargetOrientation = Rot2Quaternion(rot); ;
+            part.SitTargetPosition = new Vector3 ((float)offset.x, (float)offset.y, (float)offset.z);;
+            part.SitTargetOrientation = Rot2Quaternion (rot);;
             part.ParentEntity.HasGroupChanged = true;
         }
 
         public void llSitTarget(LSL_Vector offset, LSL_Rotation rot)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
-            SitTarget(m_host, offset, rot);
+            SitTarget (m_host, offset, rot);
         }
 
         public void llLinkSitTarget(LSL_Integer link, LSL_Vector offset, LSL_Rotation rot)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             if (link == ScriptBaseClass.LINK_ROOT)
-                SitTarget(m_host.ParentEntity.RootChild, offset, rot);
+                SitTarget (m_host.ParentEntity.RootChild, offset, rot);
             else if (link == ScriptBaseClass.LINK_THIS)
-                SitTarget(m_host, offset, rot);
-            else
-            {
-                var entity = m_host.ParentEntity.GetLinkNumPart(link);
-                if (entity != null)
-                {
-                    SitTarget((ISceneChildEntity)entity, offset, rot);
+                SitTarget (m_host, offset, rot);
+            else {
+                var entity = m_host.ParentEntity.GetLinkNumPart (link);
+                if (entity != null) {
+                    SitTarget ((ISceneChildEntity) entity, offset, rot);
                 }
             }
         }
 
         public LSL_String llAvatarOnSitTarget()
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return ScriptBaseClass.NULL_KEY;
 
             return m_host.SitTargetAvatar.Count > 0
@@ -7663,10 +7646,10 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                 link == 0)
                 return ScriptBaseClass.NULL_KEY;
 
-            var entities = GetLinkParts(link);
+            var entities = GetLinkParts (link);
             return entities.Count == 0
                            ? ScriptBaseClass.NULL_KEY
-                           : new LSL_String(entities[0].SitTargetAvatar.ToString());
+                           : new LSL_String (entities [0].SitTargetAvatar.ToString ());
         }
 
         public DateTime llAddToLandPassList(string avatar, double hours)
@@ -7697,7 +7680,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llSetTouchText(string text)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             m_host.TouchName = text;
@@ -7705,7 +7688,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llSetSitText(string text)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             m_host.SitName = text;
@@ -7713,7 +7696,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llSetLinkCamera(LSL_Integer link, LSL_Vector eye, LSL_Vector at)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             List<ISceneChildEntity> entities = GetLinkParts(link);
@@ -7726,7 +7709,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llSetCameraEyeOffset(LSL_Vector offset)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             m_host.CameraEyeOffset = new Vector3((float)offset.x, (float)offset.y, (float)offset.z);
@@ -7734,7 +7717,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llSetCameraAtOffset(LSL_Vector offset)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             m_host.CameraAtOffset = new Vector3((float)offset.x, (float)offset.y, (float)offset.z);
@@ -7742,7 +7725,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_String llDumpList2String(LSL_List src, string seperator)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return "";
 
             if (src.Length == 0)
@@ -7758,7 +7741,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_Integer llScriptDanger(LSL_Vector pos)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return 0;
 
             bool result = m_ScriptEngine.PipeEventsForScript(m_host,
@@ -7819,7 +7802,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llVolumeDetect(int detect)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             if (m_host.ParentEntity != null)
@@ -7847,7 +7830,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llSetRemoteScriptAccessPin(int pin)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             m_host.ScriptAccessPin = pin;
@@ -7924,8 +7907,8 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                         m_ScriptEngine.ScriptModule,
                         channelID,
                         m_host.UUID,
-                        m_itemID,
-                        string.Format("http://{0}:{1}/", ExternalHostName, xmlrpcMod.Port)
+                        m_itemID, 
+                        string.Format("http://{0}:{1}/", ExternalHostName,xmlrpcMod.Port)
                     );
                 }
                 object[] resobj = {
@@ -7939,8 +7922,8 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                 m_ScriptEngine.PostScriptEvent(
                     m_itemID,
                     m_host.UUID,
-                    new EventParams("remote_data", resobj, new DetectParams[0])
-                    , EventPriority.FirstStart
+                    new EventParams("remote_data", resobj,new DetectParams[0])
+                    ,EventPriority.FirstStart
                 );
             }
             return PScriptSleep(m_sleepMsOnOpenRemoteDataChannel);
@@ -7948,7 +7931,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_Key llSendRemoteData(string channel, string dest, int idata, string sdata)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return "";
 
             IXMLRPC xmlrpcMod = World.RequestModuleInterface<IXMLRPC>();
@@ -7986,7 +7969,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_String llSHA1String(string src)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return "";
 
             return Util.SHA1Hash(src).ToLower();
@@ -8353,7 +8336,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llSetPrimitiveParams(LSL_List rules)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             SetPrimParams(m_host, rules, m_allowOpenSimParams);
@@ -8362,7 +8345,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llSetLinkPrimitiveParams(int linknumber, LSL_List rules)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
 
@@ -8875,11 +8858,11 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                     bool IsVolumeDetect = m_host.VolumeDetectActive;
                     ObjectFlagUpdatePacket.ExtraPhysicsBlock[] blocks = new ObjectFlagUpdatePacket.ExtraPhysicsBlock[1];
                     blocks[0] = new ObjectFlagUpdatePacket.ExtraPhysicsBlock
-                    {
-                        Density = m_host.Density,
-                        Friction = m_host.Friction,
-                        GravityMultiplier = m_host.GravityMultiplier
-                    };
+                                    {
+                                        Density = m_host.Density,
+                                        Friction = m_host.Friction,
+                                        GravityMultiplier = m_host.GravityMultiplier
+                                    };
                     LSL_Integer shapeType = rules.GetLSLIntegerItem(idx++);
                     if (shapeType == ScriptBaseClass.PRIM_PHYSICS_SHAPE_PRIM)
                         blocks[0].PhysicsShapeType = (byte)shapeType.value;
@@ -8947,7 +8930,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_String llStringToBase64(string str)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return "";
 
             try
@@ -8966,7 +8949,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_String llBase64ToString(string str)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return "";
 
             try
@@ -8983,7 +8966,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_String llXorBase64Strings(string str1, string str2)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return "";
 
             Deprecated("llXorBase64Strings", "Use llXorBase64 instead");
@@ -8993,7 +8976,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llRemoteDataSetRegion()
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             Deprecated("llRemoteDataSetRegion", "Use llOpenRemoteDataChannel instead");
@@ -9094,7 +9077,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_String llGetObjectDesc()
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return "";
 
             return m_host.Description ?? string.Empty;
@@ -9110,7 +9093,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_String llGetCreator()
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return "";
 
             return m_host.CreatorID.ToString();
@@ -9118,7 +9101,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_String llGetTimestamp()
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return "";
 
             return DateTime.Now.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fffffffZ");
@@ -9126,7 +9109,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_Integer llGetNumberOfPrims()
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return 0;
 
             int avatarCount = m_host.ParentEntity.SitTargetAvatar.Count;
@@ -9872,7 +9855,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
             char[] imdt = new char[8];
 
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return "";
 
 
@@ -9936,7 +9919,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             int number = 0;
             int digit;
 
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return 0;
 
 
@@ -10003,7 +9986,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_String llGetHTTPHeader(LSL_Key request_id, string header)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return "";
 
 
@@ -10015,7 +9998,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_String llGetSimulatorHostname()
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return "";
 
             IUrlModule UrlModule = World.RequestModuleInterface<IUrlModule>();
@@ -10109,7 +10092,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                     if (active[j])
                     {
                         // scan all of the markers
-                        if ((offset[j] = src.IndexOf(separray[j].ToString(), beginning, StringComparison.Ordinal)) == -1)
+                        if ((offset[j] = src.IndexOf (separray [j].ToString (), beginning, StringComparison.Ordinal)) == -1)
                         {
                             // not present at all
                             active[j] = false;
@@ -10140,7 +10123,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                         if (active[j])
                         {
                             // scan all of the markers
-                            if ((offset[j] = src.IndexOf(spcarray[j - seplen].ToString(), beginning, StringComparison.Ordinal)) == -1)
+                            if ((offset[j] = src.IndexOf (spcarray [j - seplen].ToString (), beginning, StringComparison.Ordinal)) == -1)
                             {
                                 // not present at all
                                 active[j] = false;
@@ -10292,7 +10275,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_Integer llGetInventoryPermMask(string item, int mask)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return 0;
 
 
@@ -10324,7 +10307,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llSetInventoryPermMask(string item, int mask, int value)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             if (m_ScriptEngine.Config.GetBoolean("AllowGodFunctions", false))
@@ -10364,7 +10347,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_String llGetInventoryCreator(string item)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return "";
 
 
@@ -10386,7 +10369,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llOwnerSay(string msg)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             IChatModule chatModule = World.RequestModuleInterface<IChatModule>();
@@ -10397,7 +10380,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_String llRequestSecureURL()
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return "";
 
             if (m_UrlModule != null)
@@ -10407,7 +10390,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_String llGetEnv(LSL_String name)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return "";
 
             if (name == "sim_channel")
@@ -10423,15 +10406,15 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             if (name == "estate_id")
                 return new LSL_String(World.RegionInfo.EstateSettings.EstateID.ToString());
             if (name == "region_max_prims")
-                return World.RegionInfo.ObjectCapacity.ToString();
-
+                return World.RegionInfo.ObjectCapacity.ToString ();
+            
             return "";
 
         }
 
         public void llTeleportAgent(LSL_Key avatar, LSL_String landmark, LSL_Vector position, LSL_Vector look_at)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             UUID invItemID = InventorySelf();
@@ -10472,25 +10455,23 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                 IEntityTransferModule module = World.RequestModuleInterface<IEntityTransferModule>();
                 if (module != null)
                 {
-                    if (landmark != "")
-                    {
-                        var worldAsset = World.AssetService.Get(item.AssetID.ToString());
-                        if (worldAsset != null)
-                        {
-                            var lm = new AssetLandmark(worldAsset);
-                            worldAsset.Dispose();
+                    if (landmark != "") {
+                        var worldAsset = World.AssetService.Get (item.AssetID.ToString ());
+                        if (worldAsset != null) {
+                            var lm = new AssetLandmark (worldAsset);
+                            worldAsset.Dispose ();
 
-                            module.Teleport(presence, lm.RegionHandle, lm.Position,
-                                             look_at.ToVector3(), (uint)TeleportFlags.ViaLocation);
-                            lm.Dispose();
+                            module.Teleport (presence, lm.RegionHandle, lm.Position,
+                                             look_at.ToVector3 (), (uint)TeleportFlags.ViaLocation);
+                            lm.Dispose ();
                             return;
 
                         }
                     }
                     // no landmark details
-                    module.Teleport(presence, World.RegionInfo.RegionHandle,
-                                     position.ToVector3(), look_at.ToVector3(), (uint)TeleportFlags.ViaLocation);
-
+                    module.Teleport (presence, World.RegionInfo.RegionHandle,
+                                     position.ToVector3 (), look_at.ToVector3 (), (uint)TeleportFlags.ViaLocation);
+                    
                 }
             }
         }
@@ -10498,7 +10479,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
         public void llTeleportAgentGlobalCoords(LSL_Key agent, LSL_Vector global_coordinates,
                                                 LSL_Vector region_coordinates, LSL_Vector look_at)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             UUID invItemID = InventorySelf();
@@ -10541,7 +10522,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
             try
             {
-                if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+                if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                     return "";
 
                 string reply = string.Empty;
@@ -10591,9 +10572,9 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                         try
                         {
                             if (!ScriptProtection.CheckThreatLevel(ThreatLevel.High, "llRequestSimulatorData", m_host,
-                                                                   "LSL", m_itemID))
-                                return "";
-
+                                                                   "LSL", m_itemID)) 
+                            return "";
+                        
                             reply = "Universe";
                         }
                         catch
@@ -10623,7 +10604,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_String llRequestURL()
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return "";
 
 
@@ -10634,7 +10615,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llForceMouselook(int mouselook)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             m_host.ForceMouselook = (mouselook != 0);
@@ -10940,21 +10921,21 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                         landObject.SetMediaUrl(url);
 
                         // now send to all (non-child) agents
-                        World.ForEachScenePresence(delegate (IScenePresence sp)
-                        {
-                            if (!sp.IsChildAgent &&
-                                (sp.CurrentParcelUUID == landData.GlobalID))
-                            {
-                                sp.ControllingClient.SendParcelMediaUpdate(
-                                    landData.MediaURL,
-                                    landData.MediaID,
-                                    landData.MediaAutoScale,
-                                    mediaType,
-                                    description,
-                                    width, height,
-                                    loop);
-                            }
-                        });
+                        World.ForEachScenePresence(delegate(IScenePresence sp)
+                                                       {
+                                                           if (!sp.IsChildAgent &&
+                                                               (sp.CurrentParcelUUID == landData.GlobalID))
+                                                           {
+                                                               sp.ControllingClient.SendParcelMediaUpdate(
+                                                                   landData.MediaURL,
+                                                                   landData.MediaID,
+                                                                   landData.MediaAutoScale,
+                                                                   mediaType,
+                                                                   description,
+                                                                   width, height,
+                                                                   loop);
+                                                           }
+                                                       });
                     }
                     else if (!presence.IsChildAgent)
                     {
@@ -10979,16 +10960,16 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                     if (presence == null)
                     {
                         // send to all (non-child) agents
-                        World.ForEachScenePresence(delegate (IScenePresence sp)
-                        {
-                            if (!sp.IsChildAgent)
-                            {
-                                sp.ControllingClient.SendParcelMediaCommand(
-                                    landData.Flags,
-                                    (ParcelMediaCommandEnum)commandToSend,
-                                    ParamToSend);
-                            }
-                        });
+                        World.ForEachScenePresence(delegate(IScenePresence sp)
+                                                       {
+                                                           if (!sp.IsChildAgent)
+                                                           {
+                                                               sp.ControllingClient.SendParcelMediaCommand(
+                                                                   landData.Flags,
+                                                                   (ParcelMediaCommandEnum)commandToSend,
+                                                                   ParamToSend);
+                                                           }
+                                                       });
                     }
                     else if (!presence.IsChildAgent)
                     {
@@ -11204,7 +11185,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_Integer llClearPrimMedia(LSL_Integer face)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return 0;
             PScriptSleep(m_sleepMsOnClearPrimMedia);
 
@@ -11215,7 +11196,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_Integer llClearLinkMedia(LSL_Integer link, LSL_Integer face)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return 0;
             //PScriptSleep(m_sleepMsOnClearLinkMedia);
 
@@ -11363,7 +11344,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_Integer llModPow(int a, int b, int c)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return 0;
 
             long tmp = 0;
@@ -11374,7 +11355,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_Integer llGetInventoryType(string name)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return 0;
 
 
@@ -11394,9 +11375,9 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llSetPayPrice(int price, LSL_List quick_pay_buttons)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
-
+            
             m_host.ParentEntity.RootChild.PayPrice[0] = price;
 
             if (quick_pay_buttons.Data.Length > 0)
@@ -11522,7 +11503,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_String llUnescapeURL(string url)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return "";
 
             try
@@ -11715,7 +11696,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llClearCameraParams()
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
 
@@ -11778,7 +11759,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_Integer llGetUnixTime()
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return 0;
 
             return Util.UnixTimeSinceEpoch();
@@ -11786,9 +11767,9 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_Integer llGetParcelFlags(LSL_Vector pos)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return 0;
-
+            
             IParcelManagementModule parcelManagement = World.RequestModuleInterface<IParcelManagementModule>();
             if (parcelManagement != null)
             {
@@ -11799,7 +11780,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_Integer llGetRegionFlags()
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return 0;
 
             IEstateModule estate = World.RequestModuleInterface<IEstateModule>();
@@ -11810,7 +11791,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_String llXorBase64StringsCorrect(string str1, string str2)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return "";
 
             string ret = string.Empty;
@@ -11837,7 +11818,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             // parameter flags support are implemented in ScriptsHttpRequests.cs
             //   in StartHttpRequest
 
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return "";
 
             IHttpRequestModule httpScriptMod =
@@ -11893,7 +11874,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                 //}
                 if (m.Groups.Count == 5)
                 {
-                    httpHeaders["Authorization"] =
+                    httpHeaders["Authorization"] = 
                         string.Format("Basic {0}",
                                       Convert.ToBase64String(Encoding.ASCII.GetBytes(m.Groups[2] + ":" + m.Groups[3])));
                     url = m.Groups[1].ToString() + m.Groups[4];
@@ -11911,7 +11892,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llSetContentType(LSL_Key id, LSL_Integer type)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
             string content_type = "text/plain";
@@ -11944,7 +11925,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             // Partial implementation: support for parameter flags needed
             //   see http://wiki.secondlife.com/wiki/llHTTPResponse
 
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
 
 
@@ -12002,7 +11983,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_Integer llGetParcelPrimCount(LSL_Vector pos, int category, int sim_wide)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return 0;
 
             IParcelManagementModule parcelManagement = World.RequestModuleInterface<IParcelManagementModule>();
@@ -12076,7 +12057,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_Integer llGetObjectPrimCount(string object_id)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return 0;
 
             ISceneChildEntity part = World.GetSceneObjectPart(new UUID(object_id));
@@ -12089,7 +12070,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_Integer llGetParcelMaxPrims(LSL_Vector pos, int sim_wide)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return 0;
 
             IParcelManagementModule parcelManagement = World.RequestModuleInterface<IParcelManagementModule>();
@@ -12141,7 +12122,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_String llStringTrim(string src, int type)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return "";
 
             if (type == (int)ScriptBaseClass.STRING_TRIM_HEAD)
@@ -12265,67 +12246,67 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                         }
                         else if ((LSL_Integer)o == ScriptBaseClass.OBJECT_PHYSICS)
                         {
-                            ret.Add(0);
-                            break;
+                        	ret.Add(0);
+                        	break;
                         }
                         else if ((LSL_Integer)o == ScriptBaseClass.OBJECT_PHANTOM)
                         {
-                            ret.Add(0);
-                            break;
+                        	ret.Add(0);
+                        	break;
                         }
                         else if ((LSL_Integer)o == ScriptBaseClass.OBJECT_TEMP_ON_REZ)
                         {
-                            ret.Add(0);
-                            break;
+                        	ret.Add(0);
+                        	break;
                         }
                         else if ((LSL_Integer)o == ScriptBaseClass.OBJECT_RENDER_WEIGHT)
                         {
-                            ret.Add(-1);
-                            break;
+                        	ret.Add(-1);
+                        	break;
                         }
                         else if ((LSL_Integer)o == ScriptBaseClass.OBJECT_HOVER_HEIGHT)
                         {
-                            ret.Add(new LSL_Float(0));
-                            break;
+                        	ret.Add(new LSL_Float(0));
+                        	break;
                         }
                         else if ((LSL_Integer)o == ScriptBaseClass.OBJECT_LAST_OWNER_ID)
                         {
-                            ret.Add(ScriptBaseClass.NULL_KEY);
-                            break;
+                        	ret.Add(ScriptBaseClass.NULL_KEY);
+                        	break;
                         }
                         else if ((LSL_Integer)o == ScriptBaseClass.OBJECT_CLICK_ACTION)
                         {
-                            ret.Add(new LSL_Integer(0));
-                            break;
+                        	ret.Add(new LSL_Integer(0));
+                        	break;
                         }
                         else if ((LSL_Integer)o == ScriptBaseClass.OBJECT_OMEGA)
                         {
-                            ret.Add(new LSL_Vector(Vector3.Zero));
-                            break;
+                        	ret.Add(new LSL_Vector(Vector3.Zero));
+                        	break;
                         }
                         else if ((LSL_Integer)o == ScriptBaseClass.OBJECT_PRIM_COUNT)
                         {
                             // Return 0 for now, needs a proper check    
-                            ret.Add(new LSL_Integer(0));
-                            break;
+                        	ret.Add(new LSL_Integer(0));
+                        	break;
                         }
                         else if ((LSL_Integer)o == ScriptBaseClass.OBJECT_TOTAL_INVENTORY_COUNT)
                         {
                             // Return 0 for now, needs a proper check    
-                            ret.Add(new LSL_Integer(0));
-                            break;
+                        	ret.Add(new LSL_Integer(0));
+                        	break;
                         }
                         else if ((LSL_Integer)o == ScriptBaseClass.OBJECT_GROUP_TAG)
                         {
-                            // Return empty string for now, need a proper check
-                            ret.Add(new LSL_String(String.Empty));
-                            break;
+                        	// Return empty string for now, need a proper check
+                        	ret.Add(new LSL_String(String.Empty));
+                        	break;
                         }
                         else if ((LSL_Integer)o == ScriptBaseClass.OBJECT_TEMP_ATTACHED)
                         {
-                            ret.Add(new LSL_Integer(0));
-                            break;
-                        }
+                        	ret.Add(new LSL_Integer(0));
+                        	break;
+                        }                        
                         else
                         {
                             ret.Add(ScriptBaseClass.OBJECT_UNKNOWN_DETAIL);
@@ -12408,69 +12389,69 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                         else if ((LSL_Integer)o == ScriptBaseClass.OBJECT_PHYSICS)
                         {
                             // Return 0 for now, needs a proper check    
-                            ret.Add(new LSL_Integer(0));
-                            break;
+                        	ret.Add(new LSL_Integer(0));
+                        	break;
                         }
                         else if ((LSL_Integer)o == ScriptBaseClass.OBJECT_PHANTOM)
                         {
                             // Return 0 for now, needs a proper check    
-                            ret.Add(new LSL_Integer(0));
-                            break;
+                        	ret.Add(new LSL_Integer(0));
+                        	break;
                         }
                         else if ((LSL_Integer)o == ScriptBaseClass.OBJECT_TEMP_ON_REZ)
                         {
                             // Return 0 for now, needs a proper check    
-                            ret.Add(new LSL_Integer(0));
-                            break;
+                        	ret.Add(new LSL_Integer(0));
+                        	break;
                         }
                         else if ((LSL_Integer)o == ScriptBaseClass.OBJECT_RENDER_WEIGHT)
                         {
-                            ret.Add(new LSL_Integer(0));
-                            break;
+                        	ret.Add(new LSL_Integer(0));
+                        	break;
                         }
                         else if ((LSL_Integer)o == ScriptBaseClass.OBJECT_HOVER_HEIGHT)
                         {
-                            ret.Add(new LSL_Float(0));
-                            break;
+                        	ret.Add(new LSL_Float(0));
+                        	break;
                         }
                         else if ((LSL_Integer)o == ScriptBaseClass.OBJECT_LAST_OWNER_ID)
                         {
-                            ret.Add(new LSL_Key(obj.LastOwnerID.ToString()));
-                            break;
+                        	ret.Add(new LSL_Key(obj.LastOwnerID.ToString()));
+                        	break;
                         }
                         else if ((LSL_Integer)o == ScriptBaseClass.OBJECT_CLICK_ACTION)
                         {
-                            ret.Add(new LSL_Integer(obj.ClickAction));
-                            break;
+                        	ret.Add(new LSL_Integer(obj.ClickAction));
+                        	break;
                         }
                         else if ((LSL_Integer)o == ScriptBaseClass.OBJECT_OMEGA)
                         {
-                            ret.Add(new LSL_Vector(obj.AngularVelocity));
-                            break;
+                        	ret.Add(new LSL_Vector(obj.AngularVelocity));
+                        	break;
                         }
                         else if ((LSL_Integer)o == ScriptBaseClass.OBJECT_PRIM_COUNT)
                         {
                             // Return 0 for now, needs a proper check    
-                            ret.Add(new LSL_Integer(0));
-                            break;
+                        	ret.Add(new LSL_Integer(0));
+                        	break;
                         }
                         else if ((LSL_Integer)o == ScriptBaseClass.OBJECT_TOTAL_INVENTORY_COUNT)
                         {
                             // Return 0 for now, needs a proper check    
-                            ret.Add(new LSL_Integer(0));
-                            break;
+                        	ret.Add(new LSL_Integer(0));
+                        	break;
                         }
                         else if ((LSL_Integer)o == ScriptBaseClass.OBJECT_GROUP_TAG)
                         {
-                            // Return empty string for now, need a proper check
-                            ret.Add(new LSL_String(String.Empty));
-                            break;
+                        	// Return empty string for now, need a proper check
+                        	ret.Add(new LSL_String(String.Empty));
+                        	break;
                         }
                         else if ((LSL_Integer)o == ScriptBaseClass.OBJECT_TEMP_ATTACHED)
                         {
-                            // Return 0 for now, needs a proper check
-                            ret.Add(new LSL_Integer(0));
-                            break;
+                        	// Return 0 for now, needs a proper check
+                        	ret.Add(new LSL_Integer(0));
+                        	break;
                         }
                         else
                         {
@@ -12567,7 +12548,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
         protected void WithNotecard(UUID assetID, AssetRequestCallback cb)
         {
             World.AssetService.Get(assetID.ToString(), this,
-                                   delegate (string i, object sender, AssetBase a)
+                                   delegate(string i, object sender, AssetBase a)
                                    {
                                        UUID uuid = UUID.Zero;
                                        UUID.TryParse(i, out uuid);
@@ -12646,7 +12627,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                     results.Add((ContactResult)groundContact);
             }
 
-            results.Sort(delegate (ContactResult a, ContactResult b)
+            results.Sort(delegate(ContactResult a, ContactResult b)
             {
                 return a.Depth.CompareTo(b.Depth);
             });
@@ -12739,7 +12720,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
             Vector3 ab = rayEnd - rayStart;
 
-            World.ForEachScenePresence(delegate (IScenePresence sp)
+            World.ForEachScenePresence(delegate(IScenePresence sp)
             {
                 Vector3 ac = sp.AbsolutePosition - rayStart;
                 //                Vector3 bc = sp.AbsolutePosition - rayEnd;
@@ -12994,7 +12975,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             if (contacts.Count == 0)
                 return null;
 
-            contacts.Sort(delegate (ContactResult a, ContactResult b)
+            contacts.Sort(delegate(ContactResult a, ContactResult b)
             {
                 return a.Depth.CompareTo(b.Depth);
             });
@@ -13009,7 +12990,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_Key llGetNumberOfNotecardLines(string name)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return "";
 
 
@@ -13050,23 +13031,23 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                 return tid.ToString();
             }
 
-            WithNotecard(assetID, delegate (UUID id, AssetBase a)
-            {
-                if (a == null || a.Type != 7)
-                {
-                    Error("llGetNumberOfNotecardLines", "Can't find notecard '" + name + "'");
-                    tid = UUID.Zero;
-                }
-                else
-                {
-                    UTF8Encoding enc =
-                        new UTF8Encoding();
-                    string data = enc.GetString(a.Data);
-                    NotecardCache.Cache(id, data);
-                    dataserverPlugin.AddReply(rq.ToString(),
-                                              NotecardCache.GetLines(id).ToString(), 100);
-                }
-            });
+            WithNotecard(assetID, delegate(UUID id, AssetBase a)
+                                      {
+                                          if (a == null || a.Type != 7)
+                                          {
+                                              Error("llGetNumberOfNotecardLines", "Can't find notecard '" + name + "'");
+                                              tid = UUID.Zero;
+                                          }
+                                          else
+                                          {
+                                              UTF8Encoding enc =
+                                                  new UTF8Encoding();
+                                              string data = enc.GetString(a.Data);
+                                              NotecardCache.Cache(id, data);
+                                              dataserverPlugin.AddReply(rq.ToString(),
+                                                                        NotecardCache.GetLines(id).ToString(), 100);
+                                          }
+                                      });
 
             PScriptSleep(m_sleepMsOnGetNumberOfNotecardLines);
             return tid.ToString();
@@ -13088,14 +13069,14 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             UUID tid = dataserverPlugin.RegisterRequest(m_host.UUID, m_itemID, uuid.ToString());
 
             Util.FireAndForget(delegate
-            {
-                string name = "";
-                UserAccount info =
-                    World.UserAccountService.GetUserAccount(World.RegionInfo.AllScopeIDs, userID);
-                if (info != null)
-                    name = info.Name;
-                dataserverPlugin.AddReply(uuid.ToString(), name, 100);
-            });
+                                   {
+                                       string name = "";
+                                       UserAccount info =
+                                           World.UserAccountService.GetUserAccount(World.RegionInfo.AllScopeIDs, userID);
+                                       if (info != null)
+                                           name = info.Name;
+                                       dataserverPlugin.AddReply(uuid.ToString(), name, 100);
+                                   });
 
             PScriptSleep(m_sleepMsOnRequestUserName);
             return tid.ToString();
@@ -13117,19 +13098,19 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             UUID tid = dataserverPlugin.RegisterRequest(m_host.UUID, m_itemID, uuid.ToString());
 
             Util.FireAndForget(delegate
-            {
-                string name = "";
-                IProfileConnector connector =
-                    Framework.Utilities.DataManager.RequestPlugin<IProfileConnector>();
-                if (connector != null)
-                {
-                    IUserProfileInfo info = connector.GetUserProfile(userID);
-                    if (info != null)
-                        name = info.DisplayName;
-                }
-                dataserverPlugin.AddReply(uuid.ToString(),
-                                          name, 100);
-            });
+                                   {
+                                       string name = "";
+                                       IProfileConnector connector =
+                                           Framework.Utilities.DataManager.RequestPlugin<IProfileConnector>();
+                                       if (connector != null)
+                                       {
+                                           IUserProfileInfo info = connector.GetUserProfile(userID);
+                                           if (info != null)
+                                               name = info.DisplayName;
+                                       }
+                                       dataserverPlugin.AddReply(uuid.ToString(),
+                                                                 name, 100);
+                                   });
 
             PScriptSleep(m_sleepMsOnRequestUserName);
             return tid.ToString();
@@ -13137,7 +13118,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public LSL_Key llGetNotecardLine(string name, int line)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return "";
 
 
@@ -13178,24 +13159,24 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                 return tid.ToString();
             }
 
-            WithNotecard(assetID, delegate (UUID id, AssetBase a)
-            {
-                if (a == null || a.Type != 7)
-                {
-                    Error("llGetNotecardLine", "Notecard '" + name + "' could not be found.");
-                }
-                else
-                {
-                    UTF8Encoding enc =
-                        new UTF8Encoding();
-                    string data = enc.GetString(a.Data);
-                    NotecardCache.Cache(id, data);
-                    dataserverPlugin.AddReply(rq.ToString(),
-                                              NotecardCache.GetLine(id, line,
-                                                                    m_notecardLineReadCharsMax),
-                                              100);
-                }
-            });
+            WithNotecard(assetID, delegate(UUID id, AssetBase a)
+                                      {
+                                          if (a == null || a.Type != 7)
+                                          {
+                                              Error("llGetNotecardLine", "Notecard '" + name + "' could not be found.");
+                                          }
+                                          else
+                                          {
+                                              UTF8Encoding enc =
+                                                  new UTF8Encoding();
+                                              string data = enc.GetString(a.Data);
+                                              NotecardCache.Cache(id, data);
+                                              dataserverPlugin.AddReply(rq.ToString(),
+                                                                        NotecardCache.GetLine(id, line,
+                                                                                              m_notecardLineReadCharsMax),
+                                                                        100);
+                                          }
+                                      });
 
             PScriptSleep(m_sleepMsOnGetNotecardLine);
             return tid.ToString();
@@ -13229,7 +13210,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void print(string str)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.Severe, "print", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.Severe, "print", m_host, "LSL", m_itemID)) 
                 return;
 
             if (m_ScriptEngine.Config.GetBoolean("AllowosConsoleCommand", false))
@@ -13258,10 +13239,10 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                     World.RegionInfo.EstateSettings.RemoveEstateGroup(UUID.Parse(avatar));
                 else if (action == ScriptBaseClass.ESTATE_ACCESS_BANNED_AGENT_ADD)
                     World.RegionInfo.EstateSettings.AddBan(new EstateBan
-                    {
-                        EstateID = World.RegionInfo.EstateSettings.EstateID,
-                        BannedUserID = UUID.Parse(avatar)
-                    });
+                                                               {
+                                                                   EstateID = World.RegionInfo.EstateSettings.EstateID,
+                                                                   BannedUserID = UUID.Parse(avatar)
+                                                               });
                 else if (action == ScriptBaseClass.ESTATE_ACCESS_BANNED_AGENT_REMOVE)
                     World.RegionInfo.EstateSettings.RemoveBan(UUID.Parse(avatar));
                 return LSL_Integer.TRUE;
@@ -13273,7 +13254,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public void llSetKeyframedMotion(LSL_List keyframes, LSL_List options)
         {
-            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID))
+            if (!ScriptProtection.CheckThreatLevel(ThreatLevel.None, "LSL", m_host, "LSL", m_itemID)) 
                 return;
             if (!m_host.IsRoot)
             {
@@ -13323,15 +13304,15 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                 times.Add((float)time);
             }
             KeyframeAnimation animation = new KeyframeAnimation
-            {
-                CurrentMode = currentMode,
-                PositionList = positions.ToArray(),
-                RotationList = rotations.ToArray(),
-                TimeList = times.ToArray(),
-                CurrentAnimationPosition = 0,
-                InitialPosition = m_host.AbsolutePosition,
-                InitialRotation = m_host.GetRotationOffset()
-            };
+                                              {
+                                                  CurrentMode = currentMode,
+                                                  PositionList = positions.ToArray(),
+                                                  RotationList = rotations.ToArray(),
+                                                  TimeList = times.ToArray(),
+                                                  CurrentAnimationPosition = 0,
+                                                  InitialPosition = m_host.AbsolutePosition,
+                                                  InitialRotation = m_host.GetRotationOffset()
+                                              };
             m_host.ParentEntity.AddKeyframedMotion(animation, KeyframeAnimation.Commands.Play);
         }
 
@@ -13352,31 +13333,31 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             TaskInventoryItem item = m_host.TaskInventory[m_itemID];
             UUID destID;
             if (item.PermsGranter == UUID.Zero || (item.PermsMask & ScriptBaseClass.PERMISSION_DEBIT) == 0)
-                data = llList2CSV(new LSL_List("MISSING_PERMISSION_DEBIT"));
+                data = llList2CSV(new LSL_List ("MISSING_PERMISSION_DEBIT"));
             else if (!UUID.TryParse(destination, out destID))
                 data = llList2CSV(new LSL_List("INVALID_AGENT"));
             else if (amt <= 0)
                 data = llList2CSV(new LSL_List("INVALID_AMOUNT"));
             else if (World.UserAccountService.GetUserAccount(World.RegionInfo.AllScopeIDs, destID) == null)
-                data = llList2CSV(new LSL_List("LINDENDOLLAR_ENTITYDOESNOTEXIST"));
+                data = llList2CSV(new LSL_List ("LINDENDOLLAR_ENTITYDOESNOTEXIST"));
             else if (m_host.ParentEntity.OwnerID == m_host.ParentEntity.GroupID)
-                data = llList2CSV(new LSL_List("GROUP_OWNED"));
+                data = llList2CSV(new LSL_List ("GROUP_OWNED"));
             else if (moneyMod != null)
             {
                 success = moneyMod.Transfer(UUID.Parse(destination), m_host.OwnerID, amt, "", TransactionType.ObjectPays);
                 data =
                     llList2CSV(success
                                    ? new LSL_List(destination, amt)
-                                   : new LSL_List("LINDENDOLLAR_INSUFFICIENTFUNDS"));
+                                   : new LSL_List ("LINDENDOLLAR_INSUFFICIENTFUNDS"));
             }
             else
-                data = llList2CSV(new LSL_List("SERVICE_ERROR"));
+                data = llList2CSV(new LSL_List ("SERVICE_ERROR"));
 
             m_ScriptEngine.PostScriptEvent(
                 m_itemID,
                 m_host.UUID,
-                new EventParams("transaction_result",
-                                new object[] { transferID, success, data },
+                new EventParams("transaction_result", 
+                                new object[]{transferID, success,data},
                                 new DetectParams[0]),
                 EventPriority.FirstStart
             );
@@ -13403,7 +13384,7 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                 IBotController controller = botManager.GetCharacterManager(m_host.ParentEntity.UUID);
                 if (controller == null)
                     return;         // nothing to controll :(
-
+                
                 for (int i = 0; i < options.Length; i += 2)
                 {
                     LSL_Integer opt = options.GetLSLIntegerItem(i);
@@ -13543,12 +13524,11 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             if (botManager != null)
             {
                 IBotController controller = botManager.GetCharacterManager(m_host.ParentEntity.UUID);
-                if (controller != null)
-                {
+                if (controller != null) {
                     if (command == ScriptBaseClass.CHARACTER_CMD_JUMP)
-                        controller.Jump();
+                        controller.Jump ();
                     if (command == ScriptBaseClass.CHARACTER_CMD_STOP)
-                        controller.StopMoving(false, true);
+                        controller.StopMoving (false, true);
                 }
             }
         }
@@ -13861,16 +13841,14 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
                 return OSD.FromString(val);
 
             if (spec is LSL_Integer ||
-                (spec is LSL_String && ((LSL_String)spec) == ScriptBaseClass.JSON_APPEND))
-            {
-                OSDArray array = new OSDArray();
-                array.Add(JsonBuildRestOfSpec(specifiers, i + 1, val));
+                (spec is LSL_String && ((LSL_String)spec) == ScriptBaseClass.JSON_APPEND)) {
+                OSDArray array = new OSDArray ();
+                array.Add (JsonBuildRestOfSpec (specifiers, i + 1, val));
                 return array;
             }
-            if (spec is LSL_String)
-            {
-                OSDMap map = new OSDMap();
-                map.Add((LSL_String)spec, JsonBuildRestOfSpec(specifiers, i + 1, val));
+            if (spec is LSL_String) {
+                OSDMap map = new OSDMap ();
+                map.Add ((LSL_String)spec, JsonBuildRestOfSpec (specifiers, i + 1, val));
                 return map;
             }
             return new OSD();
@@ -13946,88 +13924,88 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
             return string.Empty;
         }
         #endregion
-
+        
         #region Added functions for Experiences
         public LSL_Integer llAgentInExperience(LSL_Key agent)
         {
             NotImplemented("llAgentInExperience", "Not implemented at this moment");
             return 0;
         }
-
+        
         public void llClearExperiencePermissions(LSL_Key agent)
         {
-            NotImplemented("llClearExperiencePermissions", "Not implemented at this moment");
+        	NotImplemented("llClearExperiencePermissions", "Not implemented at this moment");
         }
-
+        
         public LSL_Key llCreateKeyValue(LSL_String key, LSL_String value)
         {
-            NotImplemented("llClearExperiencePermissions", "Not implemented at this moment");
-            return UUID.Zero.ToString();
+        	NotImplemented("llClearExperiencePermissions", "Not implemented at this moment");
+        	return UUID.Zero.ToString();
         }
-
+        
         public LSL_Key llDataSizeKeyValue()
         {
-            NotImplemented("llDataSizeKeyValue", "Not implemented at this moment");
-            return UUID.Zero.ToString();
+        	NotImplemented("llDataSizeKeyValue", "Not implemented at this moment");
+        	return UUID.Zero.ToString();
         }
-
+        
         public LSL_Key llDeleteKeyValue(LSL_String key)
         {
-            NotImplemented("llDeleteKeyValue", "Not implemented at this moment");
-            return UUID.Zero.ToString();
+        	NotImplemented("llDeleteKeyValue", "Not implemented at this moment");
+        	return UUID.Zero.ToString();
         }
-
+        
         public LSL_List llGetExperienceDetails(LSL_Key experience_id)
         {
-            NotImplemented("llGetExperienceDetails", "Not implemented at this moment");
-            return new LSL_List();
+        	NotImplemented("llGetExperienceDetails", "Not implemented at this moment");
+        	return new LSL_List();
         }
-
+        
         public LSL_String llGetExperienceErrorMessage(LSL_Integer value)
         {
-            NotImplemented("llGetExperienceDetails", "Not implemented at this moment");
-            return String.Empty;
+        	NotImplemented("llGetExperienceDetails", "Not implemented at this moment");
+        	return String.Empty;
         }
-
+        
         public LSL_List llGetExperienceList(LSL_Key agent)
         {
-            NotImplemented("llGetExperienceDetails", "Function was deprecated");
-            return new LSL_List();
+        	NotImplemented("llGetExperienceDetails", "Function was deprecated");
+        	return new LSL_List();
         }
-
+        
         public LSL_Key llKeyCountKeyValue()
         {
-            NotImplemented("llKeyCountKeyValue", "Not implemented at this moment");
-            return UUID.Zero.ToString();
+        	NotImplemented("llKeyCountKeyValue", "Not implemented at this moment");
+        	return UUID.Zero.ToString();
         }
-
+        
         public LSL_Key llKeysKeyValue(LSL_Integer first, LSL_Integer count)
         {
-            NotImplemented("llKeysKeyValue", "Not implemented at this moment");
-            return UUID.Zero.ToString();
+        	NotImplemented("llKeysKeyValue", "Not implemented at this moment");
+        	return UUID.Zero.ToString();
         }
-
+        
         public LSL_Key llReadKeyValue(LSL_String key)
         {
-            NotImplemented("llReadKeyValue", "Not implemented at this moment");
-            return UUID.Zero.ToString();
+        	NotImplemented("llReadKeyValue", "Not implemented at this moment");
+        	return UUID.Zero.ToString();
         }
-
-        public void llRequestExperiencePermissions(LSL_Key agent, LSL_String name)
+        
+        public void llRequestExperiencePermissions(LSL_Key agent, LSL_String name )
         {
-            NotImplemented("llRequestExperiencePermissions", "Not implemented at this moment");
+        	NotImplemented("llRequestExperiencePermissions", "Not implemented at this moment");
         }
-
-        public LSL_Integer llSitOnLink(LSL_Key agent_id, LSL_Integer link)
+        
+        public LSL_Integer llSitOnLink( LSL_Key agent_id, LSL_Integer link )
         {
-            NotImplemented("llSitOnLink", "Not implemented at this moment");
-            return 0;
+        	NotImplemented("llSitOnLink", "Not implemented at this moment");
+        	return 0;
         }
-
-        public LSL_Key llUpdateKeyValue(LSL_Key key, LSL_String value, LSL_Integer check, LSL_String original_value)
+        
+        public LSL_Key llUpdateKeyValue( LSL_Key key, LSL_String value, LSL_Integer check, LSL_String original_value )
         {
-            NotImplemented("llUpdateKeyValue", "Not implemented at this moment");
-            return UUID.Zero.ToString();
+        	NotImplemented("llUpdateKeyValue", "Not implemented at this moment");
+        	return UUID.Zero.ToString();
         }
         #endregion
     }
@@ -14128,13 +14106,11 @@ namespace Universe.ScriptEngine.VirtualScript.APIs
 
         public static void CacheCheck()
         {
-            lock (m_Notecards)
-            {
-                foreach (UUID key in new List<UUID>(m_Notecards.Keys))
-                {
-                    Notecard nc = m_Notecards[key];
-                    if (nc.lastRef.AddSeconds(30) < DateTime.Now)
-                        m_Notecards.Remove(key);
+            lock (m_Notecards) {
+                foreach (UUID key in new List<UUID> (m_Notecards.Keys)) {
+                    Notecard nc = m_Notecards [key];
+                    if (nc.lastRef.AddSeconds (30) < DateTime.Now)
+                        m_Notecards.Remove (key);
                 }
             }
         }

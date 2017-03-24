@@ -33,51 +33,51 @@ using Universe.Framework.Modules;
 
 namespace Universe.Modules.Terrain.PaintBrushes
 {
-	public class LowerSphere : ITerrainPaintableEffect
-	{
-		#region ITerrainPaintableEffect Members
+    public class LowerSphere : ITerrainPaintableEffect
+    {
+        #region ITerrainPaintableEffect Members
 
-		public void PaintEffect (ITerrainChannel map, UUID userID, float rx, float ry, float rz, float strength,
-		                               float duration, float BrushSize)
-		{
-			int x;
-			int xFrom = (int)(rx - BrushSize + 0.5);
-			int xTo = (int)(rx + BrushSize + 0.5) + 1;
-			int yFrom = (int)(ry - BrushSize + 0.5);
-			int yTo = (int)(ry + BrushSize + 0.5) + 1;
+        public void PaintEffect (ITerrainChannel map, UUID userID, float rx, float ry, float rz, float strength,
+                                float duration, float BrushSize)
+        {
+            int x;
+            int xFrom = (int)(rx - BrushSize + 0.5);
+            int xTo = (int)(rx + BrushSize + 0.5) + 1;
+            int yFrom = (int)(ry - BrushSize + 0.5);
+            int yTo = (int)(ry + BrushSize + 0.5) + 1;
 
-			if (xFrom < 0)
-				xFrom = 0;
+            if (xFrom < 0)
+                xFrom = 0;
 
-			if (yFrom < 0)
-				yFrom = 0;
+            if (yFrom < 0)
+                yFrom = 0;
 
-			if (xTo > map.Width)
-				xTo = map.Width;
+            if (xTo > map.Width)
+                xTo = map.Width;
 
-			if (yTo > map.Height)
-				yTo = map.Height;
+            if (yTo > map.Height)
+                yTo = map.Height;
 
-			for (x = xFrom; x < xTo; x++) {
-				int y;
-				for (y = yFrom; y < yTo; y++) {
-					if (!map.Scene.Permissions.CanTerraformLand (userID, new Vector3 (x, y, 0)))
-						continue;
+            for (x = xFrom; x < xTo; x++) {
+                int y;
+                for (y = yFrom; y < yTo; y++) {
+                    if (!map.Scene.Permissions.CanTerraformLand (userID, new Vector3 (x, y, 0)))
+                        continue;
 
-					// Calculate a cos-sphere and add it to the heightmap
-					float r = (float)Math.Sqrt ((x - rx) * (x - rx) + ((y - ry) * (y - ry)));
-					float z = (float)Math.Cos (r * Math.PI / (BrushSize * 2));
-					if (z > 0.0) {
-						float newz = map [x, y] - z * duration;
-						if (newz < 0.0)
-							map [x, y] = 0;
-						else
-							map [x, y] = newz;
-					}
-				}
-			}
-		}
+                    // Calculate a cos-sphere and add it to the heightmap
+                    float r = (float)Math.Sqrt ((x - rx) * (x - rx) + ((y - ry) * (y - ry)));
+                    float z = (float)Math.Cos (r * Math.PI / (BrushSize * 2));
+                    if (z > 0.0) {
+                        float newz = map [x, y] - z * duration;
+                        if (newz < 0.0)
+                            map [x, y] = 0;
+                        else
+                            map [x, y] = newz;
+                    }
+                }
+            }
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

@@ -33,41 +33,42 @@ using System.Reflection;
 
 namespace Universe.ScriptEngine.VirtualScript
 {
-	[Serializable]
-	public class AssemblyResolver : MarshalByRefObject
-	{
-		readonly string PathToSearch = "";
+    [Serializable]
+    public class AssemblyResolver : MarshalByRefObject
+    {
+        readonly string PathToSearch = "";
 
-		public AssemblyResolver (string pathToSearch)
-		{
-			PathToSearch = pathToSearch;
-		}
+        public AssemblyResolver(string pathToSearch)
+        {
+            PathToSearch = pathToSearch;
+        }
 
-		public Assembly OnAssemblyResolve (object sender,
-		                                        ResolveEventArgs args)
-		{
-			if (!(sender is AppDomain))
-				return null;
+        public Assembly OnAssemblyResolve(object sender,
+                                          ResolveEventArgs args)
+        {
+            if (!(sender is AppDomain))
+                return null;
 
-			string[] pathList = {
-				Path.Combine (Directory.GetCurrentDirectory (), "bin"),
-				Path.Combine (Directory.GetCurrentDirectory (), PathToSearch),
-				Path.Combine (Directory.GetCurrentDirectory (), 
-					Path.Combine (PathToSearch, "Scripts")),
-				Directory.GetCurrentDirectory ()
-			};
+            string[] pathList = {
+                Path.Combine(Directory.GetCurrentDirectory(), "bin"),
+                Path.Combine(Directory.GetCurrentDirectory(), PathToSearch),
+                Path.Combine(Directory.GetCurrentDirectory(), 
+                             Path.Combine(PathToSearch, "Scripts")),
+                Directory.GetCurrentDirectory()
+            };
 
-			string assemblyName = args.Name;
-			if (assemblyName.IndexOf (",", StringComparison.Ordinal) != -1)
-				assemblyName = args.Name.Substring (0, args.Name.IndexOf (",", StringComparison.Ordinal));
+            string assemblyName = args.Name;
+            if (assemblyName.IndexOf (",", StringComparison.Ordinal) != -1)
+                assemblyName = args.Name.Substring(0, args.Name.IndexOf (",", StringComparison.Ordinal));
 
-			foreach (string s in pathList) {
-				string path = Path.Combine (s, assemblyName) + ".dll";
+            foreach (string s in pathList)
+            {
+                string path = Path.Combine(s, assemblyName) + ".dll";
 
-				if (File.Exists (path))
-					return Assembly.Load (AssemblyName.GetAssemblyName (path));
-			}
-			return null;
-		}
-	}
+                if (File.Exists(path))
+                    return Assembly.Load(AssemblyName.GetAssemblyName(path));
+            }
+            return null;
+        }
+    }
 }

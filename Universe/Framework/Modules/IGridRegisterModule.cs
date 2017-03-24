@@ -33,35 +33,35 @@ using Universe.Framework.Services;
 
 namespace Universe.Framework.Modules
 {
-	public interface IGridRegisterModule
-	{
-		/// <summary>
-		///     Update the grid server with new info about this region
-		/// </summary>
-		/// <param name="scene"></param>
-		void UpdateGridRegion (IScene scene);
+    public interface IGridRegisterModule
+    {
+        /// <summary>
+        ///     Update the grid server with new info about this region
+        /// </summary>
+        /// <param name="scene"></param>
+        void UpdateGridRegion(IScene scene);
 
-		/// <summary>
-		///     Register this region with the grid service
-		/// </summary>
-		/// <param name="scene"></param>
-		/// <param name="returnResultImmediately">If false, it will walk the user through how to fix potential issues</param>
-		/// <param name="continueTrying">Continue trying to register until it succeeds</param>
-		/// <param name="password"> </param>
-		/// <returns>Success</returns>
-		bool RegisterRegionWithGrid (IScene scene, bool returnResultImmediately, bool continueTrying, string password);
+        /// <summary>
+        ///     Register this region with the grid service
+        /// </summary>
+        /// <param name="scene"></param>
+        /// <param name="returnResultImmediately">If false, it will walk the user through how to fix potential issues</param>
+        /// <param name="continueTrying">Continue trying to register until it succeeds</param>
+        /// <param name="password"> </param>
+        /// <returns>Success</returns>
+        bool RegisterRegionWithGrid(IScene scene, bool returnResultImmediately, bool continueTrying, string password);
 
-		/// <summary>
-		///     Get the neighbors of the given region
-		/// </summary>
-		/// <param name="scene"></param>
-		/// <returns></returns>
-		List<GridRegion> GetNeighbors (IScene scene);
+        /// <summary>
+        ///     Get the neighbors of the given region
+        /// </summary>
+        /// <param name="scene"></param>
+        /// <returns></returns>
+        List<GridRegion> GetNeighbors(IScene scene);
 
-		/// <summary>
-		/// Removes a region from the grid
-		/// </summary>
-		/// <param name="scene"></param>
-		void DeleteRegion (IScene scene);
-	}
+        /// <summary>
+        /// Removes a region from the grid
+        /// </summary>
+        /// <param name="scene"></param>
+        void DeleteRegion(IScene scene);
+    }
 }

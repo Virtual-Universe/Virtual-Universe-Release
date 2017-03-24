@@ -36,156 +36,158 @@ using Universe.Framework.SceneInfo;
 
 namespace Universe.Modules.SimProtection
 {
-	/// <summary>
-	///     This module helps keep the sim running when it begins to slow down, or if it freezes, restarts it
-	/// </summary>
-	public class SimProtection : INonSharedRegionModule
-	{
-		#region Declares
+    /// <summary>
+    ///     This module helps keep the sim running when it begins to slow down, or if it freezes, restarts it
+    /// </summary>
+    public class SimProtection : INonSharedRegionModule
+    {
+        #region Declares
 
-		protected bool AllowDisablePhysics = true;
-		protected bool AllowDisableScripts = true;
+        protected bool AllowDisablePhysics = true;
+        protected bool AllowDisableScripts = true;
 
-		//Normal Sim FPS
-		float BaseRateFramesPerSecond = 45;
-		// When BaseRate / current FPS is less than this percent, begin shutting down services
-		protected DateTime DisabledPhysicsStartTime = DateTime.MinValue;
-		protected DateTime DisabledScriptStartTime = DateTime.MinValue;
-		protected bool KillSimOnZeroFPS = true;
-		protected float MinutesBeforeZeroFPSKills = 1;
-		protected float PercentToBeginShutDownOfServices = 50;
-		protected DateTime SimZeroFPSStartTime = DateTime.MinValue;
-		protected float TimeAfterToReenablePhysics = 20;
-		protected float TimeAfterToReenableScripts;
-		protected float TimeBetweenChecks = 1;
-		protected Timer TimerToCheckHeartbeat;
-		protected bool m_Enabled;
-		protected IScene m_scene;
-		protected ISimFrameMonitor m_statsReporter;
+        //Normal Sim FPS
+        float BaseRateFramesPerSecond = 45;
+        // When BaseRate / current FPS is less than this percent, begin shutting down services
+        protected DateTime DisabledPhysicsStartTime = DateTime.MinValue;
+        protected DateTime DisabledScriptStartTime = DateTime.MinValue;
+        protected bool KillSimOnZeroFPS = true;
+        protected float MinutesBeforeZeroFPSKills = 1;
+        protected float PercentToBeginShutDownOfServices = 50;
+        protected DateTime SimZeroFPSStartTime = DateTime.MinValue;
+        protected float TimeAfterToReenablePhysics = 20;
+        protected float TimeAfterToReenableScripts;
+        protected float TimeBetweenChecks = 1;
+        protected Timer TimerToCheckHeartbeat;
+        protected bool m_Enabled;
+        protected IScene m_scene;
+        protected ISimFrameMonitor m_statsReporter;
 
-		#endregion
+        #endregion
 
-		#region INonSharedRegionModule
+        #region INonSharedRegionModule
 
-		public void Initialize (IConfigSource source)
-		{
-			if (!source.Configs.Contains ("Protection"))
-				return;
-			TimeAfterToReenableScripts = TimeAfterToReenablePhysics * 2;
-			IConfig config = source.Configs ["Protection"];
-			m_Enabled = config.GetBoolean ("Enabled", false);
-			BaseRateFramesPerSecond = config.GetFloat ("BaseRateFramesPerSecond", 45);
-			PercentToBeginShutDownOfServices = config.GetFloat ("PercentToBeginShutDownOfServices", 50);
-			TimeAfterToReenablePhysics = config.GetFloat ("TimeAfterToReenablePhysics", 20);
-			AllowDisableScripts = config.GetBoolean ("AllowDisableScripts", true);
-			AllowDisablePhysics = config.GetBoolean ("AllowDisablePhysics", true);
-			KillSimOnZeroFPS = config.GetBoolean ("RestartSimIfZeroFPS", true);
-			MinutesBeforeZeroFPSKills = config.GetFloat ("TimeBeforeZeroFPSKills", 1);
-			TimeBetweenChecks = config.GetFloat ("TimeBetweenChecks", 1);
-		}
+        public void Initialize (IConfigSource source)
+        {
+            if (!source.Configs.Contains ("Protection"))
+                return;
+            TimeAfterToReenableScripts = TimeAfterToReenablePhysics * 2;
+            IConfig config = source.Configs ["Protection"];
+            m_Enabled = config.GetBoolean ("Enabled", false);
+            BaseRateFramesPerSecond = config.GetFloat ("BaseRateFramesPerSecond", 45);
+            PercentToBeginShutDownOfServices = config.GetFloat ("PercentToBeginShutDownOfServices", 50);
+            TimeAfterToReenablePhysics = config.GetFloat ("TimeAfterToReenablePhysics", 20);
+            AllowDisableScripts = config.GetBoolean ("AllowDisableScripts", true);
+            AllowDisablePhysics = config.GetBoolean ("AllowDisablePhysics", true);
+            KillSimOnZeroFPS = config.GetBoolean ("RestartSimIfZeroFPS", true);
+            MinutesBeforeZeroFPSKills = config.GetFloat ("TimeBeforeZeroFPSKills", 1);
+            TimeBetweenChecks = config.GetFloat ("TimeBetweenChecks", 1);
+        }
 
-		public void Close ()
-		{
-		}
+        public void Close ()
+        {
+        }
 
-		public void AddRegion (IScene scene)
-		{
-		}
+        public void AddRegion (IScene scene)
+        {
+        }
 
-		public string Name {
-			get { return "SimProtection"; }
-		}
+        public string Name {
+            get { return "SimProtection"; }
+        }
 
-		public Type ReplaceableInterface {
-			get { return null; }
-		}
+        public Type ReplaceableInterface {
+            get { return null; }
+        }
 
-		public void RemoveRegion (IScene scene)
-		{
-			if (!m_Enabled)
-				return;
-			TimerToCheckHeartbeat.Stop ();
-		}
+        public void RemoveRegion (IScene scene)
+        {
+            if (!m_Enabled)
+                return;
+            TimerToCheckHeartbeat.Stop ();
+        }
 
-		public void RegionLoaded (IScene scene)
-		{
-			if (!m_Enabled)
-				return;
-			m_scene = scene;
-			BaseRateFramesPerSecond = scene.BaseSimFPS;
-			m_statsReporter = m_scene.RequestModuleInterface<IMonitorModule> ().GetMonitor<ISimFrameMonitor> (m_scene);
-			if (m_statsReporter == null) {
-				MainConsole.Instance.Warn ("[SimProtection]: Cannot be used as SimStatsReporter does not exist.");
-				return;
-			}
-			TimerToCheckHeartbeat = new Timer { Interval = TimeBetweenChecks * 1000 * 60 };
-			//minutes
-			TimerToCheckHeartbeat.Elapsed += OnCheck;
-			TimerToCheckHeartbeat.Start ();
-		}
+        public void RegionLoaded (IScene scene)
+        {
+            if (!m_Enabled)
+                return;
+            m_scene = scene;
+            BaseRateFramesPerSecond = scene.BaseSimFPS;
+            m_statsReporter = m_scene.RequestModuleInterface<IMonitorModule> ().GetMonitor<ISimFrameMonitor> (m_scene);
+            if (m_statsReporter == null) {
+                MainConsole.Instance.Warn ("[SimProtection]: Cannot be used as SimStatsReporter does not exist.");
+                return;
+            }
+            TimerToCheckHeartbeat = new Timer { Interval = TimeBetweenChecks * 1000 * 60 };
+            //minutes
+            TimerToCheckHeartbeat.Elapsed += OnCheck;
+            TimerToCheckHeartbeat.Start ();
+        }
 
-		#endregion
+        #endregion
 
-		#region Protection
+        #region Protection
 
-		void OnCheck (object sender, ElapsedEventArgs e)
-		{
-			IEstateModule mod = m_scene.RequestModuleInterface<IEstateModule> ();
-			if (AllowDisableScripts &&
-			    m_statsReporter.LastReportedSimFPS < BaseRateFramesPerSecond * (PercentToBeginShutDownOfServices / 100) &&
-			    m_statsReporter.LastReportedSimFPS > 0) {
-				//Less than the percent to start shutting things down... Lets kill some stuff
-				if (mod != null)
-					mod.SetSceneCoreDebug (false, m_scene.RegionInfo.RegionSettings.DisableCollisions,
-						m_scene.RegionInfo.RegionSettings.DisablePhysics);
-				//These are opposite of what you want the value to be... go figure
-				DisabledScriptStartTime = DateTime.Now;
-			}
-			if (m_scene.RegionInfo.RegionSettings.DisableScripts &&
-			    AllowDisableScripts &&
-			    SimZeroFPSStartTime != DateTime.MinValue &&
+        void OnCheck (object sender, ElapsedEventArgs e)
+        {
+            IEstateModule mod = m_scene.RequestModuleInterface<IEstateModule> ();
+            if (AllowDisableScripts &&
+                m_statsReporter.LastReportedSimFPS < BaseRateFramesPerSecond * (PercentToBeginShutDownOfServices / 100) &&
+                m_statsReporter.LastReportedSimFPS > 0) {
+                //Less than the percent to start shutting things down... Lets kill some stuff
+                if (mod != null)
+                    mod.SetSceneCoreDebug (false, m_scene.RegionInfo.RegionSettings.DisableCollisions,
+                                          m_scene.RegionInfo.RegionSettings.DisablePhysics);
+                //These are opposite of what you want the value to be... go figure
+                DisabledScriptStartTime = DateTime.Now;
+            }
+            if (m_scene.RegionInfo.RegionSettings.DisableScripts &&
+                AllowDisableScripts &&
+                SimZeroFPSStartTime != DateTime.MinValue &&
                 //This makes sure we don't screw up the setting if the user disabled physics manually
-			    SimZeroFPSStartTime.AddSeconds (TimeAfterToReenableScripts) > DateTime.Now) {
-				DisabledScriptStartTime = DateTime.MinValue;
-				if (mod != null)
-					mod.SetSceneCoreDebug (true, m_scene.RegionInfo.RegionSettings.DisableCollisions,
-						m_scene.RegionInfo.RegionSettings.DisablePhysics);
-				//These are opposite of what you want the value to be... go figure
-			}
+                SimZeroFPSStartTime.AddSeconds (TimeAfterToReenableScripts) > DateTime.Now) {
+                DisabledScriptStartTime = DateTime.MinValue;
+                if (mod != null)
+                    mod.SetSceneCoreDebug (true, m_scene.RegionInfo.RegionSettings.DisableCollisions,
+                                          m_scene.RegionInfo.RegionSettings.DisablePhysics);
+                //These are opposite of what you want the value to be... go figure
+            }
 
-			if (m_statsReporter.LastReportedSimFPS <= 0.5f && KillSimOnZeroFPS) {
-				if (SimZeroFPSStartTime == DateTime.MinValue)
-					SimZeroFPSStartTime = DateTime.Now;
-				if (SimZeroFPSStartTime.AddMinutes (MinutesBeforeZeroFPSKills) > SimZeroFPSStartTime)
-					MainConsole.Instance.RunCommand ("shutdown");
-			} else
-				SimZeroFPSStartTime = DateTime.MinValue;
+            if (m_statsReporter.LastReportedSimFPS <= 0.5f && KillSimOnZeroFPS) {
+                if (SimZeroFPSStartTime == DateTime.MinValue)
+                    SimZeroFPSStartTime = DateTime.Now;
+                if (SimZeroFPSStartTime.AddMinutes (MinutesBeforeZeroFPSKills) > SimZeroFPSStartTime)
+                    MainConsole.Instance.RunCommand ("shutdown");
+            } else
+                SimZeroFPSStartTime = DateTime.MinValue;
 
-			float[] stats = m_scene.RequestModuleInterface<IMonitorModule> ().GetRegionStats (m_scene);
-			if (stats [2] /*PhysicsFPS*/ < BaseRateFramesPerSecond * (PercentToBeginShutDownOfServices / 100) &&
-			    stats [2] > 0.5 &&
-			    AllowDisablePhysics &&
-			    !m_scene.RegionInfo.RegionSettings.DisablePhysics) {            //Don't re-disable physics again, physics will be frozen at the last FPS
-				DisabledPhysicsStartTime = DateTime.Now;
-				if (mod != null)
-					mod.SetSceneCoreDebug (m_scene.RegionInfo.RegionSettings.DisableScripts,
-						m_scene.RegionInfo.RegionSettings.DisableCollisions, false);
-				//These are opposite of what you want the value to be... go figure
-			}
+            float [] stats = m_scene.RequestModuleInterface<IMonitorModule> ().GetRegionStats (m_scene);
+            if (stats [2] /*PhysicsFPS*/< BaseRateFramesPerSecond * (PercentToBeginShutDownOfServices / 100) &&
+                stats [2] > 0.5 &&
+                AllowDisablePhysics &&
+                !m_scene.RegionInfo.RegionSettings.DisablePhysics)
+            //Don't re-disable physics again, physics will be frozen at the last FPS
+            {
+                DisabledPhysicsStartTime = DateTime.Now;
+                if (mod != null)
+                    mod.SetSceneCoreDebug (m_scene.RegionInfo.RegionSettings.DisableScripts,
+                                          m_scene.RegionInfo.RegionSettings.DisableCollisions, false);
+                //These are opposite of what you want the value to be... go figure
+            }
 
-			if (m_scene.RegionInfo.RegionSettings.DisablePhysics &&
-			    AllowDisablePhysics &&
-			    DisabledPhysicsStartTime != DateTime.MinValue &&
+            if (m_scene.RegionInfo.RegionSettings.DisablePhysics &&
+                AllowDisablePhysics &&
+                DisabledPhysicsStartTime != DateTime.MinValue &&
                 //This makes sure we don't screw up the setting if the user disabled physics manually
-			    DisabledPhysicsStartTime.AddSeconds (TimeAfterToReenablePhysics) > DateTime.Now) {
-				DisabledPhysicsStartTime = DateTime.MinValue;
-				if (mod != null)
-					mod.SetSceneCoreDebug (m_scene.RegionInfo.RegionSettings.DisableScripts,
-						m_scene.RegionInfo.RegionSettings.DisableCollisions, true);
-				//These are opposite of what you want the value to be... go figure
-			}
-		}
+                DisabledPhysicsStartTime.AddSeconds (TimeAfterToReenablePhysics) > DateTime.Now) {
+                DisabledPhysicsStartTime = DateTime.MinValue;
+                if (mod != null)
+                    mod.SetSceneCoreDebug (m_scene.RegionInfo.RegionSettings.DisableScripts,
+                                          m_scene.RegionInfo.RegionSettings.DisableCollisions, true);
+                //These are opposite of what you want the value to be... go figure
+            }
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

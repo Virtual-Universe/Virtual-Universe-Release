@@ -32,145 +32,153 @@ using System.Threading;
 
 namespace Universe.Framework.Utilities
 {
-	internal class SimpleAsyncResult : IAsyncResult
-	{
-		private readonly object m_asyncState;
-		private readonly AsyncCallback m_callback;
+    internal class SimpleAsyncResult : IAsyncResult
+    {
+        private readonly object m_asyncState;
+        private readonly AsyncCallback m_callback;
 
-		/// <summary>
-		///     Is process completed?
-		/// </summary>
-		/// <remarks>
-		///     Should really be Boolean, but VolatileRead has no Boolean method
-		/// </remarks>
-		private byte m_completed;
+        /// <summary>
+        ///     Is process completed?
+        /// </summary>
+        /// <remarks>
+        ///     Should really be Boolean, but VolatileRead has no Boolean method
+        /// </remarks>
+        private byte m_completed;
 
-		/// <summary>
-		///     Did process complete synchronously?
-		/// </summary>
-		/// <remarks>
-		///     I have a hard time imagining a scenario where this is the case, again, same issue about
-		///     Booleans and VolatileRead as m_completed
-		/// </remarks>
-		private byte m_completedSynchronously;
+        /// <summary>
+        ///     Did process complete synchronously?
+        /// </summary>
+        /// <remarks>
+        ///     I have a hard time imagining a scenario where this is the case, again, same issue about
+        ///     Booleans and VolatileRead as m_completed
+        /// </remarks>
+        private byte m_completedSynchronously;
 
-		private Exception m_exception;
-		private ManualResetEvent m_waitHandle;
+        private Exception m_exception;
+        private ManualResetEvent m_waitHandle;
 
-		internal SimpleAsyncResult (AsyncCallback cb, object state)
-		{
-			m_callback = cb;
-			m_asyncState = state;
-			m_completed = 0;
-			m_completedSynchronously = 1;
-		}
+        internal SimpleAsyncResult(AsyncCallback cb, object state)
+        {
+            m_callback = cb;
+            m_asyncState = state;
+            m_completed = 0;
+            m_completedSynchronously = 1;
+        }
 
-		#region IAsyncResult Members
+        #region IAsyncResult Members
 
-		public object AsyncState {
-			get { return m_asyncState; }
-		}
+        public object AsyncState
+        {
+            get { return m_asyncState; }
+        }
 
-		public WaitHandle AsyncWaitHandle {
-			get {
-				if (m_waitHandle == null) {
-					bool done = IsCompleted;
-					ManualResetEvent mre = new ManualResetEvent (done);
-					if (Interlocked.CompareExchange (ref m_waitHandle, mre, null) != null) {
-						mre.Close ();
-					} else {
-						if (!done && IsCompleted) {
-							m_waitHandle.Set ();
-						}
-					}
-				}
+        public WaitHandle AsyncWaitHandle
+        {
+            get
+            {
+                if (m_waitHandle == null)
+                {
+                    bool done = IsCompleted;
+                    ManualResetEvent mre = new ManualResetEvent(done);
+                    if (Interlocked.CompareExchange(ref m_waitHandle, mre, null) != null)
+                    {
+                        mre.Close();
+                    }
+                    else
+                    {
+                        if (!done && IsCompleted)
+                        {
+                            m_waitHandle.Set();
+                        }
+                    }
+                }
 
-				return m_waitHandle;
-			}
-		}
+                return m_waitHandle;
+            }
+        }
 
 
-		public bool CompletedSynchronously {
-			get { return Thread.VolatileRead (ref m_completedSynchronously) == 1; }
-		}
+        public bool CompletedSynchronously
+        {
+            get { return Thread.VolatileRead(ref m_completedSynchronously) == 1; }
+        }
 
 
-		public bool IsCompleted {
-			get { return Thread.VolatileRead (ref m_completed) == 1; }
-		}
+        public bool IsCompleted
+        {
+            get { return Thread.VolatileRead(ref m_completed) == 1; }
+        }
 
-		#endregion
+        #endregion
 
-		#region class Methods
+        #region class Methods
 
-		internal void SetAsCompleted (bool completedSynchronously)
-		{
-			m_completed = 1;
-			m_completedSynchronously = completedSynchronously ? (byte)1 : (byte)0;
+        internal void SetAsCompleted(bool completedSynchronously)
+        {
+            m_completed = 1;
+            m_completedSynchronously = completedSynchronously ? (byte) 1 : (byte) 0;
 
-			SignalCompletion ();
-		}
+            SignalCompletion();
+        }
 
-		internal void HandleException (Exception e, bool completedSynchronously)
-		{
-			m_completed = 1;
-			m_completedSynchronously = completedSynchronously ? (byte)1 : (byte)0;
-			m_exception = e;
+        internal void HandleException(Exception e, bool completedSynchronously)
+        {
+            m_completed = 1;
+            m_completedSynchronously = completedSynchronously ? (byte) 1 : (byte) 0;
+            m_exception = e;
 
-			SignalCompletion ();
-		}
+            SignalCompletion();
+        }
 
-		private void SignalCompletion ()
-		{
-			if (m_waitHandle != null)
-				m_waitHandle.Set ();
+        private void SignalCompletion()
+        {
+            if (m_waitHandle != null) m_waitHandle.Set();
 
-			if (m_callback != null)
-				m_callback (this);
-		}
+            if (m_callback != null) m_callback(this);
+        }
 
-		public void EndInvoke ()
-		{
-			// This method assumes that only 1 thread calls EndInvoke
-			if (!IsCompleted) {
-				// If the operation isn't done, wait for it
-				AsyncWaitHandle.WaitOne ();
-				AsyncWaitHandle.Close ();
-				m_waitHandle.Close ();
-				m_waitHandle = null; // Allow early GC
-			}
+        public void EndInvoke()
+        {
+            // This method assumes that only 1 thread calls EndInvoke
+            if (!IsCompleted)
+            {
+                // If the operation isn't done, wait for it
+                AsyncWaitHandle.WaitOne();
+                AsyncWaitHandle.Close();
+                m_waitHandle.Close();
+                m_waitHandle = null; // Allow early GC
+            }
 
-			// Operation is done: if an exception occurred, throw it
-			if (m_exception != null)
-				throw m_exception;
-		}
+            // Operation is done: if an exception occurred, throw it
+            if (m_exception != null) throw m_exception;
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 
-	internal class AsyncResult<T> : SimpleAsyncResult
-	{
-		private T m_result;
+    internal class AsyncResult<T> : SimpleAsyncResult
+    {
+        private T m_result;
 
-		public AsyncResult (AsyncCallback asyncCallback, Object state) :
-			base (asyncCallback, state)
-		{
-		}
+        public AsyncResult(AsyncCallback asyncCallback, Object state) :
+            base(asyncCallback, state)
+        {
+        }
 
-		public void SetAsCompleted (T result, bool completedSynchronously)
-		{
-			// Save the asynchronous operation's result
-			m_result = result;
+        public void SetAsCompleted(T result, bool completedSynchronously)
+        {
+            // Save the asynchronous operation's result
+            m_result = result;
 
-			// Tell the base class that the operation completed
-			// successfully (no exception)
-			base.SetAsCompleted (completedSynchronously);
-		}
+            // Tell the base class that the operation completed
+            // successfully (no exception)
+            base.SetAsCompleted(completedSynchronously);
+        }
 
-		public new T EndInvoke ()
-		{
-			base.EndInvoke ();
-			return m_result;
-		}
-	}
+        public new T EndInvoke()
+        {
+            base.EndInvoke();
+            return m_result;
+        }
+    }
 }

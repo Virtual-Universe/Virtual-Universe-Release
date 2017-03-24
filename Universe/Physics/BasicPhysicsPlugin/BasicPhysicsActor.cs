@@ -32,247 +32,277 @@ using Universe.Framework.Physics;
 
 namespace Universe.Physics.BasicPhysicsPlugin
 {
-	public class BasicCharacterActor : PhysicsActor
-	{
-		private Vector3 _size;
+    public class BasicCharacterActor : PhysicsActor
+    {
+        private Vector3 _size;
 
-		public override bool IsJumping {
-			get { return false; }
-		}
+        public override bool IsJumping
+        {
+            get { return false; }
+        }
 
-		public override bool IsPreJumping {
-			get { return false; }
-		}
+        public override bool IsPreJumping
+        {
+            get { return false; }
+        }
 
-		public override float SpeedModifier {
-			get { return 1.0f; }
-			set { }
-		}
+        public override float SpeedModifier
+        {
+            get { return 1.0f; }
+            set { }
+        }
 
-		public override int PhysicsActorType {
-			get { return (int)ActorTypes.Agent; }
-			set { return; }
-		}
+        public override int PhysicsActorType
+        {
+            get { return (int) ActorTypes.Agent; }
+            set { return; }
+        }
 
-		public override Vector3 RotationalVelocity { get; set; }
+        public override Vector3 RotationalVelocity { get; set; }
 
-		public override bool SetAlwaysRun {
-			get { return false; }
-			set { return; }
-		}
+        public override bool SetAlwaysRun
+        {
+            get { return false; }
+            set { return; }
+        }
 
-		public override uint LocalID {
-			get { return 0; }
-			set { return; }
-		}
+        public override uint LocalID
+        {
+            get { return 0; }
+            set { return; }
+        }
 
-		public override bool Grabbed {
-			set { return; }
-		}
+        public override bool Grabbed {
+            set { return; }
+        }
 
-		public override bool FloatOnWater {
-			set { return; }
-		}
+        public override bool FloatOnWater
+        {
+            set { return; }
+        }
 
-		public override bool IsPhysical {
-			get { return false; }
-			set { return; }
-		}
+        public override bool IsPhysical
+        {
+            get { return false; }
+            set { return; }
+        }
 
-		public override bool ThrottleUpdates {
-			get { return false; }
-			set { return; }
-		}
+        public override bool ThrottleUpdates
+        {
+            get { return false; }
+            set { return; }
+        }
 
-		public override bool Flying { get; set; }
+        public override bool Flying { get; set; }
 
-		public override bool IsTruelyColliding { get; set; }
+        public override bool IsTruelyColliding { get; set; }
+        public override bool IsColliding { get; set; }
 
-		public override bool IsColliding { get; set; }
+        public override Vector3 Position { get; set; }
 
-		public override Vector3 Position { get; set; }
+        public override Vector3 Size
+        {
+            get { return _size; }
+            set
+            {
+                _size = value;
+                _size.Z = _size.Z/2.0f;
+            }
+        }
 
-		public override Vector3 Size {
-			get { return _size; }
-			set {
-				_size = value;
-				_size.Z = _size.Z / 2.0f;
-			}
-		}
+        public override float Mass
+        {
+            get { return 0f; }
+        }
 
-		public override float Mass {
-			get { return 0f; }
-		}
+        public override bool Kinematic {
+            get { return false; }
+            set { return; }
+        }
 
-		public override bool Kinematic {
-			get { return false; }
-			set { return; }
-		}
+        public override Vector3 Force
+        {
+            get { return Vector3.Zero; }
+            set { return; }
+        }
 
-		public override Vector3 Force {
-			get { return Vector3.Zero; }
-			set { return; }
-		}
+        public override Vector3 Velocity { get; set; }
 
-		public override Vector3 Velocity { get; set; }
+        public override float CollisionScore
+        {
+            get { return 0f; }
+            set { }
+        }
 
-		public override float CollisionScore {
-			get { return 0f; }
-			set { }
-		}
+        public override Quaternion Orientation
+        {
+            get { return Quaternion.Identity; }
+            set { }
+        }
 
-		public override Quaternion Orientation {
-			get { return Quaternion.Identity; }
-			set { }
-		}
+        public override void AddForce(Vector3 force, bool pushforce)
+        {
+        }
 
-		public override void AddForce (Vector3 force, bool pushforce)
-		{
-		}
+        public override bool SubscribedEvents()
+        {
+            return false;
+        }
 
-		public override bool SubscribedEvents ()
-		{
-			return false;
-		}
+        public override bool SendCollisions()
+        {
+            return false;
+        }
 
-		public override bool SendCollisions ()
-		{
-			return false;
-		}
+        public override void AddCollisionEvent(uint collidedWith, ContactPoint contact)
+        {
+        }
+    }
 
-		public override void AddCollisionEvent (uint collidedWith, ContactPoint contact)
-		{
-		}
-	}
+    public class BasicObjectActor : PhysicsActor
+    {
+        Vector3 _size;
 
-	public class BasicObjectActor : PhysicsActor
-	{
-		Vector3 _size;
+        public override bool Grabbed
+        {
+            set { return; }
+        }
 
-		public override bool Grabbed {
-			set { return; }
-		}
+        public override bool Selected
+        {
+            set { }
+        }
 
-		public override bool Selected {
-			set { }
-		}
+        public override int PhysicsActorType
+        {
+            get { return (int) ActorTypes.Agent; } 
+            set { return; }
+        }
 
-		public override int PhysicsActorType {
-			get { return (int)ActorTypes.Agent; } 
-			set { return; }
-		}
+        public override Vector3 RotationalVelocity { get; set; }
 
-		public override Vector3 RotationalVelocity { get; set; }
+        public override uint LocalID
+        {
+            get { return 0; }
+            set { return; }
+        }
 
-		public override uint LocalID {
-			get { return 0; }
-			set { return; }
-		}
+        public override bool FloatOnWater
+        {
+            set { return; }
+        }
 
-		public override bool FloatOnWater {
-			set { return; }
-		}
+        public override float Buoyancy
+        {
+            get { return 0f; }
+            set { return; }
+        }
 
-		public override float Buoyancy {
-			get { return 0f; }
-			set { return; }
-		}
+        public override bool IsPhysical
+        {
+            get { return false; }
+            set { return; }
+        }
 
-		public override bool IsPhysical {
-			get { return false; }
-			set { return; }
-		}
+        public override bool Kinematic {
+            get { return false; }
+            set { return; }
+        }
 
-		public override bool Kinematic {
-			get { return false; }
-			set { return; }
-		}
+        public override bool ThrottleUpdates
+        {
+            get { return false; }
+            set { return; }
+        }
 
-		public override bool ThrottleUpdates {
-			get { return false; }
-			set { return; }
-		}
+        public override bool IsTruelyColliding { get; set; }
+        public override bool IsColliding { get; set; }
 
-		public override bool IsTruelyColliding { get; set; }
+        public override Vector3 Position { get; set; }
 
-		public override bool IsColliding { get; set; }
+        public override Vector3 Size
+        {
+            get { return _size; }
+            set
+            {
+                _size = value;
+                _size.Z = _size.Z/2.0f;
+            }
+        }
 
-		public override Vector3 Position { get; set; }
+        public override float Mass
+        {
+            get { return 0f; }
+        }
 
-		public override Vector3 Size {
-			get { return _size; }
-			set {
-				_size = value;
-				_size.Z = _size.Z / 2.0f;
-			}
-		}
+        public override Vector3 Force
+        {
+            get { return Vector3.Zero; }
+            set { return; }
+        }
 
-		public override float Mass {
-			get { return 0f; }
-		}
+        public override Vector3 CenterOfMass
+        {
+            get { return Vector3.Zero; }
+        }
 
-		public override Vector3 Force {
-			get { return Vector3.Zero; }
-			set { return; }
-		}
+        public override Vector3 Velocity { get; set; }
 
-		public override Vector3 CenterOfMass {
-			get { return Vector3.Zero; }
-		}
+        public override Vector3 Torque
+        {
+            get { return Vector3.Zero; }
+            set { return; }
+        }
 
-		public override Vector3 Velocity { get; set; }
+        public override float CollisionScore
+        {
+            get { return 0f; }
+            set { }
+        }
 
-		public override Vector3 Torque {
-			get { return Vector3.Zero; }
-			set { return; }
-		}
+        public override Quaternion Orientation
+        {
+            get { return Quaternion.Identity; }
+            set { }
+        }
 
-		public override float CollisionScore {
-			get { return 0f; }
-			set { }
-		}
+        public override Vector3 Acceleration
+        {
+            get { return Vector3.Zero; }
+        }
 
-		public override Quaternion Orientation {
-			get { return Quaternion.Identity; }
-			set { }
-		}
+        public override void AddForce(Vector3 force, bool pushforce)
+        {
+        }
 
-		public override Vector3 Acceleration {
-			get { return Vector3.Zero; }
-		}
+        public override void AddAngularForce(Vector3 force, bool pushforce)
+        {
+        }
 
-		public override void AddForce (Vector3 force, bool pushforce)
-		{
-		}
+        public override void CrossingFailure()
+        {
+        }
 
-		public override void AddAngularForce (Vector3 force, bool pushforce)
-		{
-		}
+        public override void SubscribeEvents(int ms)
+        {
+        }
 
-		public override void CrossingFailure ()
-		{
-		}
+        public override void UnSubscribeEvents()
+        {
+        }
 
-		public override void SubscribeEvents (int ms)
-		{
-		}
+        public override bool SubscribedEvents()
+        {
+            return false;
+        }
 
-		public override void UnSubscribeEvents ()
-		{
-		}
+        public override bool SendCollisions()
+        {
+            return false;
+        }
 
-		public override bool SubscribedEvents ()
-		{
-			return false;
-		}
-
-		public override bool SendCollisions ()
-		{
-			return false;
-		}
-
-		public override void AddCollisionEvent (uint collidedWith, ContactPoint contact)
-		{
-		}
-	}
+        public override void AddCollisionEvent(uint collidedWith, ContactPoint contact)
+        {
+        }
+    }
 }

@@ -35,47 +35,45 @@ using Universe.Framework.Services;
 
 namespace Universe.Services
 {
-	public class SyncMessageRecievedService : IService, ISyncMessageRecievedService
-	{
-		public string Name {
-			get { return GetType ().Name; }
-		}
+    public class SyncMessageRecievedService : IService, ISyncMessageRecievedService
+    {
+        public string Name {
+            get { return GetType ().Name; }
+        }
 
-		#region ISyncMessageRecievedService Members
+        #region ISyncMessageRecievedService Members
 
-		public event MessageReceived OnMessageReceived;
+        public event MessageReceived OnMessageReceived;
 
-		public OSDMap FireMessageReceived (OSDMap message)
-		{
-			OSDMap result = null;
-			if (OnMessageReceived != null) {
-				MessageReceived eventCopy = OnMessageReceived;
-				foreach (OSDMap r in from MessageReceived messagedelegate in eventCopy.GetInvocationList ()
+        public OSDMap FireMessageReceived (OSDMap message)
+        {
+            OSDMap result = null;
+            if (OnMessageReceived != null) {
+                MessageReceived eventCopy = OnMessageReceived;
+                foreach (OSDMap r in from MessageReceived messagedelegate in eventCopy.GetInvocationList ()
                                      select messagedelegate (message)
-                                     into r where r != null select r) {
-					result = r;
-				}
-			}
-			return result;
-		}
+                                     into r where r != null select r) {result = r;}
+            }
+            return result;
+        }
 
-		#endregion
+        #endregion
 
-		#region IService Members
+        #region IService Members
 
-		public void Initialize (IConfigSource config, IRegistryCore registry)
-		{
-			registry.RegisterModuleInterface<ISyncMessageRecievedService> (this);
-		}
+        public void Initialize (IConfigSource config, IRegistryCore registry)
+        {
+            registry.RegisterModuleInterface<ISyncMessageRecievedService> (this);
+        }
 
-		public void Start (IConfigSource config, IRegistryCore registry)
-		{
-		}
+        public void Start (IConfigSource config, IRegistryCore registry)
+        {
+        }
 
-		public void FinishedStartup ()
-		{
-		}
+        public void FinishedStartup ()
+        {
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

@@ -35,23 +35,15 @@ using Universe.Framework.SceneInfo;
 
 namespace Universe.Framework.Modules
 {
-	public interface IClientNetworkServer
-	{
-		void Initialize (uint port, IConfigSource configSource, AgentCircuitManager authenticateClass);
-
-		void UpdatePort (uint port);
-
-		void AddScene (IScene x);
-
-		void Start ();
-
-		void Stop ();
-
-		IClientNetworkServer Copy ();
-
-		bool AddClient (uint circuitCode, UUID agentID, UUID sessionID, IPEndPoint remoteEndPoint,
-		                     AgentCircuitData sessionInfo);
-
-		void RemoveClient (IClientAPI iClientAPI);
-	}
+    public interface IClientNetworkServer
+    {
+        void Initialize(uint port, IConfigSource configSource, AgentCircuitManager authenticateClass);
+        void UpdatePort(uint port);
+        void AddScene(IScene x);
+        void Start();
+        void Stop();
+        IClientNetworkServer Copy();
+        bool AddClient(uint circuitCode, UUID agentID, UUID sessionID, IPEndPoint remoteEndPoint, AgentCircuitData sessionInfo);
+        void RemoveClient(IClientAPI iClientAPI);
+    }
 }

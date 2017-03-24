@@ -32,11 +32,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-
 #if NET_4_5
 using System.Net.Http;
 using System.Threading.Tasks;
-
 #else
 using System.Net;
 using Universe.Framework.Servers.HttpServer;
@@ -145,47 +143,47 @@ namespace Universe.Framework.Utilities
                 if (MainConsole.Instance != null) {
                     if (errorMessage == "")//No error
                     {
-                        // This just dumps a warning for any operation that takes more than 10000 ms
+                        // This just dumps a warning for any operation that takes more than 8000 ms
                         if (MainConsole.Instance.IsDebugEnabled) {
                             var stackTrace = new System.Diagnostics.StackTrace ();
 
                             MainConsole.Instance.Debug (
-                                string.Format ("[Web Utils]: Request (URI:{0}, METHOD:{1}, UPSTACK(4):{3}) took {2} ms",
+                                string.Format ("[WebUtils]: Request (URI:{0}, METHOD:{1}, UPSTACK(4):{3}) took {2} ms",
                                                url, method, tickelapsed,
                                 stackTrace.GetFrame (3).GetMethod ().Name));
                         }
-                        if (tickelapsed > 10000) {
+                        if (tickelapsed > 8000) {
                             MainConsole.Instance.Info (
-                                string.Format ("[Web Utils]: Slow request - (URI:{0}, METHOD:{1}) took {2} ms for {3} bytes",
+                                string.Format ("[WebUtils]: Slow request - (URI:{0}, METHOD:{1}) took {2} ms for {3} bytes",
                                                url, method, tickelapsed, buffer.Length));
                             string bufdata = buffer.Length > 0 ? Encoding.UTF8.GetString (buffer) : "null";
                             if (bufdata.Length > 255)
                                 bufdata = bufdata.Substring (0, 250) + "...";
-                            MainConsole.Instance.DebugFormat ("[Web Utils] Request - {0}", bufdata);
+                            MainConsole.Instance.DebugFormat ("[WebUtils] Request - {0}", bufdata);
                         }
                     }
                 }
             } catch (TaskCanceledException ex) {
                 if (MainConsole.Instance != null) {
                     if (ex.CancellationToken.IsCancellationRequested)
-                        MainConsole.Instance.WarnFormat ("[Web Utils] Request cancelled - (URI:{0}, METHOD:{1}) : {2}",
+                        MainConsole.Instance.WarnFormat ("[WebUtils] Request cancelled - (URI:{0}, METHOD:{1}) : {2}",
                                                          url, method, ex.Message);
                     else
-                        MainConsole.Instance.WarnFormat ("[Web Utils] Request timed out - (URI:{0}, METHOD:{1}) : {2}",
+                        MainConsole.Instance.WarnFormat ("[WebUtils] Request timed out - (URI:{0}, METHOD:{1}) : {2}",
                                                          url, method, ex.Message);
                     string bufdata = buffer.Length > 0 ? Encoding.UTF8.GetString (buffer) : "null";
                     if (bufdata.Length > 255)
                         bufdata = bufdata.Substring (0, 250) + "...";
-                    MainConsole.Instance.DebugFormat ("[Web Utils] Request - {0}", bufdata);
+                    MainConsole.Instance.DebugFormat ("[WebUtils] Request - {0}", bufdata);
                 }
             } catch (Exception ex) {
                 if (MainConsole.Instance != null) {
-                    MainConsole.Instance.WarnFormat ("[Web Utils] Request failed - (URI:{0}, METHOD:{1}) : {2}",
+                    MainConsole.Instance.WarnFormat ("[WebUtils] Request failed - (URI:{0}, METHOD:{1}) : {2}",
                                                      url, method, ex.Message);
                     string bufdata = buffer.Length > 0 ? Encoding.UTF8.GetString (buffer) : "null";
                     if (bufdata.Length > 255)
                               bufdata = bufdata.Substring (0, 250) + "...";
-                    MainConsole.Instance.DebugFormat ("[Web Utils] Request - {0}", bufdata);
+                    MainConsole.Instance.DebugFormat ("[WebUtils] Request - {0}", bufdata);
                 }
             }
             client.Dispose ();
@@ -243,7 +241,7 @@ namespace Universe.Framework.Utilities
 
         public static byte[] ServiceOSDRequest(string url, byte[] buffer, string method, int timeout)
         {
-            // MainConsole.Instance.DebugFormat("[Web Utils]: <{0}> start osd request for {1}, method {2}",reqnum,url,method);
+            // MainConsole.Instance.DebugFormat("[WEB UTIL]: <{0}> start osd request for {1}, method {2}",reqnum,url,method);
 
             string errorMessage = "unknown error";
             int tickstart = Util.EnvironmentTickCount();
@@ -291,13 +289,13 @@ namespace Universe.Framework.Utilities
                     HttpWebResponse webResponse = (HttpWebResponse)we.Response;
                     if (webResponse.StatusCode == HttpStatusCode.BadRequest)
                         //AR: Removed JSON Data filling console on connecting to down regions
-                        MainConsole.Instance.WarnFormat("[Web Utils]: WebException bad request to {0}", url);
+                        MainConsole.Instance.WarnFormat("[WebUtils]: WebException bad request to {0}", url);
                     else
                         //AR: Removed JSON Data filling console on connecting to down regions
-                        MainConsole.Instance.Warn(string.Format("[Web Utils]: WebException {0} to {1}", webResponse.StatusCode, url));
+                        MainConsole.Instance.Warn(string.Format("[WebUtils]: WebException {0} to {1}",
+                                                        webResponse.StatusCode, url));
                     return new byte[0];
                 }
-
                 if (request != null)
                     request.Abort();
             }
@@ -323,17 +321,17 @@ namespace Universe.Framework.Utilities
                             System.Diagnostics.StackTrace stackTrace = new System.Diagnostics.StackTrace();
 
                             MainConsole.Instance.Trace(
-                                string.Format("[Web Utils]: osd request (URI:{0}, METHOD:{1}, UPSTACK(4):{5}) took {2}ms overall, {3}ms writing, {4}ms de-serializing",
+                                string.Format("[WebUtils]: osd request (URI:{0}, METHOD:{1}, UPSTACK(4):{5}) took {2}ms overall, {3}ms writing, {4}ms de-serializing",
                                 url, method, tickdiff, tickdata, tickserialize,
                                 (stackTrace.FrameCount > 4 ? stackTrace.GetFrame(4) : stackTrace.GetFrame(stackTrace.FrameCount - 1)).GetMethod().Name));
                         }
                         else if (MainConsole.Instance.IsDebugEnabled)
                             MainConsole.Instance.Debug(
-                                string.Format("[Web Utils]: request (URI:{0}, METHOD:{1}) took {2}ms overall, {3}ms writing, {4}ms de-serializing",
+                                string.Format("[WebUtils]: request (URI:{0}, METHOD:{1}) took {2}ms overall, {3}ms writing, {4}ms de-serializing",
                                 url, method, tickdiff, tickdata, tickserialize));
                         if (tickdiff > 5000)
                             MainConsole.Instance.Info(
-                                string.Format("[Web Utils]: request took too long (URI:{0}, METHOD:{1}) took {2}ms overall, {3}ms writing, {4}ms de-serializing",
+                                string.Format("[WebUtils]: request took too long (URI:{0}, METHOD:{1}) took {2}ms overall, {3}ms writing, {4}ms de-serializing",
                                 url, method, tickdiff, tickdata, tickserialize));
                     }
                 }
@@ -342,7 +340,7 @@ namespace Universe.Framework.Utilities
             if (MainConsole.Instance != null)
                 using (MemoryStream stream = new MemoryStream(buffer))
                     //AR: Removed JSON Data filling console on connecting to down regions
-                    MainConsole.Instance.WarnFormat("[Web Utils]: request failed: {0} to {1}", errorMessage, url);
+                    MainConsole.Instance.WarnFormat("[WebUtils]: request failed: {0} to {1}", errorMessage, url);
             return new byte[0];
         }
 
@@ -357,65 +355,56 @@ namespace Universe.Framework.Utilities
         /// </summary>
         /// <param name="accept"></param>
         /// <returns></returns>
-        public static string[] GetPreferredImageTypes(string accept)
+        public static string [] GetPreferredImageTypes (string accept)
         {
-            if (string.IsNullOrEmpty(accept))
-                return new string[0];
+            if (string.IsNullOrEmpty (accept))
+                return new string [0];
 
-            string[] types = accept.Split(new[] { ',' });
-            if (types.Length > 0)
-            {
-                List<string> list = new List<string>(types);
+            string [] types = accept.Split (new [] { ',' });
+            if (types.Length > 0) {
+                List<string> list = new List<string> (types);
 
-                list.RemoveAll(s => !s.ToLower().StartsWith("image", StringComparison.Ordinal));
+                list.RemoveAll (s => !s.ToLower ().StartsWith ("image", StringComparison.Ordinal));
 
-                ArrayList tlist = new ArrayList(list);
-                tlist.Sort(new QBasedComparer());
+                ArrayList tlist = new ArrayList (list);
+                tlist.Sort (new QBasedComparer ());
 
-                string[] result = new string[tlist.Count];
-                for (int i = 0; i < tlist.Count; i++)
-                {
-                    string mime = (string)tlist[i];
-                    string[] parts = mime.Split(new[] { ';' });
-                    string[] pair = parts[0].Split(new[] { '/' });
+                string [] result = new string [tlist.Count];
+                for (int i = 0; i < tlist.Count; i++) {
+                    string mime = (string)tlist [i];
+                    string [] parts = mime.Split (new [] { ';' });
+                    string [] pair = parts [0].Split (new [] { '/' });
                     if (pair.Length == 2)
-                        result[i] = pair[1].ToLower();
+                        result [i] = pair [1].ToLower ();
                     else // oops, we don't know what this is...
-                        result[i] = pair[0];
+                        result [i] = pair [0];
                 }
 
                 return result;
             }
-
-            return new string[0];
+            return new string [0];
         }
 
-        public static OSDMap GetOSDMap(string data, bool doLogMessages)
+        public static OSDMap GetOSDMap (string data, bool doLogMessages)
         {
             if (data == "")
                 return null;
-            try
-            {
+            try {
                 // We should pay attention to the content-type, but let's assume we know it's JSON
-                OSD buffer = OSDParser.DeserializeJson(data);
-                if (buffer.Type == OSDType.Map)
-                {
+                OSD buffer = OSDParser.DeserializeJson (data);
+                if (buffer.Type == OSDType.Map) {
                     OSDMap args = (OSDMap)buffer;
                     return args;
                 }
                 // uh?
                 if (doLogMessages)
-                    MainConsole.Instance.Warn(("[Web Utils]: Got OSD of unexpected type " + buffer.Type));
+                    MainConsole.Instance.Warn (("[WebUtils]: Got OSD of unexpected type " + buffer.Type));
                 return null;
-            }
-            catch (Exception ex)
-            {
-                if (doLogMessages)
-                {
-                    MainConsole.Instance.Warn("[Web Utils]: Exception on parse of REST message " + ex);
-                    MainConsole.Instance.Warn("[Web Utils]: Bad data: " + data);
+            } catch (Exception ex) {
+                if (doLogMessages) {
+                    MainConsole.Instance.Warn ("[WebUtils]: Exception on parse of REST message " + ex);
+                    MainConsole.Instance.Warn ("[WebUtils]: Bad data: " + data);
                 }
-
                 return null;
             }
         }
@@ -426,34 +415,31 @@ namespace Universe.Framework.Utilities
         {
             #region IComparer Members
 
-            public int Compare(object x, object y)
+            public int Compare (object x, object y)
             {
-                float qx = GetQ(x);
-                float qy = GetQ(y);
+                float qx = GetQ (x);
+                float qy = GetQ (y);
                 if (qx < qy)
                     return -1;
-                if (Math.Abs(qx - qy) < 0.001f)
+                if (Math.Abs (qx - qy) < 0.001f)
                     return 0;
                 return 1;
             }
 
             #endregion
 
-            float GetQ(object o)
+            float GetQ (object o)
             {
                 // Example: image/png;q=0.9
 
-                if (o is string)
-                {
+                if (o is string) {
                     string mime = (string)o;
-                    string[] parts = mime.Split(new[] { ';' });
-                    if (parts.Length > 1)
-                    {
-                        string[] kvp = parts[1].Split(new[] { '=' });
-                        if (kvp.Length == 2 && kvp[0] == "q")
-                        {
+                    string [] parts = mime.Split (new [] { ';' });
+                    if (parts.Length > 1) {
+                        string [] kvp = parts [1].Split (new [] { '=' });
+                        if (kvp.Length == 2 && kvp [0] == "q") {
                             float qvalue;
-                            float.TryParse(kvp[1], out qvalue);
+                            float.TryParse (kvp [1], out qvalue);
                             return qvalue;
                         }
                     }
@@ -468,102 +454,93 @@ namespace Universe.Framework.Utilities
 
     public static class XMLUtils
     {
-        public static string BuildXmlResponse(Dictionary<string, object> data)
+        public static string BuildXmlResponse (Dictionary<string, object> data)
         {
-            XmlDocument doc = new XmlDocument();
+            XmlDocument doc = new XmlDocument ();
 
-            XmlNode xmlnode = doc.CreateNode(XmlNodeType.XmlDeclaration, "", "");
+            XmlNode xmlnode = doc.CreateNode (XmlNodeType.XmlDeclaration, "", "");
             // Set the encoding declaration.
             ((XmlDeclaration)xmlnode).Encoding = "UTF-8";
-            doc.AppendChild(xmlnode);
+            doc.AppendChild (xmlnode);
 
-            XmlElement rootElement = doc.CreateElement("", "ServerResponse", "");
+            XmlElement rootElement = doc.CreateElement ("", "ServerResponse", "");
 
-            doc.AppendChild(rootElement);
+            doc.AppendChild (rootElement);
 
-            BuildXmlData(rootElement, data);
+            BuildXmlData (rootElement, data);
 
             return doc.InnerXml;
         }
 
-        static void BuildXmlData(XmlElement parent, Dictionary<string, object> data)
+        static void BuildXmlData (XmlElement parent, Dictionary<string, object> data)
         {
-            foreach (KeyValuePair<string, object> kvp in data)
-            {
+            foreach (KeyValuePair<string, object> kvp in data) {
                 if (kvp.Value == null)
                     continue;
 
-                if (parent.OwnerDocument != null)
-                {
-                    XmlElement elem = parent.OwnerDocument.CreateElement("", kvp.Key, "");
+                if (parent.OwnerDocument != null) {
+                    XmlElement elem = parent.OwnerDocument.CreateElement ("", kvp.Key, "");
 
-                    if (kvp.Value is Dictionary<string, object>)
-                    {
-                        XmlAttribute type = parent.OwnerDocument.CreateAttribute("", "type", "");
+                    if (kvp.Value is Dictionary<string, object>) {
+                        XmlAttribute type = parent.OwnerDocument.CreateAttribute ("", "type", "");
                         type.Value = "List";
 
-                        elem.Attributes.Append(type);
+                        elem.Attributes.Append (type);
 
-                        BuildXmlData(elem, (Dictionary<string, object>)kvp.Value);
-                    }
-                    else if (kvp.Value is Dictionary<string, string>)
-                    {
-                        XmlAttribute type = parent.OwnerDocument.CreateAttribute("", "type", "");
+                        BuildXmlData (elem, (Dictionary<string, object>)kvp.Value);
+                    } else if (kvp.Value is Dictionary<string, string>) {
+                        XmlAttribute type = parent.OwnerDocument.CreateAttribute ("", "type", "");
                         type.Value = "List";
 
-                        elem.Attributes.Append(type);
+                        elem.Attributes.Append (type);
 
-                        Dictionary<string, object> value = new Dictionary<string, object>();
+                        Dictionary<string, object> value = new Dictionary<string, object> ();
                         foreach (KeyValuePair<string, string> pair in ((Dictionary<string, string>)kvp.Value))
-                            value.Add(pair.Key, pair.Value);
+                            value.Add (pair.Key, pair.Value);
 
-                        BuildXmlData(elem, value);
-                    }
-                    else
-                    {
-                        elem.AppendChild(parent.OwnerDocument.CreateTextNode(kvp.Value.ToString()));
+                        BuildXmlData (elem, value);
+                    } else {
+                        elem.AppendChild (parent.OwnerDocument.CreateTextNode (kvp.Value.ToString ()));
                     }
 
-                    parent.AppendChild(elem);
+                    parent.AppendChild (elem);
                 }
             }
         }
 
-        public static Dictionary<string, object> ParseXmlResponse(string data)
+        public static Dictionary<string, object> ParseXmlResponse (string data)
         {
             //MainConsole.Instance.DebugFormat("[XXX]: received xml string: {0}", data);
 
-            Dictionary<string, object> ret = new Dictionary<string, object>();
-            XmlDocument doc = new XmlDocument();
+            Dictionary<string, object> ret = new Dictionary<string, object> ();
+            XmlDocument doc = new XmlDocument ();
 
-            doc.LoadXml(data);
+            doc.LoadXml (data);
 
-            XmlNodeList rootL = doc.GetElementsByTagName("ServerResponse");
+            XmlNodeList rootL = doc.GetElementsByTagName ("ServerResponse");
 
             if (rootL.Count != 1)
                 return ret;
 
-            XmlNode rootNode = rootL[0];
+            XmlNode rootNode = rootL [0];
 
-            ret = ParseElement(rootNode);
+            ret = ParseElement (rootNode);
 
             return ret;
         }
 
-        static Dictionary<string, object> ParseElement(XmlNode element)
+        static Dictionary<string, object> ParseElement (XmlNode element)
         {
-            Dictionary<string, object> ret = new Dictionary<string, object>();
+            Dictionary<string, object> ret = new Dictionary<string, object> ();
             XmlNodeList partL = element.ChildNodes;
 
-            foreach (XmlNode part in partL)
-            {
-                if (part.Attributes != null)
-                {
-                    XmlNode type = part.Attributes.GetNamedItem("type");
+            foreach (XmlNode part in partL) {
+                if (part.Attributes != null) {
+                    XmlNode type = part.Attributes.GetNamedItem ("type");
                     if (type == null || type.Value != "List")
-                        ret[part.Name] = part.InnerText;
+                        ret [part.Name] = part.InnerText;
                     else
-                        ret[part.Name] = ParseElement(part);
+                        ret [part.Name] = ParseElement (part);
                 }
             }
 

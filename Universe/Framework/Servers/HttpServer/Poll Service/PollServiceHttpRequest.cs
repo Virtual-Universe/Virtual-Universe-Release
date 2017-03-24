@@ -32,20 +32,20 @@ using OpenMetaverse;
 
 namespace Universe.Framework.Servers.HttpServer
 {
-	public class PollServiceHttpRequest
-	{
-		public readonly PollServiceEventArgs PollServiceArgs;
-		public readonly HttpListenerContext Context;
-		public readonly int RequestTime;
-		public readonly UUID RequestID;
+    public class PollServiceHttpRequest
+    {
+        public readonly PollServiceEventArgs PollServiceArgs;
+        public readonly HttpListenerContext Context;
+        public readonly int RequestTime;
+        public readonly UUID RequestID;
 
-		public PollServiceHttpRequest (
-			PollServiceEventArgs pPollServiceArgs, HttpListenerContext context)
-		{
-			PollServiceArgs = pPollServiceArgs;
-			Context = context;
-			RequestTime = System.Environment.TickCount;
-			RequestID = UUID.Random ();
-		}
-	}
+        public PollServiceHttpRequest (
+            PollServiceEventArgs pPollServiceArgs, HttpListenerContext context)
+        {
+            PollServiceArgs = pPollServiceArgs;
+            Context = context;
+            RequestTime = System.Environment.TickCount;
+            RequestID = UUID.Random ();
+        }
+    }
 }

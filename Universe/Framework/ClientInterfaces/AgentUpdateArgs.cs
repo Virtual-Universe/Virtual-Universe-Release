@@ -32,64 +32,64 @@ using OpenMetaverse;
 
 namespace Universe.Framework.ClientInterfaces
 {
-	/// <summary>
-	///     Client provided parameters for avatar movement
-	/// </summary>
-	public class AgentUpdateArgs : EventArgs
-	{
-		/// <summary>
-		///     Agent's unique ID
-		/// </summary>
-		public UUID AgentID;
+    /// <summary>
+    ///     Client provided parameters for avatar movement
+    /// </summary>
+    public class AgentUpdateArgs : EventArgs
+    {
+        /// <summary>
+        ///     Agent's unique ID
+        /// </summary>
+        public UUID AgentID;
 
-		/// <summary>
-		///     Rotation of the avatar's body
-		/// </summary>
-		public Quaternion BodyRotation;
+        /// <summary>
+        ///     Rotation of the avatar's body
+        /// </summary>
+        public Quaternion BodyRotation;
 
-		/// <summary>
-		///     AT portion of the camera matrix
-		/// </summary>
-		public Vector3 CameraAtAxis;
+        /// <summary>
+        ///     AT portion of the camera matrix
+        /// </summary>
+        public Vector3 CameraAtAxis;
 
-		/// <summary>
-		///     Position of the camera in the Scene
-		/// </summary>
-		public Vector3 CameraCenter;
+        /// <summary>
+        ///     Position of the camera in the Scene
+        /// </summary>
+        public Vector3 CameraCenter;
 
-		public Vector3 CameraLeftAxis;
-		public Vector3 CameraUpAxis;
-		public Vector3 ClientAgentPosition;
+        public Vector3 CameraLeftAxis;
+        public Vector3 CameraUpAxis;
+        public Vector3 ClientAgentPosition;
 
-		/// <summary>
-		///     Bitflag field for agent movement.  Fly, forward, backward, turn left, turn right, go up, go down, Strafe, etc.
-		/// </summary>
-		public uint ControlFlags;
+        /// <summary>
+        ///     Bitflag field for agent movement.  Fly, forward, backward, turn left, turn right, go up, go down, Strafe, etc.
+        /// </summary>
+        public uint ControlFlags;
 
-		/// <summary>
-		///     Agent's client Draw distance setting
-		/// </summary>
-		public float Far;
+        /// <summary>
+        ///     Agent's client Draw distance setting
+        /// </summary>
+        public float Far;
 
-		public byte Flags;
+        public byte Flags;
 
-		/// <summary>
-		///     Rotation of the avatar's head
-		/// </summary>
-		public Quaternion HeadRotation;
+        /// <summary>
+        ///     Rotation of the avatar's head
+        /// </summary>
+        public Quaternion HeadRotation;
 
-		/// <summary>
-		///     Session Id
-		/// </summary>
-		public UUID SessionID;
+        /// <summary>
+        ///     Session Id
+        /// </summary>
+        public UUID SessionID;
 
-		public byte State;
+        public byte State;
 
-		public bool UseClientAgentPosition;
+        public bool UseClientAgentPosition;
 
-		public AgentUpdateArgs ()
-		{
-			UseClientAgentPosition = false;
-		}
-	}
+        public AgentUpdateArgs()
+        {
+            UseClientAgentPosition = false;
+        }
+    }
 }

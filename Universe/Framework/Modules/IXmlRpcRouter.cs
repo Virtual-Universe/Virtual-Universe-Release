@@ -31,12 +31,10 @@ using OpenMetaverse;
 
 namespace Universe.Framework.Modules
 {
-	public interface IXmlRpcRouter
-	{
-		void RegisterNewReceiver (IScriptModule scriptEngine, UUID channelID, UUID objectID, UUID itemID, string url);
-
-		void ScriptRemoved (UUID itemID);
-
-		void ObjectRemoved (UUID objectID);
-	}
+    public interface IXmlRpcRouter
+    {
+        void RegisterNewReceiver(IScriptModule scriptEngine, UUID channelID, UUID objectID, UUID itemID, string url);
+        void ScriptRemoved(UUID itemID);
+        void ObjectRemoved(UUID objectID);
+    }
 }

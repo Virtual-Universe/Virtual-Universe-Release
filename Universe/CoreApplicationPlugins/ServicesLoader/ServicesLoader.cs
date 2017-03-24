@@ -35,72 +35,85 @@ using Universe.Framework.Services;
 
 namespace Universe.CoreApplicationPlugins.ServicesLoader
 {
-	public class ServicesLoader : IApplicationPlugin
-	{
-		ISimulationBase m_simBase;
+    public class ServicesLoader : IApplicationPlugin
+    {
+        ISimulationBase m_simBase;
 
-		#region IApplicationPlugin Members
+        #region IApplicationPlugin Members
 
-		public void PreStartup (ISimulationBase simBase)
-		{
-		}
+        public void PreStartup(ISimulationBase simBase)
+        {
+        }
 
-		public void Initialize (ISimulationBase simBase)
-		{
-			m_simBase = simBase;
-		}
+        public void Initialize(ISimulationBase simBase)
+        {
+            m_simBase = simBase;
+        }
 
-		public void ReloadConfiguration (IConfigSource config)
-		{
-		}
+        public void ReloadConfiguration(IConfigSource config)
+        {
+        }
 
-		public void PostInitialize ()
-		{
-		}
+        public void PostInitialize()
+        {
+        }
 
-		public void Start ()
-		{
-			IConfig handlerConfig = m_simBase.ConfigSource.Configs ["ApplicationPlugins"];
-			if (handlerConfig.GetString ("ServicesLoader", "") != Name)
-				return;
+        public void Start()
+        {
+            IConfig handlerConfig = m_simBase.ConfigSource.Configs["ApplicationPlugins"];
+            if (handlerConfig.GetString("ServicesLoader", "") != Name)
+                return;
 
-			List<IService> serviceConnectors = UniverseModuleLoader.PickupModules<IService> ();
-			foreach (IService connector in serviceConnectors) {
-				try {
-					connector.Initialize (m_simBase.ConfigSource, m_simBase.ApplicationRegistry);
-				} catch {
-				}
-			}
-			foreach (IService connector in serviceConnectors) {
-				try {
-					connector.Start (m_simBase.ConfigSource, m_simBase.ApplicationRegistry);
-				} catch {
-				}
-			}
-			foreach (IService connector in serviceConnectors) {
-				try {
-					connector.FinishedStartup ();
-				} catch {
-				}
-			}
-		}
+            List<IService> serviceConnectors = UniverseModuleLoader.PickupModules<IService>();
+            foreach (IService connector in serviceConnectors)
+            {
+                try
+                {
+                    connector.Initialize(m_simBase.ConfigSource, m_simBase.ApplicationRegistry);
+                }
+                catch
+                {
+                }
+            }
+            foreach (IService connector in serviceConnectors)
+            {
+                try
+                {
+                    connector.Start(m_simBase.ConfigSource, m_simBase.ApplicationRegistry);
+                }
+                catch
+                {
+                }
+            }
+            foreach (IService connector in serviceConnectors)
+            {
+                try
+                {
+                    connector.FinishedStartup();
+                }
+                catch
+                {
+                }
+            }
+        }
 
-		public void PostStart ()
-		{
-		}
+        public void PostStart()
+        {
+        }
 
-		public void Close ()
-		{
-		}
+        public void Close()
+        {
+        }
 
-		public string Name {
-			get { return "ServicesLoader"; }
-		}
+        public string Name
+        {
+            get { return "ServicesLoader"; }
+        }
 
-		#endregion
+        #endregion
 
-		public void Dispose ()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

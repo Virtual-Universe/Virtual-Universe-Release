@@ -29,56 +29,56 @@
 
 namespace Universe.Framework.Servers.HttpServer.Interfaces
 {
-	/// <summary>
-	///     Interface to Universe's built in HTTP server.  Use this to register handlers for given URLs.
-	/// </summary>
-	public interface IHttpServer
-	{
-		uint Port { get; }
+    /// <summary>
+    ///     Interface to Universe's built in HTTP server.  Use this to register handlers for given URLs.
+    /// </summary>
+    public interface IHttpServer
+    {
+        uint Port { get; }
 
-		/// <summary>
-		///     Whether this server is running with HTTPS
-		/// </summary>
-		bool Secure { get; }
+        /// <summary>
+        ///     Whether this server is running with HTTPS
+        /// </summary>
+        bool Secure { get; }
 
-		/// <summary>
-		///     A well-formed URI for the host region server (namely "http://ExternalHostName:Port)
-		/// </summary>
-		string ServerURI { get; }
+        /// <summary>
+        ///     A well-formed URI for the host region server (namely "http://ExternalHostName:Port)
+        /// </summary>
+        string ServerURI { get; }
 
-		/// <summary>
-		///     The hostname (external IP or DNS name) that this server is on (without http(s)://)
-		/// </summary>
-		string HostName { get; set; }
+        /// <summary>
+        ///     The hostname (external IP or DNS name) that this server is on (without http(s)://)
+        /// </summary>
+        string HostName { get; set; }
 
-		/// <summary>
-		///     The hostname (external IP or DNS name) that this server is on (with http(s)://)
-		/// </summary>
-		string FullHostName { get; }
+        /// <summary>
+        ///     The hostname (external IP or DNS name) that this server is on (with http(s)://)
+        /// </summary>
+        string FullHostName { get; }
 
-		bool AddPollServiceHTTPHandler (string methodName, PollServiceEventArgs args);
+        bool AddPollServiceHTTPHandler(string methodName, PollServiceEventArgs args);
 
-		/// <summary>
-		///     Add a stream handler to the http server.  If the handler already exists, then nothing happens.
-		/// </summary>
-		/// <param name="handler"></param>
-		void AddStreamHandler (IStreamedRequestHandler handler);
+        /// <summary>
+        ///     Add a stream handler to the http server.  If the handler already exists, then nothing happens.
+        /// </summary>
+        /// <param name="handler"></param>
+        void AddStreamHandler(IStreamedRequestHandler handler);
 
-		bool AddXmlRPCHandler (string method, XmlRpcMethod handler);
+        bool AddXmlRPCHandler(string method, XmlRpcMethod handler);
 
-		/// <summary>
-		///     Gets the XML RPC handler for given method name
-		/// </summary>
-		/// <param name="method">Name of the method</param>
-		/// <returns>Returns null if not found</returns>
-		XmlRpcMethod GetXmlRPCHandler (string method);
+        /// <summary>
+        ///     Gets the XML RPC handler for given method name
+        /// </summary>
+        /// <param name="method">Name of the method</param>
+        /// <returns>Returns null if not found</returns>
+        XmlRpcMethod GetXmlRPCHandler(string method);
 
-		void RemovePollServiceHTTPHandler (string httpMethod, string path);
+        void RemovePollServiceHTTPHandler(string httpMethod, string path);
 
-		void RemoveStreamHandler (string httpMethod, string path);
+        void RemoveStreamHandler(string httpMethod, string path);
 
-		void Start ();
+        void Start();
 
-		void Stop ();
-	}
+        void Stop();
+    }
 }

@@ -32,68 +32,68 @@ using Universe.Framework.SceneInfo;
 
 namespace Universe.Modules.Monitoring.Monitors
 {
-	public class PhysicsFrameMonitor : IPhysicsFrameMonitor
-	{
-		float physicsFPS;
+    public class PhysicsFrameMonitor : IPhysicsFrameMonitor
+    {
+        float physicsFPS;
 
-		public PhysicsFrameMonitor (IScene scene)
-		{
-		}
+        public PhysicsFrameMonitor (IScene scene)
+        {
+        }
 
-		#region Implementation of IMonitor
+        #region Implementation of IMonitor
 
-		public double GetValue ()
-		{
-			return LastReportedPhysicsFPS;
-		}
+        public double GetValue ()
+        {
+            return LastReportedPhysicsFPS;
+        }
 
-		public string GetName ()
-		{
-			return "Total Physics Frame Time";
-		}
+        public string GetName ()
+        {
+            return "Total Physics Frame Time";
+        }
 
-		public string GetInterfaceName ()
-		{
-			return "IPhysicsFrameMonitor";
-		}
+        public string GetInterfaceName ()
+        {
+            return "IPhysicsFrameMonitor";
+        }
 
-		public string GetFriendlyValue ()
-		{
-			return (int)GetValue () + "ms";
-		}
+        public string GetFriendlyValue ()
+        {
+            return (int)GetValue () + "ms";
+        }
 
-		#endregion
+        #endregion
 
-		#region Other Methods
+        #region Other Methods
 
-		#region IMonitor Members
+        #region IMonitor Members
 
-		public void ResetStats ()
-		{
-			physicsFPS = 0;
-		}
+        public void ResetStats ()
+        {
+            physicsFPS = 0;
+        }
 
-		#endregion
+        #endregion
 
-		#region IPhysicsFrameMonitor Members
+        #region IPhysicsFrameMonitor Members
 
-		public void AddFPS (int value)
-		{
-			physicsFPS += value;
-		}
+        public void AddFPS (int value)
+        {
+            physicsFPS += value;
+        }
 
-		#endregion
+        #endregion
 
-		#endregion
+        #endregion
 
-		#region IPhysicsFrameMonitor Members
+        #region IPhysicsFrameMonitor Members
 
-		public float LastReportedPhysicsFPS { get; set; }
+        public float LastReportedPhysicsFPS { get; set; }
 
-		public float PhysicsFPS {
-			get { return physicsFPS; }
-		}
+        public float PhysicsFPS {
+            get { return physicsFPS; }
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

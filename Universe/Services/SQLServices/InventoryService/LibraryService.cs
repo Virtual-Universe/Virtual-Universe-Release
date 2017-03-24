@@ -43,142 +43,143 @@ using Universe.Framework.Utilities;
 
 namespace Universe.Services.SQLServices.InventoryService
 {
-	/// <summary>
-	///     Basically a hack to give us a Inventory library while we don't have a inventory server
-	///     once the server is fully implemented then should read the data from that
-	/// </summary>
-	public class LibraryService : ILibraryService, IService
-	{
-		// moved to Constants to allow for easier comparison from the WebUI
-		readonly UUID libOwner = new UUID (Constants.LibraryOwnerUUID);
+    /// <summary>
+    ///     Basically a hack to give us a Inventory library while we don't have a inventory server
+    ///     once the server is fully implemented then should read the data from that
+    /// </summary>
+    public class LibraryService : ILibraryService, IService
+    {
+        // moved to Constants to allow for easier comparison from the WebUI
+        readonly UUID libOwner = new UUID (Constants.LibraryOwnerUUID);
 
-		public UUID LibraryRootFolderID {
-			get { return new UUID (Constants.LibraryRootFolderID); }
-		}
+        // similarly placed in Constants
+        public UUID LibraryRootFolderID {
+            get { return new UUID (Constants.LibraryRootFolderID); }
+        }
 
-		string libOwnerName = Constants.LibraryOwnerName;
-		bool m_enabled;
-		IRegistryCore m_registry;
-		string pLibName = Constants.LibraryName;
-		protected IInventoryService m_inventoryService;
+        string libOwnerName = "Library Owner";
+        bool m_enabled;
+        IRegistryCore m_registry;
+        string pLibName = "Universe Library";
+        protected IInventoryService m_inventoryService;
 
-		#region ILibraryService Members
+        #region ILibraryService Members
 
-		public UUID LibraryOwnerUUID {
-			get { return libOwner; }
-		}
+        public UUID LibraryOwnerUUID {
+            get { return libOwner; }
+        }
 
-		public string LibraryOwnerName {
-			get { return libOwnerName; }
-		}
+        public string LibraryOwnerName {
+            get { return libOwnerName; }
+        }
 
-		public string LibraryName {
-			get { return pLibName; }
-		}
+        public string LibraryName {
+            get { return pLibName; }
+        }
 
-		#endregion
+        #endregion
 
-		#region IService Members
+        #region IService Members
 
-		public void Initialize (IConfigSource config, IRegistryCore registry)
-		{
-			string pLibOwnerName = "Library Owner";
+        public void Initialize (IConfigSource config, IRegistryCore registry)
+        {
+            string pLibOwnerName = "Library Owner";
 
-			IConfig libConfig = config.Configs ["LibraryService"];
-			if (libConfig != null) {
-				m_enabled = true;
-				pLibName = libConfig.GetString ("LibraryName", pLibName);
-				libOwnerName = libConfig.GetString ("LibraryOwnerName", pLibOwnerName);
-			}
+            IConfig libConfig = config.Configs ["LibraryService"];
+            if (libConfig != null) {
+                m_enabled = true;
+                pLibName = libConfig.GetString ("LibraryName", pLibName);
+                libOwnerName = libConfig.GetString ("LibraryOwnerName", pLibOwnerName);
+            }
 
-			//MainConsole.Instance.Debug("[LIBRARY]: Starting library service...");
+            //MainConsole.Instance.Debug("[LIBRARY]: Starting library service...");
 
-			registry.RegisterModuleInterface<ILibraryService> (this);
-			m_registry = registry;
-		}
+            registry.RegisterModuleInterface<ILibraryService> (this);
+            m_registry = registry;
+        }
 
-		public void Start (IConfigSource config, IRegistryCore registry)
-		{
-			if (m_enabled) {
-				if (MainConsole.Instance != null)
-					MainConsole.Instance.Commands.AddCommand (
-						"clear default inventory",
-						"clear default inventory",
-						"Clears the Default Inventory stored for this grid",
-						ClearDefaultInventory, false, true);
-			}
-		}
+        public void Start (IConfigSource config, IRegistryCore registry)
+        {
+            if (m_enabled) {
+                if (MainConsole.Instance != null)
+                    MainConsole.Instance.Commands.AddCommand (
+                        "clear default inventory",
+                        "clear default inventory",
+                        "Clears the Default Inventory stored for this grid",
+                        ClearDefaultInventory, false, true);
+            }
+        }
 
-		public void FinishedStartup ()
-		{
-			m_inventoryService = m_registry.RequestModuleInterface<IInventoryService> ();
-			LoadLibraries ();
-		}
+        public void FinishedStartup ()
+        {
+            m_inventoryService = m_registry.RequestModuleInterface<IInventoryService> ();
+            LoadLibraries ();
+        }
 
-		#endregion
+        #endregion
 
-		public void LoadLibraries ()
-		{
-			if (!m_enabled) {
-				return;
-			}
+        public void LoadLibraries ()
+        {
+            if (!m_enabled) {
+                return;
+            }
 
-			if (!File.Exists ("DefaultInventory/Inventory.ini") &&
-			             !File.Exists ("DefaultInventory/Inventory.ini.example")) {
-				MainConsole.Instance.Error (
-					"Could not find DefaultInventory/Inventory.ini or DefaultInventory/Inventory.ini.example");
-				return;
-			}
+            if (!File.Exists ("DefaultInventory/Inventory.ini") &&
+                !File.Exists ("DefaultInventory/Inventory.ini.example")) {
+                MainConsole.Instance.Error (
+                    "Could not find DefaultInventory/Inventory.ini or DefaultInventory/Inventory.ini.example");
+                return;
+            }
 
-			List<IDefaultLibraryLoader> Loaders = UniverseModuleLoader.PickupModules<IDefaultLibraryLoader> ();
-			try {
-				if (!File.Exists ("DefaultInventory/Inventory.ini")) {
-					File.Copy ("DefaultInventory/Inventory.ini.example", "DefaultInventory/Inventory.ini");
-				}
-				IniConfigSource iniSource = new IniConfigSource ("DefaultInventory/Inventory.ini",
-					                                        IniFileType.AuroraStyle);
-				if (iniSource != null) {
-					foreach (IDefaultLibraryLoader loader in Loaders) {
-						loader.LoadLibrary (this, iniSource, m_registry);
-					}
-				}
-			} catch {
-			}
-		}
+            List<IDefaultLibraryLoader> Loaders = UniverseModuleLoader.PickupModules<IDefaultLibraryLoader> ();
+            try {
+                if (!File.Exists ("DefaultInventory/Inventory.ini")) {
+                    File.Copy ("DefaultInventory/Inventory.ini.example", "DefaultInventory/Inventory.ini");
+                }
+                IniConfigSource iniSource = new IniConfigSource ("DefaultInventory/Inventory.ini",
+                                                                IniFileType.AuroraStyle);
+                if (iniSource != null) {
+                    foreach (IDefaultLibraryLoader loader in Loaders) {
+                        loader.LoadLibrary (this, iniSource, m_registry);
+                    }
+                }
+            } catch {
+            }
+        }
 
-		void ClearDefaultInventory (IScene scene, string[] cmd)
-		{
-			string sure = MainConsole.Instance.Prompt ("Are you sure you want to delete the default inventory? (yes/no)", "no");
-			if (!sure.Equals ("yes", StringComparison.CurrentCultureIgnoreCase))
-				return;
-			ClearDefaultInventory ();
-		}
+        void ClearDefaultInventory (IScene scene, string [] cmd)
+        {
+            string sure = MainConsole.Instance.Prompt ("Are you sure you want to delete the default inventory? (yes/no)", "no");
+            if (!sure.Equals ("yes", StringComparison.CurrentCultureIgnoreCase))
+                return;
+            ClearDefaultInventory ();
+        }
 
-		public void ClearDefaultInventory ()
-		{
+        public void ClearDefaultInventory ()
+        {
 
-			// get root folders
-			List<InventoryFolderBase> rootFolders = m_inventoryService.GetRootFolders (LibraryOwnerUUID);
+            // get root folders
+            List<InventoryFolderBase> rootFolders = m_inventoryService.GetRootFolders (LibraryOwnerUUID);
 
-			//Delete the root folder's folders
-			foreach (var rFF in rootFolders) {
-				List<InventoryFolderBase> rootFolderFolders = m_inventoryService.GetFolderFolders (LibraryOwnerUUID, rFF.ID);
+            //Delete the root folder's folders
+            foreach (var rFF in rootFolders) {
+                List<InventoryFolderBase> rootFolderFolders = m_inventoryService.GetFolderFolders (LibraryOwnerUUID, rFF.ID);
 
-				// delete root folders
-				foreach (InventoryFolderBase rFolder in rootFolderFolders) {
-					MainConsole.Instance.Info ("Removing folder " + rFolder.Name);
-					m_inventoryService.ForcePurgeFolder (rFolder);
-				}
-			}
+                // delete root folders
+                foreach (InventoryFolderBase rFolder in rootFolderFolders) {
+                    MainConsole.Instance.Info ("Removing folder " + rFolder.Name);
+                    m_inventoryService.ForcePurgeFolder (rFolder);
+                }
+            }
 
-			// remove top level folders
-			foreach (InventoryFolderBase rFolder in rootFolders) {
-				MainConsole.Instance.Info ("Removing folder " + rFolder.Name);
-				m_inventoryService.ForcePurgeFolder (rFolder);
-			}
+            // remove top level folders
+            foreach (InventoryFolderBase rFolder in rootFolders) {
+                MainConsole.Instance.Info ("Removing folder " + rFolder.Name);
+                m_inventoryService.ForcePurgeFolder (rFolder);
+            }
 
-			MainConsole.Instance.Info ("Finished removing default inventory");
-			MainConsole.Instance.Info ("[Library]: If a new default inventory is to be loaded, please restart Universe");
-		}
-	}
+            MainConsole.Instance.Info ("Finished removing default inventory");
+            MainConsole.Instance.Info ("[Library]: If a new default inventory is to be loaded, please restart Universe");
+        }
+    }
 }

@@ -39,159 +39,168 @@ using Universe.Framework.Utilities;
 
 namespace Universe.Services.SQLServices.AvatarService
 {
-	public class AvatarService : ConnectorBase, IAvatarService, IService
-	{
-		#region Declares
+    public class AvatarService : ConnectorBase, IAvatarService, IService
+    {
+        #region Declares
 
-		protected IAvatarData m_Database;
-		protected IAssetService m_assetService;
-		protected IInventoryService m_invService;
-		protected IAvatarAppearanceArchiver m_ArchiveService;
-		protected bool m_enableCacheBakedTextures = true;
+        protected IAvatarData m_Database;
+        protected IAssetService m_assetService;
+        protected IInventoryService m_invService;
+        protected IAvatarAppearanceArchiver m_ArchiveService;
+        protected bool m_enableCacheBakedTextures = true;
 
-		#endregion
+        #endregion
 
-		#region IService Members
+        #region IService Members
 
-		public virtual string Name {
-			get { return GetType ().Name; }
-		}
+        public virtual string Name
+        {
+            get { return GetType().Name; }
+        }
 
-		public void Initialize (IConfigSource config, IRegistryCore registry)
-		{
-			m_registry = registry;
+        public void Initialize(IConfigSource config, IRegistryCore registry)
+        {
+            m_registry = registry;
 
-			IConfig avatarConfig = config.Configs ["AvatarService"];
-			if (avatarConfig != null)
-				m_enableCacheBakedTextures = avatarConfig.GetBoolean ("EnableBakedTextureCaching",
-					m_enableCacheBakedTextures);
+            IConfig avatarConfig = config.Configs["AvatarService"];
+            if (avatarConfig != null)
+                m_enableCacheBakedTextures = avatarConfig.GetBoolean("EnableBakedTextureCaching",
+                                                                     m_enableCacheBakedTextures);
 
-			IConfig handlerConfig = config.Configs ["Handlers"];
-			if (handlerConfig.GetString ("AvatarHandler", "") != Name)
-				return;
+            IConfig handlerConfig = config.Configs["Handlers"];
+            if (handlerConfig.GetString("AvatarHandler", "") != Name)
+                return;
 
-			registry.RegisterModuleInterface<IAvatarService> (this);
+            registry.RegisterModuleInterface<IAvatarService>(this);
 
-			if (MainConsole.Instance != null)
-				MainConsole.Instance.Commands.AddCommand (
-					"reset avatar appearance", 
-					"reset avatar appearance [Name]",
-					"Resets the given avatar's appearance to the default",
-					ResetAvatarAppearance, false, true);
+            if (MainConsole.Instance != null)
+                MainConsole.Instance.Commands.AddCommand(
+                    "reset avatar appearance", 
+                    "reset avatar appearance [Name]",
+                    "Resets the given avatar's appearance to the default",
+                    ResetAvatarAppearance, false, true);
 
-			Init (registry, Name, serverPath: "/avatar/", serverHandlerName: "AvatarServerURI");
-		}
+            Init(registry, Name, serverPath: "/avatar/", serverHandlerName: "AvatarServerURI");
+        }
 
-		public void Start (IConfigSource config, IRegistryCore registry)
-		{
-			m_Database = Framework.Utilities.DataManager.RequestPlugin<IAvatarData> ();
-			m_ArchiveService = registry.RequestModuleInterface<IAvatarAppearanceArchiver> ();
-			registry.RequestModuleInterface<ISimulationBase> ()
-                    .EventManager.RegisterEventHandler ("DeleteUserInformation", DeleteUserInformation);
-		}
+        public void Start(IConfigSource config, IRegistryCore registry)
+        {
+            m_Database = Framework.Utilities.DataManager.RequestPlugin<IAvatarData>();
+            m_ArchiveService = registry.RequestModuleInterface<IAvatarAppearanceArchiver>();
+            registry.RequestModuleInterface<ISimulationBase>()
+                    .EventManager.RegisterEventHandler("DeleteUserInformation", DeleteUserInformation);
+        }
 
-		public void FinishedStartup ()
-		{
-			m_assetService = m_registry.RequestModuleInterface<IAssetService> ();
-			m_invService = m_registry.RequestModuleInterface<IInventoryService> ();
-		}
+        public void FinishedStartup()
+        {
+            m_assetService = m_registry.RequestModuleInterface<IAssetService>();
+            m_invService = m_registry.RequestModuleInterface<IInventoryService>();
+        }
 
-		#endregion
+        #endregion
 
-		#region IAvatarService Members
+        #region IAvatarService Members
 
-		public virtual IAvatarService InnerService {
-			get { return this; }
-		}
+        public virtual IAvatarService InnerService
+        {
+            get { return this; }
+        }
 
-		[CanBeReflected (ThreatLevel = ThreatLevel.Low)]
-		public AvatarAppearance GetAppearance (UUID principalID)
-		{
-			if (m_doRemoteOnly) {
-				object remoteValue = DoRemoteByURL ("AvatarServerURI", principalID);
-				return remoteValue != null ? (AvatarAppearance)remoteValue : null;
-			}
+        [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
+        public AvatarAppearance GetAppearance(UUID principalID)
+        {
+            if (m_doRemoteOnly) {
+                object remoteValue = DoRemoteByURL ("AvatarServerURI", principalID);
+                return remoteValue != null ? (AvatarAppearance)remoteValue : null;
+            }
 
-			return m_Database.Get (principalID);
-		}
+            return m_Database.Get(principalID);
+        }
 
-		public AvatarAppearance GetAndEnsureAppearance (UUID principalID, string defaultUserAvatarArchive, out bool loadedArchive)
-		{
-			loadedArchive = false;
-			AvatarAppearance avappearance = GetAppearance (principalID);
-			if (avappearance == null) {
-				//Create an appearance for the user if one doesn't exist
-				if (defaultUserAvatarArchive != "") {
-					AvatarArchive arch = m_ArchiveService.LoadAvatarArchive (defaultUserAvatarArchive, principalID);
-					if (arch != null) {
-						avappearance = arch.Appearance;
-						SetAppearance (principalID, avappearance);
-						loadedArchive = true;
-					}
-				}
-				if (avappearance == null) {//Set as Ruth
-					avappearance = new AvatarAppearance (principalID);
-					SetAppearance (principalID, avappearance);
-				}
-			}
-			return avappearance;
-		}
+        public AvatarAppearance GetAndEnsureAppearance(UUID principalID, string defaultUserAvatarArchive, out bool loadedArchive)
+        {
+            loadedArchive = false;
+            AvatarAppearance avappearance = GetAppearance(principalID);
+            if (avappearance == null)
+            {
+                //Create an appearance for the user if one doesn't exist
+                if (defaultUserAvatarArchive != "")
+                {
+                    AvatarArchive arch = m_ArchiveService.LoadAvatarArchive(defaultUserAvatarArchive, principalID);
+                    if (arch != null)
+                    {
+                        avappearance = arch.Appearance;
+                        SetAppearance(principalID, avappearance);
+                        loadedArchive = true;
+                    }
+                }
+                if(avappearance == null)//Set as Ruth
+                {
+                    avappearance = new AvatarAppearance(principalID);
+                    SetAppearance(principalID, avappearance);
+                }
+            }
+            return avappearance;
+        }
 
-		[CanBeReflected (ThreatLevel = ThreatLevel.Low)]
-		public void SetAppearance (UUID principalID, AvatarAppearance appearance)
-		{
-			if (m_doRemoteOnly) {
-				DoRemotePostByURL ("AvatarServerURI", principalID, appearance);
-				return;
-			}
+        [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
+        public void SetAppearance(UUID principalID, AvatarAppearance appearance)
+        {
+            if (m_doRemoteOnly)
+            {
+                DoRemotePostByURL("AvatarServerURI", principalID, appearance);
+                return;
+            }
 
-			m_Database.Store (principalID, appearance);
+            m_Database.Store (principalID, appearance);
 
-			var simBase = m_registry.RequestModuleInterface<ISimulationBase> ();
-			simBase.EventManager.FireGenericEventHandler ("SetAppearance", new object[] { principalID, appearance });
-		}
+            var simBase = m_registry.RequestModuleInterface<ISimulationBase> ();
+            simBase.EventManager.FireGenericEventHandler("SetAppearance", new object[] { principalID, appearance });
+        }
 
-		[CanBeReflected (ThreatLevel = ThreatLevel.Low)]
-		public void ResetAvatar (UUID principalID)
-		{
-			if (m_doRemoteOnly) {
-				DoRemotePostByURL ("AvatarServerURI", principalID);
-				return;
-			}
+        [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
+        public void ResetAvatar(UUID principalID)
+        {
+            if (m_doRemoteOnly)
+            {
+                DoRemotePostByURL("AvatarServerURI", principalID);
+                return;
+            }
 
-			m_Database.Delete (principalID);
-		}
+            m_Database.Delete(principalID);
+        }
 
-		object DeleteUserInformation (string name, object param)
-		{
-			var user = (UUID)param;
-			ResetAvatar (user);
-			return null;
-		}
+        object DeleteUserInformation(string name, object param)
+        {
+            var user = (UUID) param;
+            ResetAvatar(user);
+            return null;
+        }
 
-		#endregion
+        #endregion
 
-		#region Console Commands
+        #region Console Commands
 
-		public void ResetAvatarAppearance (IScene scene, string[] cmd)
-		{
-			string name;
-			name = cmd.Length == 3 
-                ? MainConsole.Instance.Prompt ("Avatar Name") 
-                : Util.CombineParams (cmd, 3);
-			UserAccount acc = m_registry.RequestModuleInterface<IUserAccountService> ().GetUserAccount (null, name);
-			if (acc == null) {
-				MainConsole.Instance.Format (Level.Off, "No known avatar with that name.");
-				return;
-			}
-			ResetAvatar (acc.PrincipalID);
-			InventoryFolderBase folder = m_invService.GetFolderForType (acc.PrincipalID, 0, FolderType.CurrentOutfit);
-			if (folder != null)
-				m_invService.ForcePurgeFolder (folder);
+        public void ResetAvatarAppearance(IScene scene, string[] cmd)
+        {
+            string name;
+            name = cmd.Length == 3 
+                ? MainConsole.Instance.Prompt("Avatar Name") 
+                : Util.CombineParams(cmd, 3);
+            UserAccount acc = m_registry.RequestModuleInterface<IUserAccountService>().GetUserAccount(null, name);
+            if (acc == null)
+            {
+                MainConsole.Instance.Format(Level.Off, "No known avatar with that name.");
+                return;
+            }
+            ResetAvatar(acc.PrincipalID);
+            InventoryFolderBase folder = m_invService.GetFolderForType(acc.PrincipalID, 0, FolderType.CurrentOutfit);
+            if (folder != null)
+                m_invService.ForcePurgeFolder(folder);
 
-			MainConsole.Instance.Format (Level.Off, "Reset avatar's appearance successfully.");
-		}
+            MainConsole.Instance.Format(Level.Off, "Reset avatar's appearance successfully.");
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

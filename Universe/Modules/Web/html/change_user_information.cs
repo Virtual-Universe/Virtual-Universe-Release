@@ -34,119 +34,136 @@ using Universe.Framework.Services;
 
 namespace Universe.Modules.Web
 {
-	public class ChangeUserInformationPage : IWebInterfacePage
-	{
-		public string[] FilePath {
-			get {
-				return new[] {
-					"html/change_user_information.html"
-				};
-			}
-		}
+    public class ChangeUserInformationPage : IWebInterfacePage
+    {
+        public string[] FilePath
+        {
+            get
+            {
+                return new[]
+                           {
+                               "html/change_user_information.html"
+                           };
+            }
+        }
 
-		public bool RequiresAuthentication {
-			get { return true; }
-		}
+        public bool RequiresAuthentication
+        {
+            get { return true; }
+        }
 
-		public bool RequiresAdminAuthentication {
-			get { return false; }
-		}
+        public bool RequiresAdminAuthentication
+        {
+            get { return false; }
+        }
 
-		public Dictionary<string, object> Fill (WebInterface webInterface, string filename, OSHttpRequest httpRequest,
-		                                             OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
-		                                             ITranslator translator, out string response)
-		{
-			response = null;
-			var vars = new Dictionary<string, object> ();
+        public Dictionary<string, object> Fill(WebInterface webInterface, string filename, OSHttpRequest httpRequest,
+                                               OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
+                                               ITranslator translator, out string response)
+        {
+            response = null;
+            var vars = new Dictionary<string, object>();
 
-			string error = "";
-			UserAccount user = Authenticator.GetAuthentication (httpRequest);
-			if (user == null) {
-				response = "No authentication service was available to change user details";
-				return null;
-			}
+            string error = "";
+            UserAccount user = Authenticator.GetAuthentication(httpRequest);
+            if (user == null)
+            {
+                response = "No authentication service was available to change user details";
+                return null;
+            }
 
-			// who we are dealing with...
-			vars.Add ("UserName", user.Name);
+            // who we are dealing with...
+            vars.Add ("UserName", user.Name);
 
-			// password change
-			if (requestParameters.ContainsKey ("Submit") &&
-			             requestParameters ["Submit"].ToString () == "SubmitPasswordChange") {
-				string password = requestParameters ["password"].ToString ();
-				string passwordconf = requestParameters ["passwordconf"].ToString ();
-				response = "Success";
-				if (passwordconf != password)
-					response = "Passwords do not match";
-				else {
-					IAuthenticationService authService =
-						webInterface.Registry.RequestModuleInterface<IAuthenticationService> ();
-					if (authService != null)
-						response = authService.SetPassword (user.PrincipalID, "UserAccount", password)
+            // password change
+            if (requestParameters.ContainsKey("Submit") &&
+                requestParameters["Submit"].ToString() == "SubmitPasswordChange")
+            {
+                string password = requestParameters["password"].ToString();
+                string passwordconf = requestParameters["passwordconf"].ToString();
+                response = "Success";
+                if (passwordconf != password)
+                    response = "Passwords do not match";
+                else
+                {
+                    IAuthenticationService authService =
+                        webInterface.Registry.RequestModuleInterface<IAuthenticationService>();
+                    if (authService != null)
+                        response = authService.SetPassword(user.PrincipalID, "UserAccount", password)
                             ? "Your password has been updated"
                             : "Failed to set your password, try again later";
-					else
-						response = "No authentication service was available to change your password";
-				}
-				return null;
-			}
 
-			// email change
-			if (requestParameters.ContainsKey ("Submit") &&
-			             requestParameters ["Submit"].ToString () == "SubmitEmailChange") {
-				string email = requestParameters ["email"].ToString ();
+                    else
+                        response = "No authentication service was available to change your password";
+                }
+                return null;
+            }
 
-				IUserAccountService userService = webInterface.Registry.RequestModuleInterface<IUserAccountService> ();
-				if (userService != null) {
-					user.Email = email;
-					userService.StoreUserAccount (user);
-					response = "Success";
-				} else
-					response = "No authentication service was available to change your password";
-				return null;
-			}
+            // email change
+            if (requestParameters.ContainsKey("Submit") &&
+                     requestParameters["Submit"].ToString() == "SubmitEmailChange")
+            {
+                string email = requestParameters["email"].ToString();
 
-			// Delete User
-			if (requestParameters.ContainsKey ("Submit") &&
-			             requestParameters ["Submit"].ToString () == "SubmitDeleteUser") {
-				string username = requestParameters ["username"].ToString ();
-				string password = requestParameters ["password"].ToString ();
+                IUserAccountService userService = webInterface.Registry.RequestModuleInterface<IUserAccountService>();
+                if (userService != null)
+                {
+                    user.Email = email;
+                    userService.StoreUserAccount(user);
+                    response = "Success";
+                }
+                else
+                    response = "No authentication service was available to change your password";
+                return null;
+            }
 
-				ILoginService loginService = webInterface.Registry.RequestModuleInterface<ILoginService> ();
-				if (loginService.VerifyClient (UUID.Zero, username, "UserAccount", password)) {
-					IUserAccountService userService =
-						webInterface.Registry.RequestModuleInterface<IUserAccountService> ();
-					if (userService != null) {
-						userService.DeleteUser (user.PrincipalID, user.Name, password, true, false);
-						response = "Successfully deleted account.";
-					} else
-						response = "User service unavailable, please try again later";
-				} else
-					response = "Wrong username or password";
-				return null;
-			}
+            // Delete User
+            if (requestParameters.ContainsKey("Submit") &&
+                     requestParameters["Submit"].ToString() == "SubmitDeleteUser")
+            {
+                string username = requestParameters["username"].ToString();
+                string password = requestParameters["password"].ToString();
 
-			// Page variables
-			vars.Add ("ErrorMessage", error);
-			vars.Add ("ChangeUserInformationText", translator.GetTranslatedString ("ChangeUserInformationText"));
-			vars.Add ("ChangePasswordText", translator.GetTranslatedString ("ChangePasswordText"));
-			vars.Add ("NewPasswordText", translator.GetTranslatedString ("NewPasswordText"));
-			vars.Add ("NewPasswordConfirmationText", translator.GetTranslatedString ("NewPasswordConfirmationText"));
-			vars.Add ("ChangeEmailText", translator.GetTranslatedString ("ChangeEmailText"));
-			vars.Add ("NewEmailText", translator.GetTranslatedString ("NewEmailText"));
-			vars.Add ("UserNameText", translator.GetTranslatedString ("UserNameText"));
-			vars.Add ("PasswordText", translator.GetTranslatedString ("PasswordText"));
-			vars.Add ("DeleteUserText", translator.GetTranslatedString ("DeleteUserText"));
-			vars.Add ("DeleteText", translator.GetTranslatedString ("DeleteText"));
-			vars.Add ("DeleteUserInfoText", translator.GetTranslatedString ("DeleteUserInfoText"));
-			vars.Add ("Submit", translator.GetTranslatedString ("Submit"));
+                ILoginService loginService = webInterface.Registry.RequestModuleInterface<ILoginService>();
+                if (loginService.VerifyClient(UUID.Zero, username, "UserAccount", password))
+                {
+                    IUserAccountService userService =
+                        webInterface.Registry.RequestModuleInterface<IUserAccountService>();
+                    if (userService != null)
+                    {
+                        userService.DeleteUser(user.PrincipalID, user.Name, password, true, false);
+                        response = "Successfully deleted account.";
+                    }
+                    else
+                        response = "User service unavailable, please try again later";
+                }
+                else
+                    response = "Wrong username or password";
+                return null;
+            }
 
-			return vars;
-		}
+            // Page variables
+            vars.Add("ErrorMessage", error);
+            vars.Add("ChangeUserInformationText", translator.GetTranslatedString("ChangeUserInformationText"));
+            vars.Add("ChangePasswordText", translator.GetTranslatedString("ChangePasswordText"));
+            vars.Add("NewPasswordText", translator.GetTranslatedString("NewPasswordText"));
+            vars.Add("NewPasswordConfirmationText", translator.GetTranslatedString("NewPasswordConfirmationText"));
+            vars.Add("ChangeEmailText", translator.GetTranslatedString("ChangeEmailText"));
+            vars.Add("NewEmailText", translator.GetTranslatedString("NewEmailText"));
+            vars.Add("UserNameText", translator.GetTranslatedString("UserNameText"));
+            vars.Add("PasswordText", translator.GetTranslatedString("PasswordText"));
+            vars.Add("DeleteUserText", translator.GetTranslatedString("DeleteUserText"));
+            vars.Add("DeleteText", translator.GetTranslatedString("DeleteText"));
+            vars.Add("DeleteUserInfoText", translator.GetTranslatedString("DeleteUserInfoText"));
+            vars.Add("Submit", translator.GetTranslatedString("Submit"));
 
-		public bool AttemptFindPage (string filename, ref OSHttpResponse httpResponse, out string text)
-		{
-			text = "";
-			return false;
-		}
-	}
+            return vars;
+        }
+
+        public bool AttemptFindPage(string filename, ref OSHttpResponse httpResponse, out string text)
+        {
+            text = "";
+            return false;
+        }
+    }
 }

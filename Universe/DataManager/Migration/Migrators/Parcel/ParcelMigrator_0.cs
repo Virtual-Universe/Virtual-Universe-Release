@@ -33,43 +33,45 @@ using Universe.Framework.Utilities;
 
 namespace Universe.DataManager.Migration.Migrators.Parcel
 {
-	public class ParcelMigrator_0 : Migrator
-	{
-		public ParcelMigrator_0 ()
-		{
-			Version = new Version (0, 0, 0);
-			MigrationName = "Parcel";
+    public class ParcelMigrator_0 : Migrator
+    {
+        public ParcelMigrator_0()
+        {
+            Version = new Version(0, 0, 0);
+            MigrationName = "Parcel";
 
-			Schema = new List<SchemaDefinition> ();
+            Schema = new List<SchemaDefinition>();
 
-			AddSchema ("parcelaccess", ColDefs (
-				ColDef ("ParcelID", ColumnTypes.String50),
-				ColDef ("AccessID", ColumnTypes.String50),
-				ColDef ("Flags", ColumnTypes.String50),
-				ColDef ("Time", ColumnTypes.String50)
-			), IndexDefs (
-				IndexDef (new string[1] { "ParcelID" }, IndexType.Primary)
-			));
-		}
+            // Change summary:
+            //   Change ID type fields to type UUID
+            AddSchema("parcelaccess", ColDefs(
+                ColDef("ParcelID", ColumnTypes.UUID),
+                ColDef("AccessID", ColumnTypes.UUID),
+                ColDef("Flags", ColumnTypes.String50),
+                ColDef("Time", ColumnTypes.String50)
+            ), IndexDefs(
+                IndexDef(new string[1] {"ParcelID"}, IndexType.Primary)
+            ));
+        }
 
-		protected override void DoCreateDefaults (IDataConnector genericData)
-		{
-			EnsureAllTablesInSchemaExist (genericData);
-		}
+        protected override void DoCreateDefaults(IDataConnector genericData)
+        {
+            EnsureAllTablesInSchemaExist(genericData);
+        }
 
-		protected override bool DoValidate (IDataConnector genericData)
-		{
-			return TestThatAllTablesValidate (genericData);
-		}
+        protected override bool DoValidate(IDataConnector genericData)
+        {
+            return TestThatAllTablesValidate(genericData);
+        }
 
-		protected override void DoMigrate (IDataConnector genericData)
-		{
-			DoCreateDefaults (genericData);
-		}
+        protected override void DoMigrate(IDataConnector genericData)
+        {
+            DoCreateDefaults(genericData);
+        }
 
-		protected override void DoPrepareRestorePoint (IDataConnector genericData)
-		{
-			CopyAllTablesToTempVersions (genericData);
-		}
-	}
+        protected override void DoPrepareRestorePoint(IDataConnector genericData)
+        {
+            CopyAllTablesToTempVersions(genericData);
+        }
+    }
 }

@@ -39,6 +39,7 @@ namespace Universe.Services
     // Principals may be clients acting on users' behalf,
     // or any other components that need 
     // verifiable identification.
+    //
     public class AuthenticationServiceBase
     {
         protected IAuthenticationData m_Database;
@@ -50,19 +51,19 @@ namespace Universe.Services
         /// <returns><c>true</c>, if exists was checked, <c>false</c> otherwise.</returns>
         /// <param name="principalID">Principal identifier.</param>
         /// <param name="authType">Auth type.</param>
-        public bool CheckExists(UUID principalID, string authType)
+        public bool CheckExists (UUID principalID, string authType)
         {
-            return m_Database.Get(principalID, authType) != null;
+            return m_Database.Get (principalID, authType) != null;
         }
 
-        public bool Verify(UUID principalID, string authType, string token, int lifetime)
+        public bool Verify (UUID principalID, string authType, string token, int lifetime)
         {
-            return m_Database.CheckToken(principalID, token, lifetime);
+            return m_Database.CheckToken (principalID, token, lifetime);
         }
 
-        public virtual bool Release(UUID principalID, string token, string authType)
+        public virtual bool Release (UUID principalID, string token, string authType)
         {
-            return m_Database.CheckToken(principalID, token, 0);
+            return m_Database.CheckToken (principalID, token, 0);
         }
 
         /// <summary>
@@ -72,20 +73,18 @@ namespace Universe.Services
         /// <param name="principalID">Principal identifier.</param>
         /// <param name="authType">Auth type.</param>
         /// <param name="password">Password.</param>
-        public virtual bool SetPassword(UUID principalID, string authType, string password)
+        public virtual bool SetPassword (UUID principalID, string authType, string password)
         {
-            string passwordSalt = Util.Md5Hash(UUID.Random().ToString());
-            string md5PasswdHash = Util.Md5Hash(Util.Md5Hash(password) + ":" + passwordSalt);
+            string passwordSalt = Util.Md5Hash (UUID.Random ().ToString ());
+            string md5PasswdHash = Util.Md5Hash (Util.Md5Hash (password) + ":" + passwordSalt);
 
-            AuthData auth = m_Database.Get(principalID, authType);
-            if (auth == null)
-            {
+            AuthData auth = m_Database.Get (principalID, authType);
+            if (auth == null) {
                 auth = new AuthData { PrincipalID = principalID, AccountType = authType };
             }
-
             auth.PasswordHash = md5PasswdHash;
             auth.PasswordSalt = passwordSalt;
-            return SaveAuth(auth, principalID);
+            return SaveAuth (auth, principalID);
         }
 
         /// <summary>
@@ -93,17 +92,17 @@ namespace Universe.Services
         /// </summary>
         /// <param name="principalID">Principal identifier.</param>
         /// <param name="authType">Auth type.</param>
-        public virtual bool Remove(UUID principalID, string authType)
+        public virtual bool Remove (UUID principalID, string authType)
         {
-            return m_Database.Delete(principalID, authType);
+            return m_Database.Delete (principalID, authType);
         }
 
-        protected string GetToken(UUID principalID, int lifetime)
+        protected string GetToken (UUID principalID, int lifetime)
         {
-            UUID token = UUID.Random();
+            UUID token = UUID.Random ();
 
-            if (m_Database.SetToken(principalID, token.ToString(), lifetime))
-                return token.ToString();
+            if (m_Database.SetToken (principalID, token.ToString (), lifetime))
+                return token.ToString ();
 
             return string.Empty;
         }
@@ -115,20 +114,18 @@ namespace Universe.Services
         /// <param name="principalID">Principal identifier.</param>
         /// <param name="authType">Auth type.</param>
         /// <param name="passHash">Password hash.</param>
-        public virtual bool SetPasswordHashed(UUID principalID, string authType, string passHash)
+        public virtual bool SetPasswordHashed (UUID principalID, string authType, string passHash)
         {
-            string passwordSalt = Util.Md5Hash(UUID.Random().ToString());
-            string md5PasswdHash = Util.Md5Hash(passHash + ":" + passwordSalt);
+            string passwordSalt = Util.Md5Hash (UUID.Random ().ToString ());
+            string md5PasswdHash = Util.Md5Hash (passHash + ":" + passwordSalt);
 
-            AuthData auth = m_Database.Get(principalID, authType);
-            if (auth == null)
-            {
+            AuthData auth = m_Database.Get (principalID, authType);
+            if (auth == null) {
                 auth = new AuthData { PrincipalID = principalID, AccountType = authType };
             }
-
             auth.PasswordHash = md5PasswdHash;
             auth.PasswordSalt = passwordSalt;
-            return SaveAuth(auth, principalID);
+            return SaveAuth (auth, principalID);
         }
 
         /// <summary>
@@ -138,17 +135,15 @@ namespace Universe.Services
         /// <param name="principalID">Principal identifier.</param>
         /// <param name="authType">Auth type.</param>
         /// <param name="pass">Password.</param>
-        public virtual bool SetPlainPassword(UUID principalID, string authType, string pass)
+        public virtual bool SetPlainPassword (UUID principalID, string authType, string pass)
         {
-            AuthData auth = m_Database.Get(principalID, authType);
-            if (auth == null)
-            {
+            AuthData auth = m_Database.Get (principalID, authType);
+            if (auth == null) {
                 auth = new AuthData { PrincipalID = principalID, AccountType = authType };
             }
-
             auth.PasswordHash = pass;
             auth.PasswordSalt = "";
-            return SaveAuth(auth, principalID);
+            return SaveAuth (auth, principalID);
         }
 
         /// <summary>
@@ -159,29 +154,28 @@ namespace Universe.Services
         /// <param name="authType">Auth type.</param>
         /// <param name="passHash">Password hash.</param>
         /// <param name="saltHash">Salt hash.</param>
-        public virtual bool SetSaltedPassword(UUID principalID, string authType, string passHash, string saltHash)
+        public virtual bool SetSaltedPassword (UUID principalID, string authType, string passHash, string saltHash)
         {
-            AuthData auth = m_Database.Get(principalID, authType);
-            if (auth == null)
-            {
+            AuthData auth = m_Database.Get (principalID, authType);
+            if (auth == null) {
                 auth = new AuthData { PrincipalID = principalID, AccountType = authType };
             }
-
             auth.PasswordHash = passHash;
             auth.PasswordSalt = saltHash;
-            return SaveAuth(auth, principalID);
+            return SaveAuth (auth, principalID);
         }
 
-        bool SaveAuth(AuthData auth, UUID principalID)
+        bool SaveAuth (AuthData auth, UUID principalID)
         {
-            if (!m_Database.Store(auth))
-            {
-                MainConsole.Instance.DebugFormat("[Authentication DB]: Failed to store authentication data");
+            if (!m_Database.Store (auth)) {
+                MainConsole.Instance.DebugFormat ("[Authentication DB]: Failed to store authentication data");
                 return false;
             }
 
-            MainConsole.Instance.InfoFormat("[Authentication DB]: Set password for principalID {0}", principalID);
+            MainConsole.Instance.InfoFormat ("[Authentication DB]: Set password for principalID {0}", principalID);
             return true;
+
         }
+
     }
 }

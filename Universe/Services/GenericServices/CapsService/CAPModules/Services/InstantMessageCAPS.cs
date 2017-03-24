@@ -38,46 +38,50 @@ using Universe.Framework.Services;
 
 namespace Universe.Services
 {
-	public class InstantMessageCAPS : ICapsServiceConnector
-	{
-		protected IInstantMessagingService m_imService;
-		protected IRegionClientCapsService m_service;
+    public class InstantMessageCAPS : ICapsServiceConnector
+    {
+        protected IInstantMessagingService m_imService;
+        protected IRegionClientCapsService m_service;
 
-		public void RegisterCaps (IRegionClientCapsService service)
-		{
-			m_service = service;
-			m_imService = service.Registry.RequestModuleInterface<IInstantMessagingService> ();
-			if (m_imService != null) {
-				service.AddStreamHandler ("ChatSessionRequest",
-					new GenericStreamHandler ("POST", service.CreateCAPS ("ChatSessionRequest", ""), ChatSessionRequest));
-			}
-		}
+        public void RegisterCaps(IRegionClientCapsService service)
+        {
+            m_service = service;
+            m_imService = service.Registry.RequestModuleInterface<IInstantMessagingService>();
+            if (m_imService != null)
+            {
+                service.AddStreamHandler("ChatSessionRequest",
+                                         new GenericStreamHandler("POST", service.CreateCAPS("ChatSessionRequest", ""), ChatSessionRequest));
+            }
+        }
 
-		public void EnteringRegion ()
-		{
-		}
+        public void EnteringRegion()
+        {
+        }
 
-		public void DeregisterCaps ()
-		{
-			m_service.RemoveStreamHandler ("ChatSessionRequest", "POST");
-		}
+        public void DeregisterCaps()
+        {
+            m_service.RemoveStreamHandler("ChatSessionRequest", "POST");
+        }
 
-		#region Baked Textures
+        #region Baked Textures
 
-		public byte[] ChatSessionRequest (string path, Stream request, OSHttpRequest httpRequest,
-		                                       OSHttpResponse httpResponse)
-		{
-			try {
-				OSDMap rm = (OSDMap)OSDParser.DeserializeLLSDXml (HttpServerHandlerHelpers.ReadFully (request));
+        public byte[] ChatSessionRequest(string path, Stream request, OSHttpRequest httpRequest,
+                                         OSHttpResponse httpResponse)
+        {
+            try
+            {
+                OSDMap rm = (OSDMap)OSDParser.DeserializeLLSDXml(HttpServerHandlerHelpers.ReadFully(request));
 
-				return Encoding.UTF8.GetBytes (m_imService.ChatSessionRequest (m_service, rm));
-			} catch (Exception e) {
-				MainConsole.Instance.Error ("[ImCAPS]: " + e);
-			}
+                return Encoding.UTF8.GetBytes(m_imService.ChatSessionRequest(m_service, rm));
+            }
+            catch (Exception e)
+            {
+                MainConsole.Instance.Error("[ImCAPS]: " + e);
+            }
 
-			return null;
-		}
+            return null;
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

@@ -31,10 +31,9 @@ using OpenMetaverse;
 
 namespace Universe.ScriptEngine.VirtualScript.MiniModule
 {
-	public interface IWorldAudio
-	{
-		void PlaySound (UUID audio, Vector3 position, double volume);
-
-		void PlaySound (UUID audio, Vector3 position);
-	}
+    public interface IWorldAudio
+    {
+        void PlaySound(UUID audio, Vector3 position, double volume);
+        void PlaySound(UUID audio, Vector3 position);
+    }
 }

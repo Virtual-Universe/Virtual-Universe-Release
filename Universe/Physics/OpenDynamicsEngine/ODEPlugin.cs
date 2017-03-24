@@ -35,109 +35,110 @@ using Universe.Framework.Physics;
 
 namespace Universe.Physics.OpenDynamicsEngine
 {
-	/// <summary>
-	///     ODE plugin
-	/// </summary>
-	public class UniverseODEPlugin : IPhysicsPlugin
-	{
-		static bool m_initialized;
-		ODEPhysicsScene _mScene;
-		static object m_lock = new object ();
+    /// <summary>
+    ///     ODE plugin
+    /// </summary>
+    public class UniverseODEPlugin : IPhysicsPlugin
+    {
+        static bool m_initialized;
+        ODEPhysicsScene _mScene;
+        static object m_lock = new object();
 
-		#region IPhysicsPlugin Members
+        #region IPhysicsPlugin Members
 
-		public bool Init ()
-		{
-			return true;
-		}
+        public bool Init()
+        {
+            return true;
+        }
 
-		public PhysicsScene GetScene ()
-		{
-			lock (m_lock) {
-				if (_mScene == null) {
-					if (!m_initialized) { //Only initialize ode once!
-						// Initializing ODE only when a scene is created allows alternative ODE plugins to co-habit (according to
-						// http://opensimulator.org/mantis/view.php?id=2750).
-						d.InitODE ();
-						m_initialized = true;
-					}
+        public PhysicsScene GetScene()
+        {
+            lock (m_lock) {
+                if (_mScene == null) {
+                    if (!m_initialized) //Only initialize ode once!
+                    {
+                        // Initializing ODE only when a scene is created allows alternative ODE plugins to co-habit (according to
+                        // http://opensimulator.org/mantis/view.php?id=2750).
+                        d.InitODE ();
+                        m_initialized = true;
+                    }
 
-					_mScene = new ODEPhysicsScene ();
-				}
+                    _mScene = new ODEPhysicsScene ();
+                }
 
-				return _mScene;
-			}
-		}
+                return _mScene;
+            }
+        }
 
-		public string GetName ()
-		{
-			return "OpenDynamicsEngine";
-		}
+        public string GetName()
+        {
+            return "OpenDynamicsEngine";
+        }
 
-		public void Dispose ()
-		{
-		}
+        public void Dispose()
+        {
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 
-	/// <summary>
-	///     Various properties that ODE uses for AMotors but isn't exposed in ODE.NET so we must define them ourselves.
-	/// </summary>
-	public enum dParam
-	{
-		LowStop = 0,
-		HiStop = 1,
-		Vel = 2,
-		FMax = 3,
-		FudgeFactor = 4,
-		Bounce = 5,
-		CFM = 6,
-		StopERP = 7,
-		StopCFM = 8,
-		LoStop2 = 256,
-		HiStop2 = 257,
-		Vel2 = 258,
-		FMax2 = 259,
-		StopERP2 = 7 + 256,
-		StopCFM2 = 8 + 256,
-		LoStop3 = 512,
-		HiStop3 = 513,
-		Vel3 = 514,
-		FMax3 = 515,
-		StopERP3 = 7 + 512,
-		StopCFM3 = 8 + 512
-	}
+    /// <summary>
+    ///     Various properties that ODE uses for AMotors but isn't exposed in ODE.NET so we must define them ourselves.
+    /// </summary>
+    public enum dParam
+    {
+        LowStop = 0,
+        HiStop = 1,
+        Vel = 2,
+        FMax = 3,
+        FudgeFactor = 4,
+        Bounce = 5,
+        CFM = 6,
+        StopERP = 7,
+        StopCFM = 8,
+        LoStop2 = 256,
+        HiStop2 = 257,
+        Vel2 = 258,
+        FMax2 = 259,
+        StopERP2 = 7 + 256,
+        StopCFM2 = 8 + 256,
+        LoStop3 = 512,
+        HiStop3 = 513,
+        Vel3 = 514,
+        FMax3 = 515,
+        StopERP3 = 7 + 512,
+        StopCFM3 = 8 + 512
+    }
 
-	/// <summary>
-	///     Collision flags
-	/// </summary>
-	[Flags]
-	public enum CollisionCategories
-	{
-		Disabled = 0,
-		Geom = 0x00000001,
-		Body = 0x00000002,
-		Space = 0x00000004,
-		Character = 0x00000008,
-		Land = 0x00000010,
-		Water = 0x00000020,
-		Wind = 0x00000040,
-		Sensor = 0x00000080,
-		Selected = 0x00000100
-	}
+    /// <summary>
+    ///     Collision flags
+    /// </summary>
+    [Flags]
+    public enum CollisionCategories
+    {
+        Disabled = 0,
+        Geom = 0x00000001,
+        Body = 0x00000002,
+        Space = 0x00000004,
+        Character = 0x00000008,
+        Land = 0x00000010,
+        Water = 0x00000020,
+        Wind = 0x00000040,
+        Sensor = 0x00000080,
+        Selected = 0x00000100
+    }
 
-	/// <summary>
-	///     Material type for a primitive
-	/// </summary>
-	public enum Material
-	{
-		Stone = 0,
-		Metal = 1,
-		Glass = 2,
-		Wood = 3,
-		Flesh = 4,
-		Plastic = 5,
-		Rubber = 6
-	}
+    /// <summary>
+    ///     Material type for a primitive
+    /// </summary>
+    public enum Material
+    {
+        Stone = 0,
+        Metal = 1,
+        Glass = 2,
+        Wood = 3,
+        Flesh = 4,
+        Plastic = 5,
+        Rubber = 6
+    }
 }

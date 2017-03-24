@@ -34,114 +34,117 @@ using Universe.Framework.Servers.HttpServer.Implementation;
 
 namespace Universe.Modules.Web
 {
-	public class UserEstateEditPage : IWebInterfacePage
-	{
-		public string [] FilePath {
-			get {
-				return new [] {
-					"html/user/estate_edit.html"
-				};
-			}
-		}
+    public class UserEstateEditPage : IWebInterfacePage
+    {
+        public string [] FilePath {
+            get {
+                return new []
+                           {
+                               "html/user/estate_edit.html"
+                           };
+            }
+        }
 
-		public bool RequiresAuthentication {
-			get { return true; }
-		}
+        public bool RequiresAuthentication {
+            get { return true; }
+        }
 
-		public bool RequiresAdminAuthentication {
-			get { return false; }
-		}
+        public bool RequiresAdminAuthentication {
+            get { return false; }
+        }
 
-		public Dictionary<string, object> Fill (WebInterface webInterface, string filename, OSHttpRequest httpRequest,
-		                                        OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
-		                                        ITranslator translator, out string response)
-		{
-			response = null;
-			var vars = new Dictionary<string, object> ();
-			var estateConnector = Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ();
-			var user = Authenticator.GetAuthentication (httpRequest);
+        public Dictionary<string, object> Fill (WebInterface webInterface, string filename, OSHttpRequest httpRequest,
+                                               OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
+                                               ITranslator translator, out string response)
+        {
+            response = null;
+            var vars = new Dictionary<string, object> ();
+            var estateConnector = Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ();
+            var user = Authenticator.GetAuthentication (httpRequest);
 
-			string estate;
+            string estate;
 
-			if (httpRequest.Query.ContainsKey ("EstateID")) {
-				estate = httpRequest.Query ["EstateID"].ToString ();
-			} else {
-				if (requestParameters.ContainsKey ("EstateID")) {
-					estate = requestParameters ["EstateID"].ToString ();
-				} else {
-					response = "<h3>Estate details not supplied, redirecting to main page</h3>" +
-					"<script>" +
-					"setTimeout(function() {window.location.href = \"/?page=user_estatemanager\";}, 5000);" +
-					"</script>";
-					return null;
-				}
-			}
+            if (httpRequest.Query.ContainsKey ("EstateID")) {
+                estate = httpRequest.Query ["EstateID"].ToString ();
+            } else {
+                if (requestParameters.ContainsKey ("EstateID")) {
+                    estate = requestParameters ["EstateID"].ToString ();
+                } else {
+                    response = "<h3>Estate details not supplied, redirecting to main page</h3>" +
+                        "<script>" +
+                        "setTimeout(function() {window.location.href = \"/?page=user_estatemanager\";}, 5000);" +
+                        "</script>";
+                    return null;
+                }
+            }
 
-			var estateid = -1;
-			int.TryParse (estate, out estateid);
+            var estateid = -1;
+            int.TryParse (estate, out estateid);
 
-			if (requestParameters.ContainsKey ("Delete")) {
-				response = "<h3>This estate would have been deleted... but not yet</h3>";
-				return null;
-			}
+            if (requestParameters.ContainsKey ("Delete")) {
+                response = "<h3>This estate would have been deleted... but not yet</h3>";
+                return null;
+            }
 
-			var estateSettings = estateConnector.GetEstateSettings (estateid);
-			if (estateSettings != null) {
-				if (requestParameters.ContainsKey ("Submit")) {
+            var estateSettings = estateConnector.GetEstateIDSettings (estateid);
+            if (estateSettings != null) {
+                if (requestParameters.ContainsKey ("Submit")) {
 
-					var estateOwner = requestParameters ["EstateOwner"].ToString ();
+                    var estateOwner = requestParameters ["EstateOwner"].ToString ();
 
-					estateSettings.EstateName = requestParameters ["EstateName"].ToString ();
-					estateSettings.EstateOwner = UUID.Parse (estateOwner);
-					estateSettings.PricePerMeter = int.Parse (requestParameters ["PricePerMeter"].ToString ());
-					estateSettings.PublicAccess = requestParameters ["PublicAccess"].ToString () == "1";
-					estateSettings.TaxFree = requestParameters ["TaxFree"].ToString () == "1";
-					estateSettings.AllowVoice = requestParameters ["AllowVoice"].ToString () == "1";
-					estateSettings.AllowDirectTeleport = requestParameters ["AllowDirectTeleport"].ToString () == "1";
+                    estateSettings.EstateName = requestParameters ["EstateName"].ToString ();
+                    estateSettings.EstateOwner = UUID.Parse (estateOwner);
+                    estateSettings.PricePerMeter = int.Parse (requestParameters ["PricePerMeter"].ToString ());
+                    estateSettings.PublicAccess = requestParameters ["PublicAccess"].ToString () == "1";
+                    estateSettings.TaxFree = requestParameters ["TaxFree"].ToString () == "1";
+                    estateSettings.AllowVoice = requestParameters ["AllowVoice"].ToString () == "1";
+                    estateSettings.AllowDirectTeleport = requestParameters ["AllowDirectTeleport"].ToString () == "1";
 
-					estateConnector.SaveEstateSettings (estateSettings);
+                    estateConnector.SaveEstateSettings (estateSettings);
 
-					response = "Estate details have been updated." +
-					"<script>" +
-					"setTimeout(function() {window.location.href = \"/?page=user_estatemanager\";}, 5000);" +
-					"</script>";
+                    response = "Estate details have been updated." +
+                                "<script>" +
+                                "setTimeout(function() {window.location.href = \"/?page=user_estatemanager\";}, 5000);" +
+                                "</script>";
 
-					return null;
-				}
+                    return null;
+                }
 
-				// get selected estate details
-				if (estateSettings != null) {
-					vars.Add ("EstateID", estateSettings.EstateID.ToString ());
-					vars.Add ("EstateName", estateSettings.EstateName);
-					vars.Add ("PricePerMeter", estateSettings.PricePerMeter.ToString ());
-					vars.Add ("PublicAccess", WebHelpers.YesNoSelection (translator, estateSettings.PublicAccess));
-					vars.Add ("AllowVoice", WebHelpers.YesNoSelection (translator, estateSettings.AllowVoice));
-					vars.Add ("TaxFree", WebHelpers.YesNoSelection (translator, estateSettings.TaxFree));
-					vars.Add ("AllowDirectTeleport", WebHelpers.YesNoSelection (translator, estateSettings.AllowDirectTeleport));
-					vars.Add ("Submit", translator.GetTranslatedString ("SaveUpdates"));
-				}
-			}
+                // get selected estate details
+                if (estateSettings != null) {
+                    vars.Add ("EstateID", estateSettings.EstateID.ToString ());
+                    vars.Add ("EstateName", estateSettings.EstateName);
+                    vars.Add ("PricePerMeter", estateSettings.PricePerMeter.ToString ());
+                    vars.Add ("PublicAccess", WebHelpers.YesNoSelection (translator, estateSettings.PublicAccess));
+                    vars.Add ("AllowVoice", WebHelpers.YesNoSelection (translator, estateSettings.AllowVoice));
+                    vars.Add ("TaxFree", WebHelpers.YesNoSelection (translator, estateSettings.TaxFree));
+                    vars.Add ("AllowDirectTeleport", WebHelpers.YesNoSelection (translator, estateSettings.AllowDirectTeleport));
 
-			// labels
-			vars.Add ("UserName", user.Name);
-			vars.Add ("EstateManagerText", translator.GetTranslatedString ("MenuEstateManager"));
-			vars.Add ("EstateNameText", translator.GetTranslatedString ("EstateText"));
-			vars.Add ("EstateOwnerText", translator.GetTranslatedString ("MenuOwnerTitle"));
-			vars.Add ("PricePerMeterText", translator.GetTranslatedString ("PricePerMeterText"));
-			vars.Add ("PublicAccessText", translator.GetTranslatedString ("PublicAccessText"));
-			vars.Add ("AllowVoiceText", translator.GetTranslatedString ("AllowVoiceText"));
-			vars.Add ("TaxFreeText", translator.GetTranslatedString ("TaxFreeText"));
-			vars.Add ("AllowDirectTeleportText", translator.GetTranslatedString ("AllowDirectTeleportText"));
-			vars.Add ("Cancel", translator.GetTranslatedString ("Cancel"));
-			vars.Add ("InfoMessage", "");
+                    vars.Add ("Submit", translator.GetTranslatedString ("SaveUpdates"));
+                }
+            }
 
-			return vars;
-		}
+            // labels
+            vars.Add ("UserName", user.Name);
+            vars.Add ("EstateManagerText", translator.GetTranslatedString ("MenuEstateManager"));
+            vars.Add ("EstateNameText", translator.GetTranslatedString ("EstateText"));
+            vars.Add ("EstateOwnerText", translator.GetTranslatedString ("MenuOwnerTitle"));
+            vars.Add ("PricePerMeterText", translator.GetTranslatedString ("PricePerMeterText"));
+            vars.Add ("PublicAccessText", translator.GetTranslatedString ("PublicAccessText"));
+            vars.Add ("AllowVoiceText", translator.GetTranslatedString ("AllowVoiceText"));
+            vars.Add ("TaxFreeText", translator.GetTranslatedString ("TaxFreeText"));
+            vars.Add ("AllowDirectTeleportText", translator.GetTranslatedString ("AllowDirectTeleportText"));
+            vars.Add ("Cancel", translator.GetTranslatedString ("Cancel"));
+            vars.Add ("InfoMessage", "");
 
-		public bool AttemptFindPage (string filename, ref OSHttpResponse httpResponse, out string text)
-		{
-			text = "";
-			return false;
-		}
-	}
+            return vars;
+
+        }
+
+        public bool AttemptFindPage (string filename, ref OSHttpResponse httpResponse, out string text)
+        {
+            text = "";
+            return false;
+        }
+    }
 }

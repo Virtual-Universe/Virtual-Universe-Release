@@ -31,41 +31,42 @@ using System;
 
 namespace Universe.Physics.ConvexDecompositionDotNet
 {
-	public class float2
-	{
-		public float x;
-		public float y;
+    public class float2
+    {
+        public float x;
+        public float y;
 
-		public float2 ()
-		{
-		}
+        public float2()
+        {
+        }
 
-		public float2 (float _x, float _y)
-		{
-			x = _x;
-			y = _y;
-		}
+        public float2(float _x, float _y)
+        {
+            x = _x;
+            y = _y;
+        }
 
-		public float this [int i] {
-			get {
-				switch (i) {
-				case 0:
-					return x;
-				case 1:
-					return y;
-				}
-				throw new ArgumentOutOfRangeException ();
-			}
-		}
+        public float this[int i]
+        {
+            get
+            {
+                switch (i)
+                {
+                    case 0: return x;
+                    case 1: return y;
+                }
+                throw new ArgumentOutOfRangeException();
+            }
+        }
 
-		public static float2 operator - (float2 a, float2 b)
-		{
-			return new float2 (a.x - b.x, a.y - b.y);
-		}
+        public static float2 operator -(float2 a, float2 b)
+        {
+            return new float2(a.x - b.x, a.y - b.y);
+        }
 
-		public static float2 operator + (float2 a, float2 b)
-		{
-			return new float2 (a.x + b.x, a.y + b.y);
-		}
-	}
+        public static float2 operator +(float2 a, float2 b)
+        {
+            return new float2(a.x + b.x, a.y + b.y);
+        }
+    }
 }

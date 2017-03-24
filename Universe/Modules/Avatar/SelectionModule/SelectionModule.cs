@@ -27,12 +27,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Nini.Config;
-using OpenMetaverse;
-using OpenMetaverse.Packets;
 using Universe.Framework.ClientInterfaces;
 using Universe.Framework.ConsoleFramework;
 using Universe.Framework.Modules;
@@ -40,353 +34,388 @@ using Universe.Framework.PresenceInfo;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.SceneInfo.Entities;
 using Universe.Framework.Utilities;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.Packets;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Universe.Modules.Selection
 {
-	public class SelectionModule : INonSharedRegionModule
-	{
-		#region Declares
+    public class SelectionModule : INonSharedRegionModule
+    {
+        #region Declares
 
-		private bool m_UseSelectionParticles = true;
+        private bool m_UseSelectionParticles = true;
 
-		public bool UseSelectionParticles {
-			get { return m_UseSelectionParticles; }
-		}
+        public bool UseSelectionParticles
+        {
+            get { return m_UseSelectionParticles; }
+        }
 
-		#endregion
+        #endregion
 
-		#region INonSharedRegionModule Members
+        #region INonSharedRegionModule Members
 
-		public void Initialize (IConfigSource source)
-		{
-			IConfig universestartupConfig = source.Configs ["UniverseStartup"];
-			if (universestartupConfig != null) {
-				m_UseSelectionParticles = universestartupConfig.GetBoolean ("UseSelectionParticles", true);
-			}
-		}
+        public void Initialize(IConfigSource source)
+        {
+			IConfig universestartupConfig = source.Configs["UniverseStartup"];
+			if (universestartupConfig != null)
+            {
+				m_UseSelectionParticles = universestartupConfig.GetBoolean("UseSelectionParticles", true);
+            }
+        }
 
-		public void AddRegion (IScene scene)
-		{
-			scene.EventManager.OnNewClient += EventManager_OnNewClient;
-			scene.EventManager.OnClosingClient += EventManager_OnClosingClient;
-			scene.EventManager.OnNewPresence += EventManager_OnNewPresence;
-			scene.EventManager.OnRemovePresence += EventManager_OnRemovePresence;
-		}
+        public void AddRegion(IScene scene)
+        {
+            scene.EventManager.OnNewClient += EventManager_OnNewClient;
+            scene.EventManager.OnClosingClient += EventManager_OnClosingClient;
+            scene.EventManager.OnNewPresence += EventManager_OnNewPresence;
+            scene.EventManager.OnRemovePresence += EventManager_OnRemovePresence;
+        }
 
-		public void RegionLoaded (IScene scene)
-		{
-		}
+        public void RegionLoaded(IScene scene)
+        {
+        }
 
-		public void RemoveRegion (IScene scene)
-		{
-			scene.EventManager.OnNewClient -= EventManager_OnNewClient;
-			scene.EventManager.OnClosingClient -= EventManager_OnClosingClient;
-			scene.EventManager.OnNewPresence -= EventManager_OnNewPresence;
-			scene.EventManager.OnRemovePresence -= EventManager_OnRemovePresence;
-		}
+        public void RemoveRegion(IScene scene)
+        {
+            scene.EventManager.OnNewClient -= EventManager_OnNewClient;
+            scene.EventManager.OnClosingClient -= EventManager_OnClosingClient;
+            scene.EventManager.OnNewPresence -= EventManager_OnNewPresence;
+            scene.EventManager.OnRemovePresence -= EventManager_OnRemovePresence;
+        }
 
-		public void Close ()
-		{
-		}
+        public void Close()
+        {
+        }
 
-		public string Name {
-			get { return "SelectionModule"; }
-		}
+        public string Name
+        {
+            get { return "SelectionModule"; }
+        }
 
-		public Type ReplaceableInterface {
-			get { return null; }
-		}
+        public Type ReplaceableInterface
+        {
+            get { return null; }
+        }
 
-		#endregion
+        #endregion
 
-		#region Selection Events
+        #region Selection Events
 
-		protected void EventManager_OnNewClient (IClientAPI client)
-		{
-			client.OnObjectRequest += RequestPrim;
-			client.OnObjectSelect += SelectPrim;
-			client.OnObjectDeselect += DeselectPrim;
-			client.OnViewerEffect += ProcessViewerEffect;
-		}
+        protected void EventManager_OnNewClient(IClientAPI client)
+        {
+            client.OnObjectRequest += RequestPrim;
+            client.OnObjectSelect += SelectPrim;
+            client.OnObjectDeselect += DeselectPrim;
+            client.OnViewerEffect += ProcessViewerEffect;
+        }
 
-		protected void EventManager_OnClosingClient (IClientAPI client)
-		{
-			client.OnObjectRequest -= RequestPrim;
-			client.OnObjectSelect -= SelectPrim;
-			client.OnObjectDeselect -= DeselectPrim;
-			client.OnViewerEffect -= ProcessViewerEffect;
-		}
+        protected void EventManager_OnClosingClient(IClientAPI client)
+        {
+            client.OnObjectRequest -= RequestPrim;
+            client.OnObjectSelect -= SelectPrim;
+            client.OnObjectDeselect -= DeselectPrim;
+            client.OnViewerEffect -= ProcessViewerEffect;
+        }
 
-		protected void EventManager_OnNewPresence (IScenePresence presence)
-		{
-			presence.RegisterModuleInterface (new PerClientSelectionParticles (presence, this));
-		}
+        protected void EventManager_OnNewPresence(IScenePresence presence)
+        {
+            presence.RegisterModuleInterface(new PerClientSelectionParticles(presence, this));
+        }
 
-		protected void EventManager_OnRemovePresence (IScenePresence presence)
-		{
-			PerClientSelectionParticles particles = presence.RequestModuleInterface<PerClientSelectionParticles> ();
-			if (particles != null) {
-				particles.Close ();
-				presence.UnregisterModuleInterface (particles);
-			}
-		}
+        protected void EventManager_OnRemovePresence(IScenePresence presence)
+        {
+            PerClientSelectionParticles particles = presence.RequestModuleInterface<PerClientSelectionParticles>();
+            if (particles != null)
+            {
+                particles.Close();
+                presence.UnregisterModuleInterface(particles);
+            }
+        }
 
-		/// <summary>
-		///     Invoked when the client requests a prim.
-		/// </summary>
-		/// <param name="primLocalID"></param>
-		/// <param name="cacheMissType">
-		///     0 => full object (viewer doesn't have it)
-		///     1 => CRC mismatch only
-		/// </param>
-		/// <param name="remoteClient"></param>
-		protected void RequestPrim (uint primLocalID, byte cacheMissType, IClientAPI remoteClient)
-		{
-			IEntity entity;
-			if (remoteClient.Scene.Entities.TryGetChildPrimParent (primLocalID, out entity)) {
-				if (entity is ISceneEntity) {
-					IScenePresence SP = remoteClient.Scene.GetScenePresence (remoteClient.AgentId);
-					//We send a forced because we MUST send a full update, as the client doesn't have this prim
-					((ISceneEntity)entity).ScheduleGroupUpdateToAvatar (SP, PrimUpdateFlags.ForcedFullUpdate);
-					IObjectCache cache = remoteClient.Scene.RequestModuleInterface<IObjectCache> ();
-					if (cache != null)
-						cache.RemoveObject (remoteClient.AgentId, entity.LocalId, cacheMissType);
-					MainConsole.Instance.WarnFormat ("[ObjectCache]: Avatar didn't have {0}, miss type {1}, CRC {2}",
-						primLocalID,
-						cacheMissType, ((ISceneEntity)entity).RootChild.CRC);
-				}
-			}
-		}
+        /// <summary>
+        ///     Invoked when the client requests a prim.
+        /// </summary>
+        /// <param name="primLocalID"></param>
+        /// <param name="cacheMissType">
+        ///     0 => full object (viewer doesn't have it)
+        ///     1 => CRC mismatch only
+        /// </param>
+        /// <param name="remoteClient"></param>
+        protected void RequestPrim(uint primLocalID, byte cacheMissType, IClientAPI remoteClient)
+        {
+            IEntity entity;
+            if (remoteClient.Scene.Entities.TryGetChildPrimParent(primLocalID, out entity))
+            {
+                if (entity is ISceneEntity)
+                {
+                    IScenePresence SP = remoteClient.Scene.GetScenePresence(remoteClient.AgentId);
+                    //We send a forced because we MUST send a full update, as the client doesn't have this prim
+                    ((ISceneEntity) entity).ScheduleGroupUpdateToAvatar(SP, PrimUpdateFlags.ForcedFullUpdate);
+                    IObjectCache cache = remoteClient.Scene.RequestModuleInterface<IObjectCache>();
+                    if (cache != null)
+                        cache.RemoveObject(remoteClient.AgentId, entity.LocalId, cacheMissType);
+                    MainConsole.Instance.WarnFormat("[ObjectCache]: Avatar didn't have {0}, miss type {1}, CRC {2}",
+                                                    primLocalID,
+                                                    cacheMissType, ((ISceneEntity) entity).RootChild.CRC);
+                }
+            }
+        }
 
-		/// <summary>
-		///     Invoked when the client selects a prim.
-		/// </summary>
-		/// <param name="primLocalIDs"></param>
-		/// <param name="remoteClient"></param>
-		protected void SelectPrim (List<uint> primLocalIDs, IClientAPI remoteClient)
-		{
-			IScene scene = remoteClient.Scene;
-			List<ISceneChildEntity> EntitiesToUpdate = new List<ISceneChildEntity> ();
-			ISceneChildEntity prim = null;
-			foreach (uint primLocalID in primLocalIDs) {
-				ISceneChildEntity entity = null;
-				if (scene.SceneGraph.TryGetPart (primLocalID, out entity)) {
-					if (entity is ISceneChildEntity) {
-						prim = entity;
-						// changed so that we send select to all the indicated prims
-						// also to root prim (done in prim.IsSelected)
-						// so "edit link parts" keep the object select and not moved by physics
-						// similar changes on deselect
-						// part.IsSelect is on SceneObjectPart.cs
-						// Ubit
-						prim.ParentEntity.IsSelected = true;
-					}
-				}
-				//Check for avatars! They aren't prims!
-				if (scene.GetScenePresence (primLocalID) != null)
-					continue;
+        /// <summary>
+        ///     Invoked when the client selects a prim.
+        /// </summary>
+        /// <param name="primLocalIDs"></param>
+        /// <param name="remoteClient"></param>
+        protected void SelectPrim(List<uint> primLocalIDs, IClientAPI remoteClient)
+        {
+            IScene scene = remoteClient.Scene;
+            List<ISceneChildEntity> EntitiesToUpdate = new List<ISceneChildEntity>();
+            ISceneChildEntity prim = null;
+            foreach (uint primLocalID in primLocalIDs)
+            {
+                ISceneChildEntity entity = null;
+                if (scene.SceneGraph.TryGetPart(primLocalID, out entity))
+                {
+                    if (entity is ISceneChildEntity)
+                    {
+                        prim = entity;
+                        // changed so that we send select to all the indicated prims
+                        // also to root prim (done in prim.IsSelected)
+                        // so "edit link parts" keep the object select and not moved by physics
+                        // similar changes on deselect
+                        // part.IsSelect is on SceneObjectPart.cs
+                        // Ubit
+                        prim.ParentEntity.IsSelected = true;
+                    }
+                }
+                //Check for avatars! They aren't prims!
+                if (scene.GetScenePresence(primLocalID) != null)
+                    continue;
 
-				if (entity != null) {
-					if (!EntitiesToUpdate.Contains (entity))
-						EntitiesToUpdate.Add (entity);
-				} else {
-					MainConsole.Instance.ErrorFormat (
-						"[SCENEPACKETHANDLER]: Could not find prim {0} in SelectPrim, killing prim.",
-						primLocalID);
-					//Send a kill packet to the viewer so it doesn't come up again
-					remoteClient.SendKillObject (scene.RegionInfo.RegionHandle, new uint[1] { primLocalID });
-				}
-			}
-			IScenePresence SP;
-			scene.TryGetScenePresence (remoteClient.AgentId, out SP);
-			if (SP == null)
-				return;
-			if (EntitiesToUpdate.Count != 0) {
-				SP.SceneViewer.QueuePartsForPropertiesUpdate (EntitiesToUpdate.ToArray ());
-			}
-			PerClientSelectionParticles selection = SP.RequestModuleInterface<PerClientSelectionParticles> ();
-			if (selection != null) {
-				selection.SelectedUUID = prim;
-				selection.IsSelecting = true;
-			}
-		}
+                if (entity != null)
+                {
+                    if (!EntitiesToUpdate.Contains(entity))
+                        EntitiesToUpdate.Add(entity);
+                }
+                else
+                {
+                    MainConsole.Instance.ErrorFormat(
+                        "[SCENEPACKETHANDLER]: Could not find prim {0} in SelectPrim, killing prim.",
+                        primLocalID);
+                    //Send a kill packet to the viewer so it doesn't come up again
+                    remoteClient.SendKillObject(scene.RegionInfo.RegionHandle, new uint[1] {primLocalID});
+                }
+            }
+            IScenePresence SP;
+            scene.TryGetScenePresence(remoteClient.AgentId, out SP);
+            if (SP == null)
+                return;
+            if (EntitiesToUpdate.Count != 0)
+            {
+                SP.SceneViewer.QueuePartsForPropertiesUpdate(EntitiesToUpdate.ToArray());
+            }
+            PerClientSelectionParticles selection = SP.RequestModuleInterface<PerClientSelectionParticles>();
+            if (selection != null)
+            {
+                selection.SelectedUUID = prim;
+                selection.IsSelecting = true;
+            }
+        }
 
-		/// <summary>
-		///     Handle the de-selection of a prim from the client.
-		/// </summary>
-		/// <param name="primLocalID"></param>
-		/// <param name="remoteClient"></param>
-		protected void DeselectPrim (uint primLocalID, IClientAPI remoteClient)
-		{
-			IScene scene = remoteClient.Scene;
-			ISceneChildEntity part = scene.GetSceneObjectPart (primLocalID);
-			//Do this first... As if its null, this wont be fired.
-			IScenePresence SP;
-			scene.TryGetScenePresence (remoteClient.AgentId, out SP);
+        /// <summary>
+        ///     Handle the de-selection of a prim from the client.
+        /// </summary>
+        /// <param name="primLocalID"></param>
+        /// <param name="remoteClient"></param>
+        protected void DeselectPrim(uint primLocalID, IClientAPI remoteClient)
+        {
+            IScene scene = remoteClient.Scene;
+            ISceneChildEntity part = scene.GetSceneObjectPart(primLocalID);
+            //Do this first... As if its null, this wont be fired.
+            IScenePresence SP;
+            scene.TryGetScenePresence(remoteClient.AgentId, out SP);
 
-			if (SP == null)
-				return;
+            if (SP == null)
+                return;
 
-			PerClientSelectionParticles selection = SP.RequestModuleInterface<PerClientSelectionParticles> ();
-			if (selection != null) {
-				selection.SelectedUUID = null;
-				selection.IsSelecting = false;
-			}
+            PerClientSelectionParticles selection = SP.RequestModuleInterface<PerClientSelectionParticles>();
+            if (selection != null)
+            {
+                selection.SelectedUUID = null;
+                selection.IsSelecting = false;
+            }
 
-			if (part == null)
-				return;
+            if (part == null)
+                return;
 
-			// The prim is in the process of being deleted.
-			if (null == part.ParentEntity.RootChild)
-				return;
+            // The prim is in the process of being deleted.
+            if (null == part.ParentEntity.RootChild)
+                return;
 
-			part.ParentEntity.IsSelected = false;
+            part.ParentEntity.IsSelected = false;
 
-			if (!part.ParentEntity.IsAttachment)
- {                //This NEEDS to be done because otherwise rotationalVelocity will break! Only for the editing av as the client stops the rotation for them when they are in edit
-				if (part.AngularVelocity != Vector3.Zero && !part.ParentEntity.IsDeleted)
-					SP.SceneViewer.QueuePartForUpdate (part, PrimUpdateFlags.ForcedFullUpdate);
-			}
-		}
+            if (!part.ParentEntity.IsAttachment)
+                //This NEEDS to be done because otherwise rotationalVelocity will break! Only for the editing av as the client stops the rotation for them when they are in edit
+            {
+                if (part.AngularVelocity != Vector3.Zero && !part.ParentEntity.IsDeleted)
+                    SP.SceneViewer.QueuePartForUpdate(part, PrimUpdateFlags.ForcedFullUpdate);
+            }
+        }
 
-		protected void ProcessViewerEffect (IClientAPI remoteClient, List<ViewerEffectEventHandlerArg> args)
-		{
-			IScene scene = remoteClient.Scene;
-			// TODO: don't create new blocks if recycling an old packet
-			ViewerEffectPacket.EffectBlock[] effectBlockArray = new ViewerEffectPacket.EffectBlock[args.Count];
-			IScenePresence SP;
-			scene.TryGetScenePresence (remoteClient.AgentId, out SP);
-			for (int i = 0; i < args.Count; i++) {
-				ViewerEffectPacket.EffectBlock effect = new ViewerEffectPacket.EffectBlock {
-					AgentID = args [i].AgentID,
-					Color = args [i].Color,
-					Duration = args [i].Duration,
-					ID = args [i].ID,
-					Type = args [i].Type,
-					TypeData = args [i].TypeData
-				};
-				effectBlockArray [i] = effect;
-				//Save the color
-				if (effect.Type == (int)EffectType.Beam || effect.Type == (int)EffectType.Point
-				                || effect.Type == (int)EffectType.Sphere) {
-					Color4 color = new Color4 (effect.Color, 0, false);
-					if (SP != null && !(color.R == 0 && color.G == 0 && color.B == 0)) {
-						PerClientSelectionParticles selection = SP.RequestModuleInterface<PerClientSelectionParticles> ();
-						if (selection != null) {
-							selection.EffectColor = args [i].Color;
-						}
-					}
-				}
+        protected void ProcessViewerEffect(IClientAPI remoteClient, List<ViewerEffectEventHandlerArg> args)
+        {
+            IScene scene = remoteClient.Scene;
+            // TODO: don't create new blocks if recycling an old packet
+            ViewerEffectPacket.EffectBlock[] effectBlockArray = new ViewerEffectPacket.EffectBlock[args.Count];
+            IScenePresence SP;
+            scene.TryGetScenePresence(remoteClient.AgentId, out SP);
+            for (int i = 0; i < args.Count; i++)
+            {
+                ViewerEffectPacket.EffectBlock effect = new ViewerEffectPacket.EffectBlock
+                                                            {
+                                                                AgentID = args[i].AgentID,
+                                                                Color = args[i].Color,
+                                                                Duration = args[i].Duration,
+                                                                ID = args[i].ID,
+                                                                Type = args[i].Type,
+                                                                TypeData = args[i].TypeData
+                                                            };
+                effectBlockArray[i] = effect;
+                //Save the color
+                if (effect.Type == (int) EffectType.Beam || effect.Type == (int) EffectType.Point
+                    || effect.Type == (int) EffectType.Sphere)
+                {
+                    Color4 color = new Color4(effect.Color, 0, false);
+                    if (SP != null && !(color.R == 0 && color.G == 0 && color.B == 0))
+                    {
+                        PerClientSelectionParticles selection = SP.RequestModuleInterface<PerClientSelectionParticles>();
+                        if (selection != null)
+                        {
+                            selection.EffectColor = args[i].Color;
+                        }
+                    }
+                }
 
-				foreach (
+                foreach (
                     IScenePresence client in
                         scene.GetScenePresences()
-                             .Where(client => client.ControllingClient.AgentId != remoteClient.AgentId)) {
-					client.ControllingClient.SendViewerEffect (effectBlockArray);
-				}
-			}
-		}
+                             .Where(client => client.ControllingClient.AgentId != remoteClient.AgentId))
+                {
+                    client.ControllingClient.SendViewerEffect(effectBlockArray);
+                }
+            }
+        }
 
-		#endregion
+        #endregion
 
-		#region Per Frame Events
+        #region Per Frame Events
 
-		protected class PerClientSelectionParticles
-		{
-			protected byte[] m_EffectColor = new Color4 (1, 0.01568628f, 0, 1).GetBytes ();
-			protected bool m_IsSelecting;
-			protected ISceneChildEntity m_SelectedUUID;
-			protected int m_effectsLastSent;
-			protected SelectionModule m_module;
-			protected IScenePresence m_presence;
+        protected class PerClientSelectionParticles
+        {
+            protected byte[] m_EffectColor = new Color4(1, 0.01568628f, 0, 1).GetBytes();
+            protected bool m_IsSelecting;
+            protected ISceneChildEntity m_SelectedUUID;
+            protected int m_effectsLastSent;
+            protected SelectionModule m_module;
+            protected IScenePresence m_presence;
 
-			public PerClientSelectionParticles (IScenePresence presence, SelectionModule mod)
-			{
-				m_presence = presence;
-				m_module = mod;
-				//Hook up to onFrame so that we can send the updates
-				m_presence.Scene.EventManager.OnFrame += EventManager_OnFrame;
-			}
+            public PerClientSelectionParticles(IScenePresence presence, SelectionModule mod)
+            {
+                m_presence = presence;
+                m_module = mod;
+                //Hook up to onFrame so that we can send the updates
+                m_presence.Scene.EventManager.OnFrame += EventManager_OnFrame;
+            }
 
-			public ISceneChildEntity SelectedUUID {
-				get { return m_SelectedUUID; }
-				set { m_SelectedUUID = value; }
-			}
+            public ISceneChildEntity SelectedUUID
+            {
+                get { return m_SelectedUUID; }
+                set { m_SelectedUUID = value; }
+            }
 
-			public byte[] EffectColor {
-				get { return m_EffectColor; }
-				set { m_EffectColor = value; }
-			}
+            public byte[] EffectColor
+            {
+                get { return m_EffectColor; }
+                set { m_EffectColor = value; }
+            }
 
-			public bool IsSelecting {
-				get { return m_IsSelecting; }
-				set { m_IsSelecting = value; }
-			}
+            public bool IsSelecting
+            {
+                get { return m_IsSelecting; }
+                set { m_IsSelecting = value; }
+            }
 
-			public void Close ()
-			{
-				m_SelectedUUID = null;
-				m_IsSelecting = false;
-				m_module = null;
-				m_EffectColor = null;
-				if (m_presence != null)
-					m_presence.Scene.EventManager.OnFrame -= EventManager_OnFrame;
-				m_presence = null;
-			}
+            public void Close()
+            {
+                m_SelectedUUID = null;
+                m_IsSelecting = false;
+                m_module = null;
+                m_EffectColor = null;
+                if (m_presence != null)
+                    m_presence.Scene.EventManager.OnFrame -= EventManager_OnFrame;
+                m_presence = null;
+            }
 
-			protected void EventManager_OnFrame ()
-			{
-				if (m_presence == null)
-					return;
-				//We can't deregister ourselves... our reference is lost... so just hope we stop getting called soon
-				if (!m_presence.IsChildAgent && m_module.UseSelectionParticles && (m_effectsLastSent == 0 ||
-				                Util.EnvironmentTickCountSubtract (
-					                m_effectsLastSent) > 900)) {
-					SendViewerEffects ();
-					m_effectsLastSent = Util.EnvironmentTickCount ();
-				}
-			}
+            protected void EventManager_OnFrame()
+            {
+                if (m_presence == null)
+                    return;
+                //We can't deregister ourselves... our reference is lost... so just hope we stop getting called soon
+                if (!m_presence.IsChildAgent && m_module.UseSelectionParticles && (m_effectsLastSent == 0 ||
+                                                                                   Util.EnvironmentTickCountSubtract(
+                                                                                       m_effectsLastSent) > 900))
+                {
+                    SendViewerEffects();
+                    m_effectsLastSent = Util.EnvironmentTickCount();
+                }
+            }
 
-			/// <summary>
-			///     This sends the little particles to the client if they are selecting something or such
-			/// </summary>
-			protected void SendViewerEffects ()
-			{
-				if (!IsSelecting)
-					return;
+            /// <summary>
+            ///     This sends the little particles to the client if they are selecting something or such
+            /// </summary>
+            protected void SendViewerEffects()
+            {
+                if (!IsSelecting)
+                    return;
 
-				ISceneChildEntity SOP = m_SelectedUUID;
-				if (SOP == null) { //This IS necessary, this is how we can clear this out
-					IsSelecting = false;
-					return;
-				}
+                ISceneChildEntity SOP = m_SelectedUUID;
+                if (SOP == null) //This IS necessary, this is how we can clear this out
+                {
+                    IsSelecting = false;
+                    return;
+                }
 
-				ViewerEffectPacket.EffectBlock[] effectBlockArray = new ViewerEffectPacket.EffectBlock[1];
+                ViewerEffectPacket.EffectBlock[] effectBlockArray = new ViewerEffectPacket.EffectBlock[1];
 
-				ViewerEffectPacket.EffectBlock effect = new ViewerEffectPacket.EffectBlock {
-					AgentID = m_presence.UUID,
-					Color = EffectColor,
-					Duration = 0.9f,
-					ID = UUID.Random (),
-					Type = (int)EffectType.Beam
-				};
-				//This seems to be what is passed by SL when its send from the server
-				//Bean is the line from hand to object
+                ViewerEffectPacket.EffectBlock effect = new ViewerEffectPacket.EffectBlock
+                                                            {
+                                                                AgentID = m_presence.UUID,
+                                                                Color = EffectColor,
+                                                                Duration = 0.9f,
+                                                                ID = UUID.Random(),
+                                                                Type = (int) EffectType.Beam
+                                                            };
+                //This seems to be what is passed by SL when its send from the server
+                //Bean is the line from hand to object
 
-				byte[] part = new byte[56];
-				m_presence.UUID.ToBytes (part, 0); //UUID of av first
-				SOP.UUID.ToBytes (part, 16); //UUID of object
-				SOP.AbsolutePosition.ToBytes (part, 32); //position of object first
+                byte[] part = new byte[56];
+                m_presence.UUID.ToBytes(part, 0); //UUID of av first
+                SOP.UUID.ToBytes(part, 16); //UUID of object
+                SOP.AbsolutePosition.ToBytes(part, 32); //position of object first
 
-				effect.TypeData = part;
-				effectBlockArray [0] = effect;
+                effect.TypeData = part;
+                effectBlockArray[0] = effect;
 
-				m_presence.Scene.ForEachClient (
-					client => client.SendViewerEffect (effectBlockArray)
-				);
-			}
-		}
+                m_presence.Scene.ForEachClient(
+                    client => client.SendViewerEffect(effectBlockArray)
+                    );
+            }
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }
