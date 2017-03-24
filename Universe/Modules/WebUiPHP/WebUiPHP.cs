@@ -159,8 +159,6 @@ namespace Universe.PHP.WebUI
 				// Save bitmap to stream
 				mapTexture.Save (imgstream, GetEncoderInfo ("image/jpeg"), myEncoderParameters);
 
-
-
 				// Write the stream to a byte array for output
 				jpeg = imgstream.ToArray ();
 			} catch (Exception) {
@@ -202,7 +200,8 @@ namespace Universe.PHP.WebUI
 				if (encoders [j].MimeType == mimeType)
 					return encoders [j];
 			}
-			return null;
+
+            return null;
 		}
 
 		#endregion
@@ -217,17 +216,20 @@ namespace Universe.PHP.WebUI
 				MainConsole.Instance.Warn ("You must create the user before promoting them.");
 				return;
 			}
-			IAgentConnector agents = DataPlugins.RequestPlugin<IAgentConnector> ();
+
+            IAgentConnector agents = DataPlugins.RequestPlugin<IAgentConnector> ();
 			if (agents == null) {
 				MainConsole.Instance.Warn ("Could not get IAgentConnector plugin");
 				return;
 			}
-			IAgentInfo agent = agents.GetAgent (acc.PrincipalID);
+
+            IAgentInfo agent = agents.GetAgent (acc.PrincipalID);
 			if (agent == null) {
 				MainConsole.Instance.Warn ("Could not get IAgentInfo for " + name + ", try logging the user into your grid first.");
 				return;
 			}
-			agent.OtherAgentInformation ["WebUIEnabled"] = true;
+
+            agent.OtherAgentInformation ["WebUIEnabled"] = true;
 			DataPlugins.RequestPlugin<IAgentConnector> ().UpdateAgent (agent);
 			MainConsole.Instance.Warn ("Admin added");
 		}
@@ -242,21 +244,23 @@ namespace Universe.PHP.WebUI
 				MainConsole.Instance.Warn ("User does not exist, no action taken.");
 				return;
 			}
-			IAgentConnector agents = DataPlugins.RequestPlugin<IAgentConnector> ();
+
+            IAgentConnector agents = DataPlugins.RequestPlugin<IAgentConnector> ();
 			if (agents == null) {
 				MainConsole.Instance.Warn ("Could not get IAgentConnector plugin");
 				return;
 			}
-			IAgentInfo agent = agents.GetAgent (acc.PrincipalID);
+
+            IAgentInfo agent = agents.GetAgent (acc.PrincipalID);
 			if (agent == null) {
 				MainConsole.Instance.Warn ("Could not get IAgentInfo for " + name + ", try logging the user into your grid first.");
 				return;
 			}
-			agent.OtherAgentInformation ["WebUIEnabled"] = false;
+
+            agent.OtherAgentInformation ["WebUIEnabled"] = false;
 			DataPlugins.RequestPlugin<IAgentConnector> ().UpdateAgent (agent);
 			MainConsole.Instance.Warn ("Admin removed");
 		}
-
 	}
 
 	public class WebUIHTTPHandler : BaseRequestHandler, IStreamedRequestHandler
@@ -284,8 +288,7 @@ namespace Universe.PHP.WebUI
 
 		#region BaseStreamHandler
 
-		public override byte[] Handle (string path, Stream requestData,
-		                               OSHttpRequest httpRequest, OSHttpResponse httpResponse)
+		public override byte[] Handle (string path, Stream requestData, OSHttpRequest httpRequest, OSHttpResponse httpResponse)
 		{
 			string body = HttpServerHandlerHelpers.ReadString (requestData).Trim ();
 
@@ -313,9 +316,11 @@ namespace Universe.PHP.WebUI
 			} catch (Exception e) {
 				MainConsole.Instance.TraceFormat ("[Web Interface] Exception thrown: " + e.ToString ());
 			}
-			if (resp.Count == 0) {
+
+            if (resp.Count == 0) {
 				resp.Add ("response", OSD.FromString ("Failed"));
 			}
+
 			UTF8Encoding encoding = new UTF8Encoding ();
 			httpResponse.ContentType = "application/json";
 			return encoding.GetBytes (OSDParser.SerializeJsonString (resp, true));
@@ -441,8 +446,6 @@ namespace Universe.PHP.WebUI
 				string RLCountry = map ["RLCountry"].AsString ();
 				string RLIP = map ["RLIP"].AsString ();
 
-
-
 				IAgentConnector con = DataPlugins.RequestPlugin<IAgentConnector> ();
 				con.CreateNewAgent (userID);
 
@@ -464,7 +467,8 @@ namespace Universe.PHP.WebUI
 					agent.OtherAgentInformation ["WebUIActivationToken"] = Util.Md5Hash (activationToken.ToString () + ":" + Password);
 					resp ["WebUIActivationToken"] = activationToken;
 				}
-				con.UpdateAgent (agent);
+
+                con.UpdateAgent (agent);
 
 				accountService.StoreUserAccount (user);
 
@@ -474,14 +478,14 @@ namespace Universe.PHP.WebUI
 					profileData.CreateNewProfile (user.PrincipalID);
 					profile = profileData.GetUserProfile (user.PrincipalID);
 				}
-				if (AvatarArchive.Length > 0) {
+
+                if (AvatarArchive.Length > 0) {
 					profile.AArchiveName = AvatarArchive;
 				}
-				profile.IsNewUser = true;
 
+                profile.IsNewUser = true;
 				profile.MembershipGroup = UserTitle;
 				profile.CustomType = UserTitle;
-
 				profileData.UpdateUserProfile (profile);
 			}
 
@@ -552,6 +556,7 @@ namespace Universe.PHP.WebUI
 						if (!PasswordHash.StartsWith ("$1$")) {
 							PasswordHash = "$1$" + Util.Md5Hash (PasswordHash);
 						}
+
 						PasswordHash = PasswordHash.Remove (0, 3); //remove $1$
 
 						bool verified = Utils.MD5String (activationToken.ToString () + ":" + PasswordHash) == WebUIActivationToken;
@@ -580,8 +585,7 @@ namespace Universe.PHP.WebUI
 
 			uint amount = map ["amount"];
 			BaseCurrencyConnector m_connector = Framework.Utilities.DataManager.RequestPlugin<IBaseCurrencyConnector> () as BaseCurrencyConnector;
-			m_connector.UserCurrencyTransfer (user, UUID.Zero, amount, "Money Transfer",
-				TransactionType.BuyMoney, UUID.Zero);
+			m_connector.UserCurrencyTransfer (user, UUID.Zero, amount, "Money Transfer", TransactionType.BuyMoney, UUID.Zero);
 			MainConsole.Instance.InfoFormat ("[WEBUI]: Transferring Money to " + user + " with the amount " + amount);
 			return map;
 		}
@@ -626,6 +630,7 @@ namespace Universe.PHP.WebUI
 						return resp;
 					}
 				}
+
 				resp ["UUID"] = OSD.FromUUID (account.PrincipalID);
 				resp ["FirstName"] = OSD.FromString (account.FirstName);
 				resp ["LastName"] = OSD.FromString (account.LastName);
@@ -685,7 +690,6 @@ namespace Universe.PHP.WebUI
 					return resp;
 				} else {
 					resp ["GoodLogin"] = OSD.FromBoolean (true);
-
 					resp ["UserLevel"] = OSD.FromInteger (account.UserLevel);
 					resp ["UUID"] = OSD.FromUUID (agentID);
 					resp ["FirstName"] = OSD.FromString (account.FirstName);
@@ -712,6 +716,7 @@ namespace Universe.PHP.WebUI
 				authService.SetPlainPassword (principalID, "WebLoginKey", webLoginKey.ToString ());
 				resp ["WebLoginKey"] = webLoginKey;
 			}
+
 			resp ["Failed"] = OSD.FromString (String.Format ("No auth service, cannot set WebLoginKey for user {0}.", map ["PrincipalID"].AsUUID ().ToString ()));
 
 			return resp;
@@ -766,6 +771,7 @@ namespace Universe.PHP.WebUI
 				user.UserLevel = 0;
 				accountService.StoreUserAccount (user);
 			}
+
 			return resp;
 		}
 
@@ -895,7 +901,8 @@ namespace Universe.PHP.WebUI
 						agentConnector.CreateNewAgent (account.PrincipalID);
 						agent = agentConnector.GetAgent (account.PrincipalID);
 					}
-					if (agent != null) {
+
+                    if (agent != null) {
 						agent.OtherAgentInformation ["RLName"] = map ["RLName"];
 						agent.OtherAgentInformation ["RLAddress"] = map ["RLAddress"];
 						agent.OtherAgentInformation ["RLZip"] = map ["RLZip"];
@@ -905,8 +912,10 @@ namespace Universe.PHP.WebUI
 						resp ["agent"] = OSD.FromBoolean (true);
 					}
 				}
+
 				resp ["account"] = OSD.FromBoolean (m_registry.RequestModuleInterface<IUserAccountService> ().StoreUserAccount (account));
 			}
+
 			return resp;
 		}
 
@@ -996,8 +1005,8 @@ namespace Universe.PHP.WebUI
 						accountMap ["Partner"] = "";
 						accountMap ["PartnerUUID"] = UUID.Zero;
 					}
-
 				}
+
 				IAgentConnector agentConnector = DataPlugins.RequestPlugin<IAgentConnector> ();
 				IAgentInfo agent = agentConnector.GetAgent (account.PrincipalID);
 				if (agent != null) {
@@ -1010,6 +1019,7 @@ namespace Universe.PHP.WebUI
 					agentMap ["RLCountry"] = agent.OtherAgentInformation ["RLCountry"].AsString ();
 					resp ["agent"] = agentMap;
 				}
+
 				resp ["account"] = accountMap;
 			}
 
@@ -1028,6 +1038,7 @@ namespace Universe.PHP.WebUI
 				GetAgent.Flags &= ~IAgentFlags.PermBan;
 				DataPlugins.RequestPlugin<IAgentConnector> ().UpdateAgent (GetAgent);
 			}
+
 			return resp;
 		}
 
@@ -1075,7 +1086,6 @@ namespace Universe.PHP.WebUI
 
 		#endregion
 
-
 		#region banning
 
 		private void doBan (UUID agentID, DateTime? until)
@@ -1089,7 +1099,8 @@ namespace Universe.PHP.WebUI
 					agentInfo.OtherAgentInformation ["TemporaryBanInfo"] = until.Value;
 					MainConsole.Instance.TraceFormat ("Temp ban for {0} until {1}", agentID, until.Value.ToString ("s"));
 				}
-				conn.UpdateAgent (agentInfo);
+
+                conn.UpdateAgent (agentInfo);
 			}
 		}
 
@@ -1190,8 +1201,8 @@ namespace Universe.PHP.WebUI
 				userInfo ["UserFlags"] = acc.UserFlags;
 				users.Add (userInfo);
 			}
-			resp ["Users"] = users;
 
+			resp ["Users"] = users;
 			resp ["Start"] = OSD.FromInteger (start);
 			resp ["End"] = OSD.FromInteger (end);
 			resp ["Query"] = OSD.FromString (Query);
@@ -1304,11 +1315,14 @@ namespace Universe.PHP.WebUI
 			OSDMap resp = new OSDMap ();
 			RegionFlags type = map.Keys.Contains ("RegionFlags") ? (RegionFlags)map ["RegionFlags"].AsInteger () : RegionFlags.RegionOnline;
 			int start = map.Keys.Contains ("Start") ? map ["Start"].AsInteger () : 0;
-			if (start < 0) {
+
+            if (start < 0) {
 				start = 0;
 			}
+
 			int count = map.Keys.Contains ("Count") ? map ["Count"].AsInteger () : 10;
-			if (count < 0) {
+
+            if (count < 0) {
 				count = 1;
 			}
 
@@ -1337,7 +1351,8 @@ namespace Universe.PHP.WebUI
 					Regions.Add (regions [i].ToOSD ());
 				}
 			}
-			resp ["Start"] = OSD.FromInteger (start);
+
+            resp ["Start"] = OSD.FromInteger (start);
 			resp ["Count"] = OSD.FromInteger (count);
 			resp ["Total"] = OSD.FromInteger (regions.Count);
 			resp ["Regions"] = Regions;
@@ -1353,15 +1368,18 @@ namespace Universe.PHP.WebUI
 				UUID regionID = map.ContainsKey ("RegionID") ? UUID.Parse (map ["RegionID"].ToString ()) : UUID.Zero;
 				//UUID scopeID = map.ContainsKey("ScopeID") ? UUID.Parse(map["ScopeID"].ToString()) : UUID.Zero;
 				GridRegion region = null;
-				if (regionID != UUID.Zero) {
+
+                if (regionID != UUID.Zero) {
 					region = regiondata.Get (regionID, null);
 				} else if (regionName != string.Empty) {
 					region = regiondata.Get (regionName, null, null, null) [0];
 				}
-				if (region != null) {
+
+                if (region != null) {
 					resp ["Region"] = region.ToOSD ();
 				}
 			}
+
 			return resp;
 		}
 
@@ -1394,12 +1412,14 @@ namespace Universe.PHP.WebUI
 				ParcelFlags flags = map.ContainsKey ("Flags") ? (ParcelFlags)int.Parse (map ["Flags"].ToString ()) : ParcelFlags.None;
 				ParcelCategory category = map.ContainsKey ("Category") ? (ParcelCategory)uint.Parse (map ["Flags"].ToString ()) : ParcelCategory.Any;
 				uint total = directory.GetNumberOfParcelsByRegion (RegionID, owner, flags, category);
-				if (total > 0) {
+
+                if (total > 0) {
 					resp ["Total"] = OSD.FromInteger ((int)total);
 					if (count == 0) {
 						return resp;
 					}
-					List<LandData> parcels = directory.GetParcelsByRegion (start, count, RegionID, owner, flags, category);
+
+                    List<LandData> parcels = directory.GetParcelsByRegion (start, count, RegionID, owner, flags, category);
 					OSDArray Parcels = new OSDArray (parcels.Count);
 					parcels.ForEach (delegate (LandData parcel) {
 						Parcels.Add (LandData2WebOSD (parcel));
@@ -1471,7 +1491,8 @@ namespace Universe.PHP.WebUI
 
 			IGroupsServiceConnector groups = DataPlugins.RequestPlugin<IGroupsServiceConnector> ();
 			OSDArray Groups = new OSDArray ();
-			if (groups != null) {
+
+            if (groups != null) {
 				Dictionary<string, bool> sort = new Dictionary<string, bool> ();
 				Dictionary<string, bool> boolFields = new Dictionary<string, bool> ();
 
@@ -1481,13 +1502,15 @@ namespace Universe.PHP.WebUI
 						sort [field] = int.Parse (fields [field]) != 0;
 					}
 				}
-				if (map.ContainsKey ("BoolFields") && map ["BoolFields"].Type == OSDType.Map) {
+
+                if (map.ContainsKey ("BoolFields") && map ["BoolFields"].Type == OSDType.Map) {
 					OSDMap fields = (OSDMap)map ["BoolFields"];
 					foreach (string field in fields.Keys) {
 						boolFields [field] = int.Parse (fields [field]) != 0;
 					}
 				}
-				List<GroupRecord> reply = groups.GetGroupRecords (
+
+                List<GroupRecord> reply = groups.GetGroupRecords (
 					                          AdminAgentID,
 					                          start,
 					                          map.ContainsKey ("Count") ? map ["Count"].AsUInteger () : 10,
@@ -1499,7 +1522,8 @@ namespace Universe.PHP.WebUI
 						Groups.Add (GroupRecord2OSDMap (groupReply));
 					}
 				}
-				resp ["Total"] = groups.GetNumberOfGroups (AdminAgentID, boolFields);
+
+                resp ["Total"] = groups.GetNumberOfGroups (AdminAgentID, boolFields);
 			}
 
 			resp ["Groups"] = Groups;
@@ -1511,14 +1535,17 @@ namespace Universe.PHP.WebUI
 			OSDMap resp = new OSDMap ();
 			IGroupsServiceConnector groups = DataPlugins.RequestPlugin<IGroupsServiceConnector> ();
 			resp ["Group"] = false;
-			if (groups != null && (map.ContainsKey ("Name") || map.ContainsKey ("UUID"))) {
+
+            if (groups != null && (map.ContainsKey ("Name") || map.ContainsKey ("UUID"))) {
 				UUID groupID = map.ContainsKey ("UUID") ? UUID.Parse (map ["UUID"].ToString ()) : UUID.Zero;
 				string name = map.ContainsKey ("Name") ? map ["Name"].ToString () : "";
 				GroupRecord reply = groups.GetGroupRecord (AdminAgentID, groupID, name);
-				if (reply != null) {
+
+                if (reply != null) {
 					resp ["Group"] = GroupRecord2OSDMap (reply);
 				}
 			}
+
 			return resp;
 		}
 
@@ -1530,7 +1557,8 @@ namespace Universe.PHP.WebUI
 			resp ["Verified"] = OSD.FromBoolean (false);
 			IGenericsConnector generics = DataPlugins.RequestPlugin<IGenericsConnector> ();
 			UUID groupID;
-			if (generics != null && map.ContainsKey ("Group") == true && map.ContainsKey ("Use") && UUID.TryParse (map ["Group"], out groupID) == true) {
+
+            if (generics != null && map.ContainsKey ("Group") == true && map.ContainsKey ("Use") && UUID.TryParse (map ["Group"], out groupID) == true) {
 				if (map ["Use"].AsBoolean ()) {
 					OSDMap useValue = new OSDMap ();
 					useValue ["Use"] = OSD.FromBoolean (true);
@@ -1538,9 +1566,11 @@ namespace Universe.PHP.WebUI
 				} else {
 					generics.RemoveGeneric (groupID, "Group", "WebUI_newsSource");
 				}
-				resp ["Verified"] = OSD.FromBoolean (true);
+
+                resp ["Verified"] = OSD.FromBoolean (true);
 			}
-			return resp;
+
+            return resp;
 		}
 
 		private OSDMap GroupNotices (OSDMap map)
@@ -1559,7 +1589,8 @@ namespace Universe.PHP.WebUI
 						GroupIDs.Add (foo);
 					}
 				}
-				if (GroupIDs.Count > 0) {
+
+                if (GroupIDs.Count > 0) {
 					uint start = map.ContainsKey ("Start") ? uint.Parse (map ["Start"]) : 0;
 					uint count = map.ContainsKey ("Count") ? uint.Parse (map ["Count"]) : 10;
 					List<GroupNoticeData> groupNotices = groups.GetGroupNotices (AdminAgentID, start, count, GroupIDs);
@@ -1579,7 +1610,8 @@ namespace Universe.PHP.WebUI
 						gnd ["Message"] = OSD.FromString (groups.GetGroupNotice (AdminAgentID, GND.NoticeID).Message);
 						GroupNotices.Add (gnd);
 					}
-					resp ["GroupNotices"] = GroupNotices;
+
+                    resp ["GroupNotices"] = GroupNotices;
 					resp ["Total"] = (int)groups.GetNumberOfGroupNotices (AdminAgentID, GroupIDs);
 				}
 			}
@@ -1594,16 +1626,20 @@ namespace Universe.PHP.WebUI
 			resp ["Total"] = 0;
 			IGenericsConnector generics = DataPlugins.RequestPlugin<IGenericsConnector> ();
 			IGroupsServiceConnector groups = DataPlugins.RequestPlugin<IGroupsServiceConnector> ();
-			if (generics == null || groups == null) {
+
+            if (generics == null || groups == null) {
 				return resp;
 			}
+
 			OSDMap useValue = new OSDMap ();
 			useValue ["Use"] = OSD.FromBoolean (true);
 			List<UUID> GroupIDs = generics.GetOwnersByGeneric ("Group", "WebUI_newsSource", useValue);
-			if (GroupIDs.Count <= 0) {
+
+            if (GroupIDs.Count <= 0) {
 				return resp;
 			}
-			foreach (UUID groupID in GroupIDs) {
+
+            foreach (UUID groupID in GroupIDs) {
 				GroupRecord group = groups.GetGroupRecord (AdminAgentID, groupID, "");
 				if (!group.ShowInList) {
 					GroupIDs.Remove (groupID);
