@@ -731,7 +731,7 @@ label {display:inline-block;}
 }
 
 #top h1 a {
-	/*background: transparent url(../images/logo2.png) no-repeat scroll left top;*/
+	background: transparent url(../images/logo2.png) no-repeat scroll left top;
 	display: block;
 	float: left;
 	height: 50px;

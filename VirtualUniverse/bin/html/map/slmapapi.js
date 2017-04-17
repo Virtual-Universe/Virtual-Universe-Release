@@ -745,14 +745,13 @@ SLURL.Map.prototype.CreateMapTypes = function(){
 	var mapTypes = [];
 
 		var copyCollection = new GCopyrightCollection('Universe');
-		var copyright = new GCopyright(1, new GLatLngBounds(new GLatLng(0, 0), new GLatLng(-90, 90)), 0, "(C) 2016 - 2025 " + (new Date).getFullYear() + " http://virtual-planets.org");
+		var copyright = new GCopyright(1, new GLatLngBounds(new GLatLng(0, 0), new GLatLng(-90, 90)), 0, "(C) 2014 - " + (new Date).getFullYear() + " virtual-planets.org");
 		copyCollection.addCopyright(copyright);
 
 		// Create the 'Land' type of map
 		var landTilelayers = [new GTileLayer(copyCollection, 10, 16)];
 		landTilelayers[0].getTileUrl = SLURL.getTileUrl;
 
-		//var landMap = new GMapType(landTilelayers, this.mapProjection, "Land", {errorMessage:"No SL data available"});
 		var landMap = new GMapType(landTilelayers, this.mapProjection, "Land" );
 		landMap.getMinimumResolution = function() { return SLURL.convertZoom(SLURL.minZoomLevel); };
 		landMap.getMaximumResolution = function() { return SLURL.convertZoom(SLURL.maxZoomLevel); };
@@ -763,10 +762,9 @@ SLURL.Map.prototype.CreateMapTypes = function(){
 }
 
 SLURL.Map.prototype.CreateMapDiv = function(mainDiv){
-	var
+    var
 		SLMap = this,
-		mapDiv = document.createElement("div") // Create a div to be the main map container as a child of the main div
-	;
+		mapDiv = document.createElement("div"); // Create a div to be the main map container as a child of the main div
 
 	// Match parent height
 	mapDiv.style.height = "100%";
@@ -785,8 +783,7 @@ SLURL.Map.prototype.CreateMapDiv = function(mainDiv){
 					alert("Can't find textField!");
 				}
 				return false;
-			}
-		;
+			};
 		form.setAttribute('style',[
 			'text-align:center',
 			'padding:4px',
@@ -886,21 +883,7 @@ SLURL.Map.prototype.addTextMarker = function(marker, mapWindow){
 			locY         = height / 2,
 			point        = marker.slCoord.GetGLatLng(),
 			isClickable  = false,
-			markerZIndex = (marker.options.zLayer) ? marker.options.zLayer : 0
-		;
-
-		// Work out hotspot of marker
-//		if(marker.options.horizontalAlign == "left"){
-//			hotspotX = 0;  //locX = 0;
-//		}else if(marker.options.horizontalAlign == "right"){
-//			hotspotX = gicon.iconSize.width;
-//		}
-//		if(marker.options.verticalAlign == "top"){
-//			hotspotY = 0;
-//		}else if(marker.options.verticalAlign == "bottom"){
-//			hotspotY = gicon.iconSize.height;
-//		}
-
+			markerZIndex = (marker.options.zLayer) ? marker.options.zLayer : 0;
 
 		// The SL marker 'owns' the GMarker
 		marker.gmarker          = new MarkerWithLabel({
@@ -935,8 +918,7 @@ SLURL.Map.prototype.addMarker = function(marker, mapWindow){
 			hotspotY     = height / 2,
 			point        = marker.slCoord.GetGLatLng(),
 			isClickable  = (mapWindow || marker.options.centerOnClick || marker.options.clickHandler || marker.options.onMouseOverHandler || marker.options.onMouseOutHandler), // Mouse over/out events are not clicks, but if we're not clickable or draggable, then GMaps doesn't send us any events.
-			markerZIndex = (marker.options.zLayer) ? marker.options.zLayer : 0
-		;
+			markerZIndex = (marker.options.zLayer) ? marker.options.zLayer : 0;
 
 		gicon.image          = markerImg.mainImg.URL;
 		gicon.iconSize       = new GSize(width, height);
@@ -1054,8 +1036,7 @@ SLURL.Map.prototype.panBy = function(x, y){
 		var
 			pos    = this.GMap.getCenter(),
 			offset = this.mapProjection.fromPixelToLatLng(new SLURL.XYPoint(x, y), this.GMap.getZoom()),
-			newPos = new GLatLng(pos.lat() + offset.lat(), pos.lng() + offset.lng())
-		;
+			newPos = new GLatLng(pos.lat() + offset.lat(), pos.lng() + offset.lng());
 		this.GMap.panTo(newPos);
 	}
 }

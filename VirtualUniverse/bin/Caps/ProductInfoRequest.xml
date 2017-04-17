@@ -50,9 +50,9 @@
 		</map>
 		<map>
 			<key>description</key>
-			<string>Universe Homes / Full Region</string>
+			<string>Virtual Universe Homes / Full Region</string>
 			<key>name</key>
-			<string>Universe_homes</string>
+			<string>universe_homes</string>
 			<key>sku</key>
 			<string>101</string>
 		</map>
