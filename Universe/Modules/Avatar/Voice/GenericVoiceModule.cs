@@ -53,28 +53,29 @@ namespace Universe.Modules.Voice
         public void Initialize(IConfigSource config)
         {
             IConfig voiceconfig = config.Configs["Voice"];
+
             if (voiceconfig == null)
                 return;
             
             const string voiceModule = "GenericVoice";
+
             if (voiceconfig.GetString("Module", voiceModule) != voiceModule)
                 return;
 
             // We are using generic voice calls to keep the viewer happy
             m_enabled = true;
-
         }
 
         public void AddRegion(IScene scene)
         {
             if (m_enabled)
             {
-                scene.EventManager.OnRegisterCaps +=
-                    (agentID, server) => OnRegisterCaps(scene, agentID, server);
+                scene.EventManager.OnRegisterCaps += (agentID, server) => OnRegisterCaps(scene, agentID, server);
             }
+
             m_scene = scene;
-            ISyncMessageRecievedService syncRecievedService =
-                m_scene.RequestModuleInterface<ISyncMessageRecievedService>();
+            ISyncMessageRecievedService syncRecievedService = m_scene.RequestModuleInterface<ISyncMessageRecievedService>();
+
             if (syncRecievedService != null)
                 syncRecievedService.OnMessageReceived += syncRecievedService_OnMessageReceived;
         }
@@ -127,13 +128,9 @@ namespace Universe.Modules.Voice
         {
             OSDMap retVal = new OSDMap();
             retVal["ProvisionVoiceAccountRequest"] = CapsUtil.CreateCAPS("ProvisionVoiceAccountRequest", "");
-            caps.AddStreamHandler(new GenericStreamHandler("POST", retVal["ProvisionVoiceAccountRequest"],
-                                                           (path, request, httpRequest, httpResponse) =>
-                                                           ProvisionVoiceAccountRequest(scene, agentID)));
+            caps.AddStreamHandler(new GenericStreamHandler("POST", retVal["ProvisionVoiceAccountRequest"], (path, request, httpRequest, httpResponse) => ProvisionVoiceAccountRequest(scene, agentID)));
             retVal["ParcelVoiceInfoRequest"] = CapsUtil.CreateCAPS("ParcelVoiceInfoRequest", "");
-            caps.AddStreamHandler(new GenericStreamHandler("POST", retVal["ParcelVoiceInfoRequest"],
-                                                           (path, request, httpRequest, httpResponse) =>
-                                                           ParcelVoiceInfoRequest(scene, agentID)));
+            caps.AddStreamHandler(new GenericStreamHandler("POST", retVal["ParcelVoiceInfoRequest"], (path, request, httpRequest, httpResponse) => ParcelVoiceInfoRequest(scene, agentID)));
 
             return retVal;
         }
@@ -168,8 +165,6 @@ namespace Universe.Modules.Voice
             return OSDParser.SerializeLLSDXmlBytes(response);
         }
 
-
-
         #region Region-side message sending
 
         OSDMap syncRecievedService_OnMessageReceived(OSDMap message)
@@ -184,7 +179,6 @@ namespace Universe.Modules.Voice
                 if (m_scene.RegionInfo.RegionName != regionName)
                     return null;                                            // not for the required region!!
 
-
                 bool success = true;
                 bool noAgent = false;
                 // get channel_uri: check first whether estate
@@ -193,36 +187,30 @@ namespace Universe.Modules.Voice
                 // voice channel
                 if (!m_scene.RegionInfo.EstateSettings.AllowVoice)
                 {
-                    MainConsole.Instance.DebugFormat(
-                        "[Voice]: region \"{0}\": voice not enabled in estate settings",
-                        m_scene.RegionInfo.RegionName);
+                    MainConsole.Instance.DebugFormat("[Voice]: region \"{0}\": voice not enabled in estate settings", m_scene.RegionInfo.RegionName);
                     success = false;
                 }
+
                 if (avatar == null || avatar.CurrentParcel == null)
                 {
                     noAgent = true;
                     success = false;
                 } else if ((avatar.CurrentParcel.LandData.Flags & (uint)ParcelFlags.AllowVoiceChat) == 0)
                 {
-                    MainConsole.Instance.DebugFormat(
-                       "[Voice]: region \"{0}\": Parcel \"{1}\" ({2}): avatar \"{3}\": voice not enabled for parcel",
-                        m_scene.RegionInfo.RegionName, avatar.CurrentParcel.LandData.Name,
-                        avatar.CurrentParcel.LandData.LocalID, avatar.Name);
+                    MainConsole.Instance.DebugFormat("[Voice]: region \"{0}\": Parcel \"{1}\" ({2}): avatar \"{3}\": voice not enabled for parcel", 
+                        m_scene.RegionInfo.RegionName, avatar.CurrentParcel.LandData.Name, avatar.CurrentParcel.LandData.LocalID, avatar.Name);
                     success = false;
                 }
                 else
                 {
-                    MainConsole.Instance.DebugFormat(
-                        "[Voice]: region \"{0}\": voice enabled in estate settings, creating parcel voice",
-                        m_scene.RegionInfo.RegionName);
-                    //success = true;
+                    MainConsole.Instance.DebugFormat("[Voice]: region \"{0}\": voice enabled in estate settings, creating parcel voice", m_scene.RegionInfo.RegionName);
                 }
-
 
                 OSDMap map = new OSDMap();
                 map ["Method"] = method;
                 map["Success"] = success;
                 map["NoAgent"] = noAgent;
+
                 if (success)
                 {
                     map["ParcelID"] = avatar.CurrentParcel.LandData.GlobalID;
@@ -230,8 +218,10 @@ namespace Universe.Modules.Voice
                     map["LocalID"] = avatar.CurrentParcel.LandData.LocalID;
                     map["ParcelFlags"] = avatar.CurrentParcel.LandData.Flags;
                 }
+
                 return map;
             }
+
             return null;
         }
 
