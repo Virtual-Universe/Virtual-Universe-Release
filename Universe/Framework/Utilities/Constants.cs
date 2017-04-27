@@ -105,13 +105,16 @@ namespace Universe.Framework.Utilities
         public const int USER_GOD_MAINTENANCE = 250;
 
         // user flags (account types)
-        public const int USER_FLAG_GUEST      = 0;          // Temporary: (Default) No payment info on account    
-        public const int USER_FLAG_RESIDENT   = 200;        // Resident: Payment info on account
-        public const int USER_FLAG_PAY        = 300;        // Testing: Payment info on account
-        public const int USER_FLAG_NOPAY      = 400;        // Testing: No Payment info on account
-        public const int USER_FLAG_MEMBER     = 600;        // Member Estate: Payment info on account
+        public const int USER_FLAG_CITIZEN = 0;        // Temporary: (Default) No payment info on account    
+        public const int USER_FLAG_CITIZEN = 200;        // Resident: Payment info on account
+        public const int USER_FLAG_PAY = 300;        // Testing: Payment info on account
+        public const int USER_FLAG_NOPAY = 400;        // Testing: No Payment info on account
+        public const int USER_FLAG_MEMBER = 600;        // Member Estate: Payment info on account
         public const int USER_FLAG_CONTRACTOR = 800;        // Contracted
-        public const int USER_FLAG_CHARTERMEMBER = 3840;    // Charter member
+        public const int USER_FLAG_MENTOR = 1000;        // Grid mentors
+        public const int USER_FLAG_STAFF = 1210;        // Grid staff
+        public const int USER_FLAG_ASSTDEVELOPER = 1420;        // Assistant grid developer
+        public const int USER_FLAG_COREDEVELOPER = 3840;        // Core grid developer
 
         public const int SCHEDULER_INTERVAL = 300;          // seconds between scheduler checks
 
