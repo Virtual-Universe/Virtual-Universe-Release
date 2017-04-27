@@ -209,7 +209,7 @@ namespace Universe.Services.DataService
             DateTime timeNow = DateTime.Now.ToUniversalTime();
             if (checkOnlineStatus && m_checkLastSeen && user.IsOnline && (timeLastSeen.AddHours(1) < timeNow))
             {
-                MainConsole.Instance.Warn("[UserInfoService]: Found a user (" + user.UserID +
+                MainConsole.Instance.Warn("[User Info Service]: Found a user (" + user.UserID +
                                           ") that was not seen within the last hour " +
                                           "(since " + timeLastSeen.ToLocalTime().ToString() + ", time elapsed " +
                                           (timeNow - timeLastSeen).Days + " days, " + (timeNow - timeLastSeen).Hours +

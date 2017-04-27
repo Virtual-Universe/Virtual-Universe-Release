@@ -85,7 +85,7 @@ namespace Universe.PHP.WebUI
 
 		public void Start (IConfigSource config, IRegistryCore registry)
 		{
-			MainConsole.Instance.Info ("[PHPWebUI]: Starting ... Module Name is " + Name);
+			MainConsole.Instance.Info ("[External Web Interface]: Starting ... Module Name is " + Name);
 			if (config.Configs ["GridInfoService"] != null)
 				m_servernick = config.Configs ["GridInfoService"].GetString ("gridnick", m_servernick);
 			m_registry = registry;

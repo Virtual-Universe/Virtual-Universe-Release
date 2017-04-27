@@ -128,7 +128,7 @@ namespace Universe.FileBasedServices.AssetService
                     "Enable or disable migration of SQL assets",
                     HandleMigrateSQLAssets, false, true);
             }
-            MainConsole.Instance.Info ("[Filebased asset service]: File based asset service enabled");
+            MainConsole.Instance.Info ("[File Based Asset Service]: File based asset service enabled");
 
         }
 
@@ -334,7 +334,7 @@ namespace Universe.FileBasedServices.AssetService
             if (!Directory.Exists (Path.Combine (m_assetsDirectory, "data")))
                 Directory.CreateDirectory (Path.Combine (m_assetsDirectory, "data"));
 
-            MainConsole.Instance.InfoFormat ("[Filebased asset service]: Set up Filebased Assets in {0}.",
+            MainConsole.Instance.InfoFormat ("[File Based Asset Service]: Set up Filebased Assets in {0}.",
                 m_assetsDirectory);
         }
 
@@ -402,7 +402,7 @@ namespace Universe.FileBasedServices.AssetService
             } catch (Exception ex)
             {
                 if (showWarnings)
-                    MainConsole.Instance.WarnFormat ("[Filebased asset service]: Failed to retrieve asset {0}: {1} ", id, ex);
+                    MainConsole.Instance.WarnFormat ("[File Based Asset Service]: Failed to retrieve asset {0}: {1} ", id, ex);
                 return null;
             }
 #if ASSET_DEBUG

@@ -170,7 +170,7 @@ namespace Universe.Modules.Web
                     txlt.Deserialize (m_localHtmlPath);
                 }
 
-                MainConsole.Instance.Info ("[WebUI]: Default language is " + _defaultTranslator.FullLanguageName);
+                MainConsole.Instance.Info ("[Builtin Web Interface]: Default language is " + _defaultTranslator.FullLanguageName);
             }
         }
 

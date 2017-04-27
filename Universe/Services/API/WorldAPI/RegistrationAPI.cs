@@ -174,7 +174,7 @@ namespace Universe.Services.API
                 if (AvatarArchive.Length > 0) {
                     profile.AArchiveName = AvatarArchive;
                 }
-                //    MainConsole.Instance.InfoFormat("[WebUI] Triggered Archive load of " + profile.AArchiveName);
+                //    MainConsole.Instance.InfoFormat("[Builtin Web Interface] Triggered Archive load of " + profile.AArchiveName);
                 profile.IsNewUser = true;
 
                 profile.MembershipGroup = UserTitle;

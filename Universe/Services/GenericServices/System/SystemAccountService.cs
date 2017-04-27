@@ -388,7 +388,7 @@ namespace Universe.Services.GenericServices.System
             //m_accountService.CreateUser (UUID.Parse (uuid), UUID.Parse (scopeID), userName, Util.Md5Hash (password), email);
             m_accountService.CreateUser (UUID.Parse (uuid), UUID.Zero, userName, Util.Md5Hash (password), email);
             // CreateUser will tell us success or problem
-            //MainConsole.Instance.InfoFormat("[User account service]: User '{0}' created", name);
+            //MainConsole.Instance.InfoFormat("[User Account Service]: User '{0}' created", name);
 
             // check for success
             UserAccount account = m_accountService.GetUserAccount (null, userName);

@@ -166,7 +166,7 @@ namespace Universe.Services
             catch (Exception e)
             {
                 MainConsole.Instance.WarnFormat(
-                    "[LLogin service]: Error processing inventory skeleton of agent {0} - {1}",
+                    "[LLogin Service]: Error processing inventory skeleton of agent {0} - {1}",
                     agentID, e);
 
                 // ignore and continue
@@ -470,7 +470,7 @@ namespace Universe.Services
             }
             catch (Exception e)
             {
-                MainConsole.Instance.Warn("[LLogin service]: Error creating Hashtable Response: " + e);
+                MainConsole.Instance.Warn("[LLogin Service]: Error creating Hashtable Response: " + e);
 
                 return LLFailedLoginResponse.InternalError.ToHashtable();
             }

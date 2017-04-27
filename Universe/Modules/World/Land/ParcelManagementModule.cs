@@ -1923,12 +1923,12 @@ namespace Universe.Modules.Land
             }
 
             if (parcelID == UUID.Zero)
-                MainConsole.Instance.Warn ("[RemoteParcelRequest]: Failed to find parcel, " + request);
+                MainConsole.Instance.Warn ("[Remote Parcel Request]: Failed to find parcel, " + request);
 
             OSDMap res = new OSDMap ();
             res ["parcel_id"] = parcelID;
             if (parcelID != UUID.Zero)
-                MainConsole.Instance.DebugFormat ("[RemoteParcelRequest]: Found parcelID {0}", parcelID);
+                MainConsole.Instance.DebugFormat ("[Remote Parcel Request]: Found parcelID {0}", parcelID);
 
             return OSDParser.SerializeLLSDXmlBytes (res);
         }

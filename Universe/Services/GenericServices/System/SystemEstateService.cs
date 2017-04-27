@@ -455,7 +455,7 @@ namespace Universe.Services.GenericServices.System
             // check to make sure the user exists
             UserAccount account = accountService.GetUserAccount (null, estateOwner);
             if (account == null) {
-                MainConsole.Instance.WarnFormat ("[User account service]: The user, '{0}' was not found!", estateOwner);
+                MainConsole.Instance.WarnFormat ("[User Account Service]: The user, '{0}' was not found!", estateOwner);
 
                 // temporary fix until remote user creation can be implemented
                 if (accountService.IsLocalConnector) {
@@ -477,8 +477,8 @@ namespace Universe.Services.GenericServices.System
                         return;
                     }
                 } else {
-                    MainConsole.Instance.WarnFormat ("[User account service]: The user must be created on the Grid before assigning an estate!");
-                    MainConsole.Instance.WarnFormat ("[User account service]: Regions should be assigned to the system user estate until this can be corrected");
+                    MainConsole.Instance.WarnFormat ("[User Account Service]: The user must be created on the Grid before assigning an estate!");
+                    MainConsole.Instance.WarnFormat ("[User Account Service]: Regions should be assigned to the system user estate until this can be corrected");
 
                     return;
                 }

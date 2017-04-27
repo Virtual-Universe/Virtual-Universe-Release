@@ -778,7 +778,7 @@ namespace Universe.Modules.EntityTransfer
 
             // Don't disable this log message - it's too helpful
             MainConsole.Instance.TraceFormat (
-                "[Connection begin]: Region {0} told of incoming {1} agent {2} (circuit code {3}, teleportflags {4})",
+                "[Begin Connection]: Region {0} told of incoming {1} agent {2} (circuit code {3}, teleportflags {4})",
                 scene.RegionInfo.RegionName, agent.IsChildAgent ? "child" : "root", agent.AgentID,
                 agent.CircuitCode, teleportFlags);
 
@@ -813,7 +813,7 @@ namespace Universe.Modules.EntityTransfer
             scene.AuthenticateHandler.AddNewCircuit (agent.CircuitCode, agent);
 
             MainConsole.Instance.InfoFormat (
-                "[Connection begin]: Region {0} authenticated and authorized incoming {1} agent {2} (circuit code {3})",
+                "[Begin Connection]: Region {0} authenticated and authorized incoming {1} agent {2} (circuit code {3})",
                 scene.RegionInfo.RegionName, agent.IsChildAgent ? "child" : "root", agent.AgentID,
                 agent.CircuitCode);
 
@@ -851,7 +851,7 @@ namespace Universe.Modules.EntityTransfer
                 GridRegion ourRegion = new GridRegion (scene.RegionInfo);
                 if (!AuthorizationService.IsAuthorizedForRegion (ourRegion, agent, !agent.IsChildAgent, out reason)) {
                     MainConsole.Instance.WarnFormat (
-                        "[Connection begin]: Denied access to {0} at {1} because the user does not have access to the region, reason: {2}",
+                        "[Begin Connection]: Denied access to {0} at {1} because the user does not have access to the region, reason: {2}",
                         agent.AgentID, scene.RegionInfo.RegionName, reason);
                     reason = string.Format ("You do not have access to the region {0}, reason: {1}",
                                            scene.RegionInfo.RegionName, reason);

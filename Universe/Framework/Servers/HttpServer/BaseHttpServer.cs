@@ -142,7 +142,7 @@ namespace Universe.Framework.Servers.HttpServer
 
             lock (m_streamHandlers) {
                 if (!m_streamHandlers.ContainsKey (handlerKey)) {
-                    // MainConsole.Instance.DebugFormat("[Base HTTP server]: Adding handler key {0}", handlerKey);
+                    // MainConsole.Instance.DebugFormat("[Base HTTP Server]: Adding handler key {0}", handlerKey);
                     m_streamHandlers.Add (handlerKey, handler);
                 }
             }
@@ -315,7 +315,7 @@ namespace Universe.Framework.Servers.HttpServer
                     HandleRequest (context);
                 }
             } catch (Exception e) {
-                MainConsole.Instance.ErrorFormat ("[Base HTTP server]: OnRequest() failed: {0} ", e.ToString ());
+                MainConsole.Instance.ErrorFormat ("[Base HTTP Server]: OnRequest() failed: {0} ", e.ToString ());
             }
         }
 
@@ -388,14 +388,14 @@ namespace Universe.Framework.Servers.HttpServer
                         if (!(ex is HttpListenerException) ||
                             !HttpListenerManager.IGNORE_ERROR_CODES.Contains (((HttpListenerException)ex).ErrorCode)) {
                             MainConsole.Instance.WarnFormat (
-                                "[Base HTTP server]: HandleRequest failed to write all data to the stream: {0}", ex.ToString ());
+                                "[Base HTTP Server]: HandleRequest failed to write all data to the stream: {0}", ex.ToString ());
                         }
                         response.Abort ();
                     }
 
                     requestEndTick = Environment.TickCount;
                 } catch (Exception e) {
-                    MainConsole.Instance.ErrorFormat ("[Base HTTP server]: HandleRequest() threw {0} ", e.ToString ());
+                    MainConsole.Instance.ErrorFormat ("[Base HTTP Server]: HandleRequest() threw {0} ", e.ToString ());
                     response.Abort ();
                 } finally {
                     // Every month or so this will wrap and give bad numbers, not really a problem
@@ -403,13 +403,13 @@ namespace Universe.Framework.Servers.HttpServer
                     int tickdiff = requestEndTick - requestStartTick;
                     if (tickdiff > 3000 && requestHandler != null) {
                         MainConsole.Instance.DebugFormat (
-                            "[Base HTTP server]: Slow handling of {0} {1} took {2}ms",
+                            "[Base HTTP Server]: Slow handling of {0} {1} took {2}ms",
                             requestMethod,
                             uriString,
                             tickdiff);
                     } else if (MainConsole.Instance.IsTraceEnabled) {
                         MainConsole.Instance.TraceFormat (
-                            "[Base HTTP server]: Handling {0} {1} took {2}ms",
+                            "[Base HTTP Server]: Handling {0} {1} took {2}ms",
                             requestMethod,
                             uriString,
                             tickdiff);
@@ -436,7 +436,7 @@ namespace Universe.Framework.Servers.HttpServer
                 xmlRprcRequest = (XmlRpcRequest)(new XmlRpcRequestDeserializer ()).Deserialize (requestBody);
             } catch (XmlException e) {
                 MainConsole.Instance.WarnFormat (
-                    "[Base HTTP server]: Got XMLRPC request with invalid XML from {0}.  XML was '{1}'.  Sending blank response.  Exception: {2}",
+                    "[Base HTTP Server]: Got XMLRPC request with invalid XML from {0}.  XML was '{1}'.  Sending blank response.  Exception: {2}",
                     request.RemoteIPEndPoint, requestBody, e.ToString ());
             }
 
@@ -472,7 +472,7 @@ namespace Universe.Framework.Servers.HttpServer
                                     "Requested method [{0}] from {1} threw exception: {2} {3}",
                                     methodName, request.RemoteIPEndPoint.Address, e.Message, e.StackTrace);
 
-                            MainConsole.Instance.ErrorFormat ("[Base HTTP server]: {0}", errorMessage);
+                            MainConsole.Instance.ErrorFormat ("[Base HTTP Server]: {0}", errorMessage);
 
                             // if the registered XmlRpc method threw an exception, we pass a fault-code along
                             xmlRpcResponse = new XmlRpcResponse ();
@@ -499,7 +499,7 @@ namespace Universe.Framework.Servers.HttpServer
                     responseString = "Not found";
 
                     MainConsole.Instance.ErrorFormat (
-                        "[Base HTTP server]: Handler not found for http request {0} {1}",
+                        "[Base HTTP Server]: Handler not found for http request {0} {1}",
                         request.HttpMethod, request.Url.PathAndQuery);
                 }
             }
@@ -542,7 +542,7 @@ namespace Universe.Framework.Servers.HttpServer
         public void Start ()
         {
             MainConsole.Instance.InfoFormat (
-                "[Base HTTP server]: Starting {0} server on port {1}", Secure ? "HTTPS" : "HTTP", Port);
+                "[Base HTTP Server]: Starting {0} server on port {1}", Secure ? "HTTPS" : "HTTP", Port);
 
             try {
                 //m_httpListener = new HttpListener();
@@ -562,10 +562,10 @@ namespace Universe.Framework.Servers.HttpServer
                 HTTPDRunning = true;
             } catch (Exception e) {
                 if (e is HttpListenerException && ((HttpListenerException)e).Message == "Access is denied")
-                    MainConsole.Instance.Error ("[Base HTTP server]: You must run this program as an administrator.");
+                    MainConsole.Instance.Error ("[Base HTTP Server]: You must run this program as an administrator.");
                 else {
-                    MainConsole.Instance.Error ("[Base HTTP server]: Error - " + e.Message);
-                    MainConsole.Instance.Error ("[Base HTTP server]: Tip: Do you have permission to listen on port " +
+                    MainConsole.Instance.Error ("[Base HTTP Server]: Error - " + e.Message);
+                    MainConsole.Instance.Error ("[Base HTTP Server]: Tip: Do you have permission to listen on port " +
                                                m_port + "?");
                 }
 
@@ -582,7 +582,7 @@ namespace Universe.Framework.Servers.HttpServer
                 m_PollServiceManager.Stop ();
                 m_internalServer.Stop ();
             } catch (NullReferenceException) {
-                MainConsole.Instance.Warn ("[Base HTTP server]: Null Reference when stopping HttpServer.");
+                MainConsole.Instance.Warn ("[Base HTTP Server]: Null Reference when stopping HttpServer.");
             }
         }
 
@@ -592,7 +592,7 @@ namespace Universe.Framework.Servers.HttpServer
         {
             string handlerKey = GetHandlerKey (httpMethod, path);
 
-            //MainConsole.Instance.DebugFormat("[Base HTTP server]: Removing handler key {0}", handlerKey);
+            //MainConsole.Instance.DebugFormat("[Base HTTP Server]: Removing handler key {0}", handlerKey);
 
             lock (m_streamHandlers) m_streamHandlers.Remove (handlerKey);
         }
