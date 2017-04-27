@@ -708,6 +708,9 @@
 	  <Compile Include="Web\Translators\SpanishTranslation.cs">
 		<SubType>Code</SubType>
 	  </Compile>
+	  <Compile Include="WebUiPHP\WebUiPHP.cs">
+		<SubType>Code</SubType>
+	  </Compile>
 	  <Compile Include="World\ActivitiyDetectors\ActivityDetector.cs">
 		<SubType>Code</SubType>
 	  </Compile>
@@ -757,6 +760,24 @@
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="World\Estate\EstateTerrainXferHandler.cs">
+		<SubType>Code</SubType>
+	  </Compile>
+	  <Compile Include="World\GlobalEnvironment\CloudModule.cs">
+		<SubType>Code</SubType>
+	  </Compile>
+	  <Compile Include="World\GlobalEnvironment\EnvironmentSettingsModule.cs">
+		<SubType>Code</SubType>
+	  </Compile>
+	  <Compile Include="World\GlobalEnvironment\SunModule.cs">
+		<SubType>Code</SubType>
+	  </Compile>
+	  <Compile Include="World\GlobalEnvironment\WindModule.cs">
+		<SubType>Code</SubType>
+	  </Compile>
+	  <Compile Include="World\GlobalEnvironment\Plugins\ConfigurableWind.cs">
+		<SubType>Code</SubType>
+	  </Compile>
+	  <Compile Include="World\GlobalEnvironment\Plugins\SimpleRandomWind.cs">
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="World\InventoryAccess\InventoryAccessModule.cs">
@@ -1004,24 +1025,6 @@
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="World\VisitorLogger\VisitorLogger.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="World\Wind\CloudModule.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="World\Wind\EnvironmentSettingsModule.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="World\Wind\SunModule.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="World\Wind\WindModule.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="World\Wind\Plugins\ConfigurableWind.cs">
-		<SubType>Code</SubType>
-	  </Compile>
-	  <Compile Include="World\Wind\Plugins\SimpleRandomWind.cs">
 		<SubType>Code</SubType>
 	  </Compile>
 	  <Compile Include="World\WorldMap\MapImageModule.cs">

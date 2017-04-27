@@ -43,7 +43,7 @@ namespace Universe.Framework.Services
 
         public UUID PrincipalID { get; set; }
 
-        public int UserFlags = Constants.USER_FLAG_GUEST;
+        public int UserFlags = Constants.USER_FLAG_CITIZEN;
         public int UserLevel = Constants.USER_NORMAL;
 
         public UserAccount ()
@@ -251,7 +251,6 @@ namespace Universe.Framework.Services
         /// <returns>The god level description.</returns>
         /// <param name="level">Level.</param>
         string UserGodLevel (int level);
-
     }
 
     /// <summary>

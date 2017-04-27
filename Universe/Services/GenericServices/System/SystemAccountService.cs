@@ -423,7 +423,7 @@ namespace Universe.Services.GenericServices.System
             UserAccount account = m_accountService.GetUserAccount(null, userName);
             if (account != null)
             {
-                account.UserFlags = Constants.USER_FLAG_CHARTERMEMBER;
+                account.UserFlags = Constants.USER_FLAG_COREDEVELOPER;
                 account.UserLevel = 250;
                 m_accountService.StoreUserAccount(account);
 

@@ -1053,13 +1053,10 @@ namespace Universe.Modules.Web
         /// <param name = "translator"></param>
         public static string UserFlagToType(int userFlags, ITranslator translator)
         {
-
             switch (userFlags)
             {
-                case Constants.USER_FLAG_GUEST:
-                    return translator.GetTranslatedString("Guest");
-                case Constants.USER_FLAG_RESIDENT:
-                    return translator.GetTranslatedString("Resident");
+                case Constants.USER_FLAG_CITIZEN:
+                    return translator.GetTranslatedString("Citizen");
                 case Constants.USER_FLAG_MEMBER:
                     return translator.GetTranslatedString("Member");
                 case Constants.USER_FLAG_CONTRACTOR:
