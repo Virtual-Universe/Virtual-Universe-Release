@@ -191,7 +191,7 @@ namespace Universe.Services.SQLServices.UserAccountService
                 MainConsole.Instance.Commands.AddCommand(
                     "set user type",
                     "set user type [<first> [<last> [<type>]]]",
-                    "Set the user account type. I.e. Guest, Resident, Member etc (Used for stipend payments)",
+                    "Set the user account type. I.e. Citizen, Member etc (Used for stipend payments)",
                     HandleSetUserType, false, true);
 
                 MainConsole.Instance.Commands.AddCommand(
@@ -267,6 +267,7 @@ namespace Universe.Services.SQLServices.UserAccountService
 
                     return acc;
                 }
+
                 return new UserAccount();
             }
 
@@ -295,7 +296,6 @@ namespace Universe.Services.SQLServices.UserAccountService
                         new[] { "FirstName", "LastName" },
                         new[] { firstName, lastName });
                 }
-
             }
 
             if (d.Length < 1)
@@ -332,6 +332,7 @@ namespace Universe.Services.SQLServices.UserAccountService
 
                     return acc;
                 }
+
                 return new UserAccount();
             }
 
@@ -367,7 +368,6 @@ namespace Universe.Services.SQLServices.UserAccountService
                             new[] { fName + " " + lName });
                     }
                 }
-
             }
 
             if (d.Length < 1)
@@ -400,6 +400,7 @@ namespace Universe.Services.SQLServices.UserAccountService
 
                     return acc;
                 }
+
                 return new UserAccount();
             }
 
@@ -419,15 +420,9 @@ namespace Universe.Services.SQLServices.UserAccountService
             return d[0];
         }
 
-        //[CanBeReflected(ThreatLevel = ThreatLevel.Full)]
         public bool StoreUserAccount(UserAccount data)
         {
-            /*object remoteValue = DoRemoteByURL("UserAccountServerURI", data);
-            if (remoteValue != null || m_doRemoteOnly)
-                return remoteValue == null ? false : (bool)remoteValue;*/
-
-            m_registry.RequestModuleInterface<ISimulationBase>()
-                      .EventManager.FireGenericEventHandler("UpdateUserInformation", data.PrincipalID);
+            m_registry.RequestModuleInterface<ISimulationBase>().EventManager.FireGenericEventHandler("UpdateUserInformation", data.PrincipalID);
             return m_Database.Store(data);
         }
 
@@ -487,7 +482,6 @@ namespace Universe.Services.SQLServices.UserAccountService
             List<UserAccount> ret = new List<UserAccount>(d);
             return ret;
         }
-
 
         [CanBeReflected(ThreatLevel = ThreatLevel.Low)]
         public uint NumberOfUserAccounts(List<UUID> scopeIDs, string query)
@@ -553,37 +547,20 @@ namespace Universe.Services.SQLServices.UserAccountService
             return CreateNewUser(newAccount, passHash, passSalt);
         }
 
-        //[CanBeReflected(ThreatLevel = ThreatLevel.Full)]
         string CreateNewUser(UserAccount newAccount, string passHash, string passSalt)
         {
-            /*object remoteValue = DoRemoteByURL("UserAccountServerURI", newAcc, password);
-            if (remoteValue != null || m_doRemoteOnly)
-                return remoteValue == null ? "" : remoteValue.ToString();*/
-
-<<<<<<< Updated upstream
-            UserAccount account = GetUserAccount (null, newAccount.PrincipalID);
-            UserAccount nameaccount = GetUserAccount (null, newAccount.Name);
-            if (account != null || nameaccount != null) {
-                MainConsole.Instance.ErrorFormat ("[User Account Service]: A user with the name {0} already exists!", newAccount.Name);
-=======
             UserAccount account = GetUserAccount(null, newAccount.PrincipalID);
             UserAccount nameaccount = GetUserAccount(null, newAccount.Name);
             if (account != null || nameaccount != null)
             {
                 MainConsole.Instance.ErrorFormat("[User Account Service]: A user with the name {0} already exists!", newAccount.Name);
->>>>>>> Stashed changes
                 return "A user with the same name already exists";
             }
 
             // This one is available...
-<<<<<<< Updated upstream
-            if (!StoreUserAccount (newAccount)) {
-                MainConsole.Instance.ErrorFormat ("[User Account Service]: Account creation failed for account {0}", newAccount.Name);
-=======
             if (!StoreUserAccount(newAccount))
             {
                 MainConsole.Instance.ErrorFormat("[User Account Service]: Account creation failed for account {0}", newAccount.Name);
->>>>>>> Stashed changes
                 return "Unable to save account";
             }
 
@@ -593,29 +570,16 @@ namespace Universe.Services.SQLServices.UserAccountService
             else
                 success = SetHashedPassword(newAccount.PrincipalID, passHash);
 
-<<<<<<< Updated upstream
-            if (!success) {
-                MainConsole.Instance.WarnFormat (
-                    "[User Account Service]: Unable to set password for account {0}.", newAccount.Name);
-=======
             if (!success)
             {
-                MainConsole.Instance.WarnFormat(
-                    "[User Account Service]: Unable to set password for account {0}.", newAccount.Name);
->>>>>>> Stashed changes
+                MainConsole.Instance.WarnFormat("[User Account Service]: Unable to set password for account {0}.", newAccount.Name);
                 return "Unable to set password";
             }
-            //            }
 
-<<<<<<< Updated upstream
-            MainConsole.Instance.InfoFormat ("[User Account Service]: Account {0} created successfully", newAccount.Name);
-=======
             MainConsole.Instance.InfoFormat("[User Account Service]: Account {0} created successfully", newAccount.Name);
->>>>>>> Stashed changes
             //Cache it as well
             CacheAccount(newAccount);
-            m_registry.RequestModuleInterface<ISimulationBase>()
-                              .EventManager.FireGenericEventHandler("CreateUserInformation", newAccount.PrincipalID);
+            m_registry.RequestModuleInterface<ISimulationBase>().EventManager.FireGenericEventHandler("CreateUserInformation", newAccount.PrincipalID);
 
             // create a profile for the new user
             if (m_profileConnector != null)
@@ -623,9 +587,7 @@ namespace Universe.Services.SQLServices.UserAccountService
                 m_profileConnector.CreateNewProfile(newAccount.PrincipalID);
                 IUserProfileInfo profile = m_profileConnector.GetUserProfile(newAccount.PrincipalID);
 
-                // if (AvatarArchive != "")
-                //    profile.AArchiveName = AvatarArchive;
-                profile.MembershipGroup = "Resident";
+                profile.MembershipGroup = "Citizen";
                 profile.IsNewUser = true;
                 m_profileConnector.UpdateUserProfile(profile);
             }
@@ -645,8 +607,8 @@ namespace Universe.Services.SQLServices.UserAccountService
                     );
                 }
             }
-            return "";
 
+            return "";
         }
 
         bool SetHashedPassword(UUID userId, string passHash)
@@ -657,7 +619,6 @@ namespace Universe.Services.SQLServices.UserAccountService
             return success;
         }
 
-
         bool SetSaltedPassword(UUID userId, string passHash, string passSalt)
         {
             bool success = false;
@@ -666,42 +627,24 @@ namespace Universe.Services.SQLServices.UserAccountService
             return success;
         }
 
-
         public void DeleteUser(UUID userID, string name, string password, bool archiveInformation, bool wipeFromDatabase)
         {
-            //if (password != "" && m_AuthenticationService.Authenticate(userID, "UserAccount", password, 0) == "")
-            //    return; //Not authenticated
-
             // ensure the system users are left alone!
-<<<<<<< Updated upstream
-            if (Utilities.IsSystemUser (userID)) {
-                MainConsole.Instance.Warn ("[User Account Service]: Deleting a system user account is not a good idea!");
-=======
             if (Utilities.IsSystemUser(userID))
             {
                 MainConsole.Instance.Warn("[User Account Service]: Deleting a system user account is not a good idea!");
->>>>>>> Stashed changes
                 return;
             }
 
-
-<<<<<<< Updated upstream
-            if (!m_Database.DeleteAccount (userID, archiveInformation)) {
-                MainConsole.Instance.WarnFormat (
-                    "[User Account Service]: Failed to remove the account for {0}, please check that the database is valid after this operation!",
-=======
             if (!m_Database.DeleteAccount(userID, archiveInformation))
             {
                 MainConsole.Instance.WarnFormat(
-                    "[User Account Service]: Failed to remove the account for {0}, please check that the database is valid after this operation!",
->>>>>>> Stashed changes
-                    userID);
+                    "[User Account Service]: Failed to remove the account for {0}, please check that the database is valid after this operation!", userID);
                 return;
             }
 
             if (wipeFromDatabase)
-                m_registry.RequestModuleInterface<ISimulationBase>()
-                          .EventManager.FireGenericEventHandler("DeleteUserInformation", userID);
+                m_registry.RequestModuleInterface<ISimulationBase>().EventManager.FireGenericEventHandler("DeleteUserInformation", userID);
             m_cache.Remove(userID, name);
         }
 
@@ -716,36 +659,22 @@ namespace Universe.Services.SQLServices.UserAccountService
         /// <param name="cmdParams">Cmd parameters.</param>
         protected void HandleSetPartner(IScene scene, string[] cmdParams)
         {
-<<<<<<< Updated upstream
-            string first = MainConsole.Instance.Prompt ("First User's name (<first> <last>)");
-            string second = MainConsole.Instance.Prompt ("Second User's name (<first> <last>)");
-            if (second == first) {
-                MainConsole.Instance.Error ("[User Account Service]: You are not able to set yourself as your partner");
-=======
             string first = MainConsole.Instance.Prompt("First User's name (<first> <last>)");
             string second = MainConsole.Instance.Prompt("Second User's name (<first> <last>)");
             if (second == first)
             {
                 MainConsole.Instance.Error("[User Account Service]: You are not able to set yourself as your partner");
->>>>>>> Stashed changes
                 return;
             }
 
             if (m_profileConnector != null)
             {
-                IUserProfileInfo firstProfile =
-                    m_profileConnector.GetUserProfile(GetUserAccount(null, first).PrincipalID);
-                IUserProfileInfo secondProfile =
-                    m_profileConnector.GetUserProfile(GetUserAccount(null, second).PrincipalID);
+                IUserProfileInfo firstProfile = m_profileConnector.GetUserProfile(GetUserAccount(null, first).PrincipalID);
+                IUserProfileInfo secondProfile = m_profileConnector.GetUserProfile(GetUserAccount(null, second).PrincipalID);
 
-<<<<<<< Updated upstream
-                if (firstProfile == null || secondProfile == null) {
-                    MainConsole.Instance.Warn ("[User Account Service]: At least one of these users does not have a profile?");
-=======
                 if (firstProfile == null || secondProfile == null)
                 {
                     MainConsole.Instance.Warn("[User Account Service]: At least one of these users does not have a profile?");
->>>>>>> Stashed changes
                     return;
                 }
 
@@ -755,13 +684,8 @@ namespace Universe.Services.SQLServices.UserAccountService
                 m_profileConnector.UpdateUserProfile(firstProfile);
                 m_profileConnector.UpdateUserProfile(secondProfile);
 
-<<<<<<< Updated upstream
-                MainConsole.Instance.Warn ("[User Account Service]: Partner information updated.");
-=======
                 MainConsole.Instance.Warn("[User Account Service]: Partner information updated.");
->>>>>>> Stashed changes
             }
-
         }
 
         /// <summary>
@@ -779,15 +703,6 @@ namespace Universe.Services.SQLServices.UserAccountService
                     m_profileConnector.GetUserProfile(GetUserAccount(null, first).PrincipalID);
 
                 // Find the second partner through the first user details
-<<<<<<< Updated upstream
-                if (firstProfile.Partner == UUID.Zero) {
-                    MainConsole.Instance.Error ("[User Account Service]: This user doesn't have a partner");
-                    return;
-                }
-
-                if (firstProfile.Partner == firstProfile.PrincipalID) {
-                    MainConsole.Instance.Error ("[User Account Service]: Deadlock situation avoided, this avatar is his own partner");
-=======
                 if (firstProfile.Partner == UUID.Zero)
                 {
                     MainConsole.Instance.Error("[User Account Service]: This user doesn't have a partner");
@@ -797,7 +712,6 @@ namespace Universe.Services.SQLServices.UserAccountService
                 if (firstProfile.Partner == firstProfile.PrincipalID)
                 {
                     MainConsole.Instance.Error("[User Account Service]: Deadlock situation avoided, this avatar is his own partner");
->>>>>>> Stashed changes
                     firstProfile.Partner = UUID.Zero;
                     m_profileConnector.UpdateUserProfile(firstProfile);
                 }
@@ -812,11 +726,7 @@ namespace Universe.Services.SQLServices.UserAccountService
                     m_profileConnector.UpdateUserProfile(firstProfile);
                     m_profileConnector.UpdateUserProfile(secondProfile);
 
-<<<<<<< Updated upstream
-                    MainConsole.Instance.Warn ("[User Account Service]: Partner information updated. ");
-=======
                     MainConsole.Instance.Warn("[User Account Service]: Partner information updated. ");
->>>>>>> Stashed changes
                 }
             }
         }
@@ -840,18 +750,13 @@ namespace Universe.Services.SQLServices.UserAccountService
             if (lastName == "")
                 return;
 
-<<<<<<< Updated upstream
-            UserAccount account = GetUserAccount (null, firstName, lastName);
-            if (account == null) {
-                MainConsole.Instance.Warn ("[User Account Service]: No such user");
-=======
             UserAccount account = GetUserAccount(null, firstName, lastName);
             if (account == null)
             {
                 MainConsole.Instance.Warn("[User Account Service]: No such user");
->>>>>>> Stashed changes
                 return;
             }
+
             title = cmdparams.Length < 7 ? MainConsole.Instance.Prompt("User Title") : Util.CombineParams(cmdparams, 6);
             if (m_profileConnector != null)
             {
@@ -860,35 +765,20 @@ namespace Universe.Services.SQLServices.UserAccountService
                 {
                     // this is not right is it?  >> profile.MembershipGroup = title;
                     profile.CustomType = title;
-<<<<<<< Updated upstream
-                    m_profileConnector.UpdateUserProfile (profile);
-                } else {
-                    MainConsole.Instance.Warn ("[User Account Service]: There does not appear to be a profile for this user?");
-=======
                     m_profileConnector.UpdateUserProfile(profile);
                 }
                 else
                 {
                     MainConsole.Instance.Warn("[User Account Service]: There does not appear to be a profile for this user?");
->>>>>>> Stashed changes
                     return;
                 }
-
             }
+
             bool success = StoreUserAccount(account);
             if (!success)
-<<<<<<< Updated upstream
-                MainConsole.Instance.InfoFormat ("[User Account Service]: Unable to set user profile title for account {0} {1}.", firstName,
-                                                lastName);
+                MainConsole.Instance.InfoFormat("[User Account Service]: Unable to set user profile title for account {0} {1}.", firstName, lastName);
             else
-                MainConsole.Instance.InfoFormat ("[User Account Service]: User profile title set for user {0} {1} to {2}", firstName, lastName,
-=======
-                MainConsole.Instance.InfoFormat("[User Account Service]: Unable to set user profile title for account {0} {1}.", firstName,
-                                                lastName);
-            else
-                MainConsole.Instance.InfoFormat("[User Account Service]: User profile title set for user {0} {1} to {2}", firstName, lastName,
->>>>>>> Stashed changes
-                                                title);
+                MainConsole.Instance.InfoFormat("[User Account Service]: User profile title set for user {0} {1} to {2}", firstName, lastName, title);
         }
 
         /// <summary>
@@ -911,28 +801,17 @@ namespace Universe.Services.SQLServices.UserAccountService
             if (lastName == "")
                 return;
 
-<<<<<<< Updated upstream
-            UserAccount account = GetUserAccount (null, firstName, lastName);
-            if (account == null) {
-                MainConsole.Instance.Warn ("[User Account Service]: Unable to locate this user");
-=======
             UserAccount account = GetUserAccount(null, firstName, lastName);
             if (account == null)
             {
                 MainConsole.Instance.Warn("[User Account Service]: Unable to locate this user");
->>>>>>> Stashed changes
                 return;
             }
 
             // ensure the protected system users are left alone!
-<<<<<<< Updated upstream
-            if (Utilities.IsSystemUser (account.PrincipalID)) {
-                MainConsole.Instance.Warn ("[User Account Service]: Changing system users is not a good idea!");
-=======
             if (Utilities.IsSystemUser(account.PrincipalID))
             {
                 MainConsole.Instance.Warn("[User Account Service]: Changing system users is not a good idea!");
->>>>>>> Stashed changes
                 return;
             }
 
@@ -949,15 +828,9 @@ namespace Universe.Services.SQLServices.UserAccountService
 
             bool success = StoreUserAccount(account);
             if (!success)
-<<<<<<< Updated upstream
-                MainConsole.Instance.InfoFormat ("[User Account Service]: Unable to set user level for account {0} {1}.", firstName, lastName);
-            else
-                MainConsole.Instance.InfoFormat ("[User Account Service]: User level set for user {0} {1} to {2}", firstName, lastName, level);
-=======
                 MainConsole.Instance.InfoFormat("[User Account Service]: Unable to set user level for account {0} {1}.", firstName, lastName);
             else
                 MainConsole.Instance.InfoFormat("[User Account Service]: User level set for user {0} {1} to {2}", firstName, lastName, level);
->>>>>>> Stashed changes
         }
 
         int UserTypeToUserFlags(string userType)
@@ -976,7 +849,7 @@ namespace Universe.Services.SQLServices.UserAccountService
                     return Constants.USER_FLAG_STAFF;
                 case "Assistant Developer":
                     return Constants.USER_FLAG_ASSTDEVELOPER;
-                case "Core Develoepr":
+                case "Core Developer":
                     return Constants.USER_FLAG_COREDEVELOPER;
                 default:
                     return Constants.USER_FLAG_CITIZEN;
@@ -1064,16 +937,10 @@ namespace Universe.Services.SQLServices.UserAccountService
             if (lastName == "")
                 return;
 
-<<<<<<< Updated upstream
-            UserAccount ua = GetUserAccount (null, firstName, lastName);
-            if (ua == null) {
-                MainConsole.Instance.InfoFormat ("[User Account Service]: Unable to find user '{0} {1}'", firstName, lastName);
-=======
             UserAccount ua = GetUserAccount(null, firstName, lastName);
             if (ua == null)
             {
                 MainConsole.Instance.InfoFormat("[User Account Service]: Unable to find user '{0} {1}'", firstName, lastName);
->>>>>>> Stashed changes
                 return;
             }
 
@@ -1094,7 +961,7 @@ namespace Universe.Services.SQLServices.UserAccountService
         {
             string firstName;
             string lastName;
-            List<string> userTypes = new List<string>(new[] { "Citizen", "Member", "Contractor", "Mentor", "Staff", "Assistant Developer", "Core Developer" });
+            List<string> userTypes = new List<string>(new[] { "Guest", "Resident", "Member", "Contractor", "Charter_Member" });
             int userFlags;
 
             firstName = cmdparams.Length < 4 ? MainConsole.Instance.Prompt("First name") : cmdparams[3];
@@ -1105,28 +972,17 @@ namespace Universe.Services.SQLServices.UserAccountService
             if (lastName == "")
                 return;
 
-<<<<<<< Updated upstream
-            UserAccount account = GetUserAccount (null, firstName, lastName);
-            if (account == null) {
-                MainConsole.Instance.Warn ("[User Account Service]: Unable to locate this user");
-=======
             UserAccount account = GetUserAccount(null, firstName, lastName);
             if (account == null)
             {
                 MainConsole.Instance.Warn("[User Account Service]: Unable to locate this user");
->>>>>>> Stashed changes
                 return;
             }
 
             // ensure the system users are left alone!
-<<<<<<< Updated upstream
-            if (Utilities.IsSystemUser (account.PrincipalID)) {
-                MainConsole.Instance.Warn ("[User Account Service]: Changing system users is not a good idea!");
-=======
             if (Utilities.IsSystemUser(account.PrincipalID))
             {
                 MainConsole.Instance.Warn("[User Account Service]: Changing system users is not a good idea!");
->>>>>>> Stashed changes
             }
 
             // Get user type (for payments etc)
@@ -1135,16 +991,10 @@ namespace Universe.Services.SQLServices.UserAccountService
 
             account.UserFlags = userFlags;
 
-<<<<<<< Updated upstream
-            bool success = StoreUserAccount (account);
-            if (success) {
-                MainConsole.Instance.InfoFormat ("[User Account Service]: User '{0} {1}' set to {2}", firstName, lastName, userType);
-=======
             bool success = StoreUserAccount(account);
             if (success)
             {
                 MainConsole.Instance.InfoFormat("[User Account Service]: User '{0} {1}' set to {2}", firstName, lastName, userType);
->>>>>>> Stashed changes
 
                 // update profile for the user as well
                 if (m_profileConnector != null)
@@ -1160,15 +1010,9 @@ namespace Universe.Services.SQLServices.UserAccountService
                     profile.IsNewUser = true;
                     m_profileConnector.UpdateUserProfile(profile);
                 }
-<<<<<<< Updated upstream
-            } else
-                MainConsole.Instance.InfoFormat ("[User Account Service]: Unable to set user type for account '{0} {1}'.", firstName, lastName);
-
-=======
             }
             else
                 MainConsole.Instance.InfoFormat("[User Account Service]: Unable to set user type for account '{0} {1}'.", firstName, lastName);
->>>>>>> Stashed changes
         }
 
         protected void HandleRenameUser(IScene scene, string[] cmdparams)
@@ -1184,28 +1028,17 @@ namespace Universe.Services.SQLServices.UserAccountService
             if (lastName == "")
                 return;
 
-<<<<<<< Updated upstream
-            UserAccount account = GetUserAccount (null, firstName, lastName);
-            if (account == null) {
-                MainConsole.Instance.Warn ("[User Account Service]: Unable to locate this user");
-=======
             UserAccount account = GetUserAccount(null, firstName, lastName);
             if (account == null)
             {
                 MainConsole.Instance.Warn("[User Account Service]: Unable to locate this user");
->>>>>>> Stashed changes
                 return;
             }
 
             // ensure the system users are left alone!
-<<<<<<< Updated upstream
-            if (Utilities.IsSystemUser (account.PrincipalID)) {
-                MainConsole.Instance.Warn ("[User Account Service]: Changing system users is not a good idea!");
-=======
             if (Utilities.IsSystemUser(account.PrincipalID))
             {
                 MainConsole.Instance.Warn("[User Account Service]: Changing system users is not a good idea!");
->>>>>>> Stashed changes
             }
 
             // new name
@@ -1213,47 +1046,27 @@ namespace Universe.Services.SQLServices.UserAccountService
             if (newName == "")
                 return;
 
-<<<<<<< Updated upstream
-            string [] split = newName.Split (' ');
-            if (split.Length < 2) {
-                MainConsole.Instance.Warn ("[User Account Service]: Sorry! Names must in the format 'Firstname Lastname'.");
-=======
             string[] split = newName.Split(' ');
             if (split.Length < 2)
             {
                 MainConsole.Instance.Warn("[User Account Service]: Sorry! Names must in the format 'Firstname Lastname'.");
->>>>>>> Stashed changes
                 return;
             }
 
             // verify that this is ok...
-<<<<<<< Updated upstream
-            var chkAcct = GetUserAccount (null, newName);
-            if (chkAcct != null) {
-                MainConsole.Instance.Warn ("[User Account Service]: Sorry! This name is already assigned.");
-=======
             var chkAcct = GetUserAccount(null, newName);
             if (chkAcct != null)
             {
                 MainConsole.Instance.Warn("[User Account Service]: Sorry! This name is already assigned.");
->>>>>>> Stashed changes
                 return;
             }
 
             account.Name = newName;
             bool success = StoreUserAccount(account);
             if (!success)
-<<<<<<< Updated upstream
-                MainConsole.Instance.WarnFormat ("[User Account Service]: Unable to set the new name for {0} {1}", firstName, lastName);
-            else
-                MainConsole.Instance.InfoFormat ("[User Account Service]: User '{0} {1}' has been renamed to '{2}'",
-                    firstName, lastName, newName);
-
-=======
                 MainConsole.Instance.WarnFormat("[User Account Service]: Unable to set the new name for {0} {1}", firstName, lastName);
             else
                 MainConsole.Instance.InfoFormat("[User Account Service]: User '{0} {1}' has been renamed to '{2}'", firstName, lastName, newName);
->>>>>>> Stashed changes
         }
 
         public List<string> GetAvatarArchivesFiles()
@@ -1283,7 +1096,7 @@ namespace Universe.Services.SQLServices.UserAccountService
             string password, email, uuid, scopeID;
             bool sysFlag = false;
             bool uuidFlag = false;
-            List<string> userTypes = new List<string>(new[] { "Guest", "Resident", "Member", "Contractor", "Charter_Member" });
+            List<string> userTypes = new List<string>(new[] { "Citizen", "Member", "Contractor", "Mentor", "Staff", "Assistant Developer", "Core Developer" });
 
             List<string> cmdparams = new List<string>(cmd);
             foreach (string param in cmd)
@@ -1293,7 +1106,6 @@ namespace Universe.Services.SQLServices.UserAccountService
                     sysFlag = true;
                     cmdparams.Remove(param);
                 }
-
                 if (param.StartsWith("--uuid", StringComparison.Ordinal))
                 {
                     uuidFlag = true;
@@ -1315,7 +1127,6 @@ namespace Universe.Services.SQLServices.UserAccountService
                 string firstName = ufNames.FirstName(nameSeed, 3, 4);
                 string lastName = ulNames.FirstName(nameSeed, 5, 6);
                 string enteredName = firstName + " " + lastName;
-
                 if (userName != "")
                     enteredName = userName;
                 do
@@ -1332,29 +1143,21 @@ namespace Universe.Services.SQLServices.UserAccountService
                     }
 
                     var fl = userName.Split(' ');
-
                     if (fl.Length < 2)
                     {
                         MainConsole.Instance.CleanInfo("    User name must be <firstname> <lastname>");
                         userName = "";
                     }
                 } while (userName == "");
-
                 ufNames.Reset();
                 ulNames.Reset();
             }
 
             // we have the name so check to make sure it is allowed
-<<<<<<< Updated upstream
-            UserAccount ua = GetUserAccount (null, userName);
-            if (ua != null) {
-                MainConsole.Instance.WarnFormat ("[User Account Service]: This user, '{0}' already exists!", userName);
-=======
             UserAccount ua = GetUserAccount(null, userName);
             if (ua != null)
             {
                 MainConsole.Instance.WarnFormat("[User Account Service]: This user, '{0}' already exists!", userName);
->>>>>>> Stashed changes
                 return;
             }
 
@@ -1365,7 +1168,6 @@ namespace Universe.Services.SQLServices.UserAccountService
                 do
                 {
                     password = MainConsole.Instance.PasswordPrompt("Password");
-
                     if (password == "")
                     {
                         MainConsole.Instance.CleanInfo(" .... password must not be empty, please re-enter");
@@ -1374,7 +1176,6 @@ namespace Universe.Services.SQLServices.UserAccountService
 
                     var passwordAgain = MainConsole.Instance.PasswordPrompt("Re-enter Password");
                     pwmatch = (password == passwordAgain);
-
                     if (!pwmatch)
                         MainConsole.Instance.CleanInfo(" .... passwords did not match, please re-enter");
                 } while (!pwmatch);
@@ -1446,7 +1247,6 @@ namespace Universe.Services.SQLServices.UserAccountService
                 if (m_profileConnector != null)
                 {
                     IUserProfileInfo profile = m_profileConnector.GetUserProfile(account.PrincipalID);
-
                     if (profile == null)
                     {
                         m_profileConnector.CreateNewProfile(account.PrincipalID);          // create a profile for the user
@@ -1460,15 +1260,9 @@ namespace Universe.Services.SQLServices.UserAccountService
                     profile.IsNewUser = true;
                     m_profileConnector.UpdateUserProfile(profile);
                 }
-<<<<<<< Updated upstream
-            } else
-                MainConsole.Instance.WarnFormat ("[User Account Service]: There was a problem creating the account for '{0}'", userName);
-
-=======
             }
             else
                 MainConsole.Instance.WarnFormat("[User Account Service]: There was a problem creating the account for '{0}'", userName);
->>>>>>> Stashed changes
         }
 
         /// <summary>
@@ -1483,38 +1277,23 @@ namespace Universe.Services.SQLServices.UserAccountService
 
             // check for passed username
             firstName = cmd.Length < 3 ? MainConsole.Instance.Prompt("First name") : cmd[2];
-
             if (firstName == "")
                 return;
-
             lastName = cmd.Length < 4 ? MainConsole.Instance.Prompt("Last name") : cmd[3];
-
             if (lastName == "")
                 return;
 
-<<<<<<< Updated upstream
-            UserAccount account = GetUserAccount (null, firstName, lastName);
-            if (account == null) {
-                MainConsole.Instance.Warn ("[User Account Service]: No user with that name!");
-=======
             UserAccount account = GetUserAccount(null, firstName, lastName);
-
             if (account == null)
             {
                 MainConsole.Instance.Warn("[User Account Service]: No user with that name!");
->>>>>>> Stashed changes
                 return;
             }
 
             // ensure the system users are left alone!
-<<<<<<< Updated upstream
-            if (Utilities.IsSystemUser (account.PrincipalID)) {
-                MainConsole.Instance.Warn ("[User Account Service]: You cannot delete system users!");
-=======
             if (Utilities.IsSystemUser(account.PrincipalID))
             {
                 MainConsole.Instance.Warn("[User Account Service]: You cannot delete system users!");
->>>>>>> Stashed changes
                 return;
             }
 
@@ -1525,7 +1304,6 @@ namespace Universe.Services.SQLServices.UserAccountService
             bool all = false;
 
             archive = MainConsole.Instance.Prompt("Archive Information? (Disable login, but keep their information): (yes/no)", "yes").ToLower() == "yes";
-
             if (!archive)
                 all = MainConsole.Instance.Prompt("Remove all user information (yes/no)", "yes").ToLower() == "yes";
 
@@ -1533,15 +1311,9 @@ namespace Universe.Services.SQLServices.UserAccountService
             {
                 DeleteUser(account.PrincipalID, account.Name, password, archive, all);
                 if (all)
-<<<<<<< Updated upstream
-                    MainConsole.Instance.InfoFormat ("[User Account Service]: User account '{0}' deleted", account.Name);
-                else
-                    MainConsole.Instance.InfoFormat ("[User Account Service]: User account '{0}' disabled", account.Name);
-=======
                     MainConsole.Instance.InfoFormat("[User Account Service]: User account '{0}' deleted", account.Name);
                 else
                     MainConsole.Instance.InfoFormat("[User Account Service]: User account '{0}' disabled", account.Name);
->>>>>>> Stashed changes
             }
         }
 
@@ -1556,66 +1328,39 @@ namespace Universe.Services.SQLServices.UserAccountService
 
             // check for passed username
             firstName = cmd.Length < 3 ? MainConsole.Instance.Prompt("First name") : cmd[2];
-
             if (firstName == "")
                 return;
-
             lastName = cmd.Length < 4 ? MainConsole.Instance.Prompt("Last name") : cmd[3];
-
             if (lastName == "")
                 return;
 
-<<<<<<< Updated upstream
-            UserAccount account = GetUserAccount (null, firstName, lastName);
-            if (account == null) {
-                MainConsole.Instance.Warn ("[User Account Service]: Unable to locate this user!");
-=======
             UserAccount account = GetUserAccount(null, firstName, lastName);
-
             if (account == null)
             {
                 MainConsole.Instance.Warn("[User Account Service]: Unable to locate this user!");
->>>>>>> Stashed changes
                 return;
             }
 
             // ensure the system users are left alone!
-<<<<<<< Updated upstream
-            if (Utilities.IsSystemUser (account.PrincipalID)) {
-                MainConsole.Instance.Warn ("[User Account Service]: You cannot modify system users!");
-=======
             if (Utilities.IsSystemUser(account.PrincipalID))
             {
                 MainConsole.Instance.Warn("[User Account Service]: You cannot modify system users!");
->>>>>>> Stashed changes
                 return;
             }
 
             // if the user is disabled details will exist with a level set @ -2
-<<<<<<< Updated upstream
-            if (account.UserLevel < 0) {
-                MainConsole.Instance.Warn ("[User Account Service]: User is already disabled!");
-=======
             if (account.UserLevel < 0)
             {
                 MainConsole.Instance.Warn("[User Account Service]: User is already disabled!");
->>>>>>> Stashed changes
                 return;
             }
 
             account.UserLevel = -2;
             bool success = StoreUserAccount(account);
-
             if (!success)
-<<<<<<< Updated upstream
-                MainConsole.Instance.InfoFormat ("[User Account Service]: Unable to disable account {0} {1}.", firstName, lastName);
-            else
-                MainConsole.Instance.InfoFormat ("[User Account Service]: User account {0} {1} disabled.", firstName, lastName);
-=======
                 MainConsole.Instance.InfoFormat("[User Account Service]: Unable to disable account {0} {1}.", firstName, lastName);
             else
                 MainConsole.Instance.InfoFormat("[User Account Service]: User account {0} {1} disabled.", firstName, lastName);
->>>>>>> Stashed changes
         }
 
         /// <summary>
@@ -1629,26 +1374,16 @@ namespace Universe.Services.SQLServices.UserAccountService
 
             // check for passed username
             firstName = cmd.Length < 3 ? MainConsole.Instance.Prompt("First name") : cmd[2];
-
             if (firstName == "")
                 return;
-
             lastName = cmd.Length < 4 ? MainConsole.Instance.Prompt("Last name") : cmd[3];
-
             if (lastName == "")
                 return;
 
-<<<<<<< Updated upstream
-            UserAccount account = GetUserAccount (null, firstName, lastName);
-            if (account == null) {
-                MainConsole.Instance.Warn ("[User Account Service]: Unable to locate this user!");
-=======
             UserAccount account = GetUserAccount(null, firstName, lastName);
-
             if (account == null)
             {
                 MainConsole.Instance.Warn("[User Account Service]: Unable to locate this user!");
->>>>>>> Stashed changes
                 return;
             }
 
@@ -1660,17 +1395,10 @@ namespace Universe.Services.SQLServices.UserAccountService
             account.UserLevel = 0;
 
             bool success = StoreUserAccount(account);
-
             if (!success)
-<<<<<<< Updated upstream
-                MainConsole.Instance.InfoFormat ("[User Account Service]: Unable to enable account {0} {1}.", firstName, lastName);
-            else
-                MainConsole.Instance.InfoFormat ("[User Account Service]: User account {0} {1} enabled.", firstName, lastName);
-=======
                 MainConsole.Instance.InfoFormat("[User Account Service]: Unable to enable account {0} {1}.", firstName, lastName);
             else
                 MainConsole.Instance.InfoFormat("[User Account Service]: User account {0} {1} enabled.", firstName, lastName);
->>>>>>> Stashed changes
         }
 
         /// <summary>
@@ -1685,38 +1413,23 @@ namespace Universe.Services.SQLServices.UserAccountService
 
             // check for passed username
             firstName = cmd.Length < 4 ? MainConsole.Instance.Prompt("First name") : cmd[3];
-
             if (firstName == "")
                 return;
-
             lastName = cmd.Length < 5 ? MainConsole.Instance.Prompt("Last name") : cmd[4];
-
             if (lastName == "")
                 return;
 
-<<<<<<< Updated upstream
-            UserAccount account = GetUserAccount (null, firstName, lastName);
-            if (account == null) {
-                MainConsole.Instance.ErrorFormat ("[User Account Service]: Unable to locate this user");
-=======
             UserAccount account = GetUserAccount(null, firstName, lastName);
-
             if (account == null)
             {
                 MainConsole.Instance.ErrorFormat("[User Account Service]: Unable to locate this user");
->>>>>>> Stashed changes
                 return;
             }
 
             // ensure the system users are left alone!
-<<<<<<< Updated upstream
-            if (Utilities.IsSystemUser (account.PrincipalID)) {
-                MainConsole.Instance.Warn ("[User Account Service]: Changing system users is not a good idea!");
-=======
             if (Utilities.IsSystemUser(account.PrincipalID))
             {
                 MainConsole.Instance.Warn("[User Account Service]: Changing system users is not a good idea!");
->>>>>>> Stashed changes
                 return;
             }
 
@@ -1736,7 +1449,6 @@ namespace Universe.Services.SQLServices.UserAccountService
                         MainConsole.Instance.Error("  Password confirmation does not match");
 
                 } while (!passMatch);
-
             }
             else
                 newPassword = cmd[5];
@@ -1745,17 +1457,10 @@ namespace Universe.Services.SQLServices.UserAccountService
             if (m_AuthenticationService != null)
                 success = m_AuthenticationService.SetPassword(account.PrincipalID, "UserAccount", newPassword);
             if (!success)
-<<<<<<< Updated upstream
-                MainConsole.Instance.ErrorFormat (
-                    "[User Account Service]: Unable to reset password for account '{0} {1}.", firstName, lastName);
-            else
-                MainConsole.Instance.InfoFormat ("[User Account Service]: Password reset for user '{0} {1}", firstName, lastName);
-=======
                 MainConsole.Instance.ErrorFormat(
                     "[User Account Service]: Unable to reset password for account '{0} {1}.", firstName, lastName);
             else
                 MainConsole.Instance.InfoFormat("[User Account Service]: Password reset for user '{0} {1}", firstName, lastName);
->>>>>>> Stashed changes
         }
 
         /// <summary>
@@ -1770,38 +1475,23 @@ namespace Universe.Services.SQLServices.UserAccountService
 
             // check for passed username
             firstName = cmd.Length < 4 ? MainConsole.Instance.Prompt("First name") : cmd[3];
-
             if (firstName == "")
                 return;
-
             lastName = cmd.Length < 5 ? MainConsole.Instance.Prompt("Last name") : cmd[4];
-
             if (lastName == "")
                 return;
 
             UserAccount account = GetUserAccount(null, firstName, lastName);
-
-<<<<<<< Updated upstream
-            UserAccount account = GetUserAccount (null, firstName, lastName);
-            if (account == null) {
-                MainConsole.Instance.ErrorFormat ("[User Account Service]: Unable to locate this user");
-=======
             if (account == null)
             {
                 MainConsole.Instance.ErrorFormat("[User Account Service]: Unable to locate this user");
->>>>>>> Stashed changes
                 return;
             }
 
             // ensure the system users are left alone!
-<<<<<<< Updated upstream
-            if (Utilities.IsSystemUser (account.PrincipalID)) {
-                MainConsole.Instance.Warn ("[User Account Service]: Changing system users is not a good idea!");
-=======
             if (Utilities.IsSystemUser(account.PrincipalID))
             {
                 MainConsole.Instance.Warn("[User Account Service]: Changing system users is not a good idea!");
->>>>>>> Stashed changes
                 return;
             }
 
@@ -1821,18 +1511,10 @@ namespace Universe.Services.SQLServices.UserAccountService
 
             account.Email = newEmail;
             bool success = StoreUserAccount(account);
-
             if (!success)
-<<<<<<< Updated upstream
-                MainConsole.Instance.WarnFormat ("[User Account Service]: Unable to set Email for {0} {1}", firstName, lastName);
-            else
-                MainConsole.Instance.InfoFormat ("[User Account Service]: Email for {0} {1} set to {2}", firstName, lastName, account.Email);
-
-=======
                 MainConsole.Instance.WarnFormat("[User Account Service]: Unable to set Email for {0} {1}", firstName, lastName);
             else
                 MainConsole.Instance.InfoFormat("[User Account Service]: Email for {0} {1} set to {2}", firstName, lastName, account.Email);
->>>>>>> Stashed changes
         }
 
         /// <summary>
@@ -1865,7 +1547,7 @@ namespace Universe.Services.SQLServices.UserAccountService
             fileName = PathHelpers.VerifyReadFile(fileName, "csv", m_defaultDataPath + "/Updates");
             if (fileName == "")
             {
-                MainConsole.Instance.Error("The file " + fileName + " does not exist. Please check and retry");
+                MainConsole.Instance.Error("[User Account Service]: The file " + fileName + " does not exist. Please check and retry");
                 return;
             }
 
@@ -1901,17 +1583,16 @@ namespace Universe.Services.SQLServices.UserAccountService
                         // we have full details
                         userCreated = CreateSaltedUser(new UserAccount(UUID.Zero, userUUID, firstName + " " + lastName, email), passHash, passSalt);
                     }
+
                     if (userCreated != "")
                     {
-                        MainConsole.Instance.ErrorFormat("Couldn't create the user '{0} {1}'. Reason: {2}",
-                                                          firstName, lastName, userCreated);
+                        MainConsole.Instance.ErrorFormat("[User Account Service]: Couldn't create the user '{0} {1}'. Reason: {2}", firstName, lastName, userCreated);
                         continue;
                     }
 
                     //set user levels and status  (if needed)
                     var account = GetUserAccount(null, userUUID);
-                    //account.UserLevel = 0;
-                    account.UserFlags = Constants.USER_FLAG_RESIDENT;
+                    account.UserFlags = Constants.USER_FLAG_CITIZEN;
                     StoreUserAccount(account);
 
                     // [NEW] Set the users rezdate
@@ -1921,23 +1602,17 @@ namespace Universe.Services.SQLServices.UserAccountService
                         profile.Created = int.Parse(rezday);
                         bool success = m_profileConnector.UpdateUserProfile(profile);
                         if (!success)
-<<<<<<< Updated upstream
-                            MainConsole.Instance.InfoFormat ("[User Account Service]: Unable to change rezday for {0} {1}.", account.FirstName, account.LastName);
-                        else
-                            MainConsole.Instance.InfoFormat ("[User Account Service]: Account {0} {1} has a rezday set.", account.FirstName, account.LastName);
-=======
                             MainConsole.Instance.InfoFormat("[User Account Service]: Unable to change rezday for {0} {1}.", account.FirstName, account.LastName);
                         else
                             MainConsole.Instance.InfoFormat("[User Account Service]: Account {0} {1} has a rezday set.", account.FirstName, account.LastName);
->>>>>>> Stashed changes
                     }
 
                     userNo++;
 
                 }
-                MainConsole.Instance.InfoFormat("File: {0} loaded,  {1} users added", Path.GetFileName(fileName), userNo);
-            }
 
+                MainConsole.Instance.InfoFormat("[User Account Service]: File: {0} loaded,  {1} users added", Path.GetFileName(fileName), userNo);
+            }
         }
 
         /// <summary>
@@ -2009,14 +1684,16 @@ namespace Universe.Services.SQLServices.UserAccountService
                             if (userauth != null)
                                 lineToWrite = lineToWrite + "," + userauth.PasswordHash + "," + userauth.PasswordSalt;
                         }
+
                         streamWriter.WriteLine(lineToWrite);
 
                         userNo++;
                     }
+
                     streamWriter.Flush();
                     streamWriter.Close();
 
-                    MainConsole.Instance.InfoFormat("File: {0} saved with {1} users", Path.GetFileName(fileName), userNo);
+                    MainConsole.Instance.InfoFormat("[User Account Service]: File: {0} saved with {1} users", Path.GetFileName(fileName), userNo);
                 }
                 catch
                 {
@@ -2032,7 +1709,7 @@ namespace Universe.Services.SQLServices.UserAccountService
         protected void HandleTestUsers(IScene scene, string[] cmdParams)
         {
             string checkOk;
-            checkOk = MainConsole.Instance.Prompt ("[Testing]:  Caution!! This will add random users for testing purposes. Continue? (yes, no)", "no").ToLower ();
+            checkOk = MainConsole.Instance.Prompt ("[User Account Service]:  Caution!! This will add random users for testing purposes. Continue? (yes, no)", "no").ToLower ();
             if (!checkOk.StartsWith("y"))
                 return;
 
@@ -2042,7 +1719,7 @@ namespace Universe.Services.SQLServices.UserAccountService
                 return;
 
             // make sure
-            checkOk = MainConsole.Instance.Prompt ("[Testing]: You are about to add " + addUsers + " to your database! Are you sure? (yes, no)", "no").ToLower ();
+            checkOk = MainConsole.Instance.Prompt ("[User Account Service]: You are about to add " + addUsers + " to your database! Are you sure? (yes, no)", "no").ToLower ();
             if (!checkOk.StartsWith("y"))
                 return;
 
@@ -2059,7 +1736,7 @@ namespace Universe.Services.SQLServices.UserAccountService
 
                 string check = CreateUser (userUUID, UUID.Zero, firstName + " " + lastName+userNo, Util.Md5Hash(password), email);
                 if (check != "") {
-                    MainConsole.Instance.Error ("Couldn't create the user. Reason: " + check);
+                    MainConsole.Instance.Error ("[User Account Service]: Couldn't create the user. Reason: " + check);
                     continue;
                 }
 
@@ -2072,7 +1749,7 @@ namespace Universe.Services.SQLServices.UserAccountService
 
             var elapsed = DateTime.Now - startTime;
 
-            MainConsole.Instance.InfoFormat ("Added {0} test users in {1}", addUsers, elapsed.ToString());
+            MainConsole.Instance.InfoFormat ("[User Account Service]: Added {0} test users in {1}", addUsers, elapsed.ToString());
 
         }
 #endif
