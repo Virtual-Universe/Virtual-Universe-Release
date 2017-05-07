@@ -1550,3 +1550,6 @@ msgstr "Scáileán iomlán"
 
 msgid "Yes"
 msgstr "Is ea"
+
+msgid "zh_CN"
+msgstr "简体中文"

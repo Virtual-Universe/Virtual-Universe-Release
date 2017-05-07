@@ -217,7 +217,7 @@ msgid "CatPropertyRental"
 msgstr "Eigentums Miete"
 
 msgid "CatSelect"
-msgstr ""
+msgstr "Kategorie wählen"
 
 msgid "CatService"
 msgstr "Service"
@@ -467,6 +467,9 @@ msgstr "Friends"
 
 msgid "FullRegion"
 msgstr "Voll Region"
+
+msgid "ga"
+msgstr "Irish"
 
 msgid "GeneralText"
 msgstr "General"
@@ -1548,3 +1551,5 @@ msgstr "Vollbild"
 msgid "Yes"
 msgstr "ja"
 
+msgid "zh_CN"
+msgstr "简体中文"
