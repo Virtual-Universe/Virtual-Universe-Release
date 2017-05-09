@@ -45,7 +45,6 @@ namespace Universe.Modules.Web
         public static void InitializeWebUIDefaults (WebInterface webinterface)
         {
             _settingsWebUI = new WebUISettings ();
-
             _settingsWebUI.LastSettingsVersionUpdateIgnored = CurrentVersion;
             _settingsWebUI.LastPagesVersionUpdateIgnored = PagesMigrator.GetVersion ();
             _settingsWebUI.MapCenter = new Vector2 (Constants.DEFAULT_REGIONSTART_X, Constants.DEFAULT_REGIONSTART_Y);
@@ -53,11 +52,13 @@ namespace Universe.Modules.Web
             // check for user configurations
             var configSrc = webinterface.Registry.RequestModuleInterface<ISimulationBase> ().ConfigSource;
             var loginConfig = configSrc.Configs ["LoginService"];
+
             if (loginConfig != null) {
                 _settingsWebUI.WebRegistration = loginConfig.GetBoolean ("AllowAnonymousLogin", true);
             }
         
             var mapConfig = configSrc.Configs ["WebInterface"];
+
             if (mapConfig != null) {
                 _settingsWebUI.MapCenter.X = mapConfig.GetInt ("mapcenter_x", (int)_settingsWebUI.MapCenter.X);
                 _settingsWebUI.MapCenter.Y = mapConfig.GetInt ("mapcenter_y", (int)_settingsWebUI.MapCenter.Y);
@@ -67,7 +68,6 @@ namespace Universe.Modules.Web
         public static bool RequiresUpdate ()
         {
             IGenericsConnector generics = Framework.Utilities.DataManager.RequestPlugin<IGenericsConnector> ();
-
             OSDWrapper version = generics.GetGeneric<OSDWrapper> (UUID.Zero, Schema + "Version", "");
             return version == null || version.Info.AsInteger () < CurrentVersion;
         }
@@ -75,7 +75,6 @@ namespace Universe.Modules.Web
         public static uint GetVersion ()
         {
             IGenericsConnector generics = Framework.Utilities.DataManager.RequestPlugin<IGenericsConnector> ();
-
             OSDWrapper version = generics.GetGeneric<OSDWrapper> (UUID.Zero, Schema + "Version", "");
             return version == null ? 0 : (uint)version.Info.AsInteger ();
         }
@@ -83,7 +82,6 @@ namespace Universe.Modules.Web
         public static bool RequiresInitialUpdate ()
         {
             IGenericsConnector generics = Framework.Utilities.DataManager.RequestPlugin<IGenericsConnector> ();
-
             OSDWrapper version = generics.GetGeneric<OSDWrapper> (UUID.Zero, Schema + "Version", "");
             return version == null || version.Info.AsInteger () < 1;
         }
@@ -96,27 +94,22 @@ namespace Universe.Modules.Web
 
             // login
             config = configSrc.Configs ["LoginService"];
+
             if (config != null) {
                 _settingsGrid.WelcomeMessage = config.GetString ("WelcomeMessage", _settingsGrid.WelcomeMessage);
             }
 
             // gridinfo
             config = configSrc.Configs ["GridInfoService"];
+
             if (config != null) {
                 _settingsGrid.Gridname = config.GetString ("gridname", _settingsGrid.Gridname);
                 _settingsGrid.Gridnick = config.GetString ("gridnick", _settingsGrid.Gridnick);
             }
 
-            // Library
-            //            config =  configSrc.Configs ["LibraryService"];
-            //            if (config != null)
-            //            {
-            //                _settingsGrid.LibraryName = config.GetString("LibraryName", _settingsGrid.LibraryName);
-            //                _settingsGrid.LibraryOwnerName = config.GetString("LibraryOwnerName", _settingsGrid.LibraryOwnerName);
-            //            }
-
             // System users
             config = configSrc.Configs ["SystemUserService"];
+
             if (config != null) {
                 _settingsGrid.GovernorName = config.GetString ("GovernorName", _settingsGrid.GovernorName);
                 _settingsGrid.RealEstateOwnerName = config.GetString ("RealEstateOwnerName", _settingsGrid.RealEstateOwnerName);
@@ -126,12 +119,11 @@ namespace Universe.Modules.Web
 
             // RealEstate
             config = configSrc.Configs ["EstateService"];
+
             if (config != null) {
                 _settingsGrid.SystemEstateName = config.GetString ("MainlandEstateName", _settingsGrid.MainlandEstateName);
                 _settingsGrid.SystemEstateName = config.GetString ("SystemEstateName", _settingsGrid.SystemEstateName);
             }
-
-
         }
 
         public static void ResetToDefaults (WebInterface webinterface)

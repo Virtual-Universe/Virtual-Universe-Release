@@ -63,13 +63,12 @@ namespace Universe.Modules.Web
             var vars = new Dictionary<string, object> ();
 
             string error = "";
+
             if (requestParameters.ContainsKey ("Submit")) {
                 string username = requestParameters ["username"].ToString ();
                 string UserEmail = requestParameters ["UserEmail"].ToString ();
 
-                UserAccount account =
-                    webInterface.Registry.RequestModuleInterface<IUserAccountService> ()
-                        .GetUserAccount (null, username);
+                UserAccount account = webInterface.Registry.RequestModuleInterface<IUserAccountService> ().GetUserAccount (null, username);
 
                 if (account == null) {
                     response = "<h3>Please enter a valid username</h3>";
@@ -87,6 +86,7 @@ namespace Universe.Modules.Web
                 }
 
                 var emailAddress = account.Email;
+
                 if (UserEmail != emailAddress) {
                     response = "<h3>Sorry! Unable to authenticate your account. Please contact the administrator to correct</h3>" +
                         "<script language=\"javascript\">" +
@@ -97,6 +97,7 @@ namespace Universe.Modules.Web
                 }
 
                 IEmailModule Email = webInterface.Registry.RequestModuleInterface<IEmailModule> ();
+
                 if ((Email != null) && (!Email.LocalOnly ())) {
                     var newPassword = Utilities.RandomPassword.Generate (2, 1, 0);
                     var authService = webInterface.Registry.RequestModuleInterface<IAuthenticationService> ();
@@ -112,15 +113,13 @@ namespace Universe.Modules.Web
                             emailAddress,
                             "Password reset request",
                             string.Format ("This request was made via the {0} WebUi at {1}\n\nYour new passsword is : {2}",
-                                gridName, Culture.LocaleTimeDate (), newPassword),
-                            null);
+                                gridName, Culture.LocaleTimeDate (), newPassword), null);
 
                         response = "<h3>An email has been sent with your new password</h3>Redirecting to main page";
                     } else
                         response = "<h3>Sorry! Your password was not able to be reset.<h3>Please contact the administrator directly<br>Redirecting to main page</h3>";
                 } else
                     response = "<h3>The email functions are local to the grid or have not yet been set up<h3>Please contact the administrator directly<br>Redirecting to main page</h3>";
-
 
                 response = response +
                     "<script language=\"javascript\">" +
@@ -129,7 +128,6 @@ namespace Universe.Modules.Web
 
                 return null;
             }
-
 
             vars.Add ("ErrorMessage", error);
             vars.Add ("ForgotPassword", translator.GetTranslatedString ("ForgotPassword"));

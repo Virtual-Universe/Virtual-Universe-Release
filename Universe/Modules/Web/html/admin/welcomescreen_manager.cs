@@ -84,6 +84,7 @@ namespace Universe.Modules.Web
                                                                                     "GridWelcomeScreen");
             if (welcomeInfo == null)
                 welcomeInfo = GridWelcomeScreen.Default;
+
             vars.Add("OpenNewsManager", translator.GetTranslatedString("OpenNewsManager"));
             vars.Add("SpecialWindowTitleText", translator.GetTranslatedString("SpecialWindowTitleText"));
             vars.Add("SpecialWindowTextText", translator.GetTranslatedString("SpecialWindowTextText"));

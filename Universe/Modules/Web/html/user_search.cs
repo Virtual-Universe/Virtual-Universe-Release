@@ -87,9 +87,11 @@ namespace Universe.Modules.Web
                     {
 
                         UserAccount ourAccount = Authenticator.GetAuthentication (httpRequest);
+
                         if (ourAccount != null) {
                             IFriendsService friendsService = webInterface.Registry.RequestModuleInterface<IFriendsService> ();
                             var friends = friendsService.GetFriends (ourAccount.PrincipalID);
+
                             foreach (var friend in friends) {
                                 UUID friendID = UUID.Zero;
                                 UUID.TryParse (friend.Friend, out friendID);
@@ -99,6 +101,7 @@ namespace Universe.Modules.Web
                             }
                         }
                     }
+
                     if (searchUsersList.Count > 0) {
                         noDetails = "";
 
@@ -126,7 +129,6 @@ namespace Universe.Modules.Web
                     }
                 }
             }
-
 
             vars.Add ("NoDetailsText", noDetails);
             vars.Add ("UsersList", usersList);

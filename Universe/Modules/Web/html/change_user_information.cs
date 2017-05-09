@@ -66,6 +66,7 @@ namespace Universe.Modules.Web
 
             string error = "";
             UserAccount user = Authenticator.GetAuthentication(httpRequest);
+
             if (user == null)
             {
                 response = "No authentication service was available to change user details";
@@ -82,30 +83,31 @@ namespace Universe.Modules.Web
                 string password = requestParameters["password"].ToString();
                 string passwordconf = requestParameters["passwordconf"].ToString();
                 response = "Success";
+
                 if (passwordconf != password)
                     response = "Passwords do not match";
                 else
                 {
-                    IAuthenticationService authService =
-                        webInterface.Registry.RequestModuleInterface<IAuthenticationService>();
+                    IAuthenticationService authService = webInterface.Registry.RequestModuleInterface<IAuthenticationService>();
+
                     if (authService != null)
                         response = authService.SetPassword(user.PrincipalID, "UserAccount", password)
                             ? "Your password has been updated"
                             : "Failed to set your password, try again later";
-
                     else
                         response = "No authentication service was available to change your password";
                 }
+
                 return null;
             }
 
             // email change
-            if (requestParameters.ContainsKey("Submit") &&
-                     requestParameters["Submit"].ToString() == "SubmitEmailChange")
+            if (requestParameters.ContainsKey("Submit") && requestParameters["Submit"].ToString() == "SubmitEmailChange")
             {
                 string email = requestParameters["email"].ToString();
 
                 IUserAccountService userService = webInterface.Registry.RequestModuleInterface<IUserAccountService>();
+
                 if (userService != null)
                 {
                     user.Email = email;
@@ -114,21 +116,22 @@ namespace Universe.Modules.Web
                 }
                 else
                     response = "No authentication service was available to change your password";
+
                 return null;
             }
 
             // Delete User
-            if (requestParameters.ContainsKey("Submit") &&
-                     requestParameters["Submit"].ToString() == "SubmitDeleteUser")
+            if (requestParameters.ContainsKey("Submit") && requestParameters["Submit"].ToString() == "SubmitDeleteUser")
             {
                 string username = requestParameters["username"].ToString();
                 string password = requestParameters["password"].ToString();
 
                 ILoginService loginService = webInterface.Registry.RequestModuleInterface<ILoginService>();
+
                 if (loginService.VerifyClient(UUID.Zero, username, "UserAccount", password))
                 {
-                    IUserAccountService userService =
-                        webInterface.Registry.RequestModuleInterface<IUserAccountService>();
+                    IUserAccountService userService = webInterface.Registry.RequestModuleInterface<IUserAccountService>();
+
                     if (userService != null)
                     {
                         userService.DeleteUser(user.PrincipalID, user.Name, password, true, false);
@@ -139,6 +142,7 @@ namespace Universe.Modules.Web
                 }
                 else
                     response = "Wrong username or password";
+
                 return null;
             }
 

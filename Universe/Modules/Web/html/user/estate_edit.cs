@@ -87,6 +87,7 @@ namespace Universe.Modules.Web
             }
 
             var estateSettings = estateConnector.GetEstateIDSettings (estateid);
+
             if (estateSettings != null) {
                 if (requestParameters.ContainsKey ("Submit")) {
 
@@ -138,7 +139,6 @@ namespace Universe.Modules.Web
             vars.Add ("InfoMessage", "");
 
             return vars;
-
         }
 
         public bool AttemptFindPage (string filename, ref OSHttpResponse httpResponse, out string text)

@@ -64,8 +64,10 @@ namespace Universe.Modules.Web
             UserAccount ourAccount = Authenticator.GetAuthentication (httpRequest);
             IMoneyModule moneyModule = webInterface.Registry.RequestModuleInterface<IMoneyModule> ();
             var currencySymbol = "$";
+
             if (moneyModule != null)
                 currencySymbol = moneyModule.InWorldCurrencySymbol;
+
             var directoryService = Framework.Utilities.DataManager.RequestPlugin<IDirectoryServiceConnector> ();
 
             response = null;
@@ -87,10 +89,10 @@ namespace Universe.Modules.Web
                     return null;
                 }
             }
+
             uint.TryParse (eventId, out eid);
 
             if (requestParameters.ContainsKey ("Delete")) {
-                //string newsID = httpRequest.Query ["delete"].ToString ();
                 if (directoryService.DeleteEvent (eid.ToString ()))
                     response = "<h3>Event details have been deleted</h3>" +
                         "<script>" +
@@ -98,6 +100,7 @@ namespace Universe.Modules.Web
                         "</script>";
                 else
                     response = "<h3>Error encountered when deleting event. Please try again later</h3>";
+
                 return null;
             }
 
@@ -119,8 +122,10 @@ namespace Universe.Modules.Web
 
                 Framework.Services.GridRegion region = null;
                 var parcel = directoryService.GetParcelInfo ((UUID)selParcel [5]);
+
                 if (parcel != null)
                     region = regionData.Get (parcel.RegionID, null);
+
                 if (region == null) {
                     var error = "Parcel details not found!";
                     vars.Add ("ErrorMessage", "<h3>" + error + "</h3>");
@@ -158,6 +163,7 @@ namespace Universe.Modules.Web
             }
 
             eventData = directoryService.GetEventInfo (eid);
+
             if (eventData == null) {
                 response = "<h3>Event details are not available</h3>" +
                     "<script language=\"javascript\">" +
@@ -169,7 +175,6 @@ namespace Universe.Modules.Web
 
             // details
             vars.Add ("EventID", eventData.eventID);
-            //vars.Add ("CreatorUUID", eventData.creator);
             vars.Add ("Name", eventData.name);
             vars.Add ("Description", eventData.description.Trim ());
             vars.Add ("SimName", eventData.simName);
@@ -199,7 +204,6 @@ namespace Universe.Modules.Web
             vars.Add ("EventCategoryText", translator.GetTranslatedString ("CategoryText"));
             vars.Add ("EventCoverChargeText", translator.GetTranslatedString ("CoverChargeText") + " " + currencySymbol);
             vars.Add ("EventDescriptionText", translator.GetTranslatedString ("DescriptionText"));
-
 
             vars.Add ("ErrorMessage", "");
             vars.Add ("Delete", translator.GetTranslatedString ("DeleteText"));

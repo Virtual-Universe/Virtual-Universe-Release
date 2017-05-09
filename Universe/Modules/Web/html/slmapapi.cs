@@ -59,6 +59,7 @@ namespace Universe.Modules.Web
             response = null;
             var vars = new Dictionary<string, object> ();
             var mapService = webInterface.Registry.RequestModuleInterface<IMapService> ();
+
             if (mapService != null) {
                 string mapUrl = mapService.MapServiceURL;
                 string mapAPIUrl = mapService.MapServiceAPIURL;

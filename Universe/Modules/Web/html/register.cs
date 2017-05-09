@@ -41,12 +41,10 @@ using Universe.Framework.Services.ClassHelpers.Profile;
 using Universe.Framework.Utilities;
 using RegionFlags = Universe.Framework.Services.RegionFlags;
 
-
 namespace Universe.Modules.Web
 {
     public class RegisterPage : IWebInterfacePage
     {
-
         public string[] FilePath
         {
             get
@@ -101,7 +99,6 @@ namespace Universe.Modules.Web
             }
         }
             
-
         public Dictionary<string, object> Fill(WebInterface webInterface, string filename, OSHttpRequest httpRequest,
                                                OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
                                                ITranslator translator, out string response)
@@ -170,18 +167,20 @@ namespace Universe.Modules.Web
                     response = "<h3>" + translator.GetTranslatedString ("AvatarNameError") + "</h3>";   
                     return null;
                 }
+
                 if ( (AvatarPassword == "") || (AvatarPassword != AvatarPasswordCheck) )
                 {
                     response = "<h3>" + translator.GetTranslatedString ("AvatarPasswordError") + "</h3>";   
                     return null;
-                } 
+                }
+                
                 if (UserEmail == "")
                 {
                     response = "<h3>" + translator.GetTranslatedString ("AvatarEmailError") + "</h3>";   
                     return null;
                 }
 
-                // Thish -  Only one space is allowed in the name to seperate First and Last of the avatar name
+                // Only one space is allowed in the name to seperate First and Last of the avatar name
                 if (AvatarName.Split (' ').Length != 2)
                 {
                     response = "<h3>" + translator.GetTranslatedString("AvatarNameSpacingError") + "</h3>";
@@ -193,11 +192,10 @@ namespace Universe.Modules.Web
                 {
                     AvatarPassword = Util.Md5Hash(AvatarPassword);
 
-                    IUserAccountService accountService =
-                        webInterface.Registry.RequestModuleInterface<IUserAccountService>();
+                    IUserAccountService accountService = webInterface.Registry.RequestModuleInterface<IUserAccountService>();
                     UUID userID = UUID.Random();
-                    string error = accountService.CreateUser(userID, settings.DefaultScopeID, AvatarName, AvatarPassword,
-                                                             UserEmail);
+                    string error = accountService.CreateUser(userID, settings.DefaultScopeID, AvatarName, AvatarPassword, UserEmail);
+
                     if (error == "")
                     {
                         // set the user account type
@@ -218,20 +216,15 @@ namespace Universe.Modules.Web
                         agent.OtherAgentInformation ["UserDOBDay"] = UserDOBDay;
                         agent.OtherAgentInformation ["UserDOBYear"] = UserDOBYear;
                         agent.OtherAgentInformation ["UserFlags"] = UserFlags;
-                        /*if (activationRequired)
-                        {
-                            UUID activationToken = UUID.Random();
-                            agent.OtherAgentInformation["WebUIActivationToken"] = Util.Md5Hash(activationToken.ToString() + ":" + PasswordHash);
-                            resp["WebUIActivationToken"] = activationToken;
-                        }*/
                         con.UpdateAgent (agent);
 
                         // create user profile details
-                        IProfileConnector profileData =
-                            Framework.Utilities.DataManager.RequestPlugin<IProfileConnector> ();
+                        IProfileConnector profileData = Framework.Utilities.DataManager.RequestPlugin<IProfileConnector> ();
+
                         if (profileData != null)
                         {
                             IUserProfileInfo profile = profileData.GetUserProfile (userID);
+
                             if (profile == null)
                             {
                                 profileData.CreateNewProfile (userID);
@@ -251,6 +244,7 @@ namespace Universe.Modules.Web
                                 if (snapshotUUID != UUID.Zero)
                                     profile.Image = snapshotUUID;
                             }
+
                             profile.MembershipGroup = WebHelpers.UserFlagToType (UserFlags, webInterface.EnglishTranslator);    // membership is english
                             profile.IsNewUser = true;
                             profileData.UpdateUserProfile (profile);
@@ -276,6 +270,7 @@ namespace Universe.Modules.Web
                 }
                 else
                     response = "<h3>You did not accept the Terms of Service agreement.</h3>";
+
                 return null;
             }
 
@@ -302,7 +297,6 @@ namespace Universe.Modules.Web
                 null, null, sortBy);
             foreach (var region in regions)
             {
-
                 RegionListVars.Add (new Dictionary<string, object> {
                     { "RegionName", region.RegionName },
                     { "RegionUUID", region.RegionID }
@@ -312,18 +306,19 @@ namespace Universe.Modules.Web
             vars.Add("RegionList", RegionListVars);
             vars.Add("UserHomeRegionText", translator.GetTranslatedString("UserHomeRegionText"));
 
-
             vars.Add("UserTypeText", translator.GetTranslatedString("UserTypeText"));
             vars.Add("UserType", WebHelpers.UserTypeArgs(translator)) ;
 
             vars.Add ("AvatarArchive", WebHelpers.AvatarSelections(webInterface.Registry));
 
             string tosLocation = "";
+
             if (loginServerConfig != null && loginServerConfig.GetBoolean("UseTermsOfServiceOnFirstLogin", false))
             {
                 tosLocation = loginServerConfig.GetString("FileNameOfTOS", "");
                 tosLocation = PathHelpers.VerifyReadFile (tosLocation,  ".txt", simBase.DefaultDataPath);
             }
+
             string ToS = "There are no Terms of Service currently. This may be changed at any point in the future.";
 
             if (tosLocation != "")
@@ -341,9 +336,11 @@ namespace Universe.Modules.Web
 
             // check for user name seed
             string[] m_userNameSeed = null;
+
             if (loginServerConfig != null)
             {
                 string userNameSeed = loginServerConfig.GetString ("UserNameSeed", "");
+
                 if (userNameSeed != "")
                     m_userNameSeed = userNameSeed.Split (',');
             }
@@ -361,7 +358,6 @@ namespace Universe.Modules.Web
             vars.Add("TermsOfServiceAccept", translator.GetTranslatedString("TermsOfServiceAccept"));
             vars.Add("TermsOfServiceText", translator.GetTranslatedString("TermsOfServiceText"));
             vars.Add("RegistrationsDisabled", "");
-            //vars.Add("RegistrationsDisabled", translator.GetTranslatedString("RegistrationsDisabled"));
             vars.Add("RegistrationText", translator.GetTranslatedString("RegistrationText"));
             vars.Add("AvatarNameText", translator.GetTranslatedString("AvatarNameText"));
             vars.Add("AvatarPasswordText", translator.GetTranslatedString("Password"));

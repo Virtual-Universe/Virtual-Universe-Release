@@ -67,14 +67,15 @@ namespace Universe.Modules.Web
                 string password = requestParameters ["password"].ToString ();
 
                 ILoginService loginService = webInterface.Registry.RequestModuleInterface<ILoginService> ();
+
                 if (loginService.VerifyClient (UUID.Zero, username, "UserAccount", password)) {
                     UUID sessionID = UUID.Random ();
-                    UserAccount account =
-                        webInterface.Registry.RequestModuleInterface<IUserAccountService> ()
-                                    .GetUserAccount (null, username);
+                    UserAccount account = webInterface.Registry.RequestModuleInterface<IUserAccountService> ().GetUserAccount (null, username);
                     Authenticator.AddAuthentication (sessionID, account);
+
                     if (account.UserLevel > 0)
                         Authenticator.AddAdminAuthentication (sessionID, account);
+
                     httpResponse.AddCookie (new System.Web.HttpCookie ("SessionID", sessionID.ToString ()) {
                         Expires = DateTime.MinValue,
                         Path = ""
@@ -86,6 +87,7 @@ namespace Universe.Modules.Web
                                "</script>";
                 } else
                     response = "<h3>Failed to verify user name and password</h3>";
+
                 return null;
             }
 

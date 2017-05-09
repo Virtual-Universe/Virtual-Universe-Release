@@ -81,6 +81,8 @@ namespace Universe.Modules.Web
             vars.Add("it", translator.GetTranslatedString("it"));
             vars.Add("es", translator.GetTranslatedString("es"));
             vars.Add("nl", translator.GetTranslatedString("nl"));
+            vars.Add("ru", translator.GetTranslatedString("ru"));
+            vars.Add("zh_CN", translator.GetTranslatedString("zh_CN"));
 
             return vars;
         }

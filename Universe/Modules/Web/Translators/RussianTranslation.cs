@@ -46,6 +46,7 @@ namespace Universe.Modules.Web.Translators
         {
             if (dictionary.ContainsKey (key))
                 return dictionary [key];
+
             return ":" + key + ":";
         }
 
@@ -54,6 +55,7 @@ namespace Universe.Modules.Web.Translators
         public void Deserialize (string basePath)
         {
             var newdict = TranslatorSerialization.Deserialize (basePath, LanguageName);
+
             if (newdict.Count > 0)
                 dictionary = newdict;
         }

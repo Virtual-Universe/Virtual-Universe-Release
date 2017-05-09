@@ -73,7 +73,6 @@ namespace Universe.Modules.Web
             string dateStart = thirtyDays.ToShortDateString ();
             string dateEnd = today.ToShortDateString ();
 
-
             IMoneyModule moneyModule = webInterface.Registry.RequestModuleInterface<IMoneyModule> ();
             string noDetails = translator.GetTranslatedString ("NoPurchasesText");
 
@@ -81,12 +80,13 @@ namespace Universe.Modules.Web
             if (requestParameters.ContainsKey ("Submit")) {
                 if (requestParameters.ContainsKey ("date_start"))
                     dateStart = requestParameters ["date_start"].ToString ();
+
                 if (requestParameters.ContainsKey ("date_end"))
                     dateEnd = requestParameters ["date_end"].ToString ();
-
             }
 
             UserAccount user = Authenticator.GetAuthentication (httpRequest);
+
             if (user == null) {
                 response = "<h3>Error validating user details</h3>" +
                     "<script language=\"javascript\">" +
@@ -103,6 +103,7 @@ namespace Universe.Modules.Web
             TimeSpan period = dateTo.Subtract (dateFrom);
 
             var purchases = new List<AgentPurchase> ();
+
             if (moneyModule != null)
                 purchases = moneyModule.GetPurchaseHistory (user.PrincipalID, dateFrom, dateTo, null, null);
 
@@ -121,13 +122,11 @@ namespace Universe.Modules.Web
                         { "RealAmount",((float) purchase.RealAmount/100).ToString("0.00") },
                         { "PurchaseDate", Culture.LocaleDate (purchase.PurchaseDate.ToLocalTime(), "MMM dd, hh:mm:ss tt") },
                         { "UpdateDate", Culture.LocaleDate (purchase.UpdateDate.ToLocalTime(), "MMM dd, hh:mm:ss tt") }
-
                     });
                 }
             }
 
             if (purchasesList.Count == 0) {
-
                 purchasesList.Add (new Dictionary<string, object> {
                     {"ID", ""},
                     {"AgentID", ""},
@@ -138,7 +137,6 @@ namespace Universe.Modules.Web
                     {"RealAmount",""},
                     {"PurchaseDate",""},
                     {"UpdateDate", ""}
-
                 });
             }
 
@@ -160,7 +158,6 @@ namespace Universe.Modules.Web
             vars.Add ("PurchaseAgentText", translator.GetTranslatedString ("TransactionToAgentText"));
             vars.Add ("PurchaseDateText", translator.GetTranslatedString ("TransactionDateText"));
             vars.Add ("PurchaseUpdateDateText", translator.GetTranslatedString ("TransactionDateText"));
-            //vars.Add("PurchaseTimeText", translator.GetTranslatedString("Time"));
             vars.Add ("PurchaseDetailText", translator.GetTranslatedString ("TransactionDetailText"));
             vars.Add ("LoggedIPText", translator.GetTranslatedString ("LoggedIPText"));
             vars.Add ("PurchaseAmountText", inWorldCurrency + translator.GetTranslatedString ("TransactionAmountText"));

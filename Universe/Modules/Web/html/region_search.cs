@@ -70,12 +70,12 @@ namespace Universe.Modules.Web
 
             if (requestParameters.ContainsKey("Submit"))
             {
-
                 IGridService gridService = webInterface.Registry.RequestModuleInterface<IGridService>();
                 string regionname = requestParameters["regionname"].ToString();
                 int start = httpRequest.Query.ContainsKey("Start")
                                 ? int.Parse(httpRequest.Query["Start"].ToString())
                                 : 0;
+
                 uint count = gridService.GetRegionsByNameCount(null, regionname);
                 int maxPages = (int) (count/amountPerQuery) - 1;
 
@@ -87,6 +87,7 @@ namespace Universe.Modules.Web
                 vars.Add("BackOne", start - 1 < 0 ? 0 : start - 1);
 
                 var regions = gridService.GetRegionsByName(null, regionname, (uint) start, amountPerQuery);
+
                 if (regions != null)
                 {
                     noDetails = "";
@@ -107,7 +108,6 @@ namespace Universe.Modules.Web
                         });
                     }
                 }
-
             }
             else
             {

@@ -87,7 +87,6 @@ namespace Universe.Modules.Web
                         {"AllowDirectTeleport", ""},
                         {"RegionCount", ""}
                     });
-
             }
 
             vars.Add ("EstateList", estateListVars);
@@ -112,5 +111,4 @@ namespace Universe.Modules.Web
             return false;
         }
     }
-
 }

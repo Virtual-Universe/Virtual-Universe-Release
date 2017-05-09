@@ -62,10 +62,7 @@ namespace Universe.Modules.Web
             var vars = new Dictionary<string, object> ();
             var usersList = new List<Dictionary<string, object>> ();
             var agentInfo = Framework.Utilities.DataManager.RequestPlugin<IAgentInfoConnector> ();
-
             var IsAdmin = Authenticator.CheckAdminAuthentication (httpRequest);
-
-            //var activeUsers = agentInfo.RecentlyOnline(15*60, true, new Dictionary<string, bool>());  // active in the last 15 minutes
             var activeUsers = agentInfo.CurrentlyOnline (0, new Dictionary<string, bool> ());
             var onlineText = "";
 
@@ -84,8 +81,10 @@ namespace Universe.Modules.Web
                     onlineText = translator.GetTranslatedString ("OnlineFriendsText");
 
                     var ourAccount = Authenticator.GetAuthentication (httpRequest);
+
                     if (ourAccount != null) {
                         var friendsService = webInterface.Registry.RequestModuleInterface<IFriendsService> ();
+
                         if (friendsService != null) {
                             var friends = friendsService.GetFriends (ourAccount.PrincipalID);
                             foreach (var friend in friends) {
@@ -93,7 +92,6 @@ namespace Universe.Modules.Web
                                 UUID.TryParse (friend.Friend, out friendID);
 
                                 if (friendID != UUID.Zero)
-                                    // if ( (friendID != UUID.Zero) && (friendID == ourAccount.PrincipalID)) 
                                     activeUsersList.Add (friendID);
                             }
                         }
@@ -107,12 +105,15 @@ namespace Universe.Modules.Web
                     foreach (var user in activeUsers) {
                         if (Utilities.IsSystemUser ((UUID)user.UserID))
                             continue;
+
                         if (!activeUsersList.Contains ((UUID)user.UserID))
                             continue;
 
                         var region = gridService.GetRegionByUUID (null, user.CurrentRegionID);
+
                         if (region != null) {
                             var account = accountService.GetUserAccount (region.AllScopeIDs, UUID.Parse (user.UserID));
+
                             if (account != null) {
                                 usersList.Add (new Dictionary<string, object> {
                                     { "UserName", account.Name },
@@ -142,10 +143,10 @@ namespace Universe.Modules.Web
             if (requestParameters.ContainsKey ("Order")) {
                 if (requestParameters ["Order"].ToString () == "RegionName")
                     usersList.Sort ((a, b) => a ["UserRegion"].ToString ().CompareTo (b ["UserRegion"].ToString ()));
+
                 if (requestParameters ["Order"].ToString () == "UserName")
                     usersList.Sort ((a, b) => a ["UserName"].ToString ().CompareTo (b ["UserName"].ToString ()));
             }
-
 
             vars.Add ("OnlineUsersText", onlineText);
             vars.Add ("UsersOnlineList", usersList);

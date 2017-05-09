@@ -34,7 +34,6 @@ namespace Universe.Modules.Web
         string LanguageName { get; }
         string FullLanguageName { get; }
         string GetTranslatedString (string key);
-
         void Deserialize (string basePath);
     }
 }

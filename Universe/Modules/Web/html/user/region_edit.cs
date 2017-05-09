@@ -71,6 +71,7 @@ namespace Universe.Modules.Web
             if (requestParameters.ContainsKey ("Submit")) {
 
                 var regionServerURL = requestParameters ["RegionServerURL"].ToString ();
+   
                 // required
                 if (regionServerURL == "") {
                     response = "<h3>" + translator.GetTranslatedString ("RegionServerURLError") + "</h3>";
@@ -109,6 +110,7 @@ namespace Universe.Modules.Web
                 int RegionPort = int.Parse (requestParameters ["RegionPort"].ToString ());
 
                 var newRegion = new RegionInfo ();
+
                 if (regionID != "")
                     newRegion.RegionID = UUID.Parse (regionID);
 
@@ -126,6 +128,7 @@ namespace Universe.Modules.Web
                 newRegion.Startup = StartupType.Normal;
 
                 var regionPreset = regionPresetType.ToLower (); //SubString(0,1);
+
                 if (regionPreset.StartsWith ("c", System.StringComparison.Ordinal)) {
                     newRegion.RegionPort = int.Parse (requestParameters ["RegionPort"].ToString ());
                     newRegion.SeeIntoThisSimFromNeighbor = (requestParameters ["RegionVisibility"].ToString ().ToLower () == "yes");
@@ -155,6 +158,7 @@ namespace Universe.Modules.Web
                         newRegion.RegionTerrain = "Aquatic";
                     else
                         newRegion.RegionTerrain = "Grassland";
+
                     newRegion.Startup = StartupType.Medium;
                     newRegion.SeeIntoThisSimFromNeighbor = true;
                     newRegion.InfiniteRegion = true;
@@ -186,6 +190,7 @@ namespace Universe.Modules.Web
                     newRegion.InfiniteRegion = true;
                     newRegion.ObjectCapacity = 100000;
                     newRegion.RegionSettings.AgentLimit = 100;
+
                     if (newRegion.RegionType.StartsWith ("M", System.StringComparison.Ordinal))                           // defaults are 'true'
                     {
                         newRegion.RegionSettings.AllowLandJoinDivide = false;
@@ -202,6 +207,7 @@ namespace Universe.Modules.Web
                 // TODO: !!! Assumes everything is local for now !!!  
                 if (requestParameters.ContainsKey ("NewRegion")) {
                     ISceneManager scenemanager = webInterface.Registry.RequestModuleInterface<ISceneManager> ();
+
                     if (scenemanager.CreateRegion (newRegion)) {
                         response = "<h3>Successfully created region</h3>" +
                             "<script language=\"javascript\">" +
@@ -247,14 +253,17 @@ namespace Universe.Modules.Web
                 var estateId = -1;
 
                 IEstateConnector estateConnector = Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ();
+
                 if (estateConnector != null) {
                     EstateSettings estate = estateConnector.GetRegionEstateSettings (region.RegionID);
+
                     if (estate != null) {
                         estateId = (int)estate.EstateID;
                         estateOwner = estate.EstateOwner;
                     }
 
                     var accountService = webInterface.Registry.RequestModuleInterface<IUserAccountService> ();
+
                     if (accountService != null)
                         estateOwnerAccount = accountService.GetUserAccount (null, estate.EstateOwner);
                 }
@@ -275,8 +284,10 @@ namespace Universe.Modules.Web
                 // TODO:  This will not work yet  :)
                 bool switches = false;
                 var infoConnector = Framework.Utilities.DataManager.RequestPlugin<IRegionInfoConnector> ();
+
                 if (infoConnector != null) {
                     var regionInfo = infoConnector.GetRegionInfo (region.RegionID);
+
                     if (regionInfo != null) {
                         vars.Add ("RegionCapacity", regionInfo.ObjectCapacity.ToString ());
                         vars.Add ("RegionVisibility", WebHelpers.YesNoSelection (translator, regionInfo.SeeIntoThisSimFromNeighbor));
@@ -292,12 +303,13 @@ namespace Universe.Modules.Web
                     vars.Add ("RegionDelayStartup", WebHelpers.RegionStartupSelection (translator, StartupType.Normal)); // normal startup
                 }
 
-                IWebHttpTextureService webTextureService = webInterface.Registry.
-                    RequestModuleInterface<IWebHttpTextureService> ();
+                IWebHttpTextureService webTextureService = webInterface.Registry.RequestModuleInterface<IWebHttpTextureService> ();
+
                 if (webTextureService != null && region.TerrainMapImage != UUID.Zero)
                     vars.Add ("RegionImageURL", webTextureService.GetTextureURL (region.TerrainMapImage));
                 else
                     vars.Add ("RegionImageURL", "images/icons/no_picture.jpg");
+
                 vars.Add ("Submit", translator.GetTranslatedString ("SaveUpdates"));
             }
 

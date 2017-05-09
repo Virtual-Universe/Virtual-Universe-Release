@@ -64,6 +64,7 @@ namespace Universe.Modules.Web
         {
             response = null;
             var vars = new Dictionary<string, object> ();
+
             if (httpRequest.Query.ContainsKey ("regionid")) {
                 IAgentInfoService agentInfoService = webInterface.Registry.RequestModuleInterface<IAgentInfoService> ();
                 IUserAccountService userService = webInterface.Registry.RequestModuleInterface<IUserAccountService> ();
@@ -74,16 +75,21 @@ namespace Universe.Modules.Web
                 IEstateConnector estateConnector = Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ();
                 var ownerUUID = UUID.Zero;
                 var ownerName = "Unknown";
+
                 if (estateConnector != null) {
                     EstateSettings estate = estateConnector.GetRegionEstateSettings (region.RegionID);
+
                     if (estate != null) {
                         ownerUUID = estate.EstateOwner;
                         UserAccount estateOwnerAccount = null;
+
                         if (userService != null)
                             estateOwnerAccount = userService.GetUserAccount (null, estate.EstateOwner);
+
                         ownerName = estateOwnerAccount == null ? "No account found" : estateOwnerAccount.Name;
                     }
                 }
+
                 vars.Add ("OwnerUUID", ownerUUID);
                 vars.Add ("OwnerName", ownerName);
 
@@ -111,8 +117,8 @@ namespace Universe.Modules.Web
                         foreach (var client in usersInRegion) {
                             if (userService != null) {
                                 UserAccount account = userService.GetUserAccount (null, client.UserID);
-                                if (account != null) {
 
+                                if (account != null) {
                                     Dictionary<string, object> user = new Dictionary<string, object> ();
                                     user.Add ("UserNameText", translator.GetTranslatedString ("UserNameText"));
                                     user.Add ("UserUUID", client.UserID);
@@ -121,14 +127,15 @@ namespace Universe.Modules.Web
                                 }
                             }
                         }
+
                         vars.Add ("UsersInRegion", users);
                     }
                 } else {
                     vars.Add ("NumberOfUsersInRegion", 0);
                     vars.Add ("UsersInRegion", new List<Dictionary<string, object>> ());
                 }
-                IDirectoryServiceConnector directoryConnector =
-                    Framework.Utilities.DataManager.RequestPlugin<IDirectoryServiceConnector> ();
+
+                IDirectoryServiceConnector directoryConnector = Framework.Utilities.DataManager.RequestPlugin<IDirectoryServiceConnector> ();
 
                 if (directoryConnector != null) {
                     List<LandData> data = directoryConnector.GetParcelsByRegion (0, 10, region.RegionID, UUID.Zero,
@@ -142,19 +149,24 @@ namespace Universe.Modules.Web
                             parcel.Add ("ParcelUUID", p.GlobalID);
                             parcel.Add ("ParcelName", p.Name);
                             parcel.Add ("ParcelOwnerUUID", p.OwnerID);
+
                             if (userService != null) {
                                 var account = userService.GetUserAccount (null, p.OwnerID);
+
                                 if (account != null)
                                     parcel.Add ("ParcelOwnerName", account.Name);
                                 else
                                     parcel.Add ("ParcelOwnerName", translator.GetTranslatedString ("NoAccountFound"));
                             }
+
                             parcels.Add (parcel);
                         }
                     }
+
                     vars.Add ("ParcelInRegion", parcels);
                     vars.Add ("NumberOfParcelsInRegion", parcels.Count);
                 }
+
                 IWebHttpTextureService webTextureService = webInterface.Registry.
                                                                         RequestModuleInterface<IWebHttpTextureService> ();
                 if (webTextureService != null && region.TerrainMapImage != UUID.Zero)
@@ -197,11 +209,11 @@ namespace Universe.Modules.Web
                 vars.Add ("it", translator.GetTranslatedString ("it"));
                 vars.Add ("es", translator.GetTranslatedString ("es"));
                 vars.Add ("nl", translator.GetTranslatedString ("nl"));
-
+                vars.Add ("ru", translator.GetTranslatedString ("ru"));
+                vars.Add ("zh_CN", translated.GetTranslatedString ("zh_CN"));
                 var settings = webInterface.GetWebUISettings ();
                 vars.Add ("ShowLanguageTranslatorBar", !settings.HideLanguageTranslatorBar);
                 vars.Add ("ShowStyleBar", !settings.HideStyleBar);
-
             }
 
             return vars;

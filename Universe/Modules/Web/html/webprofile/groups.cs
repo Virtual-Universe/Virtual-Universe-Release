@@ -71,25 +71,23 @@ namespace Universe.Modules.Web
 
             string username = filename.Split('/').LastOrDefault();
             UserAccount account = null;
+
             if (httpRequest.Query.ContainsKey("userid"))
             {
                 string userid = httpRequest.Query["userid"].ToString();
 
-                account = webInterface.Registry.RequestModuleInterface<IUserAccountService>().
-                                       GetUserAccount(null, UUID.Parse(userid));
+                account = webInterface.Registry.RequestModuleInterface<IUserAccountService>().GetUserAccount(null, UUID.Parse(userid));
             }
             else if (httpRequest.Query.ContainsKey("name") || username.Contains('.'))
             {
                 string name = httpRequest.Query.ContainsKey("name") ? httpRequest.Query["name"].ToString() : username;
                 name = name.Replace('.', ' ');
-                account = webInterface.Registry.RequestModuleInterface<IUserAccountService>().
-                                       GetUserAccount(null, name);
+                account = webInterface.Registry.RequestModuleInterface<IUserAccountService>().GetUserAccount(null, name);
             }
             else
             {
                 username = username.Replace("%20", " ");
-                account = webInterface.Registry.RequestModuleInterface<IUserAccountService>().
-                                       GetUserAccount(null, username);
+                account = webInterface.Registry.RequestModuleInterface<IUserAccountService>().GetUserAccount(null, username);
             }
 
             if (account == null)
@@ -98,26 +96,27 @@ namespace Universe.Modules.Web
             // User found...
             vars.Add("UserName", account.Name);
 
-            IUserProfileInfo profile = Framework.Utilities.DataManager.RequestPlugin<IProfileConnector>().
-                                              GetUserProfile(account.PrincipalID);
-            IWebHttpTextureService webhttpService =
-                webInterface.Registry.RequestModuleInterface<IWebHttpTextureService>();
+            IUserProfileInfo profile = Framework.Utilities.DataManager.RequestPlugin<IProfileConnector>().GetUserProfile(account.PrincipalID);
+            IWebHttpTextureService webhttpService = webInterface.Registry.RequestModuleInterface<IWebHttpTextureService>();
 
             if (profile != null)
             {
                 vars.Add("UserType", profile.MembershipGroup == "" ? "Citizen" : profile.MembershipGroup);
+
                 if (profile.Partner != UUID.Zero)
                 {
-                    account = webInterface.Registry.RequestModuleInterface<IUserAccountService>().
-                                           GetUserAccount(null, profile.Partner);
+                    account = webInterface.Registry.RequestModuleInterface<IUserAccountService>().GetUserAccount(null, profile.Partner);
                     vars.Add("UserPartner", account.Name);
                 }
                 else
                     vars.Add("UserPartner", "No partner");
+
                 vars.Add("UserAboutMe", profile.AboutText == "" ? "Nothing here" : profile.AboutText);
                 string url = "../images/icons/no_avatar.jpg";
+
                 if (webhttpService != null && profile.Image != UUID.Zero)
                     url = webhttpService.GetTextureURL(profile.Image);
+
                 vars.Add("UserPictureURL", url);
             }
             else
@@ -131,8 +130,7 @@ namespace Universe.Modules.Web
 
             vars.Add("UsersGroupsText", translator.GetTranslatedString("UsersGroupsText"));
 
-            IGroupsServiceConnector groupsConnector =
-                Framework.Utilities.DataManager.RequestPlugin<IGroupsServiceConnector>();
+            IGroupsServiceConnector groupsConnector = Framework.Utilities.DataManager.RequestPlugin<IGroupsServiceConnector>();
             List<Dictionary<string, object>> groups = new List<Dictionary<string, object>>();
 
             if (groupsConnector != null)
@@ -141,8 +139,10 @@ namespace Universe.Modules.Web
                 {
                     var grpData = groupsConnector.GetGroupProfile(account.PrincipalID, grp.GroupID);
                     string url = "../images/icons/no_groups.jpg";
+
                     if (webhttpService != null && grpData.InsigniaID != UUID.Zero)
                         url = webhttpService.GetTextureURL(grpData.InsigniaID);
+
                     groups.Add(new Dictionary<string, object> {
                         { "GroupPictureURL", url },
                         { "GroupName", grp.GroupName }

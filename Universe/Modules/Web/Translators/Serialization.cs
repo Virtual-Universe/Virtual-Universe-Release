@@ -56,9 +56,11 @@ namespace Universe.Modules.Web.Translators
 
                 while ((inputline = reader.ReadLine ()) != null) {
                     var bits = inputline.Split (delim, 2);
+
                     if (bits.Length == 2) {
                         if (bits [0] == "msgid")
                             key = bits [1].Replace ("\"", "");
+
                         if (key != "" & bits [0] == "msgstr") {
                             newdict.Add (key, bits [1].Replace ("\"", ""));
                             key = "";
@@ -66,6 +68,7 @@ namespace Universe.Modules.Web.Translators
                     }
                 }
             }
+
             return newdict;
         }
     }

@@ -63,6 +63,7 @@ namespace Universe.Modules.Web
             UserAccount ourAccount = Authenticator.GetAuthentication (httpRequest);
             IMoneyModule moneyModule = webInterface.Registry.RequestModuleInterface<IMoneyModule> ();
             var currencySymbol = "$";
+
             if (moneyModule != null)
                 currencySymbol = moneyModule.InWorldCurrencySymbol;
 
@@ -89,8 +90,10 @@ namespace Universe.Modules.Web
 
                 Framework.Services.GridRegion region = null;
                 var parcel = directoryService.GetParcelInfo ((UUID)selParcel [5]);
+
                 if (parcel != null)
                     region = regionData.Get (parcel.RegionID, null);
+
                 if (region == null) {
                     var error = "Parcel details not found!";
                     vars.Add ("ErrorMessage", "<h3>" + error + "</h3>");
@@ -151,7 +154,6 @@ namespace Universe.Modules.Web
             vars.Add ("EventCategoryText", translator.GetTranslatedString ("CategoryText"));
             vars.Add ("EventCoverChargeText", translator.GetTranslatedString ("CoverChargeText") + " " + currencySymbol);
             vars.Add ("EventDescriptionText", translator.GetTranslatedString ("DescriptionText"));
-
 
             vars.Add ("ErrorMessage", "");
             vars.Add ("Submit", translator.GetTranslatedString ("AddEventText"));

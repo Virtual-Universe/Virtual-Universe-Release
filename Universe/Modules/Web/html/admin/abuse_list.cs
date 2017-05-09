@@ -77,7 +77,6 @@ namespace Universe.Modules.Web
                 foreach (var rpt in abuseReports)
                 {
                     abuseReportsList.Add (new Dictionary<string, object> {
-                        //{ "Date", Culture.LocaleDate (transaction.TransferDate.ToLocalTime(), "MMM dd, hh:mm:ss tt") },
                         { "Category", rpt.Category },
                         { "ReporterName", rpt.ReporterName },
                         { "Abusername", rpt.AbuserName },
@@ -107,7 +106,6 @@ namespace Universe.Modules.Web
             vars.Add ("NoDetailsText", noDetails);
             vars.Add ("AbuseReportText", translator.GetTranslatedString ("MenuAbuse"));
 
-//            vars.Add("DateText", translator.GetTranslatedString("DateText"));
             vars.Add ("CategoryText", translator.GetTranslatedString ("CategoryText"));
             vars.Add ("AbuseReporterNameText", translator.GetTranslatedString ("AbuseReporterNameText"));
             vars.Add ("AbuserNameText", translator.GetTranslatedString ("AbuserNameText"));
@@ -126,4 +124,3 @@ namespace Universe.Modules.Web
         }
     }
 }
-

@@ -63,9 +63,9 @@ namespace Universe.Modules.Web
             var regionListVars = new List<Dictionary<string, object>> ();
             var user = Authenticator.GetAuthentication (httpRequest);
 
-
             var regionData = Framework.Utilities.DataManager.RequestPlugin<IRegionData> ();
             var regions = regionData.GetOwnerRegions (user.PrincipalID);
+
             if (regions.Count > 0) {
                 foreach (var region in regions) {
                     string info;
@@ -92,7 +92,6 @@ namespace Universe.Modules.Web
                     { "RegionID", "" },
                     { "RegionURI", "" }
                 });
-
             }
 
             vars.Add ("RegionList", regionListVars);
@@ -105,12 +104,10 @@ namespace Universe.Modules.Web
             vars.Add ("RegionListText", translator.GetTranslatedString ("RegionListText"));
             vars.Add ("RegionText", translator.GetTranslatedString ("Region"));
 
-
             vars.Add ("RegionNameText", translator.GetTranslatedString ("RegionNameText"));
             vars.Add ("RegionLocXText", translator.GetTranslatedString ("RegionLocXText"));
             vars.Add ("RegionLocYText", translator.GetTranslatedString ("RegionLocYText"));
             vars.Add ("RegionOnlineText", translator.GetTranslatedString ("Online"));
-            //vars.Add ("MainServerURL", webInterface.GridURL);
 
             return vars;
         }

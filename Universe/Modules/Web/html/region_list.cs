@@ -62,16 +62,15 @@ namespace Universe.Modules.Web
 
             List<Dictionary<string, object>> RegionListVars = new List<Dictionary<string, object>> ();
             var sortBy = new Dictionary<string, bool> ();
+
             if (httpRequest.Query.ContainsKey ("region"))
                 sortBy.Add (httpRequest.Query ["region"].ToString (), true);
             else if (httpRequest.Query.ContainsKey ("Order"))
                 sortBy.Add (httpRequest.Query ["Order"].ToString (), true);
 
-
             var regionData = Framework.Utilities.DataManager.RequestPlugin<IRegionData> ();
-            var regions = regionData.Get ((RegionFlags) 0,
-                                          RegionFlags.Hyperlink | RegionFlags.Foreign | RegionFlags.Hidden,
-                                          null, null, sortBy);
+            var regions = regionData.Get ((RegionFlags) 0, RegionFlags.Hyperlink | RegionFlags.Foreign | RegionFlags.Hidden, null, null, sortBy);
+
             foreach (var region in regions) {
                 string info;
                 info = (region.RegionArea < 1000000) ? region.RegionArea + " m2" : (region.RegionArea / 1000000) + " km2";
@@ -90,7 +89,6 @@ namespace Universe.Modules.Web
 
             vars.Add ("RegionList", RegionListVars);
             vars.Add ("RegionText", translator.GetTranslatedString ("Region"));
-
 
             vars.Add ("RegionNameText", translator.GetTranslatedString ("RegionNameText"));
             vars.Add ("RegionLocXText", translator.GetTranslatedString ("RegionLocXText"));

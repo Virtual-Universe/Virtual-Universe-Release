@@ -68,6 +68,7 @@ namespace Universe.Modules.Web
             IMoneyModule moneyModule = webInterface.Registry.RequestModuleInterface<IMoneyModule> ();
 
             var currencySymbol = "$";
+
             if (moneyModule != null)
                 currencySymbol = moneyModule.InWorldCurrencySymbol;
 
@@ -86,21 +87,22 @@ namespace Universe.Modules.Web
                 pg_checked = "";
                 ma_checked = "";
                 ao_checked = "";
+
                 if (requestParameters.ContainsKey ("display_pg")) {
-                    //level += 1;
                     level += Util.ConvertEventMaturityToDBMaturity (DirectoryManager.EventFlags.PG);
                     pg_checked = "checked";
                 }
+
                 if (requestParameters.ContainsKey ("display_ma")) {
-                    //level += 2;
                     level += Util.ConvertEventMaturityToDBMaturity (DirectoryManager.EventFlags.Mature);
                     ma_checked = "checked";
                 }
+
                 if (requestParameters.ContainsKey ("display_ao")) {
-                    //level += 4;
                     level += Util.ConvertEventMaturityToDBMaturity (DirectoryManager.EventFlags.Adult);
                     ao_checked = "checked";
                 }
+
                 eventLevel = level;
 
                 string cat = requestParameters ["category"].ToString ();
@@ -175,6 +177,7 @@ namespace Universe.Modules.Web
                         });
                     }
                 }
+
                 vars.Add ("EventList", eventListVars);
             }
 

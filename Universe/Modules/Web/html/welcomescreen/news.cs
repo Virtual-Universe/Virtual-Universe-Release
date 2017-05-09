@@ -84,12 +84,15 @@ namespace Universe.Modules.Web
             {
                 uint count = (uint)connector.GetGenericCount (UUID.Zero, "WebGridNews");
                 maxPages = (int)(count / amountPerQuery) - 1;
+
                 if (start == -1)
                     start = (maxPages < 0 ? 0 : maxPages);
 
                 var newsItems = connector.GetGenerics<GridNewsItem> (UUID.Zero, "WebGridNews");
+
                 if (newsItems.Count == 0)
                     newsItems.Add (GridNewsItem.NoNewsItem);
+
                 vars.Add("NewsList", newsItems.ConvertAll<Dictionary<string, object>>(item => item.ToDictionary()));
             }
 

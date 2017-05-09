@@ -64,6 +64,7 @@ namespace Universe.Modules.Web
             response = null;
             var vars = new Dictionary<string, object>();
             IGenericsConnector connector = Framework.Utilities.DataManager.RequestPlugin<IGenericsConnector>();
+
             if (httpRequest.Query.Contains("delete"))
             {
                 string newsID = httpRequest.Query["delete"].ToString();
@@ -72,6 +73,7 @@ namespace Universe.Modules.Web
             }
             else
                 vars["Success"] = "";
+
             var newsItems = connector.GetGenerics<GridNewsItem>(UUID.Zero, "WebGridNews");
             vars.Add("News", newsItems.ConvertAll<Dictionary<string, object>>(item => item.ToDictionary()));
             vars.Add("NewsManager", translator.GetTranslatedString("NewsManager"));

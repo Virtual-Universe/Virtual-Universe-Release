@@ -60,8 +60,8 @@ namespace Universe.Modules.Web
             response = null;
             var vars = new Dictionary<string, object> ();
             IGenericsConnector connector = Framework.Utilities.DataManager.RequestPlugin<IGenericsConnector> ();
-            GridNewsItem news = connector.GetGeneric<GridNewsItem> (UUID.Zero, "WebGridNews",
-                                                                   httpRequest.Query ["newsid"].ToString ());
+            GridNewsItem news = connector.GetGeneric<GridNewsItem> (UUID.Zero, "WebGridNews", httpRequest.Query ["newsid"].ToString ());
+
             if (news != null) {
                 vars.Add ("NewsTitle", news.Title);
                 vars.Add ("NewsText", news.Text);
@@ -74,6 +74,7 @@ namespace Universe.Modules.Web
                     vars.Add ("NewsTitle", "Invalid News Item");
                     vars.Add ("NewsText", "");
                 }
+
                 vars.Add ("NewsID", "-1");
             }
 

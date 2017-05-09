@@ -78,14 +78,16 @@ namespace Universe.Modules.Web
 
             IMoneyModule moneyModule = webInterface.Registry.RequestModuleInterface<IMoneyModule> ();
             string noDetails = translator.GetTranslatedString ("NoPurchasesText");
-            if (moneyModule != null) {
 
+            if (moneyModule != null) {
                 // Check if we're looking at the standard page or the submitted one
                 if (requestParameters.ContainsKey ("Submit")) {
                     if (requestParameters.ContainsKey ("date_start"))
                         DateStart = requestParameters ["date_start"].ToString ();
+
                     if (requestParameters.ContainsKey ("date_end"))
                         DateEnd = requestParameters ["date_end"].ToString ();
+
                     if (requestParameters.ContainsKey ("user_name"))
                         UserName = requestParameters ["user_name"].ToString ();
 
@@ -96,6 +98,7 @@ namespace Universe.Modules.Web
 
                         if (UserName.Split (' ').Length == 2) {
                             var userAccount = accountService.GetUserAccount (null, UserName);
+
                             if (userAccount != null)
                                 UserID = userAccount.PrincipalID;
                         }
@@ -119,6 +122,7 @@ namespace Universe.Modules.Web
                         foreach (var purchase in purchases) {
                             var account = accountService.GetUserAccount (null, purchase.AgentID);
                             string AgentName = "";
+
                             if (account != null)
                                 AgentName = account.Name;
 
@@ -132,7 +136,6 @@ namespace Universe.Modules.Web
                             { "RealAmount",((float) purchase.RealAmount/100).ToString("0.00") },
                             { "PurchaseDate", Culture.LocaleDate (purchase.PurchaseDate.ToLocalTime(), "MMM dd, hh:mm:ss tt") },
                             { "UpdateDate", Culture.LocaleDate (purchase.UpdateDate.ToLocalTime(), "MMM dd, hh:mm:ss tt") }
-
                         });
                         }
                     }
@@ -170,7 +173,6 @@ namespace Universe.Modules.Web
             vars.Add ("PurchaseAgentText", translator.GetTranslatedString ("TransactionToAgentText"));
             vars.Add ("PurchaseDateText", translator.GetTranslatedString ("TransactionDateText"));
             vars.Add ("PurchaseUpdateDateText", translator.GetTranslatedString ("TransactionDateText"));
-            //vars.Add("PurchaseTimeText", translator.GetTranslatedString("Time"));
             vars.Add ("PurchaseDetailText", translator.GetTranslatedString ("TransactionDetailText"));
             vars.Add ("LoggedIPText", translator.GetTranslatedString ("LoggedIPText"));
             vars.Add ("PurchaseAmountText", InWorldCurrency + translator.GetTranslatedString ("TransactionAmountText"));

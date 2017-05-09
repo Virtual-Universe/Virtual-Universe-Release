@@ -71,6 +71,7 @@ namespace Universe.Modules.Web
             IMoneyModule moneyModule = webInterface.Registry.RequestModuleInterface<IMoneyModule> ();
 
             var currencySymbol = "$";
+
             if (moneyModule != null)
                 currencySymbol = moneyModule.InWorldCurrencySymbol;
 
@@ -123,16 +124,12 @@ namespace Universe.Modules.Web
                 if (classifieds.Count == 0) { 
                     classifiedListVars.Add (new Dictionary<string, object> {
                         { "ClassifiedUUID", "" },
-                        //{ "CreatorUUID", "" },
                         { "CreationDate", "" },
                         { "ExpirationDate", "" },
                         { "Category", "" },
                         { "Name", "" },
                         { "Description", translator.GetTranslatedString("NoDetailsText") },
-                        //{ "ParcelUUID", "") },
-                        //{ "ParentEstate", "" },
                         { "SnapshotUUID", "" },
-                        //{ "ScopeID", "" },
                         { "SimName", "" },
                         { "GPosX", "" },
                         { "GPosY", "" },
@@ -145,16 +142,12 @@ namespace Universe.Modules.Web
                     foreach (var classified in classifieds) {
                         classifiedListVars.Add (new Dictionary<string, object> {
                             { "ClassifiedUUID", classified.ClassifiedUUID },
-                            //{ "CreatorUUID", classified.CreatorUUID) },
                             { "CreationDate", Util.ToDateTime (classified.CreationDate).ToShortDateString () },
                             { "ExpirationDate", Util.ToDateTime (classified.ExpirationDate).ToShortDateString () },
                             { "Category", WebHelpers.ClassifiedCategory(classified.Category, translator) },
                             { "Name", classified.Name },
                             { "Description", classified.Description },
-                            //{ "ParcelUUID", classified.ParcelUUID },
-                            //{ "ParentEstate",classified.(ParentEstate },
                             { "SnapshotUUID", classified.SnapshotUUID },
-                            //{ "ScopeID",clasified.ScopeID },
                             { "SimName", classified.SimName },
                             { "GPosX", classified.GlobalPos.X.ToString () },
                             { "GPosY", classified.GlobalPos.Y.ToString () },

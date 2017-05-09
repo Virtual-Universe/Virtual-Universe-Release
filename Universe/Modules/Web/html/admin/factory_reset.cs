@@ -68,6 +68,7 @@ namespace Universe.Modules.Web
                 response = "Menu: "+ translator.GetTranslatedString("ChangesSavedSuccessfully");
                 return null;
             }
+
             if (requestParameters.ContainsKey("ResetSettings"))
             {
                 SettingsMigrator.ResetToDefaults(webInterface);

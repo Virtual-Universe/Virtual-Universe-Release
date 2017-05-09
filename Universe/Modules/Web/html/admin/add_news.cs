@@ -64,6 +64,7 @@ namespace Universe.Modules.Web
         {
             response = null;
             var vars = new Dictionary<string, object>();
+
             if (requestParameters.ContainsKey("Submit"))
             {
                 string title = requestParameters["NewsTitle"].ToString();

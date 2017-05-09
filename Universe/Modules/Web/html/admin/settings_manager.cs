@@ -69,12 +69,15 @@ namespace Universe.Modules.Web
                 settings.MapCenter.X = int.Parse(requestParameters["GridCenterX"].ToString());
                 settings.MapCenter.Y = int.Parse(requestParameters["GridCenterY"].ToString());
                 settings.LocalFrontPage = requestParameters["LocalFrontPage"].ToString();
+
                 if (settings.LocalFrontPage != "")
                     settings.LocalFrontPage = "local/" + settings.LocalFrontPage;
+
                 settings.LocalCSS = requestParameters["LocalCSS"].ToString();
-                 settings.HideSlideshowBar = requestParameters["HideSlideshowBar"].ToString() == "1";
+                settings.HideSlideshowBar = requestParameters["HideSlideshowBar"].ToString() == "1";
                 settings.HideLanguageTranslatorBar = requestParameters["HideLanguageBar"].ToString() == "1";
                 settings.HideStyleBar = requestParameters["HideStyleBar"].ToString() == "1";
+
                 if (settings.LocalCSS != "")
                 {
                     settings.LocalCSS = "local/" + settings.LocalCSS;
@@ -97,10 +100,12 @@ namespace Universe.Modules.Web
                 settings.LastSettingsVersionUpdateIgnored = PagesMigrator.CurrentVersion;
                 webInterface.SaveWebUISettings (settings);
             }
+
             vars.Add("WebRegistrationNo", !settings.WebRegistration ? "selected=\"selected\"" : "");
             vars.Add("WebRegistrationYes", settings.WebRegistration ? "selected=\"selected\"" : "");
             vars.Add("GridCenterX", settings.MapCenter.X);
             vars.Add("GridCenterY", settings.MapCenter.Y);
+
             if (settings.LocalFrontPage.StartsWith("local/"))
                 vars.Add("LocalFrontPage", settings.LocalFrontPage.Remove(0,6));                // remove 'local/' prefix
             else
@@ -117,12 +122,11 @@ namespace Universe.Modules.Web
             vars.Add("HideLanguageBarYes", settings.HideLanguageTranslatorBar ? "selected=\"selected\"" : "");
             vars.Add("HideStyleBarNo", !settings.HideStyleBar ? "selected=\"selected\"" : "");
             vars.Add("HideStyleBarYes", settings.HideStyleBar ? "selected=\"selected\"" : "");
-            vars.Add("IgnorePagesUpdates",
-                     PagesMigrator.CheckWhetherIgnoredVersionUpdate(settings.LastPagesVersionUpdateIgnored)
+            vars.Add("IgnorePagesUpdates", PagesMigrator.CheckWhetherIgnoredVersionUpdate(settings.LastPagesVersionUpdateIgnored)
                          ? ""
                          : "checked");
-            vars.Add("IgnoreSettingsUpdates",
-                     settings.LastSettingsVersionUpdateIgnored != SettingsMigrator.CurrentVersion ? "" : "checked");
+
+            vars.Add("IgnoreSettingsUpdates", settings.LastSettingsVersionUpdateIgnored != SettingsMigrator.CurrentVersion ? "" : "checked");
 
             vars.Add("SettingsManager", translator.GetTranslatedString("SettingsManager"));
             vars.Add("IgnorePagesUpdatesText", translator.GetTranslatedString("IgnorePagesUpdatesText"));

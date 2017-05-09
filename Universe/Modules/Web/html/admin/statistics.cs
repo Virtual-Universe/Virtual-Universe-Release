@@ -90,14 +90,17 @@ namespace Universe.Modules.Web
                 });
 
             var gpuList = new List<Dictionary<string, object>> ();
+
             gpuList.Add (new Dictionary<string, object> {
                 {"GPUType","ATI"},
                 {"GPUCount", dc.GetCount ("s_gpuvendor", new KeyValuePair<string, object> ("s_gpuvendor", "ATI"))}
             });
+
             gpuList.Add (new Dictionary<string, object> {
                 {"GPUType", "NVIDIA"},
                 {"GPUCount", dc.GetCount ("s_gpuvendor", new KeyValuePair<string, object> ("s_gpuvendor", "NVIDIA"))}
             });
+
             gpuList.Add (new Dictionary<string, object> {
                 {"GPUType", "Intel"},
                 {"GPUCount", dc.GetCount ("s_gpuvendor", new KeyValuePair<string, object> ("s_gpuvendor", "Intel"))}
@@ -109,8 +112,6 @@ namespace Universe.Modules.Web
             var memoryUsage = dc.Get ("mem_use").ConvertAll ((s) => int.Parse (s));
             var pingTime = dc.Get ("ping").ConvertAll ((s) => float.Parse (s));
             var agentsInView = dc.Get ("agents_in_view").ConvertAll ((s) => int.Parse (s));
-
-
 
             // data
             vars.Add ("ViewersList", viewerList);
@@ -133,9 +134,7 @@ namespace Universe.Modules.Web
             vars.Add ("MemoryUseageText", translator.GetTranslatedString ("MemoryUseageText"));
             vars.Add ("PingTimeText", translator.GetTranslatedString ("PingTimeText"));
             vars.Add ("AgentsInViewText", translator.GetTranslatedString ("AgentsInViewText"));
-
             vars.Add ("ClearStatsText", translator.GetTranslatedString ("ClearStatsText"));
-
 
             return vars;
         }

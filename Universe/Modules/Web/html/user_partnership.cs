@@ -60,9 +60,7 @@ namespace Universe.Modules.Web
         	
 			// This page should show if a user already has a partner and show the ability to cancel the Partnership (with a payment defined in Economy.ini)
 			// 
-			// If the user doesn't have a partner, allow the user to send an Partnership invite to a person (internally send a message inworld to the person)
-			//
-			
+			// If the user doesn't have a partner, allow the user to send an Partnership invite to a person (internally send a message inworld to the person.			
 			return vars;
 		}
         

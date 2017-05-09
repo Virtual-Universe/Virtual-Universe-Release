@@ -63,19 +63,21 @@ namespace Universe.Modules.Web
 
             // homescreen login
             string error = "";
+
             if (requestParameters.ContainsKey ("username") && requestParameters.ContainsKey ("password")) {
                 string username = requestParameters ["username"].ToString ();
                 string password = requestParameters ["password"].ToString ();
 
                 ILoginService loginService = webInterface.Registry.RequestModuleInterface<ILoginService> ();
+
                 if (loginService.VerifyClient (UUID.Zero, username, "UserAccount", password)) {
                     UUID sessionID = UUID.Random ();
-                    UserAccount account =
-                        webInterface.Registry.RequestModuleInterface<IUserAccountService> ()
-                            .GetUserAccount (null, username);
+                    UserAccount account = webInterface.Registry.RequestModuleInterface<IUserAccountService> ().GetUserAccount (null, username);
                     Authenticator.AddAuthentication (sessionID, account);
+
                     if (account.UserLevel > 0)
                         Authenticator.AddAdminAuthentication (sessionID, account);
+
                     httpResponse.AddCookie (new System.Web.HttpCookie ("SessionID", sessionID.ToString ()) {
                         Expires = DateTime.MinValue,
                         Path = ""
@@ -87,6 +89,7 @@ namespace Universe.Modules.Web
                         "</script>";
                 } else
                     response = "<h3>Failed to verify user name and password</h3>";
+
                 return null;
             }
 
@@ -120,6 +123,7 @@ namespace Universe.Modules.Web
                          translator.GetTranslatedString ("UpdateRequired"));
             else
                 vars.Add ("PagesUpdateRequired", "");
+
             if (SettingsMigrator.RequiresUpdate () &&
                 SettingsMigrator.CheckWhetherIgnoredVersionUpdate (settings.LastSettingsVersionUpdateIgnored))
                 vars.Add ("SettingsUpdateRequired",

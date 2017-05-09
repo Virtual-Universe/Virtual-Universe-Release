@@ -76,11 +76,13 @@ namespace Universe.Modules.Web
             if (requestParameters.ContainsKey ("Submit")) {
                 if (requestParameters.ContainsKey ("date_start"))
                     DateStart = requestParameters ["date_start"].ToString ();
+
                 if (requestParameters.ContainsKey ("date_end"))
                     DateEnd = requestParameters ["date_end"].ToString ();
             }
 
             UserAccount user = Authenticator.GetAuthentication (httpRequest);
+
             if (user == null) {
                 response = "<h3>Error validating user details</h3>" +
                     "<script language=\"javascript\">" +
@@ -97,6 +99,7 @@ namespace Universe.Modules.Web
             TimeSpan period = dateTo.Subtract (dateFrom);
 
             var transactions = new List<AgentTransfer> ();
+
             if (user != null && moneyModule != null)
                 transactions = moneyModule.GetTransactionHistory (user.PrincipalID, UUID.Zero, dateFrom, dateTo, null, null);
 
@@ -112,20 +115,18 @@ namespace Universe.Modules.Web
                         { "Description", transaction.Description },
                         { "Amount",transaction.Amount },
                         { "ToBalance",transaction.ToBalance }
-
                     });
                 }
             }
 
             if (transactionsList.Count == 0) {
                 transactionsList.Add (new Dictionary<string, object> {
-                    {"Date", ""},                   //Culture.LocaleDate(today,"MMM dd, hh:mm:ss")},
+                    {"Date", ""},
                     {"ToAgent", ""},
                     {"FromAgent", ""},
                     {"Description", translator.GetTranslatedString ("NoTransactionsText")},
                     {"Amount",""},
                     {"ToBalance",""}
-
                 });
             }
 
@@ -146,7 +147,6 @@ namespace Universe.Modules.Web
             vars.Add ("TransactionDateText", translator.GetTranslatedString ("TransactionDateText"));
             vars.Add ("TransactionToAgentText", translator.GetTranslatedString ("TransactionToAgentText"));
             vars.Add ("TransactionFromAgentText", translator.GetTranslatedString ("TransactionFromAgentText"));
-            //vars.Add("TransactionTimeText", translator.GetTranslatedString("Time"));
             vars.Add ("TransactionDetailText", translator.GetTranslatedString ("TransactionDetailText"));
             vars.Add ("TransactionAmountText", translator.GetTranslatedString ("TransactionAmountText"));
             vars.Add ("TransactionBalanceText", translator.GetTranslatedString ("TransactionBalanceText"));

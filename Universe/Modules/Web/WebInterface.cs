@@ -57,8 +57,8 @@ namespace Universe.Modules.Web
     {
         #region Declares
 		
+        // Clear some warnings out
 		#pragma warning disable 0649
-		// Putting this here to clear out some warnings - 29082016 Fly-man-
 
         protected const int CLIENT_CACHE_TIME = 86400;  // 1 day
         protected uint _port = 8002;                    // assuming grid mode here
@@ -72,7 +72,6 @@ namespace Universe.Modules.Web
         internal GridPage webPages;
         internal WebUISettings webUISettings;
         public GridSettings gridSettings;
-
 
         #endregion
 
@@ -132,7 +131,6 @@ namespace Universe.Modules.Web
 
             _translators = UniverseModuleLoader.PickupModules<ITranslator> ();
             _defaultTranslator = _translators [0];
-
         }
 
         public void Start (IConfigSource config, IRegistryCore registry)
@@ -151,8 +149,8 @@ namespace Universe.Modules.Web
                 _defaultTranslator = _translators.FirstOrDefault (t => t.LanguageName == defaultLanguage);
                 if (_defaultTranslator == null)
                     _defaultTranslator = _translators [0];
- 
             }
+
             if (_enabled) {
                 Registry.RegisterModuleInterface<IWebInterfaceModule> (this);
                 var server = registry.RequestModuleInterface<ISimulationBase> ().GetHttpServer (_port);
@@ -183,6 +181,7 @@ namespace Universe.Modules.Web
 
                 if (PagesMigrator.RequiresInitialUpdate ())
                     PagesMigrator.ResetToDefaults ();
+
                 if (SettingsMigrator.RequiresInitialUpdate ())
                     SettingsMigrator.ResetToDefaults (this);
             }
@@ -196,30 +195,33 @@ namespace Universe.Modules.Web
         {
             IWebInterfacePage page;
             string directory = string.Join ("/", path.Split ('/'), 0, path.Split ('/').Length - 1) + "/";
+
             if (!_pages.TryGetValue (path, out page) &&
                 !_pages.TryGetValue (directory, out page))
                 page = null;
+
             return page;
         }
 
-        protected byte [] FindAndSendPage (string path, Stream request, OSHttpRequest httpRequest,
-                                         OSHttpResponse httpResponse)
+        protected byte [] FindAndSendPage (string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse)
         {
             byte [] response;
             string filename = GetFileNameFromHTMLPath (path, httpRequest.Query);
+
             if (filename == null)
                 return MainServer.BlankResponse;
 
-            //httpResponse.KeepAlive = true;
             if (httpRequest.HttpMethod == "POST")
                 httpResponse.KeepAlive = false;
 
             MainConsole.Instance.Debug ("[WebInterface]: Serving " + filename + ", keep-alive: " + httpResponse.KeepAlive);
             IWebInterfacePage page = GetPage (filename);
+
             if (page != null) {
                 // dynamic pages
                 httpResponse.ContentType = GetContentType (filename, httpResponse);
                 string text;
+
                 if (!File.Exists (filename)) {
                     if (!page.AttemptFindPage (filename, ref httpResponse, out text))
                         return MainServer.BadRequest;
@@ -229,14 +231,17 @@ namespace Universe.Modules.Web
                 var requestParameters = request != null
                                             ? ParseQueryString (HttpServerHandlerHelpers.ReadString (request))
                                             : new Dictionary<string, object> ();
+
                 if (filename.EndsWith (".xsl", StringComparison.Ordinal)) {
                     UniverseXmlDocument vars = GetXML (filename, httpRequest, httpResponse, requestParameters);
 
                     var xslt = new XslCompiledTransform ();
+
                     if (File.Exists (path)) xslt.Load (GetFileNameFromHTMLPath (path, httpRequest.Query));
                     else if (text != "") {
                         xslt.Load (new XmlTextReader (new StringReader (text)));
                     }
+
                     var stm = new MemoryStream ();
                     xslt.Transform (vars, null, stm);
                     stm.Position = 1;
@@ -259,8 +264,7 @@ namespace Universe.Modules.Web
                     if (vars == null)
                         return MainServer.BadRequest;
 
-                    response = Encoding.UTF8.GetBytes (
-                        ConvertHTML (filename, text, httpRequest, httpResponse, requestParameters, vars));
+                    response = Encoding.UTF8.GetBytes (ConvertHTML (filename, text, httpRequest, httpResponse, requestParameters, vars));
                 }
             } else {
                 // static files
@@ -268,11 +272,13 @@ namespace Universe.Modules.Web
                     return MainServer.BadRequest;
                 
                 httpResponse.ContentType = GetContentType (filename, httpResponse);
+
                 if (httpResponse.ContentType == null)
                     return MainServer.BadRequest;
                 
                 response = File.ReadAllBytes (filename);
             }
+
             return response;
         }
 
@@ -297,16 +303,18 @@ namespace Universe.Modules.Web
             response = null;
             Dictionary<string, object> vars;
             IWebInterfacePage page = GetPage (filename);
+
             if (page != null) {
                 ITranslator translator = null;
+
                 if (httpRequest.Query.ContainsKey ("language")) {
-                    translator =
-                        _translators.FirstOrDefault (t => t.LanguageName == httpRequest.Query ["language"].ToString ());
+                    translator = _translators.FirstOrDefault (t => t.LanguageName == httpRequest.Query ["language"].ToString ());
                     httpResponse.AddCookie (new HttpCookie ("language", httpRequest.Query ["language"].ToString ()));
                 } else if (httpRequest.Cookies.Get ("language") != null) {
                     var cookie = httpRequest.Cookies.Get ("language");
                     translator = _translators.FirstOrDefault (t => t.LanguageName == cookie.Value);
                 }
+
                 if (translator == null)
                     translator = _defaultTranslator;
 
@@ -314,43 +322,49 @@ namespace Universe.Modules.Web
                     if (!Authenticator.CheckAuthentication (httpRequest))
                         return null;
                 }
+
                 if (page.RequiresAdminAuthentication) {
                     if (!Authenticator.CheckAdminAuthentication (httpRequest))
                         return null;
                 }
-                vars = page.Fill (this, parentFileName, httpRequest, httpResponse, requestParameters,
-                                  translator, out response);
+
+                vars = page.Fill (this, parentFileName, httpRequest, httpResponse, requestParameters, translator, out response);
                 return vars;
             }
+
             return null;
         }
 
-        UniverseXmlDocument GetXML (string filename, OSHttpRequest httpRequest, OSHttpResponse httpResponse,
-                                         Dictionary<string, object> requestParameters)
+        UniverseXmlDocument GetXML (string filename, OSHttpRequest httpRequest, OSHttpResponse httpResponse, Dictionary<string, object> requestParameters)
         {
             IWebInterfacePage page = GetPage (filename);
+
             if (page != null) {
                 ITranslator translator = null;
+
                 if (httpRequest.Query.ContainsKey ("language"))
-                    translator =
-                        _translators.FirstOrDefault (t => t.LanguageName == httpRequest.Query ["language"].ToString ());
+                    translator = _translators.FirstOrDefault (t => t.LanguageName == httpRequest.Query ["language"].ToString ());
+
                 if (translator == null)
                     translator = _defaultTranslator;
 
                 if (page.RequiresAuthentication) {
                     if (!Authenticator.CheckAuthentication (httpRequest))
                         return null;
+
                     if (page.RequiresAdminAuthentication) {
                         if (!Authenticator.CheckAdminAuthentication (httpRequest))
                             return null;
                     }
                 }
+
                 string response;
-                var pageVars = page.Fill (this, filename, httpRequest, httpResponse, requestParameters,
-                                          translator, out response);
+                var pageVars = page.Fill (this, filename, httpRequest, httpResponse, requestParameters, translator, out response);
+
                 if (pageVars != null)
                     return (UniverseXmlDocument)pageVars ["xml"];
             }
+
             return null;
         }
 
@@ -365,11 +379,12 @@ namespace Universe.Modules.Web
             for (int pos = 0; pos < lines.Length; pos++) {
                 string line = lines [pos];
                 string cleanLine = line.Trim ();
+
                 if (cleanLine.StartsWith ("<!--#include file=", StringComparison.Ordinal)) {
-                    string [] split = line.Split (new string [] { "<!--#include file=\"", "\" -->" },
-                                                StringSplitOptions.RemoveEmptyEntries);
+                    string [] split = line.Split (new string [] { "<!--#include file=\"", "\" -->" }, StringSplitOptions.RemoveEmptyEntries);
                     for (int i = 0; i < split.Length; i += 2) {
                         string filename = GetFileNameFromHTMLPath (split [i], request.Query);
+
                         if (filename != null) {
                             string response;
                             Dictionary<string, object> newVars = AddVarsForPage (filename, originalFileName,
@@ -385,12 +400,14 @@ namespace Universe.Modules.Web
                                                 StringSplitOptions.RemoveEmptyEntries);
                     for (int i = split.Length % 2 == 0 ? 0 : 1; i < split.Length; i += 2) {
                         string filename = GetFileNameFromHTMLPath (split [i], request.Query).Replace ("index.html", "");
+
                         if (filename != null) {
                             if (Directory.Exists (filename)) {
                                 string response;
                                 Dictionary<string, object> newVars = AddVarsForPage (filename, filename, request,
                                                                      httpResponse,
                                                                      requestParameters, out response);
+
                                 string [] files = Directory.GetFiles (filename);
                                 foreach (string f in files) {
                                     if (!f.EndsWith (".html", StringComparison.Ordinal))
@@ -404,22 +421,24 @@ namespace Universe.Modules.Web
                                         newVars.Where (pair => !newVars2.ContainsKey (pair.Key)))
                                         newVars2.Add (pair.Key, pair.Value);
                                     AddDefaultVarsForPage (ref newVars2);
-                                    sb.AppendLine (ConvertHTML (f, File.ReadAllText (f), request, httpResponse,
-                                        requestParameters, newVars2));
+                                    sb.AppendLine (ConvertHTML (f, File.ReadAllText (f), request, httpResponse, requestParameters, newVars2));
                                 }
                             }
                         }
                     }
                 } else if (cleanLine.StartsWith ("{", StringComparison.Ordinal)) {
                     int indBegin, indEnd;
+
                     if ((indEnd = cleanLine.IndexOf ("ArrayBegin}", StringComparison.Ordinal)) != -1) {
                         string keyToCheck = cleanLine.Substring (1, indEnd - 1);
                         int posToCheckFrom;
                         List<string> repeatedLines = ExtractLines (lines, pos, keyToCheck, "ArrayEnd", out posToCheckFrom);
                         pos = posToCheckFrom;
+
                         if (vars.ContainsKey (keyToCheck)) {
                             List<Dictionary<string, object>> dicts =
                                 vars [keyToCheck] as List<Dictionary<string, object>>;
+
                             if (dicts != null)
                                 foreach (var dict in dicts)
                                     sb.AppendLine (ConvertHTML (originalFileName,
@@ -429,12 +448,14 @@ namespace Universe.Modules.Web
                     } else if ((indEnd = cleanLine.IndexOf ("AuthenticatedBegin}", StringComparison.Ordinal)) != -1) {
                         string key = cleanLine.Substring (1, indEnd - 1) + "AuthenticatedEnd";
                         int posToCheckFrom = FindLines (lines, pos, "", key);
+
                         if (!CheckAuth (cleanLine, request))
                             pos = posToCheckFrom;
                     } else if ((indBegin = cleanLine.IndexOf ("{If", StringComparison.Ordinal)) != -1 &&
                                (indEnd = cleanLine.IndexOf ("Begin}", StringComparison.Ordinal)) != -1) {
                         string key = cleanLine.Substring (indBegin + 3, indEnd - indBegin - 3);
                         int posToCheckFrom = FindLines (lines, pos, "If" + key, "End");
+
                         if (!vars.ContainsKey (key) || (!(bool)vars [key]))
                             pos = posToCheckFrom;
                     } else if ((cleanLine.IndexOf ("{If", StringComparison.Ordinal)) != -1 &&
@@ -484,8 +505,7 @@ namespace Universe.Modules.Web
             return posToCheckFrom - 1;
         }
 
-        static List<string> ExtractLines (string [] lines, int pos,
-                                                 string keyToCheck, string type, out int posToCheckFrom)
+        static List<string> ExtractLines (string [] lines, int pos, string keyToCheck, string type, out int posToCheckFrom)
         {
             posToCheckFrom = pos + 1;
             List<string> repeatedLines = new List<string> ();
@@ -560,10 +580,12 @@ namespace Universe.Modules.Web
 
                 if (filePath == "")
                     filePath = "index.html";
+
                 if (filePath [filePath.Length - 1] == '/')
                     filePath = filePath + "index.html";
 
                 string file;
+
                 if (filePath.StartsWith ("local/", StringComparison.Ordinal))                      // local included files 
                 {
                     file = Path.Combine (m_localHtmlPath, filePath.Remove (0, 6));
@@ -572,6 +594,7 @@ namespace Universe.Modules.Web
 
                     // try for files in the user data path first
                     file = Path.Combine (m_localHtmlPath, filePath);
+
                     if (Path.GetFileName (file) == "") {
                         file = Path.Combine (file, "index.html");
                         MainConsole.Instance.Info ("Using the Data/html page");
@@ -579,20 +602,23 @@ namespace Universe.Modules.Web
 
                     if (!File.Exists (file)) {
                         // use the default pages
-                        //MainConsole.Instance.Info ("Using the bin page");
                         file = Path.Combine ("html/", filePath);
+
                         if (!Path.GetFullPath (file).StartsWith (Path.GetFullPath ("html/"), StringComparison.Ordinal)) {
                             MainConsole.Instance.Info ("Using the Data/html page");
                             return "html/index.html";
                         }
+
                         if (Path.GetFileName (file) == "")
                             file = Path.Combine (file, "index.html");
                     }
 
                     if (query.ContainsKey ("page")) {
                         var subdir = "";
+
                         if (query.ContainsKey ("subdir"))
                             subdir = query ["subdir"] + "/";
+
                         var wpage =  "html/" + subdir + query ["page"] + ".html";
 
                         if (_pages.ContainsKey (wpage)) {
@@ -600,8 +626,9 @@ namespace Universe.Modules.Web
                         }
                     }
                 }
+
                 if (!File.Exists (file)) {
-                    MainConsole.Instance.DebugFormat ("WebInterface]: Unknown page request, {0}", file);
+                    MainConsole.Instance.DebugFormat ("[Builtin Web Interface]: Unknown page request, {0}", file);
                     return "html/http_404.html";
                 }
 
@@ -610,7 +637,6 @@ namespace Universe.Modules.Web
                 return "html/http_404.html";
             }
         }
-
 
         public static Dictionary<string, object> ParseQueryString (string query)
         {
@@ -622,6 +648,7 @@ namespace Universe.Modules.Web
 
             foreach (string t in terms) {
                 string [] elems = t.Split (new [] { '=' });
+
                 if (elems.Length == 0)
                     continue;
 
@@ -633,6 +660,7 @@ namespace Universe.Modules.Web
 
                 if (name.EndsWith ("[]", StringComparison.Ordinal)) {
                     string cleanName = name.Substring (0, name.Length - 2);
+
                     if (result.ContainsKey (cleanName)) {
                         if (!(result [cleanName] is List<string>))
                             continue;
@@ -654,13 +682,12 @@ namespace Universe.Modules.Web
             return result;
         }
 
-
-
         internal GridPage GetGridPages ()
         {
             if (webPages == null) {
                 IGenericsConnector generics = Framework.Utilities.DataManager.RequestPlugin<IGenericsConnector> ();
                 GridPage rootPage = generics.GetGeneric<GridPage> (UUID.Zero, "WebPages", "Root");
+
                 if (rootPage == null)
                     rootPage = new GridPage ();
 
@@ -675,6 +702,7 @@ namespace Universe.Modules.Web
             if (webUISettings == null) {
                 IGenericsConnector generics = Framework.Utilities.DataManager.RequestPlugin<IGenericsConnector> ();
                 var settings = generics.GetGeneric<WebUISettings> (UUID.Zero, "WebUISettings", "Settings");
+
                 if (settings == null) {
                     settings = new WebUISettings ();
 
@@ -682,6 +710,7 @@ namespace Universe.Modules.Web
                     settings.MapCenter.X = simbase.MapCenterX;
                     settings.MapCenter.Y = simbase.MapCenterY;
                 }
+
                 return settings;
             }
 
@@ -701,6 +730,7 @@ namespace Universe.Modules.Web
             if (gridSettings == null) {
                 IGenericsConnector generics = Framework.Utilities.DataManager.RequestPlugin<IGenericsConnector> ();
                 var settings = generics.GetGeneric<GridSettings> (UUID.Zero, "GridSettings", "Settings");
+
                 if (settings == null)
                     settings = new GridSettings ();
 
@@ -720,9 +750,7 @@ namespace Universe.Modules.Web
             // change what's appropriate...
             ILoginService loginService = Registry.RequestModuleInterface<ILoginService> ();
             loginService.WelcomeMessage = settings.WelcomeMessage;
-
         }
-
 
         #endregion
 
@@ -770,7 +798,6 @@ namespace Universe.Modules.Web
         {
             Dictionary<string, object> dictionary = new Dictionary<string, object> ();
 
-            //dictionary.Add("NewsDate", Time.ToShortDateString());
             dictionary.Add ("NewsDate", Culture.LocaleDate (Time));
             dictionary.Add ("NewsTitle", Title);
             dictionary.Add ("NewsText", Text);
@@ -850,7 +877,6 @@ namespace Universe.Modules.Web
             AdminRequired = mp ["AdminRequired"];
             AdminLevelRequired = mp ["AdminLevelRequired"];
             Children = ((OSDArray)mp ["Children"]).ConvertAll (o => new GridPage (o));
-
         }
 
         public override void FromOSD (OSDMap map)
@@ -895,16 +921,19 @@ namespace Universe.Modules.Web
         {
             if (rootPage == null)
                 rootPage = this;
+
             foreach (var page in rootPage.Children) {
                 if (page.MenuID == item)
                     return page;
 
                 if (page.Children.Count > 0) {
                     var p = GetPage (item, page);
+
                     if (p != null)
                         return p;
                 }
             }
+
             return null;
         }
 
@@ -917,6 +946,7 @@ namespace Universe.Modules.Web
         {
             if (rootPage == null)
                 rootPage = this;
+
             foreach (var page in rootPage.Children) {
                 if (page.Location == item)
                     return page;
@@ -927,6 +957,7 @@ namespace Universe.Modules.Web
                         return p;
                 }
             }
+
             return null;
         }
 
@@ -940,6 +971,7 @@ namespace Universe.Modules.Web
 
                 if (page.Children.Count > 0) {
                     var p = GetPage (menuItem, page);
+
                     if (p != null) {
                         p.FromOSD (replacePage.ToOSD ());
                         return;
@@ -959,12 +991,14 @@ namespace Universe.Modules.Web
 
                 if (page.Children.Count > 0) {
                     var p = GetPage (MenuID, page);
+
                     if (p != null) {
                         page.Children.Remove (p);
                         return;
                     }
                 }
             }
+
             if (foundPage != null)
                 Children.Remove (foundPage);
         }
@@ -980,12 +1014,14 @@ namespace Universe.Modules.Web
 
                 if (page.Children.Count > 0) {
                     var p = GetPageByLocation (menuLocation, page);
+
                     if (p != null) {
                         page.Children.Remove (p);
                         return;
                     }
                 }
             }
+
             if (foundPage != null)
                 Children.Remove (foundPage);
         }
@@ -999,25 +1035,28 @@ namespace Universe.Modules.Web
         {
             if (toCheck == null)
                 toCheck = this;
+
             foreach (var p in toCheck.Children) {
                 if (item.Location == p.Location)
                     return toCheck;
 
                 if (p.Children.Count > 0) {
                     var pp = GetParent (item, p);
+
                     if (pp != null)
                         return pp;
                 }
             }
+
             return null;
         }
     }
 
     public class GridSettings : IDataTransferable
     {
-        public string Gridname = "Universe Grid";
+        public string Gridname = "Virtual Universe Grid";
         public string Gridnick = "Universe";
-        public string WelcomeMessage = "Welcome to Universe, <USERNAME>!";
+        public string WelcomeMessage = "Welcome to Virtual Universe, <USERNAME>!";
         public string GovernorName = Constants.GovernorName;
         public string RealEstateOwnerName = Constants.RealEstateOwnerName;
         public string BankerName = Constants.BankerName;
@@ -1142,5 +1181,4 @@ namespace Universe.Modules.Web
             return map;
         }
     }
-
 }

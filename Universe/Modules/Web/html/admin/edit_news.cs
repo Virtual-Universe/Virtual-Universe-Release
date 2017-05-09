@@ -65,12 +65,14 @@ namespace Universe.Modules.Web
             var vars = new Dictionary<string, object>();
             IGenericsConnector connector = Framework.Utilities.DataManager.RequestPlugin<IGenericsConnector>();
             GridNewsItem news;
+
             if (requestParameters.ContainsKey("Submit"))
             {
                 string title = requestParameters["NewsTitle"].ToString();
                 string text = requestParameters["NewsText"].ToString();
                 string id = requestParameters["NewsID"].ToString();
                 news = connector.GetGeneric<GridNewsItem>(UUID.Zero, "WebGridNews", id);
+
                 if (news != null)
                 {
                     connector.RemoveGeneric (UUID.Zero, "WebGridNews", id);
@@ -81,11 +83,12 @@ namespace Universe.Modules.Web
                     "setTimeout(function() {window.location.href = \"index.html?page=news_manager\";}, 0);" +
                     "</script>";
                 }
+
                 return null;
             }
 
-
             news = connector.GetGeneric<GridNewsItem>(UUID.Zero, "WebGridNews", httpRequest.Query["newsid"].ToString());
+
             if (news != null)
             {
                 vars.Add ("NewsTitle", news.Title);
@@ -97,6 +100,7 @@ namespace Universe.Modules.Web
                 vars.Add ("EditNewsText", translator.GetTranslatedString ("EditNewsText"));
                 vars.Add ("Submit", translator.GetTranslatedString ("Submit"));
             }
+
             return vars;
         }
 

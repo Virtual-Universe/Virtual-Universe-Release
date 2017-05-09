@@ -46,6 +46,7 @@ namespace Universe.Modules.Web
                 if (_authenticatedUsers.ContainsKey (UUID.Parse (request.Cookies ["SessionID"].Value)))
                     return true;
             }
+
             return false;
         }
 
@@ -55,6 +56,7 @@ namespace Universe.Modules.Web
                 if (_authenticatedAdminUsers.ContainsKey (UUID.Parse (request.Cookies ["SessionID"].Value)))
                     return true;
             }
+
             return false;
         }
 
@@ -62,11 +64,12 @@ namespace Universe.Modules.Web
         {
             if (request.Cookies ["SessionID"] != null) {
                 var session =
-                    _authenticatedAdminUsers.FirstOrDefault (
-                        (acc) => acc.Key == UUID.Parse (request.Cookies ["SessionID"].Value));
+                    _authenticatedAdminUsers.FirstOrDefault ((acc) => acc.Key == UUID.Parse (request.Cookies ["SessionID"].Value));
+
                 if (session.Value != null && session.Value.UserLevel >= adminLevelRequired)
                     return true;
             }
+
             return false;
         }
 
@@ -91,9 +94,11 @@ namespace Universe.Modules.Web
         {
             if (request.Cookies ["SessionID"] != null) {
                 UUID sessionID = UUID.Parse (request.Cookies ["SessionID"].Value);
+
                 if (_authenticatedUsers.ContainsKey (sessionID))
                     return _authenticatedUsers [sessionID];
             }
+
             return null;
         }
 
@@ -101,6 +106,7 @@ namespace Universe.Modules.Web
         {
             if (request.Cookies ["SessionID"] != null)
                 return UUID.Parse (request.Cookies ["SessionID"].Value);
+
             return UUID.Zero;
         }
 
@@ -108,8 +114,10 @@ namespace Universe.Modules.Web
         {
             if (request.Cookies ["SessionID"] != null) {
                 UUID sessionID = UUID.Parse (request.Cookies ["SessionID"].Value);
+
                 if (_authenticatedUsers.ContainsKey (sessionID))
                     _authenticatedUsers [sessionID] = account;
+
                 if (_authenticatedAdminUsers.ContainsKey (sessionID))
                     _authenticatedAdminUsers [sessionID] = account;
             }

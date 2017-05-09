@@ -78,8 +78,10 @@ namespace Universe.Modules.Web
                 if (requestParameters.ContainsKey ("Submit")) {
                     if (requestParameters.ContainsKey ("date_start"))
                         DateStart = requestParameters ["date_start"].ToString ();
+
                     if (requestParameters.ContainsKey ("date_end"))
                         DateEnd = requestParameters ["date_end"].ToString ();
+
                     if (requestParameters.ContainsKey ("user_name"))
                         UserName = requestParameters ["user_name"].ToString ();
 
@@ -90,6 +92,7 @@ namespace Universe.Modules.Web
                         if (UserName.Split (' ').Length == 2) {
                             IUserAccountService accountService = webInterface.Registry.RequestModuleInterface<IUserAccountService> ();
                             var userAccount = accountService.GetUserAccount (null, UserName);
+
                             if (userAccount != null)
                                 UserID = userAccount.PrincipalID;
                         }
@@ -101,6 +104,7 @@ namespace Universe.Modules.Web
                     var dateTo = DateTime.Parse (DateEnd + " " + timeNow);
 
                     var transactions = new List<AgentTransfer> ();
+
                     if (UserID != UUID.Zero)
                         transactions = moneyModule.GetTransactionHistory (UserID, UUID.Zero, dateFrom, dateTo, null, null);
                     else
@@ -118,7 +122,6 @@ namespace Universe.Modules.Web
                             { "Description", transaction.Description },
                             { "Amount",transaction.Amount },
                             { "ToBalance",transaction.ToBalance }
-
                         });
                         }
                     }
@@ -126,13 +129,12 @@ namespace Universe.Modules.Web
 
                 if (transactionsList.Count == 0) {
                     transactionsList.Add (new Dictionary<string, object> {
-                    {"Date", ""},                   //Culture.LocaleDate(today,"MMM dd, hh:mm:ss")},
+                    {"Date", ""},
                     {"ToAgent", ""},
                     {"FromAgent", ""},
                     {"Description", translator.GetTranslatedString ("NoTransactionsText")},
                     {"Amount",""},
                     {"ToBalance",""}
-
                 });
                 }
             } 
@@ -154,7 +156,6 @@ namespace Universe.Modules.Web
             vars.Add ("TransactionDateText", translator.GetTranslatedString ("TransactionDateText"));
             vars.Add ("TransactionToAgentText", translator.GetTranslatedString ("TransactionToAgentText"));
             vars.Add ("TransactionFromAgentText", translator.GetTranslatedString ("TransactionFromAgentText"));
-            //vars.Add("TransactionTimeText", translator.GetTranslatedString("Time"));
             vars.Add ("TransactionDetailText", translator.GetTranslatedString ("TransactionDetailText"));
             vars.Add ("TransactionAmountText", translator.GetTranslatedString ("TransactionAmountText"));
             vars.Add ("TransactionBalanceText", translator.GetTranslatedString ("TransactionBalanceText"));

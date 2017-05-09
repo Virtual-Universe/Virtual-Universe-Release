@@ -60,12 +60,14 @@ namespace Universe.Modules.Web
         public void FinishedStartup ()
         {
             _server = _registry.RequestModuleInterface<ISimulationBase> ().GetHttpServer (0);
+
             if (_server != null) {
                 _server.AddStreamHandler (new GenericStreamHandler ("GET", "/index.php?method=GridTexture", OnHTTPGetTextureImage));
                 _server.AddStreamHandler (new GenericStreamHandler ("GET", "/index.php?method=AvatarTexture", OnHTTPGetAvatarImage));
                 _server.AddStreamHandler (new GenericStreamHandler ("GET", "/WebImage", OnHTTPGetImage));
                 _registry.RegisterModuleInterface<IWebHttpTextureService> (this);
             }
+
             IGridInfo gridInfo = _registry.RequestModuleInterface<IGridInfo> ();
             _gridNick = gridInfo != null
                             ? gridInfo.GridName
@@ -92,8 +94,7 @@ namespace Universe.Modules.Web
             return _server.ServerURI + "/WebImage?imageurl=" + imageURL;
         }
 
-        public byte [] OnHTTPGetTextureImage (string path, Stream request, OSHttpRequest httpRequest,
-                                            OSHttpResponse httpResponse)
+        public byte [] OnHTTPGetTextureImage (string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse)
         {
             byte [] jpeg = new byte [0];
             httpResponse.ContentType = "image/jpeg";
@@ -117,6 +118,7 @@ namespace Universe.Modules.Web
                     ManagedImage managedImage;
                     EncoderParameters myEncoderParameters = new EncoderParameters ();
                     myEncoderParameters.Param [0] = new EncoderParameter (Encoder.Quality, 75L);
+
                     if (OpenJPEG.DecodeToImage (mapasset, out managedImage, out image)) {
                         // Save to bitmap
                         var texture = ResizeBitmap (image, 256, 256);
@@ -130,7 +132,9 @@ namespace Universe.Modules.Web
                         } catch {
                         }
                     }
+
                     myEncoderParameters.Dispose ();
+
                     if (image != null)
                         image.Dispose ();
                 }
@@ -149,9 +153,7 @@ namespace Universe.Modules.Web
             return new byte [0];
         }
 
-
-        public byte [] OnHTTPGetAvatarImage (string path, Stream request, OSHttpRequest httpRequest,
-                                             OSHttpResponse httpResponse)
+        public byte [] OnHTTPGetAvatarImage (string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse)
         {
             httpResponse.ContentType = "image/jpeg";
 
@@ -162,6 +164,7 @@ namespace Universe.Modules.Web
                 if (File.Exists (uri)) {
                     return File.ReadAllBytes (uri);
                 }
+
                 return File.ReadAllBytes (nourl);
             } catch {
             }
@@ -169,9 +172,7 @@ namespace Universe.Modules.Web
             return new byte [0];
         }
 
-
-        public byte [] OnHTTPGetImage (string path, Stream request, OSHttpRequest httpRequest,
-                                      OSHttpResponse httpResponse)
+        public byte [] OnHTTPGetImage (string path, Stream request, OSHttpRequest httpRequest, OSHttpResponse httpResponse)
         {
             httpResponse.ContentType = "image/jpeg";
 
@@ -182,6 +183,7 @@ namespace Universe.Modules.Web
                 if (File.Exists (uri)) {
                     return File.ReadAllBytes (uri);
                 }
+
                 return File.ReadAllBytes (nourl);
             } catch {
             }
@@ -195,8 +197,7 @@ namespace Universe.Modules.Web
             Graphics temp = Graphics.FromImage (newsize);
             temp.DrawImage (b, 0, 0, nWidth, nHeight);
             temp.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            temp.DrawString (_gridNick, new Font ("Arial", 8, FontStyle.Regular),
-                            new SolidBrush (Color.FromArgb (90, 255, 255, 50)), new Point (2, nHeight - 13));
+            temp.DrawString (_gridNick, new Font ("Arial", 8, FontStyle.Regular), new SolidBrush (Color.FromArgb (90, 255, 255, 50)), new Point (2, nHeight - 13));
 
             temp.Dispose ();
             return newsize;
@@ -216,6 +217,7 @@ namespace Universe.Modules.Web
                 if (encoders [j].MimeType == mimeType)
                     return encoders [j];
             }
+
             return null;
         }
     }

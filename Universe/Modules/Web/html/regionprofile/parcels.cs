@@ -63,15 +63,9 @@ namespace Universe.Modules.Web
                                                OSHttpResponse httpResponse, Dictionary<string, object> requestParameters,
                                                ITranslator translator, out string response)
         {
-            // under development
-            //response = "<h3>Sorry! This feature is not available yet<</h3><br /> Redirecting to main page" +
-            //    "<script language=\"javascript\">" +
-            //    "setTimeout(function() {window.location.href = \"index.html\";}, 3000);" +
-            //    "</script>";
-            //return null;
-
             response = null;
             var vars = new Dictionary<string, object> ();
+
             if (httpRequest.Query.ContainsKey ("regionid")) {
                 var regionService = webInterface.Registry.RequestModuleInterface<IGridService> ();
                 var region = regionService.GetRegionByUUID (null, UUID.Parse (httpRequest.Query ["regionid"].ToString ()));
@@ -79,15 +73,18 @@ namespace Universe.Modules.Web
                 IEstateConnector estateConnector = Framework.Utilities.DataManager.RequestPlugin<IEstateConnector> ();
                 var ownerUUID = UUID.Zero;
                 string ownerName = "Unknown";
-                if (estateConnector != null) {
 
+                if (estateConnector != null) {
                     EstateSettings estate = estateConnector.GetRegionEstateSettings (region.RegionID);
+
                     if (estate != null) {
                         ownerUUID = estate.EstateOwner;
                         UserAccount estateOwnerAccount = null;
                         var accountService = webInterface.Registry.RequestModuleInterface<IUserAccountService> ();
+
                         if (accountService != null)
                             estateOwnerAccount = accountService.GetUserAccount (null, estate.EstateOwner);
+
                         ownerName = estateOwnerAccount == null ? "No account found" : estateOwnerAccount.Name;
                     }
                 } else {
@@ -110,13 +107,11 @@ namespace Universe.Modules.Web
                     ? translator.GetTranslatedString ("Online")
                     : translator.GetTranslatedString ("Offline"));
 
-                IDirectoryServiceConnector directoryConnector =
-                    Framework.Utilities.DataManager.RequestPlugin<IDirectoryServiceConnector> ();
+                IDirectoryServiceConnector directoryConnector = Framework.Utilities.DataManager.RequestPlugin<IDirectoryServiceConnector> ();
+
                 if (directoryConnector != null) {
-                    IUserAccountService accountService =
-                        webInterface.Registry.RequestModuleInterface<IUserAccountService> ();
-                    List<LandData> data = directoryConnector.GetParcelsByRegion (0, 10, region.RegionID, UUID.Zero,
-                        ParcelFlags.None, ParcelCategory.Any);
+                    IUserAccountService accountService = webInterface.Registry.RequestModuleInterface<IUserAccountService> ();
+                    List<LandData> data = directoryConnector.GetParcelsByRegion (0, 10, region.RegionID, UUID.Zero, ParcelFlags.None, ParcelCategory.Any);
                     List<Dictionary<string, object>> parcels = new List<Dictionary<string, object>> ();
                     string url = "../images/icons/no_parcel.jpg";
 
@@ -129,34 +124,31 @@ namespace Universe.Modules.Web
                             parcel.Add ("ParcelName", p.Name);
                             parcel.Add ("ParcelOwnerUUID", p.OwnerID);
                             parcel.Add ("ParcelSnapshotURL", url);
+
                             if (accountService != null) {
                                 var account = accountService.GetUserAccount (null, p.OwnerID);
+
                                 if (account != null)
                                     parcel.Add ("ParcelOwnerName", account.Name);
                                 else
                                     parcel.Add ("ParcelOwnerName", translator.GetTranslatedString ("NoAccountFound"));
                             }
+
                             parcels.Add (parcel);
                         }
                     }
+
                     vars.Add ("ParcelInRegion", parcels);
                     vars.Add ("NumberOfParcelsInRegion", parcels.Count);
                 }
-                IWebHttpTextureService webTextureService = webInterface.Registry.
-                    RequestModuleInterface<IWebHttpTextureService> ();
+
+                IWebHttpTextureService webTextureService = webInterface.Registry.RequestModuleInterface<IWebHttpTextureService> ();
+
                 if (webTextureService != null && region.TerrainMapImage != UUID.Zero)
                     vars.Add ("RegionImageURL", webTextureService.GetTextureURL (region.TerrainMapImage));
                 else
                     vars.Add ("RegionImageURL", "../images/icons/no_terrain.jpg");
 
-                /*   // Regionprofile Menus
-                   vars.Add("MenuRegionTitle", translator.GetTranslatedString("MenuRegionTitle"));
-                   vars.Add("TooltipsMenuRegion", translator.GetTranslatedString("TooltipsMenuRegion"));
-                   vars.Add("MenuParcelTitle", translator.GetTranslatedString("MenuParcelTitle"));
-                   vars.Add("TooltipsMenuParcel", translator.GetTranslatedString("TooltipsMenuParcel"));
-                   vars.Add("MenuOwnerTitle", translator.GetTranslatedString("MenuOwnerTitle"));
-                   vars.Add("TooltipsMenuOwner", translator.GetTranslatedString("TooltipsMenuOwner"));
-                   */
                 vars.Add ("RegionInformationText", translator.GetTranslatedString ("RegionInformationText"));
                 vars.Add ("OwnerNameText", translator.GetTranslatedString ("OwnerNameText"));
                 vars.Add ("RegionLocationText", translator.GetTranslatedString ("RegionLocationText"));
@@ -169,11 +161,9 @@ namespace Universe.Modules.Web
                 vars.Add ("NumberOfUsersInRegionText", translator.GetTranslatedString ("NumberOfUsersInRegionText"));
                 vars.Add ("ParcelsInRegionText", translator.GetTranslatedString ("ParcelsInRegionText"));
                 vars.Add ("MainServerURL", webInterface.GridURL);
-
             }
 
             return vars;
-
         }
 
         public bool AttemptFindPage (string filename, ref OSHttpResponse httpResponse, out string text)

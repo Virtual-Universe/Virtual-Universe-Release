@@ -72,6 +72,7 @@ namespace Universe.Modules.Web
             IWebHttpTextureService webhttpService = webInterface.Registry.RequestModuleInterface<IWebHttpTextureService>();
 
             UserAccount account = Authenticator.GetAuthentication(httpRequest);
+
             if (account == null)
                 return vars;
 
@@ -82,6 +83,7 @@ namespace Universe.Modules.Web
 
             IUserProfileInfo profile = Framework.Utilities.DataManager.RequestPlugin<IProfileConnector>().GetUserProfile(account.PrincipalID);
             string picUrl = "../images/icons/no_avatar.jpg";
+
             if (profile != null)
             {
                 vars.Add("UserType", profile.MembershipGroup == "" ? "Citizen" : profile.MembershipGroup);
@@ -93,7 +95,9 @@ namespace Universe.Modules.Web
                 }
                 else
                     vars.Add("UserPartner", "No partner");
+
                 vars.Add("UserAboutMe", profile.AboutText == "" ? "Nothing here" : profile.AboutText);
+
                 if (webhttpService != null && profile.Image != UUID.Zero)
                     picUrl = webhttpService.GetTextureURL(profile.Image);
             }
@@ -114,13 +118,16 @@ namespace Universe.Modules.Web
                 IFriendsService friendsService = webInterface.Registry.RequestModuleInterface<IFriendsService>();
                 var friends = friendsService.GetFriends(account.PrincipalID);
                 UUID friendID = UUID.Zero;
+
                 if (friends.Any(f => UUID.TryParse(f.Friend, out friendID) && friendID == ourAccount.PrincipalID))
                 {
                     IAgentInfoService agentInfoService = webInterface.Registry.RequestModuleInterface<IAgentInfoService>();
                     IGridService gridService = webInterface.Registry.RequestModuleInterface<IGridService>();
                     UserInfo ourInfo = agentInfoService.GetUserInfo(account.PrincipalID.ToString());
+
                     if (ourInfo != null && ourInfo.IsOnline)
                         vars.Add("OnlineLocation", gridService.GetRegionByUUID(null, ourInfo.CurrentRegionID).RegionName);
+
                     vars.Add("UserIsOnline", ourInfo != null && ourInfo.IsOnline);
                     vars.Add("IsOnline",
                         ourInfo != null && ourInfo.IsOnline
@@ -149,16 +156,19 @@ namespace Universe.Modules.Web
             if (groupsConnector != null)
             {
                 var groupsIn = groupsConnector.GetAgentGroupMemberships(account.PrincipalID, account.PrincipalID);
+
                 if (groupsIn != null)
                 {
                     foreach (var grp in groupsIn)
                     {
                         var grpData = groupsConnector.GetGroupProfile(account.PrincipalID, grp.GroupID);
                         string url = "../images/icons/no_groups.jpg";
+
                         if (grpData != null)
                         {
                             if (webhttpService != null && grpData.InsigniaID != UUID.Zero)
                                 url = webhttpService.GetTextureURL(grpData.InsigniaID);
+
                             groups.Add(new Dictionary<string, object> {
                             { "GroupPictureURL", url },
                             { "GroupName", grp.GroupName }
@@ -218,6 +228,8 @@ namespace Universe.Modules.Web
             vars.Add("it", translator.GetTranslatedString("it"));
             vars.Add("es", translator.GetTranslatedString("es"));
             vars.Add("nl", translator.GetTranslatedString("nl"));
+            vars.Add("ru", translator.GetTranslatedString("ru"));
+            vars.Add("zh_CN", translator.GetTranslatedString("zh_CN"));
 
             var settings = webInterface.GetWebUISettings();
             vars.Add("ShowLanguageTranslatorBar", !settings.HideLanguageTranslatorBar);

@@ -66,6 +66,7 @@ namespace Universe.Modules.Web
 
             List<Dictionary<string, object>> RegionListVars = new List<Dictionary<string, object>>();
             var sortBy = new Dictionary<string, bool>();
+
             if (httpRequest.Query.ContainsKey("region"))
                 sortBy.Add(httpRequest.Query["region"].ToString(), true);
             else if (httpRequest.Query.ContainsKey("Order"))
@@ -111,7 +112,6 @@ namespace Universe.Modules.Web
 
             vars.Add("RegionList", RegionListVars);
             vars.Add("RegionText", translator.GetTranslatedString("Region"));
-
 
             vars.Add("RegionNameText", translator.GetTranslatedString("RegionNameText"));
             vars.Add("RegionLocXText", translator.GetTranslatedString("RegionLocXText"));

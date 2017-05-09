@@ -82,19 +82,13 @@ namespace Universe.Modules.Web
             int.TryParse (estate, out estateid);
 
             if (requestParameters.ContainsKey ("Delete")) {
-                //var estateID = httpRequest.Query ["delete"].ToString ();
-                //if (estateConnector.DeleteEstate (estateID))
-                //    response = "<h3>Estate details have been deleted</h3>" +
-                //        "<script>" +
-                //        "setTimeout(function() {window.location.href = \"/?page=estate_manager\";}, 1000);" +
-                //        "</script>";
-                //else
                 response = "Estate details would have been deleted (but not yet).";
                 return null;
             }
 
             if (requestParameters.ContainsKey ("Submit")) {
                 var estateSettings = new EstateSettings ();
+
                 if (estateid >= 0)
                     estateSettings = estateConnector.GetEstateIDSettings (estateid);
 
@@ -147,7 +141,6 @@ namespace Universe.Modules.Web
                 }
             }
 
-
             // labels
             vars.Add ("EstateManagerText", translator.GetTranslatedString ("MenuEstateManager"));
             vars.Add ("EstateNameText", translator.GetTranslatedString ("EstateText"));
@@ -161,7 +154,6 @@ namespace Universe.Modules.Web
             vars.Add ("InfoMessage", "");
 
             return vars;
-
         }
 
         public bool AttemptFindPage (string filename, ref OSHttpResponse httpResponse, out string text)

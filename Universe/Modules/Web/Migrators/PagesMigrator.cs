@@ -80,15 +80,7 @@ namespace Universe.Modules.Web
                         MenuTitle = "MenuWorldMap",
                         MenuToolTip = "TooltipsMenuWorldMap"
                     },
-                    /* removed as region list now provides search capabilitie
-                     new GridPage {
-                        ShowInMenu = true,
-                        MenuID = "region_search",
-                        Location = "region_search.html",
-                        MenuPosition = 1,
-                        MenuTitle = "MenuRegionSearch",
-                        MenuToolTip = "TooltipsMenuRegionSearch"
-                    }, */
+      
                     new GridPage {
                         ShowInMenu = true,
                         MenuID = "region_list",
@@ -141,6 +133,7 @@ namespace Universe.Modules.Web
                         MenuTitle = "MenuOnlineUsers",
                         MenuToolTip = "TooltipsMenuOnlineUsers"
                     },
+
                     new GridPage {
                         ShowInMenu = true,
                         LoggedInRequired = true,
@@ -150,6 +143,7 @@ namespace Universe.Modules.Web
                         MenuTitle = "MenuUserSearch",
                         MenuToolTip = "TooltipsMenuUserSearch"
                     },
+
                     new GridPage {
                         ShowInMenu = true,
                         LoggedInRequired = true,
@@ -158,8 +152,8 @@ namespace Universe.Modules.Web
                         MenuPosition = 2,
                         MenuTitle = "MenuMyPurchases",
                         MenuToolTip = "TooltipsMenuPurchases"
-
                     },
+
                     new GridPage {
                         ShowInMenu = true,
                         LoggedInRequired = true,
@@ -169,6 +163,7 @@ namespace Universe.Modules.Web
                         MenuTitle = "MenuMyTransactions",
                         MenuToolTip = "TooltipsMenuTransactions"
                     },
+
                     new GridPage {
                         ShowInMenu = true,
                         LoggedInRequired = true,
@@ -178,6 +173,7 @@ namespace Universe.Modules.Web
                         MenuTitle = "MenuMyEvents",
                         MenuToolTip = "TooltipsMenuEvents"
                     },
+
                     new GridPage {
                         ShowInMenu = true,
                         LoggedInRequired = true,
@@ -187,6 +183,7 @@ namespace Universe.Modules.Web
                         MenuTitle = "MenuRegionManager",
                         MenuToolTip = "TooltipsMenuRegionManager"
                     },
+
                     new GridPage {
                         ShowInMenu = true,
                         LoggedInRequired = true,
@@ -196,6 +193,7 @@ namespace Universe.Modules.Web
                         MenuTitle = "MenuEstateManager",
                         MenuToolTip = "TooltipsMenuEstateManager"
                     },
+
                     new GridPage {
                         ShowInMenu = true,
                         LoggedInRequired = true,
@@ -225,6 +223,7 @@ namespace Universe.Modules.Web
                         MenuTitle = "MenuViewerHelp",
                         MenuToolTip = "TooltipsMenuViewerHelp"
                     },
+
                     new GridPage {
                         ShowInMenu = true,
                         MenuID = "chat",
@@ -235,7 +234,6 @@ namespace Universe.Modules.Web
                     }
                 }
             });
-
 
             // Management
             _rootPage.Children.Add (new GridPage {
@@ -256,6 +254,7 @@ namespace Universe.Modules.Web
                         MenuTitle = "MenuRegister",
                         MenuToolTip = "TooltipsMenuRegister"
                     },
+
                     new GridPage {
                         ShowInMenu = true,
                         AdminRequired = true,
@@ -265,6 +264,7 @@ namespace Universe.Modules.Web
                         MenuTitle = "MenuUserManager",
                         MenuToolTip = "TooltipsMenuUserManager"
                     },
+
                     new GridPage {
                         ShowInMenu = true,
                         AdminRequired = true,
@@ -274,6 +274,7 @@ namespace Universe.Modules.Web
                         MenuTitle = "MenuNewsManager",
                         MenuToolTip = "TooltipsMenuNewsManager"
                     },
+
                     new GridPage {
                         ShowInMenu = true,
                         AdminRequired = true,
@@ -283,6 +284,7 @@ namespace Universe.Modules.Web
                         MenuTitle = "MenuRegionManager",
                         MenuToolTip = "TooltipsMenuRegionManager"
                     },
+
                     new GridPage {
                         ShowInMenu = true,
                         AdminRequired = true,
@@ -292,6 +294,7 @@ namespace Universe.Modules.Web
                         MenuTitle = "MenuEstateManager",
                         MenuToolTip = "TooltipsMenuEstateManager"
                     },
+
                     new GridPage {
                         ShowInMenu = false,
                         AdminRequired = true,
@@ -300,8 +303,8 @@ namespace Universe.Modules.Web
                         MenuPosition = 5,
                         MenuTitle = "MenuManagerSimConsole",
                         MenuToolTip = "TooltipsMenuManagerSimConsole"
-
                     },
+
                     new GridPage {
                         ShowInMenu = true,
                         AdminRequired = true,
@@ -310,8 +313,8 @@ namespace Universe.Modules.Web
                         MenuPosition = 6,
                         MenuTitle = "MenuPurchases",
                         MenuToolTip = "TooltipsMenuPurchases"
-
                     },
+
                     new GridPage {
                         ShowInMenu = true,
                         AdminRequired = true,
@@ -321,6 +324,7 @@ namespace Universe.Modules.Web
                         MenuTitle = "MenuAbuse",
                         MenuToolTip = "TooltipsMenuAbuse"
                     },
+
                     new GridPage {
                         ShowInMenu = true,
                         AdminRequired = true,
@@ -330,6 +334,7 @@ namespace Universe.Modules.Web
                         MenuTitle = "MenuTransactions",
                         MenuToolTip = "TooltipsMenuTransactions"
                     },
+
                     new GridPage {
                         ShowInMenu = true,
                         AdminRequired = true,
@@ -361,6 +366,7 @@ namespace Universe.Modules.Web
                         MenuTitle = "MenuGridSettings",
                         MenuToolTip = "TooltipsMenuGridSettings"
                     },
+
                     new GridPage {
                         ShowInMenu = true,
                         AdminRequired = true,
@@ -370,6 +376,7 @@ namespace Universe.Modules.Web
                         MenuTitle = "MenuSettingsManager",
                         MenuToolTip = "TooltipsMenuSettingsManager"
                     },
+
                     new GridPage {
                         ShowInMenu = true,
                         AdminRequired = true,
@@ -379,6 +386,7 @@ namespace Universe.Modules.Web
                         MenuTitle = "MenuPageManager",
                         MenuToolTip = "TooltipsMenuPageManager"
                     },
+
                     new GridPage {
                         ShowInMenu = true,
                         AdminRequired = true,
@@ -388,6 +396,7 @@ namespace Universe.Modules.Web
                         MenuTitle = "MenuWelcomeScreenManager",
                         MenuToolTip = "TooltipsMenuWelcomeScreenManager"
                     },
+
                     new GridPage {
                         ShowInMenu = true,
                         AdminRequired = true,
@@ -399,7 +408,6 @@ namespace Universe.Modules.Web
                     }
                 }
             });
-
 
             // register
             _rootPage.Children.Add (new GridPage {
@@ -444,7 +452,6 @@ namespace Universe.Modules.Web
                 MenuToolTip = "TooltipsMenuLogout"
             });
 
-
             // these are non menu, indivual pages that can be called
             _rootPage.Children.Add (new GridPage {
                 ShowInMenu = false,
@@ -460,6 +467,7 @@ namespace Universe.Modules.Web
                 MenuPosition = 8,
                 Location = "admin/add_news.html"
             });
+
             _rootPage.Children.Add (new GridPage {
                 MenuID = "edit_news",
                 ShowInMenu = false,
@@ -467,6 +475,7 @@ namespace Universe.Modules.Web
                 MenuPosition = 8,
                 Location = "admin/edit_news.html"
             });
+
             _rootPage.Children.Add (new GridPage {
                 MenuID = "edit_user",
                 ShowInMenu = false,
@@ -508,6 +517,7 @@ namespace Universe.Modules.Web
                 MenuPosition = 8,
                 Location = "events/add_event.html"
             });
+
             _rootPage.Children.Add (new GridPage {
                 MenuID = "edit_event",
                 ShowInMenu = false,
@@ -515,6 +525,7 @@ namespace Universe.Modules.Web
                 MenuPosition = 8,
                 Location = "user/edit_event.html"
             });
+
             _rootPage.Children.Add (new GridPage {
                 MenuID = "user_regionedit",
                 ShowInMenu = false,
@@ -522,6 +533,7 @@ namespace Universe.Modules.Web
                 MenuPosition = 8,
                 Location = "user/region_edit.html"
             });
+
             _rootPage.Children.Add (new GridPage {
                 MenuID = "user_estateedit",
                 ShowInMenu = false,
@@ -529,41 +541,11 @@ namespace Universe.Modules.Web
                 MenuPosition = 8,
                 Location = "user/estate_edit.html"
             });
-
-            //Things added, but not used
-            /*pages.Add(new Dictionary<string, object> { { "MenuItemID", "tweets" }, 
-                { "ShowInMenu", false },
-                { "MenuItemLocation", "tweets.html" }, 
-                { "MenuItemTitleHelp", translator.GetTranslatedString("TooltipsMenuTweets") },
-                { "MenuItemTitle", translator.GetTranslatedString("MenuTweets") } });
-
-            pages.Add(new Dictionary<string, object> { { "MenuItemID", "agent_info" }, 
-                { "ShowInMenu", false },
-                { "MenuItemLocation", "agent_info.html" }, 
-                { "MenuItemTitleHelp", translator.GetTranslatedString("TooltipsMenuAgentInfo") },
-                { "MenuItemTitle", translator.GetTranslatedString("MenuAgentInfo") } });
-
-            pages.Add(new Dictionary<string, object> { { "MenuItemID", "region_info" }, 
-                { "ShowInMenu", false },
-                { "MenuItemLocation", "region_info.html" }, 
-                { "MenuItemTitleHelp", translator.GetTranslatedString("TooltipsMenuRegionInfo") },
-                { "MenuItemTitle", translator.GetTranslatedString("MenuRegionInfo") } });
-            pages.Add(new Dictionary<string, object> { { "MenuItemID", "add_news" }, 
-                { "ShowInMenu", false },
-                { "MenuItemLocation", "admin/add_news.html" }, 
-                { "MenuItemTitleHelp", translator.GetTranslatedString("TooltipsMenuNewsManager") },
-                { "MenuItemTitle", translator.GetTranslatedString("MenuNewsManager") } });
-            pages.Add(new Dictionary<string, object> { { "MenuItemID", "edit_news" }, 
-                { "ShowInMenu", false },
-                { "MenuItemLocation", "admin/edit_news.html" }, 
-                { "MenuItemTitleHelp", translator.GetTranslatedString("TooltipsMenuNewsManager") },
-                { "MenuItemTitle", translator.GetTranslatedString("MenuNewsManager") } });*/
         }
 
         public static bool RequiresUpdate ()
         {
             IGenericsConnector generics = Framework.Utilities.DataManager.RequestPlugin<IGenericsConnector> ();
-
             OSDWrapper version = generics.GetGeneric<OSDWrapper> (UUID.Zero, Schema + "Version", "");
             return version == null || version.Info.AsInteger () < CurrentVersion;
         }
@@ -571,7 +553,6 @@ namespace Universe.Modules.Web
         public static uint GetVersion ()
         {
             IGenericsConnector generics = Framework.Utilities.DataManager.RequestPlugin<IGenericsConnector> ();
-
             OSDWrapper version = generics.GetGeneric<OSDWrapper> (UUID.Zero, Schema + "Version", "");
             return version == null ? 0 : (uint)version.Info.AsInteger ();
         }
@@ -579,7 +560,6 @@ namespace Universe.Modules.Web
         public static bool RequiresInitialUpdate ()
         {
             IGenericsConnector generics = Framework.Utilities.DataManager.RequestPlugin<IGenericsConnector> ();
-
             OSDWrapper version = generics.GetGeneric<OSDWrapper> (UUID.Zero, Schema + "Version", "");
             return version == null || version.Info.AsInteger () < 1;
         }
@@ -591,7 +571,6 @@ namespace Universe.Modules.Web
 
             //Remove all pages
             generics.RemoveGeneric (UUID.Zero, Schema);
-
             generics.AddGeneric (UUID.Zero, Schema, "Root", _rootPage.ToOSD ());
             generics.AddGeneric (UUID.Zero, Schema + "Version", "", new OSDWrapper { Info = CurrentVersion }.ToOSD ());
         }
