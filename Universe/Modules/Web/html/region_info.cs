@@ -210,7 +210,7 @@ namespace Universe.Modules.Web
                 vars.Add ("es", translator.GetTranslatedString ("es"));
                 vars.Add ("nl", translator.GetTranslatedString ("nl"));
                 vars.Add ("ru", translator.GetTranslatedString ("ru"));
-                vars.Add ("zh_CN", translated.GetTranslatedString ("zh_CN"));
+                vars.Add ("zh_CN", translator.GetTranslatedString ("zh_CN"));
                 var settings = webInterface.GetWebUISettings ();
                 vars.Add ("ShowLanguageTranslatorBar", !settings.HideLanguageTranslatorBar);
                 vars.Add ("ShowStyleBar", !settings.HideStyleBar);
