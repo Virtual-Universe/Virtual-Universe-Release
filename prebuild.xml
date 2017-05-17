@@ -1071,7 +1071,7 @@
       </Files>
     </Project>
 
-    <Project frameworkVersion="v4_5" name="Universe.Server.WebServer" path="Universe/Servers/WebServer" type="Exe" appmanifest="app.manifest" icon="Universe.Webserver.ico">
+    <Project frameworkVersion="v4_5" name="Universe.Server.WebServer" path="Universe/Servers/WebServer" type="Exe" appmanifest="app.manifest" icon="Universe.WebServer.ico">
       <Configuration name="Debug" platform="x86">
         <Options>
           <OutputPath>../../../VirtualUniverse/bin/</OutputPath>
