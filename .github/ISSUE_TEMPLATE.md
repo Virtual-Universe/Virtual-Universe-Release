@@ -11,10 +11,11 @@
 
 ### Issue Type
 
-| Question      | Answer
-| ------------- | ---------
-| Bug?          | [yes|no]
-| New feature?  | [yes|no]
+| Question      | Answer    |
+| ------------- | --------- |
+| Question?     | [yes|no]  |
+| Bug?          | [yes|no]  |
+| New feature?  | [yes|no]  |
 
 ### For Feature requests please answer the following
 
