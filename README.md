@@ -1,14 +1,16 @@
 # Attention all users
-We are aware of an issue involving the latest versions of Third Party Viewers (TPVs) that causes avatars to go black when attaching or detaching items. The Second Galaxy Development Team is aware of this bug and is currently investigating it.
+If you are using Virtual Universe to run a production level grid open to the public, please use the official stable code in the Virtual-Universe Repository.
 
-Viewers affected are: Singularity Viewer (1.8.7.6861), Firestorm (4.7.9), Alchemy Viewer (4.0.1)  Kokua Viewer is not yet known to be affected.
+The repository is at: https://github.com/Virtual-Universe/Virtual-Universe
 
-Until we get this fixed we advise all users to use the version of their viewer just before the current release version.  In this way you will avoid this bug while we investigate this issue further.
+Never use the code in the Virtual-Dev repository for your production level grids.  The code in the Development Repository is for development of Virtual Universe and is not considered stable.
+
+The Development Repository at: https://github.com/Virtual-Universe/Virtual-Dev  code should not be used in a production level grid, and should only be used for purposes of testing only.
 
 # Virtual Universe
 
-- Current Version: 1.0.2 RC2
-- Version Release Date: April 30, 2016
+- Current Version: 1.0.3 Release
+- Version Release Date: June 28, 2017
 
 The Virtual Universe Development Team is proud to present Virtual Universe as a rolling release software.
 
