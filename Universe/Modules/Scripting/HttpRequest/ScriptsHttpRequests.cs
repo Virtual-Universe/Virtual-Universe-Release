@@ -36,12 +36,11 @@ using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
+using Nini.Config;
+using OpenMetaverse;
 using Universe.Framework.Modules;
 using Universe.Framework.SceneInfo;
 using Universe.Framework.Utilities;
-using Nini.Config;
-using OpenMetaverse;
-
 
 /*****************************************************
  *
@@ -94,16 +93,11 @@ namespace Universe.Modules.Scripting
         private int MaxNumberOfHTTPRequestsPerSecond = 1;
         private int httpTimeout = 30000;
         private string m_name = "HttpScriptRequests";
-
-        // <itemID, HttpRequestClasss>
         private Dictionary<UUID, List<HttpRequestClass>> m_pendingRequests;
         private string m_proxyexcepts = "";
         private string m_proxyurl = "";
-        // <reqID, itemID>
         private IScene m_scene;
         private IScriptModule m_scriptModule;
-
-        // private Queue<HttpRequestClass> rpcQueue = new Queue<HttpRequestClass>();
 
         public HttpRequestModule()
         {
@@ -119,8 +113,7 @@ namespace Universe.Modules.Scripting
             return UUID.Zero;
         }
 
-        public UUID StartHttpRequest(UUID primID, UUID itemID, string url, List<string> parameters,
-                                     Dictionary<string, string> headers, string body)
+        public UUID StartHttpRequest(UUID primID, UUID itemID, string url, List<string> parameters, Dictionary<string, string> headers, string body)
         {
             UUID reqID = UUID.Random();
             HttpRequestClass htc = new HttpRequestClass();
@@ -140,27 +133,22 @@ namespace Universe.Modules.Scripting
                     switch (Int32.Parse(parms[i]))
                     {
                         case (int) HttpRequestConstants.HTTP_METHOD:
-
                             htc.HttpMethod = parms[i + 1];
                             break;
 
                         case (int) HttpRequestConstants.HTTP_MIMETYPE:
-
                             htc.HttpMIMEType = parms[i + 1];
                             break;
 
                         case (int) HttpRequestConstants.HTTP_BODY_MAXLENGTH:
-
                             BODY_MAXLENGTH = int.Parse(parms[i + 1]);
                             break;
 
                         case (int) HttpRequestConstants.HTTP_VERIFY_CERT:
-
                             htc.HttpVerifyCert = (int.Parse(parms[i + 1]) != 0);
                             break;
 
                         case (int) HttpRequestConstants.HTTP_VERBOSE_THROTTLE:
-
                             htc.VerbroseThrottle = (int.Parse(parms[i + 1]) != 0);
                             break;
 
@@ -173,7 +161,6 @@ namespace Universe.Modules.Scripting
                             break;
 
                         case (int) HttpRequestConstants.HTTP_CUSTOM_HEADER:
-
                             string name = parms[i + 1];
                             string value = parms[i + 2];
                             i++; //Move forward one, since we pulled out 3 instead of 2
@@ -246,6 +233,7 @@ namespace Universe.Modules.Scripting
                             tmpReq.Stop();
                         }
                     }
+
                     m_pendingRequests.Remove(m_itemID);
                 }
             }
@@ -260,6 +248,7 @@ namespace Universe.Modules.Scripting
         {
             if (m_pendingRequests.Count == 0)
                 return null;
+
             lock (HttpListLock)
             {
                 foreach (
@@ -269,6 +258,7 @@ namespace Universe.Modules.Scripting
                     return luid;
                 }
             }
+
             return null;
         }
 
@@ -304,14 +294,12 @@ namespace Universe.Modules.Scripting
         {
             m_proxyurl = config.Configs["HTTPScriptModule"].GetString("HttpProxy");
             m_proxyexcepts = config.Configs["HTTPScriptModule"].GetString("HttpProxyExceptions");
-
             m_pendingRequests = new Dictionary<UUID, List<HttpRequestClass>>();
         }
 
         public void AddRegion(IScene scene)
         {
             m_scene = scene;
-
             m_scene.RegisterModuleInterface<IHttpRequestModule>(this);
         }
 
@@ -352,14 +340,17 @@ namespace Universe.Modules.Scripting
             {
                 return true;
             }
+
             if ((((int) sslPolicyErrors) & ~4) != 0)
                 return false;
+
 #pragma warning disable 618
             if (ServicePointManager.CertificatePolicy != null)
             {
                 ServicePoint sp = Request.ServicePoint;
                 return ServicePointManager.CertificatePolicy.CheckValidationResult(sp, certificate, Request, 0);
             }
+
 #pragma warning restore 618
             return true;
         }
@@ -455,7 +446,8 @@ namespace Universe.Modules.Scripting
             try
             {
                 Request = (HttpWebRequest) WebRequest.Create(Url);
-
+                Request.AllowAutoRedirect = false;
+                Request.KeepAlive = false;
                 Request.Method = HttpMethod;
                 Request.ContentType = HttpMIMEType;
 
@@ -463,13 +455,13 @@ namespace Universe.Modules.Scripting
                 {
                     // Connection Group Name is probably not used so we hijack it to identify
                     // a desired security exception
-//                  Request.ConnectionGroupName="NoVerify";
+                    //Request.ConnectionGroupName="NoVerify";
                     Request.Headers.Add("NoVerifyCert", "true");
                 }
-//              else
-//              {
-//                  Request.ConnectionGroupName="Verify";
-//              }
+                //else
+                //{
+                //   Request.ConnectionGroupName="Verify";
+                //}
 
                 if (!string.IsNullOrEmpty(proxyurl))
                 {
@@ -514,6 +506,7 @@ namespace Universe.Modules.Scripting
                     {
                         throw;
                     }
+
                     response = (HttpWebResponse) e.Response;
                 }
 
