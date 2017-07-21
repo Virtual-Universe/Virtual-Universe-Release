@@ -160,6 +160,7 @@ namespace Universe.Modules.GlobalEnvironment
         public void AddRegion(IScene scene)
         {
             m_scene = scene;
+            
             // This one enables the ability to type just "sun" without any parameters
             if (MainConsole.Instance != null)
             {
@@ -173,8 +174,15 @@ namespace Universe.Modules.GlobalEnvironment
                 }
             }
 
+            TimeZone local = TimeZone.CurrentTimeZone;
+            TicksUTCOffset = local.GetUtcOffset(local.ToLocalTime(DateTime.UtcNow)).Ticks;
+            //MainConsole.Instance.Debug("[Sun]: localtime offset is " + TicksUTCOffset);
+            
+            // July 21, 2017 - NoahStarfinder
+            // We don't actually use the Pacific Standard Time zone at all.
+            // It should really be based upon the local time zone of the serverr hardware.
             // Use a fixed offset from UTC for Pacific time with no DST changes. Must be a specific unchanging offset, could be 0.
-            TicksUTCOffset = -288000000000; // -8 * 60 * 60 * TICKS_PER_SECOND
+            //TicksUTCOffset = -288000000000; // -8 * 60 * 60 * TICKS_PER_SECOND
 
             // Align ticks with Second Life
             TicksToEpoch = new DateTime(1970, 1, 1).Ticks;
